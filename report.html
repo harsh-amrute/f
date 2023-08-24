@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ESLint Results</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style type="text/css">
+    body {
+      margin: 0;
+    }
+  
+    .eslint-report {
+      font-family: "Helvetica Neue", sans-serif;
+      font-size: 14px;
+      padding: 20px 40px;
+    }
+  
+    .eslint-report h1 {
+      border-bottom: 1px solid #ddd;
+      line-height: 1;
+      padding-bottom: 12px;
+    }
+  
+    .eslint-report h2 {
+      padding-bottom: 9px;
+      line-height: 1;
+      margin-top: 24px;
+      margin-bottom: 9px;
+    }
+  
+    .eslint-report h3 {
+      line-height: 1;
+      margin-top: 0;
+    }
+  
+    .eslint-report a {
+      text-decoration: none;
+    }
+  
+    .eslint-report table {
+      border-spacing: 0;
+      border-collapse: collapse;
+    }
+  
+    .toggle-all-link {
+      font-size: 14px;
+    }
+  
+    .report-table {
+      font-size: 14px;
+      min-width: 800px;
+      border: 1px solid #e6e6e6;
+      margin: 10px;
+    }
+  
+    .report-table thead {
+      background-color: #eee;
+    }
+  
+    .report-table th {
+      text-align: left;
+      vertical-align: middle;
+    }
+  
+    .report-table th,
+    .report-table td {
+      padding: 4px 9px;
+      border: 1px solid #ccc;
+    }
+  
+    .report-table td {
+      line-height: 1.5;
+      vertical-align: top;
+    }
+  
+    .report-table .error-col {
+      width: 41px;
+    }
+  
+    .report-table .warning-col {
+      width: 63px;
+    }
+  
+    .report-table .toggle-link {
+      display: block;
+    }
+  
+    .report-table .danger td {
+      background-color: rgba(242, 222, 222, 0.8);
+    }
+  
+    .report-table .danger:hover td {
+      background-color: rgba(242, 222, 222, 1);
+    }
+  
+    .report-table .warning td {
+      background-color: rgba(252, 248, 227, 0.8);
+    }
+  
+    .report-table .warning:hover td {
+      background-color: rgba(252, 248, 227, 1);
+    }
+  
+    .report-table .success td {
+      background-color: rgba(223, 240, 216, 0.8);
+    }
+  
+    .report-table .success:hover td {
+      background-color: rgba(223, 240, 216, 1);
+    }
+  
+    .table-wrapper {
+      display: flex;
+      justify-content: flex-start;
+      width: 600px;
+      align-items: flex-end;
+    }
+  
+    .table-wrapper.occurrences {
+      align-items: flex-start;
+    }
+  
+    .table-wrapper.occurrences .table-column {
+      height: 180px;
+      overflow-y: auto;
+    }
+  
+    .table-column {
+      flex: 1;
+      margin: 10px;
+    }
+  
+    .summary-table {
+      width: 100%;
+    }
+  
+    .summary-table a {
+      display: block;
+    }
+  
+    .summary-table td {
+      padding: 4px 0;
+    }
+  
+    .summary-table td:last-child {
+      text-align: right;
+    }
+  
+    .summary-table tfoot td {
+      border-top: 2px solid #666;
+      font-weight: bold;
+    }
+  
+    .details-row.hidden {
+      display: none;
+    }
+  
+    .details-table {
+      font-size: 12px;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+  
+    .details-table td {
+      border: 0;
+      padding: 1px 6px;
+    }
+  
+    .details-table td:first-child {
+      padding-left: 0;
+    }
+  
+    .details-table .location-col {
+      width: 25px;
+    }
+  
+    .details-table .rule-col {
+      white-space: nowrap;
+      width: 100px;
+    }
+  
+    .details-table .rule-col a {
+      display: block;
+    }
+  
+    .details-table .rule-col a:hover {
+      text-decoration: underline;
+    }
+  
+    .details-table .severity-col {
+      width: 45px;
+    }
+  
+    .details-table .msg-danger .severity-col {
+      color: #900;
+    }
+  
+    .details-table .msg-warning .severity-col {
+      color: #f90;
+    }
+  </style>
+
+    <script>
+      // yolo
+      function toggleAllDetails(node) {
+        var rows = document.querySelectorAll("tr.details-row");
+    
+        if (node.innerHTML === "(expand all)") {
+          node.innerHTML = "(collapse all)";
+    
+          for (var x = 0; x < rows.length; x++) {
+            var row = rows[x];
+            row.className = "details-row";
+          }
+        } else {
+          node.innerHTML = "(expand all)";
+    
+          for (var x = 0; x < rows.length; x++) {
+            var row = rows[x];
+            row.className = "details-row hidden";
+          }
+        }
+      }
+    
+      function toggleDetails(node) {
+        var parentRow = node.parentNode.parentNode;
+        var detailsRow = parentRow.nextSibling;
+    
+        if (detailsRow.className === "details-row hidden") {
+          detailsRow.className = "details-row";
+        } else {
+          detailsRow.className = "details-row hidden";
+        }
+      }
+    </script>
+</head>
+<body>
+  <div class="eslint-report">
+    <h1>ESLint Results</h1>
+
+      <h2>Summary</h2>
+      
+      <div class="table-wrapper">
+        <div class="table-column">
+          <table class="summary-table">
+              <tbody>
+                <tr>
+                  <td>Errors</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>Warnings</td>
+                  <td>0</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td>Total alerts</td>
+                  <td>0</td>
+                </tr>
+              </tfoot>
+          </table>
+        </div>
+        <div class="table-column">
+          <table class="summary-table">
+              <tbody>
+                <tr>
+                  <td>Files with errors</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>Files with only warnings</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>Clean files</td>
+                  <td>193</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td>Total files linted</td>
+                  <td>193</td>
+                </tr>
+              </tfoot>
+          </table>
+        </div>
+      </div>
+
+
+      <h2>File Breakdown
+          <a id="toggle" href="javascript:;" onclick="toggleAllDetails(this)" class="toggle-all-link">(expand all)</a></h2>
+      
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th class="error-col">Errors</th>
+            <th class="warning-col">Warnings</th>
+          </tr>
+        </thead>
+        <tbody><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\App.test.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\App.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\app-routes.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ArrowList\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonCheck\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonFloat\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonFloat\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonNormal\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonNormal\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonOutlineCheck\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonOutlineCheck\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonOutlineIcon\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonOutlineIcon\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonOutline\button.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonOutline\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonOutline\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonToggle3State\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ButtonToggle3State\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\Checkbox\CheckboxAvailability.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\Checkbox\CheckboxPendingRequest.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\Checkbox\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\DataLoading\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\Errors\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\InputSearchList\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\InputSearchList\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\LazyLoad\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ListItemInput\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ListItemInput\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\LoadingSpinner\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\MenuToolTip\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\MenuToolTip\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ModalAdvanedPermissions\common-func.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ModalAdvanedPermissions\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ModalAvailabilityComparison\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ModalContact\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ModalForced\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ModalManageUsers\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ModalReportIssue\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ModalReportIssue\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ModalSuccess\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\ModalSuccess\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\Modal\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\NotFound\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\OverlayPage\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\OverlayPage\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\Pagination\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\Pagination\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SearchInputMultiple\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SearchInputMultiple\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SearchInput\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SelectInput\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SelectInput\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SelectOptionLevel\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SelectOptionLevel\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SelectSearchMultiple\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SelectSearchMultiple\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SelectSearchResetFilter\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SelectSearch\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\Spinner\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SwitchButtonAvailability\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SwitchButtonStoreStatus\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\SwitchButton\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\TabAvailabilityComparison\AvailabilityActiveTab.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\TabAvailabilityComparison\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\TableForced\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\TableForced\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\TableForced\tableItem.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\TableStore\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\TableStore\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\TableUserManagement\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\TableUserManagement\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\Table\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\Table\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\Table\tableItem.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\Tooltip\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\VerticalPartitions\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\commons\VerticalPartitions\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\index.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\AppLayout\AuthenticationTemplate.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\AppLayout\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\BreadCrumb\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\Footer\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\Header\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\Header\style.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\LocationFilter\common-filter.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\LocationFilter\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\LocationFilter\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\LocationPermission\common-mulselect.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\LocationPermission\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\LocationPermission\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\ModuleLayout\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\NavbarItem\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\NavbarItem\particulars.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\NavbarItem\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\NavbarMenu\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\NavbarMenu\listMenu.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\NavbarMenu\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\NavbarRight\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\NavbarRight\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\NavbarTop\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\NavbarTop\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\NavigationTab\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\NavigationTab\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\ProductFilter\common-filter.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\ProductFilter\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\ProductFilter\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\ProductPermission\common-mulselect.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\ProductPermission\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\components\layouts\ProductPermission\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\config\axios-config.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\config\react-query-config.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\context\ISTStatusContext.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\context\UserDataContext.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\context\index.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\helpers\constants.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\helpers\format.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\helpers\notify.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\helpers\utils.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\hooks\index.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\hooks\useDebouncedSearch.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\hooks\useSearchParameters.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\i18n\config.js</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\app-routes-main.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\constants.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\pages\auth\change-password.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\pages\auth\forgot-password.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\pages\auth\login.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\pages\auth\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\pages\auth\welcome-board.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\pages\home\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\pages\home\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\pages\profile\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\services\api.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\services\index.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\types\User.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-main\types\index.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\app-routes-store-transfer.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\constants.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\availability-comparison\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\availability-comparison\location-filter.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\availability-comparison\product-filter.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\availability-comparison\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\forbidden\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\forbidden\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\ist-forced\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\ist-forced\styes.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\ist-status\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\ist-status\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\ist-status\views.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\manage-users\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\manage-users\listRoles.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\manage-users\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\manual-upload\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\manual-upload\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\notFound\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\notFound\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\overview\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\overview\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\permissions\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\permissions\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\profile\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\profile\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\store-status\index.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\store-status\location-filter.tsx</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\pages\store-status\styles.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\services\AvailabilityComparison\api.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\services\IstStatus\api.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\services\ManualUpload\api.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\services\ManualUpload\index.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\services\PendingISTRequests\api.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\services\PendingISTRequests\index.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\types\ManualUpload.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\module-store-transfer\types\index.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\react-app-env.d.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\reportWebVitals.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\services\forced\api.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\services\forced\index.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\services\ist\api.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\services\ist\index.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\services\profile\api.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\services\profile\index.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\services\store-status\api.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\services\store-status\index.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\setupTests.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\styles\global.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\styles\gridSystem.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\types\TError.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\types\forced.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\types\index.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\types\ist.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\types\profile.ts</td>
+              <td>0</td>
+              <td>0</td></tr><tr class="success"><td>C:\Projects_TinhVan\Portal_final\ist-portal\src\types\store.ts</td>
+              <td>0</td>
+              <td>0</td></tr></tbody>
+      </table>
+
+  </div>
+</body>
+</html>

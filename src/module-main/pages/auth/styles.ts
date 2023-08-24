@@ -1,0 +1,374 @@
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import * as gridSystem from "../../../styles/gridSystem";
+
+export const SignInArea = styled.div`
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  background: transparent linear-gradient(126deg, #f8f8fc 0%, #e1e2e8 100%) 0%
+    0% no-repeat padding-box;
+  opacity: 1;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  .spinner--dotted {
+    border: 5px dotted #fff;
+  }
+`;
+
+export const SignInContainer = styled.div`
+  flex: 1;
+  position: relative;
+`;
+
+export const ContainerLeft: any = styled.div`
+  display: flex;
+  height: 100%;
+  width: 100%;
+`;
+
+export const CircleLogin = styled.div`
+  position: absolute;
+  width: 170%;
+  height: 170%;
+  background: transparent linear-gradient(135deg, #000000 0%, #333333 100%) 0%
+    0% no-repeat padding-box;
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
+  top: -65%;
+  right: 0;
+`;
+
+export const CircleForgotPassword = styled.div`
+  position: absolute;
+  width: 170%;
+  height: 170%;
+  background: transparent linear-gradient(45deg, #333333 0%, #000000 100%) 0% 0%
+    no-repeat padding-box;
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+  top: -65%;
+  left: 0;
+`;
+
+export const ContainerRight: any = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  place-content: center;
+  align-items: center;
+`;
+export const Tittle: any = styled.h1`
+  color: #575f6b;
+  font-size: 1.8vw;
+  margin: -52px 0 0 0;
+
+  @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
+    .size.laptopL}) {
+    margin: -40px 0 0 0;
+  }
+`;
+
+export const IputLogin: any = styled.input`
+  border: none;
+  font-weight: 500;
+  font-size: 1.2vw;
+  font-family: "Roboto", sans-serif;
+  opacity: 1;
+  position: relative;
+  width: 100%;
+  background: transparent;
+  color: #707070;
+
+  &::placeholder {
+    color: #707070;
+    font-size: 1.2vw;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    transition: background-color 9999s ease-in-out 0s;
+    -webkit-text-fill-color: #707070 !important;
+  }
+`;
+
+export const KeepSingIn: any = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: 4vh 0 0 0;
+  padding: 0 0.5rem;
+`;
+
+export const KeepMe: any = styled.label`
+  font-size: 0.8vw;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  letter-spacing: 0px;
+  color: #707070;
+`;
+
+export const ChangePassText: any = styled.div`
+  padding-top: 5px;
+`;
+
+export const SCButtonLogin = styled.button`
+  cursor: pointer;
+  font-size: 1vw;
+  font-weight: bold;
+  padding: 10px 0;
+  transition: all 0.2s ease;
+  background: #f0f1f4;
+  box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+  border-radius: 40px;
+  width: 17vw;
+  height: 7vh;
+  margin: 4vh 0 0 0;
+  color: #575f6b;
+  .arrow {
+    height: 1.8vh;
+  }
+  .arrow-out {
+    visibility: hidden;
+  }
+  &:hover {
+    background: #ac3072;
+    color: #ffffff !important;
+    position: relative;
+    transition: all 0.9s ease;
+
+    span {
+      color: #ffffff;
+    }
+
+    .arrow-in {
+      display: none;
+    }
+    .arrow {
+      transform: translate(30px, 0px);
+      transition: all 0.5s ease-in;
+    }
+    .arrow-out {
+      visibility: visible;
+    }
+  }
+`;
+
+export const LinkRouter: any = styled(Link)`
+  font-size: 0.8vw;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  letter-spacing: 0px;
+  color: #707070;
+  text-decoration: none;
+`;
+
+export const FormArea: any = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .recaptcha {
+    margin: 4vh 0 0 0;
+  }
+`;
+
+export const ButtonSubmit: any = styled.div`
+  display: flex;
+  width: 100%;
+  transform: translate(40%, 0);
+`;
+
+export const ButtonSubmitText: any = styled.span`
+  margin-right: 1rem;
+  color: #575f6b;
+  font-size: 1vw;
+  font-weight: bold;
+  font-family: "Roboto", sans-serif;
+  &:hover {
+    color: #ffffff;
+  }
+`;
+
+export const ArrowArea: any = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const InputArea: any = styled.div<{ error: true | false }>`
+  border: ${(props) => (props.error ? "2px solid red" : "none")};
+  margin-top: 6vh;
+  background: transparent linear-gradient(278deg, #f2f3f6 0%, #e5e6ec 100%) 0%
+    0% no-repeat padding-box;
+  box-shadow: 6px 6px 20px #c5c5c5, -6px -6px 20px #ffffff;
+  border-radius: 40px;
+  width: 28vw;
+  height: 8vh;
+
+  p {
+    display: block;
+    position: fixed;
+  }
+`;
+
+export const InputGroup: any = styled.div`
+  display: flex;
+  height: 100%;
+  width: 100%;
+  padding: 0 2vw;
+  align-items: center;
+  gap: 1.2vw;
+
+  img {
+    width: 1.5vw;
+  }
+`;
+
+export const CheckboxButton: any = styled.input`
+  -webkit-appearance: none;
+  background: white;
+  padding: 0.5vw;
+  border-radius: 2px;
+  display: inline-block;
+  position: relative;
+  top: 0.7vh;
+  right: 0.3vw;
+  background: transparent linear-gradient(278deg, #f2f3f6 0%, #e5e6ec 100%) 0%
+    0% no-repeat padding-box;
+  box-shadow: 6px 6px 20px #c5c5c5, -6px -6px 20px #ffffff;
+
+  &:checked {
+    background-image: url("../../../../assets/img/check/checkmark.svg");
+    background-repeat: no-repeat;
+    background-size: 1.2vw;
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const LogoVector: any = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  bottom: 7.5vh;
+`;
+
+export const LogoAreaLogin: any = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  color: #fff;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  position: relative;
+
+  .icon-head {
+    position: absolute;
+  }
+
+  .left-icon {
+    width: 28vw;
+    left: 0;
+    bottom: 0;
+    opacity: 0.7;
+  }
+
+  .right-icon {
+    width: 10vw;
+    right: -10px;
+    top: 32%;
+    transform: matrix(0.33, -0.95, 0.95, 0.33, 0, 0);
+    opacity: 0.9;
+  }
+`;
+
+export const LogoAreaForgotPsw: any = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  color: #fff;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  position: relative;
+
+  .icon-head {
+    position: absolute;
+  }
+
+  .left-icon {
+    width: 8vw;
+    left: 0;
+    top: 25%;
+    opacity: 0.9;
+  }
+
+  .right-icon {
+    width: 28vw;
+    right: 0;
+    bottom: 0;
+    opacity: 0.7;
+  }
+`;
+
+export const LogoIcon: any = styled.img`
+  width: 20vw;
+`;
+
+export const WelcomeText: any = styled.h2`
+  font-size: 1vw;
+  font-weight: 300;
+  font-family: "Roboto", sans-serif;
+  letter-spacing: 0px;
+  color: #fff;
+`;
+
+export const GoBackButton: any = styled.div`
+  font-size: 0.8vw;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  letter-spacing: 0px;
+  color: #820f4c;
+  text-decoration: none;
+  margin: 4vh 0 0 0;
+  cursor: pointer;
+`;
+
+export const LogoArvind = styled.img`
+  margin-top: -4vh;
+  height: 35vh;
+`;
+
+export const SuccessArea = styled.div`
+  margin-bottom: 10vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const SuccessIcon = styled.img`
+  height: 10vh;
+  margin-bottom: 2vh;
+`;
+
+export const SuccessText = styled.p`
+  font-size: 1vw;
+`;
