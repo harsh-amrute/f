@@ -154,7 +154,7 @@ export const handleDataProductFilter = (data: any) => {
   let listCategory = [] as string[]
   let listStyle = [] as string[]
   let listFit = [] as string[]
-  let listMRP = [] as any[]
+  let listLaunchPeriod = [] as any[]
   let listSubBrand = [] as any[]
   let listBrand = [] as any[]
 
@@ -187,11 +187,11 @@ export const handleDataProductFilter = (data: any) => {
                   ...Object.keys(data[brand][subBrand][category][style])
                 )
 
-                // list mrp
+                // list launch period
                 if (data[brand][subBrand][category][style]) {
                   Object.keys(data[brand][subBrand][category][style]).map(
                     (fit: any) => {
-                      listMRP.push(
+                      listLaunchPeriod.push(
                         ...Object.values(
                           data[brand][subBrand][category][style][fit][0]
                         )
@@ -219,7 +219,7 @@ export const handleDataProductFilter = (data: any) => {
     value: item,
     label: item
   }))
-  listMRP = filterDuplicateValues(listMRP).map((item: string) => ({
+  listLaunchPeriod = filterDuplicateValues(listLaunchPeriod).map((item: string) => ({
     value: item,
     label: item
   }))
@@ -230,7 +230,7 @@ export const handleDataProductFilter = (data: any) => {
     listCategory,
     listStyle,
     listFit,
-    listMRP
+    listLaunchPeriod
   }
 }
 

@@ -17,14 +17,16 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
   const [listCategory, setListCategory] = useState<any>([])
   const [listStyle, setListStyle] = useState<any>([])
   const [listFit, setListFit] = useState<any>([])
-  const [listMRP, setListMRP] = useState<any>([])
+  // const [listMRP, setListMRP] = useState<any>([])
+  const [listLaunchPeriod, setListLaunchPeriod] = useState<any>([])
 
   const [brand, setBrand] = useState<any>([])
   const [subBrand, setSubBrand] = useState<any>([])
   const [category, setCategory] = useState<any>([])
   const [fit, setFit] = useState<any>([])
   const [style, setStyle] = useState<any>([])
-  const [mrp, setMrp] = useState<any>([])
+  // const [mrp, setMrp] = useState<any>([])
+  const [launchPeriod, setLaunchPeriod] = useState<any>([])
 
   useEffect(() => {
     async function initProductFilter () {
@@ -37,7 +39,7 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
         listCategory,
         listStyle,
         listFit,
-        listMRP
+        listLaunchPeriod
       } = handleDataProductFilter(productFilter)
 
       setListBrand(listBrand)
@@ -45,7 +47,7 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
       setListCategory(listCategory)
       setListStyle(listStyle)
       setListFit(listFit)
-      setListMRP(listMRP)
+      setListLaunchPeriod(listLaunchPeriod)
 
       setProductFilterLoading(false)
     }
@@ -91,11 +93,11 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
       onChange: setFit
     },
     {
-      icon: '../assets/img/ist/money.svg',
-      placeholder: t('filter.product.placeholder.mrp'),
-      options: listMRP,
-      value: mrp,
-      onChange: setMrp,
+      icon: '../assets/img/ist/target.svg',
+      placeholder: t('filter.product.placeholder.launchPeriod'),
+      options: listLaunchPeriod,
+      value: launchPeriod,
+      onChange: setLaunchPeriod,
       top: 17
     }
   ]
@@ -115,7 +117,7 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
     setCategory([])
     setStyle([])
     setFit([])
-    setMrp([])
+    setLaunchPeriod([])
   }
 
   const getProductFilterValue = () => {
@@ -125,7 +127,7 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
       category,
       style,
       fit,
-      mrp
+      launchPeriod
     }
   }
 

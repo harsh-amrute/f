@@ -186,7 +186,7 @@
         "category": "Category",
         "style": "Style",
         "fit": "Fit",
-        "mrp": "MRP"
+        "launchPeriod": "Launch Period"
       }
     },
     "location": {
