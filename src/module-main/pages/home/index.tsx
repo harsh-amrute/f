@@ -151,7 +151,7 @@ const Home = () => {
   const locationFilterRef = useRef<any>();
 
   const formFilter = () => {
-    const { brand, subBrand, category, style, fit } =
+    const { brand, subBrand, category, style, fit, launchPeriod } =
       // eslint-disable-next-line no-unsafe-optional-chaining
       productFilterRef.current?.getProductFilterValue();
 
@@ -160,6 +160,7 @@ const Home = () => {
     const valueCategory = category.map((item: any) => item.value);
     const valueStyle = style.map((item: any) => item.value);
     const valueFit = fit.map((item: any) => item.value);
+    const valueLaunchPeriod = launchPeriod.map((item: any) => item.value);
 
     const {
       istLocGrp,
@@ -200,6 +201,7 @@ const Home = () => {
       product_hierarchy_3: valueCategory,
       generic_code: valueStyle,
       product_hierarchy_4: valueFit,
+      launch_period: valueLaunchPeriod,
       location_group: valueIstLocGrp,
       donor_wh_name: valueDonorLocationName,
       donor_wh_region: valueDonorLocationRegion,

@@ -325,7 +325,7 @@ const IstForced = () => {
     if (currentOption) {
       valueCurrentOption = currentOption === "Ageing" ? [] : [currentOption];
     }
-    const { brand, subBrand, category, style, fit } =
+    const { brand, subBrand, category, style, fit, launchPeriod } =
       // eslint-disable-next-line no-unsafe-optional-chaining
       productFilterRef.current?.getProductFilterValue();
     const {
@@ -359,6 +359,9 @@ const IstForced = () => {
       receiver_wh_name: receiverLocationName.map((item: any) => item.value),
       receiver_wh_region: receiverLocationRegion.map((item: any) => item.value),
       receiver_wh_subtype: receiverLocationSubType.map(
+        (item: any) => item.value
+      ),
+      launch_period: launchPeriod.map(
         (item: any) => item.value
       ),
     };
