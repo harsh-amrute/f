@@ -21,7 +21,7 @@ steps:
 
 - script: |
     npx eslint --max-warnings=0 src || exit 1
-  displayName: 'Check Linting'
+  displayName: 'Check Code Linting'
 
 - script: |
     npm test -- --watchAll=false || exit 1
