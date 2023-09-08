@@ -48,10 +48,28 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --coverage --passWithNoTests",
     "eject": "react-scripts eject",
     "lint": "eslint . -f node_modules/eslint-html-reporter/reporter.js -o report.html",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx src --ignore-pattern src/types/*"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.tsx",
+      "src/**/*.ts"
+    ],
+    "coveragePathIgnorePatterns":["src/module-main","src/module-store-transfer"],
+    "coverageThreshold": {
+      "global": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+    }
+  },
+  "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    }
   },
   "browserslist": {
     "production": [
