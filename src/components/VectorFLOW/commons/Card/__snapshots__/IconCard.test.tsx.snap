@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IconCard Component matches snapshot 1`] = `
+<div>
+  <div
+    class="sc-aXZVg sc-gEvEer insLYJ kJUgjY"
+  >
+    <p
+      class="sc-fqkvVR iNCuLl"
+    >
+      Test Text
+    </p>
+    <div
+      class="sc-iGgWBj gYQOAj"
+    >
+      <img
+        data-testid="icon"
+        src="path/to/icon-on-mouse-out.png"
+      />
+    </div>
+  </div>
+</div>
+`;
