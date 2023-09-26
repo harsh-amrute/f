@@ -105,11 +105,11 @@ const TableUserManagement = ({
         return <>{action({ item, permissionUser })}</>;
       }
     } else {
-      if (permission?.includes("IST Admin")) {
+      if (permission?.includes("IST Admin") || permission?.includes("Admin")) {
         if (item.is_admin) {
           return <NoAction rolesMap={permissionUser} />;
         } else {
-          if (permissionUser.includes("IST Admin")) {
+          if (permissionUser?.includes("IST Admin") || permissionUser?.includes("Admin")) {
             return <NoAction rolesMap={permissionUser} />;
           } else {
             return <>{action({ item, permissionUser })}</>;

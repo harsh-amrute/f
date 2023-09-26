@@ -14,6 +14,10 @@ export namespace MainService {
     return await axios.post(`/${API_USER}/change-pwd/`, payload)
   }
 
+  export const getAllRoles = async () => {
+    return await axios.get(`${API_USER}/all-role`)
+  }
+
   export const getAllUsers = async () => {
     return await axios.get(`${API_USER}/all-users/`)
   }

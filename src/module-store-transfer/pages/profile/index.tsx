@@ -23,7 +23,7 @@ const Profile = () => {
   
   let listTabs
 
-  if(isAdmin || permissions.includes('IST Admin')) {
+  if(isAdmin || permissions.includes('IST Admin') || permissions.includes('Admin')) {
     listTabs = [
       t('profile.tab.overview'),
       t('profile.tab.permissions'),

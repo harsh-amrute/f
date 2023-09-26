@@ -74,7 +74,11 @@
         "normManagementSystem": "Norm Management System",
         "forceNormChange": "Force Norm Change",
         "PhaseIn_PhaseOut": "Phase-In & Phase Out",
-        "Seasonality": "Seasonality"
+        "Seasonality": "Seasonality",
+        "controlPanel":"Control Panel",
+        "savedDrafts":"Saved Drafts",
+        "taskPendingForReview":"Task Pending for Review",
+        "taskStatus":"Task Status"
       },
       "dynamicGridControl_AssortmentPlanning": {
         "title": "Dynamic Grid Control & Assortment Planning",
@@ -537,6 +541,7 @@
         },
         "roles": {
           "interStoreTransfers": "Inter Store Transfers",
+          "vectorFlow":"VectorFlow",
           "ISTAdmin": "IST Admin",
           "ISTRequestor": "IST Requestor",
           "ISTGovernor": "IST Governor",

@@ -8,6 +8,7 @@ import {
 import { MainService } from './api'
 
 export const QUERY_KEYS = {
+  useGetAllRoles: ['MainService.useGetAllRoles'],
   useGetAllUsers: ['MainService.useGetAllUsers'],
   useGetAllPermissions: ['MainService.useGetAllPermissions']
 }
@@ -16,6 +17,12 @@ export const useChangePassword = () => {
   return useMutation(async (payload: ChangePassword) => {
     return await MainService.changePassword(payload)
   })
+}
+
+export const useGetAllRoles = (onSuccess:any) => {
+  return useQuery(QUERY_KEYS.useGetAllRoles, async () => {
+    return await MainService.getAllRoles()
+  },{onSuccess})
 }
 
 export const useGetAllUsers = () => {
