@@ -1,5 +1,4 @@
-import { useState,Dispatch,SetStateAction } from 'react';
-import Select from 'react-select'
+import { Dispatch,SetStateAction } from 'react';
 
 import {SearchInputMultiple} from '../../../../components'
 import {  FieldSearchWrapper } from "./styles"
