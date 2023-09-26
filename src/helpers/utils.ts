@@ -299,3 +299,43 @@ export const format_number = (num: number) => {
     letter
   }
 } 
+
+// Helper Function to Dynamically Map Roles fetched from Backend to the Frontend as required by the ArrowList Component.
+export const generateRolesObject = (roles:Array<object>,permission:string[],is_admin:boolean) => {
+  console.log(permission);
+  const rolesArray = [] as object[];
+  const rolesObjectIST:{id:number,title:string,status:boolean,child:object[]} = {
+          id:0,
+          title:"",
+          status:false,
+          child:[],
+  }
+  const rolesObjectVF:{id:number,title:string,status:boolean,child:object[]} = {
+    id:0,
+    title:"",
+    status:false,
+    child:[],
+  }
+  
+  roles.forEach((role:any)=>{
+
+    if(role.name.startsWith("IST")){
+      if(permission.includes("IST Admin") || is_admin){
+        rolesObjectIST.id = 1;
+        rolesObjectIST.title = "profile.tabContent.manageUsers.roles.interStoreTransfers";
+        rolesObjectIST.child.push(role);
+      }
+    }
+    else{
+      if(permission.includes("Admin") || is_admin){
+        rolesObjectVF.id = 2;
+        rolesObjectVF.title = "profile.tabContent.manageUsers.roles.vectorFlow";
+        rolesObjectVF.child.push(role);
+      }
+    }
+  })
+
+  if(rolesObjectIST.child.length > 0) rolesArray.push(rolesObjectIST);
+  if(rolesObjectVF.child.length > 0) rolesArray.push(rolesObjectVF);
+  return rolesArray;
+}

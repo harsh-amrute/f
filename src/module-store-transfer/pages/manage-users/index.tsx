@@ -15,12 +15,14 @@ import {
   ModalAdvanedPermissions,
 } from "../../../components/index";
 import {
+  useGetAllRoles,
   useGetAllUsers,
   useGetAllPermissions,
 } from "../../../services/profile";
 import Spinner from "../../../components/commons/Spinner";
 import { useTranslation } from "react-i18next";
-import { dataListRoles } from "./listRoles";
+// import { dataListRoles } from "./listRoles";
+import { generateRolesObject } from '../../../helpers/utils';
 
 const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
   const { t } = useTranslation();
@@ -30,7 +32,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
     buttonSubmit: "",
   });
 
-  const [listRoles, setListRoles] = useState<any>(dataListRoles);
+  const [listRoles, setListRoles] = useState<any>([]);
   const [isOpenUser, setIsOpenUser] = useState(false);
   const [isOpenAdvanced, setIsOpenAdvanced] = useState(false);
   const [infoUser, setInfoUser] = useState<any>({
@@ -46,6 +48,11 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
 
   const { data: dataFetch, refetch, isFetching } = useGetAllUsers();
   const { data: dataPermissions } = useGetAllPermissions();
+
+  useGetAllRoles((data:any)=>{
+    const dataAllRoles = data.data ? generateRolesObject(data.data,permission,is_admin) : [];
+    setListRoles(dataAllRoles);
+  });
 
   const dataAllPermissions = dataPermissions?.data;
 
