@@ -302,7 +302,6 @@ export const format_number = (num: number) => {
 
 // Helper Function to Dynamically Map Roles fetched from Backend to the Frontend as required by the ArrowList Component.
 export const generateRolesObject = (roles:Array<object>,permission:string[],is_admin:boolean) => {
-  console.log(permission);
   const rolesArray = [] as object[];
   const rolesObjectIST:{id:number,title:string,status:boolean,child:object[]} = {
           id:0,
