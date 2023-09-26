@@ -1,21 +1,19 @@
 import * as globalStyles from '../../../styles/global'
 
-export const selectStyles = {
+export const selectStyles =(backgroundColor:string,)=> {
+  return{
   control: (provided: any, state: any) => ({
     ...provided,
     minWidth: 223,
     margin: 8,
-    background: '#F2F2F2',
+    background: backgroundColor,
     fontSize: 16,
     outline: 'none',
     borderRadius: 6,
     cursor: 'pointer',
     border: state.isFocused ? 0 : 0,
     // This line disable the blue border
-    boxShadow: state.isFocused ? 0 : 0,
-    '&:hover': {
-      border: state.isFocused ? 0 : 0
-    }
+    boxShadow: state.isFocused ? 0 : backgroundColor ?  '0px 6px 12px #95959529' : 0,
   }),
   multiValue: () => ({
     display: 'flex',
@@ -78,7 +76,7 @@ export const selectStyles = {
   dropdownIndicator: (provided: any) => ({
     ...provided,
     display: 'none' // Ẩn mũi tên
-  })
+  })}
 }
 
 export const styleMoreSelect = {
