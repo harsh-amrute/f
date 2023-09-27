@@ -542,6 +542,7 @@
         "roles": {
           "interStoreTransfers": "Inter Store Transfers",
           "vectorFlow":"VectorFlow",
+          "distribution":"Distribution",
           "ISTAdmin": "IST Admin",
           "ISTRequestor": "IST Requestor",
           "ISTGovernor": "IST Governor",
