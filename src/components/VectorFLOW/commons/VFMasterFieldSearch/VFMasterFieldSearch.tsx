@@ -14,13 +14,10 @@ interface VFMasterFieldSearchProps{
     backgroundColor:string
 }
 
-
-
-
 const VFMasterFieldSearch = (props:VFMasterFieldSearchProps)=>{
 
     return(
-        <FieldSearchWrapper>
+        <FieldSearchWrapper data-testid='search-wrapper'>
             <SearchInputMultiple
                 {...props}
                 disabled={false}
