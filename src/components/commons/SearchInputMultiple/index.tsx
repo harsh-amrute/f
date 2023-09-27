@@ -10,6 +10,9 @@ interface SelectSearchMultipleProps {
   placeholder: string;
   handleListChild: (e: object) => void;
   disabled: any;
+  icon?:any;
+  maxToShow?:number;
+  backgroundColor?:string;
 }
 
 const SearchInputMultiple = ({
@@ -19,6 +22,9 @@ const SearchInputMultiple = ({
   placeholder,
   handleListChild,
   disabled,
+  icon,
+  maxToShow = 1,
+  backgroundColor = '#F2F2F2'
 }: SelectSearchMultipleProps) => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
@@ -33,12 +39,17 @@ const SearchInputMultiple = ({
       tabSelectsValue={false}
       hideSelectedOptions={false}
       isMulti
-      components={{ IndicatorSeparator: null, MultiValue }}
+      components={{ 
+        IndicatorSeparator: null, MultiValue:(props)=>(
+          <MultiValue maxToShow={maxToShow} {...props}/>
+        ),
+        DropdownIndicator:icon
+       }}
       menuPosition="fixed"
       isDisabled={disabled}
       options={options}
       value={value}
-      styles={selectStyles}
+      styles={selectStyles(backgroundColor)}
       placeholder={placeholder}
       onChange={(e) => {
         handleSelect(e);
@@ -56,8 +67,7 @@ const SearchInputMultiple = ({
   );
 };
 
-const MultiValue = ({ index, getValue, ...props }: any) => {
-  const maxToShow = 1;
+const MultiValue = ({ index, getValue,maxToShow, ...props }: any) => {
   const overflow = getValue()
     .slice(maxToShow)
     .map((x: any) => x.label);
