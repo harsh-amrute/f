@@ -328,7 +328,7 @@ export const generateRolesObject = (roles:Array<object>,permission:string[],is_a
     else{
       if(permission.includes("Admin") || is_admin){
         rolesObjectVF.id = 2;
-        rolesObjectVF.title = "profile.tabContent.manageUsers.roles.vectorFlow";
+        rolesObjectVF.title = "profile.tabContent.manageUsers.roles.distribution";
         rolesObjectVF.child.push(role);
       }
     }
