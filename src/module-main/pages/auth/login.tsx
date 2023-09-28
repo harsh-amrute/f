@@ -132,7 +132,7 @@ function LoginContainer() {
             <ReCAPTCHA
               className="recaptcha"
               ref={recaptchaRef}
-              sitekey={process.env.REACT_APP_ENV === 'test' : TEST_SITE_KEY : SITE_KEY}
+              sitekey={process.env.REACT_APP_ENV === 'test' ? TEST_SITE_KEY : SITE_KEY}
             />
 
             <KeepSingIn>
