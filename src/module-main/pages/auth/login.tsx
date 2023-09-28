@@ -9,7 +9,7 @@ import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useEffect, useRef, useState } from "react";
 // eslint-disable-next-line import/no-named-as-default
 import ReCAPTCHA from "react-google-recaptcha";
-import { SITE_KEY } from "../../../helpers/constants";
+import { SITE_KEY,TEST_SITE_KEY } from "../../../helpers/constants";
 import WelcomeBoard from "./welcome-board";
 
 function LoginContainer() {
@@ -132,7 +132,7 @@ function LoginContainer() {
             <ReCAPTCHA
               className="recaptcha"
               ref={recaptchaRef}
-              sitekey={SITE_KEY}
+              sitekey={process.env.REACT_APP_ENV === 'test' : TEST_SITE_KEY : SITE_KEY}
             />
 
             <KeepSingIn>
