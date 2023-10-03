@@ -12,3 +12,4 @@ export const ROUTES = {
 }
 
 export const SITE_KEY = '6Lc7J34nAAAAAJoy3iXfPz_Mfl-B_EBcdXOhBYum';
+export const TEST_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
