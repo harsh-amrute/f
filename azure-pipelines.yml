@@ -3,7 +3,7 @@ trigger:
 pool:
   name: default
 variables:
-  REACT_APP_API_HOST: http://10.8.1.10:8000/
+  REACT_APP_API_HOST: http://10.8.1.10:8888/
   REACT_APP_ENV: test
 steps:
   - task: NodeTool@0
