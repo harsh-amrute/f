@@ -135,7 +135,8 @@ export const handleDownload = async (nameApi: string, nameFile: string) => {
     document.body.appendChild(link)
     link.click()
     // Clean up download URL
-    URL.revokeObjectURL(url)
+    URL.revokeObjectURL(url);
+    return true;
   } catch (error:any) {
     notifyError(error);
   }

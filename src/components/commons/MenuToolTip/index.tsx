@@ -11,7 +11,7 @@ import {
 } from "./style";
 import {handleDownload} from "../../../helpers/utils";
 
-const MenuToolTip = ({ item }: any) => {
+const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any) => {
   const { t } = useTranslation();
   const { user } = useUserData();
 
@@ -19,12 +19,18 @@ const MenuToolTip = ({ item }: any) => {
   const location = useLocation();
   const navigate = useNavigate();
   //Add Report Urls to this Array
-  const reportUrls = ['/api/download-reports/bpr','/api/download-reports/fr','/api/download-reports/rosn','/api/download-reports/store_classification','/api/download-reports/ist']
-
-  const handleTooltipClick = (url:string) => {
+  const reportUrls = ['/api/download-reports/bpr','/api/download-reports/fr','/api/download-reports/rosn','/api/download-reports/store_classification','/api/download-reports/ist'];
+  
+  const handleTooltipClick = async (url:string) => {
     
     if(reportUrls.includes(url)){
-      handleDownload(url,'');
+      setTempUrls([...tempUrls].concat(url));
+      setIsLoading(true);
+      if(await handleDownload(url,'')) {
+        setIsLoading(false);
+        const tempArr = tempUrls.filter((tempUrl:string)=>tempUrl===url)
+        setTempUrls([...tempArr]);
+      }
     }
     else{
       navigate(url, { replace: true })
@@ -59,6 +65,7 @@ const MenuToolTip = ({ item }: any) => {
                   {itemChild.url !== location.pathname && (
                     <SCIcon
                       src={
+                        isLoading && tempUrls.includes(itemChild.url) ? "../assets/img/nav/loader.svg" :
                         itemChild.imgHover
                           ? itemChild.imgHover
                           : "../assets/img/nav/arrow_down.svg"

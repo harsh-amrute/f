@@ -13,6 +13,8 @@ const NavbarMenu = ({ setMenuItem, isHide }: any) => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
   const [activeTooltip, setActiveTooltip] = useState<number>(0);
+  const [isLoading,setIsLoading] = useState(false);
+  const [tempUrls,setTempUrls] = useState([]);
 
   const handleClickMenu = (item: any, index: number) => {
     if(item.name==='navbar.listMenuParent.miscellaneousReports.title') return;
@@ -76,10 +78,10 @@ const NavbarMenu = ({ setMenuItem, isHide }: any) => {
                     widthIcon={item.widthIcon}
                   />
                   {!item.status && activeTooltip === item.id && (
-                    <MenuToolTip item={item} />
+                    <MenuToolTip item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} />
                   )}
                   {item.status && !isHide && activeTooltip === item.id && (
-                    <MenuToolTip item={item} />
+                    <MenuToolTip item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} />
                   )}
                 </NavStyle.SCNavMenu>
               </NavStyle.SCMenuItem>
