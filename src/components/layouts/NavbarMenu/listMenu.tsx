@@ -39,7 +39,7 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.masterDataManagement.controlPanel",
         img: "../assets/img/nav/arrow_down.svg",
-        url: "",
+        url: "/master-data-management/control-panel",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant"],
       },
       {

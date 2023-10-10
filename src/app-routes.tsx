@@ -15,6 +15,8 @@ import Profile from './module-store-transfer/pages/profile'
 import PageForbidden from './module-store-transfer/pages/forbidden'
 import PageNotFound from './module-store-transfer/pages/notFound'
 import { useTranslation } from 'react-i18next'
+import ControlPanel from './VectorFlow/Pages/MTA/MDM/ControlPanel'
+import ViewModify from './VectorFlow/Pages/MTA/MDM/ViewModify'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -41,7 +43,9 @@ const lazyLoad = (children: React.ReactNode) => {
     '/store-status',
     '/availability-comparison',
     '/ist-status',
-    '/permission-forbidden'
+    '/permission-forbidden',
+    '/master-data-management/control-panel',
+    '/master-data-management/view-modify'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -155,6 +159,28 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<Profile />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/control-panel',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ControlPanel />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/view-modify',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ViewModify />)
         },
         ...getStoreTransferModuleRoutes()
       ]
