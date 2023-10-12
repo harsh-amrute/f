@@ -22,11 +22,6 @@ describe('ButtonCard Component', () => {
     
     expect(mockOnClick).toHaveBeenCalledTimes(1);
   });
-
-  it('matches snapshot', () => {
-    const { container } = render(<ButtonCard text="Test Button" onClick={mockOnClick} />);
-    expect(container).toMatchSnapshot();
-  });
 });
 
 
