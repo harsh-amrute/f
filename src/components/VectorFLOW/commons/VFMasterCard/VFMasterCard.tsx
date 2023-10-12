@@ -1,11 +1,11 @@
 import { VFMasterCardContainer, VFMasterCardHeader, VFMasterCardListContainer, VFMasterCardListItem } from "./styles"
 
-interface MRCardProps{
+interface VFMasterCardProps{
     data:{id:number,name:string,fields:string[]}
     selectedFields:string[],
 }
 
-const MRCard = (props:MRCardProps)=>{
+const VFMasterCard = (props:VFMasterCardProps)=>{
     
     const {
         data,
@@ -25,4 +25,4 @@ const MRCard = (props:MRCardProps)=>{
     )
 }
 
-export default MRCard
+export default VFMasterCard
