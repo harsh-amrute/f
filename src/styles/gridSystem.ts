@@ -72,12 +72,12 @@ export const SCCol6 = styled.div`
 export const SCCol8 = styled.div<{ width: any }>`
   flex: 0 0 ${(props) => props.width.widthRight};
   max-width: ${(props) => props.width.widthRight};
-  padding-left: 50px;
+  padding-left: 0px;
   transition: ${customTransition};
 
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
       .size.laptopL}) {
-    padding-left: 35px;
+    padding-left: 0px;
   }
 `;
 export const SCFullScreen = styled.div`
