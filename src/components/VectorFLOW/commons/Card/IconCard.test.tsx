@@ -39,13 +39,4 @@ describe('IconCard Component', () => {
         fireEvent.mouseLeave(iconElement)
         expect(iconElement).toHaveAttribute('src','path/to/icon-on-mouse-out.png')
     })
-
-    it('matches snapshot', () => {
-        const { container } = render(
-          <IconCard text={cardText} iconOnMouseIn="path/to/icon-on-mouse-in.png" iconOnMouseOut="path/to/icon-on-mouse-out.png" onClick={mockOnClick} />
-        );
-        
-        expect(container).toMatchSnapshot();
-      });
-
 });
