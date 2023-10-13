@@ -6,3 +6,4 @@
 .env
 /coverage
 *.snap
+report.html

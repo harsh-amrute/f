@@ -4,7 +4,7 @@ import VFButton from './index';
 describe('VFButton Component', () => {
   it('renders the button with the provided text', () => {
     const buttonText = 'Click Me';
-    render(<VFButton onClick={() => {}} themeUi="NOIRFUSION">{buttonText}</VFButton>);
+    render(<VFButton onClick={() => {console.log("test")}} themeUi="NOIRFUSION">{buttonText}</VFButton>);
     const button = screen.getByText(buttonText);
     expect(button).toBeInTheDocument();
   });
@@ -19,26 +19,26 @@ describe('VFButton Component', () => {
 
   it('applies the custom width to the button', () => {
     const customWidth = 200;
-    render(<VFButton onClick={() => {}} themeUi="NOIRFUSION" width={customWidth}>Click Me</VFButton>);
+    render(<VFButton onClick={() => {console.log("test")}} themeUi="NOIRFUSION" width={customWidth}>Click Me</VFButton>);
     const button = screen.getByText('Click Me');
     expect(button).toHaveStyle(`width: ${customWidth}px`);
   });
 
   it('renders with default width(130px) when not supplied ', () => {
-    render(<VFButton onClick={() => {}} themeUi="NOIRFUSION">Click Me</VFButton>);
+    render(<VFButton onClick={() => {console.log("test")}} themeUi="NOIRFUSION">Click Me</VFButton>);
     const button = screen.getByText('Click Me');
     expect(button).toHaveStyle(`width: 130px`);
   });
 
   it('disables the button when disabled prop is true', () => {
-    render(<VFButton onClick={() => {}} themeUi="NOIRFUSION" disabled={true}>Click Me</VFButton>);
+    render(<VFButton onClick={() => {console.log("test")}} themeUi="NOIRFUSION" disabled={true}>Click Me</VFButton>);
     const button = screen.getByText('Click Me');
     expect(button).toHaveStyle(`pointer-events:none`);
     expect(button).toHaveStyle(`opacity:0.2`);
   });
 
   it('applies the specified theme', () => {
-    render(<VFButton onClick={() => {}} themeUi="REGALBLAZE">Click Me</VFButton>);
+    render(<VFButton onClick={() => {console.log("test")}} themeUi="REGALBLAZE">Click Me</VFButton>);
     const button = screen.getByText('Click Me');
     expect(button).toHaveStyle(`background-image:#C7810F`)
   });
