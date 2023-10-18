@@ -14,6 +14,7 @@ export const selectStyles =(backgroundColor:string,)=> {
     border: state.isFocused ? 0 : 0,
     // This line disable the blue border
     boxShadow: state.isFocused ? 0 : backgroundColor ?  '0px 6px 12px #95959529' : 0,
+    paddingRight:'13px'
   }),
   multiValue: () => ({
     display: 'flex',
