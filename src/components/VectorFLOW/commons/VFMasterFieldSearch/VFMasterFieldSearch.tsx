@@ -2,12 +2,12 @@ import { Dispatch,SetStateAction } from 'react';
 
 import {SearchInputMultiple} from '../../../../components'
 import {  FieldSearchWrapper } from "./styles"
-
+import {type Option} from '../../../../VectorFlow/types/MDM';
 
 interface VFMasterFieldSearchProps{
     options:any[]
     value:any
-    setValue:Dispatch<SetStateAction<never[]>>
+    setValue:Dispatch<SetStateAction<Option[]>>
     placeholder:string
     handleListChild:()=>void
     maxToShow:number,

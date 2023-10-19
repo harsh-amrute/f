@@ -6,6 +6,46 @@ export const Container = styled.div`
     flex-direction:column;
 `
 
+export const SCButtonContainer = styled.div`
+    display:flex;
+    gap:25px;
+    margin-top:72px;
+`
+
+export const SCCardContainer = styled.div`
+    display:flex;
+    flex-direction:row;
+    gap:30px;
+    margin-top:46px;
+    overflow-x:overlay;
+    padding-bottom:2px;
+
+    &::-webkit-scrollbar{
+        width: 7px;
+        height:8px;       
+    }
+    
+    &::-webkit-scrollbar-track{
+        border-radius: 30px;
+        opacity: 1;
+    }
+    
+    &::-webkit-scrollbar-thumb{
+        width: 7px;
+    /* UI Properties */
+    background: #CBCBCB 0% 0% no-repeat padding-box;
+    box-shadow: 0px 6px 9px #41414129;
+    border-radius: 30px;
+    opacity: 1;
+    }
+`
+
+export const SCLoaderContainer = styled.div`
+    display:flex;
+    justify-content:center;
+    margin-top:25%;
+`
+
 export const PanelGridWrapper = styled.div`
     width:100%;
     display:flex;

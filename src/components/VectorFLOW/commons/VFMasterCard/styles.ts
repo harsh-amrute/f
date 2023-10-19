@@ -3,7 +3,7 @@
 import styled from 'styled-components'
 
 export const VFMasterCardContainer = styled.div`
-width: 345px;
+min-width: 345px;
 height: 419px;
 display:flex;
 flex-direction:column;
@@ -29,7 +29,7 @@ export const VFMasterCardHeader = styled.div`
     height:60px;
     width:100%;
     padding:20px 16px;
-    border-bottom:solid 0.5px #B7B7B7;
+    border-bottom:solid 0.5px #ECECEC;
 `
 
 export const VFMasterCardListContainer = styled.div`
@@ -72,5 +72,5 @@ font-family:Roboto;
 letter-spacing: 0px;
 color: #313131;
 opacity: 1;
-border-bottom:solid 0.5px #B7B7B7;
+border-bottom:solid 0.5px #ECECEC;
 `

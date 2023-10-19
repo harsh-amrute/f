@@ -5,6 +5,7 @@ import * as GridSystem from "../../../styles/gridSystem";
 export const SCManualBoxCenter = styled.div`
   @media (min-width: ${GridSystem.size.laptopL}) {
     margin-top: 10px;
+    margin-left: 50px;
   }
 
   /* @media (min-width: ${GridSystem.size.laptop}) and (max-width: ${GridSystem

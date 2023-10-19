@@ -2,6 +2,7 @@ import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
+import { type Master, type Option, type Field } from '../VectorFlow/types/MDM';
 
 // clear cached token and redirect to sso login
 export const loginRedirect = (navigate?: NavigateFunction) => {
@@ -338,4 +339,20 @@ export const generateRolesObject = (roles:Array<object>,permission:string[],is_a
   if(rolesObjectIST.child.length > 0) rolesArray.push(rolesObjectIST);
   if(rolesObjectVF.child.length > 0) rolesArray.push(rolesObjectVF);
   return rolesArray;
+}
+
+//Helper Roles to Generate Options as required for react-multiselect component
+export const generateOptions = (data:Master[]) => {
+  const temp:string[] = [];
+  const options:Option[] = [];
+  data.forEach((master:Master)=>{
+    master.fields.forEach((field:Field)=>{
+      if(!temp.includes(field.displayName)){
+        temp.push(field.displayName);
+        if(field.visible) options.push({value:field.key,label:field.displayName,})
+      }
+    })
+  });
+
+  return options;
 }

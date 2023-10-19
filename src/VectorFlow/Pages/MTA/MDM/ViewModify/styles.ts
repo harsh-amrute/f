@@ -1,5 +1,9 @@
 import styled from 'styled-components'
 
+export const SCContainer = styled.div`
+    margin-left:50px;
+`
+
 export const TaskBarContainer = styled.div`
     background: #FFFFFF 0% 0% no-repeat padding-box;
     display:flex;

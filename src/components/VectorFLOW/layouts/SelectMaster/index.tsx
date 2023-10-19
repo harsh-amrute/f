@@ -1,134 +1,119 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { Container, QuickFilterHeader } from "./styles"
+
+import { Dispatch,SetStateAction,useEffect } from "react";
+import { Container, QuickFilterHeader,SCButtonContainer, SCLoaderContainer, SCCardContainer } from "./styles"
 
 import VFMasterCard from "../../commons/VFMasterCard/VFMasterCard";
 import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch/VFMasterFieldSearch";
-import ButtonOutlineStatus from "~/components/commons/ButtonOutline/button";
+import ButtonOutlineStatus from "../../../commons/ButtonOutline/button";
+import VFButton from "../../commons/VFButton";
+import VFButtonOutline from "../../commons/VFButtonOutline";
+import { useNavigate } from "react-router";
+import { type Master, type Option } from "../../../../VectorFlow/types/MDM";
 
+interface SelectMasterProps{
+    data:Master[],
+    options:Option[],
+    selectedOptions:Option[],
+    setSelectedOptions:Dispatch<SetStateAction<Option[]>>,
+    selectedMasters:Master[],
+    setSelectedMasters:Dispatch<SetStateAction<Master[]>>,
+    filterButtonStatus:Master[],
+    setFilterButtonStatus:Dispatch<SetStateAction<Master[]>>
+    themeUi:string,
+    isLoading:boolean
+}
 
-const ModifyRecords = ()=>{
+const SelectMaster = ({data,options,selectedOptions,setSelectedOptions,selectedMasters,setSelectedMasters,filterButtonStatus,setFilterButtonStatus,themeUi,isLoading}:SelectMasterProps)=>{
     
-    const[isLoading,setIsLoading] = useState<boolean>(true)
-    const [data,setData] = useState<any>([])
-    const [selectedFields,setSelectedFields] = useState([])
-    const [options,setOptions] = useState( [
-        {
-            value:'SKU Name',
-            label:'SKU Name'
-        },
-        {
-            value:'Location Name',
-            label:'Location Name'
-        }
-    ])
-
-    const dataArray =[
-        {
-            label:"SKU",
-        },
-        {
-            label:"Discount Period",
-        },
-        {
-            label:"IST Yield",
-        },
-        {
-            label:"Grouping",
-        },
-        {
-            label:"Deployment",
-        },
-        {
-            label:"SKULocation",
-        },
-        {
-            label:"Pivot Variant",
-        },
-        {
-            label:"MOQ",
-        },
-        {
-            label:"SOB",
-        },
-        {
-            label:"Contact",
-        },
-        {
-            label:"Location",
-        },
-        {
-            label:"Seasonality",
-        },
-        {
-            label:"Seasonality-Retail",
-        },
-        {
-            label:"Location Priority",
-        },
-        {
-            label:"Location Capacity",
-        },
-        {
-            label:"Phase-In Phase-Out",
-        },
-        {
-            label:"Buffer",
-        },
-        {
-            label:"CCR",
-        }
-    ]
-
+    const navigate = useNavigate();
 
     useEffect(()=>{
-        const getData = async()=>{
-            
-            const response =  await axios.get('https://3c8e9192-79db-40d7-b728-b29784f572de.mock.pstmn.io/api/user/all-master')
-            setData(response.data.data)
-            setIsLoading(false)
-            
-        }
-        getData()
-        
-    },[])
 
+        if(selectedMasters.length === 0 && data) {
+            setSelectedMasters([...data]);
+        }
+
+    },[selectedMasters])
+    
     if(isLoading){
-        return <p>Loading...</p>
+        return (
+            <SCLoaderContainer>
+                <img src="../assets/img/VectorFLOW/loaderBig.svg"/>
+            </SCLoaderContainer>
+        )
     }
 
+    const onClickFilterButton = (currentMaster:Master) => {
+        console.log(selectedMasters);
+
+        setSelectedOptions([])
+        
+        if(getFilterButtonStatus(currentMaster)){
+            setFilterButtonStatus(filterButtonStatus.filter((master:Master)=>master.id !== currentMaster.id));
+            setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id !== currentMaster.id))])
+        }
+        else{
+            setFilterButtonStatus([...filterButtonStatus,currentMaster]);
+            if(selectedMasters.find((selectedMaster:Master)=>selectedMaster.id === currentMaster.id)){
+                setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id === currentMaster.id))])
+            }
+            else{
+                setSelectedMasters([...selectedMasters,currentMaster]);
+            }
+        }
+
+            
+    }
+
+    const shouldDisplayCard = (currentMaster:Master) => {
+        return selectedMasters.find((selectedMaster:Master)=>selectedMaster.id === currentMaster.id);
+    }
+
+    const getFilterButtonStatus = (currentMaster:Master) => {
+        return filterButtonStatus.find((selectedMaster:Master)=>selectedMaster.id===currentMaster.id) ? true : false;
+    }
 
     return(
         <Container >
             <Container style={{flexDirection:'row',gap:'44px'}}>
-                <VFMasterFieldSearch value={selectedFields} setValue={setSelectedFields} options={options} placeholder={'Select'} handleListChild={()=>console.log("")} maxToShow={3} backgroundColor={'#FFFFFF'} />
+                <VFMasterFieldSearch value={selectedOptions} setValue={setSelectedOptions} options={options} placeholder={'Select'} handleListChild={()=>{setFilterButtonStatus([])}} maxToShow={3} backgroundColor={'#FFFFFF'} />
                 <Container style={{flexDirection:'row'}}>
                     <QuickFilterHeader>
                         Quick Filters -
                     </QuickFilterHeader>
                     <Container style={{flexDirection:'row',flexWrap:'wrap',maxWidth:'900px',gap:'10px'}}>
-                        {dataArray.map((i,index)=>{
+                        {data?.map((master:any)=>{
                             return(
                                 <ButtonOutlineStatus
-                                    status={false}
-                                    text={i.label}
-                                    onChange={()=>console.log('s')}
+                                    status={getFilterButtonStatus(master)}
+                                    text={master.name}
+                                    onChange={()=>onClickFilterButton(master)}
                                     icon=''
-                                    key={index}
+                                    key={master.id}
+                                    style={{ fontSize:'13px',fontFamily:'Roboto',letterSpacing:'0px',fontWeight:400,lineHeight:'15px',width:'auto',minWidth:'90px'}}
                                 />
                             )
                         })}
                     </Container>
                 </Container>
             </Container>
-            <Container style={{flexDirection:'row',gap:'30px',marginTop:'46px'}}>
-            {data.map((item:any)=>{
-                return <VFMasterCard data={item} key={item.id} selectedFields={selectedFields.map((s:any)=>s.value)}/>
-            })}
+            <SCCardContainer>
+                {data?.map((item:Master)=>{
+                    return shouldDisplayCard(item) && <VFMasterCard data={item} key={item.id} selectedFields={selectedOptions.map((s:Option)=>s.label)}/>
+                })}
+            </SCCardContainer>
+            <SCButtonContainer>
+                <VFButtonOutline onClick={()=>navigate('/master-data-management/control-panel')} themeUi={themeUi} width={141}>
+                    Cancel
+                </VFButtonOutline>
+                <VFButton onClick={()=>console.log("test")} themeUi={themeUi} width={141}>
+                    Submit
+                </VFButton>
 
-            </Container>
+            </SCButtonContainer>
+            
         </Container>
     )
 }
 
-export default ModifyRecords;
+export default SelectMaster;
