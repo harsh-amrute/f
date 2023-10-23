@@ -6,7 +6,7 @@ import { setupReactQuery } from '../../../../../config/react-query-config';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { UserDataContext } from '../../../../../context';
 import { useGetMasterUIConfiguration } from '../../../../Services/MTA/MDM';
-import selectEvent from 'react-select-event'
+import {select} from 'react-select-event'
 
 jest.mock('../../../../Services/MTA/MDM');
 
@@ -151,7 +151,7 @@ describe('View Modify Component', () => {
     await waitFor(async () => {
         const reactSelect = screen.getByRole('combobox');
         expect(reactSelect).toBeInTheDocument();
-        await selectEvent.select(reactSelect, ['SKU Code']);
+        await select(reactSelect, ['SKU Code']);
       });
 
   });
