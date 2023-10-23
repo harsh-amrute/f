@@ -4,7 +4,7 @@ import { type Master, type Option } from "../../../../VectorFlow/types/MDM";
 import {generateOptions} from '../../../../helpers/utils';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { UserDataContext } from '../../../../context';
-import selectEvent from 'react-select-event'
+import selectEvent from 'react-select-event';
 
 describe('SelectMaster Component', () => {
   // Create mock data for testing

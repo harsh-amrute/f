@@ -13,10 +13,9 @@ export const PanelGridWrapper = styled.div`
 `
 
 export const PanelGrid = styled.div`
-    width:100%;
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr;
-    gap:111px;
+    display:flex;
+    justify-content:center;
+    gap:80px;
     margin-bottom:5rem;
 `
 
