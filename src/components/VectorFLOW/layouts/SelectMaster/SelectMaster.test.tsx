@@ -4,7 +4,7 @@ import { type Master, type Option } from "../../../../VectorFlow/types/MDM";
 import {generateOptions} from '../../../../helpers/utils';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { UserDataContext } from '../../../../context';
-import selectEvent from 'react-select-event';
+import {select} from 'react-select-event';
 
 describe('SelectMaster Component', () => {
   // Create mock data for testing
@@ -275,7 +275,7 @@ describe('SelectMaster Component', () => {
     await waitFor(async () => {
       const reactSelect = screen.getByRole('combobox');
       expect(reactSelect).toBeInTheDocument();
-      await selectEvent.select(reactSelect, ['SKU Code']);
+      await select(reactSelect, ['SKU Code']);
       expect(setSelectedOptions).toBeCalled();
     });
    

@@ -1,5 +1,5 @@
 import { MDMService } from './api';
-import axios,{AxiosResponse,AxiosStatic} from 'axios';
+import axios,{AxiosStatic} from 'axios';
 
 
 jest.mock('axios');
