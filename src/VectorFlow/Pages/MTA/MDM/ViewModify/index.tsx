@@ -4,7 +4,7 @@
 import { SCContainer } from "./styles"
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
-import { useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM/index";
+import { useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useState,useEffect } from "react";
 import { generateOptions } from "../../../../../helpers/utils";
 import { type Master, type Option, type Field } from "../../../../types/MDM";
@@ -19,13 +19,8 @@ import { type Master, type Option, type Field } from "../../../../types/MDM";
 
     const [filterButtonStatus,setFilterButtonStatus] = useState<Array<Master>>([]);
 
-    const {data:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration((data:any)=>{
-      setSelectedMasters(data.data.responseData.data)
-      const allOptions:Option[] =  data.data.responseData.data ? generateOptions(data.data.responseData.data) : [];
-      setOptions(allOptions);
-    });
-    
-
+    const {data:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
+   
     const allMasters:Master[] = masterUIConfiguration?.data.responseData.data;
 
     const getSelectedMasters = (temp:Master[]) => {
@@ -36,13 +31,20 @@ import { type Master, type Option, type Field } from "../../../../types/MDM";
       });
       return temp;
     }
-
+    
     useEffect(()=>{
-      const temp:Master[]=[];
+
       if(filterButtonStatus.length !== 0) return;
+
+      if(!isLoading){
+        const allOptions:Option[] =  allMasters ? generateOptions(allMasters) : [];
+        setSelectedMasters(allMasters)
+        setOptions(allOptions);
+      }
+      const temp:Master[]=[];
       if(selectedOptions?.length === 0 && allMasters) setSelectedMasters([...allMasters])
       if(selectedOptions?.length > 0) setSelectedMasters([...getSelectedMasters(temp)])
-    },[selectedOptions]);
+    },[selectedOptions,isLoading]);
 
     
     return (

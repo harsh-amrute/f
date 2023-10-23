@@ -6,9 +6,9 @@ export const QUERY_KEYS = {
   useGetMasterUIConfiguration: ['MDMService.useGetMasterUIConfiguration']
 }
 
-export const useGetMasterUIConfiguration = (onSuccess:any) => {
+export const useGetMasterUIConfiguration = () => {
   return useQuery(QUERY_KEYS.useGetMasterUIConfiguration, async () => {
     return await MDMService.getMasterUIConfiguration();
-  },{onSuccess});
+  });
 }
 

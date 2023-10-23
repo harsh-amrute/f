@@ -24,12 +24,12 @@ interface SelectMasterProps{
 }
 
 const SelectMaster = ({data,options,selectedOptions,setSelectedOptions,selectedMasters,setSelectedMasters,filterButtonStatus,setFilterButtonStatus,themeUi,isLoading}:SelectMasterProps)=>{
-    
+
     const navigate = useNavigate();
 
     useEffect(()=>{
 
-        if(selectedMasters.length === 0 && data) {
+        if(selectedMasters?.length === 0 && data) {
             setSelectedMasters([...data]);
         }
 
@@ -38,13 +38,12 @@ const SelectMaster = ({data,options,selectedOptions,setSelectedOptions,selectedM
     if(isLoading){
         return (
             <SCLoaderContainer>
-                <img src="../assets/img/VectorFLOW/loaderBig.svg"/>
+                <img src="../assets/img/VectorFLOW/loaderBig.svg" data-testid="loader"/>
             </SCLoaderContainer>
         )
     }
 
     const onClickFilterButton = (currentMaster:Master) => {
-        console.log(selectedMasters);
 
         setSelectedOptions([])
         
@@ -82,7 +81,7 @@ const SelectMaster = ({data,options,selectedOptions,setSelectedOptions,selectedM
                         Quick Filters -
                     </QuickFilterHeader>
                     <Container style={{flexDirection:'row',flexWrap:'wrap',maxWidth:'900px',gap:'10px'}}>
-                        {data?.map((master:any)=>{
+                        {data?.map((master:Master)=>{
                             return(
                                 <ButtonOutlineStatus
                                     status={getFilterButtonStatus(master)}

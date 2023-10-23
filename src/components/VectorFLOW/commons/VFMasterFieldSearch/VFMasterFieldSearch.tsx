@@ -18,13 +18,15 @@ const VFMasterFieldSearch = (props:VFMasterFieldSearchProps)=>{
 
     return(
         <FieldSearchWrapper data-testid='search-wrapper'>
-            <SearchInputMultiple
-                {...props}
-                disabled={false}
-                icon={SearchIcon}
-                maxToShow={props.maxToShow}
-                backgroundColor={props.backgroundColor}
-            />
+            <div data-testid="select-filter-input">
+                <SearchInputMultiple
+                    {...props}
+                    disabled={false}
+                    icon={SearchIcon}
+                    maxToShow={props.maxToShow}
+                    backgroundColor={props.backgroundColor}
+                />
+                </div>
         </FieldSearchWrapper>
     )
 }

@@ -17,7 +17,7 @@ const VFMasterCard = (props:VFMasterCardProps)=>{
 
     
     return(
-        <VFMasterCardContainer>
+        <VFMasterCardContainer data-testid='master-card'>
             <VFMasterCardHeader>{data.name}</VFMasterCardHeader>
             <VFMasterCardListContainer data-testid='list-container'>
                 {data.fields.map((title:Field,index)=>{
