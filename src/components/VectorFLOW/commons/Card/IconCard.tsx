@@ -31,8 +31,8 @@ const IconCard = (props:IconCardProps)=>{
     }
 
     return(
-        <IconCardContainer imgSrc="assets/img/VectorFLOW/NMS/card-bg.png" >
-            <CardText onClick={onClick}>{text}</CardText>
+        <IconCardContainer imgSrc="assets/img/VectorFLOW/NMS/card-bg.png">
+            <CardText onClick={onClick} data-testid={"icon-card"}>{text}</CardText>
             <CardIconWrapper onMouseEnter={handleOnMouseIn} onMouseLeave={handleOnMouseOut} onClick={onClick}>
                 <img data-testid='icon' src={activeIcon}/>
             </CardIconWrapper>
