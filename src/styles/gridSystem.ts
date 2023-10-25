@@ -69,15 +69,15 @@ export const SCCol6 = styled.div`
   max-width: 50%;
 `;
 
-export const SCCol8 = styled.div<{ width: any }>`
+export const SCCol8 = styled.div<{ width: any, hidePadding:boolean }>`
   flex: 0 0 ${(props) => props.width.widthRight};
   max-width: ${(props) => props.width.widthRight};
-  padding-left: 0px;
+  padding-left: ${(props)=> props.hidePadding ? 0 : 50}px;
   transition: ${customTransition};
 
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
       .size.laptopL}) {
-    padding-left: 0px;
+    padding-left: 50px;
   }
 `;
 export const SCFullScreen = styled.div`

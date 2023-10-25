@@ -6,7 +6,7 @@ import MRCard from './VFMasterCard';
 const sampleData = {
   id: 1,
   name: 'Sample Card',
-  fields: ['SKU Name', 'City', 'MRP'],
+  fields: [{displayName:'SKU Name',key:'sku_name',visible:true},{displayName:'City',key:'city',visible:true},{displayName:'MRP',key:'mrp',visible:true}],
 };
 
 const selectedFields = ['SKU Name']

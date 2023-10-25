@@ -18,7 +18,7 @@ const ButtonCard = (props:ButtonCardProps)=>{
 
     return(
         <ButtonCardContainer imgSrc="assets/img/VectorFLOW/NMS/card-bg.png">
-            <CardButton onClick={onClick}>{text}</CardButton>
+            <CardButton onClick={onClick} data-testid={"button-card"}>{text}</CardButton>
         </ButtonCardContainer>
     )
 }

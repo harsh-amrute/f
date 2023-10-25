@@ -1,4 +1,5 @@
 import { Outlet } from "react-router";
+import {useLocation} from 'react-router-dom';
 import {
   Header,
   NavbarTop,
@@ -18,6 +19,10 @@ const isAnonymous = false;
 const AppLayout = () => {
   const { t } = useTranslation();
 
+  //URL arrays for excluding layout padding
+  const urls = ['/master-data-management/view-modify']
+  const location = useLocation();
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -72,7 +77,7 @@ const AppLayout = () => {
               setIsHide={setIsHide}
             />
           </GridSystem.SCCol2>
-          <GridSystem.SCCol8 width={widthResponsive}>
+          <GridSystem.SCCol8 width={widthResponsive} hidePadding={urls.includes(location.pathname)}>
             <ISTStatusContext.Provider
               value={{
                 currentAction,
