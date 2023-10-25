@@ -4,6 +4,7 @@ pool:
   name: default
 variables:
   REACT_APP_API_HOST: http://10.8.1.10:8888/
+  REACT_APP_VF_API_HOST: http://10.8.1.10:8082
   REACT_APP_ENV: test
 steps:
   - task: NodeTool@0
@@ -23,6 +24,7 @@ steps:
       npm run build
     env:
       REACT_APP_API_HOST: ${REACT_APP_API_HOST}
+      REACT_APP_VF_API_HOST: ${REACT_APP_VF_API_HOST}
       REACT_APP_ENV: ${REACT_APP_ENV}
     displayName: Build React Application
     workingDirectory: $(build.sourcesDirectory)
