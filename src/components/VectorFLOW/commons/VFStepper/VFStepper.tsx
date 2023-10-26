@@ -1,7 +1,7 @@
-import { StepperWrapper, StepWrapper,StepLabel,StepProgress, StepLabelWrapper, StepDescription } from "./styles"
+import { VFStepperWrapper, VFStepWrapper,VFStepLabel,VFStepProgress, VFStepLabelWrapper, VFStepDescription } from "./styles"
 
 
-interface StepperProps{
+interface VFStepperProps{
     items:StepItem[]
     width?:string
 }
@@ -13,7 +13,7 @@ export interface StepItem{
 
 }
 
-interface StepProps{
+interface VFStepProps{
     label:string
     status:'completed' | 'pending' | 'rejected'
     index:number
@@ -21,11 +21,11 @@ interface StepProps{
     description:string
 }
 
-interface StepIconProps{
+interface VFStepIconProps{
     status:string
 }
 
-const Stepper =  (props:StepperProps)=>{
+const VFStepper =  (props:VFStepperProps)=>{
 
     const {
         items,
@@ -33,15 +33,15 @@ const Stepper =  (props:StepperProps)=>{
     }= props
 
     return (
-        <StepperWrapper style={{width:width}} data-testid='stepper'>
+        <VFStepperWrapper style={{width:width}} data-testid='stepper'>
             {items.map((i,index)=>{
                 return <Step label={i.label} status={i.status} key={index} index={index} isLast={index==items.length-1} description={i.description}/>
             })}
-        </StepperWrapper>
+        </VFStepperWrapper>
     )
 }
 
-const Step = (props:StepProps)=>{
+const Step = (props:VFStepProps)=>{
 
     const {
         label,
@@ -51,22 +51,22 @@ const Step = (props:StepProps)=>{
     } = props
 
     return(
-        <StepWrapper isLast={isLast}>
+        <VFStepWrapper isLast={isLast}>
            
-            <StepLabelWrapper>
+            <VFStepLabelWrapper>
                 
                 {/*<StepCircle status={status}/>*/}
-                <StepIcon status={status}/>
-                <StepLabel>{label}</StepLabel>
-                <StepDescription>{description}</StepDescription>
-            </StepLabelWrapper>
-            {!isLast && <StepProgress status={status}/>}
-        </StepWrapper>
+                <VFStepIcon status={status}/>
+                <VFStepLabel>{label}</VFStepLabel>
+                <VFStepDescription>{description}</VFStepDescription>
+            </VFStepLabelWrapper>
+            {!isLast && <VFStepProgress status={status}/>}
+        </VFStepWrapper>
     )
 }   
 
 
-const StepIcon = (props:StepIconProps)=>{
+const VFStepIcon = (props:VFStepIconProps)=>{
     const {
         status
     } = props
@@ -87,4 +87,4 @@ const StepIcon = (props:StepIconProps)=>{
     )
 }
 
-export default Stepper
+export default VFStepper

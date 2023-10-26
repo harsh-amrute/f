@@ -1,7 +1,7 @@
 
-import IconCard from "../../../../../components/VectorFLOW/commons/Card/IconCard"
+import IconCard from "../../../../../components/VectorFLOW/commons/VFCard/IconCard"
 import { Container,PanelGrid, PanelGridWrapper } from "./styles"
-import ButtonCard from "../../../../../components/VectorFLOW/commons/Card/ButtonCard"
+import ButtonCard from "../../../../../components/VectorFLOW/commons/VFCard/ButtonCard"
 import { useNavigate } from "react-router"
 
 
