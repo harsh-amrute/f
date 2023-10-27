@@ -15,3 +15,8 @@ export interface Field{
     key:string,
     visible:boolean
 }
+
+export interface Tab{
+    name:string,
+    status:string
+}
