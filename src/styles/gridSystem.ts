@@ -76,9 +76,13 @@ export const SCCol8 = styled.div<{ width: any, hidePadding:boolean }>`
   transition: ${customTransition};
 
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
-      .size.laptopL}) {
-    padding-left: 50px;
+      .size.desktop}) {
+    padding-left: ${(props)=> props.hidePadding ? 0 : 50}px;
   }
+
+  @media (min-width: ${gridSystem.size.desktop}) {
+    padding-left: ${(props)=> props.hidePadding ? 0 : 50}px;
+}
 `;
 export const SCFullScreen = styled.div`
   height: 10vh;

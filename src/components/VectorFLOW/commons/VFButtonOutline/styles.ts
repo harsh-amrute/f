@@ -4,7 +4,7 @@ import * as globalStyles from "../../../../styles/global";
 export const SCButtonOutline = styled.button<{themeUi: string, isDisabled:boolean | undefined, customWidth:number | undefined}>`
   color: ${props => props.isDisabled ? '#9A9A9A' : globalStyles.chooseThemeColor[props.themeUi]?.color5};
   background-color: #fefefe;
-  padding: 15px 7px;
+  // padding: 15px 7px;
   border-radius: 6px;
   font-size:16px;
   font-family:'Roboto';
