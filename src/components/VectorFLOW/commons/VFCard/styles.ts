@@ -10,7 +10,6 @@ export const Card = styled.div<{imgSrc:string}>`
     border-radius: 16px;
     padding:45px 36px;
     width:100%;
-    max-width:385px;
     
 `
 
@@ -27,7 +26,6 @@ export const ButtonCardContainer = styled(Card)`
 
 export const CardText = styled.p`
     cursor:pointer;
-    max-width:70px;
     margin-right:65px;
     height: 68px;
     text-align: left;

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import Stepper, { StepItem } from './Stepper'; // Adjust the import path as per your project structure
+import VFStepper, { StepItem } from './VFStepper'; // Adjust the import path as per your project structure
 
 describe('Stepper Component', () => {
   const stepItems:StepItem[] = [
@@ -21,7 +21,7 @@ describe('Stepper Component', () => {
   ];
 
   it('Renders the Stepper component', () => {
-    render(<Stepper items={stepItems} width="500px" />);
+    render(<VFStepper items={stepItems} width="500px" />);
     
     // You may want to add more specific assertions here
     const stepperElement = screen.getByTestId('stepper');
@@ -29,7 +29,7 @@ describe('Stepper Component', () => {
   });
 
   it('Renders all step items', () => {
-    render(<Stepper items={stepItems} width="500px" />);
+    render(<VFStepper items={stepItems} width="500px" />);
     
     // Assert that all step items are present
     stepItems.forEach((item) => {
@@ -41,7 +41,7 @@ describe('Stepper Component', () => {
   });
 
   it('Renders correct step icons', () => {
-    render(<Stepper items={stepItems} width="500px" />);
+    render(<VFStepper items={stepItems} width="500px" />);
     
     // You may want to add more specific assertions for the step icons
     const completedStepIcon = screen.getByAltText('completed');

@@ -9,26 +9,26 @@ const getProgressColor = (status:string)=>{
 
 
 
-export const StepperWrapper = styled.div`
+export const VFStepperWrapper = styled.div`
     display:flex;
     flex-direction:row;
     width:100%;
 `
 
-export const StepWrapper = styled.div<{isLast:boolean}>`
+export const VFStepWrapper = styled.div<{isLast:boolean}>`
     display:flex;
     flex-direction:row;
     width: ${(props)=>props.isLast?'auto':'100%'};
 `
 
-export const StepLabelWrapper = styled.div`
+export const VFStepLabelWrapper = styled.div`
     display:flex;
     flex-direction:column;
     align-items:center;
 `
 
 
-export const StepLabel = styled.div`
+export const VFStepLabel = styled.div`
     text-align:center;
     margin-top:6px;
     font-size:16px:
@@ -39,7 +39,7 @@ export const StepLabel = styled.div`
     letter-spacing: 0px;
     color: #313131;
 `
-export const StepDescription = styled.div`
+export const VFStepDescription = styled.div`
     font-size:12px:
     font-style:normal;
     font-variant:normal;
@@ -49,7 +49,7 @@ export const StepDescription = styled.div`
     color: #1C1E2B;
 `
 
-export const StepProgress = styled.div<{status:string}>`
+export const VFStepProgress = styled.div<{status:string}>`
     margin-top:12px;
     margin-left:10px;
     margin-right:10px;
