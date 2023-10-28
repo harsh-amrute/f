@@ -1,7 +1,7 @@
 
 
 import { render, screen } from '@testing-library/react';
-import MRCard from './VFMasterCard';
+import MRCard from '.';
 
 const sampleData = {
   id: 1,

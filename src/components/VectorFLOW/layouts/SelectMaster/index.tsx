@@ -2,8 +2,8 @@
 import { Dispatch,SetStateAction,useEffect } from "react";
 import { Container, QuickFilterHeader,SCButtonContainer, SCLoaderContainer, SCCardContainer } from "./styles"
 
-import VFMasterCard from "../../commons/VFMasterCard/VFMasterCard";
-import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch/VFMasterFieldSearch";
+import VFMasterCard from "../../commons/VFMasterCard";
+import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
 import ButtonOutlineStatus from "../../../commons/ButtonOutline/button";
 import VFButton from "../../commons/VFButton";
 import VFButtonOutline from "../../commons/VFButtonOutline";

@@ -1,13 +1,14 @@
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
-import { TaskBarContainer, SCContainer } from "./styles";
+import { TaskBarContainer, SCContainer, SCFilterContainer, SCFilterControls, SCLegend } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
 import { useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useState,useEffect } from "react";
 import { generateOptions } from "../../../../../helpers/utils";
-import { type Master, type Option, type Field, type Tab } from "../../../../types/MDM";
+import { type Master, type Option, type Field, type Tab, type Filter } from "../../../../types/MDM";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
+import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 
 
 
@@ -20,7 +21,32 @@ import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
     const [selectedOptions,setSelectedOptions] = useState<Array<Option>>([]);
     const [selectedMasters,setSelectedMasters] = useState<Array<Master>>([]);
 
-    const [tabs,setTabs] = useState<Array<Tab>>([]);
+    const [tabs,setTabs] = useState<Array<Tab>>([{
+      id:1,
+      name:'SKU',
+      fields:[{
+        displayName:"SKU Ccode",
+        key:"sku_code",
+        visible:true
+      }],
+      status:'completed'
+    }]);
+
+    const [activeMaster,setActiveMaster] = useState<Master>()
+
+    const [filters,setFilters] = useState<Array<Filter>>([{
+        id:'fbaksbfka',
+        field:"",
+        operator:"",
+        text:''
+    }]);
+
+    const operators:Option[] = [
+      {
+        label:'Equals To',
+        value:'='
+      }
+    ]
 
     const [filterButtonStatus,setFilterButtonStatus] = useState<Array<Master>>([]);
 
@@ -54,24 +80,26 @@ import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
     const handleSelectMasterSubmit = () => {
       const selectedTabs = selectedMasters.map((master:Master,index:number) => {
         return {
+          id:master.id,
           name:master.name + ' Master',
-          status:index === 0 ? 'active' : '',
+          fields:master.fields,
+          status:'',
         }
       })
       setTabs([...selectedTabs]);
+      setActiveMaster(allMasters.find((master:Master)=>master.id === selectedTabs[0].id))
       setIsSelectMasterOpen(false);
 
     }
 
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currTab:Tab) => {
       e.stopPropagation();
-      const newTabs = tabs.filter((tab:Tab)=>tab.name !== currTab.name);
+      const newTabs = tabs.filter((tab:Tab)=>tab.id !== currTab.id);
       if(newTabs.length === 0){
         setIsSelectMasterOpen(true);
         return;
       }
-      if(currTab.status === 'active') newTabs[0].status = 'active';
-      console.log(newTabs);
+      if(currTab.id === activeMaster?.id ) setActiveMaster(allMasters.find((master:Master)=>master.id === tabs[0].id));
       setTabs([...newTabs]);
     }
 
@@ -96,6 +124,9 @@ import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
           }
           {!isSelectMasterOpen && 
             <VFTab 
+              allMasters={allMasters}
+              activeMaster={activeMaster}
+              setActiveMaster={setActiveMaster}
               tabs={tabs}
               setTabs={setTabs}
               themeUi={themeUi}
@@ -104,7 +135,19 @@ import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
               newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
               newTabHandler={()=>{setIsSelectMasterOpen(true)}}
               >
-                Hello
+                <SCFilterContainer>
+                  <SCFilterControls>
+                    {/* <SCLegend>Filter</SCLegend> */}
+                    <VFFilter 
+                      onDelete={()=>console.log('deleted')}
+                      operators={operators}
+                      filters={filters}
+                      setFilters={setFilters}
+                      fields={activeMaster ? generateOptions([activeMaster]) : []}
+                      currFilter={filters[0]}
+                    />
+                  </SCFilterControls>
+                </SCFilterContainer>
             </VFTab>
           }
         </SCContainer>

@@ -17,6 +17,15 @@ export interface Field{
 }
 
 export interface Tab{
+    id:number,
+    fields:Field[],
     name:string,
     status:string
+}
+
+export interface Filter{
+    id:string
+    field:string
+    operator:string
+    text:string
 }

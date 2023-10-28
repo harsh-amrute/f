@@ -1,5 +1,5 @@
 import { render, fireEvent,waitFor } from '@testing-library/react';
-import VFFilter from './VFFilter';
+import VFFilter from '.';
 import {select} from 'react-select-event'
 
 

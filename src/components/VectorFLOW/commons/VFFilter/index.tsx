@@ -1,25 +1,15 @@
 import { VFFilterDustbinIcon, VFFilterInputField, VFFilterSeperator, VFFilterWrapper } from "./styles";
 import Select from 'react-select'
+import {type Option, type Filter} from '../../../../VectorFlow/types/MDM';
 
-export interface fieldsType{
-    label:string
-    value:string
-}
-
-export interface FilterType{
-    id:string
-    field:string
-    operator:string
-    text:string
-}
 
 export interface VFFilterProps{
     onDelete:()=>void
-    fields:fieldsType[]
-    operators:fieldsType[]
-    currFilter:FilterType
+    fields:Option[]
+    operators:Option[]
+    currFilter:Filter
     setFilters:any
-    filters:FilterType[]
+    filters:Filter[]
 }
 
 export interface CustomSelectProps{
@@ -48,7 +38,7 @@ const VFFilter = (props:VFFilterProps)=>{
 
 
     const handleOnChange = (value:string,property:string)=>{
-       setFilters(filters.map((element:FilterType)=>{
+       setFilters(filters.map((element:Filter)=>{
         if(element.id==currFilter.id){
             return {...element,[property]:value}
         }

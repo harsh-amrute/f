@@ -8,11 +8,14 @@ import {
     SCTabContent,
     SCTabTitle
   } from './styles'
-import {type Tab} from '../../../../VectorFlow/types/MDM';
+import {type Tab, type Master} from '../../../../VectorFlow/types/MDM';
 
 interface VFTabProps{
   tabs:Tab[],
-  setTabs:Dispatch<SetStateAction<Tab[]>>
+  setTabs:Dispatch<SetStateAction<Tab[]>>,
+  allMasters:Master[],
+  activeMaster:Master | undefined,
+  setActiveMaster:Dispatch<SetStateAction<Master | undefined>>
   themeUi:string,
   onClose:(e:React.MouseEvent<HTMLElement>,tab:Tab) => void,
   newTabTitle?:string | undefined,
@@ -22,15 +25,18 @@ interface VFTabProps{
 
 }
 
-const VFTab = ({tabs,setTabs,themeUi,onClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
+const VFTab = ({tabs,allMasters,activeMaster,setActiveMaster,setTabs,themeUi,onClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
 
   const changeTab = (currTab: Tab) => {
-    const newTabs = tabs.map((tab:Tab) => {
-      if(tab.status === 'completed') return tab;
-      if(currTab.name == tab.name) return {name:tab.name,status:'active'}
-      return {name:tab.name,status:''};
-    })
-    setTabs([...newTabs]);
+    if(currTab.status === 'completed') return;
+    const activeMaster = allMasters.find((master:Master) => master.id === currTab.id);
+    setActiveMaster(activeMaster);
+  }
+
+  const getTabStatus = (activeMaster:Master | undefined,currTab:Tab) => {
+    if(currTab.status === 'completed') return 'completed';
+    return activeMaster?.id === currTab.id ? 'active' : currTab.status;
+
   }
 
   return(
@@ -41,7 +47,7 @@ const VFTab = ({tabs,setTabs,themeUi,onClose,newTabTitle,newTabIcon,newTabHandle
                 tabs.map((tab:Tab,index:number)=>{
                   return(
                     <SCTabButton 
-                      status={tab.status} 
+                      status={getTabStatus(activeMaster,tab)} 
                       zIndex={tabs.length-index} 
                       marLeft={index !== 0} 
                       themeUi={themeUi}
@@ -50,8 +56,8 @@ const VFTab = ({tabs,setTabs,themeUi,onClose,newTabTitle,newTabIcon,newTabHandle
                       }}
                       >
                         <SCTabContent>
-                          <SCTabTitle status={tab.status}>{tab.name.slice()}</SCTabTitle>
-                          <img onClick={(e:React.MouseEvent<HTMLElement>) => {onClose(e,tab)}} src={tab.status === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : tab.status === 'completed' ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/>
+                          <SCTabTitle status={getTabStatus(activeMaster,tab)}>{tab.name.slice()}</SCTabTitle>
+                          <img onClick={(e:React.MouseEvent<HTMLElement>) => {onClose(e,tab)}} src={getTabStatus(activeMaster,tab) === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : tab.status === 'completed' ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/>
                         </SCTabContent>
                     </SCTabButton>
                   )
