@@ -1,14 +1,15 @@
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
-import { TaskBarContainer, SCContainer, SCFilterContainer, SCFilterControls, SCLegend } from "./styles";
+import { TaskBarContainer, SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
 import { useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useState,useEffect } from "react";
-import { generateOptions } from "../../../../../helpers/utils";
+import { generateOptions, generateRandomId } from "../../../../../helpers/utils";
 import { type Master, type Option, type Field, type Tab, type Filter } from "../../../../types/MDM";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
+import { SCButtonSubmit } from "../../../../../components/commons/ModalReportIssue/styles";
 
 
 
@@ -34,12 +35,7 @@ import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 
     const [activeMaster,setActiveMaster] = useState<Master>()
 
-    const [filters,setFilters] = useState<Array<Filter>>([{
-        id:'fbaksbfka',
-        field:"",
-        operator:"",
-        text:''
-    }]);
+    const [filters,setFilters] = useState<Array<Filter>>([]);
 
     const operators:Option[] = [
       {
@@ -70,6 +66,7 @@ import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
       if(!isLoading){
         const allOptions:Option[] =  allMasters ? generateOptions(allMasters) : [];
         setSelectedMasters(allMasters)
+        console.log(allOptions);
         setOptions(allOptions);
       }
       const temp:Master[]=[];
@@ -78,7 +75,7 @@ import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
     },[selectedOptions,isLoading]);
 
     const handleSelectMasterSubmit = () => {
-      const selectedTabs = selectedMasters.map((master:Master,index:number) => {
+      const selectedTabs = selectedMasters.map((master:Master) => {
         return {
           id:master.id,
           name:master.name + ' Master',
@@ -87,7 +84,19 @@ import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
         }
       })
       setTabs([...selectedTabs]);
-      setActiveMaster(allMasters.find((master:Master)=>master.id === selectedTabs[0].id))
+      // setActiveMaster(selectedMasters.find((master:Master)=>master.id === selectedTabs[0].id))
+      setActiveMaster(selectedMasters[0]);
+      const filters:Filter[] = selectedMasters.map((master:Master) => {
+        const filterObj:Filter =  {
+          id:generateRandomId(),
+          masterId:master.id,
+          field:'',
+          operator:'',
+          text:''
+        }
+        return filterObj;
+      })
+      setFilters([...filters]);
       setIsSelectMasterOpen(false);
 
     }
@@ -99,10 +108,29 @@ import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
         setIsSelectMasterOpen(true);
         return;
       }
-      if(currTab.id === activeMaster?.id ) setActiveMaster(allMasters.find((master:Master)=>master.id === tabs[0].id));
+      if(currTab.id === activeMaster?.id ){
+        if(tabs.indexOf(currTab)==0){
+          setActiveMaster(tabs[1])
+        }
+        else setActiveMaster(selectedMasters.find((master:Master)=>master.id === tabs[0].id))
+      }
       setTabs([...newTabs]);
     }
 
+    const handleOnAddFilter = ()=>{
+      setFilters([...filters,{
+        id:generateRandomId(),
+        masterId:activeMaster?.id,
+        field:'',
+        operator:'',
+        text:''
+      }])
+    }
+
+    const handleOnDeleteFilter = (id:string)=>{
+      if(filters.length==1)return
+      setFilters(filters.filter((f)=>f.id!==id))
+    }
     
     return (
       <>
@@ -137,16 +165,56 @@ import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
               >
                 <SCFilterContainer>
                   <SCFilterControls>
-                    {/* <SCLegend>Filter</SCLegend> */}
-                    <VFFilter 
-                      onDelete={()=>console.log('deleted')}
-                      operators={operators}
-                      filters={filters}
-                      setFilters={setFilters}
-                      fields={activeMaster ? generateOptions([activeMaster]) : []}
-                      currFilter={filters[0]}
-                    />
+                    <SCLegend>Filter</SCLegend>
+                    {filters.map((f)=>{
+                      if(f.masterId==activeMaster?.id){
+                        return(
+                          <VFFilter 
+                            onDelete={()=>handleOnDeleteFilter(f.id)}
+                            operators={operators}
+                            filters={filters}
+                            setFilters={setFilters}
+                            fields={activeMaster ? generateOptions([activeMaster]) : []}
+                            currFilter={f}
+                            key={f.id}
+                          />
+                        )
+                      }
+                    })}
+                    
                   </SCFilterControls>
+                  <SCFilterAddControls>
+                    {filters.map((f)=>{
+                        if(f.masterId===activeMaster?.id){
+                          return (
+                            <SCFilterAddButtonWrapper>
+                              <SCFilterAddButton
+                                onClick={handleOnAddFilter}
+                                src="/assets/img/VectorFLOw/NMS/add-filter.svg"
+                                key={f.id}
+                              />
+                            </SCFilterAddButtonWrapper>
+                            
+                          )
+                        }
+                      })}
+                  </SCFilterAddControls>
+                  <SCFilterSeperator/>
+                  <SCFilterButtonGroup>
+                    <VFButton
+                    themeUi={themeUi}
+                    onClick={()=>alert('Applied')}
+                    >
+                      Apply Filter
+                    </VFButton>
+                    <VFButtonOutline
+                      onClick={()=>console.log('')}
+                      themeUi={themeUi}
+                      
+                    >
+                      Show All
+                    </VFButtonOutline>
+                  </SCFilterButtonGroup>
                 </SCFilterContainer>
             </VFTab>
           }

@@ -15,11 +15,11 @@ export const SCTabHeader = styled.div`
   align-items: center;
   place-content: space-between;
   overflow: overlay;
-  padding-bottom:2px;
+
 
   &::-webkit-scrollbar{
     width: 7px;
-    height:8px;       
+    height:5px;       
   }
 
   &::-webkit-scrollbar-track{

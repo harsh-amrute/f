@@ -5,8 +5,8 @@ export const VFFilterWrapper = styled.div`
     flex-direction:row;
     align-items:center;
     padding:10px 24px;
-    width: 1407px;
-    max-width:100%;
+    width:100%;
+   {max-width:1407px;}
     height: 56px;
     background: #E8E8E8 0% 0% no-repeat padding-box;
     border-radius: 6px;

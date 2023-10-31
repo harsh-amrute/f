@@ -25,6 +25,7 @@ export interface Tab{
 
 export interface Filter{
     id:string
+    masterId:number | undefined,
     field:string
     operator:string
     text:string

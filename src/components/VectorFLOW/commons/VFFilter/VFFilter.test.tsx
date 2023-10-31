@@ -33,6 +33,7 @@ const fields = [
 const filters = [
     {
         id:'fbaksbfka',
+        masterId:2,
         field:"",
         operator:"",
         text:''
@@ -40,12 +41,14 @@ const filters = [
     {
         id:'generateRandomId()',
         field:"",
+        masterId:2,
         operator:"",
         text:''
     },
     {
         id:'fkljsanfla',
         field:"",
+        masterId:3,
         operator:"",
         text:''
     }
@@ -55,7 +58,8 @@ const currFilter = {
     field:'',
     operator:'',
     text:'',
-    id:'fbaksbfka'
+    id:'fbaksbfka',
+    masterId:1
 }
 
 describe('Filter Component', () => {
