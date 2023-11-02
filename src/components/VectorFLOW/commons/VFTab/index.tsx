@@ -19,13 +19,13 @@ interface VFTabProps{
   themeUi:string,
   onClose:(e:React.MouseEvent<HTMLElement>,tab:Tab) => void,
   newTabTitle?:string | undefined,
-  newTabIcon:string,
+  newTabIcon?:string,
   newTabHandler?:() => void,
-  children:ReactNode,
+  children?:ReactNode,
 
 }
 
-const VFTab = ({tabs,allMasters,activeMaster,setActiveMaster,setTabs,themeUi,onClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
+const VFTab = ({tabs,allMasters,activeMaster,setActiveMaster,themeUi,onClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
 
   const changeTab = (currTab: Tab) => {
     if(currTab.status === 'completed') return;
@@ -54,10 +54,12 @@ const VFTab = ({tabs,allMasters,activeMaster,setActiveMaster,setTabs,themeUi,onC
                       onClick={() => { 
                         changeTab(tab) 
                       }}
+                      key={tab.id}
+                      data-testid="tab-button"
                       >
                         <SCTabContent>
                           <SCTabTitle status={getTabStatus(activeMaster,tab)}>{tab.name.slice()}</SCTabTitle>
-                          <img onClick={(e:React.MouseEvent<HTMLElement>) => {onClose(e,tab)}} src={getTabStatus(activeMaster,tab) === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : tab.status === 'completed' ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/>
+                          <img data-testid="tab-close" onClick={(e:React.MouseEvent<HTMLElement>) => {onClose(e,tab)}} src={getTabStatus(activeMaster,tab) === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : tab.status === 'completed' ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/>
                         </SCTabContent>
                     </SCTabButton>
                   )
@@ -70,7 +72,9 @@ const VFTab = ({tabs,allMasters,activeMaster,setActiveMaster,setTabs,themeUi,onC
                 themeUi={themeUi}
                 onClick={() => {
                   if(newTabHandler) newTabHandler();
+                  else console.debug("undefined");
                 }}
+                data-testid="new-tab"
               >
                   <SCTabContent>
                     <img style={{marginRight:'18px'}} src={newTabIcon}/>

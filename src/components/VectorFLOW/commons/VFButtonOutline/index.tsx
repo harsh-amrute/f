@@ -21,7 +21,7 @@ const VFButton = (props:VFButtonOutlineProps)=>{
 
     
     return(
-        <SCButtonOutline onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width}>
+        <SCButtonOutline onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width} data-testid="button-outline">
             {children}
         </SCButtonOutline>
     )

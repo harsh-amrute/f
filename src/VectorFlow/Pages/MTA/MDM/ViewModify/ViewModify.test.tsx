@@ -7,6 +7,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { UserDataContext } from '../../../../../context';
 import { useGetMasterUIConfiguration } from '../../../../Services/MTA/MDM';
 import {select} from 'react-select-event'
+import _ from 'lodash';
 
 jest.mock('../../../../Services/MTA/MDM');
 
@@ -81,7 +82,7 @@ const mockData = [
 
 
 const queryClient = setupReactQuery()
-describe('View Modify Component', () => {
+describe('Renders View Modify Component', () => {
 
     it('renders the view modify component when loading', async () => {
 
@@ -157,3 +158,199 @@ describe('View Modify Component', () => {
   });
   
 });
+
+
+describe('Handles all Interaction in ViewModify Component', () => { 
+
+  beforeEach(() => {
+      const result:any = {
+        isLoading:false,
+        data:{data:{responseData:{data:mockData}}}
+    }
+    useGetMasterUIConfigurationMock.mockImplementation(()=>{
+        return result
+    })
+
+    render(
+        <QueryClientProvider client={queryClient}>
+            <Router>
+                <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
+                    <ViewModify/>
+                </UserDataContext.Provider>
+            </Router>
+        </QueryClientProvider>
+    )
+  })
+
+  it('Check if Submitted Directly all masters should be selected', async () => {
+    
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+    const tabs = screen.getAllByTestId('tab-button');
+    expect(tabs.length).toBe(3);    
+
+  });
+
+  it("Check if Masters are selected as per the filters",async () => {
+
+    await waitFor(async () => {
+      const reactSelect = screen.getByRole('combobox');
+      expect(reactSelect).toBeInTheDocument();
+      await select(reactSelect, ['SKU Code']);
+    });
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const tabs = screen.getAllByTestId('tab-button');
+    expect(tabs.length).toBe(2);
+    
+
+  })
+
+  it("Check if All Tabs are closed Select Master Screen is Opened",async () => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const tabsList = screen.getAllByTestId('tab-close');
+    tabsList.forEach((tab:HTMLElement) => {
+      fireEvent.click(tab);
+    })
+
+    const reactSelect = screen.getByRole('combobox');
+    expect(reactSelect).toBeInTheDocument();    
+
+  })
+
+  it("Check if any Active Tabs is Closed First Tab is set to Default",async () => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const tabsList = screen.getAllByTestId('tab-button');
+    const tabNo = _.random(1,tabsList.length-1);
+    fireEvent.click(tabsList[tabNo]);
+
+    const tabCloseBtn = screen.getAllByTestId('tab-close')[tabNo];
+    fireEvent.click(tabCloseBtn);
+
+  })
+
+  it("Check if any InActive Tabs is Closed First Tab is set to Default",async () => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const tabCloseBtn = screen.getAllByTestId('tab-close');
+    const tabNo = _.random(1,tabCloseBtn.length-1);
+    fireEvent.click(tabCloseBtn[tabNo]);
+
+  })
+ 
+  it("Check if another Filter Box is Added on Clicking Plus Icon",() => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const addFilterIcon = screen.getByTestId('add-filter');
+    fireEvent.click(addFilterIcon);
+
+    const filters = screen.getAllByTestId('vffilter-wrapper');
+    expect(filters.length).toEqual(2);
+  
+
+  })
+
+  it("Check if Filter is Deleted on Clicking Delete Icon (Dustbin)",() => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const addFilterIcon = screen.getByTestId('add-filter');
+    fireEvent.click(addFilterIcon);
+
+    const filters = screen.getAllByTestId('delete-icon');
+    fireEvent.click(filters[filters.length-1]);
+    expect(screen.getAllByTestId('delete-icon').length).toEqual(filters.length-1);
+
+  })
+
+  it("Check If Single Filter is Present It Cannot be Deleted",() => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const filter = screen.getByTestId('delete-icon');
+    fireEvent.click(filter);
+    expect(filter).toBeInTheDocument();
+
+  })
+
+  it("Check If Select Master Screen is Opened on Clicking Add New Master",() => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const addNewMaster = screen.getByTestId('new-tab');
+    fireEvent.click(addNewMaster);
+    const reactSelect = screen.getByRole('combobox');
+    expect(reactSelect).toBeInTheDocument();
+
+  })
+
+  it("Queries Filtered Data when clicked on Apply Filter",() => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const applyFilter = screen.getByText('Apply Filter');
+    fireEvent.click(applyFilter);
+
+  })
+
+  it("Queries All Data when clicked on Show All",() => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const showAll = screen.getByText('Show All');
+    fireEvent.click(showAll);
+
+  })
+
+  it("Goes Back to Select Master screen when clicking on back button",() => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const backBtn = screen.getByTestId('back-btn');
+    fireEvent.click(backBtn);
+    
+  })
+
+  it("Resets the Filters and Data",() => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const backBtn = screen.getByText('Reset');
+    fireEvent.click(backBtn);
+    
+  })
+
+  it("Submits the Data",() => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const submitData = screen.getByText('Submit');
+    fireEvent.click(submitData);
+    
+  })
+
+
+
+
+
+ })
