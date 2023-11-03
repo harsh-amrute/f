@@ -1,5 +1,5 @@
 import {render} from '@testing-library/react'
-import VFMasterFieldSearch from './VFMasterFieldSearch'
+import VFMasterFieldSearch from '.'
 import { UserDataContext } from '../../../../context';
 
 const dummyFunction = jest.fn()

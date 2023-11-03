@@ -2,8 +2,8 @@
 import { Dispatch,SetStateAction,useEffect } from "react";
 import { Container, QuickFilterHeader,SCButtonContainer, SCLoaderContainer, SCCardContainer } from "./styles"
 
-import VFMasterCard from "../../commons/VFMasterCard/VFMasterCard";
-import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch/VFMasterFieldSearch";
+import VFMasterCard from "../../commons/VFMasterCard";
+import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
 import ButtonOutlineStatus from "../../../commons/ButtonOutline/button";
 import VFButton from "../../commons/VFButton";
 import VFButtonOutline from "../../commons/VFButtonOutline";
@@ -20,10 +20,24 @@ interface SelectMasterProps{
     filterButtonStatus:Master[],
     setFilterButtonStatus:Dispatch<SetStateAction<Master[]>>
     themeUi:string,
-    isLoading:boolean
+    isLoading:boolean,
+    handleSubmit:() => void
 }
 
-const SelectMaster = ({data,options,selectedOptions,setSelectedOptions,selectedMasters,setSelectedMasters,filterButtonStatus,setFilterButtonStatus,themeUi,isLoading}:SelectMasterProps)=>{
+const SelectMaster = (
+    {
+        data,
+        options,
+        selectedOptions,
+        setSelectedOptions,
+        selectedMasters,
+        setSelectedMasters,
+        filterButtonStatus,
+        setFilterButtonStatus,
+        themeUi,
+        isLoading,
+        handleSubmit
+    }:SelectMasterProps)=>{
 
     const navigate = useNavigate();
 
@@ -98,14 +112,14 @@ const SelectMaster = ({data,options,selectedOptions,setSelectedOptions,selectedM
             </Container>
             <SCCardContainer>
                 {data?.map((item:Master)=>{
-                    return shouldDisplayCard(item) && <VFMasterCard data={item} key={item.id} selectedFields={selectedOptions.map((s:Option)=>s.label)}/>
+                    return shouldDisplayCard(item) && <VFMasterCard data={{...item,name:item.name + ' Master'}} key={item.id} selectedFields={selectedOptions.map((s:Option)=>s.label)}/>
                 })}
             </SCCardContainer>
             <SCButtonContainer>
                 <VFButtonOutline onClick={()=>navigate('/master-data-management/control-panel')} themeUi={themeUi} width={141}>
                     Cancel
                 </VFButtonOutline>
-                <VFButton onClick={()=>console.log("test")} themeUi={themeUi} width={141}>
+                <VFButton onClick={() =>{ handleSubmit() }} themeUi={themeUi} width={141}>
                     Submit
                 </VFButton>
 

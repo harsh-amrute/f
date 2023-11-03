@@ -1,6 +1,6 @@
 import { Dispatch,SetStateAction } from 'react';
 
-import {SearchInputMultiple} from '../../../../components'
+import {SearchInputMultiple} from '../../..'
 import {  FieldSearchWrapper } from "./styles"
 import {type Option} from '../../../../VectorFlow/types/MDM';
 

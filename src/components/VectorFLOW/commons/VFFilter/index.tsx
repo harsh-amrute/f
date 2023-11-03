@@ -1,25 +1,15 @@
 import { VFFilterDustbinIcon, VFFilterInputField, VFFilterSeperator, VFFilterWrapper } from "./styles";
 import Select from 'react-select'
+import {type Option, type Filter} from '../../../../VectorFlow/types/MDM';
 
-export interface fieldsType{
-    label:string
-    value:string
-}
-
-export interface FilterType{
-    id:string
-    field:string
-    operator:string
-    text:string
-}
 
 export interface VFFilterProps{
     onDelete:()=>void
-    fields:fieldsType[]
-    operators:fieldsType[]
-    currFilter:FilterType
+    fields:Option[]
+    operators:Option[]
+    currFilter:Filter
     setFilters:any
-    filters:FilterType[]
+    filters:Filter[]
 }
 
 export interface CustomSelectProps{
@@ -27,6 +17,7 @@ export interface CustomSelectProps{
     placeholder:string
     onChange:(...params:any)=>void
     options:any[]
+    value:any
 }
 
 export interface CustomInputProps{
@@ -48,13 +39,14 @@ const VFFilter = (props:VFFilterProps)=>{
 
 
     const handleOnChange = (value:string,property:string)=>{
-       setFilters(filters.map((element:FilterType)=>{
+       setFilters(filters.map((element:Filter)=>{
         if(element.id==currFilter.id){
             return {...element,[property]:value}
         }
         return element
        }))
     }
+
 
     return(
         <VFFilterWrapper data-testid="vffilter-wrapper">
@@ -63,6 +55,7 @@ const VFFilter = (props:VFFilterProps)=>{
                 placeholder="Select" 
                 onChange={(e:any)=>handleOnChange(e.value,'field')} 
                 options={fields}
+                value={fields.find((field)=>field.value === currFilter.field)}
             />
             <VFFilterSeperator/>
             <CustomSelect 
@@ -70,6 +63,7 @@ const VFFilter = (props:VFFilterProps)=>{
                 placeholder="Select" 
                 onChange={(e:any)=>handleOnChange(e.value,'operator')} 
                 options={operators}
+                value={operators.find((field)=>field.value === currFilter.operator)}
             />
             <VFFilterSeperator/>
             <CustomInput 
@@ -94,7 +88,8 @@ const CustomSelect = (props:CustomSelectProps)=>{
         width,
         placeholder,
         onChange,
-        options
+        options,
+        value
     } = props
 
     return (
@@ -120,6 +115,7 @@ const CustomSelect = (props:CustomSelectProps)=>{
             components={{
                 IndicatorSeparator:null
             }}
+            value={value}
             onChange={onChange}
             options={options}
         />

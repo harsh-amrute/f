@@ -83,6 +83,7 @@ describe('SelectMaster Component', () => {
   const setFilterButtonStatus = jest.fn();
   const themeUi = 'NOIRFUSION';
   const isLoading = false;
+  const handleSubmit = jest.fn();
 
 
   const props = {
@@ -95,7 +96,8 @@ describe('SelectMaster Component', () => {
     filterButtonStatus,
     setFilterButtonStatus,
     themeUi,
-    isLoading
+    isLoading,
+    handleSubmit
   }
 
   it('should render loading spinner when isLoading is true', () => {

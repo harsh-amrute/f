@@ -15,3 +15,18 @@ export interface Field{
     key:string,
     visible:boolean
 }
+
+export interface Tab{
+    id:number,
+    fields:Field[],
+    name:string,
+    status:string
+}
+
+export interface Filter{
+    id:string
+    masterId:number | undefined,
+    field:string
+    operator:string
+    text:string
+}

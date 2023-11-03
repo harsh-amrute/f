@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import VFStepper, { StepItem } from './VFStepper'; // Adjust the import path as per your project structure
+import VFStepper, { StepItem } from './index'; // Adjust the import path as per your project structure
 
 describe('Stepper Component', () => {
   const stepItems:StepItem[] = [

@@ -5,6 +5,17 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field } from '../VectorFlow/types/MDM';
 
 // clear cached token and redirect to sso login
+
+const keyboardCharacters = [
+  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+  'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+  'u', 'v', 'w', 'x', 'y', 'z',
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+  'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+  'U', 'V', 'W', 'X', 'Y', 'Z'
+];
+
 export const loginRedirect = (navigate?: NavigateFunction) => {
   localStorage.removeItem(LOCAL_STORAGE_KEY.TOKEN_PAYLOAD)
 
@@ -355,4 +366,18 @@ export const generateOptions = (data:Master[]) => {
   });
 
   return options;
+}
+
+export const generateRandomId =(length?:number)=>{
+  if(!length){
+    length= 10
+  }
+  
+  let id = ''
+  for (let index = 0; index < length; index++) {
+    id = id + keyboardCharacters[Math.floor(Math.random() * keyboardCharacters.length)]
+    
+  }
+  return id
+
 }

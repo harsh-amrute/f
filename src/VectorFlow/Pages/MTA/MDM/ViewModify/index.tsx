@@ -1,92 +1,165 @@
-// import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
-// import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
-// import { TaskBarContainer } from "./styles";
-import { SCContainer } from "./styles"
+import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
+import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
+import { TaskBarContainer, SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
-import { useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
-import { useState,useEffect } from "react";
 import { generateOptions } from "../../../../../helpers/utils";
-import { type Master, type Option, type Field } from "../../../../types/MDM";
+import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
+import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
+import useViewModify from "./useViewModify"; 
+
+
 
   const ViewModify = () => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
-    // const disabled=true;
-    const [options,setOptions] = useState<Array<Option>>([]);
-    const [selectedOptions,setSelectedOptions] = useState<Array<Option>>([]);
-    const [selectedMasters,setSelectedMasters] = useState<Array<Master>>([]);
-
-    const [filterButtonStatus,setFilterButtonStatus] = useState<Array<Master>>([]);
-
-    const {data:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
    
-    const allMasters:Master[] = masterUIConfiguration?.data.responseData.data;
+    // const disabled=true;
 
-    const getSelectedMasters = (temp:Master[]) => {
-      selectedOptions.forEach((selectedOption:Option)=>{
-        allMasters.forEach((master:Master)=>{
-          if(master.fields.find((field:Field)=>field.displayName === selectedOption.label) && !temp.find((selectedMaster:Master)=>selectedMaster.id === master.id)) temp.push(master);
-        })
-      });
-      return temp;
-    }
     
-    useEffect(()=>{
 
-      if(filterButtonStatus.length !== 0) return;
+    const {
+        selectedMasters,
+        setSelectedMasters,
+        isSelectMasterOpen,
+        setIsSelectMasterOpen,
+        options,
+        selectedOptions,
+        setSelectedOptions,
+        tabs,
+        setTabs,
+        activeMaster,
+        setActiveMaster,
+        filters,
+        setFilters,
+        operators,
+        filterButtonStatus,
+        setFilterButtonStatus,
+        handleSelectMasterSubmit,
+        handleTabClose,
+        handleOnAddFilter,
+        handleOnDeleteFilter,
+        allMasters,
+        isLoading
 
-      if(!isLoading){
-        const allOptions:Option[] =  allMasters ? generateOptions(allMasters) : [];
-        setSelectedMasters(allMasters)
-        setOptions(allOptions);
-      }
-      const temp:Master[]=[];
-      if(selectedOptions?.length === 0 && allMasters) setSelectedMasters([...allMasters])
-      if(selectedOptions?.length > 0) setSelectedMasters([...getSelectedMasters(temp)])
-    },[selectedOptions,isLoading]);
-
+    } = useViewModify();
+    
+      
     
     return (
       <>
         <SCContainer>
-          <SelectMaster 
-              data={allMasters} 
-              options={options} 
-              selectedOptions={selectedOptions} 
-              setSelectedOptions={setSelectedOptions}
-              selectedMasters={selectedMasters}
-              setSelectedMasters={setSelectedMasters}
-              filterButtonStatus={filterButtonStatus}
-              setFilterButtonStatus={setFilterButtonStatus}
+          {isSelectMasterOpen && 
+            <SelectMaster 
+                data={allMasters} 
+                options={options} 
+                selectedOptions={selectedOptions} 
+                setSelectedOptions={setSelectedOptions}
+                selectedMasters={selectedMasters}
+                setSelectedMasters={setSelectedMasters}
+                filterButtonStatus={filterButtonStatus}
+                setFilterButtonStatus={setFilterButtonStatus}
+                themeUi={themeUi}
+                isLoading={isLoading}
+                handleSubmit={()=>{handleSelectMasterSubmit()}}
+            />
+          }
+          {!isSelectMasterOpen && 
+            <VFTab 
+              allMasters={allMasters}
+              activeMaster={activeMaster}
+              setActiveMaster={setActiveMaster}
+              tabs={tabs}
+              setTabs={setTabs}
               themeUi={themeUi}
-              isLoading={isLoading}
-          />
+              onClose={handleTabClose}
+              newTabTitle={"Add Master"}
+              newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
+              newTabHandler={()=>{setIsSelectMasterOpen(true)}}
+              >
+                <SCFilterContainer>
+                  <SCFilterControls>
+                    <SCLegend>Filter</SCLegend>
+                    {filters.map((f)=>{
+                      if(f.masterId==activeMaster?.id){
+                        return(
+                          <VFFilter 
+                            onDelete={()=>handleOnDeleteFilter(f.id,f.masterId)}
+                            operators={operators}
+                            filters={filters}
+                            setFilters={setFilters}
+                            fields={activeMaster ? generateOptions([activeMaster]) : []}
+                            currFilter={f}
+                            key={f.id}
+                          />
+                        )
+                      }
+                    })}
+                    
+                  </SCFilterControls>
+                  <SCFilterAddControls>
+                    {filters.map((f)=>{
+                        if(f.masterId===activeMaster?.id){
+                          return (
+                            <SCFilterAddButtonWrapper>
+                              <SCFilterAddButton
+                                onClick={handleOnAddFilter}
+                                src="/assets/img/VectorFLOw/NMS/add-filter.svg"
+                                key={f.id}
+                                data-testid="add-filter"
+                              />
+                            </SCFilterAddButtonWrapper>
+                            
+                          )
+                        }
+                      })}
+                  </SCFilterAddControls>
+                  <SCFilterSeperator/>
+                  <SCFilterButtonGroup>
+                    <VFButton
+                    themeUi={themeUi}
+                    onClick={()=>alert('Applied')}
+                    >
+                      Apply Filter
+                    </VFButton>
+                    <VFButtonOutline
+                      onClick={()=>console.log('')}
+                      themeUi={themeUi}
+                      
+                    >
+                      Show All
+                    </VFButtonOutline>
+                  </SCFilterButtonGroup>
+                </SCFilterContainer>
+            </VFTab>
+          }
         </SCContainer>
-        {/* <TaskBarContainer>
-          <VFButtonOutline onClick={()=>console.log("hello")} themeUi={themeUi} width={130}>
-              <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-                <img src={"/assets/img/VectorFLOW/NMS/back.svg"} style={{marginRight:'11px'}}/>
-                <p>Back</p>
-              </div>
-          </VFButtonOutline>
-          <VFButtonOutline onClick={()=>console.log("hello")} themeUi={themeUi} disabled={disabled} width={164}>
-              <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-                <img src={disabled ? "/assets/img/VectorFLOW/NMS/edit-online-disabled.svg" : "/assets/img/VectorFLOW/NMS/edit-online.svg"} style={{marginRight:'11px'}}/>
-                <p>Edit Online</p>
-              </div>
-          </VFButtonOutline>
-          <VFButtonOutline onClick={()=>console.log("hello")} themeUi={themeUi} width={130}>
-              Reset
-          </VFButtonOutline>
-          <VFButton onClick={()=>console.log("hello")} themeUi={themeUi} disabled={false} width={164}>
-              Modify Selected Data
-          </VFButton>
-          <VFButton onClick={()=>console.log("hello")} themeUi={themeUi} disabled={false} width={160}>
-              Submit
-          </VFButton>
-          
-        </TaskBarContainer> */}
+        {
+          !isSelectMasterOpen && 
+            <TaskBarContainer>
+                <VFButtonOutline onClick={()=>setIsSelectMasterOpen(true)} themeUi={themeUi} width={50}>
+                  <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+                    <img src={"/assets/img/VectorFLOW/NMS/back-btn.svg"} data-testid="back-btn"/>
+                  </div>
+                </VFButtonOutline>
+              {/* <VFButtonOutline onClick={()=>console.log("hello")} themeUi={themeUi} disabled={disabled} width={164}>
+                  <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+                    <img src={disabled ? "/assets/img/VectorFLOW/NMS/edit-online-disabled.svg" : "/assets/img/VectorFLOW/NMS/edit-online.svg"} style={{marginRight:'11px'}}/>
+                    <p>Edit Online</p>
+                  </div>
+              </VFButtonOutline> */}
+              <VFButtonOutline onClick={()=>console.log("hello")} themeUi={themeUi} width={130}>
+                  Reset
+              </VFButtonOutline>
+              {/* <VFButton onClick={()=>console.log("hello")} themeUi={themeUi} disabled={false} width={164}>
+                  Modify Selected Data
+              </VFButton> */}
+              <VFButton onClick={()=>console.log("hello")} themeUi={themeUi} disabled={false} width={160}>
+                  Submit
+              </VFButton>
+              
+            </TaskBarContainer>
+        }
       </>
     )
   }
