@@ -44,4 +44,10 @@ describe('VFButton Component', () => {
     expect(button).toHaveStyle(`color:#C7810E`);
     expect(button).toHaveStyle(`border:1px solid #C7810E`);
   });
+
+  it("applies the specified color given",() => {
+    render(<VFButtonOutline onClick={()=> {console.log("test")}} themeUi="REGALBLAZE" color={"#3342FF"}>Hello</VFButtonOutline> );
+    const button = screen.getByText("Hello");
+    expect(button).toHaveStyle(`color:#3342FF`);
+  })
 });

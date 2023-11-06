@@ -1,8 +1,18 @@
 import styled from 'styled-components'
 import * as globalStyles from "../../../../styles/global";
 
-export const SCButtonOutline = styled.button<{themeUi: string, isDisabled:boolean | undefined, customWidth:number | undefined}>`
-  color: ${props => props.isDisabled ? '#9A9A9A' : globalStyles.chooseThemeColor[props.themeUi]?.color5};
+function getColor(props:any) {
+  if(props.isDisabled){
+    return '#9A9A9A'
+  }
+  if(props.color){
+    return props.color
+  }
+  return  globalStyles.chooseThemeColor[props.themeUi]?.color5
+}
+
+export const SCButtonOutline = styled.button<{themeUi: string, isDisabled:boolean | undefined, customWidth:number | undefined, color:string | undefined}>`
+  color: ${props =>getColor(props)};
   background-color: #fefefe;
   padding: 15px 7px;
   border-radius: 6px;
@@ -13,6 +23,10 @@ export const SCButtonOutline = styled.button<{themeUi: string, isDisabled:boolea
   width:${(props)=>props.customWidth ? props.customWidth : 130}px;
   height:50px;
   box-shadow: 0px 6px 25px #00000029;
-  border: 1px solid ${props => props.isDisabled ? '#9A9A9A' : globalStyles.chooseThemeColor[props.themeUi]?.color5};
+  border: 1px solid ${props => getColor(props)};
   pointer-events:${(props)=>props.isDisabled ? 'none' : 'all'};
-`;
+  &:hover{
+    background-color:${(props)=>(!props.isDisabled || !props.color) && getColor(props) };
+    color:${(props)=>(!props.isDisabled || !props.color) ? getColor(props):'white' };
+  
+`

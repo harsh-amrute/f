@@ -21,7 +21,7 @@ import { type Master, type Option, type Field } from "../../../../types/MDM";
 
     const {data:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
    
-    const allMasters:Master[] = masterUIConfiguration?.data.responseData.data;
+    const allMasters:Master[] = masterUIConfiguration?.data.data;
 
     const getSelectedMasters = (temp:Master[]) => {
       selectedOptions.forEach((selectedOption:Option)=>{
