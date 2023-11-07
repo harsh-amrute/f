@@ -1,6 +1,5 @@
 import { SCButtonOutline } from "./styles"
-import React, { useContext } from 'react';
-import * as globalStyles from "../../../../styles/global";
+import React from 'react';
 
 interface VFButtonOutlineProps{
     onClick:() => void,

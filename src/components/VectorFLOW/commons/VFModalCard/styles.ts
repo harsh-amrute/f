@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import * as gridSystem from "../../../../styles/gridSystem";
-import * as globalStyles from "../../../../styles/global";
 
 export const VFHeaderWrapper = styled.div`
 display:flex;
