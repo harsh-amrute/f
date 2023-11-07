@@ -9,14 +9,14 @@ import VFButton from "../../commons/VFButton";
 import VFButtonOutline from "../../commons/VFButtonOutline";
 import { useNavigate } from "react-router";
 import { type Master, type Option } from "../../../../VectorFlow/types/MDM";
+import { useDispatch } from 'react-redux';
+import { setSelectedOptions, setSelectedMasters } from '../../../../redux/features/MDM';
 
 interface SelectMasterProps{
     data:Master[],
     options:Option[],
     selectedOptions:Option[],
-    setSelectedOptions:Dispatch<SetStateAction<Option[]>>,
     selectedMasters:Master[],
-    setSelectedMasters:Dispatch<SetStateAction<Master[]>>,
     filterButtonStatus:Master[],
     setFilterButtonStatus:Dispatch<SetStateAction<Master[]>>
     themeUi:string,
@@ -29,9 +29,7 @@ const SelectMaster = (
         data,
         options,
         selectedOptions,
-        setSelectedOptions,
         selectedMasters,
-        setSelectedMasters,
         filterButtonStatus,
         setFilterButtonStatus,
         themeUi,
@@ -40,11 +38,12 @@ const SelectMaster = (
     }:SelectMasterProps)=>{
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(()=>{
 
         if(selectedMasters?.length === 0 && data) {
-            setSelectedMasters([...data]);
+            dispatch(setSelectedMasters([...data]));
         }
 
     },[selectedMasters])
@@ -59,19 +58,19 @@ const SelectMaster = (
 
     const onClickFilterButton = (currentMaster:Master) => {
 
-        setSelectedOptions([])
+        dispatch(setSelectedOptions([]));
         
         if(getFilterButtonStatus(currentMaster)){
             setFilterButtonStatus(filterButtonStatus.filter((master:Master)=>master.id !== currentMaster.id));
-            setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id !== currentMaster.id))])
+            dispatch(setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id !== currentMaster.id))]))
         }
         else{
             setFilterButtonStatus([...filterButtonStatus,currentMaster]);
             if(selectedMasters.find((selectedMaster:Master)=>selectedMaster.id === currentMaster.id)){
-                setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id === currentMaster.id))])
+                dispatch(setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id === currentMaster.id))]));
             }
             else{
-                setSelectedMasters([...selectedMasters,currentMaster]);
+                dispatch(setSelectedMasters([...selectedMasters,currentMaster]));
             }
         }
 
@@ -86,10 +85,14 @@ const SelectMaster = (
         return filterButtonStatus.find((selectedMaster:Master)=>selectedMaster.id===currentMaster.id) ? true : false;
     }
 
+    const setValue = (option:any) => {
+        dispatch(setSelectedOptions(option));
+    }
+
     return(
         <Container >
             <Container style={{flexDirection:'row',gap:'44px'}}>
-                <VFMasterFieldSearch value={selectedOptions} setValue={setSelectedOptions} options={options} placeholder={'Select'} handleListChild={()=>{setFilterButtonStatus([])}} maxToShow={3} backgroundColor={'#FFFFFF'} />
+                <VFMasterFieldSearch value={selectedOptions} setValue={setValue} options={options} placeholder={'Select'} handleListChild={()=>{setFilterButtonStatus([])}} maxToShow={3} backgroundColor={'#FFFFFF'} />
                 <Container style={{flexDirection:'row'}}>
                     <QuickFilterHeader>
                         Quick Filters -

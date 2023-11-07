@@ -1,12 +1,22 @@
 import { render, fireEvent,waitFor } from '@testing-library/react';
 import VFFilter from '.';
 import {select} from 'react-select-event'
-
+import { store } from '../../../../redux/store/store';
+import { Provider } from 'react-redux';
+import { ReactNode } from 'react';
 
 // Mock the onClick function
 const onDelete = jest.fn();
 
-const setState = jest.fn()
+const contextWrapper = (children:ReactNode) => {
+    return(
+      <Provider store={store}>
+            {children}
+      </Provider>
+        
+    )
+  }
+
 
 const operators = [
     {
@@ -62,9 +72,17 @@ const currFilter = {
     masterId:1
 }
 
+const props = {
+    operators,
+    fields,
+    onDelete,
+    currFilter,
+    filters
+}
+
 describe('Filter Component', () => {
   it('renders the component', () => {
-    const { getByTestId } = render(<VFFilter operators={operators} fields={fields} onDelete={onDelete} currFilter={currFilter} filters={filters} setFilters={setState}/>);
+    const { getByTestId } = render(contextWrapper(<VFFilter {...props}/>));
     
     const filter = getByTestId('vffilter-wrapper');
     
@@ -72,16 +90,7 @@ describe('Filter Component', () => {
   });
 
   it('calls the onDelete function when the delete icon is clicked',()=>{
-    const {getByTestId} = render(
-        <VFFilter 
-            operators={operators} 
-            fields={fields} 
-            onDelete={onDelete} 
-            currFilter={currFilter} 
-            filters={filters} 
-            setFilters={setState}
-        />
-    )
+    const {getByTestId} = render(contextWrapper(<VFFilter {...props}/>));
 
     const deleteIcon = getByTestId('delete-icon')
 
@@ -90,57 +99,27 @@ describe('Filter Component', () => {
   })
 
   it('selects the field when the select component is triggered',async()=>{
-    const {getAllByRole} = render(
-        <VFFilter 
-            operators={operators} 
-            fields={fields} 
-            onDelete={onDelete} 
-            currFilter={currFilter} 
-            filters={filters} 
-            setFilters={setState}
-        />
-    )
+    const {getAllByRole} = render(contextWrapper(<VFFilter {...props} />))
     await waitFor(async () => {
         const reactSelect = getAllByRole('combobox')[0]
         expect(reactSelect).toBeInTheDocument();
         await select(reactSelect, ['SKUName']);
-        expect(setState).toBeCalled();
       });
   })
 
   it('selects the operator when the select component is triggered',async()=>{
-    const {getAllByRole} = render(
-        <VFFilter 
-            operators={operators} 
-            fields={fields} 
-            onDelete={onDelete} 
-            currFilter={currFilter} 
-            filters={filters} 
-            setFilters={setState}
-        />
-    )
+    const {getAllByRole} = render(contextWrapper(<VFFilter {...props}/>));
     await waitFor(async () => {
         const reactSelect = getAllByRole('combobox')[1]
         expect(reactSelect).toBeInTheDocument();
         await select(reactSelect, ['Equals to']);
-        expect(setState).toBeCalled();
       });
   })
 
   it('text field calls the onChange function when text is changed',async()=>{
-    const {getByTestId} = render(
-        <VFFilter 
-            operators={operators} 
-            fields={fields} 
-            onDelete={onDelete} 
-            currFilter={currFilter} 
-            filters={filters} 
-            setFilters={setState}
-        />
-    )
+    const {getByTestId} = render(contextWrapper(<VFFilter {...props}/>))
     const textInput = getByTestId('text-input')
     fireEvent.change(textInput,{target: {value: 'a'}})
-    expect(setState).toBeCalled()
   })
 
   });

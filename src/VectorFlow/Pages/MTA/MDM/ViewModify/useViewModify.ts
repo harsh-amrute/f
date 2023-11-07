@@ -2,17 +2,21 @@ import {useState, useEffect} from 'react';
 import { type Master, type Option, type Field, type Tab, type Filter } from "../../../../types/MDM";
 import {generateRandomId, generateOptions } from "../../../../../helpers/utils";
 import { useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
+import { useSelector, useDispatch } from 'react-redux';
+import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters} from '../../../../../redux/features/MDM';
+import type { RootState } from '../../../../../redux/store/store';
 
 const useViewModify = () => {
 
-
+    const dispatch = useDispatch();
     const [isSelectMasterOpen,setIsSelectMasterOpen] = useState<boolean>(true);
-    const [options,setOptions] = useState<Array<Option>>([]);
-    const [selectedOptions,setSelectedOptions] = useState<Array<Option>>([]);
-    const [selectedMasters,setSelectedMasters] = useState<Array<Master>>([]);
-    const [tabs,setTabs] = useState<Array<Tab>>([]);
-    const [activeMaster,setActiveMaster] = useState<Master>()
-    const [filters,setFilters] = useState<Array<Filter>>([]);
+
+    const options = useSelector((state: RootState) => state.mdm.options);
+    const selectedOptions = useSelector((state: RootState) => state.mdm.selectedOptions);
+    const selectedMasters = useSelector((state:RootState) => state.mdm.selectedMasters);
+    const tabs = useSelector((state:RootState) => state.mdm.tabs);
+    const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster);
+    const filters = useSelector((state:RootState) => state.mdm.filters);
 
     const operators:Option[] = [
         {
@@ -24,7 +28,8 @@ const useViewModify = () => {
 
     const {data:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
    
-    const allMasters:Master[] = masterUIConfiguration?.data.responseData.data;
+    const allMasters:Master[] = masterUIConfiguration?.data.data;
+
 
     useEffect(()=>{
 
@@ -32,12 +37,12 @@ const useViewModify = () => {
   
         if(!isLoading){
           const allOptions:Option[] =  allMasters ? generateOptions(allMasters) : [];
-          setSelectedMasters(allMasters)
-          setOptions(allOptions);
+          dispatch(setSelectedMasters(allMasters));
+          dispatch(setOptions(allOptions));
         }
         const temp:Master[]=[];
-        if(selectedOptions?.length === 0 && allMasters) setSelectedMasters([...allMasters])
-        if(selectedOptions?.length > 0) setSelectedMasters([...getSelectedMasters(temp)])
+        if(selectedOptions?.length === 0 && allMasters) dispatch(setSelectedMasters([...allMasters]));
+        if(selectedOptions?.length > 0) dispatch(setSelectedMasters([...getSelectedMasters(temp)]));
       },[selectedOptions,isLoading]);  
 
     const getSelectedMasters = (temp:Master[]) => {
@@ -58,9 +63,9 @@ const useViewModify = () => {
             status:'',
             }
         })
-        setTabs([...selectedTabs]);
+        dispatch(setTabs([...selectedTabs]));
         // setActiveMaster(selectedMasters.find((master:Master)=>master.id === selectedTabs[0].id))
-        setActiveMaster(selectedMasters[0]);
+        dispatch(setActiveMaster(selectedMasters[0]));
         const filters:Filter[] = selectedMasters.map((master:Master) => {
             const filterObj:Filter =  {
             id:generateRandomId(),
@@ -71,7 +76,7 @@ const useViewModify = () => {
             }
             return filterObj;
         })
-        setFilters([...filters]);
+        dispatch(setFilters([...filters]));
         setIsSelectMasterOpen(false);
 
     }
@@ -85,44 +90,41 @@ const useViewModify = () => {
         }
         if(currTab.id === activeMaster?.id ){
           if(tabs.indexOf(currTab)==0){
-            setActiveMaster(tabs[1])
+            dispatch(setActiveMaster(tabs[1]))
           }
-          else setActiveMaster(selectedMasters.find((master:Master)=>master.id === tabs[0].id))
+          else {
+            const activeMaster = selectedMasters.find((master:Master)=>master.id === tabs[0].id);
+            if(activeMaster) dispatch(setActiveMaster(activeMaster));
+          }
         }
-        setTabs([...newTabs]);
+        dispatch(setTabs([...newTabs]));
       }
 
       const handleOnAddFilter = ()=>{
-        setFilters([...filters,{
+        dispatch(setFilters([...filters,{
           id:generateRandomId(),
           masterId:activeMaster?.id,
           field:'',
           operator:'',
           text:''
-        }])
+        }]))
       }
   
       const handleOnDeleteFilter = (id:string,masterId:number | undefined)=>{
         const filtersLength = filters.filter((f:Filter) => f.masterId === masterId).length;
         if(filtersLength === 1) return;
-        setFilters(filters.filter((f)=>f.id!==id))
+        dispatch(setFilters(filters.filter((f)=>f.id!==id)))
       }
 
     return {
         selectedMasters,
-        setSelectedMasters,
         isSelectMasterOpen,
         setIsSelectMasterOpen,
         options,
-        setOptions,
         selectedOptions,
-        setSelectedOptions,
         tabs,
-        setTabs,
         activeMaster,
-        setActiveMaster,
         filters,
-        setFilters,
         operators,
         filterButtonStatus,
         setFilterButtonStatus,

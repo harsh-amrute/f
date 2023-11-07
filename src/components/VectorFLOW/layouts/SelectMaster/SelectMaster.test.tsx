@@ -5,6 +5,11 @@ import {generateOptions} from '../../../../helpers/utils';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { UserDataContext } from '../../../../context';
 import {select} from 'react-select-event';
+import {QueryClientProvider} from '@tanstack/react-query';
+import { setupReactQuery } from '../../../../config/react-query-config';
+import { ReactNode } from 'react';
+import { Provider } from 'react-redux';
+import { store } from '../../../../redux/store/store';
 
 describe('SelectMaster Component', () => {
   // Create mock data for testing
@@ -76,23 +81,38 @@ describe('SelectMaster Component', () => {
   ];
   const options:Option[] = generateOptions(data);
   const selectedOptions:Option[] = [];
-  const setSelectedOptions = jest.fn();
   const selectedMasters:Master[] = [...data];
-  const setSelectedMasters = jest.fn();
   const filterButtonStatus:Master[] = [];
   const setFilterButtonStatus = jest.fn();
   const themeUi = 'NOIRFUSION';
   const isLoading = false;
   const handleSubmit = jest.fn();
 
+  const queryClient = setupReactQuery()
+
+
+  const contextWrapper = (children:ReactNode) => {
+    return(
+      <QueryClientProvider client={queryClient}>
+          <Router>
+            <Provider store={store}>
+              <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
+                  {children}
+              </UserDataContext.Provider>
+            </Provider>
+          </Router>
+        </QueryClientProvider>
+    )
+  }
+
+  const storeDispatchSpy = jest.spyOn(store, 'dispatch')
+
 
   const props = {
     data,
     options,
     selectedOptions,
-    setSelectedOptions,
     selectedMasters,
-    setSelectedMasters,
     filterButtonStatus,
     setFilterButtonStatus,
     themeUi,
@@ -101,14 +121,7 @@ describe('SelectMaster Component', () => {
   }
 
   it('should render loading spinner when isLoading is true', () => {
-    render(
-      <Router>
-        <SelectMaster
-         {...props}
-         isLoading={true}
-        />
-      </Router>
-    );
+    render(contextWrapper(<SelectMaster {...props} isLoading={true} />));
 
     // Check if the loading spinner is displayed
     const loader = screen.getByTestId('loader')
@@ -118,15 +131,7 @@ describe('SelectMaster Component', () => {
 
   it('should render search input filter buttons and cards when isLoading is false', () => {
 
-    render(
-      <Router>
-        <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
-          <SelectMaster
-            {...props}
-          />
-        </UserDataContext.Provider>
-      </Router>
-    );
+    render(contextWrapper(<SelectMaster {...props} />));
     // Check if Search Filter is rendered
     expect(screen.getByTestId('search-wrapper')).toBeInTheDocument();
     //Check if Filter Status Buttons are rendered
@@ -137,20 +142,9 @@ describe('SelectMaster Component', () => {
 
   it('should set selected masters to all masters when the length becomes 0',() => {
     
-    // selectedMasters = [];
+    render(contextWrapper(<SelectMaster {...props} selectedMasters={[]} />));
 
-    render(
-      <Router>
-        <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
-          <SelectMaster
-            {...props}
-            selectedMasters={[]}
-          />
-        </UserDataContext.Provider>
-      </Router>
-    );
-
-    expect(setSelectedMasters).toBeCalledWith(data);
+    expect(storeDispatchSpy).toHaveBeenCalledWith({payload:data,type:"mdm/setSelectedMasters"});
 
   });
 
@@ -158,15 +152,7 @@ describe('SelectMaster Component', () => {
 
     const temp:Master[] = [...data.filter((master)=>master.id === 1)]
 
-    render(
-      <Router>
-        <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
-          <SelectMaster
-            {...props}
-          />
-        </UserDataContext.Provider>
-    </Router>
-    );
+    render(contextWrapper(<SelectMaster {...props} selectedMasters={[]} />));
 
     // Get the first filter button
     const filterButton = screen.getAllByTestId('button-outline-status');
@@ -175,9 +161,9 @@ describe('SelectMaster Component', () => {
     fireEvent.click(filterButton[0]);
 
     // Check if it Empties the search field options
-    expect(setSelectedOptions).toHaveBeenCalledWith([]);
+    expect(storeDispatchSpy).toHaveBeenCalledWith({payload:[],type:"mdm/setSelectedOptions"});
     expect(setFilterButtonStatus).toBeCalledWith([...temp]);
-    expect(setSelectedMasters).toHaveBeenCalledWith([...temp]);
+    expect(storeDispatchSpy).toHaveBeenCalledWith({payload:[...temp],type:"mdm/setSelectedMasters"});
 
   });
 
@@ -185,16 +171,7 @@ describe('SelectMaster Component', () => {
 
     const temp:Master[] = [...data.filter((master)=>master.id === 1)]
 
-    render(
-      <Router>
-        <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
-          <SelectMaster
-            {...props}
-            selectedMasters={[]}
-          />
-        </UserDataContext.Provider>
-    </Router>
-    );
+    render(contextWrapper(<SelectMaster {...props} selectedMasters={[]} />));
 
     // Get the first filter button
     const filterButton = screen.getAllByTestId('button-outline-status');
@@ -203,9 +180,28 @@ describe('SelectMaster Component', () => {
     fireEvent.click(filterButton[0]);
 
     // Check if it Empties the search field options
-    expect(setSelectedOptions).toHaveBeenCalledWith([]);
+    expect(storeDispatchSpy).toHaveBeenCalledWith({payload:[],type:"mdm/setSelectedOptions"});
 
-    expect(setSelectedMasters).toHaveBeenCalledWith([...temp]);
+    expect(storeDispatchSpy).toHaveBeenCalledWith({payload:[...temp],type:"mdm/setSelectedMasters"});
+
+  });
+
+  it('should add SKU master when clicked on SKU Filter Button when inactive (Master is present in selectedMasters)', () => {
+
+    const temp:Master[] = [...data.filter((master)=>master.id === 1)]
+
+    render(contextWrapper(<SelectMaster {...props} selectedMasters={temp} />));
+
+    // Get the first filter button
+    const filterButton = screen.getAllByTestId('button-outline-status');
+
+    // Simulate a click event on the filter button
+    fireEvent.click(filterButton[0]);
+
+    // Check if it Empties the search field options
+    expect(storeDispatchSpy).toHaveBeenCalledWith({payload:[],type:"mdm/setSelectedOptions"});
+
+    expect(storeDispatchSpy).toHaveBeenCalledWith({payload:[...temp],type:"mdm/setSelectedMasters"});
 
   });
 
@@ -213,16 +209,7 @@ describe('SelectMaster Component', () => {
 
     const temp:Master[] = [...data.filter((master)=>master.id === 1)]
 
-    render(
-      <Router>
-        <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
-          <SelectMaster
-            {...props}
-            filterButtonStatus={temp}
-          />
-        </UserDataContext.Provider>
-    </Router>
-    );
+    render(contextWrapper(<SelectMaster {...props} filterButtonStatus={temp} />));
 
     // Get the first filter button
     const filterButton = screen.getAllByTestId('button-outline-status');
@@ -231,25 +218,19 @@ describe('SelectMaster Component', () => {
     fireEvent.click(filterButton[0]);
 
     // Check if it Empties the search field options
-    expect(setSelectedOptions).toHaveBeenCalledWith([]);
+    expect(storeDispatchSpy).toHaveBeenCalledWith({payload:[],type:"mdm/setSelectedOptions"});
 
     expect(setFilterButtonStatus).toBeCalledWith([]);
 
-    expect(setSelectedMasters).toBeCalledWith([...data.filter((master:Master)=>master.id !== 1)]);
+    expect(storeDispatchSpy).toHaveBeenCalledWith({payload:[...data.filter((master:Master)=>master.id !== 1)],type:"mdm/setSelectedMasters"});
 
   });
 
+  
+
   it('should render search cancel and submit button with proper functionality', () => {
 
-    render(
-      <Router>
-        <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color:string) => {return color}}}>
-          <SelectMaster
-            {...props}
-          />
-        </UserDataContext.Provider>
-      </Router>
-    );
+    render(contextWrapper(<SelectMaster {...props} />));
 
     const cancelButton = screen.getByText('Cancel')
     expect(cancelButton).toBeInTheDocument();
@@ -263,22 +244,13 @@ describe('SelectMaster Component', () => {
 
   it('should handle click on filter select input',async () => {
 
-    render(
-      <Router>
-        <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color:string) => {return color}}}>
-          <SelectMaster
-            {...props}
-          />
-        </UserDataContext.Provider>
-      </Router>
-    );
+    render(contextWrapper(<SelectMaster {...props} />));
 
-    
     await waitFor(async () => {
       const reactSelect = screen.getByRole('combobox');
       expect(reactSelect).toBeInTheDocument();
       await select(reactSelect, ['SKU Code']);
-      expect(setSelectedOptions).toBeCalled();
+      expect(storeDispatchSpy).toBeCalled();
     });
    
   });

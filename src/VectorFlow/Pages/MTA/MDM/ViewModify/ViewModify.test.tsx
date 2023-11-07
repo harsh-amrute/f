@@ -8,6 +8,10 @@ import { UserDataContext } from '../../../../../context';
 import { useGetMasterUIConfiguration } from '../../../../Services/MTA/MDM';
 import {select} from 'react-select-event'
 import _ from 'lodash';
+import { store } from '../../../../../redux/store/store';
+import { Provider } from 'react-redux';
+import {resetState} from '../../../../../redux/features/MDM';
+import { ReactNode } from 'react';
 
 jest.mock('../../../../Services/MTA/MDM');
 
@@ -80,6 +84,20 @@ const mockData = [
     
   ];
 
+const contextWrapper = (children:ReactNode) => {
+  return(
+    <QueryClientProvider client={queryClient}>
+        <Router>
+          <Provider store={store}>
+            <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
+                {children}
+            </UserDataContext.Provider>
+          </Provider>
+        </Router>
+      </QueryClientProvider>
+  )
+}
+
 
 const queryClient = setupReactQuery()
 describe('Renders View Modify Component', () => {
@@ -87,7 +105,7 @@ describe('Renders View Modify Component', () => {
     it('renders the view modify component when loading', async () => {
 
   
-        let result:any = {
+        const result:any = {
             isLoading:true,
             // data:{data:{responseData:{data:mockData}}}
         }
@@ -96,32 +114,20 @@ describe('Renders View Modify Component', () => {
         })
     
         render(
-            <QueryClientProvider client={queryClient}>
-                <Router>
-                    <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
-                        <ViewModify/>
-                    </UserDataContext.Provider>
-                </Router>
-            </QueryClientProvider>
+            contextWrapper(<ViewModify/>)      
         )
 
-        result = {
-            isLoading:false,
-            data:{data:{responseData:{data:undefined}}}
-        }
-        useGetMasterUIConfigurationMock.mockImplementation(()=>{
-            return result
-        })
+        // result = {
+        //     isLoading:false,
+        //     data:{data:{responseData:undefined}}
+        // }
+        // useGetMasterUIConfigurationMock.mockImplementation(()=>{
+        //     return result
+        // })
     
-        render(
-            <QueryClientProvider client={queryClient}>
-                <Router>
-                    <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
-                        <ViewModify/>
-                    </UserDataContext.Provider>
-                </Router>
-            </QueryClientProvider>
-        )
+        // render(
+        //   contextWrapper(<ViewModify/>)      
+        // )
     
       });
 
@@ -130,20 +136,14 @@ describe('Renders View Modify Component', () => {
   
     const result:any = {
         isLoading:false,
-        data:{data:{responseData:{data:mockData}}}
+        data:{data:{data:mockData}}
     }
     useGetMasterUIConfigurationMock.mockImplementation(()=>{
         return result
     })
 
     render(
-        <QueryClientProvider client={queryClient}>
-            <Router>
-                <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
-                    <ViewModify/>
-                </UserDataContext.Provider>
-            </Router>
-        </QueryClientProvider>
+      contextWrapper(<ViewModify/>)      
     )
 
     const filterButton = screen.getAllByTestId('button-outline-status');
@@ -165,20 +165,16 @@ describe('Handles all Interaction in ViewModify Component', () => {
   beforeEach(() => {
       const result:any = {
         isLoading:false,
-        data:{data:{responseData:{data:mockData}}}
+        data:{data:{data:mockData}}
     }
     useGetMasterUIConfigurationMock.mockImplementation(()=>{
         return result
     })
 
+    store.dispatch(resetState());
+
     render(
-        <QueryClientProvider client={queryClient}>
-            <Router>
-                <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
-                    <ViewModify/>
-                </UserDataContext.Provider>
-            </Router>
-        </QueryClientProvider>
+      contextWrapper(<ViewModify/>)      
     )
   })
 
@@ -348,7 +344,6 @@ describe('Handles all Interaction in ViewModify Component', () => {
     fireEvent.click(submitData);
     
   })
-
 
 
 
