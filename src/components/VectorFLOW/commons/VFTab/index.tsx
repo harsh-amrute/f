@@ -1,4 +1,4 @@
-import {Dispatch,ReactNode,SetStateAction} from 'react';
+import {ReactNode} from 'react';
 import {
     SCTabArea,
     SCTabHeader,
@@ -9,13 +9,13 @@ import {
     SCTabTitle
   } from './styles'
 import {type Tab, type Master} from '../../../../VectorFlow/types/MDM';
+import { useDispatch } from 'react-redux';
+import { setActiveMaster } from '../../../../redux/features/MDM';
 
 interface VFTabProps{
   tabs:Tab[],
-  setTabs:Dispatch<SetStateAction<Tab[]>>,
   allMasters:Master[],
-  activeMaster:Master | undefined,
-  setActiveMaster:Dispatch<SetStateAction<Master | undefined>>
+  activeMaster:Master,
   themeUi:string,
   onClose:(e:React.MouseEvent<HTMLElement>,tab:Tab) => void,
   newTabTitle?:string | undefined,
@@ -25,15 +25,17 @@ interface VFTabProps{
 
 }
 
-const VFTab = ({tabs,allMasters,activeMaster,setActiveMaster,themeUi,onClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
+const VFTab = ({tabs,allMasters,activeMaster,themeUi,onClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
+  
+  const dispatch = useDispatch();
 
   const changeTab = (currTab: Tab) => {
     if(currTab.status === 'completed') return;
     const activeMaster = allMasters.find((master:Master) => master.id === currTab.id);
-    setActiveMaster(activeMaster);
+    if(activeMaster) dispatch(setActiveMaster(activeMaster));
   }
 
-  const getTabStatus = (activeMaster:Master | undefined,currTab:Tab) => {
+  const getTabStatus = (activeMaster:Master,currTab:Tab) => {
     if(currTab.status === 'completed') return 'completed';
     return activeMaster?.id === currTab.id ? 'active' : currTab.status;
 
@@ -72,7 +74,6 @@ const VFTab = ({tabs,allMasters,activeMaster,setActiveMaster,themeUi,onClose,new
                 themeUi={themeUi}
                 onClick={() => {
                   if(newTabHandler) newTabHandler();
-                  else console.debug("undefined");
                 }}
                 data-testid="new-tab"
               >

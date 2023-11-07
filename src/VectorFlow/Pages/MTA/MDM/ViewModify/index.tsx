@@ -10,28 +10,22 @@ import useViewModify from "./useViewModify";
 
 
 
+
   const ViewModify = () => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
    
     // const disabled=true;
 
-    
-
     const {
         selectedMasters,
-        setSelectedMasters,
         isSelectMasterOpen,
         setIsSelectMasterOpen,
         options,
         selectedOptions,
-        setSelectedOptions,
         tabs,
-        setTabs,
         activeMaster,
-        setActiveMaster,
         filters,
-        setFilters,
         operators,
         filterButtonStatus,
         setFilterButtonStatus,
@@ -54,9 +48,7 @@ import useViewModify from "./useViewModify";
                 data={allMasters} 
                 options={options} 
                 selectedOptions={selectedOptions} 
-                setSelectedOptions={setSelectedOptions}
                 selectedMasters={selectedMasters}
-                setSelectedMasters={setSelectedMasters}
                 filterButtonStatus={filterButtonStatus}
                 setFilterButtonStatus={setFilterButtonStatus}
                 themeUi={themeUi}
@@ -68,9 +60,7 @@ import useViewModify from "./useViewModify";
             <VFTab 
               allMasters={allMasters}
               activeMaster={activeMaster}
-              setActiveMaster={setActiveMaster}
               tabs={tabs}
-              setTabs={setTabs}
               themeUi={themeUi}
               onClose={handleTabClose}
               newTabTitle={"Add Master"}
@@ -87,7 +77,6 @@ import useViewModify from "./useViewModify";
                             onDelete={()=>handleOnDeleteFilter(f.id,f.masterId)}
                             operators={operators}
                             filters={filters}
-                            setFilters={setFilters}
                             fields={activeMaster ? generateOptions([activeMaster]) : []}
                             currFilter={f}
                             key={f.id}
