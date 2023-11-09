@@ -1,14 +1,14 @@
 import { VFFilterDustbinIcon, VFFilterInputField, VFFilterSeperator, VFFilterWrapper } from "./styles";
 import Select from 'react-select'
 import {type Option, type Filter} from '../../../../VectorFlow/types/MDM';
-
+import { useDispatch } from 'react-redux';
+import { setFilters } from '../../../../redux/features/MDM';
 
 export interface VFFilterProps{
     onDelete:()=>void
     fields:Option[]
     operators:Option[]
     currFilter:Filter
-    setFilters:any
     filters:Filter[]
 }
 
@@ -27,6 +27,7 @@ export interface CustomInputProps{
 }
 
 const VFFilter = (props:VFFilterProps)=>{
+    const dispatch = useDispatch();
 
     const{
         fields,
@@ -34,17 +35,16 @@ const VFFilter = (props:VFFilterProps)=>{
         onDelete,
         currFilter,
         filters,
-        setFilters,
     } = props
 
 
     const handleOnChange = (value:string,property:string)=>{
-       setFilters(filters.map((element:Filter)=>{
+       dispatch(setFilters(filters.map((element:Filter)=>{
         if(element.id==currFilter.id){
             return {...element,[property]:value}
         }
         return element
-       }))
+       })))
     }
 
 

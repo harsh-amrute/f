@@ -10,6 +10,9 @@ import { setupAxios } from './config/axios-config'
 import reportWebVitals from './reportWebVitals'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { store } from './redux/store/store';
+import { Provider } from 'react-redux';
+
 
 // Axios default settings and interceptors
 setupAxios()
@@ -23,8 +26,10 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <Router>
-        <App />
-        <ToastContainer />
+        <Provider store={store}>
+          <App />
+          <ToastContainer />
+        </Provider>
       </Router>
     </QueryClientProvider>
   </React.StrictMode>

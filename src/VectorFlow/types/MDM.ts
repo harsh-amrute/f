@@ -3,6 +3,16 @@ import {
     ColumnApi,
     ColDef
 } from 'ag-grid-community'
+export interface MDMStore{
+    options:Option[],
+    selectedOptions:Option[],
+    selectedMasters:Master[],
+    tabs:Tab[],
+    activeMaster:Master,
+    filters:Filter[]
+}
+
+
 export interface Master{
     id:number,
     name:string,

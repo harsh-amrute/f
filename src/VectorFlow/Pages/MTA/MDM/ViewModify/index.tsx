@@ -8,6 +8,7 @@ import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify"; 
 import VFTableWrapper from './vftable-wrapper'
+import {type Filter} from '../../../../types/MDM';
 
 
 
@@ -17,22 +18,15 @@ import VFTableWrapper from './vftable-wrapper'
    
     // const disabled=true;
 
-    
-
     const {
         selectedMasters,
-        setSelectedMasters,
         isSelectMasterOpen,
         setIsSelectMasterOpen,
         options,
         selectedOptions,
-        setSelectedOptions,
         tabs,
-        setTabs,
         activeMaster,
-        setActiveMaster,
         filters,
-        setFilters,
         operators,
         filterButtonStatus,
         setFilterButtonStatus,
@@ -57,9 +51,7 @@ import VFTableWrapper from './vftable-wrapper'
                 data={allMasters} 
                 options={options} 
                 selectedOptions={selectedOptions} 
-                setSelectedOptions={setSelectedOptions}
                 selectedMasters={selectedMasters}
-                setSelectedMasters={setSelectedMasters}
                 filterButtonStatus={filterButtonStatus}
                 setFilterButtonStatus={setFilterButtonStatus}
                 themeUi={themeUi}
@@ -71,9 +63,7 @@ import VFTableWrapper from './vftable-wrapper'
             <VFTab 
               allMasters={allMasters}
               activeMaster={activeMaster}
-              setActiveMaster={setActiveMaster}
               tabs={tabs}
-              setTabs={setTabs}
               themeUi={themeUi}
               onClose={handleTabClose}
               newTabTitle={"Add Master"}
@@ -83,14 +73,13 @@ import VFTableWrapper from './vftable-wrapper'
                 <SCFilterContainer>
                   <SCFilterControls>
                     <SCLegend>Filter</SCLegend>
-                    {filters.map((f)=>{
+                    {filters.map((f:Filter)=>{
                       if(f.masterId==activeMaster?.id){
                         return(
                           <VFFilter 
                             onDelete={()=>handleOnDeleteFilter(f.id,f.masterId)}
                             operators={operators}
                             filters={filters}
-                            setFilters={setFilters}
                             fields={activeMaster ? generateOptions([activeMaster]) : []}
                             currFilter={f}
                             key={f.id}
@@ -101,7 +90,7 @@ import VFTableWrapper from './vftable-wrapper'
                     
                   </SCFilterControls>
                   <SCFilterAddControls>
-                    {filters.map((f)=>{
+                    {filters.map((f:Filter)=>{
                         if(f.masterId===activeMaster?.id){
                           return (
                             <SCFilterAddButtonWrapper>

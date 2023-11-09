@@ -6,25 +6,28 @@ interface VFButtonOutlineProps{
     themeUi:string,
     disabled?:boolean,
     width?:number,
+    color?:string,
     children:React.ReactNode
 }
 
-const VFButton = (props:VFButtonOutlineProps)=>{
+const VFButtonOutline = (props:VFButtonOutlineProps)=>{
     
+
     const {
         onClick,
         themeUi,
         disabled,
         width,
         children,
+        color
     } = props
 
     
     return(
-        <SCButtonOutline onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width} data-testid="button-outline">
+        <SCButtonOutline color={color} onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width}>
             {children}
         </SCButtonOutline>
     )
 }
 
-export default VFButton;
+export default VFButtonOutline;
