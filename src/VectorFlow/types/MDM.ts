@@ -1,4 +1,8 @@
-
+import {
+    GridApi,
+    ColumnApi,
+    ColDef
+} from 'ag-grid-community'
 export interface Master{
     id:number,
     name:string,
@@ -30,3 +34,28 @@ export interface Filter{
     operator:string
     text:string
 }
+
+export interface GetMasterDataPayload {
+    masterId:number,
+    masterName:string,
+    filters:Array<{attributeName:string,operator:string,value:string}>,
+    fields:Array<{key:string}>,
+    paginationParameter:PaginationPayload
+    
+}
+
+export interface PaginationPayload {
+    pageNumber:number,
+    recordsPerPage:number
+}
+
+export interface VFtableProps{
+    rowData:Array<any>
+    columnDefs:ColDef[]
+    ref:any
+}
+
+// export interface GridRef{
+//     api:GridApi
+//     columnApi:ColumnApi
+// }

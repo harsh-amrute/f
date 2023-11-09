@@ -3,7 +3,7 @@ import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
 import { type Master, type Option, type Field } from '../VectorFlow/types/MDM';
-
+import {ColDef} from 'ag-grid-community';
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -380,4 +380,18 @@ export const generateRandomId =(length?:number)=>{
   }
   return id
 
+}
+
+
+export const mapMasterToColumnDefs = (fields:Field[])=>{
+  let result:ColDef[] = []
+  result = fields.map((f,index)=>{
+    return{
+      field:f.key,
+      headerName:f.displayName,
+      hide:!f.visible,
+      minWidth:180
+    }
+  })
+  return result
 }

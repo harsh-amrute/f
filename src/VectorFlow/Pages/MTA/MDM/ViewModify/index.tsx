@@ -3,10 +3,11 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import { TaskBarContainer, SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
-import { generateOptions } from "../../../../../helpers/utils";
+import { generateOptions, mapMasterToColumnDefs } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify"; 
+import VFTableWrapper from './vftable-wrapper'
 
 
 
@@ -40,11 +41,13 @@ import useViewModify from "./useViewModify";
         handleOnAddFilter,
         handleOnDeleteFilter,
         allMasters,
-        isLoading
+        isLoading,
+        handleApplyFilter,
+        rowData,
+        ref
 
     } = useViewModify();
     
-      
     
     return (
       <>
@@ -118,7 +121,7 @@ import useViewModify from "./useViewModify";
                   <SCFilterButtonGroup>
                     <VFButton
                     themeUi={themeUi}
-                    onClick={()=>alert('Applied')}
+                    onClick={()=>{handleApplyFilter()}}
                     >
                       Apply Filter
                     </VFButton>
@@ -131,6 +134,11 @@ import useViewModify from "./useViewModify";
                     </VFButtonOutline>
                   </SCFilterButtonGroup>
                 </SCFilterContainer>
+                <VFTableWrapper
+                  ref={ref}
+                  rowData={rowData?rowData:[]}
+                  columnDefs={activeMaster ? mapMasterToColumnDefs(activeMaster.fields):[]}
+                />
             </VFTab>
           }
         </SCContainer>

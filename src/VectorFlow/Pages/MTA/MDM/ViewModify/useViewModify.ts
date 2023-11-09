@@ -1,7 +1,7 @@
-import {useState, useEffect} from 'react';
-import { type Master, type Option, type Field, type Tab, type Filter } from "../../../../types/MDM";
+import {useState, useEffect, useRef} from 'react';
+import { type Master, type Option, type Field, type Tab, type Filter, GetMasterDataPayload, } from "../../../../types/MDM";
 import {generateRandomId, generateOptions } from "../../../../../helpers/utils";
-import { useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 
 const useViewModify = () => {
 
@@ -13,6 +13,11 @@ const useViewModify = () => {
     const [tabs,setTabs] = useState<Array<Tab>>([]);
     const [activeMaster,setActiveMaster] = useState<Master>()
     const [filters,setFilters] = useState<Array<Filter>>([]);
+    const {mutateAsync:getMasterData} = useGetMasterData();
+    const [rowData,setRowData] = useState();
+
+    const ref = useRef()
+
 
     const operators:Option[] = [
         {
@@ -24,7 +29,8 @@ const useViewModify = () => {
 
     const {data:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
    
-    const allMasters:Master[] = masterUIConfiguration?.data.responseData.data;
+    const allMasters:Master[] = masterUIConfiguration?.data.data;
+
 
     useEffect(()=>{
 
@@ -108,32 +114,56 @@ const useViewModify = () => {
         setFilters(filters.filter((f)=>f.id!==id))
       }
 
-    return {
-        selectedMasters,
-        setSelectedMasters,
-        isSelectMasterOpen,
-        setIsSelectMasterOpen,
-        options,
-        setOptions,
-        selectedOptions,
-        setSelectedOptions,
-        tabs,
-        setTabs,
-        activeMaster,
-        setActiveMaster,
-        filters,
-        setFilters,
-        operators,
-        filterButtonStatus,
-        setFilterButtonStatus,
-        getSelectedMasters,
-        handleSelectMasterSubmit,
-        handleTabClose,
-        handleOnAddFilter,
-        handleOnDeleteFilter,
-        allMasters,
-        isLoading
-    }
+      const handleApplyFilter =async () => {
+
+        if(activeMaster){
+        const payload:GetMasterDataPayload = {
+          masterId:activeMaster.id,
+          masterName:activeMaster.name,
+          filters:filters.filter((f:Filter) =>f.masterId === activeMaster.id).map((f:Filter) => ({attributeName:f.field,operator:f.operator,value:f.text})),
+          fields:activeMaster.fields.map((field:Field) => ({key:field.key})),
+          paginationParameter:{
+            pageNumber:1,
+            recordsPerPage:10
+          }
+        }
+        const myData =  (await getMasterData(payload)).data.data
+        setRowData(myData)
+        
+      }
+    
+  }
+
+  
+  return {
+    selectedMasters,
+    setSelectedMasters,
+    isSelectMasterOpen,
+    setIsSelectMasterOpen,
+    options,
+    setOptions,
+    selectedOptions,
+    setSelectedOptions,
+    tabs,
+    setTabs,
+    activeMaster,
+    setActiveMaster,
+    filters,
+    setFilters,
+    operators,
+    filterButtonStatus,
+    setFilterButtonStatus,
+    getSelectedMasters,
+    handleSelectMasterSubmit,
+    handleTabClose,
+    handleOnAddFilter,
+    handleOnDeleteFilter,
+    allMasters,
+    isLoading,
+    handleApplyFilter,
+    rowData,
+    ref
+}
 }
 
 export default useViewModify;
