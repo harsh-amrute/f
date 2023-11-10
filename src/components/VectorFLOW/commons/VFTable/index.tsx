@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState,useImperativeHandle } from "react";
 import {VFtableProps} from '../../../../VectorFlow/types/MDM'
 import 'ag-grid-enterprise'
 import { AgGridReact } from "ag-grid-react";
 import { VFTableWrapper } from "./styles";
-
 
 
 import "ag-grid-community/styles/ag-grid.css";
@@ -12,23 +11,17 @@ import './styles.css'
 
 
 
-const VFTable = (props:VFtableProps)=>{
+const VFTable = forwardRef((props:VFtableProps,ref:any)=>{
 
     const{
         rowData,
         columnDefs,
-        ref
     } = props
-
-
-    
-
-
 
     return(
         <VFTableWrapper className="ag-theme-alpine">
             <AgGridReact
-
+                ref={ref}
                 columnDefs={columnDefs}
                 rowData={rowData}
                 pagination
@@ -48,6 +41,12 @@ const VFTable = (props:VFtableProps)=>{
                     },
                     
                 
+                }}
+
+                defaultExcelExportParams={{
+                    processHeaderCallback(params:any){
+                        return params.column.getColDef().field;
+                    },
                 }}
                 onGridReady={(e)=>{
                    e.api.sizeColumnsToFit()
@@ -76,6 +75,6 @@ const VFTable = (props:VFtableProps)=>{
             />
         </VFTableWrapper>
     )
-}
+})
 
 export default VFTable

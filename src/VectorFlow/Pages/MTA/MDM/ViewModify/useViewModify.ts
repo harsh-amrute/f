@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef} from 'react';
-import { type Master, type Option, type Field, type Tab, type Filter, GetMasterDataPayload, } from "../../../../types/MDM";
+import { type Master, type Option, type Field, type Tab, type Filter, type GetMasterDataPayload, type GridRef } from "../../../../types/MDM";
 import {generateRandomId, generateOptions } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
@@ -20,7 +20,7 @@ const useViewModify = () => {
 
     const [rowData,setRowData] = useState([]);
 
-    const ref = useRef();
+    const ref = useRef<GridRef>();
 
     const operators:Option[] = [
         {

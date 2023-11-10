@@ -9,6 +9,7 @@ import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify"; 
 import VFTableWrapper from './vftable-wrapper'
 import {type Filter} from '../../../../types/MDM';
+import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 
 
 
@@ -123,7 +124,7 @@ import {type Filter} from '../../../../types/MDM';
                     </VFButtonOutline>
                   </SCFilterButtonGroup>
                 </SCFilterContainer>
-                <VFTableWrapper
+                <VFTable
                   ref={ref}
                   rowData={rowData?rowData:[]}
                   columnDefs={activeMaster ? mapMasterToColumnDefs(activeMaster.fields):[]}
@@ -145,7 +146,7 @@ import {type Filter} from '../../../../types/MDM';
                     <p>Edit Online</p>
                   </div>
               </VFButtonOutline> */}
-              <VFButtonOutline onClick={()=>console.log("hello")} themeUi={themeUi} width={130}>
+              <VFButtonOutline onClick={()=>console.log(ref.current?.api.exportDataAsExcel())} themeUi={themeUi} width={130}>
                   Reset
               </VFButtonOutline>
               {/* <VFButton onClick={()=>console.log("hello")} themeUi={themeUi} disabled={false} width={164}>

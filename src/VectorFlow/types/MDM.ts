@@ -65,7 +65,7 @@ export interface VFtableProps{
     ref:any
 }
 
-// export interface GridRef{
-//     api:GridApi
-//     columnApi:ColumnApi
-// }
+export interface GridRef{
+    api:GridApi
+    columnApi:ColumnApi
+}

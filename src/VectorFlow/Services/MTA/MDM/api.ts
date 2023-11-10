@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import axios from 'axios'
-import { GetMasterDataPayload } from '~/VectorFlow/types/MDM';
+import { GetMasterDataPayload } from '../../../types/MDM';
 
 
 export namespace MDMService {

@@ -1,5 +1,5 @@
 import { useQuery,useMutation } from '@tanstack/react-query'
-import { GetMasterDataPayload } from '~/VectorFlow/types/MDM';
+import { GetMasterDataPayload } from '../../../types/MDM';
 import { MDMService } from './api'
 
 
