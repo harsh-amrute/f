@@ -385,7 +385,7 @@ export const generateRandomId =(length?:number)=>{
 
 export const mapMasterToColumnDefs = (fields:Field[])=>{
   let result:ColDef[] = []
-  result = fields.map((f,index)=>{
+  result = fields.map((f)=>{
     return{
       field:f.key,
       headerName:f.displayName,

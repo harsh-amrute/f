@@ -6,8 +6,7 @@ import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMas
 import { generateOptions, mapMasterToColumnDefs } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
-import useViewModify from "./useViewModify"; 
-import VFTableWrapper from './vftable-wrapper'
+import useViewModify from "./useViewModify";
 import {type Filter} from '../../../../types/MDM';
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 

@@ -35,6 +35,7 @@ const useViewModify = () => {
     const allMasters:Master[] = masterUIConfiguration?.data.data;
 
     const {mutateAsync:getMasterData} = useGetMasterData();
+    
 
 
     useEffect(()=>{
@@ -135,8 +136,8 @@ const useViewModify = () => {
             recordsPerPage:10
           }
         }
-        const myData =  (await getMasterData(payload)).data.data
-        setRowData(myData)
+        const myData =  await getMasterData(payload);
+        setRowData(myData.data.data)
         
       }
     

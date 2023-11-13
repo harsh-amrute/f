@@ -5,17 +5,74 @@ import {QueryClientProvider} from '@tanstack/react-query';
 import { setupReactQuery } from '../../../../../config/react-query-config';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { UserDataContext } from '../../../../../context';
-import { useGetMasterUIConfiguration } from '../../../../Services/MTA/MDM';
+import { useGetMasterUIConfiguration, useGetMasterData } from '../../../../Services/MTA/MDM';
 import {select} from 'react-select-event'
 import _ from 'lodash';
 import { store } from '../../../../../redux/store/store';
 import { Provider } from 'react-redux';
 import {resetState} from '../../../../../redux/features/MDM';
 import { ReactNode } from 'react';
+import {GetMasterDataPayload} from '../../../../types/MDM';
 
 jest.mock('../../../../Services/MTA/MDM');
 
 const useGetMasterUIConfigurationMock = useGetMasterUIConfiguration as jest.MockedFunction<typeof useGetMasterUIConfiguration>;
+const useGetMasterDataMock = useGetMasterData as jest.MockedFunction<typeof useGetMasterData>;
+window.URL.createObjectURL = jest.fn();
+
+const useMasterDataResult:any = {
+  mutateAsync:(payload:GetMasterDataPayload)=>{
+    console.log(payload)
+    return {data:{data:mockMasterData}}
+  }
+
+}
+
+const mockMasterData:any = [
+        {
+            "SKUSrNo":1,
+            "SKUCode": "Q1231231DE12",
+            "SKUName": "Text Description",
+            "SKUAttr1": "ABC",
+            "SKUAttr2": "Group A",
+            "SKUAttr3": "PTH",
+            "SKUAttr4": 50,
+            "SKUAttr5": "Arrow New",
+            "SKUAttr6": "Red",
+            "SKUAttr7": 25,
+            "SKUAttr8": "mm",
+            "SKUAttr9": 35,
+            "SKUAttr10": "ABC",
+            "SKUAttr11": "SubCategory",
+            "SKUAttr12": "2022-11-08",
+            "SKUAttr13": "Dymmy Value",
+            "SKUAttr14": "ABC Group",
+            "SKUAttr15": "Dummy Value",
+            "SKUAttr16": "mm"
+        },
+        {
+            "SKUSrNo":2,
+            "SKUCode": "Q1231231FG34",
+            "SKUName": "Text Description",
+            "SKUAttr1": "ABC",
+            "SKUAttr2": "Group A",
+            "SKUAttr3": "PTH",
+            "SKUAttr4": 50,
+            "SKUAttr5": "Arrow New",
+            "SKUAttr6": "Red",
+            "SKUAttr7": 25,
+            "SKUAttr8": "mm",
+            "SKUAttr9": 35,
+            "SKUAttr10": "ABC",
+            "SKUAttr11": "SubCategory",
+            "SKUAttr12": "2022-11-08",
+            "SKUAttr13": "Dymmy Value",
+            "SKUAttr14": "ABC Group",
+            "SKUAttr15": "Dummy Value",
+            "SKUAttr16": "mm"
+        }
+]
+
 
 const mockData = [
     { 
@@ -101,6 +158,11 @@ const contextWrapper = (children:ReactNode) => {
 
 const queryClient = setupReactQuery()
 describe('Renders View Modify Component', () => {
+  beforeEach(()=>{
+    useGetMasterDataMock.mockImplementation(()=>{
+      return useMasterDataResult;
+    })
+  })
 
     it('renders the view modify component when loading', async () => {
 
@@ -112,6 +174,8 @@ describe('Renders View Modify Component', () => {
         useGetMasterUIConfigurationMock.mockImplementation(()=>{
             return result
         })
+
+        
     
         render(
             contextWrapper(<ViewModify/>)      
@@ -166,9 +230,14 @@ describe('Handles all Interaction in ViewModify Component', () => {
       const result:any = {
         isLoading:false,
         data:{data:{data:mockData}}
+      
     }
     useGetMasterUIConfigurationMock.mockImplementation(()=>{
         return result
+    })
+
+    useGetMasterDataMock.mockImplementation(()=>{
+      return useMasterDataResult;
     })
 
     store.dispatch(resetState());
