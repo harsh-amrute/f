@@ -43,7 +43,6 @@ import WarningModal from "./WarningModal";
     
     return (
       <>
-        <WarningModal count={123}/>
         <SCContainer>
           {isSelectMasterOpen && 
             <SelectMaster 
