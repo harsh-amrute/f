@@ -9,8 +9,8 @@ import { useGetMasterUIConfiguration, useGetMasterData } from '../../../../Servi
 import {select} from 'react-select-event'
 import _ from 'lodash';
 import { store } from '../../../../../redux/store/store';
-import { Provider, useDispatch } from 'react-redux';
-import {resetState, setActiveMaster} from '../../../../../redux/features/MDM';
+import { Provider } from 'react-redux';
+import {resetState} from '../../../../../redux/features/MDM';
 import { ReactNode } from 'react';
 import {GetMasterDataPayload} from '../../../../types/MDM';
 
@@ -21,7 +21,7 @@ const useGetMasterDataMock = useGetMasterData as jest.MockedFunction<typeof useG
 window.URL.createObjectURL = jest.fn();
 
 const useMasterDataResult:any = {
-  mutateAsync:(payload:GetMasterDataPayload)=>{
+  mutateAsync:()=>{
     return {data:{data:mockMasterData}}
   }
 
