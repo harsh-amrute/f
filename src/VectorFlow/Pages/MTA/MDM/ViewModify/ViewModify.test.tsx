@@ -9,8 +9,8 @@ import { useGetMasterUIConfiguration, useGetMasterData } from '../../../../Servi
 import {select} from 'react-select-event'
 import _ from 'lodash';
 import { store } from '../../../../../redux/store/store';
-import { Provider } from 'react-redux';
-import {resetState} from '../../../../../redux/features/MDM';
+import { Provider, useDispatch } from 'react-redux';
+import {resetState, setActiveMaster} from '../../../../../redux/features/MDM';
 import { ReactNode } from 'react';
 import {GetMasterDataPayload} from '../../../../types/MDM';
 
@@ -22,7 +22,6 @@ window.URL.createObjectURL = jest.fn();
 
 const useMasterDataResult:any = {
   mutateAsync:(payload:GetMasterDataPayload)=>{
-    console.log(payload)
     return {data:{data:mockMasterData}}
   }
 
@@ -418,3 +417,6 @@ describe('Handles all Interaction in ViewModify Component', () => {
 
 
  })
+
+
+

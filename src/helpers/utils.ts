@@ -390,7 +390,7 @@ export const mapMasterToColumnDefs = (fields:Field[])=>{
       field:f.key,
       headerName:f.displayName,
       hide:!f.visible,
-      minWidth:180
+      minWidth:180,
     }
   })
   return result

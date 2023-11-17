@@ -80,7 +80,7 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
                             onDelete={()=>handleOnDeleteFilter(f.id,f.masterId)}
                             operators={operators}
                             filters={filters}
-                            fields={activeMaster ? generateOptions([activeMaster]) : []}
+                            fields={generateOptions([activeMaster])}
                             currFilter={f}
                             key={f.id}
                           />
@@ -125,8 +125,8 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
                 </SCFilterContainer>
                 <VFTable
                   ref={ref}
-                  rowData={rowData?rowData:[]}
-                  columnDefs={activeMaster ? mapMasterToColumnDefs(activeMaster.fields):[]}
+                  rowData={rowData}
+                  columnDefs={mapMasterToColumnDefs(activeMaster.fields)}
                 />
             </VFTab>
           }
