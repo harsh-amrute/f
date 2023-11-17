@@ -1,7 +1,7 @@
-import {useState, useEffect} from 'react';
-import { type Master, type Option, type Field, type Tab, type Filter } from "../../../../types/MDM";
+import {useState, useEffect, useRef} from 'react';
+import { type Master, type Option, type Field, type Tab, type Filter, type GetMasterDataPayload, type GridRef } from "../../../../types/MDM";
 import {generateRandomId, generateOptions } from "../../../../../helpers/utils";
-import { useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters} from '../../../../../redux/features/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -18,6 +18,10 @@ const useViewModify = () => {
     const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster);
     const filters = useSelector((state:RootState) => state.mdm.filters);
 
+    const [rowData,setRowData] = useState([]);
+
+    const ref = useRef<GridRef>();
+
     const operators:Option[] = [
         {
           label:'Equals To',
@@ -29,6 +33,9 @@ const useViewModify = () => {
     const {data:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
    
     const allMasters:Master[] = masterUIConfiguration?.data.data;
+
+    const {mutateAsync:getMasterData} = useGetMasterData();
+    
 
 
     useEffect(()=>{
@@ -113,8 +120,29 @@ const useViewModify = () => {
       const handleOnDeleteFilter = (id:string,masterId:number | undefined)=>{
         const filtersLength = filters.filter((f:Filter) => f.masterId === masterId).length;
         if(filtersLength === 1) return;
-        dispatch(setFilters(filters.filter((f)=>f.id!==id)))
+        dispatch(setFilters(filters.filter((f:Filter)=>f.id!==id)))
       }
+
+      const handleApplyFilter =async () => {
+
+        if(activeMaster){
+        const payload:GetMasterDataPayload = {
+          masterId:activeMaster.id,
+          masterName:activeMaster.name,
+          filters:filters.filter((f:Filter) =>f.masterId === activeMaster.id).map((f:Filter) => ({attributeName:f.field,operator:f.operator,value:f.text})),
+          fields:activeMaster.fields.map((field:Field) => ({key:field.key})),
+          paginationParameter:{
+            pageNumber:1,
+            recordsPerPage:10
+          }
+        }
+        const myData =  await getMasterData(payload);
+        setRowData(myData.data.data)
+        
+      }
+    
+  }
+
 
     return {
         selectedMasters,
@@ -134,7 +162,10 @@ const useViewModify = () => {
         handleOnAddFilter,
         handleOnDeleteFilter,
         allMasters,
-        isLoading
+        handleApplyFilter,
+        rowData,
+        isLoading,
+        ref
     }
 }
 

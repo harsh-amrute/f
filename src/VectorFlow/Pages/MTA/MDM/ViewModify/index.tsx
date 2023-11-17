@@ -3,11 +3,12 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import { TaskBarContainer, SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
-import { generateOptions } from "../../../../../helpers/utils";
+import { generateOptions, mapMasterToColumnDefs } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
-import useViewModify from "./useViewModify"; 
-
+import useViewModify from "./useViewModify";
+import {type Filter} from '../../../../types/MDM';
+import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 
 
 
@@ -34,11 +35,13 @@ import useViewModify from "./useViewModify";
         handleOnAddFilter,
         handleOnDeleteFilter,
         allMasters,
-        isLoading
+        isLoading,
+        handleApplyFilter,
+        rowData,
+        ref
 
     } = useViewModify();
     
-      
     
     return (
       <>
@@ -70,14 +73,14 @@ import useViewModify from "./useViewModify";
                 <SCFilterContainer>
                   <SCFilterControls>
                     <SCLegend>Filter</SCLegend>
-                    {filters.map((f)=>{
+                    {filters.map((f:Filter)=>{
                       if(f.masterId==activeMaster?.id){
                         return(
                           <VFFilter 
                             onDelete={()=>handleOnDeleteFilter(f.id,f.masterId)}
                             operators={operators}
                             filters={filters}
-                            fields={activeMaster ? generateOptions([activeMaster]) : []}
+                            fields={generateOptions([activeMaster])}
                             currFilter={f}
                             key={f.id}
                           />
@@ -87,7 +90,7 @@ import useViewModify from "./useViewModify";
                     
                   </SCFilterControls>
                   <SCFilterAddControls>
-                    {filters.map((f)=>{
+                    {filters.map((f:Filter)=>{
                         if(f.masterId===activeMaster?.id){
                           return (
                             <SCFilterAddButtonWrapper>
@@ -107,7 +110,7 @@ import useViewModify from "./useViewModify";
                   <SCFilterButtonGroup>
                     <VFButton
                     themeUi={themeUi}
-                    onClick={()=>alert('Applied')}
+                    onClick={()=>{handleApplyFilter()}}
                     >
                       Apply Filter
                     </VFButton>
@@ -120,6 +123,11 @@ import useViewModify from "./useViewModify";
                     </VFButtonOutline>
                   </SCFilterButtonGroup>
                 </SCFilterContainer>
+                <VFTable
+                  ref={ref}
+                  rowData={rowData}
+                  columnDefs={mapMasterToColumnDefs(activeMaster.fields)}
+                />
             </VFTab>
           }
         </SCContainer>
@@ -137,7 +145,7 @@ import useViewModify from "./useViewModify";
                     <p>Edit Online</p>
                   </div>
               </VFButtonOutline> */}
-              <VFButtonOutline onClick={()=>console.log("hello")} themeUi={themeUi} width={130}>
+              <VFButtonOutline onClick={()=>console.log(ref.current?.api.exportDataAsExcel())} themeUi={themeUi} width={130}>
                   Reset
               </VFButtonOutline>
               {/* <VFButton onClick={()=>console.log("hello")} themeUi={themeUi} disabled={false} width={164}>
