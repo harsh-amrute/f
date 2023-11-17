@@ -119,7 +119,7 @@ const SelectMaster = (
                 })}
             </SCCardContainer>
             <SCButtonContainer>
-                <VFButtonOutline onClick={()=>navigate('/master-data-management/control-panel')} themeUi={themeUi} width={141}>
+                <VFButtonOutline onClick={()=>navigate('/master-data-management/control-panel')} themeUi={themeUi} width={141} disabled={false}>
                     Cancel
                 </VFButtonOutline>
                 <VFButton onClick={() =>{ handleSubmit() }} themeUi={themeUi} width={141}>

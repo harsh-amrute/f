@@ -24,7 +24,8 @@ const VFModalCard = ({
   closeModal,
   headerText,
   headerIcon,
-  children
+  children,
+  
   
 }: VFModalProps) => {
 
