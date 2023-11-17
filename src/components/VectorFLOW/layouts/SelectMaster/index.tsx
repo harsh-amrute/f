@@ -58,23 +58,31 @@ const SelectMaster = (
             </SCLoaderContainer>
         )
     }
+    // console.debug(filterButtonStatus);
 
     const onClickFilterButton = (currentMaster:Master) => {
+        // console.debug(getFilterButtonStatus(currentMaster),tempMasters)
+        console.log(currentMaster,filterButtonStatus)
 
         if(getFilterButtonStatus(currentMaster) && !tempMasters.find((t:Master)=>t.id===currentMaster.id)){
             notifyError('You can only add new master')
             return
         }
         else{
+            console.debug('else 0')
+            // console.debug(filterButtonStatus,currentMaster)
             setTempMasters([...tempMasters,currentMaster])
         }
         dispatch(setSelectedOptions([]));
         
+        
         if(getFilterButtonStatus(currentMaster)){
+            console.log('in if')
             setFilterButtonStatus(filterButtonStatus.filter((master:Master)=>master.id !== currentMaster.id));
             dispatch(setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id !== currentMaster.id))]))
         }
         else{
+            console.log('else');
             setFilterButtonStatus([...filterButtonStatus,currentMaster]);
             if(selectedMasters.find((selectedMaster:Master)=>selectedMaster.id === currentMaster.id)){
                 dispatch(setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id === currentMaster.id))]));

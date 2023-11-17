@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef} from 'react';
-import { type Master, type Option, type Field, type Tab, type Filter, GetMasterDataPayload, } from "../../../../types/MDM";
+import { type Master, type Option, type Field, type Tab, type Filter, type GetMasterDataPayload, type GridRef } from "../../../../types/MDM";
 import {generateRandomId, generateOptions } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
@@ -20,7 +20,7 @@ const useViewModify = () => {
 
     const [rowData,setRowData] = useState([]);
 
-    const ref = useRef();
+    const ref = useRef<GridRef>();
 
     const operators:Option[] = [
         {
@@ -42,7 +42,7 @@ const useViewModify = () => {
         if(filterButtonStatus.length !== 0) return;
   
         if(!isLoading){
-          const allOptions:Option[] =  allMasters ? generateOptions(allMasters) : [];
+          const allOptions:Option[] =  generateOptions(allMasters);
           dispatch(setSelectedMasters(allMasters));
           dispatch(setOptions(allOptions));
         }
@@ -89,7 +89,6 @@ const useViewModify = () => {
     
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currTab:Tab) => {
         e.stopPropagation();
-        console.log(tabs.filter((tab:Tab)=>tab.id !== currTab.id))
         const newTabs = tabs.filter((tab:Tab)=>tab.id !== currTab.id);
         if(newTabs.length === 0){
           setIsSelectMasterOpen(true);
@@ -98,13 +97,7 @@ const useViewModify = () => {
           return;
         }
         if(currTab.id === activeMaster?.id ){
-          if(tabs.indexOf(currTab)==0){
             dispatch(setActiveMaster(tabs[1]))
-          }
-          else {
-            const activeMaster = selectedMasters.find((master:Master)=>master.id === tabs[0].id);
-            if(activeMaster) dispatch(setActiveMaster(activeMaster));
-          }
         }
         dispatch(setTabs([...newTabs]));
         dispatch(setSelectedMasters([...newTabs]))
@@ -129,7 +122,7 @@ const useViewModify = () => {
 
       const handleApplyFilter =async () => {
 
-        if(activeMaster){
+        
         const payload:GetMasterDataPayload = {
           masterId:activeMaster.id,
           masterName:activeMaster.name,
@@ -140,10 +133,10 @@ const useViewModify = () => {
             recordsPerPage:10
           }
         }
-        const myData =  (await getMasterData(payload)).data.data
-        setRowData(myData)
+        const myData =  await getMasterData(payload);
+        setRowData(myData.data.data)
         
-      }
+      
     
   }
 

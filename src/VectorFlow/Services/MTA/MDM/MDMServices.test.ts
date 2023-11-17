@@ -25,4 +25,27 @@ describe('Testing the MDMService',  () => {
       expect(response.status).toBe(200);
   
     });
+
+    
+    it('should make a post request to the /get-master-data', async () => {
+
+      const mockBody = {
+        masterId:1,
+        masterName:"SKU",
+        filters:[{attributeName:"SKU",operator:'=',value:""}],
+        fields:[{key:"SKU"}],
+        paginationParameter:{
+          pageNumber:1,
+          recordsPerPage:10
+        }
+      }
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getMasterData(mockBody);
+      expect(mockedAxios.post).toHaveBeenCalledWith(`https://2cfc61ae-927a-4577-8843-ee38dfb26302.mock.pstmn.io/get-master-data`,mockBody,{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+  
+    });
   });
