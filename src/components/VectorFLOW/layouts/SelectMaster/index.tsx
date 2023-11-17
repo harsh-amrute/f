@@ -1,5 +1,5 @@
 
-import { Dispatch,SetStateAction,useEffect } from "react";
+import { Dispatch,SetStateAction,useEffect, useState } from "react";
 import { Container, QuickFilterHeader,SCButtonContainer, SCLoaderContainer, SCCardContainer } from "./styles"
 
 import VFMasterCard from "../../commons/VFMasterCard";
@@ -11,6 +11,7 @@ import { useNavigate } from "react-router";
 import { type Master, type Option } from "../../../../VectorFlow/types/MDM";
 import { useDispatch } from 'react-redux';
 import { setSelectedOptions, setSelectedMasters } from '../../../../redux/features/MDM';
+import { notifyError } from "../../../../helpers/notify";
 
 interface SelectMasterProps{
     data:Master[],
@@ -40,6 +41,8 @@ const SelectMaster = (
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const [tempMasters,setTempMasters] = useState<Master[]>([])
+
     useEffect(()=>{
 
         if(selectedMasters?.length === 0 && data) {
@@ -58,6 +61,13 @@ const SelectMaster = (
 
     const onClickFilterButton = (currentMaster:Master) => {
 
+        if(getFilterButtonStatus(currentMaster) && !tempMasters.find((t:Master)=>t.id===currentMaster.id)){
+            notifyError('You can only add new master')
+            return
+        }
+        else{
+            setTempMasters([...tempMasters,currentMaster])
+        }
         dispatch(setSelectedOptions([]));
         
         if(getFilterButtonStatus(currentMaster)){
@@ -72,9 +82,7 @@ const SelectMaster = (
             else{
                 dispatch(setSelectedMasters([...selectedMasters,currentMaster]));
             }
-        }
-
-            
+        }   
     }
 
     const shouldDisplayCard = (currentMaster:Master) => {

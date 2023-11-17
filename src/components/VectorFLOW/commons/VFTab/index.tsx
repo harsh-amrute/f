@@ -9,8 +9,8 @@ import {
     SCTabTitle
   } from './styles'
 import {type Tab, type Master} from '../../../../VectorFlow/types/MDM';
-import { useDispatch } from 'react-redux';
-import { setActiveMaster } from '../../../../redux/features/MDM';
+// import { useDispatch } from 'react-redux';
+// import { setActiveMaster } from '../../../../redux/features/MDM';
 
 interface VFTabProps{
   tabs:Tab[],
@@ -27,12 +27,13 @@ interface VFTabProps{
 
 const VFTab = ({tabs,allMasters,activeMaster,themeUi,onClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
   
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const changeTab = (currTab: Tab) => {
-    if(currTab.status === 'completed') return;
-    const activeMaster = allMasters.find((master:Master) => master.id === currTab.id);
-    if(activeMaster) dispatch(setActiveMaster(activeMaster));
+    return
+    // if(currTab.status === 'completed') return;
+    // const activeMaster = allMasters.find((master:Master) => master.id === currTab.id);
+    // if(activeMaster) dispatch(setActiveMaster(activeMaster));
   }
 
   const getTabStatus = (activeMaster:Master,currTab:Tab) => {
