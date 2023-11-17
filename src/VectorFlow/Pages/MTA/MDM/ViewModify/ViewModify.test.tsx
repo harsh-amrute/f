@@ -12,7 +12,7 @@ import { store } from '../../../../../redux/store/store';
 import { Provider } from 'react-redux';
 import {resetState} from '../../../../../redux/features/MDM';
 import { ReactNode } from 'react';
-import {GetMasterDataPayload} from '../../../../types/MDM';
+
 
 jest.mock('../../../../Services/MTA/MDM');
 
