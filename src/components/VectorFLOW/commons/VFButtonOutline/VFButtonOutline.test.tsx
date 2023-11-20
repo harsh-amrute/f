@@ -50,4 +50,13 @@ describe('VFButton Component', () => {
     const button = screen.getByText("Hello");
     expect(button).toHaveStyle(`color:#3342FF`);
   })
+
+  it("renders specific style on Hover",() => {
+    render(<VFButtonOutline onClick={()=> {console.log("test")}} themeUi="REGALBLAZE" color={"#3342FF"}>Hello</VFButtonOutline> );
+    const button = screen.getByText("Hello");
+    fireEvent.mouseOver(button);
+    expect(button).toHaveStyle(`background:#3342FF`);
+    fireEvent.mouseOut(button);
+    expect(button).toHaveStyle(`background:#fefefe`);
+  })
 });
