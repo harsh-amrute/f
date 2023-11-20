@@ -44,6 +44,7 @@ import { notifyError } from "../../../../../helpers/notify";
     } = useViewModify();
     
     
+
     return (
       <>
         <SCContainer>
@@ -141,7 +142,11 @@ import { notifyError } from "../../../../../helpers/notify";
         {
           !isSelectMasterOpen && 
             <TaskBarContainer>
-                <VFButtonOutline onClick={()=>setIsSelectMasterOpen(true)} themeUi={themeUi} width={50}>
+                <VFButtonOutline onClick={()=>setIsSelectMasterOpen(true)} themeUi={themeUi} width={50} onHoverChild={
+                  <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+                  <img src={"/assets/img/VectorFLOW/NMS/back-btn-white.svg"} data-testid="back-btn"/>
+                </div>
+                }>
                   <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                     <img src={"/assets/img/VectorFLOW/NMS/back-btn.svg"} data-testid="back-btn"/>
                   </div>
