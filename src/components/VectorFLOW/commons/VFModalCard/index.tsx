@@ -7,7 +7,8 @@ import {
   SCTextTitle,
   SCCloseModal,
   SCWrapperContent,
-  VFHeaderWrapper
+  VFHeaderWrapper,
+  SCHeader
 } from "./styles";  
 
 interface VFModalProps {
@@ -59,10 +60,12 @@ const VFModalCard = ({
                   <Dialog.Panel className="modal-forced--block">
                     <Dialog.Title as="h3" className="modal-title-forced">
                     <VFHeaderWrapper>
+                      <SCHeader>
                       <img src={headerIcon} height={25} width={27} data-testid='vfmodal-img'/> 
                       <SCTextTitle>{headerText}</SCTextTitle>
-                      <SCCloseModal onClick={closeModal}>
-                        <img src="/assets/img/VectorFLOW/NMS/close.svg" height={14} width={14} style={{marginLeft:'580px'}}/>
+                      </SCHeader>
+                      <SCCloseModal onClick={closeModal} data-testid="close-modal-icon">
+                        <img src="/assets/img/VectorFLOW/NMS/close-dark.svg" height={14} width={14} />
                       </SCCloseModal>
                       </VFHeaderWrapper>
                     </Dialog.Title>

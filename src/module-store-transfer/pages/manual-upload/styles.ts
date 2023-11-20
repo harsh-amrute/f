@@ -134,9 +134,13 @@ export const SCManualUploadInput = styled.input`
     width: 1px; */
 `;
 
-export const SCManualUploadBtn = styled.button<{ themeUi: string }>`
+export const SCManualUploadBtn = styled.button<{ themeUi: string,disabled?:boolean }>`
   background:
     ${(props) =>
+      props.disabled
+      ?
+      "gray"
+      :
       props.themeUi === "REGALBLAZE"
         ? globalStyles.chooseThemeColor[props.themeUi]?.color5
         : "transparent linear-gradient(180deg, #bc3d81 0%, #820f4c 100%)"};
