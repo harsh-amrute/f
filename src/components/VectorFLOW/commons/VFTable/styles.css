@@ -1,0 +1,38 @@
+.ag-theme-alpine {
+  /* --ag-foreground-color: #EBEBEB; */
+  /* --ag-background-color: rgb(255, 255, 255); */
+  --ag-header-foreground-color: rgb(255, 255, 255);
+  --ag-header-background-color: rgb(0, 0, 0);
+  --ag-header-height:53px;
+  /* --ag-odd-row-background-color: rgb(0, 0, 0, 0.03); */
+  /* --ag-header-column-resize-handle-color: rgb(126, 46, 132); */
+  /* --ag-border-radius:32px; */
+  --ag-font-size: 17px;
+  /* --ag-font-family: monospace; */
+}
+
+.ag-root-wrapper{
+    border-radius: 8px 8px 0 0;
+}
+
+.ag-header{
+    border-radius: 8px 0px 0 0;
+    font-style:normal;
+    font-variant: normal;
+    font-weight: 400 ;
+    font-size: 20px;
+    line-height: 24px;
+    font-family: Roboto;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+}
+
+.ag-header-row:nth-child(2){
+    background-color: #F7F7F7;
+    color:black;
+    width: 100% !important;
+}
+
+.ag-header-cell-label{
+    justify-content: center;
+}

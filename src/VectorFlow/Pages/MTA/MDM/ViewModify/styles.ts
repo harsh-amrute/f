@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 export const SCContainer = styled.div`
     margin-left:50px;
+    padding-bottom:120px;
 `
 
 export const SCFilterContainer = styled.div`
