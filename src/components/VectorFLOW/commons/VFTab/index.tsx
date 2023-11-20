@@ -25,11 +25,11 @@ interface VFTabProps{
 
 }
 
-const VFTab = ({tabs,allMasters,activeMaster,themeUi,onClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
+const VFTab = ({tabs,/*allMasters*/activeMaster,themeUi,onClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
   
   // const dispatch = useDispatch();
 
-  const changeTab = (currTab: Tab) => {
+  const changeTab = (/*currTab: Tab*/) => {
     return
     // if(currTab.status === 'completed') return;
     // const activeMaster = allMasters.find((master:Master) => master.id === currTab.id);
@@ -55,7 +55,7 @@ const VFTab = ({tabs,allMasters,activeMaster,themeUi,onClose,newTabTitle,newTabI
                       marLeft={index !== 0} 
                       themeUi={themeUi}
                       onClick={() => { 
-                        changeTab(tab) 
+                        changeTab() 
                       }}
                       key={tab.id}
                       data-testid="tab-button"

@@ -306,11 +306,23 @@ describe('Handles all Interaction in ViewModify Component', () => {
     const submit = screen.getByText('Submit');
     fireEvent.click(submit);
 
-    const tabsList = screen.getAllByTestId('tab-button');
-    console.debug(tabsList);
 
     const tabCloseBtn = screen.getAllByTestId('tab-close')[0];
     fireEvent.click(tabCloseBtn);
+
+  })
+
+  it("Check if Add new master is working",async () => {
+
+
+    
+    
+    const filterButton = screen.getAllByTestId('button-outline-status');
+    fireEvent.click(filterButton[0]);
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+    const addNewMaster = screen.getByTestId('new-tab');
+    fireEvent.click(addNewMaster);
 
   })
 
@@ -371,7 +383,7 @@ describe('Handles all Interaction in ViewModify Component', () => {
 
     const addNewMaster = screen.getByTestId('new-tab');
     fireEvent.click(addNewMaster);
-    const reactSelect = screen.getByRole('combobox');
+    const reactSelect = screen.queryAllByRole('combobox')[0];
     expect(reactSelect).toBeInTheDocument();
 
   })

@@ -4,13 +4,11 @@ import { type Master, type Option } from "../../../../VectorFlow/types/MDM";
 import {generateOptions} from '../../../../helpers/utils';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { UserDataContext } from '../../../../context';
-import {select} from 'react-select-event';
 import {QueryClientProvider} from '@tanstack/react-query';
 import { setupReactQuery } from '../../../../config/react-query-config';
-import React,{ ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Provider } from 'react-redux';
 import { store } from '../../../../redux/store/store';
-import  * as toasts  from '../../../../helpers/notify';
 
 describe('SelectMaster Component', () => {
   // Create mock data for testing
@@ -106,7 +104,6 @@ describe('SelectMaster Component', () => {
     )
   }
 
-  const storeDispatchSpy = jest.spyOn(store, 'dispatch')
 
 
   const props = {
