@@ -1,5 +1,5 @@
 import { SCButtonOutline } from "./styles"
-import React,{useState} from 'react';
+import React,{ReactNode, useState} from 'react';
 
 interface VFButtonOutlineProps{
     onClick:() => void,
@@ -7,6 +7,7 @@ interface VFButtonOutlineProps{
     disabled?:boolean,
     width?:number,
     color?:string,
+    onHoverChild?:ReactNode
     children:React.ReactNode
 }
 
@@ -19,14 +20,24 @@ const VFButtonOutline = (props:VFButtonOutlineProps)=>{
         disabled,
         width,
         children,
-        color
+        color,
+        onHoverChild
     } = props
 
     const [hoverState,setHoverState] = useState(false);
 
+    const getChildren = ()=>{
+        if(onHoverChild){
+            if(hoverState){
+                return onHoverChild
+            }
+        }
+        return children
+    }
+
     return(
         <SCButtonOutline color={color} onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width} hoverState={hoverState} onMouseOver={()=>setHoverState(true)} onMouseOut={()=>setHoverState(false)}>
-            {children}
+            {getChildren()}
         </SCButtonOutline>
     )
 }

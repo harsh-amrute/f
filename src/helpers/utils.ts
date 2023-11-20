@@ -356,6 +356,7 @@ export const generateRolesObject = (roles:Array<object>,permission:string[],is_a
 export const generateOptions = (data:Master[]) => {
   const temp:string[] = [];
   const options:Option[] = [];
+  if(!data)return options
   data.forEach((master:Master)=>{
     master.fields.forEach((field:Field)=>{
       if(!temp.includes(field.displayName)){

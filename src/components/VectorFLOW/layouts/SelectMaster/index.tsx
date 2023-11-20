@@ -1,5 +1,5 @@
 
-import { Dispatch,SetStateAction,useEffect } from "react";
+import { Dispatch,SetStateAction,useEffect, useState } from "react";
 import { Container, QuickFilterHeader,SCButtonContainer, SCLoaderContainer, SCCardContainer } from "./styles"
 
 import VFMasterCard from "../../commons/VFMasterCard";
@@ -11,6 +11,7 @@ import { useNavigate } from "react-router";
 import { type Master, type Option } from "../../../../VectorFlow/types/MDM";
 import { useDispatch } from 'react-redux';
 import { setSelectedOptions, setSelectedMasters } from '../../../../redux/features/MDM';
+import { notifyError } from "../../../../helpers/notify";
 
 interface SelectMasterProps{
     data:Master[],
@@ -40,6 +41,8 @@ const SelectMaster = (
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const [tempMasters,setTempMasters] = useState<Master[]>([])
+
     useEffect(()=>{
 
         if(selectedMasters?.length === 0 && data) {
@@ -55,16 +58,31 @@ const SelectMaster = (
             </SCLoaderContainer>
         )
     }
+    // console.debug(filterButtonStatus);
 
     const onClickFilterButton = (currentMaster:Master) => {
+        // console.debug(getFilterButtonStatus(currentMaster),tempMasters)
+        console.log(currentMaster,filterButtonStatus)
 
+        if(getFilterButtonStatus(currentMaster) && !tempMasters.find((t:Master)=>t.id===currentMaster.id)){
+            notifyError('You can only add new master')
+            return
+        }
+        else{
+            console.debug('else 0')
+            // console.debug(filterButtonStatus,currentMaster)
+            setTempMasters([...tempMasters,currentMaster])
+        }
         dispatch(setSelectedOptions([]));
         
+        
         if(getFilterButtonStatus(currentMaster)){
+            console.log('in if')
             setFilterButtonStatus(filterButtonStatus.filter((master:Master)=>master.id !== currentMaster.id));
             dispatch(setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id !== currentMaster.id))]))
         }
         else{
+            console.log('else');
             setFilterButtonStatus([...filterButtonStatus,currentMaster]);
             if(selectedMasters.find((selectedMaster:Master)=>selectedMaster.id === currentMaster.id)){
                 dispatch(setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id === currentMaster.id))]));
@@ -72,9 +90,7 @@ const SelectMaster = (
             else{
                 dispatch(setSelectedMasters([...selectedMasters,currentMaster]));
             }
-        }
-
-            
+        }   
     }
 
     const shouldDisplayCard = (currentMaster:Master) => {

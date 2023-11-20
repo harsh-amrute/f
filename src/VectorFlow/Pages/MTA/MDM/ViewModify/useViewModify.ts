@@ -35,7 +35,6 @@ const useViewModify = () => {
     const allMasters:Master[] = masterUIConfiguration?.data.data;
 
     const {mutateAsync:getMasterData} = useGetMasterData();
-    
 
 
     useEffect(()=>{
@@ -43,7 +42,7 @@ const useViewModify = () => {
         if(filterButtonStatus.length !== 0) return;
   
         if(!isLoading){
-          const allOptions:Option[] =  allMasters ? generateOptions(allMasters) : [];
+          const allOptions:Option[] =  generateOptions(allMasters);
           dispatch(setSelectedMasters(allMasters));
           dispatch(setOptions(allOptions));
         }
@@ -93,18 +92,16 @@ const useViewModify = () => {
         const newTabs = tabs.filter((tab:Tab)=>tab.id !== currTab.id);
         if(newTabs.length === 0){
           setIsSelectMasterOpen(true);
+          dispatch(setSelectedMasters([]))
+          setFilterButtonStatus([])
           return;
         }
         if(currTab.id === activeMaster?.id ){
-          if(tabs.indexOf(currTab)==0){
             dispatch(setActiveMaster(tabs[1]))
-          }
-          else {
-            const activeMaster = selectedMasters.find((master:Master)=>master.id === tabs[0].id);
-            if(activeMaster) dispatch(setActiveMaster(activeMaster));
-          }
         }
         dispatch(setTabs([...newTabs]));
+        dispatch(setSelectedMasters([...newTabs]))
+        setFilterButtonStatus([...newTabs])
       }
 
       const handleOnAddFilter = ()=>{
@@ -125,7 +122,7 @@ const useViewModify = () => {
 
       const handleApplyFilter =async () => {
 
-        if(activeMaster){
+        
         const payload:GetMasterDataPayload = {
           masterId:activeMaster.id,
           masterName:activeMaster.name,
@@ -139,7 +136,7 @@ const useViewModify = () => {
         const myData =  await getMasterData(payload);
         setRowData(myData.data.data)
         
-      }
+      
     
   }
 

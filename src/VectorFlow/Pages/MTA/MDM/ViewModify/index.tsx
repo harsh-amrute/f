@@ -9,6 +9,7 @@ import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify";
 import {type Filter} from '../../../../types/MDM';
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
+import { notifyError } from "../../../../../helpers/notify";
 
 
 
@@ -43,6 +44,7 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
     } = useViewModify();
     
     
+
     return (
       <>
         <SCContainer>
@@ -68,7 +70,13 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
               onClose={handleTabClose}
               newTabTitle={"Add Master"}
               newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
-              newTabHandler={()=>{setIsSelectMasterOpen(true)}}
+              newTabHandler={()=>{
+                if(allMasters.length === selectedMasters.length) {
+                  notifyError('All Masters have already been selected. Cannot add more masters');
+                  return;
+                }
+                setIsSelectMasterOpen(true)
+              }}
               >
                 <SCFilterContainer>
                   <SCFilterControls>
@@ -134,7 +142,11 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
         {
           !isSelectMasterOpen && 
             <TaskBarContainer>
-                <VFButtonOutline onClick={()=>setIsSelectMasterOpen(true)} themeUi={themeUi} width={50}>
+                <VFButtonOutline onClick={()=>setIsSelectMasterOpen(true)} themeUi={themeUi} width={50} onHoverChild={
+                  <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+                  <img src={"/assets/img/VectorFLOW/NMS/back-btn-white.svg"} data-testid="back-btn"/>
+                </div>
+                }>
                   <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                     <img src={"/assets/img/VectorFLOW/NMS/back-btn.svg"} data-testid="back-btn"/>
                   </div>
