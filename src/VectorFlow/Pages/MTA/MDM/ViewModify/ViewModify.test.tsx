@@ -432,12 +432,32 @@ describe('Handles all Interaction in ViewModify Component', () => {
 
     const submit = screen.getByText('Submit');
     fireEvent.click(submit);
-
-    const submitData = screen.getByText('Submit');
-    fireEvent.click(submitData);
     
   })
 
+  it("Opens the WarningModal",() => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const applyFilter = screen.getByText('Apply Filter');
+    fireEvent.click(applyFilter);
+
+    
+  })
+
+  it("Opens the UploadModal",() => {
+
+    const submit = screen.getByText('Submit');
+    fireEvent.click(submit);
+
+    const modifyData = screen.getByText('Modify Selected Data');
+    fireEvent.click(modifyData);
+
+    const downloadBtn = screen.getByText('Download')
+    fireEvent.click(downloadBtn)
+    
+  })
 
 
 
