@@ -1,10 +1,11 @@
 import {useState, useEffect, useRef} from 'react';
 import { type Master, type Option, type Field, type Tab, type Filter, type GetMasterDataPayload, type GridRef } from "../../../../types/MDM";
-import {generateRandomId, generateOptions } from "../../../../../helpers/utils";
+import {generateRandomId, generateOptions, areMasterFiltersValid } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters} from '../../../../../redux/features/MDM';
 import type { RootState } from '../../../../../redux/store/store';
+import { notifyError } from '../../../../../helpers/notify';
 
 const useViewModify = () => {
 
@@ -68,7 +69,7 @@ const useViewModify = () => {
         const selectedTabs = selectedMasters.map((master:Master) => {
             return {
             id:master.id,
-            name:master.name + ' Master',
+            name:master.name,
             fields:master.fields,
             status:'',
             }
@@ -124,13 +125,16 @@ const useViewModify = () => {
         dispatch(setFilters(filters.filter((f:Filter)=>f.id!==id)))
       }
 
-      const handleApplyFilter =async () => {
-
+      const handleApplyFilter =async (showAll?:boolean) => {
+        const currMasterFilters = filters.filter((f:Filter) =>f.masterId === activeMaster.id)
+        if(!areMasterFiltersValid(currMasterFilters) && !showAll){
+          return notifyError('Filter cannot be empty')
+        }
         
         const payload:GetMasterDataPayload = {
           masterId:activeMaster.id,
           masterName:activeMaster.name,
-          filters:filters.filter((f:Filter) =>f.masterId === activeMaster.id).map((f:Filter) => ({attributeName:f.field,operator:f.operator,value:f.text})),
+          filters:showAll?[]:currMasterFilters.map((f:Filter) => ({attributeName:f.field,operator:f.operator,value:f.text})),
           fields:activeMaster.fields.map((field:Field) => ({key:field.key})),
           paginationParameter:{
             pageNumber:1,
@@ -138,11 +142,11 @@ const useViewModify = () => {
           }
         }
         const myData =  await getMasterData(payload);
+        console.debug(myData.data)
         setRecordCount(myData.data.recordCount)
         toggleWarningModal(true)
-
         setTempRowData(myData.data.data)
-  }
+      }
 
       const onWarningModalClose = ()=>{
         toggleWarningModal(false)

@@ -2,6 +2,8 @@ import { forwardRef } from "react";
 import {VFtableProps} from '../../../../VectorFlow/types/MDM'
 import { AgGridReact } from "ag-grid-react";
 import { VFTableWrapper } from "./styles";
+import { LicenseManager } from "ag-grid-enterprise";
+import { AG_GRID_KEY } from "../../../../helpers/constants";
 
 import{
     ExcelExportParams,
@@ -10,12 +12,11 @@ import{
     GridOptions
 } from 'ag-grid-community'
 
-import 'ag-grid-enterprise'
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import './styles.css'
 
-
+LicenseManager.setLicenseKey(AG_GRID_KEY)
 
 const VFTable = forwardRef((props:VFtableProps,ref:any)=>{
 
@@ -76,6 +77,7 @@ const VFTable = forwardRef((props:VFtableProps,ref:any)=>{
                 defaultColDef={defaultColDef}
                 defaultExcelExportParams={defaultExportExcelParams}
                 sideBar={sideBar}
+                
             />
         </VFTableWrapper>
     )

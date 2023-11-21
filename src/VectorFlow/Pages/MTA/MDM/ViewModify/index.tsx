@@ -131,7 +131,7 @@ import UploadModal from "./UploadModal";
                       Apply Filter
                     </VFButton>
                     <VFButtonOutline
-                      onClick={()=>console.log('')}
+                       onClick={()=>{handleApplyFilter(true)}}
                       themeUi={themeUi}
                       
                     >

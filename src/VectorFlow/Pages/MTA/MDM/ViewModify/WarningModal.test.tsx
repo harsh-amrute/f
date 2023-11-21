@@ -14,8 +14,8 @@ const dummyprops = {
 describe("WarningModal Component", () => {
   it("renders the count props in the document ", () => {
     render( <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
-    <WarningModal {...dummyprops} />
-</UserDataContext.Provider>)
+              <WarningModal {...dummyprops} />
+            </UserDataContext.Provider>)
     const Modalcount = screen.getByText(10)
     expect(Modalcount).toBeInTheDocument()
    
