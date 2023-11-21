@@ -116,7 +116,7 @@ display: flex;
 
 export const UploadBorderContainer=styled.div`
 border: 1.5px dashed #707070;
- width: 300px; 
+ width: 393px; 
  height: 212px;
  justify-content:center;
  align-items:center;
@@ -127,8 +127,8 @@ display:flex;
 align-items:center;
 flex-direction:column;
 background: #FFFFFF 0% 0% no-repeat padding-box;
-height: 148px;
-width:270px;
+height: 152px;
+width:349px;
 box-shadow: 5px 5px 30px #6E6B6B29;
 border-radius: 6px;
 `
@@ -167,7 +167,7 @@ font-weight: 300;
 font-size: 12px;
 line-height: 14px; 
 font-family:Roboto;
-height:50%
+padding-left:15px;
 &:focus{
     border:none;
     outline:none;

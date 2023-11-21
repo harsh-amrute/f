@@ -19,6 +19,10 @@ const useViewModify = () => {
     const filters = useSelector((state:RootState) => state.mdm.filters);
 
     const [rowData,setRowData] = useState([]);
+    const [tempRowData,setTempRowData] = useState([])
+    const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
+    const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
+    const [recordCount,setRecordCount] = useState<number>(0)
 
     const ref = useRef<GridRef>();
 
@@ -134,11 +138,20 @@ const useViewModify = () => {
           }
         }
         const myData =  await getMasterData(payload);
-        setRowData(myData.data.data)
-        
-      
-    
+        setRecordCount(myData.data.recordCount)
+        toggleWarningModal(true)
+
+        setTempRowData(myData.data.data)
   }
+
+      const onWarningModalClose = ()=>{
+        toggleWarningModal(false)
+      }
+
+      const onWarningModalSuccess = ()=>{
+        setRowData(tempRowData)
+        toggleWarningModal(false)
+      }
 
 
     return {
@@ -162,6 +175,13 @@ const useViewModify = () => {
         handleApplyFilter,
         rowData,
         isLoading,
+        isWarningModalOpen,
+        toggleWarningModal,
+        onWarningModalClose,
+        onWarningModalSuccess,
+        isUploadModalOpen,
+        toggleUploadModal,
+        recordCount,
         ref
     }
 }

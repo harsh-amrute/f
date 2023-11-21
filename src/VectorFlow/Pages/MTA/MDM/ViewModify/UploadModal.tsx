@@ -32,7 +32,7 @@ const UploadModal = (props:UploadModalProps)=>{
             <UploadBorderContainer>
                <UploadModalContent>
                   <TextContent>
-                     <img src="../assets/img/manual/excel.png"  height={29} width={29}/>
+                     <img src="../assets/img/manual/excel.png"  height={29} width={29} style={{marginBottom:'10px'}}/>
                      <p>Download selected data </p>
                   </TextContent>
                   <UploadFileText>
@@ -43,8 +43,8 @@ const UploadModal = (props:UploadModalProps)=>{
                      <SCManualUploadBtn themeUi={user.user.theme_ui} 
                         onClick={onDownload}
                         style={{
-                           height:'40px',
-                           width:'93px',
+                           height:'30px',
+                           width:'91px',
                            borderRadius:'0',
                            display:'flex',
                            alignItems:'center',
@@ -72,25 +72,23 @@ const UploadModal = (props:UploadModalProps)=>{
             <UploadBorderContainer>
             <UploadModalContent>
                <TextContent>
-               <img src="../assets/img/manual/excel.png"  style={{height:'29px', width:'29px'}}/>
+               <img src="../assets/img/manual/excel.png"  style={{height:'29px', width:'29px',marginBottom:'10px'}}/>
                   <p>Drag & Drop your file here</p>
                </TextContent>     
                <InputWrapper>
-               <SCManualUploadButton style={{height:'40px', width:'105px'}}>
+               <SCManualUploadButton style={{height:'30px', width:'105px'}}>
                   <img src="../assets/img/manual/plus.png" width={19} height={19} />
                </SCManualUploadButton>
-                  <UploadModalInput/>
+                  <UploadModalInput placeholder="Click here to upload new file"/>
                      <SCManualUploadBtn themeUi={user.user.theme_ui} 
                         onClick={onUpload}
-                        disabled
                         style={{
-                           opacity: 0.34,
-                           height:'40px',
+                           height:'30px',
                            borderRadius:'0',
                            display:'flex',
                            alignItems:'center',
                            justifyContent:'center',
-                           width:'83px',
+                           width:'82px',
                            borderBottomRightRadius:'6px',
                            fontStyle:'normal',
                            fontVariant:'normal',
