@@ -1,10 +1,12 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const VFHeaderWrapper = styled.div`
 display:flex;
 flex-direction:row;
+justify-content:space-between;
 align-items:center;
 width:100%;
+height:40px;
 `;
 
 export const SCModalContent = styled.div`
@@ -25,15 +27,17 @@ export const SCTextTitle = styled.span`
   margin-left:14px;
   font-style:normal;
   font-variant:normal;
-  font-weight:450;
+  font-weight:500;
   font-size:18px;
   line-height:21px;
-  font-familt:Roboto;
+  font-family:Roboto;
   letter-spacing: 0px;
   color: #000000;
   `;
 
 export const SCCloseModal = styled.span`
+  display:flex;
+  align-items:center;
   font-weight: 300;
   font-size: 2.6rem;
 `;
@@ -44,5 +48,8 @@ export const SCWrapperContent = styled.div`
   height:auto;
 `;
 
-
+export const SCHeader = styled.div`
+  display:flex;
+  flex-direction:row;
+`
 

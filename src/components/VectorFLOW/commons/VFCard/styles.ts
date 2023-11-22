@@ -65,6 +65,7 @@ export const CardButton = styled.button`
     &:hover{
         color:#FFFFFF;
         background: transparent linear-gradient(180deg, #BC3D81 0%, #820F4C 100%) 0% 0% no-repeat padding-box;
+        border:none;
     }
     transition: 0.3s ease-in-out;
     @media (max-width: 1280px){

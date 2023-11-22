@@ -10,7 +10,6 @@ import { setupReactQuery } from '../../../../config/react-query-config';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { UserDataContext } from '../../../../context';
 
-const storeDispatchSpy = jest.spyOn(store, 'dispatch')
 
 const allMasters:Master[] = [
   { 
@@ -199,7 +198,6 @@ describe('View Modify Component', () => {
     const tabNo = _.random(1,tabsList.length-1);  
     fireEvent.click(tabsList[tabNo]);
 
-    expect(storeDispatchSpy).toHaveBeenCalledWith({payload:allMasters[tabNo],type:"mdm/setActiveMaster"});
 
   });
 

@@ -13,6 +13,11 @@
     justify-content: center;
   }
   
+  .modal-forced--block{
+    width: auto;
+    max-width: 90%;
+  }
+
   @media (min-width: 1024px) and (max-width: 1440px) {
     .content-file {
       height: 85px;

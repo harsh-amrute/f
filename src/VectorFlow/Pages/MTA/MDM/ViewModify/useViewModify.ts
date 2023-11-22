@@ -1,10 +1,11 @@
-import {useState, useEffect} from 'react';
-import { type Master, type Option, type Field, type Tab, type Filter } from "../../../../types/MDM";
-import {generateRandomId, generateOptions } from "../../../../../helpers/utils";
-import { useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
+import {useState, useEffect, useRef} from 'react';
+import { type Master, type Option, type Field, type Tab, type Filter, type GetMasterDataPayload, type GridRef } from "../../../../types/MDM";
+import {generateRandomId, generateOptions, areMasterFiltersValid } from "../../../../../helpers/utils";
+import { useGetMasterData, useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters} from '../../../../../redux/features/MDM';
 import type { RootState } from '../../../../../redux/store/store';
+import { notifyError } from '../../../../../helpers/notify';
 
 const useViewModify = () => {
 
@@ -18,12 +19,21 @@ const useViewModify = () => {
     const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster);
     const filters = useSelector((state:RootState) => state.mdm.filters);
 
-    
+    const [rowData,setRowData] = useState([]);
+    const [tempRowData,setTempRowData] = useState([])
+    const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
+    const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
+    const [recordCount,setRecordCount] = useState<number>(0)
+
+    const ref = useRef<GridRef>();
+
     const [filterButtonStatus,setFilterButtonStatus] = useState<Array<Master>>([]);
 
     const {data:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
    
     const allMasters:Master[] = masterUIConfiguration?.data.data;
+
+    const {mutateAsync:getMasterData} = useGetMasterData();
 
 
     useEffect(()=>{
@@ -31,7 +41,7 @@ const useViewModify = () => {
         if(filterButtonStatus.length !== 0) return;
   
         if(!isLoading){
-          const allOptions:Option[] =  allMasters ? generateOptions(allMasters) : [];
+          const allOptions:Option[] =  generateOptions(allMasters);
           dispatch(setSelectedMasters(allMasters));
           dispatch(setOptions(allOptions));
         }
@@ -53,7 +63,7 @@ const useViewModify = () => {
         const selectedTabs = selectedMasters.map((master:Master) => {
             return {
             id:master.id,
-            name:master.name + ' Master',
+            name:master.name,
             fields:master.fields,
             status:'',
             }
@@ -81,18 +91,16 @@ const useViewModify = () => {
         const newTabs = tabs.filter((tab:Tab)=>tab.id !== currTab.id);
         if(newTabs.length === 0){
           setIsSelectMasterOpen(true);
+          dispatch(setSelectedMasters([]))
+          setFilterButtonStatus([])
           return;
         }
         if(currTab.id === activeMaster?.id ){
-          if(tabs.indexOf(currTab)==0){
             dispatch(setActiveMaster(tabs[1]))
-          }
-          else {
-            const activeMaster = selectedMasters.find((master:Master)=>master.id === tabs[0].id);
-            if(activeMaster) dispatch(setActiveMaster(activeMaster));
-          }
         }
         dispatch(setTabs([...newTabs]));
+        dispatch(setSelectedMasters([...newTabs]))
+        setFilterButtonStatus([...newTabs])
       }
 
       const handleOnAddFilter = ()=>{
@@ -108,8 +116,41 @@ const useViewModify = () => {
       const handleOnDeleteFilter = (id:string,masterId:number | undefined)=>{
         const filtersLength = filters.filter((f:Filter) => f.masterId === masterId).length;
         if(filtersLength === 1) return;
-        dispatch(setFilters(filters.filter((f)=>f.id!==id)))
+        dispatch(setFilters(filters.filter((f:Filter)=>f.id!==id)))
       }
+
+      const handleApplyFilter =async (showAll?:boolean) => {
+        const currMasterFilters = filters.filter((f:Filter) =>f.masterId === activeMaster.id)
+        if(!areMasterFiltersValid(currMasterFilters) && !showAll){
+          return notifyError('Filter cannot be empty')
+        }
+        
+        const payload:GetMasterDataPayload = {
+          masterId:activeMaster.id,
+          masterName:activeMaster.name,
+          filters:showAll?[]:currMasterFilters.map((f:Filter) => ({attributeName:f.field,operator:f.operator,value:f.text})),
+          fields:activeMaster.fields.map((field:Field) => ({key:field.key})),
+          paginationParameter:{
+            pageNumber:1,
+            recordsPerPage:10
+          }
+        }
+        const myData =  await getMasterData(payload);
+        console.debug(myData.data)
+        setRecordCount(myData.data.recordCount)
+        toggleWarningModal(true)
+        setTempRowData(myData.data.data)
+      }
+
+      const onWarningModalClose = ()=>{
+        toggleWarningModal(false)
+      }
+
+      const onWarningModalSuccess = ()=>{
+        setRowData(tempRowData)
+        toggleWarningModal(false)
+      }
+
 
     return {
         selectedMasters,
@@ -128,7 +169,17 @@ const useViewModify = () => {
         handleOnAddFilter,
         handleOnDeleteFilter,
         allMasters,
-        isLoading
+        handleApplyFilter,
+        rowData,
+        isLoading,
+        isWarningModalOpen,
+        toggleWarningModal,
+        onWarningModalClose,
+        onWarningModalSuccess,
+        isUploadModalOpen,
+        toggleUploadModal,
+        recordCount,
+        ref
     }
 }
 

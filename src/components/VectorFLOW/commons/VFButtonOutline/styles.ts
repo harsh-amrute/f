@@ -8,12 +8,33 @@ function getColor(props:any) {
   if(props.color){
     return props.color
   }
-  return  globalStyles.chooseThemeColor[props.themeUi]?.color5
+  
+
+  if(props.themeUi === "REGALBLAZE")
+  {
+    return globalStyles.chooseThemeColor[props.themeUi]?.color5;
+    
+  }
+
+  return "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box";
+  
 }
 
-export const SCButtonOutline = styled.button<{themeUi: string, isDisabled:boolean | undefined, customWidth:number | undefined, color:string | undefined}>`
-  color: ${props =>getColor(props)};
-  background-color: #fefefe;
+function getBorderAndTextColor(props:any) {
+  if(props.isDisabled){
+    return '#9A9A9A'
+  }
+  if(props.color){
+    return props.color
+  }
+  return globalStyles.chooseThemeColor[props.themeUi]?.color5;
+}
+
+
+
+export const SCButtonOutline = styled.button<{themeUi: string, isDisabled:boolean | undefined, hoverState:boolean, customWidth:number | undefined, color:string | undefined}>`
+  color: ${props => props.hoverState ? 'white' : getBorderAndTextColor(props)};
+  background:${(props)=>props.hoverState ? getColor(props) : '#fefefe'} ;
   // padding: 15px 7px;
   border-radius: 6px;
   font-size:16px;
@@ -23,10 +44,10 @@ export const SCButtonOutline = styled.button<{themeUi: string, isDisabled:boolea
   width:${(props)=>props.customWidth ? props.customWidth : 130}px;
   height:50px;
   box-shadow: 0px 6px 25px #00000029;
-  border: 1px solid ${props => getColor(props)};
+  border: 1px solid ${props => getBorderAndTextColor(props)};
   pointer-events:${(props)=>props.isDisabled ? 'none' : 'all'};
-  &:hover{
-    background-color:${(props)=>(!props.isDisabled || !props.color) && getColor(props) };
-    color:${(props)=>(!props.isDisabled || !props.color) ? getColor(props):'white' };
+  // &:hover{
+  //   background:${(props)=>(!props.color) ? getColor(props) :props.color };
+  //   color:white;
   
 `

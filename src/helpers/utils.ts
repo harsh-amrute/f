@@ -2,6 +2,7 @@ import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
+<<<<<<< HEAD
 import { type Master, type Option, type Field } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import { File } from 'buffer';
@@ -9,6 +10,10 @@ import { File } from 'buffer';
 import { SKUSchema,SKULocationSchema } from '../validators/schemas/MTA/MDM';
 
 
+=======
+import { type Master, type Option, type Field, Filter } from '../VectorFlow/types/MDM';
+import {ColDef} from 'ag-grid-community';
+>>>>>>> develop
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -361,6 +366,7 @@ export const generateRolesObject = (roles:Array<object>,permission:string[],is_a
 export const generateOptions = (data:Master[]) => {
   const temp:string[] = [];
   const options:Option[] = [];
+  if(!data)return options
   data.forEach((master:Master)=>{
     master.fields.forEach((field:Field)=>{
       if(!temp.includes(field.displayName)){
@@ -387,6 +393,7 @@ export const generateRandomId =(length?:number)=>{
 
 }
 
+<<<<<<< HEAD
 export const parseExcelData = async (file:any) => {
 
   const checkError = (row:object) => {
@@ -424,4 +431,28 @@ export const parseExcelData = async (file:any) => {
 
   console.log(result);
   return result;
+=======
+
+export const mapMasterToColumnDefs = (fields:Field[])=>{
+  let result:ColDef[] = []
+  result = fields.map((f)=>{
+    return{
+      field:f.key,
+      headerName:f.displayName,
+      hide:!f.visible,
+      minWidth:180,
+    }
+  })
+  return result
+}
+
+
+export const areMasterFiltersValid = (masterFilters:Filter[])=>{
+  for(let i =0;i<masterFilters.length;i++){
+    if(masterFilters[i].field===""|| masterFilters[i].operator===""|| masterFilters[i].text===""){
+      return false
+    }
+  }
+  return true
+>>>>>>> develop
 }

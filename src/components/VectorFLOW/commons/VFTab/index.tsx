@@ -9,8 +9,8 @@ import {
     SCTabTitle
   } from './styles'
 import {type Tab, type Master} from '../../../../VectorFlow/types/MDM';
-import { useDispatch } from 'react-redux';
-import { setActiveMaster } from '../../../../redux/features/MDM';
+// import { useDispatch } from 'react-redux';
+// import { setActiveMaster } from '../../../../redux/features/MDM';
 
 interface VFTabProps{
   tabs:Tab[],
@@ -25,14 +25,15 @@ interface VFTabProps{
 
 }
 
-const VFTab = ({tabs,allMasters,activeMaster,themeUi,onClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
+const VFTab = ({tabs,/*allMasters*/activeMaster,themeUi,onClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
   
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const changeTab = (currTab: Tab) => {
-    if(currTab.status === 'completed') return;
-    const activeMaster = allMasters.find((master:Master) => master.id === currTab.id);
-    if(activeMaster) dispatch(setActiveMaster(activeMaster));
+  const changeTab = (/*currTab: Tab*/) => {
+    return
+    // if(currTab.status === 'completed') return;
+    // const activeMaster = allMasters.find((master:Master) => master.id === currTab.id);
+    // if(activeMaster) dispatch(setActiveMaster(activeMaster));
   }
 
   const getTabStatus = (activeMaster:Master,currTab:Tab) => {
@@ -47,6 +48,7 @@ const VFTab = ({tabs,allMasters,activeMaster,themeUi,onClose,newTabTitle,newTabI
             <SCTabHeaderLeft>
               {
                 tabs.map((tab:Tab,index:number)=>{
+                  // console.log(tab)
                   return(
                     <SCTabButton 
                       status={getTabStatus(activeMaster,tab)} 
@@ -54,13 +56,13 @@ const VFTab = ({tabs,allMasters,activeMaster,themeUi,onClose,newTabTitle,newTabI
                       marLeft={index !== 0} 
                       themeUi={themeUi}
                       onClick={() => { 
-                        changeTab(tab) 
+                        changeTab() 
                       }}
                       key={tab.id}
                       data-testid="tab-button"
                       >
                         <SCTabContent>
-                          <SCTabTitle status={getTabStatus(activeMaster,tab)}>{tab.name.slice()}</SCTabTitle>
+                          <SCTabTitle status={getTabStatus(activeMaster,tab)}>{tab.name.slice()+' Master'}</SCTabTitle>
                           <img data-testid="tab-close" onClick={(e:React.MouseEvent<HTMLElement>) => {onClose(e,tab)}} src={getTabStatus(activeMaster,tab) === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : tab.status === 'completed' ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/>
                         </SCTabContent>
                     </SCTabButton>
