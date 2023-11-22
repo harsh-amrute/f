@@ -7,7 +7,8 @@ import { generateOptions } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify"; 
-
+import { parseExcelData } from "../../../../../helpers/utils";
+import { operators } from "../../../../../helpers/MDMConstants";
 
 
 
@@ -26,7 +27,6 @@ import useViewModify from "./useViewModify";
         tabs,
         activeMaster,
         filters,
-        operators,
         filterButtonStatus,
         setFilterButtonStatus,
         handleSelectMasterSubmit,
@@ -102,6 +102,7 @@ import useViewModify from "./useViewModify";
                           )
                         }
                       })}
+                      <input type={"file"} onChange={(e)=>{if(e.target.files)parseExcelData(e.target.files[0])}}/>
                   </SCFilterAddControls>
                   <SCFilterSeperator/>
                   <SCFilterButtonGroup>

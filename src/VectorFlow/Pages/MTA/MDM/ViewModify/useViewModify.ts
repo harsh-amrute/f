@@ -18,12 +18,7 @@ const useViewModify = () => {
     const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster);
     const filters = useSelector((state:RootState) => state.mdm.filters);
 
-    const operators:Option[] = [
-        {
-          label:'Equals To',
-          value:'='
-        }
-      ]
+    
     const [filterButtonStatus,setFilterButtonStatus] = useState<Array<Master>>([]);
 
     const {data:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
@@ -125,7 +120,6 @@ const useViewModify = () => {
         tabs,
         activeMaster,
         filters,
-        operators,
         filterButtonStatus,
         setFilterButtonStatus,
         getSelectedMasters,

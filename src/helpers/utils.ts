@@ -3,6 +3,11 @@ import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
 import { type Master, type Option, type Field } from '../VectorFlow/types/MDM';
+import readXlsxFile from 'read-excel-file'
+import { File } from 'buffer';
+// import { Cell } from 'read-excel-file/types';
+import { SKUSchema,SKULocationSchema } from '../validators/schemas/MTA/MDM';
+
 
 // clear cached token and redirect to sso login
 
@@ -380,4 +385,43 @@ export const generateRandomId =(length?:number)=>{
   }
   return id
 
+}
+
+export const parseExcelData = async (file:any) => {
+
+  const checkError = (row:object) => {
+    // console.log(row);
+    
+    return 'Invalid Data Type';
+  }
+  // const {code,value} = SKUSchema.validate({SKUCode:'SWWW,'});
+  // console.log(SKUSchema.validate({SrNo:'1',SKUCode:'SWWW,|asfdddddddddddddfsadddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',SKUName:'Rohan',ElephantOrderCapping:2,Weight:0}).error);
+  const data1 = {SrNo:'1',SKUCode:'SWWWasfdddddddddddddfsad',SKUName:'Rohan',WhCode:'adsfa,|',WhName:'dsafasf',ParentWhCode:'adsfa,|',ParentWhName:'dsfadsf',Norm:0,MinNorm:2,RLT:2,FGRMFlag:'fg'};
+  console.log(SKULocationSchema.validate(data1,{context:data1}).warning?.message);
+  console.log(SKULocationSchema.validate(data1,{context:data1}).error);
+
+
+  const result:object[] = [];
+  const data = await readXlsxFile(file);
+  const rowObj:any = {};
+  let temp = 0;
+  data.slice(1).map((row:any)=>{
+
+    row.map((value:any)=>{
+      const attributeName = data[0][temp];
+      rowObj[attributeName.toString()] = value;
+      temp+=1;
+    })
+    temp = 0;
+    const errorMessage = checkError(row);
+    if(errorMessage !== ''){
+      rowObj.error = errorMessage;
+    }
+    result.push(rowObj);
+    
+  })
+
+
+  console.log(result);
+  return result;
 }
