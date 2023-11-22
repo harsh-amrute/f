@@ -122,7 +122,7 @@ describe('Filter Component', () => {
     fireEvent.change(textInput,{target: {value: 'a'}})
   })
 
-  });
+});
 
 
 

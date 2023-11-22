@@ -2,7 +2,7 @@ import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
-import { type Master, type Option, type Field } from '../VectorFlow/types/MDM';
+import { type Master, type Option, type Field, Filter } from '../VectorFlow/types/MDM';
 import {ColDef} from 'ag-grid-community';
 // clear cached token and redirect to sso login
 
@@ -395,4 +395,14 @@ export const mapMasterToColumnDefs = (fields:Field[])=>{
     }
   })
   return result
+}
+
+
+export const areMasterFiltersValid = (masterFilters:Filter[])=>{
+  for(let i =0;i<masterFilters.length;i++){
+    if(masterFilters[i].field===""|| masterFilters[i].operator===""|| masterFilters[i].text===""){
+      return false
+    }
+  }
+  return true
 }

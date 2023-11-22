@@ -9,7 +9,9 @@ import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify";
 import {type Filter} from '../../../../types/MDM';
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
+import WarningModal from './WarningModal'
 import { notifyError } from "../../../../../helpers/notify";
+import UploadModal from "./UploadModal";
 
 
 
@@ -39,6 +41,12 @@ import { notifyError } from "../../../../../helpers/notify";
         isLoading,
         handleApplyFilter,
         rowData,
+        isWarningModalOpen,
+        recordCount,
+        isUploadModalOpen,
+        toggleUploadModal,
+        onWarningModalClose,
+        onWarningModalSuccess,
         ref
 
     } = useViewModify();
@@ -123,7 +131,7 @@ import { notifyError } from "../../../../../helpers/notify";
                       Apply Filter
                     </VFButton>
                     <VFButtonOutline
-                      onClick={()=>console.log('')}
+                       onClick={()=>{handleApplyFilter(true)}}
                       themeUi={themeUi}
                       
                     >
@@ -139,6 +147,8 @@ import { notifyError } from "../../../../../helpers/notify";
             </VFTab>
           }
         </SCContainer>
+        {isWarningModalOpen && <WarningModal count={recordCount} onCloseModal={onWarningModalClose} onFailure={onWarningModalClose} onSuccess={onWarningModalSuccess}/>}
+        {isUploadModalOpen && <UploadModal openModal={isUploadModalOpen} onCloseModal={()=>toggleUploadModal(false)} onDownload={()=>toggleUploadModal(false)} onUpload={()=>toggleUploadModal(false)}/>}
         {
           !isSelectMasterOpen && 
             <TaskBarContainer>
@@ -160,12 +170,12 @@ import { notifyError } from "../../../../../helpers/notify";
               <VFButtonOutline onClick={()=>console.log(ref.current?.api.exportDataAsExcel())} themeUi={themeUi} width={130}>
                   Reset
               </VFButtonOutline>
-              {/* <VFButton onClick={()=>console.log("hello")} themeUi={themeUi} disabled={false} width={164}>
+              <VFButton onClick={()=>toggleUploadModal(true)} themeUi={themeUi} disabled={false} width={164}>
                   Modify Selected Data
-              </VFButton> */}
-              <VFButton onClick={()=>console.log("hello")} themeUi={themeUi} disabled={false} width={160}>
-                  Submit
               </VFButton>
+              {/* <VFButton onClick={()=>console.log("hello")} themeUi={themeUi} disabled={false} width={160}>
+                  Submit
+              </VFButton> */}
               
             </TaskBarContainer>
         }

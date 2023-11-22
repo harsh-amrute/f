@@ -21,7 +21,7 @@ const VFButton = (props:VFButtonProps)=>{
 
     
     return(
-        <SCButton onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width}>
+        <SCButton onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width} data-testid="vf-button">
             {children}
         </SCButton>
     )

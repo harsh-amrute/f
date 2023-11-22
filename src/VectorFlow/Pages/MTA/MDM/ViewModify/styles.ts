@@ -97,3 +97,106 @@ export const TaskBarContainer = styled.div`
     width:100%;
 
 `
+
+
+export const UploadModalWrapper=styled.div`
+display:flex;
+justify-content:center;
+padding:26px 0 40px 0; 
+
+`
+
+export const UploadModalSection=styled.div`
+display: flex;
+ flex-direction:column;
+ flex:1;
+ margin-right:32px;
+ 
+`
+
+export const UploadBorderContainer=styled.div`
+border: 1.5px dashed #707070;
+ width: 393px; 
+ height: 212px;
+ justify-content:center;
+ align-items:center;
+ display:flex;
+`
+export const UploadModalContent = styled.div`
+display:flex;
+align-items:center;
+flex-direction:column;
+background: #FFFFFF 0% 0% no-repeat padding-box;
+height: 152px;
+width:349px;
+box-shadow: 5px 5px 30px #6E6B6B29;
+border-radius: 6px;
+`
+
+export const TextContent=styled.div`
+display:flex;
+align-items:center;
+justify-content:center;
+flex:4;
+flex-direction:column;
+font-style: normal;
+font-variant: normal;
+font-weight: 600;
+font-size: 12px;
+line-height: 14px; 
+font-family:Roboto;
+`
+
+export const InputWrapper = styled.div`
+    display:flex;
+    flex-direction:row;
+    width:100%;
+   
+`
+
+export const UploadModalInput=styled.input`
+
+width:100%;
+border:none;
+outline:none;
+color: #939393;
+opacity: 1;
+font-style: normal;
+font-variant: normal;
+font-weight: 300;
+font-size: 12px;
+line-height: 14px; 
+font-family:Roboto;
+padding-left:15px;
+&:focus{
+    border:none;
+    outline:none;
+}
+&:active{
+    border:none;
+    outline:none;
+}
+border-bottom-left-radius: 6px;
+border-bottom-right-radius: 6px;
+background: #FFFFFF 0% 0% no-repeat padding-box;
+box-shadow: -2px -2px 15px #A2A0A017;
+`
+
+export const UploadModalText=styled.div`
+font-style: normal;
+font-variant: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px;
+font-family: Roboto
+`
+
+export const UploadFileText=styled(UploadModalText)`
+width:100%;
+padding-left:16px;
+padding-bottom:5px;
+text-align:left;
+font-weight:600;
+font-size:7px;
+line-height:8px;
+`
