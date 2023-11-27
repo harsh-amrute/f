@@ -10,7 +10,8 @@ const dummyProps = {
     onReset:mockFn,
     onSubmit:mockFn,
     onDeleteSelected:mockFn,
-    onExportData:mockFn
+    onExportData:mockFn,
+    onEditOnline:mockFn
 }
 
 const contextWrapper = (children:any)=>{

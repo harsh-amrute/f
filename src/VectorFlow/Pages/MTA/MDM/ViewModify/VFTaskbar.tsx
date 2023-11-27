@@ -3,16 +3,18 @@ import { useUserData } from "../../../../../context"
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import { TaskBarContainer } from "./styles"
-import VFStepper from "../../../../../components/VectorFLOW/commons/VFStepper"
+import VFStepper, { StepItem } from "../../../../../components/VectorFLOW/commons/VFStepper"
 
 
 export interface VFTaskBarProps{
     masterProgress:"default" | "view" | "error" | "uploaded" | "submitted"
+    editOnline?:boolean
     onBack:()=>void
     onExportData:()=>void
     onModifyData:()=>void
     onClearAndExportErrors:()=>void
     onSubmit:()=>void
+    onEditOnline:()=>void
     onDeleteSelected:()=>void
 }
 
@@ -21,16 +23,62 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
 
     const{
         masterProgress,
+        editOnline ,
         onBack,
         onExportData,
         onModifyData,
         onClearAndExportErrors,
         onSubmit,
+        onEditOnline,
         onDeleteSelected
     } = props
 
     const {user} = useUserData()
     const themeUi = user.user.theme_ui
+
+    const getStepperState = ():StepItem[]=>{
+        switch(masterProgress){
+            case "uploaded":
+                return [
+                    {
+                        label:'File Uploaded',
+                        status:'completed',
+                        description:''
+                    },
+                    {
+                        label:'Submit',
+                        status:'pending',
+                        description:''
+                    },
+                ]
+            case "submitted":
+                return [
+                    {
+                         label:'File Uploaded',
+                        status:'completed',
+                        description:''
+                    },
+                    {
+                        label:'Submit',
+                        status:'completed',
+                        description:''
+                    },
+                ]
+            default:
+                return [
+                    {
+                        label:'File Uploaded',
+                        status:'pending',
+                        description:''
+                    },
+                    {
+                        label:'Submit',
+                        status:'pending',
+                        description:''
+                    },
+                ]
+        }
+    }
 
     const BackButton =()=> {
         return(
@@ -54,20 +102,20 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         <VFButtonOutline onClick={onExportData} themeUi={themeUi} width={130}>
                             Export Data
                         </VFButtonOutline>
-                        {/* <VFButtonOutline onClick={onEditOnline} themeUi={themeUi} disabled width={164} onHoverChild={
+                        <VFButtonOutline onClick={onEditOnline} themeUi={themeUi} disabled={!editOnline} width={164} onHoverChild={
                             <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                                 <img src={"/assets/img/VectorFLOW/NMS/edit-online-disabled.svg"} style={{marginRight:'11px'}}/>
                                 <p>Edit Online</p>
                             </div>
                         }>
                             <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-                                <img src={"/assets/img/VectorFLOW/NMS/edit-online.svg"} style={{marginRight:'11px'}}/>
+                                <img src={editOnline?"/assets/img/VectorFLOW/NMS/edit-online.svg":"/assets/img/VectorFLOW/NMS/edit-online-disabled.svg"} style={{marginRight:'11px'}}/>
                                 <p>Edit Online</p>
                             </div>
-                        </VFButtonOutline> */}
-                    <VFButton onClick={onModifyData} themeUi={themeUi} disabled={false} width={164}>
-                        Modify Selected Data
-                    </VFButton>
+                        </VFButtonOutline>
+                    <VFButtonOutline onClick={onModifyData} themeUi={themeUi} disabled={editOnline} width={164}>
+                        Modify Data
+                    </VFButtonOutline>
                 </TaskBarContainer>
             )
 
@@ -91,28 +139,35 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <VFButton onClick={onSubmit} themeUi={themeUi} disabled={false} width={139}>
                         Submit All
                     </VFButton>
+                    <div style={{
+                        flex:7,
+                        height:'100%',
+                        width:'100%'
+                    }}>
+                    </div>
+                    <div style={{width:'200px',flex:2}}>
+                    <VFStepper
+                        items={getStepperState()}
+                    />
+                    </div>
                 </TaskBarContainer>
                 )
 
         case "submitted":
             return(
-                <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row-reverse'}}>
+                <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row'}}>
+                    <div style={{
+                        flex:7,
+                        height:'100%',
+                        width:'100%'
+                    }}>
+                    </div>
+                    <div style={{width:'200px',flex:2}}>
                     <VFStepper
-                        width="200px"
-                        items={[
-                            {
-                                label:'File Uploaded',
-                                status:'completed',
-                                description:''
-                            },
-                            {
-                                label:'Submit',
-                                status:'pending',
-                                description:''
-                            },
-                           
-                        ]}
+                        items={getStepperState()}
                     />
+                    </div>
+
                 </TaskBarContainer>
                 )
         default:

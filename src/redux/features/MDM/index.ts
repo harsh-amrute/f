@@ -8,7 +8,8 @@ const initialState:MDMStore = {
     selectedMasters:[],
     tabs:[],
     activeMaster:{id:0,name:'',fields:[]},
-    filters:[]
+    filters:[],
+    visibleColumns:[]
 }
 
 export const mdmSlice = createSlice({
@@ -33,6 +34,10 @@ export const mdmSlice = createSlice({
       setFilters: (state,action: PayloadAction<Array<Filter>>) => {
         state.filters = action.payload;
       },
+      setVisibleColumns:(state,action:PayloadAction<Array<string>>)=>{
+        console.log("Hello",action.payload)
+        state.visibleColumns = action.payload
+      },
       resetState:(state) => {
         state.options=[];
         state.selectedOptions=[];
@@ -40,6 +45,7 @@ export const mdmSlice = createSlice({
         state.tabs=[];
         state.activeMaster={id:0,name:'',fields:[]};
         state.filters=[];
+        state.visibleColumns=[]
       }
       
     },
@@ -52,6 +58,7 @@ export const mdmSlice = createSlice({
     setTabs,
     setActiveMaster,
     setFilters,
+    setVisibleColumns,
     resetState
 } = mdmSlice.actions;
 

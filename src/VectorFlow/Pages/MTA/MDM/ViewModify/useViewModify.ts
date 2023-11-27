@@ -1,11 +1,12 @@
 import {useState, useEffect, useRef} from 'react';
 import { type Master, type Option, type Field, type Tab, type Filter, type GetMasterDataPayload, type GridRef } from "../../../../types/MDM";
-import {generateRandomId, generateOptions, areMasterFiltersValid } from "../../../../../helpers/utils";
+import {generateRandomId, generateOptions, areMasterFiltersValid, mapMasterToColumnDefs } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters} from '../../../../../redux/features/MDM';
+import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters, setVisibleColumns} from '../../../../../redux/features/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError } from '../../../../../helpers/notify';
+import { ColDef, ColumnState } from 'ag-grid-enterprise';
 
 const useViewModify = () => {
 
@@ -18,12 +19,15 @@ const useViewModify = () => {
     const tabs = useSelector((state:RootState) => state.mdm.tabs);
     const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster);
     const filters = useSelector((state:RootState) => state.mdm.filters);
+    const visibleColumns = useSelector((state:RootState) => state.mdm.visibleColumns);
 
+    const [columnState,setColumnState] = useState<ColumnState[] | undefined>()
     const [rowData,setRowData] = useState([]);
     const [tempRowData,setTempRowData] = useState([])
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
     const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
     const [recordCount,setRecordCount] = useState<number>(0)
+    const [columnDefs,setColumnDefs] = useState<ColDef[]>()
 
     const ref = useRef<GridRef>();
 
@@ -43,7 +47,6 @@ const useViewModify = () => {
 
 
     useEffect(()=>{
-
         if(filterButtonStatus.length !== 0) return;
   
         if(!isLoading){
@@ -88,6 +91,7 @@ const useViewModify = () => {
             return filterObj;
         })
         dispatch(setFilters([...filters]));
+        setColumnDefs(mapMasterToColumnDefs(selectedMasters[0].fields))
         setIsSelectMasterOpen(false);
 
     }
@@ -157,6 +161,24 @@ const useViewModify = () => {
         toggleWarningModal(false)
       }
 
+      const onColumnVisible = ()=>{
+        console.log('onCOlumnVisible')
+        // localStorage.setItem('colDefs',JSON.stringify(ref.current?.api.getColumnDefs()))
+      }
+
+      const exportToExcel = ()=>{
+        console.log(ref.current?.api.getSideBar());
+        const localColDefs = localStorage.getItem('colDefs')
+        if(localColDefs)ref.current?.api.exportDataAsExcel(JSON.parse(localColDefs))
+      }
+    
+      useEffect(()=>{
+        console.log(activeMaster)
+        if(activeMaster.fields.length>0){
+          console.log("in if",activeMaster)
+          setColumnDefs(mapMasterToColumnDefs(activeMaster.fields))
+        }
+      },[filters,isUploadModalOpen,activeMaster])
 
     return {
         selectedMasters,
@@ -186,7 +208,10 @@ const useViewModify = () => {
         isUploadModalOpen,
         toggleUploadModal,
         recordCount,
-        ref
+        columnDefs,
+        onColumnVisible,
+        exportToExcel,
+        ref,
     }
 }
 

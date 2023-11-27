@@ -4,6 +4,7 @@ import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
 import { type Master, type Option, type Field, Filter } from '../VectorFlow/types/MDM';
 import {ColDef} from 'ag-grid-community';
+import { json } from 'stream/consumers';
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -385,15 +386,26 @@ export const generateRandomId =(length?:number)=>{
 
 
 export const mapMasterToColumnDefs = (fields:Field[])=>{
+  
+  const localColDefs = localStorage.getItem('colDefs')
+  // console.log(JSON.parse(localColDefs))
+  if(localColDefs && JSON.parse(localColDefs).length>0){
+    console.log('in if')
+    return JSON.parse(localColDefs)
+  }
+  console.log('in else')
   let result:ColDef[] = []
   result = fields.map((f)=>{
     return{
       field:f.key,
+      colId:f.key,
       headerName:f.displayName,
       hide:!f.visible,
       minWidth:180,
     }
   })
+  localStorage.setItem('colDefs',JSON.stringify(result))
+  // console.log(result)
   return result
 }
 

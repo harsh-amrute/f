@@ -89,13 +89,24 @@ export const TaskBarContainer = styled.div`
     display:flex;
     position:fixed;
     bottom:0;
-    left:40px;
-    right:0;
+    width:100%;
+    max-width:inherit;
+    height:95px;
     padding-top:23px;
     padding-bottom:22px;
     padding-right:38px;
     padding-left:38px;
     gap:30px;
+    &:before{
+        content:'';
+        position:fixed;
+        right:0;
+        bottom:0;
+        width:200px;
+        z-index:-100;
+        background-color:white;
+        height:95px;
+    }
 
 `
 
