@@ -29,6 +29,7 @@ const mockFn = jest.fn()
 
 describe('UploadModal',()=>{
     it('Renders the UploadModal',()=>{
-        render(contextWrapper(<UploadModal onCloseModal={mockFn} onDownload={mockFn} onUpload={mockFn} openModal={true}/>))
+        const file = new File([""], "SKU");
+        render(contextWrapper(<UploadModal onCloseModal={mockFn} onDownload={mockFn} onUpload={mockFn} openModal={true} inputText={""} setInputText={jest.fn()} file={file} setFile={jest.fn()}/>))
     })
 })

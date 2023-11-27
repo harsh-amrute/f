@@ -3,6 +3,7 @@ import {
     ColumnApi,
     ColDef
 } from 'ag-grid-community'
+import Joi from 'joi'
 export interface MDMStore{
     options:Option[],
     selectedOptions:Option[],
@@ -68,4 +69,7 @@ export interface VFtableProps{
 export interface GridRef{
     api:GridApi
     columnApi:ColumnApi
+}
+export interface MasterIdToSchema{
+    [key: string]: Joi.ObjectSchema<any>
 }

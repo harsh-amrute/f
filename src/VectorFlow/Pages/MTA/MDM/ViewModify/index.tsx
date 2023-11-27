@@ -7,13 +7,13 @@ import { generateOptions, mapMasterToColumnDefs } from "../../../../../helpers/u
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify"; 
-import { parseExcelData } from "../../../../../helpers/utils";
 import { operators } from "../../../../../helpers/MDMConstants";
 import {type Filter} from '../../../../types/MDM';
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import WarningModal from './WarningModal'
 import { notifyError } from "../../../../../helpers/notify";
 import UploadModal from "./UploadModal";
+import { useEffect } from "react";
 
 
 
@@ -48,9 +48,23 @@ import UploadModal from "./UploadModal";
         toggleUploadModal,
         onWarningModalClose,
         onWarningModalSuccess,
-        ref
+        onDownloadUploadModal,
+        downloadFileName,
+        setDownloadFileName,
+        onUploadMaster,
+        file,
+        setFile,
+        ref,
+        isTableDataLoading
 
     } = useViewModify();
+
+    useEffect(()=>{
+      if(isTableDataLoading){
+        ref.current?.api.showLoadingOverlay();
+      }
+
+    },[isTableDataLoading])
     
     
 
@@ -122,7 +136,6 @@ import UploadModal from "./UploadModal";
                           )
                         }
                       })}
-                      <input type={"file"} onChange={(e)=>{if(e.target.files)parseExcelData(e.target.files[0])}}/>
                   </SCFilterAddControls>
                   <SCFilterSeperator/>
                   <SCFilterButtonGroup>
@@ -149,8 +162,26 @@ import UploadModal from "./UploadModal";
             </VFTab>
           }
         </SCContainer>
-        {isWarningModalOpen && <WarningModal count={recordCount} onCloseModal={onWarningModalClose} onFailure={onWarningModalClose} onSuccess={onWarningModalSuccess}/>}
-        {isUploadModalOpen && <UploadModal openModal={isUploadModalOpen} onCloseModal={()=>toggleUploadModal(false)} onDownload={()=>toggleUploadModal(false)} onUpload={()=>toggleUploadModal(false)}/>}
+        {isWarningModalOpen && 
+          <WarningModal 
+            count={recordCount} 
+            onCloseModal={onWarningModalClose} 
+            onFailure={onWarningModalClose} 
+            onSuccess={onWarningModalSuccess}
+            />
+        }
+        {isUploadModalOpen && 
+          <UploadModal 
+            openModal={isUploadModalOpen} 
+            onCloseModal={()=>toggleUploadModal(false)} 
+            onDownload={()=>onDownloadUploadModal(downloadFileName === '' ? activeMaster.name : downloadFileName)} 
+            onUpload={()=>onUploadMaster()}
+            inputText={downloadFileName}
+            setInputText={setDownloadFileName}
+            file={file}
+            setFile={setFile}
+            />
+        }
         {
           !isSelectMasterOpen && 
             <TaskBarContainer>

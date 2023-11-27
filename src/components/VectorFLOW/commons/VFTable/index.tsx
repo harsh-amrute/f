@@ -41,11 +41,11 @@ const VFTable = forwardRef((props:VFtableProps,ref:any)=>{
         ]
     }
 
-    const defaultExportExcelParams:ExcelExportParams ={
-        processHeaderCallback(params:any){
-            return params.column.getColDef().field;
-        },
-    }
+    // const defaultExportExcelParams:ExcelExportParams ={
+    //     processHeaderCallback(params:any){
+    //         return params.column.getColDef().field;
+    //     },
+    // }
 
     const defaultColDef:ColDef = {
         floatingFilter:true,
@@ -63,7 +63,7 @@ const VFTable = forwardRef((props:VFtableProps,ref:any)=>{
             }
             return {background:'#F7F7F7'}
         },
-        
+        rowHeight:45
     }
 
     return(
@@ -75,8 +75,14 @@ const VFTable = forwardRef((props:VFtableProps,ref:any)=>{
                 pagination
                 gridOptions={gridOptions}
                 defaultColDef={defaultColDef}
-                defaultExcelExportParams={defaultExportExcelParams}
+                // defaultExcelExportParams={defaultExportExcelParams}
                 sideBar={sideBar}
+                onGridReady={() => {
+                    ref.current.columnApi.moveColumn('error',1)
+                }}
+                overlayLoadingTemplate={
+                    '<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="../assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>'
+                  }
                 
             />
         </VFTableWrapper>

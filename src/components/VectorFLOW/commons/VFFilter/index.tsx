@@ -97,8 +97,7 @@ const CustomSelect = (props:CustomSelectProps)=>{
             styles={{
                 container:(styles)=>({
                     ...styles,
-                    width:'100%',
-                    maxWidth:width
+                    width:'100%'
                 }),
                 control:(styles)=>({
                     ...styles,

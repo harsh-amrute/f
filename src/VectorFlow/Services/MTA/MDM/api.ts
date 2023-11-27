@@ -13,6 +13,9 @@ export namespace MDMService {
     return await axios.post(`https://2cfc61ae-927a-4577-8843-ee38dfb26302.mock.pstmn.io/get-master-data`,body,{
       headers: { 'Content-Type': 'application/json' }
     })
+    // return await axios.post(`http://10.8.1.10:8082/GetMasterData`,body,{
+    //   headers: { 'Content-Type': 'application/json' }
+    // })
   }
 
 }

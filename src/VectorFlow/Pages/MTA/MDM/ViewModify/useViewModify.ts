@@ -1,11 +1,12 @@
 import {useState, useEffect, useRef} from 'react';
 import { type Master, type Option, type Field, type Tab, type Filter, type GetMasterDataPayload, type GridRef } from "../../../../types/MDM";
-import {generateRandomId, generateOptions, areMasterFiltersValid } from "../../../../../helpers/utils";
+import {generateRandomId, generateOptions, areMasterFiltersValid, parseExcelData,mapMasterToColumnDefs } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters} from '../../../../../redux/features/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError } from '../../../../../helpers/notify';
+import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 
 const useViewModify = () => {
 
@@ -19,11 +20,14 @@ const useViewModify = () => {
     const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster);
     const filters = useSelector((state:RootState) => state.mdm.filters);
 
-    const [rowData,setRowData] = useState([]);
+    const [rowData,setRowData] = useState<object[]>([]);
     const [tempRowData,setTempRowData] = useState([])
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
     const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
     const [recordCount,setRecordCount] = useState<number>(0)
+    const [downloadFileName,setDownloadFileName] = useState('');
+    const [file,setFile] = useState<File>();
+    const [isTableDataLoading,setIsTableDataLoading] = useState<boolean>(false);
 
     const ref = useRef<GridRef>();
 
@@ -135,7 +139,10 @@ const useViewModify = () => {
             recordsPerPage:10
           }
         }
+        setIsTableDataLoading(true);
         const myData =  await getMasterData(payload);
+        setIsTableDataLoading(false);
+        console.log(myData);
         console.debug(myData.data)
         setRecordCount(myData.data.recordCount)
         toggleWarningModal(true)
@@ -149,6 +156,29 @@ const useViewModify = () => {
       const onWarningModalSuccess = ()=>{
         setRowData(tempRowData)
         toggleWarningModal(false)
+      }
+
+      const onDownloadUploadModal = (fileName:any) => {
+        ref.current?.api.exportDataAsExcel({fileName:fileName})
+      }
+
+      const onUploadMaster = async () => {
+        if(!file){
+          notifyError('Please select a file to upload.');
+          return
+        }
+
+        const result = await parseExcelData(file,activeMaster);
+        console.log(result);
+        const ifErrorExists = result.find((data:any)=>data.error);
+        const ifWarningExists = result.find((data:any)=>data.warning);
+        ifErrorExists ? ref.current?.columnApi.setColumnVisible('error',true) : ref.current?.columnApi.setColumnVisible('error',false);
+        ifWarningExists ? ref.current?.columnApi.setColumnVisible('warning',true) : ref.current?.columnApi.setColumnVisible('warning',false);
+        console.log(ref.current?.api.getColumnDefs())
+        setRowData(result);
+        toggleUploadModal(false);
+
+
       }
 
 
@@ -179,7 +209,14 @@ const useViewModify = () => {
         isUploadModalOpen,
         toggleUploadModal,
         recordCount,
-        ref
+        onDownloadUploadModal,
+        downloadFileName,
+        setDownloadFileName,
+        onUploadMaster,
+        file,
+        setFile,
+        ref,
+        isTableDataLoading
     }
 }
 

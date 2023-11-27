@@ -1,4 +1,5 @@
-import {type Option} from '../VectorFlow/types/MDM';
+import { LocationSchema, SKULocationSchema, SKUSchema, SOBSchema } from '../validators/schemas/MTA/MDM/index';
+import {type Option, type MasterIdToSchema} from '../VectorFlow/types/MDM';
 
 export const operators:Option[] = [
     {
@@ -46,3 +47,10 @@ export const operators:Option[] = [
         value:'hasNoValue'
     }
   ]
+
+export const masterIdToSchemaMapper:MasterIdToSchema = {
+    '1':SKUSchema,
+    '2':LocationSchema,
+    '3':SKULocationSchema,
+    '4':SOBSchema,
+}

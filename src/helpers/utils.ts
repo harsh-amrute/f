@@ -2,18 +2,15 @@ import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
-<<<<<<< HEAD
-import { type Master, type Option, type Field } from '../VectorFlow/types/MDM';
+import { type Master, type Option, type Field, type Filter } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import { File } from 'buffer';
 // import { Cell } from 'read-excel-file/types';
 import { SKUSchema,SKULocationSchema } from '../validators/schemas/MTA/MDM';
-
-
-=======
-import { type Master, type Option, type Field, Filter } from '../VectorFlow/types/MDM';
 import {ColDef} from 'ag-grid-community';
->>>>>>> develop
+import { masterIdToSchemaMapper } from './MDMConstants';
+import ErrorCell from '../components/VectorFLOW/commons/ErrorCell';
+import WarningCell from '../components/VectorFLOW/commons/WarningCell';
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -393,57 +390,81 @@ export const generateRandomId =(length?:number)=>{
 
 }
 
-<<<<<<< HEAD
-export const parseExcelData = async (file:any) => {
+export const parseExcelData = async (file:any,master:Master) => {
+  const masterSchema = masterIdToSchemaMapper[master.id.toString()]
 
   const checkError = (row:object) => {
-    // console.log(row);
-    
-    return 'Invalid Data Type';
+    const {error,warning} = masterSchema.validate(row) ;    
+    return {error,warning};
   }
-  // const {code,value} = SKUSchema.validate({SKUCode:'SWWW,'});
-  // console.log(SKUSchema.validate({SrNo:'1',SKUCode:'SWWW,|asfdddddddddddddfsadddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',SKUName:'Rohan',ElephantOrderCapping:2,Weight:0}).error);
-  const data1 = {SrNo:'1',SKUCode:'SWWWasfdddddddddddddfsad',SKUName:'Rohan',WhCode:'adsfa,|',WhName:'dsafasf',ParentWhCode:'adsfa,|',ParentWhName:'dsfadsf',Norm:0,MinNorm:2,RLT:2,FGRMFlag:'fg'};
-  console.log(SKULocationSchema.validate(data1,{context:data1}).warning?.message);
-  console.log(SKULocationSchema.validate(data1,{context:data1}).error);
+ 
 
 
   const result:object[] = [];
   const data = await readXlsxFile(file);
-  const rowObj:any = {};
+  const headerKeys = data[0].map((headerName)=>{
+    const fieldObj = master.fields.find((field:Field)=>field.displayName === headerName);
+    if(fieldObj) return fieldObj.key;
+    else return '';
+  })
+  
+  let rowObj:any = {};
   let temp = 0;
   data.slice(1).map((row:any)=>{
+    console.log(row)
 
     row.map((value:any)=>{
-      const attributeName = data[0][temp];
+      const attributeName = headerKeys[temp];
       rowObj[attributeName.toString()] = value;
       temp+=1;
     })
     temp = 0;
-    const errorMessage = checkError(row);
-    if(errorMessage !== ''){
-      rowObj.error = errorMessage;
+    const {error,warning} = checkError(rowObj);
+    if(error !== undefined){
+      rowObj.error = error.message;
+    }
+    if(warning !== undefined){
+      rowObj.warning = warning;
     }
     result.push(rowObj);
+    rowObj={}
     
   })
 
-
   console.log(result);
   return result;
-=======
+}
 
 export const mapMasterToColumnDefs = (fields:Field[])=>{
   let result:ColDef[] = []
+  const customColDefs:ColDef[] = [
+    {
+      field:'warning',
+      headerName:'Warning',
+      floatingFilter:false,
+      initialHide:true,
+      cellRenderer:WarningCell,
+      minWidth:200
+    },
+    {
+      field:'error',
+      headerName:'Error',
+      floatingFilter:false,
+      cellRenderer:ErrorCell,
+      initialHide:true,
+      minWidth:200
+    }
+]
   result = fields.map((f)=>{
     return{
       field:f.key,
       headerName:f.displayName,
+      colId:f.key,
       hide:!f.visible,
-      minWidth:180,
+      minWidth:180
     }
   })
-  return result
+  return [...customColDefs,...result];
 }
 
 
@@ -454,5 +475,4 @@ export const areMasterFiltersValid = (masterFilters:Filter[])=>{
     }
   }
   return true
->>>>>>> develop
 }
