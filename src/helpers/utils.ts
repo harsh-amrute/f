@@ -368,7 +368,7 @@ export const generateOptions = (data:Master[]) => {
     master.fields.forEach((field:Field)=>{
       if(!temp.includes(field.displayName)){
         temp.push(field.displayName);
-        if(field.visible) options.push({value:field.key,label:field.displayName,})
+        options.push({value:field.key,label:field.displayName,})
       }
     })
   });

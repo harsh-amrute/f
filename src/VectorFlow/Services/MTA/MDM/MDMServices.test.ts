@@ -30,9 +30,9 @@ describe('Testing the MDMService',  () => {
     it('should make a post request to the /get-master-data', async () => {
 
       const mockBody = {
-        masterId:1,
-        masterName:"SKU",
-        filters:[{attributeName:"SKU",operator:'=',value:""}],
+        id:1,
+        name:"SKU",
+        filters:[{attributeName:"SKU",op:'=',value:""}],
         fields:[{key:"SKU"}],
         paginationParameter:{
           pageNumber:1,

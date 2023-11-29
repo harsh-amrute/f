@@ -130,9 +130,9 @@ const useViewModify = () => {
         }
         
         const payload:GetMasterDataPayload = {
-          masterId:activeMaster.id,
-          masterName:activeMaster.name,
-          filters:showAll?[]:currMasterFilters.map((f:Filter) => ({attributeName:f.field,operator:f.operator,value:f.text})),
+          id:activeMaster.id,
+          name:activeMaster.name,
+          filters:showAll?[]:currMasterFilters.map((f:Filter) => ({attributeName:f.field,op:f.operator,value:f.text})),
           fields:activeMaster.fields.map((field:Field) => ({key:field.key})),
           paginationParameter:{
             pageNumber:1,

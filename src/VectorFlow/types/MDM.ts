@@ -47,9 +47,9 @@ export interface Filter{
 }
 
 export interface GetMasterDataPayload {
-    masterId:number,
-    masterName:string,
-    filters:Array<{attributeName:string,operator:string,value:string}>,
+    id:number,
+    name:string,
+    filters:Array<{attributeName:string,op:string,value:string}>,
     fields:Array<{key:string}>,
     paginationParameter:PaginationPayload
     
