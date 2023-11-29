@@ -4,7 +4,6 @@ import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
 import { type Master, type Option, type Field, Filter } from '../VectorFlow/types/MDM';
 import {ColDef} from 'ag-grid-community';
-import { json } from 'stream/consumers';
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [

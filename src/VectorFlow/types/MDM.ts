@@ -1,8 +1,7 @@
 import {
     GridApi,
     ColumnApi,
-    ColDef,
-    ColumnState
+    ColDef
 } from 'ag-grid-enterprise'
 export interface MDMStore{
     options:Option[],

@@ -6,12 +6,11 @@ import {
   act,
 } from "@testing-library/react";
 
-import { AppLayout } from "../../../../../components";
-import { getStoreTransferModuleRoutes } from "../../../../../module-store-transfer/app-routes-store-transfer";
+
 import ViewModify from "./index";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { BrowserRouter as Router, useRoutes } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { UserDataContext } from "../../../../../context";
 import {
   useGetMasterUIConfiguration,
