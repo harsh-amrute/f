@@ -1,5 +1,5 @@
-import { forwardRef, useEffect, useMemo } from "react";
-import { GridRef, VFtableProps } from "../../../../VectorFlow/types/MDM";
+import { forwardRef} from "react";
+import {  VFtableProps } from "../../../../VectorFlow/types/MDM";
 import { AgGridReact } from "ag-grid-react";
 import { VFTableWrapper } from "./styles";
 import { LicenseManager } from "ag-grid-enterprise";
@@ -8,7 +8,6 @@ import { AG_GRID_KEY } from "../../../../helpers/constants";
 import {
   ExcelExportParams,
   SideBarDef,
-  ColDef,
   GridOptions,
 } from "ag-grid-community";
 
@@ -22,7 +21,7 @@ const VFTable = forwardRef((props: VFtableProps, ref: any) => {
   const { 
     rowData,
     columnDefs,
-    onColumnVisible
+    onColumnChange
     } = props;
 
 
@@ -48,15 +47,6 @@ const VFTable = forwardRef((props: VFtableProps, ref: any) => {
     },
   };
 
-  const defaultColDef: ColDef = {
-    floatingFilter: true,
-    filter: "agMultiColumnFilter",
-    cellStyle: {
-      "text-align": "center",
-    },
-    flex: 1,
-  };
-
   const gridOptions: GridOptions = {
     getRowStyle: (params: any) => {
       if (params.node.rowIndex % 2 === 0) {
@@ -66,24 +56,6 @@ const VFTable = forwardRef((props: VFtableProps, ref: any) => {
     },
   };
 
-
-
-  const columnStateChangeHandler = (params: any) => {
-    // console.log(params)
-    // const columnApi = ref.current?.columnApi;
-    // const columnState = columnApi.getColumnState();
-    // const newColumnDefs = columnState.allColumns.map((column:any) => {
-    //   const { colDef } = column;
-    //   return colDef;
-    // });
-
-    // console.log(newColumnDefs)
-    
-    // // Update the columnDefs prop with the new column definitions
-    // onColumnStateChange(newColumnDefs);
-  };
-
-
   return (
     <VFTableWrapper className="ag-theme-alpine" role={"table"}>
       <AgGridReact
@@ -92,13 +64,10 @@ const VFTable = forwardRef((props: VFtableProps, ref: any) => {
         rowData={rowData}
         pagination
         gridOptions={gridOptions}
-        defaultColDef={defaultColDef}
         defaultExcelExportParams={defaultExportExcelParams}
         sideBar={sideBar}
-        onColumnVisible={onColumnVisible}
-        onGridColumnsChanged={()=>console.log('grid columns changed')}
-        onDisplayedColumnsChanged={()=>console.log('displayed columns changed')}
-        onColumnEverythingChanged={()=>console.log('everything changed')}
+        onColumnVisible={onColumnChange}
+        suppressColumnVirtualisation={true}
       />
     </VFTableWrapper>
   );

@@ -11,7 +11,7 @@ export interface MDMStore{
     tabs:Tab[],
     activeMaster:Master,
     filters:Filter[]
-    visibleColumns:string[]
+    colDefs:ColDef[]
 }
 
 
@@ -65,7 +65,7 @@ export interface VFtableProps{
     rowData:Array<any>
     columnDefs:ColDef[] | undefined
     ref:any
-    onColumnVisible:()=>void
+    onColumnChange:()=>void
 }
 
 export interface GridRef{

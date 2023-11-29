@@ -386,14 +386,6 @@ export const generateRandomId =(length?:number)=>{
 
 
 export const mapMasterToColumnDefs = (fields:Field[])=>{
-  
-  const localColDefs = localStorage.getItem('colDefs')
-  // console.log(JSON.parse(localColDefs))
-  if(localColDefs && JSON.parse(localColDefs).length>0){
-    console.log('in if')
-    return JSON.parse(localColDefs)
-  }
-  console.log('in else')
   let result:ColDef[] = []
   result = fields.map((f)=>{
     return{
@@ -402,10 +394,14 @@ export const mapMasterToColumnDefs = (fields:Field[])=>{
       headerName:f.displayName,
       hide:!f.visible,
       minWidth:180,
+      floatingFilter: true,
+      filter: "agMultiColumnFilter",
+      cellStyle: {
+        "text-align": "center",
+      },
+      flex: 1,
     }
   })
-  localStorage.setItem('colDefs',JSON.stringify(result))
-  // console.log(result)
   return result
 }
 

@@ -3,7 +3,7 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
-import { generateOptions, mapMasterToColumnDefs } from "../../../../../helpers/utils";
+import { generateOptions } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify";
@@ -13,8 +13,6 @@ import WarningModal from './WarningModal'
 import { notifyError } from "../../../../../helpers/notify";
 import UploadModal from "./UploadModal";
 import VFTaskBar from "./VFTaskbar";
-import { useEffect, useState } from "react";
-import { ColDef } from "ag-grid-enterprise";
 
 
 
@@ -51,9 +49,9 @@ import { ColDef } from "ag-grid-enterprise";
         toggleUploadModal,
         onWarningModalClose,
         onWarningModalSuccess,
-        onColumnVisible,
         exportToExcel,
-        columnDefs,
+        colDefs,
+        onColumnChange,
         ref,
     } = useViewModify();
 
@@ -147,8 +145,8 @@ import { ColDef } from "ag-grid-enterprise";
                 <VFTable
                   ref={ref}
                   rowData={rowData}
-                  columnDefs={columnDefs}
-                  onColumnVisible={onColumnVisible}
+                  columnDefs={colDefs}
+                  onColumnChange={onColumnChange}
                 />
             </VFTab>
           }

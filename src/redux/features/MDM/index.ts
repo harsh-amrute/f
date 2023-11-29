@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit'
 import {type MDMStore, type Option, type Master, type Tab, type Filter} from '../../../VectorFlow/types/MDM';   
+import { ColDef } from 'ag-grid-enterprise';
 
 const initialState:MDMStore = {
     options:[],
@@ -9,7 +10,7 @@ const initialState:MDMStore = {
     tabs:[],
     activeMaster:{id:0,name:'',fields:[]},
     filters:[],
-    visibleColumns:[]
+    colDefs:[]
 }
 
 export const mdmSlice = createSlice({
@@ -34,9 +35,8 @@ export const mdmSlice = createSlice({
       setFilters: (state,action: PayloadAction<Array<Filter>>) => {
         state.filters = action.payload;
       },
-      setVisibleColumns:(state,action:PayloadAction<Array<string>>)=>{
-        console.log("Hello",action.payload)
-        state.visibleColumns = action.payload
+      setColDefs:(state,action:PayloadAction<Array<ColDef>>)=>{
+        state.colDefs = action.payload;
       },
       resetState:(state) => {
         state.options=[];
@@ -45,7 +45,7 @@ export const mdmSlice = createSlice({
         state.tabs=[];
         state.activeMaster={id:0,name:'',fields:[]};
         state.filters=[];
-        state.visibleColumns=[]
+        state.colDefs=[]
       }
       
     },
@@ -58,7 +58,7 @@ export const mdmSlice = createSlice({
     setTabs,
     setActiveMaster,
     setFilters,
-    setVisibleColumns,
+    setColDefs,
     resetState
 } = mdmSlice.actions;
 
