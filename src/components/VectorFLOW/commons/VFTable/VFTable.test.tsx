@@ -18,14 +18,14 @@ describe('should render the VFTable component', () => {
   ];
   
   it("Shoudl render the table in the DOM",()=>{
-    render(<VFTable rowData={rowData} columnDefs={columnDefs} ref={ref} />);
+    render(<VFTable rowData={rowData} columnDefs={columnDefs} ref={ref}  onColumnChange={jest.fn()}/>);
 
     const table = screen.getByRole('table');
     expect(table).toBeInTheDocument();
   })
 
   it("Should export the grid data to excel",()=>{
-    render(<VFTable rowData={rowData} columnDefs={columnDefs} ref={ref} />);
+    render(<VFTable rowData={rowData} columnDefs={columnDefs} ref={ref}  onColumnChange={jest.fn()}/>);
     ref.current.api.exportDataAsExcel()
     
   })

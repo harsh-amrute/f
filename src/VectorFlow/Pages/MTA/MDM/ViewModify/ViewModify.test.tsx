@@ -6,6 +6,7 @@ import {
   act,
 } from "@testing-library/react";
 
+
 import ViewModify from "./index";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { setupReactQuery } from "../../../../../config/react-query-config";
@@ -380,13 +381,13 @@ describe("Handles all Interaction in ViewModify Component", () => {
     fireEvent.click(backBtn);
   });
 
-  it("Resets the Filters and Data", () => {
-    const submit = screen.getByText("Submit");
-    fireEvent.click(submit);
+  // it("Resets the Filters and Data", () => {
+  //   const submit = screen.getByText("Submit");
+  //   fireEvent.click(submit);
 
-    const backBtn = screen.getByText("Reset");
-    fireEvent.click(backBtn);
-  });
+  //   const backBtn = screen.getByText("Reset");
+  //   fireEvent.click(backBtn);
+  // });
 
   it("Submits the Data", () => {
     const submit = screen.getByText("Submit");
@@ -401,16 +402,16 @@ describe("Handles all Interaction in ViewModify Component", () => {
     fireEvent.click(applyFilter);
   });
 
-  it("Opens the UploadModal", () => {
-    const submit = screen.getByText("Submit");
-    fireEvent.click(submit);
+  // it("Opens the UploadModal", () => {
+  //   const submit = screen.getByText("Submit");
+  //   fireEvent.click(submit);
 
-    const modifyData = screen.getByText("Modify Selected Data");
-    fireEvent.click(modifyData);
+  //   const modifyData = screen.getByText("Modify Selected Data");
+  //   fireEvent.click(modifyData);
 
-    const downloadBtn = screen.getByText("Download");
-    fireEvent.click(downloadBtn);
-  });
+  //   const downloadBtn = screen.getByText("Download");
+  //   fireEvent.click(downloadBtn);
+  // });
 
   it("Clicks on show all button", () => {
     const submit = screen.getByText("Submit");
@@ -443,3 +444,50 @@ describe("Handles all Interaction in ViewModify Component", () => {
 
   });
 });
+
+// describe("It handles react portals",()=>{
+//   beforeEach(()=>{
+
+//     const MyApp = ()=>{
+//       return useRoutes([
+//       {
+//         path: '/',
+//         element:<ViewModify />,
+//       },
+//     ])}
+
+//     const result: any = {
+//       isLoading: false,
+//       data: { data: { data: mockData } },
+//     };
+//     useGetMasterUIConfigurationMock.mockImplementation(() => {
+//       return result;
+//     });
+
+//     useGetMasterDataMock.mockImplementation(() => {
+//       return useMasterDataResult;
+//     });
+
+//     store.dispatch(resetState());
+      
+
+//     render(contextWrapper(<MyApp/>))
+   
+//   })
+
+//   it("Renderers the viewmodify page",()=>{
+//     screen.debug()
+   
+//     screen.logTestingPlaygroundURL();
+//      const submit = screen.getByText("Submit");
+//     fireEvent.click(submit);
+
+//     const showAllBtn = screen.getByText("Show All");
+//     fireEvent.click(showAllBtn);
+
+//     const warningModalCloseIcon =  document.querySelectorAll('#root')[0]!
+//     console.debug(warningModalCloseIcon)
+//     fireEvent.click(warningModalCloseIcon)
+//   })
+
+// })

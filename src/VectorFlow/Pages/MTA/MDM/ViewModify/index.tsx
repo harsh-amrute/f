@@ -1,9 +1,9 @@
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
-import { TaskBarContainer, SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup } from "./styles";
+import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
-import { generateOptions, mapMasterToColumnDefs } from "../../../../../helpers/utils";
+import { generateOptions } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify";
@@ -12,6 +12,7 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import WarningModal from './WarningModal'
 import { notifyError } from "../../../../../helpers/notify";
 import UploadModal from "./UploadModal";
+import VFTaskBar from "./VFTaskbar";
 
 
 
@@ -20,6 +21,7 @@ import UploadModal from "./UploadModal";
     const themeUi = user?.user?.theme_ui;
    
     // const disabled=true;
+    const dummyFn =()=>{return}
 
     const {
         selectedMasters,
@@ -47,11 +49,12 @@ import UploadModal from "./UploadModal";
         toggleUploadModal,
         onWarningModalClose,
         onWarningModalSuccess,
-        ref
-
+        exportToExcel,
+        colDefs,
+        onColumnChange,
+        ref,
     } = useViewModify();
-    
-    
+
 
     return (
       <>
@@ -142,7 +145,8 @@ import UploadModal from "./UploadModal";
                 <VFTable
                   ref={ref}
                   rowData={rowData}
-                  columnDefs={mapMasterToColumnDefs(activeMaster.fields)}
+                  columnDefs={colDefs}
+                  onColumnChange={onColumnChange}
                 />
             </VFTab>
           }
@@ -151,33 +155,17 @@ import UploadModal from "./UploadModal";
         {isUploadModalOpen && <UploadModal openModal={isUploadModalOpen} onCloseModal={()=>toggleUploadModal(false)} onDownload={()=>toggleUploadModal(false)} onUpload={()=>toggleUploadModal(false)}/>}
         {
           !isSelectMasterOpen && 
-            <TaskBarContainer>
-                <VFButtonOutline onClick={()=>setIsSelectMasterOpen(true)} themeUi={themeUi} width={50} onHoverChild={
-                  <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-                  <img src={"/assets/img/VectorFLOW/NMS/back-btn-white.svg"} data-testid="back-btn"/>
-                </div>
-                }>
-                  <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-                    <img src={"/assets/img/VectorFLOW/NMS/back-btn.svg"} data-testid="back-btn"/>
-                  </div>
-                </VFButtonOutline>
-              {/* <VFButtonOutline onClick={()=>console.log("hello")} themeUi={themeUi} disabled={disabled} width={164}>
-                  <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-                    <img src={disabled ? "/assets/img/VectorFLOW/NMS/edit-online-disabled.svg" : "/assets/img/VectorFLOW/NMS/edit-online.svg"} style={{marginRight:'11px'}}/>
-                    <p>Edit Online</p>
-                  </div>
-              </VFButtonOutline> */}
-              <VFButtonOutline onClick={()=>console.log(ref.current?.api.exportDataAsExcel())} themeUi={themeUi} width={130}>
-                  Reset
-              </VFButtonOutline>
-              <VFButton onClick={()=>toggleUploadModal(true)} themeUi={themeUi} disabled={false} width={164}>
-                  Modify Selected Data
-              </VFButton>
-              {/* <VFButton onClick={()=>console.log("hello")} themeUi={themeUi} disabled={false} width={160}>
-                  Submit
-              </VFButton> */}
-              
-            </TaskBarContainer>
+          <VFTaskBar
+            masterProgress="view"
+            editOnline={false}
+            onEditOnline={dummyFn}
+            onBack={()=>setIsSelectMasterOpen(true)}
+            onClearAndExportErrors={dummyFn}
+            onModifyData={()=>toggleUploadModal(true)}
+            onExportData={exportToExcel}
+            onSubmit={dummyFn}
+            onDeleteSelected={dummyFn}
+          />
         }
       </>
     )

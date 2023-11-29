@@ -389,9 +389,16 @@ export const mapMasterToColumnDefs = (fields:Field[])=>{
   result = fields.map((f)=>{
     return{
       field:f.key,
+      colId:f.key,
       headerName:f.displayName,
       hide:!f.visible,
       minWidth:180,
+      floatingFilter: true,
+      filter: "agMultiColumnFilter",
+      cellStyle: {
+        "text-align": "center",
+      },
+      flex: 1,
     }
   })
   return result

@@ -2,7 +2,7 @@ import {
     GridApi,
     ColumnApi,
     ColDef
-} from 'ag-grid-community'
+} from 'ag-grid-enterprise'
 export interface MDMStore{
     options:Option[],
     selectedOptions:Option[],
@@ -10,6 +10,7 @@ export interface MDMStore{
     tabs:Tab[],
     activeMaster:Master,
     filters:Filter[]
+    colDefs:ColDef[]
 }
 
 
@@ -61,8 +62,9 @@ export interface PaginationPayload {
 
 export interface VFtableProps{
     rowData:Array<any>
-    columnDefs:ColDef[]
+    columnDefs:ColDef[] | undefined
     ref:any
+    onColumnChange:()=>void
 }
 
 export interface GridRef{

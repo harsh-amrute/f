@@ -1,9 +1,9 @@
 import {useState, useEffect, useRef} from 'react';
 import { type Master, type Option, type Field, type Tab, type Filter, type GetMasterDataPayload, type GridRef } from "../../../../types/MDM";
-import {generateRandomId, generateOptions, areMasterFiltersValid } from "../../../../../helpers/utils";
+import {generateRandomId, generateOptions, areMasterFiltersValid, mapMasterToColumnDefs } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters} from '../../../../../redux/features/MDM';
+import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters, setColDefs} from '../../../../../redux/features/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError } from '../../../../../helpers/notify';
 
@@ -18,6 +18,7 @@ const useViewModify = () => {
     const tabs = useSelector((state:RootState) => state.mdm.tabs);
     const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster);
     const filters = useSelector((state:RootState) => state.mdm.filters);
+    const colDefs = useSelector((state:RootState) => state.mdm.colDefs);
 
     const [rowData,setRowData] = useState([]);
     const [tempRowData,setTempRowData] = useState([])
@@ -43,7 +44,6 @@ const useViewModify = () => {
 
 
     useEffect(()=>{
-
         if(filterButtonStatus.length !== 0) return;
   
         if(!isLoading){
@@ -88,6 +88,7 @@ const useViewModify = () => {
             return filterObj;
         })
         dispatch(setFilters([...filters]));
+        dispatch(setColDefs(mapMasterToColumnDefs(selectedMasters[0].fields)))
         setIsSelectMasterOpen(false);
 
     }
@@ -106,6 +107,7 @@ const useViewModify = () => {
         }
         dispatch(setTabs([...newTabs]));
         dispatch(setSelectedMasters([...newTabs]))
+        dispatch(setColDefs(mapMasterToColumnDefs(newTabs[0].fields)))
         setFilterButtonStatus([...newTabs])
       }
 
@@ -128,6 +130,7 @@ const useViewModify = () => {
       const handleApplyFilter =async (showAll?:boolean) => {
         const currMasterFilters = filters.filter((f:Filter) =>f.masterId === activeMaster.id)
         if(!areMasterFiltersValid(currMasterFilters) && !showAll){
+          console.log("In IF")
           return notifyError('Filter cannot be empty')
         }
         
@@ -142,7 +145,6 @@ const useViewModify = () => {
           }
         }
         const myData =  await getMasterData(payload);
-        console.debug(myData.data)
         setRecordCount(myData.data.recordCount)
         toggleWarningModal(true)
         setTempRowData(myData.data.data)
@@ -157,6 +159,17 @@ const useViewModify = () => {
         toggleWarningModal(false)
       }
 
+      const exportToExcel = ()=>{
+        ref.current?.api.exportDataAsExcel()
+      }
+
+      const onColumnChange = ()=>{
+        const localColDefs = ref.current?.api.getColumnDefs()
+        if (ref.current && localColDefs) {
+          dispatch(setColDefs(localColDefs));
+        }
+      }
+    
 
     return {
         selectedMasters,
@@ -186,7 +199,10 @@ const useViewModify = () => {
         isUploadModalOpen,
         toggleUploadModal,
         recordCount,
-        ref
+        colDefs,
+        exportToExcel,
+        onColumnChange,
+        ref,
     }
 }
 
