@@ -10,7 +10,7 @@ import VFButtonOutline from "../../commons/VFButtonOutline";
 import { useNavigate } from "react-router";
 import { type Master, type Option } from "../../../../VectorFlow/types/MDM";
 import { useDispatch } from 'react-redux';
-import { setSelectedOptions, setSelectedMasters } from '../../../../redux/features/MDM';
+import { setSelectedOptions, setSelectedMasters, setViewModifyProgressState } from '../../../../redux/features/MDM';
 import { notifyError } from "../../../../helpers/notify";
 
 interface SelectMasterProps{
@@ -43,6 +43,7 @@ const SelectMaster = (
 
     const [tempMasters,setTempMasters] = useState<Master[]>([])
 
+
     useEffect(()=>{
 
         if(selectedMasters?.length === 0 && data) {
@@ -58,18 +59,14 @@ const SelectMaster = (
             </SCLoaderContainer>
         )
     }
-    // console.debug(filterButtonStatus);
 
     const onClickFilterButton = (currentMaster:Master) => {
-        // console.debug(getFilterButtonStatus(currentMaster),tempMasters)
-        console.log(currentMaster,filterButtonStatus)
 
         if(getFilterButtonStatus(currentMaster) && !tempMasters.find((t:Master)=>t.id===currentMaster.id)){
             notifyError('You can only add new master')
             return
         }
         else{
-            console.debug('else 0')
             // console.debug(filterButtonStatus,currentMaster)
             setTempMasters([...tempMasters,currentMaster])
         }
@@ -77,12 +74,10 @@ const SelectMaster = (
         
         
         if(getFilterButtonStatus(currentMaster)){
-            console.log('in if')
             setFilterButtonStatus(filterButtonStatus.filter((master:Master)=>master.id !== currentMaster.id));
             dispatch(setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id !== currentMaster.id))]))
         }
         else{
-            console.log('else');
             setFilterButtonStatus([...filterButtonStatus,currentMaster]);
             if(selectedMasters.find((selectedMaster:Master)=>selectedMaster.id === currentMaster.id)){
                 dispatch(setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id === currentMaster.id))]));
@@ -103,6 +98,11 @@ const SelectMaster = (
 
     const setValue = (option:any) => {
         dispatch(setSelectedOptions(option));
+    }
+
+    const onCancel = () => {
+        dispatch(setViewModifyProgressState('default'));
+        navigate('/master-data-management/control-panel');
     }
 
     return(
@@ -135,7 +135,7 @@ const SelectMaster = (
                 })}
             </SCCardContainer>
             <SCButtonContainer>
-                <VFButtonOutline onClick={()=>navigate('/master-data-management/control-panel')} themeUi={themeUi} width={141} disabled={false}>
+                <VFButtonOutline onClick={onCancel} themeUi={themeUi} width={141} disabled={false}>
                     Cancel
                 </VFButtonOutline>
                 <VFButton onClick={() =>{ handleSubmit() }} themeUi={themeUi} width={141}>

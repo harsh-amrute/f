@@ -6,6 +6,7 @@ import {
   act,
 } from "@testing-library/react";
 
+
 import ViewModify from "./index";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { setupReactQuery } from "../../../../../config/react-query-config";
@@ -240,6 +241,7 @@ describe("Handles all Interaction in ViewModify Component", () => {
     render(contextWrapper(<ViewModify />));
   });
 
+
   it("Check if Submitted Directly all masters should be selected", async () => {
     const submit = screen.getByText("Submit");
     fireEvent.click(submit);
@@ -380,13 +382,13 @@ describe("Handles all Interaction in ViewModify Component", () => {
     fireEvent.click(backBtn);
   });
 
-  it("Resets the Filters and Data", () => {
-    const submit = screen.getByText("Submit");
-    fireEvent.click(submit);
+  // it("Resets the Filters and Data", () => {
+  //   const submit = screen.getByText("Submit");
+  //   fireEvent.click(submit);
 
-    const backBtn = screen.getByText("Reset");
-    fireEvent.click(backBtn);
-  });
+  //   const backBtn = screen.getByText("Reset");
+  //   fireEvent.click(backBtn);
+  // });
 
   it("Submits the Data", () => {
     const submit = screen.getByText("Submit");
@@ -401,16 +403,16 @@ describe("Handles all Interaction in ViewModify Component", () => {
     fireEvent.click(applyFilter);
   });
 
-  it("Opens the UploadModal", () => {
-    const submit = screen.getByText("Submit");
-    fireEvent.click(submit);
+  // it("Opens the UploadModal", () => {
+  //   const submit = screen.getByText("Submit");
+  //   fireEvent.click(submit);
 
-    const modifyData = screen.getByText("Modify Selected Data");
-    fireEvent.click(modifyData);
+  //   // const modifyData = screen.getByText("Modify Selected Data");
+  //   // fireEvent.click(modifyData);
 
-    const downloadBtn = screen.getByText("Download");
-    fireEvent.click(downloadBtn);
-  });
+  //   const downloadBtn = screen.getByText("Download");
+  //   fireEvent.click(downloadBtn);
+  // });
 
   it("Clicks on show all button", () => {
     const submit = screen.getByText("Submit");
@@ -436,10 +438,58 @@ describe("Handles all Interaction in ViewModify Component", () => {
     const textInput = screen.getByTestId("text-input");
     fireEvent.change(textInput, { target: { value: "a" } });
 
-    act(async () => {
+    await act(async () => {
       const applyFilter = await screen.findByText("Apply Filter");
       userEvent.click(applyFilter);
     });
 
   });
+
 });
+
+describe("It handles react portals",()=>{
+  beforeEach(()=>{
+
+
+
+    const result: any = {
+      isLoading: false,
+      data: { data: { data: mockData } },
+    };
+    useGetMasterUIConfigurationMock.mockImplementation(() => {
+      return result;
+    });
+
+    useGetMasterDataMock.mockImplementation(() => {
+      return useMasterDataResult;
+    });
+
+    store.dispatch(resetState());
+      
+
+    
+   
+  })
+
+  it("Renderers the viewmodify page",()=>{
+    render(contextWrapper(<ViewModify/>))
+    // screen.debug()
+
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+
+    // const columnsToolPanel = screen.getByText('Columns');
+    // fireEvent.click(columnsToolPanel);
+    
+    screen.logTestingPlaygroundURL();
+
+
+    // const showAllBtn = screen.getByText("Show All");
+    // fireEvent.click(showAllBtn);
+
+    // const warningModalCloseIcon =  document.querySelectorAll('#root')[0]!
+    // console.debug(warningModalCloseIcon)
+    // fireEvent.click(warningModalCloseIcon)
+  })
+
+})

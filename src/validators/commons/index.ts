@@ -43,7 +43,7 @@ export const generateCommonMessages = (key:string) => {
 
 export const commonValidator = (value:any,helper:any)=>{
 
-    if(IsInputHasPipe(value) && IsInputHasPipe(value)) return helper.error('any.commapipe');
+    if(IsInputHasComma(value) && IsInputHasPipe(value)) return helper.error('any.commapipe');
     if(IsInputHasComma(value)) return helper.error('any.comma');
     if(IsInputHasPipe(value)) return helper.error('any.pipe');
 

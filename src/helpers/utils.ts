@@ -394,6 +394,7 @@ export const parseExcelData = async (file:any,master:Master) => {
   const masterSchema = masterIdToSchemaMapper[master.id.toString()]
 
   const checkError = (row:object) => {
+    console.log(row);
     const {error,warning} = masterSchema.validate(row) ;    
     return {error,warning};
   }
@@ -411,8 +412,7 @@ export const parseExcelData = async (file:any,master:Master) => {
   let rowObj:any = {};
   let temp = 0;
   data.slice(1).map((row:any)=>{
-    console.log(row)
-
+    
     row.map((value:any)=>{
       const attributeName = headerKeys[temp];
       rowObj[attributeName.toString()] = value;
@@ -431,37 +431,47 @@ export const parseExcelData = async (file:any,master:Master) => {
     
   })
 
-  console.log(result);
   return result;
 }
 
-export const mapMasterToColumnDefs = (fields:Field[])=>{
+export const mapMasterToColumnDefs = (fields:Field[],error?:boolean)=>{
   let result:ColDef[] = []
   const customColDefs:ColDef[] = [
     {
       field:'warning',
       headerName:'Warning',
       floatingFilter:false,
-      initialHide:true,
+      initialHide:error ? false : true,
       cellRenderer:WarningCell,
-      minWidth:200
+      minWidth:200,
+      suppressColumnsToolPanel:true,
+      wrapText:true,
+      autoHeight:true,
     },
     {
       field:'error',
       headerName:'Error',
       floatingFilter:false,
       cellRenderer:ErrorCell,
-      initialHide:true,
-      minWidth:200
+      initialHide:error ? false : true,
+      suppressColumnsToolPanel:true,
+      wrapText:true,
+      autoHeight:true,
     }
 ]
   result = fields.map((f)=>{
     return{
       field:f.key,
-      headerName:f.displayName,
       colId:f.key,
+      headerName:f.displayName,
       hide:!f.visible,
-      minWidth:180
+      minWidth:180,
+      floatingFilter: true,
+      filter: "agMultiColumnFilter",
+      cellStyle: {
+        "text-align": "center",
+      },
+      flex: 1,
     }
   })
   return [...customColDefs,...result];
@@ -475,4 +485,10 @@ export const areMasterFiltersValid = (masterFilters:Filter[])=>{
     }
   }
   return true
+}
+
+
+export const mapStateFiltersToPayload = (filters:Filter[]) => {
+  return filters.map((filter:Filter)=>({attributeName:filter.field,op:filter.operator,value:filter.text}))
+
 }

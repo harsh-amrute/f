@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit'
-import {type MDMStore, type Option, type Master, type Tab, type Filter} from '../../../VectorFlow/types/MDM';   
+import {type MDMStore, type Option, type Master, type Tab, type Filter, ViewModifyProgressState} from '../../../VectorFlow/types/MDM';   
+import { ColDef } from 'ag-grid-enterprise';
 
 const initialState:MDMStore = {
     options:[],
@@ -8,7 +9,9 @@ const initialState:MDMStore = {
     selectedMasters:[],
     tabs:[],
     activeMaster:{id:0,name:'',fields:[]},
-    filters:[]
+    filters:[],
+    colDefs:[],
+    ViewModifyProgressState:'default'
 }
 
 export const mdmSlice = createSlice({
@@ -33,6 +36,12 @@ export const mdmSlice = createSlice({
       setFilters: (state,action: PayloadAction<Array<Filter>>) => {
         state.filters = action.payload;
       },
+      setColDefs:(state,action:PayloadAction<Array<ColDef>>)=>{
+        state.colDefs = action.payload;
+      },
+      setViewModifyProgressState:(state,action:PayloadAction<ViewModifyProgressState>)=>{
+        state.ViewModifyProgressState = action.payload;
+      },
       resetState:(state) => {
         state.options=[];
         state.selectedOptions=[];
@@ -40,6 +49,8 @@ export const mdmSlice = createSlice({
         state.tabs=[];
         state.activeMaster={id:0,name:'',fields:[]};
         state.filters=[];
+        state.colDefs=[];
+        state.ViewModifyProgressState = "default";
       }
       
     },
@@ -52,6 +63,8 @@ export const mdmSlice = createSlice({
     setTabs,
     setActiveMaster,
     setFilters,
+    setColDefs,
+    setViewModifyProgressState,
     resetState
 } = mdmSlice.actions;
 

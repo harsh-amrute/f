@@ -2,8 +2,10 @@ import {
     GridApi,
     ColumnApi,
     ColDef
-} from 'ag-grid-community'
+} from 'ag-grid-enterprise'
 import Joi from 'joi'
+
+export type ViewModifyProgressState = "default" | "view" | "error" | "uploaded" | "submitted";
 export interface MDMStore{
     options:Option[],
     selectedOptions:Option[],
@@ -11,6 +13,8 @@ export interface MDMStore{
     tabs:Tab[],
     activeMaster:Master,
     filters:Filter[]
+    colDefs:ColDef[],
+    ViewModifyProgressState:ViewModifyProgressState
 }
 
 
@@ -51,7 +55,7 @@ export interface GetMasterDataPayload {
     name:string,
     filters:Array<{attributeName:string,op:string,value:string}>,
     fields:Array<{key:string}>,
-    paginationParameter:PaginationPayload
+    paginationParameter?:PaginationPayload | {}
     
 }
 
@@ -62,8 +66,9 @@ export interface PaginationPayload {
 
 export interface VFtableProps{
     rowData:Array<any>
-    columnDefs:ColDef[]
+    columnDefs:ColDef[] | undefined
     ref:any
+    onColumnChange:()=>void
 }
 
 export interface GridRef{
@@ -72,4 +77,12 @@ export interface GridRef{
 }
 export interface MasterIdToSchema{
     [key: string]: Joi.ObjectSchema<any>
+}
+
+
+export interface QueryFilteredDataConfigs{
+    filters:Array<{attributeName:string,op:string,value:string}>,
+    fields:Array<{key:string}>
+    showAll?:boolean,
+    pagination?:boolean
 }
