@@ -1,14 +1,14 @@
 import {useState, useEffect, useRef} from 'react';
-import { type Master, type Option, type Field, type Tab, type Filter, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs } from "../../../../types/MDM";
+import { type Master, type Option, type Field, type Tab, type Filter, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, ViewModifyProgressState } from "../../../../types/MDM";
 import {generateRandomId, generateOptions, areMasterFiltersValid, parseExcelData,mapMasterToColumnDefs, mapStateFiltersToPayload } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters, setColDefs, setViewModifyProgressState} from '../../../../../redux/features/MDM';
 import type { RootState } from '../../../../../redux/store/store';
-import { notifyError } from '../../../../../helpers/notify';
+import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 import { AgGridReactProps } from 'ag-grid-react';
-import { ColDef } from 'ag-grid-enterprise';
+import { ColDef, Column,IServerSideDatasource,IServerSideGetRowsParams,IServerSideGetRowsRequest } from 'ag-grid-enterprise';
 
 const useViewModify = () => {
 
@@ -58,6 +58,48 @@ const useViewModify = () => {
       }
     }
 
+    
+    // function (allData: any[]) {
+    //   return {
+    //     getData: (request: IServerSideGetRowsRequest) => {
+    //       // in this simplified fake server all rows are contained in an array
+    //       // const requestedRows = allData.slice(request.startRow, request.endRow);
+    //       console.log(request);
+    //       return {
+    //         success: true,
+    //         rows: [],
+    //       };
+    //     },
+    //   };
+    // }
+
+    // const createServerSideDatasource = () => {
+    //   return {
+    //     getRows: async (params:IServerSideGetRowsParams) => {
+    //       console.log('[Datasource] - rows requested by grid: ', params.request);
+    //       // get data for request from our fake server
+    //       const payloadConfigs:QueryFilteredDataConfigs = {
+    //         filters:[],
+    //         fields:[{key:"SKUCode"},{key:"SKUDescription"}],
+    //         showAll:true,
+    //         pagination:true
+    //       }
+    //       const response = await queryFilteredData(payloadConfigs);
+    //       console.log(response);
+    //       params.success({rowData:response.data.data})
+    //       // simulating real server call with a 500ms delay
+    //       // setTimeout(() => {
+    //       //   if (response.success) {
+    //       //     // supply rows for requested block to grid
+    //       //     params.success({ rowData: response.rows });
+    //       //   } else {
+    //       //     params.fail();
+    //       //   }
+    //       // }, 500);
+    //     },
+    //   };
+    // };
+
     const sideBar = {
       toolPanels: [
         {
@@ -94,10 +136,12 @@ const useViewModify = () => {
         if(downloadData) event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? activeMaster.name : downloadFileName});
       },
       rowSelection:'multiple',
-      suppressRowClickSelection:true
+      suppressRowClickSelection:true,
+      // rowModelType:'serverSide',
+      // serverSideDatasource:createServerSideDatasource(),
+      // paginationPageSize:10
   
     }
-    // console.log(colDefs);
 
     const tempAgGridProps:AgGridReactProps = {
       columnDefs:mapMasterToColumnDefs(activeMaster.fields,true),
@@ -107,6 +151,29 @@ const useViewModify = () => {
       }
     };
 
+    const addCheckBoxColDefs = () => {
+      ref.current?.api.setColumnDefs([
+        {
+          field:'checkbox',
+          headerName:'',
+          checkboxSelection:true,
+          headerCheckboxSelection:true,
+          headerCheckboxSelectionCurrentPageOnly:true
+        },
+        // {
+        //   field:'checkbox',
+        //   he
+        //   headerName:'Select Across All Pages',
+        //   // checkboxSelection:true,
+        //   headerCheckboxSelection:true
+        // },
+        ...colDefs
+      ]);
+    }
+    
+    if(ViewModifyProgressState === 'error'){
+      addCheckBoxColDefs();
+    }
 
     useEffect(()=>{
         if(filterButtonStatus.length !== 0) return;
@@ -160,17 +227,40 @@ const useViewModify = () => {
       }
 
     const handleSelectMasterSubmit = () => {
-        const selectedTabs = selectedMasters.map((master:Master) => {
-            return {
+      let selectedTabs = selectedMasters.map((master:Master) => {
+        return {
+        id:master.id,
+        name:master.name,
+        fields:master.fields,
+        status:'',
+        }
+      })
+      if(tabs.length === 0){
+        dispatch(setTabs([...selectedTabs]));
+        dispatch(setColDefs(mapMasterToColumnDefs(selectedMasters[0].fields)))
+     }
+      else{
+        selectedTabs = selectedMasters.map((master:Master)=>{
+          const oldTab = tabs.find((tab:Tab)=>tab.id === master.id);
+          if(oldTab) return oldTab;
+          return {
             id:master.id,
             name:master.name,
             fields:master.fields,
             status:'',
             }
         })
-        dispatch(setTabs([...selectedTabs]));
-        // setActiveMaster(selectedMasters.find((master:Master)=>master.id === selectedTabs[0].id))
-        dispatch(setActiveMaster(selectedMasters[0]));
+        
+        dispatch(setTabs(selectedTabs));
+        dispatch(setColDefs(mapMasterToColumnDefs(activeMaster.fields)))
+      }
+
+      if((activeMaster.fields.length === 0)) {
+        const firstInCompleteTab = selectedTabs.find((tab:Tab)=>tab.status!=='completed')
+        const firstInCompleteMaster = selectedMasters.find((master:Master)=>master.id === firstInCompleteTab?.id);
+        if(firstInCompleteMaster) dispatch(setActiveMaster(firstInCompleteMaster));
+      }
+
         const filters:Filter[] = selectedMasters.map((master:Master) => {
             const filterObj:Filter =  {
             id:generateRandomId(),
@@ -181,30 +271,49 @@ const useViewModify = () => {
             }
             return filterObj;
         })
-        dispatch(setFilters([...filters]));
-        if(ViewModifyProgressState === 'uploaded') dispatch(setColDefs([{field:'checkbox',headerName:'',checkboxSelection:true,headerCheckboxSelection:true},...mapMasterToColumnDefs(selectedMasters[0].fields)]))
-        else dispatch(setColDefs(mapMasterToColumnDefs(selectedMasters[0].fields)))
-        setIsSelectMasterOpen(false);
-        
 
+        dispatch(setFilters([...filters]));
+        setIsSelectMasterOpen(false);
+
+    }
+
+    const handleTabChange = (currTab: Tab) => {
+      if(currTab.status === 'completed') return;
+      const activeMaster = allMasters.find((master:Master) => master.id === currTab.id);
+      
+      
+      if(activeMaster && ["submitted","default","view"].includes(ViewModifyProgressState)) {
+        dispatch(setViewModifyProgressState('default'));
+        dispatch(setActiveMaster(activeMaster));
+        dispatch(setColDefs(mapMasterToColumnDefs(activeMaster.fields)))
+        setRowData([])
+      }
+      else{
+        notifyError("Please Submit the current master before switching.")
+      }
     }
     
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currTab:Tab) => {
         e.stopPropagation();
         const newTabs = tabs.filter((tab:Tab)=>tab.id !== currTab.id);
-        if(newTabs.length === 0){
+        const pendingMasters = newTabs.filter((tab:Tab)=>tab.status !== 'completed');
+        if(newTabs.length === 0 || pendingMasters.length === 0){
           setIsSelectMasterOpen(true);
           dispatch(setSelectedMasters([]))
-          setFilterButtonStatus([])
+          setFilterButtonStatus([]);
+          dispatch(setTabs([]));
           return;
         }
         if(currTab.id === activeMaster?.id ){
-            dispatch(setActiveMaster(tabs[1]))
+            dispatch(setViewModifyProgressState('default'));
+            setRowData([]);
         }
         dispatch(setTabs([...newTabs]));
-        dispatch(setSelectedMasters([...newTabs]))
-        dispatch(setColDefs(mapMasterToColumnDefs(newTabs[0].fields)))
-        setFilterButtonStatus([...newTabs])
+        dispatch(setSelectedMasters([...newTabs]));
+        dispatch(setActiveMaster(pendingMasters[0]))
+        dispatch(setColDefs(mapMasterToColumnDefs(pendingMasters[0].fields)))
+        setFilterButtonStatus([...newTabs]);
+        
       }
     
     const addNewMaster = ()=>{
@@ -262,7 +371,30 @@ const useViewModify = () => {
         toggleWarningModal(false)
       }
 
+      
+
+      const removeCheckboxColDefs = () => {
+        const newColDefs:any = ref.current?.api.getColumnDefs()?.filter((column:any)=>column.field !== 'checkbox');
+        dispatch(setColDefs(newColDefs));
+        
+      }
       const onUploadMaster = async () => {
+
+        const handleErrorAndWarning = (errorExists?:object,warningExists?:object) => {
+          if(errorExists){
+            ref.current?.columnApi.setColumnVisible('error',true);
+            dispatch(setViewModifyProgressState('error'));
+          }
+          if(warningExists){
+            ref.current?.columnApi.setColumnVisible('warning',true);
+            dispatch(setViewModifyProgressState('error'));
+          }
+          // else{
+          //   dispatch(setViewModifyProgressState('uploaded'));
+          //   addCheckBoxColDefs()
+          // }
+        }
+
         if(!file){
           notifyError('Please select a file to upload.');
           return
@@ -271,24 +403,15 @@ const useViewModify = () => {
         const result = await parseExcelData(file,activeMaster);
         const ifErrorExists = result.find((data:any)=>data.error);
         const ifWarningExists = result.find((data:any)=>data.warning);
-        if(ifErrorExists) {
-          ref.current?.columnApi.setColumnVisible('error',true);
-          dispatch(setViewModifyProgressState('error'));
- 
+        handleErrorAndWarning(ifErrorExists,ifWarningExists);
+        if(!ifErrorExists && !ifWarningExists){
+          dispatch(setViewModifyProgressState('uploaded'));
+          addCheckBoxColDefs();
         }
-        else{
-          ref.current?.columnApi.setColumnVisible('error',false);
-        }
-        if(ifWarningExists){
-          ref.current?.columnApi.setColumnVisible('warning',true);
-          dispatch(setViewModifyProgressState('error'));
-        }
-        else{
-          ref.current?.columnApi.setColumnVisible('warning',false);
-        }
+        // addCheckBoxColDefs();
         setRowData(result);
         toggleUploadModal(false);
-
+        notifySuccess(`Data Uploaded Successfully`);
 
       }
 
@@ -297,10 +420,10 @@ const useViewModify = () => {
         const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
       
         const payloadFields:any = getCurrentVisbileColumns();
-        // console.log(getCurrentVisbileColumns());
         const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:false,pagination:false}); 
         setRowData(result.data.data);
         setDownloadData(true);
+        notifySuccess(`Data Exported Successfully`);
         
       }
 
@@ -315,15 +438,38 @@ const useViewModify = () => {
             validData.push(data);
           }
         });
-        console.log(validData);
         setTempGridData(erroneusData);
         setTempDownloadData(true);
         ref.current?.columnApi.setColumnVisible('error',false);
         ref.current?.columnApi.setColumnVisible('warning',false);
-        ref.current?.api.setColumnDefs([{field:'checkbox',headerName:'',checkboxSelection:true,headerCheckboxSelection:true},...colDefs])
+        addCheckBoxColDefs();
         setRowData(validData);
         dispatch(setViewModifyProgressState('uploaded'));
         
+      }
+      
+      const deleteSelected = () => {
+        const selectedRows = ref.current?.api.getSelectedRows().map((row)=>JSON.stringify(row));
+        const updatedRows = rowData.filter((row)=>!selectedRows?.includes(JSON.stringify(row)));
+        setRowData(updatedRows);
+        notifySuccess(`${selectedRows?.length} records deleted successfully`);
+      }
+
+      const onSubmit = () => {
+        const nextMasterIndex = selectedMasters.findIndex((master:Master)=>master.id === activeMaster.id) + 1;
+        if(nextMasterIndex < selectedMasters.length) {
+          const newTabs = [...tabs].map((tab:Tab)=>{
+            const temp = {...tab}
+            if(temp.id === activeMaster.id){
+              temp.status = 'completed'
+            }
+            return temp;
+          });
+          dispatch(setTabs(newTabs));
+        }
+        removeCheckboxColDefs();
+        dispatch(setViewModifyProgressState('submitted'));
+        notifySuccess(`Modifications Submitted Successfully`);
       }
 
       
@@ -335,6 +481,7 @@ const useViewModify = () => {
         setDownloadData(false);
         setTempDownloadData(false);
       }
+
     
 
     return {
@@ -350,6 +497,7 @@ const useViewModify = () => {
         setFilterButtonStatus,
         getSelectedMasters,
         handleSelectMasterSubmit,
+        handleTabChange,
         handleTabClose,
         addNewMaster,  
         handleOnAddFilter,
@@ -381,7 +529,9 @@ const useViewModify = () => {
         ref,
         tempRef,
         tempGridData,
-        tempAgGridProps
+        tempAgGridProps,
+        deleteSelected,
+        onSubmit
     }
 }
 

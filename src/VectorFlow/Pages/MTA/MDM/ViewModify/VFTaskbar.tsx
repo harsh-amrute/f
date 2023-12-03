@@ -54,7 +54,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
             case "submitted":
                 return [
                     {
-                         label:'File Uploaded',
+                        label:'File Uploaded',
                         status:'completed',
                         description:''
                     },
@@ -137,7 +137,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                        Delete Selected
                     </VFButtonOutline>
                     <VFButton onClick={onSubmit} themeUi={themeUi} disabled={false} width={139}>
-                        Submit All
+                        Submit
                     </VFButton>
                     <div style={{
                         flex:7,

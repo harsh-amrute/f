@@ -36,3 +36,14 @@
 .ag-header-cell-label{
     justify-content: center;
 }
+
+.selected-record-count{
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    color: #6E6969;
+    padding-top: 24px;
+
+}

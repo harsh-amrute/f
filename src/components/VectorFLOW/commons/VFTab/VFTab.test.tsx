@@ -166,6 +166,7 @@ const contextWrapper = (children:ReactNode) => {
 const activeMaster:Master = allMasters[0];
 const themeUi = 'NOIRFUSION';
 const handleTabClose = jest.fn();
+const handleTabChange = jest.fn();
 const newTabHandler = jest.fn();
 
 
@@ -174,7 +175,8 @@ const props = {
   activeMaster:activeMaster,
   tabs:tabs,
   themeUi:themeUi,
-  onClose:handleTabClose,
+  onTabChange:handleTabChange,
+  onTabClose:handleTabClose,
   newTabTitle:'Add Master',
   newTabIcon:"/assets/img/VectorFLOW/NMS/add-circle.svg",
   newTabHandler:newTabHandler

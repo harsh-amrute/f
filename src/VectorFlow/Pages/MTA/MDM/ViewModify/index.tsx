@@ -37,6 +37,7 @@ import VFTaskBar from "./VFTaskbar";
         filterButtonStatus,
         setFilterButtonStatus,
         handleSelectMasterSubmit,
+        handleTabChange,
         handleTabClose,
         addNewMaster,
         handleOnAddFilter,
@@ -62,7 +63,9 @@ import VFTaskBar from "./VFTaskbar";
         onClearExportError,
         agGridProps,
         ref,
-        tempAgGridProps
+        tempAgGridProps,
+        deleteSelected,
+        onSubmit
     } = useViewModify();
 
     useEffect(()=>{
@@ -95,7 +98,8 @@ import VFTaskBar from "./VFTaskbar";
               activeMaster={activeMaster}
               tabs={tabs}
               themeUi={themeUi}
-              onClose={handleTabClose}
+              onTabChange={handleTabChange}
+              onTabClose={handleTabClose}
               newTabTitle={"Add Master"}
               newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
               newTabHandler={addNewMaster}
@@ -162,11 +166,6 @@ import VFTaskBar from "./VFTaskbar";
                 />
                 <div style={{display:'none'}}>                
                   <VFTable
-                    // ref={tempRef}
-                    // onRowDataUpdated={(event)=>{
-                    //   if(downloadData) event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? activeMaster.name : downloadFileName});
-                    // }}
-                    // rowData={tempGridData}
                     {...tempAgGridProps}
                   />
                 </div>
@@ -204,8 +203,8 @@ import VFTaskBar from "./VFTaskbar";
             onClearAndExportErrors={onClearExportError}
             onModifyData={()=>toggleUploadModal(true)}
             onExportData={exportToExcel}
-            onSubmit={dummyFn}
-            onDeleteSelected={dummyFn}
+            onSubmit={onSubmit}
+            onDeleteSelected={deleteSelected}
           />
         }
       </>
