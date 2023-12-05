@@ -11,10 +11,11 @@ const initialState:MDMStore = {
     activeMaster:{id:0,name:'',fields:[]},
     filters:[],
     colDefs:[],
-    ViewModifyProgressState:'default'
+    ViewModifyProgressState:'default',
+    isSelectMasterOpen:true,
 }
 
-export const mdmSlice = createSlice({
+export const mdmSlice = (initialState:MDMStore) => (createSlice({
     name: 'mdm',
     initialState,
     reducers: {
@@ -42,6 +43,9 @@ export const mdmSlice = createSlice({
       setViewModifyProgressState:(state,action:PayloadAction<ViewModifyProgressState>)=>{
         state.ViewModifyProgressState = action.payload;
       },
+      setIsSelectMasterOpen:(state,action:PayloadAction<boolean>)=>{
+        state.isSelectMasterOpen = action.payload;
+      },
       resetState:(state) => {
         state.options=[];
         state.selectedOptions=[];
@@ -51,10 +55,10 @@ export const mdmSlice = createSlice({
         state.filters=[];
         state.colDefs=[];
         state.ViewModifyProgressState = "default";
-      }
-      
+        state.isSelectMasterOpen = true;
+      } 
     },
-  })
+  }))
 
   export const { 
     setOptions,
@@ -65,7 +69,8 @@ export const mdmSlice = createSlice({
     setFilters,
     setColDefs,
     setViewModifyProgressState,
+    setIsSelectMasterOpen,
     resetState
-} = mdmSlice.actions;
+} = mdmSlice(initialState).actions;
 
-  export default mdmSlice.reducer;
+  export default mdmSlice(initialState).reducer;

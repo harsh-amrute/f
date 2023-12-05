@@ -394,7 +394,6 @@ export const parseExcelData = async (file:any,master:Master) => {
   const masterSchema = masterIdToSchemaMapper[master.id.toString()]
 
   const checkError = (row:object) => {
-    console.log(row);
     const {error,warning} = masterSchema.validate(row) ;    
     return {error,warning};
   }
@@ -436,29 +435,29 @@ export const parseExcelData = async (file:any,master:Master) => {
 
 export const mapMasterToColumnDefs = (fields:Field[],error?:boolean)=>{
   let result:ColDef[] = []
-  const customColDefs:ColDef[] = [
-    {
-      field:'warning',
-      headerName:'Warning',
-      floatingFilter:false,
-      initialHide:error ? false : true,
-      cellRenderer:WarningCell,
-      minWidth:200,
-      suppressColumnsToolPanel:true,
-      wrapText:true,
-      autoHeight:true,
-    },
-    {
-      field:'error',
-      headerName:'Error',
-      floatingFilter:false,
-      cellRenderer:ErrorCell,
-      initialHide:error ? false : true,
-      suppressColumnsToolPanel:true,
-      wrapText:true,
-      autoHeight:true,
-    }
-]
+//   const customColDefs:ColDef[] = [
+//     {
+//       field:'warning',
+//       headerName:'Warning',
+//       floatingFilter:false,
+//       initialHide:error ? false : true,
+//       cellRenderer:WarningCell,
+//       minWidth:200,
+//       suppressColumnsToolPanel:true,
+//       wrapText:true,
+//       autoHeight:true,
+//     },
+//     {
+//       field:'error',
+//       headerName:'Error',
+//       floatingFilter:false,
+//       cellRenderer:ErrorCell,
+//       initialHide:error ? false : true,
+//       suppressColumnsToolPanel:true,
+//       wrapText:true,
+//       autoHeight:true,
+//     }
+// ]
   result = fields.map((f)=>{
     return{
       field:f.key,
@@ -474,7 +473,7 @@ export const mapMasterToColumnDefs = (fields:Field[],error?:boolean)=>{
       flex: 1,
     }
   })
-  return [...customColDefs,...result];
+  return result;
 }
 
 

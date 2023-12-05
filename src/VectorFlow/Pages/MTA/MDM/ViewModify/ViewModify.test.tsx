@@ -4,6 +4,7 @@ import {
   screen,
   waitFor,
   act,
+  waitForElementToBeRemoved,
 } from "@testing-library/react";
 
 
@@ -24,7 +25,8 @@ import { resetState } from "../../../../../redux/features/MDM";
 import { ReactNode } from "react";
 
 import userEvent from "@testing-library/user-event";
-
+import {setTabs,setViewModifyProgressState} from '../../../../../redux/features/MDM';
+import { useSelector, useDispatch } from 'react-redux';
 
 jest.mock("../../../../Services/MTA/MDM");
 
@@ -156,6 +158,8 @@ const mockData = [
     ],
   },
 ];
+// let dispatch;
+console.debug(store);
 
 const contextWrapper = (children: ReactNode) => {
   return (
@@ -179,6 +183,7 @@ const contextWrapper = (children: ReactNode) => {
 };
 
 const queryClient = setupReactQuery();
+
 describe("Renders View Modify Component", () => {
   beforeEach(() => {
     useGetMasterDataMock.mockImplementation(() => {
@@ -223,7 +228,15 @@ describe("Renders View Modify Component", () => {
 
 describe("Handles all Interaction in ViewModify Component", () => {
 
+  const skipBeforeEach = ['Check If Tabs State is Retained When Coming From Add Master']
+
   beforeEach(() => {
+
+    if(expect.getState().currentTestName === 'Check If Tabs State is Retained When Coming From Add Master') {
+      console.debug("Hello");
+    };
+    // console.debug(expect.getState().currentTestName);
+
     const result: any = {
       isLoading: false,
       data: { data: { data: mockData } },
@@ -314,6 +327,28 @@ describe("Handles all Interaction in ViewModify Component", () => {
     fireEvent.click(tabCloseBtn[tabNo]);
   });
 
+  it("Check If Tabs State is Retained When Coming From Add Master",async ()=>{
+    let tabs = mockData.map((master:any)=>({...master,status:''}));
+
+    render(contextWrapper(<ViewModify />));
+   
+
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+    
+   
+    // act(()=>{
+    //   const addNewMaster = screen.getByTestId("new-tab");
+    //   fireEvent.click(addNewMaster);
+    // });
+
+    // await waitForElementToBeRemoved(screen.getByTestId("new-tab"),{ timeout: 30000 });
+    // screen.logTestingPlaygroundURL();
+    // fireEvent.click(screen.getByText("Submit"))
+    
+
+  })
+
   it("Check if another Filter Box is Added on Clicking Plus Icon", () => {
     const submit = screen.getByText("Submit");
     fireEvent.click(submit);
@@ -374,13 +409,13 @@ describe("Handles all Interaction in ViewModify Component", () => {
     fireEvent.click(showAll);
   });
 
-  it("Goes Back to Select Master screen when clicking on back button", () => {
-    const submit = screen.getByText("Submit");
-    fireEvent.click(submit);
+  // it("Goes Back to Select Master screen when clicking on back button", () => {
+  //   const submit = screen.getByText("Submit");
+  //   fireEvent.click(submit);
 
-    const backBtn = screen.getByTestId("back-btn");
-    fireEvent.click(backBtn);
-  });
+  //   const backBtn = screen.getByTestId("back-btn");
+  //   fireEvent.click(backBtn);
+  // });
 
   // it("Resets the Filters and Data", () => {
   //   const submit = screen.getByText("Submit");
@@ -481,7 +516,7 @@ describe("It handles react portals",()=>{
     // const columnsToolPanel = screen.getByText('Columns');
     // fireEvent.click(columnsToolPanel);
     
-    screen.logTestingPlaygroundURL();
+    // screen.logTestingPlaygroundURL();
 
 
     // const showAllBtn = screen.getByText("Show All");

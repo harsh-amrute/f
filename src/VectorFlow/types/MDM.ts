@@ -14,7 +14,8 @@ export interface MDMStore{
     activeMaster:Master,
     filters:Filter[]
     colDefs:ColDef[],
-    ViewModifyProgressState:ViewModifyProgressState
+    ViewModifyProgressState:ViewModifyProgressState,
+    isSelectMasterOpen:boolean
 }
 
 

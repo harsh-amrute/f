@@ -28,7 +28,6 @@ import VFTaskBar from "./VFTaskbar";
     const {
         selectedMasters,
         isSelectMasterOpen,
-        setIsSelectMasterOpen,
         options,
         selectedOptions,
         tabs,

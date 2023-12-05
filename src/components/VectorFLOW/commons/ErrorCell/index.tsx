@@ -4,8 +4,8 @@ import { ICellRendererParams } from "ag-grid-enterprise"
 const ErrorCell = (props:ICellRendererParams)=>{
     const message = props.data.error;
     const getFomattedMessage = (msg:string) => {
-        if(msg.length > 25) {
-            return msg.slice(0,25)+'...'
+        if(msg.length > 30) {
+            return msg.slice(0,30)+'...'
         }
         return msg;
     }

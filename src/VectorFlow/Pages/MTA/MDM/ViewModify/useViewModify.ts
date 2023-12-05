@@ -3,17 +3,17 @@ import { type Master, type Option, type Field, type Tab, type Filter, type GetMa
 import {generateRandomId, generateOptions, areMasterFiltersValid, parseExcelData,mapMasterToColumnDefs, mapStateFiltersToPayload } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters, setColDefs, setViewModifyProgressState} from '../../../../../redux/features/MDM';
+import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters, setColDefs, setViewModifyProgressState,setIsSelectMasterOpen} from '../../../../../redux/features/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 import { AgGridReactProps } from 'ag-grid-react';
 import { ColDef, Column,IServerSideDatasource,IServerSideGetRowsParams,IServerSideGetRowsRequest } from 'ag-grid-enterprise';
+import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
 
 const useViewModify = () => {
 
     const dispatch = useDispatch();
-    const [isSelectMasterOpen,setIsSelectMasterOpen] = useState<boolean>(true);
 
     const options = useSelector((state: RootState) => state.mdm.options);
     const selectedOptions = useSelector((state: RootState) => state.mdm.selectedOptions);
@@ -22,7 +22,9 @@ const useViewModify = () => {
     const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster);
     const filters = useSelector((state:RootState) => state.mdm.filters);
     const colDefs = useSelector((state:RootState) => state.mdm.colDefs);
+ 
     const ViewModifyProgressState = useSelector((state:RootState) => state.mdm.ViewModifyProgressState );
+    const isSelectMasterOpen = useSelector((state:RootState) => state.mdm.isSelectMasterOpen);
 
     const [rowData,setRowData] = useState<object[]>([]);
     const [tempRowData,setTempRowData] = useState([]) // Used for dealying the row data for warning modal
@@ -58,47 +60,6 @@ const useViewModify = () => {
       }
     }
 
-    
-    // function (allData: any[]) {
-    //   return {
-    //     getData: (request: IServerSideGetRowsRequest) => {
-    //       // in this simplified fake server all rows are contained in an array
-    //       // const requestedRows = allData.slice(request.startRow, request.endRow);
-    //       console.log(request);
-    //       return {
-    //         success: true,
-    //         rows: [],
-    //       };
-    //     },
-    //   };
-    // }
-
-    // const createServerSideDatasource = () => {
-    //   return {
-    //     getRows: async (params:IServerSideGetRowsParams) => {
-    //       console.log('[Datasource] - rows requested by grid: ', params.request);
-    //       // get data for request from our fake server
-    //       const payloadConfigs:QueryFilteredDataConfigs = {
-    //         filters:[],
-    //         fields:[{key:"SKUCode"},{key:"SKUDescription"}],
-    //         showAll:true,
-    //         pagination:true
-    //       }
-    //       const response = await queryFilteredData(payloadConfigs);
-    //       console.log(response);
-    //       params.success({rowData:response.data.data})
-    //       // simulating real server call with a 500ms delay
-    //       // setTimeout(() => {
-    //       //   if (response.success) {
-    //       //     // supply rows for requested block to grid
-    //       //     params.success({ rowData: response.rows });
-    //       //   } else {
-    //       //     params.fail();
-    //       //   }
-    //       // }, 500);
-    //     },
-    //   };
-    // };
 
     const sideBar = {
       toolPanels: [
@@ -152,7 +113,7 @@ const useViewModify = () => {
     };
 
     const addCheckBoxColDefs = () => {
-      ref.current?.api.setColumnDefs([
+      const updatedColDefs = [
         {
           field:'checkbox',
           headerName:'',
@@ -168,13 +129,42 @@ const useViewModify = () => {
         //   headerCheckboxSelection:true
         // },
         ...colDefs
-      ]);
-    }
-    
-    if(ViewModifyProgressState === 'error'){
-      addCheckBoxColDefs();
+      ]
+      ref.current?.api.setColumnDefs(updatedColDefs);
     }
 
+    const addErrorColDefs = () => {
+        const customColDefs:ColDef[] = [
+          {
+            field:'warning',
+            headerName:'Warning',
+            floatingFilter:false,
+            initialHide:false,
+            cellRenderer:WarningCell,
+            minWidth:200,
+            suppressColumnsToolPanel:true,
+            wrapText:true,
+            autoHeight:true,
+          },
+          {
+            field:'error',
+            headerName:'Error',
+            floatingFilter:false,
+            initialHide:false,
+            cellRenderer:ErrorCell,
+            // initialHide:error ? false : true,
+            suppressColumnsToolPanel:true,
+            wrapText:true,
+            autoHeight:true,
+            flex:1
+          }
+      ];
+      // ref.current?.api.setColumnDefs([...customColDefs,...colDefs]);
+      const updatedColDefs = [...customColDefs,...colDefs]
+      console.log(updatedColDefs);
+      dispatch(setColDefs([...customColDefs,...colDefs]));
+    }
+  
     useEffect(()=>{
         if(filterButtonStatus.length !== 0) return;
   
@@ -240,6 +230,7 @@ const useViewModify = () => {
         dispatch(setColDefs(mapMasterToColumnDefs(selectedMasters[0].fields)))
      }
       else{
+        console.debug("IN Else Tabs")
         selectedTabs = selectedMasters.map((master:Master)=>{
           const oldTab = tabs.find((tab:Tab)=>tab.id === master.id);
           if(oldTab) return oldTab;
@@ -252,7 +243,16 @@ const useViewModify = () => {
         })
         
         dispatch(setTabs(selectedTabs));
-        dispatch(setColDefs(mapMasterToColumnDefs(activeMaster.fields)))
+        
+        if(ViewModifyProgressState === 'uploaded'){
+          addCheckBoxColDefs();
+        }
+        else if(ViewModifyProgressState === 'error'){
+          // addErrorColDefs();
+        }
+        else{
+          dispatch(setColDefs(mapMasterToColumnDefs(activeMaster.fields)))
+        }
       }
 
       if((activeMaster.fields.length === 0)) {
@@ -273,7 +273,8 @@ const useViewModify = () => {
         })
 
         dispatch(setFilters([...filters]));
-        setIsSelectMasterOpen(false);
+        dispatch(setIsSelectMasterOpen(false));
+        
 
     }
 
@@ -286,7 +287,9 @@ const useViewModify = () => {
         dispatch(setViewModifyProgressState('default'));
         dispatch(setActiveMaster(activeMaster));
         dispatch(setColDefs(mapMasterToColumnDefs(activeMaster.fields)))
-        setRowData([])
+        setRowData([]);
+        setDownloadData(false);
+        setTempDownloadData(false);
       }
       else{
         notifyError("Please Submit the current master before switching.")
@@ -298,7 +301,7 @@ const useViewModify = () => {
         const newTabs = tabs.filter((tab:Tab)=>tab.id !== currTab.id);
         const pendingMasters = newTabs.filter((tab:Tab)=>tab.status !== 'completed');
         if(newTabs.length === 0 || pendingMasters.length === 0){
-          setIsSelectMasterOpen(true);
+          dispatch(setIsSelectMasterOpen(true));
           dispatch(setSelectedMasters([]))
           setFilterButtonStatus([]);
           dispatch(setTabs([]));
@@ -321,7 +324,7 @@ const useViewModify = () => {
         notifyError('All Masters have already been selected. Cannot add more masters');
         return;
       }
-      setIsSelectMasterOpen(true);
+      dispatch(setIsSelectMasterOpen(true));
       setDownloadData(false);
       setTempDownloadData(false);
     }
@@ -378,21 +381,18 @@ const useViewModify = () => {
         dispatch(setColDefs(newColDefs));
         
       }
+
       const onUploadMaster = async () => {
 
         const handleErrorAndWarning = (errorExists?:object,warningExists?:object) => {
           if(errorExists){
-            ref.current?.columnApi.setColumnVisible('error',true);
+            // ref.current?.columnApi.setColumnVisible('error',true);
             dispatch(setViewModifyProgressState('error'));
           }
           if(warningExists){
-            ref.current?.columnApi.setColumnVisible('warning',true);
+            // ref.current?.columnApi.setColumnVisible('warning',true);
             dispatch(setViewModifyProgressState('error'));
           }
-          // else{
-          //   dispatch(setViewModifyProgressState('uploaded'));
-          //   addCheckBoxColDefs()
-          // }
         }
 
         if(!file){
@@ -408,7 +408,9 @@ const useViewModify = () => {
           dispatch(setViewModifyProgressState('uploaded'));
           addCheckBoxColDefs();
         }
-        // addCheckBoxColDefs();
+        else{
+          addErrorColDefs();
+        }
         setRowData(result);
         toggleUploadModal(false);
         notifySuccess(`Data Uploaded Successfully`);
@@ -476,7 +478,7 @@ const useViewModify = () => {
 
       const onBackButton = () => {
         setRowData([]);
-        setIsSelectMasterOpen(true);
+        dispatch(setIsSelectMasterOpen(true));
         dispatch(setViewModifyProgressState('default'))
         setDownloadData(false);
         setTempDownloadData(false);
@@ -487,7 +489,6 @@ const useViewModify = () => {
     return {
         selectedMasters,
         isSelectMasterOpen,
-        setIsSelectMasterOpen,
         options,
         selectedOptions,
         tabs,

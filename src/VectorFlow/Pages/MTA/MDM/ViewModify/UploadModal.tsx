@@ -46,7 +46,6 @@ const UploadModal = (props:UploadModalProps)=>{
       }
   
       const file = e.target.files[0];
-      console.log(file.type);
       switch (file.type) {
         case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
           console.log(file);
