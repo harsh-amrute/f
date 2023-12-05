@@ -14,6 +14,7 @@ import {
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./styles.css";
+import VFPagination from "../VFPagination";
 
 LicenseManager.setLicenseKey(AG_GRID_KEY);
 
@@ -53,7 +54,7 @@ const VFTable = forwardRef((props: VFtableProps, ref: any) => {
         return { background: "#EBEBEB" };
       }
       return { background: "#F7F7F7" };
-    },
+    }  
   };
 
   return (
@@ -62,7 +63,6 @@ const VFTable = forwardRef((props: VFtableProps, ref: any) => {
         ref={ref}
         columnDefs={columnDefs}
         rowData={rowData}
-        pagination
         gridOptions={gridOptions}
         defaultExcelExportParams={defaultExportExcelParams}
         sideBar={sideBar}

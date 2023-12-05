@@ -25,6 +25,8 @@ const useViewModify = () => {
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
     const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
     const [recordCount,setRecordCount] = useState<number>(0)
+    const [rowsPerPage,setRowsPerPage] = useState<number>(10)
+    const [currentPage,setCurrentPage] = useState<number>(1)
 
     const ref = useRef<GridRef>();
 
@@ -169,6 +171,10 @@ const useViewModify = () => {
           dispatch(setColDefs(localColDefs));
         }
       }
+
+      const onPageChange = (e:any)=>{
+       console.log(e)
+      }
     
 
     return {
@@ -199,6 +205,9 @@ const useViewModify = () => {
         isUploadModalOpen,
         toggleUploadModal,
         recordCount,
+        rowsPerPage,
+        currentPage,
+        onPageChange,
         colDefs,
         exportToExcel,
         onColumnChange,
