@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import mdmReducer from '../features/MDM';
+import mdmReducer from '../reducers/MDM';
 
 export const store = configureStore({
     reducer: {

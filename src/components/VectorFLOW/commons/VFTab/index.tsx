@@ -8,14 +8,15 @@ import {
     SCTabContent,
     SCTabTitle
   } from './styles'
-import {type Tab, type Master} from '../../../../VectorFlow/types/MDM';
+import {type MDMMasterState} from '../../../../VectorFlow/types/MDM';
+import { useSelector } from 'react-redux';
+import { RootState } from "../../../../redux/store/store";
+
 interface VFTabProps{
-  tabs:Tab[],
-  allMasters:Master[],
-  activeMaster:Master,
+  activeMaster:MDMMasterState,
   themeUi:string,
-  onTabChange:(currTab: Tab) => void,
-  onTabClose:(e:React.MouseEvent<HTMLElement>,tab:Tab) => void,
+  onTabChange:(master: MDMMasterState) => void,
+  onTabClose:(e:React.MouseEvent<HTMLElement>,master:MDMMasterState) => void,
   newTabTitle?:string | undefined,
   newTabIcon?:string,
   newTabHandler?:() => void,
@@ -23,11 +24,13 @@ interface VFTabProps{
 
 }
 
-const VFTab = ({tabs,activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
+const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
 
-  const getTabStatus = (activeMaster:Master,currTab:Tab) => {
-    if(currTab.status === 'completed') return 'completed';
-    return activeMaster?.id === currTab.id ? 'active' : currTab.status;
+  const masters = useSelector((state:RootState)=>state.mdm.masters);
+
+  const getTabStatus = (currMaster:MDMMasterState) => {
+    if(currMaster.progress === 'submitted') return 'completed';
+    return activeMaster.id === currMaster.id ? 'active' : currMaster.progress;
 
   }
 
@@ -36,22 +39,22 @@ const VFTab = ({tabs,activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,new
         <SCTabHeader>
             <SCTabHeaderLeft>
               {
-                tabs.map((tab:Tab,index:number)=>{
+                masters.map((master:MDMMasterState,index:number)=>{
                   return(
                     <SCTabButton 
-                      status={getTabStatus(activeMaster,tab)} 
-                      zIndex={tabs.length-index} 
+                      status={getTabStatus(master)} 
+                      zIndex={masters.length-index} 
                       marLeft={index !== 0} 
                       themeUi={themeUi}
                       onClick={() => { 
-                        onTabChange(tab) 
+                        onTabChange(master) 
                       }}
-                      key={tab.id}
+                      key={master.id}
                       data-testid="tab-button"
                       >
                         <SCTabContent>
-                          <SCTabTitle status={getTabStatus(activeMaster,tab)}>{tab.name.slice()+' Master'}</SCTabTitle>
-                          <img data-testid="tab-close" onClick={(e:React.MouseEvent<HTMLElement>) => {onTabClose(e,tab)}} src={getTabStatus(activeMaster,tab) === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : tab.status === 'completed' ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/>
+                          <SCTabTitle status={getTabStatus(master)}>{master.name.slice()+' Master'}</SCTabTitle>
+                          <img data-testid="tab-close" onClick={(e:React.MouseEvent<HTMLElement>) => {onTabClose(e,master)}} src={getTabStatus(master) === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : master.progress === 'submitted' ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/>
                         </SCTabContent>
                     </SCTabButton>
                   )

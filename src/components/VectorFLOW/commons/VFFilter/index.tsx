@@ -2,7 +2,7 @@ import { VFFilterDustbinIcon, VFFilterInputField, VFFilterSeperator, VFFilterWra
 import Select from 'react-select'
 import {type Option, type Filter} from '../../../../VectorFlow/types/MDM';
 import { useDispatch } from 'react-redux';
-import { setFilters } from '../../../../redux/features/MDM';
+import { SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_FILTER } from "../../../../redux/actions/MDM";
 
 export interface VFFilterProps{
     onDelete:()=>void
@@ -34,17 +34,12 @@ const VFFilter = (props:VFFilterProps)=>{
         operators,
         onDelete,
         currFilter,
-        filters,
     } = props
 
 
     const handleOnChange = (value:string,property:string)=>{
-       dispatch(setFilters(filters.map((element:Filter)=>{
-        if(element.id==currFilter.id){
-            return {...element,[property]:value}
-        }
-        return element
-       })))
+       dispatch(UPDATE_FILTER({value:value,property:property,filterId:currFilter.id}))
+       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
     }
 
 

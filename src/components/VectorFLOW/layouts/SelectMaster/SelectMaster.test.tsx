@@ -1,6 +1,6 @@
 import { render, fireEvent, screen, waitFor, waitForElementToBeRemoved  } from '@testing-library/react';
 import SelectMaster from './index';
-import { type Master, type Option } from "../../../../VectorFlow/types/MDM";
+import { MDMMasterState, type Master, type Option } from "../../../../VectorFlow/types/MDM";
 import {generateOptions} from '../../../../helpers/utils';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { UserDataContext } from '../../../../context';
@@ -14,7 +14,7 @@ import React from 'react';
 
 describe('SelectMaster Component', () => {
   // Create mock data for testing
-  const data:Master[] = [
+  const data:MDMMasterState[] = [
     { 
       id: 1,
       name: 'SKU', 
@@ -34,7 +34,11 @@ describe('SelectMaster Component', () => {
             key: "item_category_code",
             visible: false
           },
-      ] 
+      ],
+      colDefs:[],
+      progress:'default',
+      filters:[],
+      rowData:[]
     },
     { 
       id: 2,
@@ -55,7 +59,11 @@ describe('SelectMaster Component', () => {
             key: "LocAttr1",
             visible: false
           },
-      ] 
+      ],
+      colDefs:[],
+      progress:'default',
+      filters:[],
+      rowData:[]
     },
     { 
       id: 3,
@@ -76,14 +84,17 @@ describe('SelectMaster Component', () => {
             key: "SKULocAttr1",
             visible: false
           },
-      ] 
+      ],
+      colDefs:[],
+      progress:'default',
+      filters:[],
+      rowData:[] 
     },
     
   ];
   const options:Option[] = generateOptions(data);
   const selectedOptions:Option[] = [];
-  const selectedMasters:Master[] = [...data];
-  const filterButtonStatus:Master[] = [];
+  const filterButtonStatus:number[] = [];
   const setFilterButtonStatus = jest.fn();
   const themeUi = 'NOIRFUSION';
   const isLoading = false;
@@ -112,7 +123,6 @@ describe('SelectMaster Component', () => {
     data,
     options,
     selectedOptions,
-    selectedMasters,
     filterButtonStatus,
     setFilterButtonStatus,
     themeUi,
@@ -144,7 +154,7 @@ describe('SelectMaster Component', () => {
 
   it('should set selected masters to all masters when the length becomes 0',() => {
     
-    render(contextWrapper(<SelectMaster {...props} selectedMasters={[]} />));
+    render(contextWrapper(<SelectMaster {...props} />));
 
     expect(storeDispatchSpy).toHaveBeenCalledWith({payload:data,type:"mdm/setSelectedMasters"});
 
@@ -154,7 +164,7 @@ describe('SelectMaster Component', () => {
 
     const temp:Master[] = [...data.filter((master)=>master.id === 1)]
 
-    render(contextWrapper(<SelectMaster {...props} selectedMasters={[]} />));
+    render(contextWrapper(<SelectMaster {...props} />));
 
     // Get the first filter button
     const filterButton = screen.getAllByTestId('button-outline-status');
@@ -173,7 +183,7 @@ describe('SelectMaster Component', () => {
 
     const temp:Master[] = [...data.filter((master)=>master.id === 1)]
 
-    render(contextWrapper(<SelectMaster {...props} selectedMasters={[]} />));
+    render(contextWrapper(<SelectMaster {...props} />));
 
     // Get the first filter button
     const filterButton = screen.getAllByTestId('button-outline-status');
@@ -192,7 +202,7 @@ describe('SelectMaster Component', () => {
 
     const temp:Master[] = [...data.filter((master)=>master.id === 1)]
 
-    render(contextWrapper(<SelectMaster {...props} selectedMasters={temp} />));
+    render(contextWrapper(<SelectMaster {...props} />));
 
     // Get the first filter button
     const filterButton = screen.getAllByTestId('button-outline-status');
@@ -209,7 +219,7 @@ describe('SelectMaster Component', () => {
 
   it('should return warning if trying to deselect master when coming from tabs page', () => {
     // const notifyErrorSpy = jest.spyOn(toast,'notifyError');
-    const temp:Master[] = [...data.filter((master)=>master.id === 1)];
+    const temp:number[] = [1];
     render(contextWrapper(<SelectMaster {...props} filterButtonStatus={temp} />));
     const filterButton = screen.getAllByTestId('button-outline-status');
     fireEvent.click(filterButton[0]);

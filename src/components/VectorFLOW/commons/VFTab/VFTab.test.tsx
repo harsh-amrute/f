@@ -1,6 +1,6 @@
 import { render, fireEvent, screen} from '@testing-library/react';
 import VFTab from './index';
-import { type Master, type Tab} from "../../../../VectorFlow/types/MDM";
+import { MDMMasterState, type Master, type Tab} from "../../../../VectorFlow/types/MDM";
 import _ from 'lodash';
 import { Provider } from 'react-redux';
 import { ReactNode } from 'react';
@@ -9,143 +9,9 @@ import {QueryClientProvider} from '@tanstack/react-query';
 import { setupReactQuery } from '../../../../config/react-query-config';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { UserDataContext } from '../../../../context';
+import { MasterData } from '../../../../mock-data/MDM';
 
 
-const allMasters:Master[] = [
-  { 
-    id: 1,
-    name: 'SKU', 
-    fields:[
-        {
-          displayName:'SKU Code',
-          key:"sku_code",
-          visible:true
-        },
-        {
-          displayName:'SKU Name',
-          key:"sku_name",
-          visible:true
-        },
-        {
-          displayName: "Item Category Code",
-          key: "item_category_code",
-          visible: false
-        },
-    ] 
-  },
-  { 
-    id: 2,
-    name: 'Location', 
-    fields:[
-        {
-          displayName:'Location Code',
-          key:"location_code",
-          visible:true
-        },
-        {
-          displayName:'Location Name',
-          key:"location_name",
-          visible:true
-        },
-        {
-          displayName: "c1",
-          key: "LocAttr1",
-          visible: false
-        },
-    ] 
-  },
-  { 
-    id: 3,
-    name: 'SKU Location', 
-    fields:[
-        {
-          displayName:'SKU Code',
-          key:"sku_code",
-          visible:true
-        },
-        {
-          displayName:'SKU Name',
-          key:"sku_name",
-          visible:true
-        },
-        {
-          displayName: "Segment",
-          key: "SKULocAttr1",
-          visible: false
-        },
-    ] 
-  },
-  
-];
-
-const tabs:Tab[] = [
-  { 
-    id: 1,
-    name: 'SKU', 
-    fields:[
-        {
-          displayName:'SKU Code',
-          key:"sku_code",
-          visible:true
-        },
-        {
-          displayName:'SKU Name',
-          key:"sku_name",
-          visible:true
-        },
-        {
-          displayName: "Item Category Code",
-          key: "item_category_code",
-          visible: false
-        },
-    ],
-    status:'' 
-  },
-  { 
-    id: 2,
-    name: 'Location', 
-    fields:[
-        {
-          displayName:'Location Code',
-          key:"location_code",
-          visible:true
-        },
-        {
-          displayName:'Location Name',
-          key:"location_name",
-          visible:true
-        },
-        {
-          displayName: "c1",
-          key: "LocAttr1",
-          visible: false
-        },
-    ],
-    status:'' 
-  },
-  { 
-    id: 3,
-    name: 'SKU Location', 
-    fields:[
-        {
-          displayName:'SKU Code',
-          key:"sku_code",
-          visible:true
-        },
-        {
-          displayName:'SKU Name',
-          key:"sku_name",
-          visible:true
-        },
-        {
-          displayName: "Segment",
-          key: "SKULocAttr1",
-          visible: false
-        },
-    ],
-    status:'' 
-  }
-];
 
 const queryClient = setupReactQuery()
 
@@ -163,7 +29,7 @@ const contextWrapper = (children:ReactNode) => {
   )
 }
 
-const activeMaster:Master = allMasters[0];
+const activeMaster:MDMMasterState = MasterData[0];
 const themeUi = 'NOIRFUSION';
 const handleTabClose = jest.fn();
 const handleTabChange = jest.fn();
@@ -171,9 +37,7 @@ const newTabHandler = jest.fn();
 
 
 const props = {
-  allMasters:allMasters,
   activeMaster:activeMaster,
-  tabs:tabs,
   themeUi:themeUi,
   onTabChange:handleTabChange,
   onTabClose:handleTabClose,
@@ -231,7 +95,7 @@ describe('View Modify Component', () => {
 
   it('Renders component correctly when current tab is not in the list of all masters', () => {
 
-    render(contextWrapper(<VFTab {...props} allMasters={allMasters.slice(1)}/>));
+    render(contextWrapper(<VFTab {...props} />));
     const tabCloseBtn = screen.getAllByTestId('tab-close')[0];
     fireEvent.click(tabCloseBtn)
     expect(handleTabClose).toHaveBeenCalled();
@@ -240,7 +104,7 @@ describe('View Modify Component', () => {
 
   it('calls Completed tab when status is completed', () => {
 
-    tabs[0].status = 'completed';
+    MasterData[0].progress = 'submitted';
 
     render(contextWrapper(<VFTab {...props}/>))
 
@@ -248,7 +112,7 @@ describe('View Modify Component', () => {
 
   it('Prevents changing to Already Completed Tab', () => {
 
-    tabs[0].status = 'completed';
+    MasterData[0].progress = 'submitted';
 
     render(contextWrapper(<VFTab {...props}/>))
 

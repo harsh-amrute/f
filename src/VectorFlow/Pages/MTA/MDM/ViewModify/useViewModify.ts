@@ -1,14 +1,14 @@
 import {useState, useEffect, useRef} from 'react';
-import { type Master, type Option, type Field, type Tab, type Filter, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, ViewModifyProgressState } from "../../../../types/MDM";
-import {generateRandomId, generateOptions, areMasterFiltersValid, parseExcelData,mapMasterToColumnDefs, mapStateFiltersToPayload } from "../../../../../helpers/utils";
+import { type Master, type Option, type Field, type Tab, type Filter, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, ViewModifyProgressState, MDMMasterState } from "../../../../types/MDM";
+import {generateRandomId, generateOptions, areMasterFiltersValid, parseExcelData,mapMasterToColumnDefs, mapStateFiltersToPayload, mapMasterToMasterState } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters, setColDefs, setViewModifyProgressState,setIsSelectMasterOpen} from '../../../../../redux/features/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,ADD_MASTER, STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 import { AgGridReactProps } from 'ag-grid-react';
-import { ColDef, Column,IServerSideDatasource,IServerSideGetRowsParams,IServerSideGetRowsRequest } from 'ag-grid-enterprise';
+import { ColDef } from 'ag-grid-enterprise';
 import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
 
 const useViewModify = () => {
@@ -17,13 +17,9 @@ const useViewModify = () => {
 
     const options = useSelector((state: RootState) => state.mdm.options);
     const selectedOptions = useSelector((state: RootState) => state.mdm.selectedOptions);
-    const selectedMasters = useSelector((state:RootState) => state.mdm.selectedMasters);
-    const tabs = useSelector((state:RootState) => state.mdm.tabs);
     const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster);
-    const filters = useSelector((state:RootState) => state.mdm.filters);
-    const colDefs = useSelector((state:RootState) => state.mdm.colDefs);
- 
-    const ViewModifyProgressState = useSelector((state:RootState) => state.mdm.ViewModifyProgressState );
+    const masters = useSelector((state:RootState)=>state.mdm.masters);
+
     const isSelectMasterOpen = useSelector((state:RootState) => state.mdm.isSelectMasterOpen);
 
     const [rowData,setRowData] = useState<object[]>([]);
@@ -38,27 +34,50 @@ const useViewModify = () => {
     const [defaultToolPanel,setDefaultToolPanel] = useState<string>('');
     const [downloadData,setDownloadData] = useState<boolean>(false);
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+    const [colDefs,setColDefs] = useState<ColDef[]>([]); 
+
+  
 
     const ref = useRef<GridRef>();
     const tempRef = useRef<GridRef>(); //used for second ag grid instance which is hidden.
     const [tempGridData,setTempGridData] = useState<object[]>([]);
 
-    const [filterButtonStatus,setFilterButtonStatus] = useState<Array<Master>>([]);
+    const [filterButtonStatus,setFilterButtonStatus] = useState<Array<number>>([]);
 
     const {data:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
    
-    const allMasters:Master[] = masterUIConfiguration?.data.data;
+    const allMasters:Master[] = masterUIConfiguration?.data.data || [];
+
+    const allMastersState:MDMMasterState[] = mapMasterToMasterState(allMasters);
 
     const {mutateAsync:getMasterData} = useGetMasterData();
 
-    const onColumnChange = ()=>{
+    const updateMasterProperty=(id:number,property:string,propertyValue:any)=>{
+      const data =  masters.map((master:MDMMasterState)=>{
+        const updatedMaster:any = {...master};
+        if(master.id===id){
+          updatedMaster[property] =propertyValue
+        }
+        return updatedMaster;
+      })
+      return data
+    }
+
+    // const colDefs = activeMaster.colDefs
+
+    const onColumnChange = () => {
       const localColDefs = ref.current?.api.getColumnDefs()
       if (ref.current && localColDefs) {
-        dispatch(setColDefs(localColDefs));
+
+        dispatch(UPDATE_COLDEFS({id:activeMaster.id,colDefs:localColDefs}))
+        // setColDefs(localColDefs)
         toggleToolPanel(true);
         setDefaultToolPanel('columns')
       }
+
     }
+
+  
 
 
     const sideBar = {
@@ -79,9 +98,8 @@ const useViewModify = () => {
     }
 
     const agGridProps:AgGridReactProps = {
-      columnDefs:colDefs,
-      rowData:rowData,
-      sideBar:['default','view'].includes(ViewModifyProgressState) ? sideBar : {},
+      // rowData:rowData,
+      sideBar:['default','view'].includes(activeMaster.progress) ? sideBar : {},
       gridOptions:{
         getRowStyle: (params: any) => {
           if (params.node.rowIndex % 2 === 0) {
@@ -105,7 +123,7 @@ const useViewModify = () => {
     }
 
     const tempAgGridProps:AgGridReactProps = {
-      columnDefs:mapMasterToColumnDefs(activeMaster.fields,true),
+      columnDefs:activeMaster.colDefs,
       rowData:tempGridData,
       onRowDataUpdated:(event)=>{
         if(tempDownloadData) event.api.exportDataAsExcel({fileName:downloadFileName ? 'Error-' + downloadFileName : 'Error-'+ activeMaster.name});
@@ -128,7 +146,7 @@ const useViewModify = () => {
         //   // checkboxSelection:true,
         //   headerCheckboxSelection:true
         // },
-        ...colDefs
+        ...activeMaster.colDefs
       ]
       ref.current?.api.setColumnDefs(updatedColDefs);
     }
@@ -160,26 +178,50 @@ const useViewModify = () => {
           }
       ];
       // ref.current?.api.setColumnDefs([...customColDefs,...colDefs]);
-      const updatedColDefs = [...customColDefs,...colDefs]
+      const updatedColDefs = [...customColDefs,...activeMaster.colDefs]
+      dispatch(UPDATE_COLDEFS({id:activeMaster.id,colDefs:updatedColDefs}))
       console.log(updatedColDefs);
-      dispatch(setColDefs([...customColDefs,...colDefs]));
+
     }
-  
+
     useEffect(()=>{
+
+        setColDefs(activeMaster.colDefs);
+
         if(filterButtonStatus.length !== 0) return;
+
+        if(activeMaster.id === 0){
+          if(!isLoading){
+            const allOptions:Option[] =  generateOptions(allMasters);
+            dispatch(FILL_MASTERS(allMastersState));
+            dispatch(STORE_ALL_MASTERS(allMastersState));
+            dispatch(FILL_OPTIONS(allOptions));
+          }
   
-        if(!isLoading){
-          const allOptions:Option[] =  generateOptions(allMasters);
-          dispatch(setSelectedMasters(allMasters));
-          dispatch(setOptions(allOptions));
+          const temp:MDMMasterState[]=[];
+          if(selectedOptions?.length === 0 && allMasters) dispatch(FILL_MASTERS(mapMasterToMasterState(allMasters)));
+          if(selectedOptions?.length > 0) dispatch(FILL_MASTERS([...getSelectedMasters(temp)]));
         }
-        const temp:Master[]=[];
-        if(selectedOptions?.length === 0 && allMasters) dispatch(setSelectedMasters([...allMasters]));
-        if(selectedOptions?.length > 0) dispatch(setSelectedMasters([...getSelectedMasters(temp)]));
 
-        if(isToolPanelOpen) ref.current?.api.openToolPanel('columns');
 
-      },[selectedOptions,isLoading,isToolPanelOpen]);  
+        // if(isToolPanelOpen) ref.current?.api.openToolPanel('columns');
+
+      },[selectedOptions,isLoading,activeMaster]);  
+
+      useEffect(()=>{
+        if(masters.length > 0 && filterButtonStatus.length !== 0){
+          setFilterButtonStatus(masters.map((master:MDMMasterState)=>master.id));
+        }
+      },[masters])
+
+      useEffect(() => {
+        if(tempDownloadData){
+          setDownloadData(false);
+        }
+        if(downloadData){
+          setDownloadData(false)
+        }
+      },[tempDownloadData,downloadData]);
 
 
     const getCurrentVisbileColumns = () => {
@@ -207,146 +249,66 @@ const useViewModify = () => {
       return resultData;
     }
 
-    const getSelectedMasters = (temp:Master[]) => {
+    const getSelectedMasters = (temp:MDMMasterState[]) => {
         selectedOptions.forEach((selectedOption:Option)=>{
-          allMasters.forEach((master:Master)=>{
-            if(master.fields.find((field:Field)=>field.displayName === selectedOption.label) && !temp.find((selectedMaster:Master)=>selectedMaster.id === master.id)) temp.push(master);
+          allMastersState.forEach((master:MDMMasterState)=>{
+            if(master.fields.find((field:Field)=>field.displayName === selectedOption.label) && !temp.find((selectedMaster:MDMMasterState)=>selectedMaster.id === master.id)) temp.push(master);
           })
         });
         return temp;
       }
 
     const handleSelectMasterSubmit = () => {
-      let selectedTabs = selectedMasters.map((master:Master) => {
-        return {
-        id:master.id,
-        name:master.name,
-        fields:master.fields,
-        status:'',
-        }
-      })
-      if(tabs.length === 0){
-        dispatch(setTabs([...selectedTabs]));
-        dispatch(setColDefs(mapMasterToColumnDefs(selectedMasters[0].fields)))
-     }
-      else{
-        console.debug("IN Else Tabs")
-        selectedTabs = selectedMasters.map((master:Master)=>{
-          const oldTab = tabs.find((tab:Tab)=>tab.id === master.id);
-          if(oldTab) return oldTab;
-          return {
-            id:master.id,
-            name:master.name,
-            fields:master.fields,
-            status:'',
-            }
-        })
-        
-        dispatch(setTabs(selectedTabs));
-        
-        if(ViewModifyProgressState === 'uploaded'){
-          addCheckBoxColDefs();
-        }
-        else if(ViewModifyProgressState === 'error'){
-          // addErrorColDefs();
-        }
-        else{
-          dispatch(setColDefs(mapMasterToColumnDefs(activeMaster.fields)))
-        }
+      if(activeMaster.id===0){
+        dispatch(UPDATE_ACTIVE_MASTER());
+        setColDefs(mapMasterToColumnDefs(masters[0].fields));
       }
-
-      if((activeMaster.fields.length === 0)) {
-        const firstInCompleteTab = selectedTabs.find((tab:Tab)=>tab.status!=='completed')
-        const firstInCompleteMaster = selectedMasters.find((master:Master)=>master.id === firstInCompleteTab?.id);
-        if(firstInCompleteMaster) dispatch(setActiveMaster(firstInCompleteMaster));
-      }
-
-        const filters:Filter[] = selectedMasters.map((master:Master) => {
-            const filterObj:Filter =  {
-            id:generateRandomId(),
-            masterId:master.id,
-            field:'',
-            operator:'',
-            text:''
-            }
-            return filterObj;
-        })
-
-        dispatch(setFilters([...filters]));
-        dispatch(setIsSelectMasterOpen(false));
-        
+      dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
+      
+      
 
     }
 
-    const handleTabChange = (currTab: Tab) => {
-      if(currTab.status === 'completed') return;
-      const activeMaster = allMasters.find((master:Master) => master.id === currTab.id);
+
+    const handleTabChange = (currMaster: MDMMasterState) => {
+      if(currMaster.progress === 'submitted') return;
+
+      return notifyError(`Please Complete the ${activeMaster.name} Master`);  
       
-      
-      if(activeMaster && ["submitted","default","view"].includes(ViewModifyProgressState)) {
-        dispatch(setViewModifyProgressState('default'));
-        dispatch(setActiveMaster(activeMaster));
-        dispatch(setColDefs(mapMasterToColumnDefs(activeMaster.fields)))
-        setRowData([]);
-        setDownloadData(false);
-        setTempDownloadData(false);
-      }
-      else{
-        notifyError("Please Submit the current master before switching.")
-      }
     }
     
-    const handleTabClose = (e:React.MouseEvent<HTMLElement>,currTab:Tab) => {
+    const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
         e.stopPropagation();
-        const newTabs = tabs.filter((tab:Tab)=>tab.id !== currTab.id);
-        const pendingMasters = newTabs.filter((tab:Tab)=>tab.status !== 'completed');
-        if(newTabs.length === 0 || pendingMasters.length === 0){
-          dispatch(setIsSelectMasterOpen(true));
-          dispatch(setSelectedMasters([]))
-          setFilterButtonStatus([]);
-          dispatch(setTabs([]));
-          return;
+        dispatch(REMOVE_MASTER(currMaster.id));
+        if(currMaster.id === activeMaster.id){
+          dispatch(UPDATE_ACTIVE_MASTER())
         }
-        if(currTab.id === activeMaster?.id ){
-            dispatch(setViewModifyProgressState('default'));
-            setRowData([]);
-        }
-        dispatch(setTabs([...newTabs]));
-        dispatch(setSelectedMasters([...newTabs]));
-        dispatch(setActiveMaster(pendingMasters[0]))
-        dispatch(setColDefs(mapMasterToColumnDefs(pendingMasters[0].fields)))
-        setFilterButtonStatus([...newTabs]);
-        
       }
     
     const addNewMaster = ()=>{
-      if(allMasters.length === selectedMasters.length) {
+      if(allMasters.length === masters.length) {
         notifyError('All Masters have already been selected. Cannot add more masters');
         return;
       }
-      dispatch(setIsSelectMasterOpen(true));
+      dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
       setDownloadData(false);
       setTempDownloadData(false);
     }
 
       const handleOnAddFilter = ()=>{
-        dispatch(setFilters([...filters,{
-          id:generateRandomId(),
-          masterId:activeMaster?.id,
-          field:'',
-          operator:'',
-          text:''
-        }]))
+        // dispatch(setFilters([...filters,]))
+        dispatch(ADD_FILTER());
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
       }
   
-      const handleOnDeleteFilter = (id:string,masterId:number | undefined)=>{
-        const filtersLength = filters.filter((f:Filter) => f.masterId === masterId).length;
-        if(filtersLength === 1) return;
-        dispatch(setFilters(filters.filter((f:Filter)=>f.id!==id)))
+      const handleOnDeleteFilter = (id:string)=>{
+        if(activeMaster.filters.length === 1) notifyError("Cannot Delete this Filter Instance")
+        dispatch(REMOVE_FILTER(id));
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       }
 
       const handleApplyFilter =async (showAll?:boolean) => {
-        const currMasterFilters = filters.filter((f:Filter) =>f.masterId === activeMaster.id)
+        const currMasterFilters = activeMaster.filters;
         if(!areMasterFiltersValid(currMasterFilters) && !showAll){
           return notifyError('Filter cannot be empty')
         }
@@ -360,7 +322,9 @@ const useViewModify = () => {
         setRecordCount(result.data.recordCount)
         toggleWarningModal(true)
         setTempRowData(result.data.data)
-        dispatch(setViewModifyProgressState('view'));
+        
+        dispatch(UPDATE_PROGRESS_STATE('view')); 
+       
       }
 
       const onWarningModalClose = ()=>{
@@ -371,6 +335,9 @@ const useViewModify = () => {
 
       const onWarningModalSuccess = ()=>{
         setRowData(tempRowData)
+        dispatch(UPDATE_ROW_DATA(tempRowData));
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+        
         toggleWarningModal(false)
       }
 
@@ -378,7 +345,7 @@ const useViewModify = () => {
 
       const removeCheckboxColDefs = () => {
         const newColDefs:any = ref.current?.api.getColumnDefs()?.filter((column:any)=>column.field !== 'checkbox');
-        dispatch(setColDefs(newColDefs));
+        dispatch(UPDATE_COLDEFS({id:activeMaster.id,colDefs:newColDefs}));
         
       }
 
@@ -387,11 +354,11 @@ const useViewModify = () => {
         const handleErrorAndWarning = (errorExists?:object,warningExists?:object) => {
           if(errorExists){
             // ref.current?.columnApi.setColumnVisible('error',true);
-            dispatch(setViewModifyProgressState('error'));
+            dispatch(UPDATE_PROGRESS_STATE('error'));
           }
           if(warningExists){
             // ref.current?.columnApi.setColumnVisible('warning',true);
-            dispatch(setViewModifyProgressState('error'));
+            dispatch(UPDATE_PROGRESS_STATE('error'));
           }
         }
 
@@ -405,7 +372,7 @@ const useViewModify = () => {
         const ifWarningExists = result.find((data:any)=>data.warning);
         handleErrorAndWarning(ifErrorExists,ifWarningExists);
         if(!ifErrorExists && !ifWarningExists){
-          dispatch(setViewModifyProgressState('uploaded'));
+          dispatch(UPDATE_PROGRESS_STATE('uploaded'));
           addCheckBoxColDefs();
         }
         else{
@@ -418,12 +385,13 @@ const useViewModify = () => {
       }
 
       const exportToExcel = async ()=>{
-        const currMasterFilters = filters.filter((f:Filter) =>f.masterId === activeMaster.id);
+        const currMasterFilters = activeMaster.filters;
         const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
       
         const payloadFields:any = getCurrentVisbileColumns();
         const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:false,pagination:false}); 
-        setRowData(result.data.data);
+        dispatch(UPDATE_ROW_DATA(result.data.data));
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         setDownloadData(true);
         notifySuccess(`Data Exported Successfully`);
         
@@ -446,7 +414,7 @@ const useViewModify = () => {
         ref.current?.columnApi.setColumnVisible('warning',false);
         addCheckBoxColDefs();
         setRowData(validData);
-        dispatch(setViewModifyProgressState('uploaded'));
+        dispatch(UPDATE_PROGRESS_STATE('uploaded'));
         
       }
       
@@ -458,28 +426,28 @@ const useViewModify = () => {
       }
 
       const onSubmit = () => {
-        const nextMasterIndex = selectedMasters.findIndex((master:Master)=>master.id === activeMaster.id) + 1;
-        if(nextMasterIndex < selectedMasters.length) {
-          const newTabs = [...tabs].map((tab:Tab)=>{
-            const temp = {...tab}
-            if(temp.id === activeMaster.id){
-              temp.status = 'completed'
-            }
-            return temp;
-          });
-          dispatch(setTabs(newTabs));
-        }
-        removeCheckboxColDefs();
-        dispatch(setViewModifyProgressState('submitted'));
-        notifySuccess(`Modifications Submitted Successfully`);
+        // const nextMasterIndex = selectedMasters.findIndex((master:Master)=>master.id === activeMaster.id) + 1;
+        // if(nextMasterIndex < selectedMasters.length) {
+        //   const newTabs = [...tabs].map((tab:Tab)=>{
+        //     const temp = {...tab}
+        //     if(temp.id === activeMaster.id){
+        //       temp.status = 'completed'
+        //     }
+        //     return temp;
+        //   });
+        //   dispatch(setTabs(newTabs));
+        // }
+        // removeCheckboxColDefs();
+        // dispatch(setViewModifyProgressState('submitted'));
+        // notifySuccess(`Modifications Submitted Successfully`);
       }
 
       
 
       const onBackButton = () => {
         setRowData([]);
-        dispatch(setIsSelectMasterOpen(true));
-        dispatch(setViewModifyProgressState('default'))
+        // dispatch(to(true));
+        // dispatch(setViewModifyProgressState('default'))
         setDownloadData(false);
         setTempDownloadData(false);
       }
@@ -487,13 +455,11 @@ const useViewModify = () => {
     
 
     return {
-        selectedMasters,
+        colDefs,
         isSelectMasterOpen,
         options,
         selectedOptions,
-        tabs,
         activeMaster,
-        filters,
         filterButtonStatus,
         setFilterButtonStatus,
         getSelectedMasters,
@@ -504,6 +470,7 @@ const useViewModify = () => {
         handleOnAddFilter,
         handleOnDeleteFilter,
         allMasters,
+        allMastersState,
         handleApplyFilter,
         rowData,
         isLoading,
@@ -520,10 +487,8 @@ const useViewModify = () => {
         file,
         setFile,
         isTableDataLoading,
-        colDefs,
         exportToExcel,
         onColumnChange,
-        ViewModifyProgressState,
         onBackButton,
         onClearExportError,
         agGridProps,

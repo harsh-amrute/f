@@ -11,7 +11,6 @@ import { operators } from "../../../../../helpers/MDMConstants";
 import {type Filter} from '../../../../types/MDM';
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import WarningModal from './WarningModal'
-import { notifyError } from "../../../../../helpers/notify";
 import UploadModal from "./UploadModal";
 import { useEffect } from "react";
 import VFTaskBar from "./VFTaskbar";
@@ -26,13 +25,11 @@ import VFTaskBar from "./VFTaskbar";
     const dummyFn =()=>{return}
 
     const {
-        selectedMasters,
+        colDefs,
         isSelectMasterOpen,
         options,
         selectedOptions,
-        tabs,
         activeMaster,
-        filters,
         filterButtonStatus,
         setFilterButtonStatus,
         handleSelectMasterSubmit,
@@ -41,7 +38,7 @@ import VFTaskBar from "./VFTaskbar";
         addNewMaster,
         handleOnAddFilter,
         handleOnDeleteFilter,
-        allMasters,
+        allMastersState,
         isLoading,
         handleApplyFilter,
         isWarningModalOpen,
@@ -57,20 +54,27 @@ import VFTaskBar from "./VFTaskbar";
         setFile,
         isTableDataLoading,
         exportToExcel,
-        ViewModifyProgressState,
         onBackButton,
         onClearExportError,
         agGridProps,
         ref,
+        tempRef,
         tempAgGridProps,
         deleteSelected,
         onSubmit
     } = useViewModify();
 
     useEffect(()=>{
-      if(isTableDataLoading){
-        ref.current?.api.showLoadingOverlay();
+      console.log(isTableDataLoading);
+      if(ref.current){
+        if(isTableDataLoading){
+          ref.current?.api.showLoadingOverlay();
+        }
+        // else{
+        //   ref.current?.api.hideOverlay();
+        // }
       }
+      
 
     },[isTableDataLoading])
 
@@ -80,10 +84,9 @@ import VFTaskBar from "./VFTaskbar";
         <SCContainer>
           {isSelectMasterOpen && 
             <SelectMaster 
-                data={allMasters} 
+                data={allMastersState} 
                 options={options} 
                 selectedOptions={selectedOptions} 
-                selectedMasters={selectedMasters}
                 filterButtonStatus={filterButtonStatus}
                 setFilterButtonStatus={setFilterButtonStatus}
                 themeUi={themeUi}
@@ -93,9 +96,7 @@ import VFTaskBar from "./VFTaskbar";
           }
           {!isSelectMasterOpen && 
             <VFTab 
-              allMasters={allMasters}
               activeMaster={activeMaster}
-              tabs={tabs}
               themeUi={themeUi}
               onTabChange={handleTabChange}
               onTabClose={handleTabClose}
@@ -103,18 +104,18 @@ import VFTaskBar from "./VFTaskbar";
               newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
               newTabHandler={addNewMaster}
               >
-                { (ViewModifyProgressState ==='default' || ViewModifyProgressState ==='view') 
+                { (activeMaster.progress ==='default' || activeMaster.progress ==='view') 
                     &&
                   <SCFilterContainer>
                     <SCFilterControls>
                       <SCLegend>Filter</SCLegend>
-                      {filters.map((f:Filter)=>{
+                      {activeMaster.filters.map((f:Filter)=>{
                         if(f.masterId==activeMaster?.id){
                           return(
                             <VFFilter 
-                              onDelete={()=>handleOnDeleteFilter(f.id,f.masterId)}
+                              onDelete={()=>handleOnDeleteFilter(f.id)}
                               operators={operators}
-                              filters={filters}
+                              filters={activeMaster.filters}
                               fields={generateOptions([activeMaster])}
                               currFilter={f}
                               key={f.id}
@@ -125,7 +126,7 @@ import VFTaskBar from "./VFTaskbar";
                       
                     </SCFilterControls>
                     <SCFilterAddControls>
-                      {filters.map((f:Filter)=>{
+                      {activeMaster.filters.map((f:Filter)=>{
                           if(f.masterId===activeMaster?.id){
                             return (
                               <SCFilterAddButtonWrapper>
@@ -161,10 +162,13 @@ import VFTaskBar from "./VFTaskbar";
                 }
                 <VFTable
                   ref={ref}
+                  columnDefs={activeMaster.colDefs}
+                  rowData={activeMaster.rowData}
                   {...agGridProps}
                 />
                 <div style={{display:'none'}}>                
                   <VFTable
+                    ref={tempRef}
                     {...tempAgGridProps}
                   />
                 </div>
@@ -195,7 +199,7 @@ import VFTaskBar from "./VFTaskbar";
         {
           !isSelectMasterOpen && 
           <VFTaskBar
-            masterProgress={ViewModifyProgressState}
+            masterProgress={activeMaster.progress}
             editOnline={false}
             onEditOnline={dummyFn}
             onBack={onBackButton}

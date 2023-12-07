@@ -7,18 +7,23 @@ import Joi from 'joi'
 
 export type ViewModifyProgressState = "default" | "view" | "error" | "uploaded" | "submitted";
 export interface MDMStore{
+    allMasters:MDMMasterState[],
+    masters:MDMMasterState[],
     options:Option[],
     selectedOptions:Option[],
-    selectedMasters:Master[],
-    tabs:Tab[],
-    activeMaster:Master,
-    filters:Filter[]
-    colDefs:ColDef[],
-    ViewModifyProgressState:ViewModifyProgressState,
+    activeMaster:MDMMasterState,
     isSelectMasterOpen:boolean
 }
 
-
+export interface MDMMasterState{
+    id:number,
+    name:string,
+    colDefs:ColDef[]
+    rowData:any[]
+    filters:Filter[]
+    progress:ViewModifyProgressState,
+    fields:Field[]
+}
 export interface Master{
     id:number,
     name:string,

@@ -2,7 +2,7 @@ import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
-import { type Master, type Option, type Field, type Filter } from '../VectorFlow/types/MDM';
+import { type Master, type Option, type Field, type Filter, MDMMasterState } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import { File } from 'buffer';
 // import { Cell } from 'read-excel-file/types';
@@ -490,4 +490,23 @@ export const areMasterFiltersValid = (masterFilters:Filter[])=>{
 export const mapStateFiltersToPayload = (filters:Filter[]) => {
   return filters.map((filter:Filter)=>({attributeName:filter.field,op:filter.operator,value:filter.text}))
 
+}
+
+export const mapMasterToMasterState = (masters:Master[]):MDMMasterState[] => {
+  return masters.map((master:Master)=>({
+    id:master.id,
+    name:master.name,
+    fields:master.fields,
+    filters:[
+    {
+      id:generateRandomId(),
+      masterId:master.id,
+      field:'',
+      operator:'',
+      text:''
+    }],
+    colDefs:mapMasterToColumnDefs(master.fields),
+    rowData:[],
+    progress:'default'
+  }))
 }

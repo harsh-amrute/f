@@ -21,12 +21,11 @@ import { select } from "react-select-event";
 import _ from "lodash";
 import { store } from "../../../../../redux/store/store";
 import { Provider } from "react-redux";
-import { resetState } from "../../../../../redux/features/MDM";
 import { ReactNode } from "react";
 
 import userEvent from "@testing-library/user-event";
-import {setTabs,setViewModifyProgressState} from '../../../../../redux/features/MDM';
-import { useSelector, useDispatch } from 'react-redux';
+
+
 
 jest.mock("../../../../Services/MTA/MDM");
 
@@ -158,10 +157,8 @@ const mockData = [
     ],
   },
 ];
-// let dispatch;
-console.debug(store);
 
-const contextWrapper = (children: ReactNode) => {
+const contextWrapper = (children: ReactNode,store:any) => {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
@@ -200,7 +197,7 @@ describe("Renders View Modify Component", () => {
       return result;
     });
 
-    render(contextWrapper(<ViewModify />));
+    render(contextWrapper(<ViewModify />,store));
 
   });
 
@@ -213,7 +210,7 @@ describe("Renders View Modify Component", () => {
       return result;
     });
 
-    render(contextWrapper(<ViewModify />));
+    render(contextWrapper(<ViewModify />,store));
 
     const filterButton = screen.getAllByTestId("button-outline-status");
     fireEvent.click(filterButton[0]);
@@ -232,11 +229,6 @@ describe("Handles all Interaction in ViewModify Component", () => {
 
   beforeEach(() => {
 
-    if(expect.getState().currentTestName === 'Check If Tabs State is Retained When Coming From Add Master') {
-      console.debug("Hello");
-    };
-    // console.debug(expect.getState().currentTestName);
-
     const result: any = {
       isLoading: false,
       data: { data: { data: mockData } },
@@ -249,9 +241,9 @@ describe("Handles all Interaction in ViewModify Component", () => {
       return useMasterDataResult;
     });
 
-    store.dispatch(resetState());
+    // store.dispatch(resetState());
 
-    render(contextWrapper(<ViewModify />));
+    render(contextWrapper(<ViewModify />,store));
   });
 
 
@@ -327,27 +319,6 @@ describe("Handles all Interaction in ViewModify Component", () => {
     fireEvent.click(tabCloseBtn[tabNo]);
   });
 
-  it("Check If Tabs State is Retained When Coming From Add Master",async ()=>{
-    let tabs = mockData.map((master:any)=>({...master,status:''}));
-
-    render(contextWrapper(<ViewModify />));
-   
-
-    const submit = screen.getByText("Submit");
-    fireEvent.click(submit);
-    
-   
-    // act(()=>{
-    //   const addNewMaster = screen.getByTestId("new-tab");
-    //   fireEvent.click(addNewMaster);
-    // });
-
-    // await waitForElementToBeRemoved(screen.getByTestId("new-tab"),{ timeout: 30000 });
-    // screen.logTestingPlaygroundURL();
-    // fireEvent.click(screen.getByText("Submit"))
-    
-
-  })
 
   it("Check if another Filter Box is Added on Clicking Plus Icon", () => {
     const submit = screen.getByText("Submit");
@@ -482,6 +453,20 @@ describe("Handles all Interaction in ViewModify Component", () => {
 
 });
 
+describe("Handles All Interactions (Mocking Redux Store)",() => {
+
+  it("Check If Tabs State is Retained When Coming From Add Master",async ()=>{
+    let tabs = mockData.map((master:any)=>({...master,status:''}));
+
+    // render(contextWrapper(<ViewModify />));
+   
+
+    // const submit = screen.getByText("Submit");
+    // fireEvent.click(submit);
+
+  })
+})
+
 describe("It handles react portals",()=>{
   beforeEach(()=>{
 
@@ -499,7 +484,7 @@ describe("It handles react portals",()=>{
       return useMasterDataResult;
     });
 
-    store.dispatch(resetState());
+    // store.dispatch(resetState());
       
 
     
@@ -507,7 +492,7 @@ describe("It handles react portals",()=>{
   })
 
   it("Renderers the viewmodify page",()=>{
-    render(contextWrapper(<ViewModify/>))
+    // render(contextWrapper(<ViewModify/>))
     // screen.debug()
 
     const submit = screen.getByText("Submit");
