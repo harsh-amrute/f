@@ -177,13 +177,13 @@ const useViewModify = () => {
       }
     };
 
-    const addEditOnlineToColdefs = () => {
-      const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
-        return {...col,editable:true}
-      })
-      dispatch(UPDATE_COLDEFS(updatedColdefs))
+    // const addEditOnlineToColdefs = () => {
+    //   const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
+    //     return {...col,editable:true}
+    //   })
+    //   dispatch(UPDATE_COLDEFS(updatedColdefs))
 
-    }
+    // }
 
     const addCheckBoxColDefs = () => {
       const checkboxColDefs = [
