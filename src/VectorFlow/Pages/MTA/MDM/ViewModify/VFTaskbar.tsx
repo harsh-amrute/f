@@ -4,10 +4,10 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import { TaskBarContainer } from "./styles"
 import VFStepper, { StepItem } from "../../../../../components/VectorFLOW/commons/VFStepper"
-
+import { ViewModifyProgressState } from "../../../../../VectorFlow/types/MDM";
 
 export interface VFTaskBarProps{
-    masterProgress:"default" | "view" | "error" | "uploaded" | "submitted"
+    masterProgress:ViewModifyProgressState
     editOnline?:boolean
     onBack:()=>void
     onExportData:()=>void
@@ -54,7 +54,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
             case "submitted":
                 return [
                     {
-                         label:'File Uploaded',
+                        label:'File Uploaded',
                         status:'completed',
                         description:''
                     },
@@ -137,7 +137,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                        Delete Selected
                     </VFButtonOutline>
                     <VFButton onClick={onSubmit} themeUi={themeUi} disabled={false} width={139}>
-                        Submit All
+                        Submit
                     </VFButton>
                     <div style={{
                         flex:7,

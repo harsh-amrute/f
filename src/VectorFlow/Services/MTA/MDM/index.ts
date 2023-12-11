@@ -14,6 +14,12 @@ export const useGetMasterUIConfiguration = () => {
   });
 }
 
+export const useGetCount = () => {
+  return useMutation(async (body:GetMasterDataPayload) => {
+    return await MDMService.getCount(body)
+  })
+}
+
 export const useGetMasterData = () => {
   return useMutation(async (body:GetMasterDataPayload) => {
     return await MDMService.getMasterData(body)

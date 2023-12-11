@@ -3,17 +3,27 @@ import {
     ColumnApi,
     ColDef
 } from 'ag-grid-enterprise'
+import Joi from 'joi'
+
+export type ViewModifyProgressState = "default" | "view" | "error" | "uploaded" | "submitted";
 export interface MDMStore{
+    allMasters:MDMMasterState[],
+    masters:MDMMasterState[],
     options:Option[],
     selectedOptions:Option[],
-    selectedMasters:Master[],
-    tabs:Tab[],
-    activeMaster:Master,
-    filters:Filter[]
-    colDefs:ColDef[]
+    activeMaster:MDMMasterState,
+    isSelectMasterOpen:boolean
 }
 
-
+export interface MDMMasterState{
+    id:number,
+    name:string,
+    colDefs:ColDef[]
+    rowData:any[]
+    filters:Filter[]
+    progress:ViewModifyProgressState,
+    fields:Field[]
+}
 export interface Master{
     id:number,
     name:string,
@@ -47,11 +57,11 @@ export interface Filter{
 }
 
 export interface GetMasterDataPayload {
-    masterId:number,
-    masterName:string,
-    filters:Array<{attributeName:string,operator:string,value:string}>,
+    id:number,
+    name:string,
+    filters:Array<{attributeName:string,op:string,value:string}>,
     fields:Array<{key:string}>,
-    paginationParameter:PaginationPayload
+    paginationParameter?:PaginationPayload | object
     
 }
 
@@ -70,4 +80,16 @@ export interface VFtableProps{
 export interface GridRef{
     api:GridApi
     columnApi:ColumnApi
+}
+export interface MasterIdToSchema{
+    [key: string]: Joi.ObjectSchema<any>
+}
+
+
+export interface QueryFilteredDataConfigs{
+    filters:Array<{attributeName:string,op:string,value:string}>,
+    fields:Array<{key:string}>
+    showAll?:boolean,
+    pagination?:boolean
+    count?:boolean
 }

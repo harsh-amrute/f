@@ -6,12 +6,13 @@ import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMas
 import { generateOptions } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
-import useViewModify from "./useViewModify";
+import useViewModify from "./useViewModify"; 
+import { operators } from "../../../../../helpers/MDMConstants";
 import {type Filter} from '../../../../types/MDM';
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import WarningModal from './WarningModal'
-import { notifyError } from "../../../../../helpers/notify";
 import UploadModal from "./UploadModal";
+import { useEffect } from "react";
 import VFTaskBar from "./VFTaskbar";
 
 
@@ -21,39 +22,58 @@ import VFTaskBar from "./VFTaskbar";
     const themeUi = user?.user?.theme_ui;
    
     // const disabled=true;
-    const dummyFn =()=>{return}
+    // const dummyFn =()=>{return}
 
     const {
-        selectedMasters,
         isSelectMasterOpen,
-        setIsSelectMasterOpen,
         options,
         selectedOptions,
-        tabs,
         activeMaster,
-        filters,
-        operators,
         filterButtonStatus,
         setFilterButtonStatus,
         handleSelectMasterSubmit,
+        handleTabChange,
         handleTabClose,
+        addNewMaster,
         handleOnAddFilter,
         handleOnDeleteFilter,
-        allMasters,
+        allMastersState,
         isLoading,
         handleApplyFilter,
-        rowData,
         isWarningModalOpen,
         recordCount,
         isUploadModalOpen,
         toggleUploadModal,
         onWarningModalClose,
         onWarningModalSuccess,
+        downloadFileName,
+        setDownloadFileName,
+        onUploadMaster,
+        file,
+        setFile,
+        isTableDataLoading,
         exportToExcel,
-        colDefs,
-        onColumnChange,
+        onBackButton,
+        onClearExportError,
+        agGridProps,
         ref,
+        tempRef,
+        tempAgGridProps,
+        tempGridData,
+        deleteSelected,
+        onSubmit,
+        isUploadButtonDisabled,
+        editOnline,
+        onEditOnline
     } = useViewModify();
+
+    useEffect(()=>{
+      if(ref.current){
+        if(isTableDataLoading){
+          ref.current?.api.showLoadingOverlay();
+        }
+      }
+    },[isTableDataLoading])
 
 
     return (
@@ -61,10 +81,9 @@ import VFTaskBar from "./VFTaskbar";
         <SCContainer>
           {isSelectMasterOpen && 
             <SelectMaster 
-                data={allMasters} 
+                data={allMastersState} 
                 options={options} 
                 selectedOptions={selectedOptions} 
-                selectedMasters={selectedMasters}
                 filterButtonStatus={filterButtonStatus}
                 setFilterButtonStatus={setFilterButtonStatus}
                 themeUi={themeUi}
@@ -74,97 +93,120 @@ import VFTaskBar from "./VFTaskbar";
           }
           {!isSelectMasterOpen && 
             <VFTab 
-              allMasters={allMasters}
               activeMaster={activeMaster}
-              tabs={tabs}
               themeUi={themeUi}
-              onClose={handleTabClose}
+              onTabChange={handleTabChange}
+              onTabClose={handleTabClose}
               newTabTitle={"Add Master"}
               newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
-              newTabHandler={()=>{
-                if(allMasters.length === selectedMasters.length) {
-                  notifyError('All Masters have already been selected. Cannot add more masters');
-                  return;
-                }
-                setIsSelectMasterOpen(true)
-              }}
+              newTabHandler={addNewMaster}
               >
-                <SCFilterContainer>
-                  <SCFilterControls>
-                    <SCLegend>Filter</SCLegend>
-                    {filters.map((f:Filter)=>{
-                      if(f.masterId==activeMaster?.id){
-                        return(
-                          <VFFilter 
-                            onDelete={()=>handleOnDeleteFilter(f.id,f.masterId)}
-                            operators={operators}
-                            filters={filters}
-                            fields={generateOptions([activeMaster])}
-                            currFilter={f}
-                            key={f.id}
-                          />
-                        )
-                      }
-                    })}
-                    
-                  </SCFilterControls>
-                  <SCFilterAddControls>
-                    {filters.map((f:Filter)=>{
-                        if(f.masterId===activeMaster?.id){
-                          return (
-                            <SCFilterAddButtonWrapper>
-                              <SCFilterAddButton
-                                onClick={handleOnAddFilter}
-                                src="/assets/img/VectorFLOw/NMS/add-filter.svg"
-                                key={f.id}
-                                data-testid="add-filter"
-                              />
-                            </SCFilterAddButtonWrapper>
-                            
+                { (activeMaster.progress ==='default' || activeMaster.progress ==='view') 
+                    &&
+                  <SCFilterContainer>
+                    <SCFilterControls>
+                      <SCLegend>Filter</SCLegend>
+                      {activeMaster.filters.map((f:Filter)=>{
+                        if(f.masterId==activeMaster?.id){
+                          return(
+                            <VFFilter 
+                              onDelete={()=>handleOnDeleteFilter(f.id)}
+                              operators={operators}
+                              filters={activeMaster.filters}
+                              fields={generateOptions([activeMaster])}
+                              currFilter={f}
+                              key={f.id}
+                            />
                           )
                         }
                       })}
-                  </SCFilterAddControls>
-                  <SCFilterSeperator/>
-                  <SCFilterButtonGroup>
-                    <VFButton
-                    themeUi={themeUi}
-                    onClick={()=>{handleApplyFilter()}}
-                    >
-                      Apply Filter
-                    </VFButton>
-                    <VFButtonOutline
-                       onClick={()=>{handleApplyFilter(true)}}
-                      themeUi={themeUi}
                       
-                    >
-                      Show All
-                    </VFButtonOutline>
-                  </SCFilterButtonGroup>
-                </SCFilterContainer>
+                    </SCFilterControls>
+                    <SCFilterAddControls>
+                      {activeMaster.filters.map((f:Filter)=>{
+                          if(f.masterId===activeMaster?.id){
+                            return (
+                              <SCFilterAddButtonWrapper>
+                                <SCFilterAddButton
+                                  onClick={handleOnAddFilter}
+                                  src="/assets/img/VectorFLOw/NMS/add-filter.svg"
+                                  key={f.id}
+                                  data-testid="add-filter"
+                                />
+                              </SCFilterAddButtonWrapper>
+                              
+                            )
+                          }
+                        })}
+                    </SCFilterAddControls>
+                    <SCFilterSeperator/>
+                    <SCFilterButtonGroup>
+                      <VFButton
+                      themeUi={themeUi}
+                      onClick={()=>{handleApplyFilter()}}
+                      >
+                        Apply Filter
+                      </VFButton>
+                      <VFButtonOutline
+                        onClick={()=>{handleApplyFilter(true)}}
+                        themeUi={themeUi}
+                        
+                      >
+                        Show All
+                      </VFButtonOutline>
+                    </SCFilterButtonGroup>
+                  </SCFilterContainer>
+                }
                 <VFTable
                   ref={ref}
-                  rowData={rowData}
-                  columnDefs={colDefs}
-                  onColumnChange={onColumnChange}
+                  columnDefs={activeMaster.colDefs}
+                  rowData={activeMaster.rowData}
+                  {...agGridProps}
                 />
+                <div style={{display:'none'}}>                
+                  <VFTable
+                    ref={tempRef}
+                    rowData={tempGridData}
+                    {...tempAgGridProps}
+                  />
+                </div>
+
             </VFTab>
           }
         </SCContainer>
-        {isWarningModalOpen && <WarningModal count={recordCount} onCloseModal={onWarningModalClose} onFailure={onWarningModalClose} onSuccess={onWarningModalSuccess}/>}
-        {isUploadModalOpen && <UploadModal openModal={isUploadModalOpen} onCloseModal={()=>toggleUploadModal(false)} onDownload={()=>toggleUploadModal(false)} onUpload={()=>toggleUploadModal(false)}/>}
+        {isWarningModalOpen && 
+          <WarningModal 
+            count={recordCount} 
+            onCloseModal={onWarningModalClose} 
+            onFailure={onWarningModalClose} 
+            onSuccess={onWarningModalSuccess}
+            />
+        }
+        {isUploadModalOpen && 
+          <UploadModal 
+            openModal={isUploadModalOpen} 
+            onCloseModal={()=>toggleUploadModal(false)} 
+            onDownload={()=>exportToExcel(true)} 
+            onUpload={()=>onUploadMaster()}
+            inputText={downloadFileName}
+            setInputText={setDownloadFileName}
+            file={file}
+            setFile={setFile}
+            uploadButtonStatus={isUploadButtonDisabled}
+            />
+        }
         {
           !isSelectMasterOpen && 
           <VFTaskBar
-            masterProgress="view"
-            editOnline={false}
-            onEditOnline={dummyFn}
-            onBack={()=>setIsSelectMasterOpen(true)}
-            onClearAndExportErrors={dummyFn}
+            masterProgress={activeMaster.progress}
+            editOnline={editOnline}
+            onEditOnline={onEditOnline}
+            onBack={onBackButton}
+            onClearAndExportErrors={onClearExportError}
             onModifyData={()=>toggleUploadModal(true)}
             onExportData={exportToExcel}
-            onSubmit={dummyFn}
-            onDeleteSelected={dummyFn}
+            onSubmit={onSubmit}
+            onDeleteSelected={deleteSelected}
           />
         }
       </>
