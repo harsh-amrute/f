@@ -265,11 +265,12 @@ const useViewModify = () => {
     const handleTabChange = (currMaster: MDMMasterState) => {
       if(currMaster.progress === 'submitted') return notifyError(`The ${activeMaster.name} Master is already submitted`);
 
-      const nextMasterIndex = masters.findIndex((master:Master)=>master.id === activeMaster.id) + 1;
+      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>master.progress !== 'submitted');
 
       if(currMaster.id === masters[nextMasterIndex].id) return dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex));
+      else return notifyError(`Please Complete the ${masters[nextMasterIndex].name} Master`);  
 
-      return notifyError(`Please Complete the ${activeMaster.name} Master`);  
+      
       
     }
     
@@ -388,6 +389,8 @@ const useViewModify = () => {
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           toggleUploadModal(false);
           notifySuccess(`Data Uploaded Successfully`);
+          setDownloadData(false);
+          setTempDownloadData(false);
         } catch (error:any) {
           notifyError(error.message);
         }
