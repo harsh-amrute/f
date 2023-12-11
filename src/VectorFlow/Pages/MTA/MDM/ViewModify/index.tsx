@@ -13,7 +13,6 @@ import WarningModal from './WarningModal'
 import { notifyError } from "../../../../../helpers/notify";
 import UploadModal from "./UploadModal";
 import VFTaskBar from "./VFTaskbar";
-import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 
 
 
