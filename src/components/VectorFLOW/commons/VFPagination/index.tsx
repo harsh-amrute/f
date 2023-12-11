@@ -7,55 +7,38 @@ interface SelectedRowsCountProps{
 }
 
 
-interface VFPaginationProps{
-    masterProgress:string
+export interface VFPaginationProps{
     selectedRows:number
     totalRows:number
     currentPage:number
-    totalPages:number
+    rowsPerPage:number
     handleChangePage:(e:any)=>void
     handleChangePerPage:(e:any)=>void
 }
 
-const SelectedRowsCount = (props:SelectedRowsCountProps)=>{
-
-    const{
-        selectedRows,
-        totalRows
-    } = props
-
-    return(
-        <SelectedRowsCountWrapper>
-            Selected {selectedRows} out of {totalRows}
-        </SelectedRowsCountWrapper>
-    )
-}
 
 const VFPagination  = (props:VFPaginationProps)=>{
 
     const{
-        masterProgress,
         selectedRows,
         totalRows,
         currentPage,
-        totalPages,
+        rowsPerPage,
         handleChangePage,
         handleChangePerPage
     } = props
     
-
     return(
-        <PaginationWrapper>
-            <SelectedRowsCount
-                selectedRows={selectedRows}
-                totalRows={totalRows}
-            />
+        <PaginationWrapper data-testid="vf_pagination">
+            <SelectedRowsCountWrapper>
+                Selected {selectedRows} out of {totalRows}
+            </SelectedRowsCountWrapper>
             <TotalItemsWrapper>
                 Total Items : {totalRows}
             </TotalItemsWrapper>
             <Pagination
                 page={currentPage}
-                pageCount={totalPages}
+                pageCount={totalRows/rowsPerPage}
                 handleChangePage={handleChangePage}
                 handleChangePerPage={handleChangePerPage}
             />

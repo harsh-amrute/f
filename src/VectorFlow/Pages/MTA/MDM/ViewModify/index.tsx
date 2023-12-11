@@ -52,10 +52,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
         onWarningModalSuccess,
         exportToExcel,
         colDefs,
-        rowsPerPage,
-        currentPage,
         onColumnChange,
-        onPageChange,
         ref,
     } = useViewModify();
 
@@ -151,14 +148,6 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
                   rowData={rowData}
                   columnDefs={colDefs}
                   onColumnChange={onColumnChange}
-                />
-                <VFPagination
-                  selectedRows={0}
-                  totalRows={recordCount}
-                  totalPages={recordCount/rowsPerPage}
-                  currentPage={currentPage}
-                  handleChangePage={onPageChange}
-                  handleChangePerPage={onPageChange}
                 />
             </VFTab>
           }
