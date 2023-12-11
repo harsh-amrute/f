@@ -46,6 +46,7 @@ const SearchInputMultiple = ({
         DropdownIndicator:icon
        }}
       menuPosition="fixed"
+      aria-label="Example Label"
       isDisabled={disabled}
       options={options}
       value={value}

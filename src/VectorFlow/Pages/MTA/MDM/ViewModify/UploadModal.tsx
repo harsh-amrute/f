@@ -1,14 +1,21 @@
+import { Dispatch, SetStateAction,useRef } from 'react'
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 import { UploadModalWrapper, UploadModalSection, UploadBorderContainer, UploadModalContent, TextContent, InputWrapper, UploadModalInput, UploadModalText, UploadFileText } from "./styles"
 import { SCManualUploadBtn, SCManualUploadButton } from "../../../../../module-store-transfer/pages/manual-upload/styles"
 import { useUserData } from "../../../../../context"
-
-
+import * as ManualStyle from "../../../../../module-store-transfer/pages/manual-upload/styles"; 
+import {notifyError} from '../../../../../helpers/notify';
 interface UploadModalProps{
    openModal:boolean
    onCloseModal:()=>void
    onDownload:()=>void
    onUpload:()=>void
+   inputText:string,
+   setInputText:Dispatch<SetStateAction<string>>,
+   file:File | undefined,
+   setFile:Dispatch<SetStateAction<File | undefined>>
+   uploadButtonStatus:boolean
+
 }
 
 
@@ -18,10 +25,38 @@ const UploadModal = (props:UploadModalProps)=>{
       openModal,
       onCloseModal,
       onDownload,
-      onUpload
+      onUpload,
+      inputText,
+      setInputText,
+      file,
+      setFile,
+      uploadButtonStatus
    }   = props 
 
    const {user} = useUserData()
+   const inputRef = useRef<HTMLInputElement>(null);
+
+   const handleClick = (): void => {
+      if (inputRef.current != null) {
+        inputRef.current.click();
+      }
+    };
+  
+    const handleFileChange = (e: any) => {
+      if (e.target.files.length < 1) {
+        return;
+      }
+  
+      const file = e.target.files[0];
+      switch (file.type) {
+        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+          setFile(file);
+          break;
+        default:
+          notifyError("Only xlsx files are accepted");
+      }
+    };
+
    return(
    <VFModalCard headerText={"Modification"} headerIcon={"/assets/img/VectorFLOW/NMS/settings.svg"} openModal={openModal} closeModal={onCloseModal} >
       <UploadModalWrapper>
@@ -39,7 +74,7 @@ const UploadModal = (props:UploadModalProps)=>{
                      File Name
                   </UploadFileText>
                   <InputWrapper>
-                     <UploadModalInput/>
+                     <UploadModalInput value={inputText} onChange={(e)=>setInputText(e.target.value)} data-testid="view-modify-text"/>
                      <SCManualUploadBtn themeUi={user.user.theme_ui} 
                         onClick={onDownload}
                         style={{
@@ -76,12 +111,22 @@ const UploadModal = (props:UploadModalProps)=>{
                   <p>Drag & Drop your file here</p>
                </TextContent>     
                <InputWrapper>
-               <SCManualUploadButton style={{height:'30px', width:'105px'}}>
+               <SCManualUploadButton style={{height:'30px', width:'105px'}} onClick={handleClick} data-testid="view-modify-manual-upload-btn">
                   <img src="../assets/img/manual/plus.png" width={19} height={19} />
+                  <ManualStyle.SCManualUploadInput
+                     type="file"
+                     accept=".xlsx"
+                     onChange={handleFileChange}
+                     ref={inputRef}
+                     value=""
+                     style={{ display: "none" }}
+                     data-testid="view-modify-file-upload"
+                  />
                </SCManualUploadButton>
-                  <UploadModalInput placeholder="Click here to upload new file"/>
+                  <UploadModalInput placeholder="Click here to upload new file" value={file?.name}/>
                      <SCManualUploadBtn themeUi={user.user.theme_ui} 
                         onClick={onUpload}
+                        disabled={uploadButtonStatus}
                         style={{
                            height:'30px',
                            borderRadius:'0',

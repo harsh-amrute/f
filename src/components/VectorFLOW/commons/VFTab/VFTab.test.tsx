@@ -1,155 +1,22 @@
 import { render, fireEvent, screen} from '@testing-library/react';
 import VFTab from './index';
-import { type Master, type Tab} from "../../../../VectorFlow/types/MDM";
+import { type MDMMasterState, type MDMStore}  from "../../../../VectorFlow/types/MDM";
 import _ from 'lodash';
 import { Provider } from 'react-redux';
 import { ReactNode } from 'react';
-import { store } from '../../../../redux/store/store';
+import { createStore } from '../../../../redux/store/store';
 import {QueryClientProvider} from '@tanstack/react-query';
 import { setupReactQuery } from '../../../../config/react-query-config';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { UserDataContext } from '../../../../context';
+import { MasterData } from '../../../../mock-data/MDM';
+import { mapMasterToColumnDefs } from '../../../../helpers/utils';
 
 
-const allMasters:Master[] = [
-  { 
-    id: 1,
-    name: 'SKU', 
-    fields:[
-        {
-          displayName:'SKU Code',
-          key:"sku_code",
-          visible:true
-        },
-        {
-          displayName:'SKU Name',
-          key:"sku_name",
-          visible:true
-        },
-        {
-          displayName: "Item Category Code",
-          key: "item_category_code",
-          visible: false
-        },
-    ] 
-  },
-  { 
-    id: 2,
-    name: 'Location', 
-    fields:[
-        {
-          displayName:'Location Code',
-          key:"location_code",
-          visible:true
-        },
-        {
-          displayName:'Location Name',
-          key:"location_name",
-          visible:true
-        },
-        {
-          displayName: "c1",
-          key: "LocAttr1",
-          visible: false
-        },
-    ] 
-  },
-  { 
-    id: 3,
-    name: 'SKU Location', 
-    fields:[
-        {
-          displayName:'SKU Code',
-          key:"sku_code",
-          visible:true
-        },
-        {
-          displayName:'SKU Name',
-          key:"sku_name",
-          visible:true
-        },
-        {
-          displayName: "Segment",
-          key: "SKULocAttr1",
-          visible: false
-        },
-    ] 
-  },
-  
-];
-
-const tabs:Tab[] = [
-  { 
-    id: 1,
-    name: 'SKU', 
-    fields:[
-        {
-          displayName:'SKU Code',
-          key:"sku_code",
-          visible:true
-        },
-        {
-          displayName:'SKU Name',
-          key:"sku_name",
-          visible:true
-        },
-        {
-          displayName: "Item Category Code",
-          key: "item_category_code",
-          visible: false
-        },
-    ],
-    status:'' 
-  },
-  { 
-    id: 2,
-    name: 'Location', 
-    fields:[
-        {
-          displayName:'Location Code',
-          key:"location_code",
-          visible:true
-        },
-        {
-          displayName:'Location Name',
-          key:"location_name",
-          visible:true
-        },
-        {
-          displayName: "c1",
-          key: "LocAttr1",
-          visible: false
-        },
-    ],
-    status:'' 
-  },
-  { 
-    id: 3,
-    name: 'SKU Location', 
-    fields:[
-        {
-          displayName:'SKU Code',
-          key:"sku_code",
-          visible:true
-        },
-        {
-          displayName:'SKU Name',
-          key:"sku_name",
-          visible:true
-        },
-        {
-          displayName: "Segment",
-          key: "SKULocAttr1",
-          visible: false
-        },
-    ],
-    status:'' 
-  }
-];
 
 const queryClient = setupReactQuery()
 
-const contextWrapper = (children:ReactNode) => {
+const contextWrapper = (children:ReactNode,store:any) => {
   return(
     <QueryClientProvider client={queryClient}>
         <Router>
@@ -163,47 +30,63 @@ const contextWrapper = (children:ReactNode) => {
   )
 }
 
-const activeMaster:Master = allMasters[0];
-const themeUi = 'NOIRFUSION';
-const handleTabClose = jest.fn();
-const newTabHandler = jest.fn();
 
 
-const props = {
-  allMasters:allMasters,
-  activeMaster:activeMaster,
-  tabs:tabs,
-  themeUi:themeUi,
-  onClose:handleTabClose,
-  newTabTitle:'Add Master',
-  newTabIcon:"/assets/img/VectorFLOW/NMS/add-circle.svg",
-  newTabHandler:newTabHandler
 
-}
+
 
 
 describe('View Modify Component', () => {
 
+  const mockState:MDMStore = {
+    allMasters:MasterData,
+    masters:MasterData,
+    options:[],
+    selectedOptions:[],
+    activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
+    isSelectMasterOpen:true,
+  }
+
+  const themeUi = 'NOIRFUSION';
+  const handleTabClose = jest.fn();
+  const handleTabChange = jest.fn();
+  const newTabHandler = jest.fn();
+
+  const props = {
+    activeMaster:mockState.activeMaster,
+    themeUi:themeUi,
+    onTabChange:handleTabChange,
+    onTabClose:handleTabClose,
+    newTabTitle:'Add Master',
+    newTabIcon:"/assets/img/VectorFLOW/NMS/add-circle.svg",
+    newTabHandler:newTabHandler
+  
+  }
+
+  const mockStore = createStore(mockState);
+
+  
+
+
   it('renders the VF Tab component', () => {
 
-    render(contextWrapper(<VFTab {...props}/>))
+    render(contextWrapper(<VFTab {...props}/>,mockStore))
   
   });
 
   it('changes tab when clicking', () => {
 
-    render(contextWrapper(<VFTab {...props}/>))
+    render(contextWrapper(<VFTab {...props}/>,mockStore))
 
     const tabsList = screen.getAllByTestId('tab-button');
     const tabNo = _.random(1,tabsList.length-1);  
     fireEvent.click(tabsList[tabNo]);
 
-
   });
 
   it('closes tab when clicking close icon', () => {
 
-    render(contextWrapper(<VFTab {...props}/>))
+    render(contextWrapper(<VFTab {...props}/>,mockStore))
 
     const tabCloseBtn = screen.getAllByTestId('tab-close')[0];
     fireEvent.click(tabCloseBtn)
@@ -213,7 +96,7 @@ describe('View Modify Component', () => {
 
   it('calls New Tab Handler on clickng add new tab', () => {
 
-    render(contextWrapper(<VFTab {...props}/>))
+    render(contextWrapper(<VFTab {...props}/>,mockStore))
 
     const addNewTab = screen.getByTestId('new-tab');
     fireEvent.click(addNewTab);
@@ -223,34 +106,45 @@ describe('View Modify Component', () => {
 
   it('Renders component correctly when new tab details are not provided (i.e. optional props)', () => {
 
-    render(contextWrapper(<VFTab {...props} newTabHandler={undefined}/>));
+    render(contextWrapper(<VFTab {...props} newTabHandler={undefined}/>,mockStore));
 
   });
 
   it('Renders component correctly when current tab is not in the list of all masters', () => {
 
-    render(contextWrapper(<VFTab {...props} allMasters={allMasters.slice(1)}/>));
+    render(contextWrapper(<VFTab {...props} />,mockStore));
     const tabCloseBtn = screen.getAllByTestId('tab-close')[0];
     fireEvent.click(tabCloseBtn)
     expect(handleTabClose).toHaveBeenCalled();
 
   });
 
-  it('calls Completed tab when status is completed', () => {
+  it('Displays Completed UI when Master is submitted', () => {
 
-    tabs[0].status = 'completed';
+    const updatedMasterData:MDMMasterState[] = MasterData.map((master:MDMMasterState)=>{
+      if(master.id === 1) return {...master,progress:'submitted'}
+      return master;
+    })
 
-    render(contextWrapper(<VFTab {...props}/>))
+    const localMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:updatedMasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'submitted',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
+      isSelectMasterOpen:true,
+    }
 
-  });
+    const localMockStore = createStore(localMockState);
 
-  it('Prevents changing to Already Completed Tab', () => {
+    render(contextWrapper(<VFTab {...props}/>,localMockStore))
 
-    tabs[0].status = 'completed';
+    const tabsList = screen.getAllByTestId('tab-button');
 
-    render(contextWrapper(<VFTab {...props}/>))
+    expect(tabsList[0]).toHaveStyle('background:#CECBCD 0% 0% no-repeat padding-box')
 
     const tabCloseBtn = screen.getAllByTestId('tab-close')[0];
+
     fireEvent.click(tabCloseBtn);
 
   });

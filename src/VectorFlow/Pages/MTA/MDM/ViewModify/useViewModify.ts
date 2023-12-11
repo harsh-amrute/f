@@ -1,194 +1,489 @@
-import {useState, useEffect, useRef} from 'react';
-import { type Master, type Option, type Field, type Tab, type Filter, type GetMasterDataPayload, type GridRef } from "../../../../types/MDM";
-import {generateRandomId, generateOptions, areMasterFiltersValid, mapMasterToColumnDefs } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration } from "../../../../Services/MTA/MDM";
+import {useState, useEffect, useRef, useMemo} from 'react';
+import { type Master, type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
+import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState } from "../../../../../helpers/utils";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import {setOptions,setSelectedMasters, setTabs, setActiveMaster, setFilters, setColDefs} from '../../../../../redux/features/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
-import { notifyError } from '../../../../../helpers/notify';
+import { notifyError, notifySuccess } from '../../../../../helpers/notify';
+import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
+import { AgGridReactProps } from 'ag-grid-react';
+import { ColDef } from 'ag-grid-enterprise';
+import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
 
 const useViewModify = () => {
 
     const dispatch = useDispatch();
-    const [isSelectMasterOpen,setIsSelectMasterOpen] = useState<boolean>(true);
 
     const options = useSelector((state: RootState) => state.mdm.options);
     const selectedOptions = useSelector((state: RootState) => state.mdm.selectedOptions);
-    const selectedMasters = useSelector((state:RootState) => state.mdm.selectedMasters);
-    const tabs = useSelector((state:RootState) => state.mdm.tabs);
     const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster);
-    const filters = useSelector((state:RootState) => state.mdm.filters);
-    const colDefs = useSelector((state:RootState) => state.mdm.colDefs);
+    const masters = useSelector((state:RootState)=>state.mdm.masters);
 
-    const [rowData,setRowData] = useState([]);
-    const [tempRowData,setTempRowData] = useState([])
+    const isSelectMasterOpen = useSelector((state:RootState) => state.mdm.isSelectMasterOpen);
+
+    const [rowData,setRowData] = useState<object[]>([]);
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
     const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
     const [recordCount,setRecordCount] = useState<number>(0)
+    const [downloadFileName,setDownloadFileName] = useState('');
+    const [file,setFile] = useState<File>();
+    const [isTableDataLoading,setIsTableDataLoading] = useState<boolean>(false);
+    const [defaultToolPanel,setDefaultToolPanel] = useState<string>('');
+    const [downloadData,setDownloadData] = useState<boolean>(false);
+    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+    const [colDefs,setColDefs] = useState<ColDef[]>([]); 
+    const [isUploadButtonDisabled,setIsUploadButtonDisabled] = useState<boolean>(true);
+    const [showAll,setShowAll] = useState(false) //Flag to identify if the query is an show all query as we need that param in WarningModal Succes Handler P.S- Plz Optimize if you get time
+
+    const [editOnline,toggleEditOnline] = useState(false);
+
+  
 
     const ref = useRef<GridRef>();
+    const tempRef = useRef<GridRef>(); //used for second ag grid instance which is hidden.
+    const [tempGridData,setTempGridData] = useState<object[]>([]);
 
-    const operators:Option[] = [
-        {
-          label:'Equals To',
-          value:'='
-        }
-      ]
-    const [filterButtonStatus,setFilterButtonStatus] = useState<Array<Master>>([]);
+    const [filterButtonStatus,setFilterButtonStatus] = useState<Array<number>>([]);
 
     const {data:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
    
-    const allMasters:Master[] = masterUIConfiguration?.data.data;
+    const allMasters:Master[] = masterUIConfiguration?.data.data || [];
+
+    const allMastersState:MDMMasterState[] = mapMasterToMasterState(allMasters);
 
     const {mutateAsync:getMasterData} = useGetMasterData();
 
+    const {mutateAsync:getCount} = useGetCount();
 
-    useEffect(()=>{
-        if(filterButtonStatus.length !== 0) return;
+    // const colDefs = activeMaster.colDefs
+
+    const invalidDataColdefs:ColDef[] = [
+      {
+        field:'warning',
+        colId:'warning',
+        headerName:'Warning',
+        floatingFilter:false,
+        cellRenderer:'warningCell',
+        minWidth:200,
+        suppressColumnsToolPanel:true,
+        wrapText:true,
+        autoHeight:true,
+      },
+      {
+        field:'error',
+        colId:'error',
+        headerName:'Error',
+        floatingFilter:false, 
+        cellRenderer:'errorCell',
+        suppressColumnsToolPanel:true,
+        wrapText:true,
+        autoHeight:true,
+      }
+  ];
+
+    const onColumnChange = () => {
+      const localColDefs = ref.current?.api.getColumnDefs()
+
+      if (ref.current && localColDefs) {
+        dispatch(UPDATE_COLDEFS(localColDefs))
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+        setDefaultToolPanel('columns')
+      }
+
+    }
+
+    const customCellRenderers = useMemo(() => ({
+      errorCell: ErrorCell,
+      warningCell: WarningCell  
+    }), []);
+
+    // useEffect(()=>{
+
+    // },[editOnline])
+
   
-        if(!isLoading){
-          const allOptions:Option[] =  generateOptions(allMasters);
-          dispatch(setSelectedMasters(allMasters));
-          dispatch(setOptions(allOptions));
-        }
-        const temp:Master[]=[];
-        if(selectedOptions?.length === 0 && allMasters) dispatch(setSelectedMasters([...allMasters]));
-        if(selectedOptions?.length > 0) dispatch(setSelectedMasters([...getSelectedMasters(temp)]));
-      },[selectedOptions,isLoading]);  
+    useEffect(()=>{
 
-    const getSelectedMasters = (temp:Master[]) => {
+        setColDefs(activeMaster.colDefs);
+
+        if(filterButtonStatus.length !== 0) return;
+
+        if(activeMaster.id === 0){
+          if(!isLoading){
+            const allOptions:Option[] =  generateOptions(allMasters);
+            dispatch(STORE_ALL_MASTERS(allMastersState));
+            dispatch(FILL_OPTIONS(allOptions));
+          }
+  
+          const temp:MDMMasterState[]=[];
+          dispatch(FILL_MASTERS([...getSelectedMasters(temp)]));
+        }
+
+
+        // if(isToolPanelOpen) ref.current?.api.openToolPanel('columns');
+
+      },[selectedOptions,isLoading,activeMaster]);  
+
+      useEffect(()=>{
+        if(masters.length > 0 && filterButtonStatus.length !== 0){
+          setFilterButtonStatus(masters.map((master:MDMMasterState)=>master.id));
+        }
+      },[masters])
+
+
+    const sideBar = {
+      toolPanels: [
+        {
+          id: "columns",
+          labelDefault: "Columns",
+          labelKey: "columns",
+          iconKey: "columns",
+          toolPanel: "agColumnsToolPanel",
+          toolPanelParams: {
+            suppressPivots: true,
+            suppressPivotMode: true,
+          },
+        },
+      ],
+      defaultToolPanel:defaultToolPanel,
+    }
+
+    const agGridProps:AgGridReactProps = {
+      sideBar:['default','view'].includes(activeMaster.progress) ? sideBar : {},
+      gridOptions:{
+        getRowStyle: (params: any) => {
+          if (params.node.rowIndex % 2 === 0) {
+            return { background: "#EBEBEB" };
+          }
+          return { background: "#F7F7F7" };
+        },
+      },
+      pagination:true,
+      onColumnVisible:onColumnChange,
+      overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="../assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
+      onRowDataUpdated:(event)=>{
+        if(downloadData) event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? activeMaster.name : downloadFileName});
+      },
+      rowSelection:'multiple',
+      suppressRowClickSelection:true,
+      components:customCellRenderers  
+    }
+
+    const tempAgGridProps:AgGridReactProps = {
+      columnDefs:[...invalidDataColdefs,...activeMaster.colDefs],
+      onRowDataUpdated:(event)=>{
+        if(tempDownloadData) event.api.exportDataAsExcel({fileName:downloadFileName ? 'Error-' + downloadFileName : 'Error-'+ activeMaster.name});
+      }
+    };
+
+    // const addEditOnlineToColdefs = () => {
+    //   const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
+    //     return {...col,editable:true}
+    //   })
+    //   dispatch(UPDATE_COLDEFS(updatedColdefs))
+
+    // }
+
+    const addCheckBoxColDefs = () => {
+      const checkboxColDefs = [
+        {
+          field:'checkbox',
+          colId:'checkbox',
+          headerName:'',
+          checkboxSelection:true,
+          headerCheckboxSelection:true,
+          headerCheckboxSelectionCurrentPageOnly:true
+        },
+        // {
+        //   field:'checkbox',
+        //   he
+        //   headerName:'Select Across All Pages',
+        //   // checkboxSelection:true,
+        //   headerCheckboxSelection:true
+        // },
+      ]
+      dispatch(ADD_COLDEFS({colDefs:checkboxColDefs}));
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+    }
+
+  
+
+    const addInvalidDataColDefs = (columnName:string) => {
+      dispatch(ADD_COLDEFS({colDefs:[columnName === 'error' ? invalidDataColdefs[1] : invalidDataColdefs[0]]}));
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+    }
+
+    const getCurrentVisbileColumns = () => {
+      const columnData = ref.current?.columnApi.getAllDisplayedColumns();
+      return columnData?.map((column:any) => ({key:column.colDef.field}));
+    }
+
+    const queryFilteredData = async (configs:QueryFilteredDataConfigs) => {
+      const {filters,showAll,pagination,fields,count} = configs;
+      const payload:GetMasterDataPayload = {
+        id:activeMaster.id,
+        name:activeMaster.name,
+        filters:showAll ? [] : filters,
+        fields:fields,
+      }
+
+      if(pagination) {
+        payload.paginationParameter = {
+          pageNumber:1,
+          recordsPerPage:10
+        }
+      }
+
+      let resultData;
+      if(count){
+        resultData =  await getCount(payload);
+      }
+      else{
+        resultData = await getMasterData(payload); 
+      }
+
+      return resultData;
+    }
+
+    const getSelectedMasters = (temp:MDMMasterState[]) => {
         selectedOptions.forEach((selectedOption:Option)=>{
-          allMasters.forEach((master:Master)=>{
-            if(master.fields.find((field:Field)=>field.displayName === selectedOption.label) && !temp.find((selectedMaster:Master)=>selectedMaster.id === master.id)) temp.push(master);
+          allMastersState.forEach((master:MDMMasterState)=>{
+            if(master.fields.find((field:Field)=>field.displayName === selectedOption.label) && !temp.find((selectedMaster:MDMMasterState)=>selectedMaster.id === master.id)) temp.push(master);
           })
         });
         return temp;
       }
 
     const handleSelectMasterSubmit = () => {
-        const selectedTabs = selectedMasters.map((master:Master) => {
-            return {
-            id:master.id,
-            name:master.name,
-            fields:master.fields,
-            status:'',
-            }
-        })
-        dispatch(setTabs([...selectedTabs]));
-        // setActiveMaster(selectedMasters.find((master:Master)=>master.id === selectedTabs[0].id))
-        dispatch(setActiveMaster(selectedMasters[0]));
-        const filters:Filter[] = selectedMasters.map((master:Master) => {
-            const filterObj:Filter =  {
-            id:generateRandomId(),
-            masterId:master.id,
-            field:'',
-            operator:'',
-            text:''
-            }
-            return filterObj;
-        })
-        dispatch(setFilters([...filters]));
-        dispatch(setColDefs(mapMasterToColumnDefs(selectedMasters[0].fields)))
-        setIsSelectMasterOpen(false);
+      if(activeMaster.id===0){
+        dispatch(UPDATE_ACTIVE_MASTER(0));
+      }
+      dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
+    }
 
+    const handleTabChange = (currMaster: MDMMasterState) => {
+      if(currMaster.progress === 'submitted') return notifyError(`The ${activeMaster.name} Master is already submitted`);
+
+      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>master.progress !== 'submitted');
+
+      if(currMaster.id === masters[nextMasterIndex].id) return dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex));
+      else return notifyError(`Please Complete the ${masters[nextMasterIndex].name} Master`);  
+
+      
+      
     }
     
-    const handleTabClose = (e:React.MouseEvent<HTMLElement>,currTab:Tab) => {
+    const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
         e.stopPropagation();
-        const newTabs = tabs.filter((tab:Tab)=>tab.id !== currTab.id);
-        if(newTabs.length === 0){
-          setIsSelectMasterOpen(true);
-          dispatch(setSelectedMasters([]))
-          setFilterButtonStatus([])
-          return;
+        if(masters.length === 1){
+          return notifyError("There Should be atleast one selected Master")
         }
-        if(currTab.id === activeMaster?.id ){
-            dispatch(setActiveMaster(tabs[1]))
+        dispatch(REMOVE_MASTER(currMaster.id));
+       
+        if(currMaster.id === activeMaster.id){
+          dispatch(UPDATE_ACTIVE_MASTER(0))
         }
-        dispatch(setTabs([...newTabs]));
-        dispatch(setSelectedMasters([...newTabs]))
-        dispatch(setColDefs(mapMasterToColumnDefs(newTabs[0].fields)))
-        setFilterButtonStatus([...newTabs])
       }
+    
+    const addNewMaster = ()=>{
+      if(allMasters.length === masters.length) {
+        notifyError('All Masters have already been selected. Cannot add more masters');
+        return;
+      }
+      dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+      setDownloadData(false);
+      setTempDownloadData(false);
+    }
 
       const handleOnAddFilter = ()=>{
-        dispatch(setFilters([...filters,{
-          id:generateRandomId(),
-          masterId:activeMaster?.id,
-          field:'',
-          operator:'',
-          text:''
-        }]))
+        dispatch(ADD_FILTER());
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
       }
   
-      const handleOnDeleteFilter = (id:string,masterId:number | undefined)=>{
-        const filtersLength = filters.filter((f:Filter) => f.masterId === masterId).length;
-        if(filtersLength === 1) return;
-        dispatch(setFilters(filters.filter((f:Filter)=>f.id!==id)))
+      const handleOnDeleteFilter = (id:string)=>{
+        if(activeMaster.filters.length === 1) return notifyError("Cannot Delete this Filter Instance")
+        dispatch(REMOVE_FILTER(id));
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       }
 
       const handleApplyFilter =async (showAll?:boolean) => {
-        const currMasterFilters = filters.filter((f:Filter) =>f.masterId === activeMaster.id)
+        if(showAll) setShowAll(showAll);
+        const currMasterFilters = activeMaster.filters;
         if(!areMasterFiltersValid(currMasterFilters) && !showAll){
-          console.log("In IF")
           return notifyError('Filter cannot be empty')
         }
+
+        const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
+        const payloadFields:any = getCurrentVisbileColumns();
+
+        setIsTableDataLoading(true);
+
+        const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true,count:true});
         
-        const payload:GetMasterDataPayload = {
-          masterId:activeMaster.id,
-          masterName:activeMaster.name,
-          filters:showAll?[]:currMasterFilters.map((f:Filter) => ({attributeName:f.field,operator:f.operator,value:f.text})),
-          fields:activeMaster.fields.map((field:Field) => ({key:field.key})),
-          paginationParameter:{
-            pageNumber:1,
-            recordsPerPage:10
-          }
-        }
-        const myData =  await getMasterData(payload);
-        setRecordCount(myData.data.recordCount)
+        setIsTableDataLoading(false);
+        setRecordCount(result.data.recordCount)
         toggleWarningModal(true)
-        setTempRowData(myData.data.data)
+        
       }
 
       const onWarningModalClose = ()=>{
-        toggleWarningModal(false)
+        setRowData([])
+        toggleWarningModal(false);
+        setIsTableDataLoading(false);
       }
 
-      const onWarningModalSuccess = ()=>{
-        setRowData(tempRowData)
-        toggleWarningModal(false)
-      }
+      const onWarningModalSuccess = async ()=>{
 
-      const exportToExcel = ()=>{
-        ref.current?.api.exportDataAsExcel()
-      }
+        const currMasterFilters = activeMaster.filters;
 
-      const onColumnChange = ()=>{
-        const localColDefs = ref.current?.api.getColumnDefs()
-        if (ref.current && localColDefs) {
-          dispatch(setColDefs(localColDefs));
+        const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
+        const payloadFields:any = getCurrentVisbileColumns();
+        setIsTableDataLoading(true);
+        const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true}); 
+        if(result.data.recordCount <= 10){
+          toggleEditOnline(true);
         }
+        else{
+          toggleEditOnline(false);
+        }
+        setIsTableDataLoading(false);
+        dispatch(UPDATE_ROW_DATA(result.data.data));
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+        dispatch(UPDATE_PROGRESS_STATE('view')); 
+        toggleWarningModal(false)
       }
 
+      const onEditOnline = () => {
+        const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
+          return {...col,editable:true}
+        })
+        dispatch(UPDATE_COLDEFS(updatedColdefs))
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+  
+      }
+
+      const onUploadMaster = async () => {
+        try {
+          if(!file){
+            notifyError('Please select a file to upload.');
+            return
+          }
+  
+          const result = await parseExcelData(file,activeMaster);
+          const ifErrorExists = result.find((data:any)=>data.error);
+          const ifWarningExists = result.find((data:any)=>data.warning);
+          if(ifErrorExists) {
+            dispatch(UPDATE_PROGRESS_STATE('error'));
+            addInvalidDataColDefs('error');
+          }
+          else if(ifWarningExists){
+            dispatch(UPDATE_PROGRESS_STATE('error'));
+            addInvalidDataColDefs('warning');
+          }
+          else{
+            dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+            addCheckBoxColDefs();
+          }
+          dispatch(UPDATE_ROW_DATA(result));
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          toggleUploadModal(false);
+          notifySuccess(`Data Uploaded Successfully`);
+          setDownloadData(false);
+          setTempDownloadData(false);
+        } catch (error:any) {
+          notifyError(error.message);
+        }
+
+      }
+
+      const exportToExcel = async (fromUploadModal?:boolean)=>{
+        const currMasterFilters = activeMaster.filters;
+        const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
+      
+        const payloadFields:any = getCurrentVisbileColumns();
+        const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:false,pagination:false}); 
+        dispatch(UPDATE_ROW_DATA(result.data.data));
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+        setDownloadData(true);
+        if(fromUploadModal){
+          setIsUploadButtonDisabled(false);
+          notifySuccess(`Data Downloaded Successfully`);
+          return
+        }
+        notifySuccess(`Data Exported Successfully`);
+      }
+
+      const onClearExportError = () => {
+        const erroneusData:any[] = [];
+        const validData:any[] = [] 
+        activeMaster.rowData.forEach((data:any)=>{
+          if(data.error || data.warning){
+            erroneusData.push(data);
+          }
+          else{
+            validData.push(data);
+          }
+        });
+        setTempGridData(erroneusData);
+        setTempDownloadData(true);
+        dispatch(REMOVE_COLDEFS(['error','warning']));
+        addCheckBoxColDefs();
+        dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+        
+      }
+      
+      const deleteSelected = () => {
+        const selectedRows = ref.current?.api.getSelectedRows();
+        if(selectedRows && selectedRows.length > 0){
+          dispatch(REMOVE_ROW_DATA(selectedRows));
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          notifySuccess(`${selectedRows?.length} records deleted successfully`);
+        }
+        else{
+          notifyError("Please Select Rows to Delete");
+        }
+        
+      }
+
+      const onSubmit = () => {
+      
+        dispatch(REMOVE_COLDEFS(['checkbox']));
+        dispatch(UPDATE_PROGRESS_STATE('submitted'));
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+        notifySuccess(`Modifications Submitted Successfully`);
+      }
+
+      
+
+      const onBackButton = () => {
+        setRowData([]);
+        // dispatch(to(true));
+        // dispatch(setViewModifyProgressState('default'))
+        setDownloadData(false);
+        setTempDownloadData(false);
+      }
+
+    
 
     return {
-        selectedMasters,
+        colDefs,
         isSelectMasterOpen,
-        setIsSelectMasterOpen,
         options,
         selectedOptions,
-        tabs,
         activeMaster,
-        filters,
-        operators,
         filterButtonStatus,
         setFilterButtonStatus,
         getSelectedMasters,
         handleSelectMasterSubmit,
+        handleTabChange,
         handleTabClose,
+        addNewMaster,  
         handleOnAddFilter,
         handleOnDeleteFilter,
         allMasters,
+        allMastersState,
         handleApplyFilter,
         rowData,
         isLoading,
@@ -199,10 +494,26 @@ const useViewModify = () => {
         isUploadModalOpen,
         toggleUploadModal,
         recordCount,
-        colDefs,
+        downloadFileName,
+        setDownloadFileName,
+        onUploadMaster,
+        file,
+        setFile,
+        isTableDataLoading,
         exportToExcel,
         onColumnChange,
+        onBackButton,
+        onClearExportError,
+        agGridProps,
         ref,
+        tempRef,
+        tempGridData,
+        tempAgGridProps,
+        deleteSelected,
+        onSubmit,
+        isUploadButtonDisabled,
+        editOnline,
+        onEditOnline
     }
 }
 

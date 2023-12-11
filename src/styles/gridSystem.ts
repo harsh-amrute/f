@@ -74,14 +74,17 @@ export const SCCol8 = styled.div<{ width: any, hidePadding:boolean }>`
   max-width: ${(props) => props.width.widthRight};
   padding-left: ${(props)=> props.hidePadding ? 0 : 50}px;
   transition: ${customTransition};
+  zoom:0.75;
 
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
       .size.desktop}) {
     padding-left: ${(props)=> props.hidePadding ? 0 : 50}px;
+    zoom:0.75;
   }
 
   @media (min-width: ${gridSystem.size.desktop}) {
     padding-left: ${(props)=> props.hidePadding ? 0 : 50}px;
+    zoom:1;
 }
 `;
 export const SCFullScreen = styled.div`

@@ -3,6 +3,7 @@ import {SearchInputMultiple} from '../../..'
 import {  FieldSearchWrapper } from "./styles"
 import {type Option} from '../../../../VectorFlow/types/MDM';
 
+
 interface VFMasterFieldSearchProps{
     options:any[]
     value:any
@@ -10,7 +11,8 @@ interface VFMasterFieldSearchProps{
     placeholder:string
     handleListChild:()=>void
     maxToShow:number,
-    backgroundColor:string
+    backgroundColor:string,
+    disabled:boolean,
 }
 
 const VFMasterFieldSearch = (props:VFMasterFieldSearchProps)=>{
@@ -20,7 +22,7 @@ const VFMasterFieldSearch = (props:VFMasterFieldSearchProps)=>{
             <div data-testid="select-filter-input">
                 <SearchInputMultiple
                     {...props}
-                    disabled={false}
+                    disabled={props.disabled}
                     icon={SearchIcon}
                     maxToShow={props.maxToShow}
                     backgroundColor={props.backgroundColor}

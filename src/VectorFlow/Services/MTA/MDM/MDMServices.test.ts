@@ -30,9 +30,9 @@ describe('Testing the MDMService',  () => {
     it('should make a post request to the /get-master-data', async () => {
 
       const mockBody = {
-        masterId:1,
-        masterName:"SKU",
-        filters:[{attributeName:"SKU",operator:'=',value:""}],
+        id:1,
+        name:"SKU",
+        filters:[{attributeName:"SKU",op:'=',value:""}],
         fields:[{key:"SKU"}],
         paginationParameter:{
           pageNumber:1,
@@ -42,7 +42,25 @@ describe('Testing the MDMService',  () => {
 
       mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
       const response = await MDMService.getMasterData(mockBody);
-      expect(mockedAxios.post).toHaveBeenCalledWith(`https://2cfc61ae-927a-4577-8843-ee38dfb26302.mock.pstmn.io/get-master-data`,mockBody,{
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/GetMasterData',mockBody,{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+  
+    });
+
+    it('should make a post request to the /GetCount', async () => {
+
+      const mockBody = {
+        id:1,
+        name:"SKU",
+        filters:[{attributeName:"SKU",op:'=',value:""}],
+        fields:[{key:"SKU"}],
+      }
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getCount(mockBody);
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/GetCount',mockBody,{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
