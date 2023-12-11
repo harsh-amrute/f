@@ -1,12 +1,5 @@
 import Pagination from "../../../../components/commons/Pagination"
 import { PaginationWrapper, SelectedRowsCountWrapper, TotalItemsWrapper } from "./styles"
-
-interface SelectedRowsCountProps{
-    selectedRows:number
-    totalRows:number
-}
-
-
 export interface VFPaginationProps{
     selectedRows:number
     totalRows:number
