@@ -11,13 +11,16 @@ const actions =  {
     SYNC_ACTIVE_MASTER_TO_MASTER:createAction("SYNC_ACTIVE_MASTER_TO_MASTER"),
     FILL_OPTIONS:createAction<Option[]>("FILL_OPTIONS"),
     FILL_SELECTED_OPTIONS:createAction<any>("FILL_SELECTED_OPTIONS"),
-    UPDATE_ACTIVE_MASTER:createAction("UPDATE_ACTIVE_MASTER"),
+    UPDATE_ACTIVE_MASTER:createAction<number>("UPDATE_ACTIVE_MASTER"),
     TOGGLE_SELECT_MASTER_SCREEN:createAction<boolean>("TOGGLE_SELECT_MASTER_SCREEN"),
-    UPDATE_COLDEFS:createAction<{id:number,colDefs:ColDef[]}>("UPDATE_COLDEFS"),
+    ADD_COLDEFS:createAction<{colDefs:ColDef[]}>("ADD_COLDEFS"),
+    UPDATE_COLDEFS:createAction<ColDef[]>("UPDATE_COLDEFS"),
+    REMOVE_COLDEFS:createAction<string[]>("REMOVE_COLDEFS"),
     ADD_FILTER:createAction("ADD_FILTER"),
     REMOVE_FILTER:createAction<string>("REMOVE_FILTER"),
     UPDATE_FILTER:createAction<{value:string,property:string,filterId:string}>("UPDATE_FILTER"),
     UPDATE_ROW_DATA:createAction<any[]>("UPDATE_ROW_DATA"),
+    REMOVE_ROW_DATA:createAction<any[]>("REMOVE_ROW_DATA"),
     UPDATE_PROGRESS_STATE:createAction<string>("UPDATE_PROGRESS_STATE"),
     RESET_STATE:createAction("RESET_STATE")
 }
@@ -33,11 +36,14 @@ export const {
     FILL_SELECTED_OPTIONS,
     UPDATE_ACTIVE_MASTER,
     TOGGLE_SELECT_MASTER_SCREEN,
+    ADD_COLDEFS,
     UPDATE_COLDEFS,
+    REMOVE_COLDEFS,
     ADD_FILTER,
     REMOVE_FILTER,
     UPDATE_FILTER,
     UPDATE_ROW_DATA,
+    REMOVE_ROW_DATA,
     UPDATE_PROGRESS_STATE,
     RESET_STATE
 } = actions;

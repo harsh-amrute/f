@@ -25,7 +25,6 @@ import VFTaskBar from "./VFTaskbar";
     const dummyFn =()=>{return}
 
     const {
-        colDefs,
         isSelectMasterOpen,
         options,
         selectedOptions,
@@ -60,22 +59,20 @@ import VFTaskBar from "./VFTaskbar";
         ref,
         tempRef,
         tempAgGridProps,
+        tempGridData,
         deleteSelected,
-        onSubmit
+        onSubmit,
+        isUploadButtonDisabled,
+        editOnline,
+        onEditOnline
     } = useViewModify();
 
     useEffect(()=>{
-      console.log(isTableDataLoading);
       if(ref.current){
         if(isTableDataLoading){
           ref.current?.api.showLoadingOverlay();
         }
-        // else{
-        //   ref.current?.api.hideOverlay();
-        // }
       }
-      
-
     },[isTableDataLoading])
 
 
@@ -169,6 +166,7 @@ import VFTaskBar from "./VFTaskbar";
                 <div style={{display:'none'}}>                
                   <VFTable
                     ref={tempRef}
+                    rowData={tempGridData}
                     {...tempAgGridProps}
                   />
                 </div>
@@ -188,20 +186,21 @@ import VFTaskBar from "./VFTaskbar";
           <UploadModal 
             openModal={isUploadModalOpen} 
             onCloseModal={()=>toggleUploadModal(false)} 
-            onDownload={()=>exportToExcel()} 
+            onDownload={()=>exportToExcel(true)} 
             onUpload={()=>onUploadMaster()}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}
             file={file}
             setFile={setFile}
+            uploadButtonStatus={isUploadButtonDisabled}
             />
         }
         {
           !isSelectMasterOpen && 
           <VFTaskBar
             masterProgress={activeMaster.progress}
-            editOnline={false}
-            onEditOnline={dummyFn}
+            editOnline={editOnline}
+            onEditOnline={onEditOnline}
             onBack={onBackButton}
             onClearAndExportErrors={onClearExportError}
             onModifyData={()=>toggleUploadModal(true)}

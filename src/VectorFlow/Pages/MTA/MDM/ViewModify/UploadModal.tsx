@@ -14,6 +14,7 @@ interface UploadModalProps{
    setInputText:Dispatch<SetStateAction<string>>,
    file:File | undefined,
    setFile:Dispatch<SetStateAction<File | undefined>>
+   uploadButtonStatus:boolean
 
 }
 
@@ -28,7 +29,8 @@ const UploadModal = (props:UploadModalProps)=>{
       inputText,
       setInputText,
       file,
-      setFile
+      setFile,
+      uploadButtonStatus
    }   = props 
 
    const {user} = useUserData()
@@ -48,7 +50,6 @@ const UploadModal = (props:UploadModalProps)=>{
       const file = e.target.files[0];
       switch (file.type) {
         case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-          console.log(file);
           setFile(file);
           break;
         default:
@@ -73,7 +74,7 @@ const UploadModal = (props:UploadModalProps)=>{
                      File Name
                   </UploadFileText>
                   <InputWrapper>
-                     <UploadModalInput value={inputText} onChange={(e)=>setInputText(e.target.value)}/>
+                     <UploadModalInput value={inputText} onChange={(e)=>setInputText(e.target.value)} data-testid="view-modify-text"/>
                      <SCManualUploadBtn themeUi={user.user.theme_ui} 
                         onClick={onDownload}
                         style={{
@@ -110,7 +111,7 @@ const UploadModal = (props:UploadModalProps)=>{
                   <p>Drag & Drop your file here</p>
                </TextContent>     
                <InputWrapper>
-               <SCManualUploadButton style={{height:'30px', width:'105px'}} onClick={handleClick}>
+               <SCManualUploadButton style={{height:'30px', width:'105px'}} onClick={handleClick} data-testid="view-modify-manual-upload-btn">
                   <img src="../assets/img/manual/plus.png" width={19} height={19} />
                   <ManualStyle.SCManualUploadInput
                      type="file"
@@ -119,11 +120,13 @@ const UploadModal = (props:UploadModalProps)=>{
                      ref={inputRef}
                      value=""
                      style={{ display: "none" }}
+                     data-testid="view-modify-file-upload"
                   />
                </SCManualUploadButton>
                   <UploadModalInput placeholder="Click here to upload new file" value={file?.name}/>
                      <SCManualUploadBtn themeUi={user.user.theme_ui} 
                         onClick={onUpload}
+                        disabled={uploadButtonStatus}
                         style={{
                            height:'30px',
                            borderRadius:'0',

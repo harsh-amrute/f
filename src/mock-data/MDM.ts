@@ -1,5 +1,5 @@
-import { MDMMasterState } from "~/VectorFlow/types/MDM";
-
+import { MDMMasterState } from "../VectorFlow/types/MDM";
+import { generateRandomId } from "../helpers/utils";
 export const MasterData:MDMMasterState[] = [
     { 
       id: 1,
@@ -23,7 +23,15 @@ export const MasterData:MDMMasterState[] = [
       ],
       colDefs:[],
       progress:'default',
-      filters:[],
+      filters:[
+          {
+            id:generateRandomId(),
+            masterId:1,
+            field:'',
+            operator:'',
+            text:''
+          }
+      ],
       rowData:[]
     },
     { 
@@ -48,7 +56,15 @@ export const MasterData:MDMMasterState[] = [
       ],
       colDefs:[],
       progress:'default',
-      filters:[],
+      filters:[
+        {
+          id:generateRandomId(),
+          masterId:2,
+          field:'',
+          operator:'',
+          text:''
+        }
+    ],
       rowData:[]
     },
     { 
@@ -73,7 +89,15 @@ export const MasterData:MDMMasterState[] = [
       ],
       colDefs:[],
       progress:'default',
-      filters:[],
+      filters:[
+        {
+          id:generateRandomId(),
+          masterId:3,
+          field:'',
+          operator:'',
+          text:''
+        }
+    ],
       rowData:[] 
     },
   ];

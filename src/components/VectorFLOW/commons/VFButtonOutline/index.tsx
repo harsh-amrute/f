@@ -36,7 +36,7 @@ const VFButtonOutline = (props:VFButtonOutlineProps)=>{
     }
 
     return(
-        <SCButtonOutline color={color} onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width} hoverState={hoverState} onMouseOver={()=>setHoverState(true)} onMouseOut={()=>setHoverState(false)}>
+        <SCButtonOutline color={color} onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width} hoverState={hoverState} onMouseOver={()=>setHoverState(true)} onMouseOut={()=>setHoverState(false)} data-testid="vf-button-outline">
             {getChildren()}
         </SCButtonOutline>
     )

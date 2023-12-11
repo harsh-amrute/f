@@ -61,7 +61,7 @@ export interface GetMasterDataPayload {
     name:string,
     filters:Array<{attributeName:string,op:string,value:string}>,
     fields:Array<{key:string}>,
-    paginationParameter?:PaginationPayload | {}
+    paginationParameter?:PaginationPayload | object
     
 }
 
@@ -91,4 +91,5 @@ export interface QueryFilteredDataConfigs{
     fields:Array<{key:string}>
     showAll?:boolean,
     pagination?:boolean
+    count?:boolean
 }

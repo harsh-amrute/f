@@ -1,18 +1,11 @@
+/* eslint-disable no-case-declarations */
+
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createReducer } from '@reduxjs/toolkit';
 import {type Option, type MDMMasterState, type MDMStore, type Filter} from '../../../VectorFlow/types/MDM'; 
 import { generateRandomId } from '../../../helpers/utils';
-import {FILL_MASTERS, FILL_SELECTED_OPTIONS, REMOVE_MASTER, FILTER_MASTER, ADD_MASTER, FILL_OPTIONS, UPDATE_ACTIVE_MASTER, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_COLDEFS, STORE_ALL_MASTERS, ADD_FILTER, REMOVE_FILTER, UPDATE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, RESET_STATE} from '../../actions/MDM';
-
-
-const initialState:MDMStore = {
-    allMasters:[],
-    masters:[],
-    options:[],
-    selectedOptions:[],
-    activeMaster:{id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[]},
-    isSelectMasterOpen:true,
-}
+import {FILL_MASTERS, FILL_SELECTED_OPTIONS, REMOVE_MASTER, FILTER_MASTER, ADD_MASTER, FILL_OPTIONS, UPDATE_ACTIVE_MASTER, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_COLDEFS, STORE_ALL_MASTERS, ADD_FILTER, REMOVE_FILTER, UPDATE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, RESET_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS} from '../../actions/MDM';
+import { ColDef } from 'ag-grid-enterprise';
 
 
 const setMasters = (state:any,action:PayloadAction<MDMMasterState[]>|PayloadAction<any>) => {
@@ -42,12 +35,20 @@ const setMasters = (state:any,action:PayloadAction<MDMMasterState[]>|PayloadActi
             break;
 
         case UPDATE_COLDEFS.type:
-            state.masters = state.masters.map((master:MDMMasterState)=>{
-                if(master.id === action.payload.id){
-                    return {...master,colDefs:action.payload.colDefs}
-                }
-                return master;
-            });
+            state.activeMaster = {...state.activeMaster,colDefs:action.payload};
+            // state.masters = state.masters.map((master:MDMMasterState)=>{
+            //     if(master.id === action.payload.id){
+            //         return {...master,colDefs:action.payload.colDefs}
+            //     }
+            //     return master;
+            // });
+            break;
+        case ADD_COLDEFS.type:
+            state.activeMaster = {...state.activeMaster,colDefs:[...action.payload.colDefs,...state.activeMaster.colDefs]}
+            break;
+        case REMOVE_COLDEFS.type:
+            const newColDefs = state.activeMaster.colDefs.filter((col:ColDef)=>!action.payload.includes(col.colId));
+            state.activeMaster = {...state.activeMaster,colDefs:newColDefs};
             break;
         case ADD_FILTER.type:
             state.activeMaster.filters = [
@@ -88,6 +89,12 @@ const setMasters = (state:any,action:PayloadAction<MDMMasterState[]>|PayloadActi
         case UPDATE_ROW_DATA.type:
             state.activeMaster = {...state.activeMaster,rowData:action.payload};
             break;
+        case REMOVE_ROW_DATA.type:  
+            const selectedRows = action.payload.map((row:any)=>JSON.stringify(row));
+            const updatedRows = state.activeMaster.rowData.filter((row:any)=>!selectedRows?.includes(JSON.stringify(row))); 
+            state.activeMaster = {...state.activeMaster,rowData:updatedRows};
+            break;
+
         case UPDATE_PROGRESS_STATE.type:
             state.activeMaster = {...state.activeMaster, progress:action.payload};
             break;    
@@ -104,8 +111,8 @@ const setSelectedOptions = (state:any,action: PayloadAction<Array<Option>>) => {
     state.selectedOptions = action.payload;
 }
 
-const setActiveMaster =  (state:any) => {
-    state.activeMaster = {...state.masters[0]};
+const setActiveMaster =  (state:any,action:PayloadAction<number>) => {
+    state.activeMaster = {...state.masters[action.payload]};
 }
    
 const setIsSelectMasterOpen = (state:any,action:PayloadAction<boolean>)=>{
@@ -123,7 +130,7 @@ const resetState = (state:any) => {
 
 
 
-const mdmReducer = createReducer(initialState, (builder) => {
+const mdmReducer = (initialState:MDMStore) => createReducer(initialState, (builder) => {
     builder
       .addCase(STORE_ALL_MASTERS,setMasters)
       .addCase(FILL_MASTERS,setMasters)
@@ -132,10 +139,13 @@ const mdmReducer = createReducer(initialState, (builder) => {
       .addCase(FILTER_MASTER,setMasters)
       .addCase(SYNC_ACTIVE_MASTER_TO_MASTER,setMasters)
       .addCase(UPDATE_COLDEFS,setMasters)
+      .addCase(ADD_COLDEFS,setMasters)
+      .addCase(REMOVE_COLDEFS,setMasters)
       .addCase(ADD_FILTER,setMasters)
       .addCase(REMOVE_FILTER,setMasters)
       .addCase(UPDATE_FILTER,setMasters)
       .addCase(UPDATE_ROW_DATA,setMasters)
+      .addCase(REMOVE_ROW_DATA,setMasters)
       .addCase(UPDATE_PROGRESS_STATE,setMasters)
       .addCase(FILL_OPTIONS,setOptions)
       .addCase(FILL_SELECTED_OPTIONS,setSelectedOptions)

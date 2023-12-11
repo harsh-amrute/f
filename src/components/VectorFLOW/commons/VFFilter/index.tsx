@@ -80,7 +80,6 @@ const VFFilter = (props:VFFilterProps)=>{
 const CustomSelect = (props:CustomSelectProps)=>{
 
     const {
-        width,
         placeholder,
         onChange,
         options,

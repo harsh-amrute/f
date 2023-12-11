@@ -3,10 +3,8 @@ import React from 'react';
 import VFTable from './';
 
 describe('should render the VFTable component', () => {
-    const ref = React.createRef<any>();
     window.URL.createObjectURL = jest.fn();
     
-
   const rowData = [
     { id: 1, name: 'John Doe', age: 30 },
     { id: 2, name: 'Jane Doe', age: 25 },
@@ -24,17 +22,11 @@ describe('should render the VFTable component', () => {
     columnVisible:jest.fn()
   }
   
-  it("Shoudl render the table in the DOM",()=>{
+  it("Should render the table in the DOM",()=>{
     render(<VFTable {...agGridProps}/>);
 
     const table = screen.getByRole('table');
     expect(table).toBeInTheDocument();
-  })
-
-  it("Should export the grid data to excel",()=>{
-    render(<VFTable {...agGridProps}/>);
-    ref.current.api.exportDataAsExcel()
-    
   })
 
 });

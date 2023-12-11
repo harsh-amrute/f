@@ -13,13 +13,12 @@ interface VFMasterFieldSearchProps{
     maxToShow:number,
     backgroundColor:string,
     disabled:boolean,
-    onClick:()=>void
 }
 
 const VFMasterFieldSearch = (props:VFMasterFieldSearchProps)=>{
 
     return(
-        <FieldSearchWrapper data-testid='search-wrapper' onClick={props.onClick}>
+        <FieldSearchWrapper data-testid='search-wrapper'>
             <div data-testid="select-filter-input">
                 <SearchInputMultiple
                     {...props}

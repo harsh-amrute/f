@@ -4,13 +4,9 @@ import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
-import { File } from 'buffer';
-// import { Cell } from 'read-excel-file/types';
-import { SKUSchema,SKULocationSchema } from '../validators/schemas/MTA/MDM';
 import {ColDef} from 'ag-grid-community';
 import { masterIdToSchemaMapper } from './MDMConstants';
-import ErrorCell from '../components/VectorFLOW/commons/ErrorCell';
-import WarningCell from '../components/VectorFLOW/commons/WarningCell';
+
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -390,7 +386,7 @@ export const generateRandomId =(length?:number)=>{
 
 }
 
-export const parseExcelData = async (file:any,master:Master) => {
+export const parseExcelData = async (file:any,master:MDMMasterState) => {
   const masterSchema = masterIdToSchemaMapper[master.id.toString()]
 
   const checkError = (row:object) => {
@@ -399,14 +395,23 @@ export const parseExcelData = async (file:any,master:Master) => {
   }
  
 
-
+  const currMasterKeys = master.fields.map((field:Field)=>field.key); //array containing keys of current master fields
   const result:object[] = [];
   const data = await readXlsxFile(file);
+  //displayName to key mapper
   const headerKeys = data[0].map((headerName)=>{
     const fieldObj = master.fields.find((field:Field)=>field.displayName === headerName);
     if(fieldObj) return fieldObj.key;
     else return '';
   })
+
+  headerKeys.forEach((key:string)=>{
+    if(!currMasterKeys.includes(key)){
+      throw new Error("Please Upload a Valid Master");
+    }
+  })
+
+ 
   
   let rowObj:any = {};
   let temp = 0;
@@ -433,31 +438,9 @@ export const parseExcelData = async (file:any,master:Master) => {
   return result;
 }
 
-export const mapMasterToColumnDefs = (fields:Field[],error?:boolean)=>{
+export const mapMasterToColumnDefs = (fields:Field[])=>{
   let result:ColDef[] = []
-//   const customColDefs:ColDef[] = [
-//     {
-//       field:'warning',
-//       headerName:'Warning',
-//       floatingFilter:false,
-//       initialHide:error ? false : true,
-//       cellRenderer:WarningCell,
-//       minWidth:200,
-//       suppressColumnsToolPanel:true,
-//       wrapText:true,
-//       autoHeight:true,
-//     },
-//     {
-//       field:'error',
-//       headerName:'Error',
-//       floatingFilter:false,
-//       cellRenderer:ErrorCell,
-//       initialHide:error ? false : true,
-//       suppressColumnsToolPanel:true,
-//       wrapText:true,
-//       autoHeight:true,
-//     }
-// ]
+
   result = fields.map((f)=>{
     return{
       field:f.key,
@@ -493,6 +476,7 @@ export const mapStateFiltersToPayload = (filters:Filter[]) => {
 }
 
 export const mapMasterToMasterState = (masters:Master[]):MDMMasterState[] => {
+
   return masters.map((master:Master)=>({
     id:master.id,
     name:master.name,

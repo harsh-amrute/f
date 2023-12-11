@@ -1,5 +1,4 @@
 import { forwardRef} from "react";
-import {  VFtableProps } from "../../../../VectorFlow/types/MDM";
 import { AgGridReact, AgGridReactProps } from "ag-grid-react";
 import { VFTableWrapper } from "./styles";
 import { LicenseManager } from "ag-grid-enterprise";

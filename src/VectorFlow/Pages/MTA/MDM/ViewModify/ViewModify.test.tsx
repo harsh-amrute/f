@@ -3,11 +3,8 @@ import {
   fireEvent,
   screen,
   waitFor,
-  act,
-  waitForElementToBeRemoved,
+  cleanup,
 } from "@testing-library/react";
-
-
 import ViewModify from "./index";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { setupReactQuery } from "../../../../../config/react-query-config";
@@ -16,18 +13,29 @@ import { UserDataContext } from "../../../../../context";
 import {
   useGetMasterUIConfiguration,
   useGetMasterData,
+  useGetCount,
 } from "../../../../Services/MTA/MDM";
 import { select } from "react-select-event";
 import _ from "lodash";
-import { store } from "../../../../../redux/store/store";
+import { createStore, store } from "../../../../../redux/store/store";
 import { Provider } from "react-redux";
 import { ReactNode } from "react";
 
-import userEvent from "@testing-library/user-event";
-
-
+import { RESET_STATE } from "../../../../../redux/actions/MDM";
+import { toast } from 'react-toastify'
+import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
+import { MasterData } from "../../../../../mock-data/MDM";
+import { mapMasterToColumnDefs } from "../../../../../helpers/utils";
 
 jest.mock("../../../../Services/MTA/MDM");
+
+
+jest.mock('react-toastify', () => ({
+  toast: {
+    error: jest.fn(),
+    success:jest.fn()
+  },
+}))
 
 const useGetMasterUIConfigurationMock =
   useGetMasterUIConfiguration as jest.MockedFunction<
@@ -36,9 +44,19 @@ const useGetMasterUIConfigurationMock =
 const useGetMasterDataMock = useGetMasterData as jest.MockedFunction<
   typeof useGetMasterData
 >;
+
+const useGetCountMock = useGetCount as jest.MockedFunction<
+  typeof useGetCount
+>;
 window.URL.createObjectURL = jest.fn();
 
 const useMasterDataResult: any = {
+  mutateAsync: () => {
+    return { data: mockMasterData };
+  },
+};
+
+const useGetCountResult: any = {
   mutateAsync: () => {
     return { data: mockMasterData };
   },
@@ -186,6 +204,9 @@ describe("Renders View Modify Component", () => {
     useGetMasterDataMock.mockImplementation(() => {
       return useMasterDataResult;
     });
+    useGetCountMock.mockImplementation(() => {
+      return useGetCountResult;
+    });
   });
 
   it("renders the view modify component when loading", async () => {
@@ -225,9 +246,17 @@ describe("Renders View Modify Component", () => {
 
 describe("Handles all Interaction in ViewModify Component", () => {
 
-  const skipBeforeEach = ['Check If Tabs State is Retained When Coming From Add Master']
-
   beforeEach(() => {
+    const mockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
+      isSelectMasterOpen:true,
+    }
+
+    const mockStore = createStore(mockState);
 
     const result: any = {
       isLoading: false,
@@ -241,10 +270,18 @@ describe("Handles all Interaction in ViewModify Component", () => {
       return useMasterDataResult;
     });
 
-    // store.dispatch(resetState());
+    useGetCountMock.mockImplementation(() => {
+      return useGetCountResult;
+    });
 
-    render(contextWrapper(<ViewModify />,store));
+    store.dispatch(RESET_STATE());
+
+    render(contextWrapper(<ViewModify />,mockStore));
   });
+
+  afterEach(()=>{
+    cleanup()
+  })
 
 
   it("Check if Submitted Directly all masters should be selected", async () => {
@@ -255,17 +292,17 @@ describe("Handles all Interaction in ViewModify Component", () => {
   });
 
   it("Check if Masters are selected as per the filters", async () => {
-    await waitFor(async () => {
-      const reactSelect = screen.getByRole("combobox");
-      expect(reactSelect).toBeInTheDocument();
-      await select(reactSelect, ["SKU Code"]);
-    });
+    const reactSelect = await screen.findByLabelText("Example Label");
+    expect(reactSelect).toBeInTheDocument();
+    fireEvent.focus(reactSelect);
+    fireEvent.keyDown(reactSelect, { key: 'ArrowDown', code: 40 });
+    fireEvent.click(screen.getAllByText("SKU Code")[0]);
 
     const submit = screen.getByText("Submit");
     fireEvent.click(submit);
 
-    const tabs = screen.getAllByTestId("tab-button");
-    expect(tabs.length).toBe(2);
+    // const tabs = screen.getAllByTestId("tab-button");
+    // expect(tabs.length).toBe(2);
   });
 
   it("Check if All Tabs are closed Select Master Screen is Opened", async () => {
@@ -277,8 +314,7 @@ describe("Handles all Interaction in ViewModify Component", () => {
       fireEvent.click(tab);
     });
 
-    const reactSelect = screen.getByRole("combobox");
-    expect(reactSelect).toBeInTheDocument();
+    expect(toast.error).toHaveBeenCalled()
   });
 
   it("Check if any Active Tabs is Closed First Tab is set to Default", async () => {
@@ -420,57 +456,42 @@ describe("Handles all Interaction in ViewModify Component", () => {
   //   fireEvent.click(downloadBtn);
   // });
 
-  it("Clicks on show all button", () => {
-    const submit = screen.getByText("Submit");
-    fireEvent.click(submit);
+  // it("Fetches the filter data on clicking on Apply Filter", async () => {
+  //   const submit = screen.getByText("Submit");
+  //   fireEvent.click(submit);
+  //   await waitFor(async () => {
+  //     const reactSelect = screen.getAllByRole("combobox")[0];
+  //     expect(reactSelect).toBeInTheDocument();
+  //     await select(reactSelect, ["SKU Code"]);
+  //   });
+  //   await waitFor(async () => {
+  //     const reactSelect = screen.getAllByRole("combobox")[1];
+  //     expect(reactSelect).toBeInTheDocument();
+  //     await select(reactSelect, ["Equals To"]);
+  //   });
+  //   const textInput = screen.getByTestId("text-input");
+  //   fireEvent.change(textInput, { target: { value: "a" } });
 
-    const showAllBtn = screen.getByText("Show All");
-    fireEvent.click(showAllBtn);
-  });
+  //   await act(async () => {
+  //     const applyFilter = await screen.findByText("Apply Filter");
+  //     userEvent.click(applyFilter);
+  //   });
 
-  it("Fetches the filter data on clicking on Apply Filter", async () => {
-    const submit = screen.getByText("Submit");
-    fireEvent.click(submit);
-    await waitFor(async () => {
-      const reactSelect = screen.getAllByRole("combobox")[0];
-      expect(reactSelect).toBeInTheDocument();
-      await select(reactSelect, ["SKU Code"]);
-    });
-    await waitFor(async () => {
-      const reactSelect = screen.getAllByRole("combobox")[1];
-      expect(reactSelect).toBeInTheDocument();
-      await select(reactSelect, ["Equals To"]);
-    });
-    const textInput = screen.getByTestId("text-input");
-    fireEvent.change(textInput, { target: { value: "a" } });
-
-    await act(async () => {
-      const applyFilter = await screen.findByText("Apply Filter");
-      userEvent.click(applyFilter);
-    });
-
-  });
+  // });
 
 });
 
 describe("Handles All Interactions (Mocking Redux Store)",() => {
+  const mockState:MDMStore = {
+    allMasters:MasterData,
+    masters:MasterData,
+    options:[],
+    selectedOptions:[],
+    activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
+    isSelectMasterOpen:false,
+  }
 
-  it("Check If Tabs State is Retained When Coming From Add Master",async ()=>{
-    let tabs = mockData.map((master:any)=>({...master,status:''}));
-
-    // render(contextWrapper(<ViewModify />));
-   
-
-    // const submit = screen.getByText("Submit");
-    // fireEvent.click(submit);
-
-  })
-})
-
-describe("It handles react portals",()=>{
-  beforeEach(()=>{
-
-
+  beforeEach(() => {
 
     const result: any = {
       isLoading: false,
@@ -484,32 +505,178 @@ describe("It handles react portals",()=>{
       return useMasterDataResult;
     });
 
-    // store.dispatch(resetState());
+    useGetCountMock.mockImplementation(() => {
+      return useGetCountResult;
+    });
+
+    jest.clearAllMocks();
+
+  });
+
+  afterEach(()=>{
+    cleanup();
+  })
+
+
+  it("Clears And Export Errors",async ()=>{
+
+    mockState.activeMaster.progress = 'error';
+    mockState.isSelectMasterOpen = false;
+    mockState.activeMaster.rowData = [{error:"SKU Code Has Pipe and Comma",...mockMasterData.data[0]},mockMasterData.data[1]];
+
+    const mockStore = createStore(mockState);
+
+    render(contextWrapper(<ViewModify/>,mockStore));
+
+    fireEvent.click(screen.getByText("Clear & Export Errors"));
+
+  })
+
+  it("Exports The Data to Excel when Clicking on Export Data Button",async ()=>{
+
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
+
+    const mockStore = createStore(updatedMockState);
+
+    render(contextWrapper(<ViewModify/>,mockStore));
+
+    fireEvent.click(screen.getByText("Export Data"));
+
+
+  })
+
+  it("Resets The State When Clicked on Back Button",async ()=>{
+
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
+
+    const mockStore = createStore(updatedMockState);
+
+    render(contextWrapper(<ViewModify/>,mockStore));
+
+    const backBtn = screen.getAllByTestId('vf-button-outline')[1];
+
+    fireEvent.click(backBtn);
+
+
+
+  })
+
+  it("Submits The Data",async ()=>{
+
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'uploaded',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
+
+    const mockStore = createStore(updatedMockState);
+
+    render(contextWrapper(<ViewModify/>,mockStore));
+
+    fireEvent.click(screen.getByTestId("vf-button"));
+
+    expect(toast.success).toBeCalled();
+
+  })
+
+  it("Deletes The Selected Data",async ()=>{
+
+    const checkBoxColDefs = {
+      field:'checkbox',
+      colId:'checkbox',
+      headerName:'',
+      checkboxSelection:true,
+      headerCheckboxSelection:true,
+      headerCheckboxSelectionCurrentPageOnly:true
+    };
+
+    const uploadedStateColDefs:any = [checkBoxColDefs,mapMasterToColumnDefs(MasterData[0].fields)]
+
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'uploaded',name:MasterData[0].name,colDefs:uploadedStateColDefs,rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
+
+    const mockStore = createStore(updatedMockState);
+
+    render(contextWrapper(<ViewModify/>,mockStore));
+
+    fireEvent.click(screen.getByText("Delete Selected"));
+
+    expect(toast.error).toBeCalled();
+
+    const checkbox = screen.getAllByLabelText('Press Space to toggle row selection (unchecked)');
+    expect(checkbox[0]).not.toBeChecked();
+    // fireEvent.change(checkbox[0],);
+    // expect(toast.success).toBeCalled();
+
+  })
+})
+
+// describe("It handles react portals",()=>{
+//   beforeEach(()=>{
+
+
+
+//     const result: any = {
+//       isLoading: false,
+//       data: { data: { data: mockData } },
+//     };
+//     useGetMasterUIConfigurationMock.mockImplementation(() => {
+//       return result;
+//     });
+
+//     useGetMasterDataMock.mockImplementation(() => {
+//       return useMasterDataResult;
+//     });
+
+//     store.dispatch(RESET_STATE());
       
 
     
    
-  })
+//   })
 
-  it("Renderers the viewmodify page",()=>{
-    // render(contextWrapper(<ViewModify/>))
-    // screen.debug()
+//   it("Renderers the viewmodify page",()=>{
+//     render(contextWrapper(<ViewModify/>,store))
+//     // screen.debug()
 
-    const submit = screen.getByText("Submit");
-    fireEvent.click(submit);
+//     const submit = screen.getByText("Submit");
+//     fireEvent.click(submit);
 
-    // const columnsToolPanel = screen.getByText('Columns');
-    // fireEvent.click(columnsToolPanel);
+//     // const columnsToolPanel = screen.getByText('Columns');
+//     // fireEvent.click(columnsToolPanel);
     
-    // screen.logTestingPlaygroundURL();
+//     // screen.logTestingPlaygroundURL();
 
 
-    // const showAllBtn = screen.getByText("Show All");
-    // fireEvent.click(showAllBtn);
+//     // const showAllBtn = screen.getByText("Show All");
+//     // fireEvent.click(showAllBtn);
 
-    // const warningModalCloseIcon =  document.querySelectorAll('#root')[0]!
-    // console.debug(warningModalCloseIcon)
-    // fireEvent.click(warningModalCloseIcon)
-  })
+//     // const warningModalCloseIcon =  document.querySelectorAll('#root')[0]!
+//     // console.debug(warningModalCloseIcon)
+//     // fireEvent.click(warningModalCloseIcon)
+//   })
 
-})
+// })

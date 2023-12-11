@@ -1,10 +1,22 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { MDMStore } from '../../VectorFlow/types/MDM';
 import mdmReducer from '../reducers/MDM';
 
-export const store = configureStore({
+const initialState:MDMStore = {
+    allMasters:[],
+    masters:[],
+    options:[],
+    selectedOptions:[],
+    activeMaster:{id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[]},
+    isSelectMasterOpen:true,
+}
+
+export const createStore = (initialState:MDMStore) => configureStore({
     reducer: {
-        mdm:mdmReducer
+        mdm:mdmReducer(initialState)
     },
 });
+
+export const store = createStore(initialState);
 
 export type RootState = ReturnType<typeof store.getState>

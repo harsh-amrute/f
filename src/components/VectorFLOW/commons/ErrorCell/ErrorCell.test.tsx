@@ -1,5 +1,4 @@
-import { render, fireEvent, screen } from '@testing-library/react';
-import { ICellRendererParams } from 'ag-grid-enterprise';
+import { render,screen } from '@testing-library/react';
 import ErrorCell from '.';
 
 const props:any = {
