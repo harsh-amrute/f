@@ -37,6 +37,9 @@ const useViewModify = () => {
     const [showAll,setShowAll] = useState(false) //Flag to identify if the query is an show all query as we need that param in WarningModal Succes Handler P.S- Plz Optimize if you get time
 
     const [editOnline,toggleEditOnline] = useState(false);
+    const [selectedRowsCount,setSelectedRowsCount] = useState(0);
+    const [currentPage,setCurrentPage] = useState(1);
+    const rowsPerPage = 50;
 
   
 
@@ -98,10 +101,7 @@ const useViewModify = () => {
       warningCell: WarningCell  
     }), []);
 
-    // useEffect(()=>{
-
-    // },[editOnline])
-
+  
   
     useEffect(()=>{
 
@@ -160,6 +160,8 @@ const useViewModify = () => {
         },
       },
       pagination:true,
+      paginationPageSize:rowsPerPage,
+      suppressPaginationPanel:true,
       onColumnVisible:onColumnChange,
       overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="../assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
       onRowDataUpdated:(event)=>{
@@ -167,7 +169,12 @@ const useViewModify = () => {
       },
       rowSelection:'multiple',
       suppressRowClickSelection:true,
-      components:customCellRenderers  
+      components:customCellRenderers, 
+      onSelectionChanged:()=>{
+        if(ref.current?.api){
+          setSelectedRowsCount(ref.current?.api.getSelectedRows().length)
+        }
+      },
     }
 
     const tempAgGridProps:AgGridReactProps = {
@@ -220,7 +227,7 @@ const useViewModify = () => {
     }
 
     const queryFilteredData = async (configs:QueryFilteredDataConfigs) => {
-      const {filters,showAll,pagination,fields,count} = configs;
+      const {filters,showAll,pagination,fields,count,currentPage} = configs;
       const payload:GetMasterDataPayload = {
         id:activeMaster.id,
         name:activeMaster.name,
@@ -228,13 +235,12 @@ const useViewModify = () => {
         fields:fields,
       }
 
-      if(pagination) {
+      if(pagination && !count) {
         payload.paginationParameter = {
-          pageNumber:1,
-          recordsPerPage:10
+          pageNumber:currentPage,
+          recordsPerPage:rowsPerPage
         }
       }
-
       let resultData;
       if(count){
         resultData =  await getCount(payload);
@@ -319,7 +325,7 @@ const useViewModify = () => {
 
         setIsTableDataLoading(true);
 
-        const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true,count:true});
+        const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:false,count:true});
         
         setIsTableDataLoading(false);
         setRecordCount(result.data.recordCount)
@@ -340,7 +346,7 @@ const useViewModify = () => {
         const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
         const payloadFields:any = getCurrentVisbileColumns();
         setIsTableDataLoading(true);
-        const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true}); 
+        const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true,currentPage:1}); 
         if(result.data.recordCount <= 10){
           toggleEditOnline(true);
         }
@@ -391,6 +397,7 @@ const useViewModify = () => {
           notifySuccess(`Data Uploaded Successfully`);
           setDownloadData(false);
           setTempDownloadData(false);
+          setCurrentPage(1);
         } catch (error:any) {
           notifyError(error.message);
         }
@@ -440,11 +447,33 @@ const useViewModify = () => {
           dispatch(REMOVE_ROW_DATA(selectedRows));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           notifySuccess(`${selectedRows?.length} records deleted successfully`);
+          setSelectedRowsCount(0);
+          setRecordCount(recordCount-selectedRows.length);
         }
         else{
           notifyError("Please Select Rows to Delete");
         }
         
+      }
+
+      const handlePageChange = async (pageNo:any) => {
+        setCurrentPage(pageNo);
+        setIsTableDataLoading(true)
+        if(activeMaster.rowData.length > rowsPerPage){
+            ref.current?.api.paginationGoToPage(pageNo);
+            setIsTableDataLoading(false);
+            return;
+        }
+        
+        const payloadFilters = mapStateFiltersToPayload(activeMaster.filters);
+        const payloadFields:any = getCurrentVisbileColumns();
+        const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true,currentPage:pageNo});
+        dispatch(UPDATE_ROW_DATA(result.data.data));
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+        setIsTableDataLoading(false)
+
+
+
       }
 
       const onSubmit = () => {
@@ -453,6 +482,7 @@ const useViewModify = () => {
         dispatch(UPDATE_PROGRESS_STATE('submitted'));
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         notifySuccess(`Modifications Submitted Successfully`);
+        setSelectedRowsCount(0);
       }
 
       
@@ -513,7 +543,11 @@ const useViewModify = () => {
         onSubmit,
         isUploadButtonDisabled,
         editOnline,
-        onEditOnline
+        onEditOnline,
+        rowsPerPage,
+        selectedRowsCount,
+        currentPage,
+        handlePageChange
     }
 }
 

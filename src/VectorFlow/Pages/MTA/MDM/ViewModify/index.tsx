@@ -14,6 +14,7 @@ import WarningModal from './WarningModal'
 import UploadModal from "./UploadModal";
 import { useEffect } from "react";
 import VFTaskBar from "./VFTaskbar";
+import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 
 
 
@@ -64,7 +65,12 @@ import VFTaskBar from "./VFTaskbar";
         onSubmit,
         isUploadButtonDisabled,
         editOnline,
-        onEditOnline
+        onEditOnline,
+        selectedRowsCount,
+        currentPage,
+        rowsPerPage,
+        handlePageChange
+
     } = useViewModify();
 
     useEffect(()=>{
@@ -173,6 +179,19 @@ import VFTaskBar from "./VFTaskbar";
 
             </VFTab>
           }
+          {
+            !(['default'].includes(activeMaster.progress)) 
+              && 
+              <VFPagination 
+                selectedRows={selectedRowsCount} 
+                totalRows={recordCount} 
+                currentPage={currentPage} 
+                rowsPerPage={rowsPerPage} 
+                handleChangePage={(e)=>handlePageChange(e)}  
+                handleChangePerPage={()=>console.log('hello')}
+              />
+          }
+          
         </SCContainer>
         {isWarningModalOpen && 
           <WarningModal 

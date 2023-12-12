@@ -1,6 +1,6 @@
 
 
-import { screen, render, fireEvent } from "@testing-library/react"
+import { screen, render, fireEvent, cleanup } from "@testing-library/react"
 import VFPagination, { VFPaginationProps } from "."
 
 const dummyFn = jest.fn()
@@ -20,8 +20,12 @@ describe("VFPagination Component", () => {
 
     const component = screen.getByTestId('vf_pagination')
     expect(component).toBeInTheDocument()
+
+    cleanup();
+    render(<VFPagination {...dummyprops} currentPage={2}/>)
   })
 
+  
   it("clicks on the next and previous buttons", () => {
     render(<VFPagination {...dummyprops}/>)
 
