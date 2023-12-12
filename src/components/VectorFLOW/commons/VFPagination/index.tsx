@@ -21,13 +21,17 @@ const VFPagination  = (props:VFPaginationProps)=>{
         handleChangePerPage
     } = props
     
+    const getTotalItemsString = () => {
+        if(currentPage===1) return `1-${rowsPerPage}`;
+        return `${(currentPage * rowsPerPage)+1}-${(currentPage+1)*rowsPerPage}`;
+    }
     return(
         <PaginationWrapper data-testid="vf_pagination">
             <SelectedRowsCountWrapper>
                 Selected {selectedRows} out of {totalRows}
             </SelectedRowsCountWrapper>
             <TotalItemsWrapper>
-                Total Items : {totalRows}
+                Total Items : {getTotalItemsString()}/{totalRows}
             </TotalItemsWrapper>
             <Pagination
                 page={currentPage}

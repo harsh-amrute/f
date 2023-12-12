@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const PaginationWrapper = styled.div`
     display:flex;
     flex-direction:column;
-
+    margin-top:5px;
 `
 
 export const SelectedRowsCountWrapper = styled.div`

@@ -91,5 +91,6 @@ export interface QueryFilteredDataConfigs{
     fields:Array<{key:string}>
     showAll?:boolean,
     pagination?:boolean
-    count?:boolean
+    count?:boolean,
+    currentPage?:number
 }
