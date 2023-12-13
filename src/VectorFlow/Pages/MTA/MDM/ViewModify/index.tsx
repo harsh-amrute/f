@@ -218,6 +218,8 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
           !isSelectMasterOpen && 
           <VFTaskBar
             masterProgress={activeMaster.progress}
+            onReset={()=>{}}
+            onSaveToDraft={()=>{}}
             editOnline={editOnline}
             onEditOnline={onEditOnline}
             onBack={onBackButton}

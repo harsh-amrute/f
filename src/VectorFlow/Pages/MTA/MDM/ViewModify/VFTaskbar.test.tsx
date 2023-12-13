@@ -11,7 +11,8 @@ const dummyProps = {
     onSubmit:mockFn,
     onDeleteSelected:mockFn,
     onExportData:mockFn,
-    onEditOnline:mockFn
+    onEditOnline:mockFn,
+    onSaveToDraft:mockFn
 }
 
 const contextWrapper = (children:any)=>{
@@ -50,6 +51,32 @@ describe("VFTaskBar",()=>{
     })
     it('renders the VFTaskBar with masterPrgoress=uploaded',()=>{
         render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="uploaded"/>))
+        const taskbar = screen.getByTestId("taskbar")
+        expect(taskbar).toBeInTheDocument()
+    })
+    it('renders the VFTaskBar with masterPrgoress=view',()=>{
+        render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="view"/>))
+        const taskbar = screen.getByTestId("taskbar")
+        expect(taskbar).toBeInTheDocument()
+    })
+    it('renders the VFTaskBar with masterPrgoress=editOnline',()=>{
+        render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="editOnline"/>))
+        const taskbar = screen.getByTestId("taskbar")
+        expect(taskbar).toBeInTheDocument()
+    })
+    it('renders the VFTaskBar with masterPrgoress=error',()=>{
+        render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="editOnlineSaved"/>))
+        const taskbar = screen.getByTestId("taskbar")
+        expect(taskbar).toBeInTheDocument()
+    })
+    it('renders the VFTaskBar with masterPrgoress=uploaded',()=>{
+        render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="editOnlineSubmitted"/>))
+        const taskbar = screen.getByTestId("taskbar")
+        expect(taskbar).toBeInTheDocument()
+    })
+
+    it('renders the VFTaskBar with masterPrgoress=view and editOnline=true',()=>{
+        render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="view" editOnline/>))
         const taskbar = screen.getByTestId("taskbar")
         expect(taskbar).toBeInTheDocument()
     })
