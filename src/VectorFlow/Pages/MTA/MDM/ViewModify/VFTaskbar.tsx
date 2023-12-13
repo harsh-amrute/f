@@ -3,7 +3,7 @@ import { useUserData } from "../../../../../context"
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import { TaskBarContainer } from "./styles"
-import VFStepper, { StepItem } from "../../../../../components/VectorFLOW/commons/VFStepper"
+import VFStepper,{StepItem} from "../../../../../components/VectorFLOW/commons/VFStepper"
 import { ViewModifyProgressState } from "../../../../../VectorFlow/types/MDM";
 
 export interface VFTaskBarProps{

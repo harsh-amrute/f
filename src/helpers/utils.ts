@@ -494,3 +494,22 @@ export const mapMasterToMasterState = (masters:Master[]):MDMMasterState[] => {
     progress:'default'
   }))
 }
+
+
+export const mapTaskStatusToColDefs = (taskStatus:ColDef[])=>{
+  let result:ColDef[] = []
+  result = taskStatus.map((t:ColDef)=>{
+    return{
+      ...t,
+      minWidth:180,
+      cellStyle: {
+        "textAlign": "center",
+      },
+      flex: 1,
+      floatingFilter:true,
+      filter: "agMultiColumnFilter",
+    }
+  })
+  return result
+}
+
