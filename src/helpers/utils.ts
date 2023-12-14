@@ -4,7 +4,7 @@ import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
-import {ColDef} from 'ag-grid-community';
+import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { masterIdToSchemaMapper } from './MDMConstants';
 
 // clear cached token and redirect to sso login
@@ -493,4 +493,123 @@ export const mapMasterToMasterState = (masters:Master[]):MDMMasterState[] => {
     rowData:[],
     progress:'default'
   }))
+}
+
+export const mapPendingTaskToColumnDefs = (colDefs:ColDef[])=>{
+  return colDefs.map((colDef:ColDef)=>{
+    return{
+      ...colDef,
+      minWidth:180,
+      floatingFilter: true,
+      filter: "agMultiColumnFilter",
+      cellStyle: {
+        "text-align": "center",
+      },
+      flex: 1,
+    }
+  })
+}
+
+export const mapRowDataWithSrNo = (rowData:any[])=>{
+  let result = []
+  if(!rowData)return []
+  result  = rowData.map((row,index)=>{
+    return{
+      ...row,
+      SrNo:index
+    }
+  })
+  return result
+}
+
+export const getExistingColumns = (rowData:any[])=>{
+  const firstRowColumn =JSON.parse( rowData[0].new)
+  return Object.keys(firstRowColumn)
+}
+
+export const getExistingColumnFields = (columns:string[],fields:Field[]):Field[]=>{
+  const updatedFields:Field[] = []
+  columns.map((c:string)=>{
+    fields.find((f:Field)=>{
+      if(f.key===c)updatedFields.push(f)
+    })
+  })
+  return updatedFields
+}
+
+export const mapMasterToColumnGroupDefs = (masters:Field[],existingColumnsFields:Field[]):ColGroupDef[] | ColDef[]=>{
+
+
+  return existingColumnsFields.map((f:Field)=>{
+
+    if(!f.editable){
+      return{
+        headerName:f.displayName,
+        field:f.key,
+        colId:f.key,
+        hide:!f.visible,
+        minWidth:180,
+        cellStyle: {
+          "text-align": "center",
+        },
+        flex: 1,
+      }
+    }
+
+    return{
+      headerName:f.displayName,
+      field:f.key,
+      colId:f.key,
+      hide:!f.visible,
+      minWidth:180,
+      cellStyle: {
+        "text-align": "center",
+      },
+      flex: 1,
+      children:[
+        {
+          headerName:'New ' +f.displayName,
+          field:'New'+f.key,
+          colId:'New'+f.key,
+          cellStyle:{
+            "color":'#BC3D81',
+            "text-align":"center"
+          }
+        },
+        {
+          headerName:'Old ' +f.displayName,
+          field:'Old' +f.key,
+          colId:'Old'+f.key,
+          cellStyle:{
+            "text-align":"center"
+          }
+        }
+      ]
+    }
+  })
+}
+
+
+export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[])=>{
+  return dirtyRowData.map(entry => {
+    const oldData = JSON.parse(entry.old);
+    const newData = JSON.parse(entry.new);
+
+    const oldDataPrefixed:any = {};
+    const newDataPrefixed:any = {};
+
+    existingColumnFields.map((f:Field)=>{
+      if(f.editable){
+        oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
+        newDataPrefixed[`New${f.key}`] = newData[f.key]
+      }
+      else{
+        oldDataPrefixed[f.key] = oldData[f.key]
+      }
+    })
+    return {
+        ...oldDataPrefixed,
+        ...newDataPrefixed
+    };
+});
 }

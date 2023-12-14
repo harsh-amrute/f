@@ -39,6 +39,7 @@ export interface Field{
     displayName:string,
     key:string,
     visible:boolean
+    editable?:boolean
 }
 
 export interface Tab{
