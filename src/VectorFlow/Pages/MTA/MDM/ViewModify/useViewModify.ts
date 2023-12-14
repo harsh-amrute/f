@@ -3,13 +3,16 @@ import { type Master, type Option, type Field,type GetMasterDataPayload, type Gr
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS } from '../../../../../redux/actions/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, MODIFY_ROW_DATA } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 import { AgGridReactProps } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-enterprise';
+import { masterIdToSchemaMapper } from '../../../../../helpers/MDMConstants';
+
 import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
+import _ from 'lodash';
 
 const useViewModify = () => {
 
@@ -131,6 +134,20 @@ const useViewModify = () => {
         }
       },[masters])
 
+      useEffect(()=>{
+        if(activeMaster.progress === 'editOnlineSaved'){
+          //remove Editable Coldefs
+          const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
+            return {...col,editable:false}
+          })
+          dispatch(UPDATE_COLDEFS(updatedColdefs));
+          dispatch(REMOVE_COLDEFS(['error','warning']))
+        }
+        if(activeMaster.progress === 'editOnline'){
+          return onEditOnline();
+        }
+      },[activeMaster.progress]);
+
 
     const sideBar = {
       toolPanels: [
@@ -144,12 +161,35 @@ const useViewModify = () => {
             suppressPivots: true,
             suppressPivotMode: true,
           },
+        
         },
       ],
       defaultToolPanel:defaultToolPanel,
     }
 
     const agGridProps:AgGridReactProps = {
+      // defaultColDef:{
+      //   valueSetter:(params)=>{
+      //     console.log(params);
+      //     return true;
+      //   },
+      //   // onCellValueChanged:(e)=>{
+      //   //   console.log(e);
+      //   // },
+      // },
+      readOnlyEdit:true,
+      onCellEditRequest(event) {
+        const data = event.data;
+        const field = event.colDef.field;
+        const newValue = event.newValue;
+        const oldRow = activeMaster.rowData.find((row) => row.RN === data.RN);
+        if (!oldRow || !field) {
+          return;
+        }
+        const newRow = { ...oldRow };
+        newRow[field] = newValue;
+        dispatch(MODIFY_ROW_DATA({oldRow:oldRow,newRow:newRow}))
+      },
       sideBar:['default','view'].includes(activeMaster.progress) ? sideBar : {},
       gridOptions:{
         getRowStyle: (params: any) => {
@@ -184,13 +224,6 @@ const useViewModify = () => {
       }
     };
 
-    // const addEditOnlineToColdefs = () => {
-    //   const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
-    //     return {...col,editable:true}
-    //   })
-    //   dispatch(UPDATE_COLDEFS(updatedColdefs))
-
-    // }
 
     const addCheckBoxColDefs = () => {
       const checkboxColDefs = [
@@ -218,7 +251,7 @@ const useViewModify = () => {
 
     const addInvalidDataColDefs = (columnName:string) => {
       dispatch(ADD_COLDEFS({colDefs:[columnName === 'error' ? invalidDataColdefs[1] : invalidDataColdefs[0]]}));
-      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+      // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
     }
 
     const getCurrentVisbileColumns = () => {
@@ -269,7 +302,7 @@ const useViewModify = () => {
     }
 
     const handleTabChange = (currMaster: MDMMasterState) => {
-      if(currMaster.progress === 'submitted') return notifyError(`The ${activeMaster.name} Master is already submitted`);
+      if(currMaster.progress === 'submitted') return notifyError(`The ${currMaster.name} Master is already submitted`);
 
       const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>master.progress !== 'submitted');
 
@@ -329,8 +362,7 @@ const useViewModify = () => {
         
         setIsTableDataLoading(false);
         setRecordCount(result.data.recordCount)
-        toggleWarningModal(true)
-        
+        toggleWarningModal(true);    
       }
 
       const onWarningModalClose = ()=>{
@@ -345,27 +377,37 @@ const useViewModify = () => {
 
         const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
         const payloadFields:any = getCurrentVisbileColumns();
+        
         setIsTableDataLoading(true);
         const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true,currentPage:1}); 
-        if(result.data.recordCount <= 10){
+        if(result.data.recordCount <= rowsPerPage){
           toggleEditOnline(true);
+          setShowAll(false); //setting to false in this if bcz we need this in flag true while handling server side pagination
         }
         else{
           toggleEditOnline(false);
         }
         setIsTableDataLoading(false);
+        if(result.data.recordCount == 0){
+          toggleWarningModal(false);
+          setShowAll(false);
+          return;
+        }
+       
         dispatch(UPDATE_ROW_DATA(result.data.data));
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         dispatch(UPDATE_PROGRESS_STATE('view')); 
-        toggleWarningModal(false)
+        toggleWarningModal(false);
+       
       }
 
       const onEditOnline = () => {
         const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
           return {...col,editable:true}
         })
+        dispatch(UPDATE_PROGRESS_STATE('editOnline'))
         dispatch(UPDATE_COLDEFS(updatedColdefs))
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+        // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
   
       }
 
@@ -456,7 +498,7 @@ const useViewModify = () => {
         
       }
 
-      const handlePageChange = async (pageNo:any) => {
+      const handleChangePage = async (pageNo:any) => {
         setCurrentPage(pageNo);
         setIsTableDataLoading(true)
         if(activeMaster.rowData.length > rowsPerPage){
@@ -479,7 +521,12 @@ const useViewModify = () => {
       const onSubmit = () => {
       
         dispatch(REMOVE_COLDEFS(['checkbox']));
-        dispatch(UPDATE_PROGRESS_STATE('submitted'));
+        if(activeMaster.progress === 'editOnlineSaved'){
+          dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
+        }
+        else{
+          dispatch(UPDATE_PROGRESS_STATE('submitted'));
+        }
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         notifySuccess(`Modifications Submitted Successfully`);
         setSelectedRowsCount(0);
@@ -493,6 +540,57 @@ const useViewModify = () => {
         // dispatch(setViewModifyProgressState('default'))
         setDownloadData(false);
         setTempDownloadData(false);
+      }
+
+      const onReset = () => {
+        const currentMasterData = masters.find((master:MDMMasterState)=>master.id === activeMaster.id)
+        if(currentMasterData) dispatch(UPDATE_ROW_DATA(currentMasterData.rowData))
+        dispatch(REMOVE_COLDEFS(['error','warning']));
+        dispatch(UPDATE_PROGRESS_STATE('editOnline'));
+      }
+
+      const onEditOnlineSave = () => {
+        //Cleanup errors if any and provide clean copy to check again.
+        //PS - Worked in tight deadline plz optimize whenever possible.
+        const rowData = activeMaster.rowData.map((row:any)=>{
+          if(row.error || row.warning){
+            return _.omit(row,'error','warning');
+          }
+          return row;
+        })
+
+        const checkError = (row:object) => {
+          const {error,warning} = masterSchema.validate(row) ;    
+          return {error,warning};
+        }
+
+        const masterSchema = masterIdToSchemaMapper[activeMaster.id.toString()];
+        const newData = rowData.map((row:any)=>{
+          const rowClone = {...row};
+          const {error,warning} = checkError(rowClone);
+          
+          if(error){
+            rowClone.error = error.message;
+          }
+          if(warning){
+            rowClone.warning = warning;
+          }
+          return rowClone;
+        });
+        const isErrorPresent = newData.find((row:any)=>row.error);
+        const isWarningPresent = newData.find((row:any)=>row.warning);
+        if(isErrorPresent && !activeMaster.colDefs.find((col:ColDef)=>col.colId==='error')){
+          addInvalidDataColDefs('error');
+        }
+        if(isWarningPresent && !activeMaster.colDefs.find((col:ColDef)=>col.colId==='warning')){
+          addInvalidDataColDefs('warning');
+        }
+        dispatch(UPDATE_ROW_DATA(newData));
+        if(isErrorPresent || isWarningPresent){
+          return notifyError("Invalid Data Found. Please Clear all the errors and warnings before proceeding");
+        }
+        dispatch(UPDATE_PROGRESS_STATE('editOnlineSaved'));
+        
       }
 
     
@@ -547,7 +645,9 @@ const useViewModify = () => {
         rowsPerPage,
         selectedRowsCount,
         currentPage,
-        handlePageChange
+        handleChangePage,
+        onReset,
+        onEditOnlineSave
     }
 }
 
