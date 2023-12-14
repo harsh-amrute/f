@@ -6,6 +6,7 @@ import { type Master, type Option, type Field, type Filter, MDMMasterState } fro
 import readXlsxFile from 'read-excel-file'
 import {ColDef} from 'ag-grid-community';
 import { masterIdToSchemaMapper } from './MDMConstants';
+import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 
 // clear cached token and redirect to sso login
 
@@ -493,4 +494,36 @@ export const mapMasterToMasterState = (masters:Master[]):MDMMasterState[] => {
     rowData:[],
     progress:'default'
   }))
+}
+
+export const mapDraftToColumnDefs = (fields:Field[],customParams?:ColDef)=>{
+  let result:ColDef[] = []
+  result = fields.map((f)=>{
+    return{
+      field:f.key,
+      colId:f.key,
+      headerName:f.displayName,
+      minWidth:180,
+      cellStyle: {
+        "textAlign": "center",
+      },
+      flex: 1,
+      cellRenderer:f.key==="action"&&ActionRenderer,
+      ...customParams
+    }
+  })
+  return result
+}
+
+
+export const mapDraftDataToTableRowData = (rowData:any[])=>{
+  let result = []
+  if(!rowData)return
+  result  = rowData.map((row,index)=>{
+    return{
+      ...row,
+      sr_no:index
+    }
+  })
+  return result
 }

@@ -1,11 +1,11 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Master, type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
-import { notifyError, notifySuccess } from '../../../../../helpers/notify';
+import { notifyError, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 import { AgGridReactProps } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-enterprise';
@@ -36,6 +36,8 @@ const useViewModify = () => {
     const [isUploadButtonDisabled,setIsUploadButtonDisabled] = useState<boolean>(true);
     const [showAll,setShowAll] = useState(false) //Flag to identify if the query is an show all query as we need that param in WarningModal Succes Handler P.S- Plz Optimize if you get time
 
+    const [activeMasterDraftId,setActiveMasterDraftId] = useState<string>()
+
     const [editOnline,toggleEditOnline] = useState(false);
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
     const [currentPage,setCurrentPage] = useState(1);
@@ -58,6 +60,10 @@ const useViewModify = () => {
     const {mutateAsync:getMasterData} = useGetMasterData();
 
     const {mutateAsync:getCount} = useGetCount();
+
+    const {mutateAsync:createDraft} = useCreateDraft()
+
+    const {mutateAsync:modifyDraft} = useModifyDraft()
 
     // const colDefs = activeMaster.colDefs
 
@@ -279,6 +285,26 @@ const useViewModify = () => {
       
       
     }
+
+    const generateDraftPayload = ()=>{
+      let instanceName = ''
+      masters.map((master:MDMMasterState)=>{
+        instanceName += ` ${master.name}`
+      })
+      return{
+        instanceName:instanceName,
+        searchKey:activeMaster.name,
+        draftId:activeMasterDraftId,
+        draftData:masters.map((master:MDMMasterState)=>{
+          return {
+            masterId:master.id,
+            status:master.progress==='submitted'?1:0,
+            gridState:JSON.stringify(master.colDefs),
+            dataMaster:master.id===activeMaster.id?activeMaster.rowData:[]
+          }
+        })
+      }
+    }
     
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
         e.stopPropagation();
@@ -495,6 +521,21 @@ const useViewModify = () => {
         setTempDownloadData(false);
       }
 
+      const onSaveToDraft = async()=>{
+        if(activeMasterDraftId){
+          return await notifyPromise(modifyDraft(generateDraftPayload()),{
+            success:'Draft has been updated',
+            pending:'Updating draft',
+            error:"Could not update draft"
+          })
+        }
+        return await notifyPromise(createDraft(generateDraftPayload()),{
+          success:'Draft has been updated',
+          pending:'Creating draft',
+          error:"Could create draft"
+        })
+      }
+
     
 
     return {
@@ -547,6 +588,7 @@ const useViewModify = () => {
         rowsPerPage,
         selectedRowsCount,
         currentPage,
+        onSaveToDraft,
         handlePageChange
     }
 }

@@ -45,7 +45,7 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.masterDataManagement.savedDrafts",
         img: "../assets/img/nav/arrow_down.svg",
-        url: "",
+        url: "/master-data-management/saved-drafts",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant"],
       },
       {

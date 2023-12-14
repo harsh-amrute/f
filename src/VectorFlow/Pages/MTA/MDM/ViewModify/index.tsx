@@ -66,6 +66,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
         isUploadButtonDisabled,
         editOnline,
         onEditOnline,
+        onSaveToDraft,
         selectedRowsCount,
         currentPage,
         rowsPerPage,
@@ -219,7 +220,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
           <VFTaskBar
             masterProgress={activeMaster.progress}
             onReset={()=>console.log('')}
-            onSaveToDraft={()=>console.log('')}
+            onSaveToDraft={onSaveToDraft}
             editOnline={editOnline}
             onEditOnline={onEditOnline}
             onBack={onBackButton}
