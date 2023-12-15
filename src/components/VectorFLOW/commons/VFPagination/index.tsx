@@ -22,6 +22,7 @@ const VFPagination  = (props:VFPaginationProps)=>{
     } = props
     
     const getTotalItemsString = () => {
+        if(totalRows <= rowsPerPage) return `1-${totalRows}`;
         if(currentPage===1) return `1-${rowsPerPage}`;
         return `${(currentPage * rowsPerPage)+1}-${(currentPage+1)*rowsPerPage}`;
     }

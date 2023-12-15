@@ -69,7 +69,9 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
         selectedRowsCount,
         currentPage,
         rowsPerPage,
-        handlePageChange
+        handleChangePage,
+        onReset,
+        onEditOnlineSave
 
     } = useViewModify();
 
@@ -80,7 +82,6 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
         }
       }
     },[isTableDataLoading])
-
 
     return (
       <>
@@ -187,7 +188,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
                 totalRows={recordCount} 
                 currentPage={currentPage} 
                 rowsPerPage={rowsPerPage} 
-                handleChangePage={(e)=>handlePageChange(e)}  
+                handleChangePage={(e)=>handleChangePage(e)}  
                 handleChangePerPage={()=>console.log('hello')}
               />
           }
@@ -218,8 +219,9 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
           !isSelectMasterOpen && 
           <VFTaskBar
             masterProgress={activeMaster.progress}
-            onReset={()=>console.log('')}
+            onReset={onReset}
             onSaveToDraft={()=>console.log('')}
+            onEditOnlineSave={onEditOnlineSave}
             editOnline={editOnline}
             onEditOnline={onEditOnline}
             onBack={onBackButton}

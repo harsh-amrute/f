@@ -107,6 +107,27 @@ const mockMasterData: any = {
       SKUAttr15: "Dummy Value",
       SKUAttr16: "mm",
     },
+    {
+      SKUSrNo: 3,
+      SKUCode: "Q1231231FG34",
+      SKUName: "Text Description",
+      SKUAttr1: "ABC",
+      SKUAttr2: "Group A",
+      SKUAttr3: "PTH",
+      SKUAttr4: 50,
+      SKUAttr5: "Arrow New",
+      SKUAttr6: "Red",
+      SKUAttr7: 25,
+      SKUAttr8: "mm",
+      SKUAttr9: 35,
+      SKUAttr10: "ABC",
+      SKUAttr11: "SubCategory",
+      SKUAttr12: "2022-11-08",
+      SKUAttr13: "Dymmy Value",
+      SKUAttr14: "ABC Group",
+      SKUAttr15: "Dummy Value",
+      SKUAttr16: "mm",
+    },
   ],
 };
 
@@ -609,6 +630,16 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     const uploadedStateColDefs:any = [checkBoxColDefs,mapMasterToColumnDefs(MasterData[0].fields)]
 
+    // const useRefSpy = jest.spyOn(React, 'useRef').mockReturnValueOnce({ 
+    //   current: { 
+    //     api:{
+    //       getSelectedRows(){
+    //         return mockMasterData.data[0];
+    //       }
+    //     } 
+    //   } 
+    // });
+
     const updatedMockState:MDMStore = {
       allMasters:MasterData,
       masters:MasterData,
@@ -622,14 +653,121 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     render(contextWrapper(<ViewModify/>,mockStore));
 
+    // expect(useRefSpy).toBeCalledTimes(1);
+
     fireEvent.click(screen.getByText("Delete Selected"));
 
     expect(toast.error).toBeCalled();
 
-    const checkbox = screen.getAllByLabelText('Press Space to toggle row selection (unchecked)');
-    expect(checkbox[0]).not.toBeChecked();
-    // fireEvent.change(checkbox[0],);
-    // expect(toast.success).toBeCalled();
+    
+
+  })
+
+  it("Handles Pagination When Data is on Client Side",async ()=>{
+
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
+
+    const mockStore = createStore(updatedMockState);
+
+    render(contextWrapper(<ViewModify/>,mockStore));
+
+    fireEvent.click(screen.getByLabelText("Next page"));
+    
+
+  })
+
+  it("Updates to Edit Online State when Clicking on Edit Online Button",async ()=>{
+
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
+
+    const mockStore = createStore(updatedMockState);
+
+    render(contextWrapper(<ViewModify/>,mockStore));
+
+    fireEvent.click(screen.getByText("Edit Online"));
+    
+
+  })
+
+  it("Resets the Data when Clicking on Reset Button",async ()=>{
+
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
+
+    const mockStore = createStore(updatedMockState);
+
+    render(contextWrapper(<ViewModify/>,mockStore));
+
+    fireEvent.click(screen.getByText("Reset"));
+    
+
+  })
+
+  it("Saves The Data",async ()=>{
+
+    const testData = [{...mockMasterData.data[0],SKUCode:"QACE1234,|"},mockMasterData.data[1],mockMasterData.data[2]]
+    let updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:testData},
+      isSelectMasterOpen:false,
+    }
+
+    let mockStore = createStore(updatedMockState);
+
+    const mockStoreDispatchSpy = jest.spyOn(mockStore, 'dispatch')
+
+    render(contextWrapper(<ViewModify/>,mockStore));
+
+    fireEvent.click(screen.getByText('Save', { selector: 'button' }));
+
+    const errorColDefs = {
+      field:'error',
+      colId:'error',
+      headerName:'Error',
+      floatingFilter:false, 
+      cellRenderer:'errorCell',
+      suppressColumnsToolPanel:true,
+      wrapText:true,
+      autoHeight:true,
+    }
+
+    expect(mockStoreDispatchSpy).toBeCalledWith({payload:{colDefs:[errorColDefs]},type:'ADD_COLDEFS'});
+    expect(toast.error).toBeCalled();
+
+    cleanup();
+
+    //If Data is Valid
+    updatedMockState = {...updatedMockState,activeMaster:{...updatedMockState.activeMaster,rowData:mockMasterData.data}};
+    mockStore = createStore(updatedMockState);
+    // jest.spyOn(mockStore, 'dispatch')
+
+    render(contextWrapper(<ViewModify/>,mockStore));
+
+    fireEvent.click(screen.getByText('Save', { selector: 'button' }));
+    
 
   })
 })

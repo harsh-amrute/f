@@ -16,6 +16,7 @@ export interface VFTaskBarProps{
     onClearAndExportErrors:()=>void
     onSubmit:()=>void
     onEditOnline:()=>void
+    onEditOnlineSave:()=>void
     onSaveToDraft:()=>void
     onDeleteSelected:()=>void
 }
@@ -33,6 +34,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         onSubmit,
         onReset,
         onEditOnline,
+        onEditOnlineSave,
         onSaveToDraft,
         onDeleteSelected
     } = props
@@ -234,7 +236,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <VFButtonOutline themeUi={themeUi} onClick={onReset}>
                         Reset
                     </VFButtonOutline>
-                    <VFButton themeUi={themeUi} onClick={onSaveToDraft}>
+                    <VFButton themeUi={themeUi} onClick={onEditOnlineSave}>
                         Save
                     </VFButton>
                     <VFButtonOutline themeUi={themeUi} onClick={onSubmit} disabled>
