@@ -454,6 +454,7 @@ export const mapMasterToColumnDefs = (fields:Field[])=>{
       cellStyle: {
         "text-align": "center",
       },
+      // suppressColumnsToolPanel:,
       flex: 1,
     }
   })

@@ -15,7 +15,7 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 
 const SavedDrafts = ()=>{
 
-  const {data,isLoading} = useGetAllDrafts()
+
   const {user} = useUserData()
   
   const {
@@ -23,16 +23,19 @@ const SavedDrafts = ()=>{
     openDeleteModal,
     closeDeleteModal,
     onDeleteDraft,
-    onEditDraft
+    onEditDraft,
+    allDrafts,
+    isLoading
   } = useSavedDrafts()
 
-  const rowData = data?.data.data
+  
 
-
+  console.log(allDrafts,isLoading);
 
   if(isLoading){
     return <VFLoader/>
   }
+
 
   return(
     <React.Fragment>
@@ -70,8 +73,8 @@ const SavedDrafts = ()=>{
               onDelete:openDeleteModal
             }
           })}
-          rowData={mapDraftDataToTableRowData(rowData)}
-            gridOptions={{
+          rowData={mapDraftDataToTableRowData(allDrafts)}
+          gridOptions={{
             getRowStyle: (params: any) => {
               if (params.node.rowIndex % 2 === 0) {
                 return { background: "#EBEBEB" };

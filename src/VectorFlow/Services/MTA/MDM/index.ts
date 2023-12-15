@@ -15,7 +15,7 @@ export const QUERY_KEYS = {
 
 
 export const useGetMasterUIConfiguration = () => {
-  return useMutation(QUERY_KEYS.useGetMasterUIConfiguration, async (screenType:string) => {
+  return useMutation(async (screenType:string) => {
     return await MDMService.getMasterUIConfiguration(screenType);
   });
 }

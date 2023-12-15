@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { createReducer } from '@reduxjs/toolkit';
 import {type Option, type MDMMasterState, type MDMStore, type Filter} from '../../../VectorFlow/types/MDM'; 
 import { generateRandomId } from '../../../helpers/utils';
-import {FILL_MASTERS, FILL_SELECTED_OPTIONS, REMOVE_MASTER, FILTER_MASTER, ADD_MASTER, FILL_OPTIONS, UPDATE_ACTIVE_MASTER, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_COLDEFS, STORE_ALL_MASTERS, ADD_FILTER, REMOVE_FILTER, UPDATE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, RESET_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS} from '../../actions/MDM';
+import {FILL_MASTERS, FILL_SELECTED_OPTIONS, REMOVE_MASTER, FILTER_MASTER, ADD_MASTER, FILL_OPTIONS, UPDATE_ACTIVE_MASTER, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_COLDEFS, STORE_ALL_MASTERS, ADD_FILTER, REMOVE_FILTER, UPDATE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, RESET_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, MODIFY_ROW_DATA} from '../../actions/MDM';
 import { ColDef } from 'ag-grid-enterprise';
 
 
@@ -89,6 +89,15 @@ const setMasters = (state:any,action:PayloadAction<MDMMasterState[]>|PayloadActi
         case UPDATE_ROW_DATA.type:
             state.activeMaster = {...state.activeMaster,rowData:action.payload};
             break;
+        case MODIFY_ROW_DATA.type:
+            const newRowData = state.activeMaster.rowData.map((row:any)=>{
+                if(JSON.stringify(row) === JSON.stringify(action.payload.oldRow)){
+                    return action.payload.newRow;
+                }
+                return row;
+            })
+            state.activeMaster = {...state.activeMaster,rowData:newRowData};
+            break;
         case REMOVE_ROW_DATA.type:  
             const selectedRows = action.payload.map((row:any)=>JSON.stringify(row));
             const updatedRows = state.activeMaster.rowData.filter((row:any)=>!selectedRows?.includes(JSON.stringify(row))); 
@@ -145,6 +154,7 @@ const mdmReducer = (initialState:MDMStore) => createReducer(initialState, (build
       .addCase(REMOVE_FILTER,setMasters)
       .addCase(UPDATE_FILTER,setMasters)
       .addCase(UPDATE_ROW_DATA,setMasters)
+      .addCase(MODIFY_ROW_DATA,setMasters)
       .addCase(REMOVE_ROW_DATA,setMasters)
       .addCase(UPDATE_PROGRESS_STATE,setMasters)
       .addCase(FILL_OPTIONS,setOptions)

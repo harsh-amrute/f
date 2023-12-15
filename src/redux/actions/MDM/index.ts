@@ -19,6 +19,7 @@ const actions =  {
     ADD_FILTER:createAction("ADD_FILTER"),
     REMOVE_FILTER:createAction<string>("REMOVE_FILTER"),
     UPDATE_FILTER:createAction<{value:string,property:string,filterId:string}>("UPDATE_FILTER"),
+    MODIFY_ROW_DATA:createAction<{oldRow:any[],newRow:any[]}>("MODIFY_ROW_DATA"),
     UPDATE_ROW_DATA:createAction<any[]>("UPDATE_ROW_DATA"),
     REMOVE_ROW_DATA:createAction<any[]>("REMOVE_ROW_DATA"),
     UPDATE_PROGRESS_STATE:createAction<string>("UPDATE_PROGRESS_STATE"),
@@ -43,6 +44,7 @@ export const {
     REMOVE_FILTER,
     UPDATE_FILTER,
     UPDATE_ROW_DATA,
+    MODIFY_ROW_DATA,
     REMOVE_ROW_DATA,
     UPDATE_PROGRESS_STATE,
     RESET_STATE

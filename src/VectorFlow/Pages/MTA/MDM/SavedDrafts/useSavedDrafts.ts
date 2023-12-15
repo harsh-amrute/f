@@ -1,10 +1,8 @@
 import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router"
-import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM"
-import { useGetDraftById, useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useGetDraftById, useGetMasterUIConfiguration,useGetAllDrafts, useDeleteDraft } from "../../../../../VectorFlow/Services/MTA/MDM"
 import { notifyPromise } from "../../../../../helpers/notify"
-import { MDMService } from "../../../../../VectorFlow/Services/MTA/MDM/api"
 
 
 const useSavedDrafts = ()=>{
@@ -12,10 +10,14 @@ const useSavedDrafts = ()=>{
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const {mutateAsync:getDraftById} = useGetDraftById()
-    const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration()
+    // const {mutateAsync:getDraftById} = useGetDraftById()
+    // const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration()
+    const {mutateAsync:deleteDraft} = useDeleteDraft()
     const [isDeleteModalOpen,toggleDeleteModal] = useState<boolean>(false)
-    const [deleteDraftId,setDeleteDraftId] = useState<string>("")
+    const [deleteDraftId,setDeleteDraftId] = useState<string>("");
+    const {data,isLoading} = useGetAllDrafts();
+    const allDrafts = data?.data;
+  
 
     const openDeleteModal = (draftId:string)=>{
         setDeleteDraftId(draftId)
@@ -25,13 +27,14 @@ const useSavedDrafts = ()=>{
     const closeDeleteModal =()=>toggleDeleteModal(false)
 
     const onEditDraft = async(draftId:string)=>{
+        console.log(draftId)
 
-        const draftData = await getDraftById(draftId)
-        const mastersData= await getMasterUIConfiguration('modify')
+        // const draftData = await getDraftById(draftId)
+        // const mastersData= await getMasterUIConfiguration('modify')
 
 
 
-        const masters = mastersData.data.data
+        // const masters = mastersData.data.data
         
         // dispatch(TOGGLE_SELECT_MASTER_SCREEN(true))
         // navigate('/master-data-management/view-modify')
@@ -42,7 +45,7 @@ const useSavedDrafts = ()=>{
     const onDeleteDraft = async()=>{
         closeDeleteModal();
         await notifyPromise(
-            MDMService.deleteDraft(deleteDraftId),
+            deleteDraft(deleteDraftId),
             {
                 pending:'Deleting Draft',
                 success:'Draft has been deleted sucessfully',
@@ -56,7 +59,10 @@ const useSavedDrafts = ()=>{
         openDeleteModal,
         closeDeleteModal,
         onEditDraft,
-        onDeleteDraft
+        onDeleteDraft,
+        allDrafts,
+        isLoading
+        
     }
 }
 

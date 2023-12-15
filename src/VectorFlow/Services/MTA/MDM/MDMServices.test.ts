@@ -19,9 +19,9 @@ describe('Testing the MDMService',  () => {
     });
   
     it('should make a GET request to the /GetMasterUIConfiguration', async () => {
-      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
       const response = await MDMService.getMasterUIConfiguration('add');
-      expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetMasterUIConfiguration`)
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetMasterUIConfiguration`,{screenType:'add'})
       expect(response.status).toBe(200);
   
     });

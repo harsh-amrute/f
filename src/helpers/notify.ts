@@ -9,7 +9,7 @@ interface PromiseToastMsg{
 
 export const ATTR_TOAST = {
   position: 'top-right',
-  autoClose: 3000,
+  autoClose: 5000,
   hideProgressBar: false,
   closeOnClick: true,
   pauseOnHover: true,
