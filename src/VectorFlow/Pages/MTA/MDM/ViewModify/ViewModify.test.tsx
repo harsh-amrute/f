@@ -26,7 +26,6 @@ import { toast } from 'react-toastify'
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
 import { MasterData } from "../../../../../mock-data/MDM";
 import { mapMasterToColumnDefs } from "../../../../../helpers/utils";
-import React from 'react';
 
 jest.mock("../../../../Services/MTA/MDM");
 
@@ -738,7 +737,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     let mockStore = createStore(updatedMockState);
 
-    let mockStoreDispatchSpy = jest.spyOn(mockStore, 'dispatch')
+    const mockStoreDispatchSpy = jest.spyOn(mockStore, 'dispatch')
 
     render(contextWrapper(<ViewModify/>,mockStore));
 
