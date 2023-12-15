@@ -59,6 +59,7 @@ const NavbarMenu = ({ setMenuItem, isHide }: any) => {
           const checkRole = user?.roles?.permission?.some((value: any) =>
             item?.role?.includes(value)
           );
+
           if (checkRole) {
             return (
               <NavStyle.SCMenuItem

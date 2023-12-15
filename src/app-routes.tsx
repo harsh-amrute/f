@@ -46,8 +46,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/ist-status',
     '/permission-forbidden',
     '/master-data-management/control-panel',
-    '/master-data-management/view-modify',
-    '/master-data-management/saved-drafts'
+    '/master-data-management/control-panel/view-modify',
+    '/master-data-management/control-panel/saved-drafts'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -173,20 +173,26 @@ export const initRoutes = (): RouteObject[] => {
           index: true,
           element: lazyLoad(<ControlPanel />)
         },
-        ...getStoreTransferModuleRoutes()
-      ]
-    },
-    {
-      path: '/master-data-management/view-modify',
-      element: <AppLayout />,
-      children: [
         {
           index: true,
+          path:'view-modify',
           element: lazyLoad(<ViewModify />)
         },
         ...getStoreTransferModuleRoutes()
       ]
     },
+    // {
+    //   path: '/master-data-management/control-panel',
+    //   element: <AppLayout />,
+    //   children: [
+    //     {
+    //       index: true,
+    //       path:'view-modify',
+    //       element: lazyLoad(<ViewModify />)
+    //     },
+    //     ...getStoreTransferModuleRoutes()
+    //   ]
+    // },
     {
       path: '/master-data-management/saved-drafts',
       element: <AppLayout />,

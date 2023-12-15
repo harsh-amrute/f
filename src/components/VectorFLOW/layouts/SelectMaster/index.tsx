@@ -50,7 +50,7 @@ const SelectMaster = (
     if(isLoading){
         return (
             <SCLoaderContainer>
-                <img src="../assets/img/VectorFLOW/loaderBig.svg" data-testid="loader"/>
+                <img src="/assets/img/VectorFLOW/loaderBig.svg" data-testid="loader"/>
             </SCLoaderContainer>
         )
     }
