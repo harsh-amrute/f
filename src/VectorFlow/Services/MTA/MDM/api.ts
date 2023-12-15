@@ -5,8 +5,8 @@ import { GetMasterDataPayload } from '../../../types/MDM';
 
 export namespace MDMService {
 
-  export const getMasterUIConfiguration = async () => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/GetMasterUIConfiguration`);
+  export const getMasterUIConfiguration = async (screenType:string) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/GetMasterUIConfiguration`,{screenType:screenType});
   }
 
   export const getCount = async (body:GetMasterDataPayload) => {

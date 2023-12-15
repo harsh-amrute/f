@@ -22,6 +22,7 @@ const useViewModify = () => {
 
     const isSelectMasterOpen = useSelector((state:RootState) => state.mdm.isSelectMasterOpen);
 
+    const [allMastersState,setAllMasterState] = useState<MDMMasterState[]>([])
     const [rowData,setRowData] = useState<object[]>([]);
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
     const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
@@ -51,11 +52,11 @@ const useViewModify = () => {
 
     const [filterButtonStatus,setFilterButtonStatus] = useState<Array<number>>([]);
 
-    const {data:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
+    const {mutateAsync:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
    
-    const allMasters:Master[] = masterUIConfiguration?.data.data || [];
+    // const allMasters:Master[] = masterUIConfiguration?.data.data || [];
 
-    const allMastersState:MDMMasterState[] = mapMasterToMasterState(allMasters);
+    // const allMastersState:MDMMasterState[] = mapMasterToMasterState(allMasters);
 
     const {mutateAsync:getMasterData} = useGetMasterData();
 
@@ -117,7 +118,7 @@ const useViewModify = () => {
 
         if(activeMaster.id === 0){
           if(!isLoading){
-            const allOptions:Option[] =  generateOptions(allMasters);
+            const allOptions:Option[] =  generateOptions(allMastersState);
             dispatch(STORE_ALL_MASTERS(allMastersState));
             dispatch(FILL_OPTIONS(allOptions));
           }
@@ -126,6 +127,7 @@ const useViewModify = () => {
           dispatch(FILL_MASTERS([...getSelectedMasters(temp)]));
         }
 
+       
 
         // if(isToolPanelOpen) ref.current?.api.openToolPanel('columns');
 
@@ -137,6 +139,15 @@ const useViewModify = () => {
         }
       },[masters])
 
+
+      useEffect(()=>{
+        const getMasterUIConfigurationData = async()=>{
+          const {data} = await masterUIConfiguration('modify')
+          setAllMasterState(mapMasterToMasterState(data.data))
+         }
+  
+         getMasterUIConfigurationData()
+      },[])
 
     const sideBar = {
       toolPanels: [
@@ -319,7 +330,7 @@ const useViewModify = () => {
       }
     
     const addNewMaster = ()=>{
-      if(allMasters.length === masters.length) {
+      if(allMastersState.length === masters.length) {
         notifyError('All Masters have already been selected. Cannot add more masters');
         return;
       }
@@ -553,7 +564,6 @@ const useViewModify = () => {
         addNewMaster,  
         handleOnAddFilter,
         handleOnDeleteFilter,
-        allMasters,
         allMastersState,
         handleApplyFilter,
         rowData,

@@ -3,7 +3,7 @@ import { ActionButtonWrapper, ActionContainer } from "./styles"
 
 
 interface ActionRendererProps extends ICellRendererParams{
-    onEdit:()=>void
+    onEdit:(id:string)=>void
     onDelete:(id:string)=>void
 }
 
@@ -15,9 +15,10 @@ const ActionRenderer = (props:ActionRendererProps)=>{
         onEdit
     } = props
 
+
     return(
         <ActionContainer>
-            <ActionButtonWrapper src="/assets/img/VectorFLOW/NMS/edit-draft.svg" height={24} width={24} onClick={onEdit}/>
+            <ActionButtonWrapper src="/assets/img/VectorFLOW/NMS/edit-draft.svg" height={24} width={24} onClick={()=>onEdit(data.DraftId)}/>
             <ActionButtonWrapper src="/assets/img/VectorFLOW/NMS/delete-draft.svg" height={24} width={24} style={{marginLeft:"30px"}} onClick={()=>onDelete(data.DraftId)}/>
         </ActionContainer>
     )
