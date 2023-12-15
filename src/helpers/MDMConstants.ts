@@ -1,5 +1,8 @@
+import { ColDef, ColGroupDef } from 'ag-grid-enterprise';
+import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import { LocationSchema, SKULocationSchema, SKUSchema, SOBSchema } from '../validators/schemas/MTA/MDM/index';
 import {type Option, type MasterIdToSchema} from '../VectorFlow/types/MDM';
+import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
 
 export const operators:Option[] = [
     {
@@ -54,3 +57,65 @@ export const masterIdToSchemaMapper:MasterIdToSchema = {
     '3':SKULocationSchema,
     '4':SOBSchema,
 }
+
+
+export const defaultColDefs:ColDef = {
+    minWidth:180,
+    cellStyle: {
+      "text-align": "center",
+    },
+    flex: 1,
+}
+
+export const taskPendingCustomColDefs :any[] = [
+    {
+        field:'action',
+        colId:'action',
+        headerName:'Action',
+        children:[
+            {
+                headerComponent:TaskPendingActionHeader,
+                cellRenderer:TaskPendingActionRenderer,
+                width:300,
+                cellStyle:{
+                    "border-left":"solid 1px #B9B9B9"
+                }
+            }
+            // {
+            //     field:"reject",
+            //     colId:'reject',
+            //     headerName:"Reject All",
+            //     headerCheckboxSelection:true,
+            //     cellRenderer:TaskPendingRejectActionButton,
+            //     width:150,
+            //     cellStyle:{
+            //         "border-right":"solid 1px #B9B9B9"
+            //     }
+            // }
+        ],
+        cellStyle: {
+        "text-align": "center"
+        },
+        flex: 1,
+    },
+    {
+        field:'status',
+        colId:'status',
+        headerName:'Status',
+        suppressSpanHeaderHeight: true,
+        cellStyle:{
+            "border-right":"solid 1px #B9B9B9",
+            "border-left":"solid 1px #B9B9B9"
+        },
+        flex:1,
+        minWidth:100
+    },
+    {
+        field:'comments',
+        colId:'comments',
+        headerName:'Comments',
+        suppressSpanHeaderHeight: true,
+        editable:true,
+        ...defaultColDefs
+    }
+]

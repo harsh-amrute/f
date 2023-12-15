@@ -31,6 +31,7 @@ const TaskPendingForReview = ()=>{
     }
     return (
         <VFTable
+            
             columnDefs={detailTableColDefs}
             gridOptions={{
                 getRowStyle: (params: any) => {
@@ -41,6 +42,7 @@ const TaskPendingForReview = ()=>{
                 },
             }}
             rowData={detailTableRowData}
+            rowSelection='multiple'
         />
     )
 }

@@ -17,13 +17,13 @@ const useTaskPendingForReview = ()=>{
 
     const handleOnClick = ()=>{
         setIsViewTableOpen(false)
-        setDetailTableColDefs(mapMasterToColumnGroupDefs(detailColumnFieldsDummy,existingColumnFields))
+        setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields))
         setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(detailRowDummyData,existingColumnFields))
     }
 
     useEffect(()=>{
         setIsViewTableOpen(false)
-        setDetailTableColDefs(mapMasterToColumnGroupDefs(detailColumnFieldsDummy,existingColumnFields))
+        setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields))
         setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(detailRowDummyData,existingColumnFields))
         // setViewTableColDefs(mapPendingTaskToColumnDefs([
         //     {
@@ -84,9 +84,6 @@ const useTaskPendingForReview = ()=>{
         //       }
         // ]))
     },[])
-
-    console.log(detailTableRowData,detailTableColDefs)
-
     return{
         isViewTableOpen,
         viewTableColDefs,
@@ -174,7 +171,7 @@ const detailColumnFieldsDummy = [
       "displayName": "SKU Name",
       "key": "SKUDescription",
       "visible": true,
-      "editable":true
+      "editable":false
     },
     {
       "displayName": "STYLE CODE",

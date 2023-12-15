@@ -5,7 +5,7 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
-import { masterIdToSchemaMapper } from './MDMConstants';
+import { defaultColDefs, masterIdToSchemaMapper, taskPendingCustomColDefs } from './MDMConstants';
 
 // clear cached token and redirect to sso login
 
@@ -447,13 +447,9 @@ export const mapMasterToColumnDefs = (fields:Field[])=>{
       colId:f.key,
       headerName:f.displayName,
       hide:!f.visible,
-      minWidth:180,
       floatingFilter: true,
       filter: "agMultiColumnFilter",
-      cellStyle: {
-        "text-align": "center",
-      },
-      flex: 1,
+      ...defaultColDefs
     }
   })
   return result;
@@ -499,13 +495,9 @@ export const mapPendingTaskToColumnDefs = (colDefs:ColDef[])=>{
   return colDefs.map((colDef:ColDef)=>{
     return{
       ...colDef,
-      minWidth:180,
       floatingFilter: true,
       filter: "agMultiColumnFilter",
-      cellStyle: {
-        "text-align": "center",
-      },
-      flex: 1,
+      ...defaultColDefs
     }
   })
 }
@@ -537,10 +529,9 @@ export const getExistingColumnFields = (columns:string[],fields:Field[]):Field[]
   return updatedFields
 }
 
-export const mapMasterToColumnGroupDefs = (masters:Field[],existingColumnsFields:Field[]):ColGroupDef[] | ColDef[]=>{
+export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGroupDef[] | ColDef[]=>{
 
-
-  return existingColumnsFields.map((f:Field)=>{
+  const colDefs =  existingColumnsFields.map((f:Field,index:number)=>{
 
     if(!f.editable){
       return{
@@ -548,11 +539,10 @@ export const mapMasterToColumnGroupDefs = (masters:Field[],existingColumnsFields
         field:f.key,
         colId:f.key,
         hide:!f.visible,
-        minWidth:180,
-        cellStyle: {
-          "text-align": "center",
-        },
-        flex: 1,
+        headerCheckboxSelection:index===0,
+        checkboxSelection:index===0,
+        suppressSpanHeaderHeight: true,
+        ...defaultColDefs
       }
     }
 
@@ -561,11 +551,6 @@ export const mapMasterToColumnGroupDefs = (masters:Field[],existingColumnsFields
       field:f.key,
       colId:f.key,
       hide:!f.visible,
-      minWidth:180,
-      cellStyle: {
-        "text-align": "center",
-      },
-      flex: 1,
       children:[
         {
           headerName:'New ' +f.displayName,
@@ -573,7 +558,8 @@ export const mapMasterToColumnGroupDefs = (masters:Field[],existingColumnsFields
           colId:'New'+f.key,
           cellStyle:{
             "color":'#BC3D81',
-            "text-align":"center"
+            "text-align":"center",
+            "border-left":"solid 1px #B9B9B9",
           }
         },
         {
@@ -581,12 +567,17 @@ export const mapMasterToColumnGroupDefs = (masters:Field[],existingColumnsFields
           field:'Old' +f.key,
           colId:'Old'+f.key,
           cellStyle:{
-            "text-align":"center"
+            "text-align":"center",
+            "border-right":"solid 1px #B9B9B9"
           }
         }
-      ]
+      ],
+      ...defaultColDefs,
+      
     }
   })
+
+  return [...colDefs,...taskPendingCustomColDefs]
 }
 
 
@@ -609,7 +600,9 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
     })
     return {
         ...oldDataPrefixed,
-        ...newDataPrefixed
+        ...newDataPrefixed,
+        status:'',
+        comments:''
     };
 });
 }
