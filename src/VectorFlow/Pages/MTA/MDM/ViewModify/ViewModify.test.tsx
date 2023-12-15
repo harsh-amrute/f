@@ -259,517 +259,510 @@ describe("Renders View Modify Component", () => {
 
     render(contextWrapper(<ViewModify />,store));
 
-    const filterButton = screen.getAllByTestId("button-outline-status");
-    fireEvent.click(filterButton[0]);
-
-    await waitFor(async () => {
-      const reactSelect = screen.getByRole("combobox");
-      expect(reactSelect).toBeInTheDocument();
-      await select(reactSelect, ["SKU Code"]);
-    });
+    expect(screen.getByLabelText('Example Label')).toBeInTheDocument();
   });
 });
 
-// describe("Handles all Interaction in ViewModify Component", () => {
-
-//   beforeEach(() => {
-//     const mockState:MDMStore = {
-//       allMasters:MasterData,
-//       masters:MasterData,
-//       options:[],
-//       selectedOptions:[],
-//       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
-//       isSelectMasterOpen:true,
-//     }
-
-//     const mockStore = createStore(mockState);
-
-//     useGetMasterUIConfigurationMock.mockImplementation(():any => {
-//       return {data:useGetMasterUIConfigurationMockResult,isLoading:false};
-//     });
-
-
-//     useGetMasterDataMock.mockImplementation(() => {
-//       return useMasterDataResult;
-//     });
-
-//     useGetCountMock.mockImplementation(() => {
-//       return useGetCountResult;
-//     });
-
-//     store.dispatch(RESET_STATE());
+describe("Handles all Interaction in ViewModify Component", () => {
+
+  beforeEach(() => {
+    const mockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
+      isSelectMasterOpen:true,
+    }
+
+    const mockStore = createStore(mockState);
+
+    useGetMasterUIConfigurationMock.mockImplementation(():any => {
+      return useGetMasterUIConfigurationMockResult;
+    });
+
+
+    useGetMasterDataMock.mockImplementation(() => {
+      return useMasterDataResult;
+    });
+
+    useGetCountMock.mockImplementation(() => {
+      return useGetCountResult;
+    });
+
+    store.dispatch(RESET_STATE());
 
-//     render(contextWrapper(<ViewModify />,mockStore));
-//   });
-
-//   afterEach(()=>{
-//     cleanup()
-//   })
-
-
-//   it("Check if Submitted Directly all masters should be selected", async () => {
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-//     const tabs = screen.getAllByTestId("tab-button");
-//     expect(tabs.length).toBe(3);
-//   });
-
-//   it("Check if Masters are selected as per the filters", async () => {
-//     const reactSelect = await screen.findByLabelText("Example Label");
-//     expect(reactSelect).toBeInTheDocument();
-//     fireEvent.focus(reactSelect);
-//     fireEvent.keyDown(reactSelect, { key: 'ArrowDown', code: 40 });
-//     fireEvent.click(screen.getAllByText("SKU Code")[0]);
-
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-
-//     // const tabs = screen.getAllByTestId("tab-button");
-//     // expect(tabs.length).toBe(2);
-//   });
-
-//   it("Check if All Tabs are closed Select Master Screen is Opened", async () => {
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-
-//     const tabsList = screen.getAllByTestId("tab-close");
-//     tabsList.forEach((tab: HTMLElement) => {
-//       fireEvent.click(tab);
-//     });
-
-//     expect(toast.error).toHaveBeenCalled()
-//   });
-
-//   it("Check if any Active Tabs is Closed First Tab is set to Default", async () => {
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-
-//     const tabsList = screen.getAllByTestId("tab-button");
-//     const tabNo = _.random(1, tabsList.length - 1);
-//     fireEvent.click(tabsList[tabNo]);
-
-//     const tabCloseBtn = screen.getAllByTestId("tab-close")[tabNo];
-//     fireEvent.click(tabCloseBtn);
-//   });
-
-//   it("Check if active tab closes when X is clicked", async () => {
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-
-//     const tabCloseBtn = screen.getAllByTestId("tab-close")[0];
-//     fireEvent.click(tabCloseBtn);
-//   });
-
-//   it("Check if Add new master is working", async () => {
-//     const filterButton = screen.getAllByTestId("button-outline-status");
-//     fireEvent.click(filterButton[0]);
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-//     const addNewMaster = screen.getByTestId("new-tab");
-//     fireEvent.click(addNewMaster);
-//   });
-
-//   it("Check if any InActive Tabs is Closed First Tab is set to Default", async () => {
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-
-//     const tabCloseBtn = screen.getAllByTestId("tab-close");
-//     const tabNo = _.random(1, tabCloseBtn.length - 1);
-//     fireEvent.click(tabCloseBtn[tabNo]);
-//   });
-
-
-//   it("Check if another Filter Box is Added on Clicking Plus Icon", () => {
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-
-//     const addFilterIcon = screen.getByTestId("add-filter");
-//     fireEvent.click(addFilterIcon);
-
-//     const filters = screen.getAllByTestId("vffilter-wrapper");
-//     expect(filters.length).toEqual(2);
-//   });
-
-//   it("Check if Filter is Deleted on Clicking Delete Icon (Dustbin)", () => {
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-
-//     const addFilterIcon = screen.getByTestId("add-filter");
-//     fireEvent.click(addFilterIcon);
-
-//     const filters = screen.getAllByTestId("delete-icon");
-//     fireEvent.click(filters[filters.length - 1]);
-//     expect(screen.getAllByTestId("delete-icon").length).toEqual(
-//       filters.length - 1
-//     );
-//   });
-
-//   it("Check If Single Filter is Present It Cannot be Deleted", () => {
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-
-//     const filter = screen.getByTestId("delete-icon");
-//     fireEvent.click(filter);
-//     expect(filter).toBeInTheDocument();
-//   });
-
-//   it("Check If Select Master Screen is Opened on Clicking Add New Master", () => {
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-
-//     const addNewMaster = screen.getByTestId("new-tab");
-//     fireEvent.click(addNewMaster);
-//     const reactSelect = screen.queryAllByRole("combobox")[0];
-//     expect(reactSelect).toBeInTheDocument();
-//   });
-
-//   it("Queries Filtered Data when clicked on Apply Filter", () => {
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-
-//     const applyFilter = screen.getByText("Apply Filter");
-//     fireEvent.click(applyFilter);
-//   });
-
-//   it("Queries All Data when clicked on Show All", () => {
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-
-//     const showAll = screen.getByText("Show All");
-//     fireEvent.click(showAll);
-//   });
-
-//   // it("Goes Back to Select Master screen when clicking on back button", () => {
-//   //   const submit = screen.getByText("Submit");
-//   //   fireEvent.click(submit);
-
-//   //   const backBtn = screen.getByTestId("back-btn");
-//   //   fireEvent.click(backBtn);
-//   // });
+    render(contextWrapper(<ViewModify />,mockStore));
+  });
+
+  afterEach(()=>{
+    cleanup()
+  })
+
+
+  it("Check if Submitted Directly all masters should be selected", async () => {
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+    const tabs = screen.getAllByTestId("tab-button");
+    expect(tabs.length).toBe(3);
+  });
+
+  it("Check if Masters are selected as per the filters", async () => {
+    const reactSelect = await screen.findByLabelText("Example Label");
+    expect(reactSelect).toBeInTheDocument();
+    fireEvent.focus(reactSelect);
+    fireEvent.keyDown(reactSelect, { key: 'ArrowDown', code: 40 });
+    fireEvent.click(screen.getAllByText("SKU Code")[0]);
+
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+
+    // const tabs = screen.getAllByTestId("tab-button");
+    // expect(tabs.length).toBe(2);
+  });
+
+  it("Check if All Tabs are closed Select Master Screen is Opened", async () => {
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+
+    const tabsList = screen.getAllByTestId("tab-close");
+    tabsList.forEach((tab: HTMLElement) => {
+      fireEvent.click(tab);
+    });
+
+    expect(toast.error).toHaveBeenCalled()
+  });
+
+  it("Check if any Active Tabs is Closed First Tab is set to Default", async () => {
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+
+    const tabsList = screen.getAllByTestId("tab-button");
+    const tabNo = _.random(1, tabsList.length - 1);
+    fireEvent.click(tabsList[tabNo]);
+
+    const tabCloseBtn = screen.getAllByTestId("tab-close")[tabNo];
+    fireEvent.click(tabCloseBtn);
+  });
+
+  it("Check if active tab closes when X is clicked", async () => {
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+
+    const tabCloseBtn = screen.getAllByTestId("tab-close")[0];
+    fireEvent.click(tabCloseBtn);
+  });
+
+  it("Check if Add new master is working", async () => {
+    // const filterButton = screen.getAllByTestId("button-outline-status");
+    // fireEvent.click(filterButton[0]);
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+    const addNewMaster = screen.getByTestId("new-tab");
+    fireEvent.click(addNewMaster);
+  });
+
+  it("Check if any InActive Tabs is Closed First Tab is set to Default", async () => {
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+
+    const tabCloseBtn = screen.getAllByTestId("tab-close");
+    const tabNo = _.random(1, tabCloseBtn.length - 1);
+    fireEvent.click(tabCloseBtn[tabNo]);
+  });
+
+
+  it("Check if another Filter Box is Added on Clicking Plus Icon", () => {
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+
+    const addFilterIcon = screen.getByTestId("add-filter");
+    fireEvent.click(addFilterIcon);
+
+    const filters = screen.getAllByTestId("vffilter-wrapper");
+    expect(filters.length).toEqual(2);
+  });
+
+  it("Check if Filter is Deleted on Clicking Delete Icon (Dustbin)", () => {
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+
+    const addFilterIcon = screen.getByTestId("add-filter");
+    fireEvent.click(addFilterIcon);
+
+    const filters = screen.getAllByTestId("delete-icon");
+    fireEvent.click(filters[filters.length - 1]);
+    expect(screen.getAllByTestId("delete-icon").length).toEqual(
+      filters.length - 1
+    );
+  });
+
+  it("Check If Single Filter is Present It Cannot be Deleted", () => {
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+
+    const filter = screen.getByTestId("delete-icon");
+    fireEvent.click(filter);
+    expect(filter).toBeInTheDocument();
+  });
+
+  it("Check If Select Master Screen is Opened on Clicking Add New Master", () => {
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+
+    const addNewMaster = screen.getByTestId("new-tab");
+    fireEvent.click(addNewMaster);
+    const reactSelect = screen.queryAllByRole("combobox")[0];
+    expect(reactSelect).toBeInTheDocument();
+  });
+
+  it("Queries Filtered Data when clicked on Apply Filter", () => {
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+
+    const applyFilter = screen.getByText("Apply Filter");
+    fireEvent.click(applyFilter);
+  });
+
+  it("Queries All Data when clicked on Show All", () => {
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+
+    const showAll = screen.getByText("Show All");
+    fireEvent.click(showAll);
+  });
+
+  // it("Goes Back to Select Master screen when clicking on back button", () => {
+  //   const submit = screen.getByText("Submit");
+  //   fireEvent.click(submit);
+
+  //   const backBtn = screen.getByTestId("back-btn");
+  //   fireEvent.click(backBtn);
+  // });
 
-//   // it("Resets the Filters and Data", () => {
-//   //   const submit = screen.getByText("Submit");
-//   //   fireEvent.click(submit);
+  // it("Resets the Filters and Data", () => {
+  //   const submit = screen.getByText("Submit");
+  //   fireEvent.click(submit);
 
-//   //   const backBtn = screen.getByText("Reset");
-//   //   fireEvent.click(backBtn);
-//   // });
+  //   const backBtn = screen.getByText("Reset");
+  //   fireEvent.click(backBtn);
+  // });
 
-//   it("Submits the Data", () => {
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-//   });
+  it("Submits the Data", () => {
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
+  });
 
-//   it("Opens the WarningModal", () => {
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
+  it("Opens the WarningModal", () => {
+    const submit = screen.getByText("Submit");
+    fireEvent.click(submit);
 
-//     const applyFilter = screen.getByText("Apply Filter");
-//     fireEvent.click(applyFilter);
-//   });
+    const applyFilter = screen.getByText("Apply Filter");
+    fireEvent.click(applyFilter);
+  });
 
-//   // it("Opens the UploadModal", () => {
-//   //   const submit = screen.getByText("Submit");
-//   //   fireEvent.click(submit);
+  // it("Opens the UploadModal", () => {
+  //   const submit = screen.getByText("Submit");
+  //   fireEvent.click(submit);
 
-//   //   // const modifyData = screen.getByText("Modify Selected Data");
-//   //   // fireEvent.click(modifyData);
+  //   // const modifyData = screen.getByText("Modify Selected Data");
+  //   // fireEvent.click(modifyData);
 
-//   //   const downloadBtn = screen.getByText("Download");
-//   //   fireEvent.click(downloadBtn);
-//   // });
+  //   const downloadBtn = screen.getByText("Download");
+  //   fireEvent.click(downloadBtn);
+  // });
 
-//   // it("Fetches the filter data on clicking on Apply Filter", async () => {
-//   //   const submit = screen.getByText("Submit");
-//   //   fireEvent.click(submit);
-//   //   await waitFor(async () => {
-//   //     const reactSelect = screen.getAllByRole("combobox")[0];
-//   //     expect(reactSelect).toBeInTheDocument();
-//   //     await select(reactSelect, ["SKU Code"]);
-//   //   });
-//   //   await waitFor(async () => {
-//   //     const reactSelect = screen.getAllByRole("combobox")[1];
-//   //     expect(reactSelect).toBeInTheDocument();
-//   //     await select(reactSelect, ["Equals To"]);
-//   //   });
-//   //   const textInput = screen.getByTestId("text-input");
-//   //   fireEvent.change(textInput, { target: { value: "a" } });
+  // it("Fetches the filter data on clicking on Apply Filter", async () => {
+  //   const submit = screen.getByText("Submit");
+  //   fireEvent.click(submit);
+  //   await waitFor(async () => {
+  //     const reactSelect = screen.getAllByRole("combobox")[0];
+  //     expect(reactSelect).toBeInTheDocument();
+  //     await select(reactSelect, ["SKU Code"]);
+  //   });
+  //   await waitFor(async () => {
+  //     const reactSelect = screen.getAllByRole("combobox")[1];
+  //     expect(reactSelect).toBeInTheDocument();
+  //     await select(reactSelect, ["Equals To"]);
+  //   });
+  //   const textInput = screen.getByTestId("text-input");
+  //   fireEvent.change(textInput, { target: { value: "a" } });
 
-//   //   await act(async () => {
-//   //     const applyFilter = await screen.findByText("Apply Filter");
-//   //     userEvent.click(applyFilter);
-//   //   });
+  //   await act(async () => {
+  //     const applyFilter = await screen.findByText("Apply Filter");
+  //     userEvent.click(applyFilter);
+  //   });
 
-//   // });
+  // });
 
-// });
+});
 
-// describe("Handles All Interactions (Mocking Redux Store)",() => {
-//   const mockState:MDMStore = {
-//     allMasters:MasterData,
-//     masters:MasterData,
-//     options:[],
-//     selectedOptions:[],
-//     activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
-//     isSelectMasterOpen:false,
-//   }
+describe("Handles All Interactions (Mocking Redux Store)",() => {
+  const mockState:MDMStore = {
+    allMasters:MasterData,
+    masters:MasterData,
+    options:[],
+    selectedOptions:[],
+    activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
+    isSelectMasterOpen:false,
+  }
 
-//   beforeEach(() => {
+  beforeEach(() => {
 
-//     useGetMasterUIConfigurationMock.mockImplementation(():any => {
-//       return {data:useGetMasterUIConfigurationMockResult,isLoading:true};
-//     });
+    useGetMasterUIConfigurationMock.mockImplementation(():any => {
+      return useGetMasterUIConfigurationMockResult;
+    });
 
 
-//     useGetMasterDataMock.mockImplementation(() => {
-//       return useMasterDataResult;
-//     });
+    useGetMasterDataMock.mockImplementation(() => {
+      return useMasterDataResult;
+    });
 
-//     useGetCountMock.mockImplementation(() => {
-//       return useGetCountResult;
-//     });
+    useGetCountMock.mockImplementation(() => {
+      return useGetCountResult;
+    });
 
-//     jest.clearAllMocks();
+    jest.clearAllMocks();
 
-//   });
+  });
 
-//   afterEach(()=>{
-//     cleanup();
-//   })
+  afterEach(()=>{
+    cleanup();
+  })
 
 
-//   it("Clears And Export Errors",async ()=>{
+  it("Clears And Export Errors",async ()=>{
 
-//     mockState.activeMaster.progress = 'error';
-//     mockState.isSelectMasterOpen = false;
-//     mockState.activeMaster.rowData = [{error:"SKU Code Has Pipe and Comma",...mockMasterData.data[0]},mockMasterData.data[1]];
+    mockState.activeMaster.progress = 'error';
+    mockState.isSelectMasterOpen = false;
+    mockState.activeMaster.rowData = [{error:"SKU Code Has Pipe and Comma",...mockMasterData.data[0]},mockMasterData.data[1]];
 
-//     const mockStore = createStore(mockState);
+    const mockStore = createStore(mockState);
 
-//     render(contextWrapper(<ViewModify/>,mockStore));
+    render(contextWrapper(<ViewModify/>,mockStore));
 
-//     fireEvent.click(screen.getByText("Clear & Export Errors"));
+    fireEvent.click(screen.getByText("Clear & Export Errors"));
 
-//   })
+  })
 
-//   it("Exports The Data to Excel when Clicking on Export Data Button",async ()=>{
+  it("Exports The Data to Excel when Clicking on Export Data Button",async ()=>{
 
-//     const updatedMockState:MDMStore = {
-//       allMasters:MasterData,
-//       masters:MasterData,
-//       options:[],
-//       selectedOptions:[],
-//       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
-//       isSelectMasterOpen:false,
-//     }
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
 
-//     const mockStore = createStore(updatedMockState);
+    const mockStore = createStore(updatedMockState);
 
-//     render(contextWrapper(<ViewModify/>,mockStore));
+    render(contextWrapper(<ViewModify/>,mockStore));
 
-//     fireEvent.click(screen.getByText("Export Data"));
+    fireEvent.click(screen.getByText("Export Data"));
 
 
-//   })
+  })
 
-//   it("Resets The State When Clicked on Back Button",async ()=>{
+  it("Resets The State When Clicked on Back Button",async ()=>{
 
-//     const updatedMockState:MDMStore = {
-//       allMasters:MasterData,
-//       masters:MasterData,
-//       options:[],
-//       selectedOptions:[],
-//       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
-//       isSelectMasterOpen:false,
-//     }
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
 
-//     const mockStore = createStore(updatedMockState);
+    const mockStore = createStore(updatedMockState);
 
-//     render(contextWrapper(<ViewModify/>,mockStore));
+    render(contextWrapper(<ViewModify/>,mockStore));
 
-//     const backBtn = screen.getAllByTestId('vf-button-outline')[1];
+    const backBtn = screen.getAllByTestId('vf-button-outline')[1];
 
-//     fireEvent.click(backBtn);
+    fireEvent.click(backBtn);
 
 
 
-//   })
+  })
 
-//   it("Submits The Data",async ()=>{
+  it("Submits The Data",async ()=>{
 
-//     const updatedMockState:MDMStore = {
-//       allMasters:MasterData,
-//       masters:MasterData,
-//       options:[],
-//       selectedOptions:[],
-//       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'uploaded',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
-//       isSelectMasterOpen:false,
-//     }
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'uploaded',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
 
-//     const mockStore = createStore(updatedMockState);
+    const mockStore = createStore(updatedMockState);
 
-//     render(contextWrapper(<ViewModify/>,mockStore));
+    render(contextWrapper(<ViewModify/>,mockStore));
 
-//     fireEvent.click(screen.getByTestId("vf-button"));
+    fireEvent.click(screen.getByTestId("vf-button"));
 
-//     expect(toast.success).toBeCalled();
+    expect(toast.success).toBeCalled();
 
-//   })
+  })
 
-//   it("Deletes The Selected Data",async ()=>{
+  it("Deletes The Selected Data",async ()=>{
 
-//     const checkBoxColDefs = {
-//       field:'checkbox',
-//       colId:'checkbox',
-//       headerName:'',
-//       checkboxSelection:true,
-//       headerCheckboxSelection:true,
-//       headerCheckboxSelectionCurrentPageOnly:true
-//     };
+    const checkBoxColDefs = {
+      field:'checkbox',
+      colId:'checkbox',
+      headerName:'',
+      checkboxSelection:true,
+      headerCheckboxSelection:true,
+      headerCheckboxSelectionCurrentPageOnly:true
+    };
 
-//     const uploadedStateColDefs:any = [checkBoxColDefs,mapMasterToColumnDefs(MasterData[0].fields)]
+    const uploadedStateColDefs:any = [checkBoxColDefs,mapMasterToColumnDefs(MasterData[0].fields)]
 
-//     // const useRefSpy = jest.spyOn(React, 'useRef').mockReturnValueOnce({ 
-//     //   current: { 
-//     //     api:{
-//     //       getSelectedRows(){
-//     //         return mockMasterData.data[0];
-//     //       }
-//     //     } 
-//     //   } 
-//     // });
+    // const useRefSpy = jest.spyOn(React, 'useRef').mockReturnValueOnce({ 
+    //   current: { 
+    //     api:{
+    //       getSelectedRows(){
+    //         return mockMasterData.data[0];
+    //       }
+    //     } 
+    //   } 
+    // });
 
-//     const updatedMockState:MDMStore = {
-//       allMasters:MasterData,
-//       masters:MasterData,
-//       options:[],
-//       selectedOptions:[],
-//       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'uploaded',name:MasterData[0].name,colDefs:uploadedStateColDefs,rowData:mockMasterData.data},
-//       isSelectMasterOpen:false,
-//     }
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'uploaded',name:MasterData[0].name,colDefs:uploadedStateColDefs,rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
 
-//     const mockStore = createStore(updatedMockState);
+    const mockStore = createStore(updatedMockState);
 
-//     render(contextWrapper(<ViewModify/>,mockStore));
+    render(contextWrapper(<ViewModify/>,mockStore));
 
-//     // expect(useRefSpy).toBeCalledTimes(1);
+    // expect(useRefSpy).toBeCalledTimes(1);
 
-//     fireEvent.click(screen.getByText("Delete Selected"));
+    fireEvent.click(screen.getByText("Delete Selected"));
 
-//     expect(toast.error).toBeCalled();
+    expect(toast.error).toBeCalled();
 
     
 
-//   })
+  })
 
-//   it("Handles Pagination When Data is on Client Side",async ()=>{
+  it("Handles Pagination When Data is on Client Side",async ()=>{
 
-//     const updatedMockState:MDMStore = {
-//       allMasters:MasterData,
-//       masters:MasterData,
-//       options:[],
-//       selectedOptions:[],
-//       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
-//       isSelectMasterOpen:false,
-//     }
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
 
-//     const mockStore = createStore(updatedMockState);
+    const mockStore = createStore(updatedMockState);
 
-//     render(contextWrapper(<ViewModify/>,mockStore));
+    render(contextWrapper(<ViewModify/>,mockStore));
 
-//     fireEvent.click(screen.getByLabelText("Next page"));
+    fireEvent.click(screen.getByLabelText("Next page"));
     
 
-//   })
+  })
 
-//   it("Updates to Edit Online State when Clicking on Edit Online Button",async ()=>{
+  it("Updates to Edit Online State when Clicking on Edit Online Button",async ()=>{
 
-//     const updatedMockState:MDMStore = {
-//       allMasters:MasterData,
-//       masters:MasterData,
-//       options:[],
-//       selectedOptions:[],
-//       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
-//       isSelectMasterOpen:false,
-//     }
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
 
-//     const mockStore = createStore(updatedMockState);
+    const mockStore = createStore(updatedMockState);
 
-//     render(contextWrapper(<ViewModify/>,mockStore));
+    render(contextWrapper(<ViewModify/>,mockStore));
 
-//     fireEvent.click(screen.getByText("Edit Online"));
+    fireEvent.click(screen.getByText("Edit Online"));
     
 
-//   })
+  })
 
-//   it("Resets the Data when Clicking on Reset Button",async ()=>{
+  it("Resets the Data when Clicking on Reset Button",async ()=>{
 
-//     const updatedMockState:MDMStore = {
-//       allMasters:MasterData,
-//       masters:MasterData,
-//       options:[],
-//       selectedOptions:[],
-//       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
-//       isSelectMasterOpen:false,
-//     }
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+    }
 
-//     const mockStore = createStore(updatedMockState);
+    const mockStore = createStore(updatedMockState);
 
-//     render(contextWrapper(<ViewModify/>,mockStore));
+    render(contextWrapper(<ViewModify/>,mockStore));
 
-//     fireEvent.click(screen.getByText("Reset"));
+    fireEvent.click(screen.getByText("Reset"));
     
 
-//   })
+  })
 
-//   it("Saves The Data",async ()=>{
+  it("Saves The Data",async ()=>{
 
-//     const testData = [{...mockMasterData.data[0],SKUCode:"QACE1234,|"},mockMasterData.data[1],mockMasterData.data[2]]
-//     let updatedMockState:MDMStore = {
-//       allMasters:MasterData,
-//       masters:MasterData,
-//       options:[],
-//       selectedOptions:[],
-//       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:testData},
-//       isSelectMasterOpen:false,
-//     }
+    const testData = [{...mockMasterData.data[0],SKUCode:"QACE1234,|"},mockMasterData.data[1],mockMasterData.data[2]]
+    let updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:testData},
+      isSelectMasterOpen:false,
+    }
 
-//     let mockStore = createStore(updatedMockState);
+    let mockStore = createStore(updatedMockState);
 
-//     const mockStoreDispatchSpy = jest.spyOn(mockStore, 'dispatch')
+    const mockStoreDispatchSpy = jest.spyOn(mockStore, 'dispatch')
 
-//     render(contextWrapper(<ViewModify/>,mockStore));
+    render(contextWrapper(<ViewModify/>,mockStore));
 
-//     fireEvent.click(screen.getByText('Save', { selector: 'button' }));
+    fireEvent.click(screen.getByText('Save', { selector: 'button' }));
 
-//     const errorColDefs = {
-//       field:'error',
-//       colId:'error',
-//       headerName:'Error',
-//       floatingFilter:false, 
-//       cellRenderer:'errorCell',
-//       suppressColumnsToolPanel:true,
-//       wrapText:true,
-//       autoHeight:true,
-//     }
+    const errorColDefs = {
+      field:'error',
+      colId:'error',
+      headerName:'Error',
+      floatingFilter:false, 
+      cellRenderer:'errorCell',
+      suppressColumnsToolPanel:true,
+      wrapText:true,
+      autoHeight:true,
+    }
 
-//     expect(mockStoreDispatchSpy).toBeCalledWith({payload:{colDefs:[errorColDefs]},type:'ADD_COLDEFS'});
-//     expect(toast.error).toBeCalled();
+    expect(mockStoreDispatchSpy).toBeCalledWith({payload:{colDefs:[errorColDefs]},type:'ADD_COLDEFS'});
+    expect(toast.error).toBeCalled();
 
-//     cleanup();
+    cleanup();
 
-//     //If Data is Valid
-//     updatedMockState = {...updatedMockState,activeMaster:{...updatedMockState.activeMaster,rowData:mockMasterData.data}};
-//     mockStore = createStore(updatedMockState);
-//     // jest.spyOn(mockStore, 'dispatch')
+    //If Data is Valid
+    updatedMockState = {...updatedMockState,activeMaster:{...updatedMockState.activeMaster,rowData:mockMasterData.data}};
+    mockStore = createStore(updatedMockState);
+    // jest.spyOn(mockStore, 'dispatch')
 
-//     render(contextWrapper(<ViewModify/>,mockStore));
+    render(contextWrapper(<ViewModify/>,mockStore));
 
-//     fireEvent.click(screen.getByText('Save', { selector: 'button' }));
+    fireEvent.click(screen.getByText('Save', { selector: 'button' }));
     
 
-//   })
-// })
+  })
+})
 
 // describe("It handles react portals",()=>{
 //   beforeEach(()=>{

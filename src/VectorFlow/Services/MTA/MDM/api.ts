@@ -35,8 +35,9 @@ export namespace MDMService {
   }
 
   export const createDraft = async (body: any) => {
-    return axios.post(process.env.REACT_APP_VF_API_HOST + `/draft`,
-      body)
+    return axios.post(process.env.REACT_APP_VF_API_HOST + `/draft`,body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
   }
 
   export const modifyDraft = async (body: any) => {
