@@ -51,7 +51,7 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.masterDataManagement.taskPendingForReview",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "",
+        url: "/master-data-management/task-pending",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant"],
       },
       {

@@ -44,7 +44,7 @@ const NavbarItem = ({
             </NavStyle.SCInterStore>
             <NavStyle.SCInterStoreArrowDown
               toggle={toggle}
-              src="../assets/img/nav/arrow_down.svg"
+              src="/assets/img/nav/arrow_down.svg"
             />
           </NavStyle.SCNavMenu>
           {renderListMenuChild(listMenu.child)}

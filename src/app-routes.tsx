@@ -19,6 +19,7 @@ import ControlPanel from './VectorFlow/Pages/MTA/MDM/ControlPanel'
 import ViewModify from './VectorFlow/Pages/MTA/MDM/ViewModify'
 import SavedDrafts from './VectorFlow/Pages/MTA/MDM/SavedDrafts'
 import TaskStatus from './VectorFlow/Pages/MTA/MDM/TaskStatus'
+import TaskPendingForReview from './VectorFlow/Pages/MTA/MDM/TaskPendingForReview'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -49,7 +50,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/master-data-management/control-panel',
     '/master-data-management/control-panel/view-modify',
     '/master-data-management/saved-drafts',
-    '/master-data-management/task-status'
+    '/master-data-management/task-status',
+    '/master-data-management/task-pending'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -213,6 +215,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<TaskStatus />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/task-pending',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TaskPendingForReview />)
         },
         ...getStoreTransferModuleRoutes()
       ]
