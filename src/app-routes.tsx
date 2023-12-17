@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next'
 import ControlPanel from './VectorFlow/Pages/MTA/MDM/ControlPanel'
 import ViewModify from './VectorFlow/Pages/MTA/MDM/ViewModify'
 import SavedDrafts from './VectorFlow/Pages/MTA/MDM/SavedDrafts'
+import TaskStatus from './VectorFlow/Pages/MTA/MDM/TaskStatus'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -47,7 +48,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/permission-forbidden',
     '/master-data-management/control-panel',
     '/master-data-management/control-panel/view-modify',
-    '/master-data-management/saved-drafts'
+    '/master-data-management/saved-drafts',
+    '/master-data-management/task-status'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -200,6 +202,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<SavedDrafts />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/task-status',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TaskStatus />)
         },
         ...getStoreTransferModuleRoutes()
       ]

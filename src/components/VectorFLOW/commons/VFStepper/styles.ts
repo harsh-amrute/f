@@ -22,9 +22,11 @@ export const VFStepWrapper = styled.div<{isLast:boolean}>`
 `
 
 export const VFStepLabelWrapper = styled.div`
+    position:relative;
     display:flex;
     flex-direction:column;
     align-items:center;
+    width:100px;
 `
 
 
@@ -40,6 +42,7 @@ export const VFStepLabel = styled.div`
     color: #313131;
 `
 export const VFStepDescription = styled.div`
+
     font-size:12px:
     font-style:normal;
     font-variant:normal;

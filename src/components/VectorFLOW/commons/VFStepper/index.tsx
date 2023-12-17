@@ -4,6 +4,7 @@ import { VFStepperWrapper, VFStepWrapper,VFStepLabel,VFStepProgress, VFStepLabel
 interface VFStepperProps{
     items:StepItem[]
     width?:string
+    zoom?:number
 }
 
 export interface StepItem{
@@ -29,11 +30,12 @@ const VFStepper =  (props:VFStepperProps)=>{
 
     const {
         items,
-        width
+        width,
+        zoom=1
     }= props
 
     return (
-        <VFStepperWrapper style={{width:width}} data-testid='stepper'>
+        <VFStepperWrapper style={{width:width,zoom:zoom}} data-testid='stepper'>
             {items.map((i,index)=>{
                 return <Step label={i.label} status={i.status} key={index} index={index} isLast={index==items.length-1} description={i.description}/>
             })}
@@ -50,12 +52,10 @@ const Step = (props:VFStepProps)=>{
         description
     } = props
 
+
     return(
-        <VFStepWrapper isLast={isLast}>
-           
-            <VFStepLabelWrapper>
-                
-                {/*<StepCircle status={status}/>*/}
+        <VFStepWrapper isLast={isLast}>        
+            <VFStepLabelWrapper>             
                 <VFStepIcon status={status}/>
                 <VFStepLabel>{label}</VFStepLabel>
                 <VFStepDescription>{description}</VFStepDescription>
