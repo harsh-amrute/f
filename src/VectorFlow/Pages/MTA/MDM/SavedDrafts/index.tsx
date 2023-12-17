@@ -28,13 +28,12 @@ const SavedDrafts = ()=>{
     isLoading
   } = useSavedDrafts()
 
-  
-
-  console.log(allDrafts,isLoading);
 
   if(isLoading){
     return <VFLoader/>
   }
+
+  console.debug(allDrafts,isLoading);
 
 
   return(

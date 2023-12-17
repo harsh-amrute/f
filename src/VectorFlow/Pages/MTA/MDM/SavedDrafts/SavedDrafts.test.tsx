@@ -87,7 +87,7 @@ describe("Handles all renders",()=>{
 
    beforeEach(()=>{
       useGetAllDraftsMock.mockImplementation(():any => {
-         return {data: getAllDraftsMock,isLoading:false};
+         return {data: {data:getAllDraftsMock},isLoading:false};
        });
        useGetDraftByIdMock.mockImplementation(()=>{
          return useGetDraftByIdMockData;
@@ -98,7 +98,11 @@ describe("Handles all renders",()=>{
        useDeleteDraftMock.mockImplementation(():any=>{
          return {}
        })
-       jest.clearAllMocks()
+       
+   })
+
+   afterEach(()=>{
+    jest.clearAllMocks()
    })
 
    it("renders on the dom",()=>{

@@ -47,7 +47,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/permission-forbidden',
     '/master-data-management/control-panel',
     '/master-data-management/control-panel/view-modify',
-    '/master-data-management/control-panel/saved-drafts'
+    '/master-data-management/saved-drafts'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []

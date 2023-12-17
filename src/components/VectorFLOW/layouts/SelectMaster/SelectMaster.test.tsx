@@ -80,7 +80,7 @@ describe('SelectMaster Component', () => {
     // Check if the loading spinner is displayed
     const loader = screen.getByTestId('loader')
     expect(loader).toBeInTheDocument();
-    expect(loader).toHaveAttribute('src','../assets/img/VectorFLOW/loaderBig.svg')
+    expect(loader).toHaveAttribute('src','/assets/img/VectorFLOW/loaderBig.svg')
   });
 
   it('should render search input filter buttons and cards when isLoading is false', () => {

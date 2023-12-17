@@ -16,7 +16,7 @@ const useSavedDrafts = ()=>{
     const [isDeleteModalOpen,toggleDeleteModal] = useState<boolean>(false)
     const [deleteDraftId,setDeleteDraftId] = useState<string>("");
     const {data,isLoading} = useGetAllDrafts();
-    const allDrafts = data?.data;
+    const allDrafts = data?.data.data;
   
 
     const openDeleteModal = (draftId:string)=>{
