@@ -71,3 +71,13 @@ export interface GridRef{
     api:GridApi
     columnApi:ColumnApi
 }
+
+export interface AddRecordMaster{
+    id:number,
+    name:string
+}
+
+export interface AddRecordMasterGroup{
+    name:string
+    masters:AddRecordMaster[]
+}

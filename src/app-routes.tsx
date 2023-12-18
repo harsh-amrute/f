@@ -17,6 +17,7 @@ import PageNotFound from './module-store-transfer/pages/notFound'
 import { useTranslation } from 'react-i18next'
 import ControlPanel from './VectorFlow/Pages/MTA/MDM/ControlPanel'
 import ViewModify from './VectorFlow/Pages/MTA/MDM/ViewModify'
+import AddRecord from './VectorFlow/Pages/MTA/MDM/AddRecord'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -45,7 +46,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/ist-status',
     '/permission-forbidden',
     '/master-data-management/control-panel',
-    '/master-data-management/view-modify'
+    '/master-data-management/view-modify',
+    '/master-data-management/add-record'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -180,7 +182,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<ViewModify />)
+          element: lazyLoad(<AddRecord onCancel={()=>void(console.log(""))} onSubmit={()=>void(console.log(""))} />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -206,6 +208,6 @@ export const initRoutes = (): RouteObject[] => {
         },
         ...getStoreTransferModuleRoutes()
       ]
-    }
+    },
   ]
 }
