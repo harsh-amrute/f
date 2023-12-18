@@ -65,10 +65,10 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any
                   {itemChild.url !== location.pathname && (
                     <SCIcon
                       src={
-                        isLoading && tempUrls.includes(itemChild.url) ? "../assets/img/nav/loader.svg" :
+                        isLoading && tempUrls.includes(itemChild.url) ? "/assets/img/nav/loader.svg" :
                         itemChild.imgHover
                           ? itemChild.imgHover
-                          : "../assets/img/nav/arrow_down.svg"
+                          : "/assets/img/nav/arrow_down.svg"
                       }
                       alt="arrow"
                     />

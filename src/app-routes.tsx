@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from 'react'
-import { type RouteObject } from 'react-router-dom'
+import {type RouteObject} from 'react-router-dom'
 import { AppLayout } from './components'
 import { getStoreTransferModuleRoutes } from './module-store-transfer/app-routes-store-transfer'
 import Login from './module-main/pages/auth/login'
@@ -18,6 +18,10 @@ import { useTranslation } from 'react-i18next'
 import ControlPanel from './VectorFlow/Pages/MTA/MDM/ControlPanel'
 import ViewModify from './VectorFlow/Pages/MTA/MDM/ViewModify'
 import AddRecord from './VectorFlow/Pages/MTA/MDM/AddRecord'
+import SavedDrafts from './VectorFlow/Pages/MTA/MDM/SavedDrafts'
+import TaskStatus from './VectorFlow/Pages/MTA/MDM/TaskStatus'
+import TaskPendingForReview from './VectorFlow/Pages/MTA/MDM/TaskPendingForReview'
+import SelectGroupedMasters from './components/VectorFLOW/layouts/SelectGroupedMasters'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -46,8 +50,11 @@ const lazyLoad = (children: React.ReactNode) => {
     '/ist-status',
     '/permission-forbidden',
     '/master-data-management/control-panel',
-    '/master-data-management/view-modify',
-    '/master-data-management/add-record'
+    '/master-data-management/control-panel/view-modify',
+    '/master-data-management/saved-drafts',
+    '/master-data-management/task-status',
+    '/master-data-management/task-pending',
+    '/master-data-management/add'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -173,16 +180,66 @@ export const initRoutes = (): RouteObject[] => {
           index: true,
           element: lazyLoad(<ControlPanel />)
         },
+        {
+          index: true,
+          path:'view-modify',
+          element: lazyLoad(<ViewModify />)
+        },
         ...getStoreTransferModuleRoutes()
       ]
     },
+    // {
+    //   path: '/master-data-management/control-panel',
+    //   element: <AppLayout />,
+    //   children: [
+    //     {
+    //       index: true,
+    //       path:'view-modify',
+    //       element: lazyLoad(<ViewModify />)
+    //     },
+    //     ...getStoreTransferModuleRoutes()
+    //   ]
+    // },
     {
-      path: '/master-data-management/view-modify',
+      path: '/master-data-management/saved-drafts',
       element: <AppLayout />,
       children: [
         {
           index: true,
-          element: lazyLoad(<AddRecord onCancel={()=>void(console.log(""))} onSubmit={()=>void(console.log(""))} />)
+          element: lazyLoad(<SavedDrafts />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/task-status',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TaskStatus />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/task-pending',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TaskPendingForReview />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/add',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<SelectGroupedMasters onCancel={()=>console.log('')} onSubmit={()=>console.log('')} allMasters={[]} />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -209,5 +266,6 @@ export const initRoutes = (): RouteObject[] => {
         ...getStoreTransferModuleRoutes()
       ]
     },
+    
   ]
 }

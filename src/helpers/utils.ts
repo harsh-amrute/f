@@ -2,8 +2,12 @@ import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
-import { type Master, type Option, type Field, Filter, AddRecordMasterGroup } from '../VectorFlow/types/MDM';
-import {ColDef} from 'ag-grid-community';
+import { type Master, type Option, type Field, type Filter, MDMMasterState } from '../VectorFlow/types/MDM';
+import readXlsxFile from 'read-excel-file'
+import {ColDef,ColGroupDef} from 'ag-grid-community';
+import { defaultColDefs, masterIdToSchemaMapper, taskPendingCustomColDefs } from './MDMConstants';
+import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
+
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -361,7 +365,7 @@ export const generateOptions = (data:Master[]) => {
     master.fields.forEach((field:Field)=>{
       if(!temp.includes(field.displayName)){
         temp.push(field.displayName);
-        if(field.visible) options.push({value:field.key,label:field.displayName,})
+        options.push({value:field.key,label:field.displayName,})
       }
     })
   });
@@ -383,25 +387,73 @@ export const generateRandomId =(length?:number)=>{
 
 }
 
+export const parseExcelData = async (file:any,master:MDMMasterState) => {
+  const masterSchema = masterIdToSchemaMapper[master.id.toString()]
+
+  const checkError = (row:object) => {
+    const {error,warning} = masterSchema.validate(row) ;    
+    return {error,warning};
+  }
+ 
+
+  const currMasterKeys = master.fields.map((field:Field)=>field.key); //array containing keys of current master fields
+  const result:object[] = [];
+  const data = await readXlsxFile(file);
+  //displayName to key mapper
+  const headerKeys = data[0].map((headerName)=>{
+    const fieldObj = master.fields.find((field:Field)=>field.displayName === headerName);
+    if(fieldObj) return fieldObj.key;
+    else return '';
+  })
+
+  headerKeys.forEach((key:string)=>{
+    if(!currMasterKeys.includes(key)){
+      throw new Error("Please Upload a Valid Master");
+    }
+  })
+
+ 
+  
+  let rowObj:any = {};
+  let temp = 0;
+  data.slice(1).map((row:any)=>{
+    
+    row.map((value:any)=>{
+      const attributeName = headerKeys[temp];
+      rowObj[attributeName.toString()] = value;
+      temp+=1;
+    })
+    temp = 0;
+    const {error,warning} = checkError(rowObj);
+    if(error !== undefined){
+      rowObj.error = error.message;
+    }
+    if(warning !== undefined){
+      rowObj.warning = warning;
+    }
+    result.push(rowObj);
+    rowObj={}
+    
+  })
+
+  return result;
+}
 
 export const mapMasterToColumnDefs = (fields:Field[])=>{
   let result:ColDef[] = []
+
   result = fields.map((f)=>{
     return{
       field:f.key,
       colId:f.key,
       headerName:f.displayName,
       hide:!f.visible,
-      minWidth:180,
       floatingFilter: true,
       filter: "agMultiColumnFilter",
-      cellStyle: {
-        "text-align": "center",
-      },
-      flex: 1,
+      ...defaultColDefs
     }
   })
-  return result
+  return result;
 }
 
 
@@ -420,34 +472,193 @@ export const getMasterFromMasterGroupMapper=(mapper:{})=>{
   }
 }
 
-export const mapMastersToMasterGroup=(masters:Master[])=>{
-  const masterGroupMapper = [
+
+export const mapStateFiltersToPayload = (filters:Filter[]) => {
+  return filters.map((filter:Filter)=>({attributeName:filter.field,op:filter.operator,value:filter.text}))
+
+}
+
+export const mapMasterToMasterState = (masters:Master[]):MDMMasterState[] => {
+
+  return masters.map((master:Master)=>({
+    id:master.id,
+    name:master.name,
+    fields:master.fields,
+    filters:[
     {
-      name:"SKU",
-      masters:[1]
-    },
-    {
-      name:"Location",
-      masters:[5,4]
-    },
-    {
-      name:"SKU Location",
-      masters:[2]
-    },
-    {
-      name:"Plant/CCR",
-      masters:[]
+      id:generateRandomId(),
+      masterId:master.id,
+      field:'',
+      operator:'',
+      text:''
+    }],
+    colDefs:mapMasterToColumnDefs(master.fields),
+    rowData:[],
+    progress:'default'
+  }))
+}
+
+export const mapDraftToColumnDefs = (fields:Field[],customParams?:ColDef)=>{
+  let result:ColDef[] = []
+  result = fields.map((f)=>{
+    return{
+      field:f.key,
+      colId:f.key,
+      headerName:f.displayName,
+      minWidth:180,
+      cellStyle: {
+        "textAlign": "center",
+      },
+      flex: 1,
+      cellRenderer:f.key==="action"&& ActionRenderer,
+      ...customParams
     }
-  ]
-  let result:AddRecordMasterGroup[]=[]
-  // result = masters.map((f)=>{
-  //   return {
-  //     name:f.name,
-  //     masters:  
-  //   }
-
-  // })
-
+  })
   return result
 }
 
+export const mapTaskStatusToColDefs = (taskStatus:ColDef[])=>{
+  let result:ColDef[] = []
+  result = taskStatus.map((t:ColDef)=>{
+    return{
+      ...t,
+      minWidth:180,
+      cellStyle: {
+        "textAlign": "center",
+      },
+      flex: 1,
+      floatingFilter:true,
+      filter: "agMultiColumnFilter",
+    }
+  })
+  return result
+}
+
+export const mapPendingTaskToColumnDefs = (colDefs:ColDef[])=>{
+  return colDefs.map((colDef:ColDef)=>{
+    return{
+      ...colDef,
+      floatingFilter: true,
+      filter: "agMultiColumnFilter",
+      ...defaultColDefs
+    }
+  })
+}
+
+export const mapRowDataWithSrNo = (rowData:any[])=>{
+  let result = []
+  if(!rowData)return []
+  result  = rowData.map((row,index)=>{
+    return{
+      ...row,
+      SrNo:index
+    }
+  })
+  return result
+}
+
+
+export const mapDraftDataToTableRowData = (rowData:any[])=>{
+  let result = []
+  if(!rowData)return
+  result  = rowData.map((row,index)=>{
+    return{
+      ...row,
+      sr_no:index
+    }
+  })
+  return result
+}
+
+export const getExistingColumns = (rowData:any[])=>{
+  const firstRowColumn =JSON.parse( rowData[0].new)
+  return Object.keys(firstRowColumn)
+}
+
+export const getExistingColumnFields = (columns:string[],fields:Field[]):Field[]=>{
+  const updatedFields:Field[] = []
+  columns.map((c:string)=>{
+    fields.find((f:Field)=>{
+      if(f.key===c)updatedFields.push(f)
+    })
+  })
+  return updatedFields
+}
+
+export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGroupDef[] | ColDef[]=>{
+
+  const colDefs =  existingColumnsFields.map((f:Field,index:number)=>{
+
+    if(!f.editable){
+      return{
+        headerName:f.displayName,
+        field:f.key,
+        colId:f.key,
+        hide:!f.visible,
+        headerCheckboxSelection:index===0,
+        checkboxSelection:index===0,
+        suppressSpanHeaderHeight: true,
+        ...defaultColDefs
+      }
+    }
+
+    return{
+      headerName:f.displayName,
+      field:f.key,
+      colId:f.key,
+      hide:!f.visible,
+      children:[
+        {
+          headerName:'New ' +f.displayName,
+          field:'New'+f.key,
+          colId:'New'+f.key,
+          cellStyle:{
+            "color":'#BC3D81',
+            "text-align":"center",
+            "border-left":"solid 1px #B9B9B9",
+          }
+        },
+        {
+          headerName:'Old ' +f.displayName,
+          field:'Old' +f.key,
+          colId:'Old'+f.key,
+          cellStyle:{
+            "text-align":"center",
+            "border-right":"solid 1px #B9B9B9"
+          }
+        }
+      ],
+      ...defaultColDefs,
+      
+    }
+  })
+
+  return [...colDefs,...taskPendingCustomColDefs]
+}
+
+
+export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[])=>{
+  return dirtyRowData.map(entry => {
+    const oldData = JSON.parse(entry.old);
+    const newData = JSON.parse(entry.new);
+
+    const oldDataPrefixed:any = {};
+    const newDataPrefixed:any = {};
+
+    existingColumnFields.map((f:Field)=>{
+      if(f.editable){
+        oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
+        newDataPrefixed[`New${f.key}`] = newData[f.key]
+      }
+      else{
+        oldDataPrefixed[f.key] = oldData[f.key]
+      }
+    })
+    return {
+        ...oldDataPrefixed,
+        ...newDataPrefixed,
+        status:'',
+        comments:''
+    };
+});
+}

@@ -1,6 +1,7 @@
 import './i18n/config'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { LicenseManager } from 'ag-grid-enterprise'
 import './index.css'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -12,8 +13,9 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { store } from './redux/store/store';
 import { Provider } from 'react-redux';
+import {AG_GRID_KEY} from './helpers/constants'
 
-
+LicenseManager.setLicenseKey(AG_GRID_KEY);
 // Axios default settings and interceptors
 setupAxios()
 

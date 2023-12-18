@@ -12,16 +12,16 @@ describe('Testing the MDMService',  () => {
       process.env = { ...OLD_ENV }; // Make a copy
     });
   
-    process.env.REACT_APP_VF_API_HOST = 'http://10.8.1.10:8888/';
+    process.env.REACT_APP_VF_API_HOST = 'http://10.8.1.10:8888';
   
     afterEach(() => {
       jest.clearAllMocks();
     });
   
-    it('should make a GET request to the /GetMasterUIConfiguration', async () => {
-      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
-      const response = await MDMService.getMasterUIConfiguration();
-      expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetMasterUIConfiguration`)
+    it('should make a Post request to the /GetMasterUIConfiguration', async () => {
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getMasterUIConfiguration('add');
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetMasterUIConfiguration`,{screenType:'add'})
       expect(response.status).toBe(200);
   
     });
@@ -30,9 +30,9 @@ describe('Testing the MDMService',  () => {
     it('should make a post request to the /get-master-data', async () => {
 
       const mockBody = {
-        masterId:1,
-        masterName:"SKU",
-        filters:[{attributeName:"SKU",operator:'=',value:""}],
+        id:1,
+        name:"SKU",
+        filters:[{attributeName:"SKU",op:'=',value:""}],
         fields:[{key:"SKU"}],
         paginationParameter:{
           pageNumber:1,
@@ -42,7 +42,120 @@ describe('Testing the MDMService',  () => {
 
       mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
       const response = await MDMService.getMasterData(mockBody);
-      expect(mockedAxios.post).toHaveBeenCalledWith(`https://2cfc61ae-927a-4577-8843-ee38dfb26302.mock.pstmn.io/get-master-data`,mockBody,{
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/GetMasterData',mockBody,{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+  
+    });
+
+    it('should make a post request to the /GetCount', async () => {
+
+      const mockBody = {
+        id:1,
+        name:"SKU",
+        filters:[{attributeName:"SKU",op:'=',value:""}],
+        fields:[{key:"SKU"}],
+      }
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getCount(mockBody);
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/GetCount',mockBody,{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+  
+    });
+
+    it('should make a get request to the /allDrafts', async () => {
+
+      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getAllDrafts();
+      expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/allDrafts',{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+
+    });
+
+    it('should make get request to /draft/${id}', async () => {
+
+      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getDraftById('2');
+      expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/draft/2',{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+  
+    });
+    
+    it('should make a post request to the /draft for creating new draft', async () => {
+
+      const mockBody = {
+       instanceName:'SKU SKULOCATION LOCATION',
+       searchKey:"SKU Master",
+       draftData:[
+        {
+          masterId:1,
+          status:0,
+          gridState:"",
+          dataMaster:[
+            {
+              SKU:"QAAAA1234",
+              WEIGTH:"34",
+              c1:"90"
+            }
+          ]
+        }
+       ]
+      }
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:201});
+      const response = await MDMService.createDraft(mockBody);
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/draft',mockBody,{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(201);
+  
+    });
+
+    it('should make a put request to the /draft for modifying draft', async () => {
+
+      const mockBody = {
+       draftId:'rnt-12',
+       instanceName:'SKU SKULOCATION LOCATION',
+       searchKey:"SKU Master",
+       draftData:[
+        {
+          masterId:1,
+          status:0,
+          gridState:"",
+          dataMaster:[
+            {
+              SKU:"QAAAA1234",
+              WEIGTH:"34",
+              c1:"90"
+            }
+          ]
+        }
+       ]
+      }
+
+      mockedAxios.put.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.modifyDraft(mockBody);
+      expect(mockedAxios.put).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/draft',{
+        headers: { 'Content-Type': 'application/json' },
+        body:JSON.stringify(mockBody)
+      })
+      expect(response.status).toBe(200);
+  
+    });
+
+    it('should make delete request to /draft/${id}', async () => {
+
+      mockedAxios.delete.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.deleteDraft('2');
+      expect(mockedAxios.delete).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/draft/2',{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);

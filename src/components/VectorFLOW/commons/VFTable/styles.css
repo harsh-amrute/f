@@ -20,7 +20,7 @@
     font-style:normal;
     font-variant: normal;
     font-weight: 400 ;
-    font-size: 20px;
+    font-size: 16px;
     line-height: 24px;
     font-family: Roboto;
     letter-spacing: 0px;
@@ -34,5 +34,20 @@
 }
 
 .ag-header-cell-label{
+    justify-content: center;
+}
+
+.selected-record-count{
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    color: #6E6969;
+    padding-top: 24px;
+
+}
+
+.ag-header-group-cell-with-group{
     justify-content: center;
 }

@@ -1,5 +1,5 @@
 
-import { Dispatch,SetStateAction,useEffect, useState } from "react";
+import { Dispatch,SetStateAction} from "react";
 import { Container, QuickFilterHeader,SCButtonContainer, SCLoaderContainer, SCCardContainer } from "./styles"
 
 import VFMasterCard from "../../commons/VFMasterCard";
@@ -8,18 +8,18 @@ import ButtonOutlineStatus from "../../../commons/ButtonOutline/button";
 import VFButton from "../../commons/VFButton";
 import VFButtonOutline from "../../commons/VFButtonOutline";
 import { useNavigate } from "react-router";
-import { type Master, type Option } from "../../../../VectorFlow/types/MDM";
-import { useDispatch } from 'react-redux';
-import { setSelectedOptions, setSelectedMasters } from '../../../../redux/features/MDM';
+import { type MDMMasterState,type Option } from "../../../../VectorFlow/types/MDM";
+import { useDispatch, useSelector } from 'react-redux';
 import { notifyError } from "../../../../helpers/notify";
+import { RootState } from "../../../../redux/store/store";
+import { ADD_MASTER,FILL_SELECTED_OPTIONS, FILTER_MASTER, REMOVE_MASTER, RESET_STATE } from "../../../../redux/actions/MDM";
 
 interface SelectMasterProps{
-    data:Master[],
+    data:MDMMasterState[],
     options:Option[],
     selectedOptions:Option[],
-    selectedMasters:Master[],
-    filterButtonStatus:Master[],
-    setFilterButtonStatus:Dispatch<SetStateAction<Master[]>>
+    filterButtonStatus:number[],
+    setFilterButtonStatus:Dispatch<SetStateAction<number[]>>
     themeUi:string,
     isLoading:boolean,
     handleSubmit:() => void
@@ -30,7 +30,6 @@ const SelectMaster = (
         data,
         options,
         selectedOptions,
-        selectedMasters,
         filterButtonStatus,
         setFilterButtonStatus,
         themeUi,
@@ -40,82 +39,83 @@ const SelectMaster = (
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const masters = useSelector((state:RootState)=>state.mdm.masters);
+    const activeMaster = useSelector((state:RootState)=>state.mdm.activeMaster);
 
-    const [tempMasters,setTempMasters] = useState<Master[]>([])
+    const toggledFromAddMaster = () => {
+        return masters.length > 0 && activeMaster.id !== 0;
+    }
 
-    useEffect(()=>{
-
-        if(selectedMasters?.length === 0 && data) {
-            dispatch(setSelectedMasters([...data]));
-        }
-
-    },[selectedMasters])
     
     if(isLoading){
         return (
             <SCLoaderContainer>
-                <img src="../assets/img/VectorFLOW/loaderBig.svg" data-testid="loader"/>
+                <img src="/assets/img/VectorFLOW/loaderBig.svg" data-testid="loader"/>
             </SCLoaderContainer>
         )
     }
-    // console.debug(filterButtonStatus);
 
-    const onClickFilterButton = (currentMaster:Master) => {
-        // console.debug(getFilterButtonStatus(currentMaster),tempMasters)
+    const onClickFilterButton = (currMaster:MDMMasterState) => {
 
-        if(getFilterButtonStatus(currentMaster) && !tempMasters.find((t:Master)=>t.id===currentMaster.id)){
+        if(getFilterButtonStatus(currMaster.id) && toggledFromAddMaster()){
             notifyError('You can only add new master')
             return
         }
-        else{
-            // console.debug(filterButtonStatus,currentMaster)
-            setTempMasters([...tempMasters,currentMaster])
-        }
-        dispatch(setSelectedOptions([]));
         
+        dispatch(FILL_SELECTED_OPTIONS([]));
         
-        if(getFilterButtonStatus(currentMaster)){
-            console.log('in if')
-            setFilterButtonStatus(filterButtonStatus.filter((master:Master)=>master.id !== currentMaster.id));
-            dispatch(setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id !== currentMaster.id))]))
+        if(getFilterButtonStatus(currMaster.id)){
+            setFilterButtonStatus(filterButtonStatus.filter((masterId:number)=>masterId !== currMaster.id));
+            dispatch(REMOVE_MASTER(currMaster.id))
         }
         else{
-            console.log('else');
-            setFilterButtonStatus([...filterButtonStatus,currentMaster]);
-            if(selectedMasters.find((selectedMaster:Master)=>selectedMaster.id === currentMaster.id)){
-                dispatch(setSelectedMasters([...selectedMasters.filter(((selectedMaster:Master)=>selectedMaster.id === currentMaster.id))]));
+            setFilterButtonStatus([...filterButtonStatus,currMaster.id]);
+            if(masters.find((selectedMaster:MDMMasterState)=>selectedMaster.id === currMaster.id)){
+                dispatch(FILTER_MASTER(currMaster.id));
             }
             else{
-                dispatch(setSelectedMasters([...selectedMasters,currentMaster]));
+                // if(filterButtonStatus.length === 0) dispatch(FILL_MASTERS([currMaster]));
+                // else dispatch(ADD_MASTER(currMaster));
+                dispatch(ADD_MASTER(currMaster));
             }
         }   
     }
 
-    const shouldDisplayCard = (currentMaster:Master) => {
-        return selectedMasters.find((selectedMaster:Master)=>selectedMaster.id === currentMaster.id);
+    const getFilterButtonStatus = (masterId:number) => {
+        return filterButtonStatus.find((id:number)=>id===masterId) ? true : false;
     }
 
-    const getFilterButtonStatus = (currentMaster:Master) => {
-        return filterButtonStatus.find((selectedMaster:Master)=>selectedMaster.id===currentMaster.id) ? true : false;
+    const setValue = (options:any) => {
+        dispatch(FILL_SELECTED_OPTIONS(options))
     }
 
-    const setValue = (option:any) => {
-        dispatch(setSelectedOptions(option));
+    const onCancel = () => {
+        dispatch(RESET_STATE());
+        navigate('/master-data-management/control-panel');
     }
 
     return(
         <Container >
             <Container style={{flexDirection:'row',gap:'44px'}}>
-                <VFMasterFieldSearch value={selectedOptions} setValue={setValue} options={options} placeholder={'Select'} handleListChild={()=>{setFilterButtonStatus([])}} maxToShow={3} backgroundColor={'#FFFFFF'} />
+                <VFMasterFieldSearch 
+                    value={selectedOptions} 
+                    setValue={setValue} 
+                    options={options} 
+                    placeholder={'Select'} 
+                    handleListChild={()=>{setFilterButtonStatus([])}} 
+                    maxToShow={3} 
+                    backgroundColor={'#FFFFFF'}
+                    disabled={toggledFromAddMaster()}
+                />
                 <Container style={{flexDirection:'row'}}>
                     <QuickFilterHeader>
                         Quick Filters -
                     </QuickFilterHeader>
                     <Container style={{flexDirection:'row',flexWrap:'wrap',maxWidth:'900px',gap:'10px'}}>
-                        {data?.map((master:Master)=>{
+                        {data?.map((master:MDMMasterState)=>{
                             return(
                                 <ButtonOutlineStatus
-                                    status={getFilterButtonStatus(master)}
+                                    status={getFilterButtonStatus(master.id)}
                                     text={master.name}
                                     onChange={()=>onClickFilterButton(master)}
                                     icon=''
@@ -128,15 +128,15 @@ const SelectMaster = (
                 </Container>
             </Container>
             <SCCardContainer>
-                {data?.map((item:Master)=>{
-                    return shouldDisplayCard(item) && <VFMasterCard data={{...item,name:item.name + ' Master'}} key={item.id} selectedFields={selectedOptions.map((s:Option)=>s.label)}/>
+                {(masters.length > 0 ? masters : data).map((item:MDMMasterState)=>{
+                    return <VFMasterCard data={{...item,name:item.name + ' Master'}} key={item.id} selectedFields={selectedOptions.map((s:Option)=>s.label)}/>
                 })}
             </SCCardContainer>
             <SCButtonContainer>
-                <VFButtonOutline onClick={()=>navigate('/master-data-management/control-panel')} themeUi={themeUi} width={141} disabled={false}>
+                <VFButtonOutline onClick={onCancel} themeUi={themeUi} width={141} disabled={false}>
                     Cancel
                 </VFButtonOutline>
-                <VFButton onClick={() =>{ handleSubmit() }} themeUi={themeUi} width={141}>
+                <VFButton onClick={() =>{ handleSubmit() }} themeUi={themeUi} width={141} disabled={masters.length === 0}>
                     Submit
                 </VFButton>
 

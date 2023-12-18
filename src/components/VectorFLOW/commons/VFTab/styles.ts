@@ -123,7 +123,7 @@ export const SCTabTitle = styled.p<{status:string}>`
   color: ${(props) => (props.status === 'active' || props.status==='completed' ? '#FFFFFF' : '#6C696A')};
   font-family:'Roboto';
   font-weight:500;
-  text-wrap: nowrap;
+  white-space:nowrap;
 `
 
 export const SCTabBody = styled.div`

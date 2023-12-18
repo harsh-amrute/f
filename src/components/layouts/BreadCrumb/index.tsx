@@ -4,7 +4,11 @@ import { useUserData } from "../../../context";
 const BreadCrumb = () => {
   const { t } = useTranslation();
   const { user } = useUserData();
-  
+  if(location.pathname ==='/master-data-management/control-panel')return <span>MDM {">"} Control Panel</span>
+  if(location.pathname ==='/master-data-management/view-modify')return <span>MDM {">"} View / Modify</span>
+  if(location.pathname ==='/master-data-management/saved-drafts')return <span>MDM {">"} Saved Drafts</span>
+  if(location.pathname ==='/master-data-management/task-status')return <span>MDM {">"} Task Status</span>
+
   if (location.pathname === "/manual-upload") {
     return <span> {t("breadCrumb.ist")} {">"} {t("header.manualUpload")}</span>;
   } else if (location.pathname === "/") {
