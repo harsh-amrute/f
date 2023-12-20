@@ -6,7 +6,7 @@ export interface VFPaginationProps{
     currentPage:number
     rowsPerPage:number
     handleChangePage:(e:any)=>void
-    handleChangePerPage:(e:any)=>void
+    handleChangePerPage?:(e:any)=>void
 }
 
 

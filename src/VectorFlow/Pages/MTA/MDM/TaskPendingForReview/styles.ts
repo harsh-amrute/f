@@ -1,5 +1,10 @@
 import styled from "styled-components";
 
+export const TaskPendingWrapper = styled.div`
+    width:100%;
+    margin-bottom:100px;
+`
+
 export const ActionRendererWrapper = styled.div`
     width:100%;
     height:100%;
@@ -26,4 +31,9 @@ export const ActionHeaderWrapper = styled.div`
 export const ActionHeaderContent = styled.div`
     font-size:16px;
     display:flex;
+`
+
+export const LinkWrapper = styled.div`
+    width:100%;
+    height:100%;
 `

@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
-import { type Master, type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
+import {type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
@@ -66,9 +66,9 @@ const useViewModify = () => {
 
     const {mutateAsync:getCount} = useGetCount();
 
-    // const {mutateAsync:createDraft} = useCreateDraft()
+    const {mutateAsync:createDraft} = useCreateDraft()
 
-    // const {mutateAsync:modifyDraft} = useModifyDraft()
+    const {mutateAsync:modifyDraft} = useModifyDraft()
 
     // const colDefs = activeMaster.colDefs
 
@@ -161,7 +161,6 @@ const useViewModify = () => {
       useEffect(()=>{
         const getMasterUIConfigurationData = async()=>{
           const {data} = await masterUIConfiguration('modify');
-          console.debug(data);
           setAllMasterState(mapMasterToMasterState(data.data))
          }
   
@@ -364,6 +363,8 @@ const useViewModify = () => {
         }
       }
     
+
+      
     const addNewMaster = ()=>{
       if(allMastersState.length === masters.length) {
         notifyError('All Masters have already been selected. Cannot add more masters');
@@ -421,7 +422,7 @@ const useViewModify = () => {
         const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true,currentPage:1}); 
         if(result.data.recordCount <= rowsPerPage){
           toggleEditOnline(true);
-          setShowAll(false); //setting to false in this if bcz we need this in flag true while handling server side pagination
+          // setShowAll(false); //setting to false in this if bcz we need this in flag true while handling server side pagination
         }
         else{
           toggleEditOnline(false);
@@ -437,6 +438,7 @@ const useViewModify = () => {
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         dispatch(UPDATE_PROGRESS_STATE('view')); 
         toggleWarningModal(false);
+        setShowAll(false);
        
       }
 
@@ -581,20 +583,21 @@ const useViewModify = () => {
         setTempDownloadData(false);
       }
 
-      // const onSaveToDraft = async()=>{
-      //   if(activeMasterDraftId){
-      //     return await notifyPromise(modifyDraft(generateDraftPayload()),{
-      //       success:'Draft has been updated',
-      //       pending:'Updating draft',
-      //       error:"Could not update draft"
-      //     })
-      //   }
-      //   return await notifyPromise(createDraft(generateDraftPayload()),{
-      //     success:'Draft has been updated',
-      //     pending:'Creating draft',
-      //     error:"Could create draft"
-      //   })
-      // }
+      const onSaveToDraft = async()=>{
+        setActiveMasterDraftId("")
+        if(activeMasterDraftId){
+          return await notifyPromise(modifyDraft(generateDraftPayload()),{
+            success:'Draft has been updated',
+            pending:'Updating draft',
+            error:"Could not update draft"
+          })
+        }
+        return await notifyPromise(createDraft(generateDraftPayload()),{
+          success:'Draft has been updated',
+          pending:'Creating draft',
+          error:"Could create draft"
+        })
+      }
       const onReset = () => {
         const currentMasterData = masters.find((master:MDMMasterState)=>master.id === activeMaster.id)
         if(currentMasterData) dispatch(UPDATE_ROW_DATA(currentMasterData.rowData))
@@ -691,6 +694,7 @@ const useViewModify = () => {
         tempAgGridProps,
         deleteSelected,
         onSubmit,
+        onSaveToDraft,
         isUploadButtonDisabled,
         editOnline,
         onEditOnline,

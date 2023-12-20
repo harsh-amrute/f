@@ -10,7 +10,9 @@ export const QUERY_KEYS = {
   useGetDraftById:['MDMService.useGetDraftById'],
   useCreateDraft:['MDMService.useCreateDraft'],
   useModifyDraft:['MDMService.useModifyDraft'],
-  useDeleteDraft:['MDMService.useDeleteDraft']
+  useDeleteDraft:['MDMService.useDeleteDraft'],
+  useGetPendingTasks:['MDMService.useGetPendingTasks'],
+  useGetTaskStatusData:['MDMService.useGetTaskStatusData']
 }
 
 
@@ -45,19 +47,43 @@ export const useGetDraftById = ()=>{
 }
 
 export const useCreateDraft = ()=>{
-  return useMutation(QUERY_KEYS.useCreateDraft,async(body:any)=>{
+  return useMutation(async(body:any)=>{
     return await MDMService.createDraft(body)
   })
 }
 
 export const useModifyDraft = ()=>{
-  return useMutation(QUERY_KEYS.useModifyDraft,async(body:any)=>{
+  return useMutation(async(body:any)=>{
     return await MDMService.modifyDraft(body)
   })
 }
 
 export const useDeleteDraft = ()=>{
-  return useMutation(QUERY_KEYS.useDeleteDraft,async(id:string)=>{
+  return useMutation(async(id:string)=>{
     return await MDMService.deleteDraft(id)
+  })
+}
+
+export const useGetPendingTasks = () =>{
+  return useQuery(QUERY_KEYS.useGetPendingTasks,async()=>{
+    return await MDMService.getPendingTasks()
+  })
+}
+
+export const useGetTaskDetails = ()=>{
+  return useMutation(async(taskId:string)=>{
+    return await MDMService.getTaskDetails(taskId)
+  })
+}
+
+export const useGetTaskStatusData = ()=>{
+  return useQuery(QUERY_KEYS.useGetTaskStatusData,async()=>{
+    return await MDMService.getTaskStatusData()
+  })
+}
+
+export const useGetTasKDetailDownloadData = ()=>{
+  return useMutation(async(body:{taskId:string,approverId:number})=>{
+    return await MDMService.getTaskDetailsDownloadData(body)
   })
 }

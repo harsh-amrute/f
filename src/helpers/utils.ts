@@ -583,14 +583,12 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGro
 
   const colDefs =  existingColumnsFields.map((f:Field,index:number)=>{
 
-    if(!f.editable){
+    if(!f.isEdit){
       return{
         headerName:f.displayName,
         field:f.key,
         colId:f.key,
         hide:!f.visible,
-        headerCheckboxSelection:index===0,
-        checkboxSelection:index===0,
         suppressSpanHeaderHeight: true,
         ...defaultColDefs
       }
@@ -604,6 +602,8 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGro
       children:[
         {
           headerName:'New ' +f.displayName,
+          headerCheckboxSelection:index===0,
+          checkboxSelection:index===0,
           field:'New'+f.key,
           colId:'New'+f.key,
           cellStyle:{
@@ -626,7 +626,6 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGro
       
     }
   })
-
   return [...colDefs,...taskPendingCustomColDefs]
 }
 
@@ -640,7 +639,7 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
     const newDataPrefixed:any = {};
 
     existingColumnFields.map((f:Field)=>{
-      if(f.editable){
+      if(f.isEdit){
         oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
         newDataPrefixed[`New${f.key}`] = newData[f.key]
       }

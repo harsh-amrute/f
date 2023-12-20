@@ -52,4 +52,28 @@ export namespace MDMService {
       headers: { 'Content-Type': 'application/json' }
     })
   }
+
+  export const getPendingTasks = async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/GetTaskPendingForReviewData`,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getTaskDetails = async(taskId:string)=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/GetTaskDetails/${taskId}`,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getTaskStatusData = async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/GetTaskStatusData`,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getTaskDetailsDownloadData = async(body:{taskId:string,approverId:number})=>{
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/GetTaskDetailsDownloadData`,JSON.stringify(body),{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
 }

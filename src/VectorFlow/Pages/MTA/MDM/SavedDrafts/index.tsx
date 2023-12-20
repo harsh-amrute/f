@@ -1,6 +1,4 @@
 import React from "react"
-
-import { useGetAllDrafts } from "../../../../../VectorFlow/Services/MTA/MDM"
 import useSavedDrafts from "./useSavedDrafts"
 import { mapDraftDataToTableRowData, mapDraftToColumnDefs } from "../../../../../helpers/utils"
 import { useUserData } from "../../../../../context"
@@ -33,8 +31,6 @@ const SavedDrafts = ()=>{
     return <VFLoader/>
   }
 
-  console.debug(allDrafts,isLoading);
-
 
   return(
     <React.Fragment>
@@ -45,26 +41,41 @@ const SavedDrafts = ()=>{
               displayName: "Sr No.",
               key: "sr_no",
               visible: true,
+              isAdd:true,
+              isDownload:true,
+              isEdit:true
             },
             {
               displayName: "Last Modification Date",
               key: "LastModifiedDateTime",
               visible: true,
+              isAdd:true,
+              isDownload:true,
+              isEdit:true
             },
             {
               displayName: "Instance Name",
               key: "Masters",
               visible: true,
+              isAdd:true,
+              isDownload:true,
+              isEdit:true
             },
             {
               displayName: "Search Key",
               key: "SearchKeys",
               visible: true,
+              isAdd:true,
+              isDownload:true,
+              isEdit:true
             },
             {
                 displayName:"Action",
                 key:"action",
-                visible:true
+                visible:true,
+                isAdd:true,
+                isDownload:true,
+                isEdit:true
             }
           ],{
             cellRendererParams:{
