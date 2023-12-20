@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 export interface PaginationProps {
   page: any
   handleChangePage: (page: number) => void
-  handleChangePerPage: (page: number) => void
+  handleChangePerPage?: (page: number) => void
   pageCount: number
 }
 

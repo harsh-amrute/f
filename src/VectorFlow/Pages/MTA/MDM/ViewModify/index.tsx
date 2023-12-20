@@ -66,14 +66,17 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
         isUploadButtonDisabled,
         editOnline,
         onEditOnline,
+        // onSaveToDraft,
         selectedRowsCount,
         currentPage,
         rowsPerPage,
         handleChangePage,
         onReset,
+        onSaveToDraft,
         onEditOnlineSave
 
     } = useViewModify();
+    
 
     useEffect(()=>{
       if(ref.current){
@@ -189,7 +192,6 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
                 currentPage={currentPage} 
                 rowsPerPage={rowsPerPage} 
                 handleChangePage={(e)=>handleChangePage(e)}  
-                handleChangePerPage={()=>console.log('hello')}
               />
           }
           
@@ -220,7 +222,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
           <VFTaskBar
             masterProgress={activeMaster.progress}
             onReset={onReset}
-            onSaveToDraft={()=>console.log('')}
+            onSaveToDraft={onSaveToDraft}
             onEditOnlineSave={onEditOnlineSave}
             editOnline={editOnline}
             onEditOnline={onEditOnline}

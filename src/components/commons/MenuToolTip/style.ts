@@ -58,7 +58,7 @@ export const TooltipContent = styled.div<{ action: boolean; themeUi: string }>`
 export const SCIcon = styled.img<{ src: string }>`
   margin: 0 0 2px 5px;
   ${(props) =>
-    props.src === "../assets/img/nav/arrow_down.svg" &&
+    props.src === "/assets/img/nav/arrow_down.svg" &&
     "transform: rotate(-90deg);"}
 `;
 

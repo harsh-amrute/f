@@ -6,7 +6,32 @@ import MRCard from '.';
 const sampleData = {
   id: 1,
   name: 'Sample Card',
-  fields: [{displayName:'SKU Name',key:'sku_name',visible:true},{displayName:'City',key:'city',visible:true},{displayName:'MRP',key:'mrp',visible:true}],
+  fields: [
+    {
+      displayName:'SKU Name'
+      ,key:'sku_name'
+      ,visible:true,
+      isAdd:true,
+      isDownload:true,
+      isEdit:true
+    },
+    {
+      displayName:'City'
+      ,key:'city'
+      ,visible:true,
+      isAdd:true,
+      isDownload:true,
+      isEdit:true
+    },
+    {
+      displayName:'MRP'
+      ,key:'mrp'
+      ,visible:true,
+      isAdd:true,
+      isDownload:true,
+      isEdit:true
+    }
+  ]
 };
 
 const selectedFields = ['SKU Name']

@@ -4,8 +4,9 @@ import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
-import {ColDef} from 'ag-grid-community';
-import { masterIdToSchemaMapper } from './MDMConstants';
+import {ColDef,ColGroupDef} from 'ag-grid-community';
+import { defaultColDefs, masterIdToSchemaMapper, taskPendingCustomColDefs } from './MDMConstants';
+import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 
 // clear cached token and redirect to sso login
 
@@ -447,14 +448,9 @@ export const mapMasterToColumnDefs = (fields:Field[])=>{
       colId:f.key,
       headerName:f.displayName,
       hide:!f.visible,
-      minWidth:180,
       floatingFilter: true,
       filter: "agMultiColumnFilter",
-      cellStyle: {
-        "text-align": "center",
-      },
-      // suppressColumnsToolPanel:,
-      flex: 1,
+      ...defaultColDefs
     }
   })
   return result;
@@ -494,4 +490,168 @@ export const mapMasterToMasterState = (masters:Master[]):MDMMasterState[] => {
     rowData:[],
     progress:'default'
   }))
+}
+
+export const mapDraftToColumnDefs = (fields:Field[],customParams?:ColDef)=>{
+  let result:ColDef[] = []
+  result = fields.map((f)=>{
+    return{
+      field:f.key,
+      colId:f.key,
+      headerName:f.displayName,
+      minWidth:180,
+      cellStyle: {
+        "textAlign": "center",
+      },
+      flex: 1,
+      cellRenderer:f.key==="action"&& ActionRenderer,
+      ...customParams
+    }
+  })
+  return result
+}
+
+export const mapTaskStatusToColDefs = (taskStatus:ColDef[])=>{
+  let result:ColDef[] = []
+  result = taskStatus.map((t:ColDef)=>{
+    return{
+      ...t,
+      minWidth:180,
+      cellStyle: {
+        "textAlign": "center",
+      },
+      flex: 1,
+      floatingFilter:true,
+      filter: "agMultiColumnFilter",
+    }
+  })
+  return result
+}
+
+export const mapPendingTaskToColumnDefs = (colDefs:ColDef[])=>{
+  return colDefs.map((colDef:ColDef)=>{
+    return{
+      ...colDef,
+      floatingFilter: true,
+      filter: "agMultiColumnFilter",
+      ...defaultColDefs
+    }
+  })
+}
+
+export const mapRowDataWithSrNo = (rowData:any[])=>{
+  let result = []
+  if(!rowData)return []
+  result  = rowData.map((row,index)=>{
+    return{
+      ...row,
+      SrNo:index
+    }
+  })
+  return result
+}
+
+
+export const mapDraftDataToTableRowData = (rowData:any[])=>{
+  let result = []
+  if(!rowData)return
+  result  = rowData.map((row,index)=>{
+    return{
+      ...row,
+      sr_no:index
+    }
+  })
+  return result
+}
+
+export const getExistingColumns = (rowData:any[])=>{
+  const firstRowColumn =JSON.parse( rowData[0].new)
+  return Object.keys(firstRowColumn)
+}
+
+export const getExistingColumnFields = (columns:string[],fields:Field[]):Field[]=>{
+  const updatedFields:Field[] = []
+  columns.map((c:string)=>{
+    fields.find((f:Field)=>{
+      if(f.key===c)updatedFields.push(f)
+    })
+  })
+  return updatedFields
+}
+
+export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGroupDef[] | ColDef[]=>{
+
+  const colDefs =  existingColumnsFields.map((f:Field,index:number)=>{
+
+    if(!f.isEdit){
+      return{
+        headerName:f.displayName,
+        field:f.key,
+        colId:f.key,
+        hide:!f.visible,
+        suppressSpanHeaderHeight: true,
+        ...defaultColDefs
+      }
+    }
+
+    return{
+      headerName:f.displayName,
+      field:f.key,
+      colId:f.key,
+      hide:!f.visible,
+      children:[
+        {
+          headerName:'New ' +f.displayName,
+          headerCheckboxSelection:index===0,
+          checkboxSelection:index===0,
+          field:'New'+f.key,
+          colId:'New'+f.key,
+          cellStyle:{
+            "color":'#BC3D81',
+            "text-align":"center",
+            "border-left":"solid 1px #B9B9B9",
+          }
+        },
+        {
+          headerName:'Old ' +f.displayName,
+          field:'Old' +f.key,
+          colId:'Old'+f.key,
+          cellStyle:{
+            "text-align":"center",
+            "border-right":"solid 1px #B9B9B9"
+          }
+        }
+      ],
+      ...defaultColDefs,
+      
+    }
+  })
+  return [...colDefs,...taskPendingCustomColDefs]
+}
+
+
+export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[])=>{
+  return dirtyRowData.map(entry => {
+    const oldData = JSON.parse(entry.old);
+    const newData = JSON.parse(entry.new);
+
+    const oldDataPrefixed:any = {};
+    const newDataPrefixed:any = {};
+
+    existingColumnFields.map((f:Field)=>{
+      if(f.isEdit){
+        oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
+        newDataPrefixed[`New${f.key}`] = newData[f.key]
+      }
+      else{
+        oldDataPrefixed[f.key] = oldData[f.key]
+      }
+    })
+    return {
+        ...oldDataPrefixed,
+        ...newDataPrefixed,
+        status:'',
+        comments:''
+    };
+});
 }

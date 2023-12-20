@@ -1,11 +1,11 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
-import { type Master, type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
+import {type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, MODIFY_ROW_DATA } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
-import { notifyError, notifySuccess } from '../../../../../helpers/notify';
+import { notifyError, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 import { AgGridReactProps } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-enterprise';
@@ -25,6 +25,7 @@ const useViewModify = () => {
 
     const isSelectMasterOpen = useSelector((state:RootState) => state.mdm.isSelectMasterOpen);
 
+    const [allMastersState,setAllMasterState] = useState<MDMMasterState[]>([])
     const [rowData,setRowData] = useState<object[]>([]);
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
     const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
@@ -39,6 +40,8 @@ const useViewModify = () => {
     const [isUploadButtonDisabled,setIsUploadButtonDisabled] = useState<boolean>(true);
     const [showAll,setShowAll] = useState(false) //Flag to identify if the query is an show all query as we need that param in WarningModal Succes Handler P.S- Plz Optimize if you get time
 
+    const [activeMasterDraftId,setActiveMasterDraftId] = useState<string>()
+
     const [editOnline,toggleEditOnline] = useState(false);
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
     const [currentPage,setCurrentPage] = useState(1);
@@ -52,15 +55,20 @@ const useViewModify = () => {
 
     const [filterButtonStatus,setFilterButtonStatus] = useState<Array<number>>([]);
 
-    const {data:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
-   
-    const allMasters:Master[] = masterUIConfiguration?.data.data || [];
+    const {mutateAsync:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
 
-    const allMastersState:MDMMasterState[] = mapMasterToMasterState(allMasters);
+   
+    // const allMasters:Master[] = masterUIConfiguration?.data.data || [];
+
+    // const allMastersState:MDMMasterState[] = mapMasterToMasterState(allMasters);
 
     const {mutateAsync:getMasterData} = useGetMasterData();
 
     const {mutateAsync:getCount} = useGetCount();
+
+    const {mutateAsync:createDraft} = useCreateDraft()
+
+    const {mutateAsync:modifyDraft} = useModifyDraft()
 
     // const colDefs = activeMaster.colDefs
 
@@ -114,7 +122,7 @@ const useViewModify = () => {
 
         if(activeMaster.id === 0){
           if(!isLoading){
-            const allOptions:Option[] =  generateOptions(allMasters);
+            const allOptions:Option[] =  generateOptions(allMastersState);
             dispatch(STORE_ALL_MASTERS(allMastersState));
             dispatch(FILL_OPTIONS(allOptions));
           }
@@ -123,6 +131,7 @@ const useViewModify = () => {
           dispatch(FILL_MASTERS([...getSelectedMasters(temp)]));
         }
 
+       
 
         // if(isToolPanelOpen) ref.current?.api.openToolPanel('columns');
 
@@ -148,6 +157,15 @@ const useViewModify = () => {
         }
       },[activeMaster.progress]);
 
+
+      useEffect(()=>{
+        const getMasterUIConfigurationData = async()=>{
+          const {data} = await masterUIConfiguration('modify');
+          setAllMasterState(mapMasterToMasterState(data.data))
+         }
+  
+         getMasterUIConfigurationData()
+      },[])
 
     const sideBar = {
       toolPanels: [
@@ -312,6 +330,26 @@ const useViewModify = () => {
       
       
     }
+
+    const generateDraftPayload = ()=>{
+      let instanceName = ''
+      masters.map((master:MDMMasterState)=>{
+        instanceName += ` ${master.name}`
+      })
+      return{
+        instanceName:instanceName,
+        searchKey:activeMaster.name,
+        draftId:activeMasterDraftId,
+        draftData:masters.map((master:MDMMasterState)=>{
+          return {
+            masterId:master.id,
+            status:master.progress==='submitted'?1:0,
+            gridState:JSON.stringify(master.colDefs),
+            dataMaster:master.id===activeMaster.id?activeMaster.rowData:[]
+          }
+        })
+      }
+    }
     
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
         e.stopPropagation();
@@ -325,8 +363,10 @@ const useViewModify = () => {
         }
       }
     
+
+      
     const addNewMaster = ()=>{
-      if(allMasters.length === masters.length) {
+      if(allMastersState.length === masters.length) {
         notifyError('All Masters have already been selected. Cannot add more masters');
         return;
       }
@@ -382,7 +422,7 @@ const useViewModify = () => {
         const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true,currentPage:1}); 
         if(result.data.recordCount <= rowsPerPage){
           toggleEditOnline(true);
-          setShowAll(false); //setting to false in this if bcz we need this in flag true while handling server side pagination
+          // setShowAll(false); //setting to false in this if bcz we need this in flag true while handling server side pagination
         }
         else{
           toggleEditOnline(false);
@@ -398,6 +438,7 @@ const useViewModify = () => {
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         dispatch(UPDATE_PROGRESS_STATE('view')); 
         toggleWarningModal(false);
+        setShowAll(false);
        
       }
 
@@ -542,6 +583,21 @@ const useViewModify = () => {
         setTempDownloadData(false);
       }
 
+      const onSaveToDraft = async()=>{
+        setActiveMasterDraftId("")
+        if(activeMasterDraftId){
+          return await notifyPromise(modifyDraft(generateDraftPayload()),{
+            success:'Draft has been updated',
+            pending:'Updating draft',
+            error:"Could not update draft"
+          })
+        }
+        return await notifyPromise(createDraft(generateDraftPayload()),{
+          success:'Draft has been updated',
+          pending:'Creating draft',
+          error:"Could create draft"
+        })
+      }
       const onReset = () => {
         const currentMasterData = masters.find((master:MDMMasterState)=>master.id === activeMaster.id)
         if(currentMasterData) dispatch(UPDATE_ROW_DATA(currentMasterData.rowData))
@@ -610,7 +666,6 @@ const useViewModify = () => {
         addNewMaster,  
         handleOnAddFilter,
         handleOnDeleteFilter,
-        allMasters,
         allMastersState,
         handleApplyFilter,
         rowData,
@@ -639,12 +694,14 @@ const useViewModify = () => {
         tempAgGridProps,
         deleteSelected,
         onSubmit,
+        onSaveToDraft,
         isUploadButtonDisabled,
         editOnline,
         onEditOnline,
         rowsPerPage,
         selectedRowsCount,
         currentPage,
+        // onSaveToDraft,
         handleChangePage,
         onReset,
         onEditOnlineSave

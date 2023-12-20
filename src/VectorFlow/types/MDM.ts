@@ -39,6 +39,9 @@ export interface Field{
     displayName:string,
     key:string,
     visible:boolean
+    isEdit:boolean
+    isAdd:boolean
+    isDownload:boolean
 }
 
 export interface Tab{

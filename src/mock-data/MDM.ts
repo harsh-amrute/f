@@ -8,17 +8,26 @@ export const MasterData:MDMMasterState[] = [
           {
             displayName:'SKU Code',
             key:"sku_code",
-            visible:true
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
           {
             displayName:'SKU Name',
             key:"sku_name",
-            visible:true
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
           {
             displayName: "Item Category Code",
             key: "item_category_code",
-            visible: false
+            visible:false,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
       ],
       colDefs:[],
@@ -41,17 +50,26 @@ export const MasterData:MDMMasterState[] = [
           {
             displayName:'Location Code',
             key:"location_code",
-            visible:true
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
           {
             displayName:'Location Name',
             key:"location_name",
-            visible:true
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
           {
             displayName: "c1",
             key: "LocAttr1",
-            visible: false
+            visible: false,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
       ],
       colDefs:[],
@@ -74,17 +92,25 @@ export const MasterData:MDMMasterState[] = [
           {
             displayName:'SKU Code',
             key:"sku_code",
-            visible:true
+            visible:true, isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
           {
             displayName:'SKU Name',
             key:"sku_name",
-            visible:true
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
           {
             displayName: "Segment",
             key: "SKULocAttr1",
-            visible: false
+            visible: false,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
       ],
       colDefs:[],
@@ -101,3 +127,677 @@ export const MasterData:MDMMasterState[] = [
       rowData:[] 
     },
   ];
+
+  export const getAllDraftsMock:any = {
+    recordCount: null,
+    data: [
+        {
+            DraftId: "1121423100749",
+            Masters: " SKU",
+            userid: "1",
+            LastModifiedDateTime: "2023-12-14T10:07:49",
+            SearchKeys: "SKU"
+        },
+        {
+            DraftId: "1121123170712",
+            Masters: "SKU LOCATION SKULOCATION SOB",
+            userid: "1",
+            LastModifiedDateTime: "2023-12-11T17:07:12",
+            SearchKeys: "SKU"
+        },
+        {
+            DraftId: "1121323163008",
+            Masters: " SKU Location SKU Location",
+            userid: "1",
+            LastModifiedDateTime: "2023-12-13T16:30:08",
+            SearchKeys: "SKU"
+        },
+        {
+            DraftId: "1121323164406",
+            Masters: " SKU Location SKU Location",
+            userid: "1",
+            LastModifiedDateTime: "2023-12-13T16:44:06",
+            SearchKeys: "SKU"
+        },
+        {
+            DraftId: "1121323165317",
+            Masters: " Location",
+            userid: "1",
+            LastModifiedDateTime: "2023-12-13T16:53:17",
+            SearchKeys: "Location"
+        },
+        {
+            DraftId: "1121423102937",
+            Masters: " SKU",
+            userid: "1",
+            LastModifiedDateTime: "2023-12-14T10:29:37",
+            SearchKeys: "SKU"
+        },
+        {
+            DraftId: "1121423103009",
+            Masters: " SKU",
+            userid: "1",
+            LastModifiedDateTime: "2023-12-14T10:30:09",
+            SearchKeys: "SKU"
+        },
+        {
+            DraftId: "1121423103032",
+            Masters: " SKU",
+            userid: "1",
+            LastModifiedDateTime: "2023-12-14T10:30:32",
+            SearchKeys: "SKU"
+        },
+        {
+            DraftId: "1121423104141",
+            Masters: " SKU",
+            userid: "1",
+            LastModifiedDateTime: "2023-12-14T10:41:41",
+            SearchKeys: "SKU"
+        }
+    ],
+    status: 200,
+    msg: "Data fetched successfully"
+}
+
+export const getDraftByIdMockData:any = {
+  recordCount: null,
+  data: [
+      {
+          MasterId: 1,
+          Status: 0,
+          GridState: "[{\"field\":\"SKUCode\",\"colId\":\"SKUCode\",\"headerName\":\"SKU Code\",\"hide\":false,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"SKUDescription\",\"colId\":\"SKUDescription\",\"headerName\":\"SKU Name\",\"hide\":false,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c1\",\"colId\":\"c1\",\"headerName\":\"STYLE CODE\",\"hide\":false,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c2\",\"colId\":\"c2\",\"headerName\":\"Programme\",\"hide\":false,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c3\",\"colId\":\"c3\",\"headerName\":\"Type\",\"hide\":false,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c4\",\"colId\":\"c4\",\"headerName\":\"Style status\",\"hide\":true,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c5\",\"colId\":\"c5\",\"headerName\":\"IMPORT\",\"hide\":true,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c6\",\"colId\":\"c6\",\"headerName\":\"Colour\",\"hide\":false,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c7\",\"colId\":\"c7\",\"headerName\":\"Used in FG Codes\",\"hide\":true,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c8\",\"colId\":\"c8\",\"headerName\":\"SIZE\",\"hide\":false,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c9\",\"colId\":\"c9\",\"headerName\":\"EAN\",\"hide\":false,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c10\",\"colId\":\"c10\",\"headerName\":\"UoM\",\"hide\":true,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c11\",\"colId\":\"c11\",\"headerName\":\"MRP\",\"hide\":false,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c12\",\"colId\":\"c12\",\"headerName\":\"BRAND\",\"hide\":false,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c13\",\"colId\":\"c13\",\"headerName\":\"SUB BRAND\",\"hide\":false,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c14\",\"colId\":\"c14\",\"headerName\":\"CATEGORY\",\"hide\":false,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1},{\"field\":\"c15\",\"colId\":\"c15\",\"headerName\":\"SEASON\",\"hide\":false,\"minWidth\":180,\"floatingFilter\":true,\"filter\":\"agMultiColumnFilter\",\"cellStyle\":{\"text-align\":\"center\"},\"flex\":1}]"
+      }
+  ],
+  status: 200,
+  msg: "Data fetched successfully"
+}
+
+export const getMasterUIConfigurationMockData:any = {
+  recordCount: "7",
+  data: [
+      {
+          id: "1",
+          name: "SKUMaster",
+          fields: [
+            {
+              displayName: "SKUCode",
+              key: "sc",
+              visible: true,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "Description",
+              key: "sd",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "ElephantOrderCapping",
+              key: "ec",
+              visible: true,
+              isAdd: true,
+              isEdit: false,
+              isDownload: true
+            },
+            {
+              displayName: "Weight",
+              key: "wt",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "Volume",
+              key: "vm",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c1",
+              key: "c1",
+              visible: true,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c2",
+              key: "c2",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c3",
+              key: "c3",
+              visible: true,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c4",
+              key: "c4",
+              visible: true,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c5",
+              key: "c5",
+              visible: true,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c6",
+              key: "c6",
+              visible: true,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c7",
+              key: "c7",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c8",
+              key: "c8",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c9",
+              key: "c9",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c10",
+              key: "c10",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c11",
+              key: "c11",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c12",
+              key: "c12",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c13",
+              key: "c13",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c14",
+              key: "c14",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c15",
+              key: "c15",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            }
+          ]
+      },
+  ],
+  status: 200,
+  msg: null
+}
+
+
+export const getTaskPendingForReviewMockData = {
+  recordCount: null,
+  data: [
+      {
+         TaskID: "1_20231206175429",
+          PendingSince: "2023-12-06T17:59:01.667",
+          TaskName: "M_SKU",
+          Approver: "Approver1,Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                 TaskID: "1_20231206175429",
+                  PendingSince: "2023-12-06T17:59:01.667",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "1"
+              },
+              {
+                 TaskID: "1_20231206175429",
+                  PendingSince: "2023-12-06T17:59:01.667",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+         TaskID: "1_20231206182017",
+          PendingSince: "2023-12-06T18:20:36.320",
+          TaskName: "M_SKU",
+          Approver: "Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                 TaskID: "1_20231206182017",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "1"
+              },
+              {
+                 TaskID: "1_20231206182017",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+         TaskID: "1_202312061821491222",
+          PendingSince: "2023-12-06T18:20:36.320",
+          TaskName: "M_SKU",
+          Approver: "Approver1,Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                 TaskID: "1_202312061821491222",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApprovedDate: "15/12/2023 01:51 AM",
+                  ApproverId: "1"
+              },
+              {
+                 TaskID: "1_202312061821491222",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+         TaskID: "1_20231206182149",
+          PendingSince: "2023-12-06T18:21:59.460",
+          TaskName: "M_SKU",
+          Approver: "Approver1,Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                 TaskID: "1_20231206182149",
+                  PendingSince: "2023-12-06T18:21:59.460",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Partially Approved - DB update Pending",
+                  ApprovedDate: "Dec 12 2023 12:15PM",
+                  ApproverId: "1"
+              },
+              {
+                 TaskID: "1_20231206182149",
+                  PendingSince: "2023-12-06T18:21:59.460",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Partially Approved - DB update Pending",
+                  ApprovedDate: "Dec 12 2023 12:15PM",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+         TaskID: "1_20231207113016",
+          PendingSince: "2023-12-07T11:34:47.813",
+          TaskName: "M_LOC",
+          Approver: "Approver1",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                 TaskID: "1_20231207113016",
+                  PendingSince: "2023-12-07T11:34:47.813",
+                  TaskName: "M_LOC",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "1"
+              },
+              {
+                 TaskID: "1_20231207113016",
+                  PendingSince: "2023-12-07T11:34:47.813",
+                  TaskName: "M_LOC",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "NA"
+              }
+          ]
+      },
+      {
+         TaskID: "1_20231207113620",
+          PendingSince: "2023-12-07T11:36:24.930",
+          TaskName: "M_LOC",
+          Approver: "Approver1",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                 TaskID: "1_20231207113620",
+                  PendingSince: "2023-12-07T11:36:24.930",
+                  TaskName: "M_LOC",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "NA"
+              },
+              {
+                 TaskID: "1_20231207113620",
+                  PendingSince: "2023-12-07T11:36:24.930",
+                  TaskName: "M_LOC",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Approved - DB Updated",
+                  ApproverId: "1"
+              }
+          ]
+      }
+  ],
+  status: 200,
+  msg: null
+}
+
+export const getTaskDetailsMockData = {
+  recordCount: null,
+  data: [
+      {
+          MasterId: 1,
+          data: [
+              {
+                  "new": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls\",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+                  "old": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}"
+              },
+              {
+                "new": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls\",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+                "old": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}"
+              },
+              {
+                "new": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls\",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+                "old": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}"
+            }
+          ]
+      }
+  ],
+  status: 200,
+  msg: null
+}
+
+export const getTaskStatusDataMockData = {
+  recordCount: null,
+  data: [
+      {
+          TaskID: "1_20231206175429",
+          PendingSince: "2023-12-06T17:59:01.667",
+          TaskName: "M_SKU",
+          Approver: "Approver1,Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                  TaskID: "1_20231206175429",
+                  PendingSince: "2023-12-06T17:59:01.667",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "1"
+              },
+              {
+                  TaskID: "1_20231206175429",
+                  PendingSince: "2023-12-06T17:59:01.667",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+          TaskID: "1_20231206182017",
+          PendingSince: "2023-12-06T18:20:36.320",
+          TaskName: "M_SKU",
+          Approver: "Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                  TaskID: "1_20231206182017",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "1"
+              },
+              {
+                  TaskID: "1_20231206182017",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+          TaskID: "1_202312061821491222",
+          PendingSince: "2023-12-06T18:20:36.320",
+          TaskName: "M_SKU",
+          Approver: "Approver1,Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                  TaskID: "1_202312061821491222",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApprovedDate: "15/12/2023 01:51 AM",
+                  ApproverId: "1"
+              },
+              {
+                  TaskID: "1_202312061821491222",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+          TaskID: "1_20231206182149",
+          PendingSince: "2023-12-06T18:21:59.460",
+          TaskName: "M_SKU",
+          Approver: "Approver1,Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                  TaskID: "1_20231206182149",
+                  PendingSince: "2023-12-06T18:21:59.460",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Partially Approved - DB update Pending",
+                  ApprovedDate: "Dec 12 2023 12:15PM",
+                  ApproverId: "1"
+              },
+              {
+                  TaskID: "1_20231206182149",
+                  PendingSince: "2023-12-06T18:21:59.460",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Partially Approved - DB update Pending",
+                  ApprovedDate: "Dec 12 2023 12:15PM",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+          TaskID: "1_20231207113016",
+          PendingSince: "2023-12-07T11:34:47.813",
+          TaskName: "M_LOC",
+          Approver: "Approver1",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                  TaskID: "1_20231207113016",
+                  PendingSince: "2023-12-07T11:34:47.813",
+                  TaskName: "M_LOC",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "1"
+              },
+              {
+                  TaskID: "1_20231207113016",
+                  PendingSince: "2023-12-07T11:34:47.813",
+                  TaskName: "M_LOC",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "NA"
+              }
+          ]
+      },
+      {
+          TaskID: "1_20231207113620",
+          PendingSince: "2023-12-07T11:36:24.930",
+          TaskName: "M_LOC",
+          Approver: "Approver1",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                  TaskID: "1_20231207113620",
+                  PendingSince: "2023-12-07T11:36:24.930",
+                  TaskName: "M_LOC",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "NA"
+              },
+              {
+                  TaskID: "1_20231207113620",
+                  PendingSince: "2023-12-07T11:36:24.930",
+                  TaskName: "M_LOC",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Approved - DB Updated",
+                  ApproverId: "1"
+              }
+          ]
+      }
+  ],
+  status: 200,
+  msg: null
+} 
+
+
+export const getTaskDetailsDownloadDataMockData = {
+  recordCount: null,
+  data: [
+    {
+      "new": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+      "old": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+      "Status": "3",
+      "Comments": ""
+    },
+    {
+      "new": "{\"SKUCode\":\"X9I689125STXXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXXL\",\"c2\":\"XXL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+      "old": "{\"SKUCode\":\"X9I689125STXXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXXL\",\"c2\":\"XXL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+      "Status": "3",
+      "Comments": ""
+    },
+    {
+      "new": "{\"SKUCode\":\"X9I689195STM001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689195STM\",\"c2\":\"M\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+      "old": "{\"SKUCode\":\"X9I689195STM001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689195STM\",\"c2\":\"M\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+      "Status": "4",
+      "Comments": "C2 data is wrong"
+    }
+  ],
+  status: 200,
+  msg: null
+}
+
+export const createDraftMockData = {
+  recordCount: null,
+  data: null,
+  status: 500,
+  msg: null
+}

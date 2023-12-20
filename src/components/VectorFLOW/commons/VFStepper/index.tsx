@@ -4,6 +4,8 @@ import { VFStepperWrapper, VFStepWrapper,VFStepLabel,VFStepProgress, VFStepLabel
 interface VFStepperProps{
     items:StepItem[]
     width?:string
+    zoom?:number
+    dashWidth?:string
 }
 
 export interface StepItem{
@@ -19,6 +21,7 @@ interface VFStepProps{
     index:number
     isLast:boolean
     description:string
+    dashWidth?:string
 }
 
 interface VFStepIconProps{
@@ -29,13 +32,15 @@ const VFStepper =  (props:VFStepperProps)=>{
 
     const {
         items,
-        width
+        width,
+        zoom=1,
+        dashWidth="100px"
     }= props
 
     return (
-        <VFStepperWrapper style={{width:width}} data-testid='stepper'>
+        <VFStepperWrapper style={{width:width,zoom:zoom}} data-testid='stepper'>
             {items.map((i,index)=>{
-                return <Step label={i.label} status={i.status} key={index} index={index} isLast={index==items.length-1} description={i.description}/>
+                return <Step dashWidth={dashWidth} label={i.label} status={i.status} key={index} index={index} isLast={index==items.length-1} description={i.description}/>
             })}
         </VFStepperWrapper>
     )
@@ -47,20 +52,19 @@ const Step = (props:VFStepProps)=>{
         label,
         status,
         isLast,
-        description
+        description,
+        dashWidth
     } = props
 
+
     return(
-        <VFStepWrapper isLast={isLast}>
-           
-            <VFStepLabelWrapper>
-                
-                {/*<StepCircle status={status}/>*/}
+        <VFStepWrapper isLast={isLast}>        
+            <VFStepLabelWrapper>             
                 <VFStepIcon status={status}/>
                 <VFStepLabel>{label}</VFStepLabel>
                 <VFStepDescription>{description}</VFStepDescription>
             </VFStepLabelWrapper>
-            {!isLast && <VFStepProgress status={status}/>}
+            {!isLast && <VFStepProgress status={status} style={{width:dashWidth}}/>}
         </VFStepWrapper>
     )
 }   

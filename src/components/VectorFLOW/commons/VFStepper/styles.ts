@@ -18,13 +18,15 @@ export const VFStepperWrapper = styled.div`
 export const VFStepWrapper = styled.div<{isLast:boolean}>`
     display:flex;
     flex-direction:row;
-    width: ${(props)=>props.isLast?'auto':'100%'};
+    
 `
 
 export const VFStepLabelWrapper = styled.div`
+    position:relative;
     display:flex;
     flex-direction:column;
     align-items:center;
+    width:60px;
 `
 
 
@@ -40,6 +42,7 @@ export const VFStepLabel = styled.div`
     color: #313131;
 `
 export const VFStepDescription = styled.div`
+
     font-size:12px:
     font-style:normal;
     font-variant:normal;
@@ -53,7 +56,6 @@ export const VFStepProgress = styled.div<{status:string}>`
     margin-top:12px;
     margin-left:10px;
     margin-right:10px;
-    width: 100%;
     height: 0px;
     outline: 2px ${(props)=>props.status=='async'?'dashed':'solid'} ${(props)=>getProgressColor(props.status)};
 `

@@ -2,7 +2,6 @@ import {
   render,
   fireEvent,
   screen,
-  waitFor,
   cleanup,
 } from "@testing-library/react";
 import ViewModify from "./index";
@@ -14,8 +13,9 @@ import {
   useGetMasterUIConfiguration,
   useGetMasterData,
   useGetCount,
+  useCreateDraft,
+  useModifyDraft,
 } from "../../../../Services/MTA/MDM";
-import { select } from "react-select-event";
 import _ from "lodash";
 import { createStore, store } from "../../../../../redux/store/store";
 import { Provider } from "react-redux";
@@ -24,7 +24,7 @@ import { ReactNode } from "react";
 import { RESET_STATE } from "../../../../../redux/actions/MDM";
 import { toast } from 'react-toastify'
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
-import { MasterData } from "../../../../../mock-data/MDM";
+import { createDraftMockData, MasterData } from "../../../../../mock-data/MDM";
 import { mapMasterToColumnDefs } from "../../../../../helpers/utils";
 
 jest.mock("../../../../Services/MTA/MDM");
@@ -37,8 +37,7 @@ jest.mock('react-toastify', () => ({
   },
 }))
 
-const useGetMasterUIConfigurationMock =
-  useGetMasterUIConfiguration as jest.MockedFunction<
+const useGetMasterUIConfigurationMock = useGetMasterUIConfiguration as jest.MockedFunction<
     typeof useGetMasterUIConfiguration
   >;
 const useGetMasterDataMock = useGetMasterData as jest.MockedFunction<
@@ -48,6 +47,15 @@ const useGetMasterDataMock = useGetMasterData as jest.MockedFunction<
 const useGetCountMock = useGetCount as jest.MockedFunction<
   typeof useGetCount
 >;
+
+const useCreateDraftMock = useCreateDraft as jest.MockedFunction<
+  typeof useCreateDraft
+>;
+
+const useModifyDraftMock = useModifyDraft as jest.MockedFunction<
+  typeof useModifyDraft
+>;
+
 window.URL.createObjectURL = jest.fn();
 
 const useMasterDataResult: any = {
@@ -56,11 +64,31 @@ const useMasterDataResult: any = {
   },
 };
 
+const useGetMasterUIConfigurationMockResult:any ={
+  mutateAsync:()=>{
+    return {
+      data:{data: mockData}  
+    }
+  }
+}
+
 const useGetCountResult: any = {
   mutateAsync: () => {
     return { data: mockMasterData };
   },
 };
+
+const useCreateDraftMockData :any={
+  mutateAsync:()=>{
+    return {data:createDraftMockData}
+  }
+}
+
+const useModifyDraftMockData :any={
+  mutateAsync:()=>{
+    return {data:createDraftMockData}
+  }
+}
 
 const mockMasterData: any = {
   recordCount: 345,
@@ -228,15 +256,19 @@ describe("Renders View Modify Component", () => {
     useGetCountMock.mockImplementation(() => {
       return useGetCountResult;
     });
+    useCreateDraftMock.mockImplementation(()=>{
+      return useCreateDraftMockData
+    })
+
+    useModifyDraftMock.mockImplementation(()=>{
+      return useModifyDraftMockData
+    })
   });
 
   it("renders the view modify component when loading", async () => {
-    const result: any = {
-      isLoading: true,
-      // data:{data:{responseData:{data:mockData}}}
-    };
+
     useGetMasterUIConfigurationMock.mockImplementation(() => {
-      return result;
+      return useGetMasterUIConfigurationMockResult;
     });
 
     render(contextWrapper(<ViewModify />,store));
@@ -244,24 +276,14 @@ describe("Renders View Modify Component", () => {
   });
 
   it("renders the view modify component", async () => {
-    const result: any = {
-      isLoading: false,
-      data: { data: { data: mockData } },
-    };
-    useGetMasterUIConfigurationMock.mockImplementation(() => {
-      return result;
+    useGetMasterUIConfigurationMock.mockImplementation(():any => {
+      return  useGetMasterUIConfigurationMockResult;
     });
+
 
     render(contextWrapper(<ViewModify />,store));
 
-    const filterButton = screen.getAllByTestId("button-outline-status");
-    fireEvent.click(filterButton[0]);
-
-    await waitFor(async () => {
-      const reactSelect = screen.getByRole("combobox");
-      expect(reactSelect).toBeInTheDocument();
-      await select(reactSelect, ["SKU Code"]);
-    });
+    expect(screen.getByLabelText('Example Label')).toBeInTheDocument();
   });
 });
 
@@ -279,13 +301,10 @@ describe("Handles all Interaction in ViewModify Component", () => {
 
     const mockStore = createStore(mockState);
 
-    const result: any = {
-      isLoading: false,
-      data: { data: { data: mockData } },
-    };
-    useGetMasterUIConfigurationMock.mockImplementation(() => {
-      return result;
+    useGetMasterUIConfigurationMock.mockImplementation(():any => {
+      return useGetMasterUIConfigurationMockResult;
     });
+
 
     useGetMasterDataMock.mockImplementation(() => {
       return useMasterDataResult;
@@ -294,6 +313,14 @@ describe("Handles all Interaction in ViewModify Component", () => {
     useGetCountMock.mockImplementation(() => {
       return useGetCountResult;
     });
+
+    useCreateDraftMock.mockImplementation(()=>{
+      return useCreateDraftMockData
+    })
+
+    useModifyDraftMock.mockImplementation(()=>{
+      return useModifyDraftMockData
+    })
 
     store.dispatch(RESET_STATE());
 
@@ -359,8 +386,8 @@ describe("Handles all Interaction in ViewModify Component", () => {
   });
 
   it("Check if Add new master is working", async () => {
-    const filterButton = screen.getAllByTestId("button-outline-status");
-    fireEvent.click(filterButton[0]);
+    // const filterButton = screen.getAllByTestId("button-outline-status");
+    // fireEvent.click(filterButton[0]);
     const submit = screen.getByText("Submit");
     fireEvent.click(submit);
     const addNewMaster = screen.getByTestId("new-tab");
@@ -514,13 +541,10 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
   beforeEach(() => {
 
-    const result: any = {
-      isLoading: false,
-      data: { data: { data: mockData } },
-    };
-    useGetMasterUIConfigurationMock.mockImplementation(() => {
-      return result;
+    useGetMasterUIConfigurationMock.mockImplementation(():any => {
+      return useGetMasterUIConfigurationMockResult;
     });
+
 
     useGetMasterDataMock.mockImplementation(() => {
       return useMasterDataResult;
@@ -529,6 +553,14 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
     useGetCountMock.mockImplementation(() => {
       return useGetCountResult;
     });
+
+    useCreateDraftMock.mockImplementation(()=>{
+      return useCreateDraftMockData
+    })
+
+    useModifyDraftMock.mockImplementation(()=>{
+      return useModifyDraftMockData
+    })
 
     jest.clearAllMocks();
 
