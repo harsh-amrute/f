@@ -1,14 +1,14 @@
 import { useState } from "react"
-import { useDispatch } from "react-redux"
-import { useNavigate } from "react-router"
-import { useGetDraftById, useGetMasterUIConfiguration,useGetAllDrafts, useDeleteDraft } from "../../../../../VectorFlow/Services/MTA/MDM"
+// import { useDispatch } from "react-redux"
+// import { useNavigate } from "react-router"
+import {useGetAllDrafts, useDeleteDraft } from "../../../../../VectorFlow/Services/MTA/MDM"
 import { notifyPromise } from "../../../../../helpers/notify"
 
 
 const useSavedDrafts = ()=>{
 
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
+    // const dispatch = useDispatch()
+    // const navigate = useNavigate()
 
     // const {mutateAsync:getDraftById} = useGetDraftById()
     // const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration()

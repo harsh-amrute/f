@@ -129,7 +129,7 @@ const SelectMaster = (
             </Container>
             <SCCardContainer>
                 {(masters.length > 0 ? masters : data).map((item:MDMMasterState)=>{
-                    return <VFMasterCard data={{...item,name:item.name + ' Master'}} key={item.id} selectedFields={selectedOptions.map((s:Option)=>s.label)}/>
+                    return <VFMasterCard data={item} key={item.id} selectedFields={selectedOptions.map((s:Option)=>s.label)}/>
                 })}
             </SCCardContainer>
             <SCButtonContainer>
