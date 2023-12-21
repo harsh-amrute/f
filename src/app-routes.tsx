@@ -234,12 +234,12 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/add',
+      path: '/master-data-management/add',
       element: <AppLayout />,
       children: [
         {
           index: true,
-          element: lazyLoad(<SelectGroupedMasters onCancel={()=>console.log('')} onSubmit={()=>console.log('')} allMasters={[]} />)
+          element: lazyLoad(<AddRecord/>)
         },
         ...getStoreTransferModuleRoutes()
       ]

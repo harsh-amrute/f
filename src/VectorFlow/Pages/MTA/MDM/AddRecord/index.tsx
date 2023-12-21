@@ -1,19 +1,39 @@
-import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
-import { ContentWrapper, TextContainer, TextFilterWrapper,VFMasterGroupCard,VFMasterGroupCardHeader,VFMasterGroupCardHeaderText, VFButtonWrapper,VFMasterGroupCardContent,VFMasterGroupCardImage,VFMasterGroupCardText,VFMasterGroupCardContainer} from "./styles"
-import { useUserData } from "../../../../../context";
-import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
-import { useState,ReactNode} from "react";
-import { AddRecordMasterGroup, MDMMasterState } from "~/VectorFlow/types/MDM";
+
 import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/SelectGroupedMasters";
 import useAdd from "./useAdd";
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 
-const {
-    allmasters,
-} = useAdd();
 
 const AddRecord = () => {
+    const {
+        isAddRecordsLoading,
+        onCancel,
+        mapMasterUIToMasterGroup,
+        allMasters,
+        selectedMasters,
+        handleOnClickMaster
+    } = useAdd();
 
-    <SelectGroupedMasters/>
+
+    if(isAddRecordsLoading){
+        return <VFLoader/>
+    }
+
+    return(
+        <SelectGroupedMasters 
+            onSelectMasters={()=>{}}  
+            onSubmit={()=>console.log('')}
+            onCancel={onCancel}
+            mapMasterUIToMasterGroup={mapMasterUIToMasterGroup}
+            handleOnClickMaster={handleOnClickMaster}
+            allMasters={allMasters}
+            selectedMasters={selectedMasters}
+        />
+
+        
+    )
+
+    
 }
 
 export default AddRecord;

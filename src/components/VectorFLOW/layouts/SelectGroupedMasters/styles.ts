@@ -8,8 +8,8 @@ border: 1px solid #E0E0E0;
 border-radius: 8px;
 opacity: 1;
 height:980px;            //955
-margin-left:25px;
-
+//margin-left:25px;
+margin-bottom:10px;
 `
 export const TextContainer=styled.div`
 //background-color:grey;
@@ -31,6 +31,7 @@ box-shadow: 0px 3px 6px #00000029;
 border-radius: 7px;
 opacity: 1;
 margin-left:30px;
+
 
 `  
 export const VFMasterGroupCardHeader= styled.div`
@@ -56,7 +57,9 @@ opacity: 1;
 export const VFButtonWrapper=styled.div`
 margin-top:12px;
 margin-left:30px;
-margin-bottom:12px
+margin-bottom:12px;
+display: flex;
+gap: 25px;
 `
 export const VFMasterGroupCardContent=styled.div<{theme:any}>`
 width: 415px;
@@ -81,12 +84,9 @@ cursor:pointer;
         background-color: ${(props) => globalStyles.chooseThemeColor[props.theme]?.color5};
         border: 1px solid white;
     }
-    & > div:nth-child(2){
-        color: white;
-        
-      
-    }
-    
+    // & > div:nth-child(2){
+    //     color: white;
+    // }  
 }
 `
 
@@ -126,7 +126,7 @@ justify-content:center;
 export const VFMasterGroupCardContainer=styled.div`
 display: flex;
 align-items: center;
-justify-content:center;
+justify-content:flex-start;
 overflow-y: scroll;
 padding-bottom:15px;
 &::-webkit-scrollbar{
