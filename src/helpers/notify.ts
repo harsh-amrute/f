@@ -9,7 +9,7 @@ interface PromiseToastMsg{
 
 export const ATTR_TOAST = {
   position: 'top-right',
-  autoClose: 5000,
+  autoClose: 4000,
   hideProgressBar: false,
   closeOnClick: true,
   pauseOnHover: true,
@@ -28,3 +28,5 @@ export const notifyError = (msg: string) => toast.error(msg, ATTR_TOAST)
 export const notifySuccess = (msg: string) => toast.success(msg, ATTR_TOAST)
 
 export const notifyPromise = (promise:Promise<unknown>,msgs:PromiseToastMsg)=>toast.promise(promise,msgs)
+
+export const notifyLoader = (msg: string) => toast.loading(msg)

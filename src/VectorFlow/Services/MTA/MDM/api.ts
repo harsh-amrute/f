@@ -41,9 +41,8 @@ export namespace MDMService {
   }
 
   export const modifyDraft = async (body: any) => {
-    return axios.put(process.env.REACT_APP_VF_API_HOST + `/draft`,{
+    return axios.put(process.env.REACT_APP_VF_API_HOST + `/draft`,body,{
       headers: { 'Content-Type': 'application/json' },
-      body:JSON.stringify(body)
     })
   }
 

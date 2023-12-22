@@ -450,6 +450,7 @@ export const mapMasterToColumnDefs = (fields:Field[])=>{
       hide:!f.visible,
       floatingFilter: true,
       filter: "agMultiColumnFilter",
+      // suppressColumnsToolPanel: f.isEdit ? false : true,
       ...defaultColDefs
     }
   })

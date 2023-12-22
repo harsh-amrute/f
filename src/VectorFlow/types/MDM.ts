@@ -12,7 +12,8 @@ export interface MDMStore{
     options:Option[],
     selectedOptions:Option[],
     activeMaster:MDMMasterState,
-    isSelectMasterOpen:boolean
+    isSelectMasterOpen:boolean,
+    draftId:string
 }
 
 export interface MDMMasterState{

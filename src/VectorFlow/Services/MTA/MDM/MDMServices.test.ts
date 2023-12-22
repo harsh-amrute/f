@@ -143,9 +143,8 @@ describe('Testing the MDMService',  () => {
 
       mockedAxios.put.mockResolvedValueOnce({data:'test',status:200});
       const response = await MDMService.modifyDraft(mockBody);
-      expect(mockedAxios.put).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/draft',{
-        headers: { 'Content-Type': 'application/json' },
-        body:JSON.stringify(mockBody)
+      expect(mockedAxios.put).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/draft',mockBody,{
+        headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
   

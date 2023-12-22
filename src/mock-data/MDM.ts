@@ -797,7 +797,7 @@ export const getTaskDetailsDownloadDataMockData = {
 
 export const createDraftMockData = {
   recordCount: null,
-  data: null,
+  data: '123456QA',
   status: 500,
   msg: null
 }

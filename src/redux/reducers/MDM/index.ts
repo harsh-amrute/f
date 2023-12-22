@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { createReducer } from '@reduxjs/toolkit';
 import {type Option, type MDMMasterState, type MDMStore, type Filter} from '../../../VectorFlow/types/MDM'; 
 import { generateRandomId } from '../../../helpers/utils';
-import {FILL_MASTERS, FILL_SELECTED_OPTIONS, REMOVE_MASTER, FILTER_MASTER, ADD_MASTER, FILL_OPTIONS, UPDATE_ACTIVE_MASTER, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_COLDEFS, STORE_ALL_MASTERS, ADD_FILTER, REMOVE_FILTER, UPDATE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, RESET_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, MODIFY_ROW_DATA} from '../../actions/MDM';
+import {FILL_MASTERS, FILL_SELECTED_OPTIONS, REMOVE_MASTER, FILTER_MASTER, ADD_MASTER, FILL_OPTIONS, UPDATE_ACTIVE_MASTER, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_COLDEFS, STORE_ALL_MASTERS, ADD_FILTER, REMOVE_FILTER, UPDATE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, RESET_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, MODIFY_ROW_DATA,SET_DRAFT_ID} from '../../actions/MDM';
 import { ColDef } from 'ag-grid-enterprise';
 
 
@@ -128,6 +128,10 @@ const setIsSelectMasterOpen = (state:any,action:PayloadAction<boolean>)=>{
     state.isSelectMasterOpen = action.payload;
 }
 
+const setDraftId = (state:any,action:PayloadAction<string>) => {
+    state.draftId = action.payload;
+}
+
 const resetState = (state:any) => {
     state.align = [];
     state.masters=[];
@@ -135,6 +139,7 @@ const resetState = (state:any) => {
     state.selectedOptions=[];
     state.activeMaster={id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[]};
     state.isSelectMasterOpen = true;
+    state.draftId = '';
 }
 
 
@@ -162,6 +167,7 @@ const mdmReducer = (initialState:MDMStore) => createReducer(initialState, (build
       .addCase(UPDATE_ACTIVE_MASTER,setActiveMaster)
       .addCase(TOGGLE_SELECT_MASTER_SCREEN,setIsSelectMasterOpen)
       .addCase(RESET_STATE,resetState)
+      .addCase(SET_DRAFT_ID,setDraftId)
   })
 
 export default mdmReducer;
