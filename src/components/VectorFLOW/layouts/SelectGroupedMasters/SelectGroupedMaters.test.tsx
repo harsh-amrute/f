@@ -7,8 +7,6 @@ import { store } from "../../../../redux/store/store"
 import { UserDataContext } from "../../../../context"
 import SelectGroupedMasters, { SelectGroupedMastersProps } from "."
 import { setupReactQuery } from "../../../../config/react-query-config"
-import { VFMasterGroupCardContent } from "./styles"
-
 
 const mockFunction = jest.fn()
 
@@ -16,11 +14,10 @@ const dummyprops:SelectGroupedMastersProps = {
     onSubmit:mockFunction,
     onCancel:mockFunction,
     onSelectMasters:mockFunction,
-    mapMasterUIToMasterGroup:mockFunction,
     handleOnClickMaster:mockFunction,
     selectedMasters:[
       {
-          "id": "5",
+          "id": 5,
           "name": "MOQMaster",
           "fields": [
               {
@@ -55,12 +52,77 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true
               }
-          ]
+          ],
+          "filters": [
+              {
+                  "id": "PusfrSatKf",
+                  "masterId": 5,
+                  "field": "",
+                  "operator": "",
+                  "text": ""
+              }
+          ],
+          "colDefs": [
+              {
+                  "field": "sk",
+                  "colId": "sk",
+                  "headerName": "SKUCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "wh",
+                  "colId": "wh",
+                  "headerName": "WhCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "sc",
+                  "colId": "sc",
+                  "headerName": "SupplierCode",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "mq",
+                  "colId": "mq",
+                  "headerName": "MOQ",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              }
+          ],
+          "rowData": [],
+          "progress": "default"
       }
-  ],
+    ],
     allMasters:[
       {
-          "id": "1",
+          "id": 1,
           "name": "SKUMaster",
           "fields": [
               {
@@ -223,10 +285,283 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true
               }
-          ]
+          ],
+          "filters": [
+              {
+                  "id": "L20AEYJxWR",
+                  "masterId": 1,
+                  "field": "",
+                  "operator": "",
+                  "text": ""
+              }
+          ],
+          "colDefs": [
+              {
+                  "field": "sc",
+                  "colId": "sc",
+                  "headerName": "SKUCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "sd",
+                  "colId": "sd",
+                  "headerName": "Description",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "ec",
+                  "colId": "ec",
+                  "headerName": "ElephantOrderCapping",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "wt",
+                  "colId": "wt",
+                  "headerName": "Weight",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "vm",
+                  "colId": "vm",
+                  "headerName": "Volume",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c1",
+                  "colId": "c1",
+                  "headerName": "c1",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c2",
+                  "colId": "c2",
+                  "headerName": "c2",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c3",
+                  "colId": "c3",
+                  "headerName": "c3",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c4",
+                  "colId": "c4",
+                  "headerName": "c4",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c5",
+                  "colId": "c5",
+                  "headerName": "c5",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c6",
+                  "colId": "c6",
+                  "headerName": "c6",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c7",
+                  "colId": "c7",
+                  "headerName": "c7",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c8",
+                  "colId": "c8",
+                  "headerName": "c8",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c9",
+                  "colId": "c9",
+                  "headerName": "c9",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c10",
+                  "colId": "c10",
+                  "headerName": "c10",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c11",
+                  "colId": "c11",
+                  "headerName": "c11",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c12",
+                  "colId": "c12",
+                  "headerName": "c12",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c13",
+                  "colId": "c13",
+                  "headerName": "c13",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c14",
+                  "colId": "c14",
+                  "headerName": "c14",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c15",
+                  "colId": "c15",
+                  "headerName": "c15",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              }
+          ],
+          "rowData": [],
+          "progress": "default"
       },
       {
-          "id": "2",
+          "id": 2,
           "name": "LocationMaster",
           "fields": [
               {
@@ -373,10 +708,257 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true
               }
-          ]
+          ],
+          "filters": [
+              {
+                  "id": "lwWgMl41WM",
+                  "masterId": 2,
+                  "field": "",
+                  "operator": "",
+                  "text": ""
+              }
+          ],
+          "colDefs": [
+              {
+                  "field": "wc",
+                  "colId": "wc",
+                  "headerName": "WHCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "wd",
+                  "colId": "wd",
+                  "headerName": "WHDescription",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "l",
+                  "colId": "l",
+                  "headerName": "LogisticsLocation",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c1",
+                  "colId": "c1",
+                  "headerName": "c1",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c2",
+                  "colId": "c2",
+                  "headerName": "c2",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c3",
+                  "colId": "c3",
+                  "headerName": "c3",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c4",
+                  "colId": "c4",
+                  "headerName": "c4",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c5",
+                  "colId": "c5",
+                  "headerName": "c5",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c6",
+                  "colId": "c6",
+                  "headerName": "c6",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c7",
+                  "colId": "c7",
+                  "headerName": "c7",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c8",
+                  "colId": "c8",
+                  "headerName": "c8",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c9",
+                  "colId": "c9",
+                  "headerName": "c9",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c10",
+                  "colId": "c10",
+                  "headerName": "c10",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c11",
+                  "colId": "c11",
+                  "headerName": "c11",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c12",
+                  "colId": "c12",
+                  "headerName": "c12",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c13",
+                  "colId": "c13",
+                  "headerName": "c13",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c14",
+                  "colId": "c14",
+                  "headerName": "c14",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c15",
+                  "colId": "c15",
+                  "headerName": "c15",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              }
+          ],
+          "rowData": [],
+          "progress": "default"
       },
       {
-          "id": "3",
+          "id": 3,
           "name": "SkuLocationMaster",
           "fields": [
               {
@@ -667,10 +1249,491 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true
               }
-          ]
+          ],
+          "filters": [
+              {
+                  "id": "NjjTPzIR4g",
+                  "masterId": 3,
+                  "field": "",
+                  "operator": "",
+                  "text": ""
+              }
+          ],
+          "colDefs": [
+              {
+                  "field": "sc",
+                  "colId": "sc",
+                  "headerName": "SKU Code",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "sn",
+                  "colId": "sn",
+                  "headerName": "SKU Name",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "wc",
+                  "colId": "wc",
+                  "headerName": "Location Code",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "ln",
+                  "colId": "ln",
+                  "headerName": "Location Name",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "pwc",
+                  "colId": "pwc",
+                  "headerName": "Parent Loc code",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "sc",
+                  "colId": "sc",
+                  "headerName": "Parent Loc Name",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "n",
+                  "colId": "n",
+                  "headerName": "Norm",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "mn",
+                  "colId": "mn",
+                  "headerName": "MinNorm",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "rlt",
+                  "colId": "rlt",
+                  "headerName": "RLT",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "rcp",
+                  "colId": "rcp",
+                  "headerName": "RCP",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "gcp",
+                  "colId": "gcp",
+                  "headerName": "GCP",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "ocp",
+                  "colId": "ocp",
+                  "headerName": "OCP",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "moc",
+                  "colId": "moc",
+                  "headerName": "Min Order Count",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "ps",
+                  "colId": "ps",
+                  "headerName": "PackSize",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "mst",
+                  "colId": "mst",
+                  "headerName": "Modified Spike Threshold",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "st",
+                  "colId": "st",
+                  "headerName": "Default Spike Threshold",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "mpt",
+                  "colId": "mpt",
+                  "headerName": "Modified PSO Threshold",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "pt",
+                  "colId": "pt",
+                  "headerName": "Default PSO Threshold",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "frf",
+                  "colId": "frf",
+                  "headerName": "FG/RM Flag",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "da",
+                  "colId": "da",
+                  "headerName": "DBM Active",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "npr",
+                  "colId": "npr",
+                  "headerName": "Norm Percent Reservation",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c1",
+                  "colId": "c1",
+                  "headerName": "SKULocAtt01",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c2",
+                  "colId": "c2",
+                  "headerName": "SKULocAtt02",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c3",
+                  "colId": "c3",
+                  "headerName": "SKULocAtt03",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c4",
+                  "colId": "c4",
+                  "headerName": "SKULocAtt04",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c5",
+                  "colId": "c5",
+                  "headerName": "SKULocAtt05",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c6",
+                  "colId": "c6",
+                  "headerName": "SKULocAtt06",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c7",
+                  "colId": "c7",
+                  "headerName": "SKULocAtt07",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c8",
+                  "colId": "c8",
+                  "headerName": "SKULocAtt08",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c9",
+                  "colId": "c9",
+                  "headerName": "SKULocAtt09",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c10",
+                  "colId": "c10",
+                  "headerName": "SKULocAtt10",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c11",
+                  "colId": "c11",
+                  "headerName": "SKULocAtt11",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c12",
+                  "colId": "c12",
+                  "headerName": "SKULocAtt12",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c13",
+                  "colId": "c13",
+                  "headerName": "SKULocAtt13",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c14",
+                  "colId": "c14",
+                  "headerName": "SKULocAtt14",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "c15",
+                  "colId": "c15",
+                  "headerName": "SKULocAtt15",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              }
+          ],
+          "rowData": [],
+          "progress": "default"
       },
       {
-          "id": "4",
+          "id": 4,
           "name": "SOBMaster",
           "fields": [
               {
@@ -705,10 +1768,75 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true
               }
-          ]
+          ],
+          "filters": [
+              {
+                  "id": "2vNQHWixnh",
+                  "masterId": 4,
+                  "field": "",
+                  "operator": "",
+                  "text": ""
+              }
+          ],
+          "colDefs": [
+              {
+                  "field": "sk",
+                  "colId": "sk",
+                  "headerName": "SKUCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "wc",
+                  "colId": "wc",
+                  "headerName": "WhCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "sc",
+                  "colId": "sc",
+                  "headerName": "SupplierCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "sb",
+                  "colId": "sb",
+                  "headerName": "SOB",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              }
+          ],
+          "rowData": [],
+          "progress": "default"
       },
       {
-          "id": "5",
+          "id": 5,
           "name": "MOQMaster",
           "fields": [
               {
@@ -743,10 +1871,75 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true
               }
-          ]
+          ],
+          "filters": [
+              {
+                  "id": "PusfrSatKf",
+                  "masterId": 5,
+                  "field": "",
+                  "operator": "",
+                  "text": ""
+              }
+          ],
+          "colDefs": [
+              {
+                  "field": "sk",
+                  "colId": "sk",
+                  "headerName": "SKUCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "wh",
+                  "colId": "wh",
+                  "headerName": "WhCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "sc",
+                  "colId": "sc",
+                  "headerName": "SupplierCode",
+                  "hide": true,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "mq",
+                  "colId": "mq",
+                  "headerName": "MOQ",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              }
+          ],
+          "rowData": [],
+          "progress": "default"
       },
       {
-          "id": "7",
+          "id": 7,
           "name": "AddPOMaster",
           "fields": [
               {
@@ -765,10 +1958,49 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true
               }
-          ]
+          ],
+          "filters": [
+              {
+                  "id": "pI75V7BcCx",
+                  "masterId": 7,
+                  "field": "",
+                  "operator": "",
+                  "text": ""
+              }
+          ],
+          "colDefs": [
+              {
+                  "field": "sc",
+                  "colId": "sc",
+                  "headerName": "PhaseOutSKU",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "wc",
+                  "colId": "wc",
+                  "headerName": "LocationCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              }
+          ],
+          "rowData": [],
+          "progress": "default"
       },
       {
-          "id": "8",
+          "id": 8,
           "name": "AddPIPOMaster",
           "fields": [
               {
@@ -795,10 +2027,62 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true
               }
-          ]
+          ],
+          "filters": [
+              {
+                  "id": "QBUgVT9fjD",
+                  "masterId": 8,
+                  "field": "",
+                  "operator": "",
+                  "text": ""
+              }
+          ],
+          "colDefs": [
+              {
+                  "field": "sc",
+                  "colId": "sc",
+                  "headerName": "SKUCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "wc",
+                  "colId": "wc",
+                  "headerName": "WhCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "pi",
+                  "colId": "pi",
+                  "headerName": "PhaseInSKUCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              }
+          ],
+          "rowData": [],
+          "progress": "default"
       },
       {
-          "id": "9",
+          "id": 9,
           "name": "AddTargetNorm",
           "fields": [
               {
@@ -825,10 +2109,62 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true
               }
-          ]
+          ],
+          "filters": [
+              {
+                  "id": "XUxZDbv31N",
+                  "masterId": 9,
+                  "field": "",
+                  "operator": "",
+                  "text": ""
+              }
+          ],
+          "colDefs": [
+              {
+                  "field": "sc",
+                  "colId": "sc",
+                  "headerName": "PhaseInSKUCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "wc",
+                  "colId": "wc",
+                  "headerName": "LocationCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "tn",
+                  "colId": "tn",
+                  "headerName": "TargetNorm",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              }
+          ],
+          "rowData": [],
+          "progress": "default"
       },
       {
-          "id": "11",
+          "id": 11,
           "name": "AbsoluteValueSeasonality",
           "fields": [
               {
@@ -879,10 +2215,101 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true
               }
-          ]
+          ],
+          "filters": [
+              {
+                  "id": "ehYt52tL3J",
+                  "masterId": 11,
+                  "field": "",
+                  "operator": "",
+                  "text": ""
+              }
+          ],
+          "colDefs": [
+              {
+                  "field": "sc",
+                  "colId": "sc",
+                  "headerName": "SKUCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "wc",
+                  "colId": "wc",
+                  "headerName": "WhCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "sd",
+                  "colId": "sd",
+                  "headerName": "StartDate",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "ed",
+                  "colId": "ed",
+                  "headerName": "EndDate",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "tn",
+                  "colId": "tn",
+                  "headerName": "TargetNorm",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "bd",
+                  "colId": "bd",
+                  "headerName": "BuildupDuration",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              }
+          ],
+          "rowData": [],
+          "progress": "default"
       },
       {
-          "id": "12",
+          "id": 12,
           "name": "DeltaPercentageSeasonality",
           "fields": [
               {
@@ -941,13 +2368,116 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true
               }
-          ]
+          ],
+          "filters": [
+              {
+                  "id": "O0FaDOs3JH",
+                  "masterId": 12,
+                  "field": "",
+                  "operator": "",
+                  "text": ""
+              }
+          ],
+          "colDefs": [
+              {
+                  "field": "sc",
+                  "colId": "sc",
+                  "headerName": "SKUCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "wc",
+                  "colId": "wc",
+                  "headerName": "WhCode",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "sd",
+                  "colId": "sd",
+                  "headerName": "StartDate",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "ed",
+                  "colId": "ed",
+                  "headerName": "EndDate",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "dnp",
+                  "colId": "dnp",
+                  "headerName": "DeltaNormPercentage",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "ulc",
+                  "colId": "ulc",
+                  "headerName": "UpperLowerCap",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              },
+              {
+                  "field": "bd",
+                  "colId": "bd",
+                  "headerName": "BuildupDuration",
+                  "hide": false,
+                  "floatingFilter": true,
+                  "filter": "agMultiColumnFilter",
+                  "minWidth": 180,
+                  "cellStyle": {
+                      "text-align": "center"
+                  },
+                  "flex": 1
+              }
+          ],
+          "rowData": [],
+          "progress": "default"
       }
   ]
 }
 
 const queryClient = setupReactQuery()
-
 
 const contextWrapper = (children: ReactNode,store:any) => {
   return (
@@ -974,13 +2504,12 @@ describe("SelectGroupedMasters Component", () => {
   beforeEach(()=>{
     render(contextWrapper(<SelectGroupedMasters {...dummyprops}/>,store))
   })
+
     it("renders the component", () => {
-      
       const submit=screen.getByText('Submit')
       expect(submit).toBeInTheDocument()
       const cancel=screen.getByText('Cancel')
       expect(cancel).toBeInTheDocument
-      
       });
 
       it("Check if page closes when Cancel button is clicked", async () => {
@@ -990,20 +2519,23 @@ describe("SelectGroupedMasters Component", () => {
       });
 
       it("Renders VFMasterGroupCardContent with default props", async () => {
-        // Assuming VFMasterGroupCardContent renders within SelectGroupedMasters
-        const masterNameElement = screen.getByText();
+        const masterNameElement = screen.getByText("MOQMaster");
         expect(masterNameElement).toBeInTheDocument();
       });
 
       it("Handles hover state on VFMasterGroupCardContent",()=>{
-        const masterNameElement = screen.getByText("Master Name");
-    fireEvent.mouseEnter(masterNameElement); // Assuming hover triggers on mouseEnter
-    expect(masterNameElement).toHaveStyle({ backgroundColor: "#820F4C" });
-      });
+        const masterNameElement = document.querySelector("#SKUMaster") as HTMLElement;
+        fireEvent.mouseEnter(masterNameElement);
+        expect(masterNameElement).toHaveStyle('backgroundColor: #820F4C');
+        fireEvent.mouseOut(masterNameElement);
+        expect(masterNameElement).toHaveStyle('backgroundColor: #FFFFF');
+      }); 
 
-    })
-      
+      it("It handles Click on VFMasterGroupCardContent",()=>{
+        const clickableElement = screen.getAllByTestId("vf-master-group-card")[0];
+        fireEvent.click(clickableElement);
+        fireEvent.click(clickableElement);
+    })  
     
-    
-    
+})
   

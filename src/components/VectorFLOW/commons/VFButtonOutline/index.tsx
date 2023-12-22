@@ -23,7 +23,6 @@ const VFButtonOutline = (props:VFButtonOutlineProps)=>{
         children,
         color,
         onHoverChild,
-        style
     } = props
 
     const [hoverState,setHoverState] = useState(false);

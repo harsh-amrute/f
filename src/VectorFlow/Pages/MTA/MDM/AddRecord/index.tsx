@@ -2,13 +2,13 @@
 import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/SelectGroupedMasters";
 import useAdd from "./useAdd";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
+import { notifySuccess } from "../../../../../helpers/notify";
 
 
 const AddRecord = () => {
     const {
         isAddRecordsLoading,
         onCancel,
-        mapMasterUIToMasterGroup,
         allMasters,
         selectedMasters,
         handleOnClickMaster
@@ -21,10 +21,9 @@ const AddRecord = () => {
 
     return(
         <SelectGroupedMasters 
-            onSelectMasters={()=>{}}  
-            onSubmit={()=>console.log('')}
+            onSelectMasters={()=>{console.log("")}}  
+            onSubmit={()=>notifySuccess('Submitted')}  //console.log()
             onCancel={onCancel}
-            mapMasterUIToMasterGroup={mapMasterUIToMasterGroup}
             handleOnClickMaster={handleOnClickMaster}
             allMasters={allMasters}
             selectedMasters={selectedMasters}

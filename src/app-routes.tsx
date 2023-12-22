@@ -21,7 +21,7 @@ import AddRecord from './VectorFlow/Pages/MTA/MDM/AddRecord'
 import SavedDrafts from './VectorFlow/Pages/MTA/MDM/SavedDrafts'
 import TaskStatus from './VectorFlow/Pages/MTA/MDM/TaskStatus'
 import TaskPendingForReview from './VectorFlow/Pages/MTA/MDM/TaskPendingForReview'
-import SelectGroupedMasters from './components/VectorFLOW/layouts/SelectGroupedMasters'
+
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {

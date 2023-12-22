@@ -1,12 +1,11 @@
-import { useSelector } from 'react-redux'
+import { useSelector,useDispatch } from 'react-redux'
 import { RootState } from '../../../../../redux/store/store';
-import {masterGroupMapper} from '../../../../../helpers/MDMConstants';
 import { useGetMasterUIConfiguration } from '../../../../../VectorFlow/Services/MTA/MDM';
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect} from 'react';
 import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
 import { STORE_ALL_MASTERS,RESET_STATE, REMOVE_MASTER, ADD_MASTER } from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
+import { mapMasterToMasterState } from '../../../../../helpers/utils';
 
 
 const useAdd=()=>{
@@ -19,23 +18,12 @@ const useAdd=()=>{
     useEffect(()=>{
         const getData=async()=>{
             const data = await getMasterUIConfigurationData('add')
-            console.log(data.data.data)
-            dispatch(STORE_ALL_MASTERS(data.data.data))
+            dispatch(STORE_ALL_MASTERS(mapMasterToMasterState(data.data.data)))
         }
         getData()
         
     },[])
 
-    const mapMasterUIToMasterGroup=(currentMaster:{id:number,name:string})=>{
-
-           masterGroupMapper.map((m)=>{
-            if( m.masters.includes(currentMaster.id.toString())){
-                return true
-            }
-           })
-        
-        return false
-    }
 
     const onCancel=()=>{
         dispatch(RESET_STATE());
@@ -48,19 +36,16 @@ const useAdd=()=>{
             return
         }
         dispatch(ADD_MASTER(master))
-        console.log('dsfa')
+       
     }
     
-
     return {
         allMasters,
         onCancel,
-        mapMasterUIToMasterGroup,
         isAddRecordsLoading,
         selectedMasters,
         handleOnClickMaster
     }
-
 }
 
 export default useAdd

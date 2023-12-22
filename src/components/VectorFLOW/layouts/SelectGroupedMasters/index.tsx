@@ -5,8 +5,6 @@ import VFButton from "../../../VectorFLOW/commons/VFButton";
 import { useState,ReactNode} from "react";
 import { MDMMasterState } from "../../../../VectorFlow/types/MDM";
 import {ImageMapper,ImageMapperHover, masterGroupMapper} from "../../../../helpers/MDMConstants"
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store/store";
 import * as globalStyles from "../../../../styles/global";
 
 export interface SelectGroupedMastersProps {
@@ -14,34 +12,33 @@ export interface SelectGroupedMastersProps {
     onCancel:()=>void;
     onHover?:ReactNode;
     onSelectMasters:()=>void;
-    mapMasterUIToMasterGroup:(params:any)=>boolean;
     handleOnClickMaster:(master:MDMMasterState)=>void;
     allMasters:MDMMasterState[]
     selectedMasters:MDMMasterState[]
 }
 interface CardProps{
     master:MDMMasterState
-    onClick:()=>void
     handleOnClickMaster:(master:MDMMasterState)=>void
+    selectedMasters:MDMMasterState[]
 }
 
 const Card=(props:CardProps)=>{
     const {user} = useUserData()
-    const selectedMasters = useSelector((state:RootState)=>state.mdm.masters)
     const [isHovered, setIsHovered] = useState(false);
     const {
         master,
-        handleOnClickMaster
+        handleOnClickMaster,
+        selectedMasters
     } = props;
 
     return(
-        <VFMasterGroupCardContent theme={user.user.theme_ui} style={{backgroundColor: selectedMasters.find((m:MDMMasterState)=>m.id===master.id)|| isHovered ? globalStyles.chooseThemeColor[user.user.theme_ui]?.color5 : 'white'}}
+        <VFMasterGroupCardContent data-testid='vf-master-group-card' theme={user.user.theme_ui} style={{backgroundColor: selectedMasters.find((m:MDMMasterState)=>m.id===master.id)|| isHovered ? globalStyles.chooseThemeColor[user.user.theme_ui]?.color5 : 'white'}}
             id={master.name} 
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={()=>handleOnClickMaster(master)}
         >
-            <VFMasterGroupCardImage 
+            <VFMasterGroupCardImage data-testid="vf-master-card-image"
                 style={{
                     backgroundColor:selectedMasters.find((m)=>m.id===master.id) || isHovered ? globalStyles.chooseThemeColor[user.user.theme_ui]?.color5 : '#F4F4F4',
                     border:selectedMasters.find((m)=>m.id===master.id) || isHovered ? 'white 1px solid':'none'
@@ -71,11 +68,7 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
     } = props
 
     const {user} = useUserData();
-    console.log(allMasters);
-    console.log(selectedMasters)
-   // const selectedMasters = useSelector((state:RootState)=>state.mdm.masters)
-    //const allMasters = useSelector((state:RootState)=>state.mdm.allMasters)
-
+   
  return(
     <ContentWrapper>
         <TextFilterWrapper>
@@ -96,7 +89,7 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
                         {allMasters.map((currentMaster)=>{
                             if(masterGroup.masters.includes(currentMaster.id.toString())){
                             return(
-                            <Card master={currentMaster} onClick={()=>console.log('')} handleOnClickMaster={handleOnClickMaster}/>
+                            <Card master={currentMaster} handleOnClickMaster={handleOnClickMaster} selectedMasters={selectedMasters}/>
                         )}})}
                 </VFMasterGroupCardHeader> 
             </VFMasterGroupCard>
