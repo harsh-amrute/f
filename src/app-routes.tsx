@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from 'react'
-import { type RouteObject } from 'react-router-dom'
+import {type RouteObject} from 'react-router-dom'
 import { AppLayout } from './components'
 import { getStoreTransferModuleRoutes } from './module-store-transfer/app-routes-store-transfer'
 import Login from './module-main/pages/auth/login'
@@ -17,9 +17,11 @@ import PageNotFound from './module-store-transfer/pages/notFound'
 import { useTranslation } from 'react-i18next'
 import ControlPanel from './VectorFlow/Pages/MTA/MDM/ControlPanel'
 import ViewModify from './VectorFlow/Pages/MTA/MDM/ViewModify'
+import AddRecord from './VectorFlow/Pages/MTA/MDM/AddRecord'
 import SavedDrafts from './VectorFlow/Pages/MTA/MDM/SavedDrafts'
 import TaskStatus from './VectorFlow/Pages/MTA/MDM/TaskStatus'
 import TaskPendingForReview from './VectorFlow/Pages/MTA/MDM/TaskPendingForReview'
+
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -51,7 +53,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/master-data-management/control-panel/view-modify',
     '/master-data-management/saved-drafts',
     '/master-data-management/task-status',
-    '/master-data-management/task-pending'
+    '/master-data-management/task-pending',
+    '/master-data-management/add'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -231,6 +234,17 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
+      path: '/master-data-management/add',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<AddRecord/>)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
       path: '/permission-forbidden',
       element: <AppLayout />,
       children: [
@@ -251,6 +265,7 @@ export const initRoutes = (): RouteObject[] => {
         },
         ...getStoreTransferModuleRoutes()
       ]
-    }
+    },
+    
   ]
 }

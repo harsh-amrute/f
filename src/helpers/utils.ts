@@ -466,6 +466,12 @@ export const areMasterFiltersValid = (masterFilters:Filter[])=>{
   return true
 }
 
+// export const getMasterFromMasterGroupMapper=(mapper:{})=>{
+//   for (const masterGroupKey in mapper){
+//     return 
+//   }
+// }
+
 
 export const mapStateFiltersToPayload = (filters:Filter[]) => {
   return filters.map((filter:Filter)=>({attributeName:filter.field,op:filter.operator,value:filter.text}))
