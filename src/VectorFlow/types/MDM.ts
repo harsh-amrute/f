@@ -12,7 +12,8 @@ export interface MDMStore{
     options:Option[],
     selectedOptions:Option[],
     activeMaster:MDMMasterState,
-    isSelectMasterOpen:boolean
+    isSelectMasterOpen:boolean,
+    draftId:string
 }
 
 export interface MDMMasterState{
@@ -83,6 +84,16 @@ export interface VFtableProps{
 export interface GridRef{
     api:GridApi
     columnApi:ColumnApi
+}
+
+export interface AddRecordMaster{
+    id:number,
+    name:string
+}
+
+export interface AddRecordMasterGroup{
+    name:string
+    masters:AddRecordMaster[]
 }
 export interface MasterIdToSchema{
     [key: string]: Joi.ObjectSchema<any>

@@ -81,9 +81,12 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
     
 
     useEffect(()=>{
-      if(ref.current){
+      if(ref.current && ref.current.api){
         if(isTableDataLoading){
           ref.current?.api.showLoadingOverlay();
+        }
+        else{
+          ref.current?.api.hideOverlay();
         }
       }
     },[isTableDataLoading])
@@ -206,7 +209,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
           </React.Fragment>
           }
           {
-            !(['default'].includes(activeMaster.progress)) 
+            (!['default'].includes(activeMaster.progress) && !isSelectMasterOpen) 
               && 
               <VFPagination 
                 selectedRows={selectedRowsCount} 

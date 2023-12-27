@@ -9,6 +9,7 @@ interface WarningModalProps{
     onSuccess:()=>void
     onFailure:()=>void
     onCloseModal:()=>void
+    
 }
 
 
@@ -18,7 +19,8 @@ const WarningModal = (props:WarningModalProps) =>{
         count,
         onFailure,
         onSuccess,
-        onCloseModal
+        onCloseModal,
+        
     } = props
 
     const {user} = useUserData()

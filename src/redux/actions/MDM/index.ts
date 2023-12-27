@@ -23,7 +23,8 @@ const actions =  {
     UPDATE_ROW_DATA:createAction<any[]>("UPDATE_ROW_DATA"),
     REMOVE_ROW_DATA:createAction<any[]>("REMOVE_ROW_DATA"),
     UPDATE_PROGRESS_STATE:createAction<string>("UPDATE_PROGRESS_STATE"),
-    RESET_STATE:createAction("RESET_STATE")
+    RESET_STATE:createAction("RESET_STATE"),
+    SET_DRAFT_ID:createAction<string>("SET_DRAFT_ID")
 }
 
 export const {
@@ -47,5 +48,6 @@ export const {
     MODIFY_ROW_DATA,
     REMOVE_ROW_DATA,
     UPDATE_PROGRESS_STATE,
-    RESET_STATE
+    RESET_STATE,
+    SET_DRAFT_ID
 } = actions;

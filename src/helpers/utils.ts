@@ -452,6 +452,7 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number)=>{
       hide:!f.visible,
       floatingFilter: true,
       filter: "agMultiColumnFilter",
+      // suppressColumnsToolPanel: f.isEdit ? false : true,
       ...defaultColDefs
     }
   })
@@ -497,6 +498,12 @@ export const areMasterFiltersValid = (masterFilters:Filter[])=>{
   }
   return true
 }
+
+// export const getMasterFromMasterGroupMapper=(mapper:{})=>{
+//   for (const masterGroupKey in mapper){
+//     return 
+//   }
+// }
 
 
 export const mapStateFiltersToPayload = (filters:Filter[]) => {

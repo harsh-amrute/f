@@ -12,7 +12,7 @@ import { type MDMMasterState,type Option } from "../../../../VectorFlow/types/MD
 import { useDispatch, useSelector } from 'react-redux';
 import { notifyError } from "../../../../helpers/notify";
 import { RootState } from "../../../../redux/store/store";
-import { ADD_MASTER,FILL_SELECTED_OPTIONS, FILTER_MASTER, REMOVE_MASTER, RESET_STATE } from "../../../../redux/actions/MDM";
+import { ADD_MASTER,FILL_SELECTED_OPTIONS,REMOVE_MASTER, RESET_STATE } from "../../../../redux/actions/MDM";
 
 interface SelectMasterProps{
     data:MDMMasterState[],
@@ -63,26 +63,20 @@ const SelectMaster = (
         }
         
         dispatch(FILL_SELECTED_OPTIONS([]));
-        
-        if(getFilterButtonStatus(currMaster.id)){
+      
+        if(getFilterButtonStatus(currMaster.id) || masters.find((selectedMaster:MDMMasterState)=>selectedMaster.id === currMaster.id)){
             setFilterButtonStatus(filterButtonStatus.filter((masterId:number)=>masterId !== currMaster.id));
             dispatch(REMOVE_MASTER(currMaster.id))
         }
         else{
             setFilterButtonStatus([...filterButtonStatus,currMaster.id]);
-            if(masters.find((selectedMaster:MDMMasterState)=>selectedMaster.id === currMaster.id)){
-                dispatch(FILTER_MASTER(currMaster.id));
-            }
-            else{
-                // if(filterButtonStatus.length === 0) dispatch(FILL_MASTERS([currMaster]));
-                // else dispatch(ADD_MASTER(currMaster));
-                dispatch(ADD_MASTER(currMaster));
-            }
+            dispatch(ADD_MASTER(currMaster));
+       
         }   
     }
 
     const getFilterButtonStatus = (masterId:number) => {
-        return filterButtonStatus.find((id:number)=>id===masterId) ? true : false;
+        return (filterButtonStatus.find((id:number)=>id===masterId) || masters.find((master:MDMMasterState)=>master.id === masterId)) ? true : false;
     }
 
     const setValue = (options:any) => {

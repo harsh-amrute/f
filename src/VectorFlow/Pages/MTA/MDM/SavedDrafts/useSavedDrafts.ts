@@ -15,7 +15,7 @@ const useSavedDrafts = ()=>{
     const {mutateAsync:deleteDraft} = useDeleteDraft()
     const [isDeleteModalOpen,toggleDeleteModal] = useState<boolean>(false)
     const [deleteDraftId,setDeleteDraftId] = useState<string>("");
-    const {data,isLoading} = useGetAllDrafts();
+    const {data,isLoading,refetch} = useGetAllDrafts();
     const allDrafts = data?.data.data;
   
 
@@ -52,6 +52,7 @@ const useSavedDrafts = ()=>{
                 error:'Something went wrong'
             }
         )
+        refetch();
     }
 
     return{
