@@ -143,9 +143,8 @@ describe('Testing the MDMService',  () => {
 
       mockedAxios.put.mockResolvedValueOnce({data:'test',status:200});
       const response = await MDMService.modifyDraft(mockBody);
-      expect(mockedAxios.put).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/draft',{
-        headers: { 'Content-Type': 'application/json' },
-        body:JSON.stringify(mockBody)
+      expect(mockedAxios.put).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/draft',mockBody,{
+        headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
   
@@ -161,4 +160,47 @@ describe('Testing the MDMService',  () => {
       expect(response.status).toBe(200);
   
     });
+
+    it('should make get request to /GetTaskPendingForReviewData', async () => {
+
+      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getPendingTasks()
+      expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetTaskPendingForReviewData`,{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+    });
+
+    it('should make get request to /GetTaskDetails/${taskId}', async () => {
+
+      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getTaskDetails('1_202312061821491222')
+      expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetTaskDetails/1_202312061821491222`,{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+    });
+
+    it('should make get request to /GetTaskStatusData', async () => {
+
+      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getTaskStatusData()
+      expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetTaskStatusData`,{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+    });
+
+
+    it('should make post request to /GetTaskDetailsDownloadData', async () => {
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getTaskDetailsDownloadData({taskId:'1_20231207113620',approverId:1})
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetTaskDetailsDownloadData`,JSON.stringify({taskId:'1_20231207113620',approverId:1}),{
+      headers: { 'Content-Type': 'application/json' }
+    })
+      expect(response.status).toBe(200);
+    });
+
+
   });

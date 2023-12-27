@@ -1,21 +1,21 @@
 import { useState } from "react"
-import { useDispatch } from "react-redux"
-import { useNavigate } from "react-router"
-import { useGetDraftById, useGetMasterUIConfiguration,useGetAllDrafts, useDeleteDraft } from "../../../../../VectorFlow/Services/MTA/MDM"
+// import { useDispatch } from "react-redux"
+// import { useNavigate } from "react-router"
+import {useGetAllDrafts, useDeleteDraft } from "../../../../../VectorFlow/Services/MTA/MDM"
 import { notifyPromise } from "../../../../../helpers/notify"
 
 
 const useSavedDrafts = ()=>{
 
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
+    // const dispatch = useDispatch()
+    // const navigate = useNavigate()
 
     // const {mutateAsync:getDraftById} = useGetDraftById()
     // const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration()
     const {mutateAsync:deleteDraft} = useDeleteDraft()
     const [isDeleteModalOpen,toggleDeleteModal] = useState<boolean>(false)
     const [deleteDraftId,setDeleteDraftId] = useState<string>("");
-    const {data,isLoading} = useGetAllDrafts();
+    const {data,isLoading,refetch} = useGetAllDrafts();
     const allDrafts = data?.data.data;
   
 
@@ -52,6 +52,7 @@ const useSavedDrafts = ()=>{
                 error:'Something went wrong'
             }
         )
+        refetch();
     }
 
     return{

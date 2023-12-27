@@ -8,17 +8,26 @@ export const MasterData:MDMMasterState[] = [
           {
             displayName:'SKU Code',
             key:"sku_code",
-            visible:true
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
           {
             displayName:'SKU Name',
             key:"sku_name",
-            visible:true
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
           {
             displayName: "Item Category Code",
             key: "item_category_code",
-            visible: false
+            visible:false,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
       ],
       colDefs:[],
@@ -41,17 +50,26 @@ export const MasterData:MDMMasterState[] = [
           {
             displayName:'Location Code',
             key:"location_code",
-            visible:true
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
           {
             displayName:'Location Name',
             key:"location_name",
-            visible:true
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
           {
             displayName: "c1",
             key: "LocAttr1",
-            visible: false
+            visible: false,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
       ],
       colDefs:[],
@@ -74,17 +92,25 @@ export const MasterData:MDMMasterState[] = [
           {
             displayName:'SKU Code',
             key:"sku_code",
-            visible:true
+            visible:true, isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
           {
             displayName:'SKU Name',
             key:"sku_name",
-            visible:true
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
           {
             displayName: "Segment",
             key: "SKULocAttr1",
-            visible: false
+            visible: false,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
           },
       ],
       colDefs:[],
@@ -193,17 +219,585 @@ export const getMasterUIConfigurationMockData:any = {
           id: "1",
           name: "SKUMaster",
           fields: [
-              {
-                  displayName: "SKUCode",
-                  key: "sc",
-                  visible: true,
-                  isAdd: true,
-                  isEdit: true,
-                  isDownload: true
-              },
+            {
+              displayName: "SKUCode",
+              key: "sc",
+              visible: true,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "Description",
+              key: "sd",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "ElephantOrderCapping",
+              key: "ec",
+              visible: true,
+              isAdd: true,
+              isEdit: false,
+              isDownload: true
+            },
+            {
+              displayName: "Weight",
+              key: "wt",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "Volume",
+              key: "vm",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c1",
+              key: "c1",
+              visible: true,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c2",
+              key: "c2",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c3",
+              key: "c3",
+              visible: true,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c4",
+              key: "c4",
+              visible: true,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c5",
+              key: "c5",
+              visible: true,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c6",
+              key: "c6",
+              visible: true,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c7",
+              key: "c7",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c8",
+              key: "c8",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c9",
+              key: "c9",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c10",
+              key: "c10",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c11",
+              key: "c11",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c12",
+              key: "c12",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c13",
+              key: "c13",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c14",
+              key: "c14",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            },
+            {
+              displayName: "c15",
+              key: "c15",
+              visible: false,
+              isAdd: true,
+              isEdit: true,
+              isDownload: true
+            }
           ]
       },
   ],
   status: 200,
+  msg: null
+}
+
+
+export const getTaskPendingForReviewMockData = {
+  recordCount: null,
+  data: [
+      {
+         TaskID: "1_20231206175429",
+          PendingSince: "2023-12-06T17:59:01.667",
+          TaskName: "M_SKU",
+          Approver: "Approver1,Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                 TaskID: "1_20231206175429",
+                  PendingSince: "2023-12-06T17:59:01.667",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "1"
+              },
+              {
+                 TaskID: "1_20231206175429",
+                  PendingSince: "2023-12-06T17:59:01.667",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+         TaskID: "1_20231206182017",
+          PendingSince: "2023-12-06T18:20:36.320",
+          TaskName: "M_SKU",
+          Approver: "Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                 TaskID: "1_20231206182017",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "1"
+              },
+              {
+                 TaskID: "1_20231206182017",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+         TaskID: "1_202312061821491222",
+          PendingSince: "2023-12-06T18:20:36.320",
+          TaskName: "M_SKU",
+          Approver: "Approver1,Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                 TaskID: "1_202312061821491222",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApprovedDate: "15/12/2023 01:51 AM",
+                  ApproverId: "1"
+              },
+              {
+                 TaskID: "1_202312061821491222",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+         TaskID: "1_20231206182149",
+          PendingSince: "2023-12-06T18:21:59.460",
+          TaskName: "M_SKU",
+          Approver: "Approver1,Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                 TaskID: "1_20231206182149",
+                  PendingSince: "2023-12-06T18:21:59.460",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Partially Approved - DB update Pending",
+                  ApprovedDate: "Dec 12 2023 12:15PM",
+                  ApproverId: "1"
+              },
+              {
+                 TaskID: "1_20231206182149",
+                  PendingSince: "2023-12-06T18:21:59.460",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Partially Approved - DB update Pending",
+                  ApprovedDate: "Dec 12 2023 12:15PM",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+         TaskID: "1_20231207113016",
+          PendingSince: "2023-12-07T11:34:47.813",
+          TaskName: "M_LOC",
+          Approver: "Approver1",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                 TaskID: "1_20231207113016",
+                  PendingSince: "2023-12-07T11:34:47.813",
+                  TaskName: "M_LOC",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "1"
+              },
+              {
+                 TaskID: "1_20231207113016",
+                  PendingSince: "2023-12-07T11:34:47.813",
+                  TaskName: "M_LOC",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "NA"
+              }
+          ]
+      },
+      {
+         TaskID: "1_20231207113620",
+          PendingSince: "2023-12-07T11:36:24.930",
+          TaskName: "M_LOC",
+          Approver: "Approver1",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                 TaskID: "1_20231207113620",
+                  PendingSince: "2023-12-07T11:36:24.930",
+                  TaskName: "M_LOC",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "NA"
+              },
+              {
+                 TaskID: "1_20231207113620",
+                  PendingSince: "2023-12-07T11:36:24.930",
+                  TaskName: "M_LOC",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Approved - DB Updated",
+                  ApproverId: "1"
+              }
+          ]
+      }
+  ],
+  status: 200,
+  msg: null
+}
+
+export const getTaskDetailsMockData = {
+  recordCount: null,
+  data: [
+      {
+          MasterId: 1,
+          data: [
+              {
+                  "new": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls\",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+                  "old": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}"
+              },
+              {
+                "new": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls\",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+                "old": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}"
+              },
+              {
+                "new": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls\",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+                "old": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}"
+            }
+          ]
+      }
+  ],
+  status: 200,
+  msg: null
+}
+
+export const getTaskStatusDataMockData = {
+  recordCount: null,
+  data: [
+      {
+          TaskID: "1_20231206175429",
+          PendingSince: "2023-12-06T17:59:01.667",
+          TaskName: "M_SKU",
+          Approver: "Approver1,Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                  TaskID: "1_20231206175429",
+                  PendingSince: "2023-12-06T17:59:01.667",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "1"
+              },
+              {
+                  TaskID: "1_20231206175429",
+                  PendingSince: "2023-12-06T17:59:01.667",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+          TaskID: "1_20231206182017",
+          PendingSince: "2023-12-06T18:20:36.320",
+          TaskName: "M_SKU",
+          Approver: "Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                  TaskID: "1_20231206182017",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "1"
+              },
+              {
+                  TaskID: "1_20231206182017",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+          TaskID: "1_202312061821491222",
+          PendingSince: "2023-12-06T18:20:36.320",
+          TaskName: "M_SKU",
+          Approver: "Approver1,Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                  TaskID: "1_202312061821491222",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApprovedDate: "15/12/2023 01:51 AM",
+                  ApproverId: "1"
+              },
+              {
+                  TaskID: "1_202312061821491222",
+                  PendingSince: "2023-12-06T18:20:36.320",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+          TaskID: "1_20231206182149",
+          PendingSince: "2023-12-06T18:21:59.460",
+          TaskName: "M_SKU",
+          Approver: "Approver1,Approver2",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                  TaskID: "1_20231206182149",
+                  PendingSince: "2023-12-06T18:21:59.460",
+                  TaskName: "M_SKU",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Partially Approved - DB update Pending",
+                  ApprovedDate: "Dec 12 2023 12:15PM",
+                  ApproverId: "1"
+              },
+              {
+                  TaskID: "1_20231206182149",
+                  PendingSince: "2023-12-06T18:21:59.460",
+                  TaskName: "M_SKU",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Partially Approved - DB update Pending",
+                  ApprovedDate: "Dec 12 2023 12:15PM",
+                  ApproverId: "2"
+              }
+          ]
+      },
+      {
+          TaskID: "1_20231207113016",
+          PendingSince: "2023-12-07T11:34:47.813",
+          TaskName: "M_LOC",
+          Approver: "Approver1",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                  TaskID: "1_20231207113016",
+                  PendingSince: "2023-12-07T11:34:47.813",
+                  TaskName: "M_LOC",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "1"
+              },
+              {
+                  TaskID: "1_20231207113016",
+                  PendingSince: "2023-12-07T11:34:47.813",
+                  TaskName: "M_LOC",
+                  Approver: "Approver2",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "NA"
+              }
+          ]
+      },
+      {
+          TaskID: "1_20231207113620",
+          PendingSince: "2023-12-07T11:36:24.930",
+          TaskName: "M_LOC",
+          Approver: "Approver1",
+          Requester: "Admin",
+          TaskStatus: "Pending",
+          Approvers: [
+              {
+                  TaskID: "1_20231207113620",
+                  PendingSince: "2023-12-07T11:36:24.930",
+                  TaskName: "M_LOC",
+                  Requester: "Admin",
+                  TaskStatus: "Pending",
+                  ApproverId: "NA"
+              },
+              {
+                  TaskID: "1_20231207113620",
+                  PendingSince: "2023-12-07T11:36:24.930",
+                  TaskName: "M_LOC",
+                  Approver: "Approver1",
+                  Requester: "Admin",
+                  TaskStatus: "Approved - DB Updated",
+                  ApproverId: "1"
+              }
+          ]
+      }
+  ],
+  status: 200,
+  msg: null
+} 
+
+
+export const getTaskDetailsDownloadDataMockData = {
+  recordCount: null,
+  data: [
+    {
+      "new": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+      "old": "{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+      "Status": "3",
+      "Comments": ""
+    },
+    {
+      "new": "{\"SKUCode\":\"X9I689125STXXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXXL\",\"c2\":\"XXL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+      "old": "{\"SKUCode\":\"X9I689125STXXL001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689125STXXL\",\"c2\":\"XXL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+      "Status": "3",
+      "Comments": ""
+    },
+    {
+      "new": "{\"SKUCode\":\"X9I689195STM001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689195STM\",\"c2\":\"M\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+      "old": "{\"SKUCode\":\"X9I689195STM001\",\"SKUDescription\":\"ksls      \",\"c1\":\"X9I689195STM\",\"c2\":\"M\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}",
+      "Status": "4",
+      "Comments": "C2 data is wrong"
+    }
+  ],
+  status: 200,
+  msg: null
+}
+
+export const createDraftMockData = {
+  recordCount: null,
+  data: '123456QA',
+  status: 500,
   msg: null
 }

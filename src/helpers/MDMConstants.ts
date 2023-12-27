@@ -1,9 +1,13 @@
-import { ColDef, ColGroupDef } from 'ag-grid-enterprise';
-import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
+import { ColDef } from 'ag-grid-enterprise';
+import {TaskPendingActionRenderer} from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import { LocationSchema, SKULocationSchema, SKUSchema, SOBSchema } from '../validators/schemas/MTA/MDM/index';
 import {type Option, type MasterIdToSchema} from '../VectorFlow/types/MDM';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
 
+interface masterGroupMapperType {
+    masters:string[],
+    name:string
+}
 export const operators:Option[] = [
     {
       label:'Equals To',
@@ -119,3 +123,37 @@ export const taskPendingCustomColDefs :any[] = [
         ...defaultColDefs
     }
 ]
+
+export const masterGroupMapper:masterGroupMapperType[] = [
+    {
+      name:"SKU",
+      masters:['1']
+    },
+    {
+      name:"Location",
+      masters:['5','4']
+    },
+    {
+      name:"SKU Location",
+      masters:['2']
+    },
+    {
+      name:"Plant/CCR",
+      masters:[]
+    }
+  ]
+
+  export const ImageMapper:any={
+    '1':'/assets/img/VectorFLOW/NMS/AddRecords/sku-1.svg', 
+    '5':'/assets/img/VectorFLOW/NMS/AddRecords/MOQ-1.svg',
+    '4':'/assets/img/VectorFLOW/NMS/AddRecords/sob-1.svg',
+    '2':'/assets/img/VectorFLOW/NMS/AddRecords/location-1.svg'
+  
+}
+
+export const ImageMapperHover:any={
+    '1':'/assets/img/VectorFLOW/NMS/AddRecords/sku-1-hover.svg', 
+    '5':'/assets/img/VectorFLOW/NMS/AddRecords/MOQ-1-Hover.svg',  
+    '4':'/assets/img/VectorFLOW/NMS/AddRecords/sob-1-hover.svg',  
+    '2':'/assets/img/VectorFLOW/NMS/AddRecords/location-1-hover.svg' 
+}

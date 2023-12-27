@@ -16,8 +16,7 @@ export const VFTaskStatusStepperWrapper = styled.div<{gridFraction:string}>`
     width:100%;
     display:grid;
     grid-template-columns:${(props)=>props.gridFraction};
-    align-items:center;
-    justify-content:center;
+    place-items:center;
     grid-gap:60px;
 
 `

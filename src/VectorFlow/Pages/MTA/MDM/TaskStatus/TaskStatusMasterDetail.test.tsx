@@ -28,67 +28,30 @@ describe("TaskStatusMasterDetail Component",()=>{
     
     it("Renders the component",()=>{
         const dummyData = {
-            "TaskID": "2_11/23/2023 1:10:16 PM",
-            "PendingSince": "2023-11-27T13:10:19.813",
-            "TaskName": "M_SKULOCMaster",
-            "Approver": "Approver1,Approver2,Approver3",
-            "Requester": "1",
-            "TaskStatus": "Pending",
-            "Actiontype": 1,
-            "Approvers": [
+            TaskID: "1_20231206175429",
+            PendingSince: "2023-12-06T17:59:01.667",
+            TaskName: "M_SKU",
+            Approver: "Approver1,Approver2",
+            Requester: "Admin",
+            TaskStatus: "Pending",
+            Approvers: [
                 {
-                    "TaskID": "7_12/27/2023 1:10:16 PM",
-                    "PendingSince": "2023-11-27T13:10:19.813",
-                    "TaskName": "M_SKULOCMaster",
-                    "Approver": "Approver1",
-                    "Requester": "1",
-                    "TaskStatus": "Approved",
-                    "Actiontype": 1
+                    TaskID: "1_20231206175429",
+                    PendingSince: "2023-12-06T17:59:01.667",
+                    TaskName: "M_SKU",
+                    Approver: "Approver1",
+                    Requester: "Admin",
+                    TaskStatus: "Approved",
+                    ApproverId: "1"
                 },
                 {
-                    "TaskID": "61_09/27/2023 1:10:16 PM",
-                    "PendingSince": "2023-11-27T13:10:19.813",
-                    "TaskName": "M_SKULOCMaster",
-                    "Approver": "Approver2",
-                    "Requester": "1",
-                    "TaskStatus": "Rejected",
-                    "Actiontype": 1
-                },
-                {
-                    "TaskID": "891_14/27/2023 1:10:16 PM",
-                    "PendingSince": "2023-11-27T13:10:19.813",
-                    "TaskName": "M_SKULOCMaster",
-                    "Approver": "Approver3",
-                    "Requester": "1",
-                    "TaskStatus": "Partially approved - DB Update Pending",
-                    "Actiontype": 1
-                },
-                {
-                    "TaskID": "7_12/27/2023 1:10:16 PM",
-                    "PendingSince": "2023-11-27T13:10:19.813",
-                    "TaskName": "M_SKULOCMaster",
-                    "Approver": "Approver1",
-                    "Requester": "1",
-                    "TaskStatus": "Pending",
-                    "Actiontype": 1
-                },
-                {
-                    "TaskID": "61_09/27/2023 1:10:16 PM",
-                    "PendingSince": "2023-11-27T13:10:19.813",
-                    "TaskName": "M_SKULOCMaster",
-                    "Approver": "Approver2",
-                    "Requester": "1",
-                    "TaskStatus":  "Approved - DB Update Pending",
-                    "Actiontype": 1
-                },
-                {
-                    "TaskID": "891_14/27/2023 1:10:16 PM",
-                    "PendingSince": "2023-11-27T13:10:19.813",
-                    "TaskName": "M_SKULOCMaster",
-                    "Approver": "Approver3",
-                    "Requester": "1",
-                    "TaskStatus": "",
-                    "Actiontype": 1
+                    TaskID: "1_20231206175429",
+                    PendingSince: "2023-12-06T17:59:01.667",
+                    TaskName: "M_SKU",
+                    Approver: "Approver2",
+                    Requester: "Admin",
+                    TaskStatus: "Pending",
+                    ApproverId: "2"
                 }
             ]
         }
@@ -100,40 +63,64 @@ describe("TaskStatusMasterDetail Component",()=>{
     })
     it("Renders the component with individual approver",()=>{
         const dummyData = {
-            "TaskID": "2_11/23/2023 1:10:16 PM",
-            "PendingSince": "2023-11-27T13:10:19.813",
-            "TaskName": "M_SKULOCMaster",
-            "Approver": "Approver1,Approver2,Approver3",
-            "Requester": "1",
-            "TaskStatus": "Approved",
-            "Actiontype": 1
-        }
-        render(contextWrapper(<TaskStatusMasterDetail data={dummyData} onDownload={dummyFn}/>))
-        const downloadBtn  = screen.getAllByText('Download')[0]
-        fireEvent.click(downloadBtn)
-    })
-    it("Renders the component with individual approver",()=>{
-        const dummyData = {
-            "TaskID": "2_11/23/2023 1:10:16 PM",
-            "PendingSince": "2023-11-27T13:10:19.813",
-            "TaskName": "M_SKULOCMaster",
-            "Approver": "Approver1,Approver2,Approver3",
-            "Requester": "1",
-            "TaskStatus": "any",
-            "Actiontype": 1
+            TaskID: "1_20231206175429",
+            PendingSince: "2023-12-06T17:59:01.667",
+            TaskName: "M_SKU",
+            Approver: "Approver1,Approver2",
+            Requester: "Admin",
+            TaskStatus: "Pending",
+            Approvers: [
+                {
+                    TaskID: "1_20231206175429",
+                    PendingSince: "2023-12-06T17:59:01.667",
+                    TaskName: "M_SKU",
+                    Approver: "Approver1",
+                    Requester: "Admin",
+                    TaskStatus: "Pending",
+                    ApproverId: "1"
+                },
+                {
+                    TaskID: "1_20231206175429",
+                    PendingSince: "2023-12-06T17:59:01.667",
+                    TaskName: "M_SKU",
+                    Approver: "Approver2",
+                    Requester: "Admin",
+                    TaskStatus: "Pending",
+                    ApproverId: "2"
+                }
+            ]
         }
         render(contextWrapper(<TaskStatusMasterDetail data={dummyData} onDownload={dummyFn}/>))
 
     })
     it("Renders the component with individual approver",()=>{
         const dummyData = {
-            "TaskID": "2_11/23/2023 1:10:16 PM",
-            "PendingSince": "2023-11-27T13:10:19.813",
-            "TaskName": "M_SKULOCMaster",
-            "Approver": "Approver1,Approver2,Approver3",
-            "Requester": "1",
-            "TaskStatus": "Rejected",
-            "Actiontype": 1
+            TaskID: "1_20231206175429",
+            PendingSince: "2023-12-06T17:59:01.667",
+            TaskName: "M_SKU",
+            Approver: "Approver1,Approver2",
+            Requester: "Admin",
+            TaskStatus: "Pending",
+            Approvers: [
+                {
+                    TaskID: "1_20231206175429",
+                    PendingSince: "2023-12-06T17:59:01.667",
+                    TaskName: "M_SKU",
+                    Approver: "Approver1",
+                    Requester: "Admin",
+                    TaskStatus: "Pending",
+                    ApproverId: "1"
+                },
+                {
+                    TaskID: "1_20231206175429",
+                    PendingSince: "2023-12-06T17:59:01.667",
+                    TaskName: "M_SKU",
+                    Approver: "Approver2",
+                    Requester: "Admin",
+                    TaskStatus: "Pending",
+                    ApproverId: "2"
+                }
+            ]
         }
         render(contextWrapper(<TaskStatusMasterDetail data={dummyData} onDownload={dummyFn}/>))
 

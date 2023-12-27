@@ -20,7 +20,7 @@ const AppLayout = () => {
   const { t } = useTranslation();
 
   //URL arrays for excluding layout padding
-  const urls = ['/master-data-management/control-panel/view-modify']
+  const urls = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending']
   const location = useLocation();
   
   useEffect(() => {

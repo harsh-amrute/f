@@ -41,9 +41,8 @@ export namespace MDMService {
   }
 
   export const modifyDraft = async (body: any) => {
-    return axios.put(process.env.REACT_APP_VF_API_HOST + `/draft`,{
+    return axios.put(process.env.REACT_APP_VF_API_HOST + `/draft`,body,{
       headers: { 'Content-Type': 'application/json' },
-      body:JSON.stringify(body)
     })
   }
 
@@ -55,6 +54,30 @@ export namespace MDMService {
 
   export const getSeasonalityDetails = async (body:any) => {
     return await axios.post('https://2cfc61ae-927a-4577-8843-ee38dfb26302.mock.pstmn.io/seasonality-detail',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+  
+  export const getPendingTasks = async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/GetTaskPendingForReviewData`,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getTaskDetails = async(taskId:string)=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/GetTaskDetails/${taskId}`,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getTaskStatusData = async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/GetTaskStatusData`,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getTaskDetailsDownloadData = async(body:{taskId:string,approverId:number})=>{
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/GetTaskDetailsDownloadData`,JSON.stringify(body),{
       headers: { 'Content-Type': 'application/json' }
     })
   }

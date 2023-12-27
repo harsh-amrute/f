@@ -3,9 +3,9 @@ import { type Master, type Option, type Field,type GetMasterDataPayload, type Gr
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, MODIFY_ROW_DATA } from '../../../../../redux/actions/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
-import { notifyError, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
+import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 import { AgGridReactProps } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-enterprise';
@@ -13,6 +13,7 @@ import { masterIdToSchemaMapper } from '../../../../../helpers/MDMConstants';
 
 import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
 import _ from 'lodash';
+import { toast } from 'react-toastify';
 
 const useViewModify = () => {
 
@@ -24,6 +25,7 @@ const useViewModify = () => {
     const masters = useSelector((state:RootState)=>state.mdm.masters);
 
     const isSelectMasterOpen = useSelector((state:RootState) => state.mdm.isSelectMasterOpen);
+    const draftID = useSelector((state:RootState) => state.mdm.draftId);
 
     const [allMastersState,setAllMasterState] = useState<MDMMasterState[]>([])
     const [rowData,setRowData] = useState<object[]>([]);
@@ -42,8 +44,6 @@ const useViewModify = () => {
     const [chartData,setChartData] = useState<object>();
     const [isSeasonalityChartModalOpen,toggleSeasonalityChartModal] = useState<boolean>(false);
     const [normChangeData,setNormChangeData] = useState<any>([]);
-
-    const [activeMasterDraftId,setActiveMasterDraftId] = useState<string>()
 
     const [editOnline,toggleEditOnline] = useState(false);
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
@@ -71,9 +71,9 @@ const useViewModify = () => {
 
     const {mutateAsync:getCount} = useGetCount();
 
-    // const {mutateAsync:createDraft} = useCreateDraft()
+    const {mutateAsync:createDraft} = useCreateDraft()
 
-    // const {mutateAsync:modifyDraft} = useModifyDraft()
+    const {mutateAsync:modifyDraft} = useModifyDraft()
 
     // const colDefs = activeMaster.colDefs
 
@@ -146,14 +146,14 @@ const useViewModify = () => {
           }
   
           const temp:MDMMasterState[]=[];
-          dispatch(FILL_MASTERS([...getSelectedMasters(temp)]));
+          if(selectedOptions.length > 0) dispatch(FILL_MASTERS([...getSelectedMasters(temp)]));
         }
 
        
 
         // if(isToolPanelOpen) ref.current?.api.openToolPanel('columns');
 
-      },[selectedOptions,isLoading,activeMaster]);  
+      },[selectedOptions,isLoading,activeMaster,allMastersState]);  
 
       useEffect(()=>{
         if(masters.length > 0 && filterButtonStatus.length !== 0){
@@ -179,7 +179,6 @@ const useViewModify = () => {
       useEffect(()=>{
         const getMasterUIConfigurationData = async()=>{
           const {data} = await masterUIConfiguration('modify');
-          console.debug(data);
           setAllMasterState(mapMasterToMasterState(data.data))
          }
   
@@ -215,18 +214,6 @@ const useViewModify = () => {
       //   // },
       // },
       readOnlyEdit:true,
-      onCellEditRequest(event) {
-        const data = event.data;
-        const field = event.colDef.field;
-        const newValue = event.newValue;
-        const oldRow = activeMaster.rowData.find((row) => row.RN === data.RN);
-        if (!oldRow || !field) {
-          return;
-        }
-        const newRow = { ...oldRow };
-        newRow[field] = newValue;
-        dispatch(MODIFY_ROW_DATA({oldRow:oldRow,newRow:newRow}))
-      },
       sideBar:['default','view'].includes(activeMaster.progress) ? sideBar : {},
       gridOptions:{
         getRowStyle: (params: any) => {
@@ -240,7 +227,7 @@ const useViewModify = () => {
       paginationPageSize:rowsPerPage,
       suppressPaginationPanel:true,
       onColumnVisible:onColumnChange,
-      overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="../assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
+      overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
       onRowDataUpdated:(event)=>{
         if(downloadData) event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? activeMaster.name : downloadFileName});
       },
@@ -251,6 +238,24 @@ const useViewModify = () => {
         if(ref.current?.api){
           setSelectedRowsCount(ref.current?.api.getSelectedRows().length)
         }
+      },
+      onCellEditingStopped(event) {
+        const data = event.data;
+        const field = event.colDef.field;
+        const newValue = event.newValue;
+        // const oldRow = activeMaster.rowData.find((row) => row.RN === data.RN);
+        if (!field) {
+          return;
+        }
+        const newRow = { ...data };
+        newRow[field] = newValue;
+        const newRowData = activeMaster.rowData.map((row:any)=>{
+          if(JSON.stringify(row) === JSON.stringify(data)){
+              return newRow;
+          }
+          return row;
+        })
+        validateEditOnlineData([...newRowData]);
       },
     }
 
@@ -339,12 +344,12 @@ const useViewModify = () => {
     }
 
     const handleTabChange = (currMaster: MDMMasterState) => {
-      if(currMaster.progress === 'submitted') return notifyError(`The ${currMaster.name} Master is already submitted`);
+      if(currMaster.progress === 'submitted') return notifyError(`The ${currMaster.name} is already submitted`);
 
       const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>master.progress !== 'submitted');
 
       if(currMaster.id === masters[nextMasterIndex].id) return dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex));
-      else return notifyError(`Please Complete the ${masters[nextMasterIndex].name} Master`);  
+      else return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
 
       
       
@@ -358,7 +363,7 @@ const useViewModify = () => {
       return{
         instanceName:instanceName,
         searchKey:activeMaster.name,
-        draftId:activeMasterDraftId,
+        draftId:draftID,
         draftData:masters.map((master:MDMMasterState)=>{
           return {
             masterId:master.id,
@@ -382,6 +387,8 @@ const useViewModify = () => {
         }
       }
     
+
+      
     const addNewMaster = ()=>{
       if(allMastersState.length === masters.length) {
         notifyError('All Masters have already been selected. Cannot add more masters');
@@ -392,81 +399,87 @@ const useViewModify = () => {
       setTempDownloadData(false);
     }
 
-      const handleOnAddFilter = ()=>{
-        dispatch(ADD_FILTER());
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
-      }
+    const handleOnAddFilter = ()=>{
+      dispatch(ADD_FILTER());
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+    }
   
-      const handleOnDeleteFilter = (id:string)=>{
-        if(activeMaster.filters.length === 1) return notifyError("Cannot Delete this Filter Instance")
-        dispatch(REMOVE_FILTER(id));
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+    const handleOnDeleteFilter = (id:string)=>{
+      if(activeMaster.filters.length === 1) return notifyError("Cannot Delete this Filter Instance")
+      dispatch(REMOVE_FILTER(id));
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+    }
+
+    const handleApplyFilter =async (showAll?:boolean) => {
+      if(showAll) setShowAll(showAll);
+      else setShowAll(false);
+      if(downloadData) setDownloadData(false)
+      const currMasterFilters = activeMaster.filters;
+      if(!areMasterFiltersValid(currMasterFilters) && !showAll){
+        return notifyError('Filter cannot be empty')
       }
 
-      const handleApplyFilter =async (showAll?:boolean) => {
-        if(showAll) setShowAll(showAll);
-        const currMasterFilters = activeMaster.filters;
-        if(!areMasterFiltersValid(currMasterFilters) && !showAll){
-          return notifyError('Filter cannot be empty')
-        }
+      const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
+      const payloadFields:any = getCurrentVisbileColumns();
 
-        const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
-        const payloadFields:any = getCurrentVisbileColumns();
+      setIsTableDataLoading(true);
 
-        setIsTableDataLoading(true);
+      const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:false,count:true});
+      
+      setIsTableDataLoading(false);
+      setRecordCount(result.data.recordCount)
+      toggleWarningModal(true);    
+    }
 
-        const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:false,count:true});
-        
-        setIsTableDataLoading(false);
-        setRecordCount(result.data.recordCount)
-        toggleWarningModal(true);    
+    const onWarningModalClose = ()=>{
+      toggleWarningModal(false);
+      setIsTableDataLoading(false);
+    }
+
+    const onWarningModalSuccess = async ()=>{
+
+      const currMasterFilters = activeMaster.filters;
+
+      const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
+      const payloadFields:any = getCurrentVisbileColumns();
+      
+      setIsTableDataLoading(true);
+
+      const result:any = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true,currentPage:1}),{
+        success:"Data Fetched Successfully",
+        error:"Something Went Wrong",
+        pending:"Loading Data"
+      }); 
+      if(result.data.recordCount <= rowsPerPage){
+        toggleEditOnline(true);
+        setShowAll(false); //setting to false in this if bcz we need this in flag true while handling server side pagination
       }
-
-      const onWarningModalClose = ()=>{
-        setRowData([])
+      else{
+        toggleEditOnline(false);
+      }
+      setIsTableDataLoading(false);
+      if(result.data.recordCount == 0){
         toggleWarningModal(false);
-        setIsTableDataLoading(false);
+        setShowAll(false);
+        return;
       }
+      
+      dispatch(UPDATE_ROW_DATA(result.data.data));
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+      dispatch(UPDATE_PROGRESS_STATE('view')); 
+      toggleWarningModal(false);
+      
+    }
 
-      const onWarningModalSuccess = async ()=>{
+    const onEditOnline = () => {
+      const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
+        return {...col,editable:true,}
+      })
+      dispatch(UPDATE_PROGRESS_STATE('editOnline'))
+      dispatch(UPDATE_COLDEFS(updatedColdefs))
+      // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
 
-        const currMasterFilters = activeMaster.filters;
-
-        const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
-        const payloadFields:any = getCurrentVisbileColumns();
-        
-        setIsTableDataLoading(true);
-        const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true,currentPage:1}); 
-        if(result.data.recordCount <= rowsPerPage){
-          toggleEditOnline(true);
-          setShowAll(false); //setting to false in this if bcz we need this in flag true while handling server side pagination
-        }
-        else{
-          toggleEditOnline(false);
-        }
-        setIsTableDataLoading(false);
-        if(result.data.recordCount == 0){
-          toggleWarningModal(false);
-          setShowAll(false);
-          return;
-        }
-       
-        dispatch(UPDATE_ROW_DATA(result.data.data));
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-        dispatch(UPDATE_PROGRESS_STATE('view')); 
-        toggleWarningModal(false);
-       
-      }
-
-      const onEditOnline = () => {
-        const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
-          return {...col,editable:true}
-        })
-        dispatch(UPDATE_PROGRESS_STATE('editOnline'))
-        dispatch(UPDATE_COLDEFS(updatedColdefs))
-        // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-  
-      }
+    }
 
       const onUploadMaster = async () => {
         try {
@@ -599,20 +612,20 @@ const useViewModify = () => {
         setTempDownloadData(false);
       }
 
-      // const onSaveToDraft = async()=>{
-      //   if(activeMasterDraftId){
-      //     return await notifyPromise(modifyDraft(generateDraftPayload()),{
-      //       success:'Draft has been updated',
-      //       pending:'Updating draft',
-      //       error:"Could not update draft"
-      //     })
-      //   }
-      //   return await notifyPromise(createDraft(generateDraftPayload()),{
-      //     success:'Draft has been updated',
-      //     pending:'Creating draft',
-      //     error:"Could create draft"
-      //   })
-      // }
+      const onSaveToDraft = async()=>{
+        const toastId = notifyLoader('Creating Draft');
+        if(draftID.length > 0){
+          await modifyDraft(generateDraftPayload())
+          toast.dismiss(toastId);
+          return toast.success("Draft Updated Successfully")
+        }
+
+        const data:any =  await createDraft(generateDraftPayload())
+        dispatch(SET_DRAFT_ID(data.data.data))
+        toast.dismiss(toastId);
+        return toast.success("Draft Created Successfully");
+      }
+
       const onReset = () => {
         const currentMasterData = masters.find((master:MDMMasterState)=>master.id === activeMaster.id)
         if(currentMasterData) dispatch(UPDATE_ROW_DATA(currentMasterData.rowData))
@@ -620,16 +633,16 @@ const useViewModify = () => {
         dispatch(UPDATE_PROGRESS_STATE('editOnline'));
       }
 
-      const onEditOnlineSave = () => {
+      const validateEditOnlineData = (data:any[]) => {
         //Cleanup errors if any and provide clean copy to check again.
         //PS - Worked in tight deadline plz optimize whenever possible.
-        const rowData = activeMaster.rowData.map((row:any)=>{
+        dispatch(REMOVE_COLDEFS(['error','warning']));
+        const rowData = data.map((row:any)=>{
           if(row.error || row.warning){
             return _.omit(row,'error','warning');
           }
           return row;
         })
-
         const checkError = (row:object) => {
           const {error,warning} = masterSchema.validate(row) ;    
           return {error,warning};
@@ -650,18 +663,28 @@ const useViewModify = () => {
         });
         const isErrorPresent = newData.find((row:any)=>row.error);
         const isWarningPresent = newData.find((row:any)=>row.warning);
-        if(isErrorPresent && !activeMaster.colDefs.find((col:ColDef)=>col.colId==='error')){
+        if(isErrorPresent){
           addInvalidDataColDefs('error');
         }
-        if(isWarningPresent && !activeMaster.colDefs.find((col:ColDef)=>col.colId==='warning')){
+        
+        if(isWarningPresent){
           addInvalidDataColDefs('warning');
         }
         dispatch(UPDATE_ROW_DATA(newData));
         if(isErrorPresent || isWarningPresent){
           return notifyError("Invalid Data Found. Please Clear all the errors and warnings before proceeding");
+        } 
+      }
+
+      const onEditOnlineSave = ()=>{
+        onSaveToDraft();
+        const isErrorPresent = activeMaster.colDefs.find((col:ColDef)=>col.colId==='error');
+        const isWarningPresent = activeMaster.colDefs.find((col:ColDef)=>col.colId==='warning');
+        if(isErrorPresent || isWarningPresent){
+          return notifyError("Please Clear All Errors before submit")
         }
-        dispatch(UPDATE_PROGRESS_STATE('editOnlineSaved'));
-        
+        dispatch(UPDATE_PROGRESS_STATE('editOnlineSaved'))
+
       }
 
       const onShowChart = async () => {
@@ -722,6 +745,7 @@ const useViewModify = () => {
         tempAgGridProps,
         deleteSelected,
         onSubmit,
+        onSaveToDraft,
         isUploadButtonDisabled,
         editOnline,
         onEditOnline,

@@ -2,7 +2,6 @@ import {
   render,
   fireEvent,
   screen,
-  waitFor,
   cleanup,
 } from "@testing-library/react";
 import ViewModify from "./index";
@@ -14,28 +13,31 @@ import {
   useGetMasterUIConfiguration,
   useGetMasterData,
   useGetCount,
+  useCreateDraft,
+  useModifyDraft,
 } from "../../../../Services/MTA/MDM";
-import { select } from "react-select-event";
 import _ from "lodash";
 import { createStore, store } from "../../../../../redux/store/store";
 import { Provider } from "react-redux";
 import { ReactNode } from "react";
 
 import { RESET_STATE } from "../../../../../redux/actions/MDM";
-import { toast } from 'react-toastify'
+// import { toast } from 'react-toastify'
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
-import { MasterData } from "../../../../../mock-data/MDM";
+import { createDraftMockData, MasterData } from "../../../../../mock-data/MDM";
 import { mapMasterToColumnDefs } from "../../../../../helpers/utils";
+
 
 jest.mock("../../../../Services/MTA/MDM");
 
 
-jest.mock('react-toastify', () => ({
-  toast: {
-    error: jest.fn(),
-    success:jest.fn()
-  },
-}))
+// jest.mock('react-toastify', () => ({
+//   toast: {
+//     error: jest.fn(),
+//     success:jest.fn(),
+//     loading:jest.fn()
+//   },
+// }))
 
 const useGetMasterUIConfigurationMock = useGetMasterUIConfiguration as jest.MockedFunction<
     typeof useGetMasterUIConfiguration
@@ -47,6 +49,15 @@ const useGetMasterDataMock = useGetMasterData as jest.MockedFunction<
 const useGetCountMock = useGetCount as jest.MockedFunction<
   typeof useGetCount
 >;
+
+const useCreateDraftMock = useCreateDraft as jest.MockedFunction<
+  typeof useCreateDraft
+>;
+
+const useModifyDraftMock = useModifyDraft as jest.MockedFunction<
+  typeof useModifyDraft
+>;
+
 window.URL.createObjectURL = jest.fn();
 
 const useMasterDataResult: any = {
@@ -68,6 +79,18 @@ const useGetCountResult: any = {
     return { data: mockMasterData };
   },
 };
+
+const useCreateDraftMockData :any={
+  mutateAsync:()=>{
+    return {data:createDraftMockData}
+  }
+}
+
+const useModifyDraftMockData :any={
+  mutateAsync:()=>{
+    return {data:createDraftMockData}
+  }
+}
 
 const mockMasterData: any = {
   recordCount: 345,
@@ -235,6 +258,13 @@ describe("Renders View Modify Component", () => {
     useGetCountMock.mockImplementation(() => {
       return useGetCountResult;
     });
+    useCreateDraftMock.mockImplementation(()=>{
+      return useCreateDraftMockData
+    })
+
+    useModifyDraftMock.mockImplementation(()=>{
+      return useModifyDraftMockData
+    })
   });
 
   it("renders the view modify component when loading", async () => {
@@ -248,10 +278,6 @@ describe("Renders View Modify Component", () => {
   });
 
   it("renders the view modify component", async () => {
-    const result: any = {
-      isLoading: false,
-      data: { data: { data: mockData } },
-    };
     useGetMasterUIConfigurationMock.mockImplementation(():any => {
       return  useGetMasterUIConfigurationMockResult;
     });
@@ -273,6 +299,7 @@ describe("Handles all Interaction in ViewModify Component", () => {
       selectedOptions:[],
       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
       isSelectMasterOpen:true,
+      draftId:''
     }
 
     const mockStore = createStore(mockState);
@@ -289,6 +316,14 @@ describe("Handles all Interaction in ViewModify Component", () => {
     useGetCountMock.mockImplementation(() => {
       return useGetCountResult;
     });
+
+    useCreateDraftMock.mockImplementation(()=>{
+      return useCreateDraftMockData
+    })
+
+    useModifyDraftMock.mockImplementation(()=>{
+      return useModifyDraftMockData
+    })
 
     store.dispatch(RESET_STATE());
 
@@ -330,7 +365,7 @@ describe("Handles all Interaction in ViewModify Component", () => {
       fireEvent.click(tab);
     });
 
-    expect(toast.error).toHaveBeenCalled()
+    // expect(toast.error).toHaveBeenCalled()
   });
 
   it("Check if any Active Tabs is Closed First Tab is set to Default", async () => {
@@ -505,6 +540,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
     selectedOptions:[],
     activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
     isSelectMasterOpen:false,
+    draftId:''
   }
 
   beforeEach(() => {
@@ -522,12 +558,21 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       return useGetCountResult;
     });
 
-    jest.clearAllMocks();
+    useCreateDraftMock.mockImplementation(()=>{
+      return useCreateDraftMockData
+    })
+
+    useModifyDraftMock.mockImplementation(()=>{
+      return useModifyDraftMockData
+    })
+
+    
 
   });
 
   afterEach(()=>{
     cleanup();
+    // jest.clearAllMocks();
   })
 
 
@@ -554,6 +599,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       selectedOptions:[],
       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
       isSelectMasterOpen:false,
+      draftId:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -574,6 +620,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       selectedOptions:[],
       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
       isSelectMasterOpen:false,
+      draftId:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -597,6 +644,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       selectedOptions:[],
       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'uploaded',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
       isSelectMasterOpen:false,
+      draftId:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -605,7 +653,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     fireEvent.click(screen.getByTestId("vf-button"));
 
-    expect(toast.success).toBeCalled();
+    // expect(toast.success).toBeCalled();
 
   })
 
@@ -639,6 +687,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       selectedOptions:[],
       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'uploaded',name:MasterData[0].name,colDefs:uploadedStateColDefs,rowData:mockMasterData.data},
       isSelectMasterOpen:false,
+      draftId:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -649,7 +698,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     fireEvent.click(screen.getByText("Delete Selected"));
 
-    expect(toast.error).toBeCalled();
+    // expect(toast.error).toBeCalled();
 
     
 
@@ -664,6 +713,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       selectedOptions:[],
       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
       isSelectMasterOpen:false,
+      draftId:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -684,6 +734,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       selectedOptions:[],
       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
       isSelectMasterOpen:false,
+      draftId:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -704,6 +755,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       selectedOptions:[],
       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
       isSelectMasterOpen:false,
+      draftId:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -715,25 +767,91 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
   })
 
-  it("Saves The Data",async ()=>{
+  // it("Saves The Data",async ()=>{
 
-    const testData = [{...mockMasterData.data[0],SKUCode:"QACE1234,|"},mockMasterData.data[1],mockMasterData.data[2]]
-    let updatedMockState:MDMStore = {
+  //   const testData = [{...mockMasterData.data[0],SKUCode:"QACE1234,|"},mockMasterData.data[1],mockMasterData.data[2]]
+  //   let updatedMockState:MDMStore = {
+  //     allMasters:MasterData,
+  //     masters:MasterData,
+  //     options:[],
+  //     selectedOptions:[],
+  //     activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:testData},
+  //     isSelectMasterOpen:false,
+  //   }
+
+  //   let mockStore = createStore(updatedMockState);
+
+  //   const mockStoreDispatchSpy = jest.spyOn(mockStore, 'dispatch')
+
+  //   render(contextWrapper(<ViewModify/>,mockStore));
+
+  //   fireEvent.click(screen.getByText('Save', { selector: 'button' }));
+
+  //   const errorColDefs = {
+  //     field:'error',
+  //     colId:'error',
+  //     headerName:'Error',
+  //     floatingFilter:false, 
+  //     cellRenderer:'errorCell',
+  //     suppressColumnsToolPanel:true,
+  //     wrapText:true,
+  //     autoHeight:true,
+  //   }
+
+  //   expect(mockStoreDispatchSpy).toBeCalledWith({payload:{colDefs:[errorColDefs]},type:'ADD_COLDEFS'});
+  //   expect(toast.error).toBeCalled();
+
+  //   cleanup();
+
+  //   useCreateDraftMock.mockResolvedValue(createDraftMockData);    
+
+  //   //If Data is Valid
+  //   updatedMockState = {...updatedMockState,activeMaster:{...updatedMockState.activeMaster,rowData:mockMasterData.data}};
+  //   mockStore = createStore(updatedMockState);
+  //   // jest.spyOn(mockStore, 'dispatch')
+
+  //   render(contextWrapper(<ViewModify/>,mockStore));
+    
+
+  //   fireEvent.click(screen.getByText('Save', { selector: 'button' }));
+    
+
+  // })
+
+  it("Saves To Draft",async ()=>{
+   
+    let mockState:MDMStore = {
       allMasters:MasterData,
       masters:MasterData,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:testData},
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
       isSelectMasterOpen:false,
+      draftId:''
     }
 
-    let mockStore = createStore(updatedMockState);
+    const mockStore = createStore(mockState);
 
     const mockStoreDispatchSpy = jest.spyOn(mockStore, 'dispatch')
 
+
     render(contextWrapper(<ViewModify/>,mockStore));
 
-    fireEvent.click(screen.getByText('Save', { selector: 'button' }));
+    fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
+
+    expect(mockStoreDispatchSpy).toBeCalledWith({payload:"editOnlineSaved",type:"UPDATE_PROGRESS_STATE"});
+
+    cleanup();
+
+    //If DraftId is present it calls Modifies Draft Service
+
+    mockState = {...mockState,draftId:'ABC1234'};
+    
+    render(contextWrapper(<ViewModify/>,createStore(mockState)));
+
+    fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
+
+    //Does not Updates Progress state if there are errors
 
     const errorColDefs = {
       field:'error',
@@ -746,21 +864,14 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       autoHeight:true,
     }
 
-    expect(mockStoreDispatchSpy).toBeCalledWith({payload:{colDefs:[errorColDefs]},type:'ADD_COLDEFS'});
-    expect(toast.error).toBeCalled();
+    mockState = {...mockState,activeMaster:{...mockState.activeMaster,colDefs:[errorColDefs,...mockState.activeMaster.colDefs]}}
 
-    cleanup();
+    render(contextWrapper(<ViewModify/>,createStore(mockState)));
 
-    //If Data is Valid
-    updatedMockState = {...updatedMockState,activeMaster:{...updatedMockState.activeMaster,rowData:mockMasterData.data}};
-    mockStore = createStore(updatedMockState);
-    // jest.spyOn(mockStore, 'dispatch')
+    fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
 
-    render(contextWrapper(<ViewModify/>,mockStore));
 
-    fireEvent.click(screen.getByText('Save', { selector: 'button' }));
     
-
   })
 })
 

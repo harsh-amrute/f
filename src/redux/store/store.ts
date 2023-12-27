@@ -9,6 +9,7 @@ const initialState:MDMStore = {
     selectedOptions:[],
     activeMaster:{id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[]},
     isSelectMasterOpen:true,
+    draftId:''
 }
 
 export const createStore = (initialState:MDMStore) => configureStore({

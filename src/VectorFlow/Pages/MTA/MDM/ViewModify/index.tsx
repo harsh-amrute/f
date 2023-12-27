@@ -67,7 +67,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         isUploadButtonDisabled,
         editOnline,
         onEditOnline,
-        // onSaveToDraft,
+        onSaveToDraft,
         selectedRowsCount,
         currentPage,
         rowsPerPage,
@@ -80,14 +80,16 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         normChangeData,
         onShowChart,
         toggleSeasonalityChartModal
-
     } = useViewModify();
     
 
     useEffect(()=>{
-      if(ref.current){
+      if(ref.current && ref.current.api){
         if(isTableDataLoading){
           ref.current?.api.showLoadingOverlay();
+        }
+        else{
+          ref.current?.api.hideOverlay();
         }
       }
     },[isTableDataLoading])
@@ -190,7 +192,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
             </VFTab>
           }
           {
-            !(['default'].includes(activeMaster.progress)) 
+            (!['default'].includes(activeMaster.progress) && !isSelectMasterOpen) 
               && 
               <VFPagination 
                 selectedRows={selectedRowsCount} 
@@ -198,7 +200,6 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
                 currentPage={currentPage} 
                 rowsPerPage={rowsPerPage} 
                 handleChangePage={(e)=>handleChangePage(e)}  
-                handleChangePerPage={()=>console.log('hello')}
               />
           }
           
@@ -239,7 +240,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
           <VFTaskBar
             masterProgress={activeMaster.progress}
             onReset={onReset}
-            onSaveToDraft={onShowChart}
+            onSaveToDraft={onSaveToDraft}
             onEditOnlineSave={onEditOnlineSave}
             editOnline={editOnline}
             onEditOnline={onEditOnline}

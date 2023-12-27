@@ -4,7 +4,6 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import { TaskBarContainer } from "./styles"
 import VFStepper,{StepItem} from "../../../../../components/VectorFLOW/commons/VFStepper"
-import { ViewModifyProgressState } from "../../../../../VectorFlow/types/MDM";
 
 export interface VFTaskBarProps{
     masterProgress:"default" | "view" | "error" | "uploaded" | "submitted" | "editOnline" | "editOnlineSaved" | "editOnlineSubmitted"
@@ -153,9 +152,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         <VFButtonOutline onClick={onExportData} themeUi={themeUi} width={130}>
                             Export Data
                         </VFButtonOutline>
-                        <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
+                        {/* <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
                        Save to draft
-                    </VFButtonOutline>
+                    </VFButtonOutline> */}
                         <VFButtonOutline onClick={onEditOnline} themeUi={themeUi} disabled={!editOnline} width={164} onHoverChild={
                             <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                                 <img src={"/assets/img/VectorFLOW/NMS/edit-online-disabled.svg"} style={{marginRight:'11px'}}/>

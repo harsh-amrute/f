@@ -9,9 +9,8 @@ const SuppCodeValidator = (value:any,helper:any)=>{
 }
 
 export const SOBSchema = Joi.object({
-    SrNo:Joi.string(),
-    SKUCode:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
-    WhCode:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
+    sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
+    wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
     SuppCode:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator),
     SOB:Joi.number().min(0.00).max(100.00)
 
