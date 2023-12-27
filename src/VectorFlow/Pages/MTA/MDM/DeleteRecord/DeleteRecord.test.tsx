@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { UserDataContext } from "../../../../../context"
 import { store } from "../../../../../redux/store/store"
-import AddRecord from ".";
+import DeleteRecord from ".";
 import { ReactNode } from "react";
 import { setupReactQuery } from "../../../../../config/react-query-config";
 import { QueryClientProvider } from "@tanstack/react-query"
@@ -47,7 +47,7 @@ const contextWrapper = (children: ReactNode,store:any) => {
   );
 }
 
-describe("AddRecord Component", () => {
+describe("DeleteRecord Component", () => {
   beforeEach(()=>{
       useGetMasterUIConfigurationMock.mockImplementation(()=>{
       return useGetMasterUIConfigurationMockData
@@ -64,22 +64,22 @@ describe("AddRecord Component", () => {
         isLoading:true
       }
       })
-    render(contextWrapper(<AddRecord/>,store))
+    render(contextWrapper(<DeleteRecord/>,store))
    })
 
    it("handle on submit",()=>{
-    render(contextWrapper(<AddRecord/>,store))
+    render(contextWrapper(<DeleteRecord/>,store))
     fireEvent.click(screen.getByText('Submit'));
    })
 
    it("handles on cancel",()=>{
-    render(contextWrapper(<AddRecord/>,store))
+    render(contextWrapper(<DeleteRecord/>,store))
     const closebtn=screen.getByText('Cancel')
     fireEvent.click(closebtn); 
    })
 
    it("Handles on click",()=>{
-    render(contextWrapper(<AddRecord/>,store))
+    render(contextWrapper(<DeleteRecord/>,store))
     const clickableElement = screen.getAllByTestId("vf-master-group-card")[0];
     fireEvent.click(clickableElement);
     fireEvent.click(clickableElement);
@@ -89,6 +89,7 @@ describe("AddRecord Component", () => {
     useGetMasterUIConfigurationMock.mockImplementation(()=>{
       return useGetMasterUIConfigurationMockData
       })
-    render(contextWrapper(<AddRecord/>,store))
-   }) 
+    render(contextWrapper(<DeleteRecord/>,store))
+   })
+   
 })
