@@ -7,6 +7,7 @@ import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { defaultColDefs, masterIdToSchemaMapper, taskPendingCustomColDefs } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
+import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../components/VectorFLOW/commons/SeasonalityCellRenderers';
 
 // clear cached token and redirect to sso login
 
@@ -439,8 +440,9 @@ export const parseExcelData = async (file:any,master:MDMMasterState) => {
   return result;
 }
 
-export const mapMasterToColumnDefs = (fields:Field[])=>{
+export const mapMasterToColumnDefs = (fields:Field[],masterId?:number)=>{
   let result:ColDef[] = []
+
 
   result = fields.map((f)=>{
     return{
@@ -453,6 +455,36 @@ export const mapMasterToColumnDefs = (fields:Field[])=>{
       ...defaultColDefs
     }
   })
+
+  if(masterId==10){
+    const seasonalityCheckboxColDef:ColDef={
+      field:'checkbox',
+      colId:'checkbox',
+      headerName:'',
+      checkboxSelection:true,
+      headerCheckboxSelection:true,
+      headerCheckboxSelectionCurrentPageOnly:true,
+      width:10
+    }
+    const seasonalityColorColDef:ColDef={
+      field:'color',
+      colId:'color',
+      headerName:'',
+      width:3,
+      minWidth:3,
+      cellRenderer:SeasonalityColorCellRenderer
+    }
+
+    const seasonalityGraphColDef:ColDef={
+      field:'graph',
+      colId:'graph',
+      headerName:'',
+      width:40,
+      cellRenderer:SeasonalityGraphCellRenderer
+    }
+
+    return [seasonalityColorColDef,seasonalityCheckboxColDef,seasonalityGraphColDef,...result]
+  }
   return result;
 }
 
@@ -486,7 +518,7 @@ export const mapMasterToMasterState = (masters:Master[]):MDMMasterState[] => {
       operator:'',
       text:''
     }],
-    colDefs:mapMasterToColumnDefs(master.fields),
+    colDefs:mapMasterToColumnDefs(master.fields,master.id),
     rowData:[],
     progress:'default'
   }))
@@ -573,15 +605,14 @@ export const getExistingColumnFields = (columns:string[],fields:Field[]):Field[]
   const updatedFields:Field[] = []
   columns.map((c:string)=>{
     fields.find((f:Field)=>{
-      if(f.key===c)updatedFields.push(f)
+      if(f.displayName===c)updatedFields.push(f)
     })
   })
   return updatedFields
 }
 
-export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGroupDef[] | ColDef[]=>{
-
-  const colDefs =  existingColumnsFields.map((f:Field,index:number)=>{
+export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],tasktype?:string):ColGroupDef[] | ColDef[]=>{
+  const colDefs =  existingColumnsFields.map((f:Field)=>{
 
     if(!f.isEdit){
       return{
@@ -594,6 +625,52 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGro
       }
     }
 
+    if(tasktype==="add"){
+      return{
+        headerName:f.displayName,
+        field:f.key,
+        colId:f.key,
+        hide:!f.visible,
+        children:[
+          {
+            headerName:'Add ' +f.displayName,
+            field:'add'+f.key,
+            colId:'add'+f.key,
+            cellStyle:{
+              "color":'#BC3D81',
+              "text-align":"center",
+              "border-left":"solid 1px #B9B9B9",
+            }
+          }
+        ],
+        ...defaultColDefs,
+        
+      }
+    }
+
+    if(tasktype==="delete"){
+      return{
+        headerName:f.displayName,
+        field:f.key,
+        colId:f.key,
+        hide:!f.visible,
+        children:[
+          {
+            headerName:'Delete ' +f.displayName,
+            field:'delete'+f.key,
+            colId:'delete'+f.key,
+            cellStyle:{
+              "color":'#BC3D81',
+              "text-align":"center",
+              "border-left":"solid 1px #B9B9B9",
+            }
+          }
+        ],
+        ...defaultColDefs,
+        
+      }
+    }
+
     return{
       headerName:f.displayName,
       field:f.key,
@@ -602,8 +679,6 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGro
       children:[
         {
           headerName:'New ' +f.displayName,
-          headerCheckboxSelection:index===0,
-          checkboxSelection:index===0,
           field:'New'+f.key,
           colId:'New'+f.key,
           cellStyle:{
@@ -626,11 +701,15 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGro
       
     }
   })
+
+  console.log([...colDefs,...taskPendingCustomColDefs])
   return [...colDefs,...taskPendingCustomColDefs]
 }
 
 
-export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[])=>{
+export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string)=>{
+  console.log(taskType)
+  // console.log(JSON.parse("{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls\",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}"))
   return dirtyRowData.map(entry => {
     const oldData = JSON.parse(entry.old);
     const newData = JSON.parse(entry.new);
@@ -639,14 +718,22 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
     const newDataPrefixed:any = {};
 
     existingColumnFields.map((f:Field)=>{
-      if(f.isEdit){
-        oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
+      // if(f.isEdit){
+      //   oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
+      //   newDataPrefixed[`New${f.key}`] = newData[f.key]
+      // }
+      // else{
+      //   oldDataPrefixed[f.key] = oldData[f.key]
+      // }
+      oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
         newDataPrefixed[`New${f.key}`] = newData[f.key]
-      }
-      else{
-        oldDataPrefixed[f.key] = oldData[f.key]
-      }
     })
+    console.log({
+      ...oldDataPrefixed,
+      ...newDataPrefixed,
+      status:'',
+      comments:''
+  })
     return {
         ...oldDataPrefixed,
         ...newDataPrefixed,
