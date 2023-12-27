@@ -153,7 +153,7 @@ const AddRecord = () => {
           {isUploadModalOpen && 
           <UploadModal 
             openModal={isUploadModalOpen} 
-            onCloseModal={()=>setIsUploadModalOpen(false)} 
+            onCloseModal={()=>{return}} 
             onDownload={()=>ref.current?.api.exportDataAsExcel({
               fileName:downloadFileName.length>0?downloadFileName :activeMaster.name,
             })} 
