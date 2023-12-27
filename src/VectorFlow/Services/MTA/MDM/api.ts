@@ -52,4 +52,10 @@ export namespace MDMService {
       headers: { 'Content-Type': 'application/json' }
     })
   }
+
+  export const getSeasonalityDetails = async (body:any) => {
+    return await axios.post('https://2cfc61ae-927a-4577-8843-ee38dfb26302.mock.pstmn.io/seasonality-detail',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
 }

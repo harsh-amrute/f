@@ -1,12 +1,13 @@
 import styled from 'styled-components'
 
-export const VFHeaderWrapper = styled.div`
+export const VFHeaderWrapper = styled.div<{headerBgColor:string | undefined}>`
 display:flex;
 flex-direction:row;
 justify-content:space-between;
 align-items:center;
 width:100%;
 height:40px;
+background-color:${props => props.headerBgColor ? props.headerBgColor : '#FFFFFF'}
 `;
 
 export const SCModalContent = styled.div`
@@ -19,7 +20,7 @@ export const SCModalContent = styled.div`
   left: 0px;
 `;
 
-export const SCTextTitle = styled.span`
+export const SCTextTitle = styled.span<{headerTextColor:string | undefined}>`
   display: flex;
   justify-content: center;
   width: 100%;
@@ -32,7 +33,7 @@ export const SCTextTitle = styled.span`
   line-height:21px;
   font-family:Roboto;
   letter-spacing: 0px;
-  color: #000000;
+  color: ${props => props.headerTextColor ? props.headerTextColor : '#000000'}
   `;
 
 export const SCCloseModal = styled.span`
@@ -42,8 +43,8 @@ export const SCCloseModal = styled.span`
   font-size: 2.6rem;
 `;
 
-export const SCWrapperContent = styled.div`
-  padding: 0 74px;
+export const SCWrapperContent = styled.div<{paddingLeftAndRight:number | undefined}>`
+  padding: 0 ${props => props.paddingLeftAndRight ? props.paddingLeftAndRight : 74}px;
   text-align: left;
   height:auto;
 `;

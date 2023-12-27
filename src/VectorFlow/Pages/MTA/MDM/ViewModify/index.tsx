@@ -15,6 +15,7 @@ import UploadModal from "./UploadModal";
 import { useEffect } from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
+import SeasonalityChartModal from "./SeasonalityChartModal";
 
 
 
@@ -72,7 +73,13 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
         rowsPerPage,
         handleChangePage,
         onReset,
-        onEditOnlineSave
+        onEditOnlineSave,
+        isSeasonalityChartModalOpen,
+        chartData,
+        tempRowData,
+        normChangeData,
+        onShowChart,
+        toggleSeasonalityChartModal
 
     } = useViewModify();
     
@@ -217,12 +224,22 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
             uploadButtonStatus={isUploadButtonDisabled}
             />
         }
+        {isSeasonalityChartModalOpen && 
+          <SeasonalityChartModal 
+            isModalOpen={isSeasonalityChartModalOpen}
+            closeModal={()=>toggleSeasonalityChartModal(false)}
+            chartData={chartData}
+            rowData={tempRowData}
+            normChangeData={normChangeData}
+
+          />
+        }
         {
           !isSelectMasterOpen && 
           <VFTaskBar
             masterProgress={activeMaster.progress}
             onReset={onReset}
-            onSaveToDraft={()=>console.log('')}
+            onSaveToDraft={onShowChart}
             onEditOnlineSave={onEditOnlineSave}
             editOnline={editOnline}
             onEditOnline={onEditOnline}

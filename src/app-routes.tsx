@@ -20,7 +20,8 @@ import ViewModify from './VectorFlow/Pages/MTA/MDM/ViewModify'
 import SavedDrafts from './VectorFlow/Pages/MTA/MDM/SavedDrafts'
 import TaskStatus from './VectorFlow/Pages/MTA/MDM/TaskStatus'
 import TaskPendingForReview from './VectorFlow/Pages/MTA/MDM/TaskPendingForReview'
-
+import Chart from './components/VectorFLOW/commons/Chart';
+import SeasonalityChartModal from './VectorFlow/Pages/MTA/MDM/ViewModify/SeasonalityChartModal'
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
   const search = window.location.search

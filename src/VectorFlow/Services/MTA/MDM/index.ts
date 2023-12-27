@@ -10,7 +10,8 @@ export const QUERY_KEYS = {
   useGetDraftById:['MDMService.useGetDraftById'],
   useCreateDraft:['MDMService.useCreateDraft'],
   useModifyDraft:['MDMService.useModifyDraft'],
-  useDeleteDraft:['MDMService.useDeleteDraft']
+  useDeleteDraft:['MDMService.useDeleteDraft'],
+  useGetSeasonalityDetails:['MDMService.useGetSeasonalityDetails']
 }
 
 
@@ -59,5 +60,11 @@ export const useModifyDraft = ()=>{
 export const useDeleteDraft = ()=>{
   return useMutation(QUERY_KEYS.useDeleteDraft,async(id:string)=>{
     return await MDMService.deleteDraft(id)
+  })
+}
+
+export const useGetSeasonalityDetails = () => {
+  return useMutation(QUERY_KEYS.useGetSeasonalityDetails,async(body:object)=>{
+    return await MDMService.getSeasonalityDetails(body)
   })
 }

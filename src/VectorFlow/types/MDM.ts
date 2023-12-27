@@ -95,3 +95,16 @@ export interface QueryFilteredDataConfigs{
     count?:boolean,
     currentPage?:number
 }
+
+export interface NormHistory {
+    date:string,
+    old_norm:string,
+    new_norm:string,
+    change_reason:string
+}
+
+export interface DailyData {
+    date:string,
+    stock:string,
+    git:string
+}

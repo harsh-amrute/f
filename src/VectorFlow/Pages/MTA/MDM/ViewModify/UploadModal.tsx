@@ -58,7 +58,7 @@ const UploadModal = (props:UploadModalProps)=>{
     };
 
    return(
-   <VFModalCard headerText={"Modification"} headerIcon={"/assets/img/VectorFLOW/NMS/settings.svg"} openModal={openModal} closeModal={onCloseModal} >
+   <VFModalCard headerText={"Modification"} headerIcon={"/assets/img/VectorFLOW/NMS/settings.svg"} openModal={openModal} closeModal={onCloseModal} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} >
       <UploadModalWrapper>
          <UploadModalSection>
             <UploadModalText>
@@ -67,14 +67,14 @@ const UploadModal = (props:UploadModalProps)=>{
             <UploadBorderContainer>
                <UploadModalContent>
                   <TextContent>
-                     <img src="../assets/img/manual/excel.png"  height={29} width={29} style={{marginBottom:'10px'}}/>
+                     <img src="/assets/img/manual/excel.png"  height={29} width={29} style={{marginBottom:'10px'}}/>
                      <p>Download selected data </p>
                   </TextContent>
                   <UploadFileText>
                      File Name
                   </UploadFileText>
                   <InputWrapper>
-                     <UploadModalInput value={inputText} onChange={(e)=>setInputText(e.target.value)} data-testid="view-modify-text"/>
+                     <UploadModalInput value={inputText} onChange={(e:any)=>setInputText(e.target.value)} data-testid="view-modify-text"/>
                      <SCManualUploadBtn themeUi={user.user.theme_ui} 
                         onClick={onDownload}
                         style={{
@@ -107,12 +107,12 @@ const UploadModal = (props:UploadModalProps)=>{
             <UploadBorderContainer>
             <UploadModalContent>
                <TextContent>
-               <img src="../assets/img/manual/excel.png"  style={{height:'29px', width:'29px',marginBottom:'10px'}}/>
+               <img src="/assets/img/manual/excel.png"  style={{height:'29px', width:'29px',marginBottom:'10px'}}/>
                   <p>Drag & Drop your file here</p>
                </TextContent>     
                <InputWrapper>
                <SCManualUploadButton style={{height:'30px', width:'105px'}} onClick={handleClick} data-testid="view-modify-manual-upload-btn">
-                  <img src="../assets/img/manual/plus.png" width={19} height={19} />
+                  <img src="/assets/img/manual/plus.png" width={19} height={19} />
                   <ManualStyle.SCManualUploadInput
                      type="file"
                      accept=".xlsx"

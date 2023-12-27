@@ -59,9 +59,9 @@ export const SKULocationSchema = Joi.object({
     DefaultSpikeThreshold:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
     DefaultPSOThreshold:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
     FGRMFlag:Joi.string().valid("fg", "rm"),
-    DBMActive:Joi.string().valid("yes", "no", "y", "n", "1", "0"),
-    StockPercentForRationing:Joi.number().integer().min(0).max(100),
-    NormPercentReservation:Joi.number().integer().min(0).max(100),
+    DBMActive:Joi.string().valid("yes", "no", "y", "n", "1", "0").default(1),
+    StockPercentForRationing:Joi.number().integer().min(0).max(100).default(0),
+    NormPercentReservation:Joi.number().integer().min(0).max(100).default(0),
     ...CommonSchema
 
 }).preferences(defaultJOIOptions)
