@@ -13,7 +13,6 @@ const mockFunction = jest.fn()
 const dummyprops:SelectGroupedMastersProps = {
     onSubmit:mockFunction,
     onCancel:mockFunction,
-    onSelectMasters:mockFunction,
     handleOnClickMaster:mockFunction,
     selectedMasters:[
       {

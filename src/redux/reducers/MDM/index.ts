@@ -6,6 +6,7 @@ import {type Option, type MDMMasterState, type MDMStore, type Filter} from '../.
 import { generateRandomId } from '../../../helpers/utils';
 import {FILL_MASTERS, FILL_SELECTED_OPTIONS, REMOVE_MASTER, FILTER_MASTER, ADD_MASTER, FILL_OPTIONS, UPDATE_ACTIVE_MASTER, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_COLDEFS, STORE_ALL_MASTERS, ADD_FILTER, REMOVE_FILTER, UPDATE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, RESET_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, MODIFY_ROW_DATA,SET_DRAFT_ID} from '../../actions/MDM';
 import { ColDef } from 'ag-grid-enterprise';
+import { number } from 'joi';
 
 
 const setMasters = (state:any,action:PayloadAction<MDMMasterState[]>|PayloadAction<any>) => {
@@ -120,8 +121,12 @@ const setSelectedOptions = (state:any,action: PayloadAction<Array<Option>>) => {
     state.selectedOptions = action.payload;
 }
 
-const setActiveMaster =  (state:any,action:PayloadAction<number>) => {
-    state.activeMaster = {...state.masters[action.payload]};
+const setActiveMaster =  (state:any,action:PayloadAction<number | MDMMasterState>) => {
+    if(typeof action.payload ==='number'){
+        state.activeMaster = {...state.masters[action.payload]};
+        return
+    }
+    state.activeMaster = {...action.payload,name:"Seasonality"};
 }
    
 const setIsSelectMasterOpen = (state:any,action:PayloadAction<boolean>)=>{

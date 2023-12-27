@@ -75,7 +75,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
         onSaveToDraft,
         onEditOnlineSave
 
-    } = useViewModify();
+    } = useViewModify('modify');
     
 
     useEffect(()=>{

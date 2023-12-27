@@ -135,7 +135,7 @@ export const masterGroupMapper:masterGroupMapperType[] = [
     },
     {
       name:"SKU Location",
-      masters:['2']
+      masters:['2','11','7']
     },
     {
       name:"Plant/CCR",
@@ -147,7 +147,9 @@ export const masterGroupMapper:masterGroupMapperType[] = [
     '1':'/assets/img/VectorFLOW/NMS/AddRecords/sku-1.svg', 
     '5':'/assets/img/VectorFLOW/NMS/AddRecords/MOQ-1.svg',
     '4':'/assets/img/VectorFLOW/NMS/AddRecords/sob-1.svg',
-    '2':'/assets/img/VectorFLOW/NMS/AddRecords/location-1.svg'
+    '2':'/assets/img/VectorFLOW/NMS/AddRecords/location-1.svg',
+    '11':'/assets/img/VectorFLOW/NMS/AddRecords/seasonality.svg',
+    '7':'/assets/img/VectorFLOW/NMS/AddRecords/phase-in-phase-out.svg'
   
 }
 
@@ -155,5 +157,7 @@ export const ImageMapperHover:any={
     '1':'/assets/img/VectorFLOW/NMS/AddRecords/sku-1-hover.svg', 
     '5':'/assets/img/VectorFLOW/NMS/AddRecords/MOQ-1-Hover.svg',  
     '4':'/assets/img/VectorFLOW/NMS/AddRecords/sob-1-hover.svg',  
-    '2':'/assets/img/VectorFLOW/NMS/AddRecords/location-1-hover.svg' 
+    '2':'/assets/img/VectorFLOW/NMS/AddRecords/location-1-hover.svg' ,
+    '11':'/assets/img/VectorFLOW/NMS/AddRecords/seasonality-hover.svg',
+    '7':'/assets/img/VectorFLOW/NMS/AddRecords/phase-in-phase-out-hover.svg'
 }

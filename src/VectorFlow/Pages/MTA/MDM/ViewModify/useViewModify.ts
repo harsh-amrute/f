@@ -15,7 +15,7 @@ import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCel
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 
-const useViewModify = () => {
+const useViewModify = (pageType:string) => {
 
     const dispatch = useDispatch();
 
@@ -160,7 +160,7 @@ const useViewModify = () => {
 
       useEffect(()=>{
         const getMasterUIConfigurationData = async()=>{
-          const {data} = await masterUIConfiguration('modify');
+          const {data} = await masterUIConfiguration(pageType);
           setAllMasterState(mapMasterToMasterState(data.data))
          }
   

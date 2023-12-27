@@ -2,7 +2,7 @@ import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
-import { type Master, type Option, type Field, type Filter, MDMMasterState } from '../VectorFlow/types/MDM';
+import { type Master, type Option, type Field, type Filter, MDMMasterState, UploadModalRadioButtonsType } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { defaultColDefs, masterIdToSchemaMapper, taskPendingCustomColDefs } from './MDMConstants';
@@ -661,4 +661,37 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
         comments:''
     };
 });
+}
+
+
+export const getUploadModalRadioButtons = (masterId:number)=>{
+  if(masterId==11 || masterId==12){
+    return [
+      {
+        label:'Absolute Value',
+        value:11
+      },
+      {
+        label:'Delta Percentage',
+        value:12
+      }
+    ]
+  }
+  if(masterId==7 || masterId==8 || masterId==9){
+    return [
+      {
+        label:'Phase Out',
+        value:7
+      },
+      {
+        label:'Phase In Phase Out',
+        value:8
+      },
+      {
+        label:'Target Norm',
+        value:9
+      }
+    ]
+  }
+  return []
 }

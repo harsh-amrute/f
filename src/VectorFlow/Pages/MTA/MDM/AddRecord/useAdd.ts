@@ -1,28 +1,34 @@
 import { useSelector,useDispatch } from 'react-redux'
 import { RootState } from '../../../../../redux/store/store';
 import { useGetMasterUIConfiguration } from '../../../../../VectorFlow/Services/MTA/MDM';
-import { useEffect} from 'react';
+import { useEffect, useState} from 'react';
 import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
-import { STORE_ALL_MASTERS,RESET_STATE, REMOVE_MASTER, ADD_MASTER } from '../../../../../redux/actions/MDM';
+import { STORE_ALL_MASTERS,RESET_STATE, REMOVE_MASTER, ADD_MASTER,UPDATE_ACTIVE_MASTER, UPDATE_PROGRESS_STATE, SYNC_ACTIVE_MASTER_TO_MASTER, FILL_MASTERS } from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { mapMasterToMasterState } from '../../../../../helpers/utils';
+
+import { notifyError } from '../../../../../helpers/notify';
 
 
 const useAdd=()=>{
     const allMasters = useSelector((state:RootState)=>state.mdm.allMasters); //empty arrya jaha data jaega api se
     const selectedMasters = useSelector((state:RootState)=>state.mdm.masters)
+    const activeMaster = useSelector((state:RootState)=>state.mdm.activeMaster)
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const {mutateAsync:getMasterUIConfigurationData,isLoading:isAddRecordsLoading} = useGetMasterUIConfiguration(); //usequery se uiconfi ko bulaya hai
 
-    useEffect(()=>{
-        const getData=async()=>{
-            const data = await getMasterUIConfigurationData('add')
-            dispatch(STORE_ALL_MASTERS(mapMasterToMasterState(data.data.data)))
-        }
-        getData()
+    const [isSelectMasterOpen,setIsSelectMasterOpen] = useState(true)
+    const [isUploadModalOpen,setIsUploadModalOpen] = useState<boolean>(false)
+
+    // useEffect(()=>{
+    //     const getData=async()=>{
+    //         const data = await getMasterUIConfigurationData('add')
+    //         dispatch(STORE_ALL_MASTERS(mapMasterToMasterState(data.data.data)))
+    //     }
+    //     getData()
         
-    },[])
+    // },[])
 
 
     const onCancel=()=>{
@@ -31,20 +37,90 @@ const useAdd=()=>{
     }
 
     const handleOnClickMaster=(master:MDMMasterState)=>{
+
+        //For seasonality
+        if(master.id==11){
+            const doesSeasonalityMasterExist = selectedMasters.find((m:MDMMasterState)=>m.id==11 || m.id==12)
+            if(doesSeasonalityMasterExist){
+                dispatch(REMOVE_MASTER(doesSeasonalityMasterExist.id))
+                return
+            }
+            return dispatch(ADD_MASTER({...master,name:'Seasonality'}))
+        }
+        
+
+        //for PIPO
+        if(master.id==7){
+            const doesSeasonalityMasterExist = selectedMasters.find((m:MDMMasterState)=>m.id==7 || m.id==8 || m.id==9)
+            if(doesSeasonalityMasterExist){
+                dispatch(REMOVE_MASTER(doesSeasonalityMasterExist.id))
+                return
+            }
+            return dispatch(ADD_MASTER({...master,name:'Phase In Phase Out'}))
+        }
+
         if(selectedMasters.find((m:MDMMasterState)=>m.id===master.id)){
             dispatch(REMOVE_MASTER(master.id))
             return
         }
+
+
+        if(selectedMasters.find((m:MDMMasterState)=>m.id===master.id)){
+            dispatch(REMOVE_MASTER(master.id))
+            return
+        }
+
+        
+
+        
         dispatch(ADD_MASTER(master))
        
     }
+
+    const handleSubmitSelectMaster = ()=>{
+        dispatch(UPDATE_ACTIVE_MASTER(0));
+        setIsSelectMasterOpen(false)
+        setIsUploadModalOpen(true)
+        dispatch(UPDATE_PROGRESS_STATE('view'))
+    }
     
+
+
+    const handleRadioButton = (masterFileId:number)=>{
+        if(masterFileId==activeMaster.id){
+            return
+        }
+        const isSeasonality = masterFileId==11 || masterFileId==12
+        const doesMasterExist = allMasters.find((m:MDMMasterState)=>m.id==masterFileId)
+        if(doesMasterExist){
+            const newSelectedMasters = selectedMasters.map((master:MDMMasterState)=>{
+                if(master.id==activeMaster.id){
+                    return {...doesMasterExist,name:isSeasonality?"Seasonality":"Phase In Phase Out"}
+                }
+                return master
+            })
+            dispatch(FILL_MASTERS(newSelectedMasters))
+            dispatch(UPDATE_ACTIVE_MASTER({...doesMasterExist,name:isSeasonality?"Seasonality":"Phase In Phase Out"}))
+        }
+        
+    }
+        
+    const onExportToExcel = ()=>{
+        
+    }
+
     return {
         allMasters,
         onCancel,
+        isUploadModalOpen,
         isAddRecordsLoading,
         selectedMasters,
-        handleOnClickMaster
+        activeMaster,
+        isSelectMasterOpen,
+        setIsUploadModalOpen,
+        handleOnClickMaster,
+        handleSubmitSelectMaster,
+        handleRadioButton
     }
 }
 

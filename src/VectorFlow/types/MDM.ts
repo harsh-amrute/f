@@ -108,3 +108,8 @@ export interface QueryFilteredDataConfigs{
     count?:boolean,
     currentPage?:number
 }
+
+export interface UploadModalRadioButtonsType{
+    label:string
+    value:any
+}

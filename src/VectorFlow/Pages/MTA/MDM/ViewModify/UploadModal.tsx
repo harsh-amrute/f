@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction,useRef } from 'react'
+import React, { Dispatch, SetStateAction,useRef } from 'react'
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
-import { UploadModalWrapper, UploadModalSection, UploadBorderContainer, UploadModalContent, TextContent, InputWrapper, UploadModalInput, UploadModalText, UploadFileText } from "./styles"
+import { UploadModalWrapper, UploadModalSection, UploadBorderContainer, UploadModalContent, TextContent, InputWrapper, UploadModalInput, UploadModalText, UploadFileText, UploadModalRadioWrapper } from "./styles"
 import { SCManualUploadBtn, SCManualUploadButton } from "../../../../../module-store-transfer/pages/manual-upload/styles"
 import { useUserData } from "../../../../../context"
 import * as ManualStyle from "../../../../../module-store-transfer/pages/manual-upload/styles"; 
@@ -15,7 +15,8 @@ interface UploadModalProps{
    file:File | undefined,
    setFile:Dispatch<SetStateAction<File | undefined>>
    uploadButtonStatus:boolean
-
+   radioButtons?:Array<{label:string,value:any}>
+   handleRadioButton?:(params:number)=>void
 }
 
 
@@ -30,7 +31,9 @@ const UploadModal = (props:UploadModalProps)=>{
       setInputText,
       file,
       setFile,
-      uploadButtonStatus
+      radioButtons,
+      uploadButtonStatus,
+      handleRadioButton
    }   = props 
 
    const {user} = useUserData()
@@ -70,9 +73,26 @@ const UploadModal = (props:UploadModalProps)=>{
                      <img src="/assets/img/manual/excel.png"  height={29} width={29} style={{marginBottom:'10px'}}/>
                      <p>Download selected data </p>
                   </TextContent>
-                  <UploadFileText>
-                     File Name
-                  </UploadFileText>
+                  {
+                     radioButtons && radioButtons.length>0 && handleRadioButton ? (
+                        <UploadModalRadioWrapper>
+                           {radioButtons.map((r,index)=>{
+                              return(
+                                 <React.Fragment>
+                                     <input type={'radio'} placeholder={r.label} key={index} name='file name'  onClick={()=>handleRadioButton(r.value)} style={{marginLeft:15}}/>
+                                     <label htmlFor={r.label}>{r.label}</label>
+                                 </React.Fragment>
+                              )
+                           })}
+                        </UploadModalRadioWrapper>
+                     )
+                     :
+                     <UploadFileText>
+                        File Name
+                     </UploadFileText>
+                  }
+                  
+                  
                   <InputWrapper>
                      <UploadModalInput value={inputText} onChange={(e)=>setInputText(e.target.value)} data-testid="view-modify-text"/>
                      <SCManualUploadBtn themeUi={user.user.theme_ui} 
