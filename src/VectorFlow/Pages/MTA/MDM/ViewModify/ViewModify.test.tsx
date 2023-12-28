@@ -15,6 +15,7 @@ import {
   useGetCount,
   useCreateDraft,
   useModifyDraft,
+  useGetSeasonalityDetails,
 } from "../../../../Services/MTA/MDM";
 import _ from "lodash";
 import { createStore, store } from "../../../../../redux/store/store";
@@ -24,7 +25,7 @@ import { ReactNode } from "react";
 import { RESET_STATE } from "../../../../../redux/actions/MDM";
 // import { toast } from 'react-toastify'
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
-import { createDraftMockData, MasterData } from "../../../../../mock-data/MDM";
+import { createDraftMockData, getSeasonalityDetailsMockData, MasterData } from "../../../../../mock-data/MDM";
 import { mapMasterToColumnDefs } from "../../../../../helpers/utils";
 
 
@@ -58,6 +59,10 @@ const useModifyDraftMock = useModifyDraft as jest.MockedFunction<
   typeof useModifyDraft
 >;
 
+const useGetSeasonalityDetailsMock = useGetSeasonalityDetails as jest.MockedFunction<
+typeof useGetSeasonalityDetails
+>;
+
 window.URL.createObjectURL = jest.fn();
 
 const useMasterDataResult: any = {
@@ -89,6 +94,12 @@ const useCreateDraftMockData :any={
 const useModifyDraftMockData :any={
   mutateAsync:()=>{
     return {data:createDraftMockData}
+  }
+}
+
+const useGetSeasonalityDetailsMockData:any = {
+  mutateAsync:()=>{
+    return {data:getSeasonalityDetailsMockData}
   }
 }
 
@@ -265,6 +276,10 @@ describe("Renders View Modify Component", () => {
     useModifyDraftMock.mockImplementation(()=>{
       return useModifyDraftMockData
     })
+
+    useGetSeasonalityDetailsMock.mockImplementation(()=>{
+      return useGetSeasonalityDetailsMockData;
+    })
   });
 
   it("renders the view modify component when loading", async () => {
@@ -323,6 +338,10 @@ describe("Handles all Interaction in ViewModify Component", () => {
 
     useModifyDraftMock.mockImplementation(()=>{
       return useModifyDraftMockData
+    })
+
+    useGetSeasonalityDetailsMock.mockImplementation(()=>{
+      return useGetSeasonalityDetailsMockData;
     })
 
     store.dispatch(RESET_STATE());
@@ -566,6 +585,10 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     useModifyDraftMock.mockImplementation(()=>{
       return useModifyDraftMockData
+    })
+
+    useGetSeasonalityDetailsMock.mockImplementation(()=>{
+      return useGetSeasonalityDetailsMockData;
     })
 
     

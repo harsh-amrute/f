@@ -801,3 +801,120 @@ export const createDraftMockData = {
   status: 500,
   msg: null
 }
+
+export const getSeasonalityDetailsMockData = {
+  recordCount:null,
+  data:{
+    norm:[
+        {
+            "date":"4/1/2023",
+            "old_norm":"97",
+            "new_norm":"311",
+            "change_reason":"Sesonality"
+        },
+        {
+            "date":"4/5/2023",
+            "old_norm":"311",
+            "new_norm":"200",
+            "change_reason":"Forced Norm Change"
+        },
+        {
+            "date":"4/12/2023",
+            "old_norm":"311",
+            "new_norm":"415",
+            "change_reason":"Forced Norm Change"
+        },
+        {
+            "date":"5/15/2023",
+            "old_norm":"415",
+            "new_norm":"314",
+            "change_reason":"Forced Norm Change"
+        },
+        {
+            "date":"5/30/2023",
+            "old_norm":"314",
+            "new_norm":"500",
+            "change_reason":"Forced Norm Change"
+        }
+    ],
+    dailyData:[
+        {
+            "date":"4/1/2023",
+            "stock":"50",
+            "git":"45"
+        },
+        {
+            "date":"4/2/2023",
+            "stock":"50",
+            "git":"45"
+        },
+        {
+            "date": "4/3/2023",
+            "stock": "48",
+            "git": "42"
+        },
+        {
+            "date": "4/4/2023",
+            "stock": "47",
+            "git": "43"
+        },
+        {
+            "date": "4/5/2023",
+            "stock": "49",
+            "git": "44"
+        },
+        {
+            "date": "4/6/2023",
+            "stock": "51",
+            "git": "46"
+        },
+        {
+            "date": "4/7/2023",
+            "stock": "52",
+            "git": "47"
+        },
+        {
+            "date": "4/8/2023",
+            "stock": "50",
+            "git": "45"
+        },
+        {
+            "date": "4/9/2023",
+            "stock": "48",
+            "git": "42"
+        },
+        {
+            "date": "4/10/2023",
+            "stock": "47",
+            "git": "43"
+        },
+        {
+            "date": "4/11/2023",
+            "stock": "49",
+            "git": "44"
+        },
+        {
+            "date": "4/12/2023",
+            "stock": "51",
+            "git": "46"
+        },
+        {
+            "date": "4/13/2023",
+            "stock": "52",
+            "git": "47"
+        },
+        {
+            "date": "4/14/2023",
+            "stock": "50",
+            "git": "45"
+        },
+        {
+            "date": "4/15/2023",
+            "stock": "48",
+            "git": "42"
+        },
+    ]
+},
+  status:200,
+  msg:null
+}

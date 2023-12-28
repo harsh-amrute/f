@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "author": "TSO",
-  "type": "module",
   "dependencies": {
     "@headlessui/react": "^1.7.11",
     "@lottiefiles/react-lottie-player": "^3.5.2",
@@ -60,7 +59,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --coverage --passWithNoTests",
+    "test": "react-scripts test --coverage --passWithNoTests --transformIgnorePatterns 'node_modules/(?!my-library-dir)/'",
     "eject": "react-scripts eject",
     "lint": "eslint . -f node_modules/eslint-html-reporter/reporter.js -o report.html",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx src --ignore-pattern src/types/*"
