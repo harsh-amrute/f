@@ -50,8 +50,7 @@ const useViewModify = () => {
     const [currentPage,setCurrentPage] = useState(1);
     const rowsPerPage = 50;
 
-  
-
+    const [seasonalityActiveQuickFilter,setSeasonalityActiveQuickFilter]  = useState<number>(0)
     const ref = useRef<GridRef>();
     const tempRef = useRef<GridRef>(); //used for second ag grid instance which is hidden.
     const [tempGridData,setTempGridData] = useState<object[]>([]);
@@ -148,9 +147,6 @@ const useViewModify = () => {
           const temp:MDMMasterState[]=[];
           if(selectedOptions.length > 0) dispatch(FILL_MASTERS([...getSelectedMasters(temp)]));
         }
-
-       
-
         // if(isToolPanelOpen) ref.current?.api.openToolPanel('columns');
 
       },[selectedOptions,isLoading,activeMaster,allMastersState]);  
@@ -457,18 +453,27 @@ const useViewModify = () => {
       else{
         toggleEditOnline(false);
       }
-      setIsTableDataLoading(false);
-      if(result.data.recordCount == 0){
+
+      
+        setIsTableDataLoading(false);
+        if(result.data.recordCount == 0){
+          toggleWarningModal(false);
+          setShowAll(false);
+          return;
+        }
+       
+        dispatch(UPDATE_ROW_DATA(result.data.data));
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         toggleWarningModal(false);
         setShowAll(false);
-        return;
-      }
-      
-      dispatch(UPDATE_ROW_DATA(result.data.data));
-      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-      dispatch(UPDATE_PROGRESS_STATE('view')); 
-      toggleWarningModal(false);
-      
+        if(activeMaster.id==10){
+         
+          return dispatch(UPDATE_PROGRESS_STATE('seasonality')); 
+        }
+        if(activeMaster.id==6){
+          return dispatch(UPDATE_PROGRESS_STATE('phaseInPhaseOut')); 
+        }
+        return dispatch(UPDATE_PROGRESS_STATE('view'));  
     }
 
     const onEditOnline = () => {
@@ -705,6 +710,23 @@ const useViewModify = () => {
       }
 
     
+      const onSeasonalityQuickFilter = (id:number)=>{
+        const doesMasterExist = masters.find((master:MDMMasterState)=>master.id===activeMaster.id)
+        if(id===seasonalityActiveQuickFilter){
+          if(doesMasterExist){
+            setSeasonalityActiveQuickFilter(0)
+            dispatch(UPDATE_ROW_DATA(doesMasterExist.rowData))
+            return
+          }
+
+          
+        }
+        if(doesMasterExist){
+          setSeasonalityActiveQuickFilter(id)
+          dispatch(UPDATE_ROW_DATA(doesMasterExist.rowData.filter((row)=>row.sts==id)))
+        }
+      }
+
 
     return {
         colDefs,
@@ -756,7 +778,9 @@ const useViewModify = () => {
         rowsPerPage,
         selectedRowsCount,
         currentPage,
+        seasonalityActiveQuickFilter,
         // onSaveToDraft,
+        onSeasonalityQuickFilter,
         handleChangePage,
         onReset,
         onEditOnlineSave,

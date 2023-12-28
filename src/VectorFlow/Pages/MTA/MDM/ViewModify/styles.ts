@@ -168,47 +168,110 @@ export const InputWrapper = styled.div`
 
 export const UploadModalInput=styled.input`
 
-width:100%;
-border:none;
-outline:none;
-color: #939393;
-opacity: 1;
-font-style: normal;
-font-variant: normal;
-font-weight: 300;
-font-size: 12px;
-line-height: 14px; 
-font-family:Roboto;
-padding-left:15px;
-&:focus{
+    width:100%;
     border:none;
     outline:none;
-}
-&:active{
-    border:none;
-    outline:none;
-}
-border-bottom-left-radius: 6px;
-border-bottom-right-radius: 6px;
-background: #FFFFFF 0% 0% no-repeat padding-box;
-box-shadow: -2px -2px 15px #A2A0A017;
+    color: #939393;
+    opacity: 1;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 14px; 
+    font-family:Roboto;
+    padding-left:15px;
+    &:focus{
+        border:none;
+        outline:none;
+    }
+    &:active{
+        border:none;
+        outline:none;
+    }
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: -2px -2px 15px #A2A0A017;
 `
 
 export const UploadModalText=styled.div`
-font-style: normal;
-font-variant: normal;
-font-weight: 400;
-font-size: 16px;
-line-height: 19px;
-font-family: Roboto
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    font-family: Roboto
 `
 
 export const UploadFileText=styled(UploadModalText)`
-width:100%;
-padding-left:16px;
-padding-bottom:5px;
-text-align:left;
-font-weight:600;
-font-size:7px;
-line-height:8px;
+    width:100%;
+    padding-left:16px;
+    padding-bottom:5px;
+    text-align:left;
+    font-weight:600;
+    font-size:7px;
+    line-height:8px;
+`
+
+export const SeasonalityQuickFilterWrapper = styled.div`
+    width:100%;
+    display:flex;
+    flex-direction:row;
+    justify-content:flex-end;
+    margin-bottom:10px;
+`
+
+export const SeasonalityQuickFilterHeader = styled.p`
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-style:normal;
+    font-variant:normal;
+    font-weight:700;
+    font-size:20px;
+    line-height:24px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #000000;
+`
+
+export const SeasonalityQuickFilter = styled.button<{stateColor:string,isActive:boolean}>`
+    margin-left:20px;
+    position:relative;
+    background-color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width: 90px;
+    height: 40px;
+    border: 1px solid #929292;
+    border-radius: 6px;
+    
+    color:${(props)=>props.isActive?'white':'#929292'};
+    &:before{
+        content:'';
+        position:absolute;
+        left:0;
+        top:0;
+        bottom:0;
+        width:${(props)=>props.isActive?'100%':'8px'};
+        background-color:${(props)=>props.stateColor};
+        transition:0.3s ease-in-out;
+    }
+    overflow:hidden;
+    cursor:pointer;
+    
+`
+
+export const SeasonalityQuickFilterText = styled.p`
+    font-style:normal;
+    font-variant:normal;
+    font-weight:300;
+    font-size:12px;
+    line-height:14px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color:inherit;
+    z-index:100;
+    transition:0.3s ease-out;
 `

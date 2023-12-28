@@ -205,8 +205,8 @@ const mockData = [
     ],
   },
   {
-    id: 3,
-    name: "SKU Location",
+    id: 10,
+    name: "Seasonality",
     fields: [
       {
         displayName: "SKU Code",
@@ -495,6 +495,8 @@ describe("Handles all Interaction in ViewModify Component", () => {
     const applyFilter = screen.getByText("Apply Filter");
     fireEvent.click(applyFilter);
   });
+
+  
 
   // it("Opens the UploadModal", () => {
   //   const submit = screen.getByText("Submit");
@@ -873,6 +875,29 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     
   })
+
+  it('Click on seasonality quick filter',()=>{
+    const testData = [{...mockMasterData.data[0],SKUCode:"QACE1234,|"},mockMasterData.data[1],mockMasterData.data[2]]
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:[{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:"Seasonality",colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:testData}],
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:"Seasonality",colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:testData},
+      isSelectMasterOpen:false,
+      draftId:''
+    }
+
+    const mockStore = createStore(updatedMockState);
+
+    render(contextWrapper(<ViewModify/>,mockStore));
+
+
+    screen.logTestingPlaygroundURL()
+    const notStartedQuickFilter = screen.getByText('Not Started')
+    fireEvent.click(notStartedQuickFilter)
+  })
+
 })
 
 // describe("It handles react portals",()=>{

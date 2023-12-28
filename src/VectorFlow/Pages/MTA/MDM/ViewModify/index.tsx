@@ -1,18 +1,18 @@
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
-import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup } from "./styles";
+import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup, SeasonalityQuickFilterWrapper, SeasonalityQuickFilter, SeasonalityQuickFilterHeader, SeasonalityQuickFilterText } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
 import { generateOptions } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify"; 
-import { operators } from "../../../../../helpers/MDMConstants";
-import {type Filter} from '../../../../types/MDM';
+import { operators, seasonalityQuickFilterData } from "../../../../../helpers/MDMConstants";
+import {SeasonalityQuickFilterType, type Filter} from '../../../../types/MDM';
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import WarningModal from './WarningModal'
 import UploadModal from "./UploadModal";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import SeasonalityChartModal from "./SeasonalityChartModal";
@@ -66,6 +66,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         onSubmit,
         isUploadButtonDisabled,
         editOnline,
+        seasonalityActiveQuickFilter,
         onEditOnline,
         onSaveToDraft,
         selectedRowsCount,
@@ -79,7 +80,9 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         tempRowData,
         normChangeData,
         onShowChart,
-        toggleSeasonalityChartModal
+        toggleSeasonalityChartModal,
+        onSeasonalityQuickFilter
+
     } = useViewModify();
     
 
@@ -110,7 +113,26 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
             />
           }
           {!isSelectMasterOpen && 
-            <VFTab 
+          <React.Fragment>
+            {
+              activeMaster.id==10
+              &&
+              <SeasonalityQuickFilterWrapper>
+                <SeasonalityQuickFilterHeader>
+                  Quick Filters - 
+                </SeasonalityQuickFilterHeader>
+                {seasonalityQuickFilterData.map((s:SeasonalityQuickFilterType)=>{
+                  return(
+                    <SeasonalityQuickFilter stateColor={s.color} onClick={()=>onSeasonalityQuickFilter(s.id)} isActive={seasonalityActiveQuickFilter===s.id}>
+                      <SeasonalityQuickFilterText>
+                        {s.label}
+                      </SeasonalityQuickFilterText>
+                    </SeasonalityQuickFilter>
+                  )
+                })}
+              </SeasonalityQuickFilterWrapper>
+           }
+         <VFTab 
               activeMaster={activeMaster}
               themeUi={themeUi}
               onTabChange={handleTabChange}
@@ -190,6 +212,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
                 </div>
 
             </VFTab>
+          </React.Fragment>
           }
           {
             (!['default'].includes(activeMaster.progress) && !isSelectMasterOpen) 
@@ -250,8 +273,12 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
             onExportData={exportToExcel}
             onSubmit={onSubmit}
             onDeleteSelected={deleteSelected}
+            onSeasonalityResume={()=>console.log('')}
+            onSeasonalityStop={()=>console.log('')}
+            onPhaseInPhaseOutStop={()=>console.log('')}
           />
         }
+        
       </>
     )
   }

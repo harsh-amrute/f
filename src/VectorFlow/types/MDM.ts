@@ -5,7 +5,7 @@ import {
 } from 'ag-grid-enterprise'
 import Joi from 'joi'
 
-export type ViewModifyProgressState = "default" | "view" | "error" | "uploaded" | "submitted" | "editOnline" | "editOnlineSaved" | "editOnlineSubmitted";
+export type ViewModifyProgressState = "default" | "view" | "error" | "uploaded" | "submitted" | "editOnline" | "editOnlineSaved" | "editOnlineSubmitted" | "seasonality" | "phaseInPhaseOut";
 export interface MDMStore{
     allMasters:MDMMasterState[],
     masters:MDMMasterState[],
@@ -120,4 +120,9 @@ export interface DailyData {
     date:string,
     stock:string,
     git:string
+}
+export interface SeasonalityQuickFilterType{
+    id:number
+    label:string
+    color:string
 }
