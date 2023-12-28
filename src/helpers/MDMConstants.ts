@@ -1,7 +1,7 @@
 import { ColDef } from 'ag-grid-enterprise';
 import {TaskPendingActionRenderer} from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import { LocationSchema, SKULocationSchema, SKUSchema, SOBSchema } from '../validators/schemas/MTA/MDM/index';
-import {type Option, type MasterIdToSchema} from '../VectorFlow/types/MDM';
+import {type Option, type MasterIdToSchema, SeasonalityQuickFilterType} from '../VectorFlow/types/MDM';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
 
 interface masterGroupMapperType {
@@ -124,6 +124,33 @@ export const taskPendingCustomColDefs :any[] = [
     }
 ]
 
+export const seasonalityQuickFilterData:SeasonalityQuickFilterType[] = [
+    {
+        id:1,
+        label:'Not Started',
+        color:'#898989'
+    },
+    {
+        id:4,
+        label:'In Progress',
+        color:'#EDD44C'
+    },
+    {
+        id:7,
+        label:'Finished',
+        color:'#52B736'
+    },
+    {
+        id:21,
+        label:'Aborted',
+        color:'#1D1B1C'
+    },
+    {
+        id:23,
+        label:'Stopped',
+        color:'#E33A3A'
+    }
+]
 export const masterGroupMapper:masterGroupMapperType[] = [
     {
       name:"SKU",

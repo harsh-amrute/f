@@ -28,12 +28,14 @@ const useTaskPendingForReview = ()=>{
 
     const handleOnClick = async(taskId:string)=>{
         console.log(taskId)
+        setIsViewTableOpen(false)
       const response = await getTaskDetails('1_202312061821491222')
       const currentTaskMaster = response.data.data[0]
       const currentTaskMasterid:number = currentTaskMaster.MasterId
       setRecordCount(currentTaskMaster.data.length)
       setDetailTableRowData(response.data.data)
-      const uiConfigurationResponse = await getMasterUIConfiguration('modify')
+      
+      const uiConfigurationResponse = await getMasterUIConfiguration('add')
       
       const masters:Master[] = uiConfigurationResponse.data.data
       const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterid)?.fields
@@ -41,9 +43,9 @@ const useTaskPendingForReview = ()=>{
       if(currentMasterFields){
         const existingColumns = getExistingColumns(currentTaskMaster.data)
         const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
-        setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields))
-        setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields))
-        setIsViewTableOpen(false)
+        setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,'add'))
+        setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,'modify'))
+        
       }
     }
 

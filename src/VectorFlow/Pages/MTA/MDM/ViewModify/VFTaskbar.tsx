@@ -4,9 +4,10 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import { TaskBarContainer } from "./styles"
 import VFStepper,{StepItem} from "../../../../../components/VectorFLOW/commons/VFStepper"
+import { ViewModifyProgressState } from "../../../../../VectorFlow/types/MDM"
 
 export interface VFTaskBarProps{
-    masterProgress:"default" | "view" | "error" | "uploaded" | "submitted" | "editOnline" | "editOnlineSaved" | "editOnlineSubmitted"
+    masterProgress:ViewModifyProgressState
     editOnline?:boolean
     onReset:()=>void
     onBack:()=>void
@@ -18,6 +19,9 @@ export interface VFTaskBarProps{
     onEditOnlineSave:()=>void
     onSaveToDraft:()=>void
     onDeleteSelected:()=>void
+    onSeasonalityResume:()=>void
+    onSeasonalityStop:()=>void
+    onPhaseInPhaseOutStop:()=>void
 }
 
 
@@ -35,7 +39,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         onEditOnline,
         onEditOnlineSave,
         onSaveToDraft,
-        onDeleteSelected
+        onDeleteSelected,
+        onSeasonalityResume,
+        onSeasonalityStop
     } = props
 
     const {user} = useUserData()
@@ -292,6 +298,27 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                             items={getStepperState()}
                         />
                     </div>
+                </TaskBarContainer>
+            )
+        case'seasonality':
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row'}}>
+                    <BackButton/>
+                   <VFButtonOutline themeUi={themeUi} onClick={onSeasonalityResume}>  
+                        Resume
+                   </VFButtonOutline >
+                   <VFButtonOutline themeUi={themeUi} onClick={onSeasonalityStop}>
+                        Stop Selected
+                    </VFButtonOutline>
+                </TaskBarContainer>
+            )
+        case'phaseInPhaseOut':
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row'}}>
+                    <BackButton/>
+                   <VFButton themeUi={themeUi} onClick={onSeasonalityStop}>
+                        Stop Selected
+                    </VFButton>
                 </TaskBarContainer>
             )
         default:
