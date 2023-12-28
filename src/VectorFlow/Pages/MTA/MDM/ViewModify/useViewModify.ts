@@ -613,17 +613,21 @@ const useViewModify = () => {
       }
 
       const onSaveToDraft = async()=>{
-        const toastId = notifyLoader('Creating Draft');
-        if(draftID.length > 0){
-          await modifyDraft(generateDraftPayload())
-          toast.dismiss(toastId);
-          return toast.success("Draft Updated Successfully")
-        }
+        try {
+          const toastId = notifyLoader('Creating Draft');
+          if(draftID.length > 0){
+            await modifyDraft(generateDraftPayload())
+            toast.dismiss(toastId);
+            return toast.success("Draft Updated Successfully")
+          }
 
-        const data:any =  await createDraft(generateDraftPayload())
-        dispatch(SET_DRAFT_ID(data.data.data))
-        toast.dismiss(toastId);
-        return toast.success("Draft Created Successfully");
+          const data:any =  await createDraft(generateDraftPayload())
+          dispatch(SET_DRAFT_ID(data.data.data))
+          toast.dismiss(toastId);
+          return toast.success("Draft Created Successfully");
+        } catch (error) {
+          return toast.error("Something Went Wrong");
+        }
       }
 
       const onReset = () => {

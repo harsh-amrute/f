@@ -1,6 +1,6 @@
 import Chart from "../../../../../../components/VectorFLOW/commons/Chart";
 import VFModalCard from "../../../../../../components/VectorFLOW/commons/VFModalCard";
-import { ChartData, ChartDataset, ChartOptions } from "chart.js";
+import { Chart as ChartJS, ChartData, ChartDataset, ChartOptions } from "chart.js";
 import { 
   SCChartContainer, 
   SCSeasonalityContainer, 
@@ -18,8 +18,6 @@ import {
  import Checkbox from "../../../../../../components/commons/Checkbox";
  import {enIN} from 'date-fns/locale';
  import { useRef, useState, useEffect } from "react";
- import {Chart as ChartJS} from 'chart.js';
- import {isEqual} from 'date-fns';
 import { DailyData } from "../../../../../types/MDM";
 
 

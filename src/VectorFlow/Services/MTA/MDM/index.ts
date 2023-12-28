@@ -11,12 +11,9 @@ export const QUERY_KEYS = {
   useCreateDraft:['MDMService.useCreateDraft'],
   useModifyDraft:['MDMService.useModifyDraft'],
   useDeleteDraft:['MDMService.useDeleteDraft'],
-<<<<<<< HEAD
-  useGetSeasonalityDetails:['MDMService.useGetSeasonalityDetails']
-=======
+  useGetSeasonalityDetails:['MDMService.useGetSeasonalityDetails'],
   useGetPendingTasks:['MDMService.useGetPendingTasks'],
   useGetTaskStatusData:['MDMService.useGetTaskStatusData']
->>>>>>> develop
 }
 
 
@@ -68,11 +65,12 @@ export const useDeleteDraft = ()=>{
   })
 }
 
-<<<<<<< HEAD
 export const useGetSeasonalityDetails = () => {
   return useMutation(QUERY_KEYS.useGetSeasonalityDetails,async(body:object)=>{
     return await MDMService.getSeasonalityDetails(body)
-=======
+  })
+}
+
 export const useGetPendingTasks = () =>{
   return useQuery(QUERY_KEYS.useGetPendingTasks,async()=>{
     return await MDMService.getPendingTasks()
@@ -94,6 +92,5 @@ export const useGetTaskStatusData = ()=>{
 export const useGetTasKDetailDownloadData = ()=>{
   return useMutation(async(body:{taskId:string,approverId:number})=>{
     return await MDMService.getTaskDetailsDownloadData(body)
->>>>>>> develop
   })
 }

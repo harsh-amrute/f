@@ -1,7 +1,6 @@
 
 import {
   Chart as ChartJS,
-  type Chart as ChartType,
   LinearScale,
   CategoryScale,
   BarElement,
@@ -13,14 +12,7 @@ import {
   BarController,
   ChartOptions,
   TimeScale,
-  LegendItem,
-  ChartConfigurationCustomTypesPerDataset,
-  ChartDataset,
-  ChartData,
   Filler,
-  ChartEvent,
-  PointStyle,
-  Color,
   TimeSeriesScale,
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
