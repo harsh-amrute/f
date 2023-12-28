@@ -9,7 +9,6 @@ import { defaultColDefs, masterIdToSchemaMapper, taskPendingCustomColDefs } from
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import _ from 'lodash';
 import {subDays,addDays} from 'date-fns';
-import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../components/VectorFLOW/commons/SeasonalityCellRenderers';
 
 // clear cached token and redirect to sso login
 
@@ -442,7 +441,7 @@ export const parseExcelData = async (file:any,master:MDMMasterState) => {
   return result;
 }
 
-export const mapMasterToColumnDefs = (fields:Field[],masterId?:number)=>{
+export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChart?:any)=>{
   let result:ColDef[] = []
 
 
@@ -475,7 +474,7 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number)=>{
       headerName:'',
       width:3,
       minWidth:3,
-      cellRenderer:SeasonalityColorCellRenderer
+      cellRenderer:'seasonalityColorCellRenderer'
     }
 
     const seasonalityGraphColDef:ColDef={
@@ -483,7 +482,10 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number)=>{
       colId:'graph',
       headerName:'',
       width:40,
-      cellRenderer:SeasonalityGraphCellRenderer
+      cellRenderer:'seasonalityGraphCellRenderer',
+      cellRendererParams:{
+        onShowChart
+      }
     }
 
     return [seasonalityColorColDef,seasonalityCheckboxColDef,seasonalityGraphColDef,...result]
@@ -513,7 +515,7 @@ export const mapStateFiltersToPayload = (filters:Filter[]) => {
 
 }
 
-export const mapMasterToMasterState = (masters:Master[]):MDMMasterState[] => {
+export const mapMasterToMasterState = (masters:Master[],onShowChart?:any):MDMMasterState[] => {
 
   return masters.map((master:Master)=>({
     id:master.id,
@@ -527,7 +529,7 @@ export const mapMasterToMasterState = (masters:Master[]):MDMMasterState[] => {
       operator:'',
       text:''
     }],
-    colDefs:mapMasterToColumnDefs(master.fields,master.id),
+    colDefs:mapMasterToColumnDefs(master.fields,master.id,onShowChart),
     rowData:[],
     progress:'default'
   }))
@@ -711,7 +713,6 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],tasktyp
     }
   })
 
-  console.log([...colDefs,...taskPendingCustomColDefs])
   return [...colDefs,...taskPendingCustomColDefs]
 }
 

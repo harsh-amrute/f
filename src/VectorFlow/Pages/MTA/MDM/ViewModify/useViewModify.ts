@@ -12,6 +12,7 @@ import { ColDef } from 'ag-grid-enterprise';
 import { masterIdToSchemaMapper } from '../../../../../helpers/MDMConstants';
 
 import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
+import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 
@@ -44,6 +45,7 @@ const useViewModify = () => {
     const [chartData,setChartData] = useState<object>();
     const [isSeasonalityChartModalOpen,toggleSeasonalityChartModal] = useState<boolean>(false);
     const [normChangeData,setNormChangeData] = useState<any>([]);
+    const [seasonalityRowData,setSeasonalityRowData] = useState<any>([]);
 
     const [editOnline,toggleEditOnline] = useState(false);
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
@@ -126,7 +128,9 @@ const useViewModify = () => {
 
     const customCellRenderers = useMemo(() => ({
       errorCell: ErrorCell,
-      warningCell: WarningCell  
+      warningCell: WarningCell,
+      seasonalityColorCellRenderer:SeasonalityColorCellRenderer,
+      seasonalityGraphCellRenderer:SeasonalityGraphCellRenderer
     }), []);
 
   
@@ -175,7 +179,7 @@ const useViewModify = () => {
       useEffect(()=>{
         const getMasterUIConfigurationData = async()=>{
           const {data} = await masterUIConfiguration('modify');
-          setAllMasterState(mapMasterToMasterState(data.data))
+          setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
          }
   
          getMasterUIConfigurationData()
@@ -631,6 +635,7 @@ const useViewModify = () => {
           toast.dismiss(toastId);
           return toast.success("Draft Created Successfully");
         } catch (error) {
+          toast.dismiss();
           return toast.error("Something Went Wrong");
         }
       }
@@ -665,6 +670,9 @@ const useViewModify = () => {
           if(error){
             rowClone.error = error.message;
           }
+          else{
+            rowClone.error = '';
+          }
           if(warning){
             rowClone.warning = warning;
           }
@@ -690,23 +698,32 @@ const useViewModify = () => {
         const isErrorPresent = activeMaster.colDefs.find((col:ColDef)=>col.colId==='error');
         const isWarningPresent = activeMaster.colDefs.find((col:ColDef)=>col.colId==='warning');
         if(isErrorPresent || isWarningPresent){
-          return notifyError("Please Clear All Errors before submit")
+          // return notifyError("Please Clear All Errors before submit")
+          return
         }
         dispatch(UPDATE_PROGRESS_STATE('editOnlineSaved'))
 
       }
 
-      const onShowChart = async () => {
+       const onShowChart = async (rowData:any) => {
+        try {
+          setSeasonalityRowData(rowData);
+          const toastId = notifyLoader('Fetching Chart Details');
+          const {data:{data}} = await getSeasonalityDetails(rowData);
+          setNormChangeData(data.norm);
+          const chartData = generateSesonalityChartData(rowData,data);
+          console.log(isSeasonalityChartModalOpen);
+          setChartData(chartData);
+          toggleSeasonalityChartModal(true);
+          toast.dismiss(toastId);
+          toast.success("Chart Details Fetched Successfully");
+          
+        } catch (error) {
+          toast.dismiss();
+          toast.error("Something Went Wrong");
+
+        }
         
-
-        const {data:{data}} = await getSeasonalityDetails(tempRowData);
-        setNormChangeData(data.norm);
-        const chartData = generateSesonalityChartData(tempRowData,data);
-        console.log(chartData);
-        setChartData(chartData);
-        toggleSeasonalityChartModal(true);
-
-
       }
 
     
@@ -786,10 +803,11 @@ const useViewModify = () => {
         onEditOnlineSave,
         chartData,
         isSeasonalityChartModalOpen,
-        tempRowData,
+        seasonalityRowData,
         normChangeData,
         onShowChart,
-        toggleSeasonalityChartModal
+        toggleSeasonalityChartModal,
+        tempRowData
     }
 }
 

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "author": "TSO",
+  "type": "module",
   "dependencies": {
     "@headlessui/react": "^1.7.11",
     "@lottiefiles/react-lottie-player": "^3.5.2",

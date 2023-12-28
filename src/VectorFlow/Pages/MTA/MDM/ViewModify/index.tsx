@@ -77,11 +77,12 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         onEditOnlineSave,
         isSeasonalityChartModalOpen,
         chartData,
-        tempRowData,
+        seasonalityRowData,
         normChangeData,
-        onShowChart,
         toggleSeasonalityChartModal,
-        onSeasonalityQuickFilter
+        onSeasonalityQuickFilter,
+        tempRowData,
+        onShowChart
 
     } = useViewModify();
     
