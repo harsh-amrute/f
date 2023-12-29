@@ -11,6 +11,7 @@ export const QUERY_KEYS = {
   useCreateDraft:['MDMService.useCreateDraft'],
   useModifyDraft:['MDMService.useModifyDraft'],
   useDeleteDraft:['MDMService.useDeleteDraft'],
+  useGetSeasonalityDetails:['MDMService.useGetSeasonalityDetails'],
   useGetPendingTasks:['MDMService.useGetPendingTasks'],
   useGetTaskStatusData:['MDMService.useGetTaskStatusData']
 }
@@ -61,6 +62,12 @@ export const useModifyDraft = ()=>{
 export const useDeleteDraft = ()=>{
   return useMutation(async(id:string)=>{
     return await MDMService.deleteDraft(id)
+  })
+}
+
+export const useGetSeasonalityDetails = () => {
+  return useMutation(QUERY_KEYS.useGetSeasonalityDetails,async(body:object)=>{
+    return await MDMService.getSeasonalityDetails(body)
   })
 }
 

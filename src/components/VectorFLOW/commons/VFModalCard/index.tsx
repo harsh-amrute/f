@@ -17,6 +17,10 @@ interface VFModalProps {
   headerText:string;
   headerIcon:string;
   children:ReactNode;
+  paddingLeftAndRight?:number;
+  headerBgColor?:string;
+  headerTextColor?:string;
+  closeIcon?:string
 }
 
 
@@ -25,9 +29,11 @@ const VFModalCard = ({
   closeModal,
   headerText,
   headerIcon,
+  closeIcon,
   children,
-  
-  
+  paddingLeftAndRight,
+  headerBgColor,
+  headerTextColor,
 }: VFModalProps) => {
 
 
@@ -59,18 +65,18 @@ const VFModalCard = ({
                   leaveTo="opacity-0 tranlate"
                 >
                   <Dialog.Panel className="modal-forced--block">
-                    <Dialog.Title as="h3" className="modal-title-forced">
-                    <VFHeaderWrapper>
+                    <Dialog.Title as="h3" className="modal-title-forced" style={{backgroundColor:headerBgColor}}>
+                    <VFHeaderWrapper headerBgColor={headerBgColor}>
                       <SCHeader>
-                      <img src={headerIcon} height={25} width={27} data-testid='vfmodal-img'/> 
-                      <SCTextTitle>{headerText}</SCTextTitle>
+                        {headerIcon.length > 0 && <img src={headerIcon} height={25} width={27} data-testid='vfmodal-img'/>} 
+                        <SCTextTitle headerTextColor={headerTextColor}>{headerText}</SCTextTitle>
                       </SCHeader>
                       <SCCloseModal onClick={closeModal} data-testid="close-modal-icon">
-                        <img src="/assets/img/VectorFLOW/NMS/close-dark.svg" height={14} width={14} />
+                        <img src={closeIcon} height={14} width={14} />
                       </SCCloseModal>
                       </VFHeaderWrapper>
                     </Dialog.Title>
-                    <SCWrapperContent>
+                    <SCWrapperContent paddingLeftAndRight={paddingLeftAndRight}>
                        {children}
                     </SCWrapperContent>
                   </Dialog.Panel>

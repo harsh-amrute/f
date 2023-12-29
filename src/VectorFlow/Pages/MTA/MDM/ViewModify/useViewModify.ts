@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
-import {type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
-import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft } from "../../../../Services/MTA/MDM";
+import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
+import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData } from "../../../../../helpers/utils";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -12,6 +12,7 @@ import { ColDef } from 'ag-grid-enterprise';
 import { masterIdToSchemaMapper } from '../../../../../helpers/MDMConstants';
 
 import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
+import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 
@@ -41,6 +42,9 @@ const useViewModify = () => {
     const [colDefs,setColDefs] = useState<ColDef[]>([]); 
     const [isUploadButtonDisabled,setIsUploadButtonDisabled] = useState<boolean>(true);
     const [showAll,setShowAll] = useState(false) //Flag to identify if the query is an show all query as we need that param in WarningModal Succes Handler P.S- Plz Optimize if you get time
+    const [chartData,setChartData] = useState<object>();
+    const [isSeasonalityChartModalOpen,toggleSeasonalityChartModal] = useState<boolean>(false);
+    const [normChangeData,setNormChangeData] = useState<any>([]);
 
     const [editOnline,toggleEditOnline] = useState(false);
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
@@ -61,6 +65,8 @@ const useViewModify = () => {
 
     // const allMastersState:MDMMasterState[] = mapMasterToMasterState(allMasters);
 
+    const {mutateAsync:getSeasonalityDetails} = useGetSeasonalityDetails();
+
     const {mutateAsync:getMasterData} = useGetMasterData();
 
     const {mutateAsync:getCount} = useGetCount();
@@ -70,6 +76,19 @@ const useViewModify = () => {
     const {mutateAsync:modifyDraft} = useModifyDraft()
 
     // const colDefs = activeMaster.colDefs
+
+    const tempRowData = {
+      sc:"V9I004615P1L001",
+      wc:"3017",
+      skd:"T Shirt",
+      sd:"5/05/2023",
+      ed:"5/20/2023",
+      ln:"Bangalore",
+      tn:"300",
+      bd:"7",
+      onm:'50',
+      r:"10"
+    }
 
     const invalidDataColdefs:ColDef[] = [
       {
@@ -108,7 +127,9 @@ const useViewModify = () => {
 
     const customCellRenderers = useMemo(() => ({
       errorCell: ErrorCell,
-      warningCell: WarningCell  
+      warningCell: WarningCell,
+      seasonalityColorCellRenderer:SeasonalityColorCellRenderer,
+      seasonalityGraphCellRenderer:SeasonalityGraphCellRenderer
     }), []);
 
   
@@ -157,7 +178,7 @@ const useViewModify = () => {
       useEffect(()=>{
         const getMasterUIConfigurationData = async()=>{
           const {data} = await masterUIConfiguration('modify');
-          setAllMasterState(mapMasterToMasterState(data.data))
+          setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
          }
   
          getMasterUIConfigurationData()
@@ -600,17 +621,22 @@ const useViewModify = () => {
       }
 
       const onSaveToDraft = async()=>{
-        const toastId = notifyLoader('Creating Draft');
-        if(draftID.length > 0){
-          await modifyDraft(generateDraftPayload())
-          toast.dismiss(toastId);
-          return toast.success("Draft Updated Successfully")
-        }
+        try {
+          const toastId = notifyLoader('Creating Draft');
+          if(draftID.length > 0){
+            await modifyDraft(generateDraftPayload())
+            toast.dismiss(toastId);
+            return toast.success("Draft Updated Successfully")
+          }
 
-        const data:any =  await createDraft(generateDraftPayload())
-        dispatch(SET_DRAFT_ID(data.data.data))
-        toast.dismiss(toastId);
-        return toast.success("Draft Created Successfully");
+          const data:any =  await createDraft(generateDraftPayload())
+          dispatch(SET_DRAFT_ID(data.data.data))
+          toast.dismiss(toastId);
+          return toast.success("Draft Created Successfully");
+        } catch (error) {
+          toast.dismiss();
+          return toast.error("Something Went Wrong");
+        }
       }
 
       const onReset = () => {
@@ -643,6 +669,9 @@ const useViewModify = () => {
           if(error){
             rowClone.error = error.message;
           }
+          else{
+            rowClone.error = '';
+          }
           if(warning){
             rowClone.warning = warning;
           }
@@ -668,12 +697,35 @@ const useViewModify = () => {
         const isErrorPresent = activeMaster.colDefs.find((col:ColDef)=>col.colId==='error');
         const isWarningPresent = activeMaster.colDefs.find((col:ColDef)=>col.colId==='warning');
         if(isErrorPresent || isWarningPresent){
-          return notifyError("Please Clear All Errors before submit")
+          // return notifyError("Please Clear All Errors before submit")
+          return
         }
         dispatch(UPDATE_PROGRESS_STATE('editOnlineSaved'))
 
       }
 
+       const onShowChart = async (rowData:any) => {
+        try {
+          // setSeasonalityRowData(rowData);
+          const toastId = notifyLoader('Fetching Chart Details');
+          const {data:{data}} = await getSeasonalityDetails(rowData);
+          setNormChangeData(data.norm);
+          const chartData = generateSesonalityChartData(rowData,data);
+          console.log(isSeasonalityChartModalOpen);
+          setChartData(chartData);
+          toggleSeasonalityChartModal(true);
+          toast.dismiss(toastId);
+          toast.success("Chart Details Fetched Successfully");
+          
+        } catch (error) {
+          toast.dismiss();
+          toast.error("Something Went Wrong");
+
+        }
+        
+      }
+
+    
       const onSeasonalityQuickFilter = (id:number)=>{
         const doesMasterExist = masters.find((master:MDMMasterState)=>master.id===activeMaster.id)
         if(id===seasonalityActiveQuickFilter){
@@ -747,7 +799,12 @@ const useViewModify = () => {
         onSeasonalityQuickFilter,
         handleChangePage,
         onReset,
-        onEditOnlineSave
+        onEditOnlineSave,
+        chartData,
+        isSeasonalityChartModalOpen,
+        normChangeData,
+        toggleSeasonalityChartModal,
+        tempRowData
     }
 }
 

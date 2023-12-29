@@ -15,6 +15,7 @@ import UploadModal from "./UploadModal";
 import React, { useEffect } from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
+import SeasonalityChartModal from "./SeasonalityChartModal";
 
 
 
@@ -67,15 +68,19 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
         editOnline,
         seasonalityActiveQuickFilter,
         onEditOnline,
-        // onSaveToDraft,
+        onSaveToDraft,
         selectedRowsCount,
         currentPage,
         rowsPerPage,
         handleChangePage,
         onReset,
-        onSaveToDraft,
         onEditOnlineSave,
-        onSeasonalityQuickFilter
+        isSeasonalityChartModalOpen,
+        chartData,
+        normChangeData,
+        toggleSeasonalityChartModal,
+        onSeasonalityQuickFilter,
+        tempRowData,
 
     } = useViewModify();
     
@@ -117,7 +122,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
                 </SeasonalityQuickFilterHeader>
                 {seasonalityQuickFilterData.map((s:SeasonalityQuickFilterType)=>{
                   return(
-                    <SeasonalityQuickFilter stateColor={s.color} onClick={()=>onSeasonalityQuickFilter(s.id)} isActive={seasonalityActiveQuickFilter===s.id}>
+                    <SeasonalityQuickFilter stateColor={s.color} onClick={()=>onSeasonalityQuickFilter(s.id)} isActive={seasonalityActiveQuickFilter===s.id} data-testid="seasonality-quick-filter">
                       <SeasonalityQuickFilterText>
                         {s.label}
                       </SeasonalityQuickFilterText>
@@ -241,6 +246,16 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
             setFile={setFile}
             uploadButtonStatus={isUploadButtonDisabled}
             />
+        }
+        {isSeasonalityChartModalOpen && 
+          <SeasonalityChartModal 
+            isModalOpen={isSeasonalityChartModalOpen}
+            closeModal={()=>toggleSeasonalityChartModal(false)}
+            chartData={chartData}
+            rowData={tempRowData}
+            normChangeData={normChangeData}
+
+          />
         }
         {
           !isSelectMasterOpen && 

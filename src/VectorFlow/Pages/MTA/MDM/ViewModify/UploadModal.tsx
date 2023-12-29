@@ -58,7 +58,7 @@ const UploadModal = (props:UploadModalProps)=>{
     };
 
    return(
-   <VFModalCard headerText={"Modification"} headerIcon={"/assets/img/VectorFLOW/NMS/settings.svg"} openModal={openModal} closeModal={onCloseModal} >
+   <VFModalCard headerText={"Modification"} headerIcon={"/assets/img/VectorFLOW/NMS/settings.svg"} openModal={openModal} closeModal={onCloseModal} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} >
       <UploadModalWrapper>
          <UploadModalSection>
             <UploadModalText>
@@ -74,7 +74,7 @@ const UploadModal = (props:UploadModalProps)=>{
                      File Name
                   </UploadFileText>
                   <InputWrapper>
-                     <UploadModalInput value={inputText} onChange={(e)=>setInputText(e.target.value)} data-testid="view-modify-text"/>
+                     <UploadModalInput value={inputText} onChange={(e:any)=>setInputText(e.target.value)} data-testid="view-modify-text"/>
                      <SCManualUploadBtn themeUi={user.user.theme_ui} 
                         onClick={onDownload}
                         style={{

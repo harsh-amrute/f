@@ -13,7 +13,7 @@ const SKULocationMessages = {
 
 const ParentWhCodeValidator = (value:any,helper:any)=>{
 
-    if(helper.prefs.context.WhCode === value) throw new Error('Source location code and destination location code are same');
+    if(helper.prefs.context.wc === value) throw new Error('Source location code and destination location code are same');
     return commonValidator(value,helper);
 
 }
@@ -42,7 +42,7 @@ const GCPValidator = (value:any,helper:any)=>{
 export const SKULocationSchema = Joi.object({
     SrNo:Joi.string(),
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
-    sn:Joi.string().empty().max(MAX_NAME_LENGTH),
+    sn:Joi.string().alphanum().empty().max(MAX_NAME_LENGTH),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
     ln:Joi.string().empty().max(MAX_NAME_LENGTH),
     pwc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(ParentWhCodeValidator).required().messages({...generateCommonMessages('ParentWhCode')}),
@@ -59,9 +59,9 @@ export const SKULocationSchema = Joi.object({
     DefaultSpikeThreshold:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
     DefaultPSOThreshold:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
     FGRMFlag:Joi.string().valid("fg", "rm"),
-    DBMActive:Joi.string().valid("yes", "no", "y", "n", "1", "0"),
-    StockPercentForRationing:Joi.number().integer().min(0).max(100),
-    NormPercentReservation:Joi.number().integer().min(0).max(100),
+    DBMActive:Joi.string().valid("yes", "no", "y", "n", "1", "0").default(1),
+    StockPercentForRationing:Joi.number().integer().min(0).max(100).default(0),
+    NormPercentReservation:Joi.number().integer().min(0).max(100).default(0),
     ...CommonSchema
 
 }).preferences(defaultJOIOptions)

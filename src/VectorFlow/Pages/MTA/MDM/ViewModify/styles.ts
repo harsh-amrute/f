@@ -244,7 +244,8 @@ export const SeasonalityQuickFilter = styled.button<{stateColor:string,isActive:
     justify-content:center;
     width: 90px;
     height: 40px;
-    border: 1px solid #929292;
+    border: ${(props)=> props.isActive ? '1px solid transperent' : '1px solid #929292'};
+    transition:0.3s ease-in-out;
     border-radius: 6px;
     
     color:${(props)=>props.isActive?'white':'#929292'};
@@ -273,5 +274,5 @@ export const SeasonalityQuickFilterText = styled.p`
     letter-spacing: 0px;
     color:inherit;
     z-index:100;
-    transition:0.3s ease-out;
+    transition:0.1s ease-out;
 `
