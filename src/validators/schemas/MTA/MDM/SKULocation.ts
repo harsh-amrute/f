@@ -13,7 +13,7 @@ const SKULocationMessages = {
 
 const ParentWhCodeValidator = (value:any,helper:any)=>{
 
-    if(helper.prefs.context.WhCode === value) throw new Error('Source location code and destination location code are same');
+    if(helper.prefs.context.wc === value) throw new Error('Source location code and destination location code are same');
     return commonValidator(value,helper);
 
 }
@@ -42,7 +42,7 @@ const GCPValidator = (value:any,helper:any)=>{
 export const SKULocationSchema = Joi.object({
     SrNo:Joi.string(),
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
-    sn:Joi.string().empty().max(MAX_NAME_LENGTH),
+    sn:Joi.string().alphanum().empty().max(MAX_NAME_LENGTH),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
     ln:Joi.string().empty().max(MAX_NAME_LENGTH),
     pwc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(ParentWhCodeValidator).required().messages({...generateCommonMessages('ParentWhCode')}),

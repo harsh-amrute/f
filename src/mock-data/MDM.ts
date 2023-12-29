@@ -1,5 +1,6 @@
 import { MDMMasterState } from "../VectorFlow/types/MDM";
 import { generateRandomId } from "../helpers/utils";
+
 export const MasterData:MDMMasterState[] = [
     { 
       id: 1,
@@ -798,7 +799,7 @@ export const getTaskDetailsDownloadDataMockData = {
 export const createDraftMockData = {
   recordCount: null,
   data: '123456QA',
-  status: 500,
+  status: 200,
   msg: null
 }
 
@@ -918,3 +919,90 @@ export const getSeasonalityDetailsMockData = {
   status:200,
   msg:null
 }
+
+export const SeasonalityRowData = {
+  sc:"V9I004615P1L001",
+  wc:"3017",
+  skd:"T Shirt",
+  sd:"5/05/2023",
+  ed:"5/20/2023",
+  ln:"Bangalore",
+  tn:"300",
+  bd:"7",
+  onm:'50',
+  r:"10"
+}
+
+export const ChartData = {
+  labels:['4/1/2023','4/2/2023','4/3/2023','4/4/2023','4/5/2023'],
+  datasets: [
+    {
+      type: 'line' as const,
+      label: 'Norm',
+      borderColor: '#002060',
+      borderWidth: 3,
+      data: [90,100,100,200,300],
+      pointBackgroundColor: "#00B0F0",
+      pointStyle:'circle',
+      pointRadius:[8,8,0,8,8],
+    },
+    {
+      type: 'line' as const,
+      label: 'Season',
+      borderWidth: 0,
+      fill:{
+        target:'origin',
+        above:'rgba(207, 167, 187, 0.4)'
+      },
+      data: [300,300,300,300,300],
+      pointRadius:0,
+      pointStyle:'rect',
+    },
+    {
+      type: 'line' as const,
+      label: 'BuildUpDuration',
+      borderWidth: 0,
+      fill:{
+        target:'origin',
+        above:'rgba(127, 0, 255, 0.4)'
+      },
+      data: [300,300,300,300,300],
+      pointRadius:0,
+      pointStyle:'rect',
+      pointBackgroundColor: "rgba(127, 0, 255, 0.4)",
+    },
+    {
+      type: 'line' as const,
+      label: 'RLT',
+      borderWidth: 0,
+      fill:{
+        target:'origin',
+        above:'rgba(9, 38, 53, 0.4)'
+      },
+      data: [300,300,300,300,300],
+      pointRadius:0,
+      pointStyle:'rect',
+      pointBackgroundColor: "rgba(9, 38, 53, 0.4)",
+    },
+    {
+      type: 'bar' as const,
+      label: 'Stock',
+      backgroundColor: '#E33A3A',
+      data: [50,50,48,47,49],
+      stack:'bar',
+      pointStyle:'rect',
+      pointHitRadius:0
+    },
+    {
+      type: 'bar' as const,
+      label: 'GIT',
+      backgroundColor: '#52B735',
+      data: [45,45,42,43,44],
+      stack:'bar',
+      pointStyle:'rect',
+      pointHitRadius:0
+    },
+  ],
+};
+
+

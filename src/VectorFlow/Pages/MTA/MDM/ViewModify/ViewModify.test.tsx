@@ -792,56 +792,61 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
   })
 
-  // it("Saves The Data",async ()=>{
+  it("Check IF Seasonality UI is Loaded",async ()=>{
 
-  //   const testData = [{...mockMasterData.data[0],SKUCode:"QACE1234,|"},mockMasterData.data[1],mockMasterData.data[2]]
-  //   let updatedMockState:MDMStore = {
+    console.debug(mapMasterToColumnDefs(MasterData[0].fields,10));
+
+    const updatedMockState:MDMStore = {
+      allMasters:MasterData,
+      masters:[{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:'Seasonality',colDefs:mapMasterToColumnDefs(MasterData[0].fields,10),rowData:mockMasterData.data}],
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:'Seasonality',colDefs:mapMasterToColumnDefs(MasterData[0].fields,10),rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+      draftId:''
+    }
+
+    const mockStore = createStore(updatedMockState);
+
+    render(contextWrapper(<ViewModify/>,mockStore));
+
+    const quickFilters = screen.getAllByTestId('seasonality-quick-filter');
+
+    expect(quickFilters.length).toBe(5);
+
+    fireEvent.click(quickFilters[0]);
+
+    fireEvent.click(screen.getByText('Resume'))
+    fireEvent.click(screen.getByText('Stop Selected'))
+
+    //Displays Chart
+    // fireEvent.click(screen.getByTestId('graph-icon'));
+    
+
+  })
+
+  // it("Shows Chart When CLicked on Chart Icon in case of Seasonality Master",async ()=>{
+
+  //   const updatedMockState:MDMStore = {
   //     allMasters:MasterData,
   //     masters:MasterData,
   //     options:[],
   //     selectedOptions:[],
-  //     activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:testData},
+  //     activeMaster:{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
   //     isSelectMasterOpen:false,
+  //     draftId:''
   //   }
 
-  //   let mockStore = createStore(updatedMockState);
-
-  //   const mockStoreDispatchSpy = jest.spyOn(mockStore, 'dispatch')
+  //   const mockStore = createStore(updatedMockState);
 
   //   render(contextWrapper(<ViewModify/>,mockStore));
 
-  //   fireEvent.click(screen.getByText('Save', { selector: 'button' }));
-
-  //   const errorColDefs = {
-  //     field:'error',
-  //     colId:'error',
-  //     headerName:'Error',
-  //     floatingFilter:false, 
-  //     cellRenderer:'errorCell',
-  //     suppressColumnsToolPanel:true,
-  //     wrapText:true,
-  //     autoHeight:true,
-  //   }
-
-  //   expect(mockStoreDispatchSpy).toBeCalledWith({payload:{colDefs:[errorColDefs]},type:'ADD_COLDEFS'});
-  //   expect(toast.error).toBeCalled();
-
-  //   cleanup();
-
-  //   useCreateDraftMock.mockResolvedValue(createDraftMockData);    
-
-  //   //If Data is Valid
-  //   updatedMockState = {...updatedMockState,activeMaster:{...updatedMockState.activeMaster,rowData:mockMasterData.data}};
-  //   mockStore = createStore(updatedMockState);
-  //   // jest.spyOn(mockStore, 'dispatch')
-
-  //   render(contextWrapper(<ViewModify/>,mockStore));
-    
-
-  //   fireEvent.click(screen.getByText('Save', { selector: 'button' }));
+  //   fireEvent.click(screen.getByText("Reset"));
     
 
   // })
+
+ 
 
   it("Saves To Draft",async ()=>{
    
@@ -895,6 +900,19 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
 
+    //Shows Error Modal When Service Call is not successful
+
+    cleanup();
+
+    render(contextWrapper(<ViewModify/>,createStore(mockState)));
+
+    useModifyDraftMock.mockImplementation(()=>{
+      return useModifyDraftMockData;
+    })
+    fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
+
+
+
 
     
   })
@@ -915,8 +933,6 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     render(contextWrapper(<ViewModify/>,mockStore));
 
-
-    screen.logTestingPlaygroundURL()
     const notStartedQuickFilter = screen.getByText('Not Started')
     fireEvent.click(notStartedQuickFilter)
   })

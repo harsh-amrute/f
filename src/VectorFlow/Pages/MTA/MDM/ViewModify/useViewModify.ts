@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
-import { type Master, type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
+import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
@@ -45,7 +45,6 @@ const useViewModify = () => {
     const [chartData,setChartData] = useState<object>();
     const [isSeasonalityChartModalOpen,toggleSeasonalityChartModal] = useState<boolean>(false);
     const [normChangeData,setNormChangeData] = useState<any>([]);
-    const [seasonalityRowData,setSeasonalityRowData] = useState<any>([]);
 
     const [editOnline,toggleEditOnline] = useState(false);
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
@@ -707,7 +706,7 @@ const useViewModify = () => {
 
        const onShowChart = async (rowData:any) => {
         try {
-          setSeasonalityRowData(rowData);
+          // setSeasonalityRowData(rowData);
           const toastId = notifyLoader('Fetching Chart Details');
           const {data:{data}} = await getSeasonalityDetails(rowData);
           setNormChangeData(data.norm);
@@ -803,9 +802,7 @@ const useViewModify = () => {
         onEditOnlineSave,
         chartData,
         isSeasonalityChartModalOpen,
-        seasonalityRowData,
         normChangeData,
-        onShowChart,
         toggleSeasonalityChartModal,
         tempRowData
     }

@@ -239,25 +239,28 @@ const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,clo
     }
   }
 
-  const chartRef = useRef<ChartJS>(null);
+  const chartRef = useRef<ChartJS>();
   const [visibleDataSets,setVisibleDataSets] = useState<number[]>([]);
 
   useEffect(()=>{
-    if(visibleDataSets.length === 0){
-      chartData.datasets.forEach((data:ChartData,dataSetIndex:number)=>{
-          chartRef.current?.show(dataSetIndex);
-      })
+    if(chartRef.current){
+      if(visibleDataSets.length === 0){
+        chartData.datasets.forEach((data:ChartData,dataSetIndex:number)=>{
+            chartRef.current?.show(dataSetIndex);
+        })
+      }
+      else{
+        chartData.datasets.forEach((data:ChartData,dataSetIndex:number)=>{
+          if(visibleDataSets.includes(dataSetIndex)){
+            chartRef.current?.show(dataSetIndex);
+          }
+          else{
+            chartRef.current?.hide(dataSetIndex);
+          }
+        })
+      }
     }
-    else{
-      chartData.datasets.forEach((data:ChartData,dataSetIndex:number)=>{
-        if(visibleDataSets.includes(dataSetIndex)){
-          chartRef.current?.show(dataSetIndex);
-        }
-        else{
-          chartRef.current?.hide(dataSetIndex);
-        }
-      })
-    }
+    
     
   },[visibleDataSets])
 
@@ -271,6 +274,8 @@ const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,clo
       setVisibleDataSets(visibleDataSets.filter((visibleDataSetIndex:number)=>visibleDataSetIndex !== dataSetIndex));
     }
   }
+
+
 
     return(
         <VFModalCard openModal={isModalOpen} closeModal={closeModal} headerIcon='' headerText="Seasonality Graph" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
@@ -286,17 +291,17 @@ const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,clo
                     <SCText fontWeight={500} fontSize={16}>Select Type :</SCText>
                     <SCCheckBoxRow>
                       <SCCheckBoxContainer>
-                        <Checkbox name="BuildUpDuration" value={"BuildUpDuration"} onChange={onToggleDataset} defaultChecked={false} />
+                        <Checkbox name="BuildUpDuration" value={"BuildUpDuration"} onChange={onToggleDataset} defaultChecked={false} data-testid="checkbox" />
                         <SCText fontWeight={300} fontSize={16}>Build Up Duration</SCText>
                       </SCCheckBoxContainer>
                       <SCCheckBoxContainer>
-                        <Checkbox name="GIT" value={"GIT"} onChange={onToggleDataset} defaultChecked={false} />
+                        <Checkbox name="GIT" value={"GIT"} onChange={onToggleDataset} defaultChecked={false} data-testid="checkbox" />
                         <SCText fontWeight={300} fontSize={16}>GIT</SCText>
                       </SCCheckBoxContainer>
                     </SCCheckBoxRow>
                     <SCCheckBoxRow>
                       <SCCheckBoxContainer>
-                        <Checkbox name="Stock" value={"Stock"} onChange={onToggleDataset} defaultChecked={false} />
+                        <Checkbox name="Stock" value={"Stock"} onChange={onToggleDataset} defaultChecked={false} data-testid="checkbox" />
                         <SCText fontWeight={300} fontSize={16}>Stock</SCText>
                       </SCCheckBoxContainer>
                     </SCCheckBoxRow>

@@ -77,12 +77,10 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         onEditOnlineSave,
         isSeasonalityChartModalOpen,
         chartData,
-        seasonalityRowData,
         normChangeData,
         toggleSeasonalityChartModal,
         onSeasonalityQuickFilter,
         tempRowData,
-        onShowChart
 
     } = useViewModify();
     
@@ -124,7 +122,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
                 </SeasonalityQuickFilterHeader>
                 {seasonalityQuickFilterData.map((s:SeasonalityQuickFilterType)=>{
                   return(
-                    <SeasonalityQuickFilter stateColor={s.color} onClick={()=>onSeasonalityQuickFilter(s.id)} isActive={seasonalityActiveQuickFilter===s.id}>
+                    <SeasonalityQuickFilter stateColor={s.color} onClick={()=>onSeasonalityQuickFilter(s.id)} isActive={seasonalityActiveQuickFilter===s.id} data-testid="seasonality-quick-filter">
                       <SeasonalityQuickFilterText>
                         {s.label}
                       </SeasonalityQuickFilterText>

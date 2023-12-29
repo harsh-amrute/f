@@ -39,7 +39,7 @@ ChartJS.register(
 interface ChartProps {
   type:any,
   data:any,
-  options:ChartOptions
+  options?:ChartOptions
 }
 
 
