@@ -9,7 +9,6 @@ import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../.
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 import { AgGridReactProps } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-enterprise';
-import { masterIdToSchemaMapper } from '../../../../../helpers/MDMConstants';
 
 import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
 import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers';
@@ -661,12 +660,7 @@ const useViewModify = (pageType:string) => {
           }
           return row;
         })
-        // const checkError = (row:object) => {
-        //   const {error,warning} = masterSchema.validate(row) ;    
-        //   return {error,warning};
-        // }
-
-        const masterSchema = masterIdToSchemaMapper[activeMaster.id.toString()];
+      
         const newData = rowData.map((row:any)=>{
           const rowClone = {...row};
           const {error,warning} = checkError(rowClone,activeMaster);

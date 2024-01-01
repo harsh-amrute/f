@@ -739,6 +739,8 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
     const oldDataPrefixed:any = {};
     const newDataPrefixed:any = {};
 
+    console.log(taskType);
+
     existingColumnFields.map((f:Field)=>{
       // if(f.isEdit){
       //   oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
