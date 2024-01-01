@@ -1,34 +1,34 @@
 
 import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/SelectGroupedMasters";
-import useAdd from "./useAdd";
+import useDelete from "./useDelete";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import { notifySuccess } from "../../../../../helpers/notify";
 
 
-const AddRecord = () => {
+const DeleteRecord = () => {
     const {
-        isAddRecordsLoading,
+        isDeleteRecordsLoading,
         onCancel,
         allMasters,
         selectedMasters,
-        handleOnClickMaster,
-    } = useAdd();
+        handleOnClickMaster
+    } = useDelete();
 
 
-    if(isAddRecordsLoading){
+    if(isDeleteRecordsLoading){
         return <VFLoader/>
     }
 
     return(
-        <SelectGroupedMasters 
-            onSubmit={()=>notifySuccess('Submitted')}  //console.log()
+        <SelectGroupedMasters  
+            onSubmit={()=>notifySuccess('Submitted')} //console.log
             onCancel={onCancel}
             handleOnClickMaster={handleOnClickMaster}
             allMasters={allMasters}
             selectedMasters={selectedMasters}
-            text={'add'}
-        />
-    )
+            text={'delete'}
+        />  
+    )  
 }
 
-export default AddRecord;
+export default DeleteRecord;
