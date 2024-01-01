@@ -1,11 +1,8 @@
 import { useSelector,useDispatch } from 'react-redux'
 import { RootState } from '../../../../../redux/store/store';
-import { useGetMasterUIConfiguration } from '../../../../../VectorFlow/Services/MTA/MDM';
-import { useEffect, useState} from 'react';
 import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
-import { STORE_ALL_MASTERS,RESET_STATE, REMOVE_MASTER, ADD_MASTER,UPDATE_ACTIVE_MASTER, UPDATE_PROGRESS_STATE, SYNC_ACTIVE_MASTER_TO_MASTER, FILL_MASTERS } from '../../../../../redux/actions/MDM';
+import { RESET_STATE, REMOVE_MASTER, ADD_MASTER,UPDATE_ACTIVE_MASTER, UPDATE_PROGRESS_STATE, FILL_MASTERS, TOGGLE_UPLOAD_MODAL, TOGGLE_SELECT_MASTER_SCREEN } from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
-import { mapMasterToMasterState } from '../../../../../helpers/utils';
 
 import { notifyError } from '../../../../../helpers/notify';
 
@@ -16,20 +13,11 @@ const useAdd=()=>{
     const activeMaster = useSelector((state:RootState)=>state.mdm.activeMaster)
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {mutateAsync:getMasterUIConfigurationData,isLoading:isAddRecordsLoading} = useGetMasterUIConfiguration(); //usequery se uiconfi ko bulaya hai
 
-    const [isSelectMasterOpen,setIsSelectMasterOpen] = useState(true)
-    const [isUploadModalOpen,setIsUploadModalOpen] = useState<boolean>(false)
+    const isSelectMasterOpen = useSelector((state:RootState)=>state.mdm.isSelectMasterOpen)
 
-    // useEffect(()=>{
-    //     const getData=async()=>{
-    //         const data = await getMasterUIConfigurationData('add')
-    //         dispatch(STORE_ALL_MASTERS(mapMasterToMasterState(data.data.data)))
-    //     }
-    //     getData()
-        
-    // },[])
 
+    console.debug(isSelectMasterOpen)
 
     const onCancel=()=>{
         dispatch(RESET_STATE());
@@ -51,9 +39,9 @@ const useAdd=()=>{
 
         //for PIPO
         if(master.id==7){
-            const doesSeasonalityMasterExist = selectedMasters.find((m:MDMMasterState)=>m.id==7 || m.id==8 || m.id==9)
-            if(doesSeasonalityMasterExist){
-                dispatch(REMOVE_MASTER(doesSeasonalityMasterExist.id))
+            const doesPIPOMasterExist = selectedMasters.find((m:MDMMasterState)=>m.id==7 || m.id==8 || m.id==9)
+            if(doesPIPOMasterExist){
+                dispatch(REMOVE_MASTER(doesPIPOMasterExist.id))
                 return
             }
             return dispatch(ADD_MASTER({...master,name:'Phase In Phase Out'}))
@@ -62,25 +50,16 @@ const useAdd=()=>{
         if(selectedMasters.find((m:MDMMasterState)=>m.id===master.id)){
             dispatch(REMOVE_MASTER(master.id))
             return
-        }
-
-
-        if(selectedMasters.find((m:MDMMasterState)=>m.id===master.id)){
-            dispatch(REMOVE_MASTER(master.id))
-            return
-        }
-
-        
-
-        
+        }        
         dispatch(ADD_MASTER(master))
        
     }
 
     const handleSubmitSelectMaster = ()=>{
         dispatch(UPDATE_ACTIVE_MASTER(0));
-        setIsSelectMasterOpen(false)
-        setIsUploadModalOpen(true)
+        dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
+        console.log(activeMaster.rowData.length)
+        if(activeMaster.rowData.length<=0)dispatch(TOGGLE_UPLOAD_MODAL(true))
         dispatch(UPDATE_PROGRESS_STATE('view'))
     }
     
@@ -104,23 +83,36 @@ const useAdd=()=>{
         }
         
     }
+
+    const handleTabChange = (currMaster: MDMMasterState) => {
+        if(currMaster.progress === 'submitted') return notifyError(`The ${currMaster.name} is already submitted`);
+
+        if(currMaster.id===activeMaster.id)return 
+  
+        const nextMasterIndex = selectedMasters.findIndex((master:MDMMasterState)=>master.progress !== 'submitted');
+  
+        if(currMaster.id === selectedMasters[nextMasterIndex].id){
+
+            dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex))
+            dispatch(TOGGLE_UPLOAD_MODAL(true))
+            return 
+        }
+        else return notifyError(`Please Complete the ${selectedMasters[nextMasterIndex].name}`);  
+  
         
-    const onExportToExcel = ()=>{
         
-    }
+      }
 
     return {
         allMasters,
         onCancel,
-        isUploadModalOpen,
-        isAddRecordsLoading,
         selectedMasters,
         activeMaster,
         isSelectMasterOpen,
-        setIsUploadModalOpen,
         handleOnClickMaster,
         handleSubmitSelectMaster,
-        handleRadioButton
+        handleRadioButton,
+        handleTabChange
     }
 }
 

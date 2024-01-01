@@ -3,7 +3,7 @@ import {type Option, type Field,type GetMasterDataPayload, type GridRef, type Qu
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID} from '../../../../../redux/actions/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
@@ -25,12 +25,12 @@ const useViewModify = (pageType:string) => {
     const masters = useSelector((state:RootState)=>state.mdm.masters);
 
     const isSelectMasterOpen = useSelector((state:RootState) => state.mdm.isSelectMasterOpen);
+    const isUploadModalOpen = useSelector((state:RootState)=>state.mdm.isUploadModalOpen)
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
 
     const [allMastersState,setAllMasterState] = useState<MDMMasterState[]>([])
-    const [rowData,setRowData] = useState<object[]>([]);
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
-    const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
+    // const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
     const [recordCount,setRecordCount] = useState<number>(0)
     const [downloadFileName,setDownloadFileName] = useState('');
     const [file,setFile] = useState<File>();
@@ -69,6 +69,7 @@ const useViewModify = (pageType:string) => {
     const {mutateAsync:createDraft} = useCreateDraft()
 
     const {mutateAsync:modifyDraft} = useModifyDraft()
+
 
     // const colDefs = activeMaster.colDefs
 
@@ -487,7 +488,7 @@ const useViewModify = (pageType:string) => {
           }
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-          toggleUploadModal(false);
+          dispatch(TOGGLE_UPLOAD_MODAL(false))
           notifySuccess(`Data Uploaded Successfully`);
           setDownloadData(false);
           setTempDownloadData(false);
@@ -570,7 +571,9 @@ const useViewModify = (pageType:string) => {
 
       }
 
-      const onSubmit = () => {
+      const onSubmit = async() => {
+
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
       
         dispatch(REMOVE_COLDEFS(['checkbox']));
         if(activeMaster.progress === 'editOnlineSaved'){
@@ -587,14 +590,16 @@ const useViewModify = (pageType:string) => {
       
 
       const onBackButton = () => {
-        setRowData([]);
+       dispatch(UPDATE_ROW_DATA([]));
         // dispatch(to(true));
         // dispatch(setViewModifyProgressState('default'))
         setDownloadData(false);
         setTempDownloadData(false);
+        dispatch(UPDATE_PROGRESS_STATE('default'))
       }
 
       const onSaveToDraft = async()=>{
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
         const toastId = notifyLoader('Creating Draft');
         if(draftID.length > 0){
           await modifyDraft(generateDraftPayload())
@@ -669,6 +674,9 @@ const useViewModify = (pageType:string) => {
 
       }
 
+      const toggleUploadModal = (value:boolean)=>{
+        dispatch(TOGGLE_UPLOAD_MODAL(value))
+      }
     
 
     return {
@@ -688,7 +696,6 @@ const useViewModify = (pageType:string) => {
         handleOnDeleteFilter,
         allMastersState,
         handleApplyFilter,
-        rowData,
         isLoading,
         isWarningModalOpen,
         toggleWarningModal,

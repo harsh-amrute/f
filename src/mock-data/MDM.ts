@@ -126,7 +126,299 @@ export const MasterData:MDMMasterState[] = [
     ],
       rowData:[] 
     },
+    { 
+      id: 11,
+      name: 'Seasonality', 
+      fields:[
+          {
+            displayName:'SKU Code',
+            key:"sku_code",
+            visible:true, isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName:'SKU Name',
+            key:"sku_name",
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName: "Segment",
+            key: "SKULocAttr1",
+            visible: false,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+      ],
+      colDefs:[],
+      progress:'default',
+      filters:[
+        {
+          id:generateRandomId(),
+          masterId:3,
+          field:'',
+          operator:'',
+          text:''
+        }
+    ],
+      rowData:[] 
+    },
+    { 
+      id: 7,
+      name: 'Phase In Phase Out', 
+      fields:[
+          {
+            displayName:'SKU Code',
+            key:"sku_code",
+            visible:true, isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName:'SKU Name',
+            key:"sku_name",
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName: "Segment",
+            key: "SKULocAttr1",
+            visible: false,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+      ],
+      colDefs:[],
+      progress:'default',
+      filters:[
+        {
+          id:generateRandomId(),
+          masterId:3,
+          field:'',
+          operator:'',
+          text:''
+        }
+    ],
+      rowData:[] 
+    },
   ];
+
+  export const MasterDataWithSubmittedMaster:MDMMasterState[] =  [
+    { 
+      id: 1,
+      name: 'SKU', 
+      fields:[
+          {
+            displayName:'SKU Code',
+            key:"sku_code",
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName:'SKU Name',
+            key:"sku_name",
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName: "Item Category Code",
+            key: "item_category_code",
+            visible:false,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+      ],
+      colDefs:[],
+      progress:'submitted',
+      filters:[
+          {
+            id:generateRandomId(),
+            masterId:1,
+            field:'',
+            operator:'',
+            text:''
+          }
+      ],
+      rowData:[]
+    },
+    { 
+      id: 2,
+      name: 'Location', 
+      fields:[
+          {
+            displayName:'Location Code',
+            key:"location_code",
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName:'Location Name',
+            key:"location_name",
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName: "c1",
+            key: "LocAttr1",
+            visible: false,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+      ],
+      colDefs:[],
+      progress:'default',
+      filters:[
+        {
+          id:generateRandomId(),
+          masterId:2,
+          field:'',
+          operator:'',
+          text:''
+        }
+    ],
+      rowData:[]
+    },
+    { 
+      id: 3,
+      name: 'SKU Location', 
+      fields:[
+          {
+            displayName:'SKU Code',
+            key:"sku_code",
+            visible:true, isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName:'SKU Name',
+            key:"sku_name",
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName: "Segment",
+            key: "SKULocAttr1",
+            visible: false,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+      ],
+      colDefs:[],
+      progress:'default',
+      filters:[
+        {
+          id:generateRandomId(),
+          masterId:3,
+          field:'',
+          operator:'',
+          text:''
+        }
+    ],
+      rowData:[] 
+    },
+    { 
+      id: 11,
+      name: 'Seasonality', 
+      fields:[
+          {
+            displayName:'SKU Code',
+            key:"sku_code",
+            visible:true, isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName:'SKU Name',
+            key:"sku_name",
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName: "Segment",
+            key: "SKULocAttr1",
+            visible: false,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+      ],
+      colDefs:[],
+      progress:'default',
+      filters:[
+        {
+          id:generateRandomId(),
+          masterId:3,
+          field:'',
+          operator:'',
+          text:''
+        }
+    ],
+      rowData:[] 
+    },
+    { 
+      id: 7,
+      name: 'Phase In Phase Out', 
+      fields:[
+          {
+            displayName:'SKU Code',
+            key:"sku_code",
+            visible:true, isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName:'SKU Name',
+            key:"sku_name",
+            visible:true,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+          {
+            displayName: "Segment",
+            key: "SKULocAttr1",
+            visible: false,
+            isAdd:true,
+            isDownload:true,
+            isEdit:true
+          },
+      ],
+      colDefs:[],
+      progress:'default',
+      filters:[
+        {
+          id:generateRandomId(),
+          masterId:3,
+          field:'',
+          operator:'',
+          text:''
+        }
+    ],
+      rowData:[] 
+    },
+  ]
 
   export const getAllDraftsMock:any = {
     recordCount: null,

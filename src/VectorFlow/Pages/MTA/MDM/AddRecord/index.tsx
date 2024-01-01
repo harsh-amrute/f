@@ -9,18 +9,13 @@ import useAdd from "./useAdd";
 
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
-import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
-import { SCContainer,SCFilterContainer,SCLegend,SCFilterControls,SCFilterAddButton,SCFilterButtonGroup,SCFilterAddControls,SCFilterAddButtonWrapper,SCFilterSeperator } from "../ViewModify/styles";
-import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
+import { SCContainer } from "../ViewModify/styles";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
-import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import UploadModal from "../ViewModify/UploadModal";
 import VFTaskBar from "../ViewModify/VFTaskbar";
 
 import { useUserData } from "../../../../../context";
-import {type Filter} from '../../../../types/MDM';
-import { operators } from "../../../../../helpers/MDMConstants";
-import { generateOptions, getUploadModalRadioButtons } from "../../../../../helpers/utils";
+import {getUploadModalRadioButtons } from "../../../../../helpers/utils";
 
 
 
@@ -30,25 +25,11 @@ const AddRecord = () => {
     const themeUi = user?.user?.theme_ui;
 
     const {
-        options,
-        selectedOptions,
         activeMaster,
-        filterButtonStatus,
-        setFilterButtonStatus,
-        handleSelectMasterSubmit,
-        handleTabChange,
         handleTabClose,
         addNewMaster,
-        handleOnAddFilter,
-        handleOnDeleteFilter,
-        allMastersState,
         isLoading,
-        handleApplyFilter,
-        isWarningModalOpen,
-        recordCount,
         toggleUploadModal,
-        onWarningModalClose,
-        onWarningModalSuccess,
         downloadFileName,
         setDownloadFileName,
         onUploadMaster,
@@ -65,14 +46,9 @@ const AddRecord = () => {
         tempGridData,
         deleteSelected,
         onSubmit,
-        isUploadButtonDisabled,
         editOnline,
         onEditOnline,
-        // onSaveToDraft,
-        selectedRowsCount,
-        currentPage,
-        rowsPerPage,
-        handleChangePage,
+        isUploadModalOpen,
         onReset,
         onSaveToDraft,
         onEditOnlineSave
@@ -81,18 +57,16 @@ const AddRecord = () => {
 
     const {
       isSelectMasterOpen,
-        isUploadModalOpen,
         handleSubmitSelectMaster,
         onCancel,
         allMasters,
         selectedMasters,
         handleOnClickMaster,
         handleRadioButton,
-        setIsUploadModalOpen
+        handleTabChange,
         
     } = useAdd()
     
-
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){
@@ -128,10 +102,10 @@ const AddRecord = () => {
                 activeMaster={activeMaster}
                 themeUi={themeUi}
                 onTabChange={handleTabChange}
-                onTabClose={()=>{console.log("")}}
+                onTabClose={(e)=>handleTabClose(e,activeMaster)}
                 newTabTitle={"Add Master"}
                 newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
-                newTabHandler={()=>{console.log("")}}
+                newTabHandler={addNewMaster}
                 >
                   <VFTable
                     ref={ref}
@@ -159,7 +133,6 @@ const AddRecord = () => {
             })} 
             onUpload={()=>{
               onUploadMaster()
-              setIsUploadModalOpen(false)
             }}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}

@@ -79,7 +79,7 @@ const UploadModal = (props:UploadModalProps)=>{
                            {radioButtons.map((r,index)=>{
                               return(
                                  <React.Fragment>
-                                     <input type={'radio'} placeholder={r.label} key={index} name='file name'  onClick={()=>handleRadioButton(r.value)} style={{marginLeft:15}}/>
+                                     <input type={'radio'} placeholder={r.label} key={index} name='file name'  onClick={()=>handleRadioButton(r.value)} style={{marginLeft:15}} defaultChecked={index==0}/>
                                      <label htmlFor={r.label}>{r.label}</label>
                                  </React.Fragment>
                               )

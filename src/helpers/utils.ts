@@ -2,7 +2,7 @@ import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
-import { type Master, type Option, type Field, type Filter, MDMMasterState, UploadModalRadioButtonsType } from '../VectorFlow/types/MDM';
+import { type Master, type Option, type Field, type Filter, MDMMasterState } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { defaultColDefs, masterIdToSchemaMapper, taskPendingCustomColDefs } from './MDMConstants';
@@ -552,7 +552,7 @@ export const mapRowDataWithSrNo = (rowData:any[])=>{
   result  = rowData.map((row,index)=>{
     return{
       ...row,
-      SrNo:index
+      SrNo:index + 1
     }
   })
   return result

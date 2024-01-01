@@ -14,6 +14,7 @@ export interface MDMStore{
     activeMaster:MDMMasterState,
     isSelectMasterOpen:boolean,
     draftId:string
+    isUploadModalOpen:boolean
 }
 
 export interface MDMMasterState{

@@ -32,7 +32,7 @@ const Card=(props:CardProps)=>{
 
     const getMasterName = ():string=>{
         if(master.id==11 || master.id==12){
-            return "Seasonality-Retail"
+            return "Seasonality"
         }
         if(master.id==7 || master.id==8 || master.id==9){
             return 'Phase In Phase Out'
