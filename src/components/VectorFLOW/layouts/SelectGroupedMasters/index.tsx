@@ -14,6 +14,7 @@ export interface SelectGroupedMastersProps {
     handleOnClickMaster:(master:MDMMasterState)=>void;
     allMasters:MDMMasterState[]
     selectedMasters:MDMMasterState[]
+    text:string
 }
 interface CardProps{
     master:MDMMasterState
@@ -83,7 +84,8 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
         onCancel,
         handleOnClickMaster,
         allMasters,
-        selectedMasters
+        selectedMasters,
+        text
     } = props
 
     const {user} = useUserData();
@@ -92,7 +94,7 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
     <ContentWrapper>
         <TextFilterWrapper>
             <TextContainer>
-             <p>What kind of records do you want to add?</p>
+             <p>What kind of records do you want to {text}?</p>
             </TextContainer>
         </TextFilterWrapper>
         <VFMasterGroupCardContainer> 

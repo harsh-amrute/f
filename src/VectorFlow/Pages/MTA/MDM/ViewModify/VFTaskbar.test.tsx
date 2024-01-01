@@ -13,7 +13,10 @@ const dummyProps = {
     onExportData:mockFn,
     onEditOnline:mockFn,
     onSaveToDraft:mockFn,
-    onEditOnlineSave:mockFn
+    onEditOnlineSave:mockFn,
+    onSeasonalityStop:mockFn,
+    onSeasonalityResume:mockFn,
+    onPhaseInPhaseOutStop:mockFn
 }
 
 const contextWrapper = (children:any)=>{
@@ -37,47 +40,59 @@ describe("VFTaskBar",()=>{
         const taskbar = screen.getByTestId("taskbar")
         expect(taskbar).toBeInTheDocument()
     })
-    it('renders the VFTaskBar with masterPrgoress=view',()=>{
+    it('renders the VFTaskBar with masterProgress=view',()=>{
         render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="view"/>))
         const taskbar = screen.getByTestId("taskbar")
         expect(taskbar).toBeInTheDocument()
     })
-    it('renders the VFTaskBar with masterPrgoress=default',()=>{
+    it('renders the VFTaskBar with masterProgress=default',()=>{
         render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="default"/>))
     })
-    it('renders the VFTaskBar with masterPrgoress=error',()=>{
+    it('renders the VFTaskBar with masterProgress=error',()=>{
         render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="error"/>))
         const taskbar = screen.getByTestId("taskbar")
         expect(taskbar).toBeInTheDocument()
     })
-    it('renders the VFTaskBar with masterPrgoress=uploaded',()=>{
+    it('renders the VFTaskBar with masterProgress=uploaded',()=>{
         render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="uploaded"/>))
         const taskbar = screen.getByTestId("taskbar")
         expect(taskbar).toBeInTheDocument()
     })
-    it('renders the VFTaskBar with masterPrgoress=view',()=>{
+    it('renders the VFTaskBar with masterProgress=view',()=>{
         render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="view"/>))
         const taskbar = screen.getByTestId("taskbar")
         expect(taskbar).toBeInTheDocument()
     })
-    it('renders the VFTaskBar with masterPrgoress=editOnline',()=>{
+    it('renders the VFTaskBar with masterProgress=editOnline',()=>{
         render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="editOnline"/>))
         const taskbar = screen.getByTestId("taskbar")
         expect(taskbar).toBeInTheDocument()
     })
-    it('renders the VFTaskBar with masterPrgoress=error',()=>{
+    it('renders the VFTaskBar with masterProgress=error',()=>{
         render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="editOnlineSaved"/>))
         const taskbar = screen.getByTestId("taskbar")
         expect(taskbar).toBeInTheDocument()
     })
-    it('renders the VFTaskBar with masterPrgoress=uploaded',()=>{
+    it('renders the VFTaskBar with masterProgress=uploaded',()=>{
         render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="editOnlineSubmitted"/>))
         const taskbar = screen.getByTestId("taskbar")
         expect(taskbar).toBeInTheDocument()
     })
 
-    it('renders the VFTaskBar with masterPrgoress=view and editOnline=true',()=>{
+    it('renders the VFTaskBar with masterProgress=view and editOnline=true',()=>{
         render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="view" editOnline/>))
+        const taskbar = screen.getByTestId("taskbar")
+        expect(taskbar).toBeInTheDocument()
+    })
+
+    it('renders the VFTaskBar with masterProgress=seasonality',()=>{
+        render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="seasonality" editOnline/>))
+        const taskbar = screen.getByTestId("taskbar")
+        expect(taskbar).toBeInTheDocument()
+    })
+
+    it('renders the VFTaskBar with masterProgress=phaseInPhaseOut',()=>{
+        render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="phaseInPhaseOut" editOnline/>))
         const taskbar = screen.getByTestId("taskbar")
         expect(taskbar).toBeInTheDocument()
     })

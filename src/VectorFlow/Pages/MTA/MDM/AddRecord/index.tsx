@@ -78,7 +78,6 @@ const AddRecord = () => {
       }
     },[isTableDataLoading])
 
-
     if(isLoading){
         return <VFLoader/>
     }
@@ -91,6 +90,7 @@ const AddRecord = () => {
               handleOnClickMaster={handleOnClickMaster}
               allMasters={allMasters}
               selectedMasters={selectedMasters}
+              text="add"
           />
       )
     }
@@ -162,8 +162,6 @@ const AddRecord = () => {
         }
         </React.Fragment>
     )
-
-    
 }
 
 export default AddRecord;

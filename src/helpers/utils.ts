@@ -2,11 +2,12 @@ import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
-import { type Master, type Option, type Field, type Filter, MDMMasterState } from '../VectorFlow/types/MDM';
+import { type Master, type Option, type Field, type Filter, MDMMasterState, type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { defaultColDefs, masterIdToSchemaMapper, taskPendingCustomColDefs } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
+import {subDays,addDays} from 'date-fns';
 
 // clear cached token and redirect to sso login
 
@@ -182,10 +183,10 @@ export const handleDataProductFilter = (data: any) => {
 
   // list brand
   Object.keys(data).map((brand: any) => {
-    listSubBrand = Object.keys(data[brand]).map((item: string) => ({
+    listSubBrand = listSubBrand.concat(Object.keys(data[brand]).map((item: string) => ({
       value: item,
       label: item
-    }))
+    })))
 
     // list subBrand
     if (data[brand]) {
@@ -439,8 +440,9 @@ export const parseExcelData = async (file:any,master:MDMMasterState) => {
   return result;
 }
 
-export const mapMasterToColumnDefs = (fields:Field[])=>{
+export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChart?:any)=>{
   let result:ColDef[] = []
+
 
   result = fields.map((f)=>{
     return{
@@ -454,6 +456,39 @@ export const mapMasterToColumnDefs = (fields:Field[])=>{
       ...defaultColDefs
     }
   })
+
+  if(masterId==10){
+    const seasonalityCheckboxColDef:ColDef={
+      field:'checkbox',
+      colId:'checkbox',
+      headerName:'',
+      checkboxSelection:true,
+      headerCheckboxSelection:true,
+      headerCheckboxSelectionCurrentPageOnly:true,
+      width:10
+    }
+    const seasonalityColorColDef:ColDef={
+      field:'color',
+      colId:'color',
+      headerName:'',
+      width:3,
+      minWidth:3,
+      cellRenderer:'seasonalityColorCellRenderer'
+    }
+
+    const seasonalityGraphColDef:ColDef={
+      field:'graph',
+      colId:'graph',
+      headerName:'',
+      width:40,
+      cellRenderer:'seasonalityGraphCellRenderer',
+      cellRendererParams:{
+        onShowChart
+      }
+    }
+
+    return [seasonalityColorColDef,seasonalityCheckboxColDef,seasonalityGraphColDef,...result]
+  }
   return result;
 }
 
@@ -479,7 +514,7 @@ export const mapStateFiltersToPayload = (filters:Filter[]) => {
 
 }
 
-export const mapMasterToMasterState = (masters:Master[]):MDMMasterState[] => {
+export const mapMasterToMasterState = (masters:Master[],onShowChart?:any):MDMMasterState[] => {
 
   return masters.map((master:Master)=>({
     id:master.id,
@@ -493,7 +528,7 @@ export const mapMasterToMasterState = (masters:Master[]):MDMMasterState[] => {
       operator:'',
       text:''
     }],
-    colDefs:mapMasterToColumnDefs(master.fields),
+    colDefs:mapMasterToColumnDefs(master.fields,master.id,onShowChart),
     rowData:[],
     progress:'default'
   }))
@@ -580,15 +615,14 @@ export const getExistingColumnFields = (columns:string[],fields:Field[]):Field[]
   const updatedFields:Field[] = []
   columns.map((c:string)=>{
     fields.find((f:Field)=>{
-      if(f.key===c)updatedFields.push(f)
+      if(f.displayName===c)updatedFields.push(f)
     })
   })
   return updatedFields
 }
 
-export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGroupDef[] | ColDef[]=>{
-
-  const colDefs =  existingColumnsFields.map((f:Field,index:number)=>{
+export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],tasktype?:string):ColGroupDef[] | ColDef[]=>{
+  const colDefs =  existingColumnsFields.map((f:Field)=>{
 
     if(!f.isEdit){
       return{
@@ -601,6 +635,52 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGro
       }
     }
 
+    if(tasktype==="add"){
+      return{
+        headerName:f.displayName,
+        field:f.key,
+        colId:f.key,
+        hide:!f.visible,
+        children:[
+          {
+            headerName:'Add ' +f.displayName,
+            field:'add'+f.key,
+            colId:'add'+f.key,
+            cellStyle:{
+              "color":'#BC3D81',
+              "text-align":"center",
+              "border-left":"solid 1px #B9B9B9",
+            }
+          }
+        ],
+        ...defaultColDefs,
+        
+      }
+    }
+
+    if(tasktype==="delete"){
+      return{
+        headerName:f.displayName,
+        field:f.key,
+        colId:f.key,
+        hide:!f.visible,
+        children:[
+          {
+            headerName:'Delete ' +f.displayName,
+            field:'delete'+f.key,
+            colId:'delete'+f.key,
+            cellStyle:{
+              "color":'#BC3D81',
+              "text-align":"center",
+              "border-left":"solid 1px #B9B9B9",
+            }
+          }
+        ],
+        ...defaultColDefs,
+        
+      }
+    }
+
     return{
       headerName:f.displayName,
       field:f.key,
@@ -609,8 +689,6 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGro
       children:[
         {
           headerName:'New ' +f.displayName,
-          headerCheckboxSelection:index===0,
-          checkboxSelection:index===0,
           field:'New'+f.key,
           colId:'New'+f.key,
           cellStyle:{
@@ -633,11 +711,14 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[]):ColGro
       
     }
   })
+
   return [...colDefs,...taskPendingCustomColDefs]
 }
 
 
-export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[])=>{
+export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string)=>{
+  console.log(taskType)
+  // console.log(JSON.parse("{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls\",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}"))
   return dirtyRowData.map(entry => {
     const oldData = JSON.parse(entry.old);
     const newData = JSON.parse(entry.new);
@@ -646,14 +727,22 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
     const newDataPrefixed:any = {};
 
     existingColumnFields.map((f:Field)=>{
-      if(f.isEdit){
-        oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
+      // if(f.isEdit){
+      //   oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
+      //   newDataPrefixed[`New${f.key}`] = newData[f.key]
+      // }
+      // else{
+      //   oldDataPrefixed[f.key] = oldData[f.key]
+      // }
+      oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
         newDataPrefixed[`New${f.key}`] = newData[f.key]
-      }
-      else{
-        oldDataPrefixed[f.key] = oldData[f.key]
-      }
     })
+    console.log({
+      ...oldDataPrefixed,
+      ...newDataPrefixed,
+      status:'',
+      comments:''
+  })
     return {
         ...oldDataPrefixed,
         ...newDataPrefixed,
@@ -694,4 +783,156 @@ export const getUploadModalRadioButtons = (masterId:number)=>{
     ]
   }
   return []
+}
+export const getDatesBetween = (startDate:Date, endDate:Date) => {
+  const currentDate = new Date(startDate.getTime());
+  const dates = [];
+  while (currentDate <= endDate) {
+    dates.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dates;
+}
+
+export const getFormattedDate = (date:Date) => {
+  const splitDateArray = date.toDateString().split(' ');
+  return `${splitDateArray[2]} ${splitDateArray[1]}`
+}
+
+export const generateSesonalityChartData = (row:any,data:any) => {
+  let maxNorm = 0;
+  let maxStockAndGit = 0;
+  data.norm.forEach((o:NormHistory)=>{
+    const localMaxima = Math.max(+o.old_norm,+o.new_norm)
+    if(maxNorm < localMaxima){
+      maxNorm = localMaxima;
+    }
+  })
+  data.dailyData.forEach((o:DailyData)=>{
+    const stockAndGit = parseInt(o.stock,10) + parseInt(o.git,10)
+    if(maxStockAndGit < stockAndGit){
+      maxStockAndGit = stockAndGit;
+    }
+  })
+  const maxQuantity = Math.max(maxNorm,maxStockAndGit);
+  // const xAxisLabels = data.dailyData.map((o:DailyData)=>getFormattedDate(new Date(o.date)));
+  const xAxisLabels = data.dailyData.map((o:DailyData)=>new Date(o.date));
+  const seasonalityDates = getDatesBetween(new Date(row.sd),new Date(row.ed));
+
+  const buildUpDuration = getDatesBetween(subDays(new Date(row.sd),row.bd),new Date(row.sd));
+
+  const buildUpDurationData = xAxisLabels.map((date:Date)=>{
+    if(buildUpDuration.find((sd:Date) => +sd === +date)) return maxQuantity;
+    return undefined;
+  })
+
+  const rlt = getDatesBetween(xAxisLabels[0],addDays(xAxisLabels[0],parseInt(row.r,10)));
+
+  const rltData = xAxisLabels.map((date:Date)=>{
+    if(rlt.find((sd:Date) => +sd === +date)) return maxQuantity;
+    return undefined;
+  })
+  
+
+  const seasonData = xAxisLabels.map((date:Date)=>{
+    if(seasonalityDates.find((sd:Date) => +sd === +date)) return maxQuantity;
+    return undefined
+  })
+
+  const stockData = data.dailyData.map((o:DailyData)=>{
+    return parseInt(o.stock,10)
+  })
+  
+  const gitData = data.dailyData.map((o:DailyData)=>{
+      return parseInt(o.git,10) 
+  })
+
+  const pointRadius:any[] = [];
+  let tempNorm = 0; //used for filling data when norm not changed in below function
+  const normData = data.dailyData.map((d:DailyData)=>{
+    const closestNormChange:NormHistory = data.norm.find((o:NormHistory)=>+(new Date(o.date)) === +(new Date(d.date)));
+    if(closestNormChange) {
+      tempNorm = parseInt(closestNormChange.new_norm,10);
+      pointRadius.push(5);
+      return parseInt(closestNormChange.new_norm,10)
+    }
+    pointRadius.push(0)
+    return tempNorm;
+  })
+
+  
+
+  const chartData = {
+    labels:xAxisLabels,
+    datasets: [
+      {
+        type: 'line' as const,
+        label: 'Norm',
+        borderColor: '#002060',
+        borderWidth: 3,
+        data: normData,
+        pointBackgroundColor: "#00B0F0",
+        pointStyle:'circle',
+        pointRadius:pointRadius,
+      },
+      {
+        type: 'line' as const,
+        label: 'Season',
+        borderWidth: 0,
+        fill:{
+          target:'origin',
+          above:'rgba(207, 167, 187, 0.4)'
+        },
+        data: seasonData,
+        pointRadius:0,
+        pointStyle:'rect',
+      },
+      {
+        type: 'line' as const,
+        label: 'BuildUpDuration',
+        borderWidth: 0,
+        fill:{
+          target:'origin',
+          above:'rgba(127, 0, 255, 0.4)'
+        },
+        data: buildUpDurationData,
+        pointRadius:0,
+        pointStyle:'rect',
+        pointBackgroundColor: "rgba(127, 0, 255, 0.4)",
+      },
+      {
+        type: 'line' as const,
+        label: 'RLT',
+        borderWidth: 0,
+        fill:{
+          target:'origin',
+          above:'rgba(9, 38, 53, 0.4)'
+        },
+        data: rltData,
+        pointRadius:0,
+        pointStyle:'rect',
+        pointBackgroundColor: "rgba(9, 38, 53, 0.4)",
+      },
+      {
+        type: 'bar' as const,
+        label: 'Stock',
+        backgroundColor: '#E33A3A',
+        data: stockData,
+        stack:'bar',
+        pointStyle:'rect',
+        pointHitRadius:0
+      },
+      {
+        type: 'bar' as const,
+        label: 'GIT',
+        backgroundColor: '#52B735',
+        data: gitData,
+        stack:'bar',
+        pointStyle:'rect',
+        pointHitRadius:0
+      },
+    ],
+  };
+
+  return chartData;
 }
