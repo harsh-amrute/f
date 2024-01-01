@@ -813,7 +813,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       selectedOptions:[],
       activeMaster:{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:'Seasonality',colDefs:mapMasterToColumnDefs(MasterData[0].fields,10),rowData:mockMasterData.data},
       isSelectMasterOpen:false,
-      draftId:''
+      draftId:'',
+      isUploadModalOpen:false
     }
 
     const mockStore = createStore(updatedMockState);
@@ -937,7 +938,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       selectedOptions:[],
       activeMaster:{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:"Seasonality",colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:testData},
       isSelectMasterOpen:false,
-      draftId:''
+      draftId:'',
+      isUploadModalOpen:false
     }
 
     const mockStore = createStore(updatedMockState);
