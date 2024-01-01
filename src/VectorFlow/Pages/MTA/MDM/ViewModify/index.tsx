@@ -82,7 +82,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         onSeasonalityQuickFilter,
         tempRowData,
 
-    } = useViewModify();
+    } = useViewModify('modify');
     
 
     useEffect(()=>{

@@ -3,7 +3,7 @@ import { type Option, type Field,type GetMasterDataPayload, type GridRef, type Q
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID} from '../../../../../redux/actions/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
@@ -16,7 +16,7 @@ import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../.
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 
-const useViewModify = () => {
+const useViewModify = (pageType:string) => {
 
     const dispatch = useDispatch();
 
@@ -26,12 +26,12 @@ const useViewModify = () => {
     const masters = useSelector((state:RootState)=>state.mdm.masters);
 
     const isSelectMasterOpen = useSelector((state:RootState) => state.mdm.isSelectMasterOpen);
+    const isUploadModalOpen = useSelector((state:RootState)=>state.mdm.isUploadModalOpen)
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
 
     const [allMastersState,setAllMasterState] = useState<MDMMasterState[]>([])
-    const [rowData,setRowData] = useState<object[]>([]);
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
-    const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
+    // const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
     const [recordCount,setRecordCount] = useState<number>(0)
     const [downloadFileName,setDownloadFileName] = useState('');
     const [file,setFile] = useState<File>();
@@ -74,6 +74,7 @@ const useViewModify = () => {
     const {mutateAsync:createDraft} = useCreateDraft()
 
     const {mutateAsync:modifyDraft} = useModifyDraft()
+
 
     // const colDefs = activeMaster.colDefs
 
@@ -177,7 +178,7 @@ const useViewModify = () => {
 
       useEffect(()=>{
         const getMasterUIConfigurationData = async()=>{
-          const {data} = await masterUIConfiguration('modify');
+          const {data} = await masterUIConfiguration(pageType);
           setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
          }
   
@@ -513,7 +514,7 @@ const useViewModify = () => {
           }
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-          toggleUploadModal(false);
+          dispatch(TOGGLE_UPLOAD_MODAL(false))
           notifySuccess(`Data Uploaded Successfully`);
           setDownloadData(false);
           setTempDownloadData(false);
@@ -596,7 +597,9 @@ const useViewModify = () => {
 
       }
 
-      const onSubmit = () => {
+      const onSubmit = async() => {
+
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
       
         dispatch(REMOVE_COLDEFS(['checkbox']));
         if(activeMaster.progress === 'editOnlineSaved'){
@@ -613,15 +616,17 @@ const useViewModify = () => {
       
 
       const onBackButton = () => {
-        setRowData([]);
+       dispatch(UPDATE_ROW_DATA([]));
         // dispatch(to(true));
         // dispatch(setViewModifyProgressState('default'))
         setDownloadData(false);
         setTempDownloadData(false);
+        dispatch(UPDATE_PROGRESS_STATE('default'))
       }
 
       const onSaveToDraft = async()=>{
         try {
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
           const toastId = notifyLoader('Creating Draft');
           if(draftID.length > 0){
             await modifyDraft(generateDraftPayload())
@@ -705,6 +710,9 @@ const useViewModify = () => {
 
       }
 
+      const toggleUploadModal = (value:boolean)=>{
+        dispatch(TOGGLE_UPLOAD_MODAL(value))
+      }
        const onShowChart = async (rowData:any) => {
         try {
           // setSeasonalityRowData(rowData);
@@ -761,7 +769,6 @@ const useViewModify = () => {
         handleOnDeleteFilter,
         allMastersState,
         handleApplyFilter,
-        rowData,
         isLoading,
         isWarningModalOpen,
         toggleWarningModal,

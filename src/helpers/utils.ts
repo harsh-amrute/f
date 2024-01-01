@@ -600,7 +600,7 @@ export const mapRowDataWithSrNo = (rowData:any[])=>{
   result  = rowData.map((row,index)=>{
     return{
       ...row,
-      SrNo:index
+      SrNo:index + 1
     }
   })
   return result
@@ -765,6 +765,38 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
 });
 }
 
+
+export const getUploadModalRadioButtons = (masterId:number)=>{
+  if(masterId==11 || masterId==12){
+    return [
+      {
+        label:'Absolute Value',
+        value:11
+      },
+      {
+        label:'Delta Percentage',
+        value:12
+      }
+    ]
+  }
+  if(masterId==7 || masterId==8 || masterId==9){
+    return [
+      {
+        label:'Phase Out',
+        value:7
+      },
+      {
+        label:'Phase In Phase Out',
+        value:8
+      },
+      {
+        label:'Target Norm',
+        value:9
+      }
+    ]
+  }
+  return []
+}
 export const getDatesBetween = (startDate:Date, endDate:Date) => {
   const currentDate = new Date(startDate.getTime());
   const dates = [];

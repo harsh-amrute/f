@@ -11,10 +11,10 @@ export interface SelectGroupedMastersProps {
     onSubmit:()=>void;
     onCancel:()=>void;
     onHover?:ReactNode;
-    onSelectMasters:()=>void;
     handleOnClickMaster:(master:MDMMasterState)=>void;
     allMasters:MDMMasterState[]
     selectedMasters:MDMMasterState[]
+    text:string
 }
 interface CardProps{
     master:MDMMasterState
@@ -31,8 +31,28 @@ const Card=(props:CardProps)=>{
         selectedMasters
     } = props;
 
+    const getMasterName = ():string=>{
+        if(master.id==11 || master.id==12){
+            return "Seasonality"
+        }
+        if(master.id==7 || master.id==8 || master.id==9){
+            return 'Phase In Phase Out'
+        }
+        return master.name
+    }
+
+    const doesMasterExist = ()=>{
+        if(master.id==7){
+            return selectedMasters.find((m)=>m.id==7 || m.id==8 || m.id==9)
+        }
+        if(master.id==11){
+            return selectedMasters.find((m)=>m.id==11 || m.id==12)
+        }
+        return selectedMasters.find((m)=>m.id==master.id)
+    }
+
     return(
-        <VFMasterGroupCardContent data-testid='vf-master-group-card' theme={user.user.theme_ui} style={{backgroundColor: selectedMasters.find((m:MDMMasterState)=>m.id===master.id)|| isHovered ? globalStyles.chooseThemeColor[user.user.theme_ui]?.color5 : 'white'}}
+        <VFMasterGroupCardContent data-testid='vf-master-group-card' theme={user.user.theme_ui} style={{backgroundColor: doesMasterExist()|| isHovered ? globalStyles.chooseThemeColor[user.user.theme_ui]?.color5 : 'white'}}
             id={master.name} 
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -40,19 +60,19 @@ const Card=(props:CardProps)=>{
         >
             <VFMasterGroupCardImage data-testid="vf-master-card-image"
                 style={{
-                    backgroundColor:selectedMasters.find((m)=>m.id===master.id) || isHovered ? globalStyles.chooseThemeColor[user.user.theme_ui]?.color5 : '#F4F4F4',
-                    border:selectedMasters.find((m)=>m.id===master.id) || isHovered ? 'white 1px solid':'none'
+                    backgroundColor:doesMasterExist() || isHovered ? globalStyles.chooseThemeColor[user.user.theme_ui]?.color5 : '#F4F4F4',
+                    border:doesMasterExist() || isHovered ? 'white 1px solid':'none'
                 }}>
-                <img src={isHovered || selectedMasters.find((m:MDMMasterState)=>m.id===master.id)
+                <img src={isHovered || doesMasterExist()
                     ?ImageMapperHover[master.id]
                     :ImageMapper[master.id]
                     }
                     alt={master.name}
                 />
             </VFMasterGroupCardImage>
-            <VFMasterGroupCardText style={{color:selectedMasters.find((m:MDMMasterState)=>m.id===master.id) || isHovered ? 'white': 'black'}}>
+            <VFMasterGroupCardText style={{color:doesMasterExist() || isHovered ? 'white': 'black'}}>
                 <div key={master.name}>
-                <p>{master.name}</p>
+                <p>{getMasterName()}</p>
                 </div>
             </VFMasterGroupCardText>
         </VFMasterGroupCardContent>
@@ -64,7 +84,8 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
         onCancel,
         handleOnClickMaster,
         allMasters,
-        selectedMasters
+        selectedMasters,
+        text
     } = props
 
     const {user} = useUserData();
@@ -73,7 +94,7 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
     <ContentWrapper>
         <TextFilterWrapper>
             <TextContainer>
-             <p>What kind of records do you want to add?</p>
+             <p>What kind of records do you want to {text}?</p>
             </TextContainer>
         </TextFilterWrapper>
         <VFMasterGroupCardContainer> 

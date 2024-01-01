@@ -14,6 +14,7 @@ export interface MDMStore{
     activeMaster:MDMMasterState,
     isSelectMasterOpen:boolean,
     draftId:string
+    isUploadModalOpen:boolean
 }
 
 export interface MDMMasterState{
@@ -109,6 +110,10 @@ export interface QueryFilteredDataConfigs{
     currentPage?:number
 }
 
+export interface UploadModalRadioButtonsType{
+    label:string
+    value:any
+}
 export interface NormHistory {
     date:string,
     old_norm:string,
