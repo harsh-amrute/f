@@ -125,6 +125,13 @@ display: flex;
  margin-right:32px;
  
 `
+export const UploadModalRadioWrapper = styled.div`
+    width:100%;
+    height:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+`
 
 export const UploadBorderContainer=styled.div`
 border: 1.5px dashed #707070;

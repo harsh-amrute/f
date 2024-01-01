@@ -53,8 +53,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/master-data-management/saved-drafts',
     '/master-data-management/task-status',
     '/master-data-management/task-pending',
-    '/master-data-management/add',
-    '/master-data-management/delete'
+    '/master-data-management/control-panel/add',
+    '/master-data-management/control-panel/delete'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -234,7 +234,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/add',
+      path: '/master-data-management/control-panel/add',
       element: <AppLayout />,
       children: [
         {
@@ -245,7 +245,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/delete',
+      path: '/master-data-management/control-panel/delete',
       element: <AppLayout />,
       children: [
         {
