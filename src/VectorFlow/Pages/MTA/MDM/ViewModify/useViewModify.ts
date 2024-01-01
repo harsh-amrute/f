@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import {type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
-import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState } from "../../../../../helpers/utils";
+import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, getActionId } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID} from '../../../../../redux/actions/MDM';
@@ -334,6 +334,7 @@ const useViewModify = () => {
     }
 
     const generateDraftPayload = ()=>{
+      const pathName = window.location.pathname.split('/')
       let instanceName = ''
       masters.map((master:MDMMasterState)=>{
         instanceName += ` ${master.name}`
@@ -341,11 +342,12 @@ const useViewModify = () => {
       return{
         instanceName:instanceName,
         searchKey:activeMaster.name,
+        actionType:getActionId(pathName[pathName.length-1]).id,
         draftId:draftID,
         draftData:masters.map((master:MDMMasterState)=>{
           return {
             masterId:master.id,
-            status:master.progress==='submitted'?1:0,
+            status:master.progress,
             gridState:JSON.stringify(master.colDefs),
             dataMaster:master.id===activeMaster.id?activeMaster.rowData:[]
           }
@@ -600,13 +602,15 @@ const useViewModify = () => {
       }
 
       const onSaveToDraft = async()=>{
-        const toastId = notifyLoader('Creating Draft');
+        
         if(draftID.length > 0){
+          const toastId = notifyLoader('Updating Draft');
           await modifyDraft(generateDraftPayload())
           toast.dismiss(toastId);
           return toast.success("Draft Updated Successfully")
         }
 
+        const toastId = notifyLoader('Creating Draft');
         const data:any =  await createDraft(generateDraftPayload())
         dispatch(SET_DRAFT_ID(data.data.data))
         toast.dismiss(toastId);

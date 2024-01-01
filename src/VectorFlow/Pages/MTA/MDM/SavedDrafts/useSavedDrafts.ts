@@ -1,17 +1,20 @@
 import { useState } from "react"
-// import { useDispatch } from "react-redux"
-// import { useNavigate } from "react-router"
-import {useGetAllDrafts, useDeleteDraft } from "../../../../../VectorFlow/Services/MTA/MDM"
-import { notifyPromise } from "../../../../../helpers/notify"
+import { useDispatch } from "react-redux"
+import { useNavigate } from "react-router"
+import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { notifyError, notifyPromise } from "../../../../../helpers/notify"
 
+import { FILL_MASTERS, SET_DRAFT_ID, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER } from "../../../../../redux/actions/MDM"
+import { createMastersStateFromDraftData, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
+import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 
 const useSavedDrafts = ()=>{
 
-    // const dispatch = useDispatch()
-    // const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
-    // const {mutateAsync:getDraftById} = useGetDraftById()
-    // const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration()
+    const {mutateAsync:getDraftById} = useGetDraftById()
+    const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration()
     const {mutateAsync:deleteDraft} = useDeleteDraft()
     const [isDeleteModalOpen,toggleDeleteModal] = useState<boolean>(false)
     const [deleteDraftId,setDeleteDraftId] = useState<string>("");
@@ -26,18 +29,28 @@ const useSavedDrafts = ()=>{
 
     const closeDeleteModal =()=>toggleDeleteModal(false)
 
-    const onEditDraft = async(draftId:string)=>{
-        console.log(draftId)
+    const onEditDraft = async(draftDetails:any)=>{
+        console.log(draftDetails)
 
-        // const draftData = await getDraftById(draftId)
-        // const mastersData= await getMasterUIConfiguration('modify')
+       try{
+        const draftData = await getDraftById(draftDetails.DraftId)
+
+        const mastersData= await getMasterUIConfiguration(getActionName(draftDetails.ActionType).value)
 
 
-
-        // const masters = mastersData.data.data
+        const fields = mastersData.data.data
+        const masterState = createMastersStateFromDraftData(draftData.data.data,fields)
+        const activeMaster = masterState.find((m:MDMMasterState)=>m.progress!=='submitted')
+        dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
+        dispatch(STORE_ALL_MASTERS(mapMasterToMasterState(fields)))
+        dispatch(FILL_MASTERS(masterState))
+        dispatch(SET_DRAFT_ID(draftDetails.DraftId))
+        if(activeMaster)dispatch(UPDATE_ACTIVE_MASTER(masterState.indexOf(activeMaster)))
         
-        // dispatch(TOGGLE_SELECT_MASTER_SCREEN(true))
-        // navigate('/master-data-management/view-modify')
+        navigate(`/master-data-management/control-panel/${getActionName(draftDetails.ActionType).label}`)
+       }catch(error:any){
+        notifyError(error.message)
+       }
     }
 
 
