@@ -361,7 +361,7 @@ const useViewModify = (pageType:string) => {
           return {
             masterId:master.id,
             status:master.progress,
-            gridState:JSON.stringify(master.colDefs),
+            gridState:master.id===activeMaster.id?JSON.stringify(activeMaster.colDefs):'',
             dataMaster:master.id===activeMaster.id?activeMaster.rowData:[]
           }
         })

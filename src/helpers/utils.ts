@@ -791,7 +791,7 @@ export const createMastersStateFromDraftData = (draftData:any[],fields:Master[])
     masters.push({
       id:existingMaster.id,
       name:existingMaster.name,
-      colDefs:JSON.parse(master.GridState),
+      colDefs:master.GridState.length>0?JSON.parse(master.GridState):[],
       rowData:master.DataMaster || [],
       filters:[],
       progress:master.Status,
