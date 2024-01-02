@@ -294,9 +294,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row'}}>
                     <BackButton/>
                     <div style={{
-                        flex:7,
+                        // flex:7,
                         height:'100%',
-                        width:'100%'
+                        width:'auto'
                     }}>
                     </div>
                     <div style={{width:'200px',flex:2}}>
