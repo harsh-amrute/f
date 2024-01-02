@@ -2,7 +2,7 @@ import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
-import { type Master, type Option, type Field, type Filter, MDMMasterState, type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
+import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { defaultColDefs, masterIdToSchemaMapper, taskPendingCustomColDefs } from './MDMConstants';
@@ -613,7 +613,7 @@ export const mapDraftDataToTableRowData = (rowData:any[])=>{
   result  = rowData.map((row,index)=>{
     return{
       ...row,
-      sr_no:index
+      sr_no:index + 1
     }
   })
   return result
@@ -768,6 +768,39 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
 }
 
 
+export const getActionName = (id:number):DraftActionType=>{
+  if(id===1)return {id:1,label:'add',value:'add'}
+  if(id===2)return {id:2,label:'view-modify',value:'modify'}
+  if(id===3)return {id:3,label:'delete',value:'delete'}
+  throw new Error('Invalid action id')
+}
+
+export const getActionId = (actionName:string):DraftActionType=>{
+  if(actionName==="add")return {id:1,label:'add',value:'add'}
+  if(actionName==="view-modify" || actionName==="modify")return {id:2,label:'view-modify',value:'modify'}
+  if(actionName==="delete")return {id:3,label:'delete',value:'delete'}
+  throw new Error('Invalid action Name')
+}
+
+
+export const createMastersStateFromDraftData = (draftData:any[],fields:Master[]):MDMMasterState[]=>{
+  const masters:MDMMasterState[] = []
+  draftData.map((master)=>{
+    const existingMaster = fields.find((m:Master)=>m.id==master.MasterId)
+   if(existingMaster){
+    masters.push({
+      id:existingMaster.id,
+      name:existingMaster.name,
+      colDefs:JSON.parse(master.GridState),
+      rowData:master.DataMaster || [],
+      filters:[],
+      progress:master.Status,
+      fields:existingMaster.fields
+    })
+   }
+  })
+  return masters
+}
 export const getUploadModalRadioButtons = (masterId:number)=>{
   if(masterId==11 || masterId==12){
     return [

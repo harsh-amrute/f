@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
-import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError } from "../../../../../helpers/utils";
+import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL} from '../../../../../redux/actions/MDM';
@@ -203,15 +203,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const agGridProps:AgGridReactProps = {
-      // defaultColDef:{
-      //   valueSetter:(params)=>{
-      //     console.log(params);
-      //     return true;
-      //   },
-      //   // onCellValueChanged:(e)=>{
-      //   //   console.log(e);
-      //   // },
-      // },
+
       readOnlyEdit:true,
       sideBar:['default','view'].includes(activeMaster.progress) ? sideBar : {},
       gridOptions:{
@@ -355,6 +347,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const generateDraftPayload = ()=>{
+      const pathName = window.location.pathname.split('/')
       let instanceName = ''
       masters.map((master:MDMMasterState)=>{
         instanceName += ` ${master.name}`
@@ -362,11 +355,12 @@ const useViewModify = (pageType:string) => {
       return{
         instanceName:instanceName,
         searchKey:activeMaster.name,
+        actionType:getActionId(pathName[pathName.length-1]).id,
         draftId:draftID,
         draftData:masters.map((master:MDMMasterState)=>{
           return {
             masterId:master.id,
-            status:master.progress==='submitted'?1:0,
+            status:master.progress,
             gridState:JSON.stringify(master.colDefs),
             dataMaster:master.id===activeMaster.id?activeMaster.rowData:[]
           }
@@ -664,7 +658,6 @@ const useViewModify = (pageType:string) => {
         const newData = rowData.map((row:any)=>{
           const rowClone = {...row};
           const {error,warning} = checkError(rowClone,activeMaster);
-          console.log(error)
           
           if(error){
             rowClone.error = error

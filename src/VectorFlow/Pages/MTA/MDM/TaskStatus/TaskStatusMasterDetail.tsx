@@ -10,13 +10,14 @@ export interface TaskStatusMasterDetailProps{
 }
 
 const getStepperState = (data:any):StepItem[]=>{
+    console.log(data)
     switch(data.TaskStatus){
         case "Pending":
             return [
                 {
                     label:"Submission",
                     status:'completed',
-                    description:data.date
+                    description:data.PendingSince
                 },
                 {
                     label:"Pending",
@@ -47,17 +48,17 @@ const getStepperState = (data:any):StepItem[]=>{
                 {
                     label:"Submission",
                     status:'completed',
-                    description:data.date
+                    description:data.PendingSince
                 },
                 {
                     label:"Approved",
                     status:'completed',
-                    description:data.date
+                    description:data.ApprovedDate
                 },
                 {
                     label:"DB Updated",
                     status:'completed',
-                    description:data.date
+                    description:data.DBUpdatedDate
                 }
             ]
         case "Approved - DB Updated":
@@ -65,17 +66,17 @@ const getStepperState = (data:any):StepItem[]=>{
                 {
                     label:"Submission",
                     status:'completed',
-                    description:data.date
+                    description:data.PendingSince
                 },
                 {
                     label:"Approved",
                     status:'completed',
-                    description:data.date
+                    description:data.ApprovedDate
                 },
                 {
                     label:"DB Updated",
                     status:'completed',
-                    description:data.date
+                    description:data.DBUpdatedDate
                 }
             ]
         case "Partially approved - DB Update Pending":
@@ -83,12 +84,12 @@ const getStepperState = (data:any):StepItem[]=>{
                 {
                     label:"Submission",
                     status:'completed',
-                    description:data.date
+                    description:data.PendingSince
                 },
                 {
                     label:"Partially Approved",
                     status:'completed',
-                    description:data.date
+                    description:data.ApprovedDate
                 },
                 {
                     label:"Partially Approved - DB Update Pending",
@@ -101,12 +102,12 @@ const getStepperState = (data:any):StepItem[]=>{
                 {
                     label:"Submission",
                     status:'completed',
-                    description:data.date
+                    description:data.PendingSince
                 },
                 {
                     label:"Approved",
                     status:'completed',
-                    description:data.date
+                    description:data.ApprovedDate
                 },
                 {
                     label:"DB Update Pending",
@@ -119,7 +120,7 @@ const getStepperState = (data:any):StepItem[]=>{
                 {
                     label:"Submission",
                     status:'completed',
-                    description:data.date
+                    description:data.PendingSince
                 },
                 {
                     label:"Pending",

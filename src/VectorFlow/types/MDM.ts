@@ -131,3 +131,9 @@ export interface SeasonalityQuickFilterType{
     label:string
     color:string
 }
+
+export interface DraftActionType{
+    id:number
+    label:string
+    value:string
+}
