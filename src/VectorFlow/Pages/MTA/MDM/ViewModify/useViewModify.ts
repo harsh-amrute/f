@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
-import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData } from "../../../../../helpers/utils";
+import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL} from '../../../../../redux/actions/MDM';
@@ -9,7 +9,6 @@ import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../.
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 import { AgGridReactProps } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-enterprise';
-import { masterIdToSchemaMapper } from '../../../../../helpers/MDMConstants';
 
 import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
 import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers';
@@ -233,7 +232,7 @@ const useViewModify = (pageType:string) => {
       },
       rowSelection:'multiple',
       suppressRowClickSelection:true,
-      components:customCellRenderers, 
+      components:customCellRenderers,
       onSelectionChanged:()=>{
         if(ref.current?.api){
           setSelectedRowsCount(ref.current?.api.getSelectedRows().length)
@@ -661,18 +660,14 @@ const useViewModify = (pageType:string) => {
           }
           return row;
         })
-        const checkError = (row:object) => {
-          const {error,warning} = masterSchema.validate(row) ;    
-          return {error,warning};
-        }
-
-        const masterSchema = masterIdToSchemaMapper[activeMaster.id.toString()];
+      
         const newData = rowData.map((row:any)=>{
           const rowClone = {...row};
-          const {error,warning} = checkError(rowClone);
+          const {error,warning} = checkError(rowClone,activeMaster);
+          console.log(error)
           
           if(error){
-            rowClone.error = error.message;
+            rowClone.error = error
           }
           else{
             rowClone.error = '';
@@ -719,7 +714,6 @@ const useViewModify = (pageType:string) => {
           const {data:{data}} = await getSeasonalityDetails(rowData);
           setNormChangeData(data.norm);
           const chartData = generateSesonalityChartData(rowData,data);
-          console.log(isSeasonalityChartModalOpen);
           setChartData(chartData);
           toggleSeasonalityChartModal(true);
           toast.dismiss(toastId);
@@ -747,7 +741,7 @@ const useViewModify = (pageType:string) => {
         }
         if(doesMasterExist){
           setSeasonalityActiveQuickFilter(id)
-          dispatch(UPDATE_ROW_DATA(doesMasterExist.rowData.filter((row)=>row.sts==id)))
+          dispatch(UPDATE_ROW_DATA(doesMasterExist.rowData.filter((row:any)=>row.sts==id)))
         }
       }
 
