@@ -470,14 +470,19 @@ const useViewModify = (pageType:string) => {
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         toggleWarningModal(false);
         setShowAll(false);
-        if(activeMaster.id==10){
+        if(pageType==='remove'){
+          return dispatch(UPDATE_PROGRESS_STATE('deleteView'));
+        }
+        else{
+          if(activeMaster.id==10){
          
-          return dispatch(UPDATE_PROGRESS_STATE('seasonality')); 
+            return dispatch(UPDATE_PROGRESS_STATE('seasonality')); 
+          }
+          if(activeMaster.id==6){
+            return dispatch(UPDATE_PROGRESS_STATE('phaseInPhaseOut')); 
+          }
+          return dispatch(UPDATE_PROGRESS_STATE('view')); 
         }
-        if(activeMaster.id==6){
-          return dispatch(UPDATE_PROGRESS_STATE('phaseInPhaseOut')); 
-        }
-        return dispatch(UPDATE_PROGRESS_STATE('view'));  
     }
 
     const onEditOnline = () => {
@@ -557,7 +562,8 @@ const useViewModify = (pageType:string) => {
         setTempDownloadData(true);
         dispatch(REMOVE_COLDEFS(['error','warning']));
         addCheckBoxColDefs();
-        dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+       if(pageType==='remove') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+       else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         
       }

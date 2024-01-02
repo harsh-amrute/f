@@ -9,6 +9,7 @@ import { ViewModifyProgressState } from "../../../../../VectorFlow/types/MDM"
 export interface VFTaskBarProps{
     masterProgress:ViewModifyProgressState
     editOnline?:boolean
+    deleteOnline?:boolean
     onReset:()=>void
     onBack:()=>void
     onExportData:()=>void
@@ -22,6 +23,8 @@ export interface VFTaskBarProps{
     onSeasonalityResume:()=>void
     onSeasonalityStop:()=>void
     onPhaseInPhaseOutStop:()=>void
+    onDeleteOnline:()=>void
+    onDeleteData:()=>void
 }
 
 
@@ -30,6 +33,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
     const{
         masterProgress,
         editOnline ,
+        deleteOnline,
         onBack,
         onExportData,
         onModifyData,
@@ -41,7 +45,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         onSaveToDraft,
         onDeleteSelected,
         onSeasonalityResume,
-        onSeasonalityStop
+        onSeasonalityStop,
+        onDeleteOnline,
+        onDeleteData
     } = props
 
     const {user} = useUserData()
@@ -49,7 +55,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
 
     const getStepperState = ():StepItem[]=>{
         switch(masterProgress){
-            case "uploaded":
+            case "uploaded" || "deleteUploaded":
                 return [
                     {
                         label:'File Uploaded',
@@ -319,6 +325,41 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                    <VFButton themeUi={themeUi} onClick={onSeasonalityStop}>
                         Stop Selected
                     </VFButton>
+                </TaskBarContainer>
+            )
+        case 'deleteView':
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row'}}>
+                    <BackButton/>
+                   <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnline} disabled={!deleteOnline}>  
+                        Delete Online
+                   </VFButtonOutline >
+                   <VFButtonOutline themeUi={themeUi} onClick={onDeleteData}>
+                        Delete Data
+                    </VFButtonOutline>
+                </TaskBarContainer>
+            )
+         case 'deleteUploaded':
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row'}}>
+                    <BackButton/>
+                   <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnline}>  
+                        Remove Selected
+                   </VFButtonOutline >
+                   <VFButton themeUi={themeUi} onClick={onDeleteData}>
+                        Delete All
+                    </VFButton>
+                    <div style={{
+                        flex:5,
+                        height:'100%',
+                        width:'100%'
+                    }}>
+                    </div>
+                    <div style={{width:'200px',flex:2}}>
+                        <VFStepper
+                            items={getStepperState()}
+                        />
+                    </div>
                 </TaskBarContainer>
             )
         default:
