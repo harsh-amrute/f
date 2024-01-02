@@ -52,6 +52,12 @@ export namespace MDMService {
     })
   }
 
+  export const getSeasonalityDetails = async (body:any) => {
+    return await axios.post('https://2cfc61ae-927a-4577-8843-ee38dfb26302.mock.pstmn.io/seasonality-detail',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+  
   export const getPendingTasks = async()=>{
     return await axios.get(process.env.REACT_APP_VF_API_HOST + `/GetTaskPendingForReviewData`,{
       headers: { 'Content-Type': 'application/json' }

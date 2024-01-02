@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import { ColDef } from 'ag-grid-enterprise';
-import { type MDMMasterState, type Option } from '../../../VectorFlow/types/MDM';
+import { ViewModifyProgressState, type MDMMasterState, type Option } from '../../../VectorFlow/types/MDM';
 
 const actions =  {
     STORE_ALL_MASTERS: createAction<MDMMasterState[]>("STORE_ALL_MASTERS"),
@@ -11,7 +11,7 @@ const actions =  {
     SYNC_ACTIVE_MASTER_TO_MASTER:createAction("SYNC_ACTIVE_MASTER_TO_MASTER"),
     FILL_OPTIONS:createAction<Option[]>("FILL_OPTIONS"),
     FILL_SELECTED_OPTIONS:createAction<any>("FILL_SELECTED_OPTIONS"),
-    UPDATE_ACTIVE_MASTER:createAction<number>("UPDATE_ACTIVE_MASTER"),
+    UPDATE_ACTIVE_MASTER:createAction<number | MDMMasterState>("UPDATE_ACTIVE_MASTER"),
     TOGGLE_SELECT_MASTER_SCREEN:createAction<boolean>("TOGGLE_SELECT_MASTER_SCREEN"),
     ADD_COLDEFS:createAction<{colDefs:ColDef[]}>("ADD_COLDEFS"),
     UPDATE_COLDEFS:createAction<ColDef[]>("UPDATE_COLDEFS"),
@@ -22,7 +22,8 @@ const actions =  {
     MODIFY_ROW_DATA:createAction<{oldRow:any[],newRow:any[]}>("MODIFY_ROW_DATA"),
     UPDATE_ROW_DATA:createAction<any[]>("UPDATE_ROW_DATA"),
     REMOVE_ROW_DATA:createAction<any[]>("REMOVE_ROW_DATA"),
-    UPDATE_PROGRESS_STATE:createAction<string>("UPDATE_PROGRESS_STATE"),
+    TOGGLE_UPLOAD_MODAL:createAction<boolean>("TOGGLE_UPLOAD_MODAL"),
+    UPDATE_PROGRESS_STATE:createAction<ViewModifyProgressState>("UPDATE_PROGRESS_STATE"),
     RESET_STATE:createAction("RESET_STATE"),
     SET_DRAFT_ID:createAction<string>("SET_DRAFT_ID")
 }
@@ -48,6 +49,7 @@ export const {
     MODIFY_ROW_DATA,
     REMOVE_ROW_DATA,
     UPDATE_PROGRESS_STATE,
+    TOGGLE_UPLOAD_MODAL,
     RESET_STATE,
     SET_DRAFT_ID
 } = actions;

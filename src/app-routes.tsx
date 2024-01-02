@@ -18,11 +18,10 @@ import { useTranslation } from 'react-i18next'
 import ControlPanel from './VectorFlow/Pages/MTA/MDM/ControlPanel'
 import ViewModify from './VectorFlow/Pages/MTA/MDM/ViewModify'
 import AddRecord from './VectorFlow/Pages/MTA/MDM/AddRecord'
+import DeleteRecord from './VectorFlow/Pages/MTA/MDM/DeleteRecord'
 import SavedDrafts from './VectorFlow/Pages/MTA/MDM/SavedDrafts'
 import TaskStatus from './VectorFlow/Pages/MTA/MDM/TaskStatus'
 import TaskPendingForReview from './VectorFlow/Pages/MTA/MDM/TaskPendingForReview'
-
-
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
   const search = window.location.search
@@ -54,7 +53,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/master-data-management/saved-drafts',
     '/master-data-management/task-status',
     '/master-data-management/task-pending',
-    '/master-data-management/add'
+    '/master-data-management/control-panel/add',
+    '/master-data-management/control-panel/delete'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -234,12 +234,23 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/add',
+      path: '/master-data-management/control-panel/add',
       element: <AppLayout />,
       children: [
         {
           index: true,
           element: lazyLoad(<AddRecord/>)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/control-panel/delete',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DeleteRecord/>)
         },
         ...getStoreTransferModuleRoutes()
       ]

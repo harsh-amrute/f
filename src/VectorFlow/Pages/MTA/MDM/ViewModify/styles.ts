@@ -125,6 +125,13 @@ display: flex;
  margin-right:32px;
  
 `
+export const UploadModalRadioWrapper = styled.div`
+    width:100%;
+    height:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+`
 
 export const UploadBorderContainer=styled.div`
 border: 1.5px dashed #707070;
@@ -244,7 +251,8 @@ export const SeasonalityQuickFilter = styled.button<{stateColor:string,isActive:
     justify-content:center;
     width: 90px;
     height: 40px;
-    border: 1px solid #929292;
+    border: ${(props)=> props.isActive ? '1px solid transperent' : '1px solid #929292'};
+    transition:0.3s ease-in-out;
     border-radius: 6px;
     
     color:${(props)=>props.isActive?'white':'#929292'};
@@ -273,5 +281,5 @@ export const SeasonalityQuickFilterText = styled.p`
     letter-spacing: 0px;
     color:inherit;
     z-index:100;
-    transition:0.3s ease-out;
+    transition:0.1s ease-out;
 `

@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { createReducer } from '@reduxjs/toolkit';
 import {type Option, type MDMMasterState, type MDMStore, type Filter} from '../../../VectorFlow/types/MDM'; 
 import { generateRandomId } from '../../../helpers/utils';
-import {FILL_MASTERS, FILL_SELECTED_OPTIONS, REMOVE_MASTER, FILTER_MASTER, ADD_MASTER, FILL_OPTIONS, UPDATE_ACTIVE_MASTER, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_COLDEFS, STORE_ALL_MASTERS, ADD_FILTER, REMOVE_FILTER, UPDATE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, RESET_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, MODIFY_ROW_DATA,SET_DRAFT_ID} from '../../actions/MDM';
+import {FILL_MASTERS, FILL_SELECTED_OPTIONS, REMOVE_MASTER, FILTER_MASTER, ADD_MASTER, FILL_OPTIONS, UPDATE_ACTIVE_MASTER, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_COLDEFS, STORE_ALL_MASTERS, ADD_FILTER, REMOVE_FILTER, UPDATE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, RESET_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, MODIFY_ROW_DATA,SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL} from '../../actions/MDM';
 import { ColDef } from 'ag-grid-enterprise';
 
 
@@ -120,8 +120,12 @@ const setSelectedOptions = (state:any,action: PayloadAction<Array<Option>>) => {
     state.selectedOptions = action.payload;
 }
 
-const setActiveMaster =  (state:any,action:PayloadAction<number>) => {
-    state.activeMaster = {...state.masters[action.payload]};
+const setActiveMaster =  (state:any,action:PayloadAction<number | MDMMasterState>) => {
+    if(typeof action.payload ==='number'){
+        state.activeMaster = {...state.masters[action.payload]};
+        return
+    }
+    state.activeMaster = {...action.payload,name:"Seasonality"};
 }
    
 const setIsSelectMasterOpen = (state:any,action:PayloadAction<boolean>)=>{
@@ -130,6 +134,10 @@ const setIsSelectMasterOpen = (state:any,action:PayloadAction<boolean>)=>{
 
 const setDraftId = (state:any,action:PayloadAction<string>) => {
     state.draftId = action.payload;
+}
+
+const setIsUploadModalOpen=(state:any,action:PayloadAction<boolean>)=>{
+    state.isUploadModalOpen = action.payload
 }
 
 const resetState = (state:any) => {
@@ -168,6 +176,7 @@ const mdmReducer = (initialState:MDMStore) => createReducer(initialState, (build
       .addCase(TOGGLE_SELECT_MASTER_SCREEN,setIsSelectMasterOpen)
       .addCase(RESET_STATE,resetState)
       .addCase(SET_DRAFT_ID,setDraftId)
+      .addCase(TOGGLE_UPLOAD_MODAL,setIsUploadModalOpen)
   })
 
 export default mdmReducer;

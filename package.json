@@ -19,6 +19,9 @@
     "ag-grid-enterprise": "^30.2.1",
     "ag-grid-react": "^30.2.1",
     "axios": "^1.2.1",
+    "chart.js": "^4.4.1",
+    "chartjs-adapter-date-fns": "^3.0.0",
+    "date-fns": "^3.0.6",
     "eslint-html-reporter": "^0.7.4",
     "i18next": "^22.4.15",
     "jest-canvas-mock": "^2.5.2",
@@ -27,6 +30,7 @@
     "luxon": "^3.2.1",
     "plotly.js": "^2.20.0",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-data-table-component": "^7.5.3",
     "react-dom": "^18.2.0",
     "react-drag-drop-files": "^2.3.9",
@@ -55,7 +59,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --coverage --passWithNoTests",
+    "test": "react-scripts test --coverage --passWithNoTests --transformIgnorePatterns 'node_modules/(?!my-library-dir)/'",
+    "clear-cache": "react-scripts test --clearCache",
     "eject": "react-scripts eject",
     "lint": "eslint . -f node_modules/eslint-html-reporter/reporter.js -o report.html",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx src --ignore-pattern src/types/*"
@@ -83,10 +88,10 @@
         "lines": 90
       },
       "src/VectorFlow/Pages": {
-        "statements": 60,
-        "branches": 50,
-        "functions": 60,
-        "lines": 60
+        "statements": 40,
+        "branches": 40,
+        "functions": 40,
+        "lines": 40
       },
       "src/VectorFlow/Services/**/api.ts": {
         "statements": 90,

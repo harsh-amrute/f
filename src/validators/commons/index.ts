@@ -31,7 +31,8 @@ export const IsInputHasPipe = (data:any) => {
 
 export const defaultJOIOptions = {
     abortEarly:false,
-    allowUnknown:true
+    allowUnknown:true,
+
 }
 export const generateCommonMessages = (key:string) => {
     return {
