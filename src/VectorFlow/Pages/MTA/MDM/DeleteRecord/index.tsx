@@ -19,7 +19,7 @@ const DeleteRecord = () => {
         return <VFLoader/>
     }
 
-    return(
+    return( 
         <SelectGroupedMasters  
             onSubmit={()=>notifySuccess('Submitted')} //console.log
             onCancel={onCancel}
@@ -28,6 +28,7 @@ const DeleteRecord = () => {
             selectedMasters={selectedMasters}
             text={'delete'}
         />  
+    
     )  
 }
 
