@@ -30,7 +30,6 @@ const useSavedDrafts = ()=>{
     const closeDeleteModal =()=>toggleDeleteModal(false)
 
     const onEditDraft = async(draftDetails:any)=>{
-        console.log(draftDetails)
 
        try{
         const draftData = await getDraftById(draftDetails.DraftId)

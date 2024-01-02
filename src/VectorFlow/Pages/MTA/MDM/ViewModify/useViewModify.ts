@@ -203,15 +203,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const agGridProps:AgGridReactProps = {
-      // defaultColDef:{
-      //   valueSetter:(params)=>{
-      //     console.log(params);
-      //     return true;
-      //   },
-      //   // onCellValueChanged:(e)=>{
-      //   //   console.log(e);
-      //   // },
-      // },
+
       readOnlyEdit:true,
       sideBar:['default','view'].includes(activeMaster.progress) ? sideBar : {},
       gridOptions:{
@@ -666,7 +658,6 @@ const useViewModify = (pageType:string) => {
         const newData = rowData.map((row:any)=>{
           const rowClone = {...row};
           const {error,warning} = checkError(rowClone,activeMaster);
-          console.log(error)
           
           if(error){
             rowClone.error = error
