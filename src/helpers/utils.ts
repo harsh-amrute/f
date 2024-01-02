@@ -777,7 +777,7 @@ export const createMastersStateFromDraftData = (draftData:any[],fields:Master[])
       colDefs:JSON.parse(master.GridState),
       rowData:master.DataMaster || [],
       filters:[],
-      progress:master.Status===1?'submitted':'uploaded',
+      progress:master.Status,
       fields:existingMaster.fields
     })
    }
