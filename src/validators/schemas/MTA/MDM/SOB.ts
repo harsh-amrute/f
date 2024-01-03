@@ -15,3 +15,9 @@ export const SOBSchema = Joi.object({
     SOB:Joi.number().min(0.00).max(100.00)
 
 }).preferences(defaultJOIOptions)
+
+export const SOBSchemaDelete = Joi.object({
+    sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
+    wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
+    SuppCode:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator)
+}).preferences(defaultJOIOptions)

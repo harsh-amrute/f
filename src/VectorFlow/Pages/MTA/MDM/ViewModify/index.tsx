@@ -275,6 +275,11 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
             onSeasonalityResume={()=>console.log('')}
             onSeasonalityStop={()=>console.log('')}
             onPhaseInPhaseOutStop={()=>console.log('')}
+            onDeleteData={()=>console.log('')}
+            onDeleteOnlineReset={()=>console.log('')}
+            onDeleteOnlineSave={()=>console.log('')}
+            onDeleteOnlineSubmit={()=>console.log('')}
+            onDeleteOnline={()=>console.log('')}
           />
         }
         

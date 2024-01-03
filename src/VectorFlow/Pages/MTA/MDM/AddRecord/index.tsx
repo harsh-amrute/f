@@ -161,6 +161,11 @@ const AddRecord = () => {
             onPhaseInPhaseOutStop={()=>console.log('')}
             onSeasonalityResume={()=>console.log('')}
             onSeasonalityStop={()=>console.log('')}
+            onDeleteData={()=>console.log('')}
+            onDeleteOnline={()=>console.log('')}
+            onDeleteOnlineReset={()=>console.log('')}
+            onDeleteOnlineSave={()=>console.log('')}
+            onDeleteOnlineSubmit={()=>console.log('')}
           />
         }
         </React.Fragment>

@@ -16,9 +16,6 @@ const useAdd=()=>{
 
     const isSelectMasterOpen = useSelector((state:RootState)=>state.mdm.isSelectMasterOpen)
 
-
-    console.debug(isSelectMasterOpen)
-
     const onCancel=()=>{
         dispatch(RESET_STATE());
         navigate('/master-data-management/control-panel');
