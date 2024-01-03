@@ -5,6 +5,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import { notifySuccess } from "../../../../../helpers/notify";
 
 
+
 const DeleteRecord = () => {
     const {
         isDeleteRecordsLoading,
@@ -20,6 +21,7 @@ const DeleteRecord = () => {
     }
 
     return(
+        
         <SelectGroupedMasters  
             onSubmit={()=>notifySuccess('Submitted')} //console.log
             onCancel={onCancel}
@@ -27,7 +29,9 @@ const DeleteRecord = () => {
             allMasters={allMasters}
             selectedMasters={selectedMasters}
             text={'delete'}
-        />  
+        /> 
+        
+        
     )  
 }
 
