@@ -42,11 +42,11 @@ const GCPValidator = (value:any,helper:any)=>{
 export const SKULocationSchema = Joi.object({
     SrNo:Joi.string(),
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
-    sn:Joi.string().alphanum().empty().max(MAX_NAME_LENGTH),
+    sd:Joi.string().empty().max(MAX_NAME_LENGTH),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
-    ln:Joi.string().empty().max(MAX_NAME_LENGTH),
+    wd:Joi.string().empty().max(MAX_NAME_LENGTH),
     pwc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(ParentWhCodeValidator).required().messages({...generateCommonMessages('ParentWhCode')}),
-    pln:Joi.string(),
+    pd:Joi.string(),
     n:Joi.number().integer(),
     mn:Joi.number().integer(),
     rlt:Joi.number().integer().custom(RLTValidator).messages(SKULocationMessages),
@@ -56,12 +56,20 @@ export const SKULocationSchema = Joi.object({
     moc:Joi.number().integer().min(1),
     ps:Joi.number().integer().min(1),
     st:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
-    DefaultSpikeThreshold:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
-    DefaultPSOThreshold:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
-    FGRMFlag:Joi.string().valid("fg", "rm"),
-    DBMActive:Joi.string().valid("yes", "no", "y", "n", "1", "0").default(1),
-    StockPercentForRationing:Joi.number().integer().min(0).max(100).default(0),
-    NormPercentReservation:Joi.number().integer().min(0).max(100).default(0),
+    dst:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
+    pt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
+    dpt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
+    npr:Joi.number(),
+    frf:Joi.string().valid("fg", "rm"),
+    da:Joi.string().valid("yes", "no", "y", "n", "1", "0").default(1),
+    // StockPercentForRationing:Joi.number().integer().min(0).max(100).default(0),
+    // NormPercentReservation:Joi.number().integer().min(0).max(100).default(0),
     ...CommonSchema
 
+}).preferences(defaultJOIOptions)
+
+export const SKULocationSchemaDelete = Joi.object({
+    sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
+    wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
+    pwc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(ParentWhCodeValidator).required().messages({...generateCommonMessages('ParentWhCode')}),
 }).preferences(defaultJOIOptions)
