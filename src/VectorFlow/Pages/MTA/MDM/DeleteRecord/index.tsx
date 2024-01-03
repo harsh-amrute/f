@@ -8,7 +8,7 @@ import { useUserData } from "../../../../../context";
 
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/SelectGroupedMasters";
-import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup, SeasonalityQuickFilterWrapper, SeasonalityQuickFilter, SeasonalityQuickFilterHeader, SeasonalityQuickFilterText } from "../ViewModify/styles";
+import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup} from "../ViewModify/styles";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import UploadModal from "../ViewModify/UploadModal";
@@ -35,18 +35,12 @@ const DeleteRecord = () => {
 
     const {
         isSelectMasterOpen,
-        options,
-        selectedOptions,
         activeMaster,
-        filterButtonStatus,
-        setFilterButtonStatus,
-        handleSelectMasterSubmit,
         handleTabChange,
         handleTabClose,
         addNewMaster,
         handleOnAddFilter,
         handleOnDeleteFilter,
-        allMastersState,
         isLoading,
         handleApplyFilter,
         isWarningModalOpen,
@@ -69,10 +63,7 @@ const DeleteRecord = () => {
         tempAgGridProps,
         tempGridData,
         deleteSelected,
-        isUploadButtonDisabled,
         editOnline,
-        seasonalityActiveQuickFilter,
-        onEditOnline,
         onSaveToDraft,
         selectedRowsCount,
         currentPage,
@@ -80,15 +71,8 @@ const DeleteRecord = () => {
         handleChangePage,
         onReset,
         onEditOnlineSave,
-        isSeasonalityChartModalOpen,
-        chartData,
-        normChangeData,
-        toggleSeasonalityChartModal,
-        onSeasonalityQuickFilter,
-        tempRowData,
         onDeleteOnlineSave,
         onBackButton
-
     } = useViewModify('remove');
     
 
