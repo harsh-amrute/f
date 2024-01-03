@@ -62,7 +62,6 @@ const DeleteRecord = () => {
         setFile,
         isTableDataLoading,
         exportToExcel,
-        onBackButton,
         onClearExportError,
         agGridProps,
         ref,
@@ -70,7 +69,6 @@ const DeleteRecord = () => {
         tempAgGridProps,
         tempGridData,
         deleteSelected,
-        onSubmit,
         isUploadButtonDisabled,
         editOnline,
         seasonalityActiveQuickFilter,
@@ -88,6 +86,8 @@ const DeleteRecord = () => {
         toggleSeasonalityChartModal,
         onSeasonalityQuickFilter,
         tempRowData,
+        onDeleteOnlineSave,
+        onBackButton
 
     } = useViewModify('remove');
     
@@ -97,7 +97,10 @@ const DeleteRecord = () => {
         allMasters,
         selectedMasters,
         onDeleteData,
+        onSubmit,
         onDeleteOnline,
+        onDeleteOnlineSubmit,
+        onDeleteOnlineReset,
         handleOnClickMaster,
         handleSubmitSelectMaster,
         handleRadioButton
@@ -239,7 +242,7 @@ const DeleteRecord = () => {
           {isUploadModalOpen && 
           <UploadModal 
             openModal={isUploadModalOpen} 
-            onCloseModal={()=>{return}} 
+            onCloseModal={()=>{toggleUploadModal(false)}} 
             onDownload={()=>ref.current?.api.exportDataAsExcel({
               fileName:downloadFileName.length>0?downloadFileName :activeMaster.name,
             })} 
@@ -277,6 +280,9 @@ const DeleteRecord = () => {
             onSeasonalityStop={()=>console.log('')}
             onDeleteData={onDeleteData}
             onDeleteOnline={onDeleteOnline}
+            onDeleteOnlineReset={onDeleteOnlineReset}
+            onDeleteOnlineSave={onDeleteOnlineSave}
+            onDeleteOnlineSubmit={onDeleteOnlineSubmit}
           />
         }
         </React.Fragment>

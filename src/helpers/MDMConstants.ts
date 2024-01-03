@@ -3,6 +3,10 @@ import {TaskPendingActionRenderer} from '../VectorFlow/Pages/MTA/MDM/TaskPending
 import { LocationSchema, SKULocationSchema, SKUSchema, SOBSchema } from '../validators/schemas/MTA/MDM/index';
 import {type Option, type MasterIdToSchema, SeasonalityQuickFilterType} from '../VectorFlow/types/MDM';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
+import { SKUSchemaDelete } from '../validators/schemas/MTA/MDM/SKU';
+import { LocationSchemaDelete } from '../validators/schemas/MTA/MDM/Location';
+import { SKULocationSchemaDelete } from '../validators/schemas/MTA/MDM/SKULocation';
+import { SOBSchemaDelete } from '../validators/schemas/MTA/MDM/SOB';
 
 interface masterGroupMapperType {
     masters:string[],
@@ -62,6 +66,12 @@ export const masterIdToSchemaMapper:MasterIdToSchema = {
     '4':SOBSchema,
 }
 
+export const masterIdToDeleteSchemaMapper:MasterIdToSchema = {
+    '1':SKUSchemaDelete,
+    '2':LocationSchemaDelete,
+    '3':SKULocationSchemaDelete,
+    '4':SOBSchemaDelete
+}
 
 export const defaultColDefs:ColDef = {
     minWidth:180,

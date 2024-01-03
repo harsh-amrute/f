@@ -125,7 +125,7 @@ const setActiveMaster =  (state:any,action:PayloadAction<number | MDMMasterState
         state.activeMaster = {...state.masters[action.payload]};
         return
     }
-    state.activeMaster = {...action.payload,name:"Seasonality"};
+    state.activeMaster = {...action.payload};
 }
    
 const setIsSelectMasterOpen = (state:any,action:PayloadAction<boolean>)=>{

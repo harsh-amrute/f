@@ -1,9 +1,13 @@
 import { useSelector,useDispatch } from 'react-redux'
+import { useEffect } from 'react';
 import { RootState } from '../../../../../redux/store/store';
-import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
-import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL } from '../../../../../redux/actions/MDM';
+import { GridRef, MDMMasterState } from '../../../../../VectorFlow/types/MDM';
+import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA, UPDATE_FILTER } from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { ColDef } from 'ag-grid-enterprise';
+import { useRemoveMasterData } from '../../../../..//VectorFlow/Services/MTA/MDM';
+import { createSubmitMasterPayload, mapMasterToColumnDefs } from '../../../../../helpers/utils';
+import { notifyError } from '../../../../../helpers/notify';
 
 
 const useDelete=()=>{
@@ -13,6 +17,20 @@ const useDelete=()=>{
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const {mutateAsync:removeMasterData} = useRemoveMasterData()
+    useEffect(()=>{
+        if(activeMaster.progress === 'deleteOnline'){
+            const updatedColdefs:ColDef[] = [{
+                field:'checkbox',
+                colId:'checkbox',
+                headerName:'',
+                checkboxSelection:true,
+                headerCheckboxSelection:true,
+                headerCheckboxSelectionCurrentPageOnly:true,
+            },...activeMaster.colDefs]
+            dispatch(UPDATE_COLDEFS(updatedColdefs))
+        }
+      },[activeMaster.progress]);
     const handleOnClickMaster=(master:MDMMasterState)=>{
 
         //For seasonality
@@ -72,23 +90,34 @@ const useDelete=()=>{
     }
 
     const onDeleteOnline = ()=>{
-        const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
-          return {...col,editable:true,}
-        })
         dispatch(UPDATE_PROGRESS_STATE('deleteOnline'))
-        dispatch(UPDATE_COLDEFS(updatedColdefs))
       }
 
     const onDeleteData = ()=>{
         dispatch(TOGGLE_UPLOAD_MODAL(true))
     }
 
+    const onDeleteOnlineReset = ()=>{
+        const currentMasterData = selectedMasters.find((master:MDMMasterState)=>master.id === activeMaster.id)
+        if(currentMasterData) dispatch(UPDATE_ROW_DATA(currentMasterData.rowData))
+        dispatch(UPDATE_PROGRESS_STATE('deleteOnline'))
+    }
     
+    const onDeleteOnlineSubmit = ()=>{
+        dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'))
+    }
+
 
     const onCancel=()=>{
         dispatch(RESET_STATE());
         navigate('/master-data-management/control-panel');
     }
+
+    const onSubmit = async()=>{
+        dispatch(UPDATE_PROGRESS_STATE('submitted'))
+        await removeMasterData(createSubmitMasterPayload(activeMaster,'remove'))
+    }
+
 
     return {
         allMasters,
@@ -96,6 +125,9 @@ const useDelete=()=>{
         onCancel,
         onDeleteOnline,
         onDeleteData,
+        onSubmit,
+        onDeleteOnlineSubmit,
+        onDeleteOnlineReset,
         handleOnClickMaster,
         handleRadioButton,
         handleSubmitSelectMaster

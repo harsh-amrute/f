@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
-import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId } from "../../../../../helpers/utils";
+import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL} from '../../../../../redux/actions/MDM';
@@ -376,7 +376,15 @@ const useViewModify = (pageType:string) => {
         dispatch(REMOVE_MASTER(currMaster.id));
        
         if(currMaster.id === activeMaster.id){
-          dispatch(UPDATE_ACTIVE_MASTER(0))
+          const mastersLength = masters.length
+          for (let index = 0; index < mastersLength; index++) {
+            
+            if(masters[index].progress!=='submitted'){
+              dispatch(UPDATE_ACTIVE_MASTER(index))
+              return
+            }
+          }
+        
         }
       }
     
@@ -495,7 +503,7 @@ const useViewModify = (pageType:string) => {
             return
           }
   
-          const result = await parseExcelData(file,activeMaster);
+          const result = await parseExcelData(file,activeMaster,pageType==='remove');
           const ifErrorExists = result.find((data:any)=>data.error);
           const ifWarningExists = result.find((data:any)=>data.warning);
           if(ifErrorExists) {
@@ -616,6 +624,8 @@ const useViewModify = (pageType:string) => {
 
       const onBackButton = () => {
        dispatch(UPDATE_ROW_DATA([]));
+       dispatch(UPDATE_COLDEFS( mapMasterToColumnDefs(activeMaster.fields,activeMaster.id)))
+       dispatch(ADD_FILTER())
         // dispatch(to(true));
         // dispatch(setViewModifyProgressState('default'))
         setDownloadData(false);
@@ -663,7 +673,7 @@ const useViewModify = (pageType:string) => {
       
         const newData = rowData.map((row:any)=>{
           const rowClone = {...row};
-          const {error,warning} = checkError(rowClone,activeMaster);
+          const {error,warning} = checkError(rowClone,activeMaster,pageType==='remove');
           
           if(error){
             rowClone.error = error
@@ -744,6 +754,13 @@ const useViewModify = (pageType:string) => {
         }
       }
 
+      const onDeleteOnlineSave = ()=>{
+        const selectedRows = ref.current?.api.getSelectedRows()
+        if(!selectedRows || selectedRows.length<1)return notifyError('Please select rows to submit')
+        dispatch(UPDATE_ROW_DATA(selectedRows))
+        dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSaved'))
+    }
+
 
     return {
         colDefs,
@@ -800,6 +817,7 @@ const useViewModify = (pageType:string) => {
         handleChangePage,
         onReset,
         onEditOnlineSave,
+        onDeleteOnlineSave,
         chartData,
         isSeasonalityChartModalOpen,
         normChangeData,
