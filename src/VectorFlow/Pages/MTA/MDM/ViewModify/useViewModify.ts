@@ -468,22 +468,22 @@ const useViewModify = (pageType:string) => {
         }
        
         dispatch(UPDATE_ROW_DATA(result.data.data));
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         toggleWarningModal(false);
         setShowAll(false);
         if(pageType==='remove'){
-          return dispatch(UPDATE_PROGRESS_STATE('deleteView'));
+           dispatch(UPDATE_PROGRESS_STATE('deleteView'));
         }
         else{
           if(activeMaster.id==10){
-         
-            return dispatch(UPDATE_PROGRESS_STATE('seasonality')); 
+            dispatch(UPDATE_PROGRESS_STATE('seasonality'));
+            return  dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           }
           if(activeMaster.id==6){
-            return dispatch(UPDATE_PROGRESS_STATE('phaseInPhaseOut')); 
+             dispatch(UPDATE_PROGRESS_STATE('phaseInPhaseOut')); 
           }
-          return dispatch(UPDATE_PROGRESS_STATE('view')); 
+          else  dispatch(UPDATE_PROGRESS_STATE('view')); 
         }
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
     }
 
     const onEditOnline = () => {
@@ -757,6 +757,7 @@ const useViewModify = (pageType:string) => {
       const onDeleteOnlineSave = ()=>{
         const selectedRows = ref.current?.api.getSelectedRows()
         if(!selectedRows || selectedRows.length<1)return notifyError('Please select rows to submit')
+        dispatch(REMOVE_COLDEFS(['checkbox']))
         dispatch(UPDATE_ROW_DATA(selectedRows))
         dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSaved'))
     }

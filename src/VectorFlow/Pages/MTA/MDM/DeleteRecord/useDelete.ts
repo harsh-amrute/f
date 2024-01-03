@@ -2,7 +2,7 @@ import { useSelector,useDispatch } from 'react-redux'
 import { useEffect } from 'react';
 import { RootState } from '../../../../../redux/store/store';
 import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
-import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA } from '../../../../../redux/actions/MDM';
+import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA, SYNC_ACTIVE_MASTER_TO_MASTER, REMOVE_COLDEFS } from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { ColDef } from 'ag-grid-enterprise';
 import { useRemoveMasterData } from '../../../../..//VectorFlow/Services/MTA/MDM';
@@ -28,6 +28,9 @@ const useDelete=()=>{
                 headerCheckboxSelectionCurrentPageOnly:true,
             },...activeMaster.colDefs]
             dispatch(UPDATE_COLDEFS(updatedColdefs))
+        }
+        if(activeMaster.progress === 'submitted' || activeMaster.progress==='deleteOnlineSubmitted'){
+            dispatch(REMOVE_COLDEFS(['checkbox']))
         }
       },[activeMaster.progress]);
     const handleOnClickMaster=(master:MDMMasterState)=>{
@@ -64,7 +67,6 @@ const useDelete=()=>{
     const handleSubmitSelectMaster = ()=>{
         dispatch(UPDATE_ACTIVE_MASTER(0));
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
-        dispatch(UPDATE_PROGRESS_STATE('default'))
     }
     
 
@@ -114,6 +116,8 @@ const useDelete=()=>{
 
     const onSubmit = async()=>{
         dispatch(UPDATE_PROGRESS_STATE('submitted'))
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+        
         await removeMasterData(createSubmitMasterPayload(activeMaster,'remove'))
     }
 
