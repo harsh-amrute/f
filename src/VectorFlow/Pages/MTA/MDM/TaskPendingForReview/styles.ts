@@ -37,3 +37,50 @@ export const LinkWrapper = styled.div`
     width:100%;
     height:100%;
 `
+
+export const DeleteFileModalText=styled.div`
+text-align: left;
+margin-top:40px;
+margin-bottom:40px;
+font-style: normal;
+font-variant: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px; 
+font-family:Roboto;
+letter-spacing: 0px;
+color: #000000;
+margin-right:221px;
+margin-left:162px;
+`
+
+export const ButtonWrapper=styled.div`
+margin-bottom:100px;
+display:flex;
+flex-direction:row;
+gap:35px;
+margin-right:210px;
+margin-left:164px;
+`
+
+export const ApproveModalText=styled.div`
+font-style: normal;
+font-variant: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px; 
+font-family:Roboto;
+margin-right:186px;
+margin-left:161px;
+margin-bottom:30px;
+margin-top:37px;
+text-align:center;
+`
+
+export const ApproveButtonWrapper=styled.div`
+align-items:center;
+margin-bottom:85px;
+margin-right:221px;
+margin-left:221px;
+align-items:center;
+`
