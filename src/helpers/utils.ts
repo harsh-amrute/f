@@ -455,7 +455,6 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
 export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChart?:any)=>{
   let result:any[] = []
 
-
   result = fields.map((f)=>{
     return{
       field:f.key,
@@ -769,6 +768,7 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
 
 
 export const getActionName = (id:number):DraftActionType=>{
+  console.debug(id)
   if(id===1)return {id:1,label:'add',value:'add'}
   if(id===2)return {id:2,label:'view-modify',value:'modify'}
   if(id===3)return {id:3,label:'delete',value:'remove'}
@@ -784,6 +784,7 @@ export const getActionId = (actionName:string):DraftActionType=>{
 
 
 export const createMastersStateFromDraftData = (draftData:any[],fields:Master[]):MDMMasterState[]=>{
+
   const masters:MDMMasterState[] = []
   draftData.map((master)=>{
     const existingMaster = fields.find((m:Master)=>m.id==master.MasterId)
@@ -791,9 +792,15 @@ export const createMastersStateFromDraftData = (draftData:any[],fields:Master[])
     masters.push({
       id:existingMaster.id,
       name:existingMaster.name,
-      colDefs:master.GridState.length>0?JSON.parse(master.GridState):[],
+      colDefs:master.GridState.length>0?JSON.parse(master.GridState):mapMasterToColumnDefs(existingMaster.fields,existingMaster.id),
       rowData:master.DataMaster || [],
-      filters:[],
+      filters:[{
+        id:generateRandomId(),
+        masterId:existingMaster.id,
+        field:'',
+        operator:'',
+        text:''
+      }],
       progress:master.Status,
       fields:existingMaster.fields
     })
