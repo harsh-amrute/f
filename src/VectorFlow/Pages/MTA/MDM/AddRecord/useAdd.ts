@@ -16,9 +16,6 @@ const useAdd=()=>{
 
     const isSelectMasterOpen = useSelector((state:RootState)=>state.mdm.isSelectMasterOpen)
 
-
-    console.debug(isSelectMasterOpen)
-
     const onCancel=()=>{
         dispatch(RESET_STATE());
         navigate('/master-data-management/control-panel');
@@ -59,8 +56,13 @@ const useAdd=()=>{
         dispatch(UPDATE_ACTIVE_MASTER(0));
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
         console.log(activeMaster.rowData.length)
-        if(activeMaster.rowData.length<=0)dispatch(TOGGLE_UPLOAD_MODAL(true))
-        dispatch(UPDATE_PROGRESS_STATE('view'))
+        
+        if(activeMaster.progress==='default' || activeMaster.progress==='view'){
+            if(activeMaster.rowData.length<=0)dispatch(TOGGLE_UPLOAD_MODAL(true))
+            dispatch(UPDATE_PROGRESS_STATE('view'))
+            return 
+        }
+
     }
     
 

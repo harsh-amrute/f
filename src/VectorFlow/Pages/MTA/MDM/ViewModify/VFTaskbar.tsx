@@ -9,6 +9,7 @@ import { ViewModifyProgressState } from "../../../../../VectorFlow/types/MDM"
 export interface VFTaskBarProps{
     masterProgress:ViewModifyProgressState
     editOnline?:boolean
+    deleteOnline?:boolean
     onReset:()=>void
     onBack:()=>void
     onExportData:()=>void
@@ -22,6 +23,11 @@ export interface VFTaskBarProps{
     onSeasonalityResume:()=>void
     onSeasonalityStop:()=>void
     onPhaseInPhaseOutStop:()=>void
+    onDeleteOnline:()=>void
+    onDeleteOnlineReset:()=>void
+    onDeleteOnlineSave:()=>void
+    onDeleteOnlineSubmit:()=>void
+    onDeleteData:()=>void
 }
 
 
@@ -30,6 +36,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
     const{
         masterProgress,
         editOnline ,
+        deleteOnline,
         onBack,
         onExportData,
         onModifyData,
@@ -41,7 +48,12 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         onSaveToDraft,
         onDeleteSelected,
         onSeasonalityResume,
-        onSeasonalityStop
+        onSeasonalityStop,
+        onDeleteOnline,
+        onDeleteOnlineSubmit,
+        onDeleteOnlineReset,
+        onDeleteOnlineSave,
+        onDeleteData
     } = props
 
     const {user} = useUserData()
@@ -49,7 +61,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
 
     const getStepperState = ():StepItem[]=>{
         switch(masterProgress){
-            case "uploaded":
+            case "uploaded" || "deleteUploaded":
                 return [
                     {
                         label:'File Uploaded',
@@ -112,6 +124,60 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     }
                 ]
             case "editOnlineSubmitted":
+                return [
+                    {
+                         label:'Edit Online',
+                        status:'completed',
+                        description:''
+                    },
+                    {
+                        label:'Save',
+                        status:'completed',
+                        description:''
+                    },
+                    {
+                        label:"Submit",
+                        status:"completed",
+                        description:""
+                    }
+                ]
+            case "deleteOnline":
+                return [
+                    {
+                         label:'Delete Online',
+                        status:'completed',
+                        description:''
+                    },
+                    {
+                        label:'Save',
+                        status:'pending',
+                        description:''
+                    },
+                    {
+                        label:"Submit",
+                        status:"pending",
+                        description:""
+                    }
+                ]
+             case "deleteOnlineSaved":
+                return [
+                    {
+                         label:'Delete Online',
+                        status:'completed',
+                        description:''
+                    },
+                    {
+                        label:'Save',
+                        status:'completed',
+                        description:''
+                    },
+                    {
+                        label:"Submit",
+                        status:"pending",
+                        description:""
+                    }
+                ]
+            case "deleteOnlineSubmitted":
                 return [
                     {
                          label:'Edit Online',
@@ -318,6 +384,99 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <BackButton/>
                    <VFButton themeUi={themeUi} onClick={onSeasonalityStop}>
                         Stop Selected
+                    </VFButton>
+                </TaskBarContainer>
+            )
+        case 'deleteView':
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row'}}>
+                    <BackButton/>
+                   <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnline} disabled={!deleteOnline}>  
+                        Delete Online
+                   </VFButtonOutline >
+                   <VFButtonOutline themeUi={themeUi} onClick={onDeleteData} disabled={deleteOnline}>
+                        Delete Data
+                    </VFButtonOutline>
+                </TaskBarContainer>
+            )
+        case 'deleteOnline':
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row'}}>
+                    <BackButton/>
+                   <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnlineReset}>  
+                       Reset
+                   </VFButtonOutline >
+                   <VFButton themeUi={themeUi} onClick={onDeleteOnlineSave}>
+                        Save
+                    </VFButton>
+                    <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnlineSubmit} disabled>  
+                       Submit
+                   </VFButtonOutline >
+                   <div style={{
+                        flex:4,
+                        height:'100%',
+                        width:'100%'
+                    }}>
+                    </div>
+                    <div style={{width:'200px',flex:2}}>
+                        <VFStepper
+                            items={getStepperState()}
+                        />
+                    </div>
+                </TaskBarContainer>
+            )
+         case "deleteOnlineSaved":
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row'}}>
+                    <BackButton/>
+                    <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnlineReset}>
+                        Reset
+                    </VFButtonOutline>
+                    <VFButton themeUi={themeUi} onClick={onDeleteOnlineSubmit}>
+                        Submit
+                    </VFButton>
+                    <div style={{
+                        flex:5,
+                        height:'100%',
+                        width:'100%'
+                    }}>
+                    </div>
+                    <div style={{width:'200px',flex:2}}>
+                        <VFStepper
+                            items={getStepperState()}
+                        />
+                    </div>
+                </TaskBarContainer>
+            )
+         case "deleteOnlineSubmitted":
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row'}}>
+                    <BackButton/>
+                    <div style={{
+                        // flex:7,
+                        height:'100%',
+                        width:'100%'
+                    }}>
+                    </div>
+                    <div style={{width:'200px',flex:2}}>
+                        <VFStepper
+                            items={getStepperState()}
+                        />
+                    </div>
+                </TaskBarContainer>
+            )
+         case 'deleteUploaded':
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row'}}>
+                    <BackButton/>
+                   <VFButtonOutline themeUi={themeUi} onClick={onDeleteSelected}>  
+                        Remove Selected
+                   </VFButtonOutline >
+                   <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
+                       Save to draft
+                    </VFButtonOutline>
+                   <VFButton themeUi={themeUi} onClick={onSubmit}>
+                        Delete All
                     </VFButton>
                 </TaskBarContainer>
             )

@@ -94,3 +94,9 @@ export const useGetTasKDetailDownloadData = ()=>{
     return await MDMService.getTaskDetailsDownloadData(body)
   })
 }
+
+export const useRemoveMasterData = ()=>{
+  return useMutation(async(body:any)=>{
+    return await MDMService.removeMasterData(body)
+  })
+}

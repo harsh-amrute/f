@@ -107,12 +107,13 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
                     <VFMasterGroupCardHeaderText> 
                         <p>{masterGroup.name}</p>
                     </VFMasterGroupCardHeaderText>
-                        {allMasters.map((currentMaster)=>{
+                       
+                </VFMasterGroupCardHeader>
+                {allMasters.map((currentMaster)=>{
                             if(masterGroup.masters.includes(currentMaster.id.toString())){
                             return(
                             <Card master={currentMaster} handleOnClickMaster={handleOnClickMaster} selectedMasters={selectedMasters}/>
-                        )}})}
-                </VFMasterGroupCardHeader> 
+                        )}})} 
             </VFMasterGroupCard>
                     )
             })

@@ -425,66 +425,11 @@ export const MasterData:MDMMasterState[] = [
     recordCount: null,
     data: [
         {
+            ActionType:2,
             DraftId: "1121423100749",
             Masters: " SKU",
             userid: "1",
             LastModifiedDateTime: "2023-12-14T10:07:49",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121123170712",
-            Masters: "SKU LOCATION SKULOCATION SOB",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-11T17:07:12",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121323163008",
-            Masters: " SKU Location SKU Location",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-13T16:30:08",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121323164406",
-            Masters: " SKU Location SKU Location",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-13T16:44:06",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121323165317",
-            Masters: " Location",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-13T16:53:17",
-            SearchKeys: "Location"
-        },
-        {
-            DraftId: "1121423102937",
-            Masters: " SKU",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-14T10:29:37",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121423103009",
-            Masters: " SKU",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-14T10:30:09",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121423103032",
-            Masters: " SKU",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-14T10:30:32",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121423104141",
-            Masters: " SKU",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-14T10:41:41",
             SearchKeys: "SKU"
         }
     ],
