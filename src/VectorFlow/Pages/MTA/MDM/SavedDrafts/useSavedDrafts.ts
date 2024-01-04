@@ -36,7 +36,6 @@ const useSavedDrafts = ()=>{
 
         const mastersData= await getMasterUIConfiguration(getActionName(draftDetails.ActionType).value)
 
-
         const fields = mastersData.data.data
         const masterState = createMastersStateFromDraftData(draftData.data.data,fields)
         const activeMaster = masterState.find((m:MDMMasterState)=>m.progress!=='submitted')
