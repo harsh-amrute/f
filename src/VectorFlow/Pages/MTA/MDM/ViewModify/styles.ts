@@ -283,3 +283,28 @@ export const SeasonalityQuickFilterText = styled.p`
     z-index:100;
     transition:0.1s ease-out;
 `
+
+export const SubmitDataTextContainer = styled.div`
+font-style:normal;
+font-variant:normal;
+font-weight:400;
+font-size:22px;
+line-height:25px;
+font-family:Roboto;
+color: #000000;
+opacity: 1;
+dispay:flex;
+text-align:center;
+justify-content:center;
+margin-top:42px;
+margin-bottom:44px;
+`
+
+export const SubmitDataButtonWrapper = styled.div`
+margin-bottom:87px;
+margin-left:192px;
+margin-right:189px;
+display:flex;
+flex-direction:row;
+gap:28px;
+`
