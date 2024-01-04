@@ -3,6 +3,7 @@ import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/S
 import useDelete from "./useDelete";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import { notifySuccess } from "../../../../../helpers/notify";
+import SubmitConflictModal from "../ViewModify/SubmitConflictModal";
 
 
 
@@ -21,7 +22,8 @@ const DeleteRecord = () => {
     }
 
     return(
-        
+        <>
+        <SubmitConflictModal totalCount={20} modificationCount={4} recordCount={16} onCloseModal={()=>(console.log(''))} onFailure={()=>(console.log(''))} onSuccess={()=>(console.log(''))}></SubmitConflictModal>
         <SelectGroupedMasters  
             onSubmit={()=>notifySuccess('Submitted')} //console.log
             onCancel={onCancel}
@@ -30,7 +32,7 @@ const DeleteRecord = () => {
             selectedMasters={selectedMasters}
             text={'delete'}
         /> 
-        
+        </>
         
     )  
 }

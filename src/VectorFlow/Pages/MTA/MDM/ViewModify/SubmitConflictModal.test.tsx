@@ -1,17 +1,19 @@
 import { screen, render, fireEvent } from "@testing-library/react"
-import SubmitDataModal from "./SubmitDataModal"
+import SubmitConflictModal from "./SubmitConflictModal"
 import { UserDataContext } from "../../../../../context"
 
 const mockFunction = jest.fn()
 
 const dummyprops = {
-  count:10,
+  totalCount:10,
+  recordCount:10,
+  modificationCount:10,
   onSuccess:mockFunction,
   onFailure:mockFunction,
   onCloseModal:mockFunction
 }
 
-describe("SubmitDataModal Component", () => {
+describe("SubmitConflictModal Component", () => {
     global.ResizeObserver = class MockedResizeObserver {
         observe = jest.fn();
         unobserve = jest.fn();
@@ -19,7 +21,7 @@ describe("SubmitDataModal Component", () => {
       };
     beforeEach(() => {
         render( <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
-            <SubmitDataModal {...dummyprops} />
+            <SubmitConflictModal {...dummyprops} />
             </UserDataContext.Provider>)
         })
     
@@ -30,12 +32,12 @@ describe("SubmitDataModal Component", () => {
         // })
         
         it("renders and fire event on buttons",()=>{
-        const yesbtn=screen.getByText("Yes")
-        const nobtn=screen.getByText("No")
+        const yesbtn=screen.getByText("Review")
+        const nobtn=screen.getByText("Ignore & Submit")
         expect(yesbtn).toBeInTheDocument()
-        fireEvent.click(screen.getByText("Yes"))
+        fireEvent.click(screen.getByText("Review"))
         expect(nobtn).toBeInTheDocument()
-        fireEvent.click(screen.getByText("No"))
+        fireEvent.click(screen.getByText("Ignore & Submit"))
         })
 
         it("renders close icon",()=>{

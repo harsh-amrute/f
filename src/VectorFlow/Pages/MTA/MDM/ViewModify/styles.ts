@@ -293,8 +293,9 @@ line-height:25px;
 font-family:Roboto;
 color: #000000;
 opacity: 1;
-margin-right:129px;
-margin-left:124px;
+dispay:flex;
+text-align:center;
+justify-content:center;
 margin-top:42px;
 margin-bottom:44px;
 `
