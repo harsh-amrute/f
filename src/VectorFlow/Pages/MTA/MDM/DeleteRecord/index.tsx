@@ -4,7 +4,6 @@ import useDelete from "./useDelete";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import { notifySuccess } from "../../../../../helpers/notify";
 
-
 const DeleteRecord = () => {
     const {
         isDeleteRecordsLoading,
