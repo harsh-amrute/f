@@ -2,7 +2,7 @@ import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
 import { useGetMasterUIConfiguration, useGetPendingTasks, useGetTaskDetails } from "../../../../../VectorFlow/Services/MTA/MDM"
 
-import { getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
+import { getActionName, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master } from "../../../../../VectorFlow/types/MDM"
 import TaskPendingLinkCellRenderer from "./TaskPendingLinkCellRenderer"
 
@@ -26,25 +26,24 @@ const useTaskPendingForReview = ()=>{
 
     const showLoader = isLoading || isMasterUiConfigurationLoading || isViewTableLoading
 
-    const handleOnClick = async(taskId:string)=>{
-        console.log(taskId)
+    const handleOnClick = async(taskData:any)=>{
         setIsViewTableOpen(false)
-      const response = await getTaskDetails('1_202312061821491222')
+      const response = await getTaskDetails(taskData.TaskID)
       const currentTaskMaster = response.data.data[0]
-      const currentTaskMasterid:number = currentTaskMaster.MasterId
+      const currentTaskMasterId:number = currentTaskMaster.MasterId
       setRecordCount(currentTaskMaster.data.length)
       setDetailTableRowData(response.data.data)
       
-      const uiConfigurationResponse = await getMasterUIConfiguration('add')
+      const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value)
       
       const masters:Master[] = uiConfigurationResponse.data.data
-      const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterid)?.fields
+      const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
       
       if(currentMasterFields){
-        const existingColumns = getExistingColumns(currentTaskMaster.data)
+        const existingColumns = getExistingColumns(taskData.Actiontype==2?JSON.parse(currentTaskMaster.data[0].new):currentTaskMaster.data[0])
         const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
-        setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,'add'))
-        setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,'modify'))
+        setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,getActionName(taskData.Actiontype).value))
+        setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
         
       }
     }
