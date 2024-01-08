@@ -518,6 +518,7 @@ const useViewModify = (pageType:string) => {
             dispatch(UPDATE_PROGRESS_STATE('uploaded'));
             addCheckBoxColDefs();
           }
+          setRecordCount(result.length)
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           dispatch(TOGGLE_UPLOAD_MODAL(false))
