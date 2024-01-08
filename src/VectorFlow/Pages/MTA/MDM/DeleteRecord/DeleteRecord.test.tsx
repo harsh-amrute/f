@@ -7,7 +7,7 @@ import { QueryClientProvider } from "@tanstack/react-query"
 import { BrowserRouter as Router } from "react-router-dom"
 import { Provider } from "react-redux"
 import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useRemoveMasterData } from "../../../../../VectorFlow/Services/MTA/MDM";
-import { getMasterUIConfigurationMockData ,createDraftMockData,MasterData, MasterDataWithSubmittedMaster,getSeasonalityDetailsMockData} from "../../../../../mock-data/MDM";
+import { getMasterUIConfigurationMockData ,createDraftMockData,MasterData, MasterDataWithSubmittedMaster,getSeasonalityDetailsMockData, mockMasterData} from "../../../../../mock-data/MDM";
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
 import {mapMasterToColumnDefs} from '../../../../../helpers/utils'
 import DeleteRecord from ".";
@@ -88,75 +88,6 @@ const useRemoveMasterDataMockData:any = {
       return {data:createDraftMockData}
     }
   }
-
-const mockMasterData: any = {
-  recordCount: 345,
-  data: [
-    {
-      SKUSrNo: 1,
-      SKUCode: "Q1231231DE12",
-      SKUName: "Text Description",
-      SKUAttr1: "ABC",
-      SKUAttr2: "Group A",
-      SKUAttr3: "PTH",
-      SKUAttr4: 50,
-      SKUAttr5: "Arrow New",
-      SKUAttr6: "Red",
-      SKUAttr7: 25,
-      SKUAttr8: "mm",
-      SKUAttr9: 35,
-      SKUAttr10: "ABC",
-      SKUAttr11: "SubCategory",
-      SKUAttr12: "2022-11-08",
-      SKUAttr13: "Dymmy Value",
-      SKUAttr14: "ABC Group",
-      SKUAttr15: "Dummy Value",
-      SKUAttr16: "mm",
-    },
-    {
-      SKUSrNo: 2,
-      SKUCode: "Q1231231FG34",
-      SKUName: "Text Description",
-      SKUAttr1: "ABC",
-      SKUAttr2: "Group A",
-      SKUAttr3: "PTH",
-      SKUAttr4: 50,
-      SKUAttr5: "Arrow New",
-      SKUAttr6: "Red",
-      SKUAttr7: 25,
-      SKUAttr8: "mm",
-      SKUAttr9: 35,
-      SKUAttr10: "ABC",
-      SKUAttr11: "SubCategory",
-      SKUAttr12: "2022-11-08",
-      SKUAttr13: "Dymmy Value",
-      SKUAttr14: "ABC Group",
-      SKUAttr15: "Dummy Value",
-      SKUAttr16: "mm",
-    },
-    {
-      SKUSrNo: 3,
-      SKUCode: "Q1231231FG34",
-      SKUName: "Text Description",
-      SKUAttr1: "ABC",
-      SKUAttr2: "Group A",
-      SKUAttr3: "PTH",
-      SKUAttr4: 50,
-      SKUAttr5: "Arrow New",
-      SKUAttr6: "Red",
-      SKUAttr7: 25,
-      SKUAttr8: "mm",
-      SKUAttr9: 35,
-      SKUAttr10: "ABC",
-      SKUAttr11: "SubCategory",
-      SKUAttr12: "2022-11-08",
-      SKUAttr13: "Dymmy Value",
-      SKUAttr14: "ABC Group",
-      SKUAttr15: "Dummy Value",
-      SKUAttr16: "mm",
-    },
-  ],
-};
 
 
 const queryClient = setupReactQuery()
@@ -387,6 +318,25 @@ describe("Handles all custom redux interactions",()=>{
     render(contextWrapper(<DeleteRecord/>,mockedStore))
     const clickableElement = screen.getAllByTestId('tab-close')[0]
     fireEvent.click(clickableElement)
+   })
+
+   it('handles Delete Online Save',()=>{
+    const mockState:MDMStore = {
+      allMasters:MasterDataWithSubmittedMaster,
+      masters:MasterDataWithSubmittedMaster,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'deleteOnline',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:mockMasterData.data},
+      isSelectMasterOpen:false,
+      draftId:'',
+      isUploadModalOpen:false
+    }
+
+    const mockedStore = createStore(mockState)
+
+    render(contextWrapper(<DeleteRecord/>,mockedStore))
+    
+    fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
    })
 })
 
