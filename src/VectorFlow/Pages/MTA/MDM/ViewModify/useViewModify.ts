@@ -40,7 +40,6 @@ const useViewModify = (pageType:string) => {
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
     const [colDefs,setColDefs] = useState<ColDef[]>([]); 
     const [isUploadButtonDisabled,setIsUploadButtonDisabled] = useState<boolean>(true);
-    const [showAll,setShowAll] = useState(false) //Flag to identify if the query is an show all query as we need that param in WarningModal Succes Handler P.S- Plz Optimize if you get time
     const [chartData,setChartData] = useState<object>();
     const [isSeasonalityChartModalOpen,toggleSeasonalityChartModal] = useState<boolean>(false);
     const [normChangeData,setNormChangeData] = useState<any>([]);
@@ -293,11 +292,37 @@ const useViewModify = (pageType:string) => {
     }
 
     const queryFilteredData = async (configs:QueryFilteredDataConfigs) => {
-      const {filters,showAll,pagination,fields,count,currentPage} = configs;
+      const {filters,pagination,fields,count,currentPage} = configs;
       const payload:GetMasterDataPayload = {
         id:activeMaster.id,
         name:activeMaster.name,
-        filters:showAll ? [] : filters,
+        filters:filters,
+        fields:fields,
+      }
+
+      if(pagination && !count) {
+        payload.paginationParameter = {
+          pageNumber:currentPage,
+          recordsPerPage:rowsPerPage
+        }
+      }
+      let resultData;
+      if(count){
+        resultData =  await getCount(payload);
+      }
+      else{
+        resultData = await getMasterData(payload); 
+      }
+
+      return resultData;
+    }
+
+    const queryAllData = async (configs:QueryFilteredDataConfigs) => {
+      const {pagination,fields,count,currentPage} = configs;
+      const payload:GetMasterDataPayload = {
+        id:activeMaster.id,
+        name:activeMaster.name,
+        filters:[],
         fields:fields,
       }
 
@@ -412,8 +437,6 @@ const useViewModify = (pageType:string) => {
     }
 
     const handleApplyFilter =async (showAll?:boolean) => {
-      if(showAll) setShowAll(showAll);
-      else setShowAll(false);
       if(downloadData) setDownloadData(false)
       const currMasterFilters = activeMaster.filters;
       if(!areMasterFiltersValid(currMasterFilters) && !showAll){
@@ -425,8 +448,14 @@ const useViewModify = (pageType:string) => {
 
       setIsTableDataLoading(true);
 
-      const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:false,count:true});
-      
+      let result;
+      if(showAll){
+        result = await queryAllData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true});
+      }
+      else{
+        result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true});
+      }
+
       setIsTableDataLoading(false);
       setRecordCount(result.data.recordCount)
       toggleWarningModal(true);    
@@ -445,15 +474,25 @@ const useViewModify = (pageType:string) => {
       const payloadFields:any = getCurrentVisbileColumns();
       
       setIsTableDataLoading(true);
+      let result:any;
 
-      const result:any = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true,currentPage:1}),{
-        success:"Data Fetched Successfully",
-        error:"Something Went Wrong",
-        pending:"Loading Data"
-      }); 
+      if(!areMasterFiltersValid(currMasterFilters) && activeMaster.filters.length === 1){
+        result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1}),{
+          success:"Data Fetched Successfully",
+          error:"Something Went Wrong",
+          pending:"Loading Data"
+        }); 
+      }
+      else{
+        result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1}),{
+          success:"Data Fetched Successfully",
+          error:"Something Went Wrong",
+          pending:"Loading Data"
+        }); 
+      }
+      
       if(result.data.recordCount <= rowsPerPage){
         toggleEditOnline(true);
-        setShowAll(false); //setting to false in this if bcz we need this in flag true while handling server side pagination
       }
       else{
         toggleEditOnline(false);
@@ -463,13 +502,11 @@ const useViewModify = (pageType:string) => {
         setIsTableDataLoading(false);
         if(result.data.recordCount == 0){
           toggleWarningModal(false);
-          setShowAll(false);
           return;
         }
        
         dispatch(UPDATE_ROW_DATA(result.data.data));
         toggleWarningModal(false);
-        setShowAll(false);
         if(pageType==='remove'){
            dispatch(UPDATE_PROGRESS_STATE('deleteView'));
         }
@@ -518,6 +555,7 @@ const useViewModify = (pageType:string) => {
             dispatch(UPDATE_PROGRESS_STATE('uploaded'));
             addCheckBoxColDefs();
           }
+          setRecordCount(result.length)
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           dispatch(TOGGLE_UPLOAD_MODAL(false))
@@ -595,7 +633,14 @@ const useViewModify = (pageType:string) => {
         
         const payloadFilters = mapStateFiltersToPayload(activeMaster.filters);
         const payloadFields:any = getCurrentVisbileColumns();
-        const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true,currentPage:pageNo});
+        let result;
+        if(!areMasterFiltersValid(activeMaster.filters) && activeMaster.filters.length === 1){
+          result = await queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo});
+        }
+        else{
+          result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo});
+        }
+        
         dispatch(UPDATE_ROW_DATA(result.data.data));
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         setIsTableDataLoading(false)

@@ -13,6 +13,7 @@ import { SCContainer } from "../ViewModify/styles";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import UploadModal from "../ViewModify/UploadModal";
 import VFTaskBar from "../ViewModify/VFTaskbar";
+import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 
 import { useUserData } from "../../../../../context";
 import {getUploadModalRadioButtons } from "../../../../../helpers/utils";
@@ -45,6 +46,11 @@ const AddRecord = () => {
         tempAgGridProps,
         tempGridData,
         deleteSelected,
+        selectedRowsCount,
+        recordCount,
+        currentPage,
+        rowsPerPage,
+        handleChangePage,
         onSubmit,
         editOnline,
         onEditOnline,
@@ -122,7 +128,17 @@ const AddRecord = () => {
                   </div>
 
               </VFTab>
-              
+              {
+                (!['default'].includes(activeMaster.progress) && !isSelectMasterOpen) 
+                  && 
+                  <VFPagination 
+                    selectedRows={selectedRowsCount} 
+                    totalRows={recordCount} 
+                    currentPage={currentPage} 
+                    rowsPerPage={rowsPerPage} 
+                    handleChangePage={(e)=>handleChangePage(e)}  
+                  />
+              }
           </SCContainer>
           {isUploadModalOpen && 
           <UploadModal 
