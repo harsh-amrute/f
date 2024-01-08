@@ -10,7 +10,6 @@ export interface TaskStatusMasterDetailProps{
 }
 
 const getStepperState = (data:any):StepItem[]=>{
-    console.log(data)
     switch(data.TaskStatus){
         case "Pending":
             return [
@@ -79,7 +78,7 @@ const getStepperState = (data:any):StepItem[]=>{
                     description:data.DBUpdatedDate
                 }
             ]
-        case "Partially approved - DB Update Pending":
+        case "Partially Approved - DB update Pending":
             return [
                 {
                     label:"Submission",
@@ -142,7 +141,7 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
         data,
         onDownload
     } = props
-    const approvedStatuses = ["Approved","Partially approved - DB Update Pending","Approved - DB Update Pending","Approved - DB Updated"]
+    const approvedStatuses = ["Approved","Partially Approved - DB update Pending","Approved - DB Update Pending","Approved - DB Updated"]
     const {user} = useUserData()
     const {Approvers} = data
 
@@ -184,9 +183,9 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
 
     return (
         <VFTaskStatusWrapper data-testid="task-status-master-detail">
-            {Approvers.map((approver:any)=>{
+            {Approvers.map((approver:any,index:number)=>{
                 return(
-                    <VFTaskStatusContentWrapper>
+                    <VFTaskStatusContentWrapper key={index}>
                         <VFTaskStatusStepperWrapper gridFraction={gridFraction}>
                         <VFTaskStatusStepperLabel>{approver.Approver}</VFTaskStatusStepperLabel>
                             <VFStepper
