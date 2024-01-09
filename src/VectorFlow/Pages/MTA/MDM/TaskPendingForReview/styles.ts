@@ -37,7 +37,30 @@ export const LinkWrapper = styled.div`
     width:100%;
     height:100%;
 `
-
+export const RadioContainer = styled.div`
+    display:flex;
+    justify-content: space-between;
+    align-items: center; 
+    gap:44px;
+`
+export const RadioButtonGroup = styled.div`
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 21px; 
+    font-family:Roboto;
+    margin-bottom:57px;
+    accent-color:#BC3D81;
+    display:flex;
+    gap:12px;
+    margin-top:45px;
+`
+export const SubmitButtonWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-bottom:48px;
+`
 export const DeleteFileModalText=styled.div`
 text-align: left;
 margin-top:40px;

@@ -26,7 +26,6 @@ import { operators } from "../../../../../helpers/MDMConstants";
 
 
 
-
 const DeleteRecord = () => {
 
   const {user} = useUserData()
