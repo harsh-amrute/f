@@ -44,7 +44,7 @@ const Profile = () => {
     <>
       <SCProfileOverView>
         <SCProfilePad>
-          <SCProfileImg src="../assets/img/profile/profile.svg" />
+          <SCProfileImg src="/assets/img/profile/profile.svg" />
           <SCProfileName>{user?.user?.name}</SCProfileName>
         </SCProfilePad>
         <NavigationTab

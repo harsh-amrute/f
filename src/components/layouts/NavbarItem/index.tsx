@@ -119,7 +119,7 @@ const NavbarItem = ({
               <NavStyle.SCText themeUi={themeUi}>COMPONENTS</NavStyle.SCText>
             )}
             <NavStyle.SCIconMenu
-              src={`../assets/img/nav/icon_hide_menu${
+              src={`/assets/img/nav/icon_hide_menu${
                 themeUi === "REGALBLAZE" ? "_yellow" : ""
               }.svg`}
               alt="menu"

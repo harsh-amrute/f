@@ -95,7 +95,7 @@ const NavbarRight = ({
         <SCWrapTop>
           <SCTopText>{t('theme.chooseThemeColor')}</SCTopText>
           <SCClose onClick={handleClose}>
-            <SCIconClose src="../assets/img/navRight/icon_close.svg" />
+            <SCIconClose src="/assets/img/navRight/icon_close.svg" />
           </SCClose>
         </SCWrapTop>
         <SCWrapContent>

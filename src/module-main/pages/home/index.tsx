@@ -455,7 +455,7 @@ const Home = () => {
                   await onAction();
                 }}
               >
-                <img src="../assets/img/ist/White-Arrow.svg" alt="filter" />
+                <img src="/assets/img/ist/White-Arrow.svg" alt="filter" />
               </SCQuickActionButton>
             </SCQuickFilterBox>
 

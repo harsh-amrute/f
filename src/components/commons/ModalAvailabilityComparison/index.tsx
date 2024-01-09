@@ -69,7 +69,7 @@ const ModalAvailabilityComparison = ({
                   <Dialog.Panel className="modal-availability--block">
                     <Dialog.Title as="h3" className="modal-title-availability">
                       <img
-                        src="../assets/img/availability/download.svg"
+                        src="/assets/img/availability/download.svg"
                         className="download"
                       />
                       {modalTitle}
@@ -96,7 +96,7 @@ const ModalAvailabilityComparison = ({
                                     }}
                                   />
                                   <img
-                                    src="../assets/img/availability/black-arrow.svg"
+                                    src="/assets/img/availability/black-arrow.svg"
                                     alt="arrow"
                                   />
                                   <div className="item-panel-header-content">

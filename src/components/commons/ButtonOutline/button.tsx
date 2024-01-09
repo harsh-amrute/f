@@ -17,7 +17,7 @@ const ButtonOutlineStatus = ({
 }: ButtonOutline) => {
   return (
     <SCButtonOutlineNoIcon status={status} onClick={onChange} style={style} data-testid='button-outline-status'>
-      {icon ? <SCImgOutline src={`../assets/img/forced/${icon}.svg`} /> : ''}{' '}
+      {icon ? <SCImgOutline src={`/assets/img/forced/${icon}.svg`} /> : ''}{' '}
       {text}
     </SCButtonOutlineNoIcon>
   )

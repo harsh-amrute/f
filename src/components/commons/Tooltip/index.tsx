@@ -8,7 +8,7 @@ const Tooltip = () => {
     >
       <div className="custom-tooltip">
         <img
-          src="../assets/img/nav/btnTooltip.svg"
+          src="/assets/img/nav/btnTooltip.svg"
           alt="tooltip"
           style={{ padding: '5px' }}
         />

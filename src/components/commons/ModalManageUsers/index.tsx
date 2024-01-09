@@ -100,7 +100,7 @@ const ModalManageUsers = ({
                     <Dialog.Title as="h3" className="modal-user-title">
                       <span className="modal-title--left">
                         <img
-                          src="../assets/img/ist/avatar_contact.png"
+                          src="/assets/img/ist/avatar_contact.png"
                           className="modal-img-user"
                           alt="user"
                         />

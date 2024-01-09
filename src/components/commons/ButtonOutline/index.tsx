@@ -8,7 +8,7 @@ interface ButtonOutline {
 const ButtonOutline = ({ onChange, text, icon }: ButtonOutline) => {
   return (
     <SCButtonOutline icons={!icon} onClick={onChange}>
-      {icon ? <SCImgOutline src={`../assets/img/forced/${icon}.svg`} /> : ''}{' '}
+      {icon ? <SCImgOutline src={`/assets/img/forced/${icon}.svg`} /> : ''}{' '}
       {text}
     </SCButtonOutline>
   )

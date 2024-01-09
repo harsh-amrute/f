@@ -191,7 +191,7 @@ const Table = ({
       <Tab.SCTableBox key={idx} style={{ marginBottom: 30 }}>
         <Tab.SCTableInformation>
           <Tab.SCTableImages
-            src="../assets/img/defaulimg.jpg"
+            src="/assets/img/defaulimg.jpg"
             alt="logo"
             width={100}
           />
@@ -203,7 +203,7 @@ const Table = ({
                 {item?.product?.product_hierarchy_3}
               </Tab.SCTableStyleTextSpan>
               <Tab.SCTableStyleTextSpan>
-                {item?.product?.product_hierarchy_4} | <Tab.SCRupeeContainer><Tab.SCRupeeSign src="../assets/img/ist/rupee-icon.svg"/>{item?.product?.price}</Tab.SCRupeeContainer>
+                {item?.product?.product_hierarchy_4} | <Tab.SCRupeeContainer><Tab.SCRupeeSign src="/assets/img/ist/rupee-icon.svg"/>{item?.product?.price}</Tab.SCRupeeContainer>
               </Tab.SCTableStyleTextSpan>
             </Tab.SCTableStyleText>
           </Tab.SCTableStyle>
@@ -223,7 +223,7 @@ const Table = ({
               </Tab.SCTableItemName>
               <Tab.SCTableItemValue style={{display: "flex", alignItems: "center"}}>
                 <Tab.SCValuePvPA value={item?.product?.before_col}>{item?.product?.before_col}</Tab.SCValuePvPA>
-                <Tab.SCLargerSign src="../assets/img/ist/PvPA.svg" alt="PvPA" />
+                <Tab.SCLargerSign src="/assets/img/ist/PvPA.svg" alt="PvPA" />
                 <Tab.SCValuePvPA value={item?.product?.after_col}>{item?.product?.after_col}</Tab.SCValuePvPA>
               </Tab.SCTableItemValue>
             </Tab.SCTableItem>

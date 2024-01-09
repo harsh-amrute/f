@@ -22,7 +22,7 @@ const ButtonOutlineCheck = ({
         ? (
         <img
           style={{ paddingRight: 10 }}
-          src={`../assets/img/check/${icon}.svg`}
+          src={`/assets/img/check/${icon}.svg`}
         />
           )
         : (

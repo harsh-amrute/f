@@ -23,7 +23,7 @@ const ProductFilter = ({ ...props }: ProductProps) => {
   return (
     <SCProductFilter>
       <SCProductFilterHeader>
-        <SCProductFilterImg src="../assets/img/ist/filter.svg" alt="filter" />
+        <SCProductFilterImg src="/assets/img/ist/filter.svg" alt="filter" />
         <SCProductFilterText>{t('filter.product.title')}</SCProductFilterText>
       </SCProductFilterHeader>
       <SCProductBoxSelect>
@@ -46,7 +46,7 @@ const ProductFilter = ({ ...props }: ProductProps) => {
                 />
                 <SCIconDown
                   className="icon_location"
-                  src="../assets/img/down-icon.svg"
+                  src="/assets/img/down-icon.svg"
                   alt="location"
                 />
               </SCProductFilterFlex>

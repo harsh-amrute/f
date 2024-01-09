@@ -51,8 +51,8 @@ const NavbarTop = ({
             <SCLogo
               src={
                 colorTheme === "PUREELEGANCE"
-                  ? "../assets/img/header/VectorFlowLogoBlackNew.svg"
-                  : "../assets/img/header/VectorFlowLogoWhite.svg"
+                  ? "/assets/img/header/VectorFlowLogoBlackNew.svg"
+                  : "/assets/img/header/VectorFlowLogoWhite.svg"
               }
             />
           </SCWrapLogo>
@@ -67,23 +67,23 @@ const NavbarTop = ({
         </SCLeft>
         <SCRight>
           <SCImg
-            src={`../assets/img/header/${
+            src={`/assets/img/header/${
               colorTheme === "REGALBLAZE"
                 ? "notifications_yellow"
                 : "notifications_purple"
             }.svg`}
           />
           <SCImg
-            src="../assets/img/header/icon_theme_colors.svg"
+            src="/assets/img/header/icon_theme_colors.svg"
             onClick={openNavbarRight}
           />
           <SCImg
-            src="../assets/img/header/report-bug.svg"
+            src="/assets/img/header/report-bug.svg"
             onClick={openReportIssue}
           />
 
           <SCImgLink to="/profile">
-            <SCImg src="../assets/img/header/profile_new.svg" />
+            <SCImg src="/assets/img/header/profile_new.svg" />
           </SCImgLink>
           <SCTxt colorTheme={colorTheme}>{user?.user?.name}</SCTxt>
         </SCRight>

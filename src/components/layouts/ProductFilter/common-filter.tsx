@@ -56,7 +56,7 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
 
   const productFilter = [
     {
-      icon: '../assets/img/ist/target.svg',
+      icon: '/assets/img/ist/target.svg',
       placeholder: t('filter.product.placeholder.brand'),
       options: listBrand,
       value: brand,
@@ -64,7 +64,7 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
       top: 18
     },
     {
-      icon: '../assets/img/ist/target.svg',
+      icon: '/assets/img/ist/target.svg',
       placeholder: t('filter.product.placeholder.subBrand'),
       options: listSubBrand,
       value: subBrand,
@@ -72,28 +72,28 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
       top: 18
     },
     {
-      icon: '../assets/img/ist/option.svg',
+      icon: '/assets/img/ist/option.svg',
       placeholder: t('filter.product.placeholder.category'),
       options: listCategory,
       value: category,
       onChange: setCategory
     },
     {
-      icon: '../assets/img/ist/option.svg',
+      icon: '/assets/img/ist/option.svg',
       placeholder: t('filter.product.placeholder.style'),
       options: listStyle,
       value: style,
       onChange: setStyle
     },
     {
-      icon: '../assets/img/ist/margin.svg',
+      icon: '/assets/img/ist/margin.svg',
       placeholder: t('filter.product.placeholder.fit'),
       options: listFit,
       value: fit,
       onChange: setFit
     },
     {
-      icon: '../assets/img/ist/target.svg',
+      icon: '/assets/img/ist/target.svg',
       placeholder: t('filter.product.placeholder.launchPeriod'),
       options: listLaunchPeriod,
       value: launchPeriod,

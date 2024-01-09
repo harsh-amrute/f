@@ -91,7 +91,7 @@ const NavbarMenu = ({ setMenuItem, isHide }: any) => {
         })}
       </NavStyle.SCNavBox>
       <NavStyle.SCNavLogout onClick={handleLogout}>
-        <NavStyle.SCIconLogout src="../assets/img/nav/logout.png" alt="logo" />
+        <NavStyle.SCIconLogout src="/assets/img/nav/logout.png" alt="logo" />
       </NavStyle.SCNavLogout>
     </NavStyle.SCGridNav>
   );

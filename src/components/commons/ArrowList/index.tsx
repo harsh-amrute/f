@@ -40,7 +40,7 @@ const ArrowList = ({ listData, setListData, infoUser, setInfoUser }: any) => {
                 <div className="role-item--title">{t(item.title)}</div>
                 {item.child.length > 0 && (
                   <div className={`${item.status ? 'action-down-up' : ''}`}>
-                    <img src={'../assets/img/down-icon.svg'} alt="icon" />
+                    <img src={'/assets/img/down-icon.svg'} alt="icon" />
                   </div>
                 )}
               </div>

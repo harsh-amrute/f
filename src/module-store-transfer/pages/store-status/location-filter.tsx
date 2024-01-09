@@ -64,7 +64,7 @@ export default forwardRef((props, ref) => {
 
   const locationFilter = [
     {
-      icon: "../assets/img/ist/target.svg",
+      icon: "/assets/img/ist/target.svg",
       placeholder: t("filter.location.placeholder.storeStatus.brand"),
       options: listMapBrand,
       value: valueFilterBrand,

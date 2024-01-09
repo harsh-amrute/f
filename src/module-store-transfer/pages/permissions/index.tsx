@@ -95,7 +95,7 @@ const Permissions = ({ roles }: any) => {
                   key={index}
                   checkBorderBottom={roles.permission.length > 2}
                 >
-                  <SCIconChecked src="../assets/img/check/checked_black.svg" />
+                  <SCIconChecked src="/assets/img/check/checked_black.svg" />
                   <SCOverviewItemTitle>{item}</SCOverviewItemTitle>
                 </SCOverviewItem>
               ))}
