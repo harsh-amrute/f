@@ -10,8 +10,8 @@ import { UserDataContext } from "../../../../../context";
 import TaskStatus from ".";
 import { store } from "../../../../../redux/store/store";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { useGetTasKDetailDownloadData, useGetTaskStatusData } from "../../../../../VectorFlow/Services/MTA/MDM";
-import { getTaskDetailsDownloadDataMockData, getTaskStatusDataMockData } from "../../../../../mock-data/MDM";
+import { useGetTasKDetailDownloadData, useGetTaskStatusData,useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { getTaskDetailsDownloadDataMockData, getTaskStatusDataMockData,getMasterUIConfigurationMockData } from "../../../../../mock-data/MDM";
 
 jest.mock("../../../../Services/MTA/MDM");
 
@@ -31,6 +31,11 @@ const useGetTaskDetailDownloadDataMock = useGetTasKDetailDownloadData as jest.Mo
    typeof useGetTasKDetailDownloadData
 >
 
+const useGetMasterUIConfigurationMock = useGetMasterUIConfiguration as jest.MockedFunction<
+   typeof useGetMasterUIConfiguration
+>
+
+
 window.URL.createObjectURL = jest.fn();
 
 
@@ -40,6 +45,11 @@ const useGetTaskDetailDownloadDataMockData = {
     }
 } 
 
+const useGetMasterUIConfigurationMockData: any = {
+  mutateAsync: () => {
+    return { data: getMasterUIConfigurationMockData };
+  },
+};
 
 const queryClient = setupReactQuery();
 
@@ -82,6 +92,10 @@ describe("Handles all renders",()=>{
        useGetTaskStatusDataMock.mockImplementation(():any=>{
         return {data: {data:getTaskStatusDataMockData},isLoading:false} 
        })
+
+       useGetMasterUIConfigurationMock.mockImplementation(()=>{
+        return useGetMasterUIConfigurationMockData
+      })
    })
 
    afterEach(()=>{

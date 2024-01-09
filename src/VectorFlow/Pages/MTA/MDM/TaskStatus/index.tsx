@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react"
 
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 
-import {  getActionName, mapTaskStatusToColDefs,getExistingColumns,getExistingColumnFields,mapNewAndOldMasterRowDataToCustomRowData,mapMasterToColumnGroupDefs } from "../../../../../helpers/utils"
+import {  getActionName, mapTaskStatusToColDefs,getExistingColumns,getExistingColumnFields, mapMasterToTaskStatusColumnGroupDefs, mapTaskStatusDataToRowData } from "../../../../../helpers/utils"
 import TaskStatusMasterDetail from "./TaskStatusMasterDetail"
 import { useGetTasKDetailDownloadData, useGetTaskStatusData,useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
@@ -23,44 +23,42 @@ const TaskStatus = ()=>{
 
     const rowData = data?.data.data || []
     const [tempAgGridRowData,setTempAgridRowData] = useState<any>([])
+    const [currentMasterName,setCurrentMasterName] = useState<string>('')
     const [tempAgGridColDefs,setTempAgGridColDefs] = useState<ColDef[]>([])
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
     
     const tempAgGridProps:AgGridReactProps = {
         columnDefs:tempAgGridColDefs,
         onRowDataUpdated:(event)=>{
-          if(tempDownloadData)event.api.exportDataAsExcel({fileName:"downloadFileName" });
+          if(tempDownloadData)event.api.exportDataAsExcel({fileName:currentMasterName });
         }
       };
 
     const onDownloadTaskDetails = async(payload:any)=>{
-        console.log(payload)
         
        try{
-        const response = await getTaskDetailDownloadData(payload)
+        const actionName = getActionName(payload.Actiontype).value
+        const response = await getTaskDetailDownloadData({taskId:payload.TaskID,approverId:payload.ApproverId})
         const currentTaskMaster = response.data.data[0]
-        console.log(currentTaskMaster)
         const currentTaskMasterId:number = currentTaskMaster.MasterId
         
-        const uiConfigurationResponse = await getMasterUIConfiguration('add')
+        const uiConfigurationResponse = await getMasterUIConfiguration(actionName)
         
         const masters:Master[] = uiConfigurationResponse.data.data
-        const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
-        console.log(currentMasterFields)
+        const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)
        
         if(currentMasterFields){
+          setCurrentMasterName(currentMasterFields.name)
           const existingColumns = getExistingColumns(payload.Actiontype==2?JSON.parse(currentTaskMaster.data[0].new):currentTaskMaster.data[0])
-          const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
-          setTempAgGridColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,getActionName(payload.Actiontype).value))
-          setTempAgridRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(payload.Actiontype).value,currentTaskMasterId))
+          const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields.fields)
+          setTempAgGridColDefs(mapMasterToTaskStatusColumnGroupDefs(existingColumnFields,currentTaskMasterId,actionName))
+          setTempAgridRowData(mapTaskStatusDataToRowData(currentTaskMaster.data,existingColumnFields,actionName,currentTaskMasterId))
           setTempDownloadData(true)
-          setTempAgridRowData(['fas'])
         }
        }catch(error:any){
         notifyError(error.message)
        }
     }
-
     if(isLoading){
         return <VFLoader/>
     }

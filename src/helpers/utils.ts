@@ -5,7 +5,7 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
-import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs } from './MDMConstants';
+import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,addDays} from 'date-fns';
 
@@ -735,9 +735,69 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
   },...colDefs,...taskPendingCustomColDefs]
 }
 
+export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string):ColGroupDef[] | ColDef[]=>{
+  console.log(masterId)
+  const colDefs =  existingColumnsFields.map((f:Field)=>{
+
+
+    if(tasktype==="add"){
+      return{
+        headerName:f.displayName,
+        field:f.key,
+        colId:f.key,
+        hide:!f.visible,
+        ...defaultColDefs,
+        
+      }
+    }
+
+    if(tasktype==="remove"){
+      return{
+        headerName:f.displayName,
+        field:f.key,
+        colId:f.key,
+        hide:!f.visible,
+        ...defaultColDefs,
+        
+      }
+    }
+
+    return{
+      headerName:f.displayName,
+      field:f.key,
+      colId:f.key,
+      hide:!f.visible,
+      children:[
+        {
+          headerName:'New ' +f.displayName,
+          field:'New'+f.key,
+          colId:'New'+f.key,
+          cellStyle:{
+            "color":'#BC3D81',
+            "text-align":"center",
+            "border-left":"solid 1px #B9B9B9",
+          }
+        },
+        {
+          headerName:'Old ' +f.displayName,
+          field:'Old' +f.key,
+          colId:'Old'+f.key,
+          cellStyle:{
+            "text-align":"center",
+            "border-right":"solid 1px #B9B9B9"
+          }
+        }
+      ],
+      ...defaultColDefs,
+      
+    }
+  })
+
+  return [...colDefs,...taskStatusCustomColDefs]
+}
+
 
 export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string,masterId:number)=>{
-  // console.log(JSON.parse("{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls\",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}"))
   return dirtyRowData.map(entry => {
 
     if(taskType==='modify'){
@@ -797,6 +857,63 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
         ...dataPrefixed,
         status:'',
         comments:''
+    };
+   
+});
+}
+
+export const mapTaskStatusDataToRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string,masterId:number)=>{
+  console.log(masterId)
+  return dirtyRowData.map(entry => {
+
+    if(taskType==='modify'){
+      const oldData = JSON.parse(entry.old);
+      const newData = JSON.parse(entry.new);
+      
+  
+      const oldDataPrefixed:any = {};
+      const newDataPrefixed:any = {};
+  
+  
+      existingColumnFields.map((f:Field)=>{
+
+
+        oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
+        newDataPrefixed[`New${f.key}`] = newData[f.key]
+        newDataPrefixed['status'] = oldData['Status']
+        newDataPrefixed['comments'] = oldData['Comments']
+       
+      })
+      return {
+          ...oldDataPrefixed,
+          ...newDataPrefixed
+      };
+    }
+    const data = entry;
+    
+
+    const dataPrefixed:any = {};
+
+
+
+    existingColumnFields.map((f:Field)=>{
+      dataPrefixed['status'] = data['Status']
+      dataPrefixed['comments'] = data['Comments']
+      
+      if(taskType==='add'){
+ 
+        dataPrefixed[f.key] = data[f.key]
+       
+       
+      }
+      else{
+       
+        dataPrefixed[f.key] = data[f.key]
+       
+      }
+    })
+    return {
+        ...dataPrefixed
     };
    
 });
