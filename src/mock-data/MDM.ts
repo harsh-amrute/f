@@ -1029,7 +1029,7 @@ export const getTaskStatusDataMockData = {
                   TaskName: "M_LOC",
                   Approver: "Approver1",
                   Requester: "Admin",
-                  TaskStatus: "Pending",
+                  TaskStatus: "Partially Approved - DB update Pending",
                   ApproverId: "1"
               },
               {
@@ -1038,7 +1038,7 @@ export const getTaskStatusDataMockData = {
                   TaskName: "M_LOC",
                   Approver: "Approver2",
                   Requester: "Admin",
-                  TaskStatus: "Pending",
+                  TaskStatus: "Approved - DB Update Pending",
                   ApproverId: "NA"
               }
           ]
@@ -1056,7 +1056,7 @@ export const getTaskStatusDataMockData = {
                   PendingSince: "2023-12-07T11:36:24.930",
                   TaskName: "M_LOC",
                   Requester: "Admin",
-                  TaskStatus: "Pending",
+                  TaskStatus: "Approved",
                   ApproverId: "NA"
               },
               {

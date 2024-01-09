@@ -10,7 +10,6 @@ export interface TaskStatusMasterDetailProps{
 }
 
 const getStepperState = (data:any):StepItem[]=>{
-    console.log(data)
     switch(data.TaskStatus){
         case "Pending":
             return [
@@ -79,7 +78,7 @@ const getStepperState = (data:any):StepItem[]=>{
                     description:data.DBUpdatedDate
                 }
             ]
-        case "Partially approved - DB Update Pending":
+        case "Partially Approved - DB update Pending":
             return [
                 {
                     label:"Submission",
@@ -142,7 +141,7 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
         data,
         onDownload
     } = props
-    const approvedStatuses = ["Approved","Partially approved - DB Update Pending","Approved - DB Update Pending","Approved - DB Updated"]
+    const approvedStatuses = ["Approved","Partially Approved - DB update Pending","Approved - DB Update Pending","Approved - DB Updated"]
     const {user} = useUserData()
     const {Approvers} = data
 
@@ -150,43 +149,13 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
         return approvedStatuses.includes(status)
     }
     const gridFraction ="1fr 4fr 1fr"
-    
 
-    // const individualGridFraction ="5fr 1fr"
-
-    // if(!Approvers){
-    //     return(
-    //         <VFTaskStatusWrapper data-testid="task-status-master-detail">
-    //             <VFTaskStatusContentWrapper>
-    //                 <VFTaskStatusStepperWrapper gridFraction={individualGridFraction}>
-    //                     <VFStepper
-    //                         items={getStepperState(data)}
-    //                         zoom={0.8}
-    //                         dashWidth="200px"
-    //                     />
-    //                     {showDisplayDownloadButton(data.TaskStatus) && (
-    //                         <VFButton 
-    //                             onClick={()=>{return}} 
-    //                             themeUi={user.user.theme_ui}
-    //                             width={167}
-    //                         >
-    //                             <VFTastStatusDownloadWrapper>
-    //                                 <img src="/assets/img/VectorFLOW/NMS/download-task-status.svg" height={25}/>
-    //                                 <p style={{marginLeft:10}}> Download</p>
-    //                             </VFTastStatusDownloadWrapper>
-    //                         </VFButton>
-    //                     )}
-    //                 </VFTaskStatusStepperWrapper>
-    //             </VFTaskStatusContentWrapper>
-    //         </VFTaskStatusWrapper>
-    //     )
-    // }
 
     return (
         <VFTaskStatusWrapper data-testid="task-status-master-detail">
-            {Approvers?.map((approver:any)=>{
+            {Approvers.map((approver:any,index:number)=>{
                 return(
-                    <VFTaskStatusContentWrapper>
+                    <VFTaskStatusContentWrapper key={index}>
                         <VFTaskStatusStepperWrapper gridFraction={gridFraction}>
                         <VFTaskStatusStepperLabel>{approver.Approver}</VFTaskStatusStepperLabel>
                             <VFStepper
@@ -196,7 +165,7 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
                             />
                             {showDisplayDownloadButton(approver.TaskStatus) && (
                                 <VFButton 
-                                    onClick={()=>onDownload({taskId:approver.TaskID,approverId:approver.ApproverId})} 
+                                    onClick={()=>onDownload(approver)} 
                                     themeUi={user.user.theme_ui}
                                     width={167}
                                 >

@@ -135,6 +135,32 @@ export const taskPendingCustomColDefs :any[] = [
     }
 ]
 
+export const taskStatusCustomColDefs :any[] = [
+    {
+        field:'comments',
+        colId:'comments',
+        headerName:'Comments',
+        cellStyle: {
+        "text-align": "center"
+        },
+        flex: 1,
+    },
+    {
+        field:'status',
+        colId:'status',
+        headerName:'Status',
+        cellStyle:{
+            "border-right":"solid 1px #B9B9B9",
+            "border-left":"solid 1px #B9B9B9",
+            "text-align":'center'
+        },
+        flex:1,
+        minWidth:100
+    },
+]
+
+
+
 export const seasonalityQuickFilterData:SeasonalityQuickFilterType[] = [
     {
         id:1,

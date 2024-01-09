@@ -55,10 +55,9 @@ const useAdd=()=>{
     const handleSubmitSelectMaster = ()=>{
         dispatch(UPDATE_ACTIVE_MASTER(0));
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
-        console.log(activeMaster.rowData.length)
         
-        if(activeMaster.progress==='default' || activeMaster.progress==='view'){
-            if(activeMaster.rowData.length<=0)dispatch(TOGGLE_UPLOAD_MODAL(true))
+        if(selectedMasters[0].progress==='default' || selectedMasters[0].progress==='view'){
+            if(selectedMasters[0].rowData.length<=0)dispatch(TOGGLE_UPLOAD_MODAL(true))
             dispatch(UPDATE_PROGRESS_STATE('view'))
             return 
         }
