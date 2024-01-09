@@ -184,7 +184,7 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
 
     return (
         <VFTaskStatusWrapper data-testid="task-status-master-detail">
-            {Approvers.map((approver:any)=>{
+            {Approvers?.map((approver:any)=>{
                 return(
                     <VFTaskStatusContentWrapper>
                         <VFTaskStatusStepperWrapper gridFraction={gridFraction}>

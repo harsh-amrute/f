@@ -3,6 +3,10 @@ import {TaskPendingActionRenderer} from '../VectorFlow/Pages/MTA/MDM/TaskPending
 import { LocationSchema, SKULocationSchema, SKUSchema, SOBSchema } from '../validators/schemas/MTA/MDM/index';
 import {type Option, type MasterIdToSchema, SeasonalityQuickFilterType} from '../VectorFlow/types/MDM';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
+import { SKUSchemaDelete } from '../validators/schemas/MTA/MDM/SKU';
+import { LocationSchemaDelete } from '../validators/schemas/MTA/MDM/Location';
+import { SKULocationSchemaDelete } from '../validators/schemas/MTA/MDM/SKULocation';
+import { SOBSchemaDelete } from '../validators/schemas/MTA/MDM/SOB';
 
 interface masterGroupMapperType {
     masters:string[],
@@ -62,6 +66,12 @@ export const masterIdToSchemaMapper:MasterIdToSchema = {
     '4':SOBSchema,
 }
 
+export const masterIdToDeleteSchemaMapper:MasterIdToSchema = {
+    '1':SKUSchemaDelete,
+    '2':LocationSchemaDelete,
+    '3':SKULocationSchemaDelete,
+    '4':SOBSchemaDelete
+}
 
 export const defaultColDefs:ColDef = {
     minWidth:180,
@@ -109,7 +119,8 @@ export const taskPendingCustomColDefs :any[] = [
         suppressSpanHeaderHeight: true,
         cellStyle:{
             "border-right":"solid 1px #B9B9B9",
-            "border-left":"solid 1px #B9B9B9"
+            "border-left":"solid 1px #B9B9B9",
+            "text-align":'center'
         },
         flex:1,
         minWidth:100
@@ -162,12 +173,12 @@ export const masterGroupMapper:masterGroupMapperType[] = [
     },
     {
       name:"SKU Location",
-      masters:['2','11','7']
+      masters:['2','11','7','13']
     },
     {
       name:"Plant/CCR",
       masters:[]
-    }
+    },
   ]
 
   export const ImageMapper:any={
@@ -176,7 +187,8 @@ export const masterGroupMapper:masterGroupMapperType[] = [
     '4':'/assets/img/VectorFLOW/NMS/AddRecords/sob-1.svg',
     '2':'/assets/img/VectorFLOW/NMS/AddRecords/location-1.svg',
     '11':'/assets/img/VectorFLOW/NMS/AddRecords/seasonality.svg',
-    '7':'/assets/img/VectorFLOW/NMS/AddRecords/phase-in-phase-out.svg'
+    '7':'/assets/img/VectorFLOW/NMS/AddRecords/phase-in-phase-out.svg',
+    '13':'/assets/img/VectorFLOW/NMS/AddRecords/invest-1.svg'
   
 }
 
@@ -186,5 +198,14 @@ export const ImageMapperHover:any={
     '4':'/assets/img/VectorFLOW/NMS/AddRecords/sob-1-hover.svg',  
     '2':'/assets/img/VectorFLOW/NMS/AddRecords/location-1-hover.svg' ,
     '11':'/assets/img/VectorFLOW/NMS/AddRecords/seasonality-hover.svg',
-    '7':'/assets/img/VectorFLOW/NMS/AddRecords/phase-in-phase-out-hover.svg'
+    '7':'/assets/img/VectorFLOW/NMS/AddRecords/phase-in-phase-out-hover.svg',
+    '13':'/assets/img/VectorFLOW/NMS/AddRecords/invest-1-hover.svg'
 }
+
+export const TaskPendingAvoidColumnsMapper:any ={
+    "1":["sc"],
+    "2":['wc'],
+    "3":['sc','wc'],
+    "4":['sk'],
+    "5":['sk']
+} 

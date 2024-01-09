@@ -6,6 +6,7 @@ import useTaskPendingForReview from "./useTaskPendingForReview"
 import TaskPendingTaskBar from "./TaskPendingTaskBar"
 import { TaskPendingWrapper } from "./styles"
 
+
 const TaskPendingForReview = ()=>{
 
     const {
@@ -77,6 +78,7 @@ const TaskPendingForReview = ()=>{
                 onSubmit={()=>console.log('')}
             />
         </TaskPendingWrapper>
+        
     )
 }
 

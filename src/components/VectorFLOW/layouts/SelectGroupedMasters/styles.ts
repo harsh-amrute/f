@@ -7,9 +7,9 @@ box-shadow: 0px 3px 6px #00000029;
 border: 1px solid #E0E0E0;
 border-radius: 8px;
 opacity: 1;
-height:980px;            //955
-//margin-left:25px;
-margin-bottom:10px;
+height:110vh;        //955
+margin-left:25px;
+margin-bottom:40px;
 `
 export const TextContainer=styled.div`
 //background-color:grey;
@@ -24,19 +24,23 @@ export const TextFilterWrapper=styled.div`
 padding:19px 25px 29px 25px ;
 `
 export const VFMasterGroupCard=styled.div`
-width: 450px;
-height: 786px;
+width: 440px;
+height: 586px;
+display:flex;
+flex-direction:column;
+align-items:center;
 background: #FFFFFF 0% 0% no-repeat padding-box;
 box-shadow: 0px 3px 6px #00000029;
 border-radius: 7px;
 opacity: 1;
 margin-left:30px;
+zoom:0.8;
 
 
 `  
 export const VFMasterGroupCardHeader= styled.div`
 height: 60px;
-width:450px;
+width:100%;
 background: #E3E3E3 0% 0% no-repeat padding-box;
 border-radius: 8px 8px 0px 0px;
 opacity: 1;
@@ -62,11 +66,9 @@ display: flex;
 gap: 25px;
 `
 export const VFMasterGroupCardContent=styled.div<{theme:any}>`
-width: 415px;
+width: 95%;
 height: 80px;
 margin-top:16px;
-margin-right:17px;
-margin-left:18px;
 background: #FFFFFF 0% 0% no-repeat padding-box;
 border: 1px solid #EBEBEB;
 border-radius: 7px;

@@ -10,3 +10,7 @@ export const SKUSchema = Joi.object({
     ...CommonSchema
 
 }).preferences(defaultJOIOptions)
+
+export const SKUSchemaDelete = Joi.object({
+    sc:Joi.string().empty().invalid(null).max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode'))
+}).preferences(defaultJOIOptions)

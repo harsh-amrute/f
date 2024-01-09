@@ -202,5 +202,50 @@ describe('Testing the MDMService',  () => {
       expect(response.status).toBe(200);
     });
 
+    it('should make post request to /RemoveMasterData', async () => {
+
+      mockedAxios.post.mockResolvedValueOnce({
+        "taskId": "",
+        "status": 500,
+        "msg": null,
+        "errordata": null,
+        "errorCount": null,
+        "error": null
+    });
+      const response = await MDMService.removeMasterData({
+        "id": 1,
+        "action": "remove",
+        "data": [
+            {
+                "sc": "AFADSH0554001",
+                "ec": null,
+                "c1": "AFADSH0554",
+                "c3": "8910000000000",
+                "c4": "PCS",
+                "c5": "2699",
+                "c6": "Arrow"
+            },
+        ]
+    })
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/RemoveMasterData`,JSON.stringify({
+        "id": 1,
+        "action": "remove",
+        "data": [
+            {
+                "sc": "AFADSH0554001",
+                "ec": null,
+                "c1": "AFADSH0554",
+                "c3": "8910000000000",
+                "c4": "PCS",
+                "c5": "2699",
+                "c6": "Arrow"
+            },
+        ]
+    }),{
+      headers: { 'Content-Type': 'application/json' }
+    })
+      expect(response.status).toBe(500);
+    });
+
 
   });

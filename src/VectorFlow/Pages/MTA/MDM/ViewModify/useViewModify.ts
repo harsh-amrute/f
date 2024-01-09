@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
-import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId } from "../../../../../helpers/utils";
+import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL} from '../../../../../redux/actions/MDM';
@@ -40,7 +40,6 @@ const useViewModify = (pageType:string) => {
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
     const [colDefs,setColDefs] = useState<ColDef[]>([]); 
     const [isUploadButtonDisabled,setIsUploadButtonDisabled] = useState<boolean>(true);
-    const [showAll,setShowAll] = useState(false) //Flag to identify if the query is an show all query as we need that param in WarningModal Succes Handler P.S- Plz Optimize if you get time
     const [chartData,setChartData] = useState<object>();
     const [isSeasonalityChartModalOpen,toggleSeasonalityChartModal] = useState<boolean>(false);
     const [normChangeData,setNormChangeData] = useState<any>([]);
@@ -293,11 +292,37 @@ const useViewModify = (pageType:string) => {
     }
 
     const queryFilteredData = async (configs:QueryFilteredDataConfigs) => {
-      const {filters,showAll,pagination,fields,count,currentPage} = configs;
+      const {filters,pagination,fields,count,currentPage} = configs;
       const payload:GetMasterDataPayload = {
         id:activeMaster.id,
         name:activeMaster.name,
-        filters:showAll ? [] : filters,
+        filters:filters,
+        fields:fields,
+      }
+
+      if(pagination && !count) {
+        payload.paginationParameter = {
+          pageNumber:currentPage,
+          recordsPerPage:rowsPerPage
+        }
+      }
+      let resultData;
+      if(count){
+        resultData =  await getCount(payload);
+      }
+      else{
+        resultData = await getMasterData(payload); 
+      }
+
+      return resultData;
+    }
+
+    const queryAllData = async (configs:QueryFilteredDataConfigs) => {
+      const {pagination,fields,count,currentPage} = configs;
+      const payload:GetMasterDataPayload = {
+        id:activeMaster.id,
+        name:activeMaster.name,
+        filters:[],
         fields:fields,
       }
 
@@ -376,7 +401,15 @@ const useViewModify = (pageType:string) => {
         dispatch(REMOVE_MASTER(currMaster.id));
        
         if(currMaster.id === activeMaster.id){
-          dispatch(UPDATE_ACTIVE_MASTER(0))
+          const mastersLength = masters.length
+          for (let index = 0; index < mastersLength; index++) {
+            
+            if(masters[index].progress!=='submitted'){
+              dispatch(UPDATE_ACTIVE_MASTER(index))
+              return
+            }
+          }
+        
         }
       }
     
@@ -404,8 +437,6 @@ const useViewModify = (pageType:string) => {
     }
 
     const handleApplyFilter =async (showAll?:boolean) => {
-      if(showAll) setShowAll(showAll);
-      else setShowAll(false);
       if(downloadData) setDownloadData(false)
       const currMasterFilters = activeMaster.filters;
       if(!areMasterFiltersValid(currMasterFilters) && !showAll){
@@ -417,8 +448,14 @@ const useViewModify = (pageType:string) => {
 
       setIsTableDataLoading(true);
 
-      const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:false,count:true});
-      
+      let result;
+      if(showAll){
+        result = await queryAllData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true});
+      }
+      else{
+        result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true});
+      }
+
       setIsTableDataLoading(false);
       setRecordCount(result.data.recordCount)
       toggleWarningModal(true);    
@@ -437,15 +474,25 @@ const useViewModify = (pageType:string) => {
       const payloadFields:any = getCurrentVisbileColumns();
       
       setIsTableDataLoading(true);
+      let result:any;
 
-      const result:any = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true,currentPage:1}),{
-        success:"Data Fetched Successfully",
-        error:"Something Went Wrong",
-        pending:"Loading Data"
-      }); 
+      if(!areMasterFiltersValid(currMasterFilters) && activeMaster.filters.length === 1){
+        result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1}),{
+          success:"Data Fetched Successfully",
+          error:"Something Went Wrong",
+          pending:"Loading Data"
+        }); 
+      }
+      else{
+        result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1}),{
+          success:"Data Fetched Successfully",
+          error:"Something Went Wrong",
+          pending:"Loading Data"
+        }); 
+      }
+      
       if(result.data.recordCount <= rowsPerPage){
         toggleEditOnline(true);
-        setShowAll(false); //setting to false in this if bcz we need this in flag true while handling server side pagination
       }
       else{
         toggleEditOnline(false);
@@ -455,22 +502,25 @@ const useViewModify = (pageType:string) => {
         setIsTableDataLoading(false);
         if(result.data.recordCount == 0){
           toggleWarningModal(false);
-          setShowAll(false);
           return;
         }
        
         dispatch(UPDATE_ROW_DATA(result.data.data));
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         toggleWarningModal(false);
-        setShowAll(false);
-        if(activeMaster.id==10){
-         
-          return dispatch(UPDATE_PROGRESS_STATE('seasonality')); 
+        if(pageType==='remove'){
+           dispatch(UPDATE_PROGRESS_STATE('deleteView'));
         }
-        if(activeMaster.id==6){
-          return dispatch(UPDATE_PROGRESS_STATE('phaseInPhaseOut')); 
+        else{
+          if(activeMaster.id==10){
+            dispatch(UPDATE_PROGRESS_STATE('seasonality'));
+            return  dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          }
+          if(activeMaster.id==6){
+             dispatch(UPDATE_PROGRESS_STATE('phaseInPhaseOut')); 
+          }
+          else  dispatch(UPDATE_PROGRESS_STATE('view')); 
         }
-        return dispatch(UPDATE_PROGRESS_STATE('view'));  
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
     }
 
     const onEditOnline = () => {
@@ -490,7 +540,7 @@ const useViewModify = (pageType:string) => {
             return
           }
   
-          const result = await parseExcelData(file,activeMaster);
+          const result = await parseExcelData(file,activeMaster,pageType==='remove');
           const ifErrorExists = result.find((data:any)=>data.error);
           const ifWarningExists = result.find((data:any)=>data.warning);
           if(ifErrorExists) {
@@ -505,6 +555,7 @@ const useViewModify = (pageType:string) => {
             dispatch(UPDATE_PROGRESS_STATE('uploaded'));
             addCheckBoxColDefs();
           }
+          setRecordCount(result.length)
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           dispatch(TOGGLE_UPLOAD_MODAL(false))
@@ -550,7 +601,8 @@ const useViewModify = (pageType:string) => {
         setTempDownloadData(true);
         dispatch(REMOVE_COLDEFS(['error','warning']));
         addCheckBoxColDefs();
-        dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+       if(pageType==='remove') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+       else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         
       }
@@ -581,7 +633,14 @@ const useViewModify = (pageType:string) => {
         
         const payloadFilters = mapStateFiltersToPayload(activeMaster.filters);
         const payloadFields:any = getCurrentVisbileColumns();
-        const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:showAll,pagination:true,currentPage:pageNo});
+        let result;
+        if(!areMasterFiltersValid(activeMaster.filters) && activeMaster.filters.length === 1){
+          result = await queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo});
+        }
+        else{
+          result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo});
+        }
+        
         dispatch(UPDATE_ROW_DATA(result.data.data));
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         setIsTableDataLoading(false)
@@ -610,6 +669,8 @@ const useViewModify = (pageType:string) => {
 
       const onBackButton = () => {
        dispatch(UPDATE_ROW_DATA([]));
+       dispatch(UPDATE_COLDEFS( mapMasterToColumnDefs(activeMaster.fields,activeMaster.id)))
+       dispatch(ADD_FILTER())
         // dispatch(to(true));
         // dispatch(setViewModifyProgressState('default'))
         setDownloadData(false);
@@ -657,7 +718,7 @@ const useViewModify = (pageType:string) => {
       
         const newData = rowData.map((row:any)=>{
           const rowClone = {...row};
-          const {error,warning} = checkError(rowClone,activeMaster);
+          const {error,warning} = checkError(rowClone,activeMaster,pageType==='remove');
           
           if(error){
             rowClone.error = error
@@ -738,6 +799,14 @@ const useViewModify = (pageType:string) => {
         }
       }
 
+      const onDeleteOnlineSave = ()=>{
+        const selectedRows = ref.current?.api.getSelectedRows()
+        if(!selectedRows || selectedRows.length<1)return notifyError('Please select rows to submit')
+        dispatch(REMOVE_COLDEFS(['checkbox']))
+        dispatch(UPDATE_ROW_DATA(selectedRows))
+        dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSaved'))
+    }
+
 
     return {
         colDefs,
@@ -794,6 +863,7 @@ const useViewModify = (pageType:string) => {
         handleChangePage,
         onReset,
         onEditOnlineSave,
+        onDeleteOnlineSave,
         chartData,
         isSeasonalityChartModalOpen,
         normChangeData,

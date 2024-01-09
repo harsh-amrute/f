@@ -5,7 +5,7 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
-import { defaultColDefs, masterIdToSchemaMapper, taskPendingCustomColDefs } from './MDMConstants';
+import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,addDays} from 'date-fns';
 
@@ -396,15 +396,15 @@ export const replaceKeyWithDisplayName = (message:string,master:MDMMasterState) 
   })
 }
 
-export const checkError = (row:object,master:MDMMasterState) => {
-  const masterSchema = masterIdToSchemaMapper[master.id.toString()];
+export const checkError = (row:object,master:MDMMasterState,isDelete:boolean) => {
+  const masterSchema = isDelete?masterIdToDeleteSchemaMapper[master.id.toString()]:masterIdToSchemaMapper[master.id.toString()];
   let {error,warning}:any = masterSchema.validate(row,{context:row});
   if(error) error = replaceKeyWithDisplayName(error.message,master);
   if(warning) warning = replaceKeyWithDisplayName(warning,master);
   return {error,warning};
 }
 
-export const parseExcelData = async (file:any,master:MDMMasterState) => {
+export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boolean) => {
   
   const currMasterKeys = master.fields.map((field:Field)=>field.key); //array containing keys of current master fields
   const result:object[] = [];
@@ -436,7 +436,7 @@ export const parseExcelData = async (file:any,master:MDMMasterState) => {
       temp+=1;
     })
     temp = 0;
-    const {error,warning} = checkError(rowObj,master);
+    const {error,warning} = checkError(rowObj,master,isDelete);
     // console.log(error);
     if(error !== undefined){
       rowObj.error = error;
@@ -454,7 +454,6 @@ export const parseExcelData = async (file:any,master:MDMMasterState) => {
 
 export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChart?:any)=>{
   let result:any[] = []
-
 
   result = fields.map((f)=>{
     return{
@@ -619,25 +618,25 @@ export const mapDraftDataToTableRowData = (rowData:any[])=>{
   return result
 }
 
-export const getExistingColumns = (rowData:any[])=>{
-  const firstRowColumn =JSON.parse( rowData[0].new)
-  return Object.keys(firstRowColumn)
+export const getExistingColumns = (rowData:any)=>{
+  return Object.keys(rowData)
 }
 
 export const getExistingColumnFields = (columns:string[],fields:Field[]):Field[]=>{
   const updatedFields:Field[] = []
   columns.map((c:string)=>{
     fields.find((f:Field)=>{
-      if(f.displayName===c)updatedFields.push(f)
+      if(f.key===c)updatedFields.push(f)
     })
   })
   return updatedFields
 }
 
-export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],tasktype?:string):ColGroupDef[] | ColDef[]=>{
+export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string):ColGroupDef[] | ColDef[]=>{
+
   const colDefs =  existingColumnsFields.map((f:Field)=>{
 
-    if(!f.isEdit){
+    if(TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
       return{
         headerName:f.displayName,
         field:f.key,
@@ -657,8 +656,8 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],tasktyp
         children:[
           {
             headerName:'Add ' +f.displayName,
-            field:'add'+f.key,
-            colId:'add'+f.key,
+            field:'Add'+f.key,
+            colId:'Add'+f.key,
             cellStyle:{
               "color":'#BC3D81',
               "text-align":"center",
@@ -671,7 +670,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],tasktyp
       }
     }
 
-    if(tasktype==="delete"){
+    if(tasktype==="remove"){
       return{
         headerName:f.displayName,
         field:f.key,
@@ -680,8 +679,8 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],tasktyp
         children:[
           {
             headerName:'Delete ' +f.displayName,
-            field:'delete'+f.key,
-            colId:'delete'+f.key,
+            field:'Delete'+f.key,
+            colId:'Delete'+f.key,
             cellStyle:{
               "color":'#BC3D81',
               "text-align":"center",
@@ -725,65 +724,103 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],tasktyp
     }
   })
 
-  return [...colDefs,...taskPendingCustomColDefs]
+  return [{
+    field:'checkbox',
+    colId:'checkbox',
+    headerName:'',
+    checkboxSelection:true,
+    headerCheckboxSelection:true,
+    headerCheckboxSelectionCurrentPageOnly:true,
+    width:10
+  },...colDefs,...taskPendingCustomColDefs]
 }
 
 
-export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string)=>{
-
+export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string,masterId:number)=>{
   // console.log(JSON.parse("{\"SKUCode\":\"X9I689125STXL001\",\"SKUDescription\":\"ksls\",\"c1\":\"X9I689125STXL\",\"c2\":\"XL\",\"c3\":\"8.91E+12\",\"c4\":\"PC\",\"c5\":\"999\",\"c7\":\"UI\",\"c6\":\"USPA\"}"))
   return dirtyRowData.map(entry => {
-    const oldData = JSON.parse(entry.old);
-    const newData = JSON.parse(entry.new);
 
-    const oldDataPrefixed:any = {};
-    const newDataPrefixed:any = {};
+    if(taskType==='modify'){
+      const oldData = JSON.parse(entry.old);
+      const newData = JSON.parse(entry.new);
+      
+  
+      const oldDataPrefixed:any = {};
+      const newDataPrefixed:any = {};
+  
+  
+      existingColumnFields.map((f:Field)=>{
 
-    console.log(taskType);
+        if(TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
+          newDataPrefixed[f.key] = newData[f.key]
+        }
+
+       else{
+        oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
+        newDataPrefixed[`New${f.key}`] = newData[f.key]
+       }
+      })
+      return {
+          ...oldDataPrefixed,
+          ...newDataPrefixed,
+          status:'',
+          comments:''
+      };
+    }
+    const data = entry;
+    
+
+    const dataPrefixed:any = {};
+
+
 
     existingColumnFields.map((f:Field)=>{
-      // if(f.isEdit){
-      //   oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
-      //   newDataPrefixed[`New${f.key}`] = newData[f.key]
-      // }
-      // else{
-      //   oldDataPrefixed[f.key] = oldData[f.key]
-      // }
-      oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
-        newDataPrefixed[`New${f.key}`] = newData[f.key]
+      
+      if(taskType==='add'){
+       if(!TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
+        dataPrefixed[`Add${f.key}`] = data[f.key]
+       }
+       else{
+        dataPrefixed[f.key] = data[f.key]
+       }
+      }
+      else{
+       if(!TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
+        dataPrefixed[`Delete${f.key}`] = data[f.key]
+       }
+       else{
+        dataPrefixed[f.key] = data[f.key]
+       }
+      }
     })
-    console.log({
-      ...oldDataPrefixed,
-      ...newDataPrefixed,
-      status:'',
-      comments:''
-  })
     return {
-        ...oldDataPrefixed,
-        ...newDataPrefixed,
+        ...dataPrefixed,
         status:'',
         comments:''
     };
+   
 });
 }
 
 
 export const getActionName = (id:number):DraftActionType=>{
+  console.debug(id)
   if(id===1)return {id:1,label:'add',value:'add'}
   if(id===2)return {id:2,label:'view-modify',value:'modify'}
-  if(id===3)return {id:3,label:'delete',value:'delete'}
+  if(id===3)return {id:3,label:'delete',value:'remove'}
   throw new Error('Invalid action id')
 }
 
 export const getActionId = (actionName:string):DraftActionType=>{
   if(actionName==="add")return {id:1,label:'add',value:'add'}
   if(actionName==="view-modify" || actionName==="modify")return {id:2,label:'view-modify',value:'modify'}
-  if(actionName==="delete")return {id:3,label:'delete',value:'delete'}
+  if(actionName==="delete")return {id:3,label:'delete',value:'remove'}
   throw new Error('Invalid action Name')
 }
 
 
 export const createMastersStateFromDraftData = (draftData:any[],fields:Master[]):MDMMasterState[]=>{
+
   const masters:MDMMasterState[] = []
   draftData.map((master)=>{
     const existingMaster = fields.find((m:Master)=>m.id==master.MasterId)
@@ -791,9 +828,15 @@ export const createMastersStateFromDraftData = (draftData:any[],fields:Master[])
     masters.push({
       id:existingMaster.id,
       name:existingMaster.name,
-      colDefs:master.GridState.length>0?JSON.parse(master.GridState):[],
+      colDefs:master.GridState.length>0?JSON.parse(master.GridState):mapMasterToColumnDefs(existingMaster.fields,existingMaster.id),
       rowData:master.DataMaster || [],
-      filters:[],
+      filters:[{
+        id:generateRandomId(),
+        masterId:existingMaster.id,
+        field:'',
+        operator:'',
+        text:''
+      }],
       progress:master.Status,
       fields:existingMaster.fields
     })
@@ -983,4 +1026,13 @@ export const generateSesonalityChartData = (row:any,data:any) => {
   };
 
   return chartData;
+}
+
+
+export const createSubmitMasterPayload = (master:any,action:string)=>{
+  return {
+    id:parseInt(master.id),
+    action:action,
+    data:master.rowData
+  }
 }

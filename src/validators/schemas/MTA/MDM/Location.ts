@@ -8,3 +8,7 @@ export const LocationSchema = Joi.object({
     ...CommonSchema
 
 }).preferences(defaultJOIOptions)
+
+export const LocationSchemaDelete = Joi.object({
+    wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode'))
+}).preferences(defaultJOIOptions)

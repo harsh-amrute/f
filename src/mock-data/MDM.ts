@@ -1,6 +1,75 @@
 import { MDMMasterState } from "../VectorFlow/types/MDM";
 import { generateRandomId } from "../helpers/utils";
 
+export const mockMasterData: any = {
+  recordCount: 345,
+  data: [
+    {
+      SKUSrNo: 1,
+      SKUCode: "Q1231231DE12",
+      SKUName: "Text Description",
+      SKUAttr1: "ABC",
+      SKUAttr2: "Group A",
+      SKUAttr3: "PTH",
+      SKUAttr4: 50,
+      SKUAttr5: "Arrow New",
+      SKUAttr6: "Red",
+      SKUAttr7: 25,
+      SKUAttr8: "mm",
+      SKUAttr9: 35,
+      SKUAttr10: "ABC",
+      SKUAttr11: "SubCategory",
+      SKUAttr12: "2022-11-08",
+      SKUAttr13: "Dymmy Value",
+      SKUAttr14: "ABC Group",
+      SKUAttr15: "Dummy Value",
+      SKUAttr16: "mm",
+    },
+    {
+      SKUSrNo: 2,
+      SKUCode: "Q1231231FG34",
+      SKUName: "Text Description",
+      SKUAttr1: "ABC",
+      SKUAttr2: "Group A",
+      SKUAttr3: "PTH",
+      SKUAttr4: 50,
+      SKUAttr5: "Arrow New",
+      SKUAttr6: "Red",
+      SKUAttr7: 25,
+      SKUAttr8: "mm",
+      SKUAttr9: 35,
+      SKUAttr10: "ABC",
+      SKUAttr11: "SubCategory",
+      SKUAttr12: "2022-11-08",
+      SKUAttr13: "Dymmy Value",
+      SKUAttr14: "ABC Group",
+      SKUAttr15: "Dummy Value",
+      SKUAttr16: "mm",
+    },
+    {
+      SKUSrNo: 3,
+      SKUCode: "Q1231231FG34",
+      SKUName: "Text Description",
+      SKUAttr1: "ABC",
+      SKUAttr2: "Group A",
+      SKUAttr3: "PTH",
+      SKUAttr4: 50,
+      SKUAttr5: "Arrow New",
+      SKUAttr6: "Red",
+      SKUAttr7: 25,
+      SKUAttr8: "mm",
+      SKUAttr9: 35,
+      SKUAttr10: "ABC",
+      SKUAttr11: "SubCategory",
+      SKUAttr12: "2022-11-08",
+      SKUAttr13: "Dymmy Value",
+      SKUAttr14: "ABC Group",
+      SKUAttr15: "Dummy Value",
+      SKUAttr16: "mm",
+    },
+  ],
+};
+
 export const MasterData:MDMMasterState[] = [
     { 
       id: 1,
@@ -425,66 +494,11 @@ export const MasterData:MDMMasterState[] = [
     recordCount: null,
     data: [
         {
+            ActionType:2,
             DraftId: "1121423100749",
             Masters: " SKU",
             userid: "1",
             LastModifiedDateTime: "2023-12-14T10:07:49",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121123170712",
-            Masters: "SKU LOCATION SKULOCATION SOB",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-11T17:07:12",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121323163008",
-            Masters: " SKU Location SKU Location",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-13T16:30:08",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121323164406",
-            Masters: " SKU Location SKU Location",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-13T16:44:06",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121323165317",
-            Masters: " Location",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-13T16:53:17",
-            SearchKeys: "Location"
-        },
-        {
-            DraftId: "1121423102937",
-            Masters: " SKU",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-14T10:29:37",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121423103009",
-            Masters: " SKU",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-14T10:30:09",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121423103032",
-            Masters: " SKU",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-14T10:30:32",
-            SearchKeys: "SKU"
-        },
-        {
-            DraftId: "1121423104141",
-            Masters: " SKU",
-            userid: "1",
-            LastModifiedDateTime: "2023-12-14T10:41:41",
             SearchKeys: "SKU"
         }
     ],

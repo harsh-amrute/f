@@ -25,7 +25,7 @@ import { ReactNode } from "react";
 import { RESET_STATE } from "../../../../../redux/actions/MDM";
 // import { toast } from 'react-toastify'
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
-import { createDraftMockData, getSeasonalityDetailsMockData, MasterData } from "../../../../../mock-data/MDM";
+import { createDraftMockData, getSeasonalityDetailsMockData, MasterData, mockMasterData } from "../../../../../mock-data/MDM";
 import { mapMasterToColumnDefs } from "../../../../../helpers/utils";
 
 
@@ -104,74 +104,7 @@ const useGetSeasonalityDetailsMockData:any = {
   }
 }
 
-const mockMasterData: any = {
-  recordCount: 345,
-  data: [
-    {
-      SKUSrNo: 1,
-      SKUCode: "Q1231231DE12",
-      SKUName: "Text Description",
-      SKUAttr1: "ABC",
-      SKUAttr2: "Group A",
-      SKUAttr3: "PTH",
-      SKUAttr4: 50,
-      SKUAttr5: "Arrow New",
-      SKUAttr6: "Red",
-      SKUAttr7: 25,
-      SKUAttr8: "mm",
-      SKUAttr9: 35,
-      SKUAttr10: "ABC",
-      SKUAttr11: "SubCategory",
-      SKUAttr12: "2022-11-08",
-      SKUAttr13: "Dymmy Value",
-      SKUAttr14: "ABC Group",
-      SKUAttr15: "Dummy Value",
-      SKUAttr16: "mm",
-    },
-    {
-      SKUSrNo: 2,
-      SKUCode: "Q1231231FG34",
-      SKUName: "Text Description",
-      SKUAttr1: "ABC",
-      SKUAttr2: "Group A",
-      SKUAttr3: "PTH",
-      SKUAttr4: 50,
-      SKUAttr5: "Arrow New",
-      SKUAttr6: "Red",
-      SKUAttr7: 25,
-      SKUAttr8: "mm",
-      SKUAttr9: 35,
-      SKUAttr10: "ABC",
-      SKUAttr11: "SubCategory",
-      SKUAttr12: "2022-11-08",
-      SKUAttr13: "Dymmy Value",
-      SKUAttr14: "ABC Group",
-      SKUAttr15: "Dummy Value",
-      SKUAttr16: "mm",
-    },
-    {
-      SKUSrNo: 3,
-      SKUCode: "Q1231231FG34",
-      SKUName: "Text Description",
-      SKUAttr1: "ABC",
-      SKUAttr2: "Group A",
-      SKUAttr3: "PTH",
-      SKUAttr4: 50,
-      SKUAttr5: "Arrow New",
-      SKUAttr6: "Red",
-      SKUAttr7: 25,
-      SKUAttr8: "mm",
-      SKUAttr9: 35,
-      SKUAttr10: "ABC",
-      SKUAttr11: "SubCategory",
-      SKUAttr12: "2022-11-08",
-      SKUAttr13: "Dymmy Value",
-      SKUAttr14: "ABC Group",
-      SKUAttr15: "Dummy Value",
-      SKUAttr16: "mm",
-    },
-  ],
-};
+
 
 const mockData = [
   {
@@ -667,7 +600,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
   it("Submits The Data",async ()=>{
 
-    const updatedMockState:MDMStore = {
+    let updatedMockState:MDMStore = {
       allMasters:MasterData,
       masters:MasterData,
       options:[],
@@ -678,11 +611,24 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isUploadModalOpen:false
     }
 
-    const mockStore = createStore(updatedMockState);
+    let mockStore = createStore(updatedMockState);
 
     render(contextWrapper(<ViewModify/>,mockStore));
 
     fireEvent.click(screen.getByTestId("vf-button"));
+
+    //submits the date when edit online
+
+    updatedMockState = {...updatedMockState,activeMaster:{...updatedMockState.activeMaster,progress:'editOnlineSaved'}}
+
+    cleanup();
+
+    mockStore = createStore(updatedMockState);
+
+    render(contextWrapper(<ViewModify/>,mockStore));
+
+    fireEvent.click(screen.getByTestId("vf-button"));
+
 
     // expect(toast.success).toBeCalled();
 
@@ -947,6 +893,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
     render(contextWrapper(<ViewModify/>,mockStore));
 
     const notStartedQuickFilter = screen.getByText('Not Started')
+    fireEvent.click(notStartedQuickFilter)
     fireEvent.click(notStartedQuickFilter)
   })
 

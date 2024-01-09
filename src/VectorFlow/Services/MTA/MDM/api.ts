@@ -81,4 +81,10 @@ export namespace MDMService {
       headers: { 'Content-Type': 'application/json' }
     })
   }
+
+  export const removeMasterData = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + '/RemoveMasterData',JSON.stringify(body),{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
 }

@@ -67,3 +67,9 @@ export const SKULocationSchema = Joi.object({
     ...CommonSchema
 
 }).preferences(defaultJOIOptions)
+
+export const SKULocationSchemaDelete = Joi.object({
+    sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
+    wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
+    pwc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(ParentWhCodeValidator).required().messages({...generateCommonMessages('ParentWhCode')}),
+}).preferences(defaultJOIOptions)

@@ -16,7 +16,13 @@ const dummyProps = {
     onEditOnlineSave:mockFn,
     onSeasonalityStop:mockFn,
     onSeasonalityResume:mockFn,
-    onPhaseInPhaseOutStop:mockFn
+    onPhaseInPhaseOutStop:mockFn,
+    onDeleteOnlone:mockFn,
+    onDeleteOnline:mockFn,
+    onDeleteOnlineSubmit:mockFn,
+    onDeleteData:mockFn,
+    onDeleteOnlineReset:mockFn,
+    onDeleteOnlineSave:mockFn
 }
 
 const contextWrapper = (children:any)=>{
