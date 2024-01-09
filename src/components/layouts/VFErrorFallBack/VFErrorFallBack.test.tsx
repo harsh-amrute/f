@@ -1,0 +1,15 @@
+import { fireEvent, render, screen } from "@testing-library/react"
+import VFErrorFallBack from "."
+
+
+describe('VFErrorFallBack Componenet',()=>{
+    it("Should render on the dom",()=>{
+        render(<VFErrorFallBack/>)
+    })
+
+    it('Clicks on Go Home button',()=>{
+        render(<VFErrorFallBack/>)
+        const btn = screen.getByText('Go Home')
+        fireEvent.click(btn)
+    })
+})

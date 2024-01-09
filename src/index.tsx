@@ -14,6 +14,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import { store } from './redux/store/store';
 import { Provider } from 'react-redux';
 import {AG_GRID_KEY} from './helpers/constants'
+import {ErrorBoundary} from 'react-error-boundary'
+import VFErrorFallBack from './components/layouts/VFErrorFallBack'
 
 LicenseManager.setLicenseKey(AG_GRID_KEY);
 // Axios default settings and interceptors
@@ -26,14 +28,16 @@ const root = ReactDOM.createRoot(
 )
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <Provider store={store}>
-          <App />
-          <ToastContainer />
-        </Provider>
-      </Router>
-    </QueryClientProvider>
+    <ErrorBoundary fallback={<VFErrorFallBack/>}>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Provider store={store}>
+            <App />
+            <ToastContainer />
+          </Provider>
+        </Router>
+      </QueryClientProvider>
+    </ErrorBoundary>
   </React.StrictMode>
 )
 
