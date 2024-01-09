@@ -29,7 +29,7 @@ const Modal = ({
   const themeUi = user?.user?.theme_ui;
 
   useEffect(() => {
-    if(fileJson === "../assets/img/manual/upload-success.json") {      
+    if(fileJson === "/assets/img/manual/upload-success.json") {      
       setTimeout(() => {
         closeModal();
       }, 2000);
@@ -69,7 +69,7 @@ const Modal = ({
                       className="modal-content--block"
                       style={{ height: '350px', width: '530px' }}
                     >
-                      {/* <img src="../assets/img/ist/warning.svg" className='warning_img' style={{ marginTop: '70px' }} /> */}
+                      {/* <img src="/assets/img/ist/warning.svg" className='warning_img' style={{ marginTop: '70px' }} /> */}
                       <Player
                         src={fileJson}
                         background="transparent"
@@ -132,7 +132,7 @@ const Modal = ({
                 >
                   <Dialog.Panel className="modal-content--block">
                     <img
-                      src="../assets/img/ist/warning.svg"
+                      src="/assets/img/ist/warning.svg"
                       className="warning_img"
                     />
                     <Dialog.Title as="h3" className="modal-title">

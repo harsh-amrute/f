@@ -81,11 +81,11 @@ const Header = () => {
                   }}
                 >
                   <HeaderStyled.SCExportAllBoxButton>
-                    <img src="../assets/img/forced/excel.png" alt="and" />
+                    <img src="/assets/img/forced/excel.png" alt="and" />
                     <HeaderStyled.SCExportAllBoxSpan>
                       {t('header.exportAllBtn')}
                     </HeaderStyled.SCExportAllBoxSpan>
-                    <img src="../assets/img/forced/export.svg" alt="and" />
+                    <img src="/assets/img/forced/export.svg" alt="and" />
                   </HeaderStyled.SCExportAllBoxButton>
                 </HeaderStyled.SCExportAllBox>
                 {currentAction === 'view' && (

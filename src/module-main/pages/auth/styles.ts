@@ -248,7 +248,7 @@ export const CheckboxButton: any = styled.input`
   box-shadow: 6px 6px 20px #c5c5c5, -6px -6px 20px #ffffff;
 
   &:checked {
-    background-image: url("../../../../assets/img/check/checkmark.svg");
+    background-image: url("../../../assets/img/check/checkmark.svg");
     background-repeat: no-repeat;
     background-size: 1.2vw;
   }

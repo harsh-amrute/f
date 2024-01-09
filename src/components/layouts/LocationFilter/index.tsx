@@ -23,7 +23,7 @@ const LocationFilter = ({ locationFilter, width, loading }: LocationProps) => {
   return (
     <SCLocationFilter>
       <SCProducFilterHeader>
-        <SCProductFilterImg src="../assets/img/ist/filter.svg" alt="filter" />
+        <SCProductFilterImg src="/assets/img/ist/filter.svg" alt="filter" />
         <SCProductFilterText>{t('filter.location.title')}</SCProductFilterText>
       </SCProducFilterHeader>
       <SCProductBoxSelect>
@@ -35,7 +35,7 @@ const LocationFilter = ({ locationFilter, width, loading }: LocationProps) => {
               <SCProductBoxSelectItem key={index} width={width}>
                 <SCIconLocation
                   className="icon_location"
-                  src={item.icon ? item.icon : '../assets/img/ist/location.svg'}
+                  src={item.icon ? item.icon : '/assets/img/ist/location.svg'}
                   alt="location"
                   locationIcon={!item.icon}
                 />
@@ -47,7 +47,7 @@ const LocationFilter = ({ locationFilter, width, loading }: LocationProps) => {
                 />
                 <SCIconDown
                   className="icon_location"
-                  src="../assets/img/down-icon.svg"
+                  src="/assets/img/down-icon.svg"
                   alt="location"
                 />
               </SCProductBoxSelectItem>

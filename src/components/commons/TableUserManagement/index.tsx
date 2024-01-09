@@ -141,17 +141,17 @@ const TableUserManagement = ({
     return (
       <Tab.SCTableTd>
         <Tab.SCIcon
-          src="../assets/img/profile/icon_edit.svg"
+          src="/assets/img/profile/icon_edit.svg"
           onClick={() => handleClickEdit(item)}
         />
         <Tab.SCIcon
-          src="../assets/img/profile/icon_delete.svg"
+          src="/assets/img/profile/icon_delete.svg"
           onClick={() => {
             handleOpenDelete(item.id);
           }}
         />
         <Tab.SCIcon
-          src="../assets/img/profile/icon_lock.svg"
+          src="/assets/img/profile/icon_lock.svg"
           onClick={() => {
             handleResetPwd(item.id);
           }}

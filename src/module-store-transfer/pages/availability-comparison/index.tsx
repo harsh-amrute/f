@@ -203,11 +203,11 @@ const Availability = () => {
                   setOpenModalExport(true)
                 }}
               >
-                <img src="../assets/img/forced/excel.png" alt="and" />
+                <img src="/assets/img/forced/excel.png" alt="and" />
                 <SCExportAllBoxSpan>
                   {t('availabilityComparison.button.exportSelected')}
                 </SCExportAllBoxSpan>
-                <img src="../assets/img/forced/export.svg" alt="and" />
+                <img src="/assets/img/forced/export.svg" alt="and" />
               </SCExportAllBoxButton>
             </SCTabHeaderRight>
           </SCTabHeader>

@@ -49,14 +49,14 @@ const ModalContact = ({
                     <div className="wrap-title--contact">
                       <img
                         className="avatar_contact"
-                        src="../assets/img/ist/avatar_contact.png"
+                        src="/assets/img/ist/avatar_contact.png"
                         alt="user"
                       />
                       {modalTitle}
                     </div>
                     <img
                       className="close-modal--contact"
-                      src="../assets/img/check/deline.svg"
+                      src="/assets/img/check/deline.svg"
                       alt="X"
                       onClick={closeModal}
                     />

@@ -112,14 +112,14 @@ const AvailabilityActiveTab = ({ ...props }: TabProps) => {
             <ContentItem color={item.color} key={`content_item_${idx}`}>
               {item.color === t('availabilityComparison.color.white') && (
                 <img
-                  src="../assets/img/availability/surplus.svg"
+                  src="/assets/img/availability/surplus.svg"
                   alt="surplus"
                   className="left-icon"
                 />
               )}
               {item.color === t('availabilityComparison.color.red') && (
                 <img
-                  src="../assets/img/availability/shortage.svg"
+                  src="/assets/img/availability/shortage.svg"
                   alt="shortage"
                   className="left-icon"
                 />
@@ -163,7 +163,7 @@ const AvailabilityActiveTab = ({ ...props }: TabProps) => {
                     )}
                     <ItemPanelHeader>
                       <img
-                        src="../assets/img/availability/black-arrow.svg"
+                        src="/assets/img/availability/black-arrow.svg"
                         alt="arrow"
                       />
                       <ItemPanelHeaderContent
@@ -202,7 +202,7 @@ const AvailabilityActiveTab = ({ ...props }: TabProps) => {
                       <ItemPanelBodyCenter activeTab={activeTab}>
                         <div className="gray-arrow">
                           <img
-                            src="../assets/img/availability/gray-arrow.svg"
+                            src="/assets/img/availability/gray-arrow.svg"
                             alt="gray-arrow"
                             className="gray-arrow-left"
                           />
@@ -211,20 +211,20 @@ const AvailabilityActiveTab = ({ ...props }: TabProps) => {
                           {activeTab === 'store'
                             ? (
                               <img
-                                src="../assets/img/availability/home.svg"
+                                src="/assets/img/availability/home.svg"
                                 alt="home"
                               />
                             )
                             : (
                               <img
-                                src="../assets/img/availability/home-2.svg"
+                                src="/assets/img/availability/home-2.svg"
                                 alt="home-2"
                               />
                             )}
                         </div>
                         <div className="gray-arrow">
                           <img
-                            src="../assets/img/availability/gray-arrow.svg"
+                            src="/assets/img/availability/gray-arrow.svg"
                             alt="gray-arrow"
                             className="gray-arrow-right"
                           />
@@ -252,14 +252,14 @@ const AvailabilityActiveTab = ({ ...props }: TabProps) => {
                         {quantityCount > 0
                           ? (
                             <img
-                              src="../assets/img/availability/blue-arrow.svg"
+                              src="/assets/img/availability/blue-arrow.svg"
                               alt="blue-arrow"
                             />
                           )
                           : quantityCount < 0
                             ? (
                               <img
-                                src="../assets/img/availability/brown-arrow-down.svg"
+                                src="/assets/img/availability/brown-arrow-down.svg"
                                 alt="brown-arrow-down"
                               />
                             )
@@ -274,14 +274,14 @@ const AvailabilityActiveTab = ({ ...props }: TabProps) => {
                         {priceCount.digits > 0
                           ? (
                             <img
-                              src="../assets/img/availability/blue-arrow.svg"
+                              src="/assets/img/availability/blue-arrow.svg"
                               alt="blue-arrow"
                             />
                           )
                           : priceCount.digits < 0
                             ? (
                               <img
-                                src="../assets/img/availability/brown-arrow-down.svg"
+                                src="/assets/img/availability/brown-arrow-down.svg"
                                 alt="brown-arrow-down"
                               />
                             )

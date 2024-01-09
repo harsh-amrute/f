@@ -49,13 +49,13 @@ const TableParticulars = ({
     return (
       <>
         <NavStyle.BtnLeft
-          src={`../assets/img/nav/tableParticulars/${iconLeft}.svg`}
+          src={`/assets/img/nav/tableParticulars/${iconLeft}.svg`}
           alt=""
           pcs={pcs}
           onClick={handleClickLeft}
         />
         <NavStyle.BtnRight
-          src={`../assets/img/nav/tableParticulars/${iconRight}.svg`}
+          src={`/assets/img/nav/tableParticulars/${iconRight}.svg`}
           alt=""
           pcs={pcs}
           onClick={handleClickRight}

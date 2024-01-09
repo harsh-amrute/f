@@ -64,7 +64,7 @@ const ModalSuccess = ({
                 <Dialog.Panel className="modal-forced--block">
                   <SCWrapper>
                     <SCImg
-                      src="../assets/img/reportIssue/tick-success.svg"
+                      src="/assets/img/reportIssue/tick-success.svg"
                       alt="tick"
                     />
                     <SCTextAbove>

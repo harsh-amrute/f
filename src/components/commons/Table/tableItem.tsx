@@ -178,7 +178,7 @@ const TableItem = (props: any) => {
                 <Tab.SCValuePvPA value={i?.before_col}>
                   {i?.before_col}
                 </Tab.SCValuePvPA>
-                <Tab.SCLargerSign src="../assets/img/ist/PvPA.svg" alt="PvPA" />
+                <Tab.SCLargerSign src="/assets/img/ist/PvPA.svg" alt="PvPA" />
                 <Tab.SCValuePvPA value={i?.after_col}>
                   {i?.after_col}
                 </Tab.SCValuePvPA>

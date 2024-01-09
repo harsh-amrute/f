@@ -211,7 +211,7 @@ const Particulars = ({themeUi}: any) => {
           <img
             data-tooltip-id="yield_particulars"
             ref={divRef}
-            src={`../assets/img/nav/btnTooltip${themeUi === "CHARCOALCHIC" ? '_black': ''}.svg`}
+            src={`/assets/img/nav/btnTooltip${themeUi === "CHARCOALCHIC" ? '_black': ''}.svg`}
             alt="tooltip"
             style={{
               padding: '0 5px 3px 0',

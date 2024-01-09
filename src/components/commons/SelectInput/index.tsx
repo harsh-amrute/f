@@ -16,7 +16,7 @@ const SelectInput = ({
 }: SelectOptionProps) => {
   return (
     <SCSelectOption>
-      {icon ? <SCSelectIcon src={`../assets/img/ist/${icon}.svg`} /> : ''}
+      {icon ? <SCSelectIcon src={`/assets/img/ist/${icon}.svg`} /> : ''}
       <SCSelectBox
         icons={icon === 'target'}
         icon={!icon}

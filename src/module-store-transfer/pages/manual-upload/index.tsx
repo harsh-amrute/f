@@ -149,7 +149,7 @@ const ManualUpload = () => {
           >
             <div style={{ paddingTop: 20 }}>
               <ManualStyle.SCManualExcel>
-                <img src="../assets/img/manual/excel.png" />
+                <img src="/assets/img/manual/excel.png" />
               </ManualStyle.SCManualExcel>
               <ManualStyle.SCManualDragText>
                 {t("manualUpload.dragDrop")}
@@ -161,7 +161,7 @@ const ManualUpload = () => {
               {t("manualUpload.template")}
             </ManualStyle.SCManualDowloadText>
             <img
-              src={`../assets/img/manual/${
+              src={`/assets/img/manual/${
                 themeUi === "REGALBLAZE"
                   ? "download-icon-yellow"
                   : "download-icon"
@@ -178,7 +178,7 @@ const ManualUpload = () => {
               className="file-upload"
               onClick={handleClick}
             >
-              <img src="../assets/img/manual/plus.png" width={30} />
+              <img src="/assets/img/manual/plus.png" width={30} />
               <ManualStyle.SCManualUploadInput
                 type="file"
                 accept=".csv"
@@ -217,14 +217,14 @@ const ManualUpload = () => {
           style={{ cursor: `${fileUpload && isLoading ? "" : "not-allowed"}` }}
           themeUi={themeUi}
         >
-          <ManualStyle.SCManualImgUpload src="../assets/img/manual/iconmonstr-upload-17.svg" />
+          <ManualStyle.SCManualImgUpload src="/assets/img/manual/iconmonstr-upload-17.svg" />
           {isLoading
             ? t("manualUpload.uploadBtn")
             : t("manualUpload.uploadingBtn")}
         </ManualStyle.SCManualUploadBtn>
       </ManualStyle.SCManualBox>
       <Modal
-        fileJson="../assets/data.json"
+        fileJson="/assets/data.json"
         modalTitle={t("manualUpload.uploadInProcess")}
         modalContent=""
         openModal={isShowPopup && !isLoading}
@@ -237,7 +237,7 @@ const ManualUpload = () => {
 
       {isShowSuccess && (
         <Modal
-          fileJson="../assets/img/manual/upload-success.json"
+          fileJson="/assets/img/manual/upload-success.json"
           modalTitle={t("manualUpload.uploadedSuccessfully")}
           modalContent=""
           openModal={!isShowPopup && isShowSuccess}

@@ -259,7 +259,7 @@ const ModalReportIssue = ({
                           disabled={isLoadSpinner}
                         >
                           <SCImg
-                            src="../assets/img/reportIssue/plus.svg"
+                            src="/assets/img/reportIssue/plus.svg"
                             alt=""
                           />
                           <SCPlaceholderImg>
@@ -271,7 +271,7 @@ const ModalReportIssue = ({
                             <SCWrapperItemImg key={index}>
                               <SCItemText>{item?.name}</SCItemText>
                               <SCItemImg
-                                src="../assets/img/reportIssue/delete.svg"
+                                src="/assets/img/reportIssue/delete.svg"
                                 onClick={() => handleDelete(index)}
                               />
                             </SCWrapperItemImg>

@@ -42,7 +42,7 @@ export default forwardRef((props, ref) => {
 
   const productFilter = [
     {
-      icon: '../assets/img/ist/target.svg',
+      icon: '/assets/img/ist/target.svg',
       placeholder: t('filter.product.placeholder.brand'),
       options: listBrand,
       value: brand,
@@ -50,7 +50,7 @@ export default forwardRef((props, ref) => {
       top: 18
     },
     {
-      icon: '../assets/img/ist/target.svg',
+      icon: '/assets/img/ist/target.svg',
       placeholder: t('filter.product.placeholder.subBrand'),
       options: listSubBrand,
       value: subBrand,
@@ -58,7 +58,7 @@ export default forwardRef((props, ref) => {
       top: 18
     },
     {
-      icon: '../assets/img/ist/option.svg',
+      icon: '/assets/img/ist/option.svg',
       placeholder: t('filter.product.placeholder.category'),
       options: listCategory,
       value: category,

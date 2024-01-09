@@ -188,13 +188,13 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
                 <ButtonFloat
                   text={t("profile.tabContent.manageUsers.button.addNewUser")}
                   onClick={handleClickAddNewUser}
-                  icon="../assets/img/profile/icon_plus.svg"
+                  icon="/assets/img/profile/icon_plus.svg"
                 />
               </SCItemBtn>
               <SCItemBtn>
                 <ButtonOutlineIcon
                   text={t("profile.tabContent.manageUsers.button.bulkUpload")}
-                  icon={`../assets/img/profile/${
+                  icon={`/assets/img/profile/${
                     themeUi === "REGALBLAZE"
                       ? "icon_upload_yellow"
                       : "icon_upload"

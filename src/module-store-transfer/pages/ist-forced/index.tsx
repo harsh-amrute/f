@@ -401,7 +401,7 @@ const IstForced = () => {
               <InputSearchList
                 placeholder={t("ISTForcedClosure.button.searchByISTID")}
                 searchText={inputText}
-                srcIcon="../assets/img/forced/stack.svg"
+                srcIcon="/assets/img/forced/stack.svg"
                 handleChangeText={inputChangeText}
               />
               <TextInput
@@ -490,14 +490,14 @@ const IstForced = () => {
                 }}
               >
                 <img
-                  src="../assets/img/forced/excel.png"
+                  src="/assets/img/forced/excel.png"
                   alt="and"
                   style={{ width: "26px" }}
                 />
                 <SCExportAllBoxSpan>
                   {t("ISTForcedClosure.button.exportAll")}
                 </SCExportAllBoxSpan>
-                <img src="../assets/img/forced/export.svg" alt="and" />
+                <img src="/assets/img/forced/export.svg" alt="and" />
               </SCExportAllBoxButton>
             </SCExportAllBox>
           </SCBoxFilterButton>

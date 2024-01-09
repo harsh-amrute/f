@@ -141,7 +141,7 @@ const TableItem = (props: any) => {
             themeUi={themeUi}
           >
             <Tab.SCImgContact
-              src={`../assets/img/forced/${themeUi === "REGALBLAZE" ? "contact_yellow" : "contact"
+              src={`/assets/img/forced/${themeUi === "REGALBLAZE" ? "contact_yellow" : "contact"
                 }.svg`}
             />
             {t("ISTForcedClosure.contactDetails")}
