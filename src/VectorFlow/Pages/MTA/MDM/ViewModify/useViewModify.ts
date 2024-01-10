@@ -3,7 +3,7 @@ import { type Option, type Field,type GetMasterDataPayload, type GridRef, type Q
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL} from '../../../../../redux/actions/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
@@ -457,7 +457,8 @@ const useViewModify = (pageType:string) => {
       }
 
       setIsTableDataLoading(false);
-      setRecordCount(result.data.recordCount)
+      if(!result.data.recordCount || result.data.recordCount==0)setRecordCount(0)
+      else setRecordCount(result.data.recordCount)
       toggleWarningModal(true);    
     }
 
@@ -552,7 +553,8 @@ const useViewModify = (pageType:string) => {
             addInvalidDataColDefs('warning');
           }
           else{
-            dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+           if(activeMaster.progress==='deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+           else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
             addCheckBoxColDefs();
           }
           setRecordCount(result.length)
@@ -670,12 +672,12 @@ const useViewModify = (pageType:string) => {
       const onBackButton = () => {
        dispatch(UPDATE_ROW_DATA([]));
        dispatch(UPDATE_COLDEFS( mapMasterToColumnDefs(activeMaster.fields,activeMaster.id)))
+       dispatch(REMOVE_ALL_FILTERS())
        dispatch(ADD_FILTER())
-        // dispatch(to(true));
-        // dispatch(setViewModifyProgressState('default'))
         setDownloadData(false);
         setTempDownloadData(false);
         dispatch(UPDATE_PROGRESS_STATE('default'))
+        if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
       }
 
       const onSaveToDraft = async()=>{
