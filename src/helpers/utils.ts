@@ -8,6 +8,7 @@ import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,addDays} from 'date-fns';
+import { formatTaskStatusDateFromat } from './format';
 
 // clear cached token and redirect to sso login
 
@@ -554,6 +555,10 @@ export const mapDraftToColumnDefs = (fields:Field[],customParams?:ColDef)=>{
       colId:f.key,
       headerName:f.displayName,
       minWidth:180,
+      valueFormatter:(params)=>{
+        if(params.colDef.colId==='LastModifiedDateTime')return formatTaskStatusDateFromat(params.value)
+        return params.value
+      },
       cellStyle: {
         "textAlign": "center",
       },
@@ -582,13 +587,23 @@ export const mapTaskStatusToColDefs = (taskStatus:ColDef[])=>{
   return result
 }
 
-export const mapPendingTaskToColumnDefs = (colDefs:ColDef[])=>{
+export const mapPendingTaskToColumnDefs = (colDefs:ColDef[]):ColDef[]=>{
   return colDefs.map((colDef:ColDef)=>{
     return{
       ...colDef,
       floatingFilter: true,
       filter: "agMultiColumnFilter",
-      ...defaultColDefs
+      minWidth:180,
+      cellStyle: (params)=>{
+        if(params.colDef.colId ==='TaskName')return{"text-align": "center",'color':'blue','text-decoration':'underline','cursor':'pointer'}
+        return{
+          "text-align": "center",
+          'color':'back',
+          'text-decoration':'none',
+          'cursor':'auto'
+        }
+      },
+      flex: 1,
     }
   })
 }

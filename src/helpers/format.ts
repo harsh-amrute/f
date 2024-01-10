@@ -201,3 +201,14 @@ export const formatPhoneNumber = (
   }
   return `(${telcoCode}) ${number}`
 }
+
+
+export function formatTaskStatusDateFromat(inputDate:string) {
+  // Parse the input date string using Luxon
+  const luxonDateTime = DateTime.fromISO(inputDate);
+
+  // Format the date and time using Luxon
+  const formattedDate = luxonDateTime.toFormat('dd/MM/yy hh:mm a');
+
+  return formattedDate;
+}
