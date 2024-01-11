@@ -8,7 +8,7 @@ import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,addDays} from 'date-fns';
-import { formatTaskStatusDateFromat } from './format';
+import { formatMDMDateFromat } from './format';
 
 // clear cached token and redirect to sso login
 
@@ -555,10 +555,7 @@ export const mapDraftToColumnDefs = (fields:Field[],customParams?:ColDef)=>{
       colId:f.key,
       headerName:f.displayName,
       minWidth:180,
-      valueFormatter:(params)=>{
-        if(params.colDef.colId==='LastModifiedDateTime')return formatTaskStatusDateFromat(params.value)
-        return params.value
-      },
+
       cellStyle: {
         "textAlign": "center",
       },
@@ -611,8 +608,21 @@ export const mapPendingTaskToColumnDefs = (colDefs:ColDef[]):ColDef[]=>{
 export const mapRowDataWithSrNo = (rowData:any[])=>{
   let result = []
   if(!rowData)return []
-  result  = rowData.map((row,index)=>{
+
+  result  = rowData.map((row)=>{
     return{
+      ...row,
+      PendingSince:formatMDMDateFromat(row.PendingSince)
+    }
+  })
+  result.sort((a,b):any=>{
+    const date1 = new Date(a.PendingSince)
+    const date2 = new Date(b.PendingSince)
+    return date1.getTime() - date2.getTime()
+  })
+
+  result = result.map((row:any,index:number)=>{
+    return {
       ...row,
       SrNo:index + 1
     }
@@ -624,11 +634,20 @@ export const mapRowDataWithSrNo = (rowData:any[])=>{
 export const mapDraftDataToTableRowData = (rowData:any[])=>{
   let result = []
   if(!rowData)return
-  result  = rowData.map((row,index)=>{
+  result  = rowData.map((row)=>{
     return{
       ...row,
-      sr_no:index + 1
+      LastModifiedDateTime:formatMDMDateFromat(row.LastModifiedDateTime)
     }
+  })
+  result.sort((a,b):any=>{
+    const date1 = new Date(a.LastModifiedDateTime)
+    const date2 = new Date(b.LastModifiedDateTime)
+    return date1.getTime() - date2.getTime()
+  })
+
+  result = result.map((r:any,index:number)=>{
+    return {...r, sr_no:index + 1}
   })
   return result
 }

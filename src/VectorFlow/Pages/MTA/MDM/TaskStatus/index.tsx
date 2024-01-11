@@ -10,6 +10,7 @@ import { GridRef, Master } from "../../../../../VectorFlow/types/MDM"
 import { AgGridReactProps } from "ag-grid-react"
 import { notifyError } from "../../../../../helpers/notify"
 import { ColDef } from "ag-grid-enterprise"
+import { formatMDMDateFromat } from "../../../../../helpers/format"
 
 
 const TaskStatus = ()=>{
@@ -21,7 +22,8 @@ const TaskStatus = ()=>{
     const {mutateAsync:getTaskDetailDownloadData} = useGetTasKDetailDownloadData()
     const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration()
 
-    const rowData = data?.data.data || []
+    
+    
     const [tempAgGridRowData,setTempAgridRowData] = useState<any>([])
     const [currentMasterName,setCurrentMasterName] = useState<string>('')
     const [tempAgGridColDefs,setTempAgGridColDefs] = useState<ColDef[]>([])
@@ -59,6 +61,21 @@ const TaskStatus = ()=>{
         notifyError(error.message)
        }
     }
+
+    let rowData = data?.data.data || []
+    rowData = rowData.map((row:any)=>{
+        return {
+            ...row,
+            PendingSince:formatMDMDateFromat(row.PendingSince)
+        }
+    })
+
+    rowData.sort((a:any,b:any)=>{
+        const date1 = new Date(a.PendingSince)
+        const date2 = new Date(b.PendingSince)
+        return date1.getTime() - date2.getTime()
+    })
+
     if(isLoading){
         return <VFLoader/>
     }

@@ -1,4 +1,6 @@
 import { DateTime } from 'luxon'
+
+import {format} from 'date-fns'
 export const DEFAULT_DATE_FORMAT = 'dd MMM yyyy'
 export const DEFAULT_DATE_TIME_FORMAT = 'dd MMM yy, HH:mm'
 export const DEFAULT_TIME_FORMAT = 'HH:mm'
@@ -203,12 +205,11 @@ export const formatPhoneNumber = (
 }
 
 
-export function formatTaskStatusDateFromat(inputDate:string) {
-  // Parse the input date string using Luxon
-  const luxonDateTime = DateTime.fromISO(inputDate);
+export function formatMDMDateFromat(inputDate:string) {
 
-  // Format the date and time using Luxon
-  const formattedDate = luxonDateTime.toFormat('dd/MM/yy hh:mm a');
+  const parsedDate = new Date(inputDate);
+
+  const formattedDate = format(parsedDate, 'dd/MM/yy hh:mm:ss a');
 
   return formattedDate;
 }

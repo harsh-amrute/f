@@ -8,7 +8,6 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
-import {  formatTaskStatusDateFromat } from "../../../../../helpers/format"
 
 
 
@@ -26,9 +25,6 @@ const SavedDrafts = ()=>{
     allDrafts,
     isLoading
   } = useSavedDrafts()
-
-  console.log(formatTaskStatusDateFromat('2024-01-09T16:45:21'))
-
 
   if(isLoading){
     return <VFLoader/>
