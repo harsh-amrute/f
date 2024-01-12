@@ -202,6 +202,19 @@ describe('Testing the MDMService',  () => {
       expect(response.status).toBe(200);
     });
 
+    it('should make delete request to /DeleteTask/${id}', async () => {
+
+      mockedAxios.delete.mockResolvedValueOnce({data:'1_skulocmoq',status:200});
+      const response = await MDMService.deleteTask('1_skulocmoq');
+      expect(mockedAxios.delete).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/DeleteTask',{
+        params:{
+          'taskId':'1_skulocmoq'
+        }
+      })
+      expect(response.status).toBe(200);
+  
+    });
+
     it('should make post request to /RemoveMasterData', async () => {
 
       mockedAxios.post.mockResolvedValueOnce({
@@ -246,6 +259,44 @@ describe('Testing the MDMService',  () => {
     })
       expect(response.status).toBe(500);
     });
+
+
+    it('should make post request to /ModifyMasterData', async () => {
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.modifyMasterData({id:1,data:[{
+        sc:"QAEF1000",
+        sn:"Polo T-Shirt"
+      }]})
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/ModifyMasterData`,{id:1,data:[{
+        sc:"QAEF1000",
+        sn:"Polo T-Shirt"
+      }]},{
+      headers: { 'Content-Type': 'application/json' }
+    })
+      expect(response.status).toBe(200);
+    });
+
+
+    // it('should make post request to /GetSeasonalityDetails', async () => {
+
+    //   mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+    //   const response = await MDMService.getSeasonalityDetails({
+    //     sc:"QAEF1000",
+    //     sn:"Polo T-Shirt",
+    //     sd: "2024-10-03",
+    //     ed: "2024-11-04",
+    //   })
+    //   expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetSeasonalityDetails`,{
+    //     sc:"QAEF1000",
+    //     sn:"Polo T-Shirt",
+    //     sd: "2024-10-03",
+    //     ed: "2024-11-04",
+    //   },{
+    //     headers: { 'Content-Type': 'application/json' }
+    //   })
+    //   expect(response.status).toBe(200);
+    // });
 
 
   });

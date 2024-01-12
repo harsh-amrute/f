@@ -1004,7 +1004,7 @@ export const getDatesBetween = (startDate:Date, endDate:Date) => {
 
 export const getFormattedDate = (date:Date) => {
   const splitDateArray = date.toDateString().split(' ');
-  return `${splitDateArray[2]} ${splitDateArray[1]}`
+  return `${splitDateArray[2]} ${splitDateArray[1]} ${date.getFullYear()}`
 }
 
 export const generateSesonalityChartData = (row:any,data:any) => {
@@ -1024,7 +1024,9 @@ export const generateSesonalityChartData = (row:any,data:any) => {
   })
   const maxQuantity = Math.max(maxNorm,maxStockAndGit);
   // const xAxisLabels = data.dailyData.map((o:DailyData)=>getFormattedDate(new Date(o.date)));
-  const xAxisLabels = data.dailyData.map((o:DailyData)=>new Date(o.date));
+  const xAxisLabels = getDatesBetween(new Date(data.dailyData[0].date),new Date(row.ed));
+  // const xAxisLabels = genedata.dailyData.map((o:DailyData)=>new Date(o.date));
+  const xAxisLablesFormatted = xAxisLabels.map((date:Date)=>getFormattedDate(date));
   const seasonalityDates = getDatesBetween(new Date(row.sd),new Date(row.ed));
 
   const buildUpDuration = getDatesBetween(subDays(new Date(row.sd),row.bd),new Date(row.sd));
@@ -1067,11 +1069,9 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     pointRadius.push(0)
     return tempNorm;
   })
-
   
-
   const chartData = {
-    labels:xAxisLabels,
+    labels:xAxisLablesFormatted,
     datasets: [
       {
         type: 'line' as const,

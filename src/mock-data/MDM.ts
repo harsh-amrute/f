@@ -1109,6 +1109,13 @@ export const createDraftMockData = {
   msg: null
 }
 
+export const deleteDraftMockData = {
+  recordCount: null,
+  data: '123456QA',
+  status: 201,
+  msg: "Draft Deleted Successfully"
+}
+
 export const getSeasonalityDetailsMockData = {
   recordCount:null,
   data:{
@@ -1224,6 +1231,13 @@ export const getSeasonalityDetailsMockData = {
 },
   status:200,
   msg:null
+}
+
+export const modifyMasterMockData = {
+  recordCount: null,
+  taskId: '123456QA',
+  status: 200,
+  msg: null
 }
 
 export const SeasonalityRowData = {

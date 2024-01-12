@@ -24,13 +24,19 @@ const VFPagination  = (props:VFPaginationProps)=>{
     const getTotalItemsString = () => {
         if(totalRows <= rowsPerPage) return `1-${totalRows}`;
         if(currentPage===1) return `1-${rowsPerPage}`;
-        return `${(currentPage * rowsPerPage)+1}-${(currentPage+1)*rowsPerPage}`;
+        const start = (currentPage * rowsPerPage)-rowsPerPage;
+        const end = (currentPage)*rowsPerPage;
+        if(end >= totalRows) return `${start}-${totalRows}`;
+        return `${start}-${(currentPage)*rowsPerPage}`;
     }
     return(
         <PaginationWrapper data-testid="vf_pagination">
-            <SelectedRowsCountWrapper>
-                Selected {selectedRows} out of {totalRows}
-            </SelectedRowsCountWrapper>
+            {
+                (selectedRows > 0) && <SelectedRowsCountWrapper>
+                                        Selected {selectedRows} out of {totalRows}
+                                      </SelectedRowsCountWrapper>
+            }
+            
             <TotalItemsWrapper>
                 Total Items : {getTotalItemsString()}/{totalRows}
             </TotalItemsWrapper>

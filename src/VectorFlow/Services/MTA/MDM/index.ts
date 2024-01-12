@@ -13,7 +13,9 @@ export const QUERY_KEYS = {
   useDeleteDraft:['MDMService.useDeleteDraft'],
   useGetSeasonalityDetails:['MDMService.useGetSeasonalityDetails'],
   useGetPendingTasks:['MDMService.useGetPendingTasks'],
-  useGetTaskStatusData:['MDMService.useGetTaskStatusData']
+  useGetTaskStatusData:['MDMService.useGetTaskStatusData'],
+  useModifyMasterData:['MDMService.useModifyMasterData'],
+  useDeleteTask:['MDMService.useDeleteTask']
 }
 
 
@@ -100,3 +102,16 @@ export const useRemoveMasterData = ()=>{
     return await MDMService.removeMasterData(body)
   })
 }
+
+export const useModifyMasterData = ()=>{
+  return useMutation(async(body:any)=>{
+    return await MDMService.modifyMasterData(body)
+  })
+}
+
+export const useDeleteTask = ()=>{
+  return useMutation(async(taskId:any)=>{
+    return await MDMService.deleteTask(taskId)
+  })
+}
+

@@ -71,7 +71,7 @@ const DeleteRecord = () => {
         onReset,
         onEditOnlineSave,
         onDeleteOnlineSave,
-        onBackButton
+        onBackButton,
     } = useViewModify('remove');
     
 
@@ -226,9 +226,7 @@ const DeleteRecord = () => {
           <UploadModal 
             openModal={isUploadModalOpen} 
             onCloseModal={()=>{toggleUploadModal(false)}} 
-            onDownload={()=>ref.current?.api.exportDataAsExcel({
-              fileName:downloadFileName.length>0?downloadFileName :activeMaster.name,
-            })} 
+            onDownload={() => exportToExcel(true)} 
             onUpload={()=>{
               onUploadMaster()
             }}

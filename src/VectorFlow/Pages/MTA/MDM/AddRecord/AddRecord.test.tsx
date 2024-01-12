@@ -7,8 +7,8 @@ import { setupReactQuery } from "../../../../../config/react-query-config";
 import { QueryClientProvider } from "@tanstack/react-query"
 import { BrowserRouter as Router } from "react-router-dom"
 import { Provider } from "react-redux"
-import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails } from "../../../../../VectorFlow/Services/MTA/MDM";
-import { getMasterUIConfigurationMockData ,createDraftMockData,MasterData, MasterDataWithSubmittedMaster,getSeasonalityDetailsMockData} from "../../../../../mock-data/MDM";
+import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useDeleteDraft,useModifyMasterData } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { getMasterUIConfigurationMockData ,createDraftMockData,MasterData, MasterDataWithSubmittedMaster,getSeasonalityDetailsMockData,deleteDraftMockData,modifyMasterMockData} from "../../../../../mock-data/MDM";
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
 import {mapMasterToColumnDefs} from '../../../../../helpers/utils'
 
@@ -46,6 +46,14 @@ const useGetSeasonalityDetailsMock = useGetSeasonalityDetails as jest.MockedFunc
 typeof useGetSeasonalityDetails
 >;
 
+const useModifyMasterDataMock = useModifyMasterData as jest.MockedFunction<
+typeof useModifyMasterData
+>;
+
+const useDeleteDraftMock = useDeleteDraft as jest.MockedFunction<
+typeof useDeleteDraft
+>;
+
 window.URL.createObjectURL = jest.fn();
 
 const useMasterDataResult: any = {
@@ -76,6 +84,18 @@ const useModifyDraftMockData :any={
 const useGetSeasonalityDetailsMockData:any = {
   mutateAsync:()=>{
     return {data:getSeasonalityDetailsMockData}
+  }
+}
+
+const useModifyMasterDataMockData:any = {
+  mutateAsync:() => {
+    return {data:modifyMasterMockData}
+  }
+}
+
+const useDeleteDraftMockData:any = {
+  mutateAsync:() => {
+    return {data:deleteDraftMockData}
   }
 }
 
@@ -185,7 +205,8 @@ describe("AddRecord Component", () => {
       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
       isSelectMasterOpen:true,
       draftId:'',
-      isUploadModalOpen:false
+      isUploadModalOpen:false,
+      chunkSize:100
     }
 
     useGetMasterUIConfigurationMock.mockImplementation(()=>{
@@ -211,6 +232,14 @@ describe("AddRecord Component", () => {
 
     useGetSeasonalityDetailsMock.mockImplementation(()=>{
       return useGetSeasonalityDetailsMockData;
+    })
+
+    useModifyMasterDataMock.mockImplementation(() => {
+      return useModifyMasterDataMockData;
+    })
+
+    useDeleteDraftMock.mockImplementation(() => {
+      return useDeleteDraftMockData;
     })
 
     const mockedStore = createStore(mockState)
@@ -309,6 +338,14 @@ describe("Handles all custom redux interactions",()=>{
       return useGetSeasonalityDetailsMockData;
     })
 
+    useModifyMasterDataMock.mockImplementation(() => {
+      return useModifyMasterDataMockData;
+    })
+
+    useDeleteDraftMock.mockImplementation(() => {
+      return useDeleteDraftMockData;
+    })
+
   });
 
   afterEach(()=>{
@@ -323,7 +360,8 @@ describe("Handles all custom redux interactions",()=>{
       activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'submitted',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[]},
       isSelectMasterOpen:false,
       draftId:'',
-      isUploadModalOpen:false
+      isUploadModalOpen:false,
+      chunkSize:100
     }
 
     const mockedStore = createStore(mockState)
@@ -342,7 +380,8 @@ describe("Handles all custom redux interactions",()=>{
       activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'default',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[]},
       isSelectMasterOpen:false,
       draftId:'',
-      isUploadModalOpen:false
+      isUploadModalOpen:false,
+      chunkSize:100
     }
 
     const mockedStore = createStore(mockState)
@@ -361,7 +400,8 @@ describe("Handles all custom redux interactions",()=>{
       activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'default',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[]},
       isSelectMasterOpen:false,
       draftId:'',
-      isUploadModalOpen:false
+      isUploadModalOpen:false,
+      chunkSize:100
     }
 
     const mockedStore = createStore(mockState)

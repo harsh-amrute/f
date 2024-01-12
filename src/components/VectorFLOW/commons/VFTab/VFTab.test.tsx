@@ -46,7 +46,8 @@ describe('View Modify Component', () => {
     activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
     isSelectMasterOpen:true,
     draftId:'',
-    isUploadModalOpen:false
+    isUploadModalOpen:false,
+    chunkSize:100
   }
 
   const themeUi = 'NOIRFUSION';
@@ -136,7 +137,8 @@ describe('View Modify Component', () => {
       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'submitted',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
       isSelectMasterOpen:true,
       draftId:'',
-      isUploadModalOpen:false
+      isUploadModalOpen:false,
+      chunkSize:100
     }
 
     const localMockStore = createStore(localMockState);

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch,useSelector } from "react-redux"
 import { useNavigate } from "react-router"
 import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM"
 import { notifyError, notifyPromise } from "../../../../../helpers/notify"
@@ -7,6 +7,7 @@ import { notifyError, notifyPromise } from "../../../../../helpers/notify"
 import { FILL_MASTERS, SET_DRAFT_ID, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER } from "../../../../../redux/actions/MDM"
 import { createMastersStateFromDraftData, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
 import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
+import type { RootState } from '../../../../../redux/store/store';
 
 const useSavedDrafts = ()=>{
 
@@ -19,6 +20,7 @@ const useSavedDrafts = ()=>{
     const [isDeleteModalOpen,toggleDeleteModal] = useState<boolean>(false)
     const [deleteDraftId,setDeleteDraftId] = useState<string>("");
     const {data,isLoading,refetch} = useGetAllDrafts();
+    const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize)
     const allDrafts = data?.data.data;
   
 
@@ -32,6 +34,8 @@ const useSavedDrafts = ()=>{
     const onEditDraft = async(draftDetails:any)=>{
 
        try{
+        
+        
         const draftData = await getDraftById(draftDetails.DraftId)
 
         const mastersData= await getMasterUIConfiguration(getActionName(draftDetails.ActionType).value)

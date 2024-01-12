@@ -16,7 +16,7 @@ import {
   SCVerticalDivider
  } from "./styles";
  import Checkbox from "../../../../../../components/commons/Checkbox";
- import {enIN} from 'date-fns/locale';
+//  import {enIN} from 'date-fns/locale';
  import { useRef, useState, useEffect } from "react";
 import { DailyData } from "../../../../../types/MDM";
 
@@ -39,9 +39,10 @@ const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,clo
 
   const customTooltip = (context:any)=> {
     const getCurrentDate = () => {
-      const splitDateString = tooltip.dataPoints[0].label.split(',');
-      const currentDate = `${splitDateString[0].split(' ')[1]}-${splitDateString[0].split(' ')[0]}-${splitDateString[1].trim()}`;
-      return currentDate
+      // const splitDateString = tooltip.dataPoints[0].label.split(',');
+      // const currentDate = `${splitDateString[0].split(' ')[1]}-${splitDateString[0].split(' ')[0]}-${splitDateString[1].trim()}`;
+      // return currentDate
+      return tooltip.dataPoints[0].label;
     }
   
     const getCurrentStock = () => {
@@ -154,15 +155,15 @@ const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,clo
     },
     scales:{
       x:{
-        type:'timeseries',
-        time:{
-          unit:'day',
-        },
-        adapters:{
-          date:{
-            locale:enIN
-          }
-        },
+        // type:'timeseries',
+        // time:{
+        //   unit:'day',
+        // },
+        // adapters:{
+        //   date:{
+        //     locale:enIN
+        //   }
+        // },
         title:{
           display:true,
           text:'Date 2023',
