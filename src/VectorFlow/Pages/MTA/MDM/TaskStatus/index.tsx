@@ -11,6 +11,7 @@ import { AgGridReactProps } from "ag-grid-react"
 import { notifyError } from "../../../../../helpers/notify"
 import { ColDef } from "ag-grid-enterprise"
 import { formatMDMDateFromat } from "../../../../../helpers/format"
+import { differenceInDays, format } from "date-fns"
 
 
 const TaskStatus = ()=>{
@@ -69,11 +70,15 @@ const TaskStatus = ()=>{
             PendingSince:formatMDMDateFromat(row.PendingSince)
         }
     })
-
     rowData.sort((a:any,b:any)=>{
-        const date1 = new Date(a.PendingSince)
-        const date2 = new Date(b.PendingSince)
-        return date1.getTime() - date2.getTime()
+       
+       return differenceInDays(b.PendingSince,a.PendingSince) 
+    })
+    rowData = rowData.map((r:any)=>{
+        return {
+            ...r,
+            PendingSince:format(r.PendingSince,'dd/MM/yy hh:mm:ss a')
+        }
     })
 
     if(isLoading){
