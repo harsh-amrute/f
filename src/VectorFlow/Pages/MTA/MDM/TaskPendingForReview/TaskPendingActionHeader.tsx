@@ -12,6 +12,7 @@ const TaskPendingActionHeader = (props:ICellRendererParams)=>{
     const onUnCheckAll = ()=>{
         props.api.forEachNode((rowNode)=>{
             rowNode.setDataValue('status','')
+            rowNode.setSelected(false)
         })
     }
 
@@ -24,6 +25,7 @@ const TaskPendingActionHeader = (props:ICellRendererParams)=>{
         setActionStatus(query)
         props.api.forEachNode((rowNode)=>{
             rowNode.setDataValue('status',query)
+            rowNode.setSelected(true)
         })
         
     }
@@ -42,7 +44,6 @@ const TaskPendingActionHeader = (props:ICellRendererParams)=>{
 
     handleStatusMismatch('Approved');
     handleStatusMismatch('Rejected');
-    console.log('effect')
   }, [props.api])
 
     return( 

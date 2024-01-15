@@ -26,12 +26,20 @@ const useTaskPendingForReview = ()=>{
 
     const showLoader = isLoading || isMasterUiConfigurationLoading || isViewTableLoading
 
+    const resetState = ()=>{
+        setDetailTableColDefs([])
+        setDetailTableRowData([])
+        setRecordCount(0)
+        setSelectedRows(0)
+    }
+
     const handleOnClick = async(taskData:any)=>{
-        setIsViewTableOpen(false)
+    resetState()
+    setIsViewTableOpen(false)
       const response = await getTaskDetails(taskData.TaskID)
       const currentTaskMaster = response.data.data[0]
       const currentTaskMasterId:number = currentTaskMaster.MasterId
-      setRecordCount(currentTaskMaster.data.length)
+    
       setDetailTableRowData(response.data.data)
       
       const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value)
@@ -44,7 +52,7 @@ const useTaskPendingForReview = ()=>{
         const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
         setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,getActionName(taskData.Actiontype).value))
         setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
-        
+        setRecordCount(currentTaskMaster.data.length)
       }
     }
 

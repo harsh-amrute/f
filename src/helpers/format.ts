@@ -207,9 +207,9 @@ export const formatPhoneNumber = (
 
 export function formatMDMDateFromat(inputDate:string) {
 
-  const parsedDate = new Date(inputDate);
+  const parsedDate = new Date(inputDate)
 
-  const formattedDate = format(parsedDate, 'dd/MM/yy hh:mm:ss a');
-
+  const formattedDate = format(parsedDate, 'dd/MMM/yy hh:mm:ss a')
+  
   return formattedDate;
 }

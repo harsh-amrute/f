@@ -7,7 +7,7 @@ import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
-import {subDays,addDays} from 'date-fns';
+import {subDays,addDays,differenceInDays, format} from 'date-fns';
 import { formatMDMDateFromat } from './format';
 
 // clear cached token and redirect to sso login
@@ -592,11 +592,12 @@ export const mapPendingTaskToColumnDefs = (colDefs:ColDef[]):ColDef[]=>{
       filter: "agMultiColumnFilter",
       minWidth:180,
       cellStyle: (params)=>{
-        if(params.colDef.colId ==='TaskName')return{"text-align": "center",'color':'blue','text-decoration':'underline','cursor':'pointer'}
+        if(params.colDef.colId ==='TaskName')return{"text-align": "center",'color':'rgb(188, 61, 129)','text-decoration':'underline','text-underline-offset':'7px','cursor':'pointer'}
         return{
           "text-align": "center",
           'color':'back',
           'text-decoration':'none',
+          'text-underline-offset':'0px',
           'cursor':'auto'
         }
       },
@@ -615,16 +616,16 @@ export const mapRowDataWithSrNo = (rowData:any[])=>{
       PendingSince:formatMDMDateFromat(row.PendingSince)
     }
   })
+
   result.sort((a,b):any=>{
-    const date1 = new Date(a.PendingSince)
-    const date2 = new Date(b.PendingSince)
-    return date1.getTime() - date2.getTime()
+    return differenceInDays(b.PendingSince,a.PendingSince)
   })
 
   result = result.map((row:any,index:number)=>{
     return {
       ...row,
-      SrNo:index + 1
+      SrNo:index + 1,
+      PendingSince:format(row.PendingSince,'dd/MM/yy hh:mm:ss a')
     }
   })
   return result
@@ -640,14 +641,13 @@ export const mapDraftDataToTableRowData = (rowData:any[])=>{
       LastModifiedDateTime:formatMDMDateFromat(row.LastModifiedDateTime)
     }
   })
+
   result.sort((a,b):any=>{
-    const date1 = new Date(a.LastModifiedDateTime)
-    const date2 = new Date(b.LastModifiedDateTime)
-    return date1.getTime() - date2.getTime()
+    return differenceInDays(b.LastModifiedDateTime,a.LastModifiedDateTime)
   })
 
   result = result.map((r:any,index:number)=>{
-    return {...r, sr_no:index + 1}
+    return {...r, sr_no:index + 1,LastModifiedDateTime:format(r.LastModifiedDateTime,'dd/MM/yy hh:mm:ss a')}
   })
   return result
 }
@@ -758,15 +758,17 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
     }
   })
 
-  return [{
-    field:'checkbox',
-    colId:'checkbox',
-    headerName:'',
-    checkboxSelection:true,
-    headerCheckboxSelection:true,
-    headerCheckboxSelectionCurrentPageOnly:true,
-    width:10
-  },...colDefs,...taskPendingCustomColDefs]
+  return [
+  //   {
+  //   field:'checkbox',
+  //   colId:'checkbox',
+  //   headerName:'',
+  //   checkboxSelection:true,
+  //   headerCheckboxSelection:true,
+  //   headerCheckboxSelectionCurrentPageOnly:true,
+  //   width:10
+  // }
+  ...colDefs,...taskPendingCustomColDefs]
 }
 
 export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string):ColGroupDef[] | ColDef[]=>{
