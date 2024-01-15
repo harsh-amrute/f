@@ -16,6 +16,7 @@
   .modal-forced--block{
     width: auto;
     max-width: 90%;
+    min-width: 500px;
   }
 
   @media (min-width: 1024px) and (max-width: 1440px) {

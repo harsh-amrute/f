@@ -250,7 +250,7 @@ const ModalManageUsers = ({
                           {t("profile.tabContent.manageUsers.button.cancel")}
                         </button>
                       </div>
-                    </form>
+                    </form>                
                   </Dialog.Panel>
                 </Transition.Child>
               </div>
