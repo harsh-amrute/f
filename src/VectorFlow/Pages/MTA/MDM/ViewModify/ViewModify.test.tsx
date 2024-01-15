@@ -900,13 +900,10 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     const mockStore = createStore(mockState);
 
-    const mockStoreDispatchSpy = jest.spyOn(mockStore, 'dispatch')
+    // const mockStoreDispatchSpy = jest.spyOn(mockStore, 'dispatch')
 
 
     render(contextWrapper(<ViewModify/>,mockStore));
-
-    screen.logTestingPlaygroundURL();
-
 
     fireEvent.click(screen.getAllByText('Save')[0]); 
 
