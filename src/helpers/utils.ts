@@ -437,7 +437,7 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
     })
     temp = 0;
     const {error,warning} = checkError(rowObj,master,isDelete);
-    // console.log(error);
+    
     if(error !== undefined){
       rowObj.error = error;
     }
@@ -736,7 +736,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
 }
 
 export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string):ColGroupDef[] | ColDef[]=>{
-  console.log(masterId)
+
   const colDefs =  existingColumnsFields.map((f:Field)=>{
 
 
@@ -862,8 +862,8 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
 });
 }
 
-export const mapTaskStatusDataToRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string,masterId:number)=>{
-  console.log(masterId)
+export const mapTaskStatusDataToRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string)=>{
+
   return dirtyRowData.map(entry => {
 
     if(taskType==='modify'){

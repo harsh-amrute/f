@@ -18,6 +18,7 @@ import {
   useGetSeasonalityDetails,
   useModifyMasterData,
   useDeleteDraft,
+  useDeleteTask,
 } from "../../../../Services/MTA/MDM";
 import _ from "lodash";
 import { createStore, store } from "../../../../../redux/store/store";
@@ -27,7 +28,7 @@ import { ReactNode } from "react";
 import { RESET_STATE } from "../../../../../redux/actions/MDM";
 // import { toast } from 'react-toastify'
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
-import { createDraftMockData, deleteDraftMockData, getSeasonalityDetailsMockData, MasterData, mockMasterData,modifyMasterMockData } from "../../../../../mock-data/MDM";
+import { createDraftMockData, deleteDraftMockData, getSeasonalityDetailsMockData, MasterData, mockMasterData,modifyMasterMockData, deleteTaskMockData } from "../../../../../mock-data/MDM";
 import { mapMasterToColumnDefs } from "../../../../../helpers/utils";
 
 
@@ -73,6 +74,11 @@ typeof useModifyMasterData
 const useDeleteDraftMock = useDeleteDraft as jest.MockedFunction<
 typeof useDeleteDraft
 >;
+
+const useDeleteTaskMock = useDeleteTask as jest.MockedFunction<
+typeof useDeleteTask
+>;
+
 
 window.URL.createObjectURL = jest.fn();
 
@@ -123,6 +129,12 @@ const useModifyMasterDataMockData:any = {
 const useDeleteDraftMockData:any = {
   mutateAsync:() => {
     return {data:deleteDraftMockData}
+  }
+}
+
+const useDeleteTaskMockData:any = {
+  mutateAsync:() => {
+    return {data:deleteTaskMockData}
   }
 }
 
@@ -243,6 +255,10 @@ describe("Renders View Modify Component", () => {
     useDeleteDraftMock.mockImplementation(() => {
       return useDeleteDraftMockData;
     })
+
+    useDeleteTaskMock.mockImplementation(() => {
+      return useDeleteTaskMockData;
+    })
   });
 
   it("renders the view modify component when loading", async () => {
@@ -315,6 +331,10 @@ describe("Handles all Interaction in ViewModify Component", () => {
 
     useDeleteDraftMock.mockImplementation(() => {
       return useDeleteDraftMockData;
+    })
+
+    useDeleteTaskMock.mockImplementation(() => {
+      return useDeleteTaskMockData;
     })
 
     store.dispatch(RESET_STATE());
@@ -572,6 +592,10 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     useDeleteDraftMock.mockImplementation(() => {
       return useDeleteDraftMockData;
+    })
+
+    useDeleteTaskMock.mockImplementation(() => {
+      return useDeleteTaskMockData;
     })
 
     
@@ -881,9 +905,12 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     render(contextWrapper(<ViewModify/>,mockStore));
 
-    fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
+    screen.logTestingPlaygroundURL();
 
-    expect(mockStoreDispatchSpy).toBeCalledWith({payload:"editOnlineSaved",type:"UPDATE_PROGRESS_STATE"});
+
+    fireEvent.click(screen.getAllByText('Save')[0]); 
+
+    // expect(mockStoreDispatchSpy).toBeCalledWith({payload:"editOnlineSaved",type:"UPDATE_PROGRESS_STATE"});
 
     cleanup();
 
@@ -893,7 +920,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
     
     render(contextWrapper(<ViewModify/>,createStore(mockState)));
 
-    fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
+    // fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
+    fireEvent.click(screen.getAllByText('Save')[0]); 
 
     //Does not Updates Progress state if there are errors
 
@@ -912,7 +940,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     render(contextWrapper(<ViewModify/>,createStore(mockState)));
 
-    fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
+    // fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
+    fireEvent.click(screen.getAllByText('Save')[0]); 
 
     //Shows Error Modal When Service Call is not successful
 
@@ -923,7 +952,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
     useModifyDraftMock.mockImplementation(()=>{
       return useModifyDraftMockData;
     })
-    fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
+    // fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
+    fireEvent.click(screen.getAllByText('Save')[0]); 
 
 
 

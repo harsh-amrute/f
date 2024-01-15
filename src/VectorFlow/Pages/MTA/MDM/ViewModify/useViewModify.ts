@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useDeleteDraft } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useDeleteDraft, useDeleteTask } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -14,6 +14,7 @@ import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCel
 import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
+
 
 const useViewModify = (pageType:string) => {
 
@@ -78,6 +79,8 @@ const useViewModify = (pageType:string) => {
     const {mutateAsync:deleteDraft} = useDeleteDraft()
 
     const {mutateAsync:modifyMaster} = useModifyMasterData();
+
+    const {mutateAsync:deleteTask} = useDeleteTask();
 
 
     // const chunkSize = 100;
@@ -593,7 +596,7 @@ const useViewModify = (pageType:string) => {
           if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
           else toast.update(toastId,{render:`Downloading Data ${i*rowsPerPage} / ${recordCount}`})
         }
-          
+
         dispatch(UPDATE_ROW_DATA(rows));
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         setDownloadData(true);
@@ -672,51 +675,76 @@ const useViewModify = (pageType:string) => {
 
       }
 
-      const postMasterDataChunks = async () => { 
+      const postMasterDataChunks = async (rowData:any) => { 
+        let taskId = '';
+        let toastId:any = '';
         try {
-          const payload = {
+          let submitProgress = 0;
+          const payload:any = {
             id:activeMaster.id,
             action:"",
-            data:activeMaster.rowData
+            taskId:"",
+            isOverwrite:false,
+            data:[]
           }
-          const result = await modifyMaster(payload);
-          if(result.data.status === 200){
-            return true
+
+          toastId = notifyLoader(`Submitting Data ${submitProgress}/${activeMaster.rowData.length}`);
+
+          for(let i=0; i < rowData.length; i+=chunkSize){
+          
+              if(i+chunkSize < rowData.length){
+                payload.data = activeMaster.rowData.slice(i,i+chunkSize);
+                toast.update(toastId,{render:`Submitting Data ${i+chunkSize}/${rowData.length}`})
+                submitProgress+=chunkSize;
+              }
+              else{
+                payload.data = rowData.slice(i)
+                await modifyMaster(payload);
+                toast.update(toastId,{render:`Submitting Data ${rowData.length}/${rowData.length}`})
+              }
+              const data:any = await modifyMaster(payload); 
+              payload.taskId = data.data.taskId;
+              taskId = data.data.taskId;
+            }
+            toast.dismiss(toastId);
+            return true;  
+            
           }
-          return false;  
-        } catch (error) {
+         catch (error) {
           notifyError("Something Went Wrong");
+          if(taskId.length > 0){
+            await deleteTask(taskId);
+          }
+          toast.dismiss(toastId)
           return false;
         }
       }
-
-      
+          
 
       const onSubmit = async() => {
-
 
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
 
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
       
         dispatch(REMOVE_COLDEFS(['checkbox']));
-
-        const submitLoader = notifyLoader("Submitting the Data")
+        let result;
 
         if(activeMaster.progress === 'editOnlineSaved'){
-          await postMasterDataChunks();
-          dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
-          toast.dismiss(submitLoader)
+          result = await postMasterDataChunks(activeMaster.rowData);
+          if(result) dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
 
         }
         else{
-          await postMasterDataChunks();
-          dispatch(UPDATE_PROGRESS_STATE('submitted'));
-          toast.dismiss(submitLoader)
+          result = await postMasterDataChunks(activeMaster.rowData);
+          if(result) dispatch(UPDATE_PROGRESS_STATE('submitted'));
         }
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-        notifySuccess(`Modifications Submitted Successfully`);
-        setSelectedRowsCount(0);
+        if(result){
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          notifySuccess(`Modifications Submitted Successfully`);
+          setSelectedRowsCount(0);
+        }
+        
       }
 
       
@@ -794,6 +822,7 @@ const useViewModify = (pageType:string) => {
         //Cleanup errors if any and provide clean copy to check again.
         //PS - Worked in tight deadline plz optimize whenever possible.
         dispatch(REMOVE_COLDEFS(['error','warning']));
+
         const rowData = data.map((row:any)=>{
           if(row.error || row.warning){
             return _.omit(row,'error','warning');
@@ -814,8 +843,12 @@ const useViewModify = (pageType:string) => {
           if(warning){
             rowClone.warning = warning;
           }
+          else{
+            rowClone.warning = '';
+          }
           return rowClone;
         });
+        
         const isErrorPresent = newData.find((row:any)=>row.error);
         const isWarningPresent = newData.find((row:any)=>row.warning);
         if(isErrorPresent){
@@ -829,12 +862,16 @@ const useViewModify = (pageType:string) => {
         // if(isErrorPresent || isWarningPresent){
         //   return notifyError("Invalid Data Found. Please Clear all the errors and warnings before proceeding");
         // } 
+        return newData;
       }
 
       const onEditOnlineSave = ()=>{
         onSaveToDraft();
-        const isErrorPresent = activeMaster.colDefs.find((col:ColDef)=>col.colId==='error');
-        const isWarningPresent = activeMaster.colDefs.find((col:ColDef)=>col.colId==='warning');
+        const result = validateEditOnlineData(activeMaster.rowData);
+        
+        const isErrorPresent = result.find((row:any)=>row.error.length > 0);
+        const isWarningPresent = result.find((row:any)=>row.warning.length > 0);
+      
         if(isErrorPresent || isWarningPresent){
           return notifyError("Please Clear All Errors before submit")
         }

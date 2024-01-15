@@ -1116,6 +1116,13 @@ export const deleteDraftMockData = {
   msg: "Draft Deleted Successfully"
 }
 
+export const deleteTaskMockData = {
+  recordCount: null,
+  data: '123456QA',
+  status: 200,
+  msg: "Task Deleted Successfully"
+}
+
 export const getSeasonalityDetailsMockData = {
   recordCount:null,
   data:{
