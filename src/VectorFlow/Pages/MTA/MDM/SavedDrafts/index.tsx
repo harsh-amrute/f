@@ -26,7 +26,6 @@ const SavedDrafts = ()=>{
     isLoading
   } = useSavedDrafts()
 
-
   if(isLoading){
     return <VFLoader/>
   }

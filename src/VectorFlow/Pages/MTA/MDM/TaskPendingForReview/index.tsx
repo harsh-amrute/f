@@ -22,7 +22,8 @@ const TaskPendingForReview = ()=>{
         currentPage,
         rowsPerPage,
         handleChangePage,
-        onCancel
+        onCancel,
+        setSelectedRows
     } = useTaskPendingForReview()
 
 
@@ -63,7 +64,13 @@ const TaskPendingForReview = ()=>{
                 }}
                 rowData={detailTableRowData}
                 rowSelection='multiple'
-                // onSelectionChanged={()=>setSelectedRows(ref.current.api.getSelectedRows().length)}
+                suppressRowClickSelection
+                onSelectionChanged={()=>{
+                    if(ref && ref.current){
+                        setSelectedRows(ref.current.api.getSelectedRows().length)
+                    }
+                    
+                }}
             />
             <VFPagination
                 selectedRows={selectedRows}
@@ -74,6 +81,7 @@ const TaskPendingForReview = ()=>{
 
             />
             <TaskPendingTaskBar
+                disableSubmit={selectedRows==0}
                 onCancel={onCancel}
                 onSubmit={()=>console.log('')}
             />

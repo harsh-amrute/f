@@ -1,4 +1,6 @@
 import { DateTime } from 'luxon'
+
+import {format} from 'date-fns'
 export const DEFAULT_DATE_FORMAT = 'dd MMM yyyy'
 export const DEFAULT_DATE_TIME_FORMAT = 'dd MMM yy, HH:mm'
 export const DEFAULT_TIME_FORMAT = 'HH:mm'
@@ -200,4 +202,14 @@ export const formatPhoneNumber = (
     return `${telcoCode}${number}`
   }
   return `(${telcoCode}) ${number}`
+}
+
+
+export function formatMDMDateFromat(inputDate:string) {
+
+  const parsedDate = new Date(inputDate)
+
+  const formattedDate = format(parsedDate, 'dd/MMM/yy hh:mm:ss a')
+  
+  return formattedDate;
 }

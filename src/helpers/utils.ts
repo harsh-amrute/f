@@ -7,7 +7,8 @@ import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
-import {subDays,addDays} from 'date-fns';
+import {subDays,addDays,differenceInDays, format} from 'date-fns';
+import { formatMDMDateFromat } from './format';
 
 // clear cached token and redirect to sso login
 
@@ -554,6 +555,7 @@ export const mapDraftToColumnDefs = (fields:Field[],customParams?:ColDef)=>{
       colId:f.key,
       headerName:f.displayName,
       minWidth:180,
+
       cellStyle: {
         "textAlign": "center",
       },
@@ -582,13 +584,24 @@ export const mapTaskStatusToColDefs = (taskStatus:ColDef[])=>{
   return result
 }
 
-export const mapPendingTaskToColumnDefs = (colDefs:ColDef[])=>{
+export const mapPendingTaskToColumnDefs = (colDefs:ColDef[]):ColDef[]=>{
   return colDefs.map((colDef:ColDef)=>{
     return{
       ...colDef,
       floatingFilter: true,
       filter: "agMultiColumnFilter",
-      ...defaultColDefs
+      minWidth:180,
+      cellStyle: (params)=>{
+        if(params.colDef.colId ==='TaskName')return{"text-align": "center",'color':'rgb(188, 61, 129)','text-decoration':'underline','text-underline-offset':'7px','cursor':'pointer'}
+        return{
+          "text-align": "center",
+          'color':'back',
+          'text-decoration':'none',
+          'text-underline-offset':'0px',
+          'cursor':'auto'
+        }
+      },
+      flex: 1,
     }
   })
 }
@@ -596,10 +609,23 @@ export const mapPendingTaskToColumnDefs = (colDefs:ColDef[])=>{
 export const mapRowDataWithSrNo = (rowData:any[])=>{
   let result = []
   if(!rowData)return []
-  result  = rowData.map((row,index)=>{
+
+  result  = rowData.map((row)=>{
     return{
       ...row,
-      SrNo:index + 1
+      PendingSince:formatMDMDateFromat(row.PendingSince)
+    }
+  })
+
+  result.sort((a,b):any=>{
+    return differenceInDays(b.PendingSince,a.PendingSince)
+  })
+
+  result = result.map((row:any,index:number)=>{
+    return {
+      ...row,
+      SrNo:index + 1,
+      PendingSince:format(row.PendingSince,'dd/MM/yy hh:mm:ss a')
     }
   })
   return result
@@ -609,11 +635,19 @@ export const mapRowDataWithSrNo = (rowData:any[])=>{
 export const mapDraftDataToTableRowData = (rowData:any[])=>{
   let result = []
   if(!rowData)return
-  result  = rowData.map((row,index)=>{
+  result  = rowData.map((row)=>{
     return{
       ...row,
-      sr_no:index + 1
+      LastModifiedDateTime:formatMDMDateFromat(row.LastModifiedDateTime)
     }
+  })
+
+  result.sort((a,b):any=>{
+    return differenceInDays(b.LastModifiedDateTime,a.LastModifiedDateTime)
+  })
+
+  result = result.map((r:any,index:number)=>{
+    return {...r, sr_no:index + 1,LastModifiedDateTime:format(r.LastModifiedDateTime,'dd/MM/yy hh:mm:ss a')}
   })
   return result
 }
@@ -724,15 +758,17 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
     }
   })
 
-  return [{
-    field:'checkbox',
-    colId:'checkbox',
-    headerName:'',
-    checkboxSelection:true,
-    headerCheckboxSelection:true,
-    headerCheckboxSelectionCurrentPageOnly:true,
-    width:10
-  },...colDefs,...taskPendingCustomColDefs]
+  return [
+  //   {
+  //   field:'checkbox',
+  //   colId:'checkbox',
+  //   headerName:'',
+  //   checkboxSelection:true,
+  //   headerCheckboxSelection:true,
+  //   headerCheckboxSelectionCurrentPageOnly:true,
+  //   width:10
+  // }
+  ...colDefs,...taskPendingCustomColDefs]
 }
 
 export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string):ColGroupDef[] | ColDef[]=>{

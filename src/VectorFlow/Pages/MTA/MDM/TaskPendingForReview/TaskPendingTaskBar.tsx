@@ -6,13 +6,15 @@ import { useUserData } from "../../../../../context"
 interface TaskPendingTaskBarProps{
     onSubmit:()=>void
     onCancel:()=>void
+    disableSubmit:boolean
 }
 
 const TaskPendingTaskBar = (props:TaskPendingTaskBarProps) =>{
 
     const {
         onCancel,
-        onSubmit
+        onSubmit,
+        disableSubmit
     } = props
 
     const {user} = useUserData()
@@ -22,7 +24,7 @@ const TaskPendingTaskBar = (props:TaskPendingTaskBarProps) =>{
             <VFButtonOutline onClick={onCancel} themeUi={user.user.theme_ui} disabled={false} width={137}>
                 Cancel
             </VFButtonOutline>            
-            <VFButton onClick={onSubmit} themeUi={user.user.theme_ui} disabled={false} width={137}>
+            <VFButton onClick={onSubmit} themeUi={user.user.theme_ui} disabled={disableSubmit} width={137}>
                Submit
             </VFButton>
         </TaskBarContainer>
