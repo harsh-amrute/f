@@ -80,7 +80,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         normChangeData,
         toggleSeasonalityChartModal,
         onSeasonalityQuickFilter,
-        tempRowData,
+        seasonalityRowData,
 
     } = useViewModify('modify');
     
@@ -252,7 +252,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
             isModalOpen={isSeasonalityChartModalOpen}
             closeModal={()=>toggleSeasonalityChartModal(false)}
             chartData={chartData}
-            rowData={tempRowData}
+            rowData={seasonalityRowData}
             normChangeData={normChangeData}
 
           />

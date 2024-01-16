@@ -53,7 +53,7 @@ export namespace MDMService {
   }
 
   export const getSeasonalityDetails = async (body:any) => {
-    return await axios.post('https://2cfc61ae-927a-4577-8843-ee38dfb26302.mock.pstmn.io/seasonality-detail',body,{
+    return await axios.post('https://2cfc61ae-927a-4577-8843-ee38dfb26302.mock.pstmn.io/GetSeasonalityDetails',body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }
@@ -87,4 +87,17 @@ export namespace MDMService {
       headers: { 'Content-Type': 'application/json' }
     })
   }
+
+  export const modifyMasterData = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + '/ModifyMasterData',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+
+export const deleteTask = async(taskId:any)=>{
+  return await axios.delete(process.env.REACT_APP_VF_API_HOST + '/DeleteTask',{params:{taskId}})
 }
+
+}
+

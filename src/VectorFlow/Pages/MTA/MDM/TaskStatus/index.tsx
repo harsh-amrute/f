@@ -55,7 +55,7 @@ const TaskStatus = ()=>{
           const existingColumns = getExistingColumns(payload.Actiontype==2?JSON.parse(currentTaskMaster.data[0].new):currentTaskMaster.data[0])
           const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields.fields)
           setTempAgGridColDefs(mapMasterToTaskStatusColumnGroupDefs(existingColumnFields,currentTaskMasterId,actionName))
-          setTempAgridRowData(mapTaskStatusDataToRowData(currentTaskMaster.data,existingColumnFields,actionName,currentTaskMasterId))
+          setTempAgridRowData(mapTaskStatusDataToRowData(currentTaskMaster.data,existingColumnFields,actionName))
           setTempDownloadData(true)
         }
        }catch(error:any){

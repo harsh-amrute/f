@@ -6,8 +6,8 @@ import { setupReactQuery } from "../../../../../config/react-query-config";
 import { QueryClientProvider } from "@tanstack/react-query"
 import { BrowserRouter as Router } from "react-router-dom"
 import { Provider } from "react-redux"
-import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useRemoveMasterData } from "../../../../../VectorFlow/Services/MTA/MDM";
-import { getMasterUIConfigurationMockData ,createDraftMockData,MasterData, MasterDataWithSubmittedMaster,getSeasonalityDetailsMockData, mockMasterData} from "../../../../../mock-data/MDM";
+import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useRemoveMasterData,useDeleteDraft, useModifyMasterData, useDeleteTask } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { getMasterUIConfigurationMockData ,createDraftMockData,MasterData, MasterDataWithSubmittedMaster,getSeasonalityDetailsMockData, mockMasterData,deleteDraftMockData,modifyMasterMockData, deleteTaskMockData} from "../../../../../mock-data/MDM";
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
 import {mapMasterToColumnDefs} from '../../../../../helpers/utils'
 import DeleteRecord from ".";
@@ -50,6 +50,18 @@ const useRemoveMasterDataMock = useRemoveMasterData as jest.MockedFunction<
 typeof useRemoveMasterData
 >;
 
+const useModifyMasterDataMock = useModifyMasterData as jest.MockedFunction<
+typeof useModifyMasterData
+>;
+
+const useDeleteDraftMock = useDeleteDraft as jest.MockedFunction<
+typeof useDeleteDraft
+>;
+
+const useDeleteTaskMock = useDeleteTask as jest.MockedFunction<
+typeof useDeleteTask
+>;
+
 window.URL.createObjectURL = jest.fn();
 
 const useMasterDataResult: any = {
@@ -89,7 +101,25 @@ const useRemoveMasterDataMockData:any = {
     }
   }
 
+  const useModifyMasterDataMockData:any = {
+    mutateAsync:() => {
+      return {data:modifyMasterMockData}
+    }
+  }
 
+
+
+  const useDeleteDraftMockData:any = {
+    mutateAsync:() => {
+      return {data:deleteDraftMockData}
+    }
+  }
+
+  const useDeleteTaskMockData:any = {
+    mutateAsync:() => {
+      return {data:deleteTaskMockData}
+    }
+  }
 const queryClient = setupReactQuery()
 
 const contextWrapper = (children: ReactNode,store:any) => {
@@ -126,7 +156,8 @@ describe("DeleteRecord Component", () => {
       activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
       isSelectMasterOpen:true,
       draftId:'',
-      isUploadModalOpen:false
+      isUploadModalOpen:false,
+      chunkSize:100
     }
 
     useGetMasterUIConfigurationMock.mockImplementation(()=>{
@@ -157,6 +188,18 @@ describe("DeleteRecord Component", () => {
     useRemoveMasterDataMock.mockImplementation(()=>{
         return useRemoveMasterDataMockData;
       })
+
+    useDeleteDraftMock.mockImplementation(() => {
+      return useDeleteDraftMockData;
+    })
+
+    useModifyMasterDataMock.mockImplementation(() => {
+      return useModifyMasterDataMockData;
+    })
+
+    useDeleteTaskMock.mockImplementation(() => {
+      return useDeleteTaskMockData;
+    })
 
     const mockedStore = createStore(mockState)
 
@@ -258,6 +301,18 @@ describe("Handles all custom redux interactions",()=>{
         return useRemoveMasterDataMockData;
       })
 
+    useModifyMasterDataMock.mockImplementation(() => {
+      return useModifyMasterDataMockData;
+    })
+
+    useDeleteDraftMock.mockImplementation(() => {
+      return useDeleteDraftMockData;
+    })
+
+    useDeleteTaskMock.mockImplementation(() => {
+      return useDeleteTaskMockData;
+    })
+
   });
 
   afterEach(()=>{
@@ -272,7 +327,8 @@ describe("Handles all custom redux interactions",()=>{
       activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'submitted',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[]},
       isSelectMasterOpen:false,
       draftId:'',
-      isUploadModalOpen:false
+      isUploadModalOpen:false,
+      chunkSize:100
     }
 
     const mockedStore = createStore(mockState)
@@ -291,7 +347,8 @@ describe("Handles all custom redux interactions",()=>{
       activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'default',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[]},
       isSelectMasterOpen:false,
       draftId:'',
-      isUploadModalOpen:false
+      isUploadModalOpen:false,
+      chunkSize:100
     }
 
     const mockedStore = createStore(mockState)
@@ -310,7 +367,8 @@ describe("Handles all custom redux interactions",()=>{
       activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'default',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[]},
       isSelectMasterOpen:false,
       draftId:'',
-      isUploadModalOpen:false
+      isUploadModalOpen:false,
+      chunkSize:100
     }
 
     const mockedStore = createStore(mockState)
@@ -329,7 +387,8 @@ describe("Handles all custom redux interactions",()=>{
       activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'deleteOnline',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:mockMasterData.data},
       isSelectMasterOpen:false,
       draftId:'',
-      isUploadModalOpen:false
+      isUploadModalOpen:false,
+      chunkSize:100
     }
 
     const mockedStore = createStore(mockState)

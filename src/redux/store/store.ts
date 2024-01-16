@@ -10,7 +10,8 @@ const initialState:MDMStore = {
     activeMaster:{id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[]},
     isSelectMasterOpen:true,
     draftId:'',
-    isUploadModalOpen:false
+    isUploadModalOpen:false,
+    chunkSize:100
 }
 
 export const createStore = (initialState:MDMStore) => configureStore({

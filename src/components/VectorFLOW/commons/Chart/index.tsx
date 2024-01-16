@@ -15,7 +15,8 @@ import {
   Filler,
   TimeSeriesScale,
 } from 'chart.js';
-import 'chartjs-adapter-date-fns';
+// import 'chartjs-adapter-date-fns';
+// require('chartjs-adapter-date-fns');
 import { forwardRef } from 'react';
 import { Chart as ReactChart} from 'react-chartjs-2';
 

@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useDeleteDraft, useDeleteTask } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -15,6 +15,7 @@ import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../.
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 
+
 const useViewModify = (pageType:string) => {
 
     const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const useViewModify = (pageType:string) => {
     const isSelectMasterOpen = useSelector((state:RootState) => state.mdm.isSelectMasterOpen);
     const isUploadModalOpen = useSelector((state:RootState)=>state.mdm.isUploadModalOpen)
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
+    const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize)
 
     const [allMastersState,setAllMasterState] = useState<MDMMasterState[]>([])
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
@@ -55,6 +57,7 @@ const useViewModify = (pageType:string) => {
     const [tempGridData,setTempGridData] = useState<object[]>([]);
 
     const [filterButtonStatus,setFilterButtonStatus] = useState<Array<number>>([]);
+    const [seasonalityRowData,setSeasonalityRowData] = useState<any>([]);
 
     const {mutateAsync:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
 
@@ -71,23 +74,32 @@ const useViewModify = (pageType:string) => {
 
     const {mutateAsync:createDraft} = useCreateDraft()
 
-    const {mutateAsync:modifyDraft} = useModifyDraft()
+    const {mutateAsync:modifyDraft} = useModifyDraft();
+
+    const {mutateAsync:deleteDraft} = useDeleteDraft()
+
+    const {mutateAsync:modifyMaster} = useModifyMasterData();
+
+    const {mutateAsync:deleteTask} = useDeleteTask();
+
+
+    // const chunkSize = 100;
 
 
     // const colDefs = activeMaster.colDefs
 
-    const tempRowData = {
-      sc:"V9I004615P1L001",
-      wc:"3017",
-      skd:"T Shirt",
-      sd:"5/05/2023",
-      ed:"5/20/2023",
-      ln:"Bangalore",
-      tn:"300",
-      bd:"7",
-      onm:'50',
-      r:"10"
-    }
+    // const tempRowData = {
+    //   sc:"V9I004615P1L001",
+    //   wc:"3017",
+    //   skd:"T Shirt",
+    //   sd:"5/05/2023",
+    //   ed:"5/20/2023",
+    //   ln:"Bangalore",
+    //   tn:"300",
+    //   bd:"7",
+    //   onm:'50',
+    //   r:"10"
+    // }
 
     const invalidDataColdefs:ColDef[] = [
       {
@@ -371,7 +383,7 @@ const useViewModify = (pageType:string) => {
       
     }
 
-    const generateDraftPayload = ()=>{
+    const generateDraftPayload = (rowData:any,draftId?:string)=>{
       const pathName = window.location.pathname.split('/')
       let instanceName = ''
       masters.map((master:MDMMasterState)=>{
@@ -381,13 +393,13 @@ const useViewModify = (pageType:string) => {
         instanceName:instanceName,
         searchKey:activeMaster.name,
         actionType:getActionId(pathName[pathName.length-1]).id,
-        draftId:draftID,
+        draftId:draftId,
         draftData:masters.map((master:MDMMasterState)=>{
           return {
             masterId:master.id,
             status:master.progress,
             gridState:master.id===activeMaster.id?JSON.stringify(activeMaster.colDefs):'',
-            dataMaster:master.id===activeMaster.id?activeMaster.rowData:[]
+            dataMaster:master.id===activeMaster.id?rowData:[]
           }
         })
       }
@@ -557,6 +569,7 @@ const useViewModify = (pageType:string) => {
            else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
             addCheckBoxColDefs();
           }
+  
           setRecordCount(result.length)
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
@@ -576,15 +589,26 @@ const useViewModify = (pageType:string) => {
         const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
       
         const payloadFields:any = getCurrentVisbileColumns();
-        const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:false,pagination:false}); 
-        dispatch(UPDATE_ROW_DATA(result.data.data));
+        const numberOfPages = Math.ceil(recordCount/rowsPerPage);
+        const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
+        const rows = [];
+        for(let i=1; i<=numberOfPages; i++){
+          const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:false,pagination:true,currentPage:i});
+          rows.push(...result.data.data)
+          if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
+          else toast.update(toastId,{render:`Downloading Data ${i*rowsPerPage} / ${recordCount}`})
+        }
+
+        dispatch(UPDATE_ROW_DATA(rows));
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         setDownloadData(true);
+        toast.dismiss(toastId);
         if(fromUploadModal){
           setIsUploadButtonDisabled(false);
           notifySuccess(`Data Downloaded Successfully`);
           return
         }
+
         notifySuccess(`Data Exported Successfully`);
       }
 
@@ -601,10 +625,13 @@ const useViewModify = (pageType:string) => {
         });
         setTempGridData(erroneusData);
         setTempDownloadData(true);
+        
+        dispatch(UPDATE_ROW_DATA(validData));
+        
         dispatch(REMOVE_COLDEFS(['error','warning']));
         addCheckBoxColDefs();
-       if(pageType==='remove') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-       else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+        if(pageType==='remove') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+        else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         
       }
@@ -625,6 +652,7 @@ const useViewModify = (pageType:string) => {
       }
 
       const handleChangePage = async (pageNo:any) => {
+        console.log(pageNo);
         setCurrentPage(pageNo);
         setIsTableDataLoading(true)
         if(activeMaster.rowData.length > rowsPerPage){
@@ -645,26 +673,80 @@ const useViewModify = (pageType:string) => {
         
         dispatch(UPDATE_ROW_DATA(result.data.data));
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-        setIsTableDataLoading(false)
-
-
+        setIsTableDataLoading(false);
 
       }
 
+      const postMasterDataChunks = async (rowData:any) => { 
+        let taskId = '';
+        let toastId:any = '';
+        try {
+          let submitProgress = 0;
+          const payload:any = {
+            id:activeMaster.id,
+            action:"",
+            taskId:"",
+            isOverwrite:false,
+            data:[]
+          }
+
+          toastId = notifyLoader(`Submitting Data ${submitProgress}/${activeMaster.rowData.length}`);
+
+          for(let i=0; i < rowData.length; i+=chunkSize){
+          
+              if(i+chunkSize < rowData.length){
+                payload.data = activeMaster.rowData.slice(i,i+chunkSize);
+                toast.update(toastId,{render:`Submitting Data ${i+chunkSize}/${rowData.length}`})
+                submitProgress+=chunkSize;
+              }
+              else{
+                payload.data = rowData.slice(i)
+                await modifyMaster(payload);
+                toast.update(toastId,{render:`Submitting Data ${rowData.length}/${rowData.length}`})
+              }
+              const data:any = await modifyMaster(payload); 
+              payload.taskId = data.data.taskId;
+              taskId = data.data.taskId;
+            }
+            toast.dismiss(toastId);
+            return true;  
+            
+          }
+         catch (error) {
+          notifyError("Something Went Wrong");
+          if(taskId.length > 0){
+            await deleteTask(taskId);
+          }
+          toast.dismiss(toastId)
+          return false;
+        }
+      }
+          
+
       const onSubmit = async() => {
+
+        if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
 
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
       
         dispatch(REMOVE_COLDEFS(['checkbox']));
+        let result;
+
         if(activeMaster.progress === 'editOnlineSaved'){
-          dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
+          result = await postMasterDataChunks(activeMaster.rowData);
+          if(result) dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
+
         }
         else{
-          dispatch(UPDATE_PROGRESS_STATE('submitted'));
+          result = await postMasterDataChunks(activeMaster.rowData);
+          if(result) dispatch(UPDATE_PROGRESS_STATE('submitted'));
         }
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-        notifySuccess(`Modifications Submitted Successfully`);
-        setSelectedRowsCount(0);
+        if(result){
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          notifySuccess(`Modifications Submitted Successfully`);
+          setSelectedRowsCount(0);
+        }
+        
       }
 
       
@@ -680,26 +762,57 @@ const useViewModify = (pageType:string) => {
         if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
       }
 
-      const onSaveToDraft = async()=>{
+      const postDraftChunks = async (rowData:any) => {
+        let draftId = '';
+        let chunkProgress = 0;
+        let toastId;
         try {
-          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
-          const toastId = notifyLoader('Creating Draft');
-          if(draftID.length > 0){
-            await modifyDraft(generateDraftPayload())
-            toast.dismiss(toastId);
-            return toast.success("Draft Updated Successfully")
+          toastId = notifyLoader(`Creating Draft ${chunkProgress}/${activeMaster.rowData.length}`);
+          for(let i=0; i < rowData.length; i+=chunkSize){
+            if(draftId.length > 0){
+              if(i+chunkSize < rowData.length){
+                await modifyDraft(generateDraftPayload(rowData.slice(i,i+chunkSize),draftId));
+                toast.update(toastId,{render:`Uploading ${i+chunkSize}/${rowData.length}`})
+                chunkProgress+=chunkSize;
+              }
+              else{
+                await modifyDraft(generateDraftPayload(rowData.slice(i),draftId))
+                toast.update(toastId,{render:`Uploading ${rowData.length}/${rowData.length}`})
+                
+              }
+            }
+            else{
+              const data:any =  await createDraft(generateDraftPayload(rowData.slice(0,chunkSize)));
+              draftId = data.data.data;
+              dispatch(SET_DRAFT_ID(data.data.data))
+            } 
           }
-
-          const data:any =  await createDraft(generateDraftPayload())
-          dispatch(SET_DRAFT_ID(data.data.data))
-          toast.dismiss(toastId);
-          return toast.success("Draft Created Successfully");
+          toast.dismiss(toastId)
+          return true; 
         } catch (error) {
-          toast.dismiss();
-          return toast.error("Something Went Wrong");
+          if(draftId.length > 0){
+            await deleteDraft(draftId)
+          }
+          toast.dismiss(toastId);
+          return false
         }
+
       }
 
+      const onSaveToDraft = async () => {
+          const res = await postDraftChunks(activeMaster.rowData)
+          if(res){
+            if(draftID.length > 0){
+              return toast.success("Draft Updated Successfully")
+            }
+            else{
+              return toast.success("Draft Created Successfully")
+            }
+          }
+          return notifyError("Something Went Wrong")
+      }
+
+     
       const onReset = () => {
         const currentMasterData = masters.find((master:MDMMasterState)=>master.id === activeMaster.id)
         if(currentMasterData) dispatch(UPDATE_ROW_DATA(currentMasterData.rowData))
@@ -711,6 +824,7 @@ const useViewModify = (pageType:string) => {
         //Cleanup errors if any and provide clean copy to check again.
         //PS - Worked in tight deadline plz optimize whenever possible.
         dispatch(REMOVE_COLDEFS(['error','warning']));
+
         const rowData = data.map((row:any)=>{
           if(row.error || row.warning){
             return _.omit(row,'error','warning');
@@ -731,8 +845,12 @@ const useViewModify = (pageType:string) => {
           if(warning){
             rowClone.warning = warning;
           }
+          else{
+            rowClone.warning = '';
+          }
           return rowClone;
         });
+        
         const isErrorPresent = newData.find((row:any)=>row.error);
         const isWarningPresent = newData.find((row:any)=>row.warning);
         if(isErrorPresent){
@@ -743,18 +861,21 @@ const useViewModify = (pageType:string) => {
           addInvalidDataColDefs('warning');
         }
         dispatch(UPDATE_ROW_DATA(newData));
-        if(isErrorPresent || isWarningPresent){
-          return notifyError("Invalid Data Found. Please Clear all the errors and warnings before proceeding");
-        } 
+        // if(isErrorPresent || isWarningPresent){
+        //   return notifyError("Invalid Data Found. Please Clear all the errors and warnings before proceeding");
+        // } 
+        return newData;
       }
 
       const onEditOnlineSave = ()=>{
         onSaveToDraft();
-        const isErrorPresent = activeMaster.colDefs.find((col:ColDef)=>col.colId==='error');
-        const isWarningPresent = activeMaster.colDefs.find((col:ColDef)=>col.colId==='warning');
+        const result = validateEditOnlineData(activeMaster.rowData);
+        
+        const isErrorPresent = result.find((row:any)=>row.error.length > 0);
+        const isWarningPresent = result.find((row:any)=>row.warning.length > 0);
+      
         if(isErrorPresent || isWarningPresent){
-          // return notifyError("Please Clear All Errors before submit")
-          return
+          return notifyError("Please Clear All Errors before submit")
         }
         dispatch(UPDATE_PROGRESS_STATE('editOnlineSaved'))
 
@@ -765,9 +886,9 @@ const useViewModify = (pageType:string) => {
       }
        const onShowChart = async (rowData:any) => {
         try {
-          // setSeasonalityRowData(rowData);
           const toastId = notifyLoader('Fetching Chart Details');
           const {data:{data}} = await getSeasonalityDetails(rowData);
+          setSeasonalityRowData(rowData);
           setNormChangeData(data.norm);
           const chartData = generateSesonalityChartData(rowData,data);
           setChartData(chartData);
@@ -870,7 +991,7 @@ const useViewModify = (pageType:string) => {
         isSeasonalityChartModalOpen,
         normChangeData,
         toggleSeasonalityChartModal,
-        tempRowData
+        seasonalityRowData
     }
 }
 
