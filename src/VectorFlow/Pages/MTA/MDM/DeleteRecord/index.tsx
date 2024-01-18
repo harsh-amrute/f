@@ -224,6 +224,7 @@ const DeleteRecord = () => {
         }
           {isUploadModalOpen && 
           <UploadModal 
+            header={"Deletion"}
             openModal={isUploadModalOpen} 
             onCloseModal={()=>{toggleUploadModal(false)}} 
             onDownload={() => exportToExcel(true)} 

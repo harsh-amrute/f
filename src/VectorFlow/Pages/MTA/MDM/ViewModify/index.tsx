@@ -236,6 +236,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         }
         {isUploadModalOpen && 
           <UploadModal 
+          header={"Modification"}
             openModal={isUploadModalOpen} 
             onCloseModal={()=>toggleUploadModal(false)} 
             onDownload={()=>exportToExcel(true)} 

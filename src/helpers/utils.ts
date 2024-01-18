@@ -7,7 +7,7 @@ import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
-import {subDays,addDays,differenceInDays, format, differenceInSeconds} from 'date-fns';
+import {subDays,addDays,format, differenceInSeconds} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
 import {formatMDMDate} from './format'
 
@@ -610,23 +610,23 @@ export const mapPendingTaskToColumnDefs = (colDefs:ColDef[]):ColDef[]=>{
 export const mapRowDataWithSrNo = (rowData:any[])=>{
   let result = []
   if(!rowData)return []
+  result = rowData
 
-  result  = rowData.map((row)=>{
-    return{
-      ...row,
-      PendingSince:formatMDMDate(row.PendingSince)
-    }
-  })
+  // result  = rowData.map((row)=>{
+  //   return{
+  //     ...row,
+  //     PendingSince:formatMDMDate(row.PendingSince)
+  //   }
+  // })
 
   result.sort((a,b):any=>{
-    return differenceInDays(b.PendingSince,a.PendingSince)
+    return differenceInSeconds(b.PendingSince,a.PendingSince)
   })
 
   result = result.map((row:any,index:number)=>{
     return {
       ...row,
-      SrNo:index + 1,
-      PendingSince:format(row.PendingSince,'dd/MM/yy hh:mm:ss a')
+      SrNo:index + 1
     }
   })
   return result
