@@ -7,8 +7,9 @@ import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
-import {subDays,addDays,differenceInDays, format} from 'date-fns';
-import { formatMDMDateFromat } from './format';
+import {subDays,addDays,differenceInDays, format, differenceInSeconds} from 'date-fns';
+//import { formatMDMDateFromat } from './format';
+import {formatMDMDate} from './format'
 
 // clear cached token and redirect to sso login
 
@@ -613,7 +614,7 @@ export const mapRowDataWithSrNo = (rowData:any[])=>{
   result  = rowData.map((row)=>{
     return{
       ...row,
-      PendingSince:formatMDMDateFromat(row.PendingSince)
+      PendingSince:formatMDMDate(row.PendingSince)
     }
   })
 
@@ -638,12 +639,12 @@ export const mapDraftDataToTableRowData = (rowData:any[])=>{
   result  = rowData.map((row)=>{
     return{
       ...row,
-      LastModifiedDateTime:formatMDMDateFromat(row.LastModifiedDateTime)
+      LastModifiedDateTime:formatMDMDate(row.LastModifiedDateTime)
     }
   })
 
   result.sort((a,b):any=>{
-    return differenceInDays(b.LastModifiedDateTime,a.LastModifiedDateTime)
+    return differenceInSeconds(b.LastModifiedDateTime,a.LastModifiedDateTime)
   })
 
   result = result.map((r:any,index:number)=>{

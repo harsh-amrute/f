@@ -205,11 +205,16 @@ export const formatPhoneNumber = (
 }
 
 
-export function formatMDMDateFromat(inputDate:string) {
+export function formatMDMDate(inputDate:string, dateFormat?:string) {
+  try{
+    const parsedDate = new Date(inputDate)
 
-  const parsedDate = new Date(inputDate)
+  const myFormat = dateFormat ?dateFormat: 'dd/MMM/yy hh:mm:ss a'
 
-  const formattedDate = format(parsedDate, 'dd/MMM/yy hh:mm:ss a')
-  
+  const formattedDate = format(parsedDate,myFormat)
+
   return formattedDate;
+  }catch(err){
+    console.log(err)
+  }
 }

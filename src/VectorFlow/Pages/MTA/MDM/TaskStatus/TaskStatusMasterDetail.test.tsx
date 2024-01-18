@@ -42,6 +42,7 @@ describe("TaskStatusMasterDetail Component",()=>{
                     Approver: "Approver1",
                     Requester: "Admin",
                     TaskStatus: "Approved",
+                    ApprovedDate: "2023-12-06T17:59:01.667",
                     ApproverId: "1"
                 },
                 {
@@ -51,6 +52,15 @@ describe("TaskStatusMasterDetail Component",()=>{
                     Approver: "Approver2",
                     Requester: "Admin",
                     TaskStatus: "Pending",
+                    ApproverId: "2"
+                },
+                {
+                    TaskID: "1_20231206175429",
+                    PendingSince: "2023-12-06T17:59:01.667",
+                    TaskName: "M_SKU",
+                    Approver: "Approver2",
+                    Requester: "Admin",
+                    TaskStatus: "DB Updated",
                     ApproverId: "2"
                 }
             ]
