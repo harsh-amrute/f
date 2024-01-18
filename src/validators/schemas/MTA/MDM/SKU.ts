@@ -4,7 +4,7 @@ import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENG
 export const SKUSchema = Joi.object({
     sc:Joi.string().empty().invalid(null).max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
     sd:Joi.string().empty().max(MAX_NAME_LENGTH).invalid(null),
-    ec:Joi.number().empty().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).invalid(null),
+    ec:Joi.number().integer().empty().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).invalid(null),
     wt:Joi.number().empty().greater(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
     vm:Joi.number().empty().greater(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
     ...CommonSchema

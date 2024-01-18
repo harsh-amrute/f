@@ -519,6 +519,17 @@ export const getDraftByIdMockData:any = {
   msg: "Data fetched successfully"
 }
 
+export const getDraftCountMockData:any = {
+    recordCount: "[{\"masterid\":1,\"recordCount\":7}]",
+    data: null,
+    status: 200,
+    msg: null,
+    errorCount: null,
+    error: null,
+    conflictErrorCount: null,
+    conflictError: null
+}
+
 export const getMasterUIConfigurationMockData:any = {
   recordCount: "7",
   data: [

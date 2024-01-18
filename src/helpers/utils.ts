@@ -5,7 +5,7 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
-import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs } from './MDMConstants';
+import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,addDays,differenceInDays, format} from 'date-fns';
 import { formatMDMDateFromat } from './format';
@@ -397,7 +397,7 @@ export const replaceKeyWithDisplayName = (message:string,master:MDMMasterState) 
   })
 }
 
-export const checkError = (row:object,master:MDMMasterState,isDelete:boolean) => {
+export const checkError = (row:any,master:MDMMasterState,isDelete:boolean) => { 
   const masterSchema = isDelete?masterIdToDeleteSchemaMapper[master.id.toString()]:masterIdToSchemaMapper[master.id.toString()];
   let {error,warning}:any = masterSchema.validate(row,{context:row});
   if(error) error = replaceKeyWithDisplayName(error.message,master);
@@ -437,6 +437,13 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
       temp+=1;
     })
     temp = 0;
+    //Replace with empty string if null (for Custom keys)
+    Object.keys(rowObj).forEach((key:any)=>{
+      if(customKeys.includes(key) && rowObj[key]===null){
+        rowObj[key] = ''
+      }
+    })
+
     const {error,warning} = checkError(rowObj,master,isDelete);
     
     if(error !== undefined){

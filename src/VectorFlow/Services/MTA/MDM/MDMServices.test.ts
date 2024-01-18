@@ -78,11 +78,28 @@ describe('Testing the MDMService',  () => {
 
     });
 
-    it('should make get request to /draft/${id}', async () => {
+    it('should make a get request to the /draftCount/${id}', async () => {
 
       mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
-      const response = await MDMService.getDraftById('2');
-      expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/draft/2',{
+      const response = await MDMService.getDraftCount('2');
+      expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/draftCount/2',{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+
+    });
+
+    it('should make get request to /draft/${id}', async () => {
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getDraftById('2',{
+        pageNumber:1,
+        recordsPerPage:10
+      });
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/draft/2',{
+        pageNumber:1,
+        recordsPerPage:10
+      },{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);

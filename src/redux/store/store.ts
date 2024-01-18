@@ -11,7 +11,8 @@ const initialState:MDMStore = {
     isSelectMasterOpen:true,
     draftId:'',
     isUploadModalOpen:false,
-    chunkSize:100
+    chunkSize:100,
+    recordCount:0
 }
 
 export const createStore = (initialState:MDMStore) => configureStore({

@@ -157,7 +157,8 @@ describe("DeleteRecord Component", () => {
       isSelectMasterOpen:true,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     useGetMasterUIConfigurationMock.mockImplementation(()=>{
@@ -328,7 +329,8 @@ describe("Handles all custom redux interactions",()=>{
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockedStore = createStore(mockState)
@@ -348,7 +350,8 @@ describe("Handles all custom redux interactions",()=>{
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockedStore = createStore(mockState)
@@ -368,7 +371,8 @@ describe("Handles all custom redux interactions",()=>{
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockedStore = createStore(mockState)
@@ -388,7 +392,8 @@ describe("Handles all custom redux interactions",()=>{
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockedStore = createStore(mockState)

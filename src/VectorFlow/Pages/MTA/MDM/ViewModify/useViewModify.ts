@@ -3,7 +3,7 @@ import { type Option, type Field,type GetMasterDataPayload, type GridRef, type Q
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useDeleteDraft, useDeleteTask } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS} from '../../../../../redux/actions/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
@@ -29,11 +29,12 @@ const useViewModify = (pageType:string) => {
     const isUploadModalOpen = useSelector((state:RootState)=>state.mdm.isUploadModalOpen)
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
     const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize)
+    const recordCount = useSelector((state:RootState) => state.mdm.recordCount)
 
     const [allMastersState,setAllMasterState] = useState<MDMMasterState[]>([])
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
     // const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
-    const [recordCount,setRecordCount] = useState<number>(0)
+    // const [recordCount,setRecordCount] = useState<number>(0)
     const [downloadFileName,setDownloadFileName] = useState('');
     const [file,setFile] = useState<File>();
     const [isTableDataLoading,setIsTableDataLoading] = useState<boolean>(false);
@@ -45,6 +46,11 @@ const useViewModify = (pageType:string) => {
     const [chartData,setChartData] = useState<object>();
     const [isSeasonalityChartModalOpen,toggleSeasonalityChartModal] = useState<boolean>(false);
     const [normChangeData,setNormChangeData] = useState<any>([]);
+
+    const [conflictCount,setConflictCount] = useState<number>(0);
+    const [errorCount,setErrorCount] = useState<number>(0);
+    const [conflictData,setConflictData] = useState<Array<any>>([]);
+    const [errorData,setErrorData] = useState<Array<any>>([]);
 
     const [editOnline,toggleEditOnline] = useState(false);
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
@@ -469,8 +475,8 @@ const useViewModify = (pageType:string) => {
       }
 
       setIsTableDataLoading(false);
-      if(!result.data.recordCount || result.data.recordCount==0)setRecordCount(0)
-      else setRecordCount(result.data.recordCount)
+      if(!result.data.recordCount || result.data.recordCount==0)dispatch(SET_RECORD_COUNT(0))
+      else dispatch(SET_RECORD_COUNT(result.data.recordCount))
       toggleWarningModal(true);    
     }
 
@@ -554,6 +560,7 @@ const useViewModify = (pageType:string) => {
           }
   
           const result = await parseExcelData(file,activeMaster,pageType==='remove');
+
           const ifErrorExists = result.find((data:any)=>data.error);
           const ifWarningExists = result.find((data:any)=>data.warning);
           if(ifErrorExists) {
@@ -570,7 +577,7 @@ const useViewModify = (pageType:string) => {
             addCheckBoxColDefs();
           }
   
-          setRecordCount(result.length)
+          dispatch(SET_RECORD_COUNT(result.length))
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           dispatch(TOGGLE_UPLOAD_MODAL(false))
@@ -643,7 +650,7 @@ const useViewModify = (pageType:string) => {
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           notifySuccess(`${selectedRows?.length} records deleted successfully`);
           setSelectedRowsCount(0);
-          setRecordCount(recordCount-selectedRows.length);
+          dispatch(SET_RECORD_COUNT(recordCount-selectedRows.length));
         }
         else{
           notifyError("Please Select Rows to Delete");
@@ -652,7 +659,7 @@ const useViewModify = (pageType:string) => {
       }
 
       const handleChangePage = async (pageNo:any) => {
-        console.log(pageNo);
+
         setCurrentPage(pageNo);
         setIsTableDataLoading(true)
         if(activeMaster.rowData.length > rowsPerPage){
@@ -678,20 +685,28 @@ const useViewModify = (pageType:string) => {
       }
 
       const postMasterDataChunks = async (rowData:any) => { 
+
+        //CleanUp Row Data
+        rowData = rowData.map((row:any)=>_.omit(row,'error','warning'));
+
         let taskId = '';
         let toastId:any = '';
+        let conflictCount = 0;
+        let errorCount = 0;
+        const conflictData:any = [];
+        const errorData:any = [];
         try {
           let submitProgress = 0;
           const payload:any = {
             id:activeMaster.id,
             action:"",
-            taskId:"",
-            isOverwrite:false,
+            TaskId:"",
+            IsOverWrite:false,
             data:[]
           }
 
           toastId = notifyLoader(`Submitting Data ${submitProgress}/${activeMaster.rowData.length}`);
-
+        
           for(let i=0; i < rowData.length; i+=chunkSize){
           
               if(i+chunkSize < rowData.length){
@@ -701,14 +716,53 @@ const useViewModify = (pageType:string) => {
               }
               else{
                 payload.data = rowData.slice(i)
-                await modifyMaster(payload);
                 toast.update(toastId,{render:`Submitting Data ${rowData.length}/${rowData.length}`})
               }
-              const data:any = await modifyMaster(payload); 
+              const data:any = await modifyMaster(payload);
+
+              if(taskId === '' && i!==0) throw new Error("Something Went Wrong");
+
               payload.taskId = data.data.taskId;
               taskId = data.data.taskId;
+           
+              conflictCount += parseInt(data.data.conflictErrorCount,10);
+              errorCount += parseInt(data.data.errorCount,10);
+              const conflictedRows = data.data.conflictError;
+              const errorenousRows = data.data.error;
+              if(conflictedRows instanceof Array) {
+                conflictedRows.forEach((row:any)=>{
+                  const userIndex = conflictData.findIndex((data:any)=>data.user === row.user);
+                  if(userIndex >= 0){
+                    conflictData[userIndex].conflictdetails = [...conflictData[userIndex].conflictdetails,...row.conflictdetails]
+                  }
+                  else{
+                    conflictData.push({
+                      user:row.user,
+                      conflictdetails:row.conflictdetails
+                    })
+                  }
+                })
+              }
+              if(errorenousRows instanceof Array) {
+                errorenousRows.forEach((row:any)=>{
+                  const userIndex = errorData.findIndex((data:any)=>data.errorType === row.errorType);
+                  if(userIndex >= 0){
+                    errorData[userIndex].errorData = [...errorData[userIndex].errorData,...row.errorData]
+                  }
+                  else{
+                    errorData.push({
+                      errorType:row.errorType,
+                      errorData:row.errorData
+                    })
+                  }
+                })
+              }
             }
             toast.dismiss(toastId);
+            setConflictCount(conflictCount);
+            setErrorCount(errorCount);
+            setConflictData(conflictData);
+            setErrorData(errorData);
             return true;  
             
           }
@@ -771,18 +825,23 @@ const useViewModify = (pageType:string) => {
           for(let i=0; i < rowData.length; i+=chunkSize){
             if(draftId.length > 0){
               if(i+chunkSize < rowData.length){
-                await modifyDraft(generateDraftPayload(rowData.slice(i,i+chunkSize),draftId));
+                await createDraft(generateDraftPayload(rowData.slice(i,i+chunkSize),draftId));
                 toast.update(toastId,{render:`Uploading ${i+chunkSize}/${rowData.length}`})
                 chunkProgress+=chunkSize;
               }
               else{
-                await modifyDraft(generateDraftPayload(rowData.slice(i),draftId))
+                await createDraft(generateDraftPayload(rowData.slice(i),draftId))
                 toast.update(toastId,{render:`Uploading ${rowData.length}/${rowData.length}`})
-                
               }
             }
             else{
-              const data:any =  await createDraft(generateDraftPayload(rowData.slice(0,chunkSize)));
+              let data:any;
+              if(draftID){
+                data =  await modifyDraft(generateDraftPayload(rowData.slice(0,chunkSize),draftID));
+              }
+              else{
+                data = await createDraft(generateDraftPayload(rowData.slice(0,chunkSize)));
+              }  
               draftId = data.data.data;
               dispatch(SET_DRAFT_ID(data.data.data))
             } 
@@ -790,7 +849,7 @@ const useViewModify = (pageType:string) => {
           toast.dismiss(toastId)
           return true; 
         } catch (error) {
-          if(draftId.length > 0){
+          if(draftId.length > 0 && draftID.length === 0){
             await deleteDraft(draftId)
           }
           toast.dismiss(toastId);
@@ -991,7 +1050,11 @@ const useViewModify = (pageType:string) => {
         isSeasonalityChartModalOpen,
         normChangeData,
         toggleSeasonalityChartModal,
-        seasonalityRowData
+        seasonalityRowData,
+        conflictCount,
+        errorCount,
+        conflictData,
+        errorData
     }
 }
 

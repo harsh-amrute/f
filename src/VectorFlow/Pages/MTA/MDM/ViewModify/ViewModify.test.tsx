@@ -295,7 +295,8 @@ describe("Handles all Interaction in ViewModify Component", () => {
       isSelectMasterOpen:true,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockStore = createStore(mockState);
@@ -556,7 +557,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
     isSelectMasterOpen:false,
     draftId:'',
     isUploadModalOpen:false,
-    chunkSize:100
+    chunkSize:100,
+    recordCount:0
   }
 
   beforeEach(() => {
@@ -633,7 +635,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockStore = createStore(updatedMockState);
@@ -656,7 +659,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockStore = createStore(updatedMockState);
@@ -682,7 +686,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     let mockStore = createStore(updatedMockState);
@@ -740,7 +745,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockStore = createStore(updatedMockState);
@@ -768,7 +774,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockStore = createStore(updatedMockState);
@@ -791,7 +798,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockStore = createStore(updatedMockState);
@@ -814,7 +822,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockStore = createStore(updatedMockState);
@@ -839,7 +848,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockStore = createStore(updatedMockState);
@@ -895,7 +905,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockStore = createStore(mockState);
@@ -969,7 +980,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const mockStore = createStore(updatedMockState);
