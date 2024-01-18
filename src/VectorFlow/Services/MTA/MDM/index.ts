@@ -7,6 +7,7 @@ export const QUERY_KEYS = {
   useGetMasterUIConfiguration: ['MDMService.useGetMasterUIConfiguration'],
   useGetMasterData:['MDMService.useGetMasterData'],
   useGetAllDrafts:['MDMService.useGetAllDrafts'],
+  useGetDraftCount:['MDMService.useGetDraftCount'],
   useGetDraftById:['MDMService.useGetDraftById'],
   useCreateDraft:['MDMService.useCreateDraft'],
   useModifyDraft:['MDMService.useModifyDraft'],
@@ -43,9 +44,16 @@ export const useGetAllDrafts = ()=>{
   })
 }
 
+export const useGetDraftCount = () => {
+  return useMutation(QUERY_KEYS.useGetDraftCount,async(id:string)=>{
+    return await MDMService.getDraftCount(id)
+  })
+}
+
 export const useGetDraftById = ()=>{
-  return useMutation(QUERY_KEYS.useGetDraftById,async(id:string)=>{
-    return await MDMService.getDraftById(id)
+  return useMutation(QUERY_KEYS.useGetDraftById,async(payload:any)=>{
+    const {id,body} = payload;
+    return await MDMService.getDraftById(id,body)
   })
 }
 

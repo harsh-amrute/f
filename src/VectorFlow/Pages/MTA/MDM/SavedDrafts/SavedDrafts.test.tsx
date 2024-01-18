@@ -9,8 +9,8 @@ import { UserDataContext } from "../../../../../context";
 import SavedDrafts from "."
 import { store } from "../../../../../redux/store/store";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { useDeleteDraft, useGetAllDrafts, useGetDraftById,useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM";
-import { getAllDraftsMock, getDraftByIdMockData, getMasterUIConfigurationMockData } from "../../../../../mock-data/MDM";
+import { useDeleteDraft, useGetAllDrafts, useGetDraftById,useGetDraftCount,useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { getAllDraftsMock, getDraftByIdMockData, getMasterUIConfigurationMockData, getDraftCountMockData } from "../../../../../mock-data/MDM";
 
 jest.mock("../../../../Services/MTA/MDM");
 
@@ -18,7 +18,8 @@ jest.mock("../../../../Services/MTA/MDM");
 jest.mock('react-toastify', () => ({
   toast: {
     error: jest.fn(),
-    success:jest.fn()
+    success:jest.fn(),
+    dismiss:jest.fn()
   },
 }))
 
@@ -38,6 +39,10 @@ const useGetMasterUIConfigurationMock = useGetMasterUIConfiguration as jest.Mock
    typeof useGetMasterUIConfiguration
 >
 
+const useGetDraftCountMock = useGetDraftCount as jest.MockedFunction<
+   typeof useGetDraftCount
+>
+
 window.URL.createObjectURL = jest.fn();
 
 const useGetDraftByIdMockData: any = {
@@ -45,6 +50,12 @@ const useGetDraftByIdMockData: any = {
      return { data: getDraftByIdMockData };
    },
  };
+
+ const useGetDraftCountMockData: any = {
+  mutateAsync: () => {
+    return { data: getDraftCountMockData };
+  },
+};
  
  const useGetMasterUIConfigurationMockData: any = {
    mutateAsync: () => {
@@ -98,6 +109,10 @@ describe("Handles all renders",()=>{
        useDeleteDraftMock.mockImplementation(():any=>{
          return {}
        })
+
+       useGetDraftCountMock.mockImplementation(():any=>{
+        return useGetDraftCountMockData
+      })
        
    })
 

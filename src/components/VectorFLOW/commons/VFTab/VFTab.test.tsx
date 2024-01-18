@@ -47,7 +47,8 @@ describe('View Modify Component', () => {
     isSelectMasterOpen:true,
     draftId:'',
     isUploadModalOpen:false,
-    chunkSize:100
+    chunkSize:100,
+    recordCount:0
   }
 
   const themeUi = 'NOIRFUSION';
@@ -138,7 +139,8 @@ describe('View Modify Component', () => {
       isSelectMasterOpen:true,
       draftId:'',
       isUploadModalOpen:false,
-      chunkSize:100
+      chunkSize:100,
+      recordCount:0
     }
 
     const localMockStore = createStore(localMockState);

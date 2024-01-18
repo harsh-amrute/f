@@ -28,8 +28,14 @@ export namespace MDMService {
     })
   }
 
-  export const getDraftById = async(id:string)=>{
-    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/draft/${id}`,{
+  export const getDraftCount = async(id:string)=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/draftCount/${id}`,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getDraftById = async(id:string,body:any)=>{
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/draft/${id}`,body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }
