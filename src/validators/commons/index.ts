@@ -58,19 +58,19 @@ export const MAX_DECIMAL_VAL = 99999999.99;
 export const MIN_DECIMAL_VAL = 0;
 
 export const CommonSchema = {
-    C1:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C2:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C3:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C4:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C5:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C6:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C7:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C8:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C9:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C10:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C11:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C12:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C13:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C14:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH),
-    C15:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH)
+    c1:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c2:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c3:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c4:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c5:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c6:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c7:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c8:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c9:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c10:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c11:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c12:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c13:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c14:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
+    c15:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('')
 }
