@@ -14,7 +14,7 @@ import {
 interface VFModalProps {
   openModal: boolean;
   closeModal: () => void;
-  headerText:string;
+  headerText?:string;
   headerIcon:string;
   children:ReactNode;
   paddingLeftAndRight?:number;

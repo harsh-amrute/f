@@ -7,6 +7,7 @@ import * as ManualStyle from "../../../../../module-store-transfer/pages/manual-
 import {notifyError} from '../../../../../helpers/notify';
 interface UploadModalProps{
    openModal:boolean
+   header?:string
    onCloseModal:()=>void
    onDownload:()=>void
    onUpload:()=>void
@@ -24,6 +25,7 @@ const UploadModal = (props:UploadModalProps)=>{
 
    const{
       openModal,
+      header,
       onCloseModal,
       onDownload,
       onUpload,
@@ -61,7 +63,7 @@ const UploadModal = (props:UploadModalProps)=>{
     };
 
    return(
-   <VFModalCard headerText={"Modification"} headerIcon={"/assets/img/VectorFLOW/NMS/settings.svg"} openModal={openModal} closeModal={onCloseModal} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} >
+   <VFModalCard headerText={header} headerIcon={"/assets/img/VectorFLOW/NMS/settings.svg"} openModal={openModal} closeModal={onCloseModal} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} >
       <UploadModalWrapper>
          <UploadModalSection>
             <UploadModalText>

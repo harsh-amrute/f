@@ -17,8 +17,8 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 
 import { useUserData } from "../../../../../context";
 import {getUploadModalRadioButtons } from "../../../../../helpers/utils";
-
-
+import { useDispatch } from "react-redux";
+import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 
 const AddRecord = () => {
 
@@ -100,7 +100,7 @@ const AddRecord = () => {
           />
       )
     }
-
+    const dispatch = useDispatch();
     return(
         <React.Fragment>
           <SCContainer>
@@ -142,8 +142,9 @@ const AddRecord = () => {
           </SCContainer>
           {isUploadModalOpen && 
           <UploadModal 
+            header={"Addition"}
             openModal={isUploadModalOpen} 
-            onCloseModal={()=>{return}} 
+            onCloseModal={()=>dispatch(TOGGLE_SELECT_MASTER_SCREEN(true))}
             onDownload={()=>ref.current?.api.exportDataAsExcel({
               fileName:downloadFileName.length>0?downloadFileName :activeMaster.name,
             })} 
