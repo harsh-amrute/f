@@ -9,8 +9,8 @@ import { UserDataContext } from "../../../../../context";
 import TaskPendingForReview from ".";
 import { store } from "../../../../../redux/store/store";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import {useGetMasterUIConfiguration, useGetPendingTasks, useGetTaskDetails } from "../../../../../VectorFlow/Services/MTA/MDM";
-import { getAllDraftsMock,getMasterUIConfigurationMockData, getTaskDetailsMockData, getTaskPendingForReviewMockData } from "../../../../../mock-data/MDM";
+import {useGetMasterUIConfiguration, useGetPendingTasks, useGetTaskCount, useGetTaskDetails } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { getAllDraftsMock,getMasterUIConfigurationMockData, getTaskCountMockData, getTaskDetailsMockData, getTaskPendingForReviewMockData } from "../../../../../mock-data/MDM";
 
 jest.mock("../../../../Services/MTA/MDM");
 
@@ -30,6 +30,10 @@ const useGetTaskDetailsMock = useGetTaskDetails as jest.MockedFunction<
    typeof useGetTaskDetails
 >
 
+const useGetTaskCountMock = useGetTaskCount as jest.MockedFunction<
+   typeof useGetTaskCount
+>
+
 
 const useGetMasterUIConfigurationMock = useGetMasterUIConfiguration as jest.MockedFunction<
    typeof useGetMasterUIConfiguration
@@ -46,6 +50,12 @@ window.URL.createObjectURL = jest.fn();
  const useGetTaskDetailsMockData: any = {
   mutateAsync: () => {
     return { data: getTaskDetailsMockData ,isLoading:false};
+  },
+};
+
+const useGetTaskCountMockData: any = {
+  mutateAsync: () => {
+    return { data: getTaskCountMockData ,isLoading:false};
   },
 };
 
@@ -93,6 +103,10 @@ describe("Handles all renders",()=>{
        useGetMasterUIConfigurationMock.mockImplementation(()=>{
          return useGetMasterUIConfigurationMockData
        })
+
+       useGetTaskCountMock.mockImplementation(()=>{
+        return useGetTaskCountMockData
+      })
        
    })
 

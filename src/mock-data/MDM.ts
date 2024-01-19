@@ -530,6 +530,17 @@ export const getDraftCountMockData:any = {
     conflictError: null
 }
 
+export const getTaskCountMockData:any = {
+  recordCount: "[{\"masterid\":1,\"recordCount\":7}]",
+  data: null,
+  status: 200,
+  msg: null,
+  errorCount: null,
+  error: null,
+  conflictErrorCount: null,
+  conflictError: null
+}
+
 export const getMasterUIConfigurationMockData:any = {
   recordCount: "7",
   data: [

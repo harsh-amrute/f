@@ -310,7 +310,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const queryFilteredData = async (configs:QueryFilteredDataConfigs) => {
-      const {filters,pagination,fields,count,currentPage} = configs;
+      const {filters,pagination,fields,count,currentPage,rowsPerPage} = configs;
       const payload:GetMasterDataPayload = {
         id:activeMaster.id,
         name:activeMaster.name,
@@ -336,7 +336,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const queryAllData = async (configs:QueryFilteredDataConfigs) => {
-      const {pagination,fields,count,currentPage} = configs;
+      const {pagination,fields,count,currentPage,rowsPerPage} = configs;
       const payload:GetMasterDataPayload = {
         id:activeMaster.id,
         name:activeMaster.name,
@@ -468,10 +468,10 @@ const useViewModify = (pageType:string) => {
 
       let result;
       if(showAll){
-        result = await queryAllData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true});
+        result = await queryAllData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true,rowsPerPage});
       }
       else{
-        result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true});
+        result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true,rowsPerPage});
       }
 
       setIsTableDataLoading(false);
@@ -496,14 +496,14 @@ const useViewModify = (pageType:string) => {
       let result:any;
 
       if(!areMasterFiltersValid(currMasterFilters) && activeMaster.filters.length === 1){
-        result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1}),{
+        result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
           success:"Data Fetched Successfully",
           error:"Something Went Wrong",
           pending:"Loading Data"
         }); 
       }
       else{
-        result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1}),{
+        result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
           success:"Data Fetched Successfully",
           error:"Something Went Wrong",
           pending:"Loading Data"
@@ -592,31 +592,38 @@ const useViewModify = (pageType:string) => {
       }
 
       const exportToExcel = async (fromUploadModal?:boolean)=>{
-        const currMasterFilters = activeMaster.filters;
-        const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
-      
-        const payloadFields:any = getCurrentVisbileColumns();
-        const numberOfPages = Math.ceil(recordCount/rowsPerPage);
-        const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
-        const rows = [];
-        for(let i=1; i<=numberOfPages; i++){
-          const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:false,pagination:true,currentPage:i});
-          rows.push(...result.data.data)
-          if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
-          else toast.update(toastId,{render:`Downloading Data ${i*rowsPerPage} / ${recordCount}`})
-        }
+        try {
+          const currMasterFilters = activeMaster.filters;
+          const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
+        
+          const payloadFields:any = getCurrentVisbileColumns();
+          const numberOfPages = Math.ceil(recordCount/chunkSize);
+          const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
+          const rows = [];
+          for(let i=1; i<=numberOfPages; i++){
+            const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:false,pagination:true,currentPage:i,rowsPerPage:chunkSize});
+            if(result.data.data === null) throw new Error("Something Went Wrong")
+            rows.push(...result.data.data)
+            if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
+            else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
+          }
 
-        dispatch(UPDATE_ROW_DATA(rows));
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-        setDownloadData(true);
-        toast.dismiss(toastId);
-        if(fromUploadModal){
-          setIsUploadButtonDisabled(false);
-          notifySuccess(`Data Downloaded Successfully`);
-          return
-        }
+          dispatch(UPDATE_ROW_DATA(rows));
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          setDownloadData(true);
+          toast.dismiss(toastId);
+          if(fromUploadModal){
+            setIsUploadButtonDisabled(false);
+            notifySuccess(`Data Downloaded Successfully`);
+            return
+          }
 
-        notifySuccess(`Data Exported Successfully`);
+          notifySuccess(`Data Exported Successfully`);
+        } catch (error) {
+          toast.dismiss();
+          notifyError('Something Went Wrong');
+        }
+        
       }
 
       const onClearExportError = () => {
@@ -672,10 +679,10 @@ const useViewModify = (pageType:string) => {
         const payloadFields:any = getCurrentVisbileColumns();
         let result;
         if(!areMasterFiltersValid(activeMaster.filters) && activeMaster.filters.length === 1){
-          result = await queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo});
+          result = await queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo,rowsPerPage});
         }
         else{
-          result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo});
+          result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo,rowsPerPage});
         }
         
         dispatch(UPDATE_ROW_DATA(result.data.data));

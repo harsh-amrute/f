@@ -87,9 +87,15 @@ export const useGetPendingTasks = () =>{
   })
 }
 
-export const useGetTaskDetails = ()=>{
+export const useGetTaskCount = ()=>{
   return useMutation(async(taskId:string)=>{
-    return await MDMService.getTaskDetails(taskId)
+    return await MDMService.getTaskCount(taskId)
+  })
+}
+
+export const useGetTaskDetails = ()=>{
+  return useMutation(async(body:{taskId:string,paginationParameter:{pageNumber:number,recordsPerPage:number}})=>{
+    return await MDMService.getTaskDetails(body)
   })
 }
 
