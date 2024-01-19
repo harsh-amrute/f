@@ -70,8 +70,14 @@ export namespace MDMService {
     })
   }
 
-  export const getTaskDetails = async(taskId:string)=>{
-    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/GetTaskDetails/${taskId}`,{
+  export const getTaskDetails = async(body:{taskId:string,paginationParameter:{pageNumber:number,recordsPerPage:number}})=>{
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/GetTaskDetails`,body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getTaskCount = async(taskId:string)=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/GetTaskCount/${taskId}`,{
       headers: { 'Content-Type': 'application/json' }
     })
   }

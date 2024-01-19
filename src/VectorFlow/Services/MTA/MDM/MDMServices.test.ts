@@ -188,11 +188,34 @@ describe('Testing the MDMService',  () => {
       expect(response.status).toBe(200);
     });
 
-    it('should make get request to /GetTaskDetails/${taskId}', async () => {
+    it('should make a get request to the /draftCount/${id}', async () => {
 
       mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
-      const response = await MDMService.getTaskDetails('1_202312061821491222')
-      expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetTaskDetails/1_202312061821491222`,{
+      const response = await MDMService.getTaskCount('2');
+      expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/GetTaskCount/2',{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+
+    });
+
+    it('should make get request to /GetTaskDetails', async () => {
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getTaskDetails({
+        taskId:'1_202312061821491222',
+        paginationParameter:{
+          pageNumber:1,
+          recordsPerPage:100
+        }
+      })
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetTaskDetails`,{
+        taskId:'1_202312061821491222',
+        paginationParameter:{
+          pageNumber:1,
+          recordsPerPage:100
+        }
+      },{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);

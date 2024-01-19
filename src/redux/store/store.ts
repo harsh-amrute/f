@@ -11,7 +11,7 @@ const initialState:MDMStore = {
     isSelectMasterOpen:true,
     draftId:'',
     isUploadModalOpen:false,
-    chunkSize:100,
+    chunkSize:10000,
     recordCount:0
 }
 
