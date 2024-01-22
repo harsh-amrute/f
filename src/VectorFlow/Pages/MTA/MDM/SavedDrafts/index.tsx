@@ -93,7 +93,7 @@ const SavedDrafts = ()=>{
           }}
         />
 
-        <VFModalCard headerText={"Warning"} openModal={isDeleteModalOpen} closeModal={closeDeleteModal} headerIcon={'/assets/img/VectorFLOW/NMS/warning.svg'} >
+        <VFModalCard headerText={"Warning"} openModal={isDeleteModalOpen} closeModal={closeDeleteModal} headerIcon={'/assets/img/VectorFLOW/NMS/warning.svg'} closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'}>
         <p style={{textAlign:"center", color: "#313131", paddingTop:"36px", fontStyle:"normal", fontVariant:"normal",fontWeight:300,fontSize:"16px",fontFamily:"Roboto"}}>
           Are you sure you want to delete the draft ?
         </p> 
