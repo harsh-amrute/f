@@ -9,6 +9,10 @@ import { ColumnChart } from "../../index";
 import ParticularForced from "./ParticularForced";
 import ParticularStoreStatus from "./ParticularStoreStatus";
 import ParticularAvai from "./ParticularAvai";
+import { navigateWithPrompt } from '../../../helpers/utils'
+import {useDispatch, useSelector } from 'react-redux';
+import { RootState } from "../../../redux/store/store";
+import { RESET_STATE } from "../../../redux/actions/MDM";
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -24,6 +28,12 @@ const NavbarItem = ({
   const location = useLocation();
   const { pathname } = useLocation();
   const [toggle, setToggle] = useState(true);
+  const mdm = useSelector((state:RootState) => state.mdm);
+  const dispatch = useDispatch();
+
+  const resetState = () => {
+    dispatch(RESET_STATE());
+  }
 
   const renderListMenu = (listMenu: any) => {
     return (
@@ -64,7 +74,7 @@ const NavbarItem = ({
           <SCItemChild
             key={item.url}
             onClick={() => {
-              navigate(item.url, { replace: true });
+              navigateWithPrompt(()=>navigate(item.url, { replace: true }),item.url,mdm,resetState);
             }}
             active={item.url === location.pathname}
             status={toggle}

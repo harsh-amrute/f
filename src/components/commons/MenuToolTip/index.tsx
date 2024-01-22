@@ -9,7 +9,10 @@ import {
   TooltipContent,
   SCIcon,
 } from "./style";
-import {handleDownload} from "../../../helpers/utils";
+import {handleDownload,navigateWithPrompt} from "../../../helpers/utils";
+import {useDispatch, useSelector } from 'react-redux';
+import { RootState } from "../../../redux/store/store";
+import { RESET_STATE } from "../../../redux/actions/MDM";
 
 const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any) => {
   const { t } = useTranslation();
@@ -20,6 +23,14 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any
   const navigate = useNavigate();
   //Add Report Urls to this Array
   const reportUrls = ['/api/download-reports/bpr','/api/download-reports/fr','/api/download-reports/rosn','/api/download-reports/store_classification','/api/download-reports/ist'];
+
+  const mdm = useSelector((state:RootState) => state.mdm);
+  const dispatch = useDispatch();
+
+  const resetState = () => {
+    dispatch(RESET_STATE());
+  }
+
   
   const handleTooltipClick = async (url:string) => {
     
@@ -33,7 +44,8 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any
       }
     }
     else{
-      navigate(url, { replace: true })
+      // navigate(url, { replace: true })
+      navigateWithPrompt(()=>navigate(url, { replace: true }),url,mdm,resetState);
     }
   }
 
