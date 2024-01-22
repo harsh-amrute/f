@@ -9,7 +9,7 @@ import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSch
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,addDays,format, differenceInSeconds} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
-import {formatMDMDate} from './format'
+import {formatMDMDate} from './format';
 
 // clear cached token and redirect to sso login
 
@@ -1197,3 +1197,27 @@ export const createSubmitMasterPayload = (master:any,action:string)=>{
     data:master.rowData
   }
 }
+
+export const navigateWithPrompt = (onRouteChange:()=>void,url:any,state:any,resetState:any) => {
+    const mdmRoutes = [
+      '/master-data-management/control-panel/view-modify',
+      '/master-data-management/control-panel/add',
+      '/master-data-management/control-panel/delete'
+  ]
+
+    if(!mdmRoutes.includes(url)){
+      if(state.activeMaster.id === 0){
+        onRouteChange();
+      }
+      else{
+        if(confirm("Are you sure you want to leave this page?")) {
+          onRouteChange();
+          resetState()
+         }
+      } 
+    }
+    else{
+      onRouteChange();
+    }
+   
+}  

@@ -65,7 +65,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         tempGridData,
         deleteSelected,
         onSubmit,
-        isUploadButtonDisabled,
+        // isUploadButtonDisabled,
         editOnline,
         seasonalityActiveQuickFilter,
         onEditOnline,
@@ -246,7 +246,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
             setInputText={setDownloadFileName}
             file={file}
             setFile={setFile}
-            uploadButtonStatus={isUploadButtonDisabled}
+            uploadButtonStatus={false}
             />
         }
         {isSeasonalityChartModalOpen && 

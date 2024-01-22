@@ -2,13 +2,10 @@
 import IconCard from "../../../../../components/VectorFLOW/commons/VFCard/IconCard"
 import { Container,PanelGrid, PanelGridWrapper } from "./styles"
 import ButtonCard from "../../../../../components/VectorFLOW/commons/VFCard/ButtonCard"
-import { useNavigate } from "react-router"
-
-
+import { useNavigate } from "react-router";
 
 const ControlPanel = ()=>{
-
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     return (
         <Container>

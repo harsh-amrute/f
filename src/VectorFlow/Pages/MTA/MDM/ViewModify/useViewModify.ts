@@ -813,14 +813,24 @@ const useViewModify = (pageType:string) => {
       
 
       const onBackButton = () => {
-       dispatch(UPDATE_ROW_DATA([]));
-       dispatch(UPDATE_COLDEFS( mapMasterToColumnDefs(activeMaster.fields,activeMaster.id)))
-       dispatch(REMOVE_ALL_FILTERS())
-       dispatch(ADD_FILTER())
+       if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
+       {
+        dispatch(UPDATE_PROGRESS_STATE('default'));
+        dispatch(UPDATE_ROW_DATA([]));
+        dispatch(UPDATE_COLDEFS( mapMasterToColumnDefs(activeMaster.fields,activeMaster.id)))
+        dispatch(REMOVE_ALL_FILTERS())
+       
+        dispatch(ADD_FILTER())
         setDownloadData(false);
         setTempDownloadData(false);
-        dispatch(UPDATE_PROGRESS_STATE('default'))
+
         if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+
+       }
+       
+       
+
+        
       }
 
       const postDraftChunks = async (rowData:any) => {
