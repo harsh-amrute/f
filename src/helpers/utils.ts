@@ -5,7 +5,7 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
-import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs } from './MDMConstants';
+import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs, mdmRoutes } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,addDays,format, differenceInSeconds} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
@@ -1199,12 +1199,7 @@ export const createSubmitMasterPayload = (master:any,action:string)=>{
 }
 
 export const navigateWithPrompt = (onRouteChange:()=>void,url:any,state:any,resetState:any) => {
-    const mdmRoutes = [
-      '/master-data-management/control-panel/view-modify',
-      '/master-data-management/control-panel/add',
-      '/master-data-management/control-panel/delete'
-  ]
-
+    
     if(!mdmRoutes.includes(url)){
       if(state.activeMaster.id === 0){
         onRouteChange();
