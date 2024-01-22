@@ -19,6 +19,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
 
 
 
+
   const ViewModify = () => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;

@@ -63,7 +63,7 @@ const TaskPendingForReview = ()=>{
                     },
                 }}
                 rowData={detailTableRowData}
-                rowSelection='multiple'
+                rowSelection='multiple' 
                 suppressRowClickSelection
                 onSelectionChanged={()=>{
                     if(ref && ref.current){
