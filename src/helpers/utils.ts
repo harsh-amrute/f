@@ -410,11 +410,13 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
   
   const currMasterKeys = master.fields.map((field:Field)=>field.key); //array containing keys of current master fields
   const result:object[] = [];
-  const data = await readXlsxFile(file,{
-    parseNumber: (string) => string
+  const buffer = await file.arrayBuffer();
+
+  const data = await readXlsxFile(buffer,{
+    parseNumber: (string:any) => string
   });
   //displayName to key mapper
-  const headerKeys = data[0].map((headerName)=>{
+  const headerKeys = data[0].map((headerName:any)=>{
     const fieldObj = master.fields.find((field:Field)=>field.displayName === headerName);
     if(fieldObj) return fieldObj.key;
     else return '';
