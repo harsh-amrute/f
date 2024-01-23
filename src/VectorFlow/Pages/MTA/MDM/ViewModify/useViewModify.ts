@@ -558,6 +558,7 @@ const useViewModify = (pageType:string) => {
             notifyError('Please select a file to upload.');
             return
           }
+          const toasId = notifyLoader("Reading File");
   
           const result = await parseExcelData(file,activeMaster,pageType==='remove');
 
@@ -580,12 +581,14 @@ const useViewModify = (pageType:string) => {
           dispatch(SET_RECORD_COUNT(result.length))
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-          dispatch(TOGGLE_UPLOAD_MODAL(false))
+          dispatch(TOGGLE_UPLOAD_MODAL(false));
+          toast.dismiss(toasId)
           notifySuccess(`Data Uploaded Successfully`);
           setDownloadData(false);
           setTempDownloadData(false);
           setCurrentPage(1);
         } catch (error:any) {
+          toast.dismiss();
           notifyError(error.message);
         }
 
