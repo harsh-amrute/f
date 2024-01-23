@@ -23,6 +23,7 @@ import { DailyData } from "../../../../../types/MDM";
 
 
 
+
 interface SeasonalityChartModalProps{
   rowData:any,
   chartData:any
@@ -241,7 +242,9 @@ const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,clo
   }
 
   const chartRef = useRef<ChartJS>();
-  const [visibleDataSets,setVisibleDataSets] = useState<number[]>([]);
+  const [visibleDataSets,setVisibleDataSets] = useState<number[]>(()=>{
+    return chartData.datasets.map((_:any,index:number)=>index);
+  });
 
   useEffect(()=>{
     if(chartRef.current){
@@ -292,17 +295,17 @@ const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,clo
                     <SCText fontWeight={500} fontSize={16}>Select Type :</SCText>
                     <SCCheckBoxRow>
                       <SCCheckBoxContainer>
-                        <Checkbox name="BuildUpDuration" value={"BuildUpDuration"} onChange={onToggleDataset} defaultChecked={false} data-testid="checkbox" />
+                        <Checkbox name="BuildUpDuration" value={"BuildUpDuration"} onChange={onToggleDataset} defaultChecked={true} data-testid="checkbox" />
                         <SCText fontWeight={300} fontSize={16}>Build Up Duration</SCText>
                       </SCCheckBoxContainer>
                       <SCCheckBoxContainer>
-                        <Checkbox name="GIT" value={"GIT"} onChange={onToggleDataset} defaultChecked={false} data-testid="checkbox" />
+                        <Checkbox name="GIT" value={"GIT"} onChange={onToggleDataset} defaultChecked={true} data-testid="checkbox" />
                         <SCText fontWeight={300} fontSize={16}>GIT</SCText>
                       </SCCheckBoxContainer>
                     </SCCheckBoxRow>
                     <SCCheckBoxRow>
                       <SCCheckBoxContainer>
-                        <Checkbox name="Stock" value={"Stock"} onChange={onToggleDataset} defaultChecked={false} data-testid="checkbox" />
+                        <Checkbox name="Stock" value={"Stock"} onChange={onToggleDataset} defaultChecked={true} data-testid="checkbox" />
                         <SCText fontWeight={300} fontSize={16}>Stock</SCText>
                       </SCCheckBoxContainer>
                     </SCCheckBoxRow>

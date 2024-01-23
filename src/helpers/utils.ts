@@ -1113,6 +1113,8 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     pointRadius.push(0)
     return tempNorm;
   })
+
+  console.log(buildUpDurationData)
   
   const chartData = {
     labels:xAxisLablesFormatted,
