@@ -5,7 +5,7 @@ import {
 } from 'ag-grid-enterprise'
 import Joi from 'joi'
 
-export type ViewModifyProgressState = "default" | "view" | "error" | "uploaded" | "submitted" | "editOnline" | "editOnlineSaved" | "editOnlineSubmitted" | "seasonality" | "phaseInPhaseOut" | "deleteUploaded" | "deleteView"| "deleteOnline" | "deleteOnlineSaved" | "deleteOnlineSubmitted";
+export type ViewModifyProgressState = "default" | "view" | "error" | "uploaded" | "submitted" | "editOnline" | "editOnlineSaved" | "editOnlineSubmitted" | "seasonality" | "phaseInPhaseOut" | "deleteUploaded" | "deleteView"| "deleteOnline" | "deleteOnlineSaved" | "deleteOnlineSubmitted" | "conflicts";
 export interface MDMStore{
     allMasters:MDMMasterState[],
     masters:MDMMasterState[],
@@ -137,5 +137,11 @@ export interface SeasonalityQuickFilterType{
 export interface DraftActionType{
     id:number
     label:string
+    value:string
+}
+
+export interface ConflictToolTipUser{
+    name:string
+    column:string
     value:string
 }

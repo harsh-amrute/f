@@ -1197,3 +1197,39 @@ export const createSubmitMasterPayload = (master:any,action:string)=>{
     data:master.rowData
   }
 }
+
+export const addPrefixToObjectKeys = (obj:any,prefix:string)=>{
+
+  const newObj:any = {}
+
+  Object.keys(obj).map((key)=>{
+    newObj[`${prefix + key}`] = obj[key] 
+  })
+  return newObj
+}
+
+export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[]):ColDef[]=>{
+
+  const result:any[] = []
+  const users:any[] = []
+
+  conflicts.map((conflict)=>{
+     conflict.conflictdetails.map((conflictDetail)=>{
+      const existingRowIndex = result.findIndex((row:any)=>JSON.stringify(row)===JSON.stringify(conflictDetail))
+
+      if(existingRowIndex===-1){
+        result.push({...conflictDetail.requestedData,users:[{user:conflict.user,data:conflictDetail.oldData}]})
+      }
+      else{
+        // const existingUser = result[existingRowIndex].users.findIndex((user:any)=>user.user===conflict.user)
+        // if(existingUser!==-1){
+        //   result[existingRowIndex].users[existingUser].daa
+        // }
+        result[existingRowIndex].users.push({user:conflict.user,data:conflictDetail.oldData})
+      }
+    })
+  })
+
+  console.log(result)
+  return result
+}

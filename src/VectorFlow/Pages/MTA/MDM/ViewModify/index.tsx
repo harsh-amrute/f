@@ -3,7 +3,7 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup, SeasonalityQuickFilterWrapper, SeasonalityQuickFilter, SeasonalityQuickFilterHeader, SeasonalityQuickFilterText } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
-import { generateOptions } from "../../../../../helpers/utils";
+import { createConflictRowData, generateOptions } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify"; 
@@ -16,6 +16,7 @@ import React, { useEffect } from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import SeasonalityChartModal from "./SeasonalityChartModal";
+import SubmitConflictModal from "./SubmitConflictModal";
 
 
 
@@ -81,10 +82,17 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         toggleSeasonalityChartModal,
         onSeasonalityQuickFilter,
         seasonalityRowData,
+        conflictCount,
+        errorCount,
+        conflictData,
+        errorData,
+        isConflictModalOpen,
+        setIsConflictModalOpen,
+        onReviewConflicts
 
     } = useViewModify('modify');
-    
 
+    
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){
@@ -95,6 +103,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         }
       }
     },[isTableDataLoading])
+
 
     return (
       <>
@@ -200,6 +209,8 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
                   ref={ref}
                   columnDefs={activeMaster.colDefs}
                   rowData={activeMaster.rowData}
+                  tooltipShowDelay={0}
+                  tooltipHideDelay={2000}
                   {...agGridProps}
                 />
                 <div style={{display:'none'}}>                
@@ -245,8 +256,18 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
             setInputText={setDownloadFileName}
             file={file}
             setFile={setFile}
-            uploadButtonStatus={isUploadButtonDisabled}
+            uploadButtonStatus={false}
             />
+        }
+        {isConflictModalOpen && 
+          <SubmitConflictModal 
+            totalCount={activeMaster.rowData.length}
+            modificationCount={conflictCount}
+            recordCount={activeMaster.rowData.length - conflictCount}
+            onSuccess={onReviewConflicts}
+            onCloseModal={()=>{return}}
+
+          />
         }
         {isSeasonalityChartModalOpen && 
           <SeasonalityChartModal 
@@ -262,6 +283,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
           !isSelectMasterOpen && 
           <VFTaskBar
             masterProgress={activeMaster.progress}
+            disableSubmit={activeMaster.rowData.length===0}
             onReset={onReset}
             onSaveToDraft={onSaveToDraft}
             onEditOnlineSave={onEditOnlineSave}
@@ -272,6 +294,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
             onModifyData={()=>toggleUploadModal(true)}
             onExportData={exportToExcel}
             onSubmit={onSubmit}
+            onSubmitConflictData={()=>onSubmit(true)}
             onDeleteSelected={deleteSelected}
             onSeasonalityResume={()=>console.log('')}
             onSeasonalityStop={()=>console.log('')}

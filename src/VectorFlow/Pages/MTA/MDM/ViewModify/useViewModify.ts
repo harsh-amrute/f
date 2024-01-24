@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
-import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs } from "../../../../../helpers/utils";
+import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useDeleteDraft, useDeleteTask } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT} from '../../../../../redux/actions/MDM';
@@ -14,6 +14,8 @@ import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCel
 import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
+import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
+import ConflictErrorToolTip from './ConflictErrorToolTip';
 
 
 const useViewModify = (pageType:string) => {
@@ -51,6 +53,7 @@ const useViewModify = (pageType:string) => {
     const [errorCount,setErrorCount] = useState<number>(0);
     const [conflictData,setConflictData] = useState<Array<any>>([]);
     const [errorData,setErrorData] = useState<Array<any>>([]);
+    const [isConflictModalOpen,setIsConflictModalOpen] = useState<boolean>(false)
 
     const [editOnline,toggleEditOnline] = useState(false);
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
@@ -639,6 +642,7 @@ const useViewModify = (pageType:string) => {
         addCheckBoxColDefs();
         if(pageType==='remove') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
         else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+        dispatch(SET_RECORD_COUNT(validData.length))
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         
       }
@@ -684,7 +688,7 @@ const useViewModify = (pageType:string) => {
 
       }
 
-      const postMasterDataChunks = async (rowData:any) => { 
+      const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean) => { 
 
         //CleanUp Row Data
         rowData = rowData.map((row:any)=>_.omit(row,'error','warning'));
@@ -701,7 +705,7 @@ const useViewModify = (pageType:string) => {
             id:activeMaster.id,
             action:"",
             TaskId:"",
-            IsOverWrite:false,
+            IsOverWrite:isOverWrite===true?true:false,
             data:[]
           }
 
@@ -722,10 +726,12 @@ const useViewModify = (pageType:string) => {
 
               if(taskId === '' && i!==0) throw new Error("Something Went Wrong");
 
-              payload.taskId = data.data.taskId;
+              payload.TaskId = data.data.taskId;
               taskId = data.data.taskId;
-           
-              conflictCount += parseInt(data.data.conflictErrorCount,10);
+              
+              if(data.data.conflictErrorCount){
+                conflictCount += parseInt(data.data.conflictErrorCount,10);
+              }
               errorCount += parseInt(data.data.errorCount,10);
               const conflictedRows = data.data.conflictError;
               const errorenousRows = data.data.error;
@@ -763,6 +769,9 @@ const useViewModify = (pageType:string) => {
             setErrorCount(errorCount);
             setConflictData(conflictData);
             setErrorData(errorData);
+            if(conflictCount>0){
+              return false
+            }
             return true;  
             
           }
@@ -777,7 +786,7 @@ const useViewModify = (pageType:string) => {
       }
           
 
-      const onSubmit = async() => {
+      const onSubmit = async(isOverWrite?:boolean) => {
 
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
 
@@ -787,13 +796,21 @@ const useViewModify = (pageType:string) => {
         let result;
 
         if(activeMaster.progress === 'editOnlineSaved'){
-          result = await postMasterDataChunks(activeMaster.rowData);
+          result = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
           if(result) dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
+          else{
+            setIsConflictModalOpen(true)
+            dispatch(UPDATE_PROGRESS_STATE('conflicts'))
+          }
 
         }
         else{
-          result = await postMasterDataChunks(activeMaster.rowData);
+          result = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
           if(result) dispatch(UPDATE_PROGRESS_STATE('submitted'));
+          else{
+            setIsConflictModalOpen(true)
+            dispatch(UPDATE_PROGRESS_STATE('conflicts'))
+          }
         }
         if(result){
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
@@ -989,6 +1006,40 @@ const useViewModify = (pageType:string) => {
         dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSaved'))
     }
 
+    const onReviewConflicts = ()=>{
+      const newRowData = createConflictRowData(conflictData)
+
+      const requiredColumnKeys = Object.keys(newRowData[0]).filter((key) => key !== 'users');
+
+      const newColDefs = requiredColumnKeys.map((requiredKey)=>{
+        const findColDef = activeMaster.colDefs.find(((colDef:ColDef)=>colDef.colId===requiredKey))
+        if(findColDef){
+          console.log(findColDef.colId)
+          return {
+            ...findColDef,
+            cellRenderer:ConflictErrorCellRenderer,
+            tooltipComponent:ConflictErrorToolTip,
+            tooltipComponentParams:{color: '#55AA77'},
+            tooltipField:findColDef.field,
+
+
+
+
+            // cellStyle:(params:any)=>{
+            //   console.log(params.data)
+            
+              // }
+            
+          }
+        }
+      })
+     if(newColDefs) dispatch(UPDATE_COLDEFS(newColDefs))
+      addCheckBoxColDefs()
+      dispatch(UPDATE_ROW_DATA(newRowData))
+      setIsConflictModalOpen(false)
+      dispatch(SET_RECORD_COUNT(newRowData.length))
+    }
+
 
     return {
         colDefs,
@@ -1054,7 +1105,10 @@ const useViewModify = (pageType:string) => {
         conflictCount,
         errorCount,
         conflictData,
-        errorData
+        errorData,
+        isConflictModalOpen,
+        setIsConflictModalOpen,
+        onReviewConflicts
     }
 }
 

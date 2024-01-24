@@ -308,3 +308,20 @@ display:flex;
 flex-direction:row;
 gap:28px;
 `
+
+export const ConflictErrorToolTipWrapper = styled.div`
+    position:absolute;
+    width:100%;
+    height:100%;
+    bottom:5px;
+    background-color:white;
+    display:flex;
+    justofy-content:center;
+    align-items:center;
+    border:1px solid rgb(130, 15, 76);
+   
+`
+export const ConflictErrorToolTipSection = styled.div`
+   width:100%;
+   height:100%;
+`

@@ -8,6 +8,7 @@ import { ViewModifyProgressState } from "../../../../../VectorFlow/types/MDM"
 
 export interface VFTaskBarProps{
     masterProgress:ViewModifyProgressState
+    disableSubmit?:boolean
     editOnline?:boolean
     deleteOnline?:boolean
     onReset:()=>void
@@ -16,6 +17,7 @@ export interface VFTaskBarProps{
     onModifyData:()=>void
     onClearAndExportErrors:()=>void
     onSubmit:()=>void
+    onSubmitConflictData:()=>void
     onEditOnline:()=>void
     onEditOnlineSave:()=>void
     onSaveToDraft:()=>void
@@ -36,12 +38,14 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
     const{
         masterProgress,
         editOnline ,
+        disableSubmit,
         deleteOnline,
         onBack,
         onExportData,
         onModifyData,
         onClearAndExportErrors,
         onSubmit,
+        onSubmitConflictData,
         onReset,
         onEditOnline,
         onEditOnlineSave,
@@ -61,7 +65,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
 
     const getStepperState = ():StepItem[]=>{
         switch(masterProgress){
-            case "uploaded" || "deleteUploaded":
+            case "uploaded" || "deleteUploaded || 'conflicts":
                 return [
                     {
                         label:'File Uploaded',
@@ -267,7 +271,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
                        Save to draft
                     </VFButtonOutline>
-                    <VFButton onClick={onSubmit} themeUi={themeUi} disabled={false} width={139}>
+                    <VFButton onClick={onSubmit} themeUi={themeUi} disabled={disableSubmit} width={139}>
                         Submit All
                     </VFButton>
                     <div style={{
@@ -478,6 +482,23 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                    <VFButton themeUi={themeUi} onClick={onSubmit}>
                         Delete All
                     </VFButton>
+                </TaskBarContainer>
+            )
+        case "conflicts":
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row'}}>
+                    <BackButton/>
+                    <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={false} width={139}>
+                       Delete Selected
+                    </VFButtonOutline>
+                    <VFButton onClick={onSubmitConflictData} themeUi={themeUi} disabled={disableSubmit} width={139}>
+                        Submit All
+                    </VFButton>
+                    <div style={{width:'200px',flex:2}}>
+                        <VFStepper
+                            items={getStepperState()}
+                        />
+                    </div>
                 </TaskBarContainer>
             )
         default:
