@@ -44,7 +44,7 @@ const TaskPendingForReview = ()=>{
                       return { background: "#F7F7F7" };
                     },
                   }}
-                rowData={mapRowDataWithSrNo(viewTableRowData)}
+                rowData={mapRowDataWithSrNo(viewTableRowData)}  
             />
             </TaskPendingWrapper>
         )
@@ -63,7 +63,7 @@ const TaskPendingForReview = ()=>{
                     },
                 }}
                 rowData={detailTableRowData}
-                rowSelection='multiple'
+                rowSelection='multiple' 
                 suppressRowClickSelection
                 onSelectionChanged={()=>{
                     if(ref && ref.current){
@@ -71,6 +71,9 @@ const TaskPendingForReview = ()=>{
                     }
                     
                 }}
+                pagination={true}
+                paginationPageSize={rowsPerPage}
+                suppressPaginationPanel={true}
             />
             <VFPagination
                 selectedRows={selectedRows}

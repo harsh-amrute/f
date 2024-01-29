@@ -182,6 +182,7 @@ const AddRecord = () => {
             onDeleteOnline={()=>console.log('')}
             onDeleteOnlineReset={()=>console.log('')}
             onDeleteOnlineSave={()=>console.log('')}
+            onSubmitConflictData={()=>console.log('')}
             onDeleteOnlineSubmit={()=>console.log('')}
           />
         }

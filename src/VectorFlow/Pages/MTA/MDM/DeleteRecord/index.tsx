@@ -260,6 +260,7 @@ const DeleteRecord = () => {
             onPhaseInPhaseOutStop={()=>console.log('')}
             onSeasonalityResume={()=>console.log('')}
             onSeasonalityStop={()=>console.log('')}
+            onSubmitConflictData={()=>console.log('')}
             onDeleteData={onDeleteData}
             onDeleteOnline={onDeleteOnline}
             onDeleteOnlineReset={onDeleteOnlineReset}

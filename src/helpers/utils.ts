@@ -5,11 +5,12 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
-import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs } from './MDMConstants';
+import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs, mdmRoutes } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,addDays,format, differenceInSeconds} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
-import {formatMDMDate} from './format'
+import {formatMDMDate} from './format';
+import ConflictErrorToolTip from '../VectorFlow/Pages/MTA/MDM/ViewModify/ConflictErrorToolTip';
 
 // clear cached token and redirect to sso login
 
@@ -410,11 +411,13 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
   
   const currMasterKeys = master.fields.map((field:Field)=>field.key); //array containing keys of current master fields
   const result:object[] = [];
-  const data = await readXlsxFile(file,{
-    parseNumber: (string) => string
+  const buffer = await file.arrayBuffer();
+
+  const data = await readXlsxFile(buffer,{
+    parseNumber: (string:any) => string
   });
   //displayName to key mapper
-  const headerKeys = data[0].map((headerName)=>{
+  const headerKeys = data[0].map((headerName:any)=>{
     const fieldObj = master.fields.find((field:Field)=>field.displayName === headerName);
     if(fieldObj) return fieldObj.key;
     else return '';
@@ -569,6 +572,7 @@ export const mapDraftToColumnDefs = (fields:Field[],customParams?:ColDef)=>{
       },
       flex: 1,
       cellRenderer:f.key==="action"&& ActionRenderer,
+      tooltipComponent:ConflictErrorToolTip,
       ...customParams
     }
   })
@@ -586,7 +590,7 @@ export const mapTaskStatusToColDefs = (taskStatus:ColDef[])=>{
       },
       flex: 1,
       floatingFilter:true,
-      filter: "agMultiColumnFilter",
+      filter: "agMultiColumnFilter"
     }
   })
   return result
@@ -1113,6 +1117,8 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     pointRadius.push(0)
     return tempNorm;
   })
+
+  console.log(buildUpDurationData)
   
   const chartData = {
     labels:xAxisLablesFormatted,
@@ -1208,14 +1214,16 @@ export const addPrefixToObjectKeys = (obj:any,prefix:string)=>{
   return newObj
 }
 
-export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[]):ColDef[]=>{
+export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[],masterId:number):ColDef[]=>{
 
   const result:any[] = []
-  const users:any[] = []
 
   conflicts.map((conflict)=>{
      conflict.conflictdetails.map((conflictDetail)=>{
-      const existingRowIndex = result.findIndex((row:any)=>JSON.stringify(row)===JSON.stringify(conflictDetail))
+      const existingRowIndex = result.findIndex((row:any)=>{
+        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        if(primaryKeys.length<3) return row[primaryKeys[0]]===conflictDetail.oldData[primaryKeys[0]]
+      })
 
       if(existingRowIndex===-1){
         result.push({...conflictDetail.requestedData,users:[{user:conflict.user,data:conflictDetail.oldData}]})
@@ -1232,4 +1240,41 @@ export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,re
 
   console.log(result)
   return result
+
+
 }
+
+export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[]):ColDef[]=>{
+  let result:any[] = []
+  errorConflicts.map((currError:{errorData:any[],errorType:string})=>{
+    currError.errorData.map((errorRowData:any)=>{
+     result.push({
+      ...errorRowData,
+      error:currError.errorType
+    })
+    })
+  })
+  console.log(result)
+  return result
+
+  
+}
+
+export const navigateWithPrompt = (onRouteChange:()=>void,url:any,state:any,resetState:any) => {
+    
+    if(!mdmRoutes.includes(url)){
+      if(state.activeMaster.id === 0){
+        onRouteChange();
+      }
+      else{
+        if(confirm("Are you sure you want to leave this page?")) {
+          onRouteChange();
+          resetState()
+         }
+      } 
+    }
+    else{
+      onRouteChange();
+    }
+   
+}  

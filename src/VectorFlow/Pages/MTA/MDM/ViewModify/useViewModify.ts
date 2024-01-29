@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
-import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData } from "../../../../../helpers/utils";
+import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useDeleteDraft, useDeleteTask } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT} from '../../../../../redux/actions/MDM';
@@ -62,6 +62,7 @@ const useViewModify = (pageType:string) => {
 
     const [seasonalityActiveQuickFilter,setSeasonalityActiveQuickFilter]  = useState<number>(0)
     const ref = useRef<GridRef>();
+    const veryTempRef = useRef<GridRef>()
     const tempRef = useRef<GridRef>(); //used for second ag grid instance which is hidden.
     const [tempGridData,setTempGridData] = useState<object[]>([]);
 
@@ -69,6 +70,8 @@ const useViewModify = (pageType:string) => {
     const [seasonalityRowData,setSeasonalityRowData] = useState<any>([]);
 
     const {mutateAsync:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
+
+    const [TASK_ID,setTaskId] = useState<string>();
 
    
     // const allMasters:Master[] = masterUIConfiguration?.data.data || [];
@@ -149,7 +152,9 @@ const useViewModify = (pageType:string) => {
       errorCell: ErrorCell,
       warningCell: WarningCell,
       seasonalityColorCellRenderer:SeasonalityColorCellRenderer,
-      seasonalityGraphCellRenderer:SeasonalityGraphCellRenderer
+      seasonalityGraphCellRenderer:SeasonalityGraphCellRenderer,
+      conflictErrorCellRenderer:ConflictErrorCellRenderer,
+      conflictErrorToolTip:ConflictErrorToolTip
     }), []);
 
   
@@ -245,6 +250,7 @@ const useViewModify = (pageType:string) => {
       rowSelection:'multiple',
       suppressRowClickSelection:true,
       components:customCellRenderers,
+      enableBrowserTooltips:true,
       onSelectionChanged:()=>{
         if(ref.current?.api){
           setSelectedRowsCount(ref.current?.api.getSelectedRows().length)
@@ -313,7 +319,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const queryFilteredData = async (configs:QueryFilteredDataConfigs) => {
-      const {filters,pagination,fields,count,currentPage} = configs;
+      const {filters,pagination,fields,count,currentPage,rowsPerPage} = configs;
       const payload:GetMasterDataPayload = {
         id:activeMaster.id,
         name:activeMaster.name,
@@ -339,7 +345,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const queryAllData = async (configs:QueryFilteredDataConfigs) => {
-      const {pagination,fields,count,currentPage} = configs;
+      const {pagination,fields,count,currentPage,rowsPerPage} = configs;
       const payload:GetMasterDataPayload = {
         id:activeMaster.id,
         name:activeMaster.name,
@@ -471,10 +477,10 @@ const useViewModify = (pageType:string) => {
 
       let result;
       if(showAll){
-        result = await queryAllData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true});
+        result = await queryAllData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true,rowsPerPage});
       }
       else{
-        result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true});
+        result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true,rowsPerPage});
       }
 
       setIsTableDataLoading(false);
@@ -499,14 +505,14 @@ const useViewModify = (pageType:string) => {
       let result:any;
 
       if(!areMasterFiltersValid(currMasterFilters) && activeMaster.filters.length === 1){
-        result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1}),{
+        result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
           success:"Data Fetched Successfully",
           error:"Something Went Wrong",
           pending:"Loading Data"
         }); 
       }
       else{
-        result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1}),{
+        result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
           success:"Data Fetched Successfully",
           error:"Something Went Wrong",
           pending:"Loading Data"
@@ -561,6 +567,7 @@ const useViewModify = (pageType:string) => {
             notifyError('Please select a file to upload.');
             return
           }
+          const toasId = notifyLoader("Reading File");
   
           const result = await parseExcelData(file,activeMaster,pageType==='remove');
 
@@ -583,43 +590,52 @@ const useViewModify = (pageType:string) => {
           dispatch(SET_RECORD_COUNT(result.length))
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-          dispatch(TOGGLE_UPLOAD_MODAL(false))
+          dispatch(TOGGLE_UPLOAD_MODAL(false));
+          toast.dismiss(toasId)
           notifySuccess(`Data Uploaded Successfully`);
           setDownloadData(false);
           setTempDownloadData(false);
           setCurrentPage(1);
         } catch (error:any) {
+          toast.dismiss();
           notifyError(error.message);
         }
 
       }
 
       const exportToExcel = async (fromUploadModal?:boolean)=>{
-        const currMasterFilters = activeMaster.filters;
-        const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
-      
-        const payloadFields:any = getCurrentVisbileColumns();
-        const numberOfPages = Math.ceil(recordCount/rowsPerPage);
-        const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
-        const rows = [];
-        for(let i=1; i<=numberOfPages; i++){
-          const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:false,pagination:true,currentPage:i});
-          rows.push(...result.data.data)
-          if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
-          else toast.update(toastId,{render:`Downloading Data ${i*rowsPerPage} / ${recordCount}`})
-        }
+        try {
+          const currMasterFilters = activeMaster.filters;
+          const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
+        
+          const payloadFields:any = getCurrentVisbileColumns();
+          const numberOfPages = Math.ceil(recordCount/chunkSize);
+          const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
+          const rows = [];
+          for(let i=1; i<=numberOfPages; i++){
+            const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:false,pagination:true,currentPage:i,rowsPerPage:chunkSize});
+            if(result.data.data === null) throw new Error("Something Went Wrong")
+            rows.push(...result.data.data)
+            if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
+            else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
+          }
 
-        dispatch(UPDATE_ROW_DATA(rows));
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-        setDownloadData(true);
-        toast.dismiss(toastId);
-        if(fromUploadModal){
-          setIsUploadButtonDisabled(false);
-          notifySuccess(`Data Downloaded Successfully`);
-          return
-        }
+          dispatch(UPDATE_ROW_DATA(rows));
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          setDownloadData(true);
+          toast.dismiss(toastId);
+          if(fromUploadModal){
+            setIsUploadButtonDisabled(false);
+            notifySuccess(`Data Downloaded Successfully`);
+            return
+          }
 
-        notifySuccess(`Data Exported Successfully`);
+          notifySuccess(`Data Exported Successfully`);
+        } catch (error) {
+          toast.dismiss();
+          notifyError('Something Went Wrong');
+        }
+        
       }
 
       const onClearExportError = () => {
@@ -676,10 +692,10 @@ const useViewModify = (pageType:string) => {
         const payloadFields:any = getCurrentVisbileColumns();
         let result;
         if(!areMasterFiltersValid(activeMaster.filters) && activeMaster.filters.length === 1){
-          result = await queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo});
+          result = await queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo,rowsPerPage});
         }
         else{
-          result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo});
+          result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo,rowsPerPage});
         }
         
         dispatch(UPDATE_ROW_DATA(result.data.data));
@@ -691,9 +707,9 @@ const useViewModify = (pageType:string) => {
       const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean) => { 
 
         //CleanUp Row Data
-        rowData = rowData.map((row:any)=>_.omit(row,'error','warning'));
+        rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users'));
 
-        let taskId = '';
+        let taskId:any   = '';
         let toastId:any = '';
         let conflictCount = 0;
         let errorCount = 0;
@@ -704,7 +720,7 @@ const useViewModify = (pageType:string) => {
           const payload:any = {
             id:activeMaster.id,
             action:"",
-            TaskId:"",
+            TaskId:'',
             IsOverWrite:isOverWrite===true?true:false,
             data:[]
           }
@@ -726,8 +742,16 @@ const useViewModify = (pageType:string) => {
 
               if(taskId === '' && i!==0) throw new Error("Something Went Wrong");
 
-              payload.TaskId = data.data.taskId;
-              taskId = data.data.taskId;
+              if(TASK_ID === ''){
+                payload.TaskId = data.data.taskId;
+                taskId = data.data.taskId;
+              }
+              else{
+                payload.TaskId = TASK_ID;
+                taskId = TASK_ID;
+              }
+
+              setTaskId(data.data.taskId  );
               
               if(data.data.conflictErrorCount){
                 conflictCount += parseInt(data.data.conflictErrorCount,10);
@@ -768,11 +792,8 @@ const useViewModify = (pageType:string) => {
             setConflictCount(conflictCount);
             setErrorCount(errorCount);
             setConflictData(conflictData);
-            setErrorData(errorData);
-            if(conflictCount>0){
-              return false
-            }
-            return true;  
+            setErrorData(errorData)
+            return {isConflicts:conflictCount>0,errorCount,errorData,conflictCount,conflictData} 
             
           }
          catch (error) {
@@ -781,7 +802,7 @@ const useViewModify = (pageType:string) => {
             await deleteTask(taskId);
           }
           toast.dismiss(toastId)
-          return false;
+          return {isConflicts:true,errorCount,errorData,conflictCount,conflictData} 
         }
       }
           
@@ -796,8 +817,9 @@ const useViewModify = (pageType:string) => {
         let result;
 
         if(activeMaster.progress === 'editOnlineSaved'){
-          result = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-          if(result) dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
+          const {isConflicts,} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          result = !isConflicts
+          if(!isConflicts) dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
           else{
             setIsConflictModalOpen(true)
             dispatch(UPDATE_PROGRESS_STATE('conflicts'))
@@ -805,8 +827,18 @@ const useViewModify = (pageType:string) => {
 
         }
         else{
-          result = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-          if(result) dispatch(UPDATE_PROGRESS_STATE('submitted'));
+          const {isConflicts,conflictCount} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          result = !isConflicts
+          if(!isConflicts){
+            console.log(errorCount)
+            if(errorCount>0){
+              const errorRowData = createErrorRowData(errorData)
+              addInvalidDataColDefs('error')
+              dispatch(UPDATE_ROW_DATA(errorRowData))
+              dispatch(SET_RECORD_COUNT(errorRowData.length))
+            }
+            dispatch(UPDATE_PROGRESS_STATE('submitted'));
+          }
           else{
             setIsConflictModalOpen(true)
             dispatch(UPDATE_PROGRESS_STATE('conflicts'))
@@ -823,14 +855,24 @@ const useViewModify = (pageType:string) => {
       
 
       const onBackButton = () => {
-       dispatch(UPDATE_ROW_DATA([]));
-       dispatch(UPDATE_COLDEFS( mapMasterToColumnDefs(activeMaster.fields,activeMaster.id)))
-       dispatch(REMOVE_ALL_FILTERS())
-       dispatch(ADD_FILTER())
+       if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
+       {
+        dispatch(UPDATE_PROGRESS_STATE('default'));
+        dispatch(UPDATE_ROW_DATA([]));
+        dispatch(UPDATE_COLDEFS( mapMasterToColumnDefs(activeMaster.fields,activeMaster.id)))
+        dispatch(REMOVE_ALL_FILTERS())
+       
+        dispatch(ADD_FILTER())
         setDownloadData(false);
         setTempDownloadData(false);
-        dispatch(UPDATE_PROGRESS_STATE('default'))
+
         if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+
+       }
+       
+       
+
+        
       }
 
       const postDraftChunks = async (rowData:any) => {
@@ -1007,30 +1049,21 @@ const useViewModify = (pageType:string) => {
     }
 
     const onReviewConflicts = ()=>{
-      const newRowData = createConflictRowData(conflictData)
+      console.log(conflictData)
+      const newRowData = createConflictRowData(conflictData,activeMaster.id)
 
-      const requiredColumnKeys = Object.keys(newRowData[0]).filter((key) => key !== 'users');
+      const newColDefs = activeMaster.colDefs.map((colDef:ColDef)=>{
+        return {
+          ...colDef,
+          // cellRenderer:'conflictErrorCellRenderer',
+          cellStyle:{
+            ...colDef.cellStyle,
+            'overflow':'visible'
+          },
+          tooltipComponent:'conflictErrorToolTip',
+          cellRenderer:'conflictErrorCellRenderer',
+          // tooltipField:colDef.field
 
-      const newColDefs = requiredColumnKeys.map((requiredKey)=>{
-        const findColDef = activeMaster.colDefs.find(((colDef:ColDef)=>colDef.colId===requiredKey))
-        if(findColDef){
-          console.log(findColDef.colId)
-          return {
-            ...findColDef,
-            cellRenderer:ConflictErrorCellRenderer,
-            tooltipComponent:ConflictErrorToolTip,
-            tooltipComponentParams:{color: '#55AA77'},
-            tooltipField:findColDef.field,
-
-
-
-
-            // cellStyle:(params:any)=>{
-            //   console.log(params.data)
-            
-              // }
-            
-          }
         }
       })
      if(newColDefs) dispatch(UPDATE_COLDEFS(newColDefs))
@@ -1040,6 +1073,14 @@ const useViewModify = (pageType:string) => {
       dispatch(SET_RECORD_COUNT(newRowData.length))
     }
 
+    const onIgnoreSubmitErrors = ()=>{
+      const errorRowData = createErrorRowData(errorData)
+      addInvalidDataColDefs('error')
+      dispatch(UPDATE_ROW_DATA(errorRowData))
+      dispatch(UPDATE_PROGRESS_STATE('submitted'))
+      dispatch(SET_RECORD_COUNT(errorRowData.length))
+      setIsConflictModalOpen(false)
+    }
 
     return {
         colDefs,
@@ -1092,6 +1133,7 @@ const useViewModify = (pageType:string) => {
         currentPage,
         seasonalityActiveQuickFilter,
         // onSaveToDraft,
+        veryTempRef,
         onSeasonalityQuickFilter,
         handleChangePage,
         onReset,
@@ -1108,7 +1150,8 @@ const useViewModify = (pageType:string) => {
         errorData,
         isConflictModalOpen,
         setIsConflictModalOpen,
-        onReviewConflicts
+        onReviewConflicts,
+        onIgnoreSubmitErrors
     }
 }
 

@@ -288,40 +288,50 @@ export const SubmitDataTextContainer = styled.div`
 font-style:normal;
 font-variant:normal;
 font-weight:400;
-font-size:22px;
-line-height:25px;
+font-size:19px;
+line-height:22px;
 font-family:Roboto;
 color: #000000;
 opacity: 1;
 dispay:flex;
 text-align:center;
 justify-content:center;
-margin-top:42px;
-margin-bottom:44px;
+margin-top:26px;  //42
+margin-bottom:32px; //44
 `
 
 export const SubmitDataButtonWrapper = styled.div`
-margin-bottom:87px;
-margin-left:192px;
-margin-right:189px;
+margin-bottom:59px; // 87
+margin-left:100px;  //192
+margin-right:100px;  //189
 display:flex;
 flex-direction:row;
 gap:28px;
 `
 
 export const ConflictErrorToolTipWrapper = styled.div`
-    position:absolute;
-    width:100%;
-    height:100%;
-    bottom:5px;
+    position:fixed;
     background-color:white;
+    bottom:0;
     display:flex;
-    justofy-content:center;
-    align-items:center;
+    flex-direction:column;
+    padding:5px;
     border:1px solid rgb(130, 15, 76);
+    border-radius:8px;
+    z-index:10000;
    
 `
 export const ConflictErrorToolTipSection = styled.div`
    width:100%;
-   height:100%;
+   margin-bottom:5px;
+   border-bottom:solid 2px gray;  
+   &:last-child {
+    border-bottom: none; 
+}
+`
+
+export const ConflictErrorText = styled.p`
+    text-align:left;
+    font-size:15px;
+
 `

@@ -253,3 +253,9 @@ export const customKeys = [
     'c14',
     'c15'
 ]
+
+export const mdmRoutes = [
+    '/master-data-management/control-panel/view-modify',
+    '/master-data-management/control-panel/add',
+    '/master-data-management/control-panel/delete'
+]

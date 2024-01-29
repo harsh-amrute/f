@@ -110,6 +110,7 @@ export interface QueryFilteredDataConfigs{
     pagination?:boolean
     count?:boolean,
     currentPage?:number
+    rowsPerPage:number
 }
 
 export interface UploadModalRadioButtonsType{
@@ -144,4 +145,13 @@ export interface ConflictToolTipUser{
     name:string
     column:string
     value:string
+}
+export interface TaskDataType {
+    Actiontype:number,
+    PendingSince:string,
+    RequesterName:string,
+    SrNo:number,
+    TaskID:string,
+    TaskName:string,
+    ageing:number
 }

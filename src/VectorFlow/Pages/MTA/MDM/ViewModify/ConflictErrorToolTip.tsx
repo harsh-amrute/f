@@ -5,7 +5,7 @@ const ConflictErrorToolTip = (params:any)=>{
     console.log(params)
     return(
         <div>
-            faofosaf
+            {params.value}
         </div>
     )
 }

@@ -20,6 +20,7 @@ import SubmitConflictModal from "./SubmitConflictModal";
 
 
 
+
   const ViewModify = () => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
@@ -65,7 +66,7 @@ import SubmitConflictModal from "./SubmitConflictModal";
         tempGridData,
         deleteSelected,
         onSubmit,
-        isUploadButtonDisabled,
+        // isUploadButtonDisabled,
         editOnline,
         seasonalityActiveQuickFilter,
         onEditOnline,
@@ -88,6 +89,8 @@ import SubmitConflictModal from "./SubmitConflictModal";
         errorData,
         isConflictModalOpen,
         setIsConflictModalOpen,
+        veryTempRef,
+        onIgnoreSubmitErrors,
         onReviewConflicts
 
     } = useViewModify('modify');
@@ -103,7 +106,6 @@ import SubmitConflictModal from "./SubmitConflictModal";
         }
       }
     },[isTableDataLoading])
-
 
     return (
       <>
@@ -209,10 +211,14 @@ import SubmitConflictModal from "./SubmitConflictModal";
                   ref={ref}
                   columnDefs={activeMaster.colDefs}
                   rowData={activeMaster.rowData}
-                  tooltipShowDelay={0}
-                  tooltipHideDelay={2000}
                   {...agGridProps}
                 />
+                {/* <VFTable
+                  ref={veryTempRef}
+                  columnDefs={activeMaster.colDefs}
+                  rowData={activeMaster.rowData}
+                  enableBrowserTooltips={true}
+                /> */}
                 <div style={{display:'none'}}>                
                   <VFTable
                     ref={tempRef}
@@ -263,8 +269,9 @@ import SubmitConflictModal from "./SubmitConflictModal";
           <SubmitConflictModal 
             totalCount={activeMaster.rowData.length}
             modificationCount={conflictCount}
-            recordCount={activeMaster.rowData.length - conflictCount}
+            recordCount={activeMaster.rowData.length - conflictCount - errorCount}
             onSuccess={onReviewConflicts}
+            onFailure={onIgnoreSubmitErrors}
             onCloseModal={()=>{return}}
 
           />
