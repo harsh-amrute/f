@@ -7,6 +7,8 @@ export interface VFPaginationProps{
     rowsPerPage:number
     handleChangePage:(e:any)=>void
     handleChangePerPage?:(e:any)=>void
+    showTotalItems?:boolean,
+    showPagination?:boolean
 }
 
 
@@ -18,7 +20,9 @@ const VFPagination  = (props:VFPaginationProps)=>{
         currentPage,
         rowsPerPage,
         handleChangePage,
-        handleChangePerPage
+        handleChangePerPage,
+        showTotalItems,
+        showPagination
     } = props
     
     const getTotalItemsString = () => {
@@ -36,16 +40,24 @@ const VFPagination  = (props:VFPaginationProps)=>{
                                         Selected {selectedRows} out of {totalRows}
                                       </SelectedRowsCountWrapper>
             }
+            {
+                showTotalItems &&  
+                    <TotalItemsWrapper>
+                        Total Items : {getTotalItemsString()}/{totalRows}
+                    </TotalItemsWrapper>
+            }
+            {
+                showPagination && 
+                    <Pagination
+                    page={currentPage}
+                    pageCount={totalRows/rowsPerPage}
+                    handleChangePage={handleChangePage}
+                    handleChangePerPage={handleChangePerPage}
+                />
+            }
             
-            <TotalItemsWrapper>
-                Total Items : {getTotalItemsString()}/{totalRows}
-            </TotalItemsWrapper>
-            <Pagination
-                page={currentPage}
-                pageCount={totalRows/rowsPerPage}
-                handleChangePage={handleChangePage}
-                handleChangePerPage={handleChangePerPage}
-            />
+           
+            
         </PaginationWrapper>
     )
 }

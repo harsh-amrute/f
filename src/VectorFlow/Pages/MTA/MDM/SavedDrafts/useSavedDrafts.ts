@@ -34,7 +34,7 @@ const useSavedDrafts = ()=>{
     const closeDeleteModal =()=>toggleDeleteModal(false)
 
     const onEditDraft = async(draftDetails:any)=>{
-        let toastId;
+       let toastId;
 
        try{
         
@@ -63,9 +63,11 @@ const useSavedDrafts = ()=>{
                 else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${draftCount}`})
             }
         }
+        toast.dismiss(toastId);
 
+        notifyLoader("Getting Draft Ready")
     
-        toast.update(toastId,{render:"Getting Draft Ready"});
+        // toast.update(toastId,{render:"Getting Draft Ready"});
        
         const draftData:any = [];
         draftDataRaw.forEach((data:any)=>{
@@ -80,11 +82,11 @@ const useSavedDrafts = ()=>{
                 draftData.push(data);
             }
             
-    })
+        })
  
         const mastersData= await getMasterUIConfiguration(getActionName(draftDetails.ActionType).value)
 
-        toast.dismiss(toastId);
+        toast.dismiss();
 
         const fields = mastersData.data.data
         const masterState = createMastersStateFromDraftData(draftData,fields)
@@ -98,7 +100,7 @@ const useSavedDrafts = ()=>{
         
         
         navigate(`/master-data-management/control-panel/${getActionName(draftDetails.ActionType).label}`);
-        toast.dismiss(toastId);
+        toast.dismiss();
         notifySuccess("Draft Loaded Successfully");
 
        }catch(error:any){

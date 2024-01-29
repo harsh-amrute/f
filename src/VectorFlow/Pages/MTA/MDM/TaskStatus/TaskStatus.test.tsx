@@ -10,7 +10,7 @@ import { UserDataContext } from "../../../../../context";
 import TaskStatus from ".";
 import { store } from "../../../../../redux/store/store";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { useGetTasKDetailDownloadData, useGetTaskStatusData,useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { useGetTaskDetailDownloadData, useGetTaskStatusData,useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM";
 import { getTaskDetailsDownloadDataMockData, getTaskStatusDataMockData,getMasterUIConfigurationMockData } from "../../../../../mock-data/MDM";
 
 jest.mock("../../../../Services/MTA/MDM");
@@ -27,8 +27,8 @@ const useGetTaskStatusDataMock = useGetTaskStatusData as jest.MockedFunction<
    typeof useGetTaskStatusData
 >
 
-const useGetTaskDetailDownloadDataMock = useGetTasKDetailDownloadData as jest.MockedFunction<
-   typeof useGetTasKDetailDownloadData
+const useGetTaskDetailDownloadDataMock = useGetTaskDetailDownloadData as jest.MockedFunction<
+   typeof useGetTaskDetailDownloadData
 >
 
 const useGetMasterUIConfigurationMock = useGetMasterUIConfiguration as jest.MockedFunction<

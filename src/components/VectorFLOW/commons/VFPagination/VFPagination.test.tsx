@@ -11,7 +11,9 @@ const dummyprops:VFPaginationProps = {
     rowsPerPage:10,
     currentPage:1,
     handleChangePage:dummyFn,
-    handleChangePerPage:dummyFn
+    handleChangePerPage:dummyFn,
+    showPagination:true,
+    showTotalItems:true
 }
 
 describe("VFPagination Component", () => {

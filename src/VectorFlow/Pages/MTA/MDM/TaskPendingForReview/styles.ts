@@ -31,6 +31,8 @@ export const ActionHeaderWrapper = styled.div`
 export const ActionHeaderContent = styled.div`
     font-size:16px;
     display:flex;
+    padding:5px;
+    margin-bottom:5px;
 `
 
 export const LinkWrapper = styled.div`

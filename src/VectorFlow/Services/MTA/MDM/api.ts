@@ -107,9 +107,17 @@ export namespace MDMService {
   }
 
 
-export const deleteTask = async(taskId:any)=>{
-  return await axios.delete(process.env.REACT_APP_VF_API_HOST + '/DeleteTask',{params:{taskId}})
-}
+  export const deleteTask = async(taskId:any)=>{
+    return await axios.delete(process.env.REACT_APP_VF_API_HOST + '/DeleteTask',{params:{taskId}})
+  }
+
+  export const approveTask = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + '/PostMasterAfterApproved',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+
 
 }
 

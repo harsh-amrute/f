@@ -5,11 +5,13 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
-import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs, mdmRoutes } from './MDMConstants';
+import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskStatusCustomColDefs, mdmRoutes } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,addDays,format, differenceInSeconds} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
 import {formatMDMDate} from './format';
+import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
+import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 
 // clear cached token and redirect to sso login
 
@@ -676,8 +678,9 @@ export const getExistingColumnFields = (columns:string[],fields:Field[]):Field[]
   return updatedFields
 }
 
-export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string):ColGroupDef[] | ColDef[]=>{
+export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string, showApproveAllModal?:any,showRejectAllModal?:any,actionStatus?:string):ColGroupDef[] | ColDef[]=>{
 
+  console.log(actionStatus)
   const colDefs =  existingColumnsFields.map((f:Field)=>{
 
     if(TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
@@ -767,6 +770,65 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
       
     }
   })
+
+  const taskPendingCustomColDefs :any[] = [
+    {
+        field:'action',
+        colId:'action',
+        headerName:'Action',
+        children:[
+            {
+                headerComponent:TaskPendingActionHeader,
+                headerComponentParams:{
+                  showApproveAllModal:showApproveAllModal,
+                  showRejectAllModal:showRejectAllModal,
+                  actionStatus:actionStatus
+                },
+                cellRenderer:TaskPendingActionRenderer,
+                width:300,
+                cellStyle:{
+                    "border-left":"solid 1px #B9B9B9"
+                }
+            }
+            // {
+            //     field:"reject",
+            //     colId:'reject',
+            //     headerName:"Reject All",
+            //     headerCheckboxSelection:true,
+            //     cellRenderer:TaskPendingRejectActionButton,
+            //     width:150,
+            //     cellStyle:{
+            //         "border-right":"solid 1px #B9B9B9"
+            //     }
+            // }
+        ],
+        cellStyle: {
+        "text-align": "center"
+        },
+        flex: 1,
+    },
+    {
+        field:'status',
+        colId:'status',
+        headerName:'Status',
+        suppressSpanHeaderHeight: true,
+        cellStyle:{
+            "border-right":"solid 1px #B9B9B9",
+            "border-left":"solid 1px #B9B9B9",
+            "text-align":'center'
+        },
+        flex:1,
+        minWidth:100
+    },
+    {
+        field:'comments',
+        colId:'comments',
+        headerName:'Comments',
+        suppressSpanHeaderHeight: true,
+        editable:true,
+        ...defaultColDefs
+    }
+]
 
   return [
   //   {

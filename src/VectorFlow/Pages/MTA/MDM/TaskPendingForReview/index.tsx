@@ -5,6 +5,8 @@ import { mapRowDataWithSrNo } from "../../../../../helpers/utils"
 import useTaskPendingForReview from "./useTaskPendingForReview"
 import TaskPendingTaskBar from "./TaskPendingTaskBar"
 import { TaskPendingWrapper } from "./styles"
+import ApproveAllModal from "./ApproveAllModal"
+import RejectAllModal from "./RejectAllModal"
 
 
 const TaskPendingForReview = ()=>{
@@ -23,7 +25,14 @@ const TaskPendingForReview = ()=>{
         rowsPerPage,
         handleChangePage,
         onCancel,
-        setSelectedRows
+        setSelectedRows,
+        onTaskSubmit,
+        showApproveAllModal,
+        toggleApproveAllModal,
+        showRejectAllModal,
+        toggleRejectAllModal,
+        onSelectionTypeSuccess,
+        setSelectionType
     } = useTaskPendingForReview()
 
 
@@ -73,7 +82,7 @@ const TaskPendingForReview = ()=>{
                 }}
                 pagination={true}
                 paginationPageSize={rowsPerPage}
-                suppressPaginationPanel={true}
+                // suppressPaginationPanel={true}
             />
             <VFPagination
                 selectedRows={selectedRows}
@@ -81,12 +90,22 @@ const TaskPendingForReview = ()=>{
                 currentPage={currentPage}
                 rowsPerPage={rowsPerPage}
                 handleChangePage={handleChangePage}
+                showPagination={false}
+                showTotalItems={false}
 
             />
+            {
+                showApproveAllModal && 
+                    <ApproveAllModal onSuccess={()=>onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType}/>
+            }
+            {
+                showRejectAllModal && 
+                    <RejectAllModal onSuccess={()=>onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} />
+            }
             <TaskPendingTaskBar
                 disableSubmit={selectedRows==0}
                 onCancel={onCancel}
-                onSubmit={()=>console.log('')}
+                onSubmit={onTaskSubmit}
             />
         </TaskPendingWrapper>
         

@@ -6,6 +6,8 @@ const mockFunction = jest.fn()
 
 const dummyprops = {
   onSuccess:mockFunction,
+  onClose:mockFunction,
+  setSelectionType:mockFunction
 }
 
 describe("RejectAllModal Component", () => {
