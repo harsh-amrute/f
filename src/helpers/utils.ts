@@ -10,6 +10,7 @@ import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRender
 import {subDays,addDays,format, differenceInSeconds} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
 import {formatMDMDate} from './format';
+import ConflictErrorToolTip from '../VectorFlow/Pages/MTA/MDM/ViewModify/ConflictErrorToolTip';
 
 // clear cached token and redirect to sso login
 
@@ -571,6 +572,7 @@ export const mapDraftToColumnDefs = (fields:Field[],customParams?:ColDef)=>{
       },
       flex: 1,
       cellRenderer:f.key==="action"&& ActionRenderer,
+      tooltipComponent:ConflictErrorToolTip,
       ...customParams
     }
   })
@@ -588,7 +590,7 @@ export const mapTaskStatusToColDefs = (taskStatus:ColDef[])=>{
       },
       flex: 1,
       floatingFilter:true,
-      filter: "agMultiColumnFilter",
+      filter: "agMultiColumnFilter"
     }
   })
   return result
@@ -1116,7 +1118,6 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     return tempNorm;
   })
 
-  console.log(buildUpDurationData)
   
   const chartData = {
     labels:xAxisLablesFormatted,
@@ -1200,6 +1201,58 @@ export const createSubmitMasterPayload = (master:any,action:string)=>{
     action:action,
     data:master.rowData
   }
+}
+
+export const addPrefixToObjectKeys = (obj:any,prefix:string)=>{
+
+  const newObj:any = {}
+
+  Object.keys(obj).map((key)=>{
+    newObj[`${prefix + key}`] = obj[key] 
+  })
+  return newObj
+}
+
+export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[],masterId:number):ColDef[]=>{
+
+  const result:any[] = []
+
+  conflicts.map((conflict)=>{
+     conflict.conflictdetails.map((conflictDetail)=>{
+      const existingRowIndex = result.findIndex((row:any)=>{
+        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        if(primaryKeys.length<3) return row[primaryKeys[0]]===conflictDetail.oldData[primaryKeys[0]]
+      })
+
+      if(existingRowIndex===-1){
+        result.push({...conflictDetail.requestedData,users:[{user:conflict.user,data:conflictDetail.oldData}]})
+      }
+      else{
+        // const existingUser = result[existingRowIndex].users.findIndex((user:any)=>user.user===conflict.user)
+        // if(existingUser!==-1){
+        //   result[existingRowIndex].users[existingUser].daa
+        // }
+        result[existingRowIndex].users.push({user:conflict.user,data:conflictDetail.oldData})
+      }
+    })
+  })
+
+  return result
+
+
+}
+
+export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[]):ColDef[]=>{
+  const result:any[] = []
+  errorConflicts.map((currError:{errorData:any[],errorType:string})=>{
+    currError.errorData.map((errorRowData:any)=>{
+     result.push({
+      ...errorRowData,
+      error:currError.errorType
+    })
+    })
+  })
+  return result
 }
 
 export const navigateWithPrompt = (onRouteChange:()=>void,url:any,state:any,resetState:any) => {

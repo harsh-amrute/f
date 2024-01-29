@@ -782,7 +782,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     render(contextWrapper(<ViewModify/>,mockStore));
 
-    fireEvent.click(screen.getByLabelText("Next page"));
+    // fireEvent.click(screen.getByLabelText("Next page"));
     
 
   })

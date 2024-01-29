@@ -306,5 +306,32 @@ margin-left:100px;  //192
 margin-right:100px;  //189
 display:flex;
 flex-direction:row;
-gap:26px;
+gap:28px;
+`
+
+export const ConflictErrorToolTipWrapper = styled.div`
+    position:fixed;
+    background-color:white;
+    bottom:0;
+    display:flex;
+    flex-direction:column;
+    padding:5px;
+    border:1px solid rgb(130, 15, 76);
+    border-radius:8px;
+    z-index:10000;
+   
+`
+export const ConflictErrorToolTipSection = styled.div`
+   width:100%;
+   margin-bottom:5px;
+   border-bottom:solid 2px gray;  
+   &:last-child {
+    border-bottom: none; 
+}
+`
+
+export const ConflictErrorText = styled.p`
+    text-align:left;
+    font-size:15px;
+
 `

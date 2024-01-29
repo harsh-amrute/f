@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
-import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs } from "../../../../../helpers/utils";
+import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useDeleteDraft, useDeleteTask } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT} from '../../../../../redux/actions/MDM';
@@ -14,6 +14,8 @@ import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCel
 import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
+import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
+import ConflictErrorToolTip from './ConflictErrorToolTip';
 
 
 const useViewModify = (pageType:string) => {
@@ -51,6 +53,7 @@ const useViewModify = (pageType:string) => {
     const [errorCount,setErrorCount] = useState<number>(0);
     const [conflictData,setConflictData] = useState<Array<any>>([]);
     const [errorData,setErrorData] = useState<Array<any>>([]);
+    const [isConflictModalOpen,setIsConflictModalOpen] = useState<boolean>(false)
 
     const [editOnline,toggleEditOnline] = useState(false);
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
@@ -66,6 +69,8 @@ const useViewModify = (pageType:string) => {
     const [seasonalityRowData,setSeasonalityRowData] = useState<any>([]);
 
     const {mutateAsync:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
+
+    const [TASK_ID,setTaskId] = useState<string>();
 
    
     // const allMasters:Master[] = masterUIConfiguration?.data.data || [];
@@ -146,7 +151,9 @@ const useViewModify = (pageType:string) => {
       errorCell: ErrorCell,
       warningCell: WarningCell,
       seasonalityColorCellRenderer:SeasonalityColorCellRenderer,
-      seasonalityGraphCellRenderer:SeasonalityGraphCellRenderer
+      seasonalityGraphCellRenderer:SeasonalityGraphCellRenderer,
+      conflictErrorCellRenderer:ConflictErrorCellRenderer,
+      conflictErrorToolTip:ConflictErrorToolTip
     }), []);
 
   
@@ -242,6 +249,7 @@ const useViewModify = (pageType:string) => {
       rowSelection:'multiple',
       suppressRowClickSelection:true,
       components:customCellRenderers,
+      enableBrowserTooltips:true,
       onSelectionChanged:()=>{
         if(ref.current?.api){
           setSelectedRowsCount(ref.current?.api.getSelectedRows().length)
@@ -649,6 +657,7 @@ const useViewModify = (pageType:string) => {
         addCheckBoxColDefs();
         if(pageType==='remove') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
         else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+        dispatch(SET_RECORD_COUNT(validData.length))
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         
       }
@@ -694,12 +703,12 @@ const useViewModify = (pageType:string) => {
 
       }
 
-      const postMasterDataChunks = async (rowData:any) => { 
+      const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean) => { 
 
         //CleanUp Row Data
-        rowData = rowData.map((row:any)=>_.omit(row,'error','warning'));
+        rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users'));
 
-        let taskId = '';
+        let taskId:any   = '';
         let toastId:any = '';
         let conflictCount = 0;
         let errorCount = 0;
@@ -710,8 +719,8 @@ const useViewModify = (pageType:string) => {
           const payload:any = {
             id:activeMaster.id,
             action:"",
-            TaskId:"",
-            IsOverWrite:false,
+            TaskId:'',
+            IsOverWrite:isOverWrite===true?true:false,
             data:[]
           }
 
@@ -732,10 +741,20 @@ const useViewModify = (pageType:string) => {
 
               if(taskId === '' && i!==0) throw new Error("Something Went Wrong");
 
-              payload.taskId = data.data.taskId;
-              taskId = data.data.taskId;
-           
-              conflictCount += parseInt(data.data.conflictErrorCount,10);
+              if(TASK_ID === ''){
+                payload.TaskId = data.data.taskId;
+                taskId = data.data.taskId;
+              }
+              else{
+                payload.TaskId = TASK_ID;
+                taskId = TASK_ID;
+              }
+
+              setTaskId(data.data.taskId  );
+              
+              if(data.data.conflictErrorCount){
+                conflictCount += parseInt(data.data.conflictErrorCount,10);
+              }
               errorCount += parseInt(data.data.errorCount,10);
               const conflictedRows = data.data.conflictError;
               const errorenousRows = data.data.error;
@@ -772,8 +791,8 @@ const useViewModify = (pageType:string) => {
             setConflictCount(conflictCount);
             setErrorCount(errorCount);
             setConflictData(conflictData);
-            setErrorData(errorData);
-            return true;  
+            setErrorData(errorData)
+            return {isConflicts:conflictCount>0,errorCount,errorData,conflictCount,conflictData} 
             
           }
          catch (error) {
@@ -782,12 +801,12 @@ const useViewModify = (pageType:string) => {
             await deleteTask(taskId);
           }
           toast.dismiss(toastId)
-          return false;
+          return {isConflicts:true,errorCount,errorData,conflictCount,conflictData} 
         }
       }
           
 
-      const onSubmit = async() => {
+      const onSubmit = async(isOverWrite?:boolean) => {
 
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
 
@@ -797,13 +816,32 @@ const useViewModify = (pageType:string) => {
         let result;
 
         if(activeMaster.progress === 'editOnlineSaved'){
-          result = await postMasterDataChunks(activeMaster.rowData);
-          if(result) dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
+          const {isConflicts,} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          result = !isConflicts
+          if(!isConflicts) dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
+          else{
+            setIsConflictModalOpen(true)
+            dispatch(UPDATE_PROGRESS_STATE('conflicts'))
+          }
 
         }
         else{
-          result = await postMasterDataChunks(activeMaster.rowData);
-          if(result) dispatch(UPDATE_PROGRESS_STATE('submitted'));
+          const {isConflicts} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          result = !isConflicts
+          if(!isConflicts){
+            console.log(errorCount)
+            if(errorCount>0){
+              const errorRowData = createErrorRowData(errorData)
+              addInvalidDataColDefs('error')
+              dispatch(UPDATE_ROW_DATA(errorRowData))
+              dispatch(SET_RECORD_COUNT(errorRowData.length))
+            }
+            dispatch(UPDATE_PROGRESS_STATE('submitted'));
+          }
+          else{
+            setIsConflictModalOpen(true)
+            dispatch(UPDATE_PROGRESS_STATE('conflicts'))
+          }
         }
         if(result){
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
@@ -1009,6 +1047,38 @@ const useViewModify = (pageType:string) => {
         dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSaved'))
     }
 
+    const onReviewConflicts = ()=>{
+      const newRowData = createConflictRowData(conflictData,activeMaster.id)
+
+      const newColDefs = activeMaster.colDefs.map((colDef:ColDef)=>{
+        return {
+          ...colDef,
+          // cellRenderer:'conflictErrorCellRenderer',
+          cellStyle:{
+            ...colDef.cellStyle,
+            'overflow':'visible'
+          },
+          tooltipComponent:'conflictErrorToolTip',
+          cellRenderer:'conflictErrorCellRenderer',
+          // tooltipField:colDef.field
+
+        }
+      })
+     if(newColDefs) dispatch(UPDATE_COLDEFS(newColDefs))
+      addCheckBoxColDefs()
+      dispatch(UPDATE_ROW_DATA(newRowData))
+      setIsConflictModalOpen(false)
+      dispatch(SET_RECORD_COUNT(newRowData.length))
+    }
+
+    const onIgnoreSubmitErrors = ()=>{
+      const errorRowData = createErrorRowData(errorData)
+      addInvalidDataColDefs('error')
+      dispatch(UPDATE_ROW_DATA(errorRowData))
+      dispatch(UPDATE_PROGRESS_STATE('submitted'))
+      dispatch(SET_RECORD_COUNT(errorRowData.length))
+      setIsConflictModalOpen(false)
+    }
 
     return {
         colDefs,
@@ -1074,7 +1144,11 @@ const useViewModify = (pageType:string) => {
         conflictCount,
         errorCount,
         conflictData,
-        errorData
+        errorData,
+        isConflictModalOpen,
+        setIsConflictModalOpen,
+        onReviewConflicts,
+        onIgnoreSubmitErrors
     }
 }
 
