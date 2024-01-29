@@ -1243,7 +1243,7 @@ export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,re
 }
 
 export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[]):ColDef[]=>{
-  let result:any[] = []
+  const result:any[] = []
   errorConflicts.map((currError:{errorData:any[],errorType:string})=>{
     currError.errorData.map((errorRowData:any)=>{
      result.push({
