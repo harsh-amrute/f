@@ -1049,7 +1049,6 @@ const useViewModify = (pageType:string) => {
     }
 
     const onReviewConflicts = ()=>{
-      console.log(conflictData)
       const newRowData = createConflictRowData(conflictData,activeMaster.id)
 
       const newColDefs = activeMaster.colDefs.map((colDef:ColDef)=>{

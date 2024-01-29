@@ -1118,7 +1118,6 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     return tempNorm;
   })
 
-  console.log(buildUpDurationData)
   
   const chartData = {
     labels:xAxisLablesFormatted,
@@ -1238,7 +1237,6 @@ export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,re
     })
   })
 
-  console.log(result)
   return result
 
 
@@ -1254,10 +1252,7 @@ export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:str
     })
     })
   })
-  console.log(result)
   return result
-
-  
 }
 
 export const navigateWithPrompt = (onRouteChange:()=>void,url:any,state:any,resetState:any) => {
