@@ -3,7 +3,7 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup, SeasonalityQuickFilterWrapper, SeasonalityQuickFilter, SeasonalityQuickFilterHeader, SeasonalityQuickFilterText } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
-import { createConflictRowData, generateOptions } from "../../../../../helpers/utils";
+import {  generateOptions } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify"; 
@@ -85,11 +85,7 @@ import SubmitConflictModal from "./SubmitConflictModal";
         seasonalityRowData,
         conflictCount,
         errorCount,
-        conflictData,
-        errorData,
         isConflictModalOpen,
-        setIsConflictModalOpen,
-        veryTempRef,
         onIgnoreSubmitErrors,
         onReviewConflicts
 

@@ -62,7 +62,6 @@ const useViewModify = (pageType:string) => {
 
     const [seasonalityActiveQuickFilter,setSeasonalityActiveQuickFilter]  = useState<number>(0)
     const ref = useRef<GridRef>();
-    const veryTempRef = useRef<GridRef>()
     const tempRef = useRef<GridRef>(); //used for second ag grid instance which is hidden.
     const [tempGridData,setTempGridData] = useState<object[]>([]);
 
@@ -827,7 +826,7 @@ const useViewModify = (pageType:string) => {
 
         }
         else{
-          const {isConflicts,conflictCount} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          const {isConflicts} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
           result = !isConflicts
           if(!isConflicts){
             console.log(errorCount)
@@ -1132,7 +1131,6 @@ const useViewModify = (pageType:string) => {
         currentPage,
         seasonalityActiveQuickFilter,
         // onSaveToDraft,
-        veryTempRef,
         onSeasonalityQuickFilter,
         handleChangePage,
         onReset,
