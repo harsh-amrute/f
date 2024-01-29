@@ -33,13 +33,13 @@ const ConflictErrorCellRenderer = (params:ConflictErrorCellRendererProps)=>{
 
     }
     return(
-        <div style={{height:'100%',width:'100%'}} onClick={()=>console.log(params)}  onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={()=>setIsToolTipOpen(false)} >
+        <div style={{height:'100%',width:'100%'}}  onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={()=>setIsToolTipOpen(false)} >
             <p  style={{color:getTextColor(),zIndex:-10}}>
                 {params.value}           
             </p>
-           {isToolTipOpen && (
+           {params.data.users && isToolTipOpen && (
              <ConflictErrorToolTipWrapper>
-                {params.data.users.map((user:any)=>{
+                {params.data.users && params.data.users.map((user:any)=>{
                     return (
                         <ConflictErrorToolTipSection>
                             <ConflictErrorText><b>User</b> : {user.user}</ConflictErrorText>
