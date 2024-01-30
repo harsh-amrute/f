@@ -552,7 +552,9 @@ const useViewModify = (pageType:string) => {
 
     const onEditOnline = () => {
       const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
-        return {...col,editable:true,}
+        const isEditable = activeMaster.fields.find((field:Field)=>field.key === col.colId )?.isEdit;
+        if(isEditable) return {...col,editable:true}
+        return {...col}
       })
       dispatch(UPDATE_PROGRESS_STATE('editOnline'))
       dispatch(UPDATE_COLDEFS(updatedColdefs))
@@ -566,9 +568,10 @@ const useViewModify = (pageType:string) => {
             notifyError('Please select a file to upload.');
             return
           }
-          const toasId = notifyLoader("Reading File");
+          const toastId = notifyLoader("Reading File");
+          const selectedColumns = ref.current?.columnApi.getAllDisplayedColumns();
   
-          const result = await parseExcelData(file,activeMaster,pageType==='remove');
+          const result = await parseExcelData(file,activeMaster,pageType==='remove',selectedColumns);
 
           const ifErrorExists = result.find((data:any)=>data.error);
           const ifWarningExists = result.find((data:any)=>data.warning);
@@ -590,12 +593,13 @@ const useViewModify = (pageType:string) => {
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           dispatch(TOGGLE_UPLOAD_MODAL(false));
-          toast.dismiss(toasId)
+          toast.dismiss(toastId)
           notifySuccess(`Data Uploaded Successfully`);
           setDownloadData(false);
           setTempDownloadData(false);
           setCurrentPage(1);
-        } catch (error:any) {
+        }
+         catch (error:any) {
           toast.dismiss();
           notifyError(error.message);
         }
@@ -707,6 +711,11 @@ const useViewModify = (pageType:string) => {
 
         //CleanUp Row Data
         rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users'));
+
+        //Convert To String
+        // rowData = rowData.map((row:any)=>{
+        //   Object.keys(row)
+        // })
 
         let taskId:any   = '';
         let toastId:any = '';

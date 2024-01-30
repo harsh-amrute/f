@@ -407,11 +407,14 @@ export const checkError = (row:any,master:MDMMasterState,isDelete:boolean) => {
   return {error,warning};
 }
 
-export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boolean) => {
-  
+export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boolean,selectedColumns:any) => {
+
   const currMasterKeys = master.fields.map((field:Field)=>field.key); //array containing keys of current master fields
   const result:object[] = [];
   const buffer = await file.arrayBuffer();
+
+  //Selected Columns Keys
+  const selectedKeys = selectedColumns.map((col:any)=>col.colId);
 
   const data = await readXlsxFile(buffer,{
     parseNumber: (string:any) => string
@@ -423,11 +426,38 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
     else return '';
   })
 
+  let headers:any = [] //Not Selected Headers
+  let error = false;
+
+  //Check if All Selected Keys are Present in The Uploaded
+  selectedKeys.forEach((key:string)=>{
+    if(!headerKeys.includes(key)){
+      error = true;
+      headers.push(master.fields.find((field:Field) => field.key === key)?.displayName)
+    }
+  })
+
+  if(error){
+    throw new Error( `File is Missing ${headers.join(', ')}`);
+  }
+
+  error = false;
+  headers = [];
+
   headerKeys.forEach((key:string)=>{
+    
     if(!currMasterKeys.includes(key)){
       throw new Error("Please Upload a Valid Master");
     }
+    if(!selectedKeys.includes(key)){
+      error = true;
+      headers.push(master.fields.find((field:Field) => field.key === key)?.displayName)
+    }
   })
+
+  if(error){
+    throw new Error( `File Contains ${headers.join(', ')} which were not selected`)
+  }
 
  
   
@@ -437,7 +467,7 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
     
     row.map((value:any)=>{
       const attributeName = headerKeys[temp];
-      rowObj[attributeName.toString()] = value;
+      rowObj[attributeName.toString()] = "" + value;
       temp+=1;
     })
     temp = 0;
@@ -456,10 +486,17 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
     if(warning !== undefined){
       rowObj.warning = warning;
     }
+    const doesRowExists = result.find((row:any)=>JSON.stringify(row)===JSON.stringify(rowObj));
+    if(doesRowExists){
+      throw new Error("Duplicate Rows Found in File");
+    }
     result.push(rowObj);
     rowObj={}
     
   })
+
+  
+
 
   return result;
 }

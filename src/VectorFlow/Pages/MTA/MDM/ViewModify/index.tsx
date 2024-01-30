@@ -19,8 +19,6 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
 import SubmitConflictModal from "./SubmitConflictModal";
 
 
-
-
   const ViewModify = () => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
@@ -249,11 +247,11 @@ import SubmitConflictModal from "./SubmitConflictModal";
         }
         {isUploadModalOpen && 
           <UploadModal 
-          header={"Modification"}
+            header={"Modification"}
             openModal={isUploadModalOpen} 
             onCloseModal={()=>toggleUploadModal(false)} 
             onDownload={()=>exportToExcel(true)} 
-            onUpload={()=>onUploadMaster()}
+            onUpload={onUploadMaster}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}
             file={file}
