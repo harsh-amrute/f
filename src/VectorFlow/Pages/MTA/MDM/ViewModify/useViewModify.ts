@@ -36,6 +36,7 @@ const useViewModify = (pageType:string) => {
     const [allMastersState,setAllMasterState] = useState<MDMMasterState[]>([])
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
     const [isShowAll,setIsShowAll]=useState<boolean>(true)
+    const [isOverlayVisible,setIsOverlayVisible] = useState<boolean>(false)
     // const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
     // const [recordCount,setRecordCount] = useState<number>(0)
     const [downloadFileName,setDownloadFileName] = useState('');
@@ -571,7 +572,8 @@ const useViewModify = (pageType:string) => {
             notifyError('Please select a file to upload.');
             return
           }
-          const toasId = notifyLoader("Reading File");
+          // const toasId = notifyLoader("Reading File");
+          setIsOverlayVisible(true)
   
           const result = await parseExcelData(file,activeMaster,pageType==='remove');
 
@@ -595,7 +597,7 @@ const useViewModify = (pageType:string) => {
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           dispatch(TOGGLE_UPLOAD_MODAL(false));
-          toast.dismiss(toasId)
+          setIsOverlayVisible(false)
           notifySuccess(`Data Uploaded Successfully`);
           setDownloadData(false);
           setTempDownloadData(false);
@@ -818,11 +820,11 @@ const useViewModify = (pageType:string) => {
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
      
         dispatch(REMOVE_COLDEFS(['checkbox']));
-        let result;
+        //let result;
  
         if(activeMaster.progress === 'editOnlineSaved'){
           const {isConflicts,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-          result = !isConflicts
+          //result = !isConflicts
           if(!isConflicts){
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
@@ -1130,6 +1132,7 @@ const useViewModify = (pageType:string) => {
         downloadFileName,
         setDownloadFileName,
         onUploadMaster,
+        isOverlayVisible,
         file,
         setFile,
         isTableDataLoading,
