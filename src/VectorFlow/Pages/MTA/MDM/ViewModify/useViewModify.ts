@@ -35,6 +35,8 @@ const useViewModify = (pageType:string) => {
 
     const [allMastersState,setAllMasterState] = useState<MDMMasterState[]>([])
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
+    const [isShowAll,setIsShowAll]=useState<boolean>(true)
+    const [isOverlayVisible,setIsOverlayVisible] = useState<boolean>(false)
     // const [isUploadModalOpen,toggleUploadModal] = useState<boolean>(false) 
     // const [recordCount,setRecordCount] = useState<number>(0)
     const [downloadFileName,setDownloadFileName] = useState('');
@@ -463,6 +465,8 @@ const useViewModify = (pageType:string) => {
     }
 
     const handleApplyFilter =async (showAll?:boolean) => {
+     if(showAll) setIsShowAll(showAll)
+     else setIsShowAll(false)
       if(downloadData) setDownloadData(false)
       const currMasterFilters = activeMaster.filters;
       if(!areMasterFiltersValid(currMasterFilters) && !showAll){
@@ -483,8 +487,10 @@ const useViewModify = (pageType:string) => {
       }
 
       setIsTableDataLoading(false);
-      if(!result.data.recordCount || result.data.recordCount==0)dispatch(SET_RECORD_COUNT(0))
-      else dispatch(SET_RECORD_COUNT(result.data.recordCount))
+      if(!result.data.recordCount || result.data.recordCount==0 || result.data.recordCount=='')dispatch(SET_RECORD_COUNT(0))
+      else{
+        dispatch(SET_RECORD_COUNT(result.data.recordCount))
+      }
       toggleWarningModal(true);    
     }
 
@@ -566,7 +572,8 @@ const useViewModify = (pageType:string) => {
             notifyError('Please select a file to upload.');
             return
           }
-          const toasId = notifyLoader("Reading File");
+          // const toasId = notifyLoader("Reading File");
+          setIsOverlayVisible(true)
   
           const result = await parseExcelData(file,activeMaster,pageType==='remove');
 
@@ -590,7 +597,7 @@ const useViewModify = (pageType:string) => {
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           dispatch(TOGGLE_UPLOAD_MODAL(false));
-          toast.dismiss(toasId)
+          setIsOverlayVisible(false)
           notifySuccess(`Data Uploaded Successfully`);
           setDownloadData(false);
           setTempDownloadData(false);
@@ -807,35 +814,59 @@ const useViewModify = (pageType:string) => {
           
 
       const onSubmit = async(isOverWrite?:boolean) => {
-
+ 
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
-
+ 
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
-      
+     
         dispatch(REMOVE_COLDEFS(['checkbox']));
-        let result;
-
+        //let result;
+ 
         if(activeMaster.progress === 'editOnlineSaved'){
-          const {isConflicts,} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-          result = !isConflicts
-          if(!isConflicts) dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
-          else{
-            setIsConflictModalOpen(true)
-            dispatch(UPDATE_PROGRESS_STATE('conflicts'))
-          }
-
-        }
-        else{
-          const {isConflicts} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-          result = !isConflicts
+          const {isConflicts,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          //result = !isConflicts
           if(!isConflicts){
-            console.log(errorCount)
-            if(errorCount>0){
-              const errorRowData = createErrorRowData(errorData)
+            if(localErrorCount>0 || errorCount>0){
+              let errorRowData
+              if(localErrorCount>0){
+                errorRowData = createErrorRowData(localErrorData)
+              }
+              else{
+                errorRowData = createErrorRowData(errorData)
+              }
               addInvalidDataColDefs('error')
               dispatch(UPDATE_ROW_DATA(errorRowData))
               dispatch(SET_RECORD_COUNT(errorRowData.length))
             }
+            dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+            notifySuccess(`Modifications Submitted Successfully`);
+            setSelectedRowsCount(0);
+            dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
+          }
+          else{
+            setIsConflictModalOpen(true)
+            dispatch(UPDATE_PROGRESS_STATE('conflicts'))
+          }
+ 
+        }
+        else{
+          const {isConflicts,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          if(!isConflicts){
+            if(localErrorCount>0 || errorCount>0){
+              let errorRowData
+              if(localErrorCount>0){
+                errorRowData = createErrorRowData(localErrorData)
+              }
+              else{
+                errorRowData = createErrorRowData(errorData)
+              }
+              addInvalidDataColDefs('error')
+              dispatch(UPDATE_ROW_DATA(errorRowData))
+              dispatch(SET_RECORD_COUNT(errorRowData.length))
+            }
+            dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+            notifySuccess(`Modifications Submitted Successfully`);
+            setSelectedRowsCount(0);
             dispatch(UPDATE_PROGRESS_STATE('submitted'));
           }
           else{
@@ -843,15 +874,8 @@ const useViewModify = (pageType:string) => {
             dispatch(UPDATE_PROGRESS_STATE('conflicts'))
           }
         }
-        if(result){
-          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-          notifySuccess(`Modifications Submitted Successfully`);
-          setSelectedRowsCount(0);
-        }
-        
+       
       }
-
-      
 
       const onBackButton = () => {
        if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
@@ -1108,6 +1132,7 @@ const useViewModify = (pageType:string) => {
         downloadFileName,
         setDownloadFileName,
         onUploadMaster,
+        isOverlayVisible,
         file,
         setFile,
         isTableDataLoading,
@@ -1141,6 +1166,7 @@ const useViewModify = (pageType:string) => {
         normChangeData,
         toggleSeasonalityChartModal,
         seasonalityRowData,
+        isShowAll,
         conflictCount,
         errorCount,
         conflictData,

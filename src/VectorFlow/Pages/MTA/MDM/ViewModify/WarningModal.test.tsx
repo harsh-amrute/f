@@ -6,6 +6,7 @@ const mockFunction = jest.fn()
 
 const dummyprops = {
   count:10,
+  showAll:true,
   onSuccess:mockFunction,
   onFailure:mockFunction,
   onCloseModal:mockFunction

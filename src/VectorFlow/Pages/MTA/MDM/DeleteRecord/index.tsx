@@ -63,6 +63,7 @@ const DeleteRecord = () => {
         tempGridData,
         deleteSelected,
         editOnline,
+        isShowAll,
         onSaveToDraft,
         selectedRowsCount,
         currentPage,
@@ -216,6 +217,7 @@ const DeleteRecord = () => {
 
           {isWarningModalOpen && 
           <WarningModal 
+          showAll={isShowAll}
             count={recordCount} 
             onCloseModal={onWarningModalClose} 
             onFailure={onWarningModalClose} 
