@@ -3,7 +3,7 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup, SeasonalityQuickFilterWrapper, SeasonalityQuickFilter, SeasonalityQuickFilterHeader, SeasonalityQuickFilterText } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
-import {  generateOptions } from "../../../../../helpers/utils";
+import { generateOptions } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify"; 
@@ -17,6 +17,7 @@ import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import SeasonalityChartModal from "./SeasonalityChartModal";
 import SubmitConflictModal from "./SubmitConflictModal";
+
 
 
 
@@ -86,6 +87,7 @@ import SubmitConflictModal from "./SubmitConflictModal";
         conflictCount,
         errorCount,
         isConflictModalOpen,
+        isShowAll,
         onIgnoreSubmitErrors,
         onReviewConflicts
 
@@ -245,6 +247,7 @@ import SubmitConflictModal from "./SubmitConflictModal";
             onCloseModal={onWarningModalClose} 
             onFailure={onWarningModalClose} 
             onSuccess={onWarningModalSuccess}
+            showAll={isShowAll}
             />
         }
         {isUploadModalOpen && 
