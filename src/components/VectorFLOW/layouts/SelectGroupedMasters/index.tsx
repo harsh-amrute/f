@@ -59,7 +59,7 @@ const Card=(props:CardProps)=>{
             onClick={()=>handleOnClickMaster(master)}
         >
             <VFMasterGroupCardImage data-testid="vf-master-card-image"
-                style={{
+                style={{ 
                     backgroundColor:doesMasterExist() || isHovered ? globalStyles.chooseThemeColor[user.user.theme_ui]?.color5 : '#F4F4F4',
                     border:doesMasterExist() || isHovered ? 'white 1px solid':'none'
                 }}>
@@ -68,6 +68,8 @@ const Card=(props:CardProps)=>{
                     :ImageMapper[master.id]
                     }
                     alt={master.name}
+                    height='37px'
+                    width='37px'
                 />
             </VFMasterGroupCardImage>
             <VFMasterGroupCardText style={{color:doesMasterExist() || isHovered ? 'white': 'black'}}>

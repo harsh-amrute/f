@@ -35,6 +35,26 @@ border-radius: 7px;
 opacity: 1;
 margin-left:30px;
 zoom:0.8;
+overflow:overlay;
+&::-webkit-scrollbar{
+    width: 7px;
+    height:8px;       
+}
+
+&::-webkit-scrollbar-track{
+    border-radius: 30px;
+    opacity: 1;
+}
+
+&::-webkit-scrollbar-thumb{
+    width: 7px;
+/* UI Properties */
+background: #CBCBCB 0% 0% no-repeat padding-box;
+box-shadow: 0px 6px 9px #41414129;
+border-radius: 30px;
+opacity: 1;
+}
+padding-bottom:15px;
 
 
 `  
@@ -57,6 +77,7 @@ font-family:Roboto;
 letter-spacing: 0px;
 color: #6C696A;
 opacity: 1;
+height:70px;
 `
 export const VFButtonWrapper=styled.div`
 margin-top:12px;
@@ -105,7 +126,7 @@ border-radius: 50px;
 display: flex;
 align-items: center;
 justify-content:center;
-
+margin-bottom:7px;
 `
 export const VFMasterGroupCardText=styled.div`
 text-align: left;
@@ -153,4 +174,5 @@ opacity: 1;
 margin-left:30px;
 margin-right:30px;
 border-radius:8px;
+
 `
