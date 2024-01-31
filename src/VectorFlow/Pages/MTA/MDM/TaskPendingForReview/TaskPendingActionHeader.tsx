@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 
-import { ActionHeaderContent, ActionHeaderWrapper } from "./styles"
+import { ActionHeaderContent, ActionHeaderWrapper, TaskPendingActionHeaderButton } from "./styles"
 import { useUserData } from "../../../../../context";
 
 
@@ -82,10 +82,10 @@ const TaskPendingActionHeader = (props:any)=>{
     return( 
         <ActionHeaderWrapper>   
             <ActionHeaderContent>
-                <VFButton themeUi={themeUi} onClick={()=>handleChange(props.actionStatus==='Approved',"Approved")} >Approve All</VFButton>
+                <TaskPendingActionHeaderButton themeUi={themeUi}  onClick={()=>handleChange(props.actionStatus==='Approved',"Approved")} >Approve All</TaskPendingActionHeaderButton>
             </ActionHeaderContent>
             <ActionHeaderContent>
-                <VFButton themeUi={themeUi} onClick={()=>handleChange(props.actionStatus==='Rejected',"Rejected")} >Reject All</VFButton>
+                <TaskPendingActionHeaderButton themeUi={themeUi} onClick={()=>handleChange(props.actionStatus==='Rejected',"Rejected")} >Reject All</TaskPendingActionHeaderButton>
             </ActionHeaderContent> 
         </ActionHeaderWrapper>
     )

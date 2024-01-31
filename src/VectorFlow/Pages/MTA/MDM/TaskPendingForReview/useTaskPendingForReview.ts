@@ -2,7 +2,7 @@ import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
 import { useApproveTask, useGetMasterUIConfiguration, useGetPendingTasks, useGetTaskCount, useGetTaskDetails } from "../../../../../VectorFlow/Services/MTA/MDM"
 
-import { getActionName, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
+import { createTaskPendingSubmitPayload, getActionName, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/MDM"
 import TaskPendingLinkCellRenderer from "./TaskPendingLinkCellRenderer"
 import { useSelector, useDispatch } from "react-redux"
@@ -132,7 +132,12 @@ const useTaskPendingForReview = ()=>{
     const onCancel = ()=>setIsViewTableOpen(true)
 
     const onTaskSubmit = async () => {  
+        
+       
         let toastId;
+        console.log(createTaskPendingSubmitPayload(detailTableRowData))
+        return 
+        
         try {
             const noActionPerformed = detailTableRowData.find((row:any)=>row.status === '');
 

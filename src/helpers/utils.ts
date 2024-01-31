@@ -1282,3 +1282,35 @@ export const navigateWithPrompt = (onRouteChange:()=>void,url:any,state:any,rese
     }
    
 }  
+
+
+export const createTaskPendingSubmitPayload = (rowData:any[]):any[]=>{
+  const  result:any[] = []
+
+  rowData.forEach((item) => {
+    // Create a new object to store modified key-value pairs
+    const  newItem:any = {};
+
+    // Iterate through each key-value pair in the object
+    Object.entries(item).forEach(([key, value]) => {
+      // Check if the key starts with "Oldc"
+
+      if(key==='status'){
+        return newItem[key] = value==="Approved"?"3":"4"
+      }
+
+      if (key.startsWith("Old")) {
+        // Skip keys with prefix "Oldc"
+        return;
+      }
+
+      // Remove the "Newc" prefix from the key and store the value in the new object
+      newItem[key.replace("New", "")] = value;
+    });
+
+    // Add the modified object to the result array
+    result.push(newItem);
+  });
+
+  return result
+}
