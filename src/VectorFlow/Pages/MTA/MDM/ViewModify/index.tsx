@@ -21,8 +21,6 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 
 
 
-
-
   const ViewModify = () => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
@@ -254,11 +252,11 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
         }
         {isUploadModalOpen && 
           <UploadModal 
-          header={"Modification"}
+            header={"Modification"}
             openModal={isUploadModalOpen} 
             onCloseModal={()=>toggleUploadModal(false)} 
             onDownload={()=>exportToExcel(true)} 
-            onUpload={()=>onUploadMaster()}
+            onUpload={onUploadMaster}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}
             file={file}
