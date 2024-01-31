@@ -7,7 +7,7 @@ import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs, mdmRoutes } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
-import {subDays,addDays,format, differenceInSeconds} from 'date-fns';
+import {subDays,format, differenceInSeconds} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
 import {formatMDMDate} from './format';
 import ConflictErrorToolTip from '../VectorFlow/Pages/MTA/MDM/ViewModify/ConflictErrorToolTip';
@@ -1006,7 +1006,6 @@ export const mapTaskStatusDataToRowData = (dirtyRowData:any[],existingColumnFiel
 
 
 export const getActionName = (id:number):DraftActionType=>{
-  console.debug(id)
   if(id===1)return {id:1,label:'add',value:'add'}
   if(id===2)return {id:2,label:'view-modify',value:'modify'}
   if(id===3)return {id:3,label:'delete',value:'remove'}
@@ -1109,10 +1108,15 @@ export const generateSesonalityChartData = (row:any,data:any) => {
   })
   const maxQuantity = Math.max(maxNorm,maxStockAndGit);
   // const xAxisLabels = data.dailyData.map((o:DailyData)=>getFormattedDate(new Date(o.date)));
-  const xAxisLabels = getDatesBetween(new Date(data.dailyData[0].date),new Date(row.ed));
+
+  const xAxisLabels = getDatesBetween(subDays(new Date(row.sd),Math.max(row.bd,row.r)),new Date(row.ed));
+
   // const xAxisLabels = genedata.dailyData.map((o:DailyData)=>new Date(o.date));
   const xAxisLablesFormatted = xAxisLabels.map((date:Date)=>getFormattedDate(date));
+
   const seasonalityDates = getDatesBetween(new Date(row.sd),new Date(row.ed));
+
+  // console.log("Seasonality Dates",seasonalityDates)
 
   const buildUpDuration = getDatesBetween(subDays(new Date(row.sd),row.bd),new Date(row.sd));
 
@@ -1121,7 +1125,7 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     return undefined;
   })
 
-  const rlt = getDatesBetween(xAxisLabels[0],addDays(xAxisLabels[0],parseInt(row.r,10)));
+  const rlt = getDatesBetween(subDays(new Date(row.sd),row.r),new Date(row.sd));
 
   const rltData = xAxisLabels.map((date:Date)=>{
     if(rlt.find((sd:Date) => +sd === +date)) return maxQuantity;
@@ -1134,18 +1138,47 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     return undefined
   })
 
-  const stockData = data.dailyData.map((o:DailyData)=>{
-    return parseInt(o.stock,10)
+  
+  // const stockData = data.dailyData.map((o:DailyData)=>{
+  //   const doesDateExist = xAxisLabels.find((date:Date)=> {    
+  //     return +date === +new Date(o.date)
+  //   })
+  //   if(doesDateExist) return parseInt(o.stock,10)
+  //   return 0;
+  //   // return parseInt(o.stock,10)
+  // });
+
+  const stockData = xAxisLabels.map((date:Date)=>{
+    const isDailyDataPresent = data.dailyData.find((d:DailyData)=> +new Date(d.date)=== +date);
+    if(isDailyDataPresent){
+      return isDailyDataPresent.stock
+    }
+    return 0;
   })
   
-  const gitData = data.dailyData.map((o:DailyData)=>{
-      return parseInt(o.git,10) 
+  const gitData = xAxisLabels.map((date:Date)=>{
+    const isDailyDataPresent = data.dailyData.find((d:DailyData)=> +new Date(d.date)=== +date);
+    if(isDailyDataPresent){
+      return isDailyDataPresent.git
+    }
+    return 0;
   })
 
   const pointRadius:any[] = [];
   let tempNorm = 0; //used for filling data when norm not changed in below function
-  const normData = data.dailyData.map((d:DailyData)=>{
-    const closestNormChange:NormHistory = data.norm.find((o:NormHistory)=>+(new Date(o.date)) === +(new Date(d.date)));
+  // const normData = data.dailyData.map((d:DailyData)=>{
+  //   const closestNormChange:NormHistory = data.norm.find((o:NormHistory)=>+(new Date(o.date)) === +(new Date(d.date)));
+  //   if(closestNormChange) {
+  //     tempNorm = parseInt(closestNormChange.new_norm,10);
+  //     pointRadius.push(5);
+  //     return parseInt(closestNormChange.new_norm,10)
+  //   }
+  //   pointRadius.push(0)
+  //   return tempNorm;
+  // })
+
+  const normData = xAxisLabels.map((date:Date) => {
+    const closestNormChange:NormHistory = data.norm.find((o:NormHistory)=>+(new Date(o.date)) === +(new Date(date)));
     if(closestNormChange) {
       tempNorm = parseInt(closestNormChange.new_norm,10);
       pointRadius.push(5);
@@ -1154,8 +1187,7 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     pointRadius.push(0)
     return tempNorm;
   })
-
-  
+ 
   const chartData = {
     labels:xAxisLablesFormatted,
     datasets: [

@@ -59,7 +59,7 @@ export namespace MDMService {
   }
 
   export const getSeasonalityDetails = async (body:any) => {
-    return await axios.post('https://2cfc61ae-927a-4577-8843-ee38dfb26302.mock.pstmn.io/GetSeasonalityDetails',body,{
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + '/GetSeasonalityDetails',body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }

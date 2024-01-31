@@ -330,7 +330,7 @@ const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,clo
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Location Name:</SCText>
-                        <SCText fontWeight={500} fontSize={18}>{rowData.ln}</SCText>
+                        <SCText fontWeight={500} fontSize={18}>{rowData.wd}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>
