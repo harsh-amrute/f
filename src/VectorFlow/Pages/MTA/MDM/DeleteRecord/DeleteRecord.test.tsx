@@ -6,7 +6,7 @@ import { setupReactQuery } from "../../../../../config/react-query-config";
 import { QueryClientProvider } from "@tanstack/react-query"
 import { BrowserRouter as Router } from "react-router-dom"
 import { Provider } from "react-redux"
-import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useRemoveMasterData,useDeleteDraft, useModifyMasterData, useDeleteTask } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useDeleteMasterData,useDeleteDraft, useModifyMasterData, useDeleteTask } from "../../../../../VectorFlow/Services/MTA/MDM";
 import { getMasterUIConfigurationMockData ,createDraftMockData,MasterData, MasterDataWithSubmittedMaster,getSeasonalityDetailsMockData, mockMasterData,deleteDraftMockData,modifyMasterMockData, deleteTaskMockData} from "../../../../../mock-data/MDM";
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
 import {mapMasterToColumnDefs} from '../../../../../helpers/utils'
@@ -46,8 +46,8 @@ const useGetSeasonalityDetailsMock = useGetSeasonalityDetails as jest.MockedFunc
 typeof useGetSeasonalityDetails
 >;
 
-const useRemoveMasterDataMock = useRemoveMasterData as jest.MockedFunction<
-typeof useRemoveMasterData
+const useDeleteMasterDataMock = useDeleteMasterData as jest.MockedFunction<
+typeof useDeleteMasterData
 >;
 
 const useModifyMasterDataMock = useModifyMasterData as jest.MockedFunction<
@@ -186,7 +186,7 @@ describe("DeleteRecord Component", () => {
       return useGetSeasonalityDetailsMockData;
     })
 
-    useRemoveMasterDataMock.mockImplementation(()=>{
+    useDeleteMasterDataMock.mockImplementation(()=>{
         return useRemoveMasterDataMockData;
       })
 
@@ -298,7 +298,7 @@ describe("Handles all custom redux interactions",()=>{
       return useGetSeasonalityDetailsMockData;
     })
 
-    useRemoveMasterDataMock.mockImplementation(()=>{
+    useDeleteMasterDataMock.mockImplementation(()=>{
         return useRemoveMasterDataMockData;
       })
 

@@ -111,15 +111,22 @@ export const useGetTasKDetailDownloadData = ()=>{
   })
 }
 
-export const useRemoveMasterData = ()=>{
-  return useMutation(async(body:any)=>{
-    return await MDMService.removeMasterData(body)
-  })
-}
 
 export const useModifyMasterData = ()=>{
   return useMutation(async(body:any)=>{
     return await MDMService.modifyMasterData(body)
+  })
+}
+
+export const useAddMasterData = ()=>{
+  return useMutation(async(body:any)=>{
+    return await MDMService.addMasterData(body)
+  })
+}
+
+export const useDeleteMasterData = ()=>{
+  return useMutation(async(body:any)=>{
+    return await MDMService.deleteMasterData(body)
   })
 }
 

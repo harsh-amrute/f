@@ -1311,14 +1311,24 @@ export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,re
 
 }
 
-export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[]):ColDef[]=>{
+export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[],masterId:number):ColDef[]=>{
   const result:any[] = []
   errorConflicts.map((currError:{errorData:any[],errorType:string})=>{
     currError.errorData.map((errorRowData:any)=>{
-     result.push({
-      ...errorRowData,
-      error:currError.errorType
-    })
+      const existingRowIndex = result.findIndex((row:any)=>{
+        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        if(primaryKeys.length<3) return row[primaryKeys[0]]===errorRowData[primaryKeys[0]]
+      })
+      
+      if(existingRowIndex===-1){
+        result.push({
+          ...errorRowData,
+          error:" " + currError.errorType + " ."
+        })
+      }
+      else{
+        result[existingRowIndex].error+=" " + currError.errorType + " ."
+      }
     })
   })
   return result

@@ -20,6 +20,8 @@ import {getUploadModalRadioButtons } from "../../../../../helpers/utils";
 import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 
+import SubmitErrorModal from "./SubmitErrorModal";
+
 const AddRecord = () => {
 
     const {user} = useUserData()
@@ -51,7 +53,6 @@ const AddRecord = () => {
         currentPage,
         rowsPerPage,
         handleChangePage,
-        onSubmit,
         editOnline,
         onEditOnline,
         isUploadModalOpen,
@@ -70,6 +71,11 @@ const AddRecord = () => {
         handleOnClickMaster,
         handleRadioButton,
         handleTabChange,
+        onSubmit,
+        isConflictModalOpen,
+        onIgnoreSubmitErrors,
+        conflictCount,
+        errorCount
         
     } = useAdd()
     
@@ -159,6 +165,16 @@ const AddRecord = () => {
             radioButtons={getUploadModalRadioButtons(activeMaster.id)}
             handleRadioButton={handleRadioButton}
             />
+        }
+        {isConflictModalOpen && 
+          <SubmitErrorModal 
+            totalCount={activeMaster.rowData.length}
+            errorCount={errorCount}
+            recordCount={activeMaster.rowData.length - conflictCount - errorCount}
+            onSuccess={onIgnoreSubmitErrors}
+            onCloseModal={onIgnoreSubmitErrors}
+
+          />
         }
         {
           !isSelectMasterOpen && 
