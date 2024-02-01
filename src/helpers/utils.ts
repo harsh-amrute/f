@@ -680,7 +680,6 @@ export const getExistingColumnFields = (columns:string[],fields:Field[]):Field[]
 
 export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string, showApproveAllModal?:any,showRejectAllModal?:any,actionStatus?:string):ColGroupDef[] | ColDef[]=>{
 
-  console.log(actionStatus)
   const colDefs =  existingColumnsFields.map((f:Field)=>{
 
     if(TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
@@ -918,14 +917,15 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
   
   
       existingColumnFields.map((f:Field)=>{
+        
 
         if(TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
-          newDataPrefixed[f.key] = newData[f.key]
+          newDataPrefixed[f.key] = String(newData[f.key])
         }
 
        else{
-        oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
-        newDataPrefixed[`New${f.key}`] = newData[f.key]
+        oldDataPrefixed[`Old${f.key}`] = String(oldData[f.key])
+        newDataPrefixed[`New${f.key}`] = String(newData[f.key])
        }
       })
       return {
@@ -1178,7 +1178,6 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     return tempNorm;
   })
 
-  console.log(buildUpDurationData)
   
   const chartData = {
     labels:xAxisLablesFormatted,
@@ -1285,7 +1284,6 @@ export const navigateWithPrompt = (onRouteChange:()=>void,url:any,state:any,rese
 
 
 export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):any[]=>{
-  console.log(actionType)
   const  result:any[] = []
 
   rowData.forEach((item) => {

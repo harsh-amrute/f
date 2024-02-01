@@ -29,7 +29,7 @@ const useTaskPendingForReview = ()=>{
     const recordCount = useSelector((state:RootState) => state.mdm.recordCount)
     const rowsPerPage = 50;
 
-    const {data,isLoading} = useGetPendingTasks()
+    const {data,isLoading,refetch} = useGetPendingTasks()
 
     const {mutateAsync:getTaskDetails,isLoading:isViewTableLoading} = useGetTaskDetails()
 
@@ -179,7 +179,7 @@ const useTaskPendingForReview = ()=>{
             setCurrentPage(1);
             setSelectedRows(0);
             setSelectionType('');
-
+            refetch()
             notifySuccess('Data submitted successfully and Task status updated');
 
             
