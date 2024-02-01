@@ -901,9 +901,6 @@ const useViewModify = (pageType:string) => {
         if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
 
        }
-       
-       
-
         
       }
 
@@ -1038,9 +1035,10 @@ const useViewModify = (pageType:string) => {
         try {
           const toastId = notifyLoader('Fetching Chart Details');
           const {data:{data}} = await getSeasonalityDetails(rowData);
+          const seasonalityData = data[0];
           setSeasonalityRowData(rowData);
-          setNormChangeData(data.norm);
-          const chartData = generateSesonalityChartData(rowData,data);
+          setNormChangeData(seasonalityData.norm);
+          const chartData = generateSesonalityChartData(rowData,seasonalityData);
           setChartData(chartData);
           toggleSeasonalityChartModal(true);
           toast.dismiss(toastId);
