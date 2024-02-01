@@ -7,7 +7,7 @@ import { setupReactQuery } from "../../../../../config/react-query-config";
 import { QueryClientProvider } from "@tanstack/react-query"
 import { BrowserRouter as Router } from "react-router-dom"
 import { Provider } from "react-redux"
-import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useDeleteDraft,useModifyMasterData, useDeleteTask } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useDeleteDraft,useModifyMasterData, useDeleteTask,useAddMasterData } from "../../../../../VectorFlow/Services/MTA/MDM";
 import { getMasterUIConfigurationMockData ,createDraftMockData,MasterData, MasterDataWithSubmittedMaster,getSeasonalityDetailsMockData,deleteDraftMockData,modifyMasterMockData, deleteTaskMockData} from "../../../../../mock-data/MDM";
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
 import {mapMasterToColumnDefs} from '../../../../../helpers/utils'
@@ -52,6 +52,10 @@ typeof useModifyMasterData
 
 const useDeleteDraftMock = useDeleteDraft as jest.MockedFunction<
 typeof useDeleteDraft
+>;
+
+const useAddMasterDataMock = useAddMasterData as jest.MockedFunction<
+typeof useAddMasterData
 >;
 
 const useDeleteTaskMock = useDeleteTask as jest.MockedFunction<
@@ -257,6 +261,10 @@ describe("AddRecord Component", () => {
       return useDeleteTaskMockData;
     })
 
+    useAddMasterDataMock.mockImplementation(()=>{
+      return useModifyDraftMockData;
+    })
+
     const mockedStore = createStore(mockState)
 
     render(contextWrapper(<AddRecord/>,mockedStore))
@@ -363,6 +371,10 @@ describe("Handles all custom redux interactions",()=>{
 
     useDeleteTaskMock.mockImplementation(() => {
       return useDeleteTaskMockData;
+    })
+
+    useAddMasterDataMock.mockImplementation(()=>{
+      return useModifyDraftMockData;
     })
 
   });

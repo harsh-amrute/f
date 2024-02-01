@@ -94,14 +94,21 @@ export namespace MDMService {
     })
   }
 
-  export const removeMasterData = async(body:any)=>{
-    return await axios.post(process.env.REACT_APP_VF_API_HOST + '/RemoveMasterData',JSON.stringify(body),{
+
+  export const modifyMasterData = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + '/ModifyMasterData',body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }
 
-  export const modifyMasterData = async(body:any)=>{
-    return await axios.post(process.env.REACT_APP_VF_API_HOST + '/ModifyMasterData',body,{
+  export const addMasterData = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + '/AddMasterData',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const deleteMasterData = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + '/RemoveMasterData',body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }

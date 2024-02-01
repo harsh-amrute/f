@@ -838,10 +838,10 @@ const useViewModify = (pageType:string) => {
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
               if(localErrorCount>0){
-                errorRowData = createErrorRowData(localErrorData)
+                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
               }
               else{
-                errorRowData = createErrorRowData(errorData)
+                errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
               addInvalidDataColDefs('error')
               dispatch(UPDATE_ROW_DATA(errorRowData))
@@ -864,10 +864,10 @@ const useViewModify = (pageType:string) => {
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
               if(localErrorCount>0){
-                errorRowData = createErrorRowData(localErrorData)
+                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
               }
               else{
-                errorRowData = createErrorRowData(errorData)
+                errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
               addInvalidDataColDefs('error')
               dispatch(UPDATE_ROW_DATA(errorRowData))
@@ -1105,7 +1105,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const onIgnoreSubmitErrors = ()=>{
-      const errorRowData = createErrorRowData(errorData)
+      const errorRowData = createErrorRowData(errorData,activeMaster.id)
       addInvalidDataColDefs('error')
       dispatch(UPDATE_ROW_DATA(errorRowData))
       dispatch(UPDATE_PROGRESS_STATE('submitted'))

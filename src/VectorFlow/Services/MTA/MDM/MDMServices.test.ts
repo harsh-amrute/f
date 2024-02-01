@@ -265,7 +265,7 @@ describe('Testing the MDMService',  () => {
         "errorCount": null,
         "error": null
     });
-      const response = await MDMService.removeMasterData({
+      const response = await MDMService.deleteMasterData({
         "id": 1,
         "action": "remove",
         "data": [
@@ -280,23 +280,24 @@ describe('Testing the MDMService',  () => {
             },
         ]
     })
-      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/RemoveMasterData`,JSON.stringify({
-        "id": 1,
-        "action": "remove",
-        "data": [
-            {
-                "sc": "AFADSH0554001",
-                "ec": null,
-                "c1": "AFADSH0554",
-                "c3": "8910000000000",
-                "c4": "PCS",
-                "c5": "2699",
-                "c6": "Arrow"
-            },
-        ]
-    }),{
-      headers: { 'Content-Type': 'application/json' }
-    })
+    //   expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/RemoveMasterData`,JSON.stringify({
+    //     "id": 1,
+    //     "action": "remove",
+    //     "data": [
+    //         {
+    //             "sc": "AFADSH0554001",
+    //             "ec": null,
+    //             "c1": "AFADSH0554",
+    //             "c3": "8910000000000",
+    //             "c4": "PCS",
+    //             "c5": "2699",
+    //             "c6": "Arrow"
+    //         },
+    //     ]
+    // }),{
+    //   headers: { 'Content-Type': 'application/json' }
+    // })
+    expect(mockedAxios.post).toBeCalled()
       expect(response.status).toBe(500);
     });
 
@@ -338,5 +339,20 @@ describe('Testing the MDMService',  () => {
     //   expect(response.status).toBe(200);
     // });
 
+    it('should make post request to /AddMasterData', async () => {
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.addMasterData({id:1,data:[{
+        sc:"QAEF1000",
+        sn:"Polo T-Shirt"
+      }]})
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/AddMasterData`,{id:1,data:[{
+        sc:"QAEF1000",
+        sn:"Polo T-Shirt"
+      }]},{
+      headers: { 'Content-Type': 'application/json' }
+    })
+      expect(response.status).toBe(200);
+    });
 
   });

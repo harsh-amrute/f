@@ -23,6 +23,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import { getUploadModalRadioButtons,generateOptions } from "../../../../../helpers/utils";
 import { Filter } from "../../../../../VectorFlow/types/MDM";
 import { operators } from "../../../../../helpers/MDMConstants";
+import SubmitErrorModal from "../AddRecord/SubmitErrorModal";
 
 
 
@@ -79,7 +80,10 @@ const DeleteRecord = () => {
     const {
         onCancel,
         allMasters,
-        selectedMasters,
+        selectedMasters, 
+        isConflictModalOpen,
+        conflictCount,
+        errorCount,
         onDeleteData,
         onSubmit,
         onDeleteOnline,
@@ -87,7 +91,8 @@ const DeleteRecord = () => {
         onDeleteOnlineReset,
         handleOnClickMaster,
         handleSubmitSelectMaster,
-        handleRadioButton
+        handleRadioButton,
+        onIgnoreSubmitErrors
     } = useDelete();
 
     useEffect(()=>{
@@ -242,7 +247,16 @@ const DeleteRecord = () => {
             handleRadioButton={handleRadioButton}
             />
         }
-        
+         {isConflictModalOpen && 
+          <SubmitErrorModal 
+            totalCount={activeMaster.rowData.length}
+            errorCount={errorCount}
+            recordCount={activeMaster.rowData.length - conflictCount - errorCount}
+            onSuccess={onIgnoreSubmitErrors}
+            onCloseModal={onIgnoreSubmitErrors}
+
+          />
+        }
         {
           !isSelectMasterOpen && 
           <VFTaskBar
