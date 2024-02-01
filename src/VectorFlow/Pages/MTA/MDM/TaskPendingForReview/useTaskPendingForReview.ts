@@ -14,6 +14,7 @@ import { SET_RECORD_COUNT } from "../../../../../redux/actions/MDM";
 const useTaskPendingForReview = ()=>{
     const ref = useRef<GridRef>()
     const dispatch = useDispatch();
+    const [taskActionype,setTaskActionType] = useState<number>()
     const [isViewTableOpen,setIsViewTableOpen] = useState(true)
     const [viewTableColDefs,setViewTableColDefs] = useState<ColDef[] | ColGroupDef[]>()
     const [detailTableColDefs,setDetailTableColDefs] = useState<ColDef[] | ColGroupDef[]>()
@@ -51,6 +52,7 @@ const useTaskPendingForReview = ()=>{
     const resetState = ()=>{
         setDetailTableColDefs([])
         setDetailTableRowData([])
+        setTaskActionType(0)
         dispatch(SET_RECORD_COUNT(0))
         setSelectedRows(0)
     }
@@ -61,6 +63,9 @@ const useTaskPendingForReview = ()=>{
             resetState()
             setIsViewTableOpen(false)
             setTaskId(taskData.TaskID)
+            
+            setTaskActionType(taskData.Actiontype)
+            
             
             const res:any = await getTaskCount(taskData.TaskID);
 
@@ -135,21 +140,16 @@ const useTaskPendingForReview = ()=>{
         
        
         let toastId;
-        console.log(createTaskPendingSubmitPayload(detailTableRowData))
-        return 
+        const updatedRowData = createTaskPendingSubmitPayload(detailTableRowData,taskActionype || 0)
         
         try {
-            const noActionPerformed = detailTableRowData.find((row:any)=>row.status === '');
+            const noActionPerformed = updatedRowData.find((row:any)=>row.status === '');
 
             if(noActionPerformed){
                 notifyError("Please Update the Status for all Rows before submitting")
                 return
             }
             let submitProgress = 0;
-
-            const formattedDetailRowData = detailTableRowData.map((row:any)=>{
-                return {...row,status:row.status==='Approved' ? "3" : "4"}
-            })
  
             const payload:any =  {
                 taskId:TASK_ID,
@@ -157,17 +157,17 @@ const useTaskPendingForReview = ()=>{
                 data:[]
             }
 
-            toastId = notifyLoader(`Submitting Data ${submitProgress}/${formattedDetailRowData.length}`);
+            toastId = notifyLoader(`Submitting Data ${submitProgress}/${updatedRowData.length}`);
     
             for(let i=0; i < recordCount; i+=chunkSize){
-                if(i+chunkSize < formattedDetailRowData.length){
-                    payload.data = formattedDetailRowData.slice(i,i+chunkSize);
-                    toast.update(toastId,{render:`Submitting Data ${i+chunkSize}/${formattedDetailRowData.length}`})
+                if(i+chunkSize < updatedRowData.length){
+                    payload.data = updatedRowData.slice(i,i+chunkSize);
+                    toast.update(toastId,{render:`Submitting Data ${i+chunkSize}/${updatedRowData.length}`})
                     submitProgress+=chunkSize;
                 }
                 else{
-                    payload.data = formattedDetailRowData.slice(i)
-                    toast.update(toastId,{render:`Submitting Data ${formattedDetailRowData.length}/${formattedDetailRowData.length}`})
+                    payload.data = updatedRowData.slice(i)
+                    toast.update(toastId,{render:`Submitting Data ${updatedRowData.length}/${updatedRowData.length}`})
                 }
                 
                 await approveTask(payload);

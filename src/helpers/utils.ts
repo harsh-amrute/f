@@ -1284,7 +1284,8 @@ export const navigateWithPrompt = (onRouteChange:()=>void,url:any,state:any,rese
 }  
 
 
-export const createTaskPendingSubmitPayload = (rowData:any[]):any[]=>{
+export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):any[]=>{
+  console.log(actionType)
   const  result:any[] = []
 
   rowData.forEach((item) => {
@@ -1299,13 +1300,25 @@ export const createTaskPendingSubmitPayload = (rowData:any[]):any[]=>{
         return newItem[key] = value==="Approved"?"3":"4"
       }
 
+     if(actionType===2){
       if (key.startsWith("Old")) {
         // Skip keys with prefix "Oldc"
         return;
       }
+      newItem[key.replace("New", "")] = value;
+     }
+
+     if(actionType===1){
+      newItem[key.replace("Add", "")] = value;
+     }
+
+     if(actionType===3){
+
+      newItem[key.replace("Delete", "")] = value;
+     }
 
       // Remove the "Newc" prefix from the key and store the value in the new object
-      newItem[key.replace("New", "")] = value;
+      
     });
 
     // Add the modified object to the result array
