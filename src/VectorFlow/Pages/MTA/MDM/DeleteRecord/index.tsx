@@ -260,6 +260,8 @@ const DeleteRecord = () => {
         {
           !isSelectMasterOpen && 
           <VFTaskBar
+            disableResumeSeasonality={()=>false}
+            disableStopSeasonality={()=>false}
             masterProgress={activeMaster.progress}
             onReset={onReset}
             onSaveToDraft={onSaveToDraft}

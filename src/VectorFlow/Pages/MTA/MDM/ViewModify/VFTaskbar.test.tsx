@@ -23,7 +23,9 @@ const dummyProps = {
     onDeleteData:mockFn,
     onDeleteOnlineReset:mockFn,
     onDeleteOnlineSave:mockFn,
-    onSubmitConflictData:mockFn
+    onSubmitConflictData:mockFn,
+    disableResumeSeasonality:mockFn,
+    disableStopSeasonality:mockFn
 }
 
 const contextWrapper = (children:any)=>{

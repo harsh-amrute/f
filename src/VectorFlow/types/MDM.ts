@@ -110,7 +110,7 @@ export interface QueryFilteredDataConfigs{
     pagination?:boolean
     count?:boolean,
     currentPage?:number
-    rowsPerPage:number
+    rowsPerPage?:number
 }
 
 export interface UploadModalRadioButtonsType{
@@ -130,7 +130,7 @@ export interface DailyData {
     git:string
 }
 export interface SeasonalityQuickFilterType{
-    id:number
+    id:number[]
     label:string
     color:string
 }

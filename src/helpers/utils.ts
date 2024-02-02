@@ -5,7 +5,7 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
-import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs, mdmRoutes } from './MDMConstants';
+import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,format, differenceInSeconds} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
@@ -513,6 +513,14 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChar
       floatingFilter: true,
       filter: "agMultiColumnFilter",
       cellDataType:false,
+      valueGetter:(params:any)=>{
+        if(f.key==='sts'){
+          const id=params.data.sts
+          return seasonalityQuickFilterData.find((s)=>s.id.includes(id))?.label
+
+        }
+        return params.data[f.key]
+      },
       // suppressColumnsToolPanel: f.isEdit ? false : true,
       ...defaultColDefs
     }
@@ -547,12 +555,23 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChar
         onShowChart
       }
     }
-
     return [seasonalityColorColDef,seasonalityCheckboxColDef,seasonalityGraphColDef,...result]
+  }
+
+  if(masterId==6){
+    const PIPOCheckboxColDef:ColDef={
+      field:'checkbox',
+      colId:'checkbox',
+      headerName:'',
+      checkboxSelection:true,
+      headerCheckboxSelection:true,
+      headerCheckboxSelectionCurrentPageOnly:true,
+      width:10
+    }
+    return [PIPOCheckboxColDef,...result]
   }
   return result;
 }
-
 
 export const areMasterFiltersValid = (masterFilters:Filter[])=>{
   for(let i =0;i<masterFilters.length;i++){
