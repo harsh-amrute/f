@@ -30,6 +30,8 @@ export interface VFTaskBarProps{
     onDeleteOnlineSave:()=>void
     onDeleteOnlineSubmit:()=>void
     onDeleteData:()=>void
+    disableStopSeasonality:()=>boolean
+    disableResumeSeasonality:()=>boolean
 }
 
 
@@ -57,7 +59,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         onDeleteOnlineSubmit,
         onDeleteOnlineReset,
         onDeleteOnlineSave,
-        onDeleteData
+        onDeleteData,
+        disableStopSeasonality,
+        disableResumeSeasonality
     } = props
 
     const {user} = useUserData()
@@ -374,10 +378,13 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
             return(
                 <TaskBarContainer data-testid="taskbar" style={{flexDirection:'row'}}>
                     <BackButton/>
-                   <VFButtonOutline themeUi={themeUi} onClick={onSeasonalityResume}>  
+                   <VFButtonOutline themeUi={themeUi} onClick={onSeasonalityResume} disabled={disableResumeSeasonality()}>  
                         Resume
                    </VFButtonOutline >
-                   <VFButtonOutline themeUi={themeUi} onClick={onSeasonalityStop}>
+                   <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
+                       Save to draft
+                    </VFButtonOutline> 
+                   <VFButtonOutline themeUi={themeUi} onClick={onSeasonalityStop} disabled={disableStopSeasonality()}>
                         Stop Selected
                     </VFButtonOutline>
                 </TaskBarContainer>
@@ -389,6 +396,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                    <VFButton themeUi={themeUi} onClick={onSeasonalityStop}>
                         Stop Selected
                     </VFButton>
+                    <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
+                       Save to draft
+                    </VFButtonOutline> 
                 </TaskBarContainer>
             )
         case 'deleteView':

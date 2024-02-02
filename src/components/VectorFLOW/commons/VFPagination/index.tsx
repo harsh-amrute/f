@@ -42,7 +42,7 @@ const VFPagination  = (props:VFPaginationProps)=>{
             </TotalItemsWrapper>
             <Pagination
                 page={currentPage}
-                pageCount={totalRows/rowsPerPage}
+                pageCount={Math.ceil(totalRows/rowsPerPage)}
                 handleChangePage={handleChangePage}
                 handleChangePerPage={handleChangePerPage}
             />

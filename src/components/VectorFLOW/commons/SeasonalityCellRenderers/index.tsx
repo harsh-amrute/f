@@ -19,7 +19,7 @@ export const SeasonalityGraphCellRenderer = (params:any)=>{
 
 export const SeasonalityColorCellRenderer = (params:any)=>{
 
-    const stateColor = seasonalityQuickFilterData.find((s:SeasonalityQuickFilterType)=>s.id==params.data.sts)?.color || 'white'
+    const stateColor = seasonalityQuickFilterData.find((s:SeasonalityQuickFilterType)=>s.id.includes(params.data.sts))?.color || 'white'
 
     return <SeasonalityColorCellRendererWrapper stateColor={stateColor}/>
 }

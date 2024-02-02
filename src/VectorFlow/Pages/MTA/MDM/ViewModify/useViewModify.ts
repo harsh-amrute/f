@@ -62,7 +62,7 @@ const useViewModify = (pageType:string) => {
     const [currentPage,setCurrentPage] = useState(1);
     const rowsPerPage = 50;
 
-    const [seasonalityActiveQuickFilter,setSeasonalityActiveQuickFilter]  = useState<number>(0)
+    const [seasonalityActiveQuickFilter,setSeasonalityActiveQuickFilter]  = useState<Array<Array<number>>>([])
     const ref = useRef<GridRef>();
     const tempRef = useRef<GridRef>(); //used for second ag grid instance which is hidden.
     const [tempGridData,setTempGridData] = useState<object[]>([]);
@@ -73,7 +73,6 @@ const useViewModify = (pageType:string) => {
     const {mutateAsync:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
 
     const [TASK_ID,setTaskId] = useState<string>();
-
    
     // const allMasters:Master[] = masterUIConfiguration?.data.data || [];
 
@@ -360,6 +359,7 @@ const useViewModify = (pageType:string) => {
           recordsPerPage:rowsPerPage
         }
       }
+      console.log(payload)
       let resultData;
       if(count){
         resultData =  await getCount(payload);
@@ -504,24 +504,44 @@ const useViewModify = (pageType:string) => {
       const currMasterFilters = activeMaster.filters;
 
       const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
-      const payloadFields:any = getCurrentVisbileColumns();
+      let payloadFields:any = getCurrentVisbileColumns();
+      payloadFields = payloadFields.filter((field:any)=>!['checkbox','graph','color'].includes(field.key))
       
       setIsTableDataLoading(true);
       let result:any;
 
       if(!areMasterFiltersValid(currMasterFilters) && activeMaster.filters.length === 1){
-        result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
-          success:"Data Fetched Successfully",
-          error:"Something Went Wrong",
-          pending:"Loading Data"
-        }); 
+        if(activeMaster.id==10 || activeMaster.id==6){
+          result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:false}),{
+            success:"Data Fetched Successfully",
+            error:"Something Went Wrong",
+            pending:"Loading Data"
+          });  
+        }
+        else{
+          result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
+            success:"Data Fetched Successfully",
+            error:"Something Went Wrong",
+            pending:"Loading Data"
+          }); 
       }
+    }
       else{
-        result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
-          success:"Data Fetched Successfully",
-          error:"Something Went Wrong",
-          pending:"Loading Data"
-        }); 
+        if(activeMaster.id==10 || activeMaster.id==6){
+          result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:false}),{
+            success:"Data Fetched Successfully",
+            error:"Something Went Wrong",
+            pending:"Loading Data"
+          }); 
+        }
+        else{
+          result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
+            success:"Data Fetched Successfully",
+            error:"Something Went Wrong",
+            pending:"Loading Data"
+          }); 
+      }
+        
       }
       
       if(result.data.recordCount <= rowsPerPage){
@@ -685,10 +705,12 @@ const useViewModify = (pageType:string) => {
       }
 
       const handleChangePage = async (pageNo:any) => {
+        console.log(pageNo)
 
         setCurrentPage(pageNo);
-        setIsTableDataLoading(true)
-        if(activeMaster.rowData.length > rowsPerPage){
+        setIsTableDataLoading(true);
+        console.log(activeMaster.rowData);
+        if(activeMaster.rowData.length > rowsPerPage || (activeMaster.id == 6 || activeMaster.id == 10)){
             ref.current?.api.paginationGoToPage(pageNo);
             setIsTableDataLoading(false);
             return;
@@ -941,17 +963,30 @@ const useViewModify = (pageType:string) => {
       }
 
       const onSaveToDraft = async () => {
-          const res = await postDraftChunks(activeMaster.rowData)
-          if(res){
-            if(draftID.length > 0){
-              return toast.success("Draft Updated Successfully")
+        let newData = activeMaster.rowData
+        const selectedData = ref.current?.api.getSelectedRows();
+
+        if(activeMaster.id==10 || activeMaster.id==6){
+          newData = newData.map((row:any)=>{
+            if(selectedData?.find((selectedRow:any)=>JSON.stringify(selectedRow)===JSON.stringify(row))){
+              return {...row,isSelected:true}
             }
-            else{
-              return toast.success("Draft Created Successfully")
-            }
+            return {...row,isSelected:false}
+          })
+        }
+        
+        const res = await postDraftChunks(newData)
+        if(res){
+          if(draftID.length > 0){
+            return toast.success("Draft Updated Successfully")
           }
-          return notifyError("Something Went Wrong")
-      }
+          else{
+            return toast.success("Draft Created Successfully")
+          }
+        }
+        return notifyError("Something Went Wrong")
+      
+    }
 
      
       const onReset = () => {
@@ -1046,20 +1081,41 @@ const useViewModify = (pageType:string) => {
       }
 
     
-      const onSeasonalityQuickFilter = (id:number)=>{
+      const onSeasonalityQuickFilter = (statusId:number[])=>{
         const doesMasterExist = masters.find((master:MDMMasterState)=>master.id===activeMaster.id)
-        if(id===seasonalityActiveQuickFilter){
-          if(doesMasterExist){
-            setSeasonalityActiveQuickFilter(0)
-            dispatch(UPDATE_ROW_DATA(doesMasterExist.rowData))
-            return
-          }
+        let updatedSeasonalityActiveQuickFilter= [...seasonalityActiveQuickFilter];
 
-          
-        }
         if(doesMasterExist){
-          setSeasonalityActiveQuickFilter(id)
-          dispatch(UPDATE_ROW_DATA(doesMasterExist.rowData.filter((row:any)=>row.sts==id)))
+          if(seasonalityActiveQuickFilter.find((s)=>JSON.stringify(s)===JSON.stringify(statusId))){
+            updatedSeasonalityActiveQuickFilter = seasonalityActiveQuickFilter.filter((s)=>{
+              return JSON.stringify(s)!==JSON.stringify(statusId)
+            })
+            setSeasonalityActiveQuickFilter(updatedSeasonalityActiveQuickFilter)
+          }
+          else{
+            updatedSeasonalityActiveQuickFilter = [...updatedSeasonalityActiveQuickFilter,statusId]
+            setSeasonalityActiveQuickFilter(updatedSeasonalityActiveQuickFilter)
+          }
+          let updatedRowData = []
+          
+
+          const flatState = _.flatMap(updatedSeasonalityActiveQuickFilter)
+          if(flatState.length==0){
+            updatedRowData=doesMasterExist.rowData;
+          }
+          else{
+            updatedRowData = doesMasterExist.rowData.filter((row:any)=>{     
+              return flatState.includes(row.sts)
+            })
+          }
+          
+          dispatch(UPDATE_ROW_DATA(updatedRowData))
+          dispatch(SET_RECORD_COUNT(updatedRowData.length))
+          console.log(updatedRowData)
+        
+        }
+        else{
+          return 
         }
       }
 
