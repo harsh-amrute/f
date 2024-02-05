@@ -2,32 +2,49 @@ import React, { type PropsWithChildren, useEffect, useState } from 'react'
 import { loginRedirect } from '../../../helpers/utils'
 import { MainService } from '../../../module-main/services/api'
 import { useNavigate } from 'react-router'
-import { UserDataContext } from '../../../context'
+import { UserDataContext } from '../../../context';
+import { listMenuParent } from "../NavbarMenu/listMenu";
+import { notifyError } from '../../../helpers/notify';
 
 interface AuthenticationTemplateProps {
   isAnonymous: boolean
   loadingComponent: React.ReactElement,
+  setMenuItem:any;
 }
 
 export const AuthenticationTemplate = ({
   isAnonymous,
   loadingComponent,
-  children
+  children,
+  setMenuItem
 }: PropsWithChildren<AuthenticationTemplateProps>) => {
   if (isAnonymous) {
     return <UnauthenticatedTemplate>{children}</UnauthenticatedTemplate>
   } else {
     return (
-      <AuthenticatedTemplate loadingComponent={loadingComponent}>
+      <AuthenticatedTemplate loadingComponent={loadingComponent} setMenuItem={setMenuItem}>
         {children}
       </AuthenticatedTemplate>
     )
   }
 }
 
+const getSelectedMenuItem = (permission:string[]) => {
+  return listMenuParent.find((menu:any)=>{
+    let flag = false;
+    permission.forEach((permission:string)=>{
+      if(!menu.role.includes(permission)){
+        flag = true;
+      }
+    })
+    if(flag) return false;
+    return true;
+  })  
+}
+
 const AuthenticatedTemplate = (
   props: PropsWithChildren<
-  Pick<AuthenticationTemplateProps, 'loadingComponent'>
+  Pick<AuthenticationTemplateProps, 'loadingComponent' | 'setMenuItem'>
   >
 ) => {
   const navigate = useNavigate()
@@ -40,8 +57,10 @@ const AuthenticatedTemplate = (
       .then((res) => {
         setUserData(res.data.data)
         setLoading(false)
+        props.setMenuItem(getSelectedMenuItem(res.data.data.roles.permission))
       })
-      .catch(() => {
+      .catch((err) => {
+        notifyError(err)
         loginRedirect(navigate)
         setLoading(false)
       })

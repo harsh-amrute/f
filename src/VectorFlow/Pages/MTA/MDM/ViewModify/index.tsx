@@ -90,7 +90,8 @@ import _ from "lodash";
         isConflictModalOpen,
         isShowAll,
         onIgnoreSubmitErrors,
-        onReviewConflicts
+        onReviewConflicts,
+        isDataAvailableLocally
 
     } = useViewModify('modify');
 
@@ -211,6 +212,7 @@ import _ from "lodash";
                   columnDefs={activeMaster.colDefs}
                   rowData={activeMaster.rowData}
                   {...agGridProps}
+                  suppressPaginationPanel={!isDataAvailableLocally}
                 />
                 {/* <VFTable
                   ref={veryTempRef}
@@ -230,7 +232,7 @@ import _ from "lodash";
           </React.Fragment>
           }
           {
-            (!['default'].includes(activeMaster.progress) && !isSelectMasterOpen) 
+            (!['default'].includes(activeMaster.progress) && !isDataAvailableLocally) 
               && 
               <VFPagination 
                 selectedRows={selectedRowsCount} 

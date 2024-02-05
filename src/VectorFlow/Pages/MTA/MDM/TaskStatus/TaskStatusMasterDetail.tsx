@@ -82,7 +82,7 @@ const getStepperState = (data:any):StepItem[]=>{
                     //description:formatMDMDate(data.PendingSince, 'dd/MM/yy hh:mm:ss a')
                 },
                 {
-                    label:"Approved",
+                    label:"Approved - DB Updated",
                     status:'completed',
                     description:data.ApprovedDate
                     //description:formatMDMDate(data.ApprovedDate, 'dd/MM/yy hh:mm:ss a')
@@ -114,7 +114,7 @@ const getStepperState = (data:any):StepItem[]=>{
                     description:''
                 }
             ]
-        case "Approved - DB Update Pending":
+        case "Approved - DB update Pending":
             return [
                 {
                     label:"Submission",
@@ -123,7 +123,7 @@ const getStepperState = (data:any):StepItem[]=>{
                     //description:formatMDMDate(data.PendingSince, 'dd/MM/yy hh:mm:ss a')
                 },
                 {
-                    label:"Approved",
+                    label:"Approved - DB update Pending",
                     status:'completed',
                     description:data.ApprovedDate
                     //description:formatMDMDate(data.ApprovedDate, 'dd/MM/yy hh:mm:ss a')
@@ -162,7 +162,7 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
         data,
         onDownload
     } = props
-    const approvedStatuses = ["Approved","Partially Approved - DB update Pending","Approved - DB Update Pending","Approved - DB Updated"]
+    const approvedStatuses = ["Approved","Partially Approved - DB update Pending","Approved - DB update Pending","Approved - DB Updated"]
     const {user} = useUserData()
     const {Approvers} = data
 

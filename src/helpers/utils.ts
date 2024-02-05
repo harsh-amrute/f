@@ -431,9 +431,26 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
   let headers:any = [] //Not Selected Headers
   let error = false;
 
+   //Check if File Contains a Column that is not Downloadable
+   error = false;
+   headers = [];
+   headerKeys.forEach((key:string)=>{
+     const fieldObj = master.fields.find((field:Field)=>(field.key === key) && !field.isDownload)
+     if(fieldObj){
+       headers.push(fieldObj.displayName);
+       error = true;
+     }
+   })
+ 
+   if(error){
+     throw new Error( `File Contains ${headers.join(', ')} field which are not allowed to Upload.`)
+   }
+
+
   //Check if All Selected Keys are Present in The Uploaded
   selectedKeys.forEach((key:string)=>{
-    if(!headerKeys.includes(key)){
+    const fieldObj = master.fields.find((field:Field)=>field.key === key)
+    if(!headerKeys.includes(key) && fieldObj?.isDownload){
       error = true;
       headers.push(master.fields.find((field:Field) => field.key === key)?.displayName)
     }
@@ -462,9 +479,14 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
   }
 
  
+
+ 
   
   let rowObj:any = {};
   let temp = 0;
+  if(data.slice(1).length === 0){
+    throw new Error( `File Contains zero rows.`)
+  }
   data.slice(1).map((row:any)=>{
     
     row.map((value:any)=>{
@@ -978,12 +1000,12 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
         
 
         if(TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
-          newDataPrefixed[f.key] = String(newData[f.key])
+          newDataPrefixed[f.key] = String(newData[f.key]!==undefined?newData[f.key]:"")
         }
 
        else{
-        oldDataPrefixed[`Old${f.key}`] = String(oldData[f.key])
-        newDataPrefixed[`New${f.key}`] = String(newData[f.key])
+        oldDataPrefixed[`Old${f.key}`] = String(oldData[f.key]!==undefined?oldData[f.key]:"")
+        newDataPrefixed[`New${f.key}`] = String(newData[f.key]!==undefined?newData[f.key]:"")
        }
       })
       return {
@@ -1189,6 +1211,7 @@ export const generateSesonalityChartData = (row:any,data:any) => {
   })
   const maxQuantity = Math.max(maxNorm,maxStockAndGit);
   // const xAxisLabels = data.dailyData.map((o:DailyData)=>getFormattedDate(new Date(o.date)));
+  const todaysDate = new Date();
 
   const xAxisLabels = getDatesBetween(subDays(new Date(row.sd),Math.max(row.bd,row.r)),new Date(row.ed));
 
@@ -1258,8 +1281,10 @@ export const generateSesonalityChartData = (row:any,data:any) => {
   //   return tempNorm;
   // })
 
+
   const normData = xAxisLabels.map((date:Date) => {
     const closestNormChange:NormHistory = data.norm.find((o:NormHistory)=>+(new Date(o.date)) === +(new Date(date)));
+    if( +date > +todaysDate) return undefined;
     if(closestNormChange) {
       tempNorm = parseInt(closestNormChange.new_norm,10);
       pointRadius.push(5);

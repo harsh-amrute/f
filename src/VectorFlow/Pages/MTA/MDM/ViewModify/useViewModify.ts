@@ -73,6 +73,8 @@ const useViewModify = (pageType:string) => {
     const {mutateAsync:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
 
     const [TASK_ID,setTaskId] = useState<string>();
+
+    const [isDataAvailableLocally,setIsDataAvailableLocally] = useState(false);
    
     // const allMasters:Master[] = masterUIConfiguration?.data.data || [];
 
@@ -241,11 +243,18 @@ const useViewModify = (pageType:string) => {
       },
       pagination:true,
       paginationPageSize:rowsPerPage,
-      suppressPaginationPanel:true,
+      // suppressPaginationPanel:true,
       onColumnVisible:onColumnChange,
       overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
       onRowDataUpdated:(event)=>{
-        if(downloadData) event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? activeMaster.name : downloadFileName});
+        const downloadableColumnKeys:string[] = [];
+        activeMaster.fields.forEach((field:Field)=>{
+          if(field.isDownload){
+            downloadableColumnKeys.push(field.key)
+          }
+        });
+        
+        if(downloadData) event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? activeMaster.name : downloadFileName,columnKeys:isUploadModalOpen ? downloadableColumnKeys : undefined});
       },
       rowSelection:'multiple',
       suppressRowClickSelection:true,
@@ -413,7 +422,7 @@ const useViewModify = (pageType:string) => {
         draftData:masters.map((master:MDMMasterState)=>{
           return {
             masterId:master.id,
-            status:master.progress,
+            status:activeMaster.progress,
             gridState:master.id===activeMaster.id?JSON.stringify(activeMaster.colDefs):'',
             dataMaster:master.id===activeMaster.id?rowData:[]
           }
@@ -516,7 +525,8 @@ const useViewModify = (pageType:string) => {
             success:"Data Fetched Successfully",
             error:"Something Went Wrong",
             pending:"Loading Data"
-          });  
+          });
+          setIsDataAvailableLocally(true);
         }
         else{
           result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
@@ -533,6 +543,7 @@ const useViewModify = (pageType:string) => {
             error:"Something Went Wrong",
             pending:"Loading Data"
           }); 
+          setIsDataAvailableLocally(true);
         }
         else{
           result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
@@ -557,7 +568,7 @@ const useViewModify = (pageType:string) => {
           toggleWarningModal(false);
           return;
         }
-       
+
         dispatch(UPDATE_ROW_DATA(result.data.data));
         toggleWarningModal(false);
         if(pageType==='remove'){
@@ -616,7 +627,8 @@ const useViewModify = (pageType:string) => {
             addCheckBoxColDefs();
           }
   
-          dispatch(SET_RECORD_COUNT(result.length))
+          dispatch(SET_RECORD_COUNT(result.length));
+          setIsDataAvailableLocally(true);
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           dispatch(TOGGLE_UPLOAD_MODAL(false));
@@ -629,6 +641,7 @@ const useViewModify = (pageType:string) => {
          catch (error:any) {
           toast.dismiss();
           notifyError(error.message);
+          setIsOverlayVisible(false)
         }
 
       }
@@ -639,6 +652,7 @@ const useViewModify = (pageType:string) => {
           const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
         
           const payloadFields:any = getCurrentVisbileColumns();
+          
           const numberOfPages = Math.ceil(recordCount/chunkSize);
           const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
           const rows = [];
@@ -709,13 +723,11 @@ const useViewModify = (pageType:string) => {
       }
 
       const handleChangePage = async (pageNo:any) => {
-        console.log(pageNo)
 
         setCurrentPage(pageNo);
-        setIsTableDataLoading(true);
-        console.log(activeMaster.rowData);
-        if(activeMaster.rowData.length > rowsPerPage || (activeMaster.id == 6 || activeMaster.id == 10)){
-            ref.current?.api.paginationGoToPage(pageNo);
+        setIsTableDataLoading(true)
+        if(activeMaster.rowData.length > rowsPerPage){
+            ref.current?.api.paginationGoToPage(pageNo-1);
             setIsTableDataLoading(false);
             return;
         }
@@ -846,7 +858,14 @@ const useViewModify = (pageType:string) => {
 
       const onSubmit = async(isOverWrite?:boolean) => {
  
-        if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
+        if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit");
+
+        //check if errorneous Data
+        const errorData = activeMaster.rowData.find((row:any)=>row.error!=='' || row.warning!=='');
+        if(errorData){
+          notifyError('Please Clear Errors Before Submitting');
+          return;
+        }
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
      
@@ -1237,7 +1256,8 @@ const useViewModify = (pageType:string) => {
         isConflictModalOpen,
         setIsConflictModalOpen,
         onReviewConflicts,
-        onIgnoreSubmitErrors
+        onIgnoreSubmitErrors,
+        isDataAvailableLocally
     }
 }
 

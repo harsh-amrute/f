@@ -12,7 +12,7 @@ import { AuthenticationTemplate } from "./AuthenticationTemplate";
 import * as GridSystem from "../../../styles/gridSystem";
 import { ISTStatusContext } from "../../../context/ISTStatusContext";
 import { useTranslation } from "react-i18next";
-import { listMenuParent } from "../NavbarMenu/listMenu";
+// import { listMenuParent } from "../NavbarMenu/listMenu";
 
 const isAnonymous = false;
 
@@ -41,7 +41,7 @@ const AppLayout = () => {
 
   const [isOpenNavbarRight, setIsOpenNavbarRight] = useState<boolean>(false);
   const [isLoadSpinner, setIsLoadSpinner] = useState<any>(false);
-  const [menuItem, setMenuItem] = useState<any>(listMenuParent.find((listMenu:any)=>listMenu.id===6));
+  const [menuItem, setMenuItem] = useState<any>();
   const [colorTheme, setColorTheme] = useState<string>("NOIRFUSION");
   const [isHide, setIsHide] = useState<boolean>(true);
 
@@ -49,6 +49,7 @@ const AppLayout = () => {
     <AuthenticationTemplate
       loadingComponent={<>Loading...</>}
       isAnonymous={isAnonymous}
+      setMenuItem={setMenuItem}
     >
       <NavbarRight
         isOpenNavbarRight={isOpenNavbarRight}
