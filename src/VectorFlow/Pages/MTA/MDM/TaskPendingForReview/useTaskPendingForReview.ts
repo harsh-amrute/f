@@ -102,7 +102,7 @@ const useTaskPendingForReview = ()=>{
             toast.dismiss(toastId);
             
             const currentTaskMaster = taskDataStore[0]
-            const currentTaskMasterId:number = currentTaskMaster.MasterId
+            const currentTaskMasterId:number = currentTaskMaster.masterid
             
             setDetailTableRowData(taskDataStore)
         
