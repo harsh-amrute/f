@@ -5,11 +5,13 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
-import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData } from './MDMConstants';
+import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper,taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,format, differenceInSeconds} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
 import {formatMDMDate} from './format';
+import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
+import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import ConflictErrorToolTip from '../VectorFlow/Pages/MTA/MDM/ViewModify/ConflictErrorToolTip';
 
 // clear cached token and redirect to sso login
@@ -734,7 +736,7 @@ export const getExistingColumnFields = (columns:string[],fields:Field[]):Field[]
   return updatedFields
 }
 
-export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string):ColGroupDef[] | ColDef[]=>{
+export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string, showApproveAllModal?:any,showRejectAllModal?:any,actionStatus?:string):ColGroupDef[] | ColDef[]=>{
 
   const colDefs =  existingColumnsFields.map((f:Field)=>{
 
@@ -826,6 +828,65 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
     }
   })
 
+  const taskPendingCustomColDefs :any[] = [
+    {
+        field:'action',
+        colId:'action',
+        headerName:'Action',
+        children:[
+            {
+                headerComponent:TaskPendingActionHeader,
+                headerComponentParams:{
+                  showApproveAllModal:showApproveAllModal,
+                  showRejectAllModal:showRejectAllModal,
+                  actionStatus:actionStatus
+                },
+                cellRenderer:TaskPendingActionRenderer,
+                width:300,
+                cellStyle:{
+                    "border-left":"solid 1px #B9B9B9"
+                }
+            }
+            // {
+            //     field:"reject",
+            //     colId:'reject',
+            //     headerName:"Reject All",
+            //     headerCheckboxSelection:true,
+            //     cellRenderer:TaskPendingRejectActionButton,
+            //     width:150,
+            //     cellStyle:{
+            //         "border-right":"solid 1px #B9B9B9"
+            //     }
+            // }
+        ],
+        cellStyle: {
+        "text-align": "center"
+        },
+        flex: 1,
+    },
+    {
+        field:'status',
+        colId:'status',
+        headerName:'Status',
+        suppressSpanHeaderHeight: true,
+        cellStyle:{
+            "border-right":"solid 1px #B9B9B9",
+            "border-left":"solid 1px #B9B9B9",
+            "text-align":'center'
+        },
+        flex:1,
+        minWidth:100
+    },
+    {
+        field:'comments',
+        colId:'comments',
+        headerName:'Comments',
+        suppressSpanHeaderHeight: true,
+        editable:true,
+        ...defaultColDefs
+    }
+]
+
   return [
   //   {
   //   field:'checkbox',
@@ -914,14 +975,15 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
   
   
       existingColumnFields.map((f:Field)=>{
+        
 
         if(TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
-          newDataPrefixed[f.key] = newData[f.key]
+          newDataPrefixed[f.key] = String(newData[f.key])
         }
 
        else{
-        oldDataPrefixed[`Old${f.key}`] = oldData[f.key]
-        newDataPrefixed[`New${f.key}`] = newData[f.key]
+        oldDataPrefixed[`Old${f.key}`] = String(oldData[f.key])
+        newDataPrefixed[`New${f.key}`] = String(newData[f.key])
        }
       })
       return {
@@ -1206,7 +1268,7 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     pointRadius.push(0)
     return tempNorm;
   })
- 
+
   const chartData = {
     labels:xAxisLablesFormatted,
     datasets: [
@@ -1371,3 +1433,47 @@ export const navigateWithPrompt = (onRouteChange:()=>void,url:any,state:any,rese
     }
    
 }  
+
+
+export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):any[]=>{
+  const  result:any[] = []
+
+  rowData.forEach((item) => {
+    // Create a new object to store modified key-value pairs
+    const  newItem:any = {};
+
+    // Iterate through each key-value pair in the object
+    Object.entries(item).forEach(([key, value]) => {
+      // Check if the key starts with "Oldc"
+
+      if(key==='status'){
+        return newItem[key] = value==="Approved"?"3":"4"
+      }
+
+     if(actionType===2){
+      if (key.startsWith("Old")) {
+        // Skip keys with prefix "Oldc"
+        return;
+      }
+      newItem[key.replace("New", "")] = value;
+     }
+
+     if(actionType===1){
+      newItem[key.replace("Add", "")] = value;
+     }
+
+     if(actionType===3){
+
+      newItem[key.replace("Delete", "")] = value;
+     }
+
+      // Remove the "Newc" prefix from the key and store the value in the new object
+      
+    });
+
+    // Add the modified object to the result array
+    result.push(newItem);
+  });
+
+  return result
+}

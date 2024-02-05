@@ -4,7 +4,7 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 
 import {  getActionName, mapTaskStatusToColDefs,getExistingColumns,getExistingColumnFields, mapMasterToTaskStatusColumnGroupDefs, mapTaskStatusDataToRowData } from "../../../../../helpers/utils"
 import TaskStatusMasterDetail from "./TaskStatusMasterDetail"
-import { useGetTasKDetailDownloadData, useGetTaskStatusData,useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useGetTaskDetailDownloadData, useGetTaskStatusData,useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import { GridRef, Master } from "../../../../../VectorFlow/types/MDM"
 import { AgGridReactProps } from "ag-grid-react"
@@ -19,7 +19,7 @@ const TaskStatus = ()=>{
     const {data,isLoading} = useGetTaskStatusData()
     const gridRef = useRef<GridRef>()
 
-    const {mutateAsync:getTaskDetailDownloadData} = useGetTasKDetailDownloadData()
+    const {mutateAsync:getTaskDetailDownloadData} = useGetTaskDetailDownloadData()
     const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration()
 
     
