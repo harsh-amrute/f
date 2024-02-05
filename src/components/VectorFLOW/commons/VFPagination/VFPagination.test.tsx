@@ -24,17 +24,19 @@ describe("VFPagination Component", () => {
     expect(component).toBeInTheDocument()
 
     cleanup();
-    render(<VFPagination {...dummyprops} currentPage={2}/>)
+    render(<VFPagination {...dummyprops} currentPage={2}/>);
+    
+    
   })
 
   
   it("clicks on the next and previous buttons", () => {
     render(<VFPagination {...dummyprops}/>)
 
-    const nextBtn = screen.getByText('pagination.next')
-    const previousBtn = screen.getByText('pagination.previous')
-    fireEvent.click(nextBtn)
-    fireEvent.click(previousBtn)
+    const nextBtn = screen.getAllByText('pagination.next')
+    const previousBtn = screen.getAllByText('pagination.previous')
+    fireEvent.click(nextBtn[0])
+    fireEvent.click(previousBtn[0])
     expect(dummyFn).toBeCalledTimes(2)
   })
 })

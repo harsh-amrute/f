@@ -541,6 +541,17 @@ export const getTaskCountMockData:any = {
   conflictError: null
 }
 
+export const approveTaskMockData:any = {
+  recordCount: "",
+  data: null,
+  status: 200,
+  msg: "Task Approved Successfully.",
+  errorCount: null,
+  error: null,
+  conflictErrorCount: null,
+  conflictError: null
+}
+
 export const getMasterUIConfigurationMockData:any = {
   recordCount: "7",
   data: [

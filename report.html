@@ -247,7 +247,7 @@
               <tbody>
                 <tr>
                   <td>Errors</td>
-                  <td>0</td>
+                  <td>3</td>
                 </tr>
                 <tr>
                   <td>Warnings</td>
@@ -257,7 +257,7 @@
               <tfoot>
                 <tr>
                   <td>Total alerts</td>
-                  <td>0</td>
+                  <td>3</td>
                 </tr>
               </tfoot>
           </table>
@@ -267,7 +267,7 @@
               <tbody>
                 <tr>
                   <td>Files with errors</td>
-                  <td>0</td>
+                  <td>3</td>
                 </tr>
                 <tr>
                   <td>Files with only warnings</td>
@@ -281,13 +281,34 @@
               <tfoot>
                 <tr>
                   <td>Total files linted</td>
-                  <td>332</td>
+                  <td>335</td>
                 </tr>
               </tfoot>
           </table>
         </div>
       </div>
 
+        <h2>Most-Common Errors and Warnings</h2>
+        
+        <div class="table-wrapper occurrences">
+          <div class="table-column">
+            <h3>Errors</h3>
+        
+              <table class="summary-table">
+                <tbody>
+                    <tr class="occurrence row-0">
+                        <td><a href="http://eslint.org/docs/rules/null"></a></td>
+                      <td>3</td>
+                    </tr>
+                </tbody>
+              </table>
+          </div>
+          <div class="table-column">
+            <h3>Warnings</h3>
+        
+              <p>No warnings were found!</p>
+          </div>
+        </div>
 
       <h2>File Breakdown
           <a id="toggle" href="javascript:;" onclick="toggleAllDetails(this)" class="toggle-all-link">(expand all)</a></h2>
@@ -300,7 +321,61 @@
             <th class="warning-col">Warnings</th>
           </tr>
         </thead>
-        <tbody><tr class="success"><td>D:\Merge_Conflict\vflow-frontend\src\App.tsx</td>
+        <tbody><tr class="danger"><td>            <a class="toggle-link" href="javascript:;" onclick="toggleDetails(this)">D:\Merge_Conflict\vflow-frontend\coverage\lcov-report\block-navigation.js</a></td>
+              <td>1</td>
+              <td>0</td></tr><tr class="details-row hidden">
+                <td colspan="3">
+                  <table class="details-table">
+                    <tbody><tr class="msg-danger"><td class="location-col">
+                          </td>
+                          <td class="severity-col">Error</td>
+                          <td class="message-col">Parsing error: ESLint was configured to run on &#x60;&lt;tsconfigRootDir&gt;/coverage\lcov-report\block-navigation.js&#x60; using &#x60;parserOptions.project&#x60;: &lt;tsconfigRootDir&gt;/tsconfig.json
+      However, that TSConfig does not include this file. Either:
+      - Change ESLint&#x27;s list of included files to not include this file
+      - Change that TSConfig to include this file
+      - Create a new TSConfig that includes this file and include it in your parserOptions.project
+      See the typescript-eslint docs for more info: https://typescript-eslint.io/linting/troubleshooting#i-get-errors-telling-me-eslint-was-configured-to-run--however-that-tsconfig-does-not--none-of-those-tsconfigs-include-this-file</td>
+                            <td class="rule-col"><a href="http://eslint.org/docs/rules/null"></a></td>
+      </tr></tbody>
+                  </table>
+                </td>
+              </tr><tr class="danger"><td>            <a class="toggle-link" href="javascript:;" onclick="toggleDetails(this)">D:\Merge_Conflict\vflow-frontend\coverage\lcov-report\prettify.js</a></td>
+              <td>1</td>
+              <td>0</td></tr><tr class="details-row hidden">
+                <td colspan="3">
+                  <table class="details-table">
+                    <tbody><tr class="msg-danger"><td class="location-col">
+                          </td>
+                          <td class="severity-col">Error</td>
+                          <td class="message-col">Parsing error: ESLint was configured to run on &#x60;&lt;tsconfigRootDir&gt;/coverage\lcov-report\prettify.js&#x60; using &#x60;parserOptions.project&#x60;: &lt;tsconfigRootDir&gt;/tsconfig.json
+      However, that TSConfig does not include this file. Either:
+      - Change ESLint&#x27;s list of included files to not include this file
+      - Change that TSConfig to include this file
+      - Create a new TSConfig that includes this file and include it in your parserOptions.project
+      See the typescript-eslint docs for more info: https://typescript-eslint.io/linting/troubleshooting#i-get-errors-telling-me-eslint-was-configured-to-run--however-that-tsconfig-does-not--none-of-those-tsconfigs-include-this-file</td>
+                            <td class="rule-col"><a href="http://eslint.org/docs/rules/null"></a></td>
+      </tr></tbody>
+                  </table>
+                </td>
+              </tr><tr class="danger"><td>            <a class="toggle-link" href="javascript:;" onclick="toggleDetails(this)">D:\Merge_Conflict\vflow-frontend\coverage\lcov-report\sorter.js</a></td>
+              <td>1</td>
+              <td>0</td></tr><tr class="details-row hidden">
+                <td colspan="3">
+                  <table class="details-table">
+                    <tbody><tr class="msg-danger"><td class="location-col">
+                          </td>
+                          <td class="severity-col">Error</td>
+                          <td class="message-col">Parsing error: ESLint was configured to run on &#x60;&lt;tsconfigRootDir&gt;/coverage\lcov-report\sorter.js&#x60; using &#x60;parserOptions.project&#x60;: &lt;tsconfigRootDir&gt;/tsconfig.json
+      However, that TSConfig does not include this file. Either:
+      - Change ESLint&#x27;s list of included files to not include this file
+      - Change that TSConfig to include this file
+      - Create a new TSConfig that includes this file and include it in your parserOptions.project
+      See the typescript-eslint docs for more info: https://typescript-eslint.io/linting/troubleshooting#i-get-errors-telling-me-eslint-was-configured-to-run--however-that-tsconfig-does-not--none-of-those-tsconfigs-include-this-file</td>
+                            <td class="rule-col"><a href="http://eslint.org/docs/rules/null"></a></td>
+      </tr></tbody>
+                  </table>
+                </td>
+              </tr><tr class="success"><td>D:\Merge_Conflict\vflow-frontend\src\App.tsx</td>
               <td>0</td>
               <td>0</td></tr><tr class="success"><td>D:\Merge_Conflict\vflow-frontend\src\VectorFlow\Pages\MTA\MDM\AddRecord\AddRecord.test.tsx</td>
               <td>0</td>
