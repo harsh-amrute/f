@@ -294,11 +294,12 @@ const useViewModify = (pageType:string) => {
 
 
     const addCheckBoxColDefs = () => {
-      const checkboxColDefs = [
+      const checkboxColDefs:ColDef[] = [
         {
           field:'checkbox',
           colId:'checkbox',
           headerName:'',
+          width:40,
           checkboxSelection:true,
           headerCheckboxSelection:true,
           headerCheckboxSelectionCurrentPageOnly:true
@@ -368,7 +369,6 @@ const useViewModify = (pageType:string) => {
           recordsPerPage:rowsPerPage
         }
       }
-      console.log(payload)
       let resultData;
       if(count){
         resultData =  await getCount(payload);
