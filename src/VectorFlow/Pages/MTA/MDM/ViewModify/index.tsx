@@ -229,7 +229,7 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
           </React.Fragment>
           }
           {
-            (!['default'].includes(activeMaster.progress) && !isSelectMasterOpen) 
+            (!['default'].includes(activeMaster.progress) && !isSelectMasterOpen &&![6,10].includes(activeMaster.id)) 
               && 
               <VFPagination 
                 selectedRows={selectedRowsCount} 

@@ -1,6 +1,6 @@
 import { ColDef } from 'ag-grid-enterprise';
 import {TaskPendingActionRenderer} from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
-import { LocationSchema, SKULocationSchema, SKUSchema, SOBSchema } from '../validators/schemas/MTA/MDM/index';
+import { AbsoluteValueSeasonalitySchema, AddPIPOSchema, AddPOSchema, AddTargetNormSchema, DeltaPercentageSeasonalitySchema, ForceNormChangeSchema, LocationSchema, MOQSchema, SeasonalityStatusSchema, SKULocationSchema, SKUSchema, SOBSchema, StopPIPOSchema } from '../validators/schemas/MTA/MDM/index';
 import {type Option, type MasterIdToSchema, SeasonalityQuickFilterType} from '../VectorFlow/types/MDM';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
 import { SKUSchemaDelete } from '../validators/schemas/MTA/MDM/SKU';
@@ -64,6 +64,16 @@ export const masterIdToSchemaMapper:MasterIdToSchema = {
     '2':LocationSchema,
     '3':SKULocationSchema,
     '4':SOBSchema,
+    '5':MOQSchema,
+    '6':StopPIPOSchema,
+    '7':AddPOSchema,
+    '8':AddPIPOSchema,
+    '9':AddTargetNormSchema,
+    '10':SeasonalityStatusSchema,
+    '11':AbsoluteValueSeasonalitySchema,
+    '12':DeltaPercentageSeasonalitySchema,
+    '13':ForceNormChangeSchema
+
 }
 
 export const masterIdToDeleteSchemaMapper:MasterIdToSchema = {

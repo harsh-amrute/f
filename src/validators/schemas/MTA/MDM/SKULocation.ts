@@ -60,8 +60,8 @@ export const SKULocationSchema = Joi.object({
     pt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
     dpt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
     npr:Joi.number(),
-    frf:Joi.string().valid("fg", "rm"),
-    da:Joi.string().valid("yes", "no", "y", "n", "1", "0").default(1),
+    frf:Joi.string().valid("fg", "rm").insensitive(), //make this case insensitive
+    da:Joi.string().valid("yes", "no", "y", "n", 1, 0, "1", "0").insensitive().default(1),
     // StockPercentForRationing:Joi.number().integer().min(0).max(100).default(0),
     // NormPercentReservation:Joi.number().integer().min(0).max(100).default(0),
     ...CommonSchema

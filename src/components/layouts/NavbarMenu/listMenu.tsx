@@ -32,9 +32,9 @@ export const listMenuParent: any = [
     id: 2,
     name: "navbar.listMenuParent.masterDataManagement.title",
     img: "/assets/img/nav/master_data",
-    url: "/master-data-management/control-panel",
+    url: "",
     status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant"],
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterApprover"],
     child: [
       {
         name: "navbar.listMenuParent.masterDataManagement.controlPanel",
@@ -52,7 +52,7 @@ export const listMenuParent: any = [
         name: "navbar.listMenuParent.masterDataManagement.taskPendingForReview",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/master-data-management/task-pending",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant",'MasterApprover'],
       },
       {
         name: "navbar.listMenuParent.masterDataManagement.taskStatus",

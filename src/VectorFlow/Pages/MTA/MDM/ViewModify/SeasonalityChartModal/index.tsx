@@ -60,8 +60,20 @@ const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,clo
 
     const getNormChangeReason = () => {
       const dataIndex = tooltip.dataPoints[0].dataIndex;
-      const currentDate = chart.data.labels[dataIndex];
-      const normObject = normChangeData.find((data:DailyData)=> +new Date(data.date)=== +currentDate);
+      const currentDate = new Date(chart.data.labels[dataIndex]);
+      
+      const normObject = normChangeData.find((data:DailyData)=> {
+        const normChangeDate = new Date(data.date);
+        if(
+            currentDate.getDay() === normChangeDate.getDay() &&
+            currentDate.getMonth() === normChangeDate.getMonth() &&
+            currentDate.getFullYear() === normChangeDate.getFullYear()
+          ){
+            return true;
+          }
+          return false;
+      });
+
       if(normObject){
         return normObject.change_reason
       }
