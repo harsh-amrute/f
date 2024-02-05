@@ -1,6 +1,3 @@
-
-import { useEffect } from 'react'
-
 import { ActionHeaderContent, ActionHeaderWrapper, TaskPendingActionHeaderButton } from "./styles"
 import { useUserData } from "../../../../../context";
 

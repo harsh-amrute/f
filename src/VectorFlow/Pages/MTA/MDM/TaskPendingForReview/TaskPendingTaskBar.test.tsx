@@ -4,8 +4,6 @@ import { UserDataContext } from "../../../../../context";
 
 const onSubmit = jest.fn();
 const onCancel = jest.fn();
-const disableSubmit = false;
-
 
 describe("RejectAllModal Component", () => {
   it("Renders Task Bar", () => {

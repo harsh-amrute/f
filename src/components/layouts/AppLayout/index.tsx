@@ -12,7 +12,7 @@ import { AuthenticationTemplate } from "./AuthenticationTemplate";
 import * as GridSystem from "../../../styles/gridSystem";
 import { ISTStatusContext } from "../../../context/ISTStatusContext";
 import { useTranslation } from "react-i18next";
-import { listMenuParent } from "../NavbarMenu/listMenu";
+// import { listMenuParent } from "../NavbarMenu/listMenu";
 
 const isAnonymous = false;
 
