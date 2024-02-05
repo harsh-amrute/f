@@ -122,12 +122,13 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
         }
         </VFMasterGroupCardContainer> 
             <VFButtonWrapper>
-                <VFButtonOutline onClick={onCancel} themeUi={user.user.theme_ui} color={'#A8A2A3'} style={{marginRight:'25px'}}>Cancel</VFButtonOutline>
+                <VFButtonOutline onClick={onCancel} themeUi={user.user.theme_ui} style={{marginRight:'25px'}}>Cancel</VFButtonOutline>
                 <VFButton onClick={onSubmit} themeUi={user.user.theme_ui} disabled={selectedMasters.length===0}>Submit</VFButton>
             </VFButtonWrapper> 
     </ContentWrapper>
     )
 }
+
 
 export default SelectGroupedMasters;
 
