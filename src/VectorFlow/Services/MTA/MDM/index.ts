@@ -16,7 +16,8 @@ export const QUERY_KEYS = {
   useGetPendingTasks:['MDMService.useGetPendingTasks'],
   useGetTaskStatusData:['MDMService.useGetTaskStatusData'],
   useModifyMasterData:['MDMService.useModifyMasterData'],
-  useDeleteTask:['MDMService.useDeleteTask']
+  useDeleteTask:['MDMService.useDeleteTask'],
+  useApproveTask:['MDMService.useApproveTask']
 }
 
 
@@ -105,21 +106,39 @@ export const useGetTaskStatusData = ()=>{
   })
 }
 
-export const useGetTasKDetailDownloadData = ()=>{
+export const useGetTaskDetailDownloadData = ()=>{
   return useMutation(async(body:{taskId:string,approverId:number})=>{
     return await MDMService.getTaskDetailsDownloadData(body)
   })
 }
 
+export const useApproveTask = ()=>{
+  return useMutation(async(body:{taskId:string,data:any})=>{
+    return await MDMService.approveTask(body)
+  })
+}
+
 export const useRemoveMasterData = ()=>{
   return useMutation(async(body:any)=>{
-    return await MDMService.removeMasterData(body)
+    return await MDMService.deleteMasterData(body)
   })
 }
 
 export const useModifyMasterData = ()=>{
   return useMutation(async(body:any)=>{
     return await MDMService.modifyMasterData(body)
+  })
+}
+
+export const useAddMasterData = ()=>{
+  return useMutation(async(body:any)=>{
+    return await MDMService.addMasterData(body)
+  })
+}
+
+export const useDeleteMasterData = ()=>{
+  return useMutation(async(body:any)=>{
+    return await MDMService.deleteMasterData(body)
   })
 }
 

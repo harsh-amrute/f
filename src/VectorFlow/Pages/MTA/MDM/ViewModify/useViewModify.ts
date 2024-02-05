@@ -62,7 +62,7 @@ const useViewModify = (pageType:string) => {
     const [currentPage,setCurrentPage] = useState(1);
     const rowsPerPage = 50;
 
-    const [seasonalityActiveQuickFilter,setSeasonalityActiveQuickFilter]  = useState<number>(0)
+    const [seasonalityActiveQuickFilter,setSeasonalityActiveQuickFilter]  = useState<Array<Array<number>>>([])
     const ref = useRef<GridRef>();
     const tempRef = useRef<GridRef>(); //used for second ag grid instance which is hidden.
     const [tempGridData,setTempGridData] = useState<object[]>([]);
@@ -74,6 +74,7 @@ const useViewModify = (pageType:string) => {
 
     const [TASK_ID,setTaskId] = useState<string>();
 
+    const [isDataAvailableLocally,setIsDataAvailableLocally] = useState(false);
    
     // const allMasters:Master[] = masterUIConfiguration?.data.data || [];
 
@@ -242,7 +243,7 @@ const useViewModify = (pageType:string) => {
       },
       pagination:true,
       paginationPageSize:rowsPerPage,
-      suppressPaginationPanel:true,
+      // suppressPaginationPanel:true,
       onColumnVisible:onColumnChange,
       overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
       onRowDataUpdated:(event)=>{
@@ -367,6 +368,7 @@ const useViewModify = (pageType:string) => {
           recordsPerPage:rowsPerPage
         }
       }
+      console.log(payload)
       let resultData;
       if(count){
         resultData =  await getCount(payload);
@@ -511,24 +513,46 @@ const useViewModify = (pageType:string) => {
       const currMasterFilters = activeMaster.filters;
 
       const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
-      const payloadFields:any = getCurrentVisbileColumns();
+      let payloadFields:any = getCurrentVisbileColumns();
+      payloadFields = payloadFields.filter((field:any)=>!['checkbox','graph','color'].includes(field.key))
       
       setIsTableDataLoading(true);
       let result:any;
 
       if(!areMasterFiltersValid(currMasterFilters) && activeMaster.filters.length === 1){
-        result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
-          success:"Data Fetched Successfully",
-          error:"Something Went Wrong",
-          pending:"Loading Data"
-        }); 
+        if(activeMaster.id==10 || activeMaster.id==6){
+          result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:false}),{
+            success:"Data Fetched Successfully",
+            error:"Something Went Wrong",
+            pending:"Loading Data"
+          });
+          setIsDataAvailableLocally(true);
+        }
+        else{
+          result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
+            success:"Data Fetched Successfully",
+            error:"Something Went Wrong",
+            pending:"Loading Data"
+          }); 
       }
+    }
       else{
-        result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
-          success:"Data Fetched Successfully",
-          error:"Something Went Wrong",
-          pending:"Loading Data"
-        }); 
+        if(activeMaster.id==10 || activeMaster.id==6){
+          result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:false}),{
+            success:"Data Fetched Successfully",
+            error:"Something Went Wrong",
+            pending:"Loading Data"
+          }); 
+          setIsDataAvailableLocally(true);
+        }
+        else{
+          result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
+            success:"Data Fetched Successfully",
+            error:"Something Went Wrong",
+            pending:"Loading Data"
+          }); 
+      }
+        
       }
       
       if(result.data.recordCount <= rowsPerPage){
@@ -603,7 +627,8 @@ const useViewModify = (pageType:string) => {
             addCheckBoxColDefs();
           }
   
-          dispatch(SET_RECORD_COUNT(result.length))
+          dispatch(SET_RECORD_COUNT(result.length));
+          setIsDataAvailableLocally(true);
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           dispatch(TOGGLE_UPLOAD_MODAL(false));
@@ -854,10 +879,10 @@ const useViewModify = (pageType:string) => {
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
               if(localErrorCount>0){
-                errorRowData = createErrorRowData(localErrorData)
+                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
               }
               else{
-                errorRowData = createErrorRowData(errorData)
+                errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
               addInvalidDataColDefs('error')
               dispatch(UPDATE_ROW_DATA(errorRowData))
@@ -880,10 +905,10 @@ const useViewModify = (pageType:string) => {
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
               if(localErrorCount>0){
-                errorRowData = createErrorRowData(localErrorData)
+                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
               }
               else{
-                errorRowData = createErrorRowData(errorData)
+                errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
               addInvalidDataColDefs('error')
               dispatch(UPDATE_ROW_DATA(errorRowData))
@@ -963,17 +988,30 @@ const useViewModify = (pageType:string) => {
       }
 
       const onSaveToDraft = async () => {
-          const res = await postDraftChunks(activeMaster.rowData)
-          if(res){
-            if(draftID.length > 0){
-              return toast.success("Draft Updated Successfully")
+        let newData = activeMaster.rowData
+        const selectedData = ref.current?.api.getSelectedRows();
+
+        if(activeMaster.id==10 || activeMaster.id==6){
+          newData = newData.map((row:any)=>{
+            if(selectedData?.find((selectedRow:any)=>JSON.stringify(selectedRow)===JSON.stringify(row))){
+              return {...row,isSelected:true}
             }
-            else{
-              return toast.success("Draft Created Successfully")
-            }
+            return {...row,isSelected:false}
+          })
+        }
+        
+        const res = await postDraftChunks(newData)
+        if(res){
+          if(draftID.length > 0){
+            return toast.success("Draft Updated Successfully")
           }
-          return notifyError("Something Went Wrong")
-      }
+          else{
+            return toast.success("Draft Created Successfully")
+          }
+        }
+        return notifyError("Something Went Wrong")
+      
+    }
 
      
       const onReset = () => {
@@ -1069,20 +1107,41 @@ const useViewModify = (pageType:string) => {
       }
 
     
-      const onSeasonalityQuickFilter = (id:number)=>{
+      const onSeasonalityQuickFilter = (statusId:number[])=>{
         const doesMasterExist = masters.find((master:MDMMasterState)=>master.id===activeMaster.id)
-        if(id===seasonalityActiveQuickFilter){
-          if(doesMasterExist){
-            setSeasonalityActiveQuickFilter(0)
-            dispatch(UPDATE_ROW_DATA(doesMasterExist.rowData))
-            return
-          }
+        let updatedSeasonalityActiveQuickFilter= [...seasonalityActiveQuickFilter];
 
-          
-        }
         if(doesMasterExist){
-          setSeasonalityActiveQuickFilter(id)
-          dispatch(UPDATE_ROW_DATA(doesMasterExist.rowData.filter((row:any)=>row.sts==id)))
+          if(seasonalityActiveQuickFilter.find((s)=>JSON.stringify(s)===JSON.stringify(statusId))){
+            updatedSeasonalityActiveQuickFilter = seasonalityActiveQuickFilter.filter((s)=>{
+              return JSON.stringify(s)!==JSON.stringify(statusId)
+            })
+            setSeasonalityActiveQuickFilter(updatedSeasonalityActiveQuickFilter)
+          }
+          else{
+            updatedSeasonalityActiveQuickFilter = [...updatedSeasonalityActiveQuickFilter,statusId]
+            setSeasonalityActiveQuickFilter(updatedSeasonalityActiveQuickFilter)
+          }
+          let updatedRowData = []
+          
+
+          const flatState = _.flatMap(updatedSeasonalityActiveQuickFilter)
+          if(flatState.length==0){
+            updatedRowData=doesMasterExist.rowData;
+          }
+          else{
+            updatedRowData = doesMasterExist.rowData.filter((row:any)=>{     
+              return flatState.includes(row.sts)
+            })
+          }
+          
+          dispatch(UPDATE_ROW_DATA(updatedRowData))
+          dispatch(SET_RECORD_COUNT(updatedRowData.length))
+          console.log(updatedRowData)
+        
+        }
+        else{
+          return 
         }
       }
 
@@ -1119,7 +1178,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const onIgnoreSubmitErrors = ()=>{
-      const errorRowData = createErrorRowData(errorData)
+      const errorRowData = createErrorRowData(errorData,activeMaster.id)
       addInvalidDataColDefs('error')
       dispatch(UPDATE_ROW_DATA(errorRowData))
       dispatch(UPDATE_PROGRESS_STATE('submitted'))
@@ -1197,7 +1256,8 @@ const useViewModify = (pageType:string) => {
         isConflictModalOpen,
         setIsConflictModalOpen,
         onReviewConflicts,
-        onIgnoreSubmitErrors
+        onIgnoreSubmitErrors,
+        isDataAvailableLocally
     }
 }
 

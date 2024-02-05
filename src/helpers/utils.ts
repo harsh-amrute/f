@@ -5,11 +5,13 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
-import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskPendingCustomColDefs, taskStatusCustomColDefs, mdmRoutes } from './MDMConstants';
+import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper,taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,format, differenceInSeconds} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
 import {formatMDMDate} from './format';
+import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
+import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import ConflictErrorToolTip from '../VectorFlow/Pages/MTA/MDM/ViewModify/ConflictErrorToolTip';
 
 // clear cached token and redirect to sso login
@@ -535,6 +537,14 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChar
       floatingFilter: true,
       filter: "agMultiColumnFilter",
       cellDataType:false,
+      valueGetter:(params:any)=>{
+        if(f.key==='sts'){
+          const id=params.data.sts
+          return seasonalityQuickFilterData.find((s)=>s.id.includes(id))?.label
+
+        }
+        return params.data[f.key]
+      },
       // suppressColumnsToolPanel: f.isEdit ? false : true,
       ...defaultColDefs
     }
@@ -569,12 +579,23 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChar
         onShowChart
       }
     }
-
     return [seasonalityColorColDef,seasonalityCheckboxColDef,seasonalityGraphColDef,...result]
+  }
+
+  if(masterId==6){
+    const PIPOCheckboxColDef:ColDef={
+      field:'checkbox',
+      colId:'checkbox',
+      headerName:'',
+      checkboxSelection:true,
+      headerCheckboxSelection:true,
+      headerCheckboxSelectionCurrentPageOnly:true,
+      width:10
+    }
+    return [PIPOCheckboxColDef,...result]
   }
   return result;
 }
-
 
 export const areMasterFiltersValid = (masterFilters:Filter[])=>{
   for(let i =0;i<masterFilters.length;i++){
@@ -737,7 +758,7 @@ export const getExistingColumnFields = (columns:string[],fields:Field[]):Field[]
   return updatedFields
 }
 
-export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string):ColGroupDef[] | ColDef[]=>{
+export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string, showApproveAllModal?:any,showRejectAllModal?:any,actionStatus?:string):ColGroupDef[] | ColDef[]=>{
 
   const colDefs =  existingColumnsFields.map((f:Field)=>{
 
@@ -829,6 +850,65 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
     }
   })
 
+  const taskPendingCustomColDefs :any[] = [
+    {
+        field:'action',
+        colId:'action',
+        headerName:'Action',
+        children:[
+            {
+                headerComponent:TaskPendingActionHeader,
+                headerComponentParams:{
+                  showApproveAllModal:showApproveAllModal,
+                  showRejectAllModal:showRejectAllModal,
+                  actionStatus:actionStatus
+                },
+                cellRenderer:TaskPendingActionRenderer,
+                width:300,
+                cellStyle:{
+                    "border-left":"solid 1px #B9B9B9"
+                }
+            }
+            // {
+            //     field:"reject",
+            //     colId:'reject',
+            //     headerName:"Reject All",
+            //     headerCheckboxSelection:true,
+            //     cellRenderer:TaskPendingRejectActionButton,
+            //     width:150,
+            //     cellStyle:{
+            //         "border-right":"solid 1px #B9B9B9"
+            //     }
+            // }
+        ],
+        cellStyle: {
+        "text-align": "center"
+        },
+        flex: 1,
+    },
+    {
+        field:'status',
+        colId:'status',
+        headerName:'Status',
+        suppressSpanHeaderHeight: true,
+        cellStyle:{
+            "border-right":"solid 1px #B9B9B9",
+            "border-left":"solid 1px #B9B9B9",
+            "text-align":'center'
+        },
+        flex:1,
+        minWidth:100
+    },
+    {
+        field:'comments',
+        colId:'comments',
+        headerName:'Comments',
+        suppressSpanHeaderHeight: true,
+        editable:true,
+        ...defaultColDefs
+    }
+]
+
   return [
   //   {
   //   field:'checkbox',
@@ -917,6 +997,7 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
   
   
       existingColumnFields.map((f:Field)=>{
+        
 
         if(TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
           newDataPrefixed[f.key] = String(newData[f.key]!==undefined?newData[f.key]:"")
@@ -1212,7 +1293,7 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     pointRadius.push(0)
     return tempNorm;
   })
- 
+
   const chartData = {
     labels:xAxisLablesFormatted,
     datasets: [
@@ -1336,14 +1417,24 @@ export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,re
 
 }
 
-export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[]):ColDef[]=>{
+export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[],masterId:number):ColDef[]=>{
   const result:any[] = []
   errorConflicts.map((currError:{errorData:any[],errorType:string})=>{
     currError.errorData.map((errorRowData:any)=>{
-     result.push({
-      ...errorRowData,
-      error:currError.errorType
-    })
+      const existingRowIndex = result.findIndex((row:any)=>{
+        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        if(primaryKeys.length<3) return row[primaryKeys[0]]===errorRowData[primaryKeys[0]]
+      })
+      
+      if(existingRowIndex===-1){
+        result.push({
+          ...errorRowData,
+          error:" " + currError.errorType + " ."
+        })
+      }
+      else{
+        result[existingRowIndex].error+=" " + currError.errorType + " ."
+      }
     })
   })
   return result
@@ -1367,3 +1458,47 @@ export const navigateWithPrompt = (onRouteChange:()=>void,url:any,state:any,rese
     }
    
 }  
+
+
+export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):any[]=>{
+  const  result:any[] = []
+
+  rowData.forEach((item) => {
+    // Create a new object to store modified key-value pairs
+    const  newItem:any = {};
+
+    // Iterate through each key-value pair in the object
+    Object.entries(item).forEach(([key, value]) => {
+      // Check if the key starts with "Oldc"
+
+      if(key==='status'){
+        return newItem[key] = value==="Approved"?"3":"4"
+      }
+
+     if(actionType===2){
+      if (key.startsWith("Old")) {
+        // Skip keys with prefix "Oldc"
+        return;
+      }
+      newItem[key.replace("New", "")] = value;
+     }
+
+     if(actionType===1){
+      newItem[key.replace("Add", "")] = value;
+     }
+
+     if(actionType===3){
+
+      newItem[key.replace("Delete", "")] = value;
+     }
+
+      // Remove the "Newc" prefix from the key and store the value in the new object
+      
+    });
+
+    // Add the modified object to the result array
+    result.push(newItem);
+  });
+
+  return result
+}

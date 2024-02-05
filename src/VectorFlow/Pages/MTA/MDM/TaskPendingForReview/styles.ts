@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+import * as globalStyles from "../../../../../styles/global";
+
 export const TaskPendingWrapper = styled.div`
     width:100%;
     margin-bottom:100px;
@@ -31,6 +33,8 @@ export const ActionHeaderWrapper = styled.div`
 export const ActionHeaderContent = styled.div`
     font-size:16px;
     display:flex;
+    padding:5px;
+    margin-bottom:5px;
 `
 
 export const LinkWrapper = styled.div`
@@ -106,4 +110,23 @@ margin-bottom:85px;
 margin-right:221px;
 margin-left:221px;
 align-items:center;
+`
+
+export const TaskPendingActionHeaderButton = styled.button<{ themeUi: string}>`
+    background-color:${(props:any)=>globalStyles.chooseThemeColor[props.themeUi]?.color5};
+    height:40px;
+    width:95px;
+    border-radius: 6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  font-size:16px;
+  font-family:'Roboto';
+  letter-spacing:0px;
+  font-weight:300;
+  color: ${globalStyles.white};
+  padding: 15px 7px;
+  border: none;
+  box-shadow: -5px 4px 10px #919191B3;
+  zoom:0.9;
 `

@@ -18,6 +18,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import SeasonalityChartModal from "./SeasonalityChartModal";
 import SubmitConflictModal from "./SubmitConflictModal";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
+import _ from "lodash";
 
 
 
@@ -89,7 +90,8 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
         isConflictModalOpen,
         isShowAll,
         onIgnoreSubmitErrors,
-        onReviewConflicts
+        onReviewConflicts,
+        isDataAvailableLocally
 
     } = useViewModify('modify');
 
@@ -131,7 +133,7 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
                 </SeasonalityQuickFilterHeader>
                 {seasonalityQuickFilterData.map((s:SeasonalityQuickFilterType)=>{
                   return(
-                    <SeasonalityQuickFilter stateColor={s.color} onClick={()=>onSeasonalityQuickFilter(s.id)} isActive={seasonalityActiveQuickFilter===s.id} data-testid="seasonality-quick-filter">
+                    <SeasonalityQuickFilter stateColor={s.color} onClick={()=>onSeasonalityQuickFilter(s.id)} isActive={seasonalityActiveQuickFilter.find((state)=>JSON.stringify(state)===JSON.stringify(s.id))?true:false} data-testid="seasonality-quick-filter">
                       <SeasonalityQuickFilterText>
                         {s.label}
                       </SeasonalityQuickFilterText>
@@ -210,6 +212,7 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
                   columnDefs={activeMaster.colDefs}
                   rowData={activeMaster.rowData}
                   {...agGridProps}
+                  suppressPaginationPanel={!isDataAvailableLocally}
                 />
                 {/* <VFTable
                   ref={veryTempRef}
@@ -229,7 +232,7 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
           </React.Fragment>
           }
           {
-            (!['default'].includes(activeMaster.progress) && !isSelectMasterOpen &&![6,10].includes(activeMaster.id)) 
+            (!['default'].includes(activeMaster.progress) && !isDataAvailableLocally) 
               && 
               <VFPagination 
                 selectedRows={selectedRowsCount} 
@@ -295,6 +298,27 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
         {
           !isSelectMasterOpen && 
           <VFTaskBar
+            disableStopSeasonality={()=>{
+              const flatState=_.flatMap(seasonalityActiveQuickFilter)
+              if (flatState.includes(23) && seasonalityActiveQuickFilter.find((s)=>JSON.stringify(s)===JSON.stringify([2,3,4,5,6]))) {
+                return false
+              } 
+              else if(flatState.includes(23)){
+                return true
+              }
+              return false
+             }}
+
+            disableResumeSeasonality={()=>{
+              const flatState=_.flatMap(seasonalityActiveQuickFilter)
+              if(flatState.includes(23) && seasonalityActiveQuickFilter.find((s)=>JSON.stringify(s)===JSON.stringify([2,3,4,5,6]))){
+                return false
+              }
+              else if ( seasonalityActiveQuickFilter.find((s)=>JSON.stringify(s)===JSON.stringify([2,3,4,5,6]))) {
+                return true
+              } 
+              return false
+            }}
             masterProgress={activeMaster.progress}
             disableSubmit={activeMaster.rowData.length===0}
             onReset={onReset}

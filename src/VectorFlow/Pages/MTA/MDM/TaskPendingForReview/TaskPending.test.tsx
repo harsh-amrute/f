@@ -9,8 +9,8 @@ import { UserDataContext } from "../../../../../context";
 import TaskPendingForReview from ".";
 import { store } from "../../../../../redux/store/store";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import {useGetMasterUIConfiguration, useGetPendingTasks, useGetTaskCount, useGetTaskDetails } from "../../../../../VectorFlow/Services/MTA/MDM";
-import { getAllDraftsMock,getMasterUIConfigurationMockData, getTaskCountMockData, getTaskDetailsMockData, getTaskPendingForReviewMockData } from "../../../../../mock-data/MDM";
+import {useApproveTask, useGetMasterUIConfiguration, useGetPendingTasks, useGetTaskCount, useGetTaskDetails } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { getAllDraftsMock,getMasterUIConfigurationMockData, getTaskCountMockData, getTaskDetailsMockData, getTaskPendingForReviewMockData, approveTaskMockData } from "../../../../../mock-data/MDM";
 
 jest.mock("../../../../Services/MTA/MDM");
 
@@ -39,6 +39,10 @@ const useGetMasterUIConfigurationMock = useGetMasterUIConfiguration as jest.Mock
    typeof useGetMasterUIConfiguration
 >
 
+const useApproveTaskMock = useApproveTask as jest.MockedFunction<
+   typeof useApproveTask
+>
+
 window.URL.createObjectURL = jest.fn();
 
  const useGetMasterUIConfigurationMockData: any = {
@@ -54,6 +58,12 @@ window.URL.createObjectURL = jest.fn();
 };
 
 const useGetTaskCountMockData: any = {
+  mutateAsync: () => {
+    return { data: approveTaskMockData,isLoading:false};
+  },
+};
+
+const useApproveTaskMockData: any = {
   mutateAsync: () => {
     return { data: getTaskCountMockData ,isLoading:false};
   },
@@ -106,6 +116,10 @@ describe("Handles all renders",()=>{
 
        useGetTaskCountMock.mockImplementation(()=>{
         return useGetTaskCountMockData
+      })
+
+      useApproveTaskMock.mockImplementation(()=>{
+        return useApproveTaskMockData
       })
        
    })

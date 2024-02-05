@@ -5,25 +5,29 @@ import { useUserData } from "../../../../../context";
 
 interface RejectAllModalProps{
     onSuccess:()=>void;
+    onClose:()=>void;
+    setSelectionType:any;
 }
 
 const RejectAllModal=(props:RejectAllModalProps)=>{
 
     const {
         onSuccess,
+        onClose,
+        setSelectionType
     } = props
 
     const {user} = useUserData()
 
     return(
-        <VFModalCard headerText={'Approve All'} closeModal={()=>(console.log())} openModal={true} headerIcon={""} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+        <VFModalCard headerText={'Approve All'} closeModal={onClose} openModal={true} headerIcon={""} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
             <RadioContainer>
                 <RadioButtonGroup> 
-                    <input type="radio" value="option1" checked={true} name="Approve" id="ApproveAll"/>
+                    <input type="radio" value="option1" onChange={()=>setSelectionType('All')} name="Approve" id="ApproveAll"/>
                     <label htmlFor="ApproveAll">Reject across all pages</label>
                 </RadioButtonGroup>  
                 <RadioButtonGroup> 
-                    <input type="radio" value="option2" name="Approve" id="ApproveCurrent"/>
+                    <input type="radio" value="option2" onChange={()=>setSelectionType('Current')} name="Approve" id="ApproveCurrent"/>
                     <label htmlFor="ApproveCurrent">Reject all only current page</label>
                 </RadioButtonGroup> 
             </RadioContainer>

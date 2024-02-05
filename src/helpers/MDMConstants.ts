@@ -1,5 +1,5 @@
 import { ColDef } from 'ag-grid-enterprise';
-import {TaskPendingActionRenderer} from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
+import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import { AbsoluteValueSeasonalitySchema, AddPIPOSchema, AddPOSchema, AddTargetNormSchema, DeltaPercentageSeasonalitySchema, ForceNormChangeSchema, LocationSchema, MOQSchema, SeasonalityStatusSchema, SKULocationSchema, SKUSchema, SOBSchema, StopPIPOSchema } from '../validators/schemas/MTA/MDM/index';
 import {type Option, type MasterIdToSchema, SeasonalityQuickFilterType} from '../VectorFlow/types/MDM';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
@@ -171,29 +171,29 @@ export const taskStatusCustomColDefs :any[] = [
 
 
 
-export const seasonalityQuickFilterData:SeasonalityQuickFilterType[] = [
+export const  seasonalityQuickFilterData:SeasonalityQuickFilterType[] = [
     {
-        id:1,
+        id:[1],
         label:'Not Started',
         color:'#898989'
     },
     {
-        id:4,
+        id:[2,3,4,5,6],
         label:'In Progress',
         color:'#EDD44C'
     },
     {
-        id:7,
+        id:[7],
         label:'Finished',
         color:'#52B736'
     },
     {
-        id:21,
+        id:[21],
         label:'Aborted',
         color:'#1D1B1C'
     },
     {
-        id:23,
+        id:[23],
         label:'Stopped',
         color:'#E33A3A'
     }
