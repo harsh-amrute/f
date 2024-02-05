@@ -5,13 +5,14 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
-import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskStatusCustomColDefs, mdmRoutes } from './MDMConstants';
+import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper,taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
-import {subDays,addDays,format, differenceInSeconds} from 'date-fns';
+import {subDays,format, differenceInSeconds} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
 import {formatMDMDate} from './format';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
 import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
+import ConflictErrorToolTip from '../VectorFlow/Pages/MTA/MDM/ViewModify/ConflictErrorToolTip';
 
 // clear cached token and redirect to sso login
 
@@ -408,11 +409,14 @@ export const checkError = (row:any,master:MDMMasterState,isDelete:boolean) => {
   return {error,warning};
 }
 
-export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boolean) => {
-  
+export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boolean,selectedColumns:any) => {
+
   const currMasterKeys = master.fields.map((field:Field)=>field.key); //array containing keys of current master fields
   const result:object[] = [];
   const buffer = await file.arrayBuffer();
+
+  //Selected Columns Keys
+  const selectedKeys = selectedColumns.map((col:any)=>col.colId);
 
   const data = await readXlsxFile(buffer,{
     parseNumber: (string:any) => string
@@ -424,11 +428,38 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
     else return '';
   })
 
+  let headers:any = [] //Not Selected Headers
+  let error = false;
+
+  //Check if All Selected Keys are Present in The Uploaded
+  selectedKeys.forEach((key:string)=>{
+    if(!headerKeys.includes(key)){
+      error = true;
+      headers.push(master.fields.find((field:Field) => field.key === key)?.displayName)
+    }
+  })
+
+  if(error){
+    throw new Error( `File is Missing ${headers.join(', ')}`);
+  }
+
+  error = false;
+  headers = [];
+
   headerKeys.forEach((key:string)=>{
+    
     if(!currMasterKeys.includes(key)){
       throw new Error("Please Upload a Valid Master");
     }
+    if(!selectedKeys.includes(key)){
+      error = true;
+      headers.push(master.fields.find((field:Field) => field.key === key)?.displayName)
+    }
   })
+
+  if(error){
+    throw new Error( `File Contains ${headers.join(', ')} which were not selected`)
+  }
 
  
   
@@ -438,7 +469,7 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
     
     row.map((value:any)=>{
       const attributeName = headerKeys[temp];
-      rowObj[attributeName.toString()] = value;
+      rowObj[attributeName.toString()] = "" + value;
       temp+=1;
     })
     temp = 0;
@@ -457,10 +488,17 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
     if(warning !== undefined){
       rowObj.warning = warning;
     }
+    const doesRowExists = result.find((row:any)=>JSON.stringify(row)===JSON.stringify(rowObj));
+    if(doesRowExists){
+      throw new Error("Duplicate Rows Found in File");
+    }
     result.push(rowObj);
     rowObj={}
     
   })
+
+  
+
 
   return result;
 }
@@ -477,6 +515,14 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChar
       floatingFilter: true,
       filter: "agMultiColumnFilter",
       cellDataType:false,
+      valueGetter:(params:any)=>{
+        if(f.key==='sts'){
+          const id=params.data.sts
+          return seasonalityQuickFilterData.find((s)=>s.id.includes(id))?.label
+
+        }
+        return params.data[f.key]
+      },
       // suppressColumnsToolPanel: f.isEdit ? false : true,
       ...defaultColDefs
     }
@@ -511,12 +557,23 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChar
         onShowChart
       }
     }
-
     return [seasonalityColorColDef,seasonalityCheckboxColDef,seasonalityGraphColDef,...result]
+  }
+
+  if(masterId==6){
+    const PIPOCheckboxColDef:ColDef={
+      field:'checkbox',
+      colId:'checkbox',
+      headerName:'',
+      checkboxSelection:true,
+      headerCheckboxSelection:true,
+      headerCheckboxSelectionCurrentPageOnly:true,
+      width:10
+    }
+    return [PIPOCheckboxColDef,...result]
   }
   return result;
 }
-
 
 export const areMasterFiltersValid = (masterFilters:Filter[])=>{
   for(let i =0;i<masterFilters.length;i++){
@@ -573,6 +630,7 @@ export const mapDraftToColumnDefs = (fields:Field[],customParams?:ColDef)=>{
       },
       flex: 1,
       cellRenderer:f.key==="action"&& ActionRenderer,
+      tooltipComponent:ConflictErrorToolTip,
       ...customParams
     }
   })
@@ -590,7 +648,7 @@ export const mapTaskStatusToColDefs = (taskStatus:ColDef[])=>{
       },
       flex: 1,
       floatingFilter:true,
-      filter: "agMultiColumnFilter",
+      filter: "agMultiColumnFilter"
     }
   })
   return result
@@ -1029,7 +1087,6 @@ export const mapTaskStatusDataToRowData = (dirtyRowData:any[],existingColumnFiel
 
 
 export const getActionName = (id:number):DraftActionType=>{
-  console.debug(id)
   if(id===1)return {id:1,label:'add',value:'add'}
   if(id===2)return {id:2,label:'view-modify',value:'modify'}
   if(id===3)return {id:3,label:'delete',value:'remove'}
@@ -1132,10 +1189,15 @@ export const generateSesonalityChartData = (row:any,data:any) => {
   })
   const maxQuantity = Math.max(maxNorm,maxStockAndGit);
   // const xAxisLabels = data.dailyData.map((o:DailyData)=>getFormattedDate(new Date(o.date)));
-  const xAxisLabels = getDatesBetween(new Date(data.dailyData[0].date),new Date(row.ed));
+
+  const xAxisLabels = getDatesBetween(subDays(new Date(row.sd),Math.max(row.bd,row.r)),new Date(row.ed));
+
   // const xAxisLabels = genedata.dailyData.map((o:DailyData)=>new Date(o.date));
   const xAxisLablesFormatted = xAxisLabels.map((date:Date)=>getFormattedDate(date));
+
   const seasonalityDates = getDatesBetween(new Date(row.sd),new Date(row.ed));
+
+  // console.log("Seasonality Dates",seasonalityDates)
 
   const buildUpDuration = getDatesBetween(subDays(new Date(row.sd),row.bd),new Date(row.sd));
 
@@ -1144,7 +1206,7 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     return undefined;
   })
 
-  const rlt = getDatesBetween(xAxisLabels[0],addDays(xAxisLabels[0],parseInt(row.r,10)));
+  const rlt = getDatesBetween(subDays(new Date(row.sd),row.r),new Date(row.sd));
 
   const rltData = xAxisLabels.map((date:Date)=>{
     if(rlt.find((sd:Date) => +sd === +date)) return maxQuantity;
@@ -1157,18 +1219,47 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     return undefined
   })
 
-  const stockData = data.dailyData.map((o:DailyData)=>{
-    return parseInt(o.stock,10)
+  
+  // const stockData = data.dailyData.map((o:DailyData)=>{
+  //   const doesDateExist = xAxisLabels.find((date:Date)=> {    
+  //     return +date === +new Date(o.date)
+  //   })
+  //   if(doesDateExist) return parseInt(o.stock,10)
+  //   return 0;
+  //   // return parseInt(o.stock,10)
+  // });
+
+  const stockData = xAxisLabels.map((date:Date)=>{
+    const isDailyDataPresent = data.dailyData.find((d:DailyData)=> +new Date(d.date)=== +date);
+    if(isDailyDataPresent){
+      return isDailyDataPresent.stock
+    }
+    return 0;
   })
   
-  const gitData = data.dailyData.map((o:DailyData)=>{
-      return parseInt(o.git,10) 
+  const gitData = xAxisLabels.map((date:Date)=>{
+    const isDailyDataPresent = data.dailyData.find((d:DailyData)=> +new Date(d.date)=== +date);
+    if(isDailyDataPresent){
+      return isDailyDataPresent.git
+    }
+    return 0;
   })
 
   const pointRadius:any[] = [];
   let tempNorm = 0; //used for filling data when norm not changed in below function
-  const normData = data.dailyData.map((d:DailyData)=>{
-    const closestNormChange:NormHistory = data.norm.find((o:NormHistory)=>+(new Date(o.date)) === +(new Date(d.date)));
+  // const normData = data.dailyData.map((d:DailyData)=>{
+  //   const closestNormChange:NormHistory = data.norm.find((o:NormHistory)=>+(new Date(o.date)) === +(new Date(d.date)));
+  //   if(closestNormChange) {
+  //     tempNorm = parseInt(closestNormChange.new_norm,10);
+  //     pointRadius.push(5);
+  //     return parseInt(closestNormChange.new_norm,10)
+  //   }
+  //   pointRadius.push(0)
+  //   return tempNorm;
+  // })
+
+  const normData = xAxisLabels.map((date:Date) => {
+    const closestNormChange:NormHistory = data.norm.find((o:NormHistory)=>+(new Date(o.date)) === +(new Date(date)));
     if(closestNormChange) {
       tempNorm = parseInt(closestNormChange.new_norm,10);
       pointRadius.push(5);
@@ -1178,7 +1269,6 @@ export const generateSesonalityChartData = (row:any,data:any) => {
     return tempNorm;
   })
 
-  
   const chartData = {
     labels:xAxisLablesFormatted,
     datasets: [
@@ -1261,6 +1351,68 @@ export const createSubmitMasterPayload = (master:any,action:string)=>{
     action:action,
     data:master.rowData
   }
+}
+
+export const addPrefixToObjectKeys = (obj:any,prefix:string)=>{
+
+  const newObj:any = {}
+
+  Object.keys(obj).map((key)=>{
+    newObj[`${prefix + key}`] = obj[key] 
+  })
+  return newObj
+}
+
+export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[],masterId:number):ColDef[]=>{
+
+  const result:any[] = []
+
+  conflicts.map((conflict)=>{
+     conflict.conflictdetails.map((conflictDetail)=>{
+      const existingRowIndex = result.findIndex((row:any)=>{
+        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        if(primaryKeys.length<3) return row[primaryKeys[0]]===conflictDetail.oldData[primaryKeys[0]]
+      })
+
+      if(existingRowIndex===-1){
+        result.push({...conflictDetail.requestedData,users:[{user:conflict.user,data:conflictDetail.oldData}]})
+      }
+      else{
+        // const existingUser = result[existingRowIndex].users.findIndex((user:any)=>user.user===conflict.user)
+        // if(existingUser!==-1){
+        //   result[existingRowIndex].users[existingUser].daa
+        // }
+        result[existingRowIndex].users.push({user:conflict.user,data:conflictDetail.oldData})
+      }
+    })
+  })
+
+  return result
+
+
+}
+
+export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[],masterId:number):ColDef[]=>{
+  const result:any[] = []
+  errorConflicts.map((currError:{errorData:any[],errorType:string})=>{
+    currError.errorData.map((errorRowData:any)=>{
+      const existingRowIndex = result.findIndex((row:any)=>{
+        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        if(primaryKeys.length<3) return row[primaryKeys[0]]===errorRowData[primaryKeys[0]]
+      })
+      
+      if(existingRowIndex===-1){
+        result.push({
+          ...errorRowData,
+          error:" " + currError.errorType + " ."
+        })
+      }
+      else{
+        result[existingRowIndex].error+=" " + currError.errorType + " ."
+      }
+    })
+  })
+  return result
 }
 
 export const navigateWithPrompt = (onRouteChange:()=>void,url:any,state:any,resetState:any) => {

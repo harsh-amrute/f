@@ -1,6 +1,5 @@
 
 import { useEffect } from 'react'
-import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 
 import { ActionHeaderContent, ActionHeaderWrapper, TaskPendingActionHeaderButton } from "./styles"
 import { useUserData } from "../../../../../context";

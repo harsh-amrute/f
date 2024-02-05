@@ -32,14 +32,14 @@ const SubmitConflictModal=(props:SubmitConflictModalProps)=>{
                 {modificationCount} out of {totalCount} records are under modification already
             </SubmitDataTextContainer>
             <SubmitDataButtonWrapper>
-                <VFButtonOutline themeUi={user.user.theme_ui} color={"gray"} onClick={onFailure} width={173} onHoverChild={
+                <VFButtonOutline themeUi={user.user.theme_ui}  onClick={onFailure} width={173} onHoverChild={
                 <>
                     <img src="/assets/img/VectorFLOW/NMS/close-white.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
-                    Ignore & Submit 
+                    Ignore  
                 </>
                 }>
                     <img src="/assets/img/VectorFLOW/NMS/close.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
-                    Ignore & Submit
+                    Ignore 
                 </VFButtonOutline>
                 <VFButton themeUi={user.user.theme_ui} onClick={onSuccess} width={173}>
                     <img src="/assets/img/VectorFLOW/NMS/feather-eye.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>

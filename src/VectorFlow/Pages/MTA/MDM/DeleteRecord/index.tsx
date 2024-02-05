@@ -23,6 +23,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import { getUploadModalRadioButtons,generateOptions } from "../../../../../helpers/utils";
 import { Filter } from "../../../../../VectorFlow/types/MDM";
 import { operators } from "../../../../../helpers/MDMConstants";
+import SubmitErrorModal from "../AddRecord/SubmitErrorModal";
 
 
 
@@ -63,6 +64,7 @@ const DeleteRecord = () => {
         tempGridData,
         deleteSelected,
         editOnline,
+        isShowAll,
         onSaveToDraft,
         selectedRowsCount,
         currentPage,
@@ -78,7 +80,10 @@ const DeleteRecord = () => {
     const {
         onCancel,
         allMasters,
-        selectedMasters,
+        selectedMasters, 
+        isConflictModalOpen,
+        conflictCount,
+        errorCount,
         onDeleteData,
         onSubmit,
         onDeleteOnline,
@@ -86,7 +91,8 @@ const DeleteRecord = () => {
         onDeleteOnlineReset,
         handleOnClickMaster,
         handleSubmitSelectMaster,
-        handleRadioButton
+        handleRadioButton,
+        onIgnoreSubmitErrors
     } = useDelete();
 
     useEffect(()=>{
@@ -216,6 +222,7 @@ const DeleteRecord = () => {
 
           {isWarningModalOpen && 
           <WarningModal 
+          showAll={isShowAll}
             count={recordCount} 
             onCloseModal={onWarningModalClose} 
             onFailure={onWarningModalClose} 
@@ -240,10 +247,21 @@ const DeleteRecord = () => {
             handleRadioButton={handleRadioButton}
             />
         }
-        
+         {isConflictModalOpen && 
+          <SubmitErrorModal 
+            totalCount={activeMaster.rowData.length}
+            errorCount={errorCount}
+            recordCount={activeMaster.rowData.length - conflictCount - errorCount}
+            onSuccess={onIgnoreSubmitErrors}
+            onCloseModal={onIgnoreSubmitErrors}
+
+          />
+        }
         {
           !isSelectMasterOpen && 
           <VFTaskBar
+            disableResumeSeasonality={()=>false}
+            disableStopSeasonality={()=>false}
             masterProgress={activeMaster.progress}
             onReset={onReset}
             onSaveToDraft={onSaveToDraft}
@@ -260,6 +278,7 @@ const DeleteRecord = () => {
             onPhaseInPhaseOutStop={()=>console.log('')}
             onSeasonalityResume={()=>console.log('')}
             onSeasonalityStop={()=>console.log('')}
+            onSubmitConflictData={()=>console.log('')}
             onDeleteData={onDeleteData}
             onDeleteOnline={onDeleteOnline}
             onDeleteOnlineReset={onDeleteOnlineReset}

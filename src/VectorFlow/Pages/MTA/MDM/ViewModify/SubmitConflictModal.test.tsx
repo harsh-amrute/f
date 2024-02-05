@@ -33,11 +33,11 @@ describe("SubmitConflictModal Component", () => {
         
         it("renders and fire event on buttons",()=>{
         const yesbtn=screen.getByText("Review")
-        const nobtn=screen.getByText("Ignore & Submit")
+        const nobtn=screen.getByText("Ignore")
         expect(yesbtn).toBeInTheDocument()
         fireEvent.click(screen.getByText("Review"))
         expect(nobtn).toBeInTheDocument()
-        fireEvent.click(screen.getByText("Ignore & Submit"))
+        fireEvent.click(screen.getByText("Ignore"))
         })
 
         it("renders close icon",()=>{

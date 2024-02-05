@@ -1,22 +1,36 @@
 import { useSelector,useDispatch } from 'react-redux'
-import { useEffect } from 'react';
+import { useEffect,useState } from 'react';
 import { RootState } from '../../../../../redux/store/store';
 import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
-import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA, SYNC_ACTIVE_MASTER_TO_MASTER, REMOVE_COLDEFS } from '../../../../../redux/actions/MDM';
+import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,SET_RECORD_COUNT,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA, SYNC_ACTIVE_MASTER_TO_MASTER, REMOVE_COLDEFS,ADD_COLDEFS } from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { ColDef } from 'ag-grid-enterprise';
-import { useRemoveMasterData } from '../../../../..//VectorFlow/Services/MTA/MDM';
-import { createSubmitMasterPayload } from '../../../../../helpers/utils';
+import { useDeleteMasterData ,useDeleteTask} from '../../../../..//VectorFlow/Services/MTA/MDM';
+import {createErrorRowData } from '../../../../../helpers/utils';
 
+import _ from 'lodash';
+import { notifyError,notifyLoader,notifySuccess } from '../../../../../helpers/notify';
+import { toast } from 'react-toastify';
 
 const useDelete=()=>{
     const allMasters = useSelector((state:RootState)=>state.mdm.allMasters); 
     const activeMaster = useSelector((state:RootState)=>state.mdm.activeMaster)
     const selectedMasters = useSelector((state:RootState)=>state.mdm.masters)
+    const chunkSize = useSelector((state:RootState)=>state.mdm.chunkSize)
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const {mutateAsync:removeMasterData} = useRemoveMasterData()
+    const {mutateAsync:deleteMasterData} = useDeleteMasterData()
+
+    const {mutateAsync:deleteTask} = useDeleteTask();
+
+
+    const [TASK_ID,setTaskId] = useState<string>();
+    const [conflictCount,setConflictCount] = useState<number>(0);
+    const [errorCount,setErrorCount] = useState<number>(0);
+    const [errorData,setErrorData] = useState<Array<any>>([]);
+    const [isConflictModalOpen,setIsConflictModalOpen] = useState<boolean>(false)
+
     useEffect(()=>{
         if(activeMaster.progress === 'deleteOnline'){
             const updatedColdefs:ColDef[] = [{
@@ -33,6 +47,38 @@ const useDelete=()=>{
             dispatch(REMOVE_COLDEFS(['checkbox']))
         }
       },[activeMaster.progress]);
+
+
+      const invalidDataColdefs:ColDef[] = [
+        {
+          field:'warning',
+          colId:'warning',
+          headerName:'Warning',
+          floatingFilter:false,
+          cellRenderer:'warningCell',
+          minWidth:200,
+          suppressColumnsToolPanel:true,
+          wrapText:true,
+          autoHeight:true,
+        },
+        {
+          field:'error',
+          colId:'error',
+          headerName:'Error',
+          floatingFilter:false, 
+          cellRenderer:'errorCell',
+          suppressColumnsToolPanel:true,
+          wrapText:true,
+          autoHeight:true,
+        }
+    ];
+
+
+    const addInvalidDataColDefs = (columnName:string) => {
+        dispatch(ADD_COLDEFS({colDefs:[columnName === 'error' ? invalidDataColdefs[1] : invalidDataColdefs[0]]}));
+        // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+      }
+
     const handleOnClickMaster=(master:MDMMasterState)=>{
 
         //For seasonality
@@ -114,17 +160,180 @@ const useDelete=()=>{
         navigate('/master-data-management/control-panel');
     }
 
-    const onSubmit = async()=>{
-        dispatch(UPDATE_PROGRESS_STATE('submitted'))
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+    const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean) => { 
+
+        rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users'));
+
+
+
+        let taskId:any   = '';
+        let toastId:any = '';
+        let conflictCount = 0;
+        let errorCount = 0;
+        const conflictData:any = [];
+        const errorData:any = [];
+        try {
+          let submitProgress = 0;
+          const payload:any = {
+            id:activeMaster.id,
+            action:"",
+            TaskId:'',
+            IsOverWrite:isOverWrite===true?true:false,
+            data:[]
+          }
+
+          toastId = notifyLoader(`Submitting Data ${submitProgress}/${activeMaster.rowData.length}`);
         
-        await removeMasterData(createSubmitMasterPayload(activeMaster,'remove'))
-    }
+          for(let i=0; i < rowData.length; i+=chunkSize){
+          
+              if(i+chunkSize < rowData.length){
+                payload.data = activeMaster.rowData.slice(i,i+chunkSize);
+                toast.update(toastId,{render:`Submitting Data ${i+chunkSize}/${rowData.length}`})
+                submitProgress+=chunkSize;
+              }
+              else{
+                payload.data = rowData.slice(i)
+                toast.update(toastId,{render:`Submitting Data ${rowData.length}/${rowData.length}`})
+              }
+              const data:any = await deleteMasterData(payload);
+
+              if(taskId === '' && i!==0) throw new Error("Something Went Wrong");
+
+              if(TASK_ID === ''){
+                payload.TaskId = data.data.taskId;
+                taskId = data.data.taskId;
+              }
+              else{
+                payload.TaskId = TASK_ID;
+                taskId = TASK_ID;
+              }
+
+              setTaskId(data.data.taskId  );
+              
+              if(data.data.conflictErrorCount){
+                conflictCount += parseInt(data.data.conflictErrorCount,10);
+              }
+              errorCount += parseInt(data.data.errorCount,10);
+              const conflictedRows = data.data.conflictError;
+              const errorenousRows = data.data.error;
+              if(conflictedRows instanceof Array) {
+                conflictedRows.forEach((row:any)=>{
+                  const userIndex = conflictData.findIndex((data:any)=>data.user === row.user);
+                  if(userIndex >= 0){
+                    conflictData[userIndex].conflictdetails = [...conflictData[userIndex].conflictdetails,...row.conflictdetails]
+                  }
+                  else{
+                    conflictData.push({
+                      user:row.user,
+                      conflictdetails:row.conflictdetails
+                    })
+                  }
+                })
+              }
+              if(errorenousRows instanceof Array) {
+                errorenousRows.forEach((row:any)=>{
+                  const userIndex = errorData.findIndex((data:any)=>data.errorType === row.errorType);
+                  if(userIndex >= 0){
+                    errorData[userIndex].errorData = [...errorData[userIndex].errorData,...row.errorData]
+                  }
+                  else{
+                    errorData.push({
+                      errorType:row.errorType,
+                      errorData:row.errorData
+                    })
+                  }
+                })
+              }
+            }
+            toast.dismiss(toastId);
+            setConflictCount(conflictCount);
+            setErrorCount(errorCount);
+            setErrorData(errorData)
+            return {isConflicts:conflictCount>0,errorCount,errorData,conflictCount,conflictData} 
+            
+          }
+         catch (error) {
+          notifyError("Something Went Wrong");
+          if(taskId.length > 0){
+            await deleteTask(taskId);
+          }
+          toast.dismiss(toastId)
+          return {isConflicts:true,errorCount,errorData,conflictCount,conflictData} 
+        }
+      }
+
+      const onSubmit = async(isOverWrite?:boolean) => {
+ 
+        if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
+ 
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+     
+        dispatch(REMOVE_COLDEFS(['checkbox']));
+        //let result;
+ 
+        if(activeMaster.progress === 'deleteOnlineSaved'){
+            const {isConflicts,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+            //result = !isConflicts
+            if(!isConflicts){
+              if(localErrorCount>0 || errorCount>0){
+                let errorRowData
+                if(localErrorCount>0){
+                  errorRowData = createErrorRowData(localErrorData,activeMaster.id)
+                }
+                else{
+                  errorRowData = createErrorRowData(errorData,activeMaster.id)
+                }
+                addInvalidDataColDefs('error')
+                dispatch(UPDATE_ROW_DATA(errorRowData))
+                dispatch(SET_RECORD_COUNT(errorRowData.length))
+              }
+              dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+              notifySuccess(`Deletions Submitted Successfully`);
+              dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSubmitted'));
+            }
+            else{
+              setIsConflictModalOpen(true)
+              dispatch(UPDATE_PROGRESS_STATE('conflicts'))
+            }
+   
+          }
+         else{
+            const {isConflicts,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+            if(!isConflicts){
+              if(localErrorCount>0 || errorCount>0){
+                let errorRowData
+                if(localErrorCount>0){
+                  errorRowData = createErrorRowData(localErrorData,activeMaster.id)
+                }
+                else{
+                  errorRowData = createErrorRowData(errorData,activeMaster.id)
+                }
+                addInvalidDataColDefs('error')
+                dispatch(UPDATE_ROW_DATA(errorRowData))
+                dispatch(SET_RECORD_COUNT(errorRowData.length))
+              }
+              dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+              notifySuccess(`Deletions Submitted Successfully`);
+              dispatch(UPDATE_PROGRESS_STATE('submitted'));
+              setIsConflictModalOpen(true)
+            }
+         }
+        
+       
+      }
+
+      const onIgnoreSubmitErrors = ()=>{
+        setIsConflictModalOpen(false)
+      }
+
 
 
     return {
         allMasters,
         selectedMasters,
+        isConflictModalOpen,
+        conflictCount,
+        errorCount,
         onCancel,
         onDeleteOnline,
         onDeleteData,
@@ -133,7 +342,8 @@ const useDelete=()=>{
         onDeleteOnlineReset,
         handleOnClickMaster,
         handleRadioButton,
-        handleSubmitSelectMaster
+        handleSubmitSelectMaster,
+        onIgnoreSubmitErrors
     }
 }
 

@@ -16,7 +16,9 @@ import React, { useEffect } from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import SeasonalityChartModal from "./SeasonalityChartModal";
-
+import SubmitConflictModal from "./SubmitConflictModal";
+import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
+import _ from "lodash";
 
 
 
@@ -52,6 +54,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         downloadFileName,
         setDownloadFileName,
         onUploadMaster,
+        isOverlayVisible,
         file,
         setFile,
         isTableDataLoading,
@@ -82,10 +85,16 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
         toggleSeasonalityChartModal,
         onSeasonalityQuickFilter,
         seasonalityRowData,
+        conflictCount,
+        errorCount,
+        isConflictModalOpen,
+        isShowAll,
+        onIgnoreSubmitErrors,
+        onReviewConflicts
 
     } = useViewModify('modify');
-    
 
+    
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){
@@ -123,7 +132,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
                 </SeasonalityQuickFilterHeader>
                 {seasonalityQuickFilterData.map((s:SeasonalityQuickFilterType)=>{
                   return(
-                    <SeasonalityQuickFilter stateColor={s.color} onClick={()=>onSeasonalityQuickFilter(s.id)} isActive={seasonalityActiveQuickFilter===s.id} data-testid="seasonality-quick-filter">
+                    <SeasonalityQuickFilter stateColor={s.color} onClick={()=>onSeasonalityQuickFilter(s.id)} isActive={seasonalityActiveQuickFilter.find((state)=>JSON.stringify(state)===JSON.stringify(s.id))?true:false} data-testid="seasonality-quick-filter">
                       <SeasonalityQuickFilterText>
                         {s.label}
                       </SeasonalityQuickFilterText>
@@ -203,6 +212,12 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
                   rowData={activeMaster.rowData}
                   {...agGridProps}
                 />
+                {/* <VFTable
+                  ref={veryTempRef}
+                  columnDefs={activeMaster.colDefs}
+                  rowData={activeMaster.rowData}
+                  enableBrowserTooltips={true}
+                /> */}
                 <div style={{display:'none'}}>                
                   <VFTable
                     ref={tempRef}
@@ -233,21 +248,33 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
             onCloseModal={onWarningModalClose} 
             onFailure={onWarningModalClose} 
             onSuccess={onWarningModalSuccess}
+            showAll={isShowAll}
             />
         }
         {isUploadModalOpen && 
           <UploadModal 
-          header={"Modification"}
+            header={"Modification"}
             openModal={isUploadModalOpen} 
             onCloseModal={()=>toggleUploadModal(false)} 
             onDownload={()=>exportToExcel(true)} 
-            onUpload={()=>onUploadMaster()}
+            onUpload={onUploadMaster}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}
             file={file}
             setFile={setFile}
             uploadButtonStatus={false}
             />
+        }
+        {isConflictModalOpen && 
+          <SubmitConflictModal 
+            totalCount={activeMaster.rowData.length}
+            modificationCount={conflictCount}
+            recordCount={activeMaster.rowData.length - conflictCount - errorCount}
+            onSuccess={onReviewConflicts}
+            onFailure={onIgnoreSubmitErrors}
+            onCloseModal={()=>{return}}
+
+          />
         }
         {isSeasonalityChartModalOpen && 
           <SeasonalityChartModal 
@@ -260,9 +287,38 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
           />
         }
         {
+          isOverlayVisible && (
+            <VFOverlay>
+             <img src="/assets/img/VectorFLOW/loaderBig.svg" data-testid="loader"/>
+            </VFOverlay>
+          )
+        }
+        {
           !isSelectMasterOpen && 
           <VFTaskBar
+            disableStopSeasonality={()=>{
+              const flatState=_.flatMap(seasonalityActiveQuickFilter)
+              if (flatState.includes(23) && seasonalityActiveQuickFilter.find((s)=>JSON.stringify(s)===JSON.stringify([2,3,4,5,6]))) {
+                return false
+              } 
+              else if(flatState.includes(23)){
+                return true
+              }
+              return false
+             }}
+
+            disableResumeSeasonality={()=>{
+              const flatState=_.flatMap(seasonalityActiveQuickFilter)
+              if(flatState.includes(23) && seasonalityActiveQuickFilter.find((s)=>JSON.stringify(s)===JSON.stringify([2,3,4,5,6]))){
+                return false
+              }
+              else if ( seasonalityActiveQuickFilter.find((s)=>JSON.stringify(s)===JSON.stringify([2,3,4,5,6]))) {
+                return true
+              } 
+              return false
+            }}
             masterProgress={activeMaster.progress}
+            disableSubmit={activeMaster.rowData.length===0}
             onReset={onReset}
             onSaveToDraft={onSaveToDraft}
             onEditOnlineSave={onEditOnlineSave}
@@ -273,6 +329,7 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
             onModifyData={()=>toggleUploadModal(true)}
             onExportData={exportToExcel}
             onSubmit={onSubmit}
+            onSubmitConflictData={()=>onSubmit(true)}
             onDeleteSelected={deleteSelected}
             onSeasonalityResume={()=>console.log('')}
             onSeasonalityStop={()=>console.log('')}

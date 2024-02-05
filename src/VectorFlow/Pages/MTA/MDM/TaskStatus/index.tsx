@@ -161,7 +161,7 @@ const TaskStatus = ()=>{
                     }
                 ])}
                 pagination
-                paginationPageSize={10}
+                paginationPageSize={10}            
             />
             <div style={{display:'none'}}>                
                   <VFTable

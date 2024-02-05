@@ -7,7 +7,7 @@ interface TaskPendingActionRendererProps extends ICellRendererParams{
     onReject:(id:string)=>void
 }
 
-export const TaskPendingActionRenderer = (props:TaskPendingActionRendererProps)=>{
+const TaskPendingActionRenderer = (props:TaskPendingActionRendererProps)=>{
 
     const onClick = (status:string)=>{
         if(props.data.status===status){

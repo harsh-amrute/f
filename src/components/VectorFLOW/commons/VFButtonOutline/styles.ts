@@ -51,3 +51,5 @@ export const SCButtonOutline = styled.button<{themeUi: string, isDisabled:boolea
   //   color:white;
   
 `
+
+

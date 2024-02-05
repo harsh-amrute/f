@@ -4,11 +4,14 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../../../context";
 
+
 interface WarningModalProps{
     count:number
+    showAll:boolean
     onSuccess:()=>void
     onFailure:()=>void
     onCloseModal:()=>void
+    
     
 }
 
@@ -20,12 +23,12 @@ const WarningModal = (props:WarningModalProps) =>{
         onFailure,
         onSuccess,
         onCloseModal,
-        
+        showAll,
     } = props
 
     const {user} = useUserData()
 
-    if(count===0){
+    if(count===0 && !showAll){
         return(
         <VFModalCard headerText={"Warning"} openModal={true} closeModal={onCloseModal} headerIcon={'/assets/img/VectorFLOW/NMS/warning.svg'} closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'}>
             <p data-testid="warning-test" style={{textAlign:"center", color: "#313131", paddingTop:"36px", fontStyle:"normal", fontVariant:"normal",fontWeight:300,fontSize:"16px",fontFamily:"Roboto",width:'400px'}}>
@@ -38,11 +41,24 @@ const WarningModal = (props:WarningModalProps) =>{
         )
     }
 
+    if(count===0){
+        return(
+            <VFModalCard headerText={"Warning"} openModal={true} closeModal={onCloseModal} headerIcon={'/assets/img/VectorFLOW/NMS/warning.svg'} closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'}>
+                <p data-testid="warning-test" style={{textAlign:"center", color: "#313131", paddingTop:"36px", fontStyle:"normal", fontVariant:"normal",fontWeight:300,fontSize:"16px",fontFamily:"Roboto",width:'400px'}}>
+                    There is no data available 
+                    </p> 
+                <div style={{display:"flex",gap:"28px", alignItems:"center", justifyContent:"center", paddingTop:"38px", paddingBottom:"36px"}}>
+                    <VFButtonOutline  themeUi={user.user.theme_ui} onClick={onFailure}>Close</VFButtonOutline>
+                </div>
+            </VFModalCard>
+            )
+    }
+
     return(
        <VFModalCard headerText={"Warning"} openModal={true} closeModal={onCloseModal} headerIcon={'/assets/img/VectorFLOW/NMS/warning.svg'} closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'}>
             <p data-testid="warning-test" style={{textAlign:"center", color: "#313131", paddingTop:"36px", fontStyle:"normal", fontVariant:"normal",fontWeight:300,fontSize:"16px",fontFamily:"Roboto"}}>This filter returns <b>{count}</b> records that will be open across mutiple pages.<br/>Do you want to continue?</p> 
             <div style={{display:"flex",gap:"28px", alignItems:"center", justifyContent:"center", paddingTop:"38px", paddingBottom:"36px"}}>
-           <VFButtonOutline color={"gray"} themeUi={user.user.theme_ui} onClick={onFailure}>No</VFButtonOutline>
+           <VFButtonOutline themeUi={user.user.theme_ui} onClick={onFailure}>No</VFButtonOutline>
            <VFButton themeUi={user.user.theme_ui} onClick={onSuccess}>Yes</VFButton>
            </div>
        </VFModalCard>

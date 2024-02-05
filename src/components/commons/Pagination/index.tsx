@@ -32,7 +32,7 @@ const Pagination = ({
         previousLabel={t('pagination.previous')}
         previousClassName={page == 1 ? "disabledBtn": ""}
         nextClassName={page == pageCount ? "disabledBtn": ""}
-      // renderOnZeroPageCount={null}
+        renderOnZeroPageCount={null}
       />
     </>
   )
