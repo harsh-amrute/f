@@ -21,6 +21,7 @@ import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 
 import SubmitErrorModal from "./SubmitErrorModal";
+import { MDMMasterState } from "../../../../types/MDM";
 
 const AddRecord = () => {
 
@@ -151,9 +152,15 @@ const AddRecord = () => {
             header={"Addition"}
             openModal={isUploadModalOpen} 
             onCloseModal={()=>dispatch(TOGGLE_SELECT_MASTER_SCREEN(true))}
-            onDownload={()=>ref.current?.api.exportDataAsExcel({
-              fileName:downloadFileName.length>0?downloadFileName :activeMaster.name,
-            })} 
+            // onDownload={()=>ref.current?.api.exportDataAsExcel({
+            //   fileName:downloadFileName.length>0?downloadFileName :activeMaster.name,
+            // })} 
+            onDownload={()=>{
+              const currentMaster = allMasters.find((master:MDMMasterState)=>master.id === activeMaster.id);
+              if(currentMaster){
+                ref.current?.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName});
+              }
+            }}
             onUpload={()=>{
               onUploadMaster()
             }}

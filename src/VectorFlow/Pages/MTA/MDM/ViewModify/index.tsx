@@ -91,7 +91,11 @@ import _ from "lodash";
         isShowAll,
         onIgnoreSubmitErrors,
         onReviewConflicts,
-        isDataAvailableLocally
+        isDataAvailableLocally,
+        onSeasonalityStatusUpdate,
+        validResumeStatuses,
+        validStopStatuses,
+        onPIPOStatusUpdate
 
     } = useViewModify('modify');
 
@@ -232,7 +236,7 @@ import _ from "lodash";
           </React.Fragment>
           }
           {
-            (!['default'].includes(activeMaster.progress) && !isDataAvailableLocally) 
+            (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen))
               && 
               <VFPagination 
                 selectedRows={selectedRowsCount} 
@@ -300,24 +304,25 @@ import _ from "lodash";
           <VFTaskBar
             disableStopSeasonality={()=>{
               const flatState=_.flatMap(seasonalityActiveQuickFilter)
-              if (flatState.includes(23) && seasonalityActiveQuickFilter.find((s)=>JSON.stringify(s)===JSON.stringify([2,3,4,5,6]))) {
-                return false
-              } 
-              else if(flatState.includes(23)){
-                return true
-              }
-              return false
+              let error = false;
+              flatState.map((state:number)=>{
+                if(!validStopStatuses.includes(state)) error = true;
+              })
+              if(error) return true;
+              
+              return false;
+             
              }}
 
             disableResumeSeasonality={()=>{
               const flatState=_.flatMap(seasonalityActiveQuickFilter)
-              if(flatState.includes(23) && seasonalityActiveQuickFilter.find((s)=>JSON.stringify(s)===JSON.stringify([2,3,4,5,6]))){
-                return false
-              }
-              else if ( seasonalityActiveQuickFilter.find((s)=>JSON.stringify(s)===JSON.stringify([2,3,4,5,6]))) {
-                return true
-              } 
-              return false
+              let error = false;
+              flatState.map((state:number)=>{
+                if(!validResumeStatuses.includes(state)) error = true;
+              })
+              if(error) return true;
+              
+              return false;
             }}
             masterProgress={activeMaster.progress}
             disableSubmit={activeMaster.rowData.length===0}
@@ -333,9 +338,9 @@ import _ from "lodash";
             onSubmit={onSubmit}
             onSubmitConflictData={()=>onSubmit(true)}
             onDeleteSelected={deleteSelected}
-            onSeasonalityResume={()=>console.log('')}
-            onSeasonalityStop={()=>console.log('')}
-            onPhaseInPhaseOutStop={()=>console.log('')}
+            onSeasonalityResume={()=>onSeasonalityStatusUpdate('resume')}
+            onSeasonalityStop={()=>onSeasonalityStatusUpdate('stop')}
+            onPhaseInPhaseOutStop={() => onPIPOStatusUpdate()}
             onDeleteData={()=>console.log('')}
             onDeleteOnlineReset={()=>console.log('')}
             onDeleteOnlineSave={()=>console.log('')}

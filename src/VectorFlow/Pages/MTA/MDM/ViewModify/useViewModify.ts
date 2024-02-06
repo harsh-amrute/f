@@ -3,7 +3,7 @@ import { type Option, type Field,type GetMasterDataPayload, type GridRef, type Q
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useDeleteDraft, useDeleteTask } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT} from '../../../../../redux/actions/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
@@ -32,6 +32,7 @@ const useViewModify = (pageType:string) => {
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
     const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize)
     const recordCount = useSelector((state:RootState) => state.mdm.recordCount)
+    const isDataAvailableLocally = useSelector((state:RootState) => state.mdm.isDataAvailableLocally)
 
     const [allMastersState,setAllMasterState] = useState<MDMMasterState[]>([])
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
@@ -74,7 +75,7 @@ const useViewModify = (pageType:string) => {
 
     const [TASK_ID,setTaskId] = useState<string>();
 
-    const [isDataAvailableLocally,setIsDataAvailableLocally] = useState(false);
+    // const [isDataAvailableLocally,setIsDataAvailableLocally] = useState(false);
    
     // const allMasters:Master[] = masterUIConfiguration?.data.data || [];
 
@@ -95,6 +96,10 @@ const useViewModify = (pageType:string) => {
     const {mutateAsync:modifyMaster} = useModifyMasterData();
 
     const {mutateAsync:deleteTask} = useDeleteTask();
+
+    const validStopStatuses = [1,2,3,4,5,6,21];
+
+    const validResumeStatuses = [23];
 
 
     // const chunkSize = 100;
@@ -246,7 +251,7 @@ const useViewModify = (pageType:string) => {
       // suppressPaginationPanel:true,
       onColumnVisible:onColumnChange,
       overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
-      onRowDataUpdated:(event)=>{
+      onRowDataUpdated:(event:any)=>{
         const downloadableColumnKeys:string[] = [];
         activeMaster.fields.forEach((field:Field)=>{
           if(field.isDownload){
@@ -254,7 +259,12 @@ const useViewModify = (pageType:string) => {
           }
         });
         
-        if(downloadData) event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? activeMaster.name : downloadFileName,columnKeys:isUploadModalOpen ? downloadableColumnKeys : undefined});
+        if(downloadData){
+          const currentMaster = masters.find((master:MDMMasterState)=>master.id === activeMaster.id);
+          if(currentMaster){
+            event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName,columnKeys:isUploadModalOpen ? downloadableColumnKeys : undefined});
+          }
+        } 
       },
       rowSelection:'multiple',
       suppressRowClickSelection:true,
@@ -526,7 +536,7 @@ const useViewModify = (pageType:string) => {
             error:"Something Went Wrong",
             pending:"Loading Data"
           });
-          setIsDataAvailableLocally(true);
+          dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
         }
         else{
           result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
@@ -543,7 +553,7 @@ const useViewModify = (pageType:string) => {
             error:"Something Went Wrong",
             pending:"Loading Data"
           }); 
-          setIsDataAvailableLocally(true);
+          dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
         }
         else{
           result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
@@ -609,7 +619,7 @@ const useViewModify = (pageType:string) => {
           // const toasId = notifyLoader("Reading File");
           setIsOverlayVisible(true)
   
-          const result = await parseExcelData(file,activeMaster,pageType==='remove',selectedColumns);
+          const result = await parseExcelData(file,activeMaster,pageType,selectedColumns);
 
           const ifErrorExists = result.find((data:any)=>data.error);
           const ifWarningExists = result.find((data:any)=>data.warning);
@@ -626,9 +636,9 @@ const useViewModify = (pageType:string) => {
            else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
             addCheckBoxColDefs();
           }
-  
+         
           dispatch(SET_RECORD_COUNT(result.length));
-          setIsDataAvailableLocally(true);
+          dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           dispatch(TOGGLE_UPLOAD_MODAL(false));
@@ -748,17 +758,21 @@ const useViewModify = (pageType:string) => {
 
       }
 
-      const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean) => { 
+      const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean,actionStatus="") => { 
 
         //CleanUp Row Data
         rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users'));
 
-        //Convert To String
-        // rowData = rowData.map((row:any)=>{
-        //   Object.keys(row)
-        // })
-
-        let taskId:any   = '';
+        // Convert To String
+        rowData = rowData.map((row:any)=>{
+          const tempRow:any = {};
+          Object.keys(row).forEach((key:string)=>{
+            tempRow[key] = row[key].toString();
+          })
+          return tempRow;
+        });
+      
+        let taskId:any = '';
         let toastId:any = '';
         let conflictCount = 0;
         let errorCount = 0;
@@ -768,7 +782,7 @@ const useViewModify = (pageType:string) => {
           let submitProgress = 0;
           const payload:any = {
             id:activeMaster.id,
-            action:"",
+            action:actionStatus,
             TaskId:'',
             IsOverWrite:isOverWrite===true?true:false,
             data:[]
@@ -787,6 +801,7 @@ const useViewModify = (pageType:string) => {
                 payload.data = rowData.slice(i)
                 toast.update(toastId,{render:`Submitting Data ${rowData.length}/${rowData.length}`})
               }
+      
               const data:any = await modifyMaster(payload);
 
               if(taskId === '' && i!==0) throw new Error("Something Went Wrong");
@@ -927,6 +942,48 @@ const useViewModify = (pageType:string) => {
        
       }
 
+      const onSeasonalityStatusUpdate = async (status:string) => {
+        const selectedRows = ref.current?.api.getSelectedRows();
+        let error = false;
+
+        if(selectedRows){
+          if(status === 'stop'){
+            for(let i=0; i<selectedRows.length; i++){
+              if(selectedRows && !validStopStatuses.includes(selectedRows[i].sts)){
+                notifyError('Selected Data Consists some rows that are not eligible for Stopping.')
+                error = true;
+                break;
+              }
+            }
+          }
+          if(status === 'resume'){
+            for(let i=0; i<selectedRows.length; i++){
+              if(selectedRows && !validResumeStatuses.includes(selectedRows[i].sts)){
+                notifyError('Selected Data Consists some rows that are not eligible for Resuming.');
+                error = true;
+                break;
+              }
+            }
+          }
+          if(!error) {
+            await postMasterDataChunks(selectedRows,false,status);
+            notifySuccess("Status Updated Successfully");
+          }
+          
+        }
+       
+       
+
+        
+      } 
+
+      const onPIPOStatusUpdate = async () => {
+        const selectedRows = ref.current?.api.getSelectedRows();
+        await postMasterDataChunks(selectedRows,false,'stop');
+        notifySuccess("Status Updated Successfully");
+
+      } 
+
       const onBackButton = () => {
        if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
        {
@@ -949,6 +1006,16 @@ const useViewModify = (pageType:string) => {
         let draftId = '';
         let chunkProgress = 0;
         let toastId;
+
+        // Convert To String
+        rowData = rowData.map((row:any)=>{
+          const tempRow:any = {};
+          Object.keys(row).forEach((key:string)=>{
+            tempRow[key] = row[key].toString();
+          })
+          return tempRow;
+        });
+
         try {
           toastId = notifyLoader(`Creating Draft ${chunkProgress}/${activeMaster.rowData.length}`);
           for(let i=0; i < rowData.length; i+=chunkSize){
@@ -1035,7 +1102,7 @@ const useViewModify = (pageType:string) => {
       
         const newData = rowData.map((row:any)=>{
           const rowClone = {...row};
-          const {error,warning} = checkError(rowClone,activeMaster,pageType==='remove');
+          const {error,warning} = checkError(rowClone,activeMaster,pageType);
           
           if(error){
             rowClone.error = error
@@ -1137,7 +1204,6 @@ const useViewModify = (pageType:string) => {
           
           dispatch(UPDATE_ROW_DATA(updatedRowData))
           dispatch(SET_RECORD_COUNT(updatedRowData.length))
-          console.log(updatedRowData)
         
         }
         else{
@@ -1257,7 +1323,11 @@ const useViewModify = (pageType:string) => {
         setIsConflictModalOpen,
         onReviewConflicts,
         onIgnoreSubmitErrors,
-        isDataAvailableLocally
+        isDataAvailableLocally,
+        onSeasonalityStatusUpdate,
+        validResumeStatuses,
+        validStopStatuses,
+        onPIPOStatusUpdate
     }
 }
 

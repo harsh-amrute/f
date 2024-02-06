@@ -48,7 +48,8 @@ describe('View Modify Component', () => {
     draftId:'',
     isUploadModalOpen:false,
     chunkSize:100,
-    recordCount:0
+    recordCount:0,
+    isDataAvailableLocally:true
   }
 
   const themeUi = 'NOIRFUSION';
@@ -140,7 +141,8 @@ describe('View Modify Component', () => {
       draftId:'',
       isUploadModalOpen:false,
       chunkSize:100,
-      recordCount:0
+      recordCount:0,
+      isDataAvailableLocally:true
     }
 
     const localMockStore = createStore(localMockState);
