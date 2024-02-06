@@ -27,7 +27,8 @@ const actions =  {
     UPDATE_PROGRESS_STATE:createAction<ViewModifyProgressState>("UPDATE_PROGRESS_STATE"),
     RESET_STATE:createAction("RESET_STATE"),
     SET_DRAFT_ID:createAction<string>("SET_DRAFT_ID"),
-    SET_RECORD_COUNT:createAction<number>("SET_RECORD_COUNT")
+    SET_RECORD_COUNT:createAction<number>("SET_RECORD_COUNT"),
+    UPDATE_DATA_AVAILABILITY_STATUS:createAction<boolean>("UPDATE_DATA_AVAILABILITY_STATUS")
 }
 
 export const {
@@ -55,5 +56,6 @@ export const {
     TOGGLE_UPLOAD_MODAL,
     RESET_STATE,
     SET_DRAFT_ID,
-    SET_RECORD_COUNT
+    SET_RECORD_COUNT,
+    UPDATE_DATA_AVAILABILITY_STATUS
 } = actions;

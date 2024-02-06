@@ -43,7 +43,8 @@ describe('SelectMaster Component', () => {
     draftId:'',
     isUploadModalOpen:false,
     chunkSize:100,
-    recordCount:0
+    recordCount:0,
+    isDataAvailableLocally:true
   }
 
   const mockStore = createStore(mockState);
@@ -118,7 +119,8 @@ describe('SelectMaster Component', () => {
       draftId:'',
       isUploadModalOpen:false,
       chunkSize:100,
-      recordCount:0
+      recordCount:0,
+      isDataAvailableLocally:true
     }
 
     const localMockStore = createStore(mockState);
@@ -152,7 +154,8 @@ describe('SelectMaster Component', () => {
       draftId:'',
       isUploadModalOpen:false,
       chunkSize:100,
-      recordCount:0
+      recordCount:0,
+      isDataAvailableLocally:true
     }
 
     const localMockStore = createStore(mockState);
@@ -186,7 +189,8 @@ describe('SelectMaster Component', () => {
       draftId:'',
       isUploadModalOpen:false,
       chunkSize:100,
-      recordCount:0
+      recordCount:0,
+      isDataAvailableLocally:true
     }
 
     const localMockStore = createStore(mockState);

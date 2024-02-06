@@ -16,7 +16,8 @@ export interface MDMStore{
     draftId:string
     isUploadModalOpen:boolean,
     chunkSize:number,
-    recordCount:number
+    recordCount:number,
+    isDataAvailableLocally:boolean
 }
 
 export interface MDMMasterState{

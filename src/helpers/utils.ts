@@ -401,15 +401,15 @@ export const replaceKeyWithDisplayName = (message:string,master:MDMMasterState) 
   })
 }
 
-export const checkError = (row:any,master:MDMMasterState,isDelete:boolean) => { 
-  const masterSchema = isDelete?masterIdToDeleteSchemaMapper[master.id.toString()]:masterIdToSchemaMapper[master.id.toString()];
+export const checkError = (row:any,master:MDMMasterState,pageType:string) => { 
+  const masterSchema = pageType === 'remove' ?masterIdToDeleteSchemaMapper[master.id.toString()]:masterIdToSchemaMapper[master.id.toString()];
   let {error,warning}:any = masterSchema.validate(row,{context:row});
   if(error) error = replaceKeyWithDisplayName(error.message,master);
   if(warning) warning = replaceKeyWithDisplayName(warning,master);
   return {error,warning};
 }
 
-export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boolean,selectedColumns:any) => {
+export const parseExcelData = async (file:any,master:MDMMasterState,pageType:string,selectedColumns:any) => {
 
   const currMasterKeys = master.fields.map((field:Field)=>field.key); //array containing keys of current master fields
   const result:object[] = [];
@@ -431,22 +431,24 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
   let headers:any = [] //Not Selected Headers
   let error = false;
 
-   //Check if File Contains a Column that is not Downloadable
-   error = false;
-   headers = [];
-   headerKeys.forEach((key:string)=>{
-     const fieldObj = master.fields.find((field:Field)=>(field.key === key) && !field.isDownload)
-     if(fieldObj){
-       headers.push(fieldObj.displayName);
-       error = true;
-     }
-   })
- 
-   if(error){
-     throw new Error( `File Contains ${headers.join(', ')} field which are not allowed to Upload.`)
+   
+   if(pageType === 'modify'){
+
+    //Check if File Contains a Column that is not Downloadabl;
+    headerKeys.forEach((key:string)=>{
+      const fieldObj = master.fields.find((field:Field)=>(field.key === key) && !field.isDownload)
+      if(fieldObj){
+        headers.push(fieldObj.displayName);
+        error = true;
+      }
+    })
+  
+    if(error){
+      throw new Error( `File Contains ${headers.join(', ')} field which are not allowed to Upload.`)
+    }
+
    }
-
-
+   
   //Check if All Selected Keys are Present in The Uploaded
   selectedKeys.forEach((key:string)=>{
     const fieldObj = master.fields.find((field:Field)=>field.key === key)
@@ -477,10 +479,6 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
   if(error){
     throw new Error( `File Contains ${headers.join(', ')} which were not selected`)
   }
-
- 
-
- 
   
   let rowObj:any = {};
   let temp = 0;
@@ -502,7 +500,7 @@ export const parseExcelData = async (file:any,master:MDMMasterState,isDelete:boo
       }
     })
 
-    const {error,warning} = checkError(rowObj,master,isDelete);
+    const {error,warning} = checkError(rowObj,master,pageType);
     
     if(error !== undefined){
       rowObj.error = error;

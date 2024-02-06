@@ -221,7 +221,8 @@ describe("AddRecord Component", () => {
       draftId:'',
       isUploadModalOpen:false,
       chunkSize:100,
-      recordCount:0
+      recordCount:0,
+      isDataAvailableLocally:true
     }
 
     useGetMasterUIConfigurationMock.mockImplementation(()=>{
@@ -393,7 +394,8 @@ describe("Handles all custom redux interactions",()=>{
       draftId:'',
       isUploadModalOpen:false,
       chunkSize:100,
-      recordCount:0
+      recordCount:0,
+      isDataAvailableLocally:true
     }
 
     const mockedStore = createStore(mockState)
@@ -414,7 +416,8 @@ describe("Handles all custom redux interactions",()=>{
       draftId:'',
       isUploadModalOpen:false,
       chunkSize:100,
-      recordCount:0
+      recordCount:0,
+      isDataAvailableLocally:true
     }
 
     const mockedStore = createStore(mockState)
@@ -435,7 +438,8 @@ describe("Handles all custom redux interactions",()=>{
       draftId:'',
       isUploadModalOpen:false,
       chunkSize:100,
-      recordCount:0
+      recordCount:0,
+      isDataAvailableLocally:true
     }
 
     const mockedStore = createStore(mockState)
