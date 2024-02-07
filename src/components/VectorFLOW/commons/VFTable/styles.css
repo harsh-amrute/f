@@ -52,3 +52,7 @@
 .ag-header-group-cell-with-group{
     justify-content: center;
 }
+
+.ag-status-name-value span{
+    color:black;
+}

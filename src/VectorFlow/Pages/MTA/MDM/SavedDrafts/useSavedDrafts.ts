@@ -4,7 +4,7 @@ import { useNavigate } from "react-router"
 import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount } from "../../../../../VectorFlow/Services/MTA/MDM"
 import { notifyError, notifyPromise, notifySuccess, notifyLoader } from "../../../../../helpers/notify"
 
-import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER } from "../../../../../redux/actions/MDM"
+import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS } from "../../../../../redux/actions/MDM"
 import { createMastersStateFromDraftData, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
 import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import type { RootState } from '../../../../../redux/store/store';
@@ -96,7 +96,10 @@ const useSavedDrafts = ()=>{
         dispatch(STORE_ALL_MASTERS(mapMasterToMasterState(fields)))
         dispatch(FILL_MASTERS(masterState))
         dispatch(SET_DRAFT_ID(draftDetails.DraftId))
-        if(activeMaster)dispatch(UPDATE_ACTIVE_MASTER(masterState.indexOf(activeMaster)))
+        if(activeMaster){
+            dispatch(UPDATE_ACTIVE_MASTER(masterState.indexOf(activeMaster)))
+            dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
+        }
         
         
         navigate(`/master-data-management/control-panel/${getActionName(draftDetails.ActionType).label}`);

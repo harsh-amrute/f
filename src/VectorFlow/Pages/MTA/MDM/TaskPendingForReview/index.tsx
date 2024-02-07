@@ -1,4 +1,3 @@
-import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import { mapRowDataWithSrNo } from "../../../../../helpers/utils"
@@ -20,10 +19,7 @@ const TaskPendingForReview = ()=>{
         viewTableRowData,
         showLoader,
         selectedRows,
-        recordCount,
-        currentPage,
         rowsPerPage,
-        handleChangePage,
         onCancel,
         setSelectedRows,
         onTaskSubmit,
@@ -74,6 +70,15 @@ const TaskPendingForReview = ()=>{
                 rowData={detailTableRowData}
                 rowSelection='multiple' 
                 suppressRowClickSelection
+                statusBar={{
+                    statusPanels:[
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
+                    ]
+                  }}
                 onSelectionChanged={()=>{
                     if(ref && ref.current){
                         setSelectedRows(ref.current.api.getSelectedRows().length)
@@ -84,7 +89,7 @@ const TaskPendingForReview = ()=>{
                 paginationPageSize={rowsPerPage}
                 // suppressPaginationPanel={true}
             />
-            <VFPagination
+            {/* <VFPagination
                 selectedRows={selectedRows}
                 totalRows={recordCount}
                 currentPage={currentPage}
@@ -93,7 +98,7 @@ const TaskPendingForReview = ()=>{
                 showPagination={false}
                 showTotalItems={false}
 
-            />
+            /> */}
             {
                 showApproveAllModal && 
                     <ApproveAllModal onSuccess={()=>onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType}/>
