@@ -261,10 +261,20 @@ const useViewModify = (pageType:string) => {
         
         if(downloadData){
           const currentMaster = masters.find((master:MDMMasterState)=>master.id === activeMaster.id);
-          if(currentMaster){
-            event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName,columnKeys:isUploadModalOpen ? downloadableColumnKeys : undefined});
+          const visibleColumns = ref.current?.columnApi.getAllDisplayedColumns();
+          const validColumnKeys:string[] = [];
+          if(visibleColumns){
+            visibleColumns.forEach((col:any)=>{
+              if(isUploadModalOpen && !downloadableColumnKeys.includes(col.colId)){
+                return;
+              }
+              validColumnKeys.push(col.colId)
+            })
           }
-        } 
+          if(currentMaster){
+            event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName,columnKeys: validColumnKeys});
+          }
+        }
       },
       rowSelection:'multiple',
       suppressRowClickSelection:true,
@@ -273,6 +283,14 @@ const useViewModify = (pageType:string) => {
       onSelectionChanged:()=>{
         if(ref.current?.api){
           setSelectedRowsCount(ref.current?.api.getSelectedRows().length)
+        }
+      },
+      onGridReady:(params:any)=>{
+        if(activeMaster.id==10){         
+          params.api.forEachNode((node:any) => {
+            const isSelected = node.data.IsSelected === "True";
+            node.setSelected(isSelected);
+          });       
         }
       },
       onCellEditingStopped(event) {
@@ -1011,7 +1029,13 @@ const useViewModify = (pageType:string) => {
         rowData = rowData.map((row:any)=>{
           const tempRow:any = {};
           Object.keys(row).forEach((key:string)=>{
-            tempRow[key] = row[key].toString();
+            console.log(row[key])
+            if(row[key]===undefined || row[key]===null){
+              tempRow[key] = "";
+            }
+            else{
+              tempRow[key] = row[key].toString();
+            }
           })
           return tempRow;
         });
@@ -1060,10 +1084,13 @@ const useViewModify = (pageType:string) => {
 
         if(activeMaster.id==10 || activeMaster.id==6){
           newData = newData.map((row:any)=>{
+            const tempRow = {...row}
             if(selectedData?.find((selectedRow:any)=>JSON.stringify(selectedRow)===JSON.stringify(row))){
-              return {...row,isSelected:true}
+              tempRow.IsSelected = true
+              return tempRow
             }
-            return {...row,isSelected:false}
+            tempRow.IsSelected = false
+              return tempRow
           })
         }
         
