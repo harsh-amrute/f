@@ -263,7 +263,7 @@ import _ from "lodash";
             count={recordCount} 
             onCloseModal={onWarningModalClose} 
             onFailure={onWarningModalClose} 
-            onSuccess={onWarningModalSuccess}
+            onSuccess={()=>onWarningModalSuccess()}
             showAll={isShowAll}
             />
         }
@@ -305,7 +305,7 @@ import _ from "lodash";
         {
           isOverlayVisible && (
             <VFOverlay>
-             <img src="/assets/img/VectorFLOW/loaderBig.svg" data-testid="loader"/>
+             <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Loading....</h1>
             </VFOverlay>
           )
         }
@@ -353,7 +353,6 @@ import _ from "lodash";
             onPhaseInPhaseOutStop={() => onPIPOStatusUpdate()}
             onDeleteData={()=>console.log('')}
             onDeleteOnlineReset={()=>console.log('')}
-            onDeleteOnlineSave={()=>console.log('')}
             onDeleteOnlineSubmit={()=>console.log('')}
             onDeleteOnline={()=>console.log('')}
           />

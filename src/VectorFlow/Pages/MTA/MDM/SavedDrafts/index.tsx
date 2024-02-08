@@ -42,7 +42,9 @@ const SavedDrafts = ()=>{
               visible: true,
               isAdd:true,
               isDownload:true,
-              isEdit:true
+              isEdit:true,
+              "col_Position":'1',
+              "isApplicable":true
             },
             {
               displayName: "Last Modification Date",
@@ -50,7 +52,9 @@ const SavedDrafts = ()=>{
               visible: true,
               isAdd:true,
               isDownload:true,
-              isEdit:true
+              isEdit:true,
+              "col_Position":'2',
+              "isApplicable":true
             },
             {
               displayName: "Instance Name",
@@ -58,7 +62,9 @@ const SavedDrafts = ()=>{
               visible: true,
               isAdd:true,
               isDownload:true,
-              isEdit:true
+              isEdit:true,
+              "col_Position":'3',
+              "isApplicable":true
             },
             {
               displayName: "Search Key",
@@ -66,7 +72,9 @@ const SavedDrafts = ()=>{
               visible: true,
               isAdd:true,
               isDownload:true,
-              isEdit:true
+              isEdit:true,
+              "col_Position":'4',
+              "isApplicable":true
             },
             {
                 displayName:"Action",
@@ -74,7 +82,9 @@ const SavedDrafts = ()=>{
                 visible:true,
                 isAdd:true,
                 isDownload:true,
-                isEdit:true
+                isEdit:true,
+                "col_Position":'5',
+                "isApplicable":true
             }
           ],{
             cellRendererParams:{

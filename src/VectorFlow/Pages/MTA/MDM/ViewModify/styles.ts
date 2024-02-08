@@ -87,29 +87,27 @@ export const SCFilterButtonGroup = styled.div`
 export const TaskBarContainer = styled.div`
     background: #FFFFFF 0% 0% no-repeat padding-box;
     display:flex;
+    flex-direction:row;
+    justify-content:space-between;
     position:fixed;
+    right:0;
+    width:97%;
     bottom:0;
-    width:100%;
-    max-width:inherit;
     height:95px;
     padding-top:23px;
     padding-bottom:22px;
-    padding-right:38px;
     padding-left:38px;
+    padding-right:30px;
     gap:30px;
-    &:before{
-        content:'';
-        position:fixed;
-        right:0;
-        bottom:0;
-        width:200px;
-        z-index:-100;
-        background-color:white;
-        height:95px;
-    }
+    transition:0.3s ease 0s;
 
 `
 
+export const VFTaskBarButtonGroup = styled.div`
+    display:flex;
+    flex-direction:row;
+    gap:20px;
+`
 
 export const UploadModalWrapper=styled.div`
 display:flex;

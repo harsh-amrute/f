@@ -12,7 +12,7 @@ const dummyprops = {
 
 describe("RejectAllModal Component", () => {
   it("renders the button and closeIcon in the document ", () => {
-    render( <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
+    render( <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color},isSideBarOpen:true,toggleSideBar:jest.fn}}>
               <RejectAllModal {...dummyprops} />
             </UserDataContext.Provider>)
 

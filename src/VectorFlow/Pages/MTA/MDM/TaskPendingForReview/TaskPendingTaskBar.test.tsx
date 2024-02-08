@@ -14,9 +14,10 @@ describe("RejectAllModal Component", () => {
           changeColorTheme: (color) => {
             return color;
           },
+          isSideBarOpen:true,toggleSideBar:jest.fn
         }}
       >
-        <TaskPendingTaskBar onSubmit={onSubmit} onCancel={onCancel} disableSubmit={false}/>
+        <TaskPendingTaskBar onSubmit={onSubmit} onCancel={onCancel} disableSubmit={false} isSideBarOpen={true}/>
         </UserDataContext.Provider>
     );
     fireEvent.click(screen.getByText("Submit"));

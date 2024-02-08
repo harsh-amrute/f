@@ -13,7 +13,9 @@ const sampleData = {
       ,visible:true,
       isAdd:true,
       isDownload:true,
-      isEdit:true
+      isEdit:true,
+      "col_Position":'1',
+      "isApplicable":true
     },
     {
       displayName:'City'
@@ -21,7 +23,9 @@ const sampleData = {
       ,visible:true,
       isAdd:true,
       isDownload:true,
-      isEdit:true
+      isEdit:true,
+      "col_Position":'1',
+      "isApplicable":true
     },
     {
       displayName:'MRP'
@@ -29,7 +33,9 @@ const sampleData = {
       ,visible:true,
       isAdd:true,
       isDownload:true,
-      isEdit:true
+      isEdit:true,
+      "col_Position":'1',
+      "isApplicable":true
     }
   ]
 };

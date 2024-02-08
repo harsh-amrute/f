@@ -133,6 +133,7 @@ const contextWrapper = (children: ReactNode,store:any) => {
               changeColorTheme: (color) => {
                 return color;
               },
+              isSideBarOpen:true,toggleSideBar:jest.fn
             }}
           >
             {children}
@@ -386,26 +387,5 @@ describe("Handles all custom redux interactions",()=>{
     fireEvent.click(clickableElement)
    })
 
-   it('handles Delete Online Save',()=>{
-    const mockState:MDMStore = {
-      allMasters:MasterDataWithSubmittedMaster,
-      masters:MasterDataWithSubmittedMaster,
-      options:[],
-      selectedOptions:[],
-      activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'deleteOnline',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:mockMasterData.data},
-      isSelectMasterOpen:false,
-      draftId:'',
-      isUploadModalOpen:false,
-      chunkSize:100,
-      recordCount:0,
-      isDataAvailableLocally:true
-    }
-
-    const mockedStore = createStore(mockState)
-
-    render(contextWrapper(<DeleteRecord/>,mockedStore))
-    
-    fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
-   })
 })
 

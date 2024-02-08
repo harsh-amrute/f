@@ -50,6 +50,7 @@ const AuthenticatedTemplate = (
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<any>({})
+  const [isSideBarOpen,toggleSidebar] = useState<boolean>(true)
 
   const { children, loadingComponent: Loading } = props
   useEffect(() => {
@@ -79,7 +80,7 @@ const AuthenticatedTemplate = (
 
   if (userData) {
     return (
-      <UserDataContext.Provider value={{ user: userData, changeColorTheme }}>
+      <UserDataContext.Provider value={{ user: userData, changeColorTheme,isSideBarOpen:isSideBarOpen,toggleSideBar:toggleSidebar }}>
         {children}
       </UserDataContext.Provider>
     )

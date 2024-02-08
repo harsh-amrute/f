@@ -34,7 +34,6 @@ const useAdd=()=>{
     const [conflictCount,setConflictCount] = useState<number>(0);
     const [errorCount,setErrorCount] = useState<number>(0);
     const [errorData,setErrorData] = useState<Array<any>>([]);
-    const [isConflictModalOpen,setIsConflictModalOpen] = useState<boolean>(false)
 
     const invalidDataColdefs:ColDef[] = [
         {
@@ -243,7 +242,7 @@ const useAdd=()=>{
             setConflictCount(conflictCount);
             setErrorCount(errorCount);
             setErrorData(errorData)
-            return {isConflicts:conflictCount>0,errorCount,errorData,conflictCount,conflictData} 
+            return {isDisaster:false,errorCount,errorData,conflictCount,conflictData} 
             
           }
          catch (error) {
@@ -252,7 +251,7 @@ const useAdd=()=>{
             await deleteTask(taskId);
           }
           toast.dismiss(toastId)
-          return {isConflicts:true,errorCount,errorData,conflictCount,conflictData} 
+          return {isDisaster:true,errorCount,errorData,conflictCount,conflictData} 
         }
       }
 
@@ -262,12 +261,11 @@ const useAdd=()=>{
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
      
-        dispatch(REMOVE_COLDEFS(['checkbox']));
         //let result;
  
         
-          const {isConflicts,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-          if(!isConflicts){
+          const {isDisaster,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          if(isDisaster)return
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
               if(localErrorCount>0){
@@ -281,21 +279,14 @@ const useAdd=()=>{
               dispatch(SET_RECORD_COUNT(errorRowData.length))
              
             }
+            dispatch(REMOVE_COLDEFS(['checkbox']));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
             notifySuccess(`Additions Submitted Successfully`);
             dispatch(UPDATE_PROGRESS_STATE('submitted'));
-            setIsConflictModalOpen(true)
-          }
+
+          
       }
 
-      const onIgnoreSubmitErrors = ()=>{
-        // const errorRowData = createErrorRowData(errorData)
-        // addInvalidDataColDefs('error')
-        // dispatch(UPDATE_ROW_DATA(errorRowData))
-        // dispatch(UPDATE_PROGRESS_STATE('submitted'))
-        // dispatch(SET_RECORD_COUNT(errorRowData.length))
-        setIsConflictModalOpen(false)
-      }
 
     return {
         allMasters,
@@ -303,11 +294,9 @@ const useAdd=()=>{
         selectedMasters,
         activeMaster,
         isSelectMasterOpen,
-        isConflictModalOpen,
         conflictCount,
         errorCount,
         onSubmit,
-        onIgnoreSubmitErrors,
         handleOnClickMaster,
         handleSubmitSelectMaster,
         handleRadioButton,

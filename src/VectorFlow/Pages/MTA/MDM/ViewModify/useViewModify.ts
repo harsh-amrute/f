@@ -164,6 +164,7 @@ const useViewModify = (pageType:string) => {
       conflictErrorToolTip:ConflictErrorToolTip
     }), []);
 
+
   
   
     useEffect(()=>{
@@ -528,6 +529,9 @@ const useViewModify = (pageType:string) => {
       else{
         dispatch(SET_RECORD_COUNT(result.data.recordCount))
       }
+      if(result.data.recordCount<=rowsPerPage){
+        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
+      }
       toggleWarningModal(true);    
     }
 
@@ -536,7 +540,8 @@ const useViewModify = (pageType:string) => {
       setIsTableDataLoading(false);
     }
 
-    const onWarningModalSuccess = async ()=>{
+    const onWarningModalSuccess = async (refetch?:boolean)=>{
+      refetch = refetch?refetch:false
 
       const currMasterFilters = activeMaster.filters;
 
@@ -598,6 +603,7 @@ const useViewModify = (pageType:string) => {
         }
 
         dispatch(UPDATE_ROW_DATA(result.data.data));
+        if(refetch)return
         toggleWarningModal(false);
         if(pageType==='remove'){
            dispatch(UPDATE_PROGRESS_STATE('deleteView'));
@@ -780,12 +786,16 @@ const useViewModify = (pageType:string) => {
 
         //CleanUp Row Data
         rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users'));
-
         // Convert To String
         rowData = rowData.map((row:any)=>{
           const tempRow:any = {};
           Object.keys(row).forEach((key:string)=>{
-            tempRow[key] = row[key].toString();
+            if(row[key]===undefined || row[key]===null){
+              tempRow[key] = "";
+            }
+            else{
+              tempRow[key] = row[key].toString();
+            }
           })
           return tempRow;
         });
@@ -894,7 +904,11 @@ const useViewModify = (pageType:string) => {
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit");
 
         //check if errorneous Data
-        const errorData = activeMaster.rowData.find((row:any)=>row.error!=='' || row.warning!=='');
+        const errorData = activeMaster.rowData.find((row:any)=>{
+          if(row.error!=='' || row.warning!=='')console.log(row)
+          return (row.error || row.warning) &&( row.error!=='' || row.warning!=='')
+        });
+        console.log(errorData)
         if(errorData){
           notifyError('Please Clear Errors Before Submitting');
           return;
@@ -985,6 +999,7 @@ const useViewModify = (pageType:string) => {
           }
           if(!error) {
             await postMasterDataChunks(selectedRows,false,status);
+            onWarningModalSuccess(true)
             notifySuccess("Status Updated Successfully");
           }
           
@@ -998,6 +1013,7 @@ const useViewModify = (pageType:string) => {
       const onPIPOStatusUpdate = async () => {
         const selectedRows = ref.current?.api.getSelectedRows();
         await postMasterDataChunks(selectedRows,false,'stop');
+        onWarningModalSuccess(true)
         notifySuccess("Status Updated Successfully");
 
       } 
@@ -1029,7 +1045,6 @@ const useViewModify = (pageType:string) => {
         rowData = rowData.map((row:any)=>{
           const tempRow:any = {};
           Object.keys(row).forEach((key:string)=>{
-            console.log(row[key])
             if(row[key]===undefined || row[key]===null){
               tempRow[key] = "";
             }
@@ -1238,13 +1253,13 @@ const useViewModify = (pageType:string) => {
         }
       }
 
-      const onDeleteOnlineSave = ()=>{
-        const selectedRows = ref.current?.api.getSelectedRows()
-        if(!selectedRows || selectedRows.length<1)return notifyError('Please select rows to submit')
-        dispatch(REMOVE_COLDEFS(['checkbox']))
-        dispatch(UPDATE_ROW_DATA(selectedRows))
-        dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSaved'))
-    }
+    //   const onDeleteOnlineSave = ()=>{
+    //     const selectedRows = ref.current?.api.getSelectedRows()
+    //     if(!selectedRows || selectedRows.length<1)return notifyError('Please select rows to submit')
+    //     dispatch(REMOVE_COLDEFS(['checkbox']))
+    //     dispatch(UPDATE_ROW_DATA(selectedRows))
+    //     dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSaved'))
+    // }
 
     const onReviewConflicts = ()=>{
       const newRowData = createConflictRowData(conflictData,activeMaster.id)
@@ -1335,7 +1350,6 @@ const useViewModify = (pageType:string) => {
         handleChangePage,
         onReset,
         onEditOnlineSave,
-        onDeleteOnlineSave,
         chartData,
         isSeasonalityChartModalOpen,
         normChangeData,

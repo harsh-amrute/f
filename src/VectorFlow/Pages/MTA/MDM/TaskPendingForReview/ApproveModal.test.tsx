@@ -11,7 +11,7 @@ const dummyprops = {
 
 describe("DeleteFileModal Component", () => {
     it("renders the button in the document ", () => {
-    render( <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
+    render( <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color},isSideBarOpen:true,toggleSideBar:jest.fn}}>
                 <ApproveModal {...dummyprops} />
             </UserDataContext.Provider>)
         const yesbtn = screen.getByText("Ok")

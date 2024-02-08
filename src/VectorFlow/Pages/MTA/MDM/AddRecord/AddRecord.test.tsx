@@ -196,6 +196,7 @@ const contextWrapper = (children: ReactNode,store:any) => {
               changeColorTheme: (color) => {
                 return color;
               },
+              isSideBarOpen:true,toggleSideBar:jest.fn
             }}
           >
             {children}

@@ -18,12 +18,13 @@ import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
+import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
+
 
 
 import { getUploadModalRadioButtons,generateOptions } from "../../../../../helpers/utils";
 import { Filter } from "../../../../../VectorFlow/types/MDM";
 import { operators } from "../../../../../helpers/MDMConstants";
-import SubmitErrorModal from "../AddRecord/SubmitErrorModal";
 
 
 
@@ -72,8 +73,9 @@ const DeleteRecord = () => {
         handleChangePage,
         onReset,
         onEditOnlineSave,
-        onDeleteOnlineSave,
         onBackButton,
+        isOverlayVisible,
+        isDataAvailableLocally
     } = useViewModify('remove');
     
 
@@ -81,9 +83,6 @@ const DeleteRecord = () => {
         onCancel,
         allMasters,
         selectedMasters, 
-        isConflictModalOpen,
-        conflictCount,
-        errorCount,
         onDeleteData,
         onSubmit,
         onDeleteOnline,
@@ -92,7 +91,6 @@ const DeleteRecord = () => {
         handleOnClickMaster,
         handleSubmitSelectMaster,
         handleRadioButton,
-        onIgnoreSubmitErrors
     } = useDelete();
 
     useEffect(()=>{
@@ -197,6 +195,17 @@ const DeleteRecord = () => {
                     columnDefs={activeMaster.colDefs}
                     rowData={activeMaster.rowData}
                     {...agGridProps}
+                    suppressPaginationPanel={!isDataAvailableLocally}
+                  statusBar={{
+                    statusPanels: isDataAvailableLocally?[
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
+                    ]:
+                    [],
+                  }}
                   />
                   <div style={{display:'none'}}>                
                     <VFTable
@@ -208,7 +217,7 @@ const DeleteRecord = () => {
 
               </VFTab>
               {
-                (!['default'].includes(activeMaster.progress) && !isSelectMasterOpen) 
+                (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen)) 
                   && 
                   <VFPagination 
                     selectedRows={selectedRowsCount} 
@@ -247,7 +256,7 @@ const DeleteRecord = () => {
             handleRadioButton={handleRadioButton}
             />
         }
-         {isConflictModalOpen && 
+         {/* {isConflictModalOpen && 
           <SubmitErrorModal 
             totalCount={activeMaster.rowData.length}
             errorCount={errorCount}
@@ -256,6 +265,13 @@ const DeleteRecord = () => {
             onCloseModal={onIgnoreSubmitErrors}
 
           />
+        } */}
+        {
+          isOverlayVisible && (
+            <VFOverlay>
+             <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Loading....</h1>
+            </VFOverlay>
+          )
         }
         {
           !isSelectMasterOpen && 
@@ -272,7 +288,7 @@ const DeleteRecord = () => {
             onClearAndExportErrors={onClearExportError}
             onModifyData={()=>toggleUploadModal(true)}
             onExportData={exportToExcel}
-            onSubmit={onSubmit}
+            onSubmit={()=>onSubmit(ref)}
             onDeleteSelected={deleteSelected}
             onEditOnline={()=>console.log('')}
             onPhaseInPhaseOutStop={()=>console.log('')}
@@ -282,7 +298,6 @@ const DeleteRecord = () => {
             onDeleteData={onDeleteData}
             onDeleteOnline={onDeleteOnline}
             onDeleteOnlineReset={onDeleteOnlineReset}
-            onDeleteOnlineSave={onDeleteOnlineSave}
             onDeleteOnlineSubmit={onDeleteOnlineSubmit}
           />
         }

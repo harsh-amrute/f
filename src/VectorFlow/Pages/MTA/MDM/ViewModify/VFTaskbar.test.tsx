@@ -36,6 +36,7 @@ const contextWrapper = (children:any)=>{
               changeColorTheme: (color) => {
                 return color;
               },
+              isSideBarOpen:true,toggleSideBar:jest.fn
             }}
           >
             {children}

@@ -81,7 +81,9 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName:'SKU Name',
@@ -89,7 +91,9 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName: "Item Category Code",
@@ -97,7 +101,9 @@ export const MasterData:MDMMasterState[] = [
             visible:false,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
       ],
       colDefs:[],
@@ -123,7 +129,9 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName:'Location Name',
@@ -131,7 +139,9 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName: "c1",
@@ -139,7 +149,9 @@ export const MasterData:MDMMasterState[] = [
             visible: false,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
       ],
       colDefs:[],
@@ -164,7 +176,9 @@ export const MasterData:MDMMasterState[] = [
             key:"sku_code",
             visible:true, isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName:'SKU Name',
@@ -172,7 +186,9 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName: "Segment",
@@ -180,7 +196,9 @@ export const MasterData:MDMMasterState[] = [
             visible: false,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
       ],
       colDefs:[],
@@ -205,7 +223,9 @@ export const MasterData:MDMMasterState[] = [
             key:"sku_code",
             visible:true, isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName:'SKU Name',
@@ -213,7 +233,9 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName: "Segment",
@@ -221,7 +243,9 @@ export const MasterData:MDMMasterState[] = [
             visible: false,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
       ],
       colDefs:[],
@@ -246,7 +270,9 @@ export const MasterData:MDMMasterState[] = [
             key:"sku_code",
             visible:true, isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName:'SKU Name',
@@ -254,7 +280,9 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName: "Segment",
@@ -262,7 +290,9 @@ export const MasterData:MDMMasterState[] = [
             visible: false,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
       ],
       colDefs:[],
@@ -291,7 +321,9 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName:'SKU Name',
@@ -299,7 +331,9 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName: "Item Category Code",
@@ -307,7 +341,9 @@ export const MasterData:MDMMasterState[] = [
             visible:false,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
       ],
       colDefs:[],
@@ -333,7 +369,9 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName:'Location Name',
@@ -341,7 +379,9 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName: "c1",
@@ -349,7 +389,9 @@ export const MasterData:MDMMasterState[] = [
             visible: false,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
       ],
       colDefs:[],
@@ -374,7 +416,9 @@ export const MasterData:MDMMasterState[] = [
             key:"sku_code",
             visible:true, isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName:'SKU Name',
@@ -382,7 +426,8 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true, col_Position:'1',
+            isApplicable:true
           },
           {
             displayName: "Segment",
@@ -390,7 +435,9 @@ export const MasterData:MDMMasterState[] = [
             visible: false,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
       ],
       colDefs:[],
@@ -415,7 +462,9 @@ export const MasterData:MDMMasterState[] = [
             key:"sku_code",
             visible:true, isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName:'SKU Name',
@@ -423,7 +472,9 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName: "Segment",
@@ -431,7 +482,9 @@ export const MasterData:MDMMasterState[] = [
             visible: false,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
       ],
       colDefs:[],
@@ -456,7 +509,9 @@ export const MasterData:MDMMasterState[] = [
             key:"sku_code",
             visible:true, isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName:'SKU Name',
@@ -464,7 +519,9 @@ export const MasterData:MDMMasterState[] = [
             visible:true,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
           {
             displayName: "Segment",
@@ -472,7 +529,9 @@ export const MasterData:MDMMasterState[] = [
             visible: false,
             isAdd:true,
             isDownload:true,
-            isEdit:true
+            isEdit:true,
+            col_Position:'1',
+            isApplicable:true
           },
       ],
       colDefs:[],

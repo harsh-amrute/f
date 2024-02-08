@@ -29,7 +29,6 @@ const useDelete=()=>{
     const [conflictCount,setConflictCount] = useState<number>(0);
     const [errorCount,setErrorCount] = useState<number>(0);
     const [errorData,setErrorData] = useState<Array<any>>([]);
-    const [isConflictModalOpen,setIsConflictModalOpen] = useState<boolean>(false)
 
     useEffect(()=>{
         if(activeMaster.progress === 'deleteOnline'){
@@ -40,6 +39,7 @@ const useDelete=()=>{
                 checkboxSelection:true,
                 headerCheckboxSelection:true,
                 headerCheckboxSelectionCurrentPageOnly:true,
+                width:40
             },...activeMaster.colDefs]
             dispatch(UPDATE_COLDEFS(updatedColdefs))
         }
@@ -164,7 +164,14 @@ const useDelete=()=>{
 
         rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users'));
 
-
+       // Convert To String
+       rowData = rowData.map((row:any)=>{
+        const tempRow:any = {};
+        Object.keys(row).forEach((key:string)=>{
+          tempRow[key] = row[key].toString();
+        })
+        return tempRow;
+      });
 
         let taskId:any   = '';
         let toastId:any = '';
@@ -249,7 +256,7 @@ const useDelete=()=>{
             setConflictCount(conflictCount);
             setErrorCount(errorCount);
             setErrorData(errorData)
-            return {isConflicts:conflictCount>0,errorCount,errorData,conflictCount,conflictData} 
+            return {isDisaster:false,errorCount,errorData,conflictCount,conflictData} 
             
           }
          catch (error) {
@@ -258,23 +265,25 @@ const useDelete=()=>{
             await deleteTask(taskId);
           }
           toast.dismiss(toastId)
-          return {isConflicts:true,errorCount,errorData,conflictCount,conflictData} 
+          return {isDisaster:true,errorCount,errorData,conflictCount,conflictData,} 
         }
       }
 
-      const onSubmit = async(isOverWrite?:boolean) => {
- 
+      const onSubmit = async(ref:any,isOverWrite?:boolean) => {
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
      
-        dispatch(REMOVE_COLDEFS(['checkbox']));
+        
         //let result;
  
-        if(activeMaster.progress === 'deleteOnlineSaved'){
-            const {isConflicts,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+        if(activeMaster.progress === 'deleteOnline'){
+          const selectedRows = ref.current.api.getSelectedRows()
+          if(selectedRows.length===0) return notifyError("Select rows to delete")
+          dispatch(UPDATE_ROW_DATA(selectedRows))
+            const {isDisaster,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(selectedRows,isOverWrite);
+            if(isDisaster)return
             //result = !isConflicts
-            if(!isConflicts){
               if(localErrorCount>0 || errorCount>0){
                 let errorRowData
                 if(localErrorCount>0){
@@ -290,16 +299,13 @@ const useDelete=()=>{
               dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
               notifySuccess(`Deletions Submitted Successfully`);
               dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSubmitted'));
-            }
-            else{
-              setIsConflictModalOpen(true)
-              dispatch(UPDATE_PROGRESS_STATE('conflicts'))
-            }
+              dispatch(UPDATE_PROGRESS_STATE('submitted'))
+            
    
           }
          else{
-            const {isConflicts,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-            if(!isConflicts){
+            const {isDisaster,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+            if(isDisaster)return
               if(localErrorCount>0 || errorCount>0){
                 let errorRowData
                 if(localErrorCount>0){
@@ -315,15 +321,10 @@ const useDelete=()=>{
               dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
               notifySuccess(`Deletions Submitted Successfully`);
               dispatch(UPDATE_PROGRESS_STATE('submitted'));
-              setIsConflictModalOpen(true)
-            }
+            
          }
-        
+         dispatch(REMOVE_COLDEFS(['checkbox']));
        
-      }
-
-      const onIgnoreSubmitErrors = ()=>{
-        setIsConflictModalOpen(false)
       }
 
 
@@ -331,7 +332,6 @@ const useDelete=()=>{
     return {
         allMasters,
         selectedMasters,
-        isConflictModalOpen,
         conflictCount,
         errorCount,
         onCancel,
@@ -343,7 +343,6 @@ const useDelete=()=>{
         handleOnClickMaster,
         handleRadioButton,
         handleSubmitSelectMaster,
-        onIgnoreSubmitErrors
     }
 }
 

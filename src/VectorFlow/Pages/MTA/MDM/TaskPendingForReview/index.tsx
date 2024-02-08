@@ -6,9 +6,12 @@ import TaskPendingTaskBar from "./TaskPendingTaskBar"
 import { TaskPendingWrapper } from "./styles"
 import ApproveAllModal from "./ApproveAllModal"
 import RejectAllModal from "./RejectAllModal"
+import { useUserData } from "../../../../../context"
 
 
 const TaskPendingForReview = ()=>{
+
+    const {isSideBarOpen} = useUserData()
 
     const {
         ref,
@@ -30,6 +33,7 @@ const TaskPendingForReview = ()=>{
         onSelectionTypeSuccess,
         setSelectionType
     } = useTaskPendingForReview()
+    
 
 
     if(showLoader){
@@ -108,6 +112,7 @@ const TaskPendingForReview = ()=>{
                     <RejectAllModal onSuccess={()=>onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} />
             }
             <TaskPendingTaskBar
+                isSideBarOpen={isSideBarOpen}
                 disableSubmit={selectedRows==0}
                 onCancel={onCancel}
                 onSubmit={onTaskSubmit}
