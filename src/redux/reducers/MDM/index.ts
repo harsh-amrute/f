@@ -167,6 +167,7 @@ const resetState = (state:any) => {
     state.draftId = '';
     state.recordCount = 0;
     state.isDataAvailableLocally = false;
+    state.isUploadModalOpen = false
 }
 
 

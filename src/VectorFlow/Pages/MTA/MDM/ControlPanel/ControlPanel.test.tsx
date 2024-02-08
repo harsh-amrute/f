@@ -18,7 +18,7 @@ describe('Control Component', () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <Router>
-                    <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
+                    <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color},isSideBarOpen:true,toggleSideBar:jest.fn}}>
                         <ControlPanel/>
                     </UserDataContext.Provider>
                 </Router>

@@ -14,13 +14,14 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import UploadModal from "../ViewModify/UploadModal";
 import VFTaskBar from "../ViewModify/VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
+import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
+
 
 import { useUserData } from "../../../../../context";
 import {getUploadModalRadioButtons } from "../../../../../helpers/utils";
 import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 
-import SubmitErrorModal from "./SubmitErrorModal";
 import { MDMMasterState } from "../../../../types/MDM";
 
 const AddRecord = () => {
@@ -59,7 +60,9 @@ const AddRecord = () => {
         isUploadModalOpen,
         onReset,
         onSaveToDraft,
-        onEditOnlineSave
+        onEditOnlineSave,
+        isDataAvailableLocally,
+        isOverlayVisible
 
     } = useViewModify('add');
 
@@ -72,11 +75,7 @@ const AddRecord = () => {
         handleOnClickMaster,
         handleRadioButton,
         handleTabChange,
-        onSubmit,
-        isConflictModalOpen,
-        onIgnoreSubmitErrors,
-        conflictCount,
-        errorCount
+        onSubmit
         
     } = useAdd()
     
@@ -125,6 +124,17 @@ const AddRecord = () => {
                     columnDefs={activeMaster.colDefs}
                     rowData={activeMaster.rowData}
                     {...agGridProps}
+                    suppressPaginationPanel={!isDataAvailableLocally}
+                  statusBar={{
+                    statusPanels: isDataAvailableLocally?[
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
+                    ]:
+                    [],
+                  }}
                   />
                   <div style={{display:'none'}}>                
                     <VFTable
@@ -173,7 +183,7 @@ const AddRecord = () => {
             handleRadioButton={handleRadioButton}
             />
         }
-        {isConflictModalOpen && 
+        {/* {isConflictModalOpen && 
           <SubmitErrorModal 
             totalCount={activeMaster.rowData.length}
             errorCount={errorCount}
@@ -182,6 +192,13 @@ const AddRecord = () => {
             onCloseModal={onIgnoreSubmitErrors}
 
           />
+        } */}
+        {
+          isOverlayVisible && (
+            <VFOverlay>
+             <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Loading....</h1>
+            </VFOverlay>
+          )
         }
         {
           !isSelectMasterOpen && 
@@ -206,7 +223,6 @@ const AddRecord = () => {
             onDeleteData={()=>console.log('')}
             onDeleteOnline={()=>console.log('')}
             onDeleteOnlineReset={()=>console.log('')}
-            onDeleteOnlineSave={()=>console.log('')}
             onSubmitConflictData={()=>console.log('')}
             onDeleteOnlineSubmit={()=>console.log('')}
           />

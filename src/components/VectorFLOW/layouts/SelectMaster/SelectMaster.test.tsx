@@ -55,7 +55,7 @@ describe('SelectMaster Component', () => {
       <QueryClientProvider client={queryClient}>
           <Router>
             <Provider store={store}>
-              <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
+              <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color},isSideBarOpen:true,toggleSideBar:jest.fn}}>
                   {children}
               </UserDataContext.Provider>
             </Provider>

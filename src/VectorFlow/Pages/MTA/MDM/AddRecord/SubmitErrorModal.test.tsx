@@ -20,7 +20,7 @@ describe("SubmitConflictModal Component", () => {
         disconnect = jest.fn();
       };
     it("renders the component",()=>{
-        render( <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
+        render( <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color},isSideBarOpen:true,toggleSideBar:jest.fn}}>
             <SubmitErrorModal {...dummyprops} />
             </UserDataContext.Provider>)
     })

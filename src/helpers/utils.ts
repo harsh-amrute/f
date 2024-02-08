@@ -7,7 +7,7 @@ import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef} from 'ag-grid-community';
 import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper,taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
-import {subDays,format, differenceInSeconds} from 'date-fns';
+import {subDays,format, differenceInSeconds,parse} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
 import {formatMDMDate} from './format';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
@@ -525,8 +525,10 @@ export const parseExcelData = async (file:any,master:MDMMasterState,pageType:str
 
 export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChart?:any)=>{
   let result:any[] = []
+  const tempFields = [...fields]
+  tempFields.sort((a:Field, b:Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
 
-  result = fields.map((f)=>{
+  result = tempFields.map((f)=>{
     return{
       field:f.key,
       colId:f.key,
@@ -535,6 +537,7 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChar
       floatingFilter: true,
       filter: "agMultiColumnFilter",
       cellDataType:false,
+      suppressColumnsToolPanel:!f.isApplicable,
       valueGetter:(params:any)=>{
         if(f.key==='sts'){
           const id=params.data.sts
@@ -709,7 +712,10 @@ export const mapRowDataWithSrNo = (rowData:any[])=>{
   // })
 
   result.sort((a,b):any=>{
-    return differenceInSeconds(b.PendingSince,a.PendingSince)
+    const date1 = parse(b.PendingSince, "dd/MM/yyyy hh:mm a", new Date());
+    const date2 = parse(a.PendingSince, "dd/MM/yyyy hh:mm a", new Date());
+    console.log(differenceInSeconds("31/01/2024 05:29 PM","05/02/2024 11:38 AM"))
+    return differenceInSeconds(date1,date2)
   })
 
   result = result.map((row:any,index:number)=>{

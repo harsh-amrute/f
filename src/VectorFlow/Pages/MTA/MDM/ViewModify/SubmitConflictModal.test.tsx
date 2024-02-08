@@ -20,7 +20,7 @@ describe("SubmitConflictModal Component", () => {
         disconnect = jest.fn();
       };
     beforeEach(() => {
-        render( <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color}}}>
+        render( <UserDataContext.Provider value={{user:{user:{theme_ui:'NOIRFUSION'}},changeColorTheme:(color) => {return color},isSideBarOpen:true,toggleSideBar:jest.fn}}>
             <SubmitConflictModal {...dummyprops} />
             </UserDataContext.Provider>)
         })

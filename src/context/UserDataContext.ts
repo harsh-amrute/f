@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, {  useContext } from 'react'
 
 export interface Permission {
   canView: boolean
@@ -15,7 +15,9 @@ export interface Permission {
 
 export interface UserData {
   user: any,
-  changeColorTheme: (color: string) => void
+  changeColorTheme: (color: string) => void,
+  isSideBarOpen:boolean,
+  toggleSideBar:any
 }
 
 export const UserDataContext = React.createContext<UserData>({
@@ -26,7 +28,9 @@ export const UserDataContext = React.createContext<UserData>({
     is_admin: false,
     role: ''
   },
-  changeColorTheme: (color) => {return color}
+  changeColorTheme: (color) => {return color},
+  isSideBarOpen:false,
+  toggleSideBar:()=>{return}
 })
 
 UserDataContext.displayName = 'UserDataContext'

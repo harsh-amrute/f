@@ -26,7 +26,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": true,
                   "isAdd": false,
                   "isEdit": false,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "WhCode",
@@ -34,7 +36,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": true,
                   "isAdd": false,
                   "isEdit": false,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "SupplierCode",
@@ -42,7 +46,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": false,
                   "isEdit": false,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "MOQ",
@@ -50,7 +56,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": true,
                   "isAdd": false,
                   "isEdit": false,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               }
           ],
           "filters": [
@@ -132,7 +140,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": true,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "Description",
@@ -140,7 +150,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "ElephantOrderCapping",
@@ -148,7 +160,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": true,
                   "isAdd": true,
                   "isEdit": false,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "Weight",
@@ -156,7 +170,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "Volume",
@@ -164,7 +180,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c1",
@@ -172,7 +190,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": true,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c2",
@@ -180,7 +200,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c3",
@@ -188,7 +210,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": true,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c4",
@@ -196,7 +220,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": true,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c5",
@@ -204,7 +230,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": true,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c6",
@@ -212,7 +240,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": true,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c7",
@@ -220,7 +250,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c8",
@@ -228,7 +260,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c9",
@@ -236,7 +270,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c10",
@@ -244,7 +280,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c11",
@@ -252,7 +290,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c12",
@@ -260,7 +300,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c13",
@@ -268,7 +310,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c14",
@@ -276,7 +320,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "c15",
@@ -284,7 +330,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": true,
                   "isEdit": true,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               }
           ],
           "filters": [
@@ -571,7 +619,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": true,
                   "isAdd": false,
                   "isEdit": false,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "WhCode",
@@ -579,7 +629,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": true,
                   "isAdd": false,
                   "isEdit": false,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "SupplierCode",
@@ -587,7 +639,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": false,
                   "isAdd": false,
                   "isEdit": false,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               },
               {
                   "displayName": "MOQ",
@@ -595,7 +649,9 @@ const dummyprops:SelectGroupedMastersProps = {
                   "visible": true,
                   "isAdd": false,
                   "isEdit": false,
-                  "isDownload": true
+                  "isDownload": true,
+                  "col_Position":'1',
+                  "isApplicable":true
               }
           ],
           "filters": [
@@ -680,6 +736,7 @@ const contextWrapper = (children: ReactNode,store:any) => {
               changeColorTheme: (color:any) => {
                 return color;
               },
+              isSideBarOpen:true,toggleSideBar:jest.fn
             }}
           >
             {children}

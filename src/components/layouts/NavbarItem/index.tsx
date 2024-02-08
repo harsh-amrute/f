@@ -21,7 +21,7 @@ const NavbarItem = ({
   setIsHide,
 }: any) => {
   const { t } = useTranslation();
-  const { user } = useUserData();
+  const { user,isSideBarOpen,toggleSideBar } = useUserData();
   const permission: any = user?.roles?.permission;
   const themeUi = user?.user?.theme_ui;
   const navigate = useNavigate();
@@ -113,6 +113,7 @@ const NavbarItem = ({
       });
     }
     setIsHide(!isHide);
+    toggleSideBar(!isSideBarOpen)
   };
 
   return (
