@@ -7,6 +7,6 @@ export const AbsoluteValueSeasonalitySchema = Joi.object({
     sd:Joi.string(),
     ed:Joi.string(),
     tn:Joi.number().integer(),
-    bd:Joi.number()
+    bd:Joi.number().allow(null)
 
 }).preferences(defaultJOIOptions)

@@ -250,8 +250,8 @@ export const TaskPendingAvoidColumnsMapper:any ={
     "1":["sc"],
     "2":['wc'],
     "3":['sc','wc'],
-    "4":['sk'],
-    "5":['sk']
+    "4":['sc'],
+    "5":['sk'],
 } 
 
 export const customKeys = [

@@ -11,7 +11,7 @@ import { useUserData } from "../../../../../context"
 
 const TaskPendingForReview = ()=>{
 
-    const {isSideBarOpen} = useUserData()
+    const {isSideBarOpen} = useUserData();
 
     const {
         ref,
