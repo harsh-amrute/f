@@ -116,6 +116,7 @@ export const SCIconMenu = styled.img<{ themeUi: string; isHide: boolean }>`
   position: absolute;
   right: -24px;
   width: 40px;
+  z-index:20;
   border: ${(props) =>
     props.themeUi === "REGALBLAZE" ? "unset" : "5px solid #f9f9f9"};
   border-radius: 50%;
@@ -190,7 +191,7 @@ export const SCInterStore = styled.div<{ themeUi: string }>`
 
 export const SCInterStoreArrowDown = styled.img<{ toggle: boolean }>`
   height: 8px;
-  transform: ${(props) => (props.toggle ? "rotate(0)" : "rotate(180deg)")};
+  transform: ${(props) => (!props.toggle ? "rotate(0)" : "rotate(180deg)")};
 
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
       .size.laptopL}) {
@@ -291,6 +292,25 @@ export const SCNavBox = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
+  overflow:hidden overlay;
+  &::-webkit-scrollbar{
+    width: 7px;       
+  }
+
+  &::-webkit-scrollbar-track{
+      border-radius: 30px;
+      opacity: 1;
+      background-color:#313132;
+  }
+
+  &::-webkit-scrollbar-thumb{
+      width: 7px;
+  /* UI Properties */
+  background: gray 0% 0% no-repeat padding-box;
+  box-shadow: 0px 6px 9px #41414129;
+  border-radius: 30px;
+  opacity: 1;
+  }
 `;
 
 export const SCBoxTop = styled.div`

@@ -235,6 +235,135 @@ export const listMenuParent: any = [
       },
     ],
   },
+  {
+    id: 9,
+    name: "",
+    img: "/assets/img/VectorFLOW/BPR/replacement",
+    url: "/",
+    status: true,
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+    avoidHeader:true,
+    child: [
+      {
+        name: "Supply Chain Intelligence Hub",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "//supply-chain-intelligence-hub",
+        role: ["IST Admin", "IST Requestor"],
+        child:[
+          {
+            name: "Planning",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/planning",
+            role: ["IST Admin", "IST Requestor"],
+          },
+          {
+            name: "BPR",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/BPR",
+            role: ["IST Admin", "IST Requestor"],
+          },
+          {
+            name: "Dispatch Planning",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/dispatch-planning",
+            role: ["IST Admin", "IST Requestor"],
+          },
+          {
+            name: "Open Expediting Requests",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "//supply-chain-intelligence-hub/open-expediting-requests",
+            role: ["IST Admin", "IST Requestor"],
+          },
+          {
+            name: "Vendor Dispatch Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "//supply-chain-intelligence-hub/vendor-dispatch-report",
+            role: ["IST Admin", "IST Requestor"],
+          },
+          {
+            name: "Rationed Requirement Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "//supply-chain-intelligence-hub/rationed-requirement-report",
+            role: ["IST Admin", "IST Requestor"],
+
+          },
+          {
+            name: "Buyer Order Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/buyer-order-report",
+            role: ["IST Admin", "IST Requestor"],
+
+          }
+        ]
+      },
+      {
+        name: "Logistics",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/logistics",
+        role: ["IST Admin", "IST Requestor"],
+        child:[
+          {
+            name: "InTransit Whereabouts",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/logistics/intransit-whereabouts",
+            role: ["IST Admin", "IST Requestor"],
+          }
+        ]
+      },
+      {
+        name: "Insights & Trends",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/insights-and-trends",
+        role: ["IST Admin", "IST Requestor"],
+        child:[
+          {
+            name: "Buffer Trend Report (BTR)",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/insights-and-trends/buffer-trend-report",
+            role: ["IST Admin", "IST Requestor"],
+          },
+          {
+            name: "Buffer Trends",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/insights-and-trends/buffer-trends",
+            role: ["IST Admin", "IST Requestor"],
+          },
+          {
+            name: "Logistics Insights",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/insights-and-trends/logistics-insights",
+            role: ["IST Admin", "IST Requestor"],
+          },
+          {
+            name: "Guided Insights",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/insights-and-trends/guided-insights",
+            role: ["IST Admin", "IST Requestor"],
+          },
+          {
+            name: "Research Insights",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/insights-and-trends/research-insights",
+            role: ["IST Admin", "IST Requestor"],
+          }
+        ]
+      },
+      {
+        name: "DBM",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/dbm",
+        role: ["IST Admin", "IST Requestor"],
+        child:[
+          {
+            name: "DBM Norm Suggestions",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/dbm/dbm-norm-suggestions",
+            role: ["IST Admin", "IST Requestor"],
+          }
+        ]
+      }
+    ],
+  },
   // {
   //   id: 7,
   //   name: "navbar.listMenuParent.velocityAnalysis.title",

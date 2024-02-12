@@ -27,7 +27,7 @@ const NavbarItem = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = useLocation();
-  const [toggle, setToggle] = useState(true);
+  
   const mdm = useSelector((state:RootState) => state.mdm);
   const dispatch = useDispatch();
 
@@ -35,70 +35,103 @@ const NavbarItem = ({
     dispatch(RESET_STATE());
   }
 
-  const renderListMenu = (listMenu: any) => {
+  const RenderListMenu = (props:{listMenu:any}) => {
+
+    const [toggle, setToggle] = useState(true);
+    const {
+      listMenu
+    } = props
+
+
     return (
       <SCMenuItem
         key={listMenu.id}
         active={
-          listMenu.url === location.pathname ||
+          listMenu.url === location.pathname || 
           listMenu.child.some((i: any) => i.url === location.pathname)
         }
       >
         <>
-          <NavStyle.SCNavMenu
-            onClick={activeCollapseItem}
-            className={`${toggle ? "active" : ""}`}
-          >
-            <NavStyle.SCInterStore themeUi={themeUi}>
-              {t(listMenu.name)}
-            </NavStyle.SCInterStore>
-            <NavStyle.SCInterStoreArrowDown
-              toggle={toggle}
-              src="/assets/img/nav/arrow_down.svg"
-            />
-          </NavStyle.SCNavMenu>
-          {renderListMenuChild(listMenu.child)}
+          {
+            !listMenu.avoidHeader && (
+              <NavStyle.SCNavMenu
+                onClick={()=>setToggle(!toggle)}
+                className={`${toggle ? "active" : ""}`}
+              >
+                <NavStyle.SCInterStore themeUi={themeUi}>
+                  {t(listMenu.name)}
+                </NavStyle.SCInterStore>
+                <NavStyle.SCInterStoreArrowDown
+                  toggle={toggle}
+                  src="/assets/img/nav/arrow_down.svg"
+                />
+              </NavStyle.SCNavMenu>
+            )
+          }
+            {
+              listMenu.child.map((l:any)=>{
+                if(l.child){
+                  return(
+                    <RenderListMenu listMenu={l}/>
+                  )
+                }
+                return renderListMenuChild([l],toggle)
+              })
+            }
+          
         </>
       </SCMenuItem>
     );
   };
 
-  const renderListMenuChild = (listChild: any) => {
-    return listChild.map((item: any) => {
-      const checkRole = permission?.some((value: any) =>
-        item.role.includes(value)
-      );
+  const renderListMenuChild = (listChild: any,status:boolean) => {
+    return listChild.map((item: any) => {``
+      const checkRole = permission?.some((value: any) =>{
+        return item.role.includes(value)
+    });
 
-      if (checkRole) {
-        return (
-          <SCItemChild
-            key={item.url}
-            onClick={() => {
-              navigateWithPrompt(()=>navigate(item.url, { replace: true }),item.url,mdm,resetState);
-            }}
-            active={item.url === location.pathname}
-            status={toggle}
-            themeUi={themeUi}
-          >
-            <NavStyle.SCNavChild
-              themeUi={themeUi}
+        if (checkRole) {
+          return (
+            <SCItemChild
+              key={item.url}
+              onClick={() => {
+                navigateWithPrompt(()=>navigate(item.url, { replace: true }),item.url,mdm,resetState);
+              }}
               active={item.url === location.pathname}
+              status={status}
+              themeUi={themeUi}
             >
-              {" "}
-              {t(item.name)}
-            </NavStyle.SCNavChild>
-            {!(item.url === location.pathname) && (
-              <NavStyle.SCInputIcon src={item.img} />
-            )}
-          </SCItemChild>
-        );
+              <NavStyle.SCNavChild
+                themeUi={themeUi}
+                active={item.url === location.pathname}
+              >
+                {" "}
+                {t(item.name)}
+              </NavStyle.SCNavChild>
+              {!(item.url === location.pathname) && (
+                <NavStyle.SCInputIcon src={item.img} />
+              )}
+             
+            </SCItemChild>
+            //  {item.child && (
+            //   <React.Fragment>
+            //   {item.child.map((i:any,index:number)=>{
+            //     return (
+            //       <React.Fragment>
+            //         {renderListMenu(i)}
+            //       </React.Fragment>
+            //     )
+            //   })}
+            // </React.Fragment>
+            // )}
+          );
       }
     });
   };
 
-  const activeCollapseItem = () => {
-    setToggle(!toggle);
-  };
+  // const activeCollapseItem = () => {
+  //   setToggle(!toggle);
+  // };
 
   const handleClickIconMenu = () => {
     if (isHide) {
@@ -140,7 +173,7 @@ const NavbarItem = ({
             />
           </NavStyle.SCBoxTop>
           {isHide && !!menuItem && (
-            <SCMenuLeft>{renderListMenu(menuItem)}</SCMenuLeft>
+            <SCMenuLeft><RenderListMenu listMenu={menuItem}/></SCMenuLeft>
           )}
         </NavStyle.SCNavBox>
 
