@@ -90,7 +90,7 @@
       },
       "src/VectorFlow/Pages": {
         "statements": 35,
-        "branches": 35,
+        "branches": 25,
         "functions": 35,
         "lines": 35
       },

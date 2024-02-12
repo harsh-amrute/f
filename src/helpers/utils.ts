@@ -714,7 +714,7 @@ export const mapRowDataWithSrNo = (rowData:any[])=>{
   result.sort((a,b):any=>{
     const date1 = parse(b.PendingSince, "dd/MM/yyyy hh:mm a", new Date());
     const date2 = parse(a.PendingSince, "dd/MM/yyyy hh:mm a", new Date());
-    console.log(differenceInSeconds("31/01/2024 05:29 PM","05/02/2024 11:38 AM"))
+    // console.log(differenceInSeconds("31/01/2024 05:29 PM","05/02/2024 11:38 AM"))
     return differenceInSeconds(date1,date2)
   })
 
@@ -1427,7 +1427,10 @@ export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:str
     currError.errorData.map((errorRowData:any)=>{
       const existingRowIndex = result.findIndex((row:any)=>{
         const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
-        if(primaryKeys.length<3) return row[primaryKeys[0]]===errorRowData[primaryKeys[0]]
+        if(primaryKeys.length<3){
+          return JSON.stringify(row)===JSON.stringify(errorRowData)
+          // return row[primaryKeys[0]]===errorRowData[primaryKeys[0]]
+        }
       })
       
       if(existingRowIndex===-1){
@@ -1441,6 +1444,7 @@ export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:str
       }
     })
   })
+  console.log(result);
   return result
 }
 
