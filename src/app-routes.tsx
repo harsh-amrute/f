@@ -22,6 +22,7 @@ import DeleteRecord from './VectorFlow/Pages/MTA/MDM/DeleteRecord'
 import SavedDrafts from './VectorFlow/Pages/MTA/MDM/SavedDrafts'
 import TaskStatus from './VectorFlow/Pages/MTA/MDM/TaskStatus'
 import TaskPendingForReview from './VectorFlow/Pages/MTA/MDM/TaskPendingForReview'
+import Planning from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/Planning'
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
   const search = window.location.search
@@ -54,7 +55,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/master-data-management/task-status',
     '/master-data-management/task-pending',
     '/master-data-management/control-panel/add',
-    '/master-data-management/control-panel/delete'
+    '/master-data-management/control-panel/delete',
+    '/supply-chain-intelligence-hub/planning'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -251,6 +253,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<DeleteRecord/>)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/planning',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<Planning/>)
         },
         ...getStoreTransferModuleRoutes()
       ]
