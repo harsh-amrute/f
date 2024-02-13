@@ -13,11 +13,12 @@ import {formatMDMDate} from './format';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
 import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import ConflictErrorToolTip from '../VectorFlow/Pages/MTA/MDM/ViewModify/ConflictErrorToolTip';
+import { BPRField } from '../VectorFlow/types/BPR';
 
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+  // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
   'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
   'u', 'v', 'w', 'x', 'y', 'z',
@@ -1509,4 +1510,63 @@ export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):
   });
 
   return result
+}
+
+export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BPRSpecificColumns:ColDef[] =[
+    {
+      colId:'remarks',
+      field:'ramarks',
+      headerName:'Remarks',
+      tooltipField:"tags"
+      // tooltipComponent:'remarksToolTipComponent'
+    },
+    {
+      colId:'rh',
+      field:'rh',
+      headerName:'Remark History',
+    }
+  ]
+
+  const tagsColDef:ColDef =  {
+    colId:'tags',
+    field:'tags',
+    headerName:"Tags",
+    cellRenderer:'tagsCellRenderer'
+  }
+
+  result =  fields.map((f:BPRField)=>{
+    if(f.Col_Code==='TechPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorTechCellRenderer'
+      }
+    }
+    if(f.Col_Code==='EcoPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorEcoCellRenderer'
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible
+    }
+  })
+  return [tagsColDef,...result,...BPRSpecificColumns]
 }
