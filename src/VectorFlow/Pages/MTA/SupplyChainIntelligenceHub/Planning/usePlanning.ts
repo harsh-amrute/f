@@ -30,6 +30,8 @@ const usePlanning = ()=>{
 
     const [currentTab,setCurrentTab] = useState<string>('');
 
+    const [currentView,setCurrentView] = useState<string>('');
+
     useEffect(()=>{
         fetchPlanningDataCount();
     },[])
@@ -74,7 +76,7 @@ const usePlanning = ()=>{
             console.log(result)
             setIsSelectCategoryOpen(false);
             setCurrentGraphData(result.data.data)
-            setCurrentTab('locationWise');
+            setCurrentTab('custom');
             toast.dismiss(toastId);
             notifySuccess("Graph Details Fetched Successfully")
 
@@ -95,6 +97,7 @@ const usePlanning = ()=>{
         currentCategory,
         currentGraphData,
         currentTab,
+        currentView,
         onMonitorChildClick
     }
 

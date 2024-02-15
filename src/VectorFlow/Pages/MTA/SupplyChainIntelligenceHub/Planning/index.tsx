@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import SelectCategory from "../../../../../components/VectorFLOW/layouts/SelectCategory";
-import MonitorGITChildLocationWise from "./MonitorGoodsInTransit/Child/LocationWise";
+
 import usePlanning from "./usePlanning";
 import VFOverlay from "../../../.././../components/VectorFLOW/commons/VFOverlay";
+import ChartView from "./ChartView";
 
 const Planning = () => {
 
@@ -13,29 +14,21 @@ const Planning = () => {
         currentCategory,
         currentGraphData,
         currentTab,
+        currentView,
         onMonitorChildClick
     } = usePlanning();
 
-    const renderGraphs = (category:string)=>{
-        switch(category){
-            case 'GITFromParent':
-                return <></>
-            case 'GITToChild':
-                if(currentTab === 'locationWise'){
-                    return (
-                        <MonitorGITChildLocationWise
-                            data={currentGraphData ? currentGraphData['locationWise']:[]}
-                        />
-                    )
-                }
-                return <></>
-                
-                
-            default:
-                return <></>
-        }
+    const renderView = () => {
 
+        switch(currentView){
+            case 'chart':
+                return <ChartView currentTab={currentTab} category={currentCategory} currentGraphData={currentGraphData}/>
+
+        }
+        
     }
+
+    
 
     return(
         <>
@@ -66,7 +59,7 @@ const Planning = () => {
             {
                 !isSelectCategoryOpen &&
                 <>
-                    {renderGraphs(currentCategory)}
+                    {renderView()}
                 </>
             }
             
