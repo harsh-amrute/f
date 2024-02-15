@@ -537,6 +537,7 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChar
       floatingFilter: true,
       filter: "agMultiColumnFilter",
       cellDataType:false,
+      tooltipComponent:'conflictErrorToolTip',
       suppressColumnsToolPanel:!f.isApplicable,
       valueGetter:(params:any)=>{
         if(f.key==='sts'){
@@ -833,10 +834,12 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
           headerName:'New ' +f.displayName,
           field:'New'+f.key,
           colId:'New'+f.key,
-          cellStyle:{
-            "color":'#BC3D81',
-            "text-align":"center",
-            "border-left":"solid 1px #B9B9B9",
+          cellStyle:(params:any)=>{
+            return{
+              "color":params.data[`New${f.key}`]!==params.data[`Old${f.key}`]?'#BC3D81':'black',
+              "text-align":"center",
+              "border-left":"solid 1px #B9B9B9",
+            }
           }
         },
         {
@@ -1030,18 +1033,18 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
       
       if(taskType==='add'){
        if(!TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
-        dataPrefixed[`Add${f.key}`] = data[f.key]
+        dataPrefixed[`Add${f.key}`] =String( data[f.key]!==undefined? data[f.key]:'')
        }
        else{
-        dataPrefixed[f.key] = data[f.key]
+        dataPrefixed[f.key] = String( data[f.key]!==undefined? data[f.key]:'')
        }
       }
       else{
        if(!TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
-        dataPrefixed[`Delete${f.key}`] = data[f.key]
+        dataPrefixed[`Delete${f.key}`] =String( data[f.key]!==undefined? data[f.key]:'')
        }
        else{
-        dataPrefixed[f.key] = data[f.key]
+        dataPrefixed[f.key] =String( data[f.key]!==undefined? data[f.key]:'')
        }
       }
     })

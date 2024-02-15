@@ -308,9 +308,7 @@ gap:28px;
 `
 
 export const ConflictErrorToolTipWrapper = styled.div`
-    position:fixed;
     background-color:white;
-    bottom:0;
     display:flex;
     flex-direction:column;
     padding:5px;

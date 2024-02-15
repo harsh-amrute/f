@@ -33,11 +33,11 @@ const ConflictErrorCellRenderer = (params:ConflictErrorCellRendererProps)=>{
 
     }
     return(
-        <div style={{height:'100%',width:'100%'}}  onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={()=>setIsToolTipOpen(false)} >
+        <div style={{height:'100%',width:'100%'}}   >
             <p  style={{color:getTextColor(),zIndex:-10,textOverflow:'ellipsis',display:"block"}}>
                 {params.value}           
             </p>
-           {params.data.users && isToolTipOpen && (
+           {/* {params.data.users && isToolTipOpen && (
              <ConflictErrorToolTipWrapper>
                 {params.data.users && params.data.users.map((user:any)=>{
                     return (
@@ -48,7 +48,7 @@ const ConflictErrorCellRenderer = (params:ConflictErrorCellRendererProps)=>{
                     )
                 })}
             </ConflictErrorToolTipWrapper>
-           )}
+           )} */}
         </div>
     )
 }

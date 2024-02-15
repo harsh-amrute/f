@@ -8,7 +8,7 @@ import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 import { AgGridReactProps } from 'ag-grid-react';
-import { ColDef } from 'ag-grid-enterprise';
+import { ColDef, SideBarDef } from 'ag-grid-enterprise';
 
 import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
 import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers';
@@ -101,24 +101,6 @@ const useViewModify = (pageType:string) => {
 
     const validResumeStatuses = [23];
 
-
-    // const chunkSize = 100;
-
-
-    // const colDefs = activeMaster.colDefs
-
-    // const tempRowData = {
-    //   sc:"V9I004615P1L001",
-    //   wc:"3017",
-    //   skd:"T Shirt",
-    //   sd:"5/05/2023",
-    //   ed:"5/20/2023",
-    //   ln:"Bangalore",
-    //   tn:"300",
-    //   bd:"7",
-    //   onm:'50',
-    //   r:"10"
-    // }
 
     const invalidDataColdefs:ColDef[] = [
       {
@@ -217,7 +199,7 @@ const useViewModify = (pageType:string) => {
          getMasterUIConfigurationData()
       },[])
 
-    const sideBar = {
+    const sideBar:SideBarDef = {
       toolPanels: [
         {
           id: "columns",
@@ -236,8 +218,9 @@ const useViewModify = (pageType:string) => {
     }
 
     const agGridProps:AgGridReactProps = {
-
+      tooltipShowDelay:0,
       readOnlyEdit:true,
+      tooltipTrigger:'hover',
       sideBar:['default','view'].includes(activeMaster.progress) ? sideBar : {},
       gridOptions:{
         getRowStyle: (params: any) => {
@@ -280,7 +263,6 @@ const useViewModify = (pageType:string) => {
       rowSelection:'multiple',
       suppressRowClickSelection:true,
       components:customCellRenderers,
-      enableBrowserTooltips:true,
       onSelectionChanged:()=>{
         if(ref.current?.api){
           setSelectedRowsCount(ref.current?.api.getSelectedRows().length)
@@ -905,7 +887,6 @@ const useViewModify = (pageType:string) => {
 
         //check if errorneous Data
         const errorData = activeMaster.rowData.find((row:any)=>{
-          if(row.error!=='' || row.warning!=='')console.log(row)
           return (row.error || row.warning) &&( row.error!=='' || row.warning!=='')
         });
         console.log(errorData)
@@ -1264,20 +1245,19 @@ const useViewModify = (pageType:string) => {
     const onReviewConflicts = ()=>{
       const newRowData = createConflictRowData(conflictData,activeMaster.id)
 
-      const newColDefs = activeMaster.colDefs.map((colDef:ColDef)=>{
+      const newColDefs:ColDef[] = activeMaster.colDefs.map((colDef:ColDef)=>{
         return {
           ...colDef,
           // cellRenderer:'conflictErrorCellRenderer',
-          cellStyle:{
-            ...colDef.cellStyle,
-            'overflow':'visible'
-          },
-          tooltipComponent:'conflictErrorToolTip',
+          tooltipField:colDef.field,
           cellRenderer:'conflictErrorCellRenderer',
+          // onCellClicked:(params:any)=>console.log(params)
           // tooltipField:colDef.field
 
         }
       })
+
+      console.log(newColDefs)
      if(newColDefs) dispatch(UPDATE_COLDEFS(newColDefs))
       addCheckBoxColDefs()
       dispatch(UPDATE_ROW_DATA(newRowData))
