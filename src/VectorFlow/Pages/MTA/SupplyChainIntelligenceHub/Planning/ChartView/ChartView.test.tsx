@@ -1,25 +1,24 @@
-import { render, screen } from "@testing-library/react"
-import { UserDataContext } from "../../../../../../context/UserDataContext";
+import { render } from "@testing-library/react"
 import ChartView from '.';
 import { MonitorGITChildMockData } from "../../../../../../mock-data/Planning";
 
-const mockFn = jest.fn()
+// const mockFn = jest.fn()
 
-const contextWrapper = (children:any)=>{
-    return (
-        <UserDataContext.Provider
-            value={{
-              user: { user: { theme_ui: "NOIRFUSION" } },
-              changeColorTheme: (color) => {
-                return color;
-              },
-              isSideBarOpen:true,toggleSideBar:jest.fn
-            }}
-          >
-            {children}
-          </UserDataContext.Provider>
-    )
-}
+// const contextWrapper = (children:any)=>{
+//     return (
+//         <UserDataContext.Provider
+//             value={{
+//               user: { user: { theme_ui: "NOIRFUSION" } },
+//               changeColorTheme: (color) => {
+//                 return color;
+//               },
+//               isSideBarOpen:true,toggleSideBar:jest.fn
+//             }}
+//           >
+//             {children}
+//           </UserDataContext.Provider>
+//     )
+// }
 
 describe("Monitor GIT Child",()=>{
   global.ResizeObserver = class MockedResizeObserver {

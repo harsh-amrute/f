@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import SelectCategory from "../../../../../components/VectorFLOW/layouts/SelectCategory";
 
 import usePlanning from "./usePlanning";

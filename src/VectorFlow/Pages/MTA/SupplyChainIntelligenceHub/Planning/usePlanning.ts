@@ -65,6 +65,7 @@ const usePlanning = ()=>{
 
     const onMonitorChildClick = async () => {
         try {
+            setCurrentView('chart');
             const toastId = notifyLoader('Loading Graphs');
             setCurrentCategory('GITToChild');
             const body = {
