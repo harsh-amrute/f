@@ -263,6 +263,12 @@ export const listMenuParent: any = [
             role: ["IST Admin", "IST Requestor"],
           },
           {
+            name: "Rationed Requirement Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/bor",
+            role: ["IST Admin", "IST Requestor"],
+          },
+          {
             name: "Dispatch Planning",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/dispatch-planning",
@@ -283,7 +289,7 @@ export const listMenuParent: any = [
           {
             name: "Rationed Requirement Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "//supply-chain-intelligence-hub/rationed-requirement-report",
+            url: "/supply-chain-intelligence-hub/bor",
             role: ["IST Admin", "IST Requestor"],
 
           },

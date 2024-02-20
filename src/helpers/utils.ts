@@ -13,7 +13,7 @@ import {formatMDMDate} from './format';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
 import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import ConflictErrorToolTip from '../VectorFlow/Pages/MTA/MDM/ViewModify/ConflictErrorToolTip';
-
+import { BPRField } from '../VectorFlow/types/BPR';
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -128,6 +128,65 @@ export const isTrue = (value?: string | number) => {
     (typeof value === 'string' && value?.toUpperCase() === 'TRUE') ||
     value === 1
   )
+}
+
+export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BPRSpecificColumns:ColDef[] =[
+    {
+      colId:'remarks',
+      field:'ramarks',
+      headerName:'Remarks',
+      tooltipField:"tags"
+      // tooltipComponent:'remarksToolTipComponent'
+    },
+    {
+      colId:'rh',
+      field:'rh',
+      headerName:'Remark History',
+    }
+  ]
+
+  const tagsColDef:ColDef =  {
+    colId:'tags',
+    field:'tags',
+    headerName:"Tags",
+    cellRenderer:'tagsCellRenderer'
+  }
+
+  result =  fields.map((f:BPRField)=>{
+    if(f.Col_Code==='TechPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorTechCellRenderer'
+      }
+    }
+    if(f.Col_Code==='EcoPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorEcoCellRenderer'
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible
+    }
+  })
+  return [tagsColDef,...result,...BPRSpecificColumns]
 }
 
 export const handleDownload = async (nameApi: string, nameFile: string) => {
