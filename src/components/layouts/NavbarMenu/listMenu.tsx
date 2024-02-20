@@ -259,7 +259,7 @@ export const listMenuParent: any = [
           {
             name: "BPR",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/BPR",
+            url: "/supply-chain-intelligence-hub/bpr",
             role: ["IST Admin", "IST Requestor"],
           },
           // {

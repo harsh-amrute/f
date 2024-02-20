@@ -57,7 +57,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/master-data-management/task-pending',
     '/master-data-management/control-panel/add',
     '/master-data-management/control-panel/delete',
-    '/supply-chain-intelligence-hub/BPR'
+    '/supply-chain-intelligence-hub/bpr'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -259,7 +259,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/BPR',
+      path: '/supply-chain-intelligence-hub/bpr',
       element: <AppLayout />,
       children: [
         {

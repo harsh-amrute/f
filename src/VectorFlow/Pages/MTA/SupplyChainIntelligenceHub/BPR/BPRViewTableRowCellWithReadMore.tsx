@@ -23,10 +23,7 @@ const BPRViewTableRowCellWithReadMore = (props:BPRViewTableRowCellWithReadMore)=
         <BPRViewTableRowCell style={{display:'flex',flexDirection:"row",position:'relative'}}>
             <p >{value.slice(0,15)}...</p>
             <a style={{color:'#BC3D81',cursor:'default'}}  data-tooltip-id={toolTipId} data-tooltip-content={value} >Read full </a>
-            <Tooltip style={{zIndex:30000,width:'400px',whiteSpace:"break-spaces",textAlign:"left"}} id={toolTipId} place='left' />
-           
-           
-            
+            <Tooltip style={{zIndex:30000,whiteSpace:"break-spaces",textAlign:"left"}} id={toolTipId} place='left' />
         </BPRViewTableRowCell>
     )
 }

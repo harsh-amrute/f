@@ -1,9 +1,9 @@
-import { useState,useMemo } from "react"
+import { useState,useMemo, useEffect } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 
-import { useGetBPRUIConfiguration } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub"
+import { useGetBPRData, useGetBPRUIConfiguration } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub"
 import { useUserData } from "../../../../../context"
-import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer, BRPRemarksToolTip } from "./BPRCellRenderers"
+import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
 import { mapBPRFieldsToColDefs } from "../../../../../helpers/utils"
 
 const useBPR =()=>{
@@ -12,26 +12,59 @@ const useBPR =()=>{
 
     const [isSubGridOpen,toggleSubGrid] = useState<boolean>(false)
     const [activeRow,setActiveRow] = useState<any>()
-
-
-    const {data,isLoading} = useGetBPRUIConfiguration()
-
-    const BPRColumns = mapBPRFieldsToColDefs(data?.data.data)
+    const [activeRowIndex,setActiveRowIndex] = useState<number | null>(null)
+    const [isLoading,setIsLoading] = useState<boolean>(true)
+    const [BPRRowData,setBPRRowData] = useState<any[]>([])
+  
+  
+    const {data,isLoading:isBPRUILoading,isError} = useGetBPRUIConfiguration()
     
+  
+    const {mutateAsync:getBPRData} = useGetBPRData()
 
+  
+    const BPRColumns = mapBPRFieldsToColDefs(data?.data.data)
+
+  
+    useEffect(()=>{
+        async function getBPRRowData(){
+            const rowData =await  getBPRData({
+                filters:[],
+                paginationParameter:{
+                    pageNumber:1,
+                    recordsPerPage:50
+                }
+            })
+            setBPRRowData(rowData.data.data)
+            setIsLoading(false)
+        }
+        getBPRRowData()
+    },[])
+    
+  
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:'',
         colorTechCellRenderer:BPRTechColorCellRenderer,
         colorEcoCellRenderer:BPREcoColorCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
-        remarksToolTipComponent:BRPRemarksToolTip,
+        submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
         remarksCellRenderer:BPRRemarksCellRenderer
       }), []);
-
+  
     const agGridProps:AgGridReactProps = {
-        tooltipShowDelay:0,
-        tooltipTrigger:"focus",
+        
+        suppressRowTransform:true,
+        tooltipShowDelay:0.3,
+        tooltipTrigger:'focus',
+        tooltipInteraction:true,
+        // rowSelection:'single',
         readOnlyEdit:true,
+        onRowClicked:(params:any)=>{
+            if(params.data.transit && params.data.transit.length>0){
+                setActiveRow(params.data.transit)
+                toggleSubGrid(true)
+            }
+        },
         gridOptions:{
             rowHeight:50,
             getRowStyle: (params: any) => {
@@ -42,46 +75,39 @@ const useBPR =()=>{
             },
         },
         pagination:true,
-        // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
-        // rowSelection:'multiple',
         suppressRowClickSelection:true,
         components:customCellRenderers,
-        enableBrowserTooltips:true,
         defaultColDef:{
             floatingFilter: true,
             filter: "agMultiColumnFilter",
-            // tooltipComponent:'remarksToolTipComponent',
             cellDataType:false,
+            resizable:false,
             cellStyle:{
+                "flex":1,
+                'min-width':180,
                 'text-align':'center',
                 'height':'50px',
                 "font-style":"normal",
-            " font-variant":"normal",
-            " font-weight":"300",
-            " font-size":"20px",
-            " font-family":"Roboto",
-            "display":"block",
-            'text-overflow':'ellipsis',
-            'white-space':'nowrap'
+                " font-variant":"normal",
+                " font-weight":"300",
+                " font-size":"20px",
+                " font-family":"Roboto",
+                "display":"block",
+                'text-overflow':'ellipsis',
+                'white-space':'nowrap'
             },
-            onCellClicked:(params:any)=>{
-                console.log(params)
-                if(params.data.transit && params.data.transit.length>0){
-                    setActiveRow(params.data.transit)
-                    toggleSubGrid(true)
-                    return 
-                }
-                return setActiveRow(null)
-            }
         }
     }
 
+   
     return {
         isSideBarOpen,
         isSubGridOpen,
-        isLoading,
+        isLoading : isLoading || isBPRUILoading,
+        isError,
         activeRow,
         BPRColumns,
+        BPRRowData,
         agGridProps,
         toggleSubGrid,
         setActiveRow

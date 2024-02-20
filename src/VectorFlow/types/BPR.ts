@@ -9,3 +9,11 @@ export interface BPRField {
     CellAlignment:string
     Value:string
 }
+
+export interface BPRDataPayload{
+    filters:any[]
+    paginationParameter:{
+        pageNumber:number,
+        recordsPerPage:number
+    }
+}

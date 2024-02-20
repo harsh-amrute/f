@@ -166,23 +166,122 @@ export const BPRTagsCellRendererWrapper = styled.div`
     font-family:Roboto;
     letter-spacing: 0px;
     position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
 `
 
 
 export const BPRRemarksCellRendererWrapper = styled.div`
-    position:relative;
     width:100%;
     height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+`
+
+export const BPRSubmitRemarkInput = styled.input`
+    height:30px;
+`
+
+export const BPRRemarkToolTipTextArea = styled.textarea`
+    min-width:240px;
+    max-width:240px;
+    min-height:100px;
+    max-height:100px;
+`
+
+export const BPRRemarkToolTipButtonGroup = styled.div`
+    display:flex;
+    justify-content:flex-end;
+    width:100%;
+    margin-top:5px;
+`
+
+export const  BPRRemarkToolTipButton = styled.button`
+    height:25px;
+    border-radius:4px;
+    padding:2px 7px;
+    background-color:white;
+    font-size:11px;
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
 `
 
 export const BPRRemarksToolTipWrapper = styled.div`
-    position:absolute;
-    height:400px;
-    width:400px;
-    background-color:red;
+
+    position:fixed;
+
+    background-color:white;
+    padding:10px;
     z-index:100000;
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+`
+
+export const BPRRemarksToolTipContent = styled.div`
+    height:100%;
+    width:100%;
+    box-shadow:inherit;
+    padding:10px;
+    overflow-y:auto;
+`
+
+export const BPRRemarksToolTipContentHeader = styled.p`
+    text-align:left;
+    font-weight:500;
+`
+export const BPRRemarksToolTipContentColumnContainer = styled.div`
+    border-top:solid gray 1px;
+    border-bottom:solid gray 1px;
+    display:flex;
+`
+
+export const BPRRemarksToolTipContentColumn = styled.div`
+    margin-right:10px;
+    text-align:left;
+`
+
+export const BPRRemarksToolTipContentRowContainer = styled.div`
+    display:flex;
+    flex-direction:column;
+    
+   
+`
+
+export const BPRRemarksToolTipContentRow = styled.div`
+    display:flex;
+    flex-direction:row;
+    gap:10px;
+    border-bottom:dotted gray 3px;
+    &:last-child {
+        border-bottom:none;
+    }
+
+`
+
+export const BPRRemarksToolTipContentRowCell = styled.p`
+    width:100%;
+    white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word; 
+  text-align:left;
+  line-height:normal;
+  display:flex;
+  flex-direction:column;
+  
+`
+
+export const BPRColorCellRendererIcon = styled.img`
+    height:20px;
+    width:20px;
+    cursor:pointer;
+`
+
+export const BPRRemarksToolTipContentRowNameCellSection = styled.div`
+    margin-bottom:5px;
+    color:gray;
+`
+
+export const BPRRemarksToolTipContentRowDataCellSection = styled.div`
+    margin-bottom:5px;
 `

@@ -1512,6 +1512,23 @@ export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):
   return result
 }
 
+export const createIconColumn = (params:any):ColDef=>{
+
+  const {
+    id,
+    label,
+    cellRenderer
+  } = params
+
+  return{
+    width:40,
+    colId:id,
+    headerName:label,
+    cellRenderer:cellRenderer,
+    floatingFilter:false
+  }
+}
+
 export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
 
   if(!fields || fields.length<1){
@@ -1523,15 +1540,21 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
   const BPRSpecificColumns:ColDef[] =[
     {
       colId:'remarks',
-      field:'ramarks',
+      field:'remarks',
       headerName:'Remarks',
-      tooltipField:"tags"
-      // tooltipComponent:'remarksToolTipComponent'
+     cellRenderer:'submitRemarkCellRenderer',
+     cellStyle:{
+      overflow:'visible'
+    }
     },
     {
       colId:'rh',
       field:'rh',
       headerName:'Remark History',
+      cellRenderer:'remarksCellRenderer',
+      cellStyle:{
+        overflow:'visible'
+      }
     }
   ]
 
@@ -1549,7 +1572,8 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
         field:f.Col_Code,
         headerName:f.Header,
         hide:!f.Visible,
-        cellRenderer:'colorTechCellRenderer'
+        cellRenderer:'colorTechCellRenderer',
+        tooltipField:f.Col_Code
       }
     }
     if(f.Col_Code==='EcoPen'){
@@ -1558,15 +1582,17 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
         field:f.Col_Code,
         headerName:f.Header,
         hide:!f.Visible,
-        cellRenderer:'colorEcoCellRenderer'
+        cellRenderer:'colorEcoCellRenderer',
+        tooltipField:f.Col_Code
       }
     }
     return{
       colId:f.Col_Code,
       field:f.Col_Code,
       headerName:f.Header,
-      hide:!f.Visible
+      hide:!f.Visible,
+      tooltipField:f.Col_Code
     }
   })
-  return [tagsColDef,...result,...BPRSpecificColumns]
+  return [createIconColumn({id:'graph',label:'',celLRenderer:''}),tagsColDef,...result,...BPRSpecificColumns]
 }
