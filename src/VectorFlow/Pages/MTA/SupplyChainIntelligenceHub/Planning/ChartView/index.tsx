@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
 import MonitorGITChildLocationWise from "../MonitorGoodsInTransit/Child/LocationWise";
 import MonitorGITChildCustom from "../MonitorGoodsInTransit/Child/Custom";
+import MonitorGITChildTransporterWise from '../MonitorGoodsInTransit/Child/TransporterWise';
 
 interface ChartViewProps {
     category:string,
@@ -21,6 +21,13 @@ const ChartView = ({category,currentTab,currentGraphData}:ChartViewProps) => {
                         />
                     )
                 }
+                if(currentTab === 'transporterWise'){
+                    return (
+                        <MonitorGITChildTransporterWise
+                            data={currentGraphData ? currentGraphData['transporterWise']:[]}
+                        />
+                    )
+                }
                 if(currentTab === 'custom'){
                     return (
                         <MonitorGITChildCustom
@@ -28,9 +35,13 @@ const ChartView = ({category,currentTab,currentGraphData}:ChartViewProps) => {
                         />
                     )
                 }
+                break;
+            case 'ExpediteFromParent':
+                return <></>    
+            case 'ExcessInventory':
                 return <></>
-                
-                
+            case 'OrderFulfillment':
+                return <></>
             default:
                 return <></>
         }

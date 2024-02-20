@@ -4,6 +4,7 @@ import SelectCategory from "../../../../../components/VectorFLOW/layouts/SelectC
 import usePlanning from "./usePlanning";
 import VFOverlay from "../../../.././../components/VectorFLOW/commons/VFOverlay";
 import ChartView from "./ChartView";
+import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 
 const Planning = () => {
 
@@ -15,7 +16,8 @@ const Planning = () => {
         currentGraphData,
         currentTab,
         currentView,
-        onMonitorChildClick
+        onMonitorChildClick,
+        onFloatingTabChange
     } = usePlanning();
 
     const renderView = () => {
@@ -59,6 +61,29 @@ const Planning = () => {
             {
                 !isSelectCategoryOpen &&
                 <>
+                    <div style={{display:'flex',justifyContent:'center',marginBottom:'20px'}}>
+                        <VFFloatingTab
+                            tabs={[
+                                {
+                                    id:'locationWise',
+                                    label:'Location-Wise',
+                                    value:'locationWise'
+                                },
+                                {
+                                    id:'transporterWise',
+                                    label:'Transporter-Wise',
+                                    value:'transporterWise'
+                                },
+                                {
+                                    id:'custom',
+                                    label:'Custom Screens',
+                                    value:'custom'
+                                }
+                            ]}
+                            handleClick={onFloatingTabChange}
+                        />
+                    </div>
+                    
                     {renderView()}
                 </>
             }

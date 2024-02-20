@@ -75,6 +75,7 @@ export const SCCol8 = styled.div<{ width: any, hidePadding:boolean }>`
   padding-left: ${(props)=> props.hidePadding ? 0 : 50}px;
   transition: ${customTransition};
   zoom:0.75;
+  // overflow:scroll;
 
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
       .size.desktop}) {

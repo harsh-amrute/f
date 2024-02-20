@@ -1,4 +1,4 @@
-import { useQuery,useMutation } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { PlanningService } from './api'
 
 
@@ -15,9 +15,9 @@ export const useGetPlanningDataCount = ()=>{
     })
   }
 
-export const useGetPlanningData = ()=>{
+export const useGetPlanningDataGraph = ()=>{
     return useMutation(async(body:any)=>{
-        return await PlanningService.getPlanningData(body);
+        return await PlanningService.getPlanningDataGraph(body);
     })
 }
 

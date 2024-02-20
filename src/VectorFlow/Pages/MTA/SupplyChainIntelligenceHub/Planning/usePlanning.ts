@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
-import { useGetPlanningDataCount,useGetPlanningData } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
+import { useGetPlanningDataCount,useGetPlanningDataGraph } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 import { PlanningCategory, PlanningCounts } from "../../../../types/MTA"
 const usePlanning = ()=>{
 
@@ -20,7 +20,7 @@ const usePlanning = ()=>{
 
     const {mutateAsync:getPlanningDataCount} = useGetPlanningDataCount();
 
-    const {mutateAsync:getPlanningData} = useGetPlanningData();
+    const {mutateAsync:getPlanningDataGraph} = useGetPlanningDataGraph();
 
     const [isOverlayVisible,setIsOverlayVisible] = useState(false);
 
@@ -30,7 +30,7 @@ const usePlanning = ()=>{
 
     const [currentTab,setCurrentTab] = useState<string>('');
 
-    const [currentView,setCurrentView] = useState<string>('');
+    const [currentView,setCurrentView] = useState<string>('chart');
 
     useEffect(()=>{
         fetchPlanningDataCount();
@@ -72,11 +72,11 @@ const usePlanning = ()=>{
                 type:'child',
                 filters:[]
             }
-            const result = await getPlanningData(body);
+            const result = await getPlanningDataGraph(body);
             console.log(result)
             setIsSelectCategoryOpen(false);
             setCurrentGraphData(result.data.data)
-            setCurrentTab('custom');
+            setCurrentTab('locationWise');
             toast.dismiss(toastId);
             notifySuccess("Graph Details Fetched Successfully")
 
@@ -85,9 +85,11 @@ const usePlanning = ()=>{
             toast.dismiss();
             notifyError("Something Went Wrong")
         }
-        
 
+    }
 
+    const onFloatingTabChange = (tab:any) => {
+        setCurrentTab(tab.value);
     }
 
     return {
@@ -98,7 +100,8 @@ const usePlanning = ()=>{
         currentGraphData,
         currentTab,
         currentView,
-        onMonitorChildClick
+        onMonitorChildClick,
+        onFloatingTabChange
     }
 
 

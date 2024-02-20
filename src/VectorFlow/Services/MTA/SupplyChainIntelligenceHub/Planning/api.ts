@@ -4,13 +4,13 @@ import axios from 'axios'
 export namespace PlanningService {
 
     export const getPlanningDataCount = async (body:any) => {
-        return axios.post('https://ddd9ea92-1351-4abf-876a-b4f291f17cf5.mock.pstmn.io' + `/GetPlanningDataCount`,body,{
+        return axios.post('https://c8a08519-dbab-4e46-a1d5-e76363b0d7c8.mock.pstmn.io' + `/GetPlanningDataCount`,body,{
             headers: { 'Content-Type': 'application/json' }
           })
       }
 
-    export const getPlanningData = async (body:any) => {
-        return axios.post('https://ddd9ea92-1351-4abf-876a-b4f291f17cf5.mock.pstmn.io' + `/GetPlanningDataGraph`,body,{
+    export const getPlanningDataGraph = async (body:any) => {
+        return axios.post('https://c8a08519-dbab-4e46-a1d5-e76363b0d7c8.mock.pstmn.io' + `/GetPlanningDataGraph`,body,{
             headers: { 'Content-Type': 'application/json' }
             })
     }

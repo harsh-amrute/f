@@ -1,4 +1,4 @@
-import React, { useEffect,useRef, useMemo } from "react";
+import {useRef, useMemo } from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import "./styles.css";
@@ -16,38 +16,49 @@ interface MonitorGITChildLocationWiseProps{
 
 const MonitorGITChildLocationWise = ({data}:MonitorGITChildLocationWiseProps) => {
 
-    const ref = useRef<GridRef>();
-    console.log(data['maxTechBlackRedColumn']);
+    const refGraph1 = useRef<GridRef>();
+    const refGraph2 = useRef<GridRef>();
 
     const coldefs:ColDef[] = [
         {
             field:'ln',
             headerName:'Location Name',
-            colId:'ln'
+            colId:'ln',
         },
         {
             field:'d',
             headerName:'Delay',
-            colId:'d'
+            colId:'d',
         },
         {
             field:'spd',
             headerName:'Super Delay',
-            colId:'spd'
+            colId:'spd',
         }
     ]
 
     const generateChart = () => {
-        const container = document.getElementById('LocationWiseGraph1') as HTMLElement
-        ref.current?.api.createRangeChart({
+        const container1 = document.getElementById('LocationWiseGraph1') as HTMLElement
+        refGraph1.current?.api.createRangeChart({
           chartType:'stackedColumn',
           cellRange: {
-            columns: ['ln', 'spd', 'd'],
+            columns: ['ln','spd', 'd'],
             rowStartIndex:0,
             rowEndIndex:9
           },
-          chartContainer:container
+          chartContainer:container1
         })
+
+        // const container2 = document.getElementById('LocationWiseGraph2') as HTMLElement
+        // refGraph2.current?.api.createRangeChart({
+        //   chartType:'stackedColumn',
+        //   cellRange: {
+        //     columns: ['ln', 'spd', 'd'],
+        //     rowStartIndex:0,
+        //     rowEndIndex:9
+        //   },
+        //   chartContainer:container2
+        // })
       }
 
       const getChartToolbarItems:any = () => ['chartDownload'];
@@ -70,7 +81,7 @@ const MonitorGITChildLocationWise = ({data}:MonitorGITChildLocationWiseProps) =>
 
                         }
                     },
-                    number:{
+                    series:{
                         title:{
                             enabled:true,
                             text:"Count of SKUs",
@@ -94,22 +105,26 @@ const MonitorGITChildLocationWise = ({data}:MonitorGITChildLocationWiseProps) =>
         'The graph illustrates the top 10 receiving locations having the maximum no. of SKUs in Tech Black/Red (shortage of on-hand inventory) experiencing high transport ageing (Transportation Time > Standard Lead Time)',
         'Care needs to be taken to reduce the transportation time in these locations or adjust the RLTs for Norm calculation',
         'Super Delay : Transportation Lead Time >= 1.5 x Standard Lead Time',
-        'Delay Transportation Lead Time > Standard Lead Time'
+        'Delay : Transportation Lead Time > Standard Lead Time'
+      ]
+
+      const graph2 = [
+        'This box plot graph displays the statistical distribution of delay days in transport for various locations. Each box represents the range of delay days as on today'
       ]
     
     
     return(
         <>
             <Allotment>
-                <Allotment.Pane>
-                    <SCChartContainer>
+                <Allotment.Pane preferredSize={1000}>
+                    <SCChartContainer height={547}>
                         <SCChartHeaderContainer>
                             <SCChartHeader>Top 10 Locations: Max Tech Black/Red SKUs Along With High Transport Ageing</SCChartHeader>
                         </SCChartHeaderContainer>
                         <SCHorizontalDivider/>
                         <div style={{display:'none'}}>
                             <VFTable
-                                ref={ref}
+                                ref={refGraph1}
                                 columnDefs={coldefs}
                                 rowData={data['maxTechBlackRedColumn']}
                                 enableCharts={true}
@@ -130,11 +145,42 @@ const MonitorGITChildLocationWise = ({data}:MonitorGITChildLocationWiseProps) =>
                         </div>
                         <div id="LocationWiseGraph1"></div>
                     </SCChartContainer>
-                    <VFInfoTip text={graph1}/>
-                    
+                    <div style={{marginLeft:'10px',marginRight:'10px'}}>
+                        <VFInfoTip text={graph1}/>
+                    </div>
                 </Allotment.Pane>
                 <Allotment.Pane>
-                    Rohan
+                    <SCChartContainer height={547}>
+                            <SCChartHeaderContainer>
+                                <SCChartHeader>Statistical Overview of Delay Days in Transport at Receiving Locations</SCChartHeader>
+                            </SCChartHeaderContainer>
+                            <SCHorizontalDivider/>
+                            <div style={{display:'none'}}>
+                                <VFTable
+                                    ref={refGraph2}
+                                    columnDefs={coldefs}
+                                    rowData={data['delayDaysStatisticalBox']}
+                                    enableCharts={true}
+                                    enableRangeSelection={true}
+                                    // onGridReady={generateChart}
+                                    getChartToolbarItems={getChartToolbarItems}
+                                    chartToolPanelsDef={
+                                        {
+                                            panels:[]
+                                        }
+                                    }
+                                    chartThemeOverrides={chartThemeOverrides}
+                                    chartThemes={['myCustomTheme']}
+                                    customChartThemes={{
+                                        'myCustomTheme':myCustomTheme
+                                    }}
+                                />
+                            </div>
+                            <div id="LocationWiseGraph2"></div>
+                    </SCChartContainer>
+                    <div style={{marginLeft:'10px',marginRight:'10px'}}>
+                        <VFInfoTip text={graph2}/>
+                    </div>
                 </Allotment.Pane>
             </Allotment>
         </>
