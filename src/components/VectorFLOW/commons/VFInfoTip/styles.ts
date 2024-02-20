@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const InfoWrapper=styled.div`
 height:auto;
-width:662px;
+width:100%;
 border: 1px dashed #BC3D81;
 border-radius: 6px;
 box-shadow: -5px 5px 15px #0000000F;

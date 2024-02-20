@@ -18,6 +18,7 @@
     "@types/react-lazy-load-image-component": "^1.5.2",
     "ag-grid-enterprise": "^30.2.1",
     "ag-grid-react": "^30.2.1",
+    "allotment": "^1.20.0",
     "axios": "^1.2.1",
     "chart.js": "^4.4.1",
     "chartjs-adapter-date-fns": "^3.0.0",

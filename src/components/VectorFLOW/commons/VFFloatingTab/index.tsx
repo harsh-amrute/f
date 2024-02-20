@@ -61,6 +61,7 @@ const VFFloatingTab = (props:VFFloatingTabProps)=>{
                         isActive={index===activeIndex}
                         key={index}
                         onClick={(e)=>onClick(e,index)}
+                        data-testid='floatingTabButton'
                     >
                         {t.label}
                     </VFFloatingTabButton>
