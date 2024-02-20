@@ -14,9 +14,9 @@ const useBPR =()=>{
     // const [activeRow,setActiveRow] = useState<any>()
 
 
-    //const {data,isLoading} = useGetBPRUIConfiguration()
+    const {data,isLoading} = useGetBPRUIConfiguration()
 
-    //const BPRColumns = mapBPRFieldsToColDefs(data?.data.data)
+    const BPRColumns = mapBPRFieldsToColDefs(data?.data.data)
     
 
     // const customCellRenderers = useMemo(() => ({
