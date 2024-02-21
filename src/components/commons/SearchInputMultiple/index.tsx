@@ -13,6 +13,7 @@ interface SelectSearchMultipleProps {
   icon?:any;
   maxToShow?:number;
   backgroundColor?:string;
+  
 }
 
 const SearchInputMultiple = ({
@@ -23,6 +24,7 @@ const SearchInputMultiple = ({
   handleListChild,
   disabled,
   icon,
+
   maxToShow = 1,
   backgroundColor = '#F2F2F2'
 }: SelectSearchMultipleProps) => {

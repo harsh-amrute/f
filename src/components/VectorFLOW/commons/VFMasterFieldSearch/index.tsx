@@ -2,6 +2,7 @@
 import {SearchInputMultiple} from '../../..'
 import {  FieldSearchWrapper } from "./styles"
 import {type Option} from '../../../../VectorFlow/types/MDM';
+import { CSSProperties } from 'react';
 
 
 interface VFMasterFieldSearchProps{
@@ -13,12 +14,14 @@ interface VFMasterFieldSearchProps{
     maxToShow:number,
     backgroundColor:string,
     disabled:boolean,
+    width?:string,
+    
 }
 
 const VFMasterFieldSearch = (props:VFMasterFieldSearchProps)=>{
 
     return(
-        <FieldSearchWrapper data-testid='search-wrapper'>
+        <FieldSearchWrapper data-testid='search-wrapper' style={{width:'100%'}}>
             <div data-testid="select-filter-input">
                 <SearchInputMultiple
                     {...props}
@@ -26,6 +29,7 @@ const VFMasterFieldSearch = (props:VFMasterFieldSearchProps)=>{
                     icon={SearchIcon}
                     maxToShow={props.maxToShow}
                     backgroundColor={props.backgroundColor}
+                    
                 />
                 </div>
         </FieldSearchWrapper>
