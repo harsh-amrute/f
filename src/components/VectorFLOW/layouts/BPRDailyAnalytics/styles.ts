@@ -1,0 +1,103 @@
+import styled from 'styled-components'
+
+export const BPRDailyAnalyticsWrapper = styled.div`
+    padding:10px;
+    
+`
+
+export const BPRDailyAnalyticsContainer = styled.div`
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    background: #383737 0% 0% no-repeat padding-box;
+    box-shadow: 0px 6px 12px #00000034;
+    padding:4px 8px;
+    border-radius:4px;
+`
+
+export const BPRDailyAnalyticsHeader = styled.div`
+   color:white; 
+   margin-bottom:6px;
+`
+
+export const BPRDailyAnalyticsTableContainer = styled.div`
+
+`
+
+export const BPRDailyAnalyticsTableHeaderContainer = styled.div`
+    display:flex;
+    flex-direction:row;
+    color:white;
+`
+
+export const BPRDailyAnalyticsTableHeader = styled.div`
+    width:100%;
+    text-align: center;
+    margin-bottom:5px;
+`
+
+export const BPRDailyAnalyticsTableRowContainer = styled.div`
+    display:flex;
+    flex-direction:column;
+`
+
+export const BPRDailyAnalyticsTableRow = styled.div`
+    display:flex;
+    flex-direction:row;
+    height: 26px;
+    border-radius: 4px ;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 12px #58585829;
+    margin-bottom:5px;
+    overflow:hidden;
+`
+
+export const BPRDailyAnalyticsTableCell = styled.div`
+    text-align:center;
+    position:relative;
+    width:100%;
+    height: 26px;
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    font-weight:500;
+    font-size:11px;
+    line-height:21px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #313131;
+    &:before{
+        content:'';
+        position:absolute;
+        right:0;
+        height:100%;
+        width:1px;
+    }
+`
+
+export const BPRDailyAnalyticsTableNoChangeWrapper = styled.div`
+    display:flex;
+    flex-direction:column;
+`
+
+export const BPRDailyAnalyticsTableChangeIcon = styled.img`
+    height:10px;
+    width:10px;
+`
+
+export const BPRDailyAnalyticStatusBar = styled.div`
+    display:flex;
+    align-items:center;
+
+`
+
+export const BPRDailyAnalyticStatusBarSection = styled.div`
+    width:100%;
+    font-family:Roboto;
+    font-weight:500;
+    font-size:12px;  
+    line-heigh:21px;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    text-align:center;
+`
