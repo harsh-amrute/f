@@ -70,10 +70,10 @@ const NavbarItem = ({
             )
           }
             {
-              listMenu.child.map((l:any)=>{
+              listMenu.child.map((l:any,index:number)=>{
                 if(l.child){
                   return(
-                    <RenderListMenu listMenu={l}/>
+                    <RenderListMenu listMenu={l} key={index}/>
                   )
                 }
                 return renderListMenuChild([l],toggle)

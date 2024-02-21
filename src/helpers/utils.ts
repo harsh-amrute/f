@@ -13,11 +13,12 @@ import {formatMDMDate} from './format';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
 import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import ConflictErrorToolTip from '../VectorFlow/Pages/MTA/MDM/ViewModify/ConflictErrorToolTip';
+import { BPRField } from '../VectorFlow/types/BPR';
 
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+  // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
   'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
   'u', 'v', 'w', 'x', 'y', 'z',
@@ -1509,4 +1510,109 @@ export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):
   });
 
   return result
+}
+
+export const createIconColumn = (params:any):ColDef=>{
+
+  const {
+    id,
+    label,
+    cellRenderer
+  } = params
+
+  return{
+    width:40,
+    minWidth:40,
+    colId:id,
+    headerName:label,
+    cellRenderer:cellRenderer,
+    floatingFilter:false
+  }
+}
+
+export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(params:any)=>void,onOpenRemarkHistory:(e:any,params:any)=>void):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BPRSpecificColumns:ColDef[] =[
+    {
+      colId:'remarks',
+      field:'remarks',
+      headerName:'Remarks',
+     cellRenderer:'submitRemarkCellRenderer',
+     cellRendererParams:{
+      onClick:onOpenSubmitRemark
+     },
+     cellStyle:{
+      overflow:'visible',
+      'min-width':180,
+    }
+    },
+    {
+      colId:'rh',
+      field:'rh',
+      headerName:'Remark History',
+      cellRenderer:'remarksCellRenderer',
+      
+      cellRendererParams:{
+        onClick:onOpenRemarkHistory
+       },
+      cellStyle:{
+        overflow:'visible',
+        'min-width':180,
+      }
+    }
+  ]
+
+  const tagsColDef:ColDef =  {
+    colId:'tags',
+    field:'tags',
+    headerName:"Tags",
+    cellRenderer:'tagsCellRenderer',
+    width:100
+  }
+
+  result =  fields.map((f:BPRField)=>{
+    if(f.Col_Code==='TechPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorTechCellRenderer',
+        tooltipField:f.Col_Code,
+        cellStyle:{
+          'min-width':180,
+        }
+      }
+    }
+    if(f.Col_Code==='EcoPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorEcoCellRenderer',
+        tooltipField:f.Col_Code,
+        cellStyle:{
+          'min-width':180,
+        }
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      tooltipField:f.Col_Code,
+      cellStyle:{
+        'min-width':180,
+      }
+    }
+  })
+  return [createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),tagsColDef,...result,...BPRSpecificColumns]
 }
