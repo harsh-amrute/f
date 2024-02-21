@@ -10,7 +10,6 @@
     border-radius: 30px;
     opacity: 1;
 }
-
 .custom-scrollbar::-webkit-scrollbar-thumb{
     width: 7px;
 /* UI Properties */

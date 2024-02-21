@@ -247,7 +247,7 @@ export const listMenuParent: any = [
       {
         name: "Supply Chain Intelligence Hub",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "//supply-chain-intelligence-hub",
+        url: "/supply-chain-intelligence-hub",
         role: ["IST Admin", "IST Requestor"],
         child:[
           {
