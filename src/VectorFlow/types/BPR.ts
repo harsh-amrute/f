@@ -1,4 +1,4 @@
-
+import { CSSProperties } from "react"
 
 export interface BPRField {
     Report_Name:string
@@ -16,4 +16,23 @@ export interface BPRDataPayload{
         pageNumber:number,
         recordsPerPage:number
     }
+}
+
+
+export interface BPRSubmitRemarkToolTipProps{
+    remark:string 
+    style:CSSProperties
+    setRemark:(params:any)=>void
+    onSuccess:()=>void
+    onClose:()=>void
+}
+
+export interface BPRRemarkHistoryToolTipProps{
+    remarkHistory:any[] 
+    style:CSSProperties
+    onClose:()=>void
+}
+
+export interface SubmitBPRRemarkPayload{
+    remark:string
 }

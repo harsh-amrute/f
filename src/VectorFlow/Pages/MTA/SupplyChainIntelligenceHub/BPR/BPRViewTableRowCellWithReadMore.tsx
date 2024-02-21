@@ -1,9 +1,9 @@
-import { Tooltip } from "react-tooltip"
-import { generateRandomId } from "../../../../../helpers/utils"
-import { BPRViewTableRowCell } from "./styles"
+import { BPRViewTableRowCell,BPRViewTableToolTip } from "./styles"
+
+import Portal from '../../../../../components/VectorFLOW/layouts/Portal'
 
 import 'react-tooltip/dist/react-tooltip.css'
-import { useState } from "react"
+import React, { CSSProperties, useState } from "react"
 
 
 interface BPRViewTableRowCellWithReadMore{
@@ -17,13 +17,34 @@ const BPRViewTableRowCellWithReadMore = (props:BPRViewTableRowCellWithReadMore)=
         value
     } = props
 
-    const [toolTipId,setToolTipId] = useState(generateRandomId())
+    const [isOpen,setIsOpen] = useState(false)
+
+    const [toolTipPosition,setoolTipPosition] = useState<CSSProperties>({
+       
+    })
+
+    const onMouseIn = (e:React.MouseEvent<HTMLElement>)=>{
+        const {top,left} = e.currentTarget.getBoundingClientRect()
+        setoolTipPosition({
+            top:top * 0.75 -40,
+            left:left
+        })
+        setIsOpen(true)
+    }
+
+    const onMouseOut = ()=>setIsOpen(false)
 
     return(
         <BPRViewTableRowCell style={{display:'flex',flexDirection:"row",position:'relative'}}>
             <p >{value.slice(0,15)}...</p>
-            <a style={{color:'#BC3D81',cursor:'default'}}  data-tooltip-id={toolTipId} data-tooltip-content={value} >Read full </a>
-            <Tooltip style={{zIndex:30000,whiteSpace:"break-spaces",textAlign:"left"}} id={toolTipId} place='left' />
+            <p style={{color:'#BC3D81',cursor:'default'}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut}>Read full </p>
+            {isOpen && (
+                <Portal wrapperId="viewtable">
+                    <BPRViewTableToolTip onMouseEnter={()=>setIsOpen(true)} onMouseLeave={()=>setIsOpen(false)} style={{top:toolTipPosition.top,right:40}}>
+                        {value}
+                    </BPRViewTableToolTip>
+                </Portal>
+            )}
         </BPRViewTableRowCell>
     )
 }

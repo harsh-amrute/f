@@ -1,29 +1,39 @@
-import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
-import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
+
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
-import { BPRLayout,BPRTaskBar } from "./styles"
+import { BPRLayout } from "./styles"
 import BPRViewTable from "./BPRViewTable"
-import "allotment/dist/style.css";
+
 import { Allotment } from "allotment"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import useBPR from "./useBPR"
+import BPRSubmiRemarkToolTip from "./BPRSubmitRemarkToolTip"
 
-
+import "allotment/dist/style.css";
+import BPRRemarkHistoryToolTip from "./BPRRemarkHistoryToolTip"
 
 
 const BPR = ()=>{
 
   const {
-    isSideBarOpen,
+    // isSideBarOpen,
     isSubGridOpen,
     isLoading ,
     activeRow,
     BPRColumns,
     BPRRowData,
     agGridProps,
+    submitRemarkToolTipPosition,
+    isSubmitRemarkToolTipOpen,
+    remark,
+    isRemarkHistoryToolTipOpen,
+    remarkHistoryToolipPosition,
+    remarkHistory,
+    updateRemark,
+    onCloseSubmitRemark,
+    onSubmitRemark,
+    onCloseRemarkHistory
 
 } = useBPR()
-
   
     if(isLoading){
       return (
@@ -33,7 +43,7 @@ const BPR = ()=>{
 
     return(
         <BPRLayout>
-            <BPRTaskBar style={{width:isSideBarOpen?'77%':'97%'}}>
+            {/* <BPRTaskBar style={{width:isSideBarOpen?'77%':'97%'}}>
                 <VFButtonOutline
                     themeUi="NOIRFUSION"
                     onClick={()=>console.log('')}
@@ -46,7 +56,7 @@ const BPR = ()=>{
                 >
                     Edit Filter
                 </VFButton>
-            </BPRTaskBar>
+            </BPRTaskBar> */}
             <div style={{height:'100vh'}}>
             <Allotment vertical defaultSizes={[400,100]}>
               <Allotment.Pane >
@@ -107,7 +117,23 @@ const BPR = ()=>{
               </Allotment.Pane>
             </Allotment>
             </div>
-            
+            {isSubmitRemarkToolTipOpen && (
+                <BPRSubmiRemarkToolTip
+                    remark={remark}
+                    setRemark={updateRemark}
+                    style={submitRemarkToolTipPosition}
+                    onSuccess={onSubmitRemark}
+                    onClose={onCloseSubmitRemark}
+                />
+            )}
+
+            {isRemarkHistoryToolTipOpen && (
+                <BPRRemarkHistoryToolTip
+                    remarkHistory={remarkHistory}
+                    onClose={onCloseRemarkHistory}
+                    style={remarkHistoryToolipPosition}
+                />
+            )}
         </BPRLayout>
     )
 }

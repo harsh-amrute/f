@@ -1522,6 +1522,7 @@ export const createIconColumn = (params:any):ColDef=>{
 
   return{
     width:40,
+    minWidth:40,
     colId:id,
     headerName:label,
     cellRenderer:cellRenderer,
@@ -1529,7 +1530,7 @@ export const createIconColumn = (params:any):ColDef=>{
   }
 }
 
-export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
+export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(params:any)=>void,onOpenRemarkHistory:(e:any,params:any)=>void):ColDef[]=>{
 
   if(!fields || fields.length<1){
     return []
@@ -1543,8 +1544,12 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
       field:'remarks',
       headerName:'Remarks',
      cellRenderer:'submitRemarkCellRenderer',
+     cellRendererParams:{
+      onClick:onOpenSubmitRemark
+     },
      cellStyle:{
-      overflow:'visible'
+      overflow:'visible',
+      'min-width':180,
     }
     },
     {
@@ -1552,8 +1557,13 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
       field:'rh',
       headerName:'Remark History',
       cellRenderer:'remarksCellRenderer',
+      
+      cellRendererParams:{
+        onClick:onOpenRemarkHistory
+       },
       cellStyle:{
-        overflow:'visible'
+        overflow:'visible',
+        'min-width':180,
       }
     }
   ]
@@ -1562,7 +1572,8 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
     colId:'tags',
     field:'tags',
     headerName:"Tags",
-    cellRenderer:'tagsCellRenderer'
+    cellRenderer:'tagsCellRenderer',
+    width:100
   }
 
   result =  fields.map((f:BPRField)=>{
@@ -1573,7 +1584,10 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
         headerName:f.Header,
         hide:!f.Visible,
         cellRenderer:'colorTechCellRenderer',
-        tooltipField:f.Col_Code
+        tooltipField:f.Col_Code,
+        cellStyle:{
+          'min-width':180,
+        }
       }
     }
     if(f.Col_Code==='EcoPen'){
@@ -1583,7 +1597,10 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
         headerName:f.Header,
         hide:!f.Visible,
         cellRenderer:'colorEcoCellRenderer',
-        tooltipField:f.Col_Code
+        tooltipField:f.Col_Code,
+        cellStyle:{
+          'min-width':180,
+        }
       }
     }
     return{
@@ -1591,8 +1608,11 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
       field:f.Col_Code,
       headerName:f.Header,
       hide:!f.Visible,
-      tooltipField:f.Col_Code
+      tooltipField:f.Col_Code,
+      cellStyle:{
+        'min-width':180,
+      }
     }
   })
-  return [createIconColumn({id:'graph',label:'',celLRenderer:''}),tagsColDef,...result,...BPRSpecificColumns]
+  return [createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),tagsColDef,...result,...BPRSpecificColumns]
 }

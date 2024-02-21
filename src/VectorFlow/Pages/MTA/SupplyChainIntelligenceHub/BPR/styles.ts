@@ -211,24 +211,45 @@ export const  BPRRemarkToolTipButton = styled.button`
 export const BPRRemarksToolTipWrapper = styled.div`
 
     position:fixed;
-
-    background-color:white;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 6px 12px #77777729;
+    border: 0.4000000059604645px solid #707070;
+    border-radius: 2px;
     padding:10px;
     z-index:100000;
-    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 `
 
 export const BPRRemarksToolTipContent = styled.div`
     height:100%;
     width:100%;
-    box-shadow:inherit;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 6px 12px #77777729;
+    border: 0.4000000059604645px solid #707070;
+    border-radius: 2px;
     padding:10px;
-    overflow-y:auto;
+    
 `
 
-export const BPRRemarksToolTipContentHeader = styled.p`
-    text-align:left;
+export const BPRRemarksToolTipContentHeaderContainer = styled.div`
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:5px;
+`
+export const BPRRemarkHistoryCloseIcon = styled.img`
+    height:10px;
+    width:10px;
+    cursor:pointer;
+`
+
+export const BPRRemarksToolTipContentHeader = styled.div`
     font-weight:500;
+    font-size:11px;
+    line-height:19px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #464646;
 `
 export const BPRRemarksToolTipContentColumnContainer = styled.div`
     border-top:solid gray 1px;
@@ -239,12 +260,18 @@ export const BPRRemarksToolTipContentColumnContainer = styled.div`
 export const BPRRemarksToolTipContentColumn = styled.div`
     margin-right:10px;
     text-align:left;
+    font-weight:300;
+    font-size:10px;
+    line-height:19px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #464646;
 `
 
 export const BPRRemarksToolTipContentRowContainer = styled.div`
     display:flex;
     flex-direction:column;
-    
+    height:270px;
    
 `
 
@@ -265,7 +292,10 @@ export const BPRRemarksToolTipContentRowCell = styled.p`
   word-wrap: break-word;
   overflow-wrap: break-word; 
   text-align:left;
-  line-height:normal;
+  font-weight:400;
+    font-size:10px;
+    font-family:Roboto;
+    color: #464646;
   display:flex;
   flex-direction:column;
   
@@ -284,4 +314,25 @@ export const BPRRemarksToolTipContentRowNameCellSection = styled.div`
 
 export const BPRRemarksToolTipContentRowDataCellSection = styled.div`
     margin-bottom:5px;
+`
+export const BPRViewTableToolTip = styled.div`
+    position:fixed;
+    color:white;
+    background: #4E4E4E 0% 0% no-repeat padding-box;
+    box-shadow: 0px 6px 12px #38383829;
+    border-radius:4px;
+    font-weight:500;
+    font-size:10px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    max-width:200px;
+    padding:5px;
+    z-index:10000;
+`
+
+export const BPRGraphCellRendererWrapper = styled.img`
+    height:20px;
+    width:20px;
+    cursor:pointer;
 `

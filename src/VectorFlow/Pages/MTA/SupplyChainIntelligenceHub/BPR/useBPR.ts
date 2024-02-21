@@ -1,10 +1,13 @@
-import { useState,useMemo, useEffect } from "react"
+import { useState,useMemo, useEffect, CSSProperties } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 
-import { useGetBPRData, useGetBPRUIConfiguration } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub"
+import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { useUserData } from "../../../../../context"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
 import { mapBPRFieldsToColDefs } from "../../../../../helpers/utils"
+import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
+import { toast } from "react-toastify"
+import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
 
 const useBPR =()=>{
 
@@ -12,20 +15,27 @@ const useBPR =()=>{
 
     const [isSubGridOpen,toggleSubGrid] = useState<boolean>(false)
     const [activeRow,setActiveRow] = useState<any>()
-    const [activeRowIndex,setActiveRowIndex] = useState<number | null>(null)
-    const [isLoading,setIsLoading] = useState<boolean>(true)
     const [BPRRowData,setBPRRowData] = useState<any[]>([])
-  
+
+
+    const [submitRemarkToolTipPosition,setSubmitRemarkToolipPosition] = useState<CSSProperties>({})
+    const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
+
+    const [isSubmitRemarkToolTipOpen,setIsSubmitRemarkToolTipOpen] = useState<boolean>(false)
+    const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
+
+    const [remark,setRemark] = useState<string>('')
+    const [remarkHistory,setRemarkHistory] = useState<any[]>([])
   
     const {data,isLoading:isBPRUILoading,isError} = useGetBPRUIConfiguration()
     
   
-    const {mutateAsync:getBPRData} = useGetBPRData()
+    const {mutateAsync:getBPRData,isLoading:isBPRDataLoading} = useGetBPRData()
 
-  
-    const BPRColumns = mapBPRFieldsToColDefs(data?.data.data)
+    const {mutateAsync:submitRemark} = useSubmitBPRRemark()
 
-  
+    const {mutateAsync:getRemarkHistory} = useGetBPRRemarkHistory()
+
     useEffect(()=>{
         async function getBPRRowData(){
             const rowData =await  getBPRData({
@@ -36,14 +46,12 @@ const useBPR =()=>{
                 }
             })
             setBPRRowData(rowData.data.data)
-            setIsLoading(false)
         }
         getBPRRowData()
     },[])
-    
   
     const customCellRenderers = useMemo(() => ({
-        grapCellRenderer:'',
+        grapCellRenderer:BPRGraphCellRenderer,
         colorTechCellRenderer:BPRTechColorCellRenderer,
         colorEcoCellRenderer:BPREcoColorCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
@@ -84,7 +92,6 @@ const useBPR =()=>{
             resizable:false,
             cellStyle:{
                 "flex":1,
-                'min-width':180,
                 'text-align':'center',
                 'height':'50px',
                 "font-style":"normal",
@@ -99,18 +106,92 @@ const useBPR =()=>{
         }
     }
 
+    const updateRemark = (e:any)=>setRemark(e.currentTarget.value)
+    
+
+    const onSubmitRemark = async()=>{
+        
+        try{
+            if(remark.length===0) throw new Error("Remark cannot be empty")
+            const toastId = notifyLoader("Submitting Remark")
+            const {data} = await submitRemark({
+                remark:"The SKU is having trouble with the order delivery please help us with suitable actions"
+            })
+            toast.dismiss(toastId)
+            // if(data.status!==200)notifyError('Something went wrong')
+            
+            notifySuccess(data.msg)
+            setRemark('')
+            
+            setIsSubmitRemarkToolTipOpen(false)
+        }catch(err:any){
+            notifyError(err.message)
+        }
+    }
+    
+
+    const onCloseSubmitRemark =()=>setIsSubmitRemarkToolTipOpen(false)
+
+
+    const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
+
+
+    const onOpenSubmitRemark = (e:React.MouseEvent<HTMLElement>)=>{
+        const {top,left} = e.currentTarget.getBoundingClientRect()
+        setSubmitRemarkToolipPosition({
+            top: top * 0.75 * 0.75,
+            left: left * 0.75 * 0.75 ,
+        })
+        setIsSubmitRemarkToolTipOpen(true)
+
+    }
+
+    const onOpenRemarkHistory = async(e:React.MouseEvent<HTMLElement>,row:any)=>{
+        try{
+            setIsRemarkHistoryToolTipOpen(false)
+            const toastId = notifyLoader("Getting remark history")
+            const {top,left} = e.currentTarget.getBoundingClientRect()
+            setRemarkHistoryToolipPosition({
+                top: top * 0.75 * 0.75,
+                left: left * 0.75 * 0.75 ,
+                height:360,
+                width:350
+            })
+            const {data} = await getRemarkHistory(row)
+            toast.dismiss(toastId)
+            setRemarkHistory(data.data)
+            setIsRemarkHistoryToolTipOpen(true)
+        }catch(err:any){
+            notifyError(err.message)
+        }
+    }
+
+    const BPRColumns = mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory)
+
    
     return {
         isSideBarOpen,
         isSubGridOpen,
-        isLoading : isLoading || isBPRUILoading,
+        isLoading : isBPRDataLoading || isBPRUILoading,
         isError,
         activeRow,
         BPRColumns,
         BPRRowData,
         agGridProps,
+        remark,
+        remarkHistory,
+        isRemarkHistoryToolTipOpen,
+        remarkHistoryToolipPosition,
+        isSubmitRemarkToolTipOpen,
+        submitRemarkToolTipPosition,
+        updateRemark,
+        setIsSubmitRemarkToolTipOpen,
+        setSubmitRemarkToolipPosition,
         toggleSubGrid,
-        setActiveRow
+        setActiveRow,
+        onSubmitRemark,
+        onCloseRemarkHistory,
+        onCloseSubmitRemark
     }
 }
 

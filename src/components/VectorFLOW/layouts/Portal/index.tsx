@@ -7,7 +7,7 @@ interface PortalProps {
   onClickAway?:()=>void
 }
 
-const PortalModal = ({ children, wrapperId }: PortalProps) => {
+const Portal = ({ children, wrapperId }: PortalProps) => {
   const [portalElement, setPortalElement] =useState < HTMLElement | null>(null);
 
   useLayoutEffect(() => {
@@ -44,4 +44,4 @@ const PortalModal = ({ children, wrapperId }: PortalProps) => {
   return createPortal(children, portalElement);
 };
 
-export default PortalModal;
+export default Portal;

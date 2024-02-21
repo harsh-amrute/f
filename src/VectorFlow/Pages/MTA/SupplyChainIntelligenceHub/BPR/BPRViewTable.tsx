@@ -1,7 +1,5 @@
 
 import { ColDef } from 'ag-grid-enterprise';
-import React from 'react';
-import { Tooltip } from 'react-tooltip';
 import BPRViewTableRowCellWithReadMore from './BPRViewTableRowCellWithReadMore';
 import {BPRViewTableWrapper,BPRViewTablePrefix,BPRViewTableGrid,BPRViewTableHeaderContainer,BPRViewTableHeader,BPRViewTableRowContainer,BPRViewTableRow,BPRViewTableRowCell} from './styles'
 
