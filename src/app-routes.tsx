@@ -24,6 +24,7 @@ import TaskStatus from './VectorFlow/Pages/MTA/MDM/TaskStatus'
 import TaskPendingForReview from './VectorFlow/Pages/MTA/MDM/TaskPendingForReview'
 
 import BPR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR'
+import Planning from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/Planning'
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
   const search = window.location.search
@@ -255,6 +256,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<DeleteRecord/>)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/planning',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<Planning/>)
         },
         ...getStoreTransferModuleRoutes()
       ]
