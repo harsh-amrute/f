@@ -177,7 +177,7 @@ const NavbarItem = ({
             <SCMenuLeft><RenderListMenu listMenu={menuItem}/></SCMenuLeft>
           )}
         </NavStyle.SCNavBox>
-        {isHide && pathname === "/supply-chain-intelligence-hub/BPR" && menuItem.id === 9 && (
+        {isHide && pathname === "/supply-chain-intelligence-hub/bpr" && menuItem.id === 9 && (
           <BPRDailyAnalytics
             colDefs={[
               {

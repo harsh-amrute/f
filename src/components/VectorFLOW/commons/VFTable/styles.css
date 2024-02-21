@@ -37,7 +37,6 @@
 
 .ag-row{
     overflow: visible;
-    z-index: 100;
 }
 
 .ag-header-row:nth-child(2){
