@@ -34,7 +34,7 @@ const ConflictErrorCellRenderer = (params:ConflictErrorCellRendererProps)=>{
     }
     return(
         <div style={{height:'100%',width:'100%'}}  onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={()=>setIsToolTipOpen(false)} >
-            <p  style={{color:getTextColor(),zIndex:-10,textOverflow:'ellipsis',display:"block"}}>
+            <p  style={{color:getTextColor(),zIndex:-10,textOverflow:'ellipsis',display:"block",overflow:"hidden"}}>
                 {params.value}           
             </p>
            {params.data.users && isToolTipOpen && (
