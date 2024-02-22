@@ -6,19 +6,19 @@ import { BPRDataPayload, SubmitBPRRemarkPayload } from '../../../../../VectorFlo
 export namespace BPRService {
 
   export const getBPRUIConfiguration = async () => {
-    return await axios.get(`https://c8a08519-dbab-4e46-a1d5-e76363b0d7c8.mock.pstmn.io/GetBPRUIConfiguration`,{
+    return await axios.get(`https://requestly.tech/api/mockv2/GetBPRUIConfiguration?username=user1708583815102&`,{
       headers:{ 'Content-Type': 'application/json' }
     });
   }
 
   export const getBPRData = async (payload:BPRDataPayload) => {
-    return await axios.post(`https://c8a08519-dbab-4e46-a1d5-e76363b0d7c8.mock.pstmn.io/GetBPRData`,payload,{
+    return await axios.post(`https://requestly.tech/api/mockv2/GetBPRData?username=user1708583815102&`,payload,{
       headers:{ 'Content-Type': 'application/json' }
     });
   }
 
   export const submitRemark = async (payload:SubmitBPRRemarkPayload) => {
-    return await axios.post(`https://c8a08519-dbab-4e46-a1d5-e76363b0d7c8.mock.pstmn.io/SubmitRemark`,payload,{
+    return await axios.post(`https://requestly.tech/api/mockv2/SubmitRemark?username=user1708583815102&`,payload,{
       headers:{ 'Content-Type': 'application/json' }
     });
   }
