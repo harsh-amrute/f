@@ -5,12 +5,19 @@ import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import useRRR from './useRRR';
 import { Allotment } from "allotment"
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 
 
 
 const RRR = () => {
 
- const { isSideBarOpen,BPRColumns} = useRRR();
+ const { isSideBarOpen,BPRColumns,agGridProps} = useRRR();
+
+//  if(isLoading){
+//   return(
+//     <VFLoader/>
+//   )
+//  }
 
   return (
     <RRRLayout>
@@ -37,7 +44,7 @@ const RRR = () => {
         <div style={{height:'100vf'}}>
 
         <VFTable
-                //{...agGridProps}
+                {...agGridProps}
                 columnDefs={BPRColumns}
                 rowData={[
                   {
