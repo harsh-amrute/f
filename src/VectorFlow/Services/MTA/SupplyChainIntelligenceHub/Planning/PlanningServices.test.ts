@@ -24,7 +24,7 @@ describe('Testing the MDMService',  () => {
         filters:[]
       }
       const response = await PlanningService.getPlanningDataCount(mockBody);
-      expect(mockedAxios.post).toHaveBeenCalledWith('https://c8a08519-dbab-4e46-a1d5-e76363b0d7c8.mock.pstmn.io/GetPlanningDataCount',mockBody,{
+      expect(mockedAxios.post).toHaveBeenCalledWith('https://requestly.tech/api/mockv2/GetPlanningDataCount?username=user1708583815102&',mockBody,{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
@@ -37,7 +37,7 @@ describe('Testing the MDMService',  () => {
           filters:[]
         }
         const response = await PlanningService.getPlanningDataGraph(mockBody);
-        expect(mockedAxios.post).toHaveBeenCalledWith('https://c8a08519-dbab-4e46-a1d5-e76363b0d7c8.mock.pstmn.io/GetPlanningDataGraph',mockBody,{
+        expect(mockedAxios.post).toHaveBeenCalledWith('https://requestly.tech/api/mockv2/GetPlanningDataGraph?username=user1708583815102&',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
         expect(response.status).toBe(200);
