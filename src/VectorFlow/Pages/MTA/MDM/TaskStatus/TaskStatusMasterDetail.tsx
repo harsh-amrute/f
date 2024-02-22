@@ -1,6 +1,6 @@
 import VFStepper,{StepItem} from "../../../../../components/VectorFLOW/commons/VFStepper"
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
-import { VFTaskStatusWrapper,VFTaskStatusContentWrapper, VFTaskStatusStepperWrapper, VFTastStatusDownloadWrapper, VFTaskStatusStepperLabel } from "./styles"
+import { VFTaskStatusWrapper,VFTaskStatusContentWrapper, VFTaskStatusStepperWrapper, VFTastStatusDownloadWrapper, VFTaskStatusStepperLabel,VFTaskStatusNoData } from "./styles"
 import { useUserData } from "../../../../../context"
 
 
@@ -174,14 +174,13 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
 
     return (
         <VFTaskStatusWrapper data-testid="task-status-master-detail">
-            {Approvers?.map((approver:any,index:number)=>{
+            {(Approvers && Approvers.length>0)?Approvers?.map((approver:any,index:number)=>{
                 return(
                     <VFTaskStatusContentWrapper key={index}>
                         <VFTaskStatusStepperWrapper gridFraction={gridFraction}>
                         <VFTaskStatusStepperLabel>{approver.Approver}</VFTaskStatusStepperLabel>
                             <VFStepper
                                 items={getStepperState(approver)}
-                                zoom={0.8}
                                 dashWidth="200px"
                             />
                             {showDisplayDownloadButton(approver.TaskStatus) && (
@@ -192,14 +191,19 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
                                 >
                                     <VFTastStatusDownloadWrapper>
                                         <img src="/assets/img/VectorFLOW/NMS/download-task-status.svg" height={25}/>
-                                        <p style={{marginLeft:10}}> Download</p>
+                                        <p style={{marginLeft:10,fontWeight:500}}> Download</p>
                                     </VFTastStatusDownloadWrapper>
                                 </VFButton>
                             )}
                         </VFTaskStatusStepperWrapper>
                     </VFTaskStatusContentWrapper>
                 )
-            })}
+            })
+            :
+            <VFTaskStatusNoData>
+                No data to show
+            </VFTaskStatusNoData>
+        }
         </VFTaskStatusWrapper>
     )
 }   

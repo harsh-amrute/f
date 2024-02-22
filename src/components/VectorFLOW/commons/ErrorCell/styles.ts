@@ -1,5 +1,8 @@
 import styled from 'styled-components'
 
+export const SCToolTipWrapper = styled.div`
+    position:fixed;
+`
 
 export const SCContainer = styled.div`
     height:36px;
@@ -36,3 +39,4 @@ export const SCErrorToolTipLi = styled.li`
         color:#B80000;
     }
 `
+
