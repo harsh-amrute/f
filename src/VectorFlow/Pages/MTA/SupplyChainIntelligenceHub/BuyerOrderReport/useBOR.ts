@@ -41,14 +41,22 @@ export const useBOR =()=>{
       },[])
 
       const getRecordsCount=async()=>{
-        const resultCount=await getBorDataCount("");
+            const payload={
+            filters:[],
+             paginationParameter: {
+        pageNumber: 1,
+    recordsPerPage: 50
+    }
+        }
+        const resultCount=await getBorDataCount(payload);
         setRecordCount(resultCount?.data?.recordCount);
       }
     
     const loadGridData = async (pageNo:any)=> {
         console.log(currentPage);
         const payload={
-            pageNumber:pageNo,recordsPerPage:rowsPerPage
+            filters:[],
+            paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
         }
         const result = await getBorData(payload);
         setRowData(result?.data.data)
@@ -73,6 +81,7 @@ export const useBOR =()=>{
             },
         },
          pagination:false,
+        // pivotMode:true,
          defaultColDef:{
             floatingFilter: true,
             filter: "agMultiColumnFilter",

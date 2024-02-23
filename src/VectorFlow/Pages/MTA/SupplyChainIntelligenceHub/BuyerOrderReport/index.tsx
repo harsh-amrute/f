@@ -30,7 +30,7 @@ const BuyerOrderReport = ()=>{
 
     return(
         <BORLayout>
-            <BORTaskBar style={{width:'74%'}}>
+            {/* <BORTaskBar style={{width:'74%'}}>
                 <VFButtonOutline
                     themeUi="NOIRFUSION"
                     onClick={()=>console.log('')}
@@ -43,7 +43,7 @@ const BuyerOrderReport = ()=>{
                 >
                     Edit Filter
                 </VFButton>
-            </BORTaskBar>
+            </BORTaskBar> */}
             <div style={{height:'100vh'}}>
            
               <VFTable
