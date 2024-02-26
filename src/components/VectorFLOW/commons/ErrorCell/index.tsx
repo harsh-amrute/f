@@ -10,7 +10,7 @@ const ErrorCell = (props:ICellRendererParams)=>{
 
     const message = props.data.error;
 
-    const messages = message.split(/(?<=\.)\s+/)
+    const messages = message?.split(/(?<=\.)\s+/) 
     const getFomattedMessage = (msg:string) => {
         if(msg.length > 30) {
             return msg.slice(0,30)+'...'
@@ -49,18 +49,11 @@ const ErrorCell = (props:ICellRendererParams)=>{
             <SCContainer style={{overflow:'visible'}} >
                 <img src="/assets/img/VectorFLOW/NMS/error.svg" width={17} height={17} style={{marginRight:'7px',marginLeft:'5px',cursor:"pointer"}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut}/>
                 <p  >{getFomattedMessage(message)}</p>
-                {/* <Tooltip id={rowId} style={{width:'270px',backgroundColor:'rgba(255,255,255,1)',color:'#820F4C',borderRadius:'8px',border:'1px solid #BC3D81'}}>
-                    <SCErrorToolTipUl>
-                        {message.split(/(?<=\.)\s+/).map((sentence:string,index:number)=>{
-                            return <SCErrorToolTipLi key={index}>{sentence}</SCErrorToolTipLi>
-                        })}
-                    </SCErrorToolTipUl>
-                </Tooltip> */}
                 {isToolTipOpen && (
                     <Portal wrapperId="error-tooltip">
                         <SCToolTipWrapper style={{...errorCellPosition}} onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={onMouseOut}>
                             <SCErrorToolTipUl>
-                                {messages.map((sentence:string,index:number)=>{
+                                {(messages && messages.length>0) &&  messages.map((sentence:string,index:number)=>{
                                     return <SCErrorToolTipLi key={index}>{sentence}</SCErrorToolTipLi>
                                 })}
                             </SCErrorToolTipUl>

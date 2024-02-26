@@ -193,7 +193,7 @@ const useViewModify = (pageType:string) => {
         //Effect to Add chart handler when seasonality master
         dispatch(UPDATE_COLDEFS(mapMasterToColumnDefs(activeMaster.fields,activeMaster.id,onShowChart)))
 
-      },[activeMaster.rowData])
+      },[])
 
 
       useEffect(()=>{
@@ -1161,7 +1161,9 @@ const useViewModify = (pageType:string) => {
         
         const isErrorPresent = newData.find((row:any)=>row.error);
         const isWarningPresent = newData.find((row:any)=>row.warning);
+      
         if(isErrorPresent){
+          console.log(isErrorPresent)
           addInvalidDataColDefs('error');
         }
         
