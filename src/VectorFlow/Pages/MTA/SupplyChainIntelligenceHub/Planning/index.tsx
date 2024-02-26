@@ -4,6 +4,7 @@ import usePlanning from "./usePlanning";
 import VFOverlay from "../../../.././../components/VectorFLOW/commons/VFOverlay";
 import ChartView from "./ChartView";
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
+import ActionToolBar from "./ActionToolBar";
 
 const Planning = () => {
 
@@ -15,8 +16,9 @@ const Planning = () => {
         currentGraphData,
         currentTab,
         currentView,
-        onMonitorChildClick,
-        onFloatingTabChange
+        handlePlanningQuadrantClick,
+        onFloatingTabChange,
+        onGoBack
     } = usePlanning();
 
     const renderView = () => {
@@ -49,7 +51,7 @@ const Planning = () => {
                     parentExpediteCount={planningCounts.parentExpediteCount}
                     reviewOrderFulfillmentCount={planningCounts.reviewOrderFulfillmentCount}
                     reviewExcessInventoryCount={planningCounts.reviewExcessInventoryCount}
-                    onMonitorChildClick={onMonitorChildClick}
+                    onMonitorChildClick={()=>handlePlanningQuadrantClick('GITToChild')}
                     onMonitorParentClick={()=>console.log("Test")}
                     onExpediteChildClick={()=>console.log("Test")}
                     onExpediteParentClick={()=>console.log("Test")}
@@ -60,28 +62,12 @@ const Planning = () => {
             {
                 !isSelectCategoryOpen &&
                 <>
-                    <div style={{display:'flex',justifyContent:'center',marginBottom:'20px'}}>
-                        <VFFloatingTab
-                            tabs={[
-                                {
-                                    id:'locationWise',
-                                    label:'Location-Wise',
-                                    value:'locationWise'
-                                },
-                                {
-                                    id:'transporterWise',
-                                    label:'Transporter-Wise',
-                                    value:'transporterWise'
-                                },
-                                {
-                                    id:'custom',
-                                    label:'Custom Screens',
-                                    value:'custom'
-                                }
-                            ]}
-                            handleClick={onFloatingTabChange}
+                    <ActionToolBar 
+                        view={currentView} 
+                        category={currentCategory} 
+                        onFloatingTabChange={onFloatingTabChange}
+                        onGoBack={onGoBack}
                         />
-                    </div>
                     
                     {renderView()}
                 </>

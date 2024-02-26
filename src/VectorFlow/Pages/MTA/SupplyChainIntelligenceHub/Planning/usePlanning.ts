@@ -63,24 +63,31 @@ const usePlanning = ()=>{
     }
 
 
-    const onMonitorChildClick = async () => {
+    const handlePlanningQuadrantClick = async (category:string) => {
         try {
             setCurrentView('chart');
-            const toastId = notifyLoader('Loading Graphs');
-            setCurrentCategory('GITToChild');
-            const body = {
-                category:'git',
-                type:'child',
-                filters:[]
+            switch(category){
+                case 'GITToChild':{
+                    const toastId = notifyLoader('Loading Graphs');
+                    setCurrentCategory('GITToChild');
+                    const body = {
+                        category:'git',
+                        type:'child',
+                        filters:[]
+                    }
+                    const result = await getPlanningDataGraph(body);
+                    setIsSelectCategoryOpen(false);
+                    setCurrentGraphData(result.data.data)
+                    setCurrentTab('locationWise');
+                    toast.dismiss(toastId);
+                    notifySuccess("Graph Details Fetched Successfully");
+                    break;
+                }
+                    
+                default:
+                    return;
+                    
             }
-            const result = await getPlanningDataGraph(body);
-            console.log(result)
-            setIsSelectCategoryOpen(false);
-            setCurrentGraphData(result.data.data)
-            setCurrentTab('locationWise');
-            toast.dismiss(toastId);
-            notifySuccess("Graph Details Fetched Successfully")
-
             
         } catch (error) {
             toast.dismiss();
@@ -93,6 +100,10 @@ const usePlanning = ()=>{
         setCurrentTab(tab.value);
     }
 
+    const onGoBack = () => {
+        setIsSelectCategoryOpen(true);
+    }
+
     return {
         planningCounts,
         isSelectCategoryOpen,
@@ -101,8 +112,9 @@ const usePlanning = ()=>{
         currentGraphData,
         currentTab,
         currentView,
-        onMonitorChildClick,
-        onFloatingTabChange
+        handlePlanningQuadrantClick,
+        onFloatingTabChange,
+        onGoBack
     }
 
 

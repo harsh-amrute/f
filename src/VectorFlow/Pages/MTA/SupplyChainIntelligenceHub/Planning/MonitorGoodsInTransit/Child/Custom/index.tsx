@@ -223,73 +223,42 @@ const MonitorGITChildCustom = ({data}:MonitorGITChildCustomProps) => {
             field:'median',
             headerName:'Median Delay',
             colId:'median'
-        },
-        {
-            field:'LL1',
-            headerName:'Location Level 1',
-            colId:'LL1'
-        },
-        {
-            field:'LL2',
-            headerName:'Location Level 2',
-            colId:'LL2'
-        },
-        {
-            field:'LL3',
-            headerName:'Location Level 3',
-            colId:'LL3'
-        },
-        {
-            field:'LL4',
-            headerName:'Location Level 4',
-            colId:'LL4'
-        },
-        {
-            field:'c1',
-            headerName:'Custom Attribute 1',
-            colId:'c1'
-        },
-        {
-            field:'c2',
-            headerName:'Custom Attribute 2',
-            colId:'c2'
-        },
-        {
-            field:'c3',
-            headerName:'Custom Attribute 3',
-            colId:'c3'
-        },
-        {
-            field:'c4',
-            headerName:'Custom Attribute 4',
-            colId:'c4'
-        },
-        {
-            field:'c5',
-            headerName:'Custom Attribute 5',
-            colId:'c5'
-        },
-
+        }
+       
     ]
 
-    const generateChart = () => {
-        refGraph1.current?.api.createRangeChart({
-          chartType:'stackedColumn',
-          cellRange: {
-            columns: ['ln', 'spd', 'd'],
-            rowStartIndex:0,
-            rowEndIndex:9
-          },
-        })
+    const generateChart = (graphNo:number) => {
+        
+        switch(graphNo){
+            case 1:
+                refGraph1.current?.api.createRangeChart({
+                    chartType:'stackedColumn',
+                    cellRange: {
+                      columns: ['ln', 'spd', 'd'],
+                      rowStartIndex:0,
+                      rowEndIndex:9
+                    },
+                  })
+                  break;
+            case 2:
+                break;
+            case 3:
+                refGraph3.current?.api.createRangeChart({
+                    chartType:'stackedColumn',
+                    cellRange: {
+                      columns: ['tn', 'spd', 'd'],
+                      rowStartIndex:0,
+                      rowEndIndex:9
+                    },
+                  })
+                break;
+            case 4:
+                break;
 
-        refGraph3.current?.api.createRangeChart({
-            chartType:'stackedColumn',
-            cellRange: {
-              columns: ['tn', 'spd', 'd'],
-              rowStartIndex:0,
-              rowEndIndex:9
-            },
-          })
+        }
+        
+
+       
 
         // refNew.current?.api.createRangeChart({
         //     chartType:'stackedColumn',
@@ -374,7 +343,7 @@ const MonitorGITChildCustom = ({data}:MonitorGITChildCustomProps) => {
                                 rowData={combinedGridData(data['locationWise']['maxTechBlackRedColumn'],data['customScreens'],'ln')}
                                 enableCharts={true}
                                 enableRangeSelection={true}
-                                onGridReady={generateChart}
+                                onGridReady={()=>generateChart(1)}
                                 getChartToolbarItems={getChartToolbarItems}
                                 chartThemeOverrides={chartThemeOverrides}
                                 chartThemes={['myCustomTheme']}
@@ -396,7 +365,7 @@ const MonitorGITChildCustom = ({data}:MonitorGITChildCustomProps) => {
                                 rowData={data['transporterWise']['maxTechBlackRedColumn']}
                                 enableCharts={true}
                                 enableRangeSelection={true}
-                                onGridReady={generateChart}
+                                onGridReady={()=>generateChart(3)}
                                 getChartToolbarItems={getChartToolbarItems}
                                 chartThemeOverrides={chartThemeOverrides}
                                 chartThemes={['myCustomTheme']}
