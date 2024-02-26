@@ -81,7 +81,7 @@ height:70px;
 `
 export const VFButtonWrapper=styled.div`
 margin-top:12px;
-margin-left:30px;
+margin-left:54px;
 margin-bottom:12px;
 display: flex;
 gap: 25px;

@@ -37,6 +37,7 @@ export const VFStepLabel = styled.div`
     font-style:normal;
     font-variant:normal;
     font-weight:400;
+    width:100px;
     font-family:Roboto;
     letter-spacing: 0px;
     color: #313131;
