@@ -3,7 +3,7 @@ import { type Option, type Field,type GetMasterDataPayload, type GridRef, type Q
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useDeleteDraft, useDeleteTask } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS} from '../../../../../redux/actions/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
@@ -189,6 +189,12 @@ const useViewModify = (pageType:string) => {
         }
       },[activeMaster.progress]);
 
+      useEffect(()=>{
+        //Effect to Add chart handler when seasonality master
+        dispatch(UPDATE_COLDEFS(mapMasterToColumnDefs(activeMaster.fields,activeMaster.id,onShowChart)))
+
+      },[activeMaster.rowData])
+
 
       useEffect(()=>{
         const getMasterUIConfigurationData = async()=>{
@@ -198,6 +204,12 @@ const useViewModify = (pageType:string) => {
   
          getMasterUIConfigurationData()
       },[])
+
+      useEffect(()=>{
+        if(activeMaster.progress==='default' && pageType==='add'){
+          dispatch(TOGGLE_UPLOAD_MODAL(true))
+        }
+      },[activeMaster])
 
     const sideBar:SideBarDef = {
       toolPanels: [
@@ -514,6 +526,10 @@ const useViewModify = (pageType:string) => {
       if(result.data.recordCount<=rowsPerPage){
         dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
       }
+      else{
+        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(false))
+      }
+
       toggleWarningModal(true);    
     }
 
@@ -534,7 +550,7 @@ const useViewModify = (pageType:string) => {
       setIsTableDataLoading(true);
       let result:any;
 
-      if(!areMasterFiltersValid(currMasterFilters) && activeMaster.filters.length === 1){
+      if((!areMasterFiltersValid(currMasterFilters) && activeMaster.filters.length === 1) || isShowAll){
         if(activeMaster.id==10 || activeMaster.id==6){
           result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:false}),{
             success:"Data Fetched Successfully",
@@ -550,6 +566,7 @@ const useViewModify = (pageType:string) => {
             pending:"Loading Data"
           }); 
       }
+      dispatch(RESET_FILTERS())
     }
       else{
         if(activeMaster.id==10 || activeMaster.id==6){
@@ -867,6 +884,7 @@ const useViewModify = (pageType:string) => {
             setErrorCount(errorCount);
             setConflictData(conflictData);
             setErrorData(errorData)
+            console.log(errorData)
             return {isConflicts:conflictCount>0,errorCount,errorData,conflictCount,conflictData} 
             
           }
@@ -889,7 +907,6 @@ const useViewModify = (pageType:string) => {
         const errorData = activeMaster.rowData.find((row:any)=>{
           return (row.error || row.warning) &&( row.error!=='' || row.warning!=='')
         });
-        console.log(errorData)
         if(errorData){
           notifyError('Please Clear Errors Before Submitting');
           return;
@@ -1249,7 +1266,7 @@ const useViewModify = (pageType:string) => {
         return {
           ...colDef,
           // cellRenderer:'conflictErrorCellRenderer',
-          tooltipField:colDef.field,
+          // tooltipField:colDef.field,
           cellRenderer:'conflictErrorCellRenderer',
           // onCellClicked:(params:any)=>console.log(params)
           // tooltipField:colDef.field
@@ -1257,7 +1274,6 @@ const useViewModify = (pageType:string) => {
         }
       })
 
-      console.log(newColDefs)
      if(newColDefs) dispatch(UPDATE_COLDEFS(newColDefs))
       addCheckBoxColDefs()
       dispatch(UPDATE_ROW_DATA(newRowData))

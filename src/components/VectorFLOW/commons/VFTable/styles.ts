@@ -4,6 +4,7 @@ import * as gridSystem from "../../../../styles/gridSystem";
 
 export const VFTableWrapper = styled.div`
     height:650px;
+    max-height:90%;
     margin:20px;
     zoom:0.75;
 

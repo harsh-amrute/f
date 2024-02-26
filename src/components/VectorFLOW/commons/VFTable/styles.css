@@ -34,6 +34,16 @@
     color: #FFFFFF;
 }
 
+.active-row {
+    z-index: 111 !important; /* Adjust z-index to suit your needs */
+    position: relative; /* z-index only works on positioned elements (position:absolute, position:relative, or position:fixed) */
+    /* Any other styles */
+  }
+
+.ag-row{
+    overflow: visible;
+}
+
 .ag-header-row:nth-child(2){
     background-color: #F7F7F7;
     color:black;

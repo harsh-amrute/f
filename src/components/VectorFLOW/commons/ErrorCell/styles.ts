@@ -2,6 +2,13 @@ import styled from 'styled-components'
 
 export const SCToolTipWrapper = styled.div`
     position:fixed;
+    padding:1px 5px;
+    border:1px solid #BC3D81;
+    background-color:rgba(255,255,255,1);
+    color:#820F4C;
+    border-radius:4px;
+    width:170px;
+    z-index:100000;
 `
 
 export const SCContainer = styled.div`
@@ -23,7 +30,7 @@ export const SCContainer = styled.div`
     overflow:visible;
 `
 export const SCErrorToolTipUl = styled.ul`
-    font-size:14px;
+    font-size:9px;
     width:100%;
     padding-inline:0px;
     margin-block-start:0;
@@ -33,7 +40,7 @@ export const SCErrorToolTipUl = styled.ul`
 `
 
 export const SCErrorToolTipLi = styled.li`
-    margin-top:17px;
+    margin-top:5px;
     list-style-type:circle;
     &::before{
         color:#B80000;

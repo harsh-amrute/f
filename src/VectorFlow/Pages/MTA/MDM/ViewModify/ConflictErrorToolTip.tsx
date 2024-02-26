@@ -2,7 +2,6 @@ import {ConflictErrorToolTipSection, ConflictErrorToolTipWrapper,ConflictErrorTe
 
 
 const ConflictErrorToolTip = (params:any)=>{
-    console.log(params)
     const currColumn = params.colDef?.colId || ''
     return(
         <ConflictErrorToolTipWrapper>

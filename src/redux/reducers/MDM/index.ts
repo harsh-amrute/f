@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { createReducer } from '@reduxjs/toolkit';
 import {type Option, type MDMMasterState, type MDMStore, type Filter} from '../../../VectorFlow/types/MDM'; 
 import { generateRandomId } from '../../../helpers/utils';
-import {FILL_MASTERS, FILL_SELECTED_OPTIONS, REMOVE_MASTER, FILTER_MASTER, ADD_MASTER, FILL_OPTIONS, UPDATE_ACTIVE_MASTER, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_COLDEFS, STORE_ALL_MASTERS, ADD_FILTER, REMOVE_FILTER, UPDATE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, RESET_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, MODIFY_ROW_DATA,SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS} from '../../actions/MDM';
+import {FILL_MASTERS, FILL_SELECTED_OPTIONS, REMOVE_MASTER, FILTER_MASTER, ADD_MASTER, FILL_OPTIONS, UPDATE_ACTIVE_MASTER, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_COLDEFS, STORE_ALL_MASTERS, ADD_FILTER, REMOVE_FILTER, UPDATE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, RESET_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, MODIFY_ROW_DATA,SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS} from '../../actions/MDM';
 import { ColDef } from 'ag-grid-enterprise';
 
 
@@ -80,6 +80,21 @@ const setMasters = (state:any,action:PayloadAction<MDMMasterState[]>|PayloadActi
             break;
         case REMOVE_FILTER.type:
             state.activeMaster.filters = state.activeMaster.filters.filter((filter:Filter)=>filter.id !== action.payload)
+            state.masters = state.masters.map((master:MDMMasterState)=>{
+                if(master.id===state.activeMaster.id){
+                    return {...state.activeMaster}
+                }
+                return master
+            })
+            break;
+         case RESET_FILTERS.type:
+            state.activeMaster.filters = [{
+                id:generateRandomId(),
+                masterId:state.activeMaster.id,
+                field:'',
+                operator:'',
+                text:''
+              }]
             state.masters = state.masters.map((master:MDMMasterState)=>{
                 if(master.id===state.activeMaster.id){
                     return {...state.activeMaster}
@@ -187,6 +202,7 @@ const mdmReducer = (initialState:MDMStore) => createReducer(initialState, (build
       .addCase(REMOVE_FILTER,setMasters)
       .addCase(REMOVE_ALL_FILTERS,setMasters)
       .addCase(UPDATE_FILTER,setMasters)
+      .addCase(RESET_FILTERS,setMasters)
       .addCase(UPDATE_ROW_DATA,setMasters)
       .addCase(MODIFY_ROW_DATA,setMasters)
       .addCase(REMOVE_ROW_DATA,setMasters)
