@@ -1635,3 +1635,54 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
   })
   return [createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),tagsColDef,...result,...BPRSpecificColumns]
 }
+export const mapBORFieldsToColDefs = (fields:UiConfigField[]):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BORSpecificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer'
+      
+
+      // tooltipComponent:'remarksToolTipComponent'
+    }
+  ]
+
+
+
+  result =  fields.map((f:UiConfigField)=>{
+
+
+    if(f.Col_Code==='DispatchPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        floatingFilter:true,
+        cellRenderer:'colorDispatchCellRenderer',
+       
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      floatingFilter:true,
+      filter:"agMultiColumnFilter"
+    }
+  })
+  return [...result,...BORSpecificColumns]
+}

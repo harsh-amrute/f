@@ -1,10 +1,7 @@
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 
-
- import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
- import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
- import { BORLayout,BORTaskBar } from "../styles"
+ import { BORLayout } from "./styles"
  import {useBOR} from "./useBOR"
  import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 
@@ -57,7 +54,7 @@ const BuyerOrderReport = ()=>{
                 totalRows={recordCount} 
                 currentPage={currentPage} 
                 rowsPerPage={rowsPerPage} 
-                handleChangePage={(e)=>handleChangePage(e)}  
+                handleChangePage={(e)=>handleChangePage(e)} 
               />
               
              </div>

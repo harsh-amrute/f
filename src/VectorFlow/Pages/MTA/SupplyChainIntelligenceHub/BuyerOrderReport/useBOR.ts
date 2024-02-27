@@ -1,14 +1,14 @@
-import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub"
+import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import { mapBORFieldsToColDefs } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect } from "react"
 import { AgGridReactProps } from "ag-grid-react"
-import {DispatchColorCellRenderer} from "../CellRenderer"
+import {DispatchColorCellRenderer} from "./CellRenderer"
 import { SeasonalityGraphCellRenderer } from "../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers"
 
 export const useBOR =()=>{
     
      //const [activeRow,setActiveRow] = useState<any>()
-     const {data,isLoading} = useGetBORUIConfiguration();
+     const {data} = useGetBORUIConfiguration();
    
     // const [isSubGridOpen,toggleSubGrid] = useState<boolean>(false);
      const [rowData,setRowData] = useState([]);
@@ -17,13 +17,12 @@ export const useBOR =()=>{
      const [currentPage,setCurrentPage] = useState(1);
      const rowsPerPage = 50;
      const handleChangePage = async (pageNo:any) => {
-        console.log(pageNo);
          setCurrentPage(pageNo);
          loadGridData(pageNo);
       }
 
 
-     const {mutateAsync:getBorData,isLoading:isViewTableLoading} = useBORData();
+     const {mutateAsync:getBorData, isLoading} = useBORData();
      const {mutateAsync:getBorDataCount} = useBORDataCount();
 
      const customCellRenderers = useMemo(() => ({
@@ -53,7 +52,6 @@ export const useBOR =()=>{
       }
     
     const loadGridData = async (pageNo:any)=> {
-        console.log(currentPage);
         const payload={
             filters:[],
             paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
@@ -98,15 +96,7 @@ export const useBOR =()=>{
             'text-overflow':'ellipsis',
             'white-space':'nowrap'
             },
-            // onCellClicked:(params:any)=>{
-            //     console.log(params)
-            //     if(params.data.transit && params.data.transit.length>0){
-            //         setActiveRow(params.data.transit)
-            //         toggleSubGrid(true)
-            //         return 
-            //     }
-            //     return setActiveRow(null)
-            // }
+           
         }
 }
 

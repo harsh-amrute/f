@@ -1,6 +1,4 @@
-import { ICellRendererParams } from "ag-grid-enterprise"
-//import { CustomTooltipProps } from "ag-grid-react"
-import { useState } from "react"
+
 import { BORColorCellRendererWrapper} from "./styles"
 
 
@@ -40,13 +38,13 @@ const colorMapper =(color:string)=> {
     }
 }
 
-export const DispatchColorCellRenderer = (params:ICellRendererParams)=>{
+export const DispatchColorCellRenderer = (params:any)=>{
 
     const DispatchColor = params.data.DispatchColor
 
     const cellColor = colorMapper(params.data.DispatchColor)
 
-    if(!DispatchColor || DispatchColor.lenght<1){
+    if(!DispatchColor || DispatchColor.length<1){
         return(
             <BORColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
                 NULL

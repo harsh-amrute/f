@@ -1,8 +1,8 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub"
+import { fireEvent, render, screen,act } from '@testing-library/react';
+import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import { mockBORData,mockBORCountData,mockBORUIConfigData} from "../../../../../mock-data/BOR";
 import BuyerOrderReport from './';
-jest.mock("../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub");
+jest.mock("../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport");
 
 const useGetBORUIConfigurationMock = useGetBORUIConfiguration as jest.MockedFunction<
     typeof useGetBORUIConfiguration
@@ -57,42 +57,17 @@ describe("Renders BOR Component", ()=>{
         render(<BuyerOrderReport/>)
     })
      it("renders BuyerOrderReport", async()=>{
-        render(<BuyerOrderReport/>)
+        await act(async () => {
+               render(<BuyerOrderReport/>)
+          })
     })
 
-    // it("Changes Page when Clicked on Next",()=>{
-    //     render(<BuyerOrderReport/>);
-    //     const nextBtn = screen.getByLabelText('Next page');
-    //     screen.logTestingPlaygroundURL();
-    //     fireEvent.click(nextBtn);
+     it("Handles Pagination", async()=>{
+        await act(async () => {
+               render(<BuyerOrderReport/>)
+          })
 
-    // })
+        const nextBtn = screen.getAllByLabelText('Next page');
+        fireEvent.click(nextBtn[0]);
+    })
 })
-// describe('should render the VFTable component', () => {
-//     window.URL.createObjectURL = jest.fn();
-    
-//   const rowData = [
-//     { id: 1, name: 'John Doe', age: 30 },
-//     { id: 2, name: 'Jane Doe', age: 25 },
-//   ];
-
-//   const columnDefs = [
-//     { header: 'ID', field: 'id' },
-//     { header: 'Name', field: 'name' },
-//     { header: 'Age', field: 'age' },
-//   ];
-
-//   const agGridProps = {
-//     rowData:rowData,
-//     columnDefs:columnDefs,
-//     columnVisible:jest.fn()
-//   }
-  
-//   it("Should render the table in the DOM",()=>{
-//     render(<BuyerOrderReport/>);
-
-//     const table = screen.getByRole('table');
-//     expect(table).toBeInTheDocument();
-//   })
-
-// });
