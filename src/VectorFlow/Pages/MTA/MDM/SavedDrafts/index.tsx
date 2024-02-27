@@ -15,7 +15,7 @@ const SavedDrafts = ()=>{
 
 
   const {user} = useUserData()
-  
+
   const {
     isDeleteModalOpen,
     openDeleteModal,
