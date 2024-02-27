@@ -89,7 +89,7 @@ export const BPREcoColorCellRenderer = (params:any)=>{
 
     const cellColor = colorMapper(ecoColor)
 
-    if(!ecoColor || ecoColor.lenght<1){
+    if(!ecoColor || ecoColor.length<1){
         return(
             <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
                 NULL
