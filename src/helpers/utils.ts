@@ -12,7 +12,6 @@ import {subDays,format, differenceInSeconds,parse} from 'date-fns';
 import {formatMDMDate} from './format';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
 import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
-import ConflictErrorToolTip from '../VectorFlow/Pages/MTA/MDM/ViewModify/ConflictErrorToolTip';
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField } from '../VectorFlow/types/BPR';
 
@@ -656,7 +655,6 @@ export const mapDraftToColumnDefs = (fields:Field[],customParams?:ColDef)=>{
       },
       flex: 1,
       cellRenderer:f.key==="action"&& ActionRenderer,
-      tooltipComponent:ConflictErrorToolTip,
       ...customParams
     }
   })

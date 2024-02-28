@@ -342,7 +342,7 @@ export const ConflictErrorText = styled.p`
 
 `
 
-export const ToolTipTraingle = styled.div`
+export const ToolTipTriangle = styled.div`
     position:absolute;
     left:55px;
     width: 0px;

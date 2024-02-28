@@ -1,45 +1,50 @@
-import { ICellRendererParams } from "ag-grid-enterprise"
+
 import { CSSProperties, useState } from "react"
 import Portal from "../../../../../components/VectorFLOW/layouts/Portal"
 
 
-import {ConflictErrorToolTipSection, ConflictErrorToolTipWrapper,ConflictErrorText, ToolTipTraingle} from './styles' 
+import {ConflictErrorToolTipSection, ConflictErrorToolTipWrapper,ConflictErrorText, ToolTipTriangle} from './styles' 
 
-interface ConflictErrorCellRendererProps extends ICellRendererParams{
-    onClick:(taskDetail:any)=>void
-}
 
-const ConflictErrorCellRenderer = (params:ConflictErrorCellRendererProps)=>{
-    
+
+const ConflictErrorCellRenderer = (params:any)=>{
+
     const [isToolTipOpen,setIsToolTipOpen] = useState(false)
     const [tooltipPosition,setToolTipPosition] = useState<CSSProperties>()
     const [isToolTipOverflowing,setIsToolTipOverflowing] = useState<boolean>(false)
 
     const currColumn = params.colDef?.colId || ''
 
-    const getTextColor = ()=>{
-        let conflictFound = false
-        const currentColId = params.colDef?.colId
-        const currentRow = params.data
-        if(!currentRow.users)return 
-        currentRow.users.map((user:any)=>{
-           if(currentColId){
-            if(user.data[currentColId]!==currentRow[currentColId]){
-                conflictFound = true 
+    const getTextColor = () => {
+        console.debug(params)
+        let conflictFound = false;
+        const currentColId = params.colDef?.colId;
+        const currentRow = params.data;
+    
+        if (!currentRow.users) return 'black';
+        currentRow.users.some((user: any) => {
+            if (currentColId) {
+                if (user.data[currentColId] !== currentRow[currentColId]) {
+                    conflictFound = true;
+                    return true; 
+                }
             }
-           }
-        })
-        if(conflictFound){
-          return "rgb(130, 15, 76)"
+            return false;
+        });
+        if (conflictFound) {
+            return "rgb(130, 15, 76)";
         }
-        return 'black'
-
+        return 'black';
     }
+
     const onMouseIn = (e: React.MouseEvent<HTMLElement>) => {
         const { left, top } = e.currentTarget.getBoundingClientRect();
-    
+        
         const tooltipHeight = params.data.users.length * 40;
         const viewportHeight = window.innerHeight;
+        console.debug(top)
+        console.debug(viewportHeight)
+    
     
         let tooltipTop = top * 0.75 * 0.75 + 35;
     
@@ -65,10 +70,10 @@ const ConflictErrorCellRenderer = (params:ConflictErrorCellRendererProps)=>{
             </p>
            {params.data.users && isToolTipOpen && (
              <Portal wrapperId="conflict-tooltip">
-                <ConflictErrorToolTipWrapper style={{...tooltipPosition}} onMouseEnter={()=>setIsToolTipOpen(true)}>
+                <ConflictErrorToolTipWrapper style={{...tooltipPosition}}>
                     {!isToolTipOverflowing && (
                         <div style={{position:'relative',width:'100%'}}>
-                            <ToolTipTraingle style={{top:-18}}/>
+                            <ToolTipTriangle style={{top:-18}}/>
                         </div>
                     )}
                     {params.data.users.map((user:any,index:number)=>{
@@ -81,7 +86,7 @@ const ConflictErrorCellRenderer = (params:ConflictErrorCellRendererProps)=>{
                     })}
                     {isToolTipOverflowing && (
                          <div style={{position:'relative',width:'100%'}}>
-                            <ToolTipTraingle style={{top:'unset',bottom:-18,transform:'rotate(180deg)'}}/>
+                            <ToolTipTriangle style={{top:'unset',bottom:-18,transform:'rotate(180deg)'}}/>
                         </div>
                     )}
                 </ConflictErrorToolTipWrapper>
