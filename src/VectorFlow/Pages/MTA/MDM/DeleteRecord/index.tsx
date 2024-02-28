@@ -235,7 +235,7 @@ const DeleteRecord = () => {
             count={recordCount} 
             onCloseModal={onWarningModalClose} 
             onFailure={onWarningModalClose} 
-            onSuccess={onWarningModalSuccess}
+            onSuccess={()=>onWarningModalSuccess()}
             />
         }
           {isUploadModalOpen && 

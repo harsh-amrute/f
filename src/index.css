@@ -1,0 +1,22 @@
+.custom-scrollbar{
+    overflow-y:overlay;
+}
+ 
+.custom-scrollbar::-webkit-scrollbar{
+    width: 7px;      
+}
+ 
+.custom-scrollbar::-webkit-scrollbar-track{
+    border-radius: 30px;
+    opacity: 1;
+}
+ 
+.custom-scrollbar::-webkit-scrollbar-thumb{
+    width: 7px;
+/* UI Properties */
+background: #D1D1D1 0% 0% no-repeat padding-box;
+box-shadow: 0px 6px 9px #F8F8F8; 
+border-radius: 30px;
+opacity: 1;
+}
+/*#41414129*/

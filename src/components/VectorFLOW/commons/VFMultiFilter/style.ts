@@ -37,7 +37,8 @@ font-weight:300;
 font-size:16px;
 line-height:20px;
 font-family:Roboto;
-align-items:center;
+display:flex;
+// align-items:center;
 justify-content:center;
 flex-direction:column;
 `
@@ -81,15 +82,18 @@ gap:5px;
 `
 
 export const SelectDropdownComponent = styled.div`
-width:85px;
+width:60px;
+flex-grow: 1;
 text-align:center;
 `
 export const MultiSelectCheckBoxComponent = styled.div`
 margin-bottom:16px;
 display:flex;
-justify-content:center;
+justify-content:flex-start;
 align-items:center;
+gap:6px;
 `
+
 export const TextFieldHeader=styled.div`
 font-style:normal;
 font-variant:normal;

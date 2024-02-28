@@ -15,6 +15,8 @@ interface VFMasterFieldSearchProps{
     backgroundColor:string,
     disabled:boolean,
     width?:string,
+    borderRadius?:number,
+    boxShadow?:string,
     
 }
 

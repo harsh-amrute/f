@@ -1,6 +1,6 @@
 import * as globalStyles from '../../../styles/global'
 
-export const selectStyles =(backgroundColor:string,)=> {
+export const selectStyles =(backgroundColor:string,borderRadius:number, boxShadow:string)=> {
   return{
   control: (provided: any, state: any) => ({
     ...provided,
@@ -9,11 +9,11 @@ export const selectStyles =(backgroundColor:string,)=> {
     background: backgroundColor,
     fontSize: 16,
     outline: 'none',
-    borderRadius: 6,
+    borderRadius: borderRadius ? borderRadius : 6,
     cursor: 'pointer',
     border: state.isFocused ? 0 : 0,
     // This line disable the blue border
-    boxShadow: state.isFocused ? 0 : backgroundColor ?  '0px 6px 12px #95959529' : 0,
+    boxShadow: state.isFocused ? 0 : backgroundColor ?  '0px 6px 12px #95959529' : boxShadow,
     paddingRight:'13px'
   }),
   multiValue: () => ({
