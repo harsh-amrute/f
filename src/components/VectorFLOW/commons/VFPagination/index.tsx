@@ -33,6 +33,7 @@ const VFPagination  = (props:VFPaginationProps)=>{
         if(end >= totalRows) return `${start}-${totalRows}`;
         return `${start}-${(currentPage)*rowsPerPage}`;
     }
+
     return(
         <PaginationWrapper data-testid="vf_pagination">
             {

@@ -47,7 +47,7 @@ const ErrorCell = (props:ICellRendererParams)=>{
         <>
         {message &&
             <SCContainer style={{overflow:'visible'}} >
-                <img src="/assets/img/VectorFLOW/NMS/error.svg" width={17} height={17} style={{marginRight:'7px',marginLeft:'5px',cursor:"pointer"}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut}/>
+                <img src="/assets/img/VectorFLOW/NMS/error.svg" width={17} height={17} style={{marginRight:'7px',marginLeft:'5px',cursor:"pointer"}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} data-testid="errorImage"/>
                 <p  >{getFomattedMessage(message)}</p>
                 {isToolTipOpen && (
                     <Portal wrapperId="error-tooltip">

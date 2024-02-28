@@ -22,7 +22,7 @@ import DeleteRecord from './VectorFlow/Pages/MTA/MDM/DeleteRecord'
 import SavedDrafts from './VectorFlow/Pages/MTA/MDM/SavedDrafts'
 import TaskStatus from './VectorFlow/Pages/MTA/MDM/TaskStatus'
 import TaskPendingForReview from './VectorFlow/Pages/MTA/MDM/TaskPendingForReview'
-
+import BuyerOrderReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BuyerOrderReport'
 import BPR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR'
 import Planning from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/Planning'
 // to show loading state for desired page only instead of the entire screen
@@ -58,6 +58,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/master-data-management/task-pending',
     '/master-data-management/control-panel/add',
     '/master-data-management/control-panel/delete',
+    '/supply-chain-intelligence-hub/bor',
     '/supply-chain-intelligence-hub/bpr',
     '/supply-chain-intelligence-hub/planning'
   ]
@@ -289,6 +290,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<PageForbidden />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/bor',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<BuyerOrderReport/>)
         },
         ...getStoreTransferModuleRoutes()
       ]
