@@ -15,7 +15,6 @@ import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../.
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
-import ConflictErrorToolTip from './ConflictErrorToolTip';
 
 
 const useViewModify = (pageType:string) => {
@@ -142,8 +141,7 @@ const useViewModify = (pageType:string) => {
       warningCell: WarningCell,
       seasonalityColorCellRenderer:SeasonalityColorCellRenderer,
       seasonalityGraphCellRenderer:SeasonalityGraphCellRenderer,
-      conflictErrorCellRenderer:ConflictErrorCellRenderer,
-      conflictErrorToolTip:ConflictErrorToolTip
+      conflictErrorCellRenderer:ConflictErrorCellRenderer
     }), []);
 
 
