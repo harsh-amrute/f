@@ -14,7 +14,7 @@ import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForR
 import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField } from '../VectorFlow/types/BPR';
-
+import {RRRField} from '../VectorFlow/types/RRR'
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -129,6 +129,128 @@ export const isTrue = (value?: string | number) => {
     (typeof value === 'string' && value?.toUpperCase() === 'TRUE') ||
     value === 1
   )
+}
+
+// export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
+
+//   if(!fields || fields.length<1){
+//     return []
+//   }
+
+//   let result:ColDef[] = []
+
+//   const BPRSpecificColumns:ColDef[] =[
+//     {
+//       colId:'remarks',
+//       field:'ramarks',
+//       headerName:'Remarks',
+//       tooltipField:"tags"
+//       // tooltipComponent:'remarksToolTipComponent'
+//     },
+//     {
+//       colId:'rh',
+//       field:'rh',
+//       headerName:'Remark History',
+//     }
+//   ]
+
+//   const tagsColDef:ColDef =  {
+//     colId:'tags',
+//     field:'tags',
+//     headerName:"Tags",
+//     cellRenderer:'tagsCellRenderer'
+//   }
+
+//   result =  fields.map((f:BPRField)=>{
+//     if(f.Col_Code==='TechPen'){
+//       return{
+//         colId:f.Col_Code,
+//         field:f.Col_Code,
+//         headerName:f.Header,
+//         hide:!f.Visible,
+//         cellRenderer:'colorTechCellRenderer'
+//       }
+//     }
+//     if(f.Col_Code==='EcoPen'){
+//       return{
+//         colId:f.Col_Code,
+//         field:f.Col_Code,
+//         headerName:f.Header,
+//         hide:!f.Visible,
+//         cellRenderer:'colorEcoCellRenderer'
+//       }
+//     }
+//     return{
+//       colId:f.Col_Code,
+//       field:f.Col_Code,
+//       headerName:f.Header,
+//       hide:!f.Visible
+//     }
+//   })
+//   return [tagsColDef,...result,...BPRSpecificColumns]
+// }
+
+export const mapRRRFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const RRRSpecificColumns:ColDef[] =[
+    {
+      colId:'remarks',
+      field:'ramarks',
+      headerName:'Remarks',
+      tooltipField:"tags"
+      // tooltipComponent:'remarksToolTipComponent'
+    },
+    {
+      colId:'rh',
+      field:'rh',
+      headerName:'Remark History',
+    }
+  ]
+
+  result =  fields.map((f:RRRField)=>{
+    
+    if(f.Col_Code==='TPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorTechCellRenderer'
+      }
+    }
+    if(f.Col_Code==='EPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorEcoCellRenderer'
+      }
+    }
+
+    if(f.Col_Code==='DispatchPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorDispatchRender'
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible
+    }
+  })
+  return [...result,...RRRSpecificColumns]
 }
 
 export const handleDownload = async (nameApi: string, nameFile: string) => {
