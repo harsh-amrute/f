@@ -289,7 +289,7 @@ export const listMenuParent: any = [
           {
             name: "Rationed Requirement Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/bor",
+            url: "/supply-chain-intelligence-hub/rrr",
             role: ["IST Admin", "IST Requestor"],
 
           },

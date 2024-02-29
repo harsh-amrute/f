@@ -1,31 +1,67 @@
-import { useState,useMemo } from "react"
+import { useState,useMemo,useEffect } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 
-import { useGetBPRUIConfiguration } from "../../../../Services/MTA/SupplyChainIntelligenceHub"
+import { useGetBPRUIConfiguration,useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
-import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer, BRPRemarksToolTip } from "./RRRCellRenderers"
-import { mapBPRFieldsToColDefs } from "../../../../../helpers/utils"
+import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
+import { mapRRRFieldsToColDefs } from "../../../../../helpers/utils"
 
-const useBPR =()=>{
+
+const useRRR =()=>{
 
     const {isSideBarOpen} = useUserData()
+    const [RRRRowData,setRRRRowData] = useState<any[]>([])
+    const [isShowAll,setIsShowAll]=useState<boolean>(true)
+    const [RRRDataCount, setRRRDataCount]=useState<any>();
 
-    const [isSubGridOpen,toggleSubGrid] = useState<boolean>(false)
-    const [activeRow,setActiveRow] = useState<any>()
+    const [currentPage,setCurrentPage] = useState<any>(1);
+
+    const {data,isLoading:isRRRConfigLoading} = useGetBPRUIConfiguration()
+    const {mutateAsync:getRRRData,isLoading:isRRRDataLoading} =useGetRRRData();
+    const {mutateAsync:getRRRDataCount}=useGetRRRDataCount();
+
+    const RRRColumns = mapRRRFieldsToColDefs(data?.data.data)
+
+    const handleChangePage = async (pageNo:any) => {
+        setCurrentPage(pageNo);
+        getRRRRowData(pageNo);
+     }
+
+    useEffect(()=>{       
+        getDataCount();
+        getRRRRowData(currentPage);
+    },[])
 
 
-    const {data,isLoading} = useGetBPRUIConfiguration()
+    const getDataCount=async () => {
+        const rowDataCount =await getRRRDataCount({
+            filters:[],
+            paginationParameter:{
+                pageNumber:1,
+                recordsPerPage:50
+            }
+        })
+        setRRRDataCount(rowDataCount?.data?.recordCount)
+    }
 
-    const BPRColumns = mapBPRFieldsToColDefs(data?.data.data)
-    
+    const getRRRRowData= async(pageNo:any)=>{
+        const rowData =await getRRRData({
+            filters:[],
+            paginationParameter:{
+                pageNumber:pageNo,
+                recordsPerPage:50
+            }
+        })
+        setRRRRowData(rowData?.data?.data)
+    }
 
-    const customCellRenderers = useMemo(() => ({
+    const customCellRenderers = useMemo(() => (   
+        {
         grapCellRenderer:'',
-        colorTechCellRenderer:BPRTechColorCellRenderer,
-        colorEcoCellRenderer:BPREcoColorCellRenderer,
-        tagsCellRenderer:BPRTagsCellRenderer,
-        remarksToolTipComponent:BRPRemarksToolTip,
-        remarksCellRenderer:BPRRemarksCellRenderer
+        colorTechCellRenderer:RRRTechColorCellRenderer,
+        colorEcoCellRenderer:RRREcoColorCellRenderer,
+        colorDispatchRender:RRRDispatchColorCellRenderer
+        
       }), []);
 
     const agGridProps:AgGridReactProps = {
@@ -41,7 +77,7 @@ const useBPR =()=>{
             return { background: "#F7F7F7" };
             },
         },
-        pagination:true,
+        pagination:false,
         // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
         // rowSelection:'multiple',
         suppressRowClickSelection:true,
@@ -63,25 +99,31 @@ const useBPR =()=>{
             "display":"block",
             'text-overflow':'ellipsis',
             'white-space':'nowrap'
-            },
-            onCellClicked:(params:any)=>{
-                console.log(params)
-                if(params.data.transit && params.data.transit.length>0){
-                    setActiveRow(params.data.transit)
-                    toggleSubGrid(true)
-                    return 
-                }
-                return setActiveRow(null)
             }
+            // ,
+            // onCellClicked:(params:any)=>{
+            //     console.log(params)
+            //     if(params.data.transit && params.data.transit.length>0){
+            //         setActiveRow(params.data.transit)
+            //         toggleSubGrid(true)
+            //         return 
+            //     }
+            //     return setActiveRow(null)
+            // }
         }
     }
 
     return {
         isSideBarOpen,
-        BPRColumns,
-        agGridProps
+        RRRColumns,
+        agGridProps,
+        isLoading : isRRRDataLoading || isRRRConfigLoading,
+        RRRRowData,
+        handleChangePage,
+        RRRDataCount,
+        currentPage
        
     }
 }
 
-export default  useBPR
+export default  useRRR

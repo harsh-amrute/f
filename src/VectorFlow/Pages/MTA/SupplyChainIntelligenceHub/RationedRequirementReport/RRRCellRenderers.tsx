@@ -1,8 +1,8 @@
 import { ICellRendererParams } from "ag-grid-enterprise"
-import { CustomTooltipProps } from "ag-grid-react"
+
 import { useState } from "react"
 
-import {BPRColorCellRendererWrapper, BPRTagsCellRendererWrapper,BPRRemarksToolTipWrapper, BPRRemarksCellRendererWrapper} from "./styles"
+import {RRRColorCellRendererWrapper} from "./styles"
 
 const colorMapper =(color:string)=> {
 
@@ -40,80 +40,71 @@ const colorMapper =(color:string)=> {
     }
 }
 
-export const BPRTechColorCellRenderer = (params:ICellRendererParams)=>{
+export const RRRTechColorCellRenderer = (params:ICellRendererParams)=>{
+    const techColor = params.data.TCol
 
-    const techColor = params.data.TechColor
-
-    const cellColor = colorMapper(params.data.TechColor)
+    const cellColor = colorMapper(techColor)
+    
 
     if(!techColor || techColor.lenght<1){
         return(
-            <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
+            <RRRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
                 NULL
-            </BPRColorCellRendererWrapper>
+            </RRRColorCellRendererWrapper>
         )
     }
 
     return(
-        <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
-            {params.data.TechPen}%
-        </BPRColorCellRendererWrapper>
+        <RRRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
+            {params.data.TPen}%
+        </RRRColorCellRendererWrapper>
     )
 }
 
 
-export const BPREcoColorCellRenderer = (params:ICellRendererParams)=>{
+export const RRREcoColorCellRenderer = (params:ICellRendererParams)=>{
 
-
-    const ecoColor = params.data.EcoColor
+   
+    const ecoColor = params.data.ECol
 
     const cellColor = colorMapper(ecoColor)
 
     if(!ecoColor || ecoColor.lenght<1){
         return(
-            <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
+            <RRRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
                 NULL
-            </BPRColorCellRendererWrapper>
+            </RRRColorCellRendererWrapper>
         )
     }
 
     return(
-        <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
-            {params.data.EcoPen}%
-        </BPRColorCellRendererWrapper>
+        <RRRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
+            {params.data.EPen}%
+        </RRRColorCellRendererWrapper>
     )
 }
 
-export const BPRTagsCellRenderer = (params:ICellRendererParams)=>{
+export const RRRDispatchColorCellRenderer = (params:ICellRendererParams)=>{
+
+   
+    const ecoColor = params.data.DispatchColor
+
+    const cellColor = colorMapper(ecoColor)
+
+    if(!ecoColor || ecoColor.lenght<1){
+        return(
+            <RRRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
+                NULL
+            </RRRColorCellRendererWrapper>
+        )
+    }
+
     return(
-        <BPRTagsCellRendererWrapper>
-            {params.data.tags}
-        </BPRTagsCellRendererWrapper>
+        <RRRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
+            {params.data.DispatchPen}%
+        </RRRColorCellRendererWrapper>
     )
 }
 
-export const BRPRemarksToolTip = (params:CustomTooltipProps)=>{
-    console.log(params)
-    return(
-        <BPRRemarksToolTipWrapper>
-            {params.value}
-        </BPRRemarksToolTipWrapper>
-    )
-}
 
-export const BPRRemarksCellRenderer = (params:any)=>{
 
-    const [isOpen,setIsOpen] = useState<boolean>(false)
-
-    return (
-        <BPRRemarksCellRendererWrapper onClick={()=>setIsOpen(!isOpen)}>
-            {
-                isOpen && (
-                    <BPRRemarksToolTipWrapper>
-                        {params.value}
-                    </BPRRemarksToolTipWrapper>
-                )
-            }
-        </BPRRemarksCellRendererWrapper>
-    )
-}
