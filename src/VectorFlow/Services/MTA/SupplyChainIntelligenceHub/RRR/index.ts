@@ -13,7 +13,7 @@ export const QUERY_KEYS = {
 
 export const useGetRRRUIConfiguration =  () => {
     return useQuery(QUERY_KEYS.useGetRRRUIConfiguration,async () => {
-      return await RRRServices.getBPRUIConfiguration();
+      return await RRRServices.getRRRUIConfiguration();
     });
   }
 
