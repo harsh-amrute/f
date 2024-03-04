@@ -3,8 +3,8 @@ import SelectCategory from "../../../../../components/VectorFLOW/layouts/SelectC
 import usePlanning from "./usePlanning";
 import VFOverlay from "../../../.././../components/VectorFLOW/commons/VFOverlay";
 import ChartView from "./ChartView";
-import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
-import ActionToolBar from "./ActionToolBar";
+import ActionToolBar from './ActionToolBar';
+import GridView from "./GridView";
 
 const Planning = () => {
 
@@ -15,23 +15,29 @@ const Planning = () => {
         currentCategory,
         currentGraphData,
         currentTab,
+        setCurrentTab,
         currentView,
         handlePlanningQuadrantClick,
         onFloatingTabChange,
-        onGoBack
+        onGoBack,
+        onViewChange,
+        getFloatingTabsList,
+        currentGridData
     } = usePlanning();
 
     const renderView = () => {
 
         switch(currentView){
+            
             case 'chart':
                 return <ChartView currentTab={currentTab} category={currentCategory} currentGraphData={currentGraphData}/>
+            case 'grid':
+                return <GridView currentTab={currentTab} category={currentCategory} currentGridData={currentGridData}/>
 
         }
         
     }
 
-    
 
     return(
         <>
@@ -52,9 +58,9 @@ const Planning = () => {
                     reviewOrderFulfillmentCount={planningCounts.reviewOrderFulfillmentCount}
                     reviewExcessInventoryCount={planningCounts.reviewExcessInventoryCount}
                     onMonitorChildClick={()=>handlePlanningQuadrantClick('GITToChild')}
-                    onMonitorParentClick={()=>console.log("Test")}
+                    onMonitorParentClick={()=>handlePlanningQuadrantClick('GITFromParent')}
                     onExpediteChildClick={()=>console.log("Test")}
-                    onExpediteParentClick={()=>console.log("Test")}
+                    onExpediteParentClick={()=>handlePlanningQuadrantClick('ExpediteFromParent')}
                     onExcessInventoryReviewClick={()=>console.log("Test")}
                     onOrderFulfillmentReviewClick={()=>console.log("Test")}
                 />
@@ -64,9 +70,13 @@ const Planning = () => {
                 <>
                     <ActionToolBar 
                         view={currentView} 
-                        category={currentCategory} 
                         onFloatingTabChange={onFloatingTabChange}
                         onGoBack={onGoBack}
+                        onViewChange={onViewChange}
+                        currentTab={currentTab}
+                        setCurrentTab={setCurrentTab}
+                        tabsList={getFloatingTabsList()}
+                        disableChartAndGridViewToggle={['GITFromParent'].includes(currentCategory)}
                         />
                     
                     {renderView()}

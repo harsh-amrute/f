@@ -588,7 +588,7 @@ const useViewModify = (pageType:string) => {
         
       }
       
-      if(result.data.recordCount <= rowsPerPage){
+      if(recordCount <= rowsPerPage){
         toggleEditOnline(true);
       }
       else{
@@ -597,7 +597,7 @@ const useViewModify = (pageType:string) => {
 
       
         setIsTableDataLoading(false);
-        if(result.data.recordCount == 0){
+        if(recordCount == 0){
           toggleWarningModal(false);
           return;
         }
@@ -908,7 +908,7 @@ const useViewModify = (pageType:string) => {
           if(row.error!=='' || row.warning!=='')console.log(row)
           return (row.error || row.warning) &&( row.error!=='' || row.warning!=='')
         });
-        console.log(errorData)
+
         if(errorData){
           notifyError('Please Clear Errors Before Submitting');
           return;

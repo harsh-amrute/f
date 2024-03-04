@@ -20,7 +20,8 @@ const AppLayout = () => {
   const { t } = useTranslation();
 
   //URL arrays for excluding layout padding
-  const urls = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/BPR']
+  const urlExcludePadding = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/BPR'];
+  const urlDisableZoomScaling = ['/supply-chain-intelligence-hub/planning'];
   const location = useLocation();
   
   useEffect(() => {
@@ -78,7 +79,7 @@ const AppLayout = () => {
               setIsHide={setIsHide}
             />
           </GridSystem.SCCol2>
-          <GridSystem.SCCol8 width={widthResponsive} hidePadding={urls.includes(location.pathname)}>
+          <GridSystem.SCCol8 width={widthResponsive} hidePadding={urlExcludePadding.includes(location.pathname)} disableZoomScaling={urlDisableZoomScaling.includes(location.pathname)}>
             <ISTStatusContext.Provider
               value={{
                 currentAction,

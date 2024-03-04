@@ -1,14 +1,14 @@
-import GridViewTable from "../../GridView/GridViewTable"
+import GridViewTable from "../../../../GridView/GridViewTable"
 import { useMemo } from "react";
-import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTechColorCellRenderer,BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
-import { useGetBPRUIConfiguration } from "../../../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTechColorCellRenderer,BPRTagsCellRenderer } from "../../../../../BPR/BPRCellRenderers";
+import { useGetBPRUIConfiguration } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { AgGridReactProps } from "ag-grid-react";
-import VFLoader from "../../../../../../../components/VectorFLOW/commons/VFLoader";
-import {mapBPRFieldsToColDefs} from '../../../../../../../helpers/utils';
+import {mapBPRFieldsToColDefs} from '../../../../../../../../../helpers/utils';
 
-const MonitorGITParent = ({data}:{data:any})=>{
+const MonitorGITChildLocationWiseGrid = ({data}:{data:any})=>{
 
-    const {data:bprUIConfigData,isLoading} = useGetBPRUIConfiguration();
+    const {data:bprUIConfigData} = useGetBPRUIConfiguration()
+
 
     const customCellRenderers = useMemo(() => ({
         // grapCellRenderer:BPRGraphCellRenderer,
@@ -66,19 +66,13 @@ const MonitorGITParent = ({data}:{data:any})=>{
         }
     }
 
+ 
 
     const PlanningColumns = mapBPRFieldsToColDefs(bprUIConfigData?.data.data,()=>{console.log('hello')},()=>{console.log('hello')})
 
-    if(isLoading){
-      return (
-        <VFLoader/>
-      )
-    }
-
-
     return(
-        <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={data} customGridRowData={[]} customGridColDef={[]}/>
+        <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={data ? data : []} customGridRowData={[]} customGridColDef={[]}/>
     )
 }
 
-export default MonitorGITParent
+export default MonitorGITChildLocationWiseGrid

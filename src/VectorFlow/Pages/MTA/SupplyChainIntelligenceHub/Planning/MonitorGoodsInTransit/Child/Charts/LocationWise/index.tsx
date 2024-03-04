@@ -1,12 +1,12 @@
-import {useRef, useMemo } from "react";
+import {useRef, useMemo} from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import "./styles.css";
-import VFTable from "../../../../../../../../components/VectorFLOW/commons/VFTable";
-import { type GridRef } from "../../../../../../../types/MDM";
+import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
+import { type GridRef } from "../../../../../../../../types/MDM";
 import { ColDef } from "ag-grid-enterprise";
-import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider} from '../../styles';
-import VFInfoTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
+import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../../styles';
+import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 
 
 interface MonitorGITChildLocationWiseProps{
@@ -14,7 +14,7 @@ interface MonitorGITChildLocationWiseProps{
 }
 
 
-const MonitorGITChildLocationWise = ({data}:MonitorGITChildLocationWiseProps) => {
+const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWiseProps) => {
 
     const refGraph1 = useRef<GridRef>();
     const refGraph2 = useRef<GridRef>();
@@ -38,7 +38,7 @@ const MonitorGITChildLocationWise = ({data}:MonitorGITChildLocationWiseProps) =>
     ]
 
     const generateChart = () => {
-        const container1 = document.getElementById('LocationWiseGraph1') as HTMLElement
+        // const container1 = document.getElementById('LocationWiseGraph1') as HTMLElement
         refGraph1.current?.api.createRangeChart({
           chartType:'stackedColumn',
           cellRange: {
@@ -46,7 +46,7 @@ const MonitorGITChildLocationWise = ({data}:MonitorGITChildLocationWiseProps) =>
             rowStartIndex:0,
             rowEndIndex:9
           },
-          chartContainer:container1
+        //   chartContainer:container1
         })
 
         // const container2 = document.getElementById('LocationWiseGraph2') as HTMLElement
@@ -111,58 +111,26 @@ const MonitorGITChildLocationWise = ({data}:MonitorGITChildLocationWiseProps) =>
       const graph2 = [
         'This box plot graph displays the statistical distribution of delay days in transport for various locations. Each box represents the range of delay days as on today'
       ]
-    
-    
+
+     
     return(
         <>
-            <Allotment>
-                <Allotment.Pane preferredSize={1000}>
-                    <SCChartContainer height={547}>
-                        <SCChartHeaderContainer>
-                            <SCChartHeader>Top 10 Locations: Max Tech Black/Red SKUs Along With High Transport Ageing</SCChartHeader>
-                        </SCChartHeaderContainer>
-                        <SCHorizontalDivider/>
-                        <div style={{display:'none'}}>
-                            <VFTable
-                                ref={refGraph1}
-                                columnDefs={coldefs}
-                                rowData={data['maxTechBlackRedColumn']}
-                                enableCharts={true}
-                                enableRangeSelection={true}
-                                onGridReady={generateChart}
-                                getChartToolbarItems={getChartToolbarItems}
-                                chartToolPanelsDef={
-                                    {
-                                        panels:[]
-                                    }
-                                }
-                                chartThemeOverrides={chartThemeOverrides}
-                                chartThemes={['myCustomTheme']}
-                                customChartThemes={{
-                                    'myCustomTheme':myCustomTheme
-                                }}
-                            />
-                        </div>
-                        <div id="LocationWiseGraph1"></div>
-                    </SCChartContainer>
-                    <div style={{marginLeft:'10px',marginRight:'10px'}}>
-                        <VFInfoTip text={graph1}/>
-                    </div>
-                </Allotment.Pane>
-                <Allotment.Pane>
-                    <SCChartContainer height={547}>
+            <SCDynamicContainer>
+                <Allotment>
+                    <Allotment.Pane preferredSize={1000}>
+                        <SCChartContainer height={547}>
                             <SCChartHeaderContainer>
-                                <SCChartHeader>Statistical Overview of Delay Days in Transport at Receiving Locations</SCChartHeader>
+                                <SCChartHeader>Top 10 Locations: Max Tech Black/Red SKUs Along With High Transport Ageing</SCChartHeader>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                            <div style={{display:'none'}}>
+                            <div style={{height:'486px'}}>
                                 <VFTable
-                                    ref={refGraph2}
+                                    ref={refGraph1}
                                     columnDefs={coldefs}
-                                    rowData={data['delayDaysStatisticalBox']}
+                                    rowData={data['maxTechBlackRedColumn']}
                                     enableCharts={true}
                                     enableRangeSelection={true}
-                                    // onGridReady={generateChart}
+                                    onGridReady={generateChart}
                                     getChartToolbarItems={getChartToolbarItems}
                                     chartToolPanelsDef={
                                         {
@@ -174,18 +142,53 @@ const MonitorGITChildLocationWise = ({data}:MonitorGITChildLocationWiseProps) =>
                                     customChartThemes={{
                                         'myCustomTheme':myCustomTheme
                                     }}
+                                    disableZoomScaling={true}
                                 />
                             </div>
-                            <div id="LocationWiseGraph2"></div>
-                    </SCChartContainer>
-                    <div style={{marginLeft:'10px',marginRight:'10px'}}>
-                        <VFInfoTip text={graph2}/>
-                    </div>
-                </Allotment.Pane>
-            </Allotment>
+                            {/* <div id="LocationWiseGraph1"></div> */}
+                        </SCChartContainer>
+                        <div style={{marginLeft:'10px',marginRight:'10px'}}>
+                            <VFInfoTip text={graph1}/>
+                        </div>
+                    </Allotment.Pane>
+                    <Allotment.Pane>
+                        <SCChartContainer height={547}>
+                                <SCChartHeaderContainer>
+                                    <SCChartHeader>Statistical Overview of Delay Days in Transport at Receiving Locations</SCChartHeader>
+                                </SCChartHeaderContainer>
+                                <SCHorizontalDivider/>
+                                <div style={{display:'none'}}>
+                                    <VFTable
+                                        ref={refGraph2}
+                                        columnDefs={coldefs}
+                                        rowData={data['delayDaysStatisticalBox']}
+                                        enableCharts={true}
+                                        enableRangeSelection={true}
+                                        // onGridReady={generateChart}
+                                        getChartToolbarItems={getChartToolbarItems}
+                                        chartToolPanelsDef={
+                                            {
+                                                panels:[]
+                                            }
+                                        }
+                                        chartThemeOverrides={chartThemeOverrides}
+                                        chartThemes={['myCustomTheme']}
+                                        customChartThemes={{
+                                            'myCustomTheme':myCustomTheme
+                                        }}
+                                    />
+                                </div>
+                                <div id="LocationWiseGraph2"></div>
+                        </SCChartContainer>
+                        <div style={{marginLeft:'10px',marginRight:'10px'}}>
+                            <VFInfoTip text={graph2}/>
+                        </div>
+                    </Allotment.Pane>
+                </Allotment>
+            </SCDynamicContainer>
         </>
     )
     
 }
 
-export default MonitorGITChildLocationWise;
+export default MonitorGITChildLocationWiseCharts;

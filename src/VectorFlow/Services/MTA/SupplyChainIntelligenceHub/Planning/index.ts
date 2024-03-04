@@ -21,4 +21,16 @@ export const useGetPlanningDataGraph = ()=>{
     })
 }
 
+export const useGetPlanningDataGrid = ()=>{
+  return useMutation(async(body:any)=>{
+      return await PlanningService.getPlanningDataGrid(body);
+  })
+}
+
+export const useGetPlanningDataCustom = ()=>{
+  return useMutation(async(body:any)=>{
+      return await PlanningService.getPlanningDataCustom(body);
+  })
+}
+
 

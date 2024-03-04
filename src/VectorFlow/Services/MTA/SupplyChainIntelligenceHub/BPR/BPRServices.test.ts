@@ -14,6 +14,7 @@ describe('Testing the MDMService',  () => {
     });
   
     process.env.REACT_APP_VF_API_HOST = 'http://10.8.1.10:8888';
+    process.env.REACT_APP_VF_MOCK_API_HOST = 'http://10.8.1.10:8081'
   
     afterEach(() => {
       jest.clearAllMocks();
@@ -23,7 +24,7 @@ describe('Testing the MDMService',  () => {
       mockedAxios.get.mockResolvedValueOnce(GetBPRUIConfigurationMockResponse);
       
       const response = await BPRService.getBPRUIConfiguration();
-      expect(mockedAxios.get).toHaveBeenCalledWith('https://requestly.tech/api/mockv2/GetBPRUIConfiguration?username=user1708583815102&',{
+      expect(mockedAxios.get).toHaveBeenCalledWith('http://10.8.1.10:8081/GetBPRUIConfiguration',{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
@@ -40,7 +41,7 @@ describe('Testing the MDMService',  () => {
             }
         }
         const response = await BPRService.getBPRData(mockBody);
-        expect(mockedAxios.post).toHaveBeenCalledWith('https://requestly.tech/api/mockv2/GetBPRData?username=user1708583815102&',mockBody,{
+        expect(mockedAxios.post).toHaveBeenCalledWith('http://10.8.1.10:8081/GetBPRData',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
         expect(response.status).toBe(200);
@@ -61,7 +62,7 @@ describe('Testing the MDMService',  () => {
             remark:"Some remark"
         }
         const response = await BPRService.submitRemark({remark:'Some remark'});
-        expect(mockedAxios.post).toHaveBeenCalledWith('https://requestly.tech/api/mockv2/SubmitRemark?username=user1708583815102&',mockBody,{
+        expect(mockedAxios.post).toHaveBeenCalledWith('http://10.8.1.10:8081/SubmitRemark',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
         expect(response.status).toBe(200);
@@ -127,7 +128,7 @@ describe('Testing the MDMService',  () => {
             ]
         }
         const response = await BPRService.getRemarkHistory(mockBody);
-        expect(mockedAxios.post).toHaveBeenCalledWith('https://requestly.tech/api/mockv2/GetRemarkHistory?rq_uid=cbmPNOZG8RVVRE3DQJ8t0mWWQ9y1',mockBody,{
+        expect(mockedAxios.post).toHaveBeenCalledWith('http://10.8.1.10:8081/GetRemarkHistory',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
         expect(response.status).toBe(200);
