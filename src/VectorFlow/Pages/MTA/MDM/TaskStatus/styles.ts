@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const VFTaskStatusWrapper = styled.div`
     display:flex;
     flex-direction:column;
+    background-color:white;
 `
 export const VFTaskStatusContentWrapper = styled.div`
     display:flex;
@@ -12,6 +13,7 @@ export const VFTaskStatusContentWrapper = styled.div`
 `
 
 export const VFTaskStatusStepperWrapper = styled.div<{gridFraction:string}>`
+    margin-top:20px;
     height:60px;
     width:100%;
     display:grid;
@@ -30,6 +32,15 @@ export const VFTastStatusDownloadWrapper = styled.div`
 `
 
 export const VFTaskStatusStepperLabel = styled.p`
-    font-size:16px;
+    font-size:20px;
     text-align:center;
+`
+
+export const VFTaskStatusNoData = styled.div`
+    width:100%;
+    height:90px;
+    padding:10px;
+    padding-left:60px;
+    display:flex;
+    align-items:center;
 `

@@ -1,4 +1,4 @@
-import { render,screen } from '@testing-library/react';
+import { render,screen,fireEvent } from '@testing-library/react';
 import ErrorCell from '.';
 
 const props:any = {
@@ -22,6 +22,16 @@ describe("Renders Error Cell",() => {
         expect(screen.getByText('dummydumm')).toBeInTheDocument();
         
     })
+
+    it("Renders the Tooltip",()=>{
+        const message = "dummydumm"
+        props.data.error = message;
+        render(<ErrorCell {...props}/>);
+        fireEvent.mouseEnter(screen.getByTestId('errorImage'))
+        fireEvent.mouseLeave(screen.getByTestId('errorImage'))
+        
+    })
+    
     it("Renders an Empty fragment when message is undefined",()=>{
         props.data.error = undefined;
         render(<ErrorCell {...props}/>);

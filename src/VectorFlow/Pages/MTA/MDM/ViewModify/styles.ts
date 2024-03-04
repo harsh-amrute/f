@@ -1,4 +1,14 @@
-import styled from 'styled-components'
+import styled,{keyframes} from 'styled-components'
+
+const fadeIn = keyframes`
+  from {
+   opacity:0;
+  }
+
+  to {
+  opacity:1;
+  }
+`;
 
 export const SCContainer = styled.div`
     margin-left:50px;
@@ -303,6 +313,7 @@ margin-bottom:59px; // 87
 margin-left:100px;  //192
 margin-right:100px;  //189
 display:flex;
+
 flex-direction:row;
 gap:28px;
 `
@@ -310,26 +321,34 @@ gap:28px;
 export const ConflictErrorToolTipWrapper = styled.div`
     position:fixed;
     background-color:white;
-    bottom:0;
     display:flex;
     flex-direction:column;
     padding:5px;
-    border:1px solid rgb(130, 15, 76);
-    border-radius:8px;
+    min-width: 135px;
     z-index:10000;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    animation:${fadeIn} 0.2s ease-in;
    
 `
 export const ConflictErrorToolTipSection = styled.div`
    width:100%;
    margin-bottom:5px;
-   border-bottom:solid 2px gray;  
-   &:last-child {
-    border-bottom: none; 
-}
+   border-bottom:solid 1px gray;  
+   font-size:10px;
 `
 
 export const ConflictErrorText = styled.p`
     text-align:left;
-    font-size:15px;
 
 `
+
+export const ToolTipTriangle = styled.div`
+    position:absolute;
+    left:55px;
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-width: 0 7.5px 13.0px 7.5px;
+    border-color: transparent transparent white transparent;
+    transform: rotate(0deg);
+` 
