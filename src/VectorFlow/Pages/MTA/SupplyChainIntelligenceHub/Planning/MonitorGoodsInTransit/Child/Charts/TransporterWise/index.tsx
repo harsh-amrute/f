@@ -1,11 +1,11 @@
 import { useRef, useMemo } from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
-import VFTable from "../../../../../../../../components/VectorFLOW/commons/VFTable";
-import { type GridRef } from "../../../../../../../types/MDM";
+import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
+import { type GridRef } from "../../../../../../../../types/MDM";
 import { ColDef } from "ag-grid-enterprise";
-import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider} from '../../styles';
-import VFInfoTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
+import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider} from '../../../styles';
+import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 
 
 interface MonitorGITChildTransporterWiseProps{
@@ -13,7 +13,7 @@ interface MonitorGITChildTransporterWiseProps{
 }
 
 
-const MonitorGITChildTransporterWise = ({data}:MonitorGITChildTransporterWiseProps) => {
+const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterWiseProps) => {
 
     const refGraph1 = useRef<GridRef>();
     const refGraph2 = useRef<GridRef>(); 
@@ -37,7 +37,7 @@ const MonitorGITChildTransporterWise = ({data}:MonitorGITChildTransporterWisePro
     ]
 
     const generateChart = () => {
-        const container1 = document.getElementById('TransporterWiseGraph1') as HTMLElement
+        // const container1 = document.getElementById('TransporterWiseGraph1') as HTMLElement
         refGraph1.current?.api.createRangeChart({
           chartType:'stackedColumn',
           cellRange: {
@@ -45,7 +45,7 @@ const MonitorGITChildTransporterWise = ({data}:MonitorGITChildTransporterWisePro
             rowStartIndex:0,
             rowEndIndex:9
           },
-          chartContainer:container1
+        //   chartContainer:container1
         })
 
         // const container2 = document.getElementById('LocationWiseGraph2') as HTMLElement
@@ -121,7 +121,7 @@ const MonitorGITChildTransporterWise = ({data}:MonitorGITChildTransporterWisePro
                             <SCChartHeader>Top 10 Transporters: Max LRs With Tech Black/Red SKUs Along With High Transport Ageing</SCChartHeader>
                         </SCChartHeaderContainer>
                         <SCHorizontalDivider/>
-                        <div style={{display:'none'}}>
+                        <div style={{height:'486px'}}>
                             <VFTable
                                 ref={refGraph1}
                                 columnDefs={coldefs}
@@ -142,7 +142,7 @@ const MonitorGITChildTransporterWise = ({data}:MonitorGITChildTransporterWisePro
                                 }}
                             />
                         </div>
-                        <div id="TransporterWiseGraph1"></div>
+                        {/* <div id="TransporterWiseGraph1"></div> */}
                     </SCChartContainer>
                     <div style={{marginLeft:'10px',marginRight:'10px'}}>
                         <VFInfoTip text={graph1}/>
@@ -187,4 +187,4 @@ const MonitorGITChildTransporterWise = ({data}:MonitorGITChildTransporterWisePro
     
 }
 
-export default MonitorGITChildTransporterWise;
+export default MonitorGITChildTransporterWiseCharts;

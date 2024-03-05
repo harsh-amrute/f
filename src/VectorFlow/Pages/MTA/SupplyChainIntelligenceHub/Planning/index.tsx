@@ -3,7 +3,8 @@ import SelectCategory from "../../../../../components/VectorFLOW/layouts/SelectC
 import usePlanning from "./usePlanning";
 import VFOverlay from "../../../.././../components/VectorFLOW/commons/VFOverlay";
 import ChartView from "./ChartView";
-import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
+import ActionToolBar from './ActionToolBar';
+import GridView from "./GridView";
 
 const Planning = () => {
 
@@ -14,22 +15,29 @@ const Planning = () => {
         currentCategory,
         currentGraphData,
         currentTab,
+        setCurrentTab,
         currentView,
-        onMonitorChildClick,
-        onFloatingTabChange
+        handlePlanningQuadrantClick,
+        onFloatingTabChange,
+        onGoBack,
+        onViewChange,
+        getFloatingTabsList,
+        currentGridData
     } = usePlanning();
 
     const renderView = () => {
 
         switch(currentView){
+            
             case 'chart':
                 return <ChartView currentTab={currentTab} category={currentCategory} currentGraphData={currentGraphData}/>
+            case 'grid':
+                return <GridView currentTab={currentTab} category={currentCategory} currentGridData={currentGridData}/>
 
         }
         
     }
 
-    
 
     return(
         <>
@@ -49,10 +57,10 @@ const Planning = () => {
                     parentExpediteCount={planningCounts.parentExpediteCount}
                     reviewOrderFulfillmentCount={planningCounts.reviewOrderFulfillmentCount}
                     reviewExcessInventoryCount={planningCounts.reviewExcessInventoryCount}
-                    onMonitorChildClick={onMonitorChildClick}
-                    onMonitorParentClick={()=>console.log("Test")}
+                    onMonitorChildClick={()=>handlePlanningQuadrantClick('GITToChild')}
+                    onMonitorParentClick={()=>handlePlanningQuadrantClick('GITFromParent')}
                     onExpediteChildClick={()=>console.log("Test")}
-                    onExpediteParentClick={()=>console.log("Test")}
+                    onExpediteParentClick={()=>handlePlanningQuadrantClick('ExpediteFromParent')}
                     onExcessInventoryReviewClick={()=>console.log("Test")}
                     onOrderFulfillmentReviewClick={()=>console.log("Test")}
                 />
@@ -60,28 +68,16 @@ const Planning = () => {
             {
                 !isSelectCategoryOpen &&
                 <>
-                    <div style={{display:'flex',justifyContent:'center',marginBottom:'20px'}}>
-                        <VFFloatingTab
-                            tabs={[
-                                {
-                                    id:'locationWise',
-                                    label:'Location-Wise',
-                                    value:'locationWise'
-                                },
-                                {
-                                    id:'transporterWise',
-                                    label:'Transporter-Wise',
-                                    value:'transporterWise'
-                                },
-                                {
-                                    id:'custom',
-                                    label:'Custom Screens',
-                                    value:'custom'
-                                }
-                            ]}
-                            handleClick={onFloatingTabChange}
+                    <ActionToolBar 
+                        view={currentView} 
+                        onFloatingTabChange={onFloatingTabChange}
+                        onGoBack={onGoBack}
+                        onViewChange={onViewChange}
+                        currentTab={currentTab}
+                        setCurrentTab={setCurrentTab}
+                        tabsList={getFloatingTabsList()}
+                        disableChartAndGridViewToggle={['GITFromParent'].includes(currentCategory)}
                         />
-                    </div>
                     
                     {renderView()}
                 </>
