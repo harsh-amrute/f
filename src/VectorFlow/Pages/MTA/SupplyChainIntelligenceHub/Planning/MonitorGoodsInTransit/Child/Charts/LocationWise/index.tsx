@@ -1,10 +1,10 @@
-import {useRef, useMemo} from "react";
+import {useRef, useMemo, useState} from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import "./styles.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../../../../types/MDM";
-import { ColDef } from "ag-grid-enterprise";
+import { ColDef, ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../../styles';
 import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 
@@ -18,8 +18,14 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
 
     const refGraph1 = useRef<GridRef>();
     const refGraph2 = useRef<GridRef>();
+    const [hideChart1,toggleChart1] = useState<boolean>(false);
+    // const [hideChart2,toggleChart2] = useState<boolean>(false);
+    const [grid1DisplayStatus,setGrid1DisplayStatus] = useState<string>('none');
+    // const [grid2DisplayStatus,setGrid2DisplayStatus] = useState<string>('none');
+    let chartRef1:ChartRef |undefined;
+    // let chartRef2:ChartRef | undefined;
 
-    const coldefs:ColDef[] = [
+    const coldefs1:ColDef[] = [
         {
             field:'ln',
             headerName:'Location Name',
@@ -37,29 +43,72 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
         }
     ]
 
-    const generateChart = () => {
-        // const container1 = document.getElementById('LocationWiseGraph1') as HTMLElement
-        refGraph1.current?.api.createRangeChart({
-          chartType:'stackedColumn',
-          cellRange: {
-            columns: ['ln','spd', 'd'],
-            rowStartIndex:0,
-            rowEndIndex:9
-          },
-        //   chartContainer:container1
-        })
+    const generateChart = (graphNo:number,withOutContainer?:boolean) => {
+       
+        if(graphNo === 1){
+            if(withOutContainer) {
+                chartRef1 = refGraph1.current?.api.createRangeChart({
+                    chartType:'stackedColumn',
+                    cellRange: {
+                    columns: ['ln','spd','d'],
+                    rowStartIndex:0,
+                    rowEndIndex:9
+                    }
+                })
+            }
+            else{
+                const container1 = document.getElementById('LocationWiseG1') as HTMLElement
+                chartRef1 = refGraph1.current?.api.createRangeChart({
+                    chartType:'stackedColumn',
+                    cellRange: {
+                    columns: ['ln','spd','d'],
+                    rowStartIndex:0,
+                    rowEndIndex:9
+                    },
+                  chartContainer: container1 
+                })    
+            }
+            
+        }
+        // if(graphNo === 2){
+        //     if(withOutContainer) {
+        //         chartRef2 = refGraph2.current?.api.createRangeChart({
+        //             chartType:'column',
+        //             cellRange: {
+        //                 columns: ['ln','trqcn'],
+        //                 rowStartIndex:0,
+        //                 rowEndIndex:9
+        //             }
+        //         })
+        //     }
+        //     else{
+        //         const container2 = document.getElementById('CreateAvailabilityAtParentG2') as HTMLElement
+        //         chartRef2 = refGraph2.current?.api.createRangeChart({
+        //             chartType:'column',
+        //             cellRange: {
+        //                 columns: ['ln','trqcn'],
+        //                 rowStartIndex:0,
+        //                 rowEndIndex:9
+        //             },
+        //             chartContainer:container2
+        //         })
+        //     }
+            
+        // }
+    }
 
-        // const container2 = document.getElementById('LocationWiseGraph2') as HTMLElement
-        // refGraph2.current?.api.createRangeChart({
-        //   chartType:'stackedColumn',
-        //   cellRange: {
-        //     columns: ['ln', 'spd', 'd'],
-        //     rowStartIndex:0,
-        //     rowEndIndex:9
-        //   },
-        //   chartContainer:container2
-        // })
-      }
+    const handleChartClose = (graphNo:number) => {
+    if(graphNo === 1){
+        chartRef1?.destroyChart()
+        toggleChart1(true);
+        setGrid1DisplayStatus('block')
+    }
+    // if(graphNo === 2){
+    //     chartRef2?.destroyChart()
+    //     toggleChart2(true);
+    //     setGrid2DisplayStatus('block')
+    // }
+    }
 
       const getChartToolbarItems:any = () => ['chartDownload'];
 
@@ -117,35 +166,69 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
         <>
             <SCDynamicContainer>
                 <Allotment>
-                    <Allotment.Pane preferredSize={1000}>
+                    <Allotment.Pane preferredSize={'80%'}>
                         <SCChartContainer height={547}>
                             <SCChartHeaderContainer>
                                 <SCChartHeader>Top 10 Locations: Max Tech Black/Red SKUs Along With High Transport Ageing</SCChartHeader>
+                                {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                            <div style={{height:'486px'}}>
-                                <VFTable
-                                    ref={refGraph1}
-                                    columnDefs={coldefs}
-                                    rowData={data['maxTechBlackRedColumn']}
-                                    enableCharts={true}
-                                    enableRangeSelection={true}
-                                    onGridReady={generateChart}
-                                    getChartToolbarItems={getChartToolbarItems}
-                                    chartToolPanelsDef={
-                                        {
-                                            panels:[]
-                                        }
-                                    }
-                                    chartThemeOverrides={chartThemeOverrides}
-                                    chartThemes={['myCustomTheme']}
-                                    customChartThemes={{
-                                        'myCustomTheme':myCustomTheme
-                                    }}
-                                    disableZoomScaling={true}
-                                />
-                            </div>
-                            {/* <div id="LocationWiseGraph1"></div> */}
+                            <div style={{height:'460px',display:grid1DisplayStatus}}>
+                                {
+                                    hideChart1 &&
+                                    (
+                                        <VFTable
+                                            ref={refGraph1}
+                                            columnDefs={coldefs1}
+                                            rowData={data['maxTechBlackRedColumn']}
+                                            enableCharts={true}
+                                            enableRangeSelection={true}
+                                            onGridReady={()=>generateChart(1,true)}
+                                            getChartToolbarItems={getChartToolbarItems}
+                                            chartToolPanelsDef={
+                                                {
+                                                    panels:[]
+                                                }
+                                            }
+                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemes={['myCustomTheme']}
+                                            customChartThemes={{
+                                                'myCustomTheme':myCustomTheme
+                                            }}
+                                            disableZoomScaling={true}
+                                        />
+                                    )
+                                }
+                                {
+                                    !hideChart1 &&
+                                    (
+                                        <div style={{display:'none'}}>
+                                        <VFTable
+                                            ref={refGraph1}
+                                            columnDefs={coldefs1}
+                                            rowData={data['maxTechBlackRedColumn']}
+                                            enableCharts={true}
+                                            enableRangeSelection={true}
+                                            onGridReady={()=>generateChart(1)}
+                                            getChartToolbarItems={getChartToolbarItems}
+                                            chartToolPanelsDef={
+                                                {
+                                                    panels:[]
+                                                }
+                                            }
+                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemes={['myCustomTheme']}
+                                            customChartThemes={{
+                                                'myCustomTheme':myCustomTheme
+                                            }}
+                                            disableZoomScaling={true}
+                                        />
+                                        </div>
+                                    )
+                                }
+                               
+                                </div>
+                                {!hideChart1 && <div id="LocationWiseG1" style={{height:'460px'}}></div>}
                         </SCChartContainer>
                         <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>
@@ -160,7 +243,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                 <div style={{display:'none'}}>
                                     <VFTable
                                         ref={refGraph2}
-                                        columnDefs={coldefs}
+                                        columnDefs={coldefs1}
                                         rowData={data['delayDaysStatisticalBox']}
                                         enableCharts={true}
                                         enableRangeSelection={true}

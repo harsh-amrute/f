@@ -41,7 +41,7 @@ export const SCChartHeaderContainer = styled.div`
     height:60px;
     background-color:white;
     display:flex;
-    justify-content:center;
+    justify-content:space-evenly;
     align-items:center;
 `
 export const SCChartHeader = styled.p`

@@ -59,7 +59,7 @@ const Planning = () => {
                     reviewExcessInventoryCount={planningCounts.reviewExcessInventoryCount}
                     onMonitorChildClick={()=>handlePlanningQuadrantClick('GITToChild')}
                     onMonitorParentClick={()=>handlePlanningQuadrantClick('GITFromParent')}
-                    onExpediteChildClick={()=>console.log("Test")}
+                    onExpediteChildClick={()=>handlePlanningQuadrantClick('ExpediteToChild')}
                     onExpediteParentClick={()=>handlePlanningQuadrantClick('ExpediteFromParent')}
                     onExcessInventoryReviewClick={()=>console.log("Test")}
                     onOrderFulfillmentReviewClick={()=>console.log("Test")}
@@ -75,8 +75,8 @@ const Planning = () => {
                         onViewChange={onViewChange}
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
-                        tabsList={getFloatingTabsList()}
-                        disableChartAndGridViewToggle={['GITFromParent'].includes(currentCategory)}
+                        tabsList={getFloatingTabsList(currentView)}
+                        disableChartAndGridViewToggle={['GITFromParent',].includes(currentCategory)}
                         />
                     
                     {renderView()}

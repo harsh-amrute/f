@@ -41,13 +41,13 @@ const usePlanning = ()=>{
     },[])
 
    
-    const getFloatingTabsList = () => {
+    const getFloatingTabsList = (view:string) => {
         switch(currentCategory){
             case 'GITFromParent':{
                 return [];
             }
             case 'GITToChild':{
-                if(currentView === 'chart'){
+                if(view === 'chart'){
                      return([
                         {
                             id:'locationWise',
@@ -83,23 +83,49 @@ const usePlanning = ()=>{
                 
             }
         case 'ExpediteFromParent':{
-            return([
-                {
-                    id:'expediteDispatches',
-                    label:'Expedite Dispatches',
-                    value:'expediteDispatches'
-                },
-                {
-                    id:'createAvailabilityAtParent',
-                    label:'Create Availability At Parent',
-                    value:'createAvailabilityAtParent'
-                },
-                {
-                    id:'custom',
-                    label:'Custom Screens',
-                    value:'custom'
-                }
-            ])
+            if(view === 'chart'){
+                return([
+                    {
+                        id:'expediteDispatches',
+                        label:'Expedite Dispatches',
+                        value:'expediteDispatches'
+                    },
+                    {
+                        id:'createAvailabilityAtParent',
+                        label:'Create Availability At Parent',
+                        value:'createAvailabilityAtParent'
+                    },
+                    {
+                        id:'custom',
+                        label:'Custom Screens',
+                        value:'custom'
+                    }
+                ])
+            }
+            else{
+                return []
+            }
+          
+        }
+        case 'ExpediteToChild':{
+            if(view === 'chart'){
+                return([
+                    {
+                        id:'expediteDispatches',
+                        label:'Expedite Dispatches',
+                        value:'expediteDispatches'
+                    },
+                    {
+                        id:'custom',
+                        label:'Custom Screens',
+                        value:'custom'
+                    }
+                ])
+            }
+            else{
+                return []
+            }
+          
         }
         default:
             return([])
@@ -191,6 +217,23 @@ const usePlanning = ()=>{
                     notifySuccess("Graph Details Fetched Successfully");
                     break;
                 }
+                case 'ExpediteToChild':{
+                    const toastId = notifyLoader('Loading Graphs');
+                    setCurrentCategory('ExpediteToChild');
+                    setCurrentView('chart');
+                    const body = {
+                        category:'expedite',
+                        type:'child',
+                        filters:[]
+                    }
+                    const result = await getPlanningDataGraph(body);
+                    setIsSelectCategoryOpen(false);
+                    setCurrentGraphData(result.data.data)
+                    setCurrentTab('expediteDispatches');
+                    toast.dismiss(toastId);
+                    notifySuccess("Graph Details Fetched Successfully");
+                    break;
+                }
                     
                 default:
                     return;
@@ -225,6 +268,24 @@ const usePlanning = ()=>{
                     setCurrentGridData(result.data.data);
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
+                    break;
+                }
+                case 'ExpediteFromParent':{
+                    const toastId = notifyLoader('Loading Grid Data');
+                    const body = {
+                        category:'expedite',
+                        type:'parent',
+                        filters:[],
+                        paginationParameter:{
+                            pageNumber:1,
+                            recordsPerPage:50
+                        }
+                    }
+                    const result = await getPlanningDataGrid(body);
+                    setCurrentGridData(result.data.data);
+                    toast.dismiss(toastId);
+                    notifySuccess("Grid Details Fetched Successfully");
+                    break;
                 }
             }
         } catch (error) {
@@ -247,7 +308,10 @@ const usePlanning = ()=>{
 
 
     const onViewChange = (view:string) => {
-        setCurrentTab(getFloatingTabsList()[0].value);
+        const activeTab = getFloatingTabsList(view)[0];
+        if(activeTab){
+             setCurrentTab(getFloatingTabsList(view)[0].value);
+        } 
         setCurrentView(view);
         fetchAndUpdateGridData();
     }

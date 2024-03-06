@@ -3,6 +3,9 @@ import MonitorGITChildCustomCharts from "../MonitorGoodsInTransit/Child/Charts/C
 import MonitorGITChildTransporterWiseCharts from '../MonitorGoodsInTransit/Child/Charts/TransporterWise';
 import MonitorGITParent from "../MonitorGoodsInTransit/Parent";
 import ExpediteDispatches from '../Expedite/Parent/Chart/ExpediteDispatches';
+import ExpediteDispatchesChild from "../Expedite/Child/Chart/ExpediteDispatches";
+import CreateAvailabilityAtParent from "../Expedite/Parent/Chart/CreateAvailabilityAtParent";
+import ExpediteParentCustomCharts from "../Expedite/Parent/Chart/Custom";
 
 interface ChartViewProps {
     category:string,
@@ -44,7 +47,33 @@ const ChartView = ({category,currentTab,currentGraphData}:ChartViewProps) => {
                         />
                     )
                 }
-                break;    
+                if(currentTab === 'createAvailabilityAtParent'){
+                    return (
+                        <CreateAvailabilityAtParent
+                            data={currentGraphData ? currentGraphData['createAvailabilityAtParent']:[]}
+                        />
+                    )
+                }
+                if(currentTab === 'custom'){
+                    return (
+                        <ExpediteParentCustomCharts/>
+                    )
+                }
+                break; 
+            case 'ExpediteToChild':
+                if(currentTab === 'expediteDispatches'){
+                    return (
+                        <ExpediteDispatchesChild
+                            data={currentGraphData ? currentGraphData['expediteDispatches']:[]}
+                        />
+                    )
+                }
+                if(currentTab === 'custom'){
+                    return (
+                        <ExpediteParentCustomCharts/>
+                    )
+                }
+                break;   
             case 'ExcessInventory':
                 return <></>
             case 'OrderFulfillment':
