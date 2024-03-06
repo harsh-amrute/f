@@ -157,7 +157,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
       ]
 
       const graph2 = [
-        'This graph highlights the top 10 receiving locations with maximum SKUs in eco black/red which have rationed quantity available at parent location.',
+        'This graph highlights the top 10 receiving locations with max SKUs in Eco Black/Red which have rationed qty available at parent',
         'To improve availability, expedite dispatches to these locations.'
       ]
 
@@ -210,7 +210,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                         <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
-                                            rowData={data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocations']}
+                                            rowData={data=[]}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1)}
