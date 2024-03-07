@@ -961,10 +961,13 @@ export const ExpediteParentMockData = {
 }
 
 export const ExpediteChildMockData = {
-    maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocations: [],
-    maxEcoBlackRedWithRationedQtyAvailableAtParent:[],
-    prePostRationing:[]
-}
+    expediteDispatches:{
+      maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocations: [],
+      maxEcoBlackRedWithRationedQtyAvailableAtParent:[],
+      prePostRationing:[]
+    }
+    }
+    
 
 export const getPlanningDataCountMockData = {
     "recordCount": "200",
