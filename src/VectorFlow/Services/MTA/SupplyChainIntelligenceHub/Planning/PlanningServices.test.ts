@@ -5,7 +5,7 @@ import axios,{AxiosStatic} from 'axios';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<AxiosStatic>;
 
-describe('Testing the MDMService',  () => {
+describe('Testing the Planning Service',  () => {
     const OLD_ENV = process.env;
     beforeEach(() => {
       jest.resetModules() // Most important - it clears the cache
@@ -13,6 +13,7 @@ describe('Testing the MDMService',  () => {
     });
   
     process.env.REACT_APP_VF_API_HOST = 'http://10.8.1.10:8888';
+    process.env.REACT_APP_VF_MOCK_API_HOST='http://10.8.1.10:8081'
   
     afterEach(() => {
       jest.clearAllMocks();
@@ -24,7 +25,7 @@ describe('Testing the MDMService',  () => {
         filters:[]
       }
       const response = await PlanningService.getPlanningDataCount(mockBody);
-      expect(mockedAxios.post).toHaveBeenCalledWith('https://requestly.tech/api/mockv2/GetPlanningDataCount?username=user1708583815102&',mockBody,{
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_MOCK_API_HOST + '/GetPlanningDataCount',mockBody,{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
@@ -37,7 +38,33 @@ describe('Testing the MDMService',  () => {
           filters:[]
         }
         const response = await PlanningService.getPlanningDataGraph(mockBody);
-        expect(mockedAxios.post).toHaveBeenCalledWith('https://requestly.tech/api/mockv2/GetPlanningDataGraph?username=user1708583815102&',mockBody,{
+        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_MOCK_API_HOST + '/GetPlanningDataGraph',mockBody,{
+          headers: { 'Content-Type': 'application/json' }
+        })
+        expect(response.status).toBe(200);
+    
+      });
+
+      it('should make a Post request to the /getPlanningDataGrid', async () => {
+        mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+        const mockBody = {
+          filters:[]
+        }
+        const response = await PlanningService.getPlanningDataGrid(mockBody);
+        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_MOCK_API_HOST + '/GetPlanningDataGrid',mockBody,{
+          headers: { 'Content-Type': 'application/json' }
+        })
+        expect(response.status).toBe(200);
+    
+      });
+
+      it('should make a Post request to the /getPlanningDataCustom', async () => {
+        mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+        const mockBody = {
+          filters:[]
+        }
+        const response = await PlanningService.getPlanningDataCustom(mockBody);
+        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_MOCK_API_HOST + '/GetPlanningDataCustom',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
         expect(response.status).toBe(200);

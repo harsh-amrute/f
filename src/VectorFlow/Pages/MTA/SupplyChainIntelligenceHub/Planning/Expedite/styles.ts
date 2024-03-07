@@ -51,6 +51,7 @@ export const SCChartHeader = styled.p`
     font-family:Roboto;
     letter-spacing: 0px;
     color: #000000;
+    text-align:center;
 `
 
 export const SCHorizontalDivider = styled.hr`

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import * as gridSystem from "../../../../styles/gridSystem";
 
 export const DateContainer=styled.div`
 height:160px;
@@ -7,6 +8,14 @@ display:flex;
 justify-content:center;
 align-items: center;
 flex-direction:column;
+@media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
+    .size.desktop}) {
+    zoom:0.75;
+}
+
+@media (min-width: ${gridSystem.size.desktop}) {
+    zoom:1;
+}
 `
 
 export const DateWrapper=styled.div`
@@ -34,6 +43,14 @@ display:flex;
 align-items:center;
 justify-content:space-evenly;
 margin-bottom:26px;
+    @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
+        .size.desktop}) {
+        zoom:0.75;
+    }
+
+    @media (min-width: ${gridSystem.size.desktop}) {
+        zoom:1;
+    }
 `
 export const CardWrapper=styled.div`
 width:425px;
