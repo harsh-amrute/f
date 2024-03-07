@@ -108,3 +108,24 @@ width:100%;
 padding: 0 1rem;
 box-sizing:border-box;
 `
+export const VFHorizonText=styled.div`
+font-style:normal;
+font-variant:normal;
+font-weight:500;
+font-size:20px;
+line-height:26px;
+font-family:Roboto;
+display: block; 
+text-align: center; 
+align-items:center;
+//padding-top:15px;
+`
+export const RangeSliderComponent=styled.div`
+// border-bottom:0.5px solid #707070;
+//height:100px;
+padding-top:15px;
+padding-bottom:15px;
+display:flex;
+align-items: center; 
+flex-direction:column;
+`

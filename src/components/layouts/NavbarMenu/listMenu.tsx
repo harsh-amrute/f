@@ -259,27 +259,27 @@ export const listMenuParent: any = [
           {
             name: "BPR",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/BPR",
+            url: "/supply-chain-intelligence-hub/bpr",
             role: ["IST Admin", "IST Requestor"],
           },
-          {
-            name: "Dispatch Planning",
-            img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/dispatch-planning",
-            role: ["IST Admin", "IST Requestor"],
-          },
-          {
-            name: "Open Expediting Requests",
-            img: "/assets/img/nav/arrow_down.svg",
-            url: "//supply-chain-intelligence-hub/open-expediting-requests",
-            role: ["IST Admin", "IST Requestor"],
-          },
-          {
-            name: "Vendor Dispatch Report",
-            img: "/assets/img/nav/arrow_down.svg",
-            url: "//supply-chain-intelligence-hub/vendor-dispatch-report",
-            role: ["IST Admin", "IST Requestor"],
-          },
+          // {
+          //   name: "Dispatch Planning",
+          //   img: "/assets/img/nav/arrow_down.svg",
+          //   url: "/supply-chain-intelligence-hub/dispatch-planning",
+          //   role: ["IST Admin", "IST Requestor"],
+          // },
+          // {
+          //   name: "Open Expediting Requests",
+          //   img: "/assets/img/nav/arrow_down.svg",
+          //   url: "//supply-chain-intelligence-hub/open-expediting-requests",
+          //   role: ["IST Admin", "IST Requestor"],
+          // },
+          // {
+          //   name: "Vendor Dispatch Report",
+          //   img: "/assets/img/nav/arrow_down.svg",
+          //   url: "//supply-chain-intelligence-hub/vendor-dispatch-report",
+          //   role: ["IST Admin", "IST Requestor"],
+          // },
           {
             name: "Rationed Requirement Report",
             img: "/assets/img/nav/arrow_down.svg",
@@ -290,26 +290,26 @@ export const listMenuParent: any = [
           {
             name: "Buyer Order Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/buyer-order-report",
+            url: "/supply-chain-intelligence-hub/bor",
             role: ["IST Admin", "IST Requestor"],
 
           }
         ]
       },
-      {
-        name: "Logistics",
-        img: "/assets/img/nav/arrow_down.svg",
-        url: "/logistics",
-        role: ["IST Admin", "IST Requestor"],
-        child:[
-          {
-            name: "InTransit Whereabouts",
-            img: "/assets/img/nav/arrow_down.svg",
-            url: "/logistics/intransit-whereabouts",
-            role: ["IST Admin", "IST Requestor"],
-          }
-        ]
-      },
+      // {
+      //   name: "Logistics",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   url: "/logistics",
+      //   role: ["IST Admin", "IST Requestor"],
+      //   child:[
+      //     {
+      //       name: "InTransit Whereabouts",
+      //       img: "/assets/img/nav/arrow_down.svg",
+      //       url: "/logistics/intransit-whereabouts",
+      //       role: ["IST Admin", "IST Requestor"],
+      //     }
+      //   ]
+      // },
       {
         name: "Insights & Trends",
         img: "/assets/img/nav/arrow_down.svg",
@@ -328,12 +328,12 @@ export const listMenuParent: any = [
             url: "/insights-and-trends/buffer-trends",
             role: ["IST Admin", "IST Requestor"],
           },
-          {
-            name: "Logistics Insights",
-            img: "/assets/img/nav/arrow_down.svg",
-            url: "/insights-and-trends/logistics-insights",
-            role: ["IST Admin", "IST Requestor"],
-          },
+          // {
+          //   name: "Logistics Insights",
+          //   img: "/assets/img/nav/arrow_down.svg",
+          //   url: "/insights-and-trends/logistics-insights",
+          //   role: ["IST Admin", "IST Requestor"],
+          // },
           {
             name: "Guided Insights",
             img: "/assets/img/nav/arrow_down.svg",

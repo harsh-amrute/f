@@ -88,10 +88,7 @@ export const defaultColDefs:ColDef = {
     cellStyle: {
       "text-align": "center",
       'text-overflow':'ellipsis',
-      'white-space':'nowrap',
-       'overflow': 'hidden',
-       "display":'block',
-        "overflow-x":'hidden'
+      'white-space':'nowrap'
     },
     flex: 1,
 }

@@ -13,7 +13,8 @@ export const selectStyles =(backgroundColor:string,borderRadius:number, boxShado
     cursor: 'pointer',
     border: state.isFocused ? 0 : 0,
     // This line disable the blue border
-    boxShadow: state.isFocused ? 0 : backgroundColor ?  '0px 6px 12px #95959529' : boxShadow,
+    // boxShadow: state.isFocused ? 0 : backgroundColor ?  '0px 6px 12px #95959529' : boxShadow,
+     boxShadow: state.isFocused ? 0 : boxShadow ?  boxShadow : '0px 6px 12px #95959529' ,
     paddingRight:'13px'
   }),
   multiValue: () => ({
@@ -22,16 +23,18 @@ export const selectStyles =(backgroundColor:string,borderRadius:number, boxShado
     color: `${globalStyles.white}`,
     margin: '5px',
     padding: '7px',
-    borderRadius: '20px'
+    borderRadius: '20px',
+
   }),
   multiValueLabel: (provided: any) => ({
     ...provided,
-    color: `${globalStyles.white}`,
+    color:`${globalStyles.white}` , 
     font: 'normal normal 300 13px/ 13px Roboto',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    padding: '3px 5px 3px 6px'
+    padding: '3px 5px 3px 6px',
+    
   }),
   multiValueRemove: () => ({
     display: 'flex',
@@ -46,7 +49,8 @@ export const selectStyles =(backgroundColor:string,borderRadius:number, boxShado
   }),
   option: (provided: any) => ({
     ...provided,
-    cursor: 'pointer'
+    cursor: 'pointer',
+
   }),
   menuList: (provided: any) => ({
     ...provided,
@@ -77,8 +81,37 @@ export const selectStyles =(backgroundColor:string,borderRadius:number, boxShado
   dropdownIndicator: (provided: any) => ({
     ...provided,
     display: 'none' // Ẩn mũi tên
-  })}
+  }), 
+  placeholder:()=>({
+    paddingLeft:'15px',
+  }),
+  valueContainer:()=>({
+    overflow:'auto',
+    maxHeight:'40px',
+    width:'90%', 
+    display:'flex',
+    alignItems:'center',
+    '&::-webkit-scrollbar': {
+      width: '7px',
+       display:'none',
+      
+    },
+    '&::-webkit-scrollbar-track': {
+      borderRadius: '30px',
+      opacity: 1,
+    },
+    '&::-webkit-scrollbar-thumb': {
+      width: '7px',
+      background: '#D1D1D1 0% 0% no-repeat padding-box',
+      boxShadow: '0px 6px 9px #F8F8F8',
+      borderRadius: '30px',
+      opacity: 1,
+    },
+  }),
+
 }
+}
+
 
 export const styleMoreSelect = {
   display: 'flex',

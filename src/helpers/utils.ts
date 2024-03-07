@@ -4,7 +4,7 @@ import { MainService } from '../module-main/services/api'
 import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
-import {ColDef,ColGroupDef} from 'ag-grid-community';
+import {ColDef,ColGroupDef,CellClickedEvent} from 'ag-grid-community';
 import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper,taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,format, differenceInSeconds,parse} from 'date-fns';
@@ -12,12 +12,13 @@ import {subDays,format, differenceInSeconds,parse} from 'date-fns';
 import {formatMDMDate} from './format';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
 import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
-import ConflictErrorToolTip from '../VectorFlow/Pages/MTA/MDM/ViewModify/ConflictErrorToolTip';
+import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
+import { BPRField } from '../VectorFlow/types/BPR';
 
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+  // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
   'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
   'u', 'v', 'w', 'x', 'y', 'z',
@@ -537,6 +538,7 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChar
       floatingFilter: true,
       filter: "agMultiColumnFilter",
       cellDataType:false,
+      tooltipComponent:'conflictErrorToolTip',
       suppressColumnsToolPanel:!f.isApplicable,
       valueGetter:(params:any)=>{
         if(f.key==='sts'){
@@ -577,7 +579,7 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChar
       width:40,
       cellRenderer:'seasonalityGraphCellRenderer',
       cellRendererParams:{
-        onShowChart
+        onShowChart:onShowChart
       }
     }
     return [seasonalityColorColDef,seasonalityCheckboxColDef,seasonalityGraphColDef,...result]
@@ -653,7 +655,6 @@ export const mapDraftToColumnDefs = (fields:Field[],customParams?:ColDef)=>{
       },
       flex: 1,
       cellRenderer:f.key==="action"&& ActionRenderer,
-      tooltipComponent:ConflictErrorToolTip,
       ...customParams
     }
   })
@@ -668,6 +669,18 @@ export const mapTaskStatusToColDefs = (taskStatus:ColDef[])=>{
       minWidth:180,
       cellStyle: {
         "textAlign": "center",
+        'overflow':'hidden',
+        'text-overflow':'ellipsis',
+        'white-space':'nowrap',
+        'padding-top':'7px',
+        'font-weight':t.colId==='TaskStatus'?'500':'auto',
+        'color':t.colId==='TaskStatus'?'rgb(188, 61, 129)':'black',
+        'cursor':t.colId==='TaskStatus'?'pointer':'default'
+      },
+      onCellClicked:(params:CellClickedEvent)=>{
+        if(params.colDef.colId==='TaskStatus'){
+          params.node.setExpanded(!params.node.expanded)
+        }
       },
       flex: 1,
       floatingFilter:true,
@@ -685,13 +698,14 @@ export const mapPendingTaskToColumnDefs = (colDefs:ColDef[]):ColDef[]=>{
       filter: "agMultiColumnFilter",
       minWidth:180,
       cellStyle: (params)=>{
-        if(params.colDef.colId ==='TaskName')return{"text-align": "center",'color':'rgb(188, 61, 129)','text-decoration':'underline','text-underline-offset':'7px','cursor':'pointer'}
+        if(params.colDef.colId ==='TaskName')return{"text-align": "center",'color':'rgb(188, 61, 129)','text-decoration':'none','text-underline-offset':'7px','cursor':'pointer','font-weight':'500'}
         return{
           "text-align": "center",
           'color':'back',
           'text-decoration':'none',
           'text-underline-offset':'0px',
-          'cursor':'auto'
+          'cursor':'auto',
+          'font-weight':'400'
         }
       },
       flex: 1,
@@ -833,10 +847,12 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
           headerName:'New ' +f.displayName,
           field:'New'+f.key,
           colId:'New'+f.key,
-          cellStyle:{
-            "color":'#BC3D81',
-            "text-align":"center",
-            "border-left":"solid 1px #B9B9B9",
+          cellStyle:(params:any)=>{
+            return{
+              "color":params.data[`New${f.key}`]!==params.data[`Old${f.key}`]?'#BC3D81':'black',
+              "text-align":"center",
+              "border-left":"solid 1px #B9B9B9",
+            }
           }
         },
         {
@@ -1030,18 +1046,18 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
       
       if(taskType==='add'){
        if(!TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
-        dataPrefixed[`Add${f.key}`] = data[f.key]
+        dataPrefixed[`Add${f.key}`] =String( data[f.key]!==undefined? data[f.key]:'')
        }
        else{
-        dataPrefixed[f.key] = data[f.key]
+        dataPrefixed[f.key] = String( data[f.key]!==undefined? data[f.key]:'')
        }
       }
       else{
        if(!TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
-        dataPrefixed[`Delete${f.key}`] = data[f.key]
+        dataPrefixed[`Delete${f.key}`] =String( data[f.key]!==undefined? data[f.key]:'')
        }
        else{
-        dataPrefixed[f.key] = data[f.key]
+        dataPrefixed[f.key] =String( data[f.key]!==undefined? data[f.key]:'')
        }
       }
     })
@@ -1509,4 +1525,162 @@ export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):
   });
 
   return result
+}
+
+
+
+export const createIconColumn = (params:any):ColDef=>{
+
+  const {
+    id,
+    label,
+    cellRenderer
+  } = params
+
+  return{
+    width:40,
+    minWidth:40,
+    colId:id,
+    headerName:label,
+    cellRenderer:cellRenderer,
+    floatingFilter:false
+  }
+}
+
+export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(params:any)=>void,onOpenRemarkHistory:(e:any,params:any)=>void):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BPRSpecificColumns:ColDef[] =[
+    {
+      colId:'remarks',
+      field:'remarks',
+      headerName:'Remarks',
+     cellRenderer:'submitRemarkCellRenderer',
+     cellRendererParams:{
+      onClick:onOpenSubmitRemark
+     },
+     cellStyle:{
+      overflow:'visible',
+      'min-width':180,
+    }
+    },
+    {
+      colId:'rh',
+      field:'rh',
+      headerName:'Remark History',
+      cellRenderer:'remarksCellRenderer',
+      
+      cellRendererParams:{
+        onClick:onOpenRemarkHistory
+       },
+      cellStyle:{
+        overflow:'visible',
+        'min-width':180,
+      }
+    }
+  ]
+
+  const tagsColDef:ColDef =  {
+    colId:'tags',
+    field:'tags',
+    headerName:"Tags",
+    cellRenderer:'tagsCellRenderer',
+    width:100
+  }
+
+  result =  fields.map((f:BPRField)=>{
+    if(f.Col_Code==='TechPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorTechCellRenderer',
+        tooltipField:f.Col_Code,
+        cellStyle:{
+          'min-width':180,
+        }
+      }
+    }
+    if(f.Col_Code==='EcoPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorEcoCellRenderer',
+        tooltipField:f.Col_Code,
+        cellStyle:{
+          'min-width':180,
+        }
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      tooltipField:f.Col_Code,
+      cellStyle:{
+        'min-width':180,
+      }
+    }
+  })
+  return [createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),tagsColDef,...result,...BPRSpecificColumns]
+}
+export const mapBORFieldsToColDefs = (fields:UiConfigField[]):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BORSpecificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer'
+      
+
+      // tooltipComponent:'remarksToolTipComponent'
+    }
+  ]
+
+
+
+  result =  fields.map((f:UiConfigField)=>{
+
+
+    if(f.Col_Code==='DispatchPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        floatingFilter:true,
+        cellRenderer:'colorDispatchCellRenderer',
+       
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      floatingFilter:true,
+      filter:"agMultiColumnFilter"
+    }
+  })
+  return [...result,...BORSpecificColumns]
 }

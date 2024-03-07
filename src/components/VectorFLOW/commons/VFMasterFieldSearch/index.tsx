@@ -23,7 +23,7 @@ interface VFMasterFieldSearchProps{
 const VFMasterFieldSearch = (props:VFMasterFieldSearchProps)=>{
 
     return(
-        <FieldSearchWrapper data-testid='search-wrapper' style={{width:'100%'}}>
+        <FieldSearchWrapper data-testid='search-wrapper' >
             <div data-testid="select-filter-input">
                 <SearchInputMultiple
                     {...props}

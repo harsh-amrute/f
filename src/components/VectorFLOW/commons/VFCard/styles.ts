@@ -20,9 +20,14 @@ export const IconCardContainer = styled(Card)`
 `
 
 export const ButtonCardContainer = styled(Card)`
-    aspect-ratio:2.75;
+    aspect-ratio: 2.75;
 
-`
+    & > *:nth-child(2),
+    & > *:nth-child(3) {
+        opacity: 0;
+        visibility: hidden;
+    }
+`;
 
 export const CardText = styled.p`
     cursor:pointer;

@@ -38,7 +38,7 @@ const SearchInputMultiple = ({
     handleListChild(e);
   };
 
-  const myBoxShadow = boxShadow?boxShadow:'0'
+  const myBoxShadow = boxShadow ? boxShadow:'0px 6px 12px #95959529'
 
   return (
     <Select

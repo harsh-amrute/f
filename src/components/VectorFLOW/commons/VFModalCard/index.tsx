@@ -35,7 +35,7 @@ const VFModalCard = ({
   paddingLeftAndRight,
   headerBgColor,
   headerTextColor,
-  backgroundColor
+  backgroundColor,
 }: VFModalProps) => {
 
 
@@ -78,7 +78,7 @@ const VFModalCard = ({
                       </SCCloseModal>
                       </VFHeaderWrapper>
                     </Dialog.Title>
-                    <SCWrapperContent paddingLeftAndRight={paddingLeftAndRight} backgroundColor={backgroundColor}>
+                    <SCWrapperContent paddingLeftAndRight={paddingLeftAndRight} backgroundColor={backgroundColor} >
                        {children}
                     </SCWrapperContent>
                   </Dialog.Panel>

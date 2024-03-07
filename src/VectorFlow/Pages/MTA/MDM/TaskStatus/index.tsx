@@ -93,6 +93,7 @@ const TaskStatus = ()=>{
                 detailCellRendererParams={{
                     onDownload:onDownloadTaskDetails
                 }}
+                rowHeight={60}
                 detailRowAutoHeight
                 gridOptions={{
                     getRowStyle: (params: any) => {

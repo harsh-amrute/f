@@ -3,19 +3,18 @@ import { type Option, type Field,type GetMasterDataPayload, type GridRef, type Q
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useDeleteDraft, useDeleteTask } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS} from '../../../../../redux/actions/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 import { AgGridReactProps } from 'ag-grid-react';
-import { ColDef } from 'ag-grid-enterprise';
+import { ColDef, SideBarDef } from 'ag-grid-enterprise';
 
 import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
 import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
-import ConflictErrorToolTip from './ConflictErrorToolTip';
 
 
 const useViewModify = (pageType:string) => {
@@ -102,24 +101,6 @@ const useViewModify = (pageType:string) => {
     const validResumeStatuses = [23];
 
 
-    // const chunkSize = 100;
-
-
-    // const colDefs = activeMaster.colDefs
-
-    // const tempRowData = {
-    //   sc:"V9I004615P1L001",
-    //   wc:"3017",
-    //   skd:"T Shirt",
-    //   sd:"5/05/2023",
-    //   ed:"5/20/2023",
-    //   ln:"Bangalore",
-    //   tn:"300",
-    //   bd:"7",
-    //   onm:'50',
-    //   r:"10"
-    // }
-
     const invalidDataColdefs:ColDef[] = [
       {
         field:'warning',
@@ -160,8 +141,7 @@ const useViewModify = (pageType:string) => {
       warningCell: WarningCell,
       seasonalityColorCellRenderer:SeasonalityColorCellRenderer,
       seasonalityGraphCellRenderer:SeasonalityGraphCellRenderer,
-      conflictErrorCellRenderer:ConflictErrorCellRenderer,
-      conflictErrorToolTip:ConflictErrorToolTip
+      conflictErrorCellRenderer:ConflictErrorCellRenderer
     }), []);
 
 
@@ -207,6 +187,12 @@ const useViewModify = (pageType:string) => {
         }
       },[activeMaster.progress]);
 
+      useEffect(()=>{
+        //Effect to Add chart handler when seasonality master
+        dispatch(UPDATE_COLDEFS(mapMasterToColumnDefs(activeMaster.fields,activeMaster.id,onShowChart)))
+
+      },[])
+
 
       useEffect(()=>{
         const getMasterUIConfigurationData = async()=>{
@@ -217,7 +203,13 @@ const useViewModify = (pageType:string) => {
          getMasterUIConfigurationData()
       },[])
 
-    const sideBar = {
+      useEffect(()=>{
+        if(activeMaster.progress==='default' && pageType==='add'){
+          dispatch(TOGGLE_UPLOAD_MODAL(true))
+        }
+      },[activeMaster])
+
+    const sideBar:SideBarDef = {
       toolPanels: [
         {
           id: "columns",
@@ -236,8 +228,9 @@ const useViewModify = (pageType:string) => {
     }
 
     const agGridProps:AgGridReactProps = {
-
+      tooltipShowDelay:0,
       readOnlyEdit:true,
+      tooltipTrigger:'hover',
       sideBar:['default','view'].includes(activeMaster.progress) ? sideBar : {},
       gridOptions:{
         getRowStyle: (params: any) => {
@@ -280,7 +273,6 @@ const useViewModify = (pageType:string) => {
       rowSelection:'multiple',
       suppressRowClickSelection:true,
       components:customCellRenderers,
-      enableBrowserTooltips:true,
       onSelectionChanged:()=>{
         if(ref.current?.api){
           setSelectedRowsCount(ref.current?.api.getSelectedRows().length)
@@ -532,6 +524,10 @@ const useViewModify = (pageType:string) => {
       if(result.data.recordCount<=rowsPerPage){
         dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
       }
+      else{
+        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(false))
+      }
+
       toggleWarningModal(true);    
     }
 
@@ -552,7 +548,7 @@ const useViewModify = (pageType:string) => {
       setIsTableDataLoading(true);
       let result:any;
 
-      if(!areMasterFiltersValid(currMasterFilters) && activeMaster.filters.length === 1){
+      if((!areMasterFiltersValid(currMasterFilters) && activeMaster.filters.length === 1) || isShowAll){
         if(activeMaster.id==10 || activeMaster.id==6){
           result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:false}),{
             success:"Data Fetched Successfully",
@@ -568,6 +564,7 @@ const useViewModify = (pageType:string) => {
             pending:"Loading Data"
           }); 
       }
+      dispatch(RESET_FILTERS())
     }
       else{
         if(activeMaster.id==10 || activeMaster.id==6){
@@ -885,6 +882,7 @@ const useViewModify = (pageType:string) => {
             setErrorCount(errorCount);
             setConflictData(conflictData);
             setErrorData(errorData)
+            console.log(errorData)
             return {isConflicts:conflictCount>0,errorCount,errorData,conflictCount,conflictData} 
             
           }
@@ -905,10 +903,8 @@ const useViewModify = (pageType:string) => {
 
         //check if errorneous Data
         const errorData = activeMaster.rowData.find((row:any)=>{
-          if(row.error!=='' || row.warning!=='')console.log(row)
           return (row.error || row.warning) &&( row.error!=='' || row.warning!=='')
         });
-        console.log(errorData)
         if(errorData){
           notifyError('Please Clear Errors Before Submitting');
           return;
@@ -1163,7 +1159,9 @@ const useViewModify = (pageType:string) => {
         
         const isErrorPresent = newData.find((row:any)=>row.error);
         const isWarningPresent = newData.find((row:any)=>row.warning);
+      
         if(isErrorPresent){
+          console.log(isErrorPresent)
           addInvalidDataColDefs('error');
         }
         
@@ -1264,20 +1262,18 @@ const useViewModify = (pageType:string) => {
     const onReviewConflicts = ()=>{
       const newRowData = createConflictRowData(conflictData,activeMaster.id)
 
-      const newColDefs = activeMaster.colDefs.map((colDef:ColDef)=>{
+      const newColDefs:ColDef[] = activeMaster.colDefs.map((colDef:ColDef)=>{
         return {
           ...colDef,
           // cellRenderer:'conflictErrorCellRenderer',
-          cellStyle:{
-            ...colDef.cellStyle,
-            'overflow':'visible'
-          },
-          tooltipComponent:'conflictErrorToolTip',
+          // tooltipField:colDef.field,
           cellRenderer:'conflictErrorCellRenderer',
+          // onCellClicked:(params:any)=>console.log(params)
           // tooltipField:colDef.field
 
         }
       })
+
      if(newColDefs) dispatch(UPDATE_COLDEFS(newColDefs))
       addCheckBoxColDefs()
       dispatch(UPDATE_ROW_DATA(newRowData))
