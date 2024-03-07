@@ -8,11 +8,11 @@ export const SCDynamicContainer = styled.div`
     height:150vh;
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
         .size.desktop}) {
-        height:150vh
+        height:165vh
     }
   
     @media (min-width: ${gridSystem.size.desktop}) {
-      height:100vh
+      height:110vh
     }
 `
 

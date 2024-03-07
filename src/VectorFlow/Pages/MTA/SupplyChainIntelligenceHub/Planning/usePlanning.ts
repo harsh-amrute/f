@@ -127,6 +127,26 @@ const usePlanning = ()=>{
             }
           
         }
+        case 'ExcessInventory':{
+            if(view === 'chart'){
+                return([
+                    {
+                        id:'excessInventory',
+                        label:'Excess Inventory',
+                        value:'excessInventory'
+                    },
+                    {
+                        id:'custom',
+                        label:'Custom Screens',
+                        value:'custom'
+                    }
+                ])
+            }
+            else{
+                return []
+            }
+          
+        }
         default:
             return([])
         }
@@ -234,6 +254,23 @@ const usePlanning = ()=>{
                     notifySuccess("Graph Details Fetched Successfully");
                     break;
                 }
+                case 'ExcessInventory':{
+                    const toastId = notifyLoader('Loading Graphs');
+                    setCurrentCategory('ExcessInventory');
+                    setCurrentView('chart');
+                    const body = {
+                        category:'excessInventory',
+                        type:'review',
+                        filters:[]
+                    }
+                    const result = await getPlanningDataGraph(body);
+                    setIsSelectCategoryOpen(false);
+                    setCurrentGraphData(result.data.data)
+                    setCurrentTab('excessInventory');
+                    toast.dismiss(toastId);
+                    notifySuccess("Graph Details Fetched Successfully");
+                    break;
+                }
                     
                 default:
                     return;
@@ -275,6 +312,40 @@ const usePlanning = ()=>{
                     const body = {
                         category:'expedite',
                         type:'parent',
+                        filters:[],
+                        paginationParameter:{
+                            pageNumber:1,
+                            recordsPerPage:50
+                        }
+                    }
+                    const result = await getPlanningDataGrid(body);
+                    setCurrentGridData(result.data.data);
+                    toast.dismiss(toastId);
+                    notifySuccess("Grid Details Fetched Successfully");
+                    break;
+                }
+                case 'ExpediteToChild':{
+                    const toastId = notifyLoader('Loading Grid Data');
+                    const body = {
+                        category:'expedite',
+                        type:'child',
+                        filters:[],
+                        paginationParameter:{
+                            pageNumber:1,
+                            recordsPerPage:50
+                        }
+                    }
+                    const result = await getPlanningDataGrid(body);
+                    setCurrentGridData(result.data.data);
+                    toast.dismiss(toastId);
+                    notifySuccess("Grid Details Fetched Successfully");
+                    break;
+                }
+                case 'ExcessInventory':{
+                    const toastId = notifyLoader('Loading Grid Data');
+                    const body = {
+                        category:'excessInventory',
+                        type:'review',
                         filters:[],
                         paginationParameter:{
                             pageNumber:1,

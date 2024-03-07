@@ -6,6 +6,9 @@ import ExpediteDispatches from '../Expedite/Parent/Chart/ExpediteDispatches';
 import ExpediteDispatchesChild from "../Expedite/Child/Chart/ExpediteDispatches";
 import CreateAvailabilityAtParent from "../Expedite/Parent/Chart/CreateAvailabilityAtParent";
 import ExpediteParentCustomCharts from "../Expedite/Parent/Chart/Custom";
+import ExpediteChildCustomCharts from "../Expedite/Child/Chart/Custom";
+import ExcessInventory from "../ExcessInventory/Chart/ExcessInventory";
+import ExcessInventoryCustomCharts from "../ExcessInventory/Chart/Custom";
 
 interface ChartViewProps {
     category:string,
@@ -70,12 +73,24 @@ const ChartView = ({category,currentTab,currentGraphData}:ChartViewProps) => {
                 }
                 if(currentTab === 'custom'){
                     return (
-                        <ExpediteParentCustomCharts/>
+                        <ExpediteChildCustomCharts/>
                     )
                 }
                 break;   
             case 'ExcessInventory':
-                return <></>
+                if(currentTab === 'excessInventory'){
+                    return (
+                        <ExcessInventory
+                            data={currentGraphData ? currentGraphData:[]}
+                        />
+                    )
+                }
+                if(currentTab === 'custom'){
+                    return(
+                        <ExcessInventoryCustomCharts/>
+                    )
+                }
+                break;
             case 'OrderFulfillment':
                 return <></>
             default:
