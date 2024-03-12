@@ -337,6 +337,7 @@ import _ from "lodash";
             }}
             masterProgress={activeMaster.progress}
             disableSubmit={activeMaster.rowData.length===0}
+            disableDeleteSelected={activeMaster.rowData.length < 1}
             onReset={onReset}
             onSaveToDraft={onSaveToDraft}
             onEditOnlineSave={onEditOnlineSave}

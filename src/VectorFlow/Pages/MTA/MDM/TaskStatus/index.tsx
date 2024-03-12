@@ -10,7 +10,7 @@ import { GridRef, Master } from "../../../../../VectorFlow/types/MDM"
 import { AgGridReactProps } from "ag-grid-react"
 import { notifyError } from "../../../../../helpers/notify"
 import { ColDef } from "ag-grid-enterprise"
-import { differenceInDays} from "date-fns"
+import { differenceInSeconds} from "date-fns"
 
 
 const TaskStatus = ()=>{
@@ -48,6 +48,11 @@ const TaskStatus = ()=>{
         
         const masters:Master[] = uiConfigurationResponse.data.data
         const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)
+
+        if(!currentTaskMaster.data){
+            notifyError('Task Details Can be only downloaded by the Approver');
+            return
+        }
        
         if(currentMasterFields){
           setCurrentMasterName(currentMasterFields.name)
@@ -71,8 +76,7 @@ const TaskStatus = ()=>{
     //     }
     // })
     rowData.sort((a:any,b:any)=>{
-       
-       return differenceInDays(b.PendingSince,a.PendingSince) 
+       return differenceInSeconds(b.PendingSince,a.PendingSince) 
     })
     // rowData = rowData.map((r:any)=>{
     //     return {

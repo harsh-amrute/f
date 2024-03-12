@@ -212,7 +212,7 @@ const AddRecord = () => {
             editOnline={editOnline}
             onEditOnline={onEditOnline}
             onBack={onBackButton}
-            onClearAndExportErrors={onClearExportError}
+            onClearAndExportErrors={()=>onClearExportError(true)}
             onModifyData={()=>toggleUploadModal(true)}
             onExportData={exportToExcel}
             onSubmit={onSubmit}
