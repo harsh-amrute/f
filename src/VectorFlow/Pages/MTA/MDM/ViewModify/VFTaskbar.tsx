@@ -9,13 +9,14 @@ import { ViewModifyProgressState } from "../../../../../VectorFlow/types/MDM"
 export interface VFTaskBarProps{
     masterProgress:ViewModifyProgressState
     disableSubmit?:boolean
+    disableDeleteSelected?:boolean
     editOnline?:boolean
     deleteOnline?:boolean
     onReset:()=>void
     onBack:()=>void
     onExportData:()=>void
     onModifyData:()=>void
-    onClearAndExportErrors:()=>void
+    onClearAndExportErrors:(skipClear?:boolean)=>void
     onSubmit:()=>void
     onSubmitConflictData:()=>void
     onEditOnline:()=>void
@@ -40,6 +41,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         masterProgress,
         editOnline ,
         disableSubmit,
+        disableDeleteSelected,
         deleteOnline,
         onBack,
         onExportData,
@@ -274,7 +276,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                    <VFTaskBarButtonGroup>
                     <BackButton/>                      
-                        <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={false} width={139}>
+                        <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={disableDeleteSelected} width={139}>
                         Delete Selected
                         </VFButtonOutline>
                         <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
@@ -294,11 +296,15 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
 
         case "submitted":
             return(
-                <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'flex-end'}}>
+                <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
+                    <VFButton onClick={onClearAndExportErrors} themeUi={themeUi} disabled={false} width={183}>
+                            Export Errors
+                    </VFButton>
                     <div >
-                    <VFStepper
-                        items={getStepperState()}
-                    />
+                        
+                        <VFStepper
+                            items={getStepperState()}
+                        />
                     </div>
 
                 </TaskBarContainer>
@@ -346,7 +352,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
             )
         case "editOnlineSubmitted":
             return(
-                <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'flex-end'}}>
+                <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
                    <VFTaskBarButtonGroup>
                     <BackButton/>
                    </VFTaskBarButtonGroup>

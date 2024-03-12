@@ -93,6 +93,8 @@ const SavedDrafts = ()=>{
             }
           })}
           rowData={mapDraftDataToTableRowData(allDrafts)}
+          pagination={true}
+          paginationPageSize={50}
           gridOptions={{
             getRowStyle: (params: any) => {
               if (params.node.rowIndex % 2 === 0) {
@@ -101,6 +103,7 @@ const SavedDrafts = ()=>{
               return { background: "#F7F7F7" };
             },
           }}
+          
         />
 
         <VFModalCard headerText={"Warning"} openModal={isDeleteModalOpen} closeModal={closeDeleteModal} headerIcon={'/assets/img/VectorFLOW/NMS/warning.svg'} closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'}>

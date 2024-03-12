@@ -266,12 +266,11 @@ const useAdd=()=>{
         
           const {isDisaster,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
           let errorRowData = [];
-          console.log(localErrorCount,localErrorData);
+
           if(isDisaster)return
             if(localErrorCount>0 || errorCount>0){
               if(localErrorCount > 0){
                 errorRowData = createErrorRowData(localErrorData,activeMaster.id)
-                console.log(errorRowData);
               }
               else{
                 errorRowData = createErrorRowData(errorData,activeMaster.id)
@@ -282,11 +281,12 @@ const useAdd=()=>{
              
             }
             dispatch(REMOVE_COLDEFS(['checkbox']));
-            dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+
             if(errorRowData.length > 0) notifyError("Addition Unsuccessfull")
             else notifySuccess(`Additions Submitted Successfully`);
             
             dispatch(UPDATE_PROGRESS_STATE('submitted'));
+            dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
 
           
       }

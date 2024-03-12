@@ -1582,7 +1582,7 @@ export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:str
       }
     })
   })
-  console.log(result);
+
   return result
 }
 
@@ -1618,7 +1618,7 @@ export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):
       // Check if the key starts with "Oldc"
 
       if(key==='status'){
-        return newItem[key] = value==="Approved"?"3":"4"
+        return newItem[key] = value === "Approved" ? "3" :value === "Rejected" ? "4" : ""
       }
 
      if(actionType===2){
