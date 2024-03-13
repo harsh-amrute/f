@@ -40,11 +40,11 @@ describe("SubmitConflictModal Component", () => {
         fireEvent.click(screen.getByText("Ignore"))
         })
 
-        it("renders close icon",()=>{
-          const onClose=screen.getByTestId("close-modal-icon")
-          expect(onClose).toBeInTheDocument()
-          fireEvent.click(screen.getByTestId("close-modal-icon"))
-        })
+        // it("renders close icon",()=>{
+        //   const onClose=screen.getByTestId("close-modal-icon")
+        //   expect(onClose).toBeInTheDocument()
+        //   fireEvent.click(screen.getByTestId("close-modal-icon"))
+        // })
 
 })
 

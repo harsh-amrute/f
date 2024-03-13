@@ -61,7 +61,7 @@ const Planning = () => {
                     onMonitorParentClick={()=>handlePlanningQuadrantClick('GITFromParent')}
                     onExpediteChildClick={()=>handlePlanningQuadrantClick('ExpediteToChild')}
                     onExpediteParentClick={()=>handlePlanningQuadrantClick('ExpediteFromParent')}
-                    onExcessInventoryReviewClick={()=>console.log("Test")}
+                    onExcessInventoryReviewClick={()=>handlePlanningQuadrantClick('ExcessInventory')}
                     onOrderFulfillmentReviewClick={()=>console.log("Test")}
                 />
             }

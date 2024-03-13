@@ -28,6 +28,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
     let chartRef2:ChartRef | undefined;
 
     // const refGraph3 = useRef<GridRef>();
+    console.debug(data);
 
     const colDefs1:ColDef[] = [
         {
@@ -187,7 +188,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                             rowData={data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocations']}
                                             enableCharts={true}
                                             enableRangeSelection={true}
-                                            onGridReady={()=>generateChart(1,true)}
+                                            // onGridReady={()=>generateChart(1,true)}
                                             getChartToolbarItems={getChartToolbarItems}
                                             chartToolPanelsDef={
                                                 {
@@ -210,7 +211,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                         <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
-                                            rowData={data=[]}
+                                            rowData={data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocations']}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1)}

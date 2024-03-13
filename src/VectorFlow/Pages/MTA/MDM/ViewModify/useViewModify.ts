@@ -328,8 +328,18 @@ const useViewModify = (pageType:string) => {
       },
     }
 
+    const getTempGridColDefs = () => {
+      //check if it already contains
+      let doesInvalidColDefExists = false;
+      invalidDataColdefs.forEach((invalidColumn:ColDef)=>{
+         if(activeMaster.colDefs.find((column:ColDef)=>invalidColumn.colId === column.colId)) doesInvalidColDefExists = true;
+      })
+      if(doesInvalidColDefExists) return [...activeMaster.colDefs]
+      return [...invalidDataColdefs,...activeMaster.colDefs]
+    }
+
     const tempAgGridProps:AgGridReactProps = {
-      columnDefs:[...invalidDataColdefs,...activeMaster.colDefs],
+      columnDefs:getTempGridColDefs(),
       onRowDataUpdated:(event)=>{
         if(tempDownloadData) event.api.exportDataAsExcel({fileName:downloadFileName ? 'Error-' + downloadFileName : 'Error-'+ activeMaster.name});
       }
@@ -442,7 +452,8 @@ const useViewModify = (pageType:string) => {
     const handleTabChange = (currMaster: MDMMasterState) => {
       if(currMaster.progress === 'submitted') return notifyError(`The ${currMaster.name} is already submitted`);
 
-      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>master.progress !== 'submitted');
+      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
+      console.log(nextMasterIndex);
 
       if(currMaster.id === masters[nextMasterIndex].id) return dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex));
       else return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
@@ -735,7 +746,7 @@ const useViewModify = (pageType:string) => {
         
       }
 
-      const onClearExportError = () => {
+      const onClearExportError = (skipClear?:boolean) => {
         const erroneusData:any[] = [];
         const validData:any[] = [] 
         activeMaster.rowData.forEach((data:any)=>{
@@ -746,17 +757,22 @@ const useViewModify = (pageType:string) => {
             validData.push(data);
           }
         });
+        console.log(erroneusData);
         setTempGridData(erroneusData);
         setTempDownloadData(true);
+
+        if(!skipClear){
+          dispatch(UPDATE_ROW_DATA(validData));
         
-        dispatch(UPDATE_ROW_DATA(validData));
+          dispatch(REMOVE_COLDEFS(['error','warning']));
+          addCheckBoxColDefs();
+          if(pageType==='remove') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+          else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+          dispatch(SET_RECORD_COUNT(validData.length))
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+        }
         
-        dispatch(REMOVE_COLDEFS(['error','warning']));
-        addCheckBoxColDefs();
-        if(pageType==='remove') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-        else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
-        dispatch(SET_RECORD_COUNT(validData.length))
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+        
         
       }
       
@@ -953,10 +969,10 @@ const useViewModify = (pageType:string) => {
               dispatch(UPDATE_ROW_DATA(errorRowData))
               dispatch(SET_RECORD_COUNT(errorRowData.length))
             }
-            dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
             notifySuccess(`Modifications Submitted Successfully`);
             setSelectedRowsCount(0);
             dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
+            dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           }
           else{
             setIsConflictModalOpen(true)
@@ -979,10 +995,10 @@ const useViewModify = (pageType:string) => {
               dispatch(UPDATE_ROW_DATA(errorRowData))
               dispatch(SET_RECORD_COUNT(errorRowData.length))
             }
-            dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
             notifySuccess(`Modifications Submitted Successfully`);
             setSelectedRowsCount(0);
             dispatch(UPDATE_PROGRESS_STATE('submitted'));
+            dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           }
           else{
             setIsConflictModalOpen(true)
