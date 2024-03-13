@@ -203,6 +203,7 @@ const AddRecord = () => {
         {
           !isSelectMasterOpen && 
           <VFTaskBar
+            enableEditOnlineReset={false}
             disableResumeSeasonality={()=>false}
             disableStopSeasonality={()=>false}
             masterProgress={activeMaster.progress}

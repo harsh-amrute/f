@@ -50,6 +50,7 @@ const useViewModify = (pageType:string) => {
     const [chartData,setChartData] = useState<object>();
     const [isSeasonalityChartModalOpen,toggleSeasonalityChartModal] = useState<boolean>(false);
     const [normChangeData,setNormChangeData] = useState<any>([]);
+    const [enableEditOnlineReset,setEnableEditOnlineReset] = useState<boolean>(false)
 
     const [conflictCount,setConflictCount] = useState<number>(0);
     const [errorCount,setErrorCount] = useState<number>(0);
@@ -294,15 +295,36 @@ const useViewModify = (pageType:string) => {
         if (!field) {
           return;
         }
+        dispatch(REMOVE_COLDEFS(['error','warning']));
         const newRow = { ...data };
         newRow[field] = newValue;
         const newRowData = activeMaster.rowData.map((row:any)=>{
           if(JSON.stringify(row) === JSON.stringify(data)){
+            const {error,warning} = checkError(newRow,activeMaster,pageType)
+            console.log(error)
+            if(error){
+              newRow.error = error
+              addInvalidDataColDefs('error');
+            
+            }
+            else{
+              newRow.error = ''
+            }
+            if(warning){
+              newRow.warning = warning
+              addInvalidDataColDefs('warning');
+            
+            }
+            else{
+              newRow.warning = ''
+            }
               return newRow;
+        
           }
           return row;
         })
-        validateEditOnlineData([...newRowData]);
+        setEnableEditOnlineReset(true)
+        dispatch(UPDATE_ROW_DATA([...newRowData]))
       },
     }
 
@@ -1114,7 +1136,8 @@ const useViewModify = (pageType:string) => {
             return toast.success("Draft Created Successfully")
           }
         }
-        return notifyError("Something Went Wrong")
+         notifyError("Something Went Wrong")
+         return false
       
     }
 
@@ -1124,9 +1147,10 @@ const useViewModify = (pageType:string) => {
         if(currentMasterData) dispatch(UPDATE_ROW_DATA(currentMasterData.rowData))
         dispatch(REMOVE_COLDEFS(['error','warning']));
         dispatch(UPDATE_PROGRESS_STATE('editOnline'));
+        setEnableEditOnlineReset(false)
       }
 
-      const validateEditOnlineData = (data:any[]) => {
+      const     validateEditOnlineData = (data:any[]) => {
         //Cleanup errors if any and provide clean copy to check again.
         //PS - Worked in tight deadline plz optimize whenever possible.
         dispatch(REMOVE_COLDEFS(['error','warning']));
@@ -1167,6 +1191,7 @@ const useViewModify = (pageType:string) => {
         
         if(isWarningPresent){
           addInvalidDataColDefs('warning');
+          
         }
         dispatch(UPDATE_ROW_DATA(newData));
         // if(isErrorPresent || isWarningPresent){
@@ -1175,8 +1200,9 @@ const useViewModify = (pageType:string) => {
         return newData;
       }
 
-      const onEditOnlineSave = ()=>{
-        onSaveToDraft();
+      const onEditOnlineSave = async()=>{
+        const isSuccess = await onSaveToDraft();
+       if(isSuccess){
         const result = validateEditOnlineData(activeMaster.rowData);
         
         const isErrorPresent = result.find((row:any)=>row.error.length > 0);
@@ -1186,6 +1212,7 @@ const useViewModify = (pageType:string) => {
           return notifyError("Please Clear All Errors before submit")
         }
         dispatch(UPDATE_PROGRESS_STATE('editOnlineSaved'))
+       }
 
       }
 
@@ -1364,7 +1391,8 @@ const useViewModify = (pageType:string) => {
         onSeasonalityStatusUpdate,
         validResumeStatuses,
         validStopStatuses,
-        onPIPOStatusUpdate
+        onPIPOStatusUpdate,
+        enableEditOnlineReset
     }
 }
 

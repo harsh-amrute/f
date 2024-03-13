@@ -31,6 +31,7 @@ export interface VFTaskBarProps{
     onDeleteData:()=>void
     disableStopSeasonality:()=>boolean
     disableResumeSeasonality:()=>boolean
+    enableEditOnlineReset:boolean
 }
 
 
@@ -41,6 +42,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         editOnline ,
         disableSubmit,
         deleteOnline,
+        enableEditOnlineReset,
         onBack,
         onExportData,
         onModifyData,
@@ -308,7 +310,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                     <VFTaskBarButtonGroup>
                         <BackButton/>
-                        <VFButtonOutline themeUi={themeUi} onClick={onReset}>
+                        <VFButtonOutline themeUi={themeUi} onClick={onReset} disabled={!enableEditOnlineReset}>
                             Reset
                         </VFButtonOutline>
                         <VFButton themeUi={themeUi} onClick={onEditOnlineSave}>
@@ -330,7 +332,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                    <VFTaskBarButtonGroup>
                     <BackButton/>
-                        <VFButtonOutline themeUi={themeUi} onClick={onReset}>
+                        <VFButtonOutline themeUi={themeUi} onClick={onReset} disabled={!enableEditOnlineReset}>
                             Reset
                         </VFButtonOutline>
                         <VFButton themeUi={themeUi} onClick={onSubmit}>

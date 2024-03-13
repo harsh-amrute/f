@@ -95,7 +95,8 @@ import _ from "lodash";
         onSeasonalityStatusUpdate,
         validResumeStatuses,
         validStopStatuses,
-        onPIPOStatusUpdate
+        onPIPOStatusUpdate,
+        enableEditOnlineReset
 
     } = useViewModify('modify');
 
@@ -266,6 +267,7 @@ import _ from "lodash";
             onFailure={onWarningModalClose} 
             onSuccess={()=>onWarningModalSuccess()}
             showAll={isShowAll}
+            rowsPerPage={rowsPerPage}
             />
         }
         {isUploadModalOpen && 
@@ -337,6 +339,7 @@ import _ from "lodash";
             }}
             masterProgress={activeMaster.progress}
             disableSubmit={activeMaster.rowData.length===0}
+            enableEditOnlineReset = {enableEditOnlineReset}
             onReset={onReset}
             onSaveToDraft={onSaveToDraft}
             onEditOnlineSave={onEditOnlineSave}
