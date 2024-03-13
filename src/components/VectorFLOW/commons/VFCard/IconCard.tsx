@@ -1,4 +1,4 @@
-import { useState } from "react"
+
 import {  IconCardContainer, CardText ,CardIconWrapper} from "./styles"
 
 
@@ -14,27 +14,17 @@ const IconCard = (props:IconCardProps)=>{
 
 
     const {
-        iconOnMouseIn,
         iconOnMouseOut,
         text,
         onClick
     } = props
 
-    const [activeIcon,setActiveIcon] = useState(iconOnMouseOut)
-
-    const handleOnMouseIn = ()=>{
-        setActiveIcon(iconOnMouseIn)
-    }
-
-    const handleOnMouseOut = ()=>{
-        setActiveIcon(iconOnMouseOut)
-    }
 
     return(
-        <IconCardContainer imgSrc="assets/img/VectorFLOW/NMS/card-bg.png">
+        <IconCardContainer imgSrc="assets/img/VectorFLOW/NMS/card-bg.svg">
             <CardText onClick={onClick} data-testid={"icon-card"}>{text}</CardText>
-            <CardIconWrapper onMouseEnter={handleOnMouseIn} onMouseLeave={handleOnMouseOut} onClick={onClick}>
-                <img data-testid='icon' src={activeIcon}/>
+            <CardIconWrapper >
+                <img data-testid='icon' src={iconOnMouseOut}/>
             </CardIconWrapper>
         </IconCardContainer>
     )

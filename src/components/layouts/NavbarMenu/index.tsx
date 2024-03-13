@@ -33,6 +33,7 @@ const NavbarMenu = ({ setMenuItem, isHide }: any) => {
   };
 
   const handleItemHover = (e: any, id: number) => {
+    console.log(id)
     setActiveTooltip(id);
   };
 

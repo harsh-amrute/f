@@ -32,6 +32,7 @@ export interface VFTaskBarProps{
     onDeleteData:()=>void
     disableStopSeasonality:()=>boolean
     disableResumeSeasonality:()=>boolean
+    enableEditOnlineReset:boolean
 }
 
 
@@ -43,6 +44,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         disableSubmit,
         disableDeleteSelected,
         deleteOnline,
+        enableEditOnlineReset,
         onBack,
         onExportData,
         onModifyData,
@@ -264,7 +266,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
                         Save to draft
                         </VFButtonOutline>            
-                        <VFButton onClick={onClearAndExportErrors} themeUi={themeUi} disabled={false} width={183}>
+                        <VFButton onClick={()=>onClearAndExportErrors(false)} themeUi={themeUi} disabled={false} width={183}>
                             Clear & Export Errors
                         </VFButton>
                     </VFTaskBarButtonGroup>
@@ -314,7 +316,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                     <VFTaskBarButtonGroup>
                         <BackButton/>
-                        <VFButtonOutline themeUi={themeUi} onClick={onReset}>
+                        <VFButtonOutline themeUi={themeUi} onClick={onReset} disabled={!enableEditOnlineReset}>
                             Reset
                         </VFButtonOutline>
                         <VFButton themeUi={themeUi} onClick={onEditOnlineSave}>
@@ -336,7 +338,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                    <VFTaskBarButtonGroup>
                     <BackButton/>
-                        <VFButtonOutline themeUi={themeUi} onClick={onReset}>
+                        <VFButtonOutline themeUi={themeUi} onClick={onReset} disabled={!enableEditOnlineReset}>
                             Reset
                         </VFButtonOutline>
                         <VFButton themeUi={themeUi} onClick={onSubmit}>
