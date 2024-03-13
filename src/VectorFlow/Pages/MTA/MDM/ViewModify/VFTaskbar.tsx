@@ -266,7 +266,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
                         Save to draft
                         </VFButtonOutline>            
-                        <VFButton onClick={onClearAndExportErrors} themeUi={themeUi} disabled={false} width={183}>
+                        <VFButton onClick={()=>onClearAndExportErrors(false)} themeUi={themeUi} disabled={false} width={183}>
                             Clear & Export Errors
                         </VFButton>
                     </VFTaskBarButtonGroup>

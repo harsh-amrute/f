@@ -757,7 +757,6 @@ const useViewModify = (pageType:string) => {
             validData.push(data);
           }
         });
-        console.log(erroneusData);
         setTempGridData(erroneusData);
         setTempDownloadData(true);
 
@@ -1146,10 +1145,10 @@ const useViewModify = (pageType:string) => {
         const res = await postDraftChunks(newData)
         if(res){
           if(draftID.length > 0){
-            return toast.success("Draft Updated Successfully")
+            return notifySuccess("Draft Updated Successfully")
           }
           else{
-            return toast.success("Draft Created Successfully")
+            return notifySuccess("Draft Created Successfully")
           }
         }
          notifyError("Something Went Wrong")
@@ -1246,7 +1245,7 @@ const useViewModify = (pageType:string) => {
           setChartData(chartData);
           toggleSeasonalityChartModal(true);
           toast.dismiss(toastId);
-          toast.success("Chart Details Fetched Successfully");
+          notifySuccess("Chart Details Fetched Successfully");
           
         } catch (error) {
           toast.dismiss();

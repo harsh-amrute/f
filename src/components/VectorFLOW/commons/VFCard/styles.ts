@@ -81,7 +81,7 @@ export const CardButton = styled.button`
 `
 
 export const CardIconWrapper = styled.div`
-    cursor:pointer;
+    // cursor:pointer;
     width: 44px;
     height: 44px;
 `

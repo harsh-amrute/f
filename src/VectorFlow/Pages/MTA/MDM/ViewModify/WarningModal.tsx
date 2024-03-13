@@ -37,7 +37,7 @@ const WarningModal = (props:WarningModalProps) =>{
                 There is no data available for selected filters
                 </p> 
             <div style={{display:"flex",gap:"28px", alignItems:"center", justifyContent:"center", paddingTop:"38px", paddingBottom:"36px"}}>
-                <VFButtonOutline  themeUi={user.user.theme_ui} onClick={onFailure}>Close</VFButtonOutline>
+                <VFButtonOutline  themeUi={user.user.theme_ui} onClick={onFailure}>OK</VFButtonOutline>
             </div>
         </VFModalCard>
         )
@@ -50,7 +50,7 @@ const WarningModal = (props:WarningModalProps) =>{
                     There is no data available 
                     </p> 
                 <div style={{display:"flex",gap:"28px", alignItems:"center", justifyContent:"center", paddingTop:"38px", paddingBottom:"36px"}}>
-                    <VFButtonOutline  themeUi={user.user.theme_ui} onClick={onFailure}>Close</VFButtonOutline>
+                    <VFButtonOutline  themeUi={user.user.theme_ui} onClick={onFailure}>OK</VFButtonOutline>
                 </div>
             </VFModalCard>
             )

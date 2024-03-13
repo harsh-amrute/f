@@ -4,6 +4,7 @@ import Portal from '../../../../../components/VectorFLOW/layouts/Portal'
 
 import 'react-tooltip/dist/react-tooltip.css'
 import React, { CSSProperties, useState } from "react"
+import useViewPort from "../../../../../hooks/useViewPort"
 
 
 interface BPRViewTableRowCellWithReadMore{
@@ -17,6 +18,11 @@ const BPRViewTableRowCellWithReadMore = (props:BPRViewTableRowCellWithReadMore)=
         value
     } = props
 
+
+    const {getScreenZoomValue} = useViewPort()
+
+    const screenSize = getScreenZoomValue()
+
     const [isOpen,setIsOpen] = useState(false)
 
     const [toolTipPosition,setoolTipPosition] = useState<CSSProperties>({
@@ -26,7 +32,7 @@ const BPRViewTableRowCellWithReadMore = (props:BPRViewTableRowCellWithReadMore)=
     const onMouseIn = (e:React.MouseEvent<HTMLElement>)=>{
         const {top,left} = e.currentTarget.getBoundingClientRect()
         setoolTipPosition({
-            top:top * 0.75 -40,
+            top:top * screenSize -40,
             left:left
         })
         setIsOpen(true)

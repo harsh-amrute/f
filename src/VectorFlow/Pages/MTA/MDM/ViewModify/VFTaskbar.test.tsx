@@ -25,7 +25,8 @@ const dummyProps = {
     onDeleteOnlineSave:mockFn,
     onSubmitConflictData:mockFn,
     disableResumeSeasonality:mockFn,
-    disableStopSeasonality:mockFn
+    disableStopSeasonality:mockFn,
+    enableEditOnlineReset:false
 }
 
 const contextWrapper = (children:any)=>{
