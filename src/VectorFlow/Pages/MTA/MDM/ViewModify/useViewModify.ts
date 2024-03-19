@@ -175,14 +175,15 @@ const useViewModify = (pageType:string) => {
       },[masters])
 
       useEffect(()=>{
-        if(activeMaster.progress === 'editOnlineSaved'){
-          //remove Editable Coldefs
-          const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
-            return {...col,editable:false}
-          })
-          dispatch(UPDATE_COLDEFS(updatedColdefs));
-          dispatch(REMOVE_COLDEFS(['error','warning']))
-        }
+        
+        // if(activeMaster.progress === 'editOnlineSaved'){
+        //   //remove Editable Coldefs
+        //   const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
+        //     return {...col,editable:false}
+        //   })
+        //   dispatch(UPDATE_COLDEFS(updatedColdefs));
+        //   dispatch(REMOVE_COLDEFS(['error','warning']))
+        // }
         if(activeMaster.progress === 'editOnline'){
           return onEditOnline();
         }
@@ -190,6 +191,7 @@ const useViewModify = (pageType:string) => {
 
       useEffect(()=>{
         //Effect to Add chart handler when seasonality master
+        if(activeMaster.id === 10)
         dispatch(UPDATE_COLDEFS(mapMasterToColumnDefs(activeMaster.fields,activeMaster.id,onShowChart)))
 
       },[])
@@ -301,7 +303,6 @@ const useViewModify = (pageType:string) => {
         const newRowData = activeMaster.rowData.map((row:any)=>{
           if(JSON.stringify(row) === JSON.stringify(data)){
             const {error,warning} = checkError(newRow,activeMaster,pageType)
-            console.log(error)
             if(error){
               newRow.error = error
               addInvalidDataColDefs('error');
@@ -453,7 +454,6 @@ const useViewModify = (pageType:string) => {
       if(currMaster.progress === 'submitted') return notifyError(`The ${currMaster.name} is already submitted`);
 
       const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
-      console.log(nextMasterIndex);
 
       if(currMaster.id === masters[nextMasterIndex].id) return dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex));
       else return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
@@ -654,12 +654,14 @@ const useViewModify = (pageType:string) => {
     const onEditOnline = () => {
       const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
         const isEditable = activeMaster.fields.find((field:Field)=>field.key === col.colId )?.isEdit;
+        
         if(isEditable) return {...col,editable:true}
         return {...col}
       })
+
       dispatch(UPDATE_PROGRESS_STATE('editOnline'))
       dispatch(UPDATE_COLDEFS(updatedColdefs))
-      // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
 
     }
 
@@ -914,13 +916,18 @@ const useViewModify = (pageType:string) => {
                 })
               }
             }
+
+            const intersectionCount = conflictCount + errorCount - activeMaster.rowData.length
+            
+            const pureErrorCount = activeMaster.rowData.length + intersectionCount - conflictCount
+            const pureConflictCount = activeMaster.rowData.length + intersectionCount - errorCount
             toast.dismiss(toastId);
-            setConflictCount(conflictCount);
-            setErrorCount(errorCount);
+            setConflictCount(pureErrorCount);
+            console.log(intersectionCount)
+            setErrorCount(pureErrorCount);
             setConflictData(conflictData);
             setErrorData(errorData)
-            console.log(errorData)
-            return {isConflicts:conflictCount>0,errorCount,errorData,conflictCount,conflictData} 
+            return {isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} 
             
           }
          catch (error) {
@@ -938,6 +945,15 @@ const useViewModify = (pageType:string) => {
  
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit");
 
+        if(activeMaster.progress === 'editOnline'){
+          //remove Editable Coldefs
+          const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
+            return {...col,editable:false}
+          })
+          dispatch(UPDATE_COLDEFS(updatedColdefs));
+          // dispatch(REMOVE_COLDEFS(['error','warning']))
+        }
+
         //check if errorneous Data
         const errorData = activeMaster.rowData.find((row:any)=>{
           return (row.error || row.warning) &&( row.error!=='' || row.warning!=='')
@@ -952,7 +968,7 @@ const useViewModify = (pageType:string) => {
         dispatch(REMOVE_COLDEFS(['checkbox']));
         //let result;
  
-        if(activeMaster.progress === 'editOnlineSaved'){
+        if(activeMaster.progress === 'editOnline'){
           const {isConflicts,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
           //result = !isConflicts
           if(!isConflicts){
@@ -1200,7 +1216,6 @@ const useViewModify = (pageType:string) => {
         const isWarningPresent = newData.find((row:any)=>row.warning);
       
         if(isErrorPresent){
-          console.log(isErrorPresent)
           addInvalidDataColDefs('error');
         }
         
@@ -1216,18 +1231,18 @@ const useViewModify = (pageType:string) => {
       }
 
       const onEditOnlineSave = async()=>{
-        const isSuccess = await onSaveToDraft();
-       if(isSuccess){
-        const result = validateEditOnlineData(activeMaster.rowData);
+        await onSaveToDraft();
+      //  if(isSuccess){
+      //   const result = validateEditOnlineData(activeMaster.rowData);
         
-        const isErrorPresent = result.find((row:any)=>row.error.length > 0);
-        const isWarningPresent = result.find((row:any)=>row.warning.length > 0);
+      //   const isErrorPresent = result.find((row:any)=>row.error.length > 0);
+      //   const isWarningPresent = result.find((row:any)=>row.warning.length > 0);
       
-        if(isErrorPresent || isWarningPresent){
-          return notifyError("Please Clear All Errors before submit")
-        }
-        dispatch(UPDATE_PROGRESS_STATE('editOnlineSaved'))
-       }
+      //   if(isErrorPresent || isWarningPresent){
+      //     return notifyError("Please Clear All Errors before submit")
+      //   }
+      //   // dispatch(UPDATE_PROGRESS_STATE('editOnlineSaved'))
+      //  }
 
       }
 

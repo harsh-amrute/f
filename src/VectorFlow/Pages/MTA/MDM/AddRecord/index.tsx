@@ -23,6 +23,7 @@ import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 
 import { MDMMasterState } from "../../../../types/MDM";
+import { Field } from "../../../../types/MDM";
 
 const AddRecord = () => {
 
@@ -167,8 +168,14 @@ const AddRecord = () => {
             // })} 
             onDownload={()=>{
               const currentMaster = allMasters.find((master:MDMMasterState)=>master.id === activeMaster.id);
+              const downloadableColumnKeys:string[] = [];
+              activeMaster.fields.forEach((field:Field)=>{
+                if(field.isAdd){
+                  downloadableColumnKeys.push(field.key)
+                }
+              });
               if(currentMaster){
-                ref.current?.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName});
+                ref.current?.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName,columnKeys:downloadableColumnKeys});
               }
             }}
             onUpload={()=>{

@@ -79,11 +79,11 @@ describe("VFTaskBar",()=>{
         const taskbar = screen.getByTestId("taskbar")
         expect(taskbar).toBeInTheDocument()
     })
-    it('renders the VFTaskBar with masterProgress=error',()=>{
-        render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="editOnlineSaved"/>))
-        const taskbar = screen.getByTestId("taskbar")
-        expect(taskbar).toBeInTheDocument()
-    })
+    // it('renders the VFTaskBar with masterProgress=error',()=>{
+    //     render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="editOnlineSaved"/>))
+    //     const taskbar = screen.getByTestId("taskbar")
+    //     expect(taskbar).toBeInTheDocument()
+    // })
     it('renders the VFTaskBar with masterProgress=uploaded',()=>{
         render(contextWrapper(<VFTaskBar {...dummyProps} masterProgress="editOnlineSubmitted"/>))
         const taskbar = screen.getByTestId("taskbar")

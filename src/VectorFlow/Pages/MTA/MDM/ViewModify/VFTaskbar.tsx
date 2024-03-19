@@ -107,34 +107,29 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         description:''
                     },
                     {
-                        label:'Save',
-                        status:'pending',
-                        description:''
-                    },
-                    {
                         label:"Submit",
                         status:"pending",
                         description:""
                     }
                 ]
-            case "editOnlineSaved":
-                return [
-                    {
-                         label:'Edit Online',
-                        status:'completed',
-                        description:''
-                    },
-                    {
-                        label:'Save',
-                        status:'completed',
-                        description:''
-                    },
-                    {
-                        label:"Submit",
-                        status:"pending",
-                        description:""
-                    }
-                ]
+            // case "editOnlineSaved":
+            //     return [
+            //         {
+            //              label:'Edit Online',
+            //             status:'completed',
+            //             description:''
+            //         },
+            //         {
+            //             label:'Save',
+            //             status:'completed',
+            //             description:''
+            //         },
+            //         {
+            //             label:"Submit",
+            //             status:"pending",
+            //             description:""
+            //         }
+            //     ]
             case "editOnlineSubmitted":
                 return [
                     {
@@ -320,9 +315,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                             Reset
                         </VFButtonOutline>
                         <VFButton themeUi={themeUi} onClick={onEditOnlineSave}>
-                            Save
+                            Save as Draft
                         </VFButton>
-                        <VFButtonOutline themeUi={themeUi} onClick={onSubmit} disabled>
+                        <VFButtonOutline themeUi={themeUi} onClick={onSubmit} >
                             Submit
                         </VFButtonOutline>
                     </VFTaskBarButtonGroup>
@@ -333,25 +328,25 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     </div>
                 </TaskBarContainer>
             )
-        case "editOnlineSaved":
-            return(
-                <TaskBarContainer data-testid="taskbar" style={{width:width}}>
-                   <VFTaskBarButtonGroup>
-                    <BackButton/>
-                        <VFButtonOutline themeUi={themeUi} onClick={onReset} disabled={!enableEditOnlineReset}>
-                            Reset
-                        </VFButtonOutline>
-                        <VFButton themeUi={themeUi} onClick={onSubmit}>
-                            Submit
-                        </VFButton>
-                   </VFTaskBarButtonGroup>
-                    <div>
-                        <VFStepper
-                            items={getStepperState()}
-                        />
-                    </div>
-                </TaskBarContainer>
-            )
+        // case "editOnlineSaved":
+        //     return(
+        //         <TaskBarContainer data-testid="taskbar" style={{width:width}}>
+        //            <VFTaskBarButtonGroup>
+        //             <BackButton/>
+        //                 <VFButtonOutline themeUi={themeUi} onClick={onReset} disabled={!enableEditOnlineReset}>
+        //                     Reset
+        //                 </VFButtonOutline>
+        //                 <VFButton themeUi={themeUi} onClick={onSubmit}>
+        //                     Submit
+        //                 </VFButton>
+        //            </VFTaskBarButtonGroup>
+        //             <div>
+        //                 <VFStepper
+        //                     items={getStepperState()}
+        //                 />
+        //             </div>
+        //         </TaskBarContainer>
+        //     )
         case "editOnlineSubmitted":
             return(
                 <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>

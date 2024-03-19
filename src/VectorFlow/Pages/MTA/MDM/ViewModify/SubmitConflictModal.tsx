@@ -8,6 +8,7 @@ interface SubmitConflictModalProps{
     totalCount:number;
     recordCount:number;
     modificationCount:number;
+    errorCount:number
     onFailure:()=>void;
     onSuccess:()=>void;
     onCloseModal:()=>void;
@@ -20,9 +21,11 @@ const SubmitConflictModal=(props:SubmitConflictModalProps)=>{
         modificationCount,
         onFailure,
         onSuccess,
+        errorCount
     } = props
 
     const {user} = useUserData()
+
 
     return (
         <VFModalCard headerText="Submit Data" openModal={true} headerIcon={""} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
