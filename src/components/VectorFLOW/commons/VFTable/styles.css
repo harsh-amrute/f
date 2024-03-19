@@ -72,3 +72,31 @@
 .ag-status-name-value span{
     color:black;
 }
+
+.ag-body-horizontal-scroll{
+    height: unset !important;
+    max-height: unset !important;
+    min-height: 29px !important;
+}
+
+.ag-body-horizontal-scroll-viewport{
+    height:unset !important;
+    max-height: unset !important;
+    min-height: unset !important;
+}
+
+.ag-horizontal-right-spacer{
+    display:none !important;
+}
+
+.ag-body-vertical-scroll-viewport{
+    min-width: unset !important;
+    width: 29px !important;
+    max-width: unset !important;
+}
+
+.ag-body-vertical-scroll{
+    min-width:unset !important;
+    max-width: unset !important;
+    width: unset !important;
+}

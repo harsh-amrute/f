@@ -8,6 +8,7 @@ const dummyprops = {
   totalCount:10,
   recordCount:10,
   modificationCount:10,
+  errorCount:10,
   onSuccess:mockFunction,
   onFailure:mockFunction,
   onCloseModal:mockFunction

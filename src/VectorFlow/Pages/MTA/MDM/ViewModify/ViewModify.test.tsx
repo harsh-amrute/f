@@ -704,7 +704,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     //submits the date when edit online
 
-    updatedMockState = {...updatedMockState,activeMaster:{...updatedMockState.activeMaster,progress:'editOnlineSaved'}}
+    updatedMockState = {...updatedMockState,activeMaster:{...updatedMockState.activeMaster,progress:'editOnline'}}
 
     cleanup();
 
@@ -928,7 +928,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     render(contextWrapper(<ViewModify/>,mockStore));
 
-    fireEvent.click(screen.getAllByText('Save')[0]); 
+    fireEvent.click(screen.getAllByText('Save as Draft')[0]); 
 
     // expect(mockStoreDispatchSpy).toBeCalledWith({payload:"editOnlineSaved",type:"UPDATE_PROGRESS_STATE"});
 
@@ -941,7 +941,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
     render(contextWrapper(<ViewModify/>,createStore(mockState)));
 
     // fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
-    fireEvent.click(screen.getAllByText('Save')[0]); 
+    fireEvent.click(screen.getAllByText('Save as Draft')[0]); 
 
     //Does not Updates Progress state if there are errors
 
@@ -961,7 +961,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
     render(contextWrapper(<ViewModify/>,createStore(mockState)));
 
     // fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
-    fireEvent.click(screen.getAllByText('Save')[0]); 
+    fireEvent.click(screen.getAllByText('Save as Draft')[0]); 
 
     //Shows Error Modal When Service Call is not successful
 
@@ -973,7 +973,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       return useModifyDraftMockData;
     })
     // fireEvent.click(screen.getByText('Save', { selector: 'button' })); 
-    fireEvent.click(screen.getAllByText('Save')[0]); 
+    fireEvent.click(screen.getAllByText('Save as Draft')[0]); 
 
 
 

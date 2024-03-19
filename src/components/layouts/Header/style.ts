@@ -150,8 +150,9 @@ export const SCHeaderIconProfile = styled.img`
   cursor: pointer;
 `;
 export const SCWrapperImg = styled.div<{ isHideLogo: boolean }>`
-  position: absolute;
-  right: -2vw;
+  position: fixed;
+  right: 0px;
+  top:120px;
   width: ${(props) => (props.isHideLogo ? "176px" : "1vw")};
   height: 55px;
   margin-top: -22px;
@@ -160,6 +161,7 @@ export const SCWrapperImg = styled.div<{ isHideLogo: boolean }>`
   background: #ffffff 0% 0% no-repeat padding-box;
   cursor: pointer;
   transition: ${globalStyles.customTransition};
+  z-index:100;
 `;
 
 export const SCImg = styled.img<{ isHideLogo: boolean }>`

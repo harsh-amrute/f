@@ -100,6 +100,7 @@ import _ from "lodash";
 
     } = useViewModify('modify');
 
+    console.log(errorCount)
 
     
     useEffect(()=>{
@@ -288,7 +289,8 @@ import _ from "lodash";
           <SubmitConflictModal 
             totalCount={activeMaster.rowData.length}
             modificationCount={conflictCount}
-            recordCount={activeMaster.rowData.length - conflictCount - errorCount}
+            errorCount={errorCount}
+            recordCount={activeMaster.rowData.length - (conflictCount + errorCount)}
             onSuccess={onReviewConflicts}
             onFailure={onIgnoreSubmitErrors}
             onCloseModal={()=>{return}}
