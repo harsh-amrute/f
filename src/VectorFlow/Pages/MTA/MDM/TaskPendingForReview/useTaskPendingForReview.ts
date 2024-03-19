@@ -26,6 +26,8 @@ const useTaskPendingForReview = ()=>{
     const [showRejectAllModal,toggleRejectAllModal] = useState<boolean>(false);
     const [selectionType,setSelectionType] = useState<string>('');
 
+    const [currMasterId,setCurrMasterId] = useState<number>(0)
+
     const recordCount = useSelector((state:RootState) => state.mdm.recordCount)
     const rowsPerPage = 50;
 
@@ -103,6 +105,7 @@ const useTaskPendingForReview = ()=>{
             
             const currentTaskMaster = taskDataStore[0]
             const currentTaskMasterId:number = currentTaskMaster.MasterId
+            setCurrMasterId(currentTaskMasterId)
             
             setDetailTableRowData(taskDataStore)
         
@@ -140,7 +143,7 @@ const useTaskPendingForReview = ()=>{
         
        
         let toastId;
-        const updatedRowData = createTaskPendingSubmitPayload(detailTableRowData,taskActionype || 0)
+        const updatedRowData = createTaskPendingSubmitPayload(detailTableRowData,taskActionype || 0,currMasterId)
         
         try {
             const noActionPerformed = updatedRowData.find((row:any)=>row.status === '');
