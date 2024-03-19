@@ -22,8 +22,7 @@ import {getUploadModalRadioButtons } from "../../../../../helpers/utils";
 import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 
-import { MDMMasterState } from "../../../../types/MDM";
-import { Field } from "../../../../types/MDM";
+import { MDMMasterState,Field } from "../../../../types/MDM";
 
 const AddRecord = () => {
 

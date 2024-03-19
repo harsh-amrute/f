@@ -21,7 +21,6 @@ const SubmitConflictModal=(props:SubmitConflictModalProps)=>{
         modificationCount,
         onFailure,
         onSuccess,
-        errorCount
     } = props
 
     const {user} = useUserData()

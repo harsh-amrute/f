@@ -1181,54 +1181,54 @@ const useViewModify = (pageType:string) => {
         setEnableEditOnlineReset(false)
       }
 
-      const     validateEditOnlineData = (data:any[]) => {
-        //Cleanup errors if any and provide clean copy to check again.
-        //PS - Worked in tight deadline plz optimize whenever possible.
-        dispatch(REMOVE_COLDEFS(['error','warning']));
+      // const     validateEditOnlineData = (data:any[]) => {
+      //   //Cleanup errors if any and provide clean copy to check again.
+      //   //PS - Worked in tight deadline plz optimize whenever possible.
+      //   dispatch(REMOVE_COLDEFS(['error','warning']));
 
-        const rowData = data.map((row:any)=>{
-          if(row.error || row.warning){
-            return _.omit(row,'error','warning');
-          }
-          return row;
-        })
+      //   const rowData = data.map((row:any)=>{
+      //     if(row.error || row.warning){
+      //       return _.omit(row,'error','warning');
+      //     }
+      //     return row;
+      //   })
       
-        const newData = rowData.map((row:any)=>{
-          const rowClone = {...row};
-          const {error,warning} = checkError(rowClone,activeMaster,pageType);
+      //   const newData = rowData.map((row:any)=>{
+      //     const rowClone = {...row};
+      //     const {error,warning} = checkError(rowClone,activeMaster,pageType);
           
-          if(error){
-            rowClone.error = error
-          }
-          else{
-            rowClone.error = '';
-          }
-          if(warning){
-            rowClone.warning = warning;
-          }
-          else{
-            rowClone.warning = '';
-          }
-          return rowClone;
-        });
+      //     if(error){
+      //       rowClone.error = error
+      //     }
+      //     else{
+      //       rowClone.error = '';
+      //     }
+      //     if(warning){
+      //       rowClone.warning = warning;
+      //     }
+      //     else{
+      //       rowClone.warning = '';
+      //     }
+      //     return rowClone;
+      //   });
         
-        const isErrorPresent = newData.find((row:any)=>row.error);
-        const isWarningPresent = newData.find((row:any)=>row.warning);
+      //   const isErrorPresent = newData.find((row:any)=>row.error);
+      //   const isWarningPresent = newData.find((row:any)=>row.warning);
       
-        if(isErrorPresent){
-          addInvalidDataColDefs('error');
-        }
+      //   if(isErrorPresent){
+      //     addInvalidDataColDefs('error');
+      //   }
         
-        if(isWarningPresent){
-          addInvalidDataColDefs('warning');
+      //   if(isWarningPresent){
+      //     addInvalidDataColDefs('warning');
           
-        }
-        dispatch(UPDATE_ROW_DATA(newData));
-        // if(isErrorPresent || isWarningPresent){
-        //   return notifyError("Invalid Data Found. Please Clear all the errors and warnings before proceeding");
-        // } 
-        return newData;
-      }
+      //   }
+      //   dispatch(UPDATE_ROW_DATA(newData));
+      //   // if(isErrorPresent || isWarningPresent){
+      //   //   return notifyError("Invalid Data Found. Please Clear all the errors and warnings before proceeding");
+      //   // } 
+      //   return newData;
+      // }
 
       const onEditOnlineSave = async()=>{
         await onSaveToDraft();
