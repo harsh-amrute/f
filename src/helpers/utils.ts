@@ -1651,7 +1651,7 @@ export const navigateWithPrompt = (onRouteChange:()=>void,url:any,state:any,rese
 }  
 
 
-export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):any[]=>{
+export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number,masterId:number):any[]=>{
   const  result:any[] = []
 
   rowData.forEach((item) => {
@@ -1675,7 +1675,16 @@ export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):
      }
 
      if(actionType===1){
+      if(masterId===13){
+        if (key.startsWith("Old")) {
+          // Skip keys with prefix "Oldc"
+          return;
+        }
+        newItem[key.replace("New", "")] = value;
+      }
+     else{
       newItem[key.replace("Add", "")] = value;
+     }
      }
 
      if(actionType===3){
