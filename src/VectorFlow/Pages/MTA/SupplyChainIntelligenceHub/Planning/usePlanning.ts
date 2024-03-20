@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
-import { useGetPlanningDataCount,useGetPlanningDataGraph } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
+import { useGetPlanningDataCount,useGetPlanningDataGraph, useGetPlanningDataGrid } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 import { PlanningCategory, PlanningCounts } from "../../../../types/MTA"
 const usePlanning = ()=>{
 
@@ -22,11 +22,15 @@ const usePlanning = ()=>{
 
     const {mutateAsync:getPlanningDataGraph} = useGetPlanningDataGraph();
 
+    const {mutateAsync:getPlanningDataGrid} = useGetPlanningDataGrid();
+
     const [isOverlayVisible,setIsOverlayVisible] = useState(false);
 
     const [currentCategory,setCurrentCategory] = useState<string>('');
 
     const [currentGraphData,setCurrentGraphData] = useState();
+
+    const [currentGridData,setCurrentGridData] = useState();
 
     const [currentTab,setCurrentTab] = useState<string>('');
 
@@ -35,6 +39,118 @@ const usePlanning = ()=>{
     useEffect(()=>{
         fetchPlanningDataCount();
     },[])
+
+   
+    const getFloatingTabsList = (view:string) => {
+        switch(currentCategory){
+            case 'GITFromParent':{
+                return [];
+            }
+            case 'GITToChild':{
+                if(view === 'chart'){
+                     return([
+                        {
+                            id:'locationWise',
+                            label:'Location-Wise',
+                            value:'locationWise'
+                        },
+                        {
+                            id:'transporterWise',
+                            label:'Transporter-Wise',
+                            value:'transporterWise'
+                        },
+                        {
+                            id:'custom',
+                            label:'Custom Screens',
+                            value:'custom'
+                        }
+                    ])
+                }
+                else{
+                    return ([
+                        {
+                            id:'locationWise',
+                            label:'Location-Wise',
+                            value:'locationWise'
+                        },
+                        {
+                            id:'transporterWise',
+                            label:'Transporter-Wise',
+                            value:'transporterWise'
+                        }
+                    ])
+                }
+                
+            }
+        case 'ExpediteFromParent':{
+            if(view === 'chart'){
+                return([
+                    {
+                        id:'expediteDispatches',
+                        label:'Expedite Dispatches',
+                        value:'expediteDispatches'
+                    },
+                    {
+                        id:'createAvailabilityAtParent',
+                        label:'Create Availability At Parent',
+                        value:'createAvailabilityAtParent'
+                    },
+                    {
+                        id:'custom',
+                        label:'Custom Screens',
+                        value:'custom'
+                    }
+                ])
+            }
+            else{
+                return []
+            }
+          
+        }
+        case 'ExpediteToChild':{
+            if(view === 'chart'){
+                return([
+                    {
+                        id:'expediteDispatches',
+                        label:'Expedite Dispatches',
+                        value:'expediteDispatches'
+                    },
+                    {
+                        id:'custom',
+                        label:'Custom Screens',
+                        value:'custom'
+                    }
+                ])
+            }
+            else{
+                return []
+            }
+          
+        }
+        case 'ExcessInventory':{
+            if(view === 'chart'){
+                return([
+                    {
+                        id:'excessInventory',
+                        label:'Excess Inventory',
+                        value:'excessInventory'
+                    },
+                    {
+                        id:'custom',
+                        label:'Custom Screens',
+                        value:'custom'
+                    }
+                ])
+            }
+            else{
+                return []
+            }
+          
+        }
+        default:
+            return([])
+        }
+    }
 
     const fetchPlanningDataCount = async () => {
         setIsOverlayVisible(true);
@@ -63,24 +179,103 @@ const usePlanning = ()=>{
     }
 
 
-    const onMonitorChildClick = async () => {
+    const handlePlanningQuadrantClick = async (category:string) => {
         try {
-            setCurrentView('chart');
-            const toastId = notifyLoader('Loading Graphs');
-            setCurrentCategory('GITToChild');
-            const body = {
-                category:'git',
-                type:'child',
-                filters:[]
-            }
-            const result = await getPlanningDataGraph(body);
-            console.log(result)
-            setIsSelectCategoryOpen(false);
-            setCurrentGraphData(result.data.data)
-            setCurrentTab('locationWise');
-            toast.dismiss(toastId);
-            notifySuccess("Graph Details Fetched Successfully")
+            switch(category){
+                case 'GITFromParent':{
+                    const toastId = notifyLoader('Loading Grid Data');
+                    const body = {
+                        category:'git',
+                        type:'parent',
+                        filters:[],
+                        paginationParameter:{
+                            pageNumber:1,
+                            recordsPerPage:50
+                        }
+                    }
+                    const result = await getPlanningDataGrid(body);
+                    setCurrentView('grid');
+                    setCurrentCategory(category);
+                    setCurrentGridData(result.data.data);
+                    setIsSelectCategoryOpen(false);
+                    toast.dismiss(toastId);
+                    notifySuccess("Grid Data Fetched Successfully");
+                    break;
+                }
+                case 'GITToChild':{
+                    const toastId = notifyLoader('Loading Graphs');
+                    setCurrentCategory('GITToChild');
+                    setCurrentView('chart');
+                    const body = {
+                        category:'git',
+                        type:'child',
+                        filters:[]
+                    }
+                    const result = await getPlanningDataGraph(body);
+                    setIsSelectCategoryOpen(false);
+                    setCurrentGraphData(result.data.data)
+                    setCurrentTab('locationWise');
+                    toast.dismiss(toastId);
+                    notifySuccess("Graph Details Fetched Successfully");
+                    break;
+                }
 
+                case 'ExpediteFromParent':{
+                    const toastId = notifyLoader('Loading Graphs');
+                    setCurrentCategory('ExpediteFromParent');
+                    setCurrentView('chart');
+                    const body = {
+                        category:'expedite',
+                        type:'parent',
+                        filters:[]
+                    }
+                    const result = await getPlanningDataGraph(body);
+                    setIsSelectCategoryOpen(false);
+                    setCurrentGraphData(result.data.data)
+                    setCurrentTab('expediteDispatches');
+                    toast.dismiss(toastId);
+                    notifySuccess("Graph Details Fetched Successfully");
+                    break;
+                }
+                case 'ExpediteToChild':{
+                    const toastId = notifyLoader('Loading Graphs');
+                    setCurrentCategory('ExpediteToChild');
+                    setCurrentView('chart');
+                    const body = {
+                        category:'expedite',
+                        type:'child',
+                        filters:[]
+                    }
+                    const result = await getPlanningDataGraph(body);
+                    setIsSelectCategoryOpen(false);
+                    setCurrentGraphData(result.data.data)
+                    setCurrentTab('expediteDispatches');
+                    toast.dismiss(toastId);
+                    notifySuccess("Graph Details Fetched Successfully");
+                    break;
+                }
+                case 'ExcessInventory':{
+                    const toastId = notifyLoader('Loading Graphs');
+                    setCurrentCategory('ExcessInventory');
+                    setCurrentView('chart');
+                    const body = {
+                        category:'excessInventory',
+                        type:'review',
+                        filters:[]
+                    }
+                    const result = await getPlanningDataGraph(body);
+                    setIsSelectCategoryOpen(false);
+                    setCurrentGraphData(result.data.data)
+                    setCurrentTab('excessInventory');
+                    toast.dismiss(toastId);
+                    notifySuccess("Graph Details Fetched Successfully");
+                    break;
+                }
+                    
+                default:
+                    return;
+                    
+            }
             
         } catch (error) {
             toast.dismiss();
@@ -89,8 +284,107 @@ const usePlanning = ()=>{
 
     }
 
+    const fetchAndUpdateGridData = async () => {
+        try {
+            switch(currentCategory){
+                case 'GITFromParent':{
+                    break;
+                }
+                case 'GITToChild':{
+                    const toastId = notifyLoader('Loading Grid Data');
+                    const body = {
+                        category:'git',
+                        type:'child',
+                        filters:[],
+                        paginationParameter:{
+                            pageNumber:1,
+                            recordsPerPage:50
+                        }
+                    }
+                    const result = await getPlanningDataGrid(body);
+                    setCurrentGridData(result.data.data);
+                    toast.dismiss(toastId);
+                    notifySuccess("Grid Details Fetched Successfully");
+                    break;
+                }
+                case 'ExpediteFromParent':{
+                    const toastId = notifyLoader('Loading Grid Data');
+                    const body = {
+                        category:'expedite',
+                        type:'parent',
+                        filters:[],
+                        paginationParameter:{
+                            pageNumber:1,
+                            recordsPerPage:50
+                        }
+                    }
+                    const result = await getPlanningDataGrid(body);
+                    setCurrentGridData(result.data.data);
+                    toast.dismiss(toastId);
+                    notifySuccess("Grid Details Fetched Successfully");
+                    break;
+                }
+                case 'ExpediteToChild':{
+                    const toastId = notifyLoader('Loading Grid Data');
+                    const body = {
+                        category:'expedite',
+                        type:'child',
+                        filters:[],
+                        paginationParameter:{
+                            pageNumber:1,
+                            recordsPerPage:50
+                        }
+                    }
+                    const result = await getPlanningDataGrid(body);
+                    setCurrentGridData(result.data.data);
+                    toast.dismiss(toastId);
+                    notifySuccess("Grid Details Fetched Successfully");
+                    break;
+                }
+                case 'ExcessInventory':{
+                    const toastId = notifyLoader('Loading Grid Data');
+                    const body = {
+                        category:'excessInventory',
+                        type:'review',
+                        filters:[],
+                        paginationParameter:{
+                            pageNumber:1,
+                            recordsPerPage:50
+                        }
+                    }
+                    const result = await getPlanningDataGrid(body);
+                    setCurrentGridData(result.data.data);
+                    toast.dismiss(toastId);
+                    notifySuccess("Grid Details Fetched Successfully");
+                    break;
+                }
+            }
+        } catch (error) {
+            toast.dismiss();
+            notifyError('Something Went Wrong')
+        }
+    }
+
     const onFloatingTabChange = (tab:any) => {
         setCurrentTab(tab.value);
+    }
+
+    const onGoBack = () => {
+        setIsSelectCategoryOpen(true);
+        setCurrentCategory('');
+        setCurrentView('');
+        setCurrentTab('');
+    }
+
+
+
+    const onViewChange = (view:string) => {
+        const activeTab = getFloatingTabsList(view)[0];
+        if(activeTab){
+             setCurrentTab(getFloatingTabsList(view)[0].value);
+        } 
+        setCurrentView(view);
+        fetchAndUpdateGridData();
     }
 
     return {
@@ -101,8 +395,13 @@ const usePlanning = ()=>{
         currentGraphData,
         currentTab,
         currentView,
-        onMonitorChildClick,
-        onFloatingTabChange
+        handlePlanningQuadrantClick,
+        onFloatingTabChange,
+        onGoBack,
+        onViewChange,
+        setCurrentTab,
+        getFloatingTabsList,
+        currentGridData
     }
 
 

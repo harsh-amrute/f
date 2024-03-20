@@ -8,10 +8,15 @@ import { mapBPRFieldsToColDefs } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
+import useViewPort from "../../../../../hooks/useViewPort"
 
 const useBPR =()=>{
 
     const {isSideBarOpen} = useUserData()
+    const {getGridZoom,getScreenZoomValue} = useViewPort()
+
+    const gridZoom = getGridZoom()
+    const screenZoom = getScreenZoomValue() 
 
     const [isSubGridOpen,toggleSubGrid] = useState<boolean>(false)
     const [activeRow,setActiveRow] = useState<any>()
@@ -139,8 +144,8 @@ const useBPR =()=>{
     const onOpenSubmitRemark = (e:React.MouseEvent<HTMLElement>)=>{
         const {top,left} = e.currentTarget.getBoundingClientRect()
         setSubmitRemarkToolipPosition({
-            top: top * 0.75 * 0.75,
-            left: left * 0.75 * 0.75 ,
+            top: top * gridZoom * screenZoom,
+            left: left * gridZoom * screenZoom,
         })
         setIsSubmitRemarkToolTipOpen(true)
 
@@ -152,8 +157,8 @@ const useBPR =()=>{
             const toastId = notifyLoader("Getting remark history")
             const {top,left} = e.currentTarget.getBoundingClientRect()
             setRemarkHistoryToolipPosition({
-                top: top * 0.75 * 0.75,
-                left: left * 0.75 * 0.75 ,
+                top: top *  gridZoom * screenZoom,
+                left: left *  gridZoom * screenZoom,
                 height:360,
                 width:350
             })

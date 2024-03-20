@@ -75,7 +75,8 @@ const DeleteRecord = () => {
         onEditOnlineSave,
         onBackButton,
         isOverlayVisible,
-        isDataAvailableLocally
+        isDataAvailableLocally,
+        enableEditOnlineReset
     } = useViewModify('remove');
     
 
@@ -134,7 +135,7 @@ const DeleteRecord = () => {
                 newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
                 newTabHandler={addNewMaster}
                 >
-                  { (activeMaster.progress ==='default' || activeMaster.progress ==='view') 
+                  { (activeMaster.progress ==='default' || activeMaster.progress ==='deleteView') 
                     &&
                   <SCFilterContainer>
                     <SCFilterControls>
@@ -231,6 +232,7 @@ const DeleteRecord = () => {
 
           {isWarningModalOpen && 
           <WarningModal 
+            rowsPerPage={rowsPerPage}
           showAll={isShowAll}
             count={recordCount} 
             onCloseModal={onWarningModalClose} 
@@ -276,6 +278,7 @@ const DeleteRecord = () => {
         {
           !isSelectMasterOpen && 
           <VFTaskBar
+            enableEditOnlineReset={enableEditOnlineReset}
             disableResumeSeasonality={()=>false}
             disableStopSeasonality={()=>false}
             masterProgress={activeMaster.progress}

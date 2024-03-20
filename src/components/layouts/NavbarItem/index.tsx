@@ -43,7 +43,6 @@ const NavbarItem = ({
       listMenu
     } = props
 
-
     return (
       <SCMenuItem
         key={listMenu.id}

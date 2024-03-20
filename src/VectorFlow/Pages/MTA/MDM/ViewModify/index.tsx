@@ -95,10 +95,12 @@ import _ from "lodash";
         onSeasonalityStatusUpdate,
         validResumeStatuses,
         validStopStatuses,
-        onPIPOStatusUpdate
+        onPIPOStatusUpdate,
+        enableEditOnlineReset
 
     } = useViewModify('modify');
 
+    console.log(errorCount)
 
     
     useEffect(()=>{
@@ -266,6 +268,7 @@ import _ from "lodash";
             onFailure={onWarningModalClose} 
             onSuccess={()=>onWarningModalSuccess()}
             showAll={isShowAll}
+            rowsPerPage={rowsPerPage}
             />
         }
         {isUploadModalOpen && 
@@ -286,7 +289,8 @@ import _ from "lodash";
           <SubmitConflictModal 
             totalCount={activeMaster.rowData.length}
             modificationCount={conflictCount}
-            recordCount={activeMaster.rowData.length - conflictCount - errorCount}
+            errorCount={errorCount}
+            recordCount={activeMaster.rowData.length - (conflictCount + errorCount)}
             onSuccess={onReviewConflicts}
             onFailure={onIgnoreSubmitErrors}
             onCloseModal={()=>{return}}
@@ -337,6 +341,8 @@ import _ from "lodash";
             }}
             masterProgress={activeMaster.progress}
             disableSubmit={activeMaster.rowData.length===0}
+            enableEditOnlineReset = {enableEditOnlineReset}
+            disableDeleteSelected={activeMaster.rowData.length < 1}
             onReset={onReset}
             onSaveToDraft={onSaveToDraft}
             onEditOnlineSave={onEditOnlineSave}

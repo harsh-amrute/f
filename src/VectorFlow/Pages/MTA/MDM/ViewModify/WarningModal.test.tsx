@@ -9,7 +9,8 @@ const dummyprops = {
   showAll:true,
   onSuccess:mockFunction,
   onFailure:mockFunction,
-  onCloseModal:mockFunction
+  onCloseModal:mockFunction,
+  rowsPerPage:20
 }
 
 describe("WarningModal Component", () => {

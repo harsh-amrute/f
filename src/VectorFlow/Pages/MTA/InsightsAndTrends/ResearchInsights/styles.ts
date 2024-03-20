@@ -10,6 +10,16 @@ export const ResearchInsightsLayout = styled.div`
     
 `
 
+export const ResearchInsightsTableWrapper = styled.div`
+    display:flex;
+    flex-direction:column;
+`
+
+export const ResearchInsightsTableTaskBar = styled.div`
+    width:100%;
+    padding:10px 20px;
+`
+
 export const AvailabilityTrendWrapper = styled.div`
     width:100%;
     min-width:300px;
@@ -154,4 +164,38 @@ export const ChartWrapper = styled.div`
     display:flex;
     justify-content:center;
     align-items:center;
+`
+
+export const CalenderSummaryWrapper  = styled.div`
+    display:flex;
+    flex-direction:row;
+    width:100%;
+`
+
+export const CalenderSummaryCell = styled.div`
+display:flex;
+flex-direction:column;
+align-items:center;
+width:100%;
+`
+export const CalenderSummaryCellText = styled.p`
+    font-weight:400;
+    font-size:12px;
+    text-align:center;
+`
+
+export const CalenderSummaryCellContentWrapper = styled.div`
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+`
+
+export const CalenderSummaryCellContent = styled.p`
+    font-weight:500;
+    font-size:18px;
+`
+export const CalenderSummaryCellContentStick = styled.div`
+    height:20px ;
+    width:2px;
+    margin-left:5px;
 `

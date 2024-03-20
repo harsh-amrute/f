@@ -23,10 +23,22 @@ export const ATTR_TOAST = {
   theme?: Theme
 }
 
-export const notifyError = (msg: string) => toast.error(msg, ATTR_TOAST)
+export const notifyError = (msg: string) =>{
+  toast.dismiss()
+  return toast.error(msg, ATTR_TOAST)
+}
 
-export const notifySuccess = (msg: string) => toast.success(msg, ATTR_TOAST)
+export const notifySuccess = (msg: string) =>{
+  toast.dismiss()
+  return toast.success(msg, ATTR_TOAST)
+}
 
-export const notifyPromise = (promise:Promise<unknown>,msgs:PromiseToastMsg)=>toast.promise(promise,msgs)
+export const notifyPromise = (promise:Promise<unknown>,msgs:PromiseToastMsg)=>{
+  toast.dismiss()
+  return toast.promise(promise,msgs,ATTR_TOAST)
+}
 
-export const notifyLoader = (msg: string) => toast.loading(msg)
+export const notifyLoader = (msg: string) =>{
+  toast.dismiss()
+  return toast.loading(msg)
+}

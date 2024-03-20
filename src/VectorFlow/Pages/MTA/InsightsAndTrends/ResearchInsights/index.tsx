@@ -5,7 +5,7 @@ import VFRangeSlider from "../../../../../components/VectorFLOW/commons/VFRangeS
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 
 
-import { AvailabilityTrendHeader, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper } from "./styles"
+import { AvailabilityTrendHeader,ResearchInsightsTableWrapper,ResearchInsightsTableTaskBar, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick } from "./styles"
 
 import CustomCalenderCaption from './CustomCalenderCaption'
 import CustomCalenderDay from './CustomCalenderDay'
@@ -16,6 +16,8 @@ import 'react-day-picker/dist/style.css';
 import './styles.css'
 import { AgChartsReact } from 'ag-charts-react'
 import React from 'react'
+import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline'
+import { useUserData } from '../../../../../context'
 
 
 
@@ -28,10 +30,21 @@ const ResearchInsights = ()=>{
         ResearchInsightsData,
         isLoading,
         horizon,
-        selectedRows,
+        graphState,
         setHorizon,
-        getColor
+        getColor,
+        setCalenderType,
+        setGraphOneType,
+        setGraphTwoType,
+        handleOnUpdateGraph,
+        redCount,
+        blackCount,
+        whiteCount
     } = useResearchInsights()
+
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
 
     
 
@@ -41,12 +54,23 @@ const ResearchInsights = ()=>{
 
     return(
         <ResearchInsightsLayout>
-            <VFTable
-                {...agGridProps}
-                ref={ref}
-                columnDefs={ResearchInsightsColumns}
-                rowData={ResearchInsightsData}
-            />
+            <ResearchInsightsTableWrapper>
+                <VFTable
+                    {...agGridProps}
+                    ref={ref}
+                    columnDefs={ResearchInsightsColumns}
+                    rowData={ResearchInsightsData}
+                />
+                <ResearchInsightsTableTaskBar>
+                    <VFButtonOutline
+                        themeUi={themeUi}
+                        onClick={handleOnUpdateGraph}
+                        // disabled={graphState==='default'}
+                    >
+                        Update Graph
+                    </VFButtonOutline>
+                </ResearchInsightsTableTaskBar>
+            </ResearchInsightsTableWrapper>
             <AvailabilityTrendWrapper>
                 <AvailabilityTrendHeader>
                     Availability Trend
@@ -98,8 +122,9 @@ const ResearchInsights = ()=>{
                         labelValueFormatter={(value:number)=>value>1?`${value} Days`:`${value} Day`}
                     />
                 </AvailabilityTrendSection>
-                {selectedRows?.length===1 && (
-                    <AvailabilityTrendSection>
+                {graphState==='calender' && (
+                    <React.Fragment>
+                        <AvailabilityTrendSection>
                         <ChartHeader>
                             <ChartHeaderText>
                                 Summary
@@ -117,7 +142,7 @@ const ResearchInsights = ()=>{
                                             value:'eco'
                                         }
                                     ]}
-                                    handleClick={(value)=>console.log(value)}
+                                    handleClick={(e:any)=>setCalenderType(e.label)}
                                     
                                 />
                             </CapsuleWrapper>
@@ -141,8 +166,68 @@ const ResearchInsights = ()=>{
                             />
                         </CalenderWrapper>
                     </AvailabilityTrendSection>
+                    <AvailabilityTrendSection>
+                        <CalenderSummaryWrapper>
+                            <CalenderSummaryCell>
+                                <CalenderSummaryCellText>Black Count</CalenderSummaryCellText>
+                                <CalenderSummaryCellContentWrapper>
+                                    <CalenderSummaryCellContent>
+                                            {blackCount}%
+                                    </CalenderSummaryCellContent>
+                                    <CalenderSummaryCellContentStick style={{backgroundColor:'black'}}/>
+                                </CalenderSummaryCellContentWrapper>
+                            </CalenderSummaryCell>
+                            <CalenderSummaryCell>
+                                <CalenderSummaryCellText>Red Count</CalenderSummaryCellText>
+                                <CalenderSummaryCellContentWrapper>
+                                    <CalenderSummaryCellContent>
+                                        {redCount}%
+                                    </CalenderSummaryCellContent>
+                                    <CalenderSummaryCellContentStick style={{backgroundColor:'#F04D4D'}}/>
+                                </CalenderSummaryCellContentWrapper>
+                            </CalenderSummaryCell>
+                            <CalenderSummaryCell>
+                                <CalenderSummaryCellText>White Count</CalenderSummaryCellText>
+                                <CalenderSummaryCellContentWrapper>
+                                    <CalenderSummaryCellContent>
+                                            {whiteCount}%
+                                    </CalenderSummaryCellContent>
+                                    <CalenderSummaryCellContentStick style={{backgroundColor:'gray'}}/>
+                                </CalenderSummaryCellContentWrapper>
+                            </CalenderSummaryCell>
+                        </CalenderSummaryWrapper>
+                    </AvailabilityTrendSection>
+                    <AvailabilityTrendSection>
+                        <CalenderSummaryWrapper>
+                            <CalenderSummaryCell>
+                                <CalenderSummaryCellText>Contd. Black Ageing</CalenderSummaryCellText>
+                                <CalenderSummaryCellContentWrapper>
+                                    <CalenderSummaryCellContent>
+                                        0
+                                    </CalenderSummaryCellContent>
+                                </CalenderSummaryCellContentWrapper>
+                            </CalenderSummaryCell>
+                            <CalenderSummaryCell>
+                                <CalenderSummaryCellText>Contd. Black + Red Ageing</CalenderSummaryCellText>
+                                <CalenderSummaryCellContentWrapper>
+                                    <CalenderSummaryCellContent>
+                                        30
+                                    </CalenderSummaryCellContent>
+                                </CalenderSummaryCellContentWrapper>
+                            </CalenderSummaryCell>
+                            <CalenderSummaryCell>
+                                <CalenderSummaryCellText>Contd. White Ageing</CalenderSummaryCellText>
+                                <CalenderSummaryCellContentWrapper>
+                                    <CalenderSummaryCellContent>
+                                        0
+                                    </CalenderSummaryCellContent>
+                                </CalenderSummaryCellContentWrapper>
+                            </CalenderSummaryCell>
+                        </CalenderSummaryWrapper>
+                    </AvailabilityTrendSection>
+                    </React.Fragment>
                 )}
-                {selectedRows?.length>1 && (
+                {graphState==='graph' && (
                     <React.Fragment>
                         <AvailabilityTrendSection>
                     <ChartHeader>
@@ -162,7 +247,7 @@ const ResearchInsights = ()=>{
                                         value:'eco'
                                     }
                                 ]}
-                                handleClick={(value)=>console.log(value)}
+                                handleClick={(value:any)=>setGraphOneType(value.label)}
                                 
                             />
                         </CapsuleWrapper>
@@ -213,7 +298,7 @@ const ResearchInsights = ()=>{
                     <AvailabilityTrendSection style={{border:'none'}}>
                     <ChartHeader>
                         <ChartHeaderText>
-                            Current Location
+                           Parent Location
                         </ChartHeaderText>
                         <CapsuleWrapper>
                             <VFCapsule
@@ -228,7 +313,7 @@ const ResearchInsights = ()=>{
                                         value:'eco'
                                     }
                                 ]}
-                                handleClick={(value)=>console.log(value)}
+                                handleClick={(value:any)=>setGraphTwoType(value.label)}
                                 
                             />
                         </CapsuleWrapper>

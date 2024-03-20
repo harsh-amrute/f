@@ -20,7 +20,7 @@ const ControlPanel = ()=>{
                 <PanelGrid>
                     <ButtonCard text="Forced Norm Changes" onClick={()=>console.log("clciked")}/>
                     <ButtonCard text="Phase-In Phase-Out" onClick={()=>console.log("clciked")}/>
-                    <ButtonCard text="Seasonality" onClick={()=>console.log("clciked")}/>
+                    <ButtonCard text="Seasonality" onClick={()=>console.log("clciked")}/> 
                 </PanelGrid>
             </PanelGridWrapper>
         </Container>
