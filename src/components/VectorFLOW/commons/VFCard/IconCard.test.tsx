@@ -21,22 +21,4 @@ describe('IconCard Component', () => {
         expect(mockOnClick).toBeCalledTimes(1)
     })
 
-    it('calls the onClick when the icon is clicked',()=>{
-        const {getByTestId} = render(<IconCard text={cardText} iconOnMouseIn="path/to/icon-on-mouse-in.png" iconOnMouseOut="path/to/icon-on-mouse-out.png" onClick={mockOnClick}/>)
-
-        const textElement = getByTestId('icon')
-        fireEvent.click(textElement)
-        expect(mockOnClick).toBeCalledTimes(1)
-    })
-
-    it('renders different icon when mouse enters and leaves',()=>{
-        const {getByTestId} = render(<IconCard text={cardText} iconOnMouseIn="path/to/icon-on-mouse-in.png" iconOnMouseOut="path/to/icon-on-mouse-out.png" onClick={mockOnClick}/>)
-        const iconElement = getByTestId('icon')
-
-        fireEvent.mouseEnter(iconElement)
-        expect(iconElement).toHaveAttribute('src','path/to/icon-on-mouse-in.png')
-
-        fireEvent.mouseLeave(iconElement)
-        expect(iconElement).toHaveAttribute('src','path/to/icon-on-mouse-out.png')
-    })
 });

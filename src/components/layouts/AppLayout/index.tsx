@@ -20,13 +20,15 @@ const AppLayout = () => {
   const { t } = useTranslation();
 
   //URL arrays for excluding layout padding
-  const urlExcludePadding = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/BPR'];
+  const urlExcludePadding = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr'];
   const urlDisableZoomScaling = ['/supply-chain-intelligence-hub/planning'];
+  const urlExclusdeHeader = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr','/master-data-management/task-status','/master-data-management/saved-drafts'];
   const location = useLocation();
   
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  
 
   const [currentViewCount, setCurrentViewCount] = useState(0);
   const [currentDataCount, setCurrentDataCount] = useState(0);
@@ -45,7 +47,7 @@ const AppLayout = () => {
   const [menuItem, setMenuItem] = useState<any>();
   const [colorTheme, setColorTheme] = useState<string>("NOIRFUSION");
   const [isHide, setIsHide] = useState<boolean>(true);
-
+  
   return (
     <AuthenticationTemplate
       loadingComponent={<>Loading...</>}
@@ -94,7 +96,7 @@ const AppLayout = () => {
                 setCurrentDataCount,
               }}
             >
-              <Header />
+              <Header urlExcludeHeader={urlExclusdeHeader}/>
               <Outlet />
             </ISTStatusContext.Provider>
           </GridSystem.SCCol8>

@@ -898,9 +898,21 @@ export const getExistingColumnFields = (columns:string[],fields:Field[]):Field[]
   return updatedFields
 }
 
+export const areValuesEqual = (a:any,b:any):boolean=>{
+  if(typeof parseInt(a) ==='number' && typeof parseInt(b)==='number'){
+    return parseFloat(a).toFixed(0) ===parseFloat(b).toFixed(0)
+  }
+  return a===b
+}
+
 export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string, showApproveAllModal?:any,showRejectAllModal?:any,actionStatus?:string):ColGroupDef[] | ColDef[]=>{
 
-  const colDefs =  existingColumnsFields.map((f:Field)=>{
+
+  const sortedFields = existingColumnsFields.sort((a:Field,b:Field)=>{
+    return parseInt(a.col_Position) - parseInt(b.col_Position)
+  })
+
+  const colDefs =  sortedFields.map((f:Field)=>{
 
     if(TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
       return{
@@ -914,6 +926,39 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
     }
 
     if(tasktype==="add"){
+      if(masterId===13){
+        return{
+          headerName:f.displayName,
+          field:f.key,
+          colId:f.key,
+          hide:!f.visible,
+          children:[
+            {
+              headerName:'New ' +f.displayName,
+              field:'New'+f.key,
+              colId:'New'+f.key,
+              cellStyle:(params:any)=>{
+                return{
+                  "color":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?'#BC3D81':'black',
+                  "text-align":"center",
+                  "border-left":"solid 1px #B9B9B9",
+                }
+              }
+            },
+            {
+              headerName:'Old ' +f.displayName,
+              field:'Old' +f.key,
+              colId:'Old'+f.key,
+              cellStyle:{
+                "text-align":"center",
+                "border-right":"solid 1px #B9B9B9"
+              }
+            }
+          ],
+          ...defaultColDefs,
+          
+        }
+      }
       return{
         headerName:f.displayName,
         field:f.key,
@@ -971,7 +1016,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
           colId:'New'+f.key,
           cellStyle:(params:any)=>{
             return{
-              "color":params.data[`New${f.key}`]!==params.data[`Old${f.key}`]?'#BC3D81':'black',
+              "color":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?'#BC3D81':'black',
               "text-align":"center",
               "border-left":"solid 1px #B9B9B9",
             }
@@ -1129,7 +1174,7 @@ export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields:Field
 export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string,masterId:number)=>{
   return dirtyRowData.map(entry => {
 
-    if(taskType==='modify'){
+    if(taskType==='modify' || masterId===13){
       const oldData = JSON.parse(entry.old);
       const newData = JSON.parse(entry.new);
       
@@ -1582,7 +1627,7 @@ export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:str
       }
     })
   })
-  console.log(result);
+
   return result
 }
 
@@ -1606,7 +1651,7 @@ export const navigateWithPrompt = (onRouteChange:()=>void,url:any,state:any,rese
 }  
 
 
-export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):any[]=>{
+export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number,masterId:number):any[]=>{
   const  result:any[] = []
 
   rowData.forEach((item) => {
@@ -1618,7 +1663,7 @@ export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):
       // Check if the key starts with "Oldc"
 
       if(key==='status'){
-        return newItem[key] = value==="Approved"?"3":"4"
+        return newItem[key] = value === "Approved" ? "3" :value === "Rejected" ? "4" : ""
       }
 
      if(actionType===2){
@@ -1630,7 +1675,16 @@ export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number):
      }
 
      if(actionType===1){
+      if(masterId===13){
+        if (key.startsWith("Old")) {
+          // Skip keys with prefix "Oldc"
+          return;
+        }
+        newItem[key.replace("New", "")] = value;
+      }
+     else{
       newItem[key.replace("Add", "")] = value;
+     }
      }
 
      if(actionType===3){

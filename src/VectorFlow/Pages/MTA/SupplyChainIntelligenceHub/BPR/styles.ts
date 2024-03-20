@@ -217,6 +217,7 @@ export const BPRRemarksToolTipWrapper = styled.div`
     border-radius: 2px;
     padding:10px;
     z-index:100000;
+    transition:0.2s ease-in-out;
 `
 
 export const BPRRemarksToolTipContent = styled.div`

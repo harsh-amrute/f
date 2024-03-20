@@ -130,7 +130,7 @@ const UploadModal = (props:UploadModalProps)=>{
             <UploadModalContent>
                <TextContent>
                <img src="/assets/img/manual/excel.png"  style={{height:'29px', width:'29px',marginBottom:'10px'}}/>
-                  <p>Drag & Drop your file here</p>
+                  <p>Select your file here</p>
                </TextContent>     
                <InputWrapper>
                <SCManualUploadButton style={{height:'30px', width:'105px'}} onClick={handleClick} data-testid="view-modify-manual-upload-btn">
