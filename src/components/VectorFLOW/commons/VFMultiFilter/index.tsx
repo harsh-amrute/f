@@ -602,10 +602,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         return {label: ele.SKUCode, value: ele.SKUName}
     })
 
-    const onApplyFiltertp = ()=>{
-        console.log(multiFilter)
-    }
-
+   
     return(
         <>
         <VFModalCard zoom={'0.65'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
@@ -915,7 +912,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             <ButtonFilterWrapper>
                 <ButtonContainer>
                     <VFButtonOutline themeUi={user.user.theme_ui} onClick={onGoBack}>Go Back!</VFButtonOutline>
-                    <VFButton themeUi={user.user.theme_ui} onClick={onApplyFiltertp}>Apply Filter</VFButton>
+                    <VFButton themeUi={user.user.theme_ui} onClick={onApplyFilter}>Apply Filter</VFButton>
                 </ButtonContainer>
             </ButtonFilterWrapper>
             </React.Fragment>
