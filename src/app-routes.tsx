@@ -25,6 +25,7 @@ import TaskPendingForReview from './VectorFlow/Pages/MTA/MDM/TaskPendingForRevie
 import BuyerOrderReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BuyerOrderReport'
 import BPR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR'
 import Planning from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/Planning'
+import ResearchInsights from './VectorFlow/Pages/MTA/InsightsAndTrends/ResearchInsights'
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
   const search = window.location.search
@@ -60,7 +61,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/master-data-management/control-panel/delete',
     '/supply-chain-intelligence-hub/bor',
     '/supply-chain-intelligence-hub/bpr',
-    '/supply-chain-intelligence-hub/planning'
+    '/supply-chain-intelligence-hub/planning',
+    '/insights-and-trends/research-insights'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -301,6 +303,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<BuyerOrderReport/>)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/insights-and-trends/research-insights',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ResearchInsights/>)
         },
         ...getStoreTransferModuleRoutes()
       ]

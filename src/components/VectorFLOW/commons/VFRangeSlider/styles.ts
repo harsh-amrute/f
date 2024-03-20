@@ -7,7 +7,7 @@ export const RangeSliderContainer = styled.div`
   margin: 20px auto;
 `;
 
-export const RangeSliderInput = styled.input`
+export const RangeSliderInput = styled.input<{progressValue:number}>`
   -webkit-appearance: none;
   width: 100%;
   height: 11px;
@@ -20,8 +20,9 @@ border-radius: 30px;
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 20px;
-    height: 20px;
+    margin-top:-5px;
+    width: 19px;
+    height: 19px;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -30,6 +31,15 @@ border-radius: 30px;
     border:4px solid white;
     box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
     cursor: pointer;
+
+  }
+
+  &::-webkit-slider-runnable-track {
+    height:9px;
+    cursor: pointer;
+    background: linear-gradient(to right,  #454545 0%,#454545 ${(props)=>props.progressValue}%,#ffffff ${(props)=>props.progressValue}%,#ffffff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    border-radius: 30px;
+    border: none;
   }
 
   &:hover {
@@ -37,14 +47,11 @@ border-radius: 30px;
   }
 `;
 
-export const ValueLabel = styled.div<{ left: number }>`
+export const ValueLabel = styled.div<{ left: number,top:number }>`
   position: absolute;
-  width:30px;
-  height:20px;
   text-align:center;
-  border-radius:50%;
   background-color:white;
-  top:32px;
+  top:${(props)=>props.top}px;
   left: ${(props) => props.left}px;
 //   transform: translateX(-50%);
   font-size: 12px;
@@ -61,7 +68,6 @@ export const MilestonesContainer = styled.div`
 export const MilestoneLabel = styled.span`
   font-size: 12px;
   position:absolute;
-  top:5px;
   font-weight:500;
   letter-spacing: 0px;
   color: #000000;
@@ -77,24 +83,25 @@ export const ToolTipTriangle = styled.div`
     border-color: transparent transparent black transparent;
     transform: rotate(180deg);
 ` 
-export const RangeProgressBackground = styled.div`
-position:absolute;
-left:0;
-right:0;
-top:1px;
-height: 10px;
-border-radius: 5px;
-z-index:-2;
-`
+// export const RangeProgressBackground = styled.div`
+// position:absolute;
+// left:0;
+// right:0;
+// top:1px;
+// height: 10px;
+// border-radius: 5px;
+// background-color:red;
+// z-index:-2;
+// `
 
-export const RangeProgress = styled.div`
-  position:absolute;
-  top:1px;
-  height:10px;
-  border-radius: 5px;
-  background-color: black;
-  z-index:-1;
-`
+// export const RangeProgress = styled.div`
+//   position:absolute;
+//   top:1px;
+//   height:10px;
+//   border-radius: 5px;
+//   background-color: black;
+//   z-index:-1;
+// `
 
 export const CustomThumb = styled.div`
 position:absolute;
@@ -110,3 +117,4 @@ border:4px solid white;
 box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
 cursor: pointer;
 `
+

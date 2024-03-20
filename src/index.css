@@ -23,3 +23,12 @@ opacity: 1;
     zoom: 0.75;
     z-index: 100000000;
 }
+
+.react-calender{
+    background-color: #F4F4F4 !important;
+    border: none !important;
+}
+
+.react-calendar__navigation__label__labelText{
+    font-weight: 600 !important;
+}
