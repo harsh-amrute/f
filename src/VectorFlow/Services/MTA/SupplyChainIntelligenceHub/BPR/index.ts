@@ -6,7 +6,8 @@ import { BPRService } from './api'
 
 export const QUERY_KEYS = {
   useGetBPRUIConfiguration: ['BPRService.useGetBPRUIConfiguration'],
-  userGetBPRData:['BPRService.userGetBPRData']
+  userGetBPRData:['BPRService.userGetBPRData'],
+  useGetAllSKUs:['BPRService.useGetAllSKUs']
 }
 
 
@@ -15,6 +16,14 @@ export const useGetBPRUIConfiguration = () => {
       return await BPRService.getBPRUIConfiguration();
     });
   }
+
+  export const useGetAllSKUs=()=>{
+    return useQuery(QUERY_KEYS.useGetAllSKUs,async () => {
+      return await BPRService.getAllSKUs();
+    });
+   
+  }
+
 
 export const useGetBPRData = () => {
   return useMutation(async (payload:BPRDataPayload) => {

@@ -2,7 +2,6 @@
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import { BPRLayout } from "./styles"
 import BPRViewTable from "./BPRViewTable"
-
 import { Allotment } from "allotment"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import useBPR from "./useBPR"
@@ -12,36 +11,44 @@ import "allotment/dist/style.css";
 import BPRRemarkHistoryToolTip from "./BPRRemarkHistoryToolTip"
 
 
+
 const BPR = ()=>{
 
-  const {
-    // isSideBarOpen,
-    isSubGridOpen,
-    isLoading ,
-    activeRow,
-    BPRColumns,
-    BPRRowData,
-    agGridProps,
-    submitRemarkToolTipPosition,
-    isSubmitRemarkToolTipOpen,
-    remark,
-    isRemarkHistoryToolTipOpen,
-    remarkHistoryToolipPosition,
-    remarkHistory,
-    updateRemark,
-    onCloseSubmitRemark,
-    onSubmitRemark,
-    onCloseRemarkHistory
 
-} = useBPR()
-  
+
+  const {
+        // isSideBarOpen,
+        isSubGridOpen,
+        isLoading ,
+        activeRow,
+        BPRColumns,
+        BPRRowData,
+        agGridProps,
+        submitRemarkToolTipPosition,
+        isSubmitRemarkToolTipOpen,
+        remark,
+        isRemarkHistoryToolTipOpen,
+        remarkHistoryToolipPosition,
+        remarkHistory,
+        updateRemark,
+        onCloseSubmitRemark,
+        onSubmitRemark,
+        onCloseRemarkHistory
+    } = useBPR();
+
+    
+
+    
     if(isLoading){
       return (
         <VFLoader/>
       )
     }
 
+
     return(
+        <>
+        
         <BPRLayout>
             {/* <BPRTaskBar style={{width:isSideBarOpen?'77%':'97%'}}>
                 <VFButtonOutline
@@ -135,7 +142,8 @@ const BPR = ()=>{
                 />
             )}
         </BPRLayout>
+        </>
     )
-}
+            }
 
 export default BPR

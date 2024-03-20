@@ -38,10 +38,11 @@ export interface SubmitBPRRemarkPayload{
 }
 
 export interface BPRFilter{
+    type?:string
     name:string
     attributeName:string
     operator:string
-    value:string
+    value:string | string[]
 }
 
 export interface BPRFilterGroup{
@@ -58,4 +59,5 @@ export interface BPRFilterState{
     coverageFilter:BPRFilterGroup
     colorFilter:BPRFilterGroup
 }
+
 

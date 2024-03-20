@@ -13,6 +13,9 @@ interface SelectSearchMultipleProps {
   icon?:any;
   maxToShow?:number;
   backgroundColor?:string;
+  borderRadius?:number;
+  boxShadow?:string,
+  
 }
 
 const SearchInputMultiple = ({
@@ -24,7 +27,9 @@ const SearchInputMultiple = ({
   disabled,
   icon,
   maxToShow = 1,
-  backgroundColor = '#F2F2F2'
+  backgroundColor = '#F2F2F2',
+  borderRadius,
+  boxShadow
 }: SelectSearchMultipleProps) => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
@@ -32,6 +37,8 @@ const SearchInputMultiple = ({
     setValue(e);
     handleListChild(e);
   };
+
+  const myBoxShadow = boxShadow ? boxShadow:'0px 6px 12px #95959529'
 
   return (
     <Select
@@ -50,7 +57,8 @@ const SearchInputMultiple = ({
       isDisabled={disabled}
       options={options}
       value={value}
-      styles={selectStyles(backgroundColor)}
+      styles={selectStyles(backgroundColor, borderRadius ? borderRadius : 6, myBoxShadow)}
+
       placeholder={placeholder}
       onChange={(e) => {
         handleSelect(e);

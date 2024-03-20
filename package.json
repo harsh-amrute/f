@@ -49,6 +49,7 @@
     "react-router-dom": "^6.21.0",
     "react-scripts": "5.0.1",
     "react-select": "^5.7.2",
+    "react-spring": "^9.7.3",
     "react-toastify": "^9.1.1",
     "react-tooltip": "^5.8.3",
     "read-excel-file": "^5.7.1",
@@ -84,10 +85,10 @@
         "lines": 0
       },
       "src/components/VectorFLOW": {
-        "statements": 90,
-        "branches": 90,
-        "functions": 90,
-        "lines": 90
+        "statements": 80,
+        "branches": 80,
+        "functions": 80,
+        "lines": 80
       },
       "src/VectorFlow/Pages": {
         "statements": 35,

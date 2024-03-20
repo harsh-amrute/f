@@ -26,7 +26,12 @@ export namespace BPRService {
   export const getRemarkHistory = async (payload:any) => {
     return await axios.post(process.env.REACT_APP_VF_MOCK_API_HOST + `/GetRemarkHistory`,payload,{
       headers:{ 'Content-Type': 'application/json' }
+    }); 
+  }
+
+  export const getAllSKUs=async()=>{
+    return await axios.get(`https://requestly.tech/api/mockv2/GetAllSKU?username=user1708583815102&`,{
+      headers:{ 'Content-Type': 'application/json' }
     });
   }
 }
-

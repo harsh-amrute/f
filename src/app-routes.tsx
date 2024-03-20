@@ -23,8 +23,8 @@ import SavedDrafts from './VectorFlow/Pages/MTA/MDM/SavedDrafts'
 import TaskStatus from './VectorFlow/Pages/MTA/MDM/TaskStatus'
 import TaskPendingForReview from './VectorFlow/Pages/MTA/MDM/TaskPendingForReview'
 import BuyerOrderReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BuyerOrderReport'
-import BPR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR'
 import Planning from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/Planning'
+import BPR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR'
 import RRR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/RationedRequirementReport'
 
 // to show loading state for desired page only instead of the entire screen
@@ -260,6 +260,19 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<DeleteRecord/>)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+
+
+    {
+      path: '/supply-chain-intelligence-hub/planning',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<Planning />)
         },
         ...getStoreTransferModuleRoutes()
       ]
