@@ -77115,3 +77115,35 @@ export const GetBPRDataMockResponse = {
     "conflictErrorCount": null,
     "conflictError": null
 }
+
+export const GetAllSKUsMockResponse:any ={
+    "recordCount": "200",
+    "data": [
+        {
+            "SKUCode": "ARES0798C004",
+            "SKUName": "AR CORE SHIRTS, 42"
+        },
+        {
+            "SKUCode": "ARES0439C002",
+            "SKUName": "AR CORE SHIRTS, 39"
+        },
+        {
+            "SKUCode": "ARES0439C007",
+            "SKUName": "AR CORE SHIRTS, 48"
+        },
+        {
+            "SKUCode": "AREK0295A008",
+            "SKUName": "ARROW-ARROW SPORT-MPO-MENS POLO TSHI, XL"
+        },
+        {
+            "SKUCode": "AREK0292A006",
+            "SKUName": "ARROW-ARROW SPORT-MPO-MENS POLO TSHIR, M"
+        }
+    ],
+    "status": 200,
+    "msg": null,
+    "errorCount": null,
+    "error": null,
+    "conflictErrorCount": null,
+    "conflictError": null
+} 

@@ -43,10 +43,11 @@ export const SCCloseModal = styled.span`
   font-size: 2.6rem;
 `;
 
-export const SCWrapperContent = styled.div<{paddingLeftAndRight:number | undefined}>`
-  padding: 0 ${props => props.paddingLeftAndRight ? props.paddingLeftAndRight : 74}px;
+export const SCWrapperContent = styled.div<{paddingLeftAndRight:number | undefined, backgroundColor:string | undefined}> `
+  padding: 0 ${props => props.paddingLeftAndRight ? props.paddingLeftAndRight : props.paddingLeftAndRight===0 ? 0 : 74}px;
   text-align: left;
   height:auto;
+  background-color:${props => props.backgroundColor ? props.backgroundColor :'white'};
 `;
 
 export const SCHeader = styled.div`

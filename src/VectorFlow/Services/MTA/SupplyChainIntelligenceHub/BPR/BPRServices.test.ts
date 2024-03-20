@@ -135,4 +135,45 @@ describe('Testing the MDMService',  () => {
     
       });
 
+      it('should make a request to /GetAllSKU',async()=>{
+        const mockedResponse = {
+          "recordCount": "200",
+          "data": [
+              {
+                  "SKUCode": "ARES0798C004",
+                  "SKUName": "AR CORE SHIRTS, 42"
+              },
+              {
+                  "SKUCode": "ARES0439C002",
+                  "SKUName": "AR CORE SHIRTS, 39"
+              },
+              {
+                  "SKUCode": "ARES0439C007",
+                  "SKUName": "AR CORE SHIRTS, 48"
+              },
+              {
+                  "SKUCode": "AREK0295A008",
+                  "SKUName": "ARROW-ARROW SPORT-MPO-MENS POLO TSHI, XL"
+              },
+              {
+                  "SKUCode": "AREK0292A006",
+                  "SKUName": "ARROW-ARROW SPORT-MPO-MENS POLO TSHIR, M"
+              }
+          ],
+          "status": 200,
+          "msg": null,
+          "errorCount": null,
+          "error": null,
+          "conflictErrorCount": null,
+          "conflictError": null
+      }
+      mockedAxios.get.mockResolvedValueOnce(mockedResponse)
+      const response = await BPRService.getAllSKUs()
+      expect(mockedAxios.get).toHaveBeenCalledWith('https://requestly.tech/api/mockv2/GetAllSKU?username=user1708583815102&',{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200)
+      })
+      
+
   });

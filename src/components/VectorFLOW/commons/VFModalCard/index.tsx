@@ -21,7 +21,9 @@ interface VFModalProps {
   paddingLeftAndRight?:number;
   headerBgColor?:string;
   headerTextColor?:string;
-  closeIcon?:string
+  closeIcon?:string;
+  backgroundColor?:string;
+  zoom?:string
 }
 
 
@@ -35,6 +37,8 @@ const VFModalCard = ({
   paddingLeftAndRight,
   headerBgColor,
   headerTextColor,
+  backgroundColor,
+  zoom = '1'
 }: VFModalProps) => {
 
 
@@ -54,7 +58,7 @@ const VFModalCard = ({
             >
               <div className="modal-bg inset" />
             </Transition.Child>
-            <SCModalContent>
+            <SCModalContent style={{zoom:zoom}}>
               <div className="modal-content--box">
                 <Transition.Child
                   as={Fragment}
@@ -81,7 +85,7 @@ const VFModalCard = ({
                       }
                       </VFHeaderWrapper>
                     </Dialog.Title>
-                    <SCWrapperContent paddingLeftAndRight={paddingLeftAndRight}>
+                    <SCWrapperContent paddingLeftAndRight={paddingLeftAndRight} backgroundColor={backgroundColor} >
                        {children}
                     </SCWrapperContent>
                   </Dialog.Panel>
