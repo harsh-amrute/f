@@ -2,7 +2,6 @@
 import {SearchInputMultiple} from '../../..'
 import {  FieldSearchWrapper } from "./styles"
 import {type Option} from '../../../../VectorFlow/types/MDM';
-import { CSSProperties } from 'react';
 
 
 interface VFMasterFieldSearchProps{
