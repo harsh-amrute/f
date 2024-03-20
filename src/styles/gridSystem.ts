@@ -69,18 +69,18 @@ export const SCCol6 = styled.div`
   max-width: 50%;
 `;
 
-export const SCCol8 = styled.div<{ width: any, hidePadding:boolean }>`
+export const SCCol8 = styled.div<{ width: any, hidePadding:boolean,disableZoomScaling?:boolean }>`
   flex: 0 0 ${(props) => props.width.widthRight};
   max-width: ${(props) => props.width.widthRight};
   padding-left: ${(props)=> props.hidePadding ? 0 : 50}px;
   transition: ${customTransition};
-  zoom:0.75;
+  zoom:${props=>props.disableZoomScaling ? 1 : 0.75};
   // overflow:scroll;
 
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
       .size.desktop}) {
     padding-left: ${(props)=> props.hidePadding ? 0 : 50}px;
-    zoom:0.75;
+    zoom:${props=>props.disableZoomScaling ? 1 : 0.75};
   }
 
   @media (min-width: ${gridSystem.size.desktop}) {

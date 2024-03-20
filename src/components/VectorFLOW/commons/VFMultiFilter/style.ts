@@ -1,10 +1,12 @@
 import styled from "styled-components";
 
+
 export const FilterBody = styled.div`
 margin:0px 47px 0px 47px;
 display:flex;
 justify-content:center;
 gap:10px;  //25px
+}
 `
 export const FilterCardWrapper = styled.div`
 width:270px;

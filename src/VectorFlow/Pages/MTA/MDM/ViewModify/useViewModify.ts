@@ -585,7 +585,7 @@ const useViewModify = (pageType:string) => {
         
       }
       
-      if(result.data.recordCount <= rowsPerPage){
+      if(recordCount <= rowsPerPage){
         toggleEditOnline(true);
       }
       else{
@@ -594,7 +594,7 @@ const useViewModify = (pageType:string) => {
 
       
         setIsTableDataLoading(false);
-        if(result.data.recordCount == 0){
+        if(recordCount == 0){
           toggleWarningModal(false);
           return;
         }

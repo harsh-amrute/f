@@ -1,4 +1,20 @@
 import styled from "styled-components";
+// import * as globalStyles from "../../../../../../styles/global";
+import * as gridSystem from "../../../../../../styles/gridSystem";
+
+
+export const SCDynamicContainer = styled.div`
+    display:block;
+    height:150vh;
+    @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
+        .size.desktop}) {
+        height:150vh
+    }
+  
+    @media (min-width: ${gridSystem.size.desktop}) {
+      height:100vh
+    }
+`
 
 export const SCChartContainer = styled.div<{height?:number}>`
     padding:5px;
@@ -12,6 +28,7 @@ export const SCChartContainer = styled.div<{height?:number}>`
     // height:547px;
     height:${props => props.height ? props.height +'px' : 'auto'}
 `
+
 export const SCChartLayout = styled.div`
     overflow-y:scroll;
     display:flex;
@@ -24,7 +41,7 @@ export const SCChartHeaderContainer = styled.div`
     height:60px;
     background-color:white;
     display:flex;
-    justify-content:center;
+    justify-content:space-evenly;
     align-items:center;
 `
 export const SCChartHeader = styled.p`

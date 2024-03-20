@@ -36,3 +36,28 @@ export interface BPRRemarkHistoryToolTipProps{
 export interface SubmitBPRRemarkPayload{
     remark:string
 }
+
+export interface BPRFilter{
+    type?:string
+    name:string
+    attributeName:string
+    operator:string
+    value:string | string[]
+}
+
+export interface BPRFilterGroup{
+    id:string
+    label:string
+    filters:Array<BPRFilter>
+}
+
+export interface BPRFilterState{
+    supplyChainFilter:BPRFilterGroup
+    locationFilter:BPRFilterGroup
+    productFilter:BPRFilterGroup
+    availabilityFilter:BPRFilterGroup
+    coverageFilter:BPRFilterGroup
+    colorFilter:BPRFilterGroup
+}
+
+

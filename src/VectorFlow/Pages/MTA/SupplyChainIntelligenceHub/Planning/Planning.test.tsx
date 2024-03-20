@@ -1,9 +1,40 @@
 import { screen, render, fireEvent, cleanup } from "@testing-library/react"
-import { useGetPlanningDataCount, useGetPlanningDataGraph } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
+import { useGetPlanningDataCount, useGetPlanningDataGraph, useGetPlanningDataGrid } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 // import { UserDataContext } from "../../../../../context";
-import { getPlanningDataCountMockData, MonitorGITChildMockData } from "../../../../../mock-data/Planning";
+import { getPlanningDataCountMockData, MonitorGITChildMockData,MonitorGITParentMockData ,getPlanningDataGridMockData, ExpediteParentMockData,ExpediteChildMockData, getPlanningDataGraphMockData } from "../../../../../mock-data/Planning";
 import Planning from ".";
 import { act } from "react-dom/test-utils";
+import { UserDataContext } from "../../../../../context/UserDataContext";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { setupReactQuery } from "../../../../../config/react-query-config";
+import { ReactNode } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "../../../../../redux/store/store";
+
+const queryClient = setupReactQuery();
+
+const contextWrapper = (children: ReactNode,store:any) => {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Provider store={store}>
+            <UserDataContext.Provider
+              value={{
+                user: { user: { theme_ui: "NOIRFUSION" } },
+                changeColorTheme: (color) => {
+                  return color;
+                },
+                isSideBarOpen:true,toggleSideBar:jest.fn
+              }}
+            >
+              {children}
+            </UserDataContext.Provider>
+          </Provider>
+        </Router>
+      </QueryClientProvider>
+    );
+  };
 
 jest.mock("../../../../Services/MTA/SupplyChainIntelligenceHub/Planning");
 
@@ -15,18 +46,28 @@ const useGetPlanningDataGraphMock = useGetPlanningDataGraph as jest.MockedFuncti
     typeof useGetPlanningDataGraph
 >;
 
+const useGetPlanningDataGridMock = useGetPlanningDataGrid as jest.MockedFunction<
+    typeof useGetPlanningDataGrid
+>;
+
 const useGetPlanningDataCountMockData: any = {
     mutateAsync: () => {
         return { data: getPlanningDataCountMockData };
     },
 };
 
-const useGetPlanningDataGraphMockData: any = {
+const useGetPlanningDataGraphMockData: any = (mockData:any) => ({
     mutateAsync: () => {
-        return { data: {recordCount:345,data:MonitorGITChildMockData} };
+        return { data: {recordCount:345,data:mockData} };
     },
     isLoading:false
-};
+});
+
+const useGetPlanningDataGridMockData: any = (mockData:any) => ({
+    mutateAsync: () => {
+        return { data: {recordCount:345,data:mockData} };
+    },
+});
 
 
 describe("Planning Quadrant", () => {
@@ -40,11 +81,13 @@ describe("Planning Quadrant", () => {
     beforeEach(() => {
         useGetPlanningDataCountMock.mockImplementation(()=>{
             return useGetPlanningDataCountMockData
-        })
+        }) 
         useGetPlanningDataGraphMock.mockImplementation(()=>{
-            return useGetPlanningDataGraphMockData
+            return useGetPlanningDataGraphMockData(getPlanningDataGraphMockData)
         })
-        
+        useGetPlanningDataGridMock.mockImplementation(()=>{
+            return useGetPlanningDataGridMockData(getPlanningDataGridMockData)
+        })
     });
 
     it("Renders Select Category Planning Quadrant", () => {
@@ -52,6 +95,9 @@ describe("Planning Quadrant", () => {
     })
 
     it("Switches Floating Tab", async () => {
+        useGetPlanningDataGraphMock.mockImplementation(()=>{
+            return useGetPlanningDataGraphMockData(MonitorGITChildMockData)
+        })
         render(<Planning/>);
         await act(async () => {
             fireEvent.click(screen.getAllByText('To Child')[0])
@@ -65,14 +111,20 @@ describe("Planning Quadrant", () => {
     })
 
     it("Renders MonitorGIT Graphs", async () => {
-        render(<Planning/>);
+        useGetPlanningDataGraphMock.mockImplementation(()=>{
+            return useGetPlanningDataGraphMockData(MonitorGITChildMockData)
+        })
+        render(contextWrapper(<Planning/>,store));
         // fireEvent.click(screen.getAllByText('To Child')[0])
         await act(async () => {
             fireEvent.click(screen.getAllByText('To Child')[0])
         })
         expect(screen.getAllByTestId('floatingTabButton').length).toEqual(3);
         cleanup();
-        render(<Planning/>);
+        useGetPlanningDataGridMock.mockImplementation(()=>{
+            return useGetPlanningDataGridMockData(MonitorGITParentMockData)
+        })
+        render(contextWrapper(<Planning/>,store));
         await act(async () => {
             fireEvent.click(screen.getAllByText('From Parent')[0])
         })
@@ -80,12 +132,18 @@ describe("Planning Quadrant", () => {
     })
 
     it("Renders Expedite Graphs", async () => {
-        render(<Planning/>);
+        useGetPlanningDataGraphMock.mockImplementation(()=>{
+            return useGetPlanningDataGraphMockData(ExpediteChildMockData)
+        })
+        render(contextWrapper(<Planning/>,store));
         await act(async () => {
             fireEvent.click(screen.getAllByText('To Child')[1])
         })
         cleanup();
-        render(<Planning/>);
+        useGetPlanningDataGraphMock.mockImplementation(()=>{
+            return useGetPlanningDataGraphMockData(ExpediteParentMockData)
+        })
+        render(contextWrapper(<Planning/>,store));
         await act(async () => {
             fireEvent.click(screen.getAllByText('From Parent')[1])
         })
