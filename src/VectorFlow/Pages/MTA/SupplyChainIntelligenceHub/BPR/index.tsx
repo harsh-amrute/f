@@ -11,6 +11,7 @@ import "allotment/dist/style.css";
 import BPRRemarkHistoryToolTip from "./BPRRemarkHistoryToolTip"
 
 
+
 const BPR = ()=>{
 
 
@@ -34,50 +35,20 @@ const BPR = ()=>{
         onSubmitRemark,
         onCloseRemarkHistory
     } = useBPR();
-  
+
+    
+
+    
     if(isLoading){
       return (
         <VFLoader/>
       )
     }
 
-    // const [multiFilter, setMultiFilter]= useState<BPRFilterState>(
-    //     {
-    //         supplyChainFilter:{
-    //             id:'1',
-    //             label:'SupplyChain',
-    //             filters:[]
-    //         },
-    //         locationFilter:{
-    //             id:'2',
-    //             label:'Location',
-    //             filters:[]
-    //         },
-    //         productFilter:{
-    //             id:'3',
-    //             label:'Product',
-    //             filters:[]
-    //         },
-    //         availabilityFilter:{
-    //             id:'4',
-    //             label:'Availability',
-    //             filters:[]
-    //         },
-    //         coverageFilter:{
-    //             id:'5',
-    //             label:'Coverage',
-    //             filters:[]
-    //         },
-    //         colorFilter:{
-    //             id:'6',
-    //             label:'Color',
-    //             filters:[]
-    //         },
-    //     }
-    // )
-    
+
     return(
         <>
+        
         <BPRLayout>
             {/* <BPRTaskBar style={{width:isSideBarOpen?'77%':'97%'}}>
                 <VFButtonOutline

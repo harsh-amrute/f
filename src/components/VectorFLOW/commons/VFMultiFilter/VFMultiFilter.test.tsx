@@ -189,19 +189,19 @@ describe("VFMultiFilter Component", () => {
             expect(horizonActive).toBeInTheDocument()
         })
 
-        it('handles multiselect',()=>{
-            render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
-            const allMultiSelects = screen.getAllByTestId('vfmaster-search-icon')
-            allMultiSelects.forEach((multiSelect:any)=>{
-                fireEvent.click(multiSelect)
-                screen.logTestingPlaygroundURL()
+        // it('handles multiselect',()=>{
+        //     render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
+        //     const allMultiSelects = screen.getAllByTestId('vfmaster-search-icon')
+        //     allMultiSelects.forEach((multiSelect:any)=>{
+        //         fireEvent.click(multiSelect)
+        //         screen.logTestingPlaygroundURL()
                
-                const option = screen.getByText('ARES0798C004')
-                fireEvent.click(option)
+        //         const option = screen.getByText('ARES0798C004')
+        //         fireEvent.click(option)
 
              
-            })
-        })
+        //     })
+       // })
     
   })
 

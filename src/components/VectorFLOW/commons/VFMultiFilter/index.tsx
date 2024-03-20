@@ -5,7 +5,7 @@ import { ButtonFilterWrapper, FilterCardWrapper, FilterBody, FilterHeader, Butto
 import VFButtonOutline from "../VFButtonOutline";
 import React, { useState } from "react";
 import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
-import { useSpring, animated, AnimatedProps } from "react-spring";
+import { useSpring, animated } from "react-spring";
 import Select from "react-select";
 import './styles.css';
 import { useGetAllSKUs } from "../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
@@ -31,7 +31,7 @@ interface VFMultiFilterProps{
     setMultiFilter:any    
 }
 
-const FilterCheckboxAccordian = ({filterType,filterKey,isOpen,setOpenStatus,children,onChange}:any) => {
+const FilterCheckboxAccordian = ({filterType,filterKey,isOpen,setOpenStatus,children}:any) => {
 
     const openStatusReducer = (prevStatus:any)=> {
         Object.keys(prevStatus).forEach((filterType)=>{
@@ -118,7 +118,7 @@ const FilterSelectDropdown = ({placeholder,options,hideDropdownArrow,onChange}:a
     
 
     const customStylesClose = {
-        control: (baseStyles:any,state:any)=>(
+        control: (baseStyles:any)=>(
             {
                 ...baseStyles,
                 height:'39px',
@@ -136,7 +136,7 @@ const FilterSelectDropdown = ({placeholder,options,hideDropdownArrow,onChange}:a
         indicatorsContainer:()=>({
             paddingRight:'10px',
         }),
-        option: (baseStyles:any,state:any)=>(
+        option: (baseStyles:any)=>(
             {
                 ...baseStyles,
                 color:'#313131',
@@ -152,7 +152,7 @@ const FilterSelectDropdown = ({placeholder,options,hideDropdownArrow,onChange}:a
                 borderTop:'1px solid #B7B7B7',
             }
         ),
-        menuList:(baseStyles:any,state:any)=>(
+        menuList:(baseStyles:any)=>(
             {
                 ...baseStyles,
                 borderRadius:'0px 0px 20px 20px',
@@ -210,7 +210,7 @@ const FilterSelectDropdown = ({placeholder,options,hideDropdownArrow,onChange}:a
 
     const customStylesOpen = {
         ...customStylesClose,
-        control:(baseStyles:any,state:any)=>({
+        control:(baseStyles:any)=>({
             ...baseStyles,
             height:'39px',
             borderRadius:' 20px 20px 0px 0px',
@@ -411,8 +411,8 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
 
     
-        let currGroupKey:any  = ""
-        let currentKey:any=""
+        const currGroupKey:any  = Object.keys(multiFilter).find((key:string)=>multiFilter[key as keyof BPRFilterState].id===parentId)
+        // let currentKey:any=""
         let finalValue:any | [];
         let selectedValues:any = [];
        
@@ -428,14 +428,14 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                 filterObj.name = filterId;
 
                 const newFilterObj = { ...filterObj, value: finalValue };
-                let currGroupKey:any | undefined = Object.keys(multiFilter).find((key:string)=>{
+                const  currGroupKey:any | undefined = Object.keys(multiFilter).find((key:string)=>{
                     if(multiFilter[key as keyof BPRFilterState].id ===parentId){
-                        currentKey = key   
+                        // currentKey = key   
                         return multiFilter[key as keyof BPRFilterState].id ===parentId
                     }
                  })
                  if(currGroupKey){
-                     selectedValues = [...multiFilter[currGroupKey as keyof BPRFilterState]?.filters];
+                     selectedValues = [...multiFilter[currGroupKey as keyof BPRFilterState].filters];
                  }
                 if (!selectedValues.some((obj:any) => (obj.value === finalValue) && (obj.name === filterId) )) {
                  selectedValues.push(newFilterObj);
@@ -463,7 +463,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
        else if(Array.isArray(e)){
         finalValue = e.map((ele: any) =>{
-            let newfilterObj = {...filterObj}
+            const newfilterObj = {...filterObj}
             newfilterObj.value = ele.label;
             return newfilterObj
         })
@@ -473,7 +473,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
    
         const currGroup:string | undefined = Object.keys(multiFilter).find((key:string)=>{
-            if(multiFilter[key as keyof BPRFilterState].id ===parentId) currGroupKey = key
             return multiFilter[key as keyof BPRFilterState].id ===parentId
         })
 
@@ -562,6 +561,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }   
     }
 
+   
 
     
     const{
@@ -602,9 +602,13 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         return {label: ele.SKUCode, value: ele.SKUName}
     })
 
+    const onApplyFiltertp = ()=>{
+        console.log(multiFilter)
+    }
+
     return(
         <>
-        <VFModalCard zoom={'0.65'} openModal={true} closeModal={()=>(console.log(""))} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={'Select Filter'} closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
+        <VFModalCard zoom={'0.65'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
            {
             isLoading
             ?
@@ -911,7 +915,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             <ButtonFilterWrapper>
                 <ButtonContainer>
                     <VFButtonOutline themeUi={user.user.theme_ui} onClick={onGoBack}>Go Back!</VFButtonOutline>
-                    <VFButton themeUi={user.user.theme_ui} onClick={onApplyFilter}>Apply Filter</VFButton>
+                    <VFButton themeUi={user.user.theme_ui} onClick={onApplyFiltertp}>Apply Filter</VFButton>
                 </ButtonContainer>
             </ButtonFilterWrapper>
             </React.Fragment>
