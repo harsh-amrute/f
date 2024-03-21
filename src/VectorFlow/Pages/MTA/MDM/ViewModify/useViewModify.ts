@@ -596,6 +596,7 @@ const useViewModify = (pageType:string) => {
             error:"Something Went Wrong",
             pending:"Loading Data"
           }); 
+          console.log(result.data)
       }
       dispatch(RESET_FILTERS())
     }
@@ -631,7 +632,7 @@ const useViewModify = (pageType:string) => {
           toggleWarningModal(false);
           return;
         }
-
+        
         dispatch(UPDATE_ROW_DATA(result.data.data));
         if(refetch)return
         toggleWarningModal(false);

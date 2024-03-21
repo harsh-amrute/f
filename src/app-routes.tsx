@@ -24,6 +24,7 @@ import TaskStatus from './VectorFlow/Pages/MTA/MDM/TaskStatus'
 import TaskPendingForReview from './VectorFlow/Pages/MTA/MDM/TaskPendingForReview'
 import BuyerOrderReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BuyerOrderReport'
 import Planning from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/Planning'
+import ResearchInsights from './VectorFlow/Pages/MTA/InsightsAndTrends/ResearchInsights'
 import BPR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR'
 import RRR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/RationedRequirementReport'
 
@@ -63,6 +64,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/supply-chain-intelligence-hub/bor',
     '/supply-chain-intelligence-hub/bpr',
     '/supply-chain-intelligence-hub/planning',
+    '/insights-and-trends/research-insights',
     '/supply-chain-intelligence-hub/rrr'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
@@ -317,6 +319,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<BuyerOrderReport/>)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/insights-and-trends/research-insights',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ResearchInsights/>)
         },
         ...getStoreTransferModuleRoutes()
       ]

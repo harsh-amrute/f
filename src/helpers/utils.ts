@@ -1809,6 +1809,73 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
   })
   return [createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),tagsColDef,...result,...BPRSpecificColumns]
 }
+
+export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const checkboxColDef:ColDef={
+    field:'checkbox',
+    colId:'checkbox',
+    headerName:'',
+    floatingFilter:false,
+    checkboxSelection:true,
+    headerCheckboxSelection:true,
+    headerCheckboxSelectionCurrentPageOnly:true,
+    width:10
+  }
+
+
+  const tagsColDef:ColDef =  {
+    colId:'tags',
+    field:'tags',
+    headerName:"Tags",
+    cellRenderer:'tagsCellRenderer',
+    width:100
+  }
+
+  result =  fields.map((f:BPRField)=>{
+    if(f.Col_Code==='TechPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorTechCellRenderer',
+        cellStyle:{
+          'min-width':180,
+        }
+      }
+    }
+    if(f.Col_Code==='EcoPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorEcoCellRenderer',
+        cellStyle:{
+          'min-width':180,
+        }
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      cellStyle:{
+        'min-width':180,
+      }
+    }
+  })
+  return [checkboxColDef,createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),tagsColDef,...result]
+}
+
 export const mapBORFieldsToColDefs = (fields:UiConfigField[]):ColDef[]=>{
 
   if(!fields || fields.length<1){
