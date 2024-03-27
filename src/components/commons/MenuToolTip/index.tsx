@@ -13,8 +13,10 @@ import {handleDownload,navigateWithPrompt} from "../../../helpers/utils";
 import {useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
+import React from "react";
 
 const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any) => {
+  console.log(item)
   const { t } = useTranslation();
   const { user } = useUserData();
 
@@ -49,6 +51,45 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any
     }
   }
 
+  const renderToolTipContent = (items:any):any=>{
+
+    if(items.child){
+      return(
+        items.child.map((itemChild: any, index: number) => {
+          if (
+            user.url_permission.includes(itemChild.url) ||
+            itemChild.url === "" ||
+            itemChild.url === "/profile" || reportUrls.includes(itemChild.url)
+          ) {
+            return (
+              <TooltipContent
+                key={index}
+                action={itemChild.url === location.pathname}
+                themeUi={themeUi}
+                onClick={() => handleTooltipClick(itemChild.url)}
+              >
+                {t(itemChild.name)}
+                {itemChild.url !== location.pathname && (
+                  <SCIcon
+                    src={
+                      isLoading && tempUrls.includes(itemChild.url) ? "/assets/img/nav/loader.svg" :
+                      itemChild.imgHover
+                        ? itemChild.imgHover
+                        : "/assets/img/nav/arrow_down.svg"
+                    }
+                    alt="arrow"
+                  />
+                )}
+              </TooltipContent>
+            );
+          }
+        })
+      )
+    }
+
+    return renderToolTipContent(items.child)
+  }
+
   return (
     <WrapToolTip>
       <Tooltip
@@ -60,35 +101,7 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any
       >
         <TooltipContainer>
           <TooltipTitle>{t(item.name)}</TooltipTitle>
-          {item.child.map((itemChild: any, index: number) => {
-            if (
-              user.url_permission.includes(itemChild.url) ||
-              itemChild.url === "" ||
-              itemChild.url === "/profile" || reportUrls.includes(itemChild.url)
-            ) {
-              return (
-                <TooltipContent
-                  key={index}
-                  action={itemChild.url === location.pathname}
-                  themeUi={themeUi}
-                  onClick={() => handleTooltipClick(itemChild.url)}
-                >
-                  {t(itemChild.name)}
-                  {itemChild.url !== location.pathname && (
-                    <SCIcon
-                      src={
-                        isLoading && tempUrls.includes(itemChild.url) ? "/assets/img/nav/loader.svg" :
-                        itemChild.imgHover
-                          ? itemChild.imgHover
-                          : "/assets/img/nav/arrow_down.svg"
-                      }
-                      alt="arrow"
-                    />
-                  )}
-                </TooltipContent>
-              );
-            }
-          })}
+         {renderToolTipContent(item)}
         </TooltipContainer>
       </Tooltip>
     </WrapToolTip>

@@ -3,7 +3,17 @@ import { useUserData } from '../../../context'
 import * as HeaderStyled from './style'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-const Header = () => {
+
+interface HeaderProps{
+  urlExcludeHeader:Array<string>
+}
+
+const Header = (props:HeaderProps) => {
+
+  const {
+    urlExcludeHeader
+  } = props
+
   const { t } = useTranslation()
   const { user } = useUserData()
   const themeUi = user?.user?.theme_ui;
@@ -135,7 +145,17 @@ const Header = () => {
           </HeaderStyled.SCWrapperImg>
         </>
       )
-    } else {
+    } 
+    
+    if(urlExcludeHeader.includes(location.pathname)){
+      return(
+        <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo}>
+            <HeaderStyled.SCImg src="/assets/img/logoArvind.png" alt="logo" isHideLogo={isHideLogo} />
+          </HeaderStyled.SCWrapperImg>
+      )
+    }
+
+    else {
       return (
         <HeaderStyled.SCHeaderBox
           style={{

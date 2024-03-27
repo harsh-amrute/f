@@ -1,5 +1,6 @@
 
 import { CSSProperties, useState } from "react"
+import useViewPort from "../../../../../hooks/useViewPort"
 import Portal from "../../../../../components/VectorFLOW/layouts/Portal"
 
 
@@ -9,6 +10,11 @@ import {ConflictErrorToolTipSection, ConflictErrorToolTipWrapper,ConflictErrorTe
 
 const ConflictErrorCellRenderer = (params:any)=>{
 
+    const {getScreenZoomValue,getGridZoom} = useViewPort()
+
+    const currScreenZoom = getScreenZoomValue()
+    const currGridZoom = getGridZoom()
+
     const [isToolTipOpen,setIsToolTipOpen] = useState(false)
     const [tooltipPosition,setToolTipPosition] = useState<CSSProperties>()
     const [isToolTipOverflowing,setIsToolTipOverflowing] = useState<boolean>(false)
@@ -16,7 +22,6 @@ const ConflictErrorCellRenderer = (params:any)=>{
     const currColumn = params.colDef?.colId || ''
 
     const getTextColor = () => {
-        console.debug(params)
         let conflictFound = false;
         const currentColId = params.colDef?.colId;
         const currentRow = params.data;
@@ -42,19 +47,17 @@ const ConflictErrorCellRenderer = (params:any)=>{
         
         const tooltipHeight = params.data.users.length * 40;
         const viewportHeight = window.innerHeight;
-        console.debug(top)
-        console.debug(viewportHeight)
     
     
-        let tooltipTop = top * 0.75 * 0.75 + 35;
+        let tooltipTop = top * currGridZoom * currScreenZoom + 35;
     
         if (tooltipTop + tooltipHeight > viewportHeight) {
-            tooltipTop = top * 0.75 * 0.75 - tooltipHeight -10;
+            tooltipTop = top *  currGridZoom * currScreenZoom - tooltipHeight -10;
             setIsToolTipOverflowing(true)
         }
     
-        setToolTipPosition({
-            left: left * 0.75 * 0.75 - 25,
+        setToolTipPosition({           
+            left: left *  currGridZoom * currScreenZoom - 25,
             top: tooltipTop
         });
         setIsToolTipOpen(true);

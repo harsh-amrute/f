@@ -2,15 +2,23 @@ import { SCContainer, SCErrorToolTipLi, SCErrorToolTipUl, SCToolTipWrapper } fro
 import { ICellRendererParams } from "ag-grid-enterprise"
 import React, { CSSProperties, useState } from "react";
 import Portal from "../../layouts/Portal";
+import useViewPort from "../../../../hooks/useViewPort";
 
 const ErrorCell = (props:ICellRendererParams)=>{
+
+    const {getGridZoom,getScreenZoomValue} = useViewPort()
+
+    const currScreenZoom = getScreenZoomValue()
+    const currGridZoom = getGridZoom()
+
 
     const [errorCellPosition,setErrorCellPosition] = useState<CSSProperties>()
     const [isToolTipOpen,setIsToolTipOpen] = useState<boolean>(false)
 
     const message = props.data.error;
 
-    const messages = message?.split(/(?<=\.)\s+/) 
+    const messages = message?.split('.').filter((msg:string)=>msg.length > 1)
+    
     const getFomattedMessage = (msg:string) => {
         if(msg.length > 30) {
             return msg.slice(0,30)+'...'
@@ -24,15 +32,15 @@ const ErrorCell = (props:ICellRendererParams)=>{
         const tooltipHeight =messages.length * 33 /* Height of your tooltip */;
         const viewportHeight = window.innerHeight;
     
-        let tooltipTop = (bottom * 0.75 * 0.75) + 10;
+        let tooltipTop = (bottom * currGridZoom * currScreenZoom) + 10;
     
         // Check if tooltip overflows on the bottom side
         if (tooltipTop + tooltipHeight > viewportHeight) {
-            tooltipTop = (top * 0.75 * 0.75) - tooltipHeight;
+            tooltipTop = (top * currGridZoom * currScreenZoom) - tooltipHeight;
         }
     
         setErrorCellPosition({
-            left: left * 0.75 * 0.75,
+            left: left *currGridZoom * currScreenZoom,
             top: tooltipTop
         });
     

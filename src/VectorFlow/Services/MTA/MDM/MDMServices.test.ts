@@ -13,6 +13,7 @@ describe('Testing the MDMService',  () => {
     });
   
     process.env.REACT_APP_VF_API_HOST = 'http://10.8.1.10:8888';
+    process.env.REACT_APP_API_HOST = 'http://10.8.1.10:8888/'
   
     afterEach(() => {
       jest.clearAllMocks();
@@ -351,6 +352,16 @@ describe('Testing the MDMService',  () => {
         sn:"Polo T-Shirt"
       }]},{
       headers: { 'Content-Type': 'application/json' }
+    })
+      expect(response.status).toBe(200);
+    });
+
+    it('should make post request to /api/validate-master/', async () => {
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.validateMaster({},1)
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_API_HOST + `api/validate-master/1`,{},{
+        responseType:'stream'
     })
       expect(response.status).toBe(200);
     });

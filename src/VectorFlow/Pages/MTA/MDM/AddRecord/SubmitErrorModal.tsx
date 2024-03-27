@@ -24,10 +24,19 @@ const SubmitErrorModal=(props:SubmitErrorModalProps)=>{
 
     return (
         <VFModalCard headerText="Submit Data" openModal={true} closeModal={onCloseModal} headerIcon={""} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-            <SubmitDataTextContainer>
-                {recordCount} Records submitted successfully!<br/><br/>
-                {errorCount} out of {totalCount} records are have errors
-            </SubmitDataTextContainer>
+            {
+                recordCount!==errorCount
+                ?
+                <SubmitDataTextContainer>
+                    No data was submiited
+                    {errorCount} out of {totalCount} records are have errors
+                </SubmitDataTextContainer>
+                :
+                <SubmitDataTextContainer>
+                    {recordCount} Records submitted successfully!<br/><br/>
+                    {errorCount} out of {totalCount} records are have errors
+                </SubmitDataTextContainer>
+            }
             <SubmitDataButtonWrapper>
                 <VFButtonOutline themeUi={user.user.theme_ui} color={"gray"} onClick={onSuccess} width={173} onHoverChild={
                 <>

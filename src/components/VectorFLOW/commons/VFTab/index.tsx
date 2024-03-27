@@ -29,7 +29,7 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
   const masters = useSelector((state:RootState)=>state.mdm.masters);
 
   const getTabStatus = (currMaster:MDMMasterState) => {
-    if(currMaster.progress === 'submitted') return 'completed';
+    if(currMaster.progress === 'submitted' || currMaster.progress === 'editOnlineSubmitted') return 'completed';
     return activeMaster.id === currMaster.id ? 'active' : currMaster.progress;
 
   }
@@ -54,7 +54,7 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
                       >
                         <SCTabContent>
                           <SCTabTitle status={getTabStatus(master)}>{master.name}</SCTabTitle>
-                          <img data-testid="tab-close" onClick={(e:React.MouseEvent<HTMLElement>) => {onTabClose(e,master)}} src={getTabStatus(master) === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : master.progress === 'submitted' ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/>
+                          <img data-testid="tab-close" onClick={(e:React.MouseEvent<HTMLElement>) => {onTabClose(e,master)}} src={getTabStatus(master) === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : (master.progress === 'submitted' || master.progress === 'editOnlineSubmitted') ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/>
                         </SCTabContent>
                     </SCTabButton>
                   )

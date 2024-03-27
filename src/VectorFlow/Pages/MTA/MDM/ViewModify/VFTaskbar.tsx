@@ -9,13 +9,14 @@ import { ViewModifyProgressState } from "../../../../../VectorFlow/types/MDM"
 export interface VFTaskBarProps{
     masterProgress:ViewModifyProgressState
     disableSubmit?:boolean
+    disableDeleteSelected?:boolean
     editOnline?:boolean
     deleteOnline?:boolean
     onReset:()=>void
     onBack:()=>void
     onExportData:()=>void
     onModifyData:()=>void
-    onClearAndExportErrors:()=>void
+    onClearAndExportErrors:(skipClear?:boolean)=>void
     onSubmit:()=>void
     onSubmitConflictData:()=>void
     onEditOnline:()=>void
@@ -31,6 +32,7 @@ export interface VFTaskBarProps{
     onDeleteData:()=>void
     disableStopSeasonality:()=>boolean
     disableResumeSeasonality:()=>boolean
+    enableEditOnlineReset:boolean
 }
 
 
@@ -40,7 +42,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         masterProgress,
         editOnline ,
         disableSubmit,
+        disableDeleteSelected,
         deleteOnline,
+        enableEditOnlineReset,
         onBack,
         onExportData,
         onModifyData,
@@ -103,34 +107,29 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         description:''
                     },
                     {
-                        label:'Save',
-                        status:'pending',
-                        description:''
-                    },
-                    {
                         label:"Submit",
                         status:"pending",
                         description:""
                     }
                 ]
-            case "editOnlineSaved":
-                return [
-                    {
-                         label:'Edit Online',
-                        status:'completed',
-                        description:''
-                    },
-                    {
-                        label:'Save',
-                        status:'completed',
-                        description:''
-                    },
-                    {
-                        label:"Submit",
-                        status:"pending",
-                        description:""
-                    }
-                ]
+            // case "editOnlineSaved":
+            //     return [
+            //         {
+            //              label:'Edit Online',
+            //             status:'completed',
+            //             description:''
+            //         },
+            //         {
+            //             label:'Save',
+            //             status:'completed',
+            //             description:''
+            //         },
+            //         {
+            //             label:"Submit",
+            //             status:"pending",
+            //             description:""
+            //         }
+            //     ]
             case "editOnlineSubmitted":
                 return [
                     {
@@ -262,7 +261,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
                         Save to draft
                         </VFButtonOutline>            
-                        <VFButton onClick={onClearAndExportErrors} themeUi={themeUi} disabled={false} width={183}>
+                        <VFButton onClick={()=>onClearAndExportErrors(false)} themeUi={themeUi} disabled={false} width={183}>
                             Clear & Export Errors
                         </VFButton>
                     </VFTaskBarButtonGroup>
@@ -274,7 +273,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                    <VFTaskBarButtonGroup>
                     <BackButton/>                      
-                        <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={false} width={139}>
+                        <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={disableDeleteSelected} width={139}>
                         Delete Selected
                         </VFButtonOutline>
                         <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
@@ -294,11 +293,15 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
 
         case "submitted":
             return(
-                <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'flex-end'}}>
+                <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
+                    <VFButton onClick={onClearAndExportErrors} themeUi={themeUi} disabled={false} width={183}>
+                            Export Errors
+                    </VFButton>
                     <div >
-                    <VFStepper
-                        items={getStepperState()}
-                    />
+                        
+                        <VFStepper
+                            items={getStepperState()}
+                        />
                     </div>
 
                 </TaskBarContainer>
@@ -308,13 +311,13 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                     <VFTaskBarButtonGroup>
                         <BackButton/>
-                        <VFButtonOutline themeUi={themeUi} onClick={onReset}>
+                        <VFButtonOutline themeUi={themeUi} onClick={onReset} disabled={!enableEditOnlineReset}>
                             Reset
                         </VFButtonOutline>
                         <VFButton themeUi={themeUi} onClick={onEditOnlineSave}>
-                            Save
+                            Save as Draft
                         </VFButton>
-                        <VFButtonOutline themeUi={themeUi} onClick={onSubmit} disabled>
+                        <VFButtonOutline themeUi={themeUi} onClick={onSubmit} >
                             Submit
                         </VFButtonOutline>
                     </VFTaskBarButtonGroup>
@@ -325,28 +328,28 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     </div>
                 </TaskBarContainer>
             )
-        case "editOnlineSaved":
-            return(
-                <TaskBarContainer data-testid="taskbar" style={{width:width}}>
-                   <VFTaskBarButtonGroup>
-                    <BackButton/>
-                        <VFButtonOutline themeUi={themeUi} onClick={onReset}>
-                            Reset
-                        </VFButtonOutline>
-                        <VFButton themeUi={themeUi} onClick={onSubmit}>
-                            Submit
-                        </VFButton>
-                   </VFTaskBarButtonGroup>
-                    <div>
-                        <VFStepper
-                            items={getStepperState()}
-                        />
-                    </div>
-                </TaskBarContainer>
-            )
+        // case "editOnlineSaved":
+        //     return(
+        //         <TaskBarContainer data-testid="taskbar" style={{width:width}}>
+        //            <VFTaskBarButtonGroup>
+        //             <BackButton/>
+        //                 <VFButtonOutline themeUi={themeUi} onClick={onReset} disabled={!enableEditOnlineReset}>
+        //                     Reset
+        //                 </VFButtonOutline>
+        //                 <VFButton themeUi={themeUi} onClick={onSubmit}>
+        //                     Submit
+        //                 </VFButton>
+        //            </VFTaskBarButtonGroup>
+        //             <div>
+        //                 <VFStepper
+        //                     items={getStepperState()}
+        //                 />
+        //             </div>
+        //         </TaskBarContainer>
+        //     )
         case "editOnlineSubmitted":
             return(
-                <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'flex-end'}}>
+                <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
                    <VFTaskBarButtonGroup>
                     <BackButton/>
                    </VFTaskBarButtonGroup>

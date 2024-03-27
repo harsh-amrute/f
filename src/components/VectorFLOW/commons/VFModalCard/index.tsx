@@ -10,17 +10,20 @@ import {
   VFHeaderWrapper,
   SCHeader
 } from "./styles";  
+import { noop } from "lodash";
 
 interface VFModalProps {
   openModal: boolean;
-  closeModal: () => void;
+  closeModal?: () => void;
   headerText?:string;
   headerIcon:string;
   children:ReactNode;
   paddingLeftAndRight?:number;
   headerBgColor?:string;
   headerTextColor?:string;
-  closeIcon?:string
+  closeIcon?:string;
+  backgroundColor?:string;
+  zoom?:string
 }
 
 
@@ -34,6 +37,8 @@ const VFModalCard = ({
   paddingLeftAndRight,
   headerBgColor,
   headerTextColor,
+  backgroundColor,
+  zoom = '1'
 }: VFModalProps) => {
 
 
@@ -41,7 +46,7 @@ const VFModalCard = ({
     <>
       {
         <Transition appear show={openModal} as={Fragment}>
-          <Dialog as="div" className="modal-box" onClose={closeModal}>
+          <Dialog as="div" className="modal-box" onClose={noop}>
             <Transition.Child
               as={Fragment}
               enter="transition"
@@ -53,7 +58,7 @@ const VFModalCard = ({
             >
               <div className="modal-bg inset" />
             </Transition.Child>
-            <SCModalContent>
+            <SCModalContent style={{zoom:zoom}}>
               <div className="modal-content--box">
                 <Transition.Child
                   as={Fragment}
@@ -71,12 +76,16 @@ const VFModalCard = ({
                         {headerIcon.length > 0 && <img src={headerIcon} height={25} width={27} data-testid='vfmodal-img'/>} 
                         <SCTextTitle headerTextColor={headerTextColor}>{headerText}</SCTextTitle>
                       </SCHeader>
-                      <SCCloseModal onClick={closeModal} data-testid="close-modal-icon">
-                        <img src={closeIcon} height={14} width={14} />
-                      </SCCloseModal>
+                      {
+                        closeModal && (
+                          <SCCloseModal onClick={closeModal} data-testid="close-modal-icon">
+                            <img src={closeIcon} height={14} width={14} />
+                          </SCCloseModal>
+                        )
+                      }
                       </VFHeaderWrapper>
                     </Dialog.Title>
-                    <SCWrapperContent paddingLeftAndRight={paddingLeftAndRight}>
+                    <SCWrapperContent paddingLeftAndRight={paddingLeftAndRight} backgroundColor={backgroundColor} >
                        {children}
                     </SCWrapperContent>
                   </Dialog.Panel>

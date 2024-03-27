@@ -10,7 +10,7 @@ interface Capsule{
 interface VFCapsuleProps{
     defaultActive:number
     capsules:Capsule[]
-    handleClick:(capsule:Capsule)=>void
+    handleClick:any
 }
 
 const VFCapsule = (props:VFCapsuleProps)=>{

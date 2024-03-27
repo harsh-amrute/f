@@ -23,8 +23,9 @@ import SavedDrafts from './VectorFlow/Pages/MTA/MDM/SavedDrafts'
 import TaskStatus from './VectorFlow/Pages/MTA/MDM/TaskStatus'
 import TaskPendingForReview from './VectorFlow/Pages/MTA/MDM/TaskPendingForReview'
 import BuyerOrderReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BuyerOrderReport'
-import BPR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR'
 import Planning from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/Planning'
+import ResearchInsights from './VectorFlow/Pages/MTA/InsightsAndTrends/ResearchInsights'
+import BPR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR'
 import RRR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/RationedRequirementReport'
 import GuidedInsights from './VectorFlow/Pages/MTA/InsightsAndTrends/GuidedInsights'
 
@@ -65,7 +66,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/supply-chain-intelligence-hub/bpr',
     '/supply-chain-intelligence-hub/planning',
     '/supply-chain-intelligence-hub/rrr',
-    '/insights-and-trends/guided-insights'
+    '/insights-and-trends/guided-insights',
+    '/insights-and-trends/research-insights',
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -266,6 +268,19 @@ export const initRoutes = (): RouteObject[] => {
         ...getStoreTransferModuleRoutes()
       ]
     },
+
+
+    {
+      path: '/supply-chain-intelligence-hub/planning',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<Planning />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
     {
       path: '/supply-chain-intelligence-hub/planning',
       element: <AppLayout />,
@@ -306,6 +321,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<BuyerOrderReport/>)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/insights-and-trends/research-insights',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ResearchInsights/>)
         },
         ...getStoreTransferModuleRoutes()
       ]

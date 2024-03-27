@@ -1,6 +1,6 @@
 // VFRangeSlider.tsx
 import React, { useState } from 'react';
-import { RangeSliderContainer, RangeSliderInput, ValueLabel, MilestonesContainer, MilestoneLabel, ToolTipTriangle,RangeProgress, RangeProgressBackground } from './styles';
+import { RangeSliderContainer, RangeSliderInput, ValueLabel, MilestonesContainer, MilestoneLabel, ToolTipTriangle } from './styles';
 
 interface VFRangeSliderProps {
   milestones?: number[];
@@ -9,13 +9,18 @@ interface VFRangeSliderProps {
   strictMode:boolean
   width:number
   defaultValue:number
+  showTriangle:boolean
   handleChange:(number:number)=>void
+  labelValueFormatter?:(number:number)=>string
 }
 
 
-const VFRangeSlider: React.FC<VFRangeSliderProps> = ({ milestones,min,max,strictMode,width,defaultValue,handleChange }) => {
+const VFRangeSlider: React.FC<VFRangeSliderProps> = ({ milestones,min,max,strictMode,width,defaultValue,showTriangle,handleChange,labelValueFormatter }) => {
   const [value, setValue] = useState<number>(defaultValue);
   const [currMileStoneIndex,setCurrMileStoneIndex] = useState<number>(0)
+
+  const range  = max - min
+  const multiplier = width -20
 
 
   const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,32 +47,38 @@ const VFRangeSlider: React.FC<VFRangeSliderProps> = ({ milestones,min,max,strict
     }
   };
 
-  const range  = max - min
-  const multiplier = width -20
+  const valueFormatter = ()=>{
+    if(!labelValueFormatter)return value
+    return labelValueFormatter(value)
+  }
 
 
   return (
     <RangeSliderContainer style={{width:width}}>
         <RangeSliderInput
             type="range"
+            data-testid="range-slider"
             min={min}
             max={max}
             value={value}
             onChange={handleSliderChange}
+            progressValue={(value/max)*100}
         />
-        <RangeProgress 
+        {/* <RangeProgress 
             style={{width:value===0?0:((value / range) * multiplier) + 6}}
-        />
-        <RangeProgressBackground/>
-        <ValueLabel left={((value / range) * multiplier) -3}>{value}</ValueLabel>
-        <ToolTipTriangle 
-            style={{left:((value / range) * multiplier) + 6.5}}
-        />
+        /> */}
+        {/* <RangeProgressBackground/> */}
+        <ValueLabel left={((value / range) * multiplier) -3} top={showTriangle?32:20}>{valueFormatter()}</ValueLabel>
+        {showTriangle && (
+            <ToolTipTriangle 
+                style={{left:((value / range) * multiplier) + 6.5}}
+            />
+        )}
         {milestones && (
             <MilestonesContainer>
                 {milestones.map((milestone:number,index:number)=>{
                     if(milestone!==milestones[currMileStoneIndex]){
-                        return <MilestoneLabel style={{left:((milestone / range) * multiplier) + 6.5}} key={index}>{milestone}</MilestoneLabel>
+                        return <MilestoneLabel style={{left:((milestone / range) * multiplier) + 6.5,top:!showTriangle?-7:5}} key={index}>{milestone}</MilestoneLabel>
                     }
                 })}
         </MilestonesContainer>
