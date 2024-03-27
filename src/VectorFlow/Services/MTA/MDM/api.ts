@@ -124,7 +124,11 @@ export namespace MDMService {
     })
   }
 
-
+  export const validateMaster = async(formData:any,masterId:any)=>{
+    return await axios.post(process.env.REACT_APP_API_HOST + 'api/validate-master/' + masterId,formData,{
+      responseType:'stream'
+    })
+  }
 
 }
 

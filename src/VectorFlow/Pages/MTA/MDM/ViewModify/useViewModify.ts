@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useDeleteDraft, useDeleteTask } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useDeleteDraft, useDeleteTask, useValidateMaster } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -96,6 +96,8 @@ const useViewModify = (pageType:string) => {
     const {mutateAsync:modifyMaster} = useModifyMasterData();
 
     const {mutateAsync:deleteTask} = useDeleteTask();
+
+    const {mutateAsync:validateMaster} = useValidateMaster();
 
     const validStopStatuses = [1,2,3,4,5,6,21];
 
@@ -676,7 +678,16 @@ const useViewModify = (pageType:string) => {
           // const toasId = notifyLoader("Reading File");
           setIsOverlayVisible(true)
   
-          const result = await parseExcelData(file,activeMaster,pageType,selectedColumns);
+          await parseExcelData(file,activeMaster,pageType,selectedColumns);
+
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("ui_config",JSON.stringify(activeMaster.fields))
+          formData.append("screen_type",JSON.stringify({screenType:pageType}))
+
+          const response = await validateMaster({formData,masterId:activeMaster.id});
+          const result = JSON.parse(response.data)
+          setIsOverlayVisible(false)
 
           const ifErrorExists = result.find((data:any)=>data.error);
           const ifWarningExists = result.find((data:any)=>data.warning);

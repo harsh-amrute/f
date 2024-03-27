@@ -17,7 +17,8 @@ const ErrorCell = (props:ICellRendererParams)=>{
 
     const message = props.data.error;
 
-    const messages = message?.split(/(?<=\.)\s+/) 
+    const messages = message?.split('.').filter((msg:string)=>msg.length > 1)
+    
     const getFomattedMessage = (msg:string) => {
         if(msg.length > 30) {
             return msg.slice(0,30)+'...'
