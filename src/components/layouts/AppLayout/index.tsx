@@ -20,7 +20,7 @@ const AppLayout = () => {
   const { t } = useTranslation();
 
   //URL arrays for excluding layout padding
-  const urlExcludePadding = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr'];
+  const urlExcludePadding = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr','/insights-and-trends/guided-insights'];
   const urlDisableZoomScaling = ['/supply-chain-intelligence-hub/planning'];
   const urlExclusdeHeader = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr','/master-data-management/task-status','/master-data-management/saved-drafts'];
   const location = useLocation();
