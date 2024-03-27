@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen,waitFor } from "@testing-library/react";
 import VFMultiFilter from ".";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { UserDataContext } from "../../../../context";
@@ -6,6 +6,7 @@ import { setupReactQuery } from "../../../../config/react-query-config";
 import {ReactNode} from 'react'
 import { useGetAllSKUs } from "../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import {GetAllSKUsMockResponse} from '../../../../mock-data/BPR'
+import {select} from 'react-select-event'
 
 const mockFunction = jest.fn()
 
@@ -102,32 +103,11 @@ describe("VFMultiFilter Component", () => {
         })
     })
 
-   
-    // it("renders the component in the document when VFMultiFilter is true", () => {
-    //     // useGetAllSKUMock.mockImplementation(():any=>{
-    //     //     return {
-    //     //         isLoading:false,
-    //     //         data:{data:GetAllSKUsMockResponse}
-    //     //     }
-    //     // })
-    //   render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
-    //     // const headerText = screen.getByText("Header")
-    //     // const headerIcon = screen.getByTestId('vfmultifilter-img')
-    //     // expect(headerText).toBeInTheDocument()
-    //     // expect(headerIcon).toBeInTheDocument()
-    //     // expect(headerIcon).toHaveAttribute('src','/assets/img/VectorFLOW/BPR/select-filter.svg')
-    //     const goBackButton = screen.getByText("Go Back!"); 
-    //     expect(goBackButton).toBeInTheDocument()
-    //     fireEvent.click(goBackButton)
-    //     const applybutton = screen.getByText("Apply Filter");
-    //     expect(applybutton).toBeInTheDocument();
-    // })
 
     it('Handles all checkboxes',()=>{
         render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
 
         const checkboxes = screen.getAllByRole('checkbox')
-        console.debug(checkboxes.length)
         checkboxes.forEach((checkbox:any)=>{
             fireEvent.click(checkbox)
         })
@@ -189,44 +169,102 @@ describe("VFMultiFilter Component", () => {
             expect(horizonActive).toBeInTheDocument()
         })
 
-        // it('handles multiselect',()=>{
-        //     render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
-        //     const allMultiSelects = screen.getAllByTestId('vfmaster-search-icon')
-        //     allMultiSelects.forEach((multiSelect:any)=>{
-        //         fireEvent.click(multiSelect)
-        //         screen.logTestingPlaygroundURL()
-               
-        //         const option = screen.getByText('ARES0798C004')
-        //         fireEvent.click(option)
+        it('Clicks on all buttons',()=>{
+            render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
+            const goBackButton = screen.getByText("Go Back!"); 
+            expect(goBackButton).toBeInTheDocument()
+            fireEvent.click(goBackButton)
+            const applybutton = screen.getByText("Apply Filter");
+            expect(applybutton).toBeInTheDocument();
+        })
 
-             
-        //     })
-       // })
-    
+        it('handles multiselect',async()=>{
+            render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
+          
+            const forLocation=screen.getByText('For Locations')
+            expect(forLocation).toBeInTheDocument()
+            fireEvent.click(forLocation)
+          
+
+           
+            await waitFor(async () => {
+                const reactSelect = screen.getAllByLabelText("Example Label")[0];
+                expect(reactSelect).toBeInTheDocument();
+                await select(reactSelect, ["ARES0798C004"]);
+            });
+
+            await waitFor(async () => {
+                const reactSelect = screen.getAllByLabelText("Example Label")[1];
+                expect(reactSelect).toBeInTheDocument();
+                await select(reactSelect, ["ARES0798C004"]);
+            });
+
+
+            await waitFor(async () => {
+                const reactSelect = screen.getAllByLabelText("Example Label")[2];
+                expect(reactSelect).toBeInTheDocument();
+                await select(reactSelect, ["ARES0798C004"]);
+            });
+            
+            await waitFor(async () => {
+                const reactSelect = screen.getAllByLabelText("Example Label")[3];
+                expect(reactSelect).toBeInTheDocument();
+                await select(reactSelect, ["ARES0798C004"]);
+            });
+
+            await waitFor(async () => {
+                const reactSelect = screen.getAllByLabelText("Example Label")[4];
+                expect(reactSelect).toBeInTheDocument();
+                await select(reactSelect, ["ARES0798C004"]);
+            });
+
+            fireEvent.click(forLocation)
+
+            const forChildren=screen.getByText('For Children Of')
+            expect(forChildren).toBeInTheDocument()
+            fireEvent.click(forChildren)
+
+            await waitFor(async () => {
+                const reactSelect = screen.getAllByLabelText("Example Label")[0];
+                expect(reactSelect).toBeInTheDocument();
+                await select(reactSelect, ["ARES0798C004"]);
+            });
+
+            await waitFor(async () => {
+                const reactSelect = screen.getAllByLabelText("Example Label")[1];
+                expect(reactSelect).toBeInTheDocument();
+                await select(reactSelect, ["ARES0798C004"]);
+            });
+
+        })
+
+        it('handles comparision',async ()=>{
+            render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
+                await waitFor(async () => {
+                    const reactSelect = screen.getAllByLabelText("PF1")[0];
+                    expect(reactSelect).toBeInTheDocument();
+                    await select(reactSelect, ["P1"]);
+                });
+                await waitFor(async () => {
+                    const reactSelect = screen.getAllByLabelText("PF1")[1];
+                    expect(reactSelect).toBeInTheDocument();
+                    await select(reactSelect, ["<="]);
+                });
+
+                
+                await waitFor(async () => {
+                    const reactSelect = screen.getAllByLabelText("CF1")[0];
+                    expect(reactSelect).toBeInTheDocument();
+                    await select(reactSelect, ["Type"]);
+                });
+                await waitFor(async () => {
+                    const reactSelect = screen.getAllByLabelText("CF1")[1];
+                    expect(reactSelect).toBeInTheDocument();
+                    await select(reactSelect, ["Color"]);
+                });
+        })
+
   })
 
 
-
-//   it("renders the component in the document when VFMultiFilter is true", () => {
-//         useGetAllSKUMock.mockImplementation(():any=>{
-//             return {
-//                 isLoading:false,
-//                 data:{data:GetAllSKUsMockResponse}
-//             }
-//         })
-//       render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
-//         // const headerText = screen.getByText("Header")
-//         // const headerIcon = screen.getByTestId('vfmultifilter-img')
-//         // expect(headerText).toBeInTheDocument()
-//         // expect(headerIcon).toBeInTheDocument()
-//         // expect(headerIcon).toHaveAttribute('src','/assets/img/VectorFLOW/BPR/select-filter.svg')
-
-//         const goBackButton = screen.getByText("Go Back!"); 
-//         expect(goBackButton).toBeInTheDocument()
-//         fireEvent.click(goBackButton)
-//         const applybutton = screen.getByText("Apply");
-//         expect(applybutton).toBeInTheDocument();
-//     })
-
-    
 

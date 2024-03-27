@@ -6,8 +6,8 @@ import { setupReactQuery } from "../../../../../config/react-query-config";
 import { QueryClientProvider } from "@tanstack/react-query"
 import { BrowserRouter as Router } from "react-router-dom"
 import { Provider } from "react-redux"
-import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useDeleteMasterData,useDeleteDraft, useModifyMasterData, useDeleteTask } from "../../../../../VectorFlow/Services/MTA/MDM";
-import { getMasterUIConfigurationMockData ,createDraftMockData,MasterData, MasterDataWithSubmittedMaster,getSeasonalityDetailsMockData, mockMasterData,deleteDraftMockData,modifyMasterMockData, deleteTaskMockData} from "../../../../../mock-data/MDM";
+import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useDeleteMasterData,useDeleteDraft, useModifyMasterData, useDeleteTask, useValidateMaster } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { getMasterUIConfigurationMockData ,createDraftMockData,MasterData, MasterDataWithSubmittedMaster,getSeasonalityDetailsMockData, mockMasterData,deleteDraftMockData,modifyMasterMockData, deleteTaskMockData,validateMasterMockData} from "../../../../../mock-data/MDM";
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
 import {mapMasterToColumnDefs} from '../../../../../helpers/utils'
 import DeleteRecord from ".";
@@ -60,6 +60,10 @@ typeof useDeleteDraft
 
 const useDeleteTaskMock = useDeleteTask as jest.MockedFunction<
 typeof useDeleteTask
+>;
+
+const useValidateMasterMock = useValidateMaster as jest.MockedFunction<
+typeof useValidateMaster
 >;
 
 window.URL.createObjectURL = jest.fn();
@@ -118,6 +122,12 @@ const useRemoveMasterDataMockData:any = {
   const useDeleteTaskMockData:any = {
     mutateAsync:() => {
       return {data:deleteTaskMockData}
+    }
+  }
+
+  const useValidateMasterMockData:any = {
+    mutateAsync:() => {
+      return {data:validateMasterMockData}
     }
   }
 const queryClient = setupReactQuery()
@@ -202,6 +212,10 @@ describe("DeleteRecord Component", () => {
 
     useDeleteTaskMock.mockImplementation(() => {
       return useDeleteTaskMockData;
+    })
+
+    useValidateMasterMock.mockImplementation(() => {
+      return useValidateMasterMockData;
     })
 
     const mockedStore = createStore(mockState)
@@ -314,6 +328,10 @@ describe("Handles all custom redux interactions",()=>{
 
     useDeleteTaskMock.mockImplementation(() => {
       return useDeleteTaskMockData;
+    })
+
+    useValidateMasterMock.mockImplementation(() => {
+      return useValidateMasterMockData;
     })
 
   });
