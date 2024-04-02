@@ -227,7 +227,8 @@ describe("It handles all interactions",()=>{
 
   it('clicks on remarkhistory',async()=>{
     await waitFor(async()=>{
-      const imgElement = screen.getAllByAltText('eye icon')[0];
+      
+      const imgElement = screen.getAllByRole('img', { name: /eye icon/i })[0]
       fireEvent.click(imgElement)
     })
   })
