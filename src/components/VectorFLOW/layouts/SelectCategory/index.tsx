@@ -6,7 +6,6 @@ import {useState} from 'react'
 import VFButton from "../../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../../context"
 import VFMultiFilter from "../../../../components/VectorFLOW/commons/VFMultiFilter";
-import { Card } from "../../commons/VFCard/styles";
 
 
 interface CountProp{
@@ -65,7 +64,7 @@ const SelectCategory=(props:CountProp)=>{
         <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>Edit Filter</VFButton>
             {
                 isFilterOpen && (
-                <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true} ></VFMultiFilter>
+                <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true}></VFMultiFilter>
                
                 )
             }

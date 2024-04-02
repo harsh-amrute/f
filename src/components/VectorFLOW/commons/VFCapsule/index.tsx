@@ -1,4 +1,4 @@
-import { useState } from "react"
+
 import { useUserData } from "../../../../context"
 import { VFCapsuleButton, VFCapsuleWrapper } from "./styles"
 
@@ -8,7 +8,7 @@ interface Capsule{
 }
 
 interface VFCapsuleProps{
-    defaultActive:number
+    activeBtn:Capsule
     capsules:Capsule[]
     handleClick:any
 }
@@ -16,7 +16,7 @@ interface VFCapsuleProps{
 const VFCapsule = (props:VFCapsuleProps)=>{
 
     const {
-        defaultActive,
+        activeBtn,
         capsules,
         handleClick
     } = props
@@ -25,19 +25,19 @@ const VFCapsule = (props:VFCapsuleProps)=>{
 
     const {user} = useUserData()
 
-    const [activeButton,setActiveButton] = useState<Capsule>(capsules[defaultActive])
 
     const onClick = (capsule:Capsule)=>{
-        setActiveButton(capsule)
         handleClick(capsule)
         
     }
 
+    const activeCapsule = activeBtn 
+
     return(
-        <VFCapsuleWrapper themeUi={user.user.theme_ui}>
+        <VFCapsuleWrapper themeUi={user.user.theme_ui} data-testid = 'vf-capsule'>
             {capsules.map((c:Capsule)=>{
                 return(
-                    <VFCapsuleButton isActive={c.value===activeButton.value} onClick={()=>onClick(c)} themeUi={user.user.theme_ui} key={c.value}>
+                    <VFCapsuleButton isActive={c.value===activeCapsule.value} onClick={()=>onClick(c)} themeUi={user.user.theme_ui} key={c.value}>
                         {c.label}
                     </VFCapsuleButton>
                 )

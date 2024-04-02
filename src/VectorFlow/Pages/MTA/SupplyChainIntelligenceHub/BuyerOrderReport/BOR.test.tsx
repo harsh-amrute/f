@@ -102,7 +102,7 @@ describe("Renders BOR Component", ()=>{
           render(contextWrapper(<BuyerOrderReport />,store));
           })
 
-        const nextBtn = screen.getAllByLabelText('Next page');
+          const nextBtn = screen.getAllByAltText('pagination-next-arrow')
         fireEvent.click(nextBtn[0]);
     })
 })

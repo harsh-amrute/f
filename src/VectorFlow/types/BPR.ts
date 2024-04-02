@@ -61,3 +61,36 @@ export interface BPRFilterState{
 }
 
 
+
+export interface ReseachInsightsGraphTypeState{
+    label:"Self" | "Child" | "Parent"
+    value:"Self" | "Child" | "Parent"
+}
+
+export interface ReseachInsightsGraphPenState{
+    label:"Eco" | "Tech"
+    value:"Eco" | "Tech"
+}
+
+export interface ReseachInsightsGraphDateState{
+    Red:number
+    White:number
+    Yellow:number
+    Green:number
+    Black:number
+    Blue:number
+    date:string
+}
+
+
+export interface ReseachInsightsGraphDateStateFilter{
+    key:string,
+    value:string
+}
+
+export interface ReseachInsightsGraphState{
+    type:ReseachInsightsGraphTypeState
+    pen:ReseachInsightsGraphPenState
+    id:number
+    filters:Array<ReseachInsightsGraphDateStateFilter>
+}

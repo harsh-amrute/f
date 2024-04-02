@@ -15,6 +15,7 @@ import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingFo
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField } from '../VectorFlow/types/BPR';
 import {RRRField} from '../VectorFlow/types/RRR'
+import _ from 'lodash'
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -1605,16 +1606,22 @@ export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,re
 }
 
 export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[],masterId:number):ColDef[]=>{
+  console.log(masterId)
   const result:any[] = []
   errorConflicts.map((currError:{errorData:any[],errorType:string})=>{
     currError.errorData.map((errorRowData:any)=>{
       const existingRowIndex = result.findIndex((row:any)=>{
-        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
-        if(primaryKeys.length<3){
-          return JSON.stringify(row)===JSON.stringify(errorRowData)
-          // return row[primaryKeys[0]]===errorRowData[primaryKeys[0]]
-        }
+        // const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        // if(primaryKeys.length<3){
+        //   return JSON.stringify(row)===JSON.stringify(errorRowData)
+        //   // return row[primaryKeys[0]]===errorRowData[primaryKeys[0]]
+        // }
+        // console.log(row)
+        
+        const omittedResultEntry = _.omit(row,['error'])
+        return JSON.stringify(omittedResultEntry)===JSON.stringify(errorRowData)
       })
+      
       
       if(existingRowIndex===-1){
         result.push({
@@ -1926,4 +1933,45 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[]):ColDef[]=>{
     }
   })
   return [...result,...BORSpecificColumns]
+}
+
+export const BPRColorMapper =(color:string):{bg:string,text:string}=> {
+
+  switch (color){
+      case "White":
+          return {
+              "bg":"white",
+              "text":"black"
+          }
+      case "Yellow":
+          return {
+              "bg":"#EBBF2B",
+              "text":"white"
+          }
+      case "Green":
+          return {
+              "bg":"#418D18",
+              "text":"white"
+          }
+      case "Red":
+          return {
+              "bg":"#F04D4D",
+              "text":"white"
+          }
+      case "Black":
+          return{
+              "bg":"#000000",
+              "text":"white"
+          }
+      case "Blue":
+          return{
+              "bg":"blue",
+              "text":'white'
+          }
+      default:
+          return{
+              "bg":"#B2B2B2",
+              "text":"white"
+          }
+  }
 }

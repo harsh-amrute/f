@@ -100,7 +100,6 @@ import _ from "lodash";
 
     } = useViewModify('modify');
 
-    // console.log(errorCount)
 
     
     useEffect(()=>{
@@ -231,6 +230,17 @@ import _ from "lodash";
                     [],
                   }}
                 />
+                {
+            (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen))
+              && 
+              <VFPagination 
+                selectedRows={selectedRowsCount} 
+                totalRows={recordCount} 
+                currentPage={currentPage} 
+                rowsPerPage={rowsPerPage} 
+                handleChangePage={(e)=>handleChangePage(e)}  
+              />
+          }
                 {/* <VFTable
                   ref={veryTempRef}
                   columnDefs={activeMaster.colDefs}
@@ -248,17 +258,7 @@ import _ from "lodash";
             </VFTab>
           </React.Fragment>
           }
-          {
-            (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen))
-              && 
-              <VFPagination 
-                selectedRows={selectedRowsCount} 
-                totalRows={recordCount} 
-                currentPage={currentPage} 
-                rowsPerPage={rowsPerPage} 
-                handleChangePage={(e)=>handleChangePage(e)}  
-              />
-          }
+          
           
         </SCContainer>
         {isWarningModalOpen && 

@@ -1,4 +1,4 @@
-import { screen,render,fireEvent, act, waitFor } from "@testing-library/react";
+import { screen,render,fireEvent, act } from "@testing-library/react";
 import SelectCategory from ".";
 import { UserDataContext } from "../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -65,8 +65,7 @@ describe ("SelectCategory Component", () => {
             expect(button).toBeInTheDocument();
             fireEvent.click(button);
         })
-        screen.logTestingPlaygroundURL()
-        
+  
     })
 
 })

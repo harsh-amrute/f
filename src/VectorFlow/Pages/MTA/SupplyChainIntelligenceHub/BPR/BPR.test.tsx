@@ -15,12 +15,12 @@ import {store} from "../../../../../redux/store/store";
 
 jest.mock('../../../../Services/MTA/SupplyChainIntelligenceHub/BPR')
 
-const mockContextValue = {
-  user: { user: { theme_ui: "NOIRFUSION" } },
-  changeColorTheme: jest.fn(),
-  isSideBarOpen: true,
-  toggleSideBar: jest.fn()
-};
+// const mockContextValue = {
+//   user: { user: { theme_ui: "NOIRFUSION" } },
+//   changeColorTheme: jest.fn(),
+//   isSideBarOpen: true,
+//   toggleSideBar: jest.fn()
+// };
 
 // Mock the query client
 const queryClient = setupReactQuery();
@@ -254,7 +254,8 @@ describe("It handles all interactions",()=>{
 
   it('clicks on remarkhistory',async()=>{
     await waitFor(async()=>{
-      const imgElement = screen.getAllByAltText('eye icon')[0];
+      
+      const imgElement = screen.getAllByRole('img', { name: /eye icon/i })[0]
       fireEvent.click(imgElement)
     })
   })

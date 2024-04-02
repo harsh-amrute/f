@@ -5,11 +5,6 @@ import VFOverlay from "../../../.././../components/VectorFLOW/commons/VFOverlay"
 import ChartView from "./ChartView";
 import ActionToolBar from './ActionToolBar';
 import GridView from "./GridView";
-import { useUserData } from "../../../../../context"
-import VFSelectedFilters from "../../../../../components/VectorFLOW/commons/VFSelectedFilters";
-import {useState} from 'react'
-import VFMultiFilter from "../../../../../components/VectorFLOW/commons/VFMultiFilter";
-import useBPRFilter from "../../../../../hooks/useBPRFilter";
 
 
 const Planning = () => {
@@ -31,12 +26,6 @@ const Planning = () => {
         currentGridData
     } = usePlanning();
 
-    
-
-    const [isFilterOpen,toggleFilter] = useState<boolean>(false)
-
-    const {user} = useUserData()
-    const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
 
     const renderView = () => {
 

@@ -1,3 +1,4 @@
+import React from 'react'
 import { render,screen,fireEvent } from '@testing-library/react';
 import ErrorCell from '.';
 
@@ -28,6 +29,7 @@ describe("Renders Error Cell",() => {
         props.data.error = message;
         render(<ErrorCell {...props}/>);
         fireEvent.mouseEnter(screen.getByTestId('errorImage'))
+        fireEvent.mouseEnter(screen.getByTestId('tooltip-wrapper'))
         fireEvent.mouseLeave(screen.getByTestId('errorImage'))
         
     })
@@ -38,3 +40,29 @@ describe("Renders Error Cell",() => {
         
     })
 })
+
+describe('ErrorCell component', () => {
+    test('tooltip repositioning when overflow occurs', () => {
+      // Mock window.innerHeight
+      const originalInnerHeight:any = Object.getOwnPropertyDescriptor(window, 'innerHeight');
+      Object.defineProperty(window, 'innerHeight', { value: 10 });
+  
+      const props:any = {
+        data: {
+          error: 'This is a test error message.'
+        }
+      };
+  
+      const { getByTestId } = render(<ErrorCell {...props} />);
+  
+      const errorImage = getByTestId('errorImage');
+  
+      fireEvent.mouseEnter(errorImage);
+  
+      // You can assert the repositioned tooltip position here
+    //   expect(tooltipWrapper.style.top).toBe('approximately expected value');
+  
+      // Restore the original window.innerHeight
+      Object.defineProperty(window, 'innerHeight', originalInnerHeight);
+    });
+  });

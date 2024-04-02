@@ -11,9 +11,7 @@ import './styles.css';
 import { useGetAllSKUs } from "../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import VFLoader from "../../../../components/VectorFLOW/commons/VFLoader";
 import VFRangeSlider from "../VFRangeSlider";
-import { BPRField, BPRFilter, BPRFilterState } from "../../../../VectorFlow/types/BPR";
-import { filter } from "lodash";
-import { getValue } from "@testing-library/user-event/dist/utils";
+import {  BPRFilter, BPRFilterState } from "../../../../VectorFlow/types/BPR";
 
 interface VFMultiFilterProps{
     onApplyFilter:()=>void
@@ -344,7 +342,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
                   {
                     header==="Availabilty Filter" ?
                     <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-                        <FilterTextInput disabled={true} placeholder={placeholder} onChange={(e:any)=>onChange(e,'value')} value={getValue()}/>    
+                        <FilterTextInput disabled={true} placeholder={placeholder} value={getValue()}/>  
                     </SelectDropdownComponent> 
                     : 
                     <SelectDropdownComponent data-testid="BPR-filter-dropdown">
@@ -381,6 +379,9 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     //  }
 
     const onFilterChange=(filterId:string,e:any,parentId:string,property:string, header?:string)=>{
+
+        console.log(e)
+        console.log(filterId)
         
         const filterObj:BPRFilter = {
             attributeName:"",
@@ -504,15 +505,16 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             return newfilterObj
         })
        }
-        else{
-            finalValue = e
-        }
+        // else{
+        //     finalValue = e
+        // }
    
         const currGroup:string | undefined = Object.keys(multiFilter).find((key:string)=>{
             return multiFilter[key as keyof BPRFilterState].id ===parentId
         })
        
         if(currGroup){
+
             const currFilter:BPRFilter | undefined =multiFilter[currGroup as keyof BPRFilterState].filters.find((filter:BPRFilter)=>{
                 return filter.name===filterId
             })
@@ -601,7 +603,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     const{
        
         onGoBack,
-        selectedOption,
         multiFilter,
         setMultiFilter,
         supplyChainNodeFilterActive = true,
@@ -639,7 +640,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     const getAPIValue = (filterId:any, filterState:any) => {
        
         return filterState.map((f:BPRFilter)=>{
-            if(f.name===filterId){
+           if(f.name===filterId){
                 return{
                     label:f.value,
                     value:f.value
@@ -663,7 +664,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                 <VFHorizonText>
                     <p>Horizon</p>
                 </VFHorizonText>
-                <VFRangeSlider min={0} max={90} milestones={[0,30,60,90]} strictMode={true} width={500} defaultValue={0} handleChange={()=>console.log('')} showTriangle={true}></VFRangeSlider>  
+                <VFRangeSlider min={0} max={90} milestones={[0,30,60,90]} strictMode={true} width={500} defaultValue={0} handleChange={()=>console.log('')} showTriangle></VFRangeSlider>  
             </RangeSliderComponent>
                 <hr style={{ marginLeft:'30px', marginRight:'30px'}}></hr> 
             </>

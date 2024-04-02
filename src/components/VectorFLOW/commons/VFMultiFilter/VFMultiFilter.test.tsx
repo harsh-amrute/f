@@ -169,12 +169,20 @@ describe("VFMultiFilter Component", () => {
             expect(horizonActive).toBeInTheDocument()
         })
 
+        it('Handles horizon interactions',()=>{
+            render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
+            const rangeInput = screen.getByRole('slider');
+            fireEvent.change(rangeInput, { target: { value: '60' } });
+            fireEvent.change(rangeInput, { target: { value: '90' } });
+        })
+
         it('Clicks on all buttons',()=>{
             render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
             const goBackButton = screen.getByText("Go Back!"); 
             expect(goBackButton).toBeInTheDocument()
             fireEvent.click(goBackButton)
             const applybutton = screen.getByText("Apply Filter");
+            fireEvent.click(applybutton)
             expect(applybutton).toBeInTheDocument();
         })
 
@@ -244,6 +252,7 @@ describe("VFMultiFilter Component", () => {
                     const reactSelect = screen.getAllByLabelText("PF1")[0];
                     expect(reactSelect).toBeInTheDocument();
                     await select(reactSelect, ["P1"]);
+                    await select(reactSelect, ["P3"]);
                 });
                 await waitFor(async () => {
                     const reactSelect = screen.getAllByLabelText("PF1")[1];

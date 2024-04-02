@@ -1,6 +1,5 @@
-import { filter, map } from 'lodash';
 import {useState} from 'react';
-import { BPRFilterState, BPRFilter } from '../VectorFlow/types/BPR';
+import { BPRFilterState} from '../VectorFlow/types/BPR';
 
 const useBPRFilter=()=>{
 

@@ -20,7 +20,6 @@ import {
  
 } from './styles';
 import { useUserData } from '../../../../../../context/UserDataContext';
-import { ModuleKind } from 'typescript';
 
 
 interface ActionToolBarProps {
@@ -32,7 +31,8 @@ interface ActionToolBarProps {
     onFloatingTabChange:(tab:any)=>void,
     onGoBack:()=>void
     onViewChange:(view:string)=>void,
-    disableChartAndGridViewToggle?:boolean
+    disableChartAndGridViewToggle?:boolean,
+    
 }
 
 

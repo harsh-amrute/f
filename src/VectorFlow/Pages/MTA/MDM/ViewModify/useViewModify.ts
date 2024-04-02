@@ -598,7 +598,6 @@ const useViewModify = (pageType:string) => {
             error:"Something Went Wrong",
             pending:"Loading Data"
           }); 
-          console.log(result.data)
       }
       dispatch(RESET_FILTERS())
     }
@@ -899,6 +898,7 @@ const useViewModify = (pageType:string) => {
               errorCount += parseInt(data.data.errorCount,10);
               const conflictedRows = data.data.conflictError;
               const errorenousRows = data.data.error;
+              
               if(conflictedRows instanceof Array) {
                 conflictedRows.forEach((row:any)=>{
                   const userIndex = conflictData.findIndex((data:any)=>data.user === row.user);
@@ -935,7 +935,6 @@ const useViewModify = (pageType:string) => {
             const pureConflictCount = activeMaster.rowData.length + intersectionCount - errorCount
             toast.dismiss(toastId);
             setConflictCount(pureErrorCount);
-            console.log(intersectionCount)
             setErrorCount(pureErrorCount);
             setConflictData(conflictData);
             setErrorData(errorData)
