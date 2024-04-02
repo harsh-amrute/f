@@ -3,11 +3,45 @@
 import { fireEvent,render,screen,act } from "@testing-library/react";
 import {useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount} from '../../../../Services/MTA/SupplyChainIntelligenceHub/RRR'
 
+import { QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter as Router } from "react-router-dom";
+import { setupReactQuery } from "../../../../../config/react-query-config";
+
+import { ReactNode } from "react";
+import { Provider } from "react-redux";
+import {store} from "../../../../../redux/store/store";
+import { UserDataContext } from "../../../../../context";
+
 
 import {mockRRRData,mockRRRUiConfig,mockRRRDataCount} from '../../../../../mock-data/RRR';
 import RRR from "./";
 
 jest.mock("../../../../Services/MTA/SupplyChainIntelligenceHub/RRR");
+
+const queryClient = setupReactQuery();
+
+  const contextWrapper = (children: ReactNode,store:any) => {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Provider store={store}>
+            <UserDataContext.Provider
+              value={{
+                user: { user: { theme_ui: "NOIRFUSION" } },
+                changeColorTheme: (color) => {
+                  return color;
+                },
+                isSideBarOpen:true,toggleSideBar:jest.fn
+              }}
+            >
+              {children}
+            </UserDataContext.Provider>
+          </Provider>
+        </Router>
+      </QueryClientProvider>
+    );
+  };
+
 
 const useGetRRRUIConfigurationMock = useGetRRRUIConfiguration as jest.MockedFunction<
 typeof useGetRRRUIConfiguration
@@ -61,22 +95,18 @@ const useGetRRRCountResult: any = {
         useGetRRRUIConfigurationMock.mockImplementation(()=>{
             return {...useGetRRRUIConfigurationMockResult,isLoading:true};
         });
-        render(<RRR/>)
+        render(contextWrapper(<RRR/>,store));
     })
-
-
-
-
 
      it("renders RRReport", async()=>{
         await act(async () => {
-               render(<RRR/>)
+          render(contextWrapper(<RRR />,store));
           })
     })
 
      it("Handles Pagination", async()=>{
         await act(async () => {
-               render(<RRR/>)
+          render(contextWrapper(<RRR />,store));
           })
           const nextBtn = screen.getAllByAltText('pagination-next-arrow')
        

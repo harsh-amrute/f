@@ -91,14 +91,14 @@ describe("Planning Quadrant", () => {
     });
 
     it("Renders Select Category Planning Quadrant", () => {
-        render(<Planning/>)
+        render(contextWrapper(<Planning/>,store));
     })
 
     it("Switches Floating Tab", async () => {
         useGetPlanningDataGraphMock.mockImplementation(()=>{
             return useGetPlanningDataGraphMockData(MonitorGITChildMockData)
         })
-        render(<Planning/>);
+        render(contextWrapper(<Planning/>,store));
         await act(async () => {
             fireEvent.click(screen.getAllByText('To Child')[0])
         })
@@ -151,21 +151,21 @@ describe("Planning Quadrant", () => {
     })
 
     it("Renders Excess Inventory Graphs", async () => {
-        render(<Planning/>);
+        render(contextWrapper(<Planning/>,store));
         await act(async () => {
             fireEvent.click(screen.getAllByText('Review')[0])
         })
     })
 
     it("Renders Order Fulfillment Graphs", async () => {
-        render(<Planning/>);
+        render(contextWrapper(<Planning/>,store));
         await act(async () => {
             fireEvent.click(screen.getAllByText('Review')[1])
         })
     })
 
     it("Switches Floating Tab on Click", () => {
-        render(<Planning/>);
+        render(contextWrapper(<Planning/>,store));
         fireEvent.click(screen.getAllByText('To Child')[0])
         // fireEvent.click(screen.getByTestId('floatingTabButton'));
     })

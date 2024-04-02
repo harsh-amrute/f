@@ -114,7 +114,7 @@ height:calc(100% - 15px);
 
 `
 export const ButtonWrapper=styled.div`
-background: #BC3D81;
+ background: #BC3D81;
 border-radius: 0px 0px 12px 12px;
 height:69px;
 width:425px;
@@ -135,4 +135,21 @@ font-size:18px;
 line-height:24px;
 font-family:Roboto;
 color:white;
+`
+export const PlanningTaskBar = styled.div`
+ // border:1px solid black;
+   height:50px;
+   display:flex;
+   justify-content: space-between;
+   padding-bottom:0px;
+   zoom:0.8;
+   scrollbar-width: none;
+   ::-webkit-scrollbar {
+    width: 0.2px;
+    display:none;
+  }
+
+`
+export const ButtonFilterWrapper = styled.div`
+border:none;
 `

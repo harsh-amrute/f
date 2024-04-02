@@ -7,16 +7,20 @@ import { setupReactQuery } from "../../../../../config/react-query-config";
 import { useGetBPRData, useGetBPRRemarkHistory, useGetBPRUIConfiguration, useSubmitBPRRemark } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
 import { GetBPRDataMockResponse, GetBPRUIConfigurationMockResponse } from '../../../../../mock-data/BPR';
 
+import { ReactNode } from "react";
+import { Provider } from "react-redux";
+import {store} from "../../../../../redux/store/store";
+
 // Mock context data
 
 jest.mock('../../../../Services/MTA/SupplyChainIntelligenceHub/BPR')
 
-const mockContextValue = {
-  user: { user: { theme_ui: "NOIRFUSION" } },
-  changeColorTheme: jest.fn(),
-  isSideBarOpen: true,
-  toggleSideBar: jest.fn()
-};
+// const mockContextValue = {
+//   user: { user: { theme_ui: "NOIRFUSION" } },
+//   changeColorTheme: jest.fn(),
+//   isSideBarOpen: true,
+//   toggleSideBar: jest.fn()
+// };
 
 // Mock the query client
 const queryClient = setupReactQuery();
@@ -37,17 +41,40 @@ const useGetBPRRemarkHistoryMock = useGetBPRRemarkHistory as jest.MockedFunction
   typeof useGetBPRRemarkHistory
 >
 
-const contextWrapper = (children:any) => {
+// const contextWrapper = (children:any) => {
+//   return (
+//     <QueryClientProvider client={queryClient}>
+//       <Router>
+//           <UserDataContext.Provider value={mockContextValue}>
+//             {children}
+//           </UserDataContext.Provider>
+//       </Router>
+//     </QueryClientProvider>
+//   );
+// }
+
+
+const contextWrapper = (children: ReactNode,store:any) => {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-          <UserDataContext.Provider value={mockContextValue}>
+        <Provider store={store}>
+          <UserDataContext.Provider
+            value={{
+              user: { user: { theme_ui: "NOIRFUSION" } },
+              changeColorTheme: (color) => {
+                return color;
+              },
+              isSideBarOpen:true,toggleSideBar:jest.fn
+            }}
+          >
             {children}
           </UserDataContext.Provider>
+        </Provider>
       </Router>
     </QueryClientProvider>
   );
-}
+};
 
 describe('BPR Component', () => {
   global.ResizeObserver = class MockedResizeObserver {
@@ -124,12 +151,12 @@ describe('BPR Component', () => {
     useGetBPRUIConfigurationMock.mockImplementation(():any=>{
       return {data: {data:GetBPRUIConfigurationMockResponse},isLoading:true};
     })
-    render(contextWrapper(<BPR />));
+    render(contextWrapper(<BPR />,store));
     expect(screen.getByTestId('loader')).toBeInTheDocument();
   });
 
   it('renders BPR layout properly', () => {
-    render(contextWrapper(<BPR />));
+    render(contextWrapper(<BPR />,store));
     // Add your assertions here to ensure the layout renders correctly
   });
 });
@@ -206,7 +233,7 @@ describe("It handles all interactions",()=>{
         }
       }
     })
-    render(contextWrapper(<BPR/>))
+    render(contextWrapper(<BPR/>,store))
   });
 
   it("submits a remark",async()=>{

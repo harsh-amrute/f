@@ -53,8 +53,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
 
     }
 
-    const getCellIcons = (value:number,colKey:string)=>{
-        if(colKey==='techChange' || colKey==='ecoChange'){
+    const getCellIcons = (value:number)=>{
             if(value>0){
                 return <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-increase.svg'/>
             }
@@ -67,7 +66,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                     <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-decrease.svg' style={{transform:'rotate(90deg)'}}/>
                 </BPRDailyAnalyticsTableNoChangeWrapper>
             )
-        }
+        
     }
 
     return(

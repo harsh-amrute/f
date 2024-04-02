@@ -65,14 +65,16 @@ describe('VFSelectedFilters Component', () => {
         render(
             <VFSelectedFilters filters={mockFilters} onRemoveFilter={onRemoveFilter} />
         );
+        screen.logTestingPlaygroundURL()
+
 
         // Check if the placeholder text is rendered
         expect(screen.getByText('Selected Filters')).toBeInTheDocument();
 
         // Check if the filter labels and values are rendered
-        expect(screen.getByText('Supply Chain')).toBeInTheDocument();
-        expect(screen.getByText('Attribute 1 : Value 1')).toBeInTheDocument();
-        expect(screen.getByText('Attribute 2 : Value 2')).toBeInTheDocument();
+        expect(screen.getByText(/supply chain:/i)).toBeInTheDocument();
+        expect(screen.getByText(/attribute 1/i)).toBeInTheDocument();
+        expect(screen.getByText(/attribute 2/i)).toBeInTheDocument();
 
         // Check if the close icon is rendered
         const closeIcon = screen.getAllByTestId('closeIcon-filter')[0]; // Adjust the test ID according to your implementation
@@ -80,7 +82,7 @@ describe('VFSelectedFilters Component', () => {
 
         // Simulate click on the close icon and check if the handler is called
         fireEvent.click(closeIcon);
-        expect(onRemoveFilter).toHaveBeenCalledWith('supplyChainFilterId', 'filter1');
+        expect(onRemoveFilter).toHaveBeenCalledWith('supplyChainFilterId', 'filter1',"Value 1");
     });
 
     // Add more test cases for different scenarios as needed

@@ -7,16 +7,21 @@ import { useGetBPRData,useGetBPRUIConfiguration } from '../../../../../VectorFlo
 import { GetBPRDataMockResponse,GetBPRUIConfigurationMockResponse} from '../../../../../mock-data/BPR';
 import ResearchInsights from './index';
 
+import { ReactNode } from "react";
+import { Provider } from "react-redux";
+import {store} from "../../../../../redux/store/store";
+
+
 // Mock context data
 
 jest.mock('../../../../Services/MTA/SupplyChainIntelligenceHub/BPR')
 
-const mockContextValue = {
-  user: { user: { theme_ui: "NOIRFUSION" } },
-  changeColorTheme: jest.fn(),
-  isSideBarOpen: true,
-  toggleSideBar: jest.fn()
-};
+// const mockContextValue = {
+//   user: { user: { theme_ui: "NOIRFUSION" } },
+//   changeColorTheme: jest.fn(),
+//   isSideBarOpen: true,
+//   toggleSideBar: jest.fn()
+// };
 
 // Mock the query client
 const queryClient = setupReactQuery();
@@ -32,17 +37,27 @@ const useGetBPRUIConfigurationMock = useGetBPRUIConfiguration as jest.MockedFunc
 
 
 
-const contextWrapper = (children:any) => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-          <UserDataContext.Provider value={mockContextValue}>
-            {children}
-          </UserDataContext.Provider>
-      </Router>
-    </QueryClientProvider>
-  );
-}
+  const contextWrapper = (children: ReactNode,store:any) => {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Provider store={store}>
+            <UserDataContext.Provider
+              value={{
+                user: { user: { theme_ui: "NOIRFUSION" } },
+                changeColorTheme: (color) => {
+                  return color;
+                },
+                isSideBarOpen:true,toggleSideBar:jest.fn
+              }}
+            >
+              {children}
+            </UserDataContext.Provider>
+          </Provider>
+        </Router>
+      </QueryClientProvider>
+    );
+  };
 
 describe('Research and insights Component', () => {
   global.ResizeObserver = class MockedResizeObserver {
@@ -73,12 +88,12 @@ describe('Research and insights Component', () => {
     useGetBPRUIConfigurationMock.mockImplementation(():any=>{
         return {data: {data:GetBPRUIConfigurationMockResponse},isLoading:true};
       })
-    render(contextWrapper(<ResearchInsights />));
+      render(contextWrapper(<ResearchInsights />,store));
     expect(screen.getByTestId('loader')).toBeInTheDocument();
   });
 
   it('renders BPR layout properly', () => {
-    render(contextWrapper(<ResearchInsights />));
+    render(contextWrapper(<ResearchInsights />,store));
     const inputRange = screen.getByRole('slider');
 
     fireEvent.change(inputRange, { target: { value: '75' } });
@@ -111,7 +126,7 @@ describe('Handles all interactions', () => {
       }
     })
     
-    render(contextWrapper(<ResearchInsights />));
+    render(contextWrapper(<ResearchInsights />,store));
     
 
     // await waitFor(async()=>{

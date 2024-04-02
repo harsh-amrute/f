@@ -3,6 +3,7 @@ import useRRR from './useRRR';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
+import ActionToolBar from "../Planning/ActionToolBar"
 
 
 
@@ -19,6 +20,9 @@ const RRR = () => {
 
 
   return (
+  <>
+  
+  <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'RRR'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
     <RRRLayout>
         {/* <RRRTaskBar style={{width:isSideBarOpen? '77%':'97%'}}>
             <VFButtonOutline
@@ -56,6 +60,7 @@ const RRR = () => {
               />  
         </div>
     </RRRLayout>
+  </>
   )
 }
 
