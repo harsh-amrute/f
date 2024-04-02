@@ -10,7 +10,8 @@ interface Capsule{
 interface VFCapsuleProps{
     defaultActive:number
     capsules:Capsule[]
-    handleClick:(capsule:Capsule)=>void
+    handleClick:any
+    //handleClick?:(i:any,index:any)=>void  
 }
 
 const VFCapsule = (props:VFCapsuleProps)=>{
@@ -35,7 +36,7 @@ const VFCapsule = (props:VFCapsuleProps)=>{
 
     return(
         <VFCapsuleWrapper themeUi={user.user.theme_ui}>
-            {capsules.map((c:Capsule)=>{
+            {capsules.map((c:Capsule,i:any)=>{
                 return(
                     <VFCapsuleButton isActive={c.value===activeButton.value} onClick={()=>onClick(c)} themeUi={user.user.theme_ui} key={c.value}>
                         {c.label}

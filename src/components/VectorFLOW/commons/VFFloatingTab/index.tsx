@@ -12,7 +12,7 @@ interface VFFloatingTabItemProps{
 export interface VFFloatingTabProps{
     tabs:Array<VFFloatingTabItemProps>
     defaultTab?:number
-    handleClick?:(i:any)=>void  
+    handleClick?:(i:any,index:any)=>void  
 }
 
 interface ActiveShadowDataType{
@@ -24,11 +24,10 @@ const VFFloatingTab = (props:VFFloatingTabProps)=>{
 
     const {
         tabs,
-        defaultTab = 0,
+        defaultTab=0,
         handleClick
     } = props
-
-
+    
     const [activeIndex,setActiveIndex] = useState<number>(defaultTab)
 
     const [activeShadowData,setActiveShadowData] = useState<ActiveShadowDataType | null>(null)
@@ -49,7 +48,7 @@ const VFFloatingTab = (props:VFFloatingTabProps)=>{
             width:e.currentTarget.offsetWidth
         })
         setActiveIndex(index)
-       if( handleClick) handleClick(tabs[index])
+       if( handleClick) handleClick(tabs[index],index)
     }
 
     return(

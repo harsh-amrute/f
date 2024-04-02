@@ -17,7 +17,7 @@ const ChartView = ({category,currentTab,currentGraphData}:ChartViewProps) => {
                 if(currentTab === 'locationWise'){
                     return (
                         <MonitorGITChildLocationWise
-                            data={currentGraphData ? currentGraphData['locationWise']:[]}
+                            data={currentGraphData ? currentGraphData:[]}
                         />
                     )
                 }

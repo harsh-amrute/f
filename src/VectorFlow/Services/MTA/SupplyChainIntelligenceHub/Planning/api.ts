@@ -10,7 +10,7 @@ export namespace PlanningService {
       }
 
     export const getPlanningDataGraph = async (body:any) => {
-        return axios.post(`https://requestly.tech/api/mockv2/GetPlanningDataGraph?username=user1708583815102&`,body,{
+        return axios.get(`https://874b1519-1a43-4314-a8d0-6c20e10100cf.mock.pstmn.io/GetBTGData`,{
             headers: { 'Content-Type': 'application/json' }
             })
     }

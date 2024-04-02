@@ -112,6 +112,8 @@ const MonitorGITChildLocationWise = ({data}:MonitorGITChildLocationWiseProps) =>
         'This box plot graph displays the statistical distribution of delay days in transport for various locations. Each box represents the range of delay days as on today'
       ]
     
+
+      console.log("datattata",data);
     
     return(
         <>

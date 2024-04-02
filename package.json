@@ -4,6 +4,8 @@
   "private": true,
   "author": "TSO",
   "dependencies": {
+    "@ag-grid-community/all-modules": "^27.3.0",
+    "@ag-grid-enterprise/all-modules": "^27.3.0",
     "@headlessui/react": "^1.7.11",
     "@lottiefiles/react-lottie-player": "^3.5.2",
     "@reduxjs/toolkit": "^1.9.7",
@@ -16,6 +18,7 @@
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.10",
     "@types/react-lazy-load-image-component": "^1.5.2",
+    "ag-charts-react": "^9.1.1",
     "ag-grid-enterprise": "^30.2.1",
     "ag-grid-react": "^30.2.1",
     "allotment": "^1.20.0",

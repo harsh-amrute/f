@@ -19,6 +19,8 @@ const Planning = () => {
         onFloatingTabChange
     } = usePlanning();
 
+    console.log("currentGraphData",currentGraphData);
+
     const renderView = () => {
 
         switch(currentView){
