@@ -12,7 +12,6 @@ interface VFTableProps extends AgGridReactProps {
 
 
 const VFTable = forwardRef((props: VFTableProps, ref: any) => {
- 
   return (
     <VFTableWrapper className="ag-theme-alpine" role={"table"} height={props.height} disableZoomScaling={props.disableZoomScaling}>
       <AgGridReact

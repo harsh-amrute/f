@@ -2,13 +2,16 @@ import styled from 'styled-components'
 
 export const BPRDailyAnalyticsWrapper = styled.div`
     padding:10px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
     
 `
 
 export const BPRDailyAnalyticsContainer = styled.div`
     display:flex;
     flex-direction:column;
-    width:100%;
+    width:90%;
     background: #383737 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #00000034;
     padding:4px 8px;
@@ -18,6 +21,7 @@ export const BPRDailyAnalyticsContainer = styled.div`
 export const BPRDailyAnalyticsHeader = styled.div`
    color:white; 
    margin-bottom:6px;
+   border-bottom:1px white solid;
 `
 
 export const BPRDailyAnalyticsTableContainer = styled.div`
@@ -32,34 +36,37 @@ export const BPRDailyAnalyticsTableHeaderContainer = styled.div`
 
 export const BPRDailyAnalyticsTableHeader = styled.div`
     width:100%;
-    text-align: center;
+    text-align: left;
     margin-bottom:5px;
 `
 
 export const BPRDailyAnalyticsTableRowContainer = styled.div`
     display:flex;
     flex-direction:column;
+    justify-content:center;
 `
 
 export const BPRDailyAnalyticsTableRow = styled.div`
     display:flex;
     flex-direction:row;
-    height: 26px;
+    width:95%;
     border-radius: 4px ;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 12px #58585829;
     margin-bottom:5px;
     overflow:hidden;
+    zoom:0.7;
 `
 
 export const BPRDailyAnalyticsTableCell = styled.div`
+    
     text-align:center;
     position:relative;
     width:100%;
-    height: 26px;
     display:flex;
     align-items:center;
-    justify-content:space-around;
+    justify-content:center;
+    flex-direction:column;
     font-weight:500;
     font-size:11px;
     line-height:21px;
@@ -96,8 +103,28 @@ export const BPRDailyAnalyticStatusBarSection = styled.div`
     font-family:Roboto;
     font-weight:500;
     font-size:12px;  
-    line-heigh:21px;
+    line-height:21px;
     letter-spacing: 0px;
     color: #FFFFFF;
     text-align:center;
+`
+
+export const BPRDailyAnalyticsTableCellHeader = styled.p`
+    font-style:normal;
+    font-variant:normal;
+    font-weight:500;
+    font-size:16px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #313131;
+`
+
+export const BPRDailyAnalyticsTableCellText = styled.p`
+    font-style:normal;
+    font-variant:normal;
+    font-weight:400;
+    font-size:16px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #313131;
 `

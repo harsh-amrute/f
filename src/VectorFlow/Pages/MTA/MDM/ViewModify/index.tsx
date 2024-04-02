@@ -100,7 +100,6 @@ import _ from "lodash";
 
     } = useViewModify('modify');
 
-    console.log(errorCount)
 
     
     useEffect(()=>{

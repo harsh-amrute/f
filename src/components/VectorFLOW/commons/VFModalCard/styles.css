@@ -17,6 +17,7 @@
     width: auto;
     max-width: 90%;
     min-width: 500px;
+    border-radius: 12px 12px 0px 0px;
   }
 
   @media (min-width: 1024px) and (max-width: 1440px) {

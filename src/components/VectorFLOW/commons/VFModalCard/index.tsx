@@ -79,7 +79,7 @@ const VFModalCard = ({
                       {
                         closeModal && (
                           <SCCloseModal onClick={closeModal} data-testid="close-modal-icon">
-                            <img src={closeIcon} height={14} width={14} />
+                            <img src={closeIcon} height={16} width={16} />
                           </SCCloseModal>
                         )
                       }

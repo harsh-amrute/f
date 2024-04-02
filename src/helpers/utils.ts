@@ -1927,3 +1927,44 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[]):ColDef[]=>{
   })
   return [...result,...BORSpecificColumns]
 }
+
+export const BPRColorMapper =(color:string):{bg:string,text:string}=> {
+
+  switch (color){
+      case "White":
+          return {
+              "bg":"white",
+              "text":"black"
+          }
+      case "Yellow":
+          return {
+              "bg":"#EBBF2B",
+              "text":"white"
+          }
+      case "Green":
+          return {
+              "bg":"#418D18",
+              "text":"white"
+          }
+      case "Red":
+          return {
+              "bg":"#F04D4D",
+              "text":"white"
+          }
+      case "Black":
+          return{
+              "bg":"#000000",
+              "text":"white"
+          }
+      case "Blue":
+          return{
+              "bg":"blue",
+              "text":'white'
+          }
+      default:
+          return{
+              "bg":"#B2B2B2",
+              "text":"white"
+          }
+  }
+}

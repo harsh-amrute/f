@@ -26,7 +26,7 @@ const mockContextValue = {
 describe('VFCapsule Component', () => {
     // Mock data for the component props
     const mockProps = {
-        defaultActive: 0,
+        activeBtn: { label: 'Label 1', value: 'Value 1' },
         capsules: [
             { label: 'Label 1', value: 'Value 1' },
             { label: 'Label 2', value: 'Value 2' },

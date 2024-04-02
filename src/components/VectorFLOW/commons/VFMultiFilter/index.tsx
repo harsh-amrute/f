@@ -345,6 +345,9 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     
 
     const onFilterChange=(filterId:string,e:any,parentId:string,property:string, header?:string)=>{
+
+        console.log(e)
+        console.log(filterId)
         
         const filterObj:BPRFilter = {
             attributeName:"",
@@ -468,15 +471,17 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             return newfilterObj
         })
        }
-        else{
-            finalValue = e
-        }
+        // else{
+        //     finalValue = e
+        // }
    
         const currGroup:string | undefined = Object.keys(multiFilter).find((key:string)=>{
             return multiFilter[key as keyof BPRFilterState].id ===parentId
         })
 
         if(currGroup){
+
+            
             const currFilter:BPRFilter | undefined =multiFilter[currGroup as keyof BPRFilterState].filters.find((filter:BPRFilter)=>{
                 return filter.name===filterId
             })
@@ -562,8 +567,9 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     }
 
    
-
-    
+const tpbutton=()=>{
+    console.log(multiFilter)
+}
     const{
        
         onGoBack,
@@ -618,7 +624,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                 <VFHorizonText>
                     <p>Horizon</p>
                 </VFHorizonText>
-                <VFRangeSlider min={0} max={90} milestones={[0,30,60,90]} strictMode={true} width={500} defaultValue={0} handleChange={()=>console.log('')}></VFRangeSlider>  
+                <VFRangeSlider min={0} max={90} milestones={[0,30,60,90]} strictMode={true} width={500} defaultValue={0} handleChange={()=>console.log('')} showTriangle></VFRangeSlider>  
             </RangeSliderComponent>
                 <hr style={{ marginLeft:'30px', marginRight:'30px'}}></hr> 
             </>
@@ -912,7 +918,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             <ButtonFilterWrapper>
                 <ButtonContainer>
                     <VFButtonOutline themeUi={user.user.theme_ui} onClick={onGoBack}>Go Back!</VFButtonOutline>
-                    <VFButton themeUi={user.user.theme_ui} onClick={onApplyFilter}>Apply Filter</VFButton>
+                    <VFButton themeUi={user.user.theme_ui} onClick={tpbutton}>Apply Filter</VFButton>
                 </ButtonContainer>
             </ButtonFilterWrapper>
             </React.Fragment>
