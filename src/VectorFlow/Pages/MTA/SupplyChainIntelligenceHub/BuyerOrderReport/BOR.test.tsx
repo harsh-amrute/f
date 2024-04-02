@@ -3,6 +3,17 @@ import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../
 import { mockBORData,mockBORCountData,mockBORUIConfigData} from "../../../../../mock-data/BOR";
 import BuyerOrderReport from './';
 jest.mock("../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport");
+import { QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter as Router } from "react-router-dom";
+import { setupReactQuery } from "../../../../../config/react-query-config";
+
+
+
+import { ReactNode } from "react";
+import { Provider } from "react-redux";
+import {store} from "../../../../../redux/store/store";
+import { UserDataContext } from "../../../../../context";
+
 
 const useGetBORUIConfigurationMock = useGetBORUIConfiguration as jest.MockedFunction<
     typeof useGetBORUIConfiguration
@@ -15,6 +26,30 @@ const useGetBORUIConfigurationMock = useGetBORUIConfiguration as jest.MockedFunc
   >;
 
   window.URL.createObjectURL = jest.fn();
+
+  const queryClient = setupReactQuery();
+
+  const contextWrapper = (children: ReactNode,store:any) => {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Provider store={store}>
+            <UserDataContext.Provider
+              value={{
+                user: { user: { theme_ui: "NOIRFUSION" } },
+                changeColorTheme: (color) => {
+                  return color;
+                },
+                isSideBarOpen:true,toggleSideBar:jest.fn
+              }}
+            >
+              {children}
+            </UserDataContext.Provider>
+          </Provider>
+        </Router>
+      </QueryClientProvider>
+    );
+  };
 
   
 const useBORDataResult: any = {
@@ -54,17 +89,17 @@ describe("Renders BOR Component", ()=>{
         useGetBORUIConfigurationMock.mockImplementation(()=>{
             return {...useGetMasterUIConfigurationMockResult,isLoading:true};
         });
-        render(<BuyerOrderReport/>)
+        render(contextWrapper(<BuyerOrderReport />,store));
     })
      it("renders BuyerOrderReport", async()=>{
         await act(async () => {
-               render(<BuyerOrderReport/>)
+          render(contextWrapper(<BuyerOrderReport />,store));
           })
     })
 
      it("Handles Pagination", async()=>{
         await act(async () => {
-               render(<BuyerOrderReport/>)
+          render(contextWrapper(<BuyerOrderReport />,store));
           })
 
         const nextBtn = screen.getAllByLabelText('Next page');

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import * as gridSystem from "../../../../../../styles/gridSystem";
 
 export const SCTaskBarContainer = styled.div`
-    padding-top:30px;
+    margin-top:20px;
     padding-left:10px;
     display:flex;
     align-items:center;

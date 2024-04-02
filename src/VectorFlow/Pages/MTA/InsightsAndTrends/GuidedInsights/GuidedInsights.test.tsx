@@ -3,10 +3,42 @@ import { act } from "react-dom/test-utils";
 import { useGetAvailabilityTrend, useGetChronicUnavailabilityLoc, useGetChronicUnavailabilitySku, useGetChronicUnavailabilityGridView} from "../../../../Services/MTA/InsightsAndTrends";
 import { GuidedInsights } from "../../../../../mock-data/GuidedInsights";
 import GuidedInsight from ".";
+import { UserDataContext } from "../../../../../context";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter as Router } from "react-router-dom";
+import { setupReactQuery } from "../../../../../config/react-query-config";
+import { ReactNode } from "react";
+import { Provider } from "react-redux";
+import {store} from "../../../../../redux/store/store";
+
 jest.mock("../../../../Services/MTA/InsightsAndTrends");
 jest.mock("ag-charts-react", () => ({
   AgChartsReact: jest.fn(() => null) // Replace null with a mock component if needed
 }));
+
+const queryClient = setupReactQuery();
+
+const contextWrapper = (children: ReactNode,store:any) => {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Provider store={store}>
+            <UserDataContext.Provider
+              value={{
+                user: { user: { theme_ui: "NOIRFUSION" } },
+                changeColorTheme: (color) => {
+                  return color;
+                },
+                isSideBarOpen:true,toggleSideBar:jest.fn
+              }}
+            >
+              {children}
+            </UserDataContext.Provider>
+          </Provider>
+        </Router>
+      </QueryClientProvider>
+    );
+  };
 
 const useGetAvailabilityTrendMock = useGetAvailabilityTrend as jest.MockedFunction<
     typeof useGetAvailabilityTrend
@@ -49,11 +81,11 @@ describe("Availability Trend Data", () => {
     
      it("Renders Availability Tred Data", () => {
              
-        render(<GuidedInsight/>)
+        render(contextWrapper(<GuidedInsight />,store));
     })
     it("On changing tab to Availability trend data ", async() => {
 
-        render(<GuidedInsight/>)
+        render(contextWrapper(<GuidedInsight />,store));
          await act(async () => {
             
             fireEvent.click(screen.getAllByTestId('floatingTabButton')[0])
@@ -69,7 +101,7 @@ describe("Availability Trend Data", () => {
             return useGetChronicUnavailabilitySkuData;
         })
         
-        render(<GuidedInsight/>)
+        render(contextWrapper(<GuidedInsight />,store));
          await act(async () => {
             
             fireEvent.click(screen.getAllByTestId('floatingTabButton')[1])

@@ -42,7 +42,7 @@ export interface BPRFilter{
     name:string
     attributeName:string
     operator:string
-    value:string | string[]
+    value:string
 }
 
 export interface BPRFilterGroup{

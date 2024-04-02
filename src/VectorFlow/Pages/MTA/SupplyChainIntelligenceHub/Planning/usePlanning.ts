@@ -14,6 +14,7 @@ const usePlanning = ()=>{
         reviewOrderFulfillmentCount:0,
     }
 
+   
     const [planningCounts,setPlanningCounts] = useState<PlanningCounts>(initialPlanningCounts)
 
     const [isSelectCategoryOpen,setIsSelectCategoryOpen] = useState(true);
@@ -39,7 +40,6 @@ const usePlanning = ()=>{
     useEffect(()=>{
         fetchPlanningDataCount();
     },[])
-
    
     const getFloatingTabsList = (view:string) => {
         switch(currentCategory){
@@ -180,6 +180,7 @@ const usePlanning = ()=>{
 
 
     const handlePlanningQuadrantClick = async (category:string) => {
+        console.log(category)
         try {
             switch(category){
                 case 'GITFromParent':{
@@ -202,6 +203,7 @@ const usePlanning = ()=>{
                     notifySuccess("Grid Data Fetched Successfully");
                     break;
                 }
+             
                 case 'GITToChild':{
                     const toastId = notifyLoader('Loading Graphs');
                     setCurrentCategory('GITToChild');
@@ -283,6 +285,8 @@ const usePlanning = ()=>{
         }
 
     }
+
+   
 
     const fetchAndUpdateGridData = async () => {
         try {
@@ -370,6 +374,7 @@ const usePlanning = ()=>{
     }
 
     const onGoBack = () => {
+        console.log('sadfa')
         setIsSelectCategoryOpen(true);
         setCurrentCategory('');
         setCurrentView('');
@@ -408,6 +413,7 @@ const usePlanning = ()=>{
 }
 
 export default usePlanning
+ 
 
 
 

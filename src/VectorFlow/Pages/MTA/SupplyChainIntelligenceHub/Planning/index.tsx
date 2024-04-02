@@ -37,7 +37,6 @@ const Planning = () => {
 
     const {user} = useUserData()
     const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
-    const themeUi = user.user.theme_ui
 
     const renderView = () => {
 
@@ -55,18 +54,7 @@ const Planning = () => {
 
     return(
         <>
-      
-  {/* <PlanningTaskBar>
-<VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
-<ButtonFilterWrapper>
-<VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>Edit Filter</VFButton>
-    {
-        isFilterOpen && (
-        <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} colorFilterActive={true} coverageFilterActive={true}  locationFilterActive={true} ></VFMultiFilter>
-        )
-    }
-</ButtonFilterWrapper> 
-</PlanningTaskBar>  */}
+    
        
        
             {
