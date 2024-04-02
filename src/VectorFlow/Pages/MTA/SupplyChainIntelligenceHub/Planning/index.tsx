@@ -5,6 +5,12 @@ import VFOverlay from "../../../.././../components/VectorFLOW/commons/VFOverlay"
 import ChartView from "./ChartView";
 import ActionToolBar from './ActionToolBar';
 import GridView from "./GridView";
+import { useUserData } from "../../../../../context"
+import VFSelectedFilters from "../../../../../components/VectorFLOW/commons/VFSelectedFilters";
+import {useState} from 'react'
+import VFMultiFilter from "../../../../../components/VectorFLOW/commons/VFMultiFilter";
+import useBPRFilter from "../../../../../hooks/useBPRFilter";
+
 
 const Planning = () => {
 
@@ -25,6 +31,14 @@ const Planning = () => {
         currentGridData
     } = usePlanning();
 
+    
+
+    const [isFilterOpen,toggleFilter] = useState<boolean>(false)
+
+    const {user} = useUserData()
+    const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
+    const themeUi = user.user.theme_ui
+
     const renderView = () => {
 
         switch(currentView){
@@ -41,6 +55,20 @@ const Planning = () => {
 
     return(
         <>
+      
+  {/* <PlanningTaskBar>
+<VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
+<ButtonFilterWrapper>
+<VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>Edit Filter</VFButton>
+    {
+        isFilterOpen && (
+        <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} colorFilterActive={true} coverageFilterActive={true}  locationFilterActive={true} ></VFMultiFilter>
+        )
+    }
+</ButtonFilterWrapper> 
+</PlanningTaskBar>  */}
+       
+       
             {
                 isOverlayVisible && (
                 <VFOverlay>
@@ -69,6 +97,7 @@ const Planning = () => {
                 !isSelectCategoryOpen &&
                 <>
                     <ActionToolBar 
+                        currCategory={currentCategory}
                         view={currentView} 
                         onFloatingTabChange={onFloatingTabChange}
                         onGoBack={onGoBack}

@@ -376,8 +376,6 @@ const usePlanning = ()=>{
         setCurrentTab('');
     }
 
-
-
     const onViewChange = (view:string) => {
         const activeTab = getFloatingTabsList(view)[0];
         if(activeTab){
@@ -387,6 +385,7 @@ const usePlanning = ()=>{
         fetchAndUpdateGridData();
     }
 
+ 
     return {
         planningCounts,
         isSelectCategoryOpen,
@@ -401,7 +400,7 @@ const usePlanning = ()=>{
         onViewChange,
         setCurrentTab,
         getFloatingTabsList,
-        currentGridData
+        currentGridData,
     }
 
 

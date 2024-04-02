@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 export const VFSelectedFiltersWrapper = styled.div`
+    max-width:800px;
     height: 51px;
     padding:5px;
     display:flex;
@@ -8,9 +9,15 @@ export const VFSelectedFiltersWrapper = styled.div`
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #95959529;
     border-radius: 30px;
+    overflow-x:overlay;
+    ::-webkit-scrollbar {
+     width: 0.2px;
+     display:none;
+   }
 `
 
-export const VFSelectedFiltersPlaceHolder = styled.span`
+
+export const VFSelectedFiltersPlaceHolder = styled.p`
     height: 39px;
     border-radius: 20px;
     font-weight:400;
@@ -22,7 +29,9 @@ export const VFSelectedFiltersPlaceHolder = styled.span`
     letter-spacing: 0px;
     color: #313131;
     padding:5px 15px;
-    margin-right:-15px;
+    text-wrap:nowrap;
+   // margin-right:-15px;
+//    min-width:140px;
 `
 
 export const VFSelectedFiltersChip = styled.span`
@@ -34,6 +43,8 @@ export const VFSelectedFiltersChip = styled.span`
     background: #F2F2F2 0% 0% no-repeat padding-box;
     border-radius: 20px;
     margin-left:10px;
+
+    
 `
 
 export const VFSelectedFiltersFilterLabel = styled.div`
@@ -57,6 +68,7 @@ font-size:16px;
 line-height:21px;
 font-family:Roboto;
 letter-spacing: 0px;
+display:flex;
 
 `
 

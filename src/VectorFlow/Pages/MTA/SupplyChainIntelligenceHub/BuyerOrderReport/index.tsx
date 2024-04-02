@@ -4,6 +4,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
  import { BORLayout } from "./styles"
  import {useBOR} from "./useBOR"
  import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
+ import ActionToolBar from "../Planning/ActionToolBar"
 
 const BuyerOrderReport = ()=>{
 
@@ -26,6 +27,8 @@ const BuyerOrderReport = ()=>{
     }
 
     return(
+     <>
+        <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BOR'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
         <BORLayout>
             {/* <BORTaskBar style={{width:'74%'}}>
                 <VFButtonOutline
@@ -60,6 +63,7 @@ const BuyerOrderReport = ()=>{
              </div>
             
         </BORLayout>
+    </>
     )
 }
 
