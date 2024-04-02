@@ -1,5 +1,7 @@
-import Pagination from "../../../../components/commons/Pagination"
-import { PaginationWrapper, SelectedRowsCountWrapper, TotalItemsWrapper } from "./styles"
+
+import { PaginationWrapper,StatusBarLabel,StatusBarLabelLight,StatusBarLabelBold,PaginationContainer, PaginationArrowIcon } from "./styles"
+
+
 export interface VFPaginationProps{
     selectedRows:number
     totalRows:number
@@ -15,57 +17,82 @@ export interface VFPaginationProps{
 const VFPagination  = (props:VFPaginationProps)=>{
 
     const{
-        selectedRows,
         totalRows,
         currentPage,
         rowsPerPage,
         handleChangePage,
-        handleChangePerPage,
-        showTotalItems,
-        showPagination
     } = props
+
+    const totalPages = Math.ceil(totalRows/rowsPerPage)
     
     const getTotalItemsString = () => {
-        if(totalRows <= rowsPerPage) return `1-${totalRows}`;
-        if(currentPage===1) return `1-${rowsPerPage}`;
+        if(totalRows <= rowsPerPage) return `1 to ${totalRows}`;        
+        if(currentPage===1) return `1 to ${rowsPerPage}`;
         const start = (currentPage * rowsPerPage)-rowsPerPage + 1;
         const end = (currentPage)*rowsPerPage;
-        if(end >= totalRows) return `${start}-${totalRows}`;
-        return `${start}-${(currentPage)*rowsPerPage}`;
+        if(end >= totalRows) return `${start} to ${totalRows}`;
+        return `${start} to ${(currentPage)*rowsPerPage}`;
+    }
+
+    const handleOnClick = (newPage:number)=>{
+        if(newPage >totalPages)return handleChangePage(totalPages)
+        if(newPage<=1)return handleChangePage(1)
+        return handleChangePage(newPage)
     }
 
     return(
         <PaginationWrapper data-testid="vf_pagination">
-            {
-                (selectedRows > 0) && <SelectedRowsCountWrapper>
-                                        Selected {selectedRows} out of {totalRows}
-                                      </SelectedRowsCountWrapper>
-            }
-            {
-                showTotalItems &&  
-                    <TotalItemsWrapper>
-                        Total Items : {getTotalItemsString()}/{totalRows}
-                    </TotalItemsWrapper>
-            }
-            {
-                showPagination && 
-                    <Pagination
-                    page={currentPage}
-                    pageCount={totalRows/rowsPerPage}
-                    handleChangePage={handleChangePage}
-                    handleChangePerPage={handleChangePerPage}
+            <PaginationContainer>
+            <StatusBarLabel>
+                <StatusBarLabelBold>
+                {getTotalItemsString()} 
+                </StatusBarLabelBold>
+                <StatusBarLabelLight>
+                    of
+                </StatusBarLabelLight>
+                <StatusBarLabelBold>
+                    {totalRows}
+                </StatusBarLabelBold>
+            </StatusBarLabel>
+            <StatusBarLabel style={{marginLeft:'10px'}}>
+                <PaginationArrowIcon 
+                    src="/assets/img/VectorFLOW/NMS/pagination-last-arrow.svg" 
+                    style={{transform:'rotate(180deg)'}} 
+                    onClick={()=>handleOnClick(0)}
+                    alt="pagination-last-prev-arrow"
                 />
-            }
+                <PaginationArrowIcon 
+                    src="/assets/img/VectorFLOW/NMS/pagination-arrow.svg" 
+                    style={{transform:'rotate(180deg)'}} 
+                    onClick={()=>handleOnClick(currentPage - 1)}
+                    alt="pagination-prev-arrow"
+                />
+                <StatusBarLabelLight>
+                    Page
+                </StatusBarLabelLight>
+                <StatusBarLabelBold>
+                    {currentPage}
+                </StatusBarLabelBold>
+                <StatusBarLabelLight>
+                    of
+                </StatusBarLabelLight>
+                <StatusBarLabelBold>
+                    {totalPages}
+                </StatusBarLabelBold>  
+                
+                <PaginationArrowIcon 
+                    src="/assets/img/VectorFLOW/NMS/pagination-arrow.svg" 
+                    onClick={()=>handleOnClick(currentPage + 1)}
+                    alt="pagination-next-arrow"    
+                />
+                <PaginationArrowIcon 
+                    src="/assets/img/VectorFLOW/NMS/pagination-last-arrow.svg" 
+                    onClick={()=>handleOnClick(totalPages)}
+                    alt="pagination-last-next-arrow"  
+                />
+            </StatusBarLabel>
+            </PaginationContainer>
             
-            <TotalItemsWrapper>
-                Total Items : {getTotalItemsString()}/{totalRows}
-            </TotalItemsWrapper>
-            <Pagination
-                page={currentPage}
-                pageCount={Math.ceil(totalRows/rowsPerPage)}
-                handleChangePage={handleChangePage}
-                handleChangePerPage={handleChangePerPage}
-            />
         </PaginationWrapper>
     )
 }
