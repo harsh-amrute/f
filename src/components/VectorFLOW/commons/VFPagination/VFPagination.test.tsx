@@ -33,10 +33,14 @@ describe("VFPagination Component", () => {
   it("clicks on the next and previous buttons", () => {
     render(<VFPagination {...dummyprops}/>)
 
-    const nextBtn = screen.getAllByText('pagination.next')
-    const previousBtn = screen.getAllByText('pagination.previous')
+    const nextBtn = screen.getAllByAltText('pagination-next-arrow')
+    const previousBtn = screen.getAllByAltText('pagination-prev-arrow')
+    const prevLastBtn = screen.getByAltText('pagination-last-prev-arrow')
+    const nextLastBtn = screen.getByAltText('pagination-last-next-arrow')
     fireEvent.click(nextBtn[0])
     fireEvent.click(previousBtn[0])
-    expect(dummyFn).toBeCalledTimes(2)
+    fireEvent.click(prevLastBtn)
+    fireEvent.click(nextLastBtn)
+    expect(dummyFn).toBeCalledTimes(4)
   })
 })

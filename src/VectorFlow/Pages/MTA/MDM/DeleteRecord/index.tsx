@@ -208,16 +208,7 @@ const DeleteRecord = () => {
                     [],
                   }}
                   />
-                  <div style={{display:'none'}}>                
-                    <VFTable
-                      ref={tempRef}
-                      rowData={tempGridData}
-                      {...tempAgGridProps}
-                    />
-                  </div>
-
-              </VFTab>
-              {
+                  {
                 (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen)) 
                   && 
                   <VFPagination 
@@ -228,6 +219,16 @@ const DeleteRecord = () => {
                     handleChangePage={(e)=>handleChangePage(e)}  
                   />
               }
+                  <div style={{display:'none'}}>                
+                    <VFTable
+                      ref={tempRef}
+                      rowData={tempGridData}
+                      {...tempAgGridProps}
+                    />
+                  </div>
+
+              </VFTab>
+              
           </SCContainer>
 
           {isWarningModalOpen && 
