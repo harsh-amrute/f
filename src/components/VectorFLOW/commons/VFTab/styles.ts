@@ -132,5 +132,6 @@ export const SCTabBody = styled.div`
   background: #ffffff 0% 0% no-repeat padding-box;
   border: 0.5px solid #cccccc;
   border-radius: 0px 15px 15px 15px;
+  padding-bottom:10px;
 `
 

@@ -78,7 +78,7 @@ const useGetRRRCountResult: any = {
         await act(async () => {
                render(<RRR/>)
           })
-        const nextBtn = screen.getAllByText('pagination.next');
+          const nextBtn = screen.getAllByAltText('pagination-next-arrow')
        
         fireEvent.click(nextBtn[0]);
     })

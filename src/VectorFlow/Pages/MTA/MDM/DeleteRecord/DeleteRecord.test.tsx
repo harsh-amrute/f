@@ -405,5 +405,33 @@ describe("Handles all custom redux interactions",()=>{
     fireEvent.click(clickableElement)
    })
 
+   it('handles filter interactions',()=>{
+    const mockState:MDMStore = {
+      allMasters:MasterDataWithSubmittedMaster,
+      masters:MasterDataWithSubmittedMaster,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'default',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[]},
+      isSelectMasterOpen:false,
+      draftId:'',
+      isUploadModalOpen:false,
+      chunkSize:100,
+      recordCount:0,
+      isDataAvailableLocally:true
+    }
+
+    const mockedStore = createStore(mockState)
+
+    render(contextWrapper(<DeleteRecord/>,mockedStore))
+    const deleteIcon = screen.getAllByTestId('delete-icon')
+    fireEvent.click(deleteIcon[0])
+
+    const applyFilterBtn = screen.getByText('Apply Filter')
+    fireEvent.click(applyFilterBtn)
+
+    const showAllBtn = screen.getByText('Show All')
+    fireEvent.click(showAllBtn)
+   })
+
 })
 
