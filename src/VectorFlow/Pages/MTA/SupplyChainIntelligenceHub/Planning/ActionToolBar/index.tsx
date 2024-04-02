@@ -100,11 +100,13 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
    }
     
 
+
     const renderFloatingTab = () => {
    
         return(
                 <VFFloatingTab
                     tabs={tabsList}
+                    defaultTab={tabsList.findIndex(object=>{return object.value===currentTab;})==-1?0:tabsList.findIndex(object=>{return object.value===currentTab;})}
                     handleClick={onFloatingTabChange}
                 />
         )
