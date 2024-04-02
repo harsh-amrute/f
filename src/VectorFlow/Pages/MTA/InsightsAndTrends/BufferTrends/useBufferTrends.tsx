@@ -12,14 +12,13 @@ const initialGraphData  ={
 
 const useBufferTrends = () => {
 
-    const [currentCategory,setCurrentCategory] = useState<string>('');
     const [currentTab,setCurrentTab]=useState<string>('technicalView')
     const [currentPageTab,setCurrentPageTab]=useState<string>('absolute')
     const [currentView,setCurrentView] = useState<string>('chart');
     const [currentGraphData,setCurrentGraphData] = useState([]);
     const [graphData,setGraphData] = useState(initialGraphData);
     const [isSelectCategoryOpen,setIsSelectCategoryOpen] = useState(true);
-    const [currentPageIndex,setCurrentPageIndex]=useState<number>()
+    //const [currentPageIndex,setCurrentPageIndex]=useState<number>()
 
     const {mutateAsync:getBufferTrendsGraph,isLoading} = useGetBufferTrendsGraph();
 
@@ -34,8 +33,8 @@ const useBufferTrends = () => {
             setCurrentPageTab(currentPageTab);
             const toastId = notifyLoader('Loading Graphs');
             const body = {
-                category:currentPageTab,//"absolute",//currentPageTab,
-                type:currentTab, //"technicalView", //currentTab,
+                category:currentPageTab,
+                type:currentTab,
                 filters:[]
             }           
             const result:any = await getBufferTrendsGraph(body)
@@ -56,7 +55,7 @@ const useBufferTrends = () => {
 
    const onFloatingTabChange = (tab:any,index:any) =>{
      setCurrentTab(tab.value);
-     setCurrentPageIndex(index);
+     //setCurrentPageIndex(index);
 
    } 
 
@@ -84,7 +83,7 @@ const useBufferTrends = () => {
         isLoading,
         onFloatingTabChangeOnPages,
         currentPageTab,
-        currentPageIndex
+        //currentPageIndex
     }
   
 }

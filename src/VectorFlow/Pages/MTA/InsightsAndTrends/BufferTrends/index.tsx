@@ -1,5 +1,4 @@
 
-
 import React, { useEffect } from 'react'
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import useBufferTrends from './useBufferTrends';
@@ -10,7 +9,7 @@ import ChartView from '../../InsightsAndTrends/BufferTrends/ChartView';
 const BufferTrends = () => {
 
    const {currentTab,onFloatingTabChange,currentView,currentGraphData,BufferTrendsDataLoad,isLoading,
-    currentPageTab,onFloatingTabChangeOnPages,currentPageIndex} =useBufferTrends();
+    currentPageTab,onFloatingTabChangeOnPages} =useBufferTrends();
    
    const renderView=()=>{
     switch(currentView){
@@ -22,15 +21,6 @@ const BufferTrends = () => {
    useEffect(()=>{
     BufferTrendsDataLoad()
    },[currentTab])
-
-//    if(isLoading){
-//     return(
-//       <VFLoader/>
-//     )
-//    }
-
-   //console.log("render ")
-
    
   return (
     <>
@@ -49,11 +39,10 @@ const BufferTrends = () => {
                                 }
                             ]}
                             handleClick={onFloatingTabChange}
-                            defaultTab={currentPageIndex}
                         />
                     </div>
                     {isLoading?<VFLoader/>: renderView()}      
-                    {/* {renderView()} */}
+                   
     </>
     
   )
