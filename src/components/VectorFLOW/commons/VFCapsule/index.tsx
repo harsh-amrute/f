@@ -1,4 +1,4 @@
-import { useState } from "react"
+
 import { useUserData } from "../../../../context"
 import { VFCapsuleButton, VFCapsuleWrapper } from "./styles"
 
@@ -31,7 +31,7 @@ const VFCapsule = (props:VFCapsuleProps)=>{
         
     }
 
-    const activeCapsule = activeBtn || capsules[0]
+    const activeCapsule = activeBtn 
 
     return(
         <VFCapsuleWrapper themeUi={user.user.theme_ui} data-testid = 'vf-capsule'>

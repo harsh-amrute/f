@@ -148,3 +148,10 @@ export const useDeleteTask = ()=>{
   })
 }
 
+export const useValidateMaster = () => {
+  return useMutation(async(body:any)=>{
+    const {formData,masterId} = body;
+    return await MDMService.validateMaster(formData,masterId)
+  })
+}
+

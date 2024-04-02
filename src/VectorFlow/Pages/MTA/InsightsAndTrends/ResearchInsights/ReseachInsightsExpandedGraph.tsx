@@ -1,7 +1,6 @@
 import { AgChartsReact } from "ag-charts-react"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 
-import {AgChartOptions} from 'ag-charts-community'
 import { ExpandedChartFilterWrapper,ExpandedChartSelectWrapper,ExpandedChartSelectLabel,ExpandedChartCapsuleWrapper} from "./styles"
 
 import Select from 'react-select'

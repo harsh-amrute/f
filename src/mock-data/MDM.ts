@@ -1424,4 +1424,15 @@ export const ChartData = {
   ],
 };
 
+export const validateMasterMockData = {
+  recordCount: null,
+  data: {
+    'sc':'ABCDEF',
+    "error":'dummy error',
+    'warning':'dummy warning'
+  },
+  status: 200,
+  msg: null
+}
+
 

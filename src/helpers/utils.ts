@@ -5,7 +5,7 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef,CellClickedEvent} from 'ag-grid-community';
-import { customKeys, defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper,taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData } from './MDMConstants';
+import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper,taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,format, differenceInSeconds,parse} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
@@ -603,42 +603,42 @@ export const parseExcelData = async (file:any,master:MDMMasterState,pageType:str
     throw new Error( `File Contains ${headers.join(', ')} which were not selected`)
   }
   
-  let rowObj:any = {};
-  let temp = 0;
+  // let rowObj:any = {};
+  // let temp = 0;
   if(data.slice(1).length === 0){
     throw new Error( `File Contains zero rows.`)
   }
-  data.slice(1).map((row:any)=>{
+  // data.slice(1).map((row:any)=>{
     
-    row.map((value:any)=>{
-      const attributeName = headerKeys[temp];
-      rowObj[attributeName.toString()] = "" + value;
-      temp+=1;
-    })
-    temp = 0;
-    //Replace with empty string if null (for Custom keys)
-    Object.keys(rowObj).forEach((key:any)=>{
-      if(customKeys.includes(key) && rowObj[key]===null){
-        rowObj[key] = ''
-      }
-    })
+  //   row.map((value:any)=>{
+  //     const attributeName = headerKeys[temp];
+  //     rowObj[attributeName.toString()] = "" + value;
+  //     temp+=1;
+  //   })
+  //   temp = 0;
+  //   //Replace with empty string if null (for Custom keys)
+  //   Object.keys(rowObj).forEach((key:any)=>{
+  //     if(customKeys.includes(key) && rowObj[key]===null){
+  //       rowObj[key] = ''
+  //     }
+  //   })
 
-    const {error,warning} = checkError(rowObj,master,pageType);
+  //   const {error,warning} = checkError(rowObj,master,pageType);
     
-    if(error !== undefined){
-      rowObj.error = error;
-    }
-    if(warning !== undefined){
-      rowObj.warning = warning;
-    }
-    const doesRowExists = result.find((row:any)=>JSON.stringify(row)===JSON.stringify(rowObj));
-    if(doesRowExists){
-      throw new Error("Duplicate Rows Found in File");
-    }
-    result.push(rowObj);
-    rowObj={}
+  //   if(error !== undefined){
+  //     rowObj.error = error;
+  //   }
+  //   if(warning !== undefined){
+  //     rowObj.warning = warning;
+  //   }
+  //   const doesRowExists = result.find((row:any)=>JSON.stringify(row)===JSON.stringify(rowObj));
+  //   if(doesRowExists){
+  //     throw new Error("Duplicate Rows Found in File");
+  //   }
+  //   result.push(rowObj);
+  //   rowObj={}
     
-  })
+  // })
 
   
 

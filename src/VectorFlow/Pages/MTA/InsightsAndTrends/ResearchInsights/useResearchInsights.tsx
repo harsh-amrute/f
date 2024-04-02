@@ -19,11 +19,9 @@ const useResearchInsights = ()=>{
     const {mutateAsync:getBPRData,isLoading:isBPRDataLoading} = useGetBPRData()
 
     const [isGraphOneOpen,setIsGraphOneOpen] = useState<boolean>(false)
-    const [horizon,setHorizon] = useState<number>(90)
+    const [horizon,setHorizon] = useState<number>(10)
     const [graphState,setGraphState] = useState<'default' | 'calender' | 'graph'>('default')
-    const [currCalenderDates,setCurrCalenderDates] = useState<Array<{color:string,date:any}>>([])
     const [calenderType,setCalenderType] = useState<'Tech' | 'Eco'>('Tech')
-    const [graphOneData,setGraphOneData] = useState<Array<any>>([])
     const [expandedGraphId,setExpandedGraphId] = useState<1 | 2>(1)
 
     const [graphs,setGraphs] = useState<Array<ReseachInsightsGraphState>>([
@@ -149,16 +147,10 @@ const useResearchInsights = ()=>{
 
     function convertCustomObjToObjects(colorArray:any) {
         const result:any = [];
-        const suffixes = ['st', 'nd', 'rd'];
     
         colorArray.forEach((color:any, index:any) => {
-            const day = index + 1;
             const date = addDays(new Date(), -(colorArray.length - index) + 1);
-            let suffix = 'th';
-    
-            if (day <= 3) {
-                suffix = suffixes[day - 1];
-            }
+            
     
             const dateString = `${format(date, 'do MMM')}`;
     
@@ -342,11 +334,9 @@ const useResearchInsights = ()=>{
         isLoading:isBPRDataLoading || isBPRUILoading,
         horizon,
         graphState,
-        currCalenderDates,
         blackCount,
         redCount,
         whiteCount,
-        graphOneData,
         isGraphOneOpen,
         graphs,
         locationGraphData,

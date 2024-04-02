@@ -19,6 +19,7 @@ import {
   useModifyMasterData,
   useDeleteDraft,
   useDeleteTask,
+  useValidateMaster
 } from "../../../../Services/MTA/MDM";
 import _ from "lodash";
 import { createStore, store } from "../../../../../redux/store/store";
@@ -28,7 +29,7 @@ import { ReactNode } from "react";
 import { RESET_STATE } from "../../../../../redux/actions/MDM";
 // import { toast } from 'react-toastify'
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
-import { createDraftMockData, deleteDraftMockData, getSeasonalityDetailsMockData, MasterData, mockMasterData,modifyMasterMockData, deleteTaskMockData } from "../../../../../mock-data/MDM";
+import { createDraftMockData, deleteDraftMockData, getSeasonalityDetailsMockData, MasterData, mockMasterData,modifyMasterMockData, deleteTaskMockData, validateMasterMockData } from "../../../../../mock-data/MDM";
 import { mapMasterToColumnDefs } from "../../../../../helpers/utils";
 
 
@@ -77,6 +78,10 @@ typeof useDeleteDraft
 
 const useDeleteTaskMock = useDeleteTask as jest.MockedFunction<
 typeof useDeleteTask
+>;
+
+const useValidateMasterMock = useValidateMaster as jest.MockedFunction<
+typeof useValidateMaster
 >;
 
 
@@ -135,6 +140,12 @@ const useDeleteDraftMockData:any = {
 const useDeleteTaskMockData:any = {
   mutateAsync:() => {
     return {data:deleteTaskMockData}
+  }
+}
+
+const useValidateMasterMockData:any = {
+  mutateAsync:() => {
+    return {data:validateMasterMockData}
   }
 }
 
@@ -260,6 +271,10 @@ describe("Renders View Modify Component", () => {
     useDeleteTaskMock.mockImplementation(() => {
       return useDeleteTaskMockData;
     })
+
+    useValidateMasterMock.mockImplementation(() => {
+      return useValidateMasterMockData;
+    })
   });
 
   it("renders the view modify component when loading", async () => {
@@ -338,6 +353,10 @@ describe("Handles all Interaction in ViewModify Component", () => {
 
     useDeleteTaskMock.mockImplementation(() => {
       return useDeleteTaskMockData;
+    })
+
+    useValidateMasterMock.mockImplementation(() => {
+      return useValidateMasterMockData;
     })
 
     store.dispatch(RESET_STATE());
@@ -601,6 +620,10 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     useDeleteTaskMock.mockImplementation(() => {
       return useDeleteTaskMockData;
+    })
+
+    useValidateMasterMock.mockImplementation(() => {
+      return useValidateMasterMockData;
     })
 
     

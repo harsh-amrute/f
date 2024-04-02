@@ -57,6 +57,7 @@ const VFRangeSlider: React.FC<VFRangeSliderProps> = ({ milestones,min,max,strict
     <RangeSliderContainer style={{width:width}}>
         <RangeSliderInput
             type="range"
+            data-testid="range-slider"
             min={min}
             max={max}
             value={value}

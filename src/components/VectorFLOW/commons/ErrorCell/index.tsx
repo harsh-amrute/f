@@ -17,7 +17,8 @@ const ErrorCell = (props:ICellRendererParams)=>{
 
     const message = props.data.error;
 
-    const messages = message?.split(/(?<=\.)\s+/) 
+    const messages = message?.split('.').filter((msg:string)=>msg.length > 1)
+    
     const getFomattedMessage = (msg:string) => {
         if(msg.length > 30) {
             return msg.slice(0,30)+'...'
@@ -46,6 +47,7 @@ const ErrorCell = (props:ICellRendererParams)=>{
         setIsToolTipOpen(true);
     }
 
+
     const onMouseOut = ()=>{
         setIsToolTipOpen(false)
     }
@@ -58,7 +60,7 @@ const ErrorCell = (props:ICellRendererParams)=>{
                 <p  >{getFomattedMessage(message)}</p>
                 {isToolTipOpen && (
                     <Portal wrapperId="error-tooltip">
-                        <SCToolTipWrapper style={{...errorCellPosition}} onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={onMouseOut}>
+                        <SCToolTipWrapper data-testid='tooltip-wrapper' style={{...errorCellPosition}} onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={onMouseOut}>
                             <SCErrorToolTipUl>
                                 {(messages && messages.length>0) &&  messages.map((sentence:string,index:number)=>{
                                     return <SCErrorToolTipLi key={index}>{sentence}</SCErrorToolTipLi>
