@@ -306,7 +306,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId}:any)=>{
                   {
                     header==="Availabilty Filter" ?
                     <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-                        <FilterTextInput disabled={true} placeholder={placeholder} onChange={(e:any)=>onChange(e,'value')}/>    
+                        <FilterTextInput disabled={true} placeholder={placeholder} />    
                     </SelectDropdownComponent> 
                     : 
                     <SelectDropdownComponent data-testid="BPR-filter-dropdown">
@@ -346,6 +346,9 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     
 
     const onFilterChange=(filterId:string,e:any,parentId:string,property:string, header?:string)=>{
+
+        console.log(e)
+        console.log(filterId)
         
         const filterObj:BPRFilter = {
             attributeName:"",
@@ -469,15 +472,16 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             return newfilterObj
         })
        }
-        else{
-            finalValue = e
-        }
+        // else{
+        //     finalValue = e
+        // }
    
         const currGroup:string | undefined = Object.keys(multiFilter).find((key:string)=>{
             return multiFilter[key as keyof BPRFilterState].id ===parentId
         })
        
         if(currGroup){
+
             const currFilter:BPRFilter | undefined =multiFilter[currGroup as keyof BPRFilterState].filters.find((filter:BPRFilter)=>{
                 return filter.name===filterId
             })
@@ -561,8 +565,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     }
 
    
-
-    
     const{
        
         onGoBack,
@@ -576,7 +578,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         colorFilterActive = false,
         coverageFilterActive = false,
         horizonActive = false,
-        onApplyFilter
         
     } = props
 
@@ -617,7 +618,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                 <VFHorizonText>
                     <p>Horizon</p>
                 </VFHorizonText>
-                <VFRangeSlider min={0} max={90} milestones={[0,30,60,90]} strictMode={true} width={500} defaultValue={0} handleChange={()=>console.log('')} showTriangle={true}></VFRangeSlider>  
+                <VFRangeSlider min={0} max={90} milestones={[0,30,60,90]} strictMode={true} width={500} defaultValue={0} handleChange={()=>console.log('')} showTriangle></VFRangeSlider>  
             </RangeSliderComponent>
                 <hr style={{ marginLeft:'30px', marginRight:'30px'}}></hr> 
             </>
@@ -911,7 +912,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             <ButtonFilterWrapper>
                 <ButtonContainer>
                     <VFButtonOutline themeUi={user.user.theme_ui} onClick={onGoBack}>Go Back!</VFButtonOutline>
-                    <VFButton themeUi={user.user.theme_ui} onClick={onApplyFilter}>Apply Filter</VFButton>
+                    <VFButton themeUi={user.user.theme_ui} onClick={()=>console.log(multiFilter)}>Apply Filter</VFButton>
                 </ButtonContainer>
             </ButtonFilterWrapper>
             </React.Fragment>

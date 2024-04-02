@@ -5,7 +5,7 @@ import VFRangeSlider from "../../../../../components/VectorFLOW/commons/VFRangeS
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 
 
-import { AvailabilityTrendHeader,ResearchInsightsTableWrapper,ResearchInsightsTableTaskBar, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick } from "./styles"
+import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrapper,ResearchInsightsTableTaskBar, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick, ExpandChartIcon } from "./styles"
 
 import CustomCalenderCaption from './CustomCalenderCaption'
 import CustomCalenderDay from './CustomCalenderDay'
@@ -18,6 +18,7 @@ import { AgChartsReact } from 'ag-charts-react'
 import React from 'react'
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline'
 import { useUserData } from '../../../../../context'
+import ExpandedGraph from './ReseachInsightsExpandedGraph'
 
 
 
@@ -34,12 +35,20 @@ const ResearchInsights = ()=>{
         setHorizon,
         getColor,
         setCalenderType,
-        setGraphOneType,
-        setGraphTwoType,
         handleOnUpdateGraph,
         redCount,
         blackCount,
-        whiteCount
+        whiteCount,
+        expandedGraphId,
+        isGraphOneOpen,
+        selfGraphData,
+        locationGraphData,
+        graphs,
+        calenderType,
+        expandedGraphAllFilterValues,
+        toggleGraphModal,
+        setIsGraphOneOpen,
+        updateGraphState
     } = useResearchInsights()
 
     const {user} = useUserData()
@@ -47,15 +56,16 @@ const ResearchInsights = ()=>{
     const themeUi = user.user.theme_ui
 
     
-
     if(isLoading){
         return <VFLoader/>
     }
 
+    
     return(
         <ResearchInsightsLayout>
-            <ResearchInsightsTableWrapper>
+            <ResearchInsightsTableWrapper style={{zoom:0.8}}>
                 <VFTable
+                    height={800}
                     {...agGridProps}
                     ref={ref}
                     columnDefs={ResearchInsightsColumns}
@@ -131,15 +141,15 @@ const ResearchInsights = ()=>{
                             </ChartHeaderText>
                             <CapsuleWrapper>
                                 <VFCapsule
-                                    defaultActive={0}
+                                    activeBtn={{label:calenderType,value:calenderType}}
                                     capsules={[
                                         {
                                             label:"Tech",
-                                            value:'tech'
+                                            value:'Tech'
                                         },
                                         {
                                             label:"Eco",
-                                            value:'eco'
+                                            value:'Eco'
                                         }
                                     ]}
                                     handleClick={(e:any)=>setCalenderType(e.label)}
@@ -150,6 +160,9 @@ const ResearchInsights = ()=>{
                         <CalenderWrapper>
                             <CalenderHeader> Technical </CalenderHeader>
                             <DayPicker
+                                style={{
+                                    zoom:0.7
+                                }}
                                 mode='single'
                                 components={{
                                     Caption:CustomCalenderCaption,
@@ -236,134 +249,264 @@ const ResearchInsights = ()=>{
                         </ChartHeaderText>
                         <CapsuleWrapper>
                             <VFCapsule
-                                defaultActive={0}
+                                activeBtn={graphs[0].pen}
                                 capsules={[
                                     {
                                         label:"Tech",
-                                        value:'tech'
+                                        value:'Tech'
                                     },
                                     {
                                         label:"Eco",
-                                        value:'eco'
+                                        value:'Eco'
                                     }
                                 ]}
-                                handleClick={(value:any)=>setGraphOneType(value.label)}
+                                handleClick={(value:any)=>updateGraphState(1,'pen',value)}
                                 
                             />
                         </CapsuleWrapper>
                     </ChartHeader>
                     <ChartWrapper>
+                        <ExpandChartIcon src='/assets/img/VectorFLOW/BPR/expand-graph.svg' onClick={()=>toggleGraphModal(true,1)}/>
                         <AgChartsReact options={{
                         height:200,
-                        width:400,
-                        data:[
+                        width:300,
+                        data:selfGraphData,
+                        axes:[
                             {
-                            date: "1",
-                            red: 200,
-                            diesel: 100,
+                                
+                                type:"category",
+                                position:'bottom',
+                                label:{
+                                    fontSize:8
+                                }
                             },
                             {
-                            date: "2",
-                            petrol: 300,
-                            diesel: 130,
-                            },
-                            {
-                            date: "3",
-                            green: 350,
-                            diesel: 160,
-                            },
-                            {
-                            date: "4",
-                            green: 400,
-                            red: 200,
-                            },
+                                type:"number",
+                                position:'left',
+                                label:{
+                                    fontSize:8
+                                }
+                            }
                         ],
                         series: [
-                        {
-                            type: "line",
-                            xKey: "date",
-                            yKey: "red",
-                            yName: "Red",
-                        },
-                        {
-                            type: "line",
-                            xKey: "date",
-                            yKey: "green",
-                            yName: "Green",
-                        },
-                        ],
+                            {
+                                type: "line",
+                                xKey: "date",
+                                yKey: "Red",
+                                yName: "Red",
+                                
+                                marker:{
+                                    fill:'red'
+                                },
+                                stroke:'red'
+                                
+                            },
+                            {
+                                type: "line",
+                                xKey: "date",
+                                yKey: "Green",
+                                yName: "Green",
+                                marker:{
+                                    fill:'green'
+                                },
+                                stroke:'green'
+                            },
+                            {
+                                type: "line",
+                                xKey: "date",
+                                yKey: "Yellow",
+                                yName: "Yellow",
+                                marker:{
+                                    fill:'yellow'
+                                },
+                                stroke:'yellow'
+                            },
+                            {
+                                type: "line",
+                                xKey: "date",
+                                yKey: "Black",
+                                yName: "Black",
+                                marker:{
+                                    fill:'black'
+                                },
+                                stroke:'black'
+                            },
+                            {
+                                type: "line",
+                                xKey: "date",
+                                yKey: "Blue",
+                                yName: "Blue",
+                                marker:{
+                                    fill:'blue'
+                                },
+                                stroke:'blue'
+                            },
+                            {
+                                type: "line",
+                                xKey: "date",
+                                yKey: "White",
+                                yName: "White",
+                                marker:{
+                                    fill:'gray'
+                                },
+                                stroke:'gray'
+                            }
+                            ],
+                        legend:{
+                            position:'top',
+                            item:{
+                                label:{
+                                    fontSize:8,
+
+                                },
+                                marker:{
+                                    size:10
+                                },
+                                line:{
+                                    strokeWidth:1
+                                }
+                            }
+                            
+                        }
                     }}/>
                     </ChartWrapper>
                     </AvailabilityTrendSection>
                     <AvailabilityTrendSection style={{border:'none'}}>
                     <ChartHeader>
-                        <ChartHeaderText>
-                           Parent Location
-                        </ChartHeaderText>
+                        <ChartHeaderRadioGroup>
+                            <input type="radio" value="parent" name="location" id="parent" defaultChecked onChange={()=>updateGraphState(2,'type',{label:"Parent",value:'Parent'})}/>
+                            <label htmlFor="parent">Parent</label>
+                        </ChartHeaderRadioGroup>
+                        <ChartHeaderRadioGroup style={{marginLeft:'10px'}}>
+                            <input type="radio" value="child" name="location" id="child" onChange={()=>updateGraphState(2,'type',{label:"Child",value:'Child'})}/>
+                            <label htmlFor="child">Child</label>
+                        </ChartHeaderRadioGroup>
                         <CapsuleWrapper>
                             <VFCapsule
-                                defaultActive={0}
+                                activeBtn={graphs[1].pen}
                                 capsules={[
                                     {
                                         label:"Tech",
-                                        value:'tech'
+                                        value:'Tech'
                                     },
                                     {
                                         label:"Eco",
-                                        value:'eco'
+                                        value:'Eco'
                                     }
                                 ]}
-                                handleClick={(value:any)=>setGraphTwoType(value.label)}
+                                handleClick={(value:any)=>updateGraphState(2,'pen',value)}
                                 
                             />
                         </CapsuleWrapper>
                     </ChartHeader>
                     <ChartWrapper>
-                    <AgChartsReact options={{
-                        height:200,
-                        width:400,
-                        data:[
-                            {
-                            quarter: "Q1",
-                            petrol: 200,
-                            diesel: 100,
-                            },
-                            {
-                            quarter: "Q2",
-                            petrol: 300,
-                            diesel: 130,
-                            },
-                            {
-                            quarter: "Q3",
-                            petrol: 350,
-                            diesel: 160,
-                            },
-                            {
-                            quarter: "Q4",
-                            petrol: 400,
-                            diesel: 200,
-                            },
-                        ],
-                        series: [
-                        {
-                            type: "line",
-                            xKey: "quarter",
-                            yKey: "petrol",
-                            yName: "Petrol",
-                        },
-                        {
-                            type: "line",
-                            xKey: "quarter",
-                            yKey: "diesel",
-                            yName: "Diesel",
-                        },
-                        ],
-                    }}/>
+                        <ExpandChartIcon src='/assets/img/VectorFLOW/BPR/expand-graph.svg' onClick={()=>toggleGraphModal(true,2)}/>
+                        <AgChartsReact options={{
+                            height:150,
+                            width:300,
+                            data:locationGraphData,
+                            axes:[
+                                {
+                                    
+                                    type:"category",
+                                    position:'bottom',
+                                    label:{
+                                        fontSize:8
+                                    }
+                                },
+                                {
+                                    type:"number",
+                                    position:'left',
+                                    label:{
+                                        fontSize:8
+                                    }
+                                }
+                            ],
+                            series: [
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Red",
+                                    yName: "Red",
+                                    
+                                    marker:{
+                                        fill:'red'
+                                    },
+                                    stroke:'red'
+                                    
+                                },
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Green",
+                                    yName: "Green",
+                                    marker:{
+                                        fill:'green'
+                                    },
+                                    stroke:'green'
+                                },
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Yellow",
+                                    yName: "Yellow",
+                                    marker:{
+                                        fill:'yellow'
+                                    },
+                                    stroke:'yellow'
+                                },
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Black",
+                                    yName: "Black",
+                                    marker:{
+                                        fill:'black'
+                                    },
+                                    stroke:'black'
+                                },
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Blue",
+                                    yName: "Blue",
+                                    marker:{
+                                        fill:'blue'
+                                    },
+                                    stroke:'blue'
+                                },
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "White",
+                                    yName: "White",
+                                    marker:{
+                                        fill:'gray'
+                                    },
+                                    stroke:'gray'
+                                }
+                                ],
+                                legend:{
+                                    position:'top'
+                                }
+                        }}/>
                     </ChartWrapper>
                     </AvailabilityTrendSection>
                     </React.Fragment>
                 )}
             </AvailabilityTrendWrapper>
+           
+             <ExpandedGraph
+                onUpdateGraphs={updateGraphState}
+                options={expandedGraphAllFilterValues}
+                graphs={graphs}
+                id={expandedGraphId}
+                onTogglePen={(e)=>updateGraphState(expandedGraphId,"pen",e)}
+                data={expandedGraphId===1?selfGraphData:locationGraphData}
+                isOpen={isGraphOneOpen}
+                onClose={()=>setIsGraphOneOpen(false)}
+            />
+           
         </ResearchInsightsLayout>
     )
 }

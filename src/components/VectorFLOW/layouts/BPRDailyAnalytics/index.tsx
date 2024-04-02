@@ -1,7 +1,23 @@
 
 import { ColDef } from 'ag-grid-enterprise'
-import { useMemo } from 'react'
-import {BPRDailyAnalyticsHeader,BPRDailyAnalyticsContainer, BPRDailyAnalyticsTableCell, BPRDailyAnalyticsTableContainer, BPRDailyAnalyticsTableHeader, BPRDailyAnalyticsTableHeaderContainer, BPRDailyAnalyticsTableRow, BPRDailyAnalyticsTableRowContainer, BPRDailyAnalyticStatusBar, BPRDailyAnalyticsWrapper, BPRDailyAnalyticsTableChangeIcon,BPRDailyAnalyticsTableNoChangeWrapper, BPRDailyAnalyticStatusBarSection} from './styles'
+import React, { useMemo } from 'react'
+import {
+    BPRDailyAnalyticsHeader,
+    BPRDailyAnalyticsContainer,
+    BPRDailyAnalyticsTableCell,
+    BPRDailyAnalyticsTableContainer,
+    BPRDailyAnalyticsTableHeader,
+    BPRDailyAnalyticsTableHeaderContainer,
+    BPRDailyAnalyticsTableRow,
+    BPRDailyAnalyticsTableRowContainer,
+    BPRDailyAnalyticStatusBar,
+    BPRDailyAnalyticsWrapper,
+    BPRDailyAnalyticsTableChangeIcon,
+    BPRDailyAnalyticsTableNoChangeWrapper,
+    BPRDailyAnalyticStatusBarSection,
+    BPRDailyAnalyticsTableCellHeader,
+    BPRDailyAnalyticsTableCellText
+} from './styles'
 
 interface BPRDailyAnalyticsProps{
     colDefs:ColDef[]
@@ -58,7 +74,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
         <BPRDailyAnalyticsWrapper>
             <BPRDailyAnalyticsContainer>
             <BPRDailyAnalyticsHeader>
-                Analytics (Today)
+                Analytics (SKU Locations)
             </BPRDailyAnalyticsHeader>
             <BPRDailyAnalyticsTableContainer>
                 <BPRDailyAnalyticsTableHeaderContainer>
@@ -84,15 +100,35 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                                {Object.keys(row).map((key:string)=>{
                                    if(key==='color'){
                                         return(
-                                            <BPRDailyAnalyticsTableCell style={{backgroundColor:row[key],width:25,boxShadow: "0px 3px 12px #AFAFAF"}}/>
+                                            <BPRDailyAnalyticsTableCell style={{backgroundColor:row[key],width:60,boxShadow: "0px 3px 12px #AFAFAF"}}/>
                                         )
                                    }
-                                   return(
-                                        <BPRDailyAnalyticsTableCell>
-                                           {getCellText(row[key],key)}
-                                           {getCellIcons(row[key],key)}
-                                        </BPRDailyAnalyticsTableCell>
+                                  if(key=='techCount'){
+                                    return(
+                                        <React.Fragment>
+                                            <BPRDailyAnalyticsTableCell>
+                                                <BPRDailyAnalyticsTableCellHeader>{getCellText(row[key],key)}</BPRDailyAnalyticsTableCellHeader>
+                                                <BPRDailyAnalyticsTableCellText>{getCellText(row.techChange,'techChange')}</BPRDailyAnalyticsTableCellText>
+                                            </BPRDailyAnalyticsTableCell>
+                                            <BPRDailyAnalyticsTableCell>
+                                                {getCellIcons(row.techChange,'techChange')}
+                                            </BPRDailyAnalyticsTableCell>
+                                        </React.Fragment>
                                     )
+                                  }
+                                  if( key==='ecoCount'){
+                                    return(
+                                        <React.Fragment>
+                                            <BPRDailyAnalyticsTableCell>
+                                                <BPRDailyAnalyticsTableCellHeader>{getCellText(row[key],key)}</BPRDailyAnalyticsTableCellHeader>
+                                                <BPRDailyAnalyticsTableCellText>{getCellText(row.ecoChange,'ecoChange')}</BPRDailyAnalyticsTableCellText>
+                                            </BPRDailyAnalyticsTableCell>
+                                           <BPRDailyAnalyticsTableCell>
+                                                {getCellIcons(row.ecoChange,'ecoChange')}
+                                           </BPRDailyAnalyticsTableCell>
+                                        </React.Fragment>
+                                    )
+                                  }
                                })}
                             </BPRDailyAnalyticsTableRow>
                         )

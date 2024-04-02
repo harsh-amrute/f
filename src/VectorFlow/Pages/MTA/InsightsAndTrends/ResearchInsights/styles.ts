@@ -17,7 +17,8 @@ export const ResearchInsightsTableWrapper = styled.div`
 
 export const ResearchInsightsTableTaskBar = styled.div`
     width:100%;
-    padding:10px 20px;
+    padding:10px 15px;
+    margin-top:-10px;
 `
 
 export const AvailabilityTrendWrapper = styled.div`
@@ -34,7 +35,7 @@ export const AvailabilityTrendHeader = styled.div`
     color:white;
     width:100%;
     text-align:center;
-    font-size:16px;
+    font-size:14px;
     font-weight:500;
     font-family:Roboto;
 `
@@ -48,7 +49,7 @@ export const AvailabilityTrendSection = styled.div`
 
 export const HistoricalAvailabiltyHeader = styled.p`
     font-weight:500;
-    font-size:12px;
+    font-size:10px;
     margin-bottom:5px;
 `
 
@@ -71,7 +72,7 @@ export const HistoricalAvailabiltyContentSection = styled.span`
 export const HistoricalAvailabiltyContentSectionHeader = styled.p`
     display:inline;
     font-weight:500;
-    font-size:11px;
+    font-size:9px;
     line-height:10px;
     color:#383737;
 `
@@ -79,34 +80,48 @@ export const HistoricalAvailabiltyContentSectionHeader = styled.p`
 export const HistoricalAvailabiltyContentSectionData = styled.p`
     display:inline;
     font-weight:500;
-    font-size:14px;
+    font-size:9px;
     color:black;
 `
 
 export const HorizonHeader = styled.p`
     text-align:center;
     font-weight:500;
-    font-size:12px;
+    font-size:10px;
 `
 
 export const ChartHeader = styled.div`
     width:100%;
     display:flex;
-    justify-content:space-between;
     align-items:center:
     
 `
 
 export const ChartHeaderText = styled.p`
-    font-size:15px;
+    font-size:12px;
     font-weight:400;
     display:flex;
     align-items:center;
 `
 
+export const ChartHeaderRadioGroup = styled.div`
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    accent-color:#BC3D81;
+    font-style:normal;
+    font-variant:normal;
+    font-weight:300;
+    font-size:10px;
+    line-height:19px;
+    font-family:Roboto;
+`
+
+
 export const CapsuleWrapper = styled.div`
     width:100%;
-    max-width:120px;
+    max-width:80px;
+    margin-left:auto;
 `
 
 export const CalenderWrapper = styled.div`
@@ -159,6 +174,7 @@ export const CustomCalenderDayWrapper = styled.div`
 `
 
 export const ChartWrapper = styled.div`
+    position:relative;
     width:100%;
     padding-top:10px;
     display:flex;
@@ -180,7 +196,7 @@ width:100%;
 `
 export const CalenderSummaryCellText = styled.p`
     font-weight:400;
-    font-size:12px;
+    font-size:9px;
     text-align:center;
 `
 
@@ -192,10 +208,57 @@ export const CalenderSummaryCellContentWrapper = styled.div`
 
 export const CalenderSummaryCellContent = styled.p`
     font-weight:500;
-    font-size:18px;
+    font-size:12px;
 `
 export const CalenderSummaryCellContentStick = styled.div`
-    height:20px ;
+    height:15px ;
     width:2px;
     margin-left:5px;
+`
+
+export const ExpandChartIcon = styled.img`
+    position:absolute;
+    right:0;
+    top:5px;
+    height:20px;
+    width:20px;
+    z-index:20;
+    cursor:pointer;
+`
+
+export const ExpandedChartFilterWrapper = styled.div`
+    width:100%;
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    padding:10px;
+    margin-top:20px;
+    border-bottom:2px dashed gray;
+`
+
+
+export const ExpandedChartSelectWrapper = styled.div`
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    align-items:center;
+    margin-right:20px;
+`
+
+export const ExpandedChartSelectLabel = styled.p`
+    margin-right:15px;
+    font-style:normal;
+    font-variant:normal;
+    font-weight:500;
+    font-size:12px;
+    line-height:26px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #000000;
+`
+
+export const ExpandedChartCapsuleWrapper = styled.div`
+    width:100px;
+    margin-left:auto;
+    zoom:0.8;
 `
