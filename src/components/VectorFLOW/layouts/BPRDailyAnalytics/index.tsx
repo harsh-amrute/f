@@ -110,7 +110,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                                                 <BPRDailyAnalyticsTableCellText>{getCellText(row.techChange,'techChange')}</BPRDailyAnalyticsTableCellText>
                                             </BPRDailyAnalyticsTableCell>
                                             <BPRDailyAnalyticsTableCell>
-                                                {getCellIcons(row.techChange,'techChange')}
+                                                {getCellIcons(row.techChange)}
                                             </BPRDailyAnalyticsTableCell>
                                         </React.Fragment>
                                     )
@@ -123,7 +123,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                                                 <BPRDailyAnalyticsTableCellText>{getCellText(row.ecoChange,'ecoChange')}</BPRDailyAnalyticsTableCellText>
                                             </BPRDailyAnalyticsTableCell>
                                            <BPRDailyAnalyticsTableCell>
-                                                {getCellIcons(row.ecoChange,'ecoChange')}
+                                                {getCellIcons(row.ecoChange)}
                                            </BPRDailyAnalyticsTableCell>
                                         </React.Fragment>
                                     )
