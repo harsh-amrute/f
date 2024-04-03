@@ -1,75 +1,78 @@
 import {useRef, useMemo, useState} from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
-import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
-import { type GridRef } from "../../../../../../../../types/MDM";
-import { ChartRef, ColDef } from "ag-grid-enterprise";
-import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../../styles';
-import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
+import "../../styles.css";
+import VFTable from "../../../../../../../../components/VectorFLOW/commons/VFTable";
+import { type GridRef } from "../../../../../../../types/MDM";
+import { ColDef, ChartRef } from "ag-grid-enterprise";
+import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../styles';
+import VFInfoTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 
-
-interface CreateAvailabilityAtParentProps{
+interface ExcessInventoryProps{
     data:any
 }
 
 
-const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
+const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
 
     const refGraph1 = useRef<GridRef>();
     const refGraph2 = useRef<GridRef>();
+  
     const [hideChart1,toggleChart1] = useState<boolean>(false);
     const [hideChart2,toggleChart2] = useState<boolean>(false);
+
     const [grid1DisplayStatus,setGrid1DisplayStatus] = useState<string>('none');
     const [grid2DisplayStatus,setGrid2DisplayStatus] = useState<string>('none');
-
-    const coldefs1:ColDef[] = [
-        {
-            field:'ln',
-            headerName:'Location Name',
-            colId:'ln',
-        },
-        {
-            field:'trqn',
-            headerName:'SKU Location Count',
-            colId:'trqn',
-        }
-    ]
-    const coldefs2:ColDef[] = [
-        {
-            field:'ln',
-            headerName:'Location Name',
-            colId:'ln',
-        },
-        {
-            field:'trqcn',
-            headerName:'SKU Location Count',
-            colId:'trqcn',
-        }
-    ];
+    
 
     let chartRef1:ChartRef |undefined;
     let chartRef2:ChartRef | undefined;
-
+    
+    const colDefs1:ColDef[] = [
+        {
+            field:'ln',
+            headerName:'Location Name',
+            colId:'ln',
+        },
+        {
+            field:'ev',
+            headerName:'Count of SKUs',
+            colId:'ev',
+        },
+    ]
+    
+    const colDefs2:ColDef[] = [
+        {
+            field:'ln',
+            headerName:'Location Name',
+            colId:'ln',
+        },
+        {
+            field:'eiv',
+            headerName:'Value (In Lakhs)',
+            colId:'eiv',
+        },
+    ];
+   
     const generateChart = (graphNo:number,withOutContainer?:boolean) => {
-        console.log(graphNo)
        
         if(graphNo === 1){
             if(withOutContainer) {
                 chartRef1 = refGraph1.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                    columns: ['ln','trqn'],
+                    columns: ['ln','ev'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     }
                 })
             }
             else{
-                const container1 = document.getElementById('CreateAvailabilityAtParentG1') as HTMLElement
+                const container1 = document.getElementById('ExcessInventoryLocationG1') as HTMLElement
                 chartRef1 = refGraph1.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                    columns: ['ln','trqn'],
+                    columns: ['ln','ev'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     },
@@ -78,23 +81,24 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             }
             
         }
+      
         if(graphNo === 2){
             if(withOutContainer) {
                 chartRef2 = refGraph2.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                        columns: ['ln','trqcn'],
+                        columns: ['ln','eiv'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     }
                 })
             }
             else{
-                const container2 = document.getElementById('CreateAvailabilityAtParentG2') as HTMLElement
+                const container2 = document.getElementById('ExcessInventoryLocationG2') as HTMLElement
                 chartRef2 = refGraph2.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                        columns: ['ln','trqcn'],
+                        columns: ['ln','eiv'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     },
@@ -105,13 +109,27 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
         }
       }
 
+      const handleChartClose = (graphNo:number) => {
+        if(graphNo === 1){
+            chartRef1?.destroyChart()
+            toggleChart1(true);
+            setGrid1DisplayStatus('block')
+        }
+        if(graphNo === 2){
+            chartRef2?.destroyChart()
+            toggleChart2(true);
+            setGrid2DisplayStatus('block')
+        }
+      }
+
+
       const getChartToolbarItems:any = () => ['chartDownload'];
 
-      const chartThemeOverrides = useMemo<any>(() => { 
+      const chartThemeOverridesG1 = useMemo<any>(() => { 
         return {
-            palette:{
-                fills:['#0c7528','#570dbf']
-            },
+            // palette:{
+            //     fills:['#848484','#848484']
+            // },
               common: {
                   legend:{
                     position:'top'
@@ -120,7 +138,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                     category:{
                         title:{
                             enabled:true,
-                            text:'Parent Location Name',
+                            text:'Location Name',
                             position:'bottom',
 
                         }
@@ -138,57 +156,71 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
           };
       }, []);
 
+      const chartThemeOverridesG2 = useMemo<any>(() => { 
+        return {
+            // palette:{
+            //     fills:['#848484','#848484']
+            // },
+              common: {
+                  legend:{
+                    position:'top'
+                  },
+                  axes:{
+                    category:{
+                        title:{
+                            enabled:true,
+                            text:'Location Name',
+                            position:'bottom',
+
+                        }
+                    },
+                    number:{
+                        title:{
+                            enabled:true,
+                            text:"Value in Lakhs",
+                            position:"left"
+                        }
+                      }
+                  },
+                  
+              },
+          };
+      }, []);
+
       const myCustomTheme:any = {
         palette: {
-            fills: ['#9A0101', '#F02424'],
+            fills: ['#848484'],
             strokes: ['#ffffff', '#ffffff'],
           },
       }
 
       const graph1 = [
-        'This graph highlights the top 10 parent locations with max SKUs in eco black/red with insufficient/nil rationed stock available for receiving locations',
-        'To improve availability, expedite production/sourcing at these parent locations.'
+        'This graph highlights the top 10 locations with the highest excess inventory, measured in terms of the count of SKUs'
       ]
 
       const graph2 = [
-        'This graph highlights the top 10 parent locations with max number of SKUs in continuous Eco Black/Red > RLT and have nil rationed stock available for receiving locations.',
-        'To improve availability, expedite production/sourcing at these parent locations.'
+        'This graph highlights the top 10 locations with the highest excess inventory, assessed in terms of monetary value.'
       ]
-
-      const handleChartClose = (graphNo:number) => {
-        if(graphNo === 1){
-            chartRef1?.destroyChart()
-            toggleChart1(true);
-            setGrid1DisplayStatus('block')
-        }
-        if(graphNo === 2){
-            chartRef2?.destroyChart()
-            toggleChart2(true);
-            setGrid2DisplayStatus('block')
-        }
-      }
-
-
      
     return(
         <>
             <SCDynamicContainer>
                 <Allotment>
-                    <Allotment.Pane>
+                    <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={547}>
                             <SCChartHeaderContainer>
-                                <SCChartHeader>Top 10 Parent Locations : Max Eco Black/Red SKUs With Nil Rationed Stock for Receiving Locations</SCChartHeader>
+                                <SCChartHeader>Top 10 Locations with Excess Inventory: Count of SKUs</SCChartHeader>
                                 {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                            <div style={{height:'486px',display:grid1DisplayStatus}}>
+                                <div style={{display:grid1DisplayStatus}}>
                                 {
                                     hideChart1 &&
                                     (
                                         <VFTable
                                             ref={refGraph1}
-                                            columnDefs={coldefs1}
-                                            rowData={data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']}
+                                            columnDefs={colDefs1}
+                                            rowData={data['topTenLocationsWithExcessInventorySkuCount']}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1,true)}
@@ -198,7 +230,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                                     panels:[]
                                                 }
                                             }
-                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemeOverrides={chartThemeOverridesG1}
                                             chartThemes={['myCustomTheme']}
                                             customChartThemes={{
                                                 'myCustomTheme':myCustomTheme
@@ -213,8 +245,8 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                         <div style={{display:'none'}}>
                                         <VFTable
                                             ref={refGraph1}
-                                            columnDefs={coldefs1}
-                                            rowData={data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']}
+                                            columnDefs={colDefs1}
+                                            rowData={data['topTenLocationsWithExcessInventorySkuCount']}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1)}
@@ -224,7 +256,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                                     panels:[]
                                                 }
                                             }
-                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemeOverrides={chartThemeOverridesG1}
                                             chartThemes={['myCustomTheme']}
                                             customChartThemes={{
                                                 'myCustomTheme':myCustomTheme
@@ -235,28 +267,28 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                     )
                                 }
                                
-                            </div>
-                            {!hideChart1 && <div id="CreateAvailabilityAtParentG1" style={{height:'460px'}}></div>}
+                                </div>
+                                {!hideChart1 && <div id="ExcessInventoryLocationG1" style={{height:'460px'}}></div>}
                         </SCChartContainer>
                         <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>
                         </div>
                     </Allotment.Pane>
-                    <Allotment.Pane>
+                    <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={547}>
-                                <SCChartHeaderContainer>
-                                    <SCChartHeader>Top 10 Parent Location: Max Continuous Eco Black/Red SKUs With Nil Rationed Stock Available For Receiving Location</SCChartHeader>
-                                    {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}
-                                </SCChartHeaderContainer>
-                                <SCHorizontalDivider/>
-                                <div style={{height:'486px',display:grid2DisplayStatus}}>
+                            <SCChartHeaderContainer>
+                                <SCChartHeader>Top 10 Locations with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader>
+                                {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}
+                            </SCChartHeaderContainer>
+                            <SCHorizontalDivider/>
+                                <div style={{display:grid2DisplayStatus}}>
                                 {
                                     hideChart2 &&
                                     (
                                         <VFTable
                                             ref={refGraph2}
-                                            columnDefs={coldefs2}
-                                            rowData={data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']}
+                                            columnDefs={colDefs2}
+                                            rowData={data['topTenLocationsWithExcessInventoryValue']}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2,true)}
@@ -266,7 +298,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                                     panels:[]
                                                 }
                                             }
-                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemeOverrides={chartThemeOverridesG2}
                                             chartThemes={['myCustomTheme']}
                                             customChartThemes={{
                                                 'myCustomTheme':myCustomTheme
@@ -281,8 +313,8 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                         <div style={{display:'none'}}>
                                         <VFTable
                                             ref={refGraph2}
-                                            columnDefs={coldefs2}
-                                            rowData={data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']}
+                                            columnDefs={colDefs2}
+                                            rowData={data['topTenLocationsWithExcessInventoryValue']}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2)}
@@ -292,7 +324,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                                     panels:[]
                                                 }
                                             }
-                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemeOverrides={chartThemeOverridesG2}
                                             chartThemes={['myCustomTheme']}
                                             customChartThemes={{
                                                 'myCustomTheme':myCustomTheme
@@ -304,12 +336,13 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                 }
                                
                                 </div>
-                                {!hideChart2 && <div id="CreateAvailabilityAtParentG2" style={{height:'460px'}}></div>}
+                                {!hideChart2 && <div id="ExcessInventoryLocationG2" style={{height:'460px'}}></div>}
                         </SCChartContainer>
                         <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph2}/>
                         </div>
                     </Allotment.Pane>
+                  
                 </Allotment>
             </SCDynamicContainer>
         </>
@@ -317,4 +350,4 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
     
 }
 
-export default CreateAvailabilityAtParent;
+export default ExcessInventoryLocationWise;

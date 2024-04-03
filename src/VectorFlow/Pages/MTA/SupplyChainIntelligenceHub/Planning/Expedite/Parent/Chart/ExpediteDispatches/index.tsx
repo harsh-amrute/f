@@ -4,10 +4,11 @@ import "allotment/dist/style.css";
 import "../../../styles.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../../../../types/MDM";
-import { ColDef, ChartRef } from "ag-grid-enterprise";
+import { ColDef, ChartRef} from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../../styles';
 import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
-
+import { AgChartsReact } from "ag-charts-react";
+import { AgChartOptions } from "ag-charts-community";
 interface ExpediteParentDispatchesProps{
     data:any
 }
@@ -17,17 +18,16 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
 
     const refGraph1 = useRef<GridRef>();
     const refGraph2 = useRef<GridRef>();
+    const refGraph3 = useRef<GridRef>();
     const [hideChart1,toggleChart1] = useState<boolean>(false);
     const [hideChart2,toggleChart2] = useState<boolean>(false);
+    const [hideChart3,toggleChart3] = useState<boolean>(false);
     // const [hideChart3,toggleChart3] = useState<boolean>(false);
     const [grid1DisplayStatus,setGrid1DisplayStatus] = useState<string>('none');
     const [grid2DisplayStatus,setGrid2DisplayStatus] = useState<string>('none');
-    // const [grid3DisplayStatus,setGrid3DisplayStatus] = useState<string>('none');
 
     let chartRef1:ChartRef |undefined;
     let chartRef2:ChartRef | undefined;
-
-    // const refGraph3 = useRef<GridRef>();
 
     const colDefs1:ColDef[] = [
         {
@@ -41,9 +41,149 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
             colId:'trqa',
         },
     ]
-    const colDefs2:ColDef[] = [];
+
+    const getMaxParentLocationLength = (data:any) => {
+        let maxParentLocationLength = 0;
+        data?.forEach((row:{ln:string,count:Array<{wc:string,count:string}>}) => {
+            maxParentLocationLength = Math.max(maxParentLocationLength,row['count'].length)
+        });
+        return maxParentLocationLength;
+    }
+
+    const getParentLocationColdefs = (data:any)=>{
+        const maxParentLocationLength = getMaxParentLocationLength(data);
+        const dynamicColdefs:ColDef[] = [];
+        for(let i=0;i<maxParentLocationLength;i++){
+            dynamicColdefs.push({
+                field:`p${i+1}`,
+                headerName:`Parent ${i+1}`,
+                colId:`p${i+1}`
+            })
+        }
+        console.log(dynamicColdefs);
+        return dynamicColdefs;
+    }
+
+    const colDefs2:ColDef[] = [
+        {
+            field:'ln',
+            headerName:'Receiving Location Name',
+            colId:'ln',
+        },
+    ];
+
+
+    // const detailCellRendererParams = useMemo<any>(() => {
+    //     return {
+    //       detailGridOptions: {
+    //         columnDefs: [
+    //           { field: "ln",headerName:'Parent Location Code'},
+    //           { field: "count",headerName:'Count of SKUs'},
+    //         ],
+    //         defaultColDef: {
+    //           flex: 1,
+    //         },
+    //       },
+    //       getDetailRowData: function (params:any) {
+    //         params.successCallback(params.data.callRecords);
+    //       },
+    //     };
+    //   }, []);
+
+    const colDefs3:ColDef[] = [
+        {
+            field:'color',
+            headerName:'Color',
+            colId:'color',
+        },
+        {
+            field:'pre',
+            headerName:'Availability Pre Rationing',
+            colId:'pre',
+        },
+        {
+            field:'post',
+            headerName:'Availability Post Rationing',
+            colId:'post',
+        },
+    ];
+
+    const generateRowObj = (maxParentLocationLength:number)=>{
+        const rowObj:any = {
+            ln:'',
+        }
+        for(let i=0;i<maxParentLocationLength;i++){
+            rowObj[`p${i+1}`] = ''
+        }
+        return rowObj
+    }
+
+    
+
+    const mapDataToRowData = (data:any)=>{
+        let rowData:any = [];
+        data.forEach((row:{ln:string,count:Array<{wc:string,count:string}>})=>{
+            const rowObj = generateRowObj(getMaxParentLocationLength(data))
+            rowObj.ln = row['ln'];
+            row['count'].forEach((subRow:{wc:string,count:string},index:number)=>{
+                rowObj[`p${index+1}`] = parseInt(subRow.count,10)
+            })
+            rowData.push(rowObj)
+        })
+        rowData = rowData.map((row:any)=>{
+            const newRow:any = {...row}
+            Object.keys(newRow).forEach((key:string)=>{
+                if(newRow[key]==='') newRow[key] = 0
+            })
+            return newRow
+        })
+        return rowData;
+    }
+    
+
+    const options:AgChartOptions = {
+        // title: {
+        //   text: "PRE",
+        // },
+        data:data['prePostRationing'],
+        series: [
+          {
+            type:'pie',
+            title:{
+                text:'PRE'
+                
+            },
+            fills:['#ED1C24','#000000','#FFCB05','#418D18','#8B8B8B41'],
+            angleKey:'pre',
+            sectorLabelKey:'pre',
+            outerRadiusRatio: 0.5,
+            sectorLabel: {
+                color:'white',
+                fontWeight: "bold",
+                formatter: ({ value }) => `${value}%`,
+            },
+          },
+          {
+            type:'donut',
+            title:{
+                text:'POST'
+            },
+            fills:['#ED1C24','#000000','#FFCB05','#418D18','#8B8B8B41'],
+            angleKey:'post',
+            sectorLabelKey:'post',
+            innerRadiusRatio: 0.7,
+            sectorLabel: {
+                color: "white",
+                fontWeight: "bold",
+                formatter: ({ value }) => `${value}%`,
+            },
+          },
+          
+        ],
+      };
 
     const generateChart = (graphNo:number,withOutContainer?:boolean) => {
+        console.log(graphNo)
        
         if(graphNo === 1){
             if(withOutContainer) {
@@ -70,31 +210,33 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
             }
             
         }
-        // if(graphNo === 2){
-        //     if(withOutContainer) {
-        //         chartRef2 = refGraph2.current?.api.createRangeChart({
-        //             chartType:'column',
-        //             cellRange: {
-        //                 columns: ['ln','trqcn'],
-        //                 rowStartIndex:0,
-        //                 rowEndIndex:9
-        //             }
-        //         })
-        //     }
-        //     else{
-        //         const container2 = document.getElementById('CreateAvailabilityAtParentG2') as HTMLElement
-        //         chartRef2 = refGraph2.current?.api.createRangeChart({
-        //             chartType:'column',
-        //             cellRange: {
-        //                 columns: ['ln','trqcn'],
-        //                 rowStartIndex:0,
-        //                 rowEndIndex:9
-        //             },
-        //             chartContainer:container2
-        //         })
-        //     }
+        if(graphNo === 2){
+
+            if(withOutContainer) {
+                chartRef2 = refGraph2.current?.api.createRangeChart({
+                    chartType:'stackedColumn',
+                    cellRange: {
+                        columns: ['ln',...Array.from({length:getMaxParentLocationLength(data['maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParent'])},(el:undefined,index:number)=>`p${index+1}`)],
+                        rowStartIndex:0,
+                        rowEndIndex:9
+                    }
+                })
+            }
+            else{
+                const container2 = document.getElementById('ExpediteDispatchesG2') as HTMLElement
+                chartRef2 = refGraph2.current?.api.createRangeChart({
+                    chartType:'stackedColumn',
+                    cellRange: {
+                        columns: ['ln',...Array.from({length:getMaxParentLocationLength(data['maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParent'])},(el:undefined,index:number)=>`p${index+1}`)],
+                        rowStartIndex:0,
+                        rowEndIndex:9
+                    },
+                    chartContainer:container2
+                })
+            }
             
-        // }
+        }
+
       }
 
       const handleChartClose = (graphNo:number) => {
@@ -108,16 +250,17 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
             toggleChart2(true);
             setGrid2DisplayStatus('block')
         }
+        if(graphNo === 3){
+            toggleChart3(true);
+            // setGrid2DisplayStatus('block')
+        }
       }
 
 
       const getChartToolbarItems:any = () => ['chartDownload'];
 
-      const chartThemeOverrides = useMemo<any>(() => { 
+      const chartThemeOverridesG1 = useMemo<any>(() => { 
         return {
-            palette:{
-                fills:['#0c7528','#570dbf']
-            },
               common: {
                   legend:{
                     position:'top'
@@ -131,7 +274,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
 
                         }
                     },
-                    series:{
+                    number:{
                         title:{
                             enabled:true,
                             text:"Count of SKUs",
@@ -144,9 +287,47 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
           };
       }, []);
 
-      const myCustomTheme:any = {
+      const chartThemeOverridesG2 = useMemo<any>(() => { 
+        return {
+              common: {
+                  legend:{
+                    position:'top'
+                  },
+                  axes:{
+                    category:{
+                        title:{
+                            enabled:true,
+                            text:'Receiving Location Name',
+                            position:'bottom',
+
+                        }
+                    },
+                    number:{
+                        title:{
+                            enabled:true,
+                            text:"Count of SKUs",
+                            position:"left"
+                        }
+                      }
+                  },
+                  tooltip:{
+                    renderer:(params:any)=>console.log("params",params)
+                  }
+                  
+              },
+          };
+      }, []);
+
+      const myCustomThemeG1:any = {
         palette: {
-            fills: ['#9A0101', '#F02424'],
+            fills: ['#860202'],
+            strokes: ['#ffffff', '#ffffff'],
+          },
+      }
+
+      const myCustomThemeG2:any = {
+        palette: {
+            fills: ['#D0A928'],
             strokes: ['#ffffff', '#ffffff'],
           },
       }
@@ -170,7 +351,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
         <>
             <SCDynamicContainer>
                 <Allotment>
-                    <Allotment.Pane preferredSize={'70%'}>
+                    <Allotment.Pane preferredSize={'60%'}>
                         <SCChartContainer height={330}>
                             <SCChartHeaderContainer>
                                 <SCChartHeader>Top 10 Parent Location: Max Eco Black/Red SKUs With Available Rationed Qty For Receiving Locations</SCChartHeader>
@@ -194,10 +375,10 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                                     panels:[]
                                                 }
                                             }
-                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemeOverrides={chartThemeOverridesG1}
                                             chartThemes={['myCustomTheme']}
                                             customChartThemes={{
-                                                'myCustomTheme':myCustomTheme
+                                                'myCustomTheme':myCustomThemeG1
                                             }}
                                             disableZoomScaling={true}
                                         />
@@ -220,10 +401,10 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                                     panels:[]
                                                 }
                                             }
-                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemeOverrides={chartThemeOverridesG1}
                                             chartThemes={['myCustomTheme']}
                                             customChartThemes={{
-                                                'myCustomTheme':myCustomTheme
+                                                'myCustomTheme':myCustomThemeG1
                                             }}
                                             disableZoomScaling={true}
                                         />
@@ -239,7 +420,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                         </div>
                         <SCChartContainer height={330}>
                             <SCChartHeaderContainer>
-                                <SCChartHeader>Top 10 Receiving Locations: Max Eco Black/Red SKUs With Rationed Quantity Available At Parent</SCChartHeader>
+                                <SCChartHeader>Top 10 Receiving Locations: Max Pipeline Inv. Black/Red SKUs With Rationed Quantity Available At Parent</SCChartHeader>
                                 {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
@@ -249,21 +430,21 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                     (
                                         <VFTable
                                             ref={refGraph2}
-                                            columnDefs={colDefs2}
-                                            rowData={data['maxEcoBlackRedWithRationedQtyAvailableAtParent']}
+                                            columnDefs={[...colDefs2,...getParentLocationColdefs(data['maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParent'])]}
+                                            rowData={mapDataToRowData(data['maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParent'])}
                                             enableCharts={true}
                                             enableRangeSelection={true}
-                                            // onGridReady={()=>generateChart(2,true)}
+                                            onGridReady={()=>generateChart(2,true)}
                                             getChartToolbarItems={getChartToolbarItems}
                                             chartToolPanelsDef={
                                                 {
                                                     panels:[]
                                                 }
                                             }
-                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemeOverrides={chartThemeOverridesG2}
                                             chartThemes={['myCustomTheme']}
                                             customChartThemes={{
-                                                'myCustomTheme':myCustomTheme
+                                                'myCustomTheme':myCustomThemeG2
                                             }}
                                             disableZoomScaling={true}
                                         />
@@ -275,8 +456,8 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                         <div style={{display:'none'}}>
                                         <VFTable
                                             ref={refGraph2}
-                                            columnDefs={colDefs2}
-                                            rowData={data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocations']}
+                                            columnDefs={[...colDefs2,...getParentLocationColdefs(data['maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParent'])]}
+                                            rowData={mapDataToRowData(data['maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParent'])}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2)}
@@ -286,10 +467,10 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                                     panels:[]
                                                 }
                                             }
-                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemeOverrides={chartThemeOverridesG2}
                                             chartThemes={['myCustomTheme']}
                                             customChartThemes={{
-                                                'myCustomTheme':myCustomTheme
+                                                'myCustomTheme':myCustomThemeG2
                                             }}
                                             disableZoomScaling={true}
                                         />
@@ -308,31 +489,41 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                         <SCChartContainer height={547}>
                                 <SCChartHeaderContainer>
                                     <SCChartHeader>Comparision of Availability: Pre Rationing vs Post Rationing</SCChartHeader>
-                                    {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}
+                                    {!hideChart3 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(3)}/>}
                                 </SCChartHeaderContainer>
                                 <SCHorizontalDivider/>
-                                <div style={{display:'none'}}>
-                                    <VFTable
-                                        ref={refGraph2}
-                                        columnDefs={colDefs2}
-                                        // rowData={data['delayDaysStatisticalBox']}
-                                        enableCharts={true}
-                                        enableRangeSelection={true}
-                                        // onGridReady={generateChart}
-                                        getChartToolbarItems={getChartToolbarItems}
-                                        chartToolPanelsDef={
-                                            {
-                                                panels:[]
-                                            }
-                                        }
-                                        chartThemeOverrides={chartThemeOverrides}
-                                        chartThemes={['myCustomTheme']}
-                                        customChartThemes={{
-                                            'myCustomTheme':myCustomTheme
-                                        }}
-                                    />
+                                <div>
+                                    {
+                                        hideChart3 && (
+                                            <VFTable
+                                                ref={refGraph3}
+                                                columnDefs={colDefs3}
+                                                rowData={data['prePostRationing']}
+                                                enableCharts={true}
+                                                enableRangeSelection={true}
+                                                // onGridReady={generateChart}
+                                                getChartToolbarItems={getChartToolbarItems}
+                                                chartToolPanelsDef={
+                                                    {
+                                                        panels:[]
+                                                    }
+                                                }
+                                                chartThemeOverrides={chartThemeOverridesG1}
+                                                // chartThemes={['myCustomTheme']}
+                                                // customChartThemes={{
+                                                //     'myCustomTheme':myCustomTheme
+                                                // }}
+                                            />
+                                        )
+                                    }      
                                 </div>
-                                <div id="ExpediteDispatchesG3"></div>
+                                {
+                                    !hideChart3 && (<div id="ExpediteDispatchesG3">
+                                                    <AgChartsReact options={options}  />
+                                                    </div>
+                                                )
+                                }
+                                
                         </SCChartContainer>
                         <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph3}/>

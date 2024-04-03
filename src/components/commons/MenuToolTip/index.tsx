@@ -16,7 +16,6 @@ import { RESET_STATE } from "../../../redux/actions/MDM";
 import React from "react";
 
 const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any) => {
-  console.log(item)
   const { t } = useTranslation();
   const { user } = useUserData();
 

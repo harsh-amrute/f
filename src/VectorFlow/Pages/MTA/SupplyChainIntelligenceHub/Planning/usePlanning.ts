@@ -131,9 +131,39 @@ const usePlanning = ()=>{
             if(view === 'chart'){
                 return([
                     {
-                        id:'excessInventory',
-                        label:'Excess Inventory',
-                        value:'excessInventory'
+                        id:'excessInventoryLocation',
+                        label:'Excess Inventory Location-wise',
+                        value:'excessInventoryLocation'
+                    },
+                    {
+                        id:'excessInventoryProduct',
+                        label:'Excess Inventory Product-wise',
+                        value:'excessInventoryProduct'
+                    },
+                    {
+                        id:'custom',
+                        label:'Custom Screens',
+                        value:'custom'
+                    }
+                ])
+            }
+            else{
+                return []
+            }
+          
+        }
+        case 'OrderFulfillment':{
+            if(view === 'chart'){
+                return([
+                    {
+                        id:'orderFulfillmentLocation',
+                        label:'Order Fulfillment Location-wise',
+                        value:'orderFulfillmentLocation'
+                    },
+                    {
+                        id:'orderFulfillmentProduct',
+                        label:'Order Fulfillment Product-wise',
+                        value:'orderFulfillmentProduct'
                     },
                     {
                         id:'custom',
@@ -268,7 +298,24 @@ const usePlanning = ()=>{
                     const result = await getPlanningDataGraph(body);
                     setIsSelectCategoryOpen(false);
                     setCurrentGraphData(result.data.data)
-                    setCurrentTab('excessInventory');
+                    setCurrentTab('excessInventoryLocation');
+                    toast.dismiss(toastId);
+                    notifySuccess("Graph Details Fetched Successfully");
+                    break;
+                }
+                case 'OrderFulfillment':{
+                    const toastId = notifyLoader('Loading Graphs');
+                    setCurrentCategory('OrderFulfillment');
+                    setCurrentView('chart');
+                    const body = {
+                        category:'orderFulfillment',
+                        type:'review',
+                        filters:[]
+                    }
+                    const result = await getPlanningDataGraph(body);
+                    setIsSelectCategoryOpen(false);
+                    setCurrentGraphData(result.data.data)
+                    setCurrentTab('orderFulfillmentLocation');
                     toast.dismiss(toastId);
                     notifySuccess("Graph Details Fetched Successfully");
                     break;
@@ -362,7 +409,25 @@ const usePlanning = ()=>{
                     notifySuccess("Grid Details Fetched Successfully");
                     break;
                 }
+                case 'OrderFulfillment':{
+                    const toastId = notifyLoader('Loading Grid Data');
+                    const body = {
+                        category:'orderFulfillment',
+                        type:'review',
+                        filters:[],
+                        paginationParameter:{
+                            pageNumber:1,
+                            recordsPerPage:50
+                        }
+                    }
+                    const result = await getPlanningDataGrid(body);
+                    setCurrentGridData(result.data.data);
+                    toast.dismiss(toastId);
+                    notifySuccess("Grid Details Fetched Successfully");
+                    break;
+                }
             }
+            
         } catch (error) {
             toast.dismiss();
             notifyError('Something Went Wrong')

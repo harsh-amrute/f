@@ -13,6 +13,10 @@ import { useGetPlanningDataCustom } from "../../../../../Services/MTA/SupplyChai
 // const mockFn = jest.fn()
 const queryClient = setupReactQuery();
 
+jest.mock("ag-charts-react", () => ({
+  AgChartsReact: jest.fn(() => null)
+}));
+
 jest.mock("../../../../../Services/MTA/SupplyChainIntelligenceHub/Planning");
 
 const contextWrapper = (children: ReactNode,store:any) => {
@@ -65,8 +69,8 @@ describe("Monitor GIT Child",()=>{
     render(contextWrapper(<ChartView category="GITToChild" currentTab="" currentGraphData={MonitorGITChildMockData}/>,store))
     render(contextWrapper(<ChartView category="GITFromParent" currentTab="" currentGraphData={MonitorGITChildMockData}/>,store))
     render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="expediteDispatches" currentGraphData={ExpediteParentMockData}/>,store))
-    render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="CreateAvailabilityAtParent" currentGraphData={[]}/>,store))
-    render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="CustomScreens" currentGraphData={[]}/>,store))
+    render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="createAvailabilityAtParent" currentGraphData={ExpediteParentMockData}/>,store))
+    render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="custom" currentGraphData={[]}/>,store))
     render(contextWrapper(<ChartView category="ExcessInventory" currentTab="CustomScreens" currentGraphData={[]}/>,store))
     render(contextWrapper(<ChartView category="OrderFulfillment" currentTab="CustomScreens" currentGraphData={[]}/>,store))
 
