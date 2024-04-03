@@ -8,7 +8,7 @@ import { ColDef, ChartRef} from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../../styles';
 import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { AgChartsReact } from "ag-charts-react";
-import { AgChartOptions, AgCharts } from "ag-charts-community";
+import { AgChartOptions } from "ag-charts-community";
 interface ExpediteParentDispatchesProps{
     data:any
 }

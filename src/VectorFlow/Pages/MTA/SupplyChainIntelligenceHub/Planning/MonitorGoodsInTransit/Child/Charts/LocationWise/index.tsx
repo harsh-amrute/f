@@ -7,7 +7,6 @@ import { type GridRef } from "../../../../../../../../types/MDM";
 import { ColDef, ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../../styles';
 import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
-import {AgChartThemeOverrides} from 'ag-grid-community';
 
 
 interface MonitorGITChildLocationWiseProps{
