@@ -4,6 +4,7 @@ import ExpediteParentGrid from "../Expedite/Parent/Grid";
 import MonitorGITChildLocationWiseGrid from "../MonitorGoodsInTransit/Child/Grid/LocationWise"
 import MonitorGITChildTransporterWiseGrid from "../MonitorGoodsInTransit/Child/Grid/TransporterWise"
 import MonitorGITParent from "../MonitorGoodsInTransit/Parent";
+import OrderFulfillmentGrid from '../OrderFulfillment/Grid';
 
 
 interface GridViewProps {
@@ -27,7 +28,7 @@ const GridView = ({category,currentTab,currentGridData}:GridViewProps) => {
             case 'ExcessInventory':
                 return <ExcessInventoryGrid data={currentGridData ? currentGridData : []}/>
             case 'OrderFulfillment':
-                return <></>
+                return <OrderFulfillmentGrid data={currentGridData ? currentGridData : []}/>
             default:
                 return <></>
         }

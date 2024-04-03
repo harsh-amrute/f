@@ -36,6 +36,10 @@ const contextWrapper = (children: ReactNode,store:any) => {
     );
   };
 
+jest.mock("ag-charts-react", () => ({
+    AgChartsReact: jest.fn(() => null)
+}));
+
 jest.mock("../../../../Services/MTA/SupplyChainIntelligenceHub/Planning");
 
 const useGetPlanningDataCountMock = useGetPlanningDataCount as jest.MockedFunction<
