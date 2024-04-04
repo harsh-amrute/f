@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import useBufferTrends from './useBufferTrends';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader'

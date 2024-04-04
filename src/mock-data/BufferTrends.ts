@@ -1,4 +1,4 @@
-import { BufferTrendsGraphState } from "~/VectorFlow/types/BPR"
+import { BufferTrendsGraphState } from "../VectorFlow/types/BPR"
 export const mockBTGTechData:any={
     "recordCount": "0",
     "data":{

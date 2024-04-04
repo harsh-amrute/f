@@ -1,6 +1,4 @@
 
-
-import React, { useState } from 'react'
 import TechnicalWise  from '../TechnicalView'
 import EconomicalWise from '../EconomicalView'
 import { BufferTrendsGraphState } from '../../../../../types/BPR'

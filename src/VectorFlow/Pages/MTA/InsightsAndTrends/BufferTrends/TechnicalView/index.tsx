@@ -1,14 +1,14 @@
-import {useRef, useMemo, useState } from "react";
+
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import {CapsuleWrapper,ChartWrapper} from "./styles";
-import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider} from '../styles';
+import {SCChartHeaderContainer, SCChartContainer, SCHorizontalDivider} from '../styles';
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { BufferTrendsGraphState } from '../../../../../types/BPR'
 import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule";
 
 import { AgChartsReact } from "ag-charts-react";
-import { AgChartOptions, AgCharts } from "ag-charts-community";
+import { AgChartOptions} from "ag-charts-community";
 
 
 
@@ -22,10 +22,8 @@ interface TechnicalWiseProps{
 }
 
 
-const TechnicalWise = ({data,currentPageTab,handleClick,isLoading,graphs,updateGraphState}:TechnicalWiseProps) => {
+const TechnicalWise = ({data,isLoading,graphs,updateGraphState}:TechnicalWiseProps) => {
 
-    // const refGraph1 = useRef<GridRef>(null);
-    // const refGraph2 = useRef<GridRef>(null);
 
     const options:AgChartOptions = {
         axes:[
@@ -146,10 +144,6 @@ const TechnicalWise = ({data,currentPageTab,handleClick,isLoading,graphs,updateG
       const graph1 = [
         'This graph shows the trend of number of SKU Locations in Black, Red, Green, Yellow, and White.'
       ]
-
-      const graph2 = [
-        'This graph shows the trend of percentage of SKU Locations in Black, Red, Green, Yellow, and White.'
-      ];
     
     
     return(

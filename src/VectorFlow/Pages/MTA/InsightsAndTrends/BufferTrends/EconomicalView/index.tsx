@@ -1,16 +1,15 @@
 
-import {useRef, useMemo, useState } from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import {CapsuleWrapper,ChartWrapper} from "./styles";
-import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider} from '../styles';
+import {SCChartHeaderContainer, SCChartContainer, SCHorizontalDivider} from '../styles';
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule";
 import { BufferTrendsGraphState } from '../../../../../types/BPR'
 
 
 import { AgChartsReact } from "ag-charts-react";
-import { AgChartOptions, AgCharts } from "ag-charts-community";
+import { AgChartOptions } from "ag-charts-community";
 
 
 
@@ -26,10 +25,8 @@ interface EconomicalWiseProps{
 
 
 
-const EconomicalWise = ({data,currentPageTab,handleClick,isLoading,graphs,updateGraphState}:EconomicalWiseProps) => {
+const EconomicalWise = ({data,isLoading,graphs,updateGraphState}:EconomicalWiseProps) => {
 
-    // const refGraph1 = useRef<GridRef>(null);
-    // const refGraph2 = useRef<GridRef>(null);
 
     const options:AgChartOptions = {
         axes:[
@@ -149,10 +146,6 @@ const EconomicalWise = ({data,currentPageTab,handleClick,isLoading,graphs,update
       const graph1 = [
         'This graph shows the trend of number of SKU Locations in Black, Red, Green, Yellow, and White.(economical)'
       ]
-
-      const graph2 = [
-        'This graph shows the trend of percentage of SKU Locations in Black, Red, Green, Yellow, and White.'
-      ];
     
     return(
         <>

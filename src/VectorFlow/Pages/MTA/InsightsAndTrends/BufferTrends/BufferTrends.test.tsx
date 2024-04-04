@@ -1,5 +1,5 @@
-import { screen,render,fireEvent,cleanup } from "@testing-library/react";
-import { mockBTGTechData,mockBTGEcoData } from "../../../../../mock-data/BufferTrends";
+import { screen,render,fireEvent} from "@testing-library/react";
+import { mockBTGTechData } from "../../../../../mock-data/BufferTrends";
 import { useGetBufferTrendsGraph } from '../../../../Services/MTA/InsightsAndTrends/BufferTrends/index'
 import { setupReactQuery } from "../../../../../config/react-query-config";
 import { QueryClientProvider } from "@tanstack/react-query";
