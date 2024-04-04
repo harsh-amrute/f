@@ -25,6 +25,8 @@ const Planning = () => {
         currentGridData
     } = usePlanning();
 
+    console.log("currentGraphData",currentGraphData);
+
     const renderView = () => {
 
         switch(currentView){

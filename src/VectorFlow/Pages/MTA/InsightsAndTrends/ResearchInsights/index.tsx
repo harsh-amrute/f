@@ -60,7 +60,7 @@ const ResearchInsights = ()=>{
         return <VFLoader/>
     }
 
-    
+    console.log("selfGraphData",selfGraphData)
     return(
         <ResearchInsightsLayout>
             <ResearchInsightsTableWrapper style={{zoom:0.8}}>
