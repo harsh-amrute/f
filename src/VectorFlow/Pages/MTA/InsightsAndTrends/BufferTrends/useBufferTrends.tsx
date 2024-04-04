@@ -65,7 +65,7 @@ const useBufferTrends = () => {
 
     }
 
-   const onFloatingTabChange = (tab:any,index:any) =>{
+   const onFloatingTabChange = (tab:any) =>{
      setCurrentTab(tab.value);
      updateGraphState(1,"pen",{label:'Absolute',value:'Absolute'})
     

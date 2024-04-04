@@ -60,8 +60,6 @@ const ResearchInsights = ()=>{
     if(isLoading){
         return <VFLoader/>
     }
-
-    console.log("selfGraphData",selfGraphData)
     return(
         <>
        <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'ResearchInsight'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>

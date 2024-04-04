@@ -226,8 +226,6 @@ const useResearchInsights = ()=>{
         }))
     }
 
-    console.log(graphs)
-
     const toggleGraphModal = (open:boolean,data?:any)=>{
         if(data){
             setExpandedGraphId(data)
