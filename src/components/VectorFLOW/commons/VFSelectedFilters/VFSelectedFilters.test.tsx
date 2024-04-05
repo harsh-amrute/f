@@ -9,8 +9,8 @@ const mockFilters:BPRFilterState = {
         id: 'supplyChainFilterId',
         label: 'Supply Chain',
         filters: [
-            { name: 'filter1', attributeName: 'Attribute 1', value: 'Value 1',operator:"" },
-            { name: 'filter2', attributeName: 'Attribute 2', value: 'Value 2',operator:""  }
+            { name: 'filter1', attributeName: 'Attribute 1', value: 'Value 1',operator:">" },
+            { name: 'filter2', attributeName: 'Attribute 2', value: 'Value 2',operator:"<"  }
         ]
     },
     locationFilter: {
@@ -65,7 +65,7 @@ describe('VFSelectedFilters Component', () => {
         render(
             <VFSelectedFilters filters={mockFilters} onRemoveFilter={onRemoveFilter} />
         );
-        screen.logTestingPlaygroundURL()
+       
 
 
         // Check if the placeholder text is rendered

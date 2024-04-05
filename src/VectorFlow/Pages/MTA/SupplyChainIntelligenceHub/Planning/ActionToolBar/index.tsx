@@ -45,13 +45,12 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
     const themeUi = user?.user?.theme_ui;
  const [isFilterOpen,toggleFilter] = useState<boolean>(false)
 
- 
 
 
    const renderFilter = () => {
     switch(currCategory){
         case 'GITFromParent':
-            return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  />;
+            return <VFMultiFilter onApplyFilter={()=>{toggleFilter(false)}} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} />;
         case 'GITToChild':
             return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  />;
         case 'ExpediteFromParent':

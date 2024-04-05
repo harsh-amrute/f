@@ -9,11 +9,11 @@ export const VFSelectedFiltersWrapper = styled.div`
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #95959529;
     border-radius: 30px;
-    overflow-x:overlay;
-    ::-webkit-scrollbar {
-     width: 0.2px;
-     display:none;
-   }
+    // overflow-x:overlay;
+//     ::-webkit-scrollbar {
+//      width: 0.2px;
+//      display:none;
+//    }
 `
 
 
@@ -69,6 +69,7 @@ line-height:21px;
 font-family:Roboto;
 letter-spacing: 0px;
 display:flex;
+text-wrap:nowrap;
 
 `
 
@@ -79,4 +80,13 @@ export const VFSelectedFiltersFilterCloseIcon = styled.img`
     border-radius:50%;
     border:solid 1px black;
     cursor:pointer;
+`
+export const VFFilterScrollBar = styled.div`
+overflow-x:overlay;
+display:flex;
+
+::-webkit-scrollbar {
+    width: 0.2px;
+    display:none;
+  }
 `
