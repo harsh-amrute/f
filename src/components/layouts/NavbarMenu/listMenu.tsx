@@ -237,10 +237,10 @@ export const listMenuParent: any = [
   },
   {
     id: 9,
-    name: "",
+    name: "Replenishment and Replacement",
     img: "/assets/img/VectorFLOW/BPR/replacement",
     url: "/",
-    status: true,
+    status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
     avoidHeader:true,
     child: [

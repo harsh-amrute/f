@@ -96,7 +96,8 @@ import _ from "lodash";
         validResumeStatuses,
         validStopStatuses,
         onPIPOStatusUpdate,
-        enableEditOnlineReset
+        enableEditOnlineReset,
+        submittedDataCount
 
     } = useViewModify('modify');
 
@@ -290,7 +291,7 @@ import _ from "lodash";
             totalCount={activeMaster.rowData.length}
             modificationCount={conflictCount}
             errorCount={errorCount}
-            recordCount={activeMaster.rowData.length - (conflictCount + errorCount)}
+            recordCount={submittedDataCount}
             onSuccess={onReviewConflicts}
             onFailure={onIgnoreSubmitErrors}
             onCloseModal={()=>{return}}

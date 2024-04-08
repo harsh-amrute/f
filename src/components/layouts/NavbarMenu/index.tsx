@@ -40,6 +40,7 @@ const NavbarMenu = ({ setMenuItem, isHide }: any) => {
     setActiveTooltip(0);
   };
 
+
   const renderImg = (src: string, active: boolean, id: number) => {
     let srcImg: string;
     if (themeUi === "CHARCOALCHIC" && active && id === 6) {

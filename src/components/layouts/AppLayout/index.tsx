@@ -38,15 +38,15 @@ const AppLayout = () => {
     t("ISTStatus.viewName") as string
   );
   const [widthResponsive, setWidthResponsive] = useState<object>({
-    widthLeft: "20%",
-    widthRight: "75%",
+    widthLeft: "0%",
+    widthRight: "95%",
   });
 
   const [isOpenNavbarRight, setIsOpenNavbarRight] = useState<boolean>(false);
   const [isLoadSpinner, setIsLoadSpinner] = useState<any>(false);
   const [menuItem, setMenuItem] = useState<any>();
   const [colorTheme, setColorTheme] = useState<string>("NOIRFUSION");
-  const [isHide, setIsHide] = useState<boolean>(true);
+  const [isHide, setIsHide] = useState<boolean>(false);
   
   return (
     <AuthenticationTemplate
