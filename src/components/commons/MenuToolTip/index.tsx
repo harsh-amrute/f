@@ -13,12 +13,10 @@ import {handleDownload,navigateWithPrompt} from "../../../helpers/utils";
 import {useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
-import React from "react";
 
 const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any) => {
   const { t } = useTranslation();
   const { user } = useUserData();
-
   const themeUi = user?.user?.theme_ui;
   const location = useLocation();
   const navigate = useNavigate();
@@ -50,24 +48,46 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any
     }
   }
 
-  const renderToolTipContent = (items:any):any=>{
+  const getNestedChildren = (children: Array<any>): any => {
+    const stack = [...children];
+    const result = [];
 
-    if(items.child){
+    while (stack.length > 0) {
+        const current = stack.pop();
+
+        if (current.child) {
+            stack.push(...current.child);
+        }
+
+        else{
+          result.push(current);
+        }
+    }
+
+    return result.reverse();
+};
+
+
+
+
+  const renderToolTipContent = (items:any):any=>{
+    const result = getNestedChildren(items.child)
       return(
-        items.child.map((itemChild: any, index: number) => {
+        result.map((itemChild: any, index: number) => {
           if (
             user.url_permission.includes(itemChild.url) ||
             itemChild.url === "" ||
             itemChild.url === "/profile" || reportUrls.includes(itemChild.url)
           ) {
             return (
+              
               <TooltipContent
                 key={index}
                 action={itemChild.url === location.pathname}
                 themeUi={themeUi}
                 onClick={() => handleTooltipClick(itemChild.url)}
               >
-                {t(itemChild.name)}
+                {t(itemChild.name) || itemChild.name}
                 {itemChild.url !== location.pathname && (
                   <SCIcon
                     src={
@@ -84,9 +104,6 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any
           }
         })
       )
-    }
-
-    return renderToolTipContent(items.child)
   }
 
   return (

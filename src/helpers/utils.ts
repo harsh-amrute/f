@@ -1577,14 +1577,15 @@ export const addPrefixToObjectKeys = (obj:any,prefix:string)=>{
 }
 
 export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[],masterId:number):ColDef[]=>{
-
+  console.log(masterId)
   const result:any[] = []
-
   conflicts.map((conflict)=>{
      conflict.conflictdetails.map((conflictDetail)=>{
       const existingRowIndex = result.findIndex((row:any)=>{
-        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
-        if(primaryKeys.length<3) return row[primaryKeys[0]]===conflictDetail.oldData[primaryKeys[0]]
+        // const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        // if(primaryKeys.length<3) return row[primaryKeys[0]]===conflictDetail.oldData[primaryKeys[0]]
+        const omittedResultEntry = _.omit(row,['users'])
+        return JSON.stringify(omittedResultEntry)===JSON.stringify(conflictDetail.oldData)
       })
 
       if(existingRowIndex===-1){
@@ -1608,32 +1609,34 @@ export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,re
 export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[],masterId:number):ColDef[]=>{
   console.log(masterId)
   const result:any[] = []
-  errorConflicts.map((currError:{errorData:any[],errorType:string})=>{
-    currError.errorData.map((errorRowData:any)=>{
-      const existingRowIndex = result.findIndex((row:any)=>{
-        // const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
-        // if(primaryKeys.length<3){
-        //   return JSON.stringify(row)===JSON.stringify(errorRowData)
-        //   // return row[primaryKeys[0]]===errorRowData[primaryKeys[0]]
-        // }
-        // console.log(row)
-        
-        const omittedResultEntry = _.omit(row,['error'])
-        return JSON.stringify(omittedResultEntry)===JSON.stringify(errorRowData)
-      })
-      
-      
-      if(existingRowIndex===-1){
-        result.push({
-          ...errorRowData,
-          error:" " + currError.errorType + " ."
+  if(Array.isArray(errorConflicts)){
+    errorConflicts.map((currError:{errorData:any[],errorType:string})=>{
+      currError.errorData.map((errorRowData:any)=>{
+        const existingRowIndex = result.findIndex((row:any)=>{
+          // const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+          // if(primaryKeys.length<3){
+          //   return JSON.stringify(row)===JSON.stringify(errorRowData)
+          //   // return row[primaryKeys[0]]===errorRowData[primaryKeys[0]]
+          // }
+          // console.log(row)
+          
+          const omittedResultEntry = _.omit(row,['error'])
+          return JSON.stringify(omittedResultEntry)===JSON.stringify(errorRowData)
         })
-      }
-      else{
-        result[existingRowIndex].error+=" " + currError.errorType + " ."
-      }
+        
+        
+        if(existingRowIndex===-1){
+          result.push({
+            ...errorRowData,
+            error:" " + currError.errorType + " ."
+          })
+        }
+        else{
+          result[existingRowIndex].error+=" " + currError.errorType + " ."
+        }
+      })
     })
-  })
+  }
 
   return result
 }

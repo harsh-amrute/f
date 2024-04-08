@@ -29,7 +29,7 @@ const SubmitConflictModal=(props:SubmitConflictModalProps)=>{
     return (
         <VFModalCard headerText="Submit Data" openModal={true} headerIcon={""} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
             <SubmitDataTextContainer>
-                {recordCount} Records submitted successfully!<br/><br/>
+                {recordCount>0 && <>{recordCount} Records submitted successfully!<br/><br/></>}
                 {modificationCount} out of {totalCount} records are under modification already
             </SubmitDataTextContainer>
             <SubmitDataButtonWrapper>
