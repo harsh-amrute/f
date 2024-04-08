@@ -954,7 +954,6 @@ const useViewModify = (pageType:string) => {
           
 
       const onSubmit = async(isOverWrite?:boolean) => {
- 
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit");
 
         if(activeMaster.progress === 'editOnline'){
@@ -981,7 +980,7 @@ const useViewModify = (pageType:string) => {
         //let result;
  
         if(activeMaster.progress === 'editOnline'){
-          const {isConflicts,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          const {isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
           //result = !isConflicts
           if(!isConflicts){
             if(localErrorCount>0 || errorCount>0){
@@ -1007,9 +1006,8 @@ const useViewModify = (pageType:string) => {
           else{
             // console.time('That took ')
             // console.log('Calculating...')
-            const tempCon = createConflictRowData(conflictData,activeMaster.id)
+            const tempCon = createConflictRowData(localConflictData,activeMaster.id)
             const tempError = createErrorRowData(localErrorData,activeMaster.id)
-            console.log(tempCon)
             const tempResult:any = []
 
             tempCon.forEach((t:any)=>{
@@ -1017,13 +1015,14 @@ const useViewModify = (pageType:string) => {
               if(exist)tempResult.push(exist)
             })
             
-            console.log("Conflicts Count : ",tempCon.length)
-            console.log("Errors Count : ",tempError.length)
-            console.log("Intersection Count : ",tempResult.length)
-            console.log("Not Submitted Count : ",(tempCon.length -tempResult.length )+(tempError.length -tempResult.length ))
-            console.log("Active master length",activeMaster.rowData.length);
-            console.log("Submitted Count : ",activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
-            console.timeEnd('That took ')
+            // console.log("Conflicts Count : ",tempCon.length)
+            // console.log("Errors Count : ",tempError.length)
+            // console.log("Intersection Count : ",tempResult.length)
+            // console.log("Not Submitted Count : ",(tempCon.length -tempResult.length )+(tempError.length -tempResult.length ))
+            // console.log("Active master length",activeMaster.rowData.length);
+            // console.log("Submitted Count : ",activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
+            // console.timeEnd('That took ')
+            setConflictData(tempCon)
             setConflictCount(tempCon.length)
             setSubmittedDataCount(activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
             setIsConflictModalOpen(true)
@@ -1032,7 +1031,7 @@ const useViewModify = (pageType:string) => {
  
         }
         else{
-          const {isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          const {isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
           
           if(!isConflicts){
             if(localErrorCount>0 || errorCount>0){
@@ -1058,7 +1057,7 @@ const useViewModify = (pageType:string) => {
           else{
             // console.time('That took ')
             // console.log('Calculating...')
-            const tempCon = createConflictRowData(conflictData,activeMaster.id)
+            const tempCon = createConflictRowData(localConflictData,activeMaster.id)
             const tempError = createErrorRowData(localErrorData,activeMaster.id)
 
             const tempResult:any = []
@@ -1075,6 +1074,7 @@ const useViewModify = (pageType:string) => {
             // console.log("Active master length",activeMaster.rowData.length);
             // console.log("Submitted Count : ",activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
             // console.timeEnd('That took ')
+            setConflictData(tempCon)
             setConflictCount(tempCon.length)
             setSubmittedDataCount(activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
             setIsConflictModalOpen(true)
@@ -1380,7 +1380,7 @@ const useViewModify = (pageType:string) => {
     // }
     const onReviewConflicts = ()=>{
       
-      const newRowData = createConflictRowData(conflictData,activeMaster.id)
+    
 
       const newColDefs:ColDef[] = activeMaster.colDefs.map((colDef:ColDef)=>{
         return {
@@ -1396,17 +1396,20 @@ const useViewModify = (pageType:string) => {
 
      if(newColDefs) dispatch(UPDATE_COLDEFS(newColDefs))
       addCheckBoxColDefs()
-      dispatch(UPDATE_ROW_DATA(newRowData))
+      dispatch(UPDATE_ROW_DATA(conflictData))
       setIsConflictModalOpen(false)
-      dispatch(SET_RECORD_COUNT(newRowData.length))
+      dispatch(SET_RECORD_COUNT(conflictData.length))
     }
 
     const onIgnoreSubmitErrors = ()=>{
       const errorRowData = createErrorRowData(errorData,activeMaster.id)
-      addInvalidDataColDefs('error')
-      dispatch(UPDATE_ROW_DATA(errorRowData))
+      if(errorRowData.length>0){
+        addInvalidDataColDefs('error')
+        dispatch(UPDATE_ROW_DATA(errorRowData))
+        dispatch(SET_RECORD_COUNT(errorRowData.length))
+      }
       dispatch(UPDATE_PROGRESS_STATE('submitted'))
-      dispatch(SET_RECORD_COUNT(errorRowData.length))
+      
       setIsConflictModalOpen(false)
     }
 

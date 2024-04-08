@@ -76,7 +76,8 @@ const DeleteRecord = () => {
         onBackButton,
         isOverlayVisible,
         isDataAvailableLocally,
-        enableEditOnlineReset
+        enableEditOnlineReset,
+        errorCount
     } = useViewModify('remove');
     
 
@@ -279,6 +280,7 @@ const DeleteRecord = () => {
         {
           !isSelectMasterOpen && 
           <VFTaskBar
+            showSubmittedExportError={errorCount>0}
             enableEditOnlineReset={enableEditOnlineReset}
             disableResumeSeasonality={()=>false}
             disableStopSeasonality={()=>false}

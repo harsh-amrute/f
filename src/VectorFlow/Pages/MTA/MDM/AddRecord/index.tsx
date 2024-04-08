@@ -62,7 +62,8 @@ const AddRecord = () => {
         onSaveToDraft,
         onEditOnlineSave,
         isDataAvailableLocally,
-        isOverlayVisible
+        isOverlayVisible,
+        errorCount
 
     } = useViewModify('add');
 
@@ -209,6 +210,7 @@ const AddRecord = () => {
         {
           !isSelectMasterOpen && 
           <VFTaskBar
+          showSubmittedExportError={errorCount>0}
             enableEditOnlineReset={false}
             disableResumeSeasonality={()=>false}
             disableStopSeasonality={()=>false}

@@ -1577,9 +1577,8 @@ export const addPrefixToObjectKeys = (obj:any,prefix:string)=>{
 }
 
 export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[],masterId:number):ColDef[]=>{
-
+  console.log(masterId)
   const result:any[] = []
-
   conflicts.map((conflict)=>{
      conflict.conflictdetails.map((conflictDetail)=>{
       const existingRowIndex = result.findIndex((row:any)=>{

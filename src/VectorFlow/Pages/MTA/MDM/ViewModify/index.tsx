@@ -340,6 +340,7 @@ import _ from "lodash";
               
               return false;
             }}
+            showSubmittedExportError={errorCount>0}
             masterProgress={activeMaster.progress}
             disableSubmit={activeMaster.rowData.length===0}
             enableEditOnlineReset = {enableEditOnlineReset}
