@@ -18,6 +18,7 @@ import { AgChartsReact } from 'ag-charts-react'
 import React from 'react'
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline'
 import { useUserData } from '../../../../../context'
+import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar'
 import ExpandedGraph from './ReseachInsightsExpandedGraph'
 
 
@@ -59,9 +60,9 @@ const ResearchInsights = ()=>{
     if(isLoading){
         return <VFLoader/>
     }
-
-    
     return(
+        <>
+       <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'ResearchInsight'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
         <ResearchInsightsLayout>
             <ResearchInsightsTableWrapper style={{zoom:0.8}}>
                 <VFTable
@@ -508,6 +509,7 @@ const ResearchInsights = ()=>{
             />
            
         </ResearchInsightsLayout>
+        </>
     )
 }
 

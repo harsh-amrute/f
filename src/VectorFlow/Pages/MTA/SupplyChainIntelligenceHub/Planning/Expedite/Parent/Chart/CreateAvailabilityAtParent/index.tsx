@@ -120,12 +120,12 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                     category:{
                         title:{
                             enabled:true,
-                            text:'Receiving Location Name',
+                            text:'Parent Location Name',
                             position:'bottom',
 
                         }
                     },
-                    series:{
+                    number:{
                         title:{
                             enabled:true,
                             text:"Count of SKUs",

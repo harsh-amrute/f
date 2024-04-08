@@ -42,7 +42,7 @@ export interface BPRFilter{
     name:string
     attributeName:string
     operator:string
-    value:string | string[]
+    value:string
 }
 
 export interface BPRFilterGroup{
@@ -93,4 +93,38 @@ export interface ReseachInsightsGraphState{
     pen:ReseachInsightsGraphPenState
     id:number
     filters:Array<ReseachInsightsGraphDateStateFilter>
+}
+
+
+export interface BufferTrendsGraphTypeState{
+    label:"Self" 
+    value:"Self" 
+}
+
+export interface BufferTrendsGraphPenState{
+    label:"Absolute" | "Percentage"
+    value:"Absolute" | "Percentage"
+}
+
+export interface BufferTrendsGraphDateState{
+    Red:number
+    White:number
+    Yellow:number
+    Green:number
+    Black:number
+    Blue:number
+    date:string
+}
+
+
+export interface BufferTrendsGraphDateStateFilter{
+    key:string,
+    value:string
+}
+
+export interface BufferTrendsGraphState{
+    type:BufferTrendsGraphTypeState
+    pen:BufferTrendsGraphPenState
+    id:number
+    filters:Array<BufferTrendsGraphDateStateFilter>
 }

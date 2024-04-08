@@ -7,8 +7,13 @@ import ExpediteDispatchesChild from "../Expedite/Child/Chart/ExpediteDispatches"
 import CreateAvailabilityAtParent from "../Expedite/Parent/Chart/CreateAvailabilityAtParent";
 import ExpediteParentCustomCharts from "../Expedite/Parent/Chart/Custom";
 import ExpediteChildCustomCharts from "../Expedite/Child/Chart/Custom";
-import ExcessInventory from "../ExcessInventory/Chart/ExcessInventory";
+import ExcessInventoryLocation from "../ExcessInventory/Chart/ExcessInventoryLocationWise";
+import ExcessInventoryProduct from "../ExcessInventory/Chart/ExcessInventoryProductWise";
 import ExcessInventoryCustomCharts from "../ExcessInventory/Chart/Custom";
+import OrderFulfillmentLocation from '../OrderFulfillment/Chart/OrderFulfillmentLocationWise';
+import OrderFulfillmentProduct from '../OrderFulfillment/Chart/OrderFulfillmentProductWise';
+import OrderFulfillmentCustomCharts from '../OrderFulfillment/Chart/Custom';
+
 
 interface ChartViewProps {
     category:string,
@@ -78,9 +83,16 @@ const ChartView = ({category,currentTab,currentGraphData}:ChartViewProps) => {
                 }
                 break;   
             case 'ExcessInventory':
-                if(currentTab === 'excessInventory'){
+                if(currentTab === 'excessInventoryLocation'){
                     return (
-                        <ExcessInventory
+                        <ExcessInventoryLocation
+                            data={currentGraphData ? currentGraphData:[]}
+                        />
+                    )
+                }
+                if(currentTab === 'excessInventoryProduct'){
+                    return (
+                        <ExcessInventoryProduct
                             data={currentGraphData ? currentGraphData:[]}
                         />
                     )
@@ -92,7 +104,26 @@ const ChartView = ({category,currentTab,currentGraphData}:ChartViewProps) => {
                 }
                 break;
             case 'OrderFulfillment':
-                return <></>
+                if(currentTab === 'orderFulfillmentLocation'){
+                    return (
+                        <OrderFulfillmentLocation
+                            data={currentGraphData ? currentGraphData:[]}
+                        />
+                    )
+                }
+                if(currentTab === 'orderFulfillmentProduct'){
+                    return (
+                        <OrderFulfillmentProduct
+                            data={currentGraphData ? currentGraphData:[]}
+                        />
+                    )
+                }
+                if(currentTab === 'custom'){
+                    return (
+                        <OrderFulfillmentCustomCharts/>
+                    )
+                }
+                break;
             default:
                 return <></>
         }

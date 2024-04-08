@@ -112,11 +112,8 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
 
       const getChartToolbarItems:any = () => ['chartDownload'];
 
-      const chartThemeOverrides = useMemo<any>(() => { 
+      const chartThemeOverridesG1 = useMemo<any>(() => { 
         return {
-            palette:{
-                fills:['#0c7528','#570dbf']
-            },
               common: {
                   legend:{
                     position:'top'
@@ -130,7 +127,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
 
                         }
                     },
-                    series:{
+                    number:{
                         title:{
                             enabled:true,
                             text:"Count of SKUs",
@@ -138,6 +135,9 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                         }
                       }
                   },
+                  highlight:{
+                    range:'node'
+                  }
                   
               },
           };
@@ -190,7 +190,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                                     panels:[]
                                                 }
                                             }
-                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemeOverrides={chartThemeOverridesG1}
                                             chartThemes={['myCustomTheme']}
                                             customChartThemes={{
                                                 'myCustomTheme':myCustomTheme
@@ -216,7 +216,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                                     panels:[]
                                                 }
                                             }
-                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemeOverrides={chartThemeOverridesG1}
                                             chartThemes={['myCustomTheme']}
                                             customChartThemes={{
                                                 'myCustomTheme':myCustomTheme
@@ -254,7 +254,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                                 panels:[]
                                             }
                                         }
-                                        chartThemeOverrides={chartThemeOverrides}
+                                        chartThemeOverrides={chartThemeOverridesG1}
                                         chartThemes={['myCustomTheme']}
                                         customChartThemes={{
                                             'myCustomTheme':myCustomTheme

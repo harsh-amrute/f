@@ -24,11 +24,10 @@ const VFFloatingTab = (props:VFFloatingTabProps)=>{
 
     const {
         tabs,
-        defaultTab = 0,
+        defaultTab=0,
         handleClick
     } = props
-
-
+    
     const [activeIndex,setActiveIndex] = useState<number>(defaultTab)
 
     const [activeShadowData,setActiveShadowData] = useState<ActiveShadowDataType | null>(null)

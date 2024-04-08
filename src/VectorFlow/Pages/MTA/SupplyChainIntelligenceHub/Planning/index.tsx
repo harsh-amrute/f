@@ -6,6 +6,7 @@ import ChartView from "./ChartView";
 import ActionToolBar from './ActionToolBar';
 import GridView from "./GridView";
 
+
 const Planning = () => {
 
     const {
@@ -25,6 +26,7 @@ const Planning = () => {
         currentGridData
     } = usePlanning();
 
+
     const renderView = () => {
 
         switch(currentView){
@@ -41,6 +43,9 @@ const Planning = () => {
 
     return(
         <>
+    
+       
+       
             {
                 isOverlayVisible && (
                 <VFOverlay>
@@ -62,13 +67,14 @@ const Planning = () => {
                     onExpediteChildClick={()=>handlePlanningQuadrantClick('ExpediteToChild')}
                     onExpediteParentClick={()=>handlePlanningQuadrantClick('ExpediteFromParent')}
                     onExcessInventoryReviewClick={()=>handlePlanningQuadrantClick('ExcessInventory')}
-                    onOrderFulfillmentReviewClick={()=>console.log("Test")}
+                    onOrderFulfillmentReviewClick={()=>handlePlanningQuadrantClick('OrderFulfillment')}
                 />
             }
             {
                 !isSelectCategoryOpen &&
                 <>
                     <ActionToolBar 
+                        currCategory={currentCategory}
                         view={currentView} 
                         onFloatingTabChange={onFloatingTabChange}
                         onGoBack={onGoBack}

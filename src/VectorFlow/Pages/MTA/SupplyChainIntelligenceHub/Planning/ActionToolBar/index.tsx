@@ -1,5 +1,12 @@
 import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton';
 import VFFloatingTab from '../../../../../../components/VectorFLOW/commons/VFFloatingTab';
+import VFSelectedFilters from '../../../../../../components/VectorFLOW/commons/VFSelectedFilters';
+import useBPRFilter from '../../../../../../hooks/useBPRFilter';
+import {useState} from 'react';
+import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
+import { useLocation} from "react-router-dom";
+
+
 import {
     SCTaskBarContainer, 
     SCGoBackContainer, 
@@ -9,23 +16,94 @@ import {
     SCVerticalDivider, 
     SCViewImage,
     SCCustomActionsContainer,
-    SCViewContainerWithBg
+    SCViewContainerWithBg,
+ 
 } from './styles';
 import { useUserData } from '../../../../../../context/UserDataContext';
+
+
 interface ActionToolBarProps {
     view:string,
     currentTab:string,
     setCurrentTab:any,
+    currCategory?:any,
     tabsList:Array<{id:string,label:string,value:string}>,
     onFloatingTabChange:(tab:any)=>void,
     onGoBack:()=>void
     onViewChange:(view:string)=>void,
-    disableChartAndGridViewToggle?:boolean
-
+    disableChartAndGridViewToggle?:boolean,
+    
 }
-const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,disableChartAndGridViewToggle}:ActionToolBarProps) => {
+
+
+
+const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle}:ActionToolBarProps) => {
     const { user } = useUserData();
+    const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
+    const { pathname } = useLocation();
+
     const themeUi = user?.user?.theme_ui;
+ const [isFilterOpen,toggleFilter] = useState<boolean>(false)
+
+
+
+   const renderFilter = () => {
+    switch(currCategory){
+        case 'GITFromParent':
+            return <VFMultiFilter onApplyFilter={()=>{toggleFilter(false)}} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} />;
+        case 'GITToChild':
+            return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  />;
+        case 'ExpediteFromParent':
+            return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  />;
+        case 'ExpediteToChild':
+            return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  />;
+        case 'ExcessInventory':
+            return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  />;
+        case 'OrderFulfillment':
+            return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} coverageFilterActive={true}  />;
+        case 'BPR':
+            if(pathname==='/supply-chain-intelligence-hub/bpr'){
+                return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  />    
+            }
+            break;
+        case 'RRR':
+            if(pathname==='/supply-chain-intelligence-hub/rrr'){
+                 return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  />;
+            }
+            break;
+        case 'BOR':
+            if(pathname==='/supply-chain-intelligence-hub/bor'){
+                return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  />;
+            }
+            break;
+        case 'BTR':
+            if(pathname==='/insights-and-trends/buffer-trend-report'){
+                return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} colorFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  />;
+            }
+            break;
+        case 'BufferTrend':
+            if(pathname==='/insights-and-trends/buffer-trends'){
+                 return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} colorFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  />;
+             }
+            break;
+         case 'ResearchInsight':
+            if(pathname==='/insights-and-trends/research-insights'){
+                return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} />;
+            }
+            break;
+        case 'DBMNorm':
+            if(pathname==='/dbm/dbm-norm-suggestions'){
+                return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} />;
+            }
+            break;
+        default:
+            <></>
+
+    }
+
+   }
+   
+    
 
 
     const renderFloatingTab = () => {
@@ -94,9 +172,15 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                             <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
                             <SCGoBackText><b>Go Back</b></SCGoBackText>
                         </SCGoBackContainer>
+                        <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
                         {tabsList.length > 0 && renderFloatingTab()}
                         <SCCustomActionsContainer>
-                                <VFButton themeUi={themeUi} onClick={()=>console.log("test")}>Edit Filter</VFButton>
+
+
+                        <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
+                            {isFilterOpen && renderFilter()}
+                         
+                                {/* <VFButton themeUi={themeUi} onClick={()=>console.log("test")}>   Edit Filter</VFButton> */}
                                 <SCVerticalDivider/>
                                 <SCViewContainerWithBg>
                                     <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />

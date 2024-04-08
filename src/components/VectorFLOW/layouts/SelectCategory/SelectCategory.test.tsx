@@ -1,5 +1,12 @@
-import { screen,render,fireEvent } from "@testing-library/react";
+import { screen,render,fireEvent, act } from "@testing-library/react";
 import SelectCategory from ".";
+import { UserDataContext } from "../../../../context";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter as Router } from "react-router-dom";
+import { setupReactQuery } from "../../../../config/react-query-config";
+import { ReactNode } from "react";
+import { Provider } from "react-redux";
+import {store} from "../../../../redux/store/store";
 
 const dummyprops = {
     childMonitorCount:100,
@@ -16,16 +23,49 @@ const dummyprops = {
     onOrderFulfillmentReviewClick:jest.fn(),
 }
 
+const queryClient = setupReactQuery();
+
+const contextWrapper = (children: ReactNode,store:any) => {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Provider store={store}>
+            <UserDataContext.Provider
+              value={{
+                user: { user: { theme_ui: "NOIRFUSION" } },
+                changeColorTheme: (color:any) => {
+                  return color;
+                },
+                isSideBarOpen:true,toggleSideBar:jest.fn
+              }}
+            >
+              {children}
+            </UserDataContext.Provider>
+          </Provider>
+        </Router>
+      </QueryClientProvider>
+    );
+  };
+
+
+
 describe ("SelectCategory Component", () => {
-    it("renders the Select Category component", () => {
-        render (<SelectCategory{...dummyprops}></SelectCategory>)
+    it("renders the Select Category component", async () => {
+        render (contextWrapper(<SelectCategory{...dummyprops}></SelectCategory>,store));
+
         const btn = screen.getAllByText('From Parent')[0];
         fireEvent.click(btn);
         expect(btn).toBeInTheDocument();
 
         const count=screen.getAllByText('100')[0];
         expect(count).toBeInTheDocument();
-
+        act(()=>{
+            
+            const button=screen.getAllByText('Edit Filter')[0]
+            expect(button).toBeInTheDocument();
+            fireEvent.click(button);
+        })
+  
     })
 
 })

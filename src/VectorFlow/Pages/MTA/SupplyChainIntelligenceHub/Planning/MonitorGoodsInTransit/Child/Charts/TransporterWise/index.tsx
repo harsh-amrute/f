@@ -111,7 +111,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
 
       const getChartToolbarItems:any = () => ['chartDownload'];
 
-      const chartThemeOverrides = useMemo<any>(() => { 
+      const chartThemeOverridesG1 = useMemo<any>(() => { 
         return {
             palette:{
                 fills:['#0c7528','#570dbf']
@@ -188,7 +188,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                                     panels:[]
                                                 }
                                             }
-                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemeOverrides={chartThemeOverridesG1}
                                             chartThemes={['myCustomTheme']}
                                             customChartThemes={{
                                                 'myCustomTheme':myCustomTheme
@@ -214,7 +214,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                                     panels:[]
                                                 }
                                             }
-                                            chartThemeOverrides={chartThemeOverrides}
+                                            chartThemeOverrides={chartThemeOverridesG1}
                                             chartThemes={['myCustomTheme']}
                                             customChartThemes={{
                                                 'myCustomTheme':myCustomTheme
@@ -252,7 +252,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                             panels:[]
                                         }
                                     }
-                                    chartThemeOverrides={chartThemeOverrides}
+                                    chartThemeOverrides={chartThemeOverridesG1}
                                     chartThemes={['myCustomTheme']}
                                     customChartThemes={{
                                         'myCustomTheme':myCustomTheme

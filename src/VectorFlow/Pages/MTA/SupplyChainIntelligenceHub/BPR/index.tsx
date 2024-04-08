@@ -9,6 +9,7 @@ import BPRSubmiRemarkToolTip from "./BPRSubmitRemarkToolTip"
 
 import "allotment/dist/style.css";
 import BPRRemarkHistoryToolTip from "./BPRRemarkHistoryToolTip"
+import ActionToolBar from "../Planning/ActionToolBar"
 
 
 
@@ -33,7 +34,7 @@ const BPR = ()=>{
         updateRemark,
         onCloseSubmitRemark,
         onSubmitRemark,
-        onCloseRemarkHistory
+        onCloseRemarkHistory,
     } = useBPR();
 
     
@@ -48,6 +49,7 @@ const BPR = ()=>{
 
     return(
         <>
+        <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BPR'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
         
         <BPRLayout>
             {/* <BPRTaskBar style={{width:isSideBarOpen?'77%':'97%'}}>

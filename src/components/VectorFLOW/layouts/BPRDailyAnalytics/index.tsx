@@ -53,8 +53,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
 
     }
 
-    const getCellIcons = (value:number,colKey:string)=>{
-        if(colKey==='techChange' || colKey==='ecoChange'){
+    const getCellIcons = (value:number)=>{
             if(value>0){
                 return <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-increase.svg'/>
             }
@@ -67,7 +66,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                     <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-decrease.svg' style={{transform:'rotate(90deg)'}}/>
                 </BPRDailyAnalyticsTableNoChangeWrapper>
             )
-        }
+        
     }
 
     return(
@@ -111,7 +110,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                                                 <BPRDailyAnalyticsTableCellText>{getCellText(row.techChange,'techChange')}</BPRDailyAnalyticsTableCellText>
                                             </BPRDailyAnalyticsTableCell>
                                             <BPRDailyAnalyticsTableCell>
-                                                {getCellIcons(row.techChange,'techChange')}
+                                                {getCellIcons(row.techChange)}
                                             </BPRDailyAnalyticsTableCell>
                                         </React.Fragment>
                                     )
@@ -124,7 +123,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                                                 <BPRDailyAnalyticsTableCellText>{getCellText(row.ecoChange,'ecoChange')}</BPRDailyAnalyticsTableCellText>
                                             </BPRDailyAnalyticsTableCell>
                                            <BPRDailyAnalyticsTableCell>
-                                                {getCellIcons(row.ecoChange,'ecoChange')}
+                                                {getCellIcons(row.ecoChange)}
                                            </BPRDailyAnalyticsTableCell>
                                         </React.Fragment>
                                     )

@@ -30,6 +30,7 @@ const VFPagination  = (props:VFPaginationProps)=>{
         if(currentPage===1) return `1 to ${rowsPerPage}`;
         const start = (currentPage * rowsPerPage)-rowsPerPage + 1;
         const end = (currentPage)*rowsPerPage;
+        console.debug(end,totalRows)
         if(end >= totalRows) return `${start} to ${totalRows}`;
         return `${start} to ${(currentPage)*rowsPerPage}`;
     }
