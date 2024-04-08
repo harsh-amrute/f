@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import useBufferTrends from './useBufferTrends';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader'
+import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar';
 
 import ChartView from '../../InsightsAndTrends/BufferTrends/ChartView';
 
@@ -30,6 +31,8 @@ const BufferTrends = () => {
    
   return (
     <>
+     <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BufferTrend'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
+
     <div style={{display:'flex',justifyContent:'center',marginBottom:'8px'}}>
                         <VFFloatingTab
                             tabs={[

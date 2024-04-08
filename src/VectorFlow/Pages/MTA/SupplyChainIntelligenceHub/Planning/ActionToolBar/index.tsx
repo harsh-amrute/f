@@ -83,7 +83,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             break;
         case 'BufferTrend':
             if(pathname==='/insights-and-trends/buffer-trends'){
-                 return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} colorFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  />;
+                 return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  />;
              }
             break;
          case 'ResearchInsight':
@@ -91,6 +91,11 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                 return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} />;
             }
             break;
+            case 'GuidedInsight':
+                if(pathname==='/insights-and-trends/guided-insights'){
+                    return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true}/>;
+                }
+               break;
         case 'DBMNorm':
             if(pathname==='/dbm/dbm-norm-suggestions'){
                 return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} />;
@@ -100,6 +105,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             <></>
 
     }
+    
 
    }
    
@@ -172,7 +178,11 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                             <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
                             <SCGoBackText><b>Go Back</b></SCGoBackText>
                         </SCGoBackContainer>
+                        {currCategory === 'GuidedInsight' ? null:
+                        
                         <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
+
+                        }
                         {tabsList.length > 0 && renderFloatingTab()}
                         <SCCustomActionsContainer>
 
@@ -199,11 +209,13 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
 
                         
                             {
+                                currCategory==='CustomScreens' ? null : (
                                 !disableChartAndGridViewToggle &&
                                 <SCViewBackground>
                                     <SCViewContainer onClick={() => onViewChange('chart')}>
                                         <SCViewImage src={"/assets/img/VectorFLOW/BPR/chart-view-grey.svg"} alt="" />
                                         <p style={{color:'#b0acac'}}>Chart View</p>
+                            
                                     </SCViewContainer>
                                     <div><SCVerticalDivider/></div>
                                     <SCViewContainer>
@@ -211,6 +223,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                         <p style={{color:'#bc3d81'}}>Grid View</p>
                                     </SCViewContainer>
                                 </SCViewBackground>
+                                )
                             }           
                         </SCCustomActionsContainer>
                     </SCTaskBarContainer>
