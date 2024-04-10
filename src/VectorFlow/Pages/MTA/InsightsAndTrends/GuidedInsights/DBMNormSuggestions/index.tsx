@@ -7,14 +7,16 @@ import { type GridRef } from "../../../../../types/MDM";
 import { ColDef, ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../style';
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
+import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
+    
 //import 'ag-grid-enterprise';
 
 const DBMNormSuggestions = () => {
  
-    const {data:DBMNormSuggestionLoc}=useGetDBMNormSuggestionLoc();
-    const {data:DBMNormSuggestionPie}=useGetDBMNormSuggestionPie();
-    const {data:DBMNormSuggestionSKUs}=useGetDBMNormSuggestionSKUs();
-    const {data:DBMNormSuggestionAgeing}=useGetDBMNormSuggestionAgeing();
+    const {data:DBMNormSuggestionLoc, isLoading:isLoadingGraph1}=useGetDBMNormSuggestionLoc();
+    const {data:DBMNormSuggestionPie,isLoading:isLoadingGraph2}=useGetDBMNormSuggestionPie();
+    const {data:DBMNormSuggestionSKUs,isLoading:isLoadingGraph3}=useGetDBMNormSuggestionSKUs();
+    const {data:DBMNormSuggestionAgeing,isLoading:isLoadingGraph4}=useGetDBMNormSuggestionAgeing();
 
     const DBMSuggestionLocData=DBMNormSuggestionLoc?.data?.data;
     const ActiveDBMSuggestionData=DBMNormSuggestionPie?.data?.data;
@@ -620,7 +622,9 @@ const chartThemeOverrides2 = useMemo<any>(() => {
       const graph4 = [
     'This chart highlights the pendency of DBM suggestions. DBM Suggestion Age = Today - Suggestion Generation Date'
 ]
-
+if(isLoadingGraph1 || isLoadingGraph2 || isLoadingGraph3 || isLoadingGraph4){
+   return <VFLoader/>
+}
      
     return(
         <>

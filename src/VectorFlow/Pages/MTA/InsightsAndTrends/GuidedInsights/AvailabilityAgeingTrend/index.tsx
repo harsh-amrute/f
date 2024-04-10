@@ -4,11 +4,12 @@ import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRan
 import { useUserData } from "../../../../../../context";
 import { useState,useEffect } from "react";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
+import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 
 const AvailabilityAgeingTrend=()=>{
  const [horizon,setHorizon] = useState<number>(9);
  const [minAgeing,setAgeing] = useState<number>(1);
-  const {mutateAsync: GetAvailabilityAgeing} = useGetAvailabilityAgeing();
+  const {mutateAsync: GetAvailabilityAgeing, isLoading} = useGetAvailabilityAgeing();
   const [AvailabilityAgeingTrendData,setAgeingData]=useState();
    const {user} = useUserData()
    const themeUi=user?.user?.theme_ui
@@ -85,6 +86,9 @@ const AvailabilityAgeingTrend=()=>{
 
 }
  const numbers = Array.from(Array(90), (_, index) => index + 1);
+ if(isLoading){
+        return <VFLoader/>
+    }
     return <div>
       <div style={{display:"flex", top: 221,
       left: 239,

@@ -7,13 +7,14 @@ import { ColDef, ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../style';
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { useGetChronicUnavailabilityLoc,useGetChronicUnavailabilitySku} from "../../../../../Services/MTA/InsightsAndTrends";
+  import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
  
 
 
 const ChronicUnavailabilityCharts = () => {
 
-    const {data:ChronicUnavailabilityLoc}=useGetChronicUnavailabilityLoc();
-    const {data:ChronicUnavailabilitySku}=useGetChronicUnavailabilitySku();
+    const {data:ChronicUnavailabilityLoc, isLoading:isLoadingChronicLoc}=useGetChronicUnavailabilityLoc();
+    const {data:ChronicUnavailabilitySku, isLoading:isLoadingChronicSku}=useGetChronicUnavailabilitySku();
 
     const ChronicUnavailabilityLocData=ChronicUnavailabilityLoc?.data?.data;
     const ChronicUnavailabilitySkuData=ChronicUnavailabilitySku?.data?.data;
@@ -431,7 +432,9 @@ const chartThemeOverrides2 = useMemo<any>(() => {
     'This graph highlights the top 10 products based on the number of locations where the SKU remains in continuous eco black, red or combination of black and red, surpassing the RLT'   
     ]
 
-     
+   if(isLoadingChronicSku || isLoadingChronicLoc){
+        return <VFLoader/>
+    } 
     return(
         <>
             <SCDynamicContainer>

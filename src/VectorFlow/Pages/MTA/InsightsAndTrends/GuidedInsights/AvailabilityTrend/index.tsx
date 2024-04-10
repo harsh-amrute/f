@@ -4,12 +4,13 @@ import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRan
 import { useState,useEffect } from "react";
 import { useUserData } from "../../../../../../context";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
-
+import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 const AvailabilityTrend=()=>{
   const [AvailabilityTrend,setAvailabilityData]=useState();
-    const {mutateAsync: GetAvailabilityTrend} = useGetAvailabilityTrend();
+    const {mutateAsync: GetAvailabilityTrend, isLoading} = useGetAvailabilityTrend();
   //const rowData=AvailabilityTrend?.data?.data;
   const [horizon,setHorizon] = useState<number>(9);
+   
  const {user} = useUserData()
    const themeUi=user?.user?.theme_ui
   useEffect(()=>{
@@ -59,6 +60,9 @@ const AvailabilityTrend=()=>{
       }as const
 ]
 }
+if(isLoading){
+        return <VFLoader/>
+    }
 return <div>
   <div style={{width:650, display:"flex" }}>
   <label style={{fontStyle:"normal",
