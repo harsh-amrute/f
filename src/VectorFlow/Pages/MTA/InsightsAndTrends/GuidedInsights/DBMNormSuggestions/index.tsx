@@ -7,7 +7,7 @@ import { type GridRef } from "../../../../../types/MDM";
 import { ColDef, ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../style';
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
-
+//import 'ag-grid-enterprise';
 
 const DBMNormSuggestions = () => {
  
@@ -20,7 +20,12 @@ const DBMNormSuggestions = () => {
     const ActiveDBMSuggestionData=DBMNormSuggestionPie?.data?.data;
     const DBMSuggestionSkuData=DBMNormSuggestionSKUs?.data?.data;
     const DBMSuggestionAgeingData=DBMNormSuggestionAgeing?.data?.data;
-    
+    const totalCount = ActiveDBMSuggestionData?.reduce((acc:any, curr:any) => acc + curr.count, 0);
+    const pieData = ActiveDBMSuggestionData?.map((row:any) => ({
+  suggestion: row.suggestion,
+  count: Math.floor((row.count / totalCount) * 100)
+}));
+
     const refGraph1 = useRef<GridRef>();
     const refGraph2 = useRef<GridRef>();
     const refGraph3 = useRef<GridRef>();
@@ -57,17 +62,128 @@ const DBMNormSuggestions = () => {
             headerName:'NormDec',
             colId:'NormDec',
         }
+        ,
+          {
+            field:'whcode',
+            headerName:'Location Code',
+            colId:'whcode',
+        },
+         {
+            field:'LogisticsLocation',
+            headerName:'LogisticsLocation',
+            colId:'LogisticsLocation',
+        },
+         {
+            field:'LL1',
+            headerName:'LL1',
+            colId:'LL1',
+        },
+         {
+            field:'LL2',
+            headerName:'LL2',
+            colId:'LL2',
+        },
+         {
+            field:'LL3',
+            headerName:'LL3',
+            colId:'LL3',
+        },
+         {
+            field:'LL4',
+            headerName:'LL4',
+            colId:'LL4',
+        },
+         {
+            field:'LL5',
+            headerName:'LL5',
+            colId:'LL5',
+        },
+         {
+            field:'c1',
+            headerName:'c1',
+            colId:'c1',
+        },
+         {
+            field:'C2',
+            headerName:'C2',
+            colId:'C2',
+        },
+         {
+            field:'C3',
+            headerName:'C3',
+            colId:'C3',
+        },
+         {
+            field:'C4',
+            headerName:'C4',
+            colId:'C4',
+        },
+         {
+            field:'C5',
+            headerName:'C5',
+            colId:'C5',
+        },
+         {
+            field:'C6',
+            headerName:'C6',
+            colId:'C6',
+        },
+         {
+            field:'C7',
+            headerName:'C7',
+            colId:'C7',
+        },
+         {
+            field:'C8',
+            headerName:'C8',
+            colId:'C8',
+        },
+         {
+            field:'C9',
+            headerName:'C9',
+            colId:'C9',
+        },
+         {
+            field:'C10',
+            headerName:'C10',
+            colId:'C10',
+        },
+         {
+            field:'C11',
+            headerName:'C11',
+            colId:'C11',
+        },
+        {
+            field:'C12',
+            headerName:'C12',
+            colId:'C12',
+        },
+        {
+            field:'C13',
+            headerName:'C13',
+            colId:'C13',
+        },
+        {
+            field:'C14',
+            headerName:'C14',
+            colId:'C14',
+        },
+        {
+            field:'C15',
+            headerName:'C15',
+            colId:'C15',
+        }
     ]
      const coldefs2:ColDef[] = [
         {
-            field:'type',
-            headerName:'Type',
-            colId:'type',
+            field:'suggestion',
+            headerName:'suggestion',
+            colId:'suggestion',
         },
         {
-            field:'percentage',
-            headerName:'percentage',
-            colId:'percentage',
+            field:'count',
+            headerName:'count',
+            colId:'count',
         },
         
     ]
@@ -87,6 +203,126 @@ const DBMNormSuggestions = () => {
             field:'NormDec',
             headerName:'NormDec',
             colId:'NormDec',
+        },
+         {
+            field:'SKUDescription',
+            headerName:'SKUDescription',
+            colId:'SKUDescription',
+        },
+         {
+            field:'elephantOrderCapping',
+            headerName:'elephantOrderCapping',
+            colId:'elephantOrderCapping',
+        },
+         {
+            field:'weight',
+            headerName:'weight',
+            colId:'weight',
+        },
+         {
+            field:'volume',
+            headerName:'volume',
+            colId:'volume',
+        },
+        {
+            field:'SL1',
+            headerName:'SL1',
+            colId:'SL1',
+        },
+         {
+            field:'SL2',
+            headerName:'SL2',
+            colId:'SL2',
+        },
+         {
+            field:'SL3',
+            headerName:'SL3',
+            colId:'SL3',
+        },
+         {
+            field:'SL4',
+            headerName:'SL4',
+            colId:'SL4',
+        },
+         {
+            field:'SL5',
+            headerName:'SL5',
+            colId:'SL5',
+        },
+         {
+            field:'c1',
+            headerName:'c1',
+            colId:'c1',
+        },
+         {
+            field:'C2',
+            headerName:'C2',
+            colId:'C2',
+        },
+         {
+            field:'C3',
+            headerName:'C3',
+            colId:'C3',
+        },
+         {
+            field:'C4',
+            headerName:'C4',
+            colId:'C4',
+        },
+         {
+            field:'C5',
+            headerName:'C5',
+            colId:'C5',
+        },
+         {
+            field:'C6',
+            headerName:'C6',
+            colId:'C6',
+        },
+         {
+            field:'C7',
+            headerName:'C7',
+            colId:'C7',
+        },
+         {
+            field:'C8',
+            headerName:'C8',
+            colId:'C8',
+        },
+         {
+            field:'C9',
+            headerName:'C9',
+            colId:'C9',
+        },
+         {
+            field:'C10',
+            headerName:'C10',
+            colId:'C10',
+        },
+         {
+            field:'C11',
+            headerName:'C11',
+            colId:'C11',
+        },
+        {
+            field:'C12',
+            headerName:'C12',
+            colId:'C12',
+        },
+        {
+            field:'C13',
+            headerName:'C13',
+            colId:'C13',
+        },
+        {
+            field:'C14',
+            headerName:'C14',
+            colId:'C14',
+        },
+        {
+            field:'C15',
+            headerName:'C15',
+            colId:'C15',
         }
     ]
      const coldefs4:ColDef[] = [
@@ -141,7 +377,7 @@ const DBMNormSuggestions = () => {
                 chartRef2 = refGraph2.current?.api.createRangeChart({
                     chartType:'pie',
                     cellRange: {
-                        columns: ['type','percentage'],
+                        columns: ['suggestion','count'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     }
@@ -152,7 +388,7 @@ const DBMNormSuggestions = () => {
                 chartRef2 = refGraph2.current?.api.createRangeChart({
                     chartType:'pie',
                     cellRange: {
-                        columns: ['type','percentage'],
+                        columns: ['suggestion','count'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     },
@@ -463,8 +699,8 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                         <SCChartContainer height={547}>
                                 <SCChartHeaderContainer>
                                     <SCChartHeader>Distribution Of Current Active DBM Suggestions</SCChartHeader>
-                                     {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}
-                      
+                                     {/* {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}
+                       */}
                                 </SCChartHeaderContainer>
                                 <SCHorizontalDivider/>
                                 <div style={{height:'460px',display:grid2DisplayStatus}}>
@@ -474,10 +710,10 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={coldefs2}
-                                        rowData={ActiveDBMSuggestionData}
+                                        rowData={pieData}
                                         enableCharts={true}
                                         enableRangeSelection={true}
-                                        onRowDataUpdated={()=>generateChart(2,true)}
+                                        onFirstDataRendered={()=>generateChart(2,true)}
                                         getChartToolbarItems={getChartToolbarItems}
                                         chartToolPanelsDef={
                                             {
@@ -499,10 +735,10 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                                         <VFTable
                                             ref={refGraph2}
                                             columnDefs={coldefs2}
-                                            rowData={ActiveDBMSuggestionData}
+                                            rowData={pieData}
                                             enableCharts={true}
                                             enableRangeSelection={true}
-                                            onRowDataUpdated={()=>generateChart(2)}
+                                            onFirstDataRendered={()=>generateChart(2)}
                                             getChartToolbarItems={getChartToolbarItems}
                                             chartToolPanelsDef={
                                                 {

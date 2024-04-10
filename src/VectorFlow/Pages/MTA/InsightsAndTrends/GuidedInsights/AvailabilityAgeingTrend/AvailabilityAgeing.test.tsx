@@ -10,9 +10,13 @@ jest.mock("ag-charts-react", () => ({
 const useGetAvailabilityAgeingMock = useGetAvailabilityAgeing as jest.MockedFunction<
     typeof useGetAvailabilityAgeing
 >;
-const useGetAvailabilityAgeingData: any = { data: {data: GuidedInsights.AvailabilityAgeingTrendData }};
+//const useGetAvailabilityAgeingData: any = { data: {data: GuidedInsights.AvailabilityAgeingTrendData }};
 
-
+const useGetAvailabilityAgeingData: any = {
+  mutateAsync: () => {
+    return { data: {data: GuidedInsights.AvailabilityAgeingTrendData }};
+  },
+};
 describe("Availability Ageing ", () => {
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();

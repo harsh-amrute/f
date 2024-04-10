@@ -1,5 +1,5 @@
 import {InsightsAndTrendsService} from './api';
-import { useQuery } from '@tanstack/react-query'
+import { useQuery,useMutation } from '@tanstack/react-query'
 export const QUERY_KEYS = {
   useGetAvailabilityTrend: ['InsightsAndTrendsService.useGetAvailabilityTrend'],
 useGetChronicUnavailabilityLoc:['InsightsAndTrendsService.useGetChronicUnavailabilityLoc'],
@@ -14,8 +14,8 @@ useGetExcessInventoryValue:['InsightsAndTrendsService.useGetExcessInventoryValue
 useGetChronicUnavailabilityGridView:['InsightsAndTrendsService.useGetChronicUnavailabilityGridView']
 }
 export const useGetAvailabilityTrend = ()=>{
-  return useQuery(QUERY_KEYS.useGetAvailabilityTrend,async()=>{
-    return await InsightsAndTrendsService.getAvaialabilityTrend()
+  return useMutation(async (body:{horison:number})=>{
+    return await InsightsAndTrendsService.getAvaialabilityTrend(body)
   })
 }
 export const useGetChronicUnavailabilityLoc = ()=>{
@@ -28,11 +28,16 @@ export const useGetChronicUnavailabilitySku = ()=>{
     return await InsightsAndTrendsService.getChronicUnavailabilitySku()
   })
 }
-export const useGetAvailabilityAgeing = ()=>{
-  return useQuery(QUERY_KEYS.useGetAvailabilityAgeing,async()=>{
-    return await InsightsAndTrendsService.getAvailabilityAgeing()
-  })
-}
+// export const useGetAvailabilityAgeing = (horizon:number)=>{
+//   return useMutation(QUERY_KEYS.useGetAvailabilityAgeing,async()=>{
+//     return await InsightsAndTrendsService.getAvailabilityAgeing(horizon)
+//   })
+// }
+export const useGetAvailabilityAgeing = () => {
+    return useMutation(async (body:{horison:number}) => {
+      return await InsightsAndTrendsService.getAvailabilityAgeing(body);
+    });
+  }
 
 export const useGetDBMNormSuggestionLoc= ()=>{
   return useQuery(QUERY_KEYS.useGetDBMNormSuggestionLoc,async()=>{

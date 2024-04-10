@@ -43,26 +43,43 @@ const contextWrapper = (children: ReactNode,store:any) => {
 const useGetAvailabilityTrendMock = useGetAvailabilityTrend as jest.MockedFunction<
     typeof useGetAvailabilityTrend
 >;
-const useGetAvailabilityTrendData: any =   { data:{data: GuidedInsights.AvailabilityTrendData }}; 
-   
+//const useGetAvailabilityTrendData: any =   { data:{data: GuidedInsights.AvailabilityTrendData }}; 
+const useGetAvailabilityTrendData: any = {
+  mutateAsync: () => {
+    return { data:{data: GuidedInsights.AvailabilityTrendData }};
+  },
+};   
 
 const useGetChronicUnavailabilityGridViewMock = useGetChronicUnavailabilityGridView as jest.MockedFunction<
     typeof useGetChronicUnavailabilityGridView
 >;
-const useGetChronicUnavailabilityGridViewData: any = { data: {data: GuidedInsights.ChronicGridViewData }};
-
+//const useGetChronicUnavailabilityGridViewData: any = { data: {data: GuidedInsights.ChronicGridViewData }};
+const useGetChronicUnavailabilityGridViewData: any = {
+  mutateAsync: () => {
+    return { data: {data: GuidedInsights.ChronicGridViewData }};
+  },
+};
 
 const useGetChronicUnavailabilityLocMock = useGetChronicUnavailabilityLoc as jest.MockedFunction<
     typeof useGetChronicUnavailabilityLoc
 >;
-const useGetChronicUnavailabilityLocData: any ={ data: 
-            {data: GuidedInsights.ChronicUnavailabilityLocData }}; 
+// const useGetChronicUnavailabilityLocData: any ={ data: 
+//             {data: GuidedInsights.ChronicUnavailabilityLocData }};
+const useGetChronicUnavailabilityLocData: any = {
+  mutateAsync: () => {
+    return { data:{data: GuidedInsights.ChronicUnavailabilityLocData }};
+  },
+}; 
   
 const useGetChronicUnavailabilitySkuMock = useGetChronicUnavailabilitySku as jest.MockedFunction<
     typeof useGetChronicUnavailabilitySku
 >;
-const useGetChronicUnavailabilitySkuData: any =  { data: {data: GuidedInsights.ChronicUnavailabilitySkuData }}; 
-   
+//const useGetChronicUnavailabilitySkuData: any =  { data: {data: GuidedInsights.ChronicUnavailabilitySkuData }}; 
+   const useGetChronicUnavailabilitySkuData: any = {
+  mutateAsync: () => {
+    return { data: {data: GuidedInsights.ChronicUnavailabilitySkuData }};
+  },
+}; 
 describe("Availability Trend Data", () => {
     global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();
