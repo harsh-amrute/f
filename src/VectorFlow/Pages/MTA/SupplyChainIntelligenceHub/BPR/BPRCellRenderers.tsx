@@ -63,10 +63,9 @@ const colorMapper =(color:string)=> {
 export const BPRTechColorCellRenderer = (params:any)=>{
 
     const techColor = params.data.TechColor
-
     const cellColor = colorMapper(params.data.TechColor)
 
-    if(!techColor || techColor.lenght<1){
+    if(!techColor || techColor.length<1){
         return(
             <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}} data-testid='bpr-tech-color-cell'>
                 NULL

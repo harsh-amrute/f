@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import {VFFloatingTabWrapper,VFFloatingTabButton,VFFloatingTabButtonActiveShadow} from './styles'
 
-interface VFFloatingTabItemProps{
+export interface VFFloatingTabItemProps{
     label:string
     value:string
     id:string

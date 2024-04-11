@@ -37,7 +37,10 @@ export const SCGoBackText = styled.div`
 export const SCViewContainer = styled.div`
     display:flex;
     flex-direction:column;
+    
+    align-items:center;
     cursor:pointer;
+    overflow:hidden;
 `
 
 export const SCViewContainerWithBg = styled.div`
@@ -59,7 +62,7 @@ export const SCViewBackground = styled.div`
     box-shadow: -5px 4px 10px #8584843F;
     border-radius:5px;
     padding:10px;
-    height:58px;
+    // height:58px;
     
 `
 export const SCVerticalDivider = styled.div`
@@ -71,8 +74,9 @@ export const SCVerticalDivider = styled.div`
     align-items:center;
 `
 export const SCViewImage = styled.img`
-    width:42px;
-    height:27px;
+    width:38px;
+    height:20px;
+    margin-bottom:7px;
 `
 
 export const SCCustomActionsContainer = styled.div`

@@ -84,7 +84,7 @@ export const masterIdToDeleteSchemaMapper:MasterIdToSchema = {
 }
 
 export const defaultColDefs:ColDef = {
-    minWidth:180,
+    minWidth:140,
     cellStyle: {
       "text-align": "center",
       'text-overflow':'ellipsis',
