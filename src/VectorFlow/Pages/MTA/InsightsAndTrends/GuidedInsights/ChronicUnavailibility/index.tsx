@@ -7,14 +7,14 @@ import { ColDef, ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../style';
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { useGetChronicUnavailabilityLoc,useGetChronicUnavailabilitySku} from "../../../../../Services/MTA/InsightsAndTrends";
+  import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 
- 
 
 
 const ChronicUnavailabilityCharts = () => {
 
-    const {data:ChronicUnavailabilityLoc}=useGetChronicUnavailabilityLoc();
-    const {data:ChronicUnavailabilitySku}=useGetChronicUnavailabilitySku();
+    const {data:ChronicUnavailabilityLoc, isLoading:isLoadingChronicLoc}=useGetChronicUnavailabilityLoc();
+    const {data:ChronicUnavailabilitySku, isLoading:isLoadingChronicSku}=useGetChronicUnavailabilitySku();
 
     const ChronicUnavailabilityLocData=ChronicUnavailabilityLoc?.data?.data;
     const ChronicUnavailabilitySkuData=ChronicUnavailabilitySku?.data?.data;
@@ -37,10 +37,121 @@ const ChronicUnavailabilityCharts = () => {
             headerName:'Location Name',
             colId:'location',
         },
+        
+  {
+            field:'whcode',
+            headerName:'Location Code',
+            colId:'whcode',
+        },
         {
             field:'countSku',
             headerName:'Count Of Skus',
             colId:'countSku',
+        },
+         {
+            field:'LogisticsLocation',
+            headerName:'LogisticsLocation',
+            colId:'LogisticsLocation',
+        },
+         {
+            field:'LL1',
+            headerName:'LL1',
+            colId:'LL1',
+        },
+         {
+            field:'LL2',
+            headerName:'LL2',
+            colId:'LL2',
+        },
+         {
+            field:'LL3',
+            headerName:'LL3',
+            colId:'LL3',
+        },
+         {
+            field:'LL4',
+            headerName:'LL4',
+            colId:'LL4',
+        },
+         {
+            field:'LL5',
+            headerName:'LL5',
+            colId:'LL5',
+        },
+         {
+            field:'c1',
+            headerName:'c1',
+            colId:'c1',
+        },
+         {
+            field:'C2',
+            headerName:'C2',
+            colId:'C2',
+        },
+         {
+            field:'C3',
+            headerName:'C3',
+            colId:'C3',
+        },
+         {
+            field:'C4',
+            headerName:'C4',
+            colId:'C4',
+        },
+         {
+            field:'C5',
+            headerName:'C5',
+            colId:'C5',
+        },
+         {
+            field:'C6',
+            headerName:'C6',
+            colId:'C6',
+        },
+         {
+            field:'C7',
+            headerName:'C7',
+            colId:'C7',
+        },
+         {
+            field:'C8',
+            headerName:'C8',
+            colId:'C8',
+        },
+         {
+            field:'C9',
+            headerName:'C9',
+            colId:'C9',
+        },
+         {
+            field:'C10',
+            headerName:'C10',
+            colId:'C10',
+        },
+         {
+            field:'C11',
+            headerName:'C11',
+            colId:'C11',
+        },
+        {
+            field:'C12',
+            headerName:'C12',
+            colId:'C12',
+        },
+        {
+            field:'C13',
+            headerName:'C13',
+            colId:'C13',
+        },
+        {
+            field:'C14',
+            headerName:'C14',
+            colId:'C14',
+        },
+        {
+            field:'C15',
+            headerName:'C15',
+            colId:'C15',
         }
     ]
      const coldefs2:ColDef[] = [
@@ -53,6 +164,126 @@ const ChronicUnavailabilityCharts = () => {
             field:'countloc',
             headerName:'Count Of Locations',
             colId:'countloc',
+        },
+         {
+            field:'SKUDescription',
+            headerName:'SKUDescription',
+            colId:'SKUDescription',
+        },
+         {
+            field:'elephantOrderCapping',
+            headerName:'elephantOrderCapping',
+            colId:'elephantOrderCapping',
+        },
+         {
+            field:'weight',
+            headerName:'weight',
+            colId:'weight',
+        },
+         {
+            field:'volume',
+            headerName:'volume',
+            colId:'volume',
+        },
+        {
+            field:'SL1',
+            headerName:'SL1',
+            colId:'SL1',
+        },
+         {
+            field:'SL2',
+            headerName:'SL2',
+            colId:'SL2',
+        },
+         {
+            field:'SL3',
+            headerName:'SL3',
+            colId:'SL3',
+        },
+         {
+            field:'SL4',
+            headerName:'SL4',
+            colId:'SL4',
+        },
+         {
+            field:'SL5',
+            headerName:'SL5',
+            colId:'SL5',
+        },
+         {
+            field:'c1',
+            headerName:'c1',
+            colId:'c1',
+        },
+         {
+            field:'C2',
+            headerName:'C2',
+            colId:'C2',
+        },
+         {
+            field:'C3',
+            headerName:'C3',
+            colId:'C3',
+        },
+         {
+            field:'C4',
+            headerName:'C4',
+            colId:'C4',
+        },
+         {
+            field:'C5',
+            headerName:'C5',
+            colId:'C5',
+        },
+         {
+            field:'C6',
+            headerName:'C6',
+            colId:'C6',
+        },
+         {
+            field:'C7',
+            headerName:'C7',
+            colId:'C7',
+        },
+         {
+            field:'C8',
+            headerName:'C8',
+            colId:'C8',
+        },
+         {
+            field:'C9',
+            headerName:'C9',
+            colId:'C9',
+        },
+         {
+            field:'C10',
+            headerName:'C10',
+            colId:'C10',
+        },
+         {
+            field:'C11',
+            headerName:'C11',
+            colId:'C11',
+        },
+        {
+            field:'C12',
+            headerName:'C12',
+            colId:'C12',
+        },
+        {
+            field:'C13',
+            headerName:'C13',
+            colId:'C13',
+        },
+        {
+            field:'C14',
+            headerName:'C14',
+            colId:'C14',
+        },
+        {
+            field:'C15',
+            headerName:'C15',
+            colId:'C15',
         }
     ]
 
@@ -201,7 +432,9 @@ const chartThemeOverrides2 = useMemo<any>(() => {
     'This graph highlights the top 10 products based on the number of locations where the SKU remains in continuous eco black, red or combination of black and red, surpassing the RLT'   
     ]
 
-     
+   if(isLoadingChronicSku || isLoadingChronicLoc){
+        return <VFLoader/>
+    } 
     return(
         <>
             <SCDynamicContainer>
