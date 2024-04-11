@@ -29,6 +29,7 @@ import BPR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR'
 import RRR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/RationedRequirementReport'
 import GuidedInsights from './VectorFlow/Pages/MTA/InsightsAndTrends/GuidedInsights'
 import BufferTrends from './VectorFlow/Pages/MTA/InsightsAndTrends/BufferTrends'
+import BufferTrendReport from './VectorFlow/Pages/MTA/InsightsAndTrends/BTR'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -70,6 +71,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/insights-and-trends/buffer-trends',
     '/insights-and-trends/guided-insights',
     '/insights-and-trends/research-insights',
+    '/insights-and-trends/buffer-trend-report'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -356,6 +358,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<GuidedInsights/>)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/insights-and-trends/buffer-trend-report',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<BufferTrendReport/>)
         },
         ...getStoreTransferModuleRoutes()
       ]

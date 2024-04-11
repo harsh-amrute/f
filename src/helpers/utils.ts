@@ -16,6 +16,8 @@ import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField } from '../VectorFlow/types/BPR';
 import {RRRField} from '../VectorFlow/types/RRR'
 import _ from 'lodash'
+import AvailabilityCellRenderer from '../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
+import CategoryCellRenderer from '../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/CategoryCellRenderer';
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -1977,4 +1979,96 @@ export const BPRColorMapper =(color:string):{bg:string,text:string}=> {
               "text":"white"
           }
   }
+}
+
+
+export const mapBTRRowDataToColDefs = (row:any,onShowChart?:()=>void):Array<ColDef>=>{
+  const graphCellRenderer:ColDef={
+    field:'graph',
+    colId:'graph',
+    headerName:'',
+    width:40,
+    cellRenderer:'graphCellRenderer',
+    cellRendererParams:{
+      onShowChart:onShowChart
+    },
+    // cellStyle:{
+    //   'max-width':100,
+    //   'margin-left':20,
+    //   'margin-right':40
+    // },
+    flex: 1
+  }
+
+  let result =Object.keys(row).map((key:string):ColDef=>{
+   
+    if(key.startsWith('D')){
+      return {
+        field:key,
+        colId:key,
+        headerName:key,
+        cellRenderer:'colorCellRenderer',
+        cellRendererParams:(params:any)=>{
+          return{
+            colorValue:params.data[key]
+          }
+        },
+        floatingFilter: true,
+        filter: "agMultiColumnFilter",
+        ...defaultColDefs
+      }
+    }
+
+    if(key==='Tags'){
+      return {
+        field:key,
+        colId:key,
+        headerName:key,
+        cellRenderer:'tagsCellRenderer',
+        floatingFilter: true,
+        filter: "agMultiColumnFilter",
+        ...defaultColDefs
+      }
+    }
+    
+    if(key==='Availability'){
+      return {
+        field:key,
+        colId:key,
+        headerName:key,
+        cellRenderer:'availabilityCellRenderer',
+        tooltipField:key,
+        tooltipComponent:'availabilityToolTip',
+        floatingFilter: true,
+        filter: "agMultiColumnFilter",
+        ...defaultColDefs
+      }
+    }
+
+    if(key==='category'){
+      return {
+        field:key,
+        colId:key,
+        headerName:key,
+        cellRenderer:'categoryCellRenderer',
+        floatingFilter: true,
+        tooltipField:key,
+        tooltipComponent:'categoryToolTip',
+        filter: "agMultiColumnFilter",
+        ...defaultColDefs
+      }
+    }
+
+    return {
+      field:key,
+      colId:key,
+      headerName:key,
+      floatingFilter: true,
+      filter: "agMultiColumnFilter",
+      ...defaultColDefs
+    }
+  })
+  if(onShowChart)result = [graphCellRenderer,...result]
+  return result
+
 }

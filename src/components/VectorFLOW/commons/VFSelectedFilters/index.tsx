@@ -28,7 +28,6 @@ const VFSelectedFilters = (props:VFSelectedFiltersProps)=>{
 
             {Object.keys(filters).map((key:any)=>{
                const currGroup: BPRFilterGroup = filters[key as keyof BPRFilterState];
-               console.log(currGroup.label,areFiltersValid(currGroup.filters))
                 if(currGroup.filters.length>0 && areFiltersValid(currGroup.filters)){
                    return(
                     <VFSelectedFiltersChip>
