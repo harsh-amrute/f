@@ -6,6 +6,8 @@ import {useState} from 'react'
 import VFButton from "../../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../../context"
 import VFMultiFilter from "../../../../components/VectorFLOW/commons/VFMultiFilter";
+import { MultiFilterSupplyChainCheckboxList } from '../../../../helpers/BPRConstants'
+
 
 
 interface CountProp{
@@ -64,7 +66,7 @@ const SelectCategory=(props:CountProp)=>{
         <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>Edit Filter</VFButton>
             {
                 isFilterOpen && (
-                <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true}></VFMultiFilter>
+                <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true} productFilterActive={true} supplyChainNodeFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))}></VFMultiFilter>
                
                 )
             }

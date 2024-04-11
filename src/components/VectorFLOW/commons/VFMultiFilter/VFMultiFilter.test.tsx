@@ -44,6 +44,24 @@ const dummyprops={
     onGoBack:mockFunction,
     selectedOption:mockFunction,
     toggleAdd:mockFunction,
+    supplyChainForLocationCheckBoxList:[
+        { label: 'Plant', id: '1' },
+        { label: 'Supplier', id: '2' },
+        { label: 'CWH', id: '3' },
+        { label: 'RWH', id: '4' },
+        { label: 'Depot', id: '5' },
+        { label: 'Distributor', id: '6' },
+        { label: 'Retailer', id: '7' }   
+    ], 
+    supplyChainForChildrenOfCheckBoxList:[
+        { label: 'Plant', id: '1' },
+        { label: 'Supplier', id: '2' },
+        { label: 'CWH', id: '3' },
+        { label: 'RWH', id: '4' },
+        { label: 'Depot', id: '5' },
+        { label: 'Distributor', id: '6' },
+        { label: 'Retailer', id: '7' }   
+    ],
     placeholder:"hello",
     supplyChainNodeFilterActive:true,
     locationFilterActive:true,
