@@ -18,7 +18,6 @@ interface VFMultiFilterProps{
     onGoBack:()=>void
     selectedOption?:()=>void
     toggleAdd?:()=>void
-
     placeholder?:string
     supplyChainNodeFilterActive?:boolean
     locationFilterActive?:boolean
@@ -28,7 +27,9 @@ interface VFMultiFilterProps{
     coverageFilterActive?:boolean
     horizonActive?:boolean
     multiFilter:BPRFilterState
-    setMultiFilter:any    
+    setMultiFilter:any 
+    supplyChainForLocationCheckBoxList:Array<any> 
+    supplyChainForChildrenOfCheckBoxList:Array<any>  
 }
 
 const FilterCheckboxAccordian = ({filterType,filterKey,isOpen,setOpenStatus,children}:any) => {
@@ -616,7 +617,10 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         colorFilterActive = false,
         coverageFilterActive = false,
         horizonActive = false,
-        onApplyFilter
+        onApplyFilter,
+        supplyChainForLocationCheckBoxList,
+        supplyChainForChildrenOfCheckBoxList
+
         
     } = props
 
@@ -657,7 +661,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
    
     return(
         <>
-        <VFModalCard zoom={'0.65'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
+        <VFModalCard zoom={'0.75'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
            {
             isLoading
             ?
@@ -686,11 +690,14 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                       <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.location?'unset' : '50px'}}>
                           <FilterCheckboxAccordian filterType="For Locations" filterKey="location" isOpen={openStatus.location} setOpenStatus={setOpenStatus}>
                           <FilterCheckboxAccordian filterType="Location Type" filterKey="location_type" isOpen={child.location_type} setOpenStatus={setChild}  style={{paddingLeft:'50px', maxHeight:'unset'}}>
-                              <FilterMultiSelectCheckbox filterOptions={[
+                              {/* <FilterMultiSelectCheckbox filterOptions={[
                                 { label: 'Plant', id: '1' },
                                 { label: 'Supplier', id: '2' },
                                 { label: 'CWH', id: '3' },
                               ]}
+                              filterState={multiFilter.supplyChainFilter.filters}
+                              onChange={(e:any, key:string)=>onFilterChange('SCF1',e,'1', key)}/> */}
+                              <FilterMultiSelectCheckbox filterOptions={supplyChainForLocationCheckBoxList}
                               filterState={multiFilter.supplyChainFilter.filters}
                               onChange={(e:any, key:string)=>onFilterChange('SCF1',e,'1', key)}/>
                           </FilterCheckboxAccordian>
@@ -736,11 +743,13 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                       <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.loc_children?'unset' : '50px'}}>
                           <FilterCheckboxAccordian filterType="For Children Of" filterKey="loc_children" isOpen={openStatus.loc_children} setOpenStatus={setOpenStatus}>
                           <FilterCheckboxAccordian filterType="Location Type" filterKey="loc_children_type" isOpen={child.loc_children_type} setOpenStatus={setChild} style={{paddingLeft:'50px'}}>
-                          <FilterMultiSelectCheckbox filterOptions={[
-                              { label: 'Child', id: '1' },
-                              { label: 'Kit', id: '2' },
-                              { label: 'Ok', id: '3' },
+                          {/* <FilterMultiSelectCheckbox filterOptions={[
+                              { label: 'Plant', id: '1' },
+                              { label: 'CWH', id: '2' },
+                              { label: 'RWH', id: '3' },
                             ]}
+                            filterState={multiFilter.supplyChainFilter.filters} */}
+                            <FilterMultiSelectCheckbox filterOptions={supplyChainForChildrenOfCheckBoxList}
                             filterState={multiFilter.supplyChainFilter.filters}
                            onChange={(e:any, key:string)=>onFilterChange('SCF4',e,'1',key)}/>
                           </FilterCheckboxAccordian>

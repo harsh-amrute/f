@@ -37,3 +37,14 @@ export const BTRCategoryMapper:BTRCategoryMapperType = {
         toolTipDescription:"*Total Tech black + red days >=RLT"
     }
 }
+
+export const MultiFilterSupplyChainCheckboxList =[
+    
+    { label: 'Plant', id: '1' },
+    { label: 'Supplier', id: '2' },
+    { label: 'CWH', id: '3' },
+    { label: 'RWH', id: '4' },
+    { label: 'Depot', id: '5' },
+    { label: 'Distributor', id: '6' },
+    { label: 'Retailer', id: '7' }   
+]
