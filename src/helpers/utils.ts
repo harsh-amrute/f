@@ -16,8 +16,6 @@ import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField } from '../VectorFlow/types/BPR';
 import {RRRField} from '../VectorFlow/types/RRR'
 import _ from 'lodash'
-import AvailabilityCellRenderer from '../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
-import CategoryCellRenderer from '../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/CategoryCellRenderer';
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [

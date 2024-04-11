@@ -1,9 +1,7 @@
-import { useRef } from "react"
-import { AgGridReact, AgGridReactProps } from "ag-grid-react"
+import {  AgGridReactProps } from "ag-grid-react"
 import { Allotment } from "allotment"
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import { BTRTableWrapper,BTRTableHeader } from "./styles"
-import { VFTableWrapper } from "../../../../../components/VectorFLOW/commons/VFTable/styles"
 
 interface SpliViewTableProps extends AgGridReactProps{
     header:string
