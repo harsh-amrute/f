@@ -61,14 +61,14 @@ global.ResizeObserver = class MockedResizeObserver {
         })
        
     })
-      it("On minimize chart click for graph 2", async() => {
-       render(<DBMNormSuggestions/>)
-         await act(async () => {
+    //   it("On minimize chart click for graph 2", async() => {
+    //    render(<DBMNormSuggestions/>)
+    //      await act(async () => {
             
-            fireEvent.click(screen.getAllByTestId('minimizechart2')[0])
-        })
+    //         fireEvent.click(screen.getAllByTestId('minimizechart2')[0])
+    //     })
        
-    })
+    // })
       it("On minimize chart click for graph 2", async() => {
    
         render(<DBMNormSuggestions/>)

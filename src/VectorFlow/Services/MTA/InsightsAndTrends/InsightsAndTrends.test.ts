@@ -15,11 +15,11 @@ describe('Testing the GuidedInsightsService',  () => {
       jest.clearAllMocks();
     });
   
-    it('should make a get request to the /AvailabilityTrend', async () => {
-      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+    it('should make a post request to the /AvailabilityTrend', async () => {
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
    
-      const response = await InsightsAndTrendsService.getAvaialabilityTrend();
-      expect(mockedAxios.get).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/AvailabilityTrend',{
+      const response = await InsightsAndTrendsService.getAvaialabilityTrend({horison:9});
+      expect(mockedAxios.post).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/AvailabilityTrend',{horison:9},{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
@@ -49,10 +49,10 @@ describe('Testing the GuidedInsightsService',  () => {
     });
 
      it('should make a get request to the /AvailabilityAgeing', async () => {
-      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
    
-      const response = await InsightsAndTrendsService.getAvailabilityAgeing();
-      expect(mockedAxios.get).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/AvailabilityAgeing',{
+      const response = await InsightsAndTrendsService.getAvailabilityAgeing({horison:9});
+      expect(mockedAxios.post).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/AvailabilityAgeing',{horison:9},{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);

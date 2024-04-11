@@ -87,6 +87,7 @@ const ChronicGridView=({currentGridData}:ChronicGridViewProps)=>{
     ]
 
     return <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={currentGridData} customGridRowData={[]} customGridColDef={[]}/>
+    
    
 }
 export default ChronicGridView
