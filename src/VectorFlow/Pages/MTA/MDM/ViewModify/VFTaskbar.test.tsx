@@ -26,7 +26,8 @@ const dummyProps = {
     onSubmitConflictData:mockFn,
     disableResumeSeasonality:mockFn,
     disableStopSeasonality:mockFn,
-    enableEditOnlineReset:false
+    enableEditOnlineReset:false,
+    showSubmittedExportError:true
 }
 
 const contextWrapper = (children:any)=>{

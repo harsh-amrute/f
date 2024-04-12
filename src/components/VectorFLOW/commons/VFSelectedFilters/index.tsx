@@ -1,9 +1,9 @@
 import { BPRFilter, BPRFilterGroup, BPRFilterState } from '../../../.././VectorFlow/types/BPR'
-import {VFSelectedFiltersChip, VFSelectedFiltersFilterCloseIcon, VFSelectedFiltersFilterContent, VFSelectedFiltersFilterLabel, VFSelectedFiltersFilterValue, VFSelectedFiltersPlaceHolder,VFSelectedFiltersWrapper} from './styles'
+import {VFSelectedFiltersChip, VFSelectedFiltersFilterCloseIcon, VFSelectedFiltersFilterContent, VFSelectedFiltersFilterLabel, VFSelectedFiltersFilterValue, VFSelectedFiltersPlaceHolder,VFSelectedFiltersWrapper,VFFilterScrollBar} from './styles'
 
 interface VFSelectedFiltersProps{
     filters:BPRFilterState
-    onRemoveFilter:(parentId:string,filterId:string,value:string)=>void
+    onRemoveFilter:(parentId:string,filterId:string,value:string)=>void,
    
 }
 
@@ -15,17 +15,21 @@ const VFSelectedFilters = (props:VFSelectedFiltersProps)=>{
         onRemoveFilter,
     } = props
 
+    const areFiltersValid = (groupedFilters:Array<BPRFilter>):boolean=>{
+        return groupedFilters.some((f:BPRFilter)=>f.attributeName!="" && f.value!="" && f.operator!="")
+    }
  
     return (
         <VFSelectedFiltersWrapper>
             <VFSelectedFiltersPlaceHolder>
                 Selected Filters
             </VFSelectedFiltersPlaceHolder>
+     <VFFilterScrollBar>
+
             {Object.keys(filters).map((key:any)=>{
                const currGroup: BPRFilterGroup = filters[key as keyof BPRFilterState];
-                if(currGroup.filters.length>0){
+                if(currGroup.filters.length>0 && areFiltersValid(currGroup.filters)){
                    return(
-                  
                     <VFSelectedFiltersChip>
                     <VFSelectedFiltersFilterLabel>
                        <b>{currGroup.label + ':'}</b> 
@@ -45,11 +49,11 @@ const VFSelectedFilters = (props:VFSelectedFiltersProps)=>{
                         )
                     })}
                 </VFSelectedFiltersChip>
-               
-                
                    )
                 }
-            })}
+            })
+            }
+     </VFFilterScrollBar>
         </VFSelectedFiltersWrapper>
     )
 }

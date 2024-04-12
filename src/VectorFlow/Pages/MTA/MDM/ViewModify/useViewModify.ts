@@ -56,6 +56,7 @@ const useViewModify = (pageType:string) => {
     const [errorCount,setErrorCount] = useState<number>(0);
     const [conflictData,setConflictData] = useState<Array<any>>([]);
     const [errorData,setErrorData] = useState<Array<any>>([]);
+    const [submittedDataCount,setSubmittedDataCount] = useState<number>(0)
     const [isConflictModalOpen,setIsConflictModalOpen] = useState<boolean>(false)
 
     const [editOnline,toggleEditOnline] = useState(false);
@@ -953,7 +954,6 @@ const useViewModify = (pageType:string) => {
           
 
       const onSubmit = async(isOverWrite?:boolean) => {
- 
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit");
 
         if(activeMaster.progress === 'editOnline'){
@@ -980,7 +980,7 @@ const useViewModify = (pageType:string) => {
         //let result;
  
         if(activeMaster.progress === 'editOnline'){
-          const {isConflicts,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          const {isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
           //result = !isConflicts
           if(!isConflicts){
             if(localErrorCount>0 || errorCount>0){
@@ -992,8 +992,11 @@ const useViewModify = (pageType:string) => {
                 errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
               addInvalidDataColDefs('error')
-              dispatch(UPDATE_ROW_DATA(errorRowData))
-              dispatch(SET_RECORD_COUNT(errorRowData.length))
+              console.log(errorRowData)
+              if(errorRowData.length>0){
+                dispatch(UPDATE_ROW_DATA(errorRowData))
+                dispatch(SET_RECORD_COUNT(errorRowData.length))
+              }
             }
             notifySuccess(`Modifications Submitted Successfully`);
             setSelectedRowsCount(0);
@@ -1001,13 +1004,35 @@ const useViewModify = (pageType:string) => {
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           }
           else{
+            // console.time('That took ')
+            // console.log('Calculating...')
+            const tempCon = createConflictRowData(localConflictData,activeMaster.id)
+            const tempError = createErrorRowData(localErrorData,activeMaster.id)
+            const tempResult:any = []
+
+            tempCon.forEach((t:any)=>{
+              const exist = tempError.find((e:any)=>e.sc===t.sc)
+              if(exist)tempResult.push(exist)
+            })
+            
+            // console.log("Conflicts Count : ",tempCon.length)
+            // console.log("Errors Count : ",tempError.length)
+            // console.log("Intersection Count : ",tempResult.length)
+            // console.log("Not Submitted Count : ",(tempCon.length -tempResult.length )+(tempError.length -tempResult.length ))
+            // console.log("Active master length",activeMaster.rowData.length);
+            // console.log("Submitted Count : ",activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
+            // console.timeEnd('That took ')
+            setConflictData(tempCon)
+            setConflictCount(tempCon.length)
+            setSubmittedDataCount(activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
             setIsConflictModalOpen(true)
             dispatch(UPDATE_PROGRESS_STATE('conflicts'))
           }
  
         }
         else{
-          const {isConflicts,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          const {isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          
           if(!isConflicts){
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
@@ -1018,8 +1043,11 @@ const useViewModify = (pageType:string) => {
                 errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
               addInvalidDataColDefs('error')
-              dispatch(UPDATE_ROW_DATA(errorRowData))
-              dispatch(SET_RECORD_COUNT(errorRowData.length))
+              if(errorRowData.length>0){
+                dispatch(UPDATE_ROW_DATA(errorRowData))
+                dispatch(SET_RECORD_COUNT(errorRowData.length))
+              }
+              
             }
             notifySuccess(`Modifications Submitted Successfully`);
             setSelectedRowsCount(0);
@@ -1027,9 +1055,33 @@ const useViewModify = (pageType:string) => {
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           }
           else{
+            // console.time('That took ')
+            // console.log('Calculating...')
+            const tempCon = createConflictRowData(localConflictData,activeMaster.id)
+            const tempError = createErrorRowData(localErrorData,activeMaster.id)
+
+            const tempResult:any = []
+
+            tempCon.forEach((t:any)=>{
+              const exist = tempError.find((e:any)=>e.sc===t.sc)
+              if(exist)tempResult.push(exist)
+            })
+            
+            // console.log("Conflicts Count : ",tempCon.length)
+            // console.log("Errors Count : ",tempError.length)
+            // console.log("Intersection Count : ",tempResult.length)
+            // console.log("Not Submitted Count : ",(tempCon.length -tempResult.length )+(tempError.length -tempResult.length ))
+            // console.log("Active master length",activeMaster.rowData.length);
+            // console.log("Submitted Count : ",activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
+            // console.timeEnd('That took ')
+            setConflictData(tempCon)
+            setConflictCount(tempCon.length)
+            setSubmittedDataCount(activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
             setIsConflictModalOpen(true)
             dispatch(UPDATE_PROGRESS_STATE('conflicts'))
           }
+
+
         }
        
       }
@@ -1326,9 +1378,9 @@ const useViewModify = (pageType:string) => {
     //     dispatch(UPDATE_ROW_DATA(selectedRows))
     //     dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSaved'))
     // }
-
     const onReviewConflicts = ()=>{
-      const newRowData = createConflictRowData(conflictData,activeMaster.id)
+      
+    
 
       const newColDefs:ColDef[] = activeMaster.colDefs.map((colDef:ColDef)=>{
         return {
@@ -1344,17 +1396,20 @@ const useViewModify = (pageType:string) => {
 
      if(newColDefs) dispatch(UPDATE_COLDEFS(newColDefs))
       addCheckBoxColDefs()
-      dispatch(UPDATE_ROW_DATA(newRowData))
+      dispatch(UPDATE_ROW_DATA(conflictData))
       setIsConflictModalOpen(false)
-      dispatch(SET_RECORD_COUNT(newRowData.length))
+      dispatch(SET_RECORD_COUNT(conflictData.length))
     }
 
     const onIgnoreSubmitErrors = ()=>{
       const errorRowData = createErrorRowData(errorData,activeMaster.id)
-      addInvalidDataColDefs('error')
-      dispatch(UPDATE_ROW_DATA(errorRowData))
+      if(errorRowData.length>0){
+        addInvalidDataColDefs('error')
+        dispatch(UPDATE_ROW_DATA(errorRowData))
+        dispatch(SET_RECORD_COUNT(errorRowData.length))
+      }
       dispatch(UPDATE_PROGRESS_STATE('submitted'))
-      dispatch(SET_RECORD_COUNT(errorRowData.length))
+      
       setIsConflictModalOpen(false)
     }
 
@@ -1422,6 +1477,7 @@ const useViewModify = (pageType:string) => {
         isShowAll,
         conflictCount,
         errorCount,
+        submittedDataCount,
         conflictData,
         errorData,
         isConflictModalOpen,

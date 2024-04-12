@@ -44,6 +44,24 @@ const dummyprops={
     onGoBack:mockFunction,
     selectedOption:mockFunction,
     toggleAdd:mockFunction,
+    supplyChainForLocationCheckBoxList:[
+        { label: 'Plant', id: '1' },
+        { label: 'Supplier', id: '2' },
+        { label: 'CWH', id: '3' },
+        { label: 'RWH', id: '4' },
+        { label: 'Depot', id: '5' },
+        { label: 'Distributor', id: '6' },
+        { label: 'Retailer', id: '7' }   
+    ], 
+    supplyChainForChildrenOfCheckBoxList:[
+        { label: 'Plant', id: '1' },
+        { label: 'Supplier', id: '2' },
+        { label: 'CWH', id: '3' },
+        { label: 'RWH', id: '4' },
+        { label: 'Depot', id: '5' },
+        { label: 'Distributor', id: '6' },
+        { label: 'Retailer', id: '7' }   
+    ],
     placeholder:"hello",
     supplyChainNodeFilterActive:true,
     locationFilterActive:true,
@@ -58,22 +76,37 @@ const dummyprops={
         supplyChainFilter:{
             id:'1',
             label:'SupplyChain',
-            filters:[]
+            filters:[  {
+                name: 'SCF2',attributeName: "LocationCode",value: "ARES0798C004",operator: "=", },
+        ]
         },
         locationFilter:{
             id:'2',
             label:'Location',
-            filters:[]
+            filters:[
+             { name:'LF1',attributeName: "l2",value: "11",operator: "doesnotcontain"},
+        ]
         },
         productFilter:{
             id:'3',
             label:'Product',
-            filters:[]
+            filters:[
+            { name: 'PF1', attributeName: 'Attribute 1', value: 'Value 1',operator:">" },
+            { name: 'PF9', attributeName: 'Attribute 1', value: 'Value 1',operator:">" },
+
+            
+            ]
         },
         availabilityFilter:{
             id:'4',
             label:'Availability',
-            filters:[]
+              filters: [
+                    { name: 'AF5', attributeName: 'Attribute 1', value: 'Value 1',operator:">" },
+                    { name: 'AF6', attributeName: 'Attribute 2', value: 'Value 2',operator:"<"  },
+                    { name: 'AF7', attributeName: 'Attribute 2', value: 'Value 2',operator:"<"  },
+                    {name:"AF5",attributeName: "PIPO,Seasonality", value: "Green",operator: "="}
+
+                ]
         },
         coverageFilter:{
             id:'5',
@@ -83,7 +116,9 @@ const dummyprops={
         colorFilter:{
             id:'6',
             label:'Color',
-            filters:[]
+            filters:[
+                {name:'CF2',type: "colorage",attributeName: "black/red",value: "100",operator: "startswith"}
+            ]
         },
     },
     setMultiFilter:mockFunction,  
@@ -104,16 +139,22 @@ describe("VFMultiFilter Component", () => {
     })
 
 
-    it('Handles all checkboxes',()=>{
+    it('Handles all checkboxes',async()=>{
         render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
-
         const checkboxes = screen.getAllByRole('checkbox')
+
+        await waitFor(async () => {
+
         checkboxes.forEach((checkbox:any)=>{
             fireEvent.click(checkbox)
         })
-        checkboxes.forEach((checkbox:any)=>{
-            fireEvent.click(checkbox)
-        })
+      
+    })
+    checkboxes.forEach((checkbox:any)=>{
+        fireEvent.change(checkbox, {target:{checked:false}})
+
+    })
+           
     })
 
     it('Handles all dropdowns',()=>{
@@ -150,6 +191,8 @@ describe("VFMultiFilter Component", () => {
             fireEvent.click(open)
         })
     })
+
+    
 
     it("renders all the filters in the component", () => {
             render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
@@ -246,6 +289,8 @@ describe("VFMultiFilter Component", () => {
 
         })
 
+        
+
         it('handles comparision',async ()=>{
             render(contextWrapper(<VFMultiFilter {...dummyprops}></VFMultiFilter>))
                 await waitFor(async () => {
@@ -258,6 +303,17 @@ describe("VFMultiFilter Component", () => {
                     const reactSelect = screen.getAllByLabelText("PF1")[1];
                     expect(reactSelect).toBeInTheDocument();
                     await select(reactSelect, ["<="]);
+                    await select(reactSelect, ["<="]);
+
+
+                });
+                await waitFor(async () => {
+                    const reactSelect = screen.getAllByLabelText("PF1")[1];
+                    expect(reactSelect).toBeInTheDocument();
+                    await select(reactSelect, ["<="]);
+                    await select(reactSelect, ["<="]);
+
+
                 });
 
                 
@@ -272,6 +328,7 @@ describe("VFMultiFilter Component", () => {
                     await select(reactSelect, ["Color"]);
                 });
         })
+
 
   })
 

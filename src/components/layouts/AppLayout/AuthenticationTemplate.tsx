@@ -50,7 +50,7 @@ const AuthenticatedTemplate = (
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<any>({})
-  const [isSideBarOpen,toggleSidebar] = useState<boolean>(true)
+  const [isSideBarOpen,toggleSidebar] = useState<boolean>(false)
 
   const { children, loadingComponent: Loading } = props
   useEffect(() => {

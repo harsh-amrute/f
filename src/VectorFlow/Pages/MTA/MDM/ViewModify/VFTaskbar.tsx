@@ -33,6 +33,7 @@ export interface VFTaskBarProps{
     disableStopSeasonality:()=>boolean
     disableResumeSeasonality:()=>boolean
     enableEditOnlineReset:boolean
+    showSubmittedExportError:boolean
 }
 
 
@@ -45,6 +46,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         disableDeleteSelected,
         deleteOnline,
         enableEditOnlineReset,
+        showSubmittedExportError,
         onBack,
         onExportData,
         onModifyData,
@@ -294,9 +296,13 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         case "submitted":
             return(
                 <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
-                    <VFButton onClick={onClearAndExportErrors} themeUi={themeUi} disabled={false} width={183}>
-                            Export Errors
-                    </VFButton>
+                    {showSubmittedExportError ? (
+                         <VFButton onClick={onClearAndExportErrors} themeUi={themeUi} disabled={false} width={183}>
+                                Export Errors
+                        </VFButton>
+                    ):
+                        <div style={{width:'100%'}}/>
+                    }
                     <div >
                         
                         <VFStepper

@@ -149,9 +149,8 @@ export const BPRColorCellRendererWrapper = styled.div`
 `
 
 export const BPRTagsCellRendererWrapper = styled.div`
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    display:block;
+    padding:4px 5px;
     width: 55px;
     height: 25px;
     background: #8E8E8E 0% 0% no-repeat padding-box;
@@ -169,6 +168,10 @@ export const BPRTagsCellRendererWrapper = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow:hidden;
 
 `
 

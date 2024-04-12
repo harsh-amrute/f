@@ -4,10 +4,11 @@ import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip
 import { AgChartsReact } from "ag-charts-react";
 import { Allotment } from "allotment";
 import {useGetExcessInventorySku,useGetExcessInventoryValue}from "../../../../../Services/MTA/InsightsAndTrends";
+import VFLoader from '../../../../../../components/VectorFLOW/commons/VFLoader';
 
 const ExcessInventoryTrend=()=>{
-    const {data:ExcessInventorySkuData}=useGetExcessInventorySku();
-    const {data:ExcessInventoryValueData}=useGetExcessInventoryValue();
+    const {data:ExcessInventorySkuData, isLoading:isLoaderGraph1}=useGetExcessInventorySku();
+    const {data:ExcessInventoryValueData, isLoading:isLoaderGraph2}=useGetExcessInventoryValue();
             
     const ExcessInventorySku=ExcessInventorySkuData?.data?.data;
     const ExcessInventoryValue=ExcessInventoryValueData?.data?.data;
@@ -90,6 +91,9 @@ const graph1=['This graph highlights the date-wise trend of excess inventory acr
 
 const graph2=['This graph highlights the date-wise trend of excess inventory in value across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
 
+if(isLoaderGraph1||isLoaderGraph2){
+  <VFLoader/>
+}
     return                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={493} >

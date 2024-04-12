@@ -91,7 +91,7 @@ function LoginContainer() {
       </SignInContainer>
       <SignInContainer>
         <ContainerRight>
-          <LogoArvind src="/assets/img/logoArvind.png" alt="logo" />
+          <LogoArvind style={{opacity:0}} src="" alt="logo" />
           <Tittle>{t("loginPage.title")}</Tittle>
           <FormArea onSubmit={handleSubmit(onSave)}>
             <InputArea error={errors.email}>

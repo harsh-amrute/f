@@ -51,9 +51,15 @@ const GuidedInsight=()=>{
                         setCurrentTab={setCurrentTab}
                         tabsList={getFloatingTabsList()}
                        disableChartAndGridViewToggle={currentTab==='chronicunavailability'|| currentView==='grid'?false:true}
+                //   disableChartAndGridViewToggle={(currentTab==='chronicunavailability'|| currentTab==='customscreens' )|| (currentView==='grid'|| currentView==='chart') ?false:true}
+                currCategory={'GuidedInsight' }
 
                         />
-                          {renderView()}
-                        </>)
+                      {renderView()} 
+                  </>) 
+   
+
+
+
 }
 export default GuidedInsight;

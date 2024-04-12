@@ -10,8 +10,12 @@ const useGetAvailabilityTrendMock = useGetAvailabilityTrend as jest.MockedFuncti
 jest.mock("ag-charts-react", () => ({
   AgChartsReact: jest.fn(() => null) // Replace null with a mock component if needed
 }));
-const useGetAvailabilityTrendData: any =  { data: {data: GuidedInsights.AvailabilityTrendData }}; 
-
+//const useGetAvailabilityTrendData: any =  { data: {data: GuidedInsights.AvailabilityTrendData }}; 
+const useGetAvailabilityTrendData: any = {
+  mutateAsync: () => {
+    return { data: {data: GuidedInsights.AvailabilityTrendData }};
+  },
+};
 describe("Availability Trend", () => {
      beforeEach(()=>{
       useGetAvailabilityTrendMock.mockImplementation(()=>{

@@ -13,7 +13,39 @@ const useBPRFilter=()=>{
             locationFilter:{
                 id:'2',
                 label:'Location',
-                filters:[]
+                filters:[
+                    // {   
+                    //     name:'LF1',
+                    //     attributeName: "L1",
+                    //     value: "",
+                    //     operator: "<=",          
+                    // },
+                    // {   
+                    //     name:'LF2',
+                    //     attributeName: "L2",
+                    //     value: "",
+                    //     operator: "<=",          
+                    // },
+                    // {   
+                    //     name:'LF3',
+                    //     attributeName: "L3",
+                    //     value: "",
+                    //     operator: "<=",          
+                    // },
+                    // {   
+                    //     name:'LF4',
+                    //     attributeName: "L4",
+                    //     value: "",
+                    //     operator: "<=",          
+                    // },
+                    // {   
+                    //     name:'LF5',
+                    //     attributeName: "L5",
+                    //     value: "",
+                    //     operator: "<=",          
+                    // },
+
+                ]
             },
             productFilter:{
                 id:'3',

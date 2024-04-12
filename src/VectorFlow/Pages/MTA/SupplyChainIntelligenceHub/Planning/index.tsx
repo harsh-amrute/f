@@ -43,9 +43,6 @@ const Planning = () => {
 
     return(
         <>
-    
-       
-       
             {
                 isOverlayVisible && (
                 <VFOverlay>

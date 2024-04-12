@@ -1,15 +1,34 @@
 import { AgChartsReact } from "ag-charts-react";
 import { useGetAvailabilityTrend} from "../../../../../Services/MTA/InsightsAndTrends";
- 
+import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider"
+import { useState,useEffect } from "react";
+import { useUserData } from "../../../../../../context";
+import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
+import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 const AvailabilityTrend=()=>{
-  const {data:AvailabilityTrend}=useGetAvailabilityTrend();
-  const rowData=AvailabilityTrend?.data?.data;
-    
+  const [AvailabilityTrend,setAvailabilityData]=useState();
+    const {mutateAsync: GetAvailabilityTrend, isLoading} = useGetAvailabilityTrend();
+  //const rowData=AvailabilityTrend?.data?.data;
+  const [horizon,setHorizon] = useState<number>(9);
+   
+ const {user} = useUserData()
+   const themeUi=user?.user?.theme_ui
+  useEffect(()=>{
+      
+        OnHorizonChange(horizon);
+      },[])
+   const OnHorizonChange=async(hvalue:any)=>{
+   setHorizon(hvalue);
+    const param={horison:horizon}
+   const AvailabilityTrend=await GetAvailabilityTrend(param);
+  const AvailabilityTrendData=AvailabilityTrend?.data?.data;
+  setAvailabilityData(AvailabilityTrendData);
+  }
     const options = {
     title: {  
       text: 'Week Wise Availabilty Trend',
     },
-     data: rowData,     
+     data: AvailabilityTrend,     
     series: [
       {
     
@@ -41,7 +60,34 @@ const AvailabilityTrend=()=>{
       }as const
 ]
 }
-
-  return <div><AgChartsReact options={options}  /></div>
+if(isLoading){
+        return <VFLoader/>
+    }
+return <div>
+  <div style={{width:650, display:"flex" }}>
+  <label style={{fontStyle:"normal",
+    fontVariant:"normal",
+    fontWeight:400,
+    fontSize:20,
+   paddingTop:20,
+   paddingLeft:50,
+    fontFamily:"Roboto"}}> <b>Select Horizon: </b></label>
+                    <VFRangeSlider
+                        showTriangle={false}
+                        min={1}
+                        max={90}
+                        milestones={[0,9,30,60,90]}
+                        strictMode={true}
+                        width={250}
+                        defaultValue={horizon}
+                        handleChange={(e)=>setHorizon(e)}
+                        labelValueFormatter={(value:number)=>value>1?`${value} Days`:`${value} Day`}
+                    />
+                   
+                      <VFButtonOutline themeUi={themeUi} onClick={()=>OnHorizonChange(horizon)}>Submit</VFButtonOutline>
+                   
+                    </div>
+   
+   <div><AgChartsReact options={options}  /></div></div>
 }
 export default AvailabilityTrend
