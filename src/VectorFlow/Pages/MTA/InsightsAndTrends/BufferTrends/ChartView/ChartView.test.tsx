@@ -44,8 +44,8 @@ describe ("Buffer trends charts",()=>{
   };
 
   it("should render chart view",()=>{
-      render(contextWrapper(<ChartView currentTab="technicalView" currentGraphData={[]} currentPageTab="Absolute" isLoading={false}  graphs={graphsMock}  updateGraphState={()=>console.log("a")} />))
-      render(contextWrapper(<ChartView currentTab="economicalView" currentGraphData={[]} currentPageTab="Absolute" isLoading={false}  graphs={graphsMock}  updateGraphState={()=>console.log("a")} />))
+      render(contextWrapper(<ChartView currentTab="technicalView" currentGraphData={[]} currentPageTab="Absolute" isLoading={false}  graphs={graphsMock}  updateGraphState={()=>console.log("a") }  setHorizondays={()=>console.log("b")} handleSubmitClick={()=>console.log("b")} horizonDays={30}/>))
+      render(contextWrapper(<ChartView currentTab="economicalView" currentGraphData={[]} currentPageTab="Absolute" isLoading={false}  graphs={graphsMock}  updateGraphState={()=>console.log("a")} setHorizondays={()=>console.log("b")} handleSubmitClick={()=>console.log("b")} horizonDays={30}/>))
   })
 
 })

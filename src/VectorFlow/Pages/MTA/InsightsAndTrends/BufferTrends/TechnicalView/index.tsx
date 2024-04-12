@@ -2,10 +2,13 @@
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import {CapsuleWrapper,ChartWrapper} from "./styles";
-import {SCChartHeaderContainer, SCChartContainer, SCHorizontalDivider} from '../styles';
+import {SCChartHeaderContainer, SCChartContainer, SCHorizontalDivider
+        ,SCChartSliderContainer,SCChartMainContainer,HorizonHeader} from '../styles';
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { BufferTrendsGraphState } from '../../../../../types/BPR'
 import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule";
+import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
+import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 
 import { AgChartsReact } from "ag-charts-react";
 import { AgChartOptions} from "ag-charts-community";
@@ -19,10 +22,13 @@ interface TechnicalWiseProps{
     isLoading:boolean
     graphs:BufferTrendsGraphState[]  
     updateGraphState:(id:number, property:string, value:any) => void
+    setHorizondays:any
+    handleSubmitClick:()=>void
+    horizonDays:number
 }
 
 
-const TechnicalWise = ({data,isLoading,graphs,updateGraphState}:TechnicalWiseProps) => {
+const TechnicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,handleSubmitClick,horizonDays}:TechnicalWiseProps) => {
 
 
     const options:AgChartOptions = {
@@ -51,7 +57,7 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState}:TechnicalWisePro
           {
             type: "line",
             xKey: "dt",
-            yKey: "B",
+            yKey: "b",
             yName: "Black",
             stroke: "black" ,
             marker:{
@@ -63,7 +69,7 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState}:TechnicalWisePro
             type: "line",
             xKey: "dt",
             xName:"Date",
-            yKey: "BU",
+            yKey: "bu",
             yName: "Blue",
             stroke: "Blue" ,
             marker:{
@@ -75,7 +81,7 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState}:TechnicalWisePro
             type: "line",
             xKey: "dt",
             xName:"Date",
-            yKey: "R",
+            yKey: "r",
             yName: "Red",
             stroke: "Red" ,
             marker:{
@@ -87,7 +93,7 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState}:TechnicalWisePro
             type: "line",
             xKey: "dt",
             xName:"Date",
-            yKey: "Y",
+            yKey: "y",
             yName: "Yellow",
             stroke: "Yellow" ,
             marker:{
@@ -99,7 +105,7 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState}:TechnicalWisePro
             type: "line",
             xKey: "dt",
             xName:"Date",
-            yKey: "G",
+            yKey: "g",
             yName: "Green",
             stroke: "Green" ,
             marker:{
@@ -112,7 +118,7 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState}:TechnicalWisePro
             type: "line",
             xKey: "dt",
             xName:"Date",
-            yKey: "W",
+            yKey: "w",
             yName: "White",
             stroke: "Grey" ,
             marker:{
@@ -152,6 +158,33 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState}:TechnicalWisePro
             <Allotment>
                 <Allotment.Pane preferredSize={1000}>
                     <SCChartContainer height={375}>
+
+                        <SCChartMainContainer>
+
+                        <SCChartSliderContainer>
+                                <label style={{fontStyle:"normal",
+                                    fontVariant:"normal",
+                                    fontWeight:400,
+                                    fontSize:17,
+                                
+                                    fontFamily:"Roboto"}}> <b>Select Horizon: </b></label>                
+                                <VFRangeSlider
+                                        showTriangle={false}
+                                        min={1}
+                                        max={90}
+                                        milestones={[0,1,90]}
+                                        strictMode={false}
+                                        width={250}
+                                        defaultValue={horizonDays}
+                                        handleChange={(e)=>setHorizondays(e)}
+                                        labelValueFormatter={(value:number)=>value>1?`${value} Days`:`${value} Day`}
+                                    />
+                                <div>
+                                    <VFButtonOutline themeUi="" onClick={handleSubmitClick} width={120} disabled={false}>
+                                        Submit
+                                    </VFButtonOutline>
+                                </div>
+                        </SCChartSliderContainer>
                         <SCChartHeaderContainer>
                             <CapsuleWrapper>
                                 <VFCapsule
@@ -172,9 +205,11 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState}:TechnicalWisePro
                                     />                                   
                             </CapsuleWrapper>                                                                
                         </SCChartHeaderContainer>
+                        </SCChartMainContainer>
+                        
                         <SCHorizontalDivider/>
                         <ChartWrapper>
-                            <div style={{ height:'100%' , width:'100%'}}>
+                            <div style={{ height:'77%' , width:'100%'}}>
                                 <AgChartsReact options={{...options,data:data}}/>
                             </div> 
                         </ChartWrapper>                      

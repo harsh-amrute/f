@@ -22,7 +22,7 @@ describe ("buffer trends services",()=>{
         mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
         const mockBody = {
             category:"Absolute",
-            type:"technicalView",
+            type:"tech",
           filters:[]
         }
         const response = await BufferTrendsService.getBufferTrendsGraph(mockBody);
