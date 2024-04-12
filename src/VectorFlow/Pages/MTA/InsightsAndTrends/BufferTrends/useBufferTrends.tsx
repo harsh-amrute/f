@@ -13,12 +13,15 @@ const initialGraphData  ={
 
 const useBufferTrends = () => {
 
-    const [currentTab,setCurrentTab]=useState<string>('technicalView')
+    console.log('use buffer is called')
+
+    const [currentTab,setCurrentTab]=useState<string>('tech')
     const [currentPageTab,setCurrentPageTab]=useState<string>('absolute')
     const [currentView,setCurrentView] = useState<string>('chart');
     const [currentGraphData,setCurrentGraphData] = useState([]);
     const [graphData,setGraphData] = useState(initialGraphData);
     const [isSelectCategoryOpen,setIsSelectCategoryOpen] = useState(true);
+    const [horizonDays,setHorizondays]=useState(30);
 
     const {mutateAsync:getBufferTrendsGraph,isLoading} = useGetBufferTrendsGraph();
 
@@ -43,17 +46,19 @@ const useBufferTrends = () => {
             setCurrentView('chart');
             setCurrentTab(currentTab);
             setCurrentPageTab(currentPageTab);
-            const toastId = notifyLoader('Loading Graphs');
+            setHorizondays(horizonDays);
+            //const toastId = notifyLoader('Loading Graphs');
             const body = {
-                category:currentPageTab,
-                type:currentTab,
-                filters:[]
+                //category:currentPageTab,
+                days:horizonDays,
+                bufferTrendType:currentTab,
+                //filters:[]
             }           
             const result:any = await getBufferTrendsGraph(body)
             setIsSelectCategoryOpen(false);
             setCurrentGraphData(result.data?.data?.absolute);
             setGraphData(result.data);
-            toast.dismiss(toastId);
+            //toast.dismiss(toastId);
             notifySuccess("Graph Details Fetched Successfully")
         
             
@@ -66,8 +71,11 @@ const useBufferTrends = () => {
     }
 
    const onFloatingTabChange = (tab:any) =>{
+
+    console.log("called")
      setCurrentTab(tab.value);
      updateGraphState(1,"pen",{label:'Absolute',value:'Absolute'})
+     setHorizondays(30);
     
    } 
 
@@ -110,6 +118,13 @@ const useBufferTrends = () => {
         }))
     }
 
+    const handleSubmitClick=()=>{
+        console.log("clicked")
+        BufferTrendsDataLoad();
+    }
+
+    //console.log(horizonDays)
+
 
     return {
         currentTab ,
@@ -122,7 +137,10 @@ const useBufferTrends = () => {
         onFloatingTabChangeOnPages,
         currentPageTab,
         graphs,
-        updateGraphState
+        updateGraphState,
+        setHorizondays,
+        handleSubmitClick,
+        horizonDays
     }
   
 }

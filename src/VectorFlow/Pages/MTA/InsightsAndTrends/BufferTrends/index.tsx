@@ -10,7 +10,7 @@ import ChartView from '../../InsightsAndTrends/BufferTrends/ChartView';
 const BufferTrends = () => {
 
    const {currentTab,onFloatingTabChange,currentView,currentGraphData,BufferTrendsDataLoad,isLoading,
-    currentPageTab,onFloatingTabChangeOnPages,graphs,updateGraphState} =useBufferTrends();
+    currentPageTab,onFloatingTabChangeOnPages,graphs,updateGraphState,setHorizondays,handleSubmitClick,horizonDays} =useBufferTrends();
    
    const renderView=()=>{
     switch(currentView){
@@ -21,7 +21,11 @@ const BufferTrends = () => {
                     onFloatingTabChangeOnPages={onFloatingTabChangeOnPages} 
                     isLoading={isLoading}
                     graphs={graphs}
-                    updateGraphState={updateGraphState}/>   
+                    updateGraphState={updateGraphState}
+                    setHorizondays={setHorizondays}
+                    handleSubmitClick={handleSubmitClick}
+                    horizonDays={horizonDays}
+                    />   
         }
    }
    
@@ -39,12 +43,12 @@ const BufferTrends = () => {
                                 {
                                     id:'technical View',
                                     label:'On-Hand inv. Availability Trend',
-                                    value:'technicalView'
+                                    value:'tech'
                                 },
                                 {
                                     id:'economicalView',
                                     label:'Pipeline Inv. Availability Trend',
-                                    value:'economicalView'
+                                    value:'eco'
                                 }
                             ]}
                             handleClick={onFloatingTabChange}

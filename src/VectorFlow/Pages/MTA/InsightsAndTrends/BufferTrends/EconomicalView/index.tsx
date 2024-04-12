@@ -2,10 +2,13 @@
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import {CapsuleWrapper,ChartWrapper} from "./styles";
-import {SCChartHeaderContainer, SCChartContainer, SCHorizontalDivider} from '../styles';
+import {SCChartHeaderContainer, SCChartContainer, SCHorizontalDivider,
+    SCChartSliderContainer,SCChartMainContainer,HorizonHeader} from '../styles';
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule";
 import { BufferTrendsGraphState } from '../../../../../types/BPR'
+import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
+import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 
 
 import { AgChartsReact } from "ag-charts-react";
@@ -20,12 +23,16 @@ interface EconomicalWiseProps{
     isLoading:boolean
     graphs:BufferTrendsGraphState[]
     updateGraphState:(id:number, property:string, value:any) => void  
+    setHorizondays?:any
+    handleSubmitClick:()=>void
+    horizonDays:number
 }
 
 
 
 
-const EconomicalWise = ({data,isLoading,graphs,updateGraphState}:EconomicalWiseProps) => {
+const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
+            ,handleSubmitClick,horizonDays}:EconomicalWiseProps) => {
 
 
     const options:AgChartOptions = {
@@ -54,7 +61,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState}:EconomicalWiseP
           {
             type: "line",
             xKey: "dt",
-            yKey: "B",
+            yKey: "b",
             yName: "Black",
             stroke: "black" ,
             
@@ -67,7 +74,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState}:EconomicalWiseP
             type: "line",
             xKey: "dt",
             xName:"Date",
-            yKey: "BU",
+            yKey: "bu",
             yName: "Blue",
             stroke: "Blue" ,
             marker:{
@@ -79,7 +86,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState}:EconomicalWiseP
             type: "line",
             xKey: "dt",
             xName:"Date",
-            yKey: "R",
+            yKey: "r",
             yName: "Red",
             stroke: "Red" ,
             marker:{
@@ -91,7 +98,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState}:EconomicalWiseP
             type: "line",
             xKey: "dt",
             xName:"Date",
-            yKey: "Y",
+            yKey: "y",
             yName: "Yellow",
             stroke: "Yellow" ,
             marker:{
@@ -103,7 +110,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState}:EconomicalWiseP
             type: "line",
             xKey: "dt",
             xName:"Date",
-            yKey: "G",
+            yKey: "g",
             yName: "Green",
             stroke: "Green" ,
             marker:{
@@ -116,7 +123,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState}:EconomicalWiseP
             type: "line",
             xKey: "dt",
             xName:"Date",
-            yKey: "W",
+            yKey: "w",
             yName: "White",
             stroke: "grey" ,
             marker:{
@@ -144,7 +151,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState}:EconomicalWiseP
       }
     }
       const graph1 = [
-        'This graph shows the trend of number of SKU Locations in Black, Red, Green, Yellow, and White.(economical)'
+        'This graph shows the trend of number of SKU Locations in Black, Red, Green, Yellow, and White.'
       ]
     
     return(
@@ -152,29 +159,58 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState}:EconomicalWiseP
             <Allotment>
                 <Allotment.Pane preferredSize={1000}>
                     <SCChartContainer height={375}>
-                        <SCChartHeaderContainer style={{display:'flex', justifyContent:'right',marginBottom:'5px'}}>
-
-                            <CapsuleWrapper>
-                                <VFCapsule
-                                    activeBtn={graphs[0].pen}
-                                    capsules={[
-                                        
-                                        {
-                                            label:"Percentage",
-                                            value:'Percentage'
-                                        },
-                                        {
-                                            label:"Absolute Value",
-                                            value:'Absolute'
-                                        }
-                                    ]}
-                                    handleClick={(value:any)=>updateGraphState(1,"pen",value)}                            
-                                />
-                            </CapsuleWrapper>                           
-                        </SCChartHeaderContainer>
+                        <SCChartMainContainer>
+                            <SCChartSliderContainer>                               
+                            <label style={{fontStyle:"normal",
+                                    fontVariant:"normal",
+                                    fontWeight:400,
+                                    fontSize:17,
+                                
+                                    fontFamily:"Roboto"}}> <b>Select Horizon: </b></label>               
+                                <VFRangeSlider
+                                        showTriangle={false}
+                                        min={1}
+                                        max={90}
+                                        milestones={[0,1,90]}
+                                        strictMode={false}
+                                        width={250}
+                                        defaultValue={horizonDays}
+                                        handleChange={(e)=>setHorizondays(e)}
+                                        labelValueFormatter={(value:number)=>value>1?`${value} Days`:`${value} Day`}
+                                    />
+                                <div>
+                                    <VFButtonOutline themeUi="" onClick={handleSubmitClick} width={120} disabled={false}>
+                                        Submit
+                                    </VFButtonOutline>
+                                </div>
+                                
+                            </SCChartSliderContainer>
+                            
+                            <SCChartHeaderContainer style={{display:'flex',marginBottom:'5px'}}>
+                                
+                                <CapsuleWrapper>
+                                    <VFCapsule
+                                        activeBtn={graphs[0].pen}
+                                        capsules={[
+                                            
+                                            {
+                                                label:"Percentage",
+                                                value:'Percentage'
+                                            },
+                                            {
+                                                label:"Absolute Value",
+                                                value:'Absolute'
+                                            }
+                                        ]}
+                                        handleClick={(value:any)=>updateGraphState(1,"pen",value)}                            
+                                    />
+                                </CapsuleWrapper>                           
+                            </SCChartHeaderContainer>
+                        </SCChartMainContainer>
+                        
                         <SCHorizontalDivider/>
                         <ChartWrapper>
-                            <div style={{ height:'100%' , width:'100%'}}>
+                            <div style={{ height:'77%' , width:'100%'}}>
                                 <AgChartsReact options={{...options,data:data}}/>
                             </div> 
                         </ChartWrapper>
