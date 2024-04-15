@@ -32,8 +32,10 @@ export const SCChartSliderContainer = styled.div`
     display: flex;
     justify-content:space-between;
     justify-content:center;
-    gap:1px;
-    align-items:center
+    gap:13px;
+    align-items:center;
+    height:55px
+
 
 `
 

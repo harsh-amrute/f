@@ -1,5 +1,5 @@
 import { useState} from 'react'
-import { notifyLoader,notifyError,notifySuccess } from '../../../../../helpers/notify'
+import { notifyError,notifySuccess } from '../../../../../helpers/notify'
 import { toast } from "react-toastify";
 import { useGetBufferTrendsGraph } from "../../../../Services/MTA/InsightsAndTrends/BufferTrends";
 import { BufferTrendsGraphState } from '../../../../../VectorFlow/types/BPR'
@@ -12,9 +12,7 @@ const initialGraphData  ={
   };
 
 const useBufferTrends = () => {
-
-    console.log('use buffer is called')
-
+    const [multiFilterState,setMultiFilterState] = useState<any>({})
     const [currentTab,setCurrentTab]=useState<string>('tech')
     const [currentPageTab,setCurrentPageTab]=useState<string>('absolute')
     const [currentView,setCurrentView] = useState<string>('chart');
@@ -22,7 +20,7 @@ const useBufferTrends = () => {
     const [graphData,setGraphData] = useState(initialGraphData);
     const [isSelectCategoryOpen,setIsSelectCategoryOpen] = useState(true);
     const [horizonDays,setHorizondays]=useState(30);
-
+   
     const {mutateAsync:getBufferTrendsGraph,isLoading} = useGetBufferTrendsGraph();
 
 
@@ -47,19 +45,18 @@ const useBufferTrends = () => {
             setCurrentTab(currentTab);
             setCurrentPageTab(currentPageTab);
             setHorizondays(horizonDays);
-            //const toastId = notifyLoader('Loading Graphs');
             const body = {
-                //category:currentPageTab,
                 days:horizonDays,
                 bufferTrendType:currentTab,
-                //filters:[]
+                filters:multiFilterState
             }           
             const result:any = await getBufferTrendsGraph(body)
             setIsSelectCategoryOpen(false);
             setCurrentGraphData(result.data?.data?.absolute);
             setGraphData(result.data);
-            //toast.dismiss(toastId);
             notifySuccess("Graph Details Fetched Successfully")
+
+        
         
             
         } catch (error) {
@@ -123,7 +120,43 @@ const useBufferTrends = () => {
         BufferTrendsDataLoad();
     }
 
-    //console.log(horizonDays)
+    const onGoBack = () => {
+        console.log('sadfa')
+        // setIsSelectCategoryOpen(true);
+        // setCurrentView('grid');
+        // setCurrentTab('tech');
+        // setHorizondays(30);
+        // setMultiFilterState([]);
+
+    }
+
+    const handleApplyFilter = async(params:any)=>{
+        setMultiFilterState(params); 
+        try {
+            setCurrentView('chart');
+            setCurrentTab(currentTab);
+            setCurrentPageTab(currentPageTab);
+            setHorizondays(horizonDays);
+            const body = {
+                days:horizonDays,
+                bufferTrendType:currentTab,
+                filters:params
+            }           
+            const result:any = await getBufferTrendsGraph(body)
+            setIsSelectCategoryOpen(false);
+            setCurrentGraphData(result.data?.data?.absolute);
+            setGraphData(result.data);
+            notifySuccess("Graph Details Fetched Successfully")
+    
+            console.log("no error")
+        
+            
+        } catch (error) {
+            toast.dismiss();
+            console.log(error);
+            notifyError("Something Went Wrong")
+        }
+       }
 
 
     return {
@@ -140,7 +173,10 @@ const useBufferTrends = () => {
         updateGraphState,
         setHorizondays,
         handleSubmitClick,
-        horizonDays
+        horizonDays,
+        setMultiFilterState,
+        handleApplyFilter,
+        onGoBack
     }
   
 }

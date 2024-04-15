@@ -34,7 +34,15 @@ interface EconomicalWiseProps{
 const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
             ,handleSubmitClick,horizonDays}:EconomicalWiseProps) => {
 
-
+    const numericData = data.map((item:any) => ({
+        ...item,
+        b: parseFloat(item.b),
+        bu:parseFloat(item.bu),
+        y:parseFloat(item.y),
+        g:parseFloat(item.g),
+        w:parseFloat(item.w)
+        // Parse the string to a floating-point number
+    }));
     const options:AgChartOptions = {
         axes:[
             {
@@ -164,8 +172,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
                             <label style={{fontStyle:"normal",
                                     fontVariant:"normal",
                                     fontWeight:400,
-                                    fontSize:17,
-                                
+                                    fontSize:15,                              
                                     fontFamily:"Roboto"}}> <b>Select Horizon: </b></label>               
                                 <VFRangeSlider
                                         showTriangle={false}
@@ -178,7 +185,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
                                         handleChange={(e)=>setHorizondays(e)}
                                         labelValueFormatter={(value:number)=>value>1?`${value} Days`:`${value} Day`}
                                     />
-                                <div>
+                                <div style={{zoom:0.8}}>
                                     <VFButtonOutline themeUi="" onClick={handleSubmitClick} width={120} disabled={false}>
                                         Submit
                                     </VFButtonOutline>
@@ -211,7 +218,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
                         <SCHorizontalDivider/>
                         <ChartWrapper>
                             <div style={{ height:'77%' , width:'100%'}}>
-                                <AgChartsReact options={{...options,data:data}}/>
+                                <AgChartsReact options={{...options,data:numericData}}/>
                             </div> 
                         </ChartWrapper>
                             
