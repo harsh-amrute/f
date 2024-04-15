@@ -1,5 +1,6 @@
+import {useState,useMemo} from 'react'
+
 import GridViewTable from "../../../GridView/GridViewTable"
-import { useMemo } from "react";
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTechColorCellRenderer,BPRTagsCellRenderer } from "../../../../BPR/BPRCellRenderers";
 import { useGetBPRUIConfiguration } from "../../../../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { AgGridReactProps } from "ag-grid-react";
@@ -8,6 +9,9 @@ import {mapBPRFieldsToColDefs} from '../../../../../../../../helpers/utils';
 const ExpediteParentGrid = ({data}:{data:any})=>{
 
     const {data:bprUIConfigData} = useGetBPRUIConfiguration()
+
+    const [activeRow,setActiveRow] = useState()
+    const [isSubGridOpen,toggleSubGrid] = useState(false)
 
 
     const customCellRenderers = useMemo(() => ({
@@ -29,8 +33,8 @@ const ExpediteParentGrid = ({data}:{data:any})=>{
         readOnlyEdit:true,
         onRowClicked:(params:any)=>{
             if(params.data.transit && params.data.transit.length>0){
-                // setActiveRow(params.data.transit)
-                // toggleSubGrid(true)
+                setActiveRow(params.data.transit)
+                toggleSubGrid(true)
             }
         },
         gridOptions:{
@@ -71,7 +75,7 @@ const ExpediteParentGrid = ({data}:{data:any})=>{
     const PlanningColumns = mapBPRFieldsToColDefs(bprUIConfigData?.data.data,()=>{console.log('hello')},()=>{console.log('hello')})
 
     return(
-        <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={data ? data : []} customGridRowData={[]} customGridColDef={[]}/>
+        <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={data ? data : []} customGridRowData={activeRow} customGridColDef={[]} showStockGrid isSubGridOpen={isSubGridOpen}/>
     )
 }
 

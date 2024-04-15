@@ -32,7 +32,8 @@ const useDelete=()=>{
 
     useEffect(()=>{
         if(activeMaster.progress === 'deleteOnline'){
-            const updatedColdefs:ColDef[] = [{
+            if(activeMaster.colDefs[0].colId!=='checkbox'){
+              const updatedColdefs:ColDef[] = [{
                 field:'checkbox',
                 colId:'checkbox',
                 headerName:'',
@@ -42,6 +43,7 @@ const useDelete=()=>{
                 width:40
             },...activeMaster.colDefs]
             dispatch(UPDATE_COLDEFS(updatedColdefs))
+            }
         }
         if(activeMaster.progress === 'submitted' || activeMaster.progress==='deleteOnlineSubmitted'){
             dispatch(REMOVE_COLDEFS(['checkbox']))
@@ -151,7 +153,7 @@ const useDelete=()=>{
     }
     
     const onDeleteOnlineSubmit = ()=>{
-        dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'))
+        dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSubmitted'))
     }
 
 

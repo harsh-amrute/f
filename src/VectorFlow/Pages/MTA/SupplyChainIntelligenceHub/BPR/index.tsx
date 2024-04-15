@@ -78,6 +78,7 @@ const BPR = ()=>{
               <Allotment.Pane maxSize={300}>
               {isSubGridOpen && (
                 <BPRViewTable
+                    tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg"
                     rowData={activeRow}
                     colDefs={[
                         {

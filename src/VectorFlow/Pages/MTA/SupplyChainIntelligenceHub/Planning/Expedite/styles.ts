@@ -1,19 +1,25 @@
 import styled from "styled-components";
 // import * as globalStyles from "../../../../../../styles/global";
-import * as gridSystem from "../../../../../../styles/gridSystem";
 
+
+// export const SCDynamicContainer = styled.div`
+//     display:block;
+//     height:150vh;
+//     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
+//         .size.desktop}) {
+//         height:150vh
+//     }
+  
+//     @media (min-width: ${gridSystem.size.desktop}) {
+//       height:100vh
+//     }
+// `
 
 export const SCDynamicContainer = styled.div`
     display:block;
-    height:150vh;
-    @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
-        .size.desktop}) {
-        height:150vh
-    }
-  
-    @media (min-width: ${gridSystem.size.desktop}) {
-      height:100vh
-    }
+    aspect-ratio:1;
+    width:100%;
+   
 `
 
 export const SCChartContainer = styled.div<{height?:number}>`
@@ -27,6 +33,7 @@ export const SCChartContainer = styled.div<{height?:number}>`
     margin-left:5px;
     // height:547px;
     height:${props => props.height ? props.height +'px' : 'auto'}
+    
 `
 
 export const SCChartLayout = styled.div`

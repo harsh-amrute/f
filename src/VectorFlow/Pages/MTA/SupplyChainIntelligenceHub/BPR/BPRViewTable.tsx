@@ -1,26 +1,35 @@
 
 import { ColDef } from 'ag-grid-enterprise';
 import BPRViewTableRowCellWithReadMore from './BPRViewTableRowCellWithReadMore';
-import {BPRViewTableWrapper,BPRViewTablePrefix,BPRViewTableGrid,BPRViewTableHeaderContainer,BPRViewTableHeader,BPRViewTableRowContainer,BPRViewTableRow,BPRViewTableRowCell} from './styles'
+import {BPRViewTableWrapper,BPRViewTablePrefix,BPRViewTableGrid,BPRViewTableHeaderContainer,BPRViewTableHeader,BPRViewTableRowContainer,BPRViewTableRow,BPRViewTableRowCell, TableHeader} from './styles'
 
 
 interface BPRViewTableProps{
     colDefs:ColDef[]
     rowData:any[]
+    tablePrefixSrc:string
+    tableHeader?:string
 }
 
 const BPRViewTable = (props:BPRViewTableProps)=>{
 
     const {
         colDefs,
-        rowData
+        rowData,
+        tablePrefixSrc,
+        tableHeader
     } = props
 
 
     return(
         <BPRViewTableWrapper>
-            <BPRViewTablePrefix src="/assets/img/VectorFLOW/BPR/in-transit.svg"/>
+            <BPRViewTablePrefix src={tablePrefixSrc}/>
             <BPRViewTableGrid>
+                {tableHeader && (
+                    <TableHeader>
+                        {tableHeader}
+                    </TableHeader>
+                )}
                 <BPRViewTableHeaderContainer>
                     {colDefs.map((colDef:ColDef)=>{
                         return(

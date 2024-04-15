@@ -77,7 +77,7 @@ const MonitorGITParent = ({data}:{data:any})=>{
 
 
     return(
-        <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={data} customGridRowData={[]} customGridColDef={[]}/>
+        <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={data} customGridRowData={[]} customGridColDef={[]} isSubGridOpen={false}/>
     )
 }
 
