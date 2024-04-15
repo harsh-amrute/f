@@ -14,7 +14,7 @@ import VFRangeSlider from "../VFRangeSlider";
 import {  BPRFilter, BPRFilterState } from "../../../../VectorFlow/types/BPR";
 
 interface VFMultiFilterProps{
-    onApplyFilter:()=>void
+    onApplyFilter:(params:any)=>void
     onGoBack:()=>void
     selectedOption?:()=>void
     toggleAdd?:()=>void
@@ -382,6 +382,24 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     //     current:[]
     //  }
 
+    const{
+       
+        onGoBack,
+        multiFilter,
+        setMultiFilter,
+        supplyChainNodeFilterActive = false,
+        productFilterActive = false,
+        locationFilterActive = false,
+        availabilityFilterActive = false,
+        colorFilterActive = false,
+        coverageFilterActive = false,
+        horizonActive = false,
+        onApplyFilter,
+        supplyChainForLocationCheckBoxList,
+        supplyChainForChildrenOfCheckBoxList
+
+        
+    } = props
 
     const onFilterChange=(filterId:string,e:any,parentId:string,property:string, header?:string)=>{
 
@@ -605,24 +623,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     
    
     
-    const{
-       
-        onGoBack,
-        multiFilter,
-        setMultiFilter,
-        supplyChainNodeFilterActive = false,
-        productFilterActive = false,
-        locationFilterActive = false,
-        availabilityFilterActive = false,
-        colorFilterActive = false,
-        coverageFilterActive = false,
-        horizonActive = false,
-        onApplyFilter,
-        supplyChainForLocationCheckBoxList,
-        supplyChainForChildrenOfCheckBoxList
-
-        
-    } = props
+    
 
     const [openStatus,setOpenStatus] = useState({
         category:false,
@@ -983,7 +984,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             <ButtonFilterWrapper>
                 <ButtonContainer>
                     <VFButtonOutline themeUi={user.user.theme_ui} onClick={onGoBack}>Go Back!</VFButtonOutline>
-                    <VFButton themeUi={user.user.theme_ui} onClick={onApplyFilter}>Apply Filter</VFButton>
+                    <VFButton themeUi={user.user.theme_ui} onClick={()=>onApplyFilter(multiFilter)}>Apply Filter</VFButton>
 
                 </ButtonContainer>
             </ButtonFilterWrapper>
