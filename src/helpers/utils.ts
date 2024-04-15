@@ -1577,7 +1577,7 @@ export const addPrefixToObjectKeys = (obj:any,prefix:string)=>{
 }
 
 export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[],masterId:number):ColDef[]=>{
-  console.log(masterId)
+
   const result:any[] = []
   conflicts.map((conflict)=>{
      conflict.conflictdetails.map((conflictDetail)=>{
@@ -1607,7 +1607,7 @@ export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,re
 }
 
 export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[],masterId:number):ColDef[]=>{
-  console.log(masterId)
+
   const result:any[] = []
   if(Array.isArray(errorConflicts)){
     errorConflicts.map((currError:{errorData:any[],errorType:string})=>{
@@ -1733,7 +1733,7 @@ export const createIconColumn = (params:any):ColDef=>{
   }
 }
 
-export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(params:any)=>void,onOpenRemarkHistory:(e:any,params:any)=>void):ColDef[]=>{
+export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(params:any)=>void,onOpenRemarkHistory:(e:any,params:any)=>void,onOpenDailyDataGraph:(params:any)=>void):ColDef[]=>{
 
   if(!fields || fields.length<1){
     return []
@@ -1817,7 +1817,7 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
       }
     }
   })
-  return [createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),tagsColDef,...result,...BPRSpecificColumns]
+  return [{...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result,...BPRSpecificColumns]
 }
 
 export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{

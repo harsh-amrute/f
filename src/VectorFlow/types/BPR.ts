@@ -37,6 +37,11 @@ export interface SubmitBPRRemarkPayload{
     remark:string
 }
 
+export interface GetDailyDataPayload{
+    SKUCode:string,
+    WhCode:string
+}
+
 export interface BPRFilter{
     type?:string
     name:string
@@ -127,4 +132,19 @@ export interface BufferTrendsGraphState{
     pen:BufferTrendsGraphPenState
     id:number
     filters:Array<BufferTrendsGraphDateStateFilter>
+}
+
+export interface NormChangeHistory{
+    date:string,
+    newNorm:number,
+    oldNorm:number,
+    reason:string
+}
+
+export interface DailyDataChart{
+    cs:number,
+    dt:string,
+    git:number,
+    rp:number,
+    stock:number
 }

@@ -35,6 +35,7 @@ interface DailyDataGraphModalProps{
   masterData:any,
   isModalOpen:boolean,
   closeModal:()=>void,
+  toggleNormChangeHistoryTable:any
 
 }
 
@@ -47,8 +48,8 @@ interface NormData{
 
 
 
-const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModalOpen,closeModal}:DailyDataGraphModalProps) => {
-    console.log(rowData);
+const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModalOpen,closeModal,toggleNormChangeHistoryTable}:DailyDataGraphModalProps) => {
+    // console.log(rowData);
     const suspensionOptions = [
         {label:'Upward Stock Based',value:'upwardstockbased'},
         {label:'Downward Stock Based',value:'downwardstockbased'},
@@ -57,19 +58,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
 
     ]
     const [horizon,setHorizon] = useState<number>(30);
-    console.log(rowData);
-    console.log(normChangeData)
-    console.log(chartData.length);
-
 
     const generateChartOptions = () => {
         const adjustedChartData = chartData.slice(chartData.length-horizon,chartData.length);
         const sortedNormChangeData = normChangeData.sort((a:NormChangeHistory,b:NormChangeHistory) => new Date(a.date).getTime() - new Date(b.date).getTime());
-        console.log(sortedNormChangeData);
-        const todaysDate = new Date();
-
-        console.log(sortedNormChangeData);
-
 
         let tempNorm = 0;
         let normData = chartData.map((dailyData:DailyDataChart) => {
@@ -83,32 +75,27 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
               }
             });
 
-            if(closestNormChangeIndex === -1){
-              const normChangeOldest = sortedNormChangeData[0];
-              const normChangeLatest = sortedNormChangeData[sortedNormChangeData.length-1]
-              if(new Date(dailyData.dt).getTime() > new Date(normChangeOldest.date).getTime()){
-                tempNorm = normChangeOldest['oldNorm'];
-              }
-              if(new Date(dailyData.dt).getTime() < new Date(normChangeLatest.date).getTime()){
-                tempNorm = normChangeLatest['newNorm'];
-              }
-            }
-            else{
+            // if(closestNormChangeIndex === -1){
+            //   const normChangeOldest = sortedNormChangeData[0];
+            //   const normChangeLatest = sortedNormChangeData[sortedNormChangeData.length-1]
+            //   if(new Date(dailyData.dt).getTime() > new Date(normChangeOldest.date).getTime()){
+            //     tempNorm = normChangeOldest['oldNorm'];
+            //   }
+            //   if(new Date(dailyData.dt).getTime() < new Date(normChangeLatest.date).getTime()){
+            //     tempNorm = normChangeLatest['newNorm'];
+            //   }
+            // }
+            // else{
               tempNorm = sortedNormChangeData[closestNormChangeIndex]['newNorm'];
-            }
+            // }  
 
             return {date:dailyData.dt,norm:tempNorm};
         }).slice(chartData.length-horizon,chartData.length);
-
         normData = normData.map((data:NormData)=>{
           const normBand = parseFloat((data.norm/3).toFixed(2))
           return {...data,normRed:normBand,normGreen:normBand,normYellow:normBand}
         })
-        console.log(normData)
-
        
-        
-    
 
         const options:any = {
             title: {  
@@ -248,7 +235,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                     <SCHorizontalDivider/>
                     <SCDataRow>
                         <SCText fontSize={16} fontWeight={300}>Norm Change History :</SCText>
-                        <div style={{display:'flex',gap:'5px'}}>
+                        <div style={{display:'flex',gap:'5px'}} onClick={() => toggleNormChangeHistoryTable(true)}>
                             <img src="/assets/img/VectorFLOW/BPR/eye-filled-purple.svg"/>
                             <SCText fontSize={16} fontWeight={700} style={{color:'#BC3D81'}}>Click To View</SCText>
                         </div>

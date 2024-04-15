@@ -1,5 +1,5 @@
 import { useQuery,useMutation } from '@tanstack/react-query'
-import { BPRDataPayload, SubmitBPRRemarkPayload } from '../../../../../VectorFlow/types/BPR';
+import { BPRDataPayload, GetDailyDataPayload, SubmitBPRRemarkPayload } from '../../../../../VectorFlow/types/BPR';
 
 import { BPRService } from './api'
 
@@ -40,5 +40,11 @@ export const useGetBPRRemarkHistory = () => {
 export const useSubmitBPRRemark = () => {
   return useMutation(async (payload:SubmitBPRRemarkPayload) => {
     return await BPRService.submitRemark(payload);
+  });
+}
+
+export const useGetDailyData = () => {
+  return useMutation(async (payload:GetDailyDataPayload) => {
+    return await BPRService.getDailyData(payload);
   });
 }
