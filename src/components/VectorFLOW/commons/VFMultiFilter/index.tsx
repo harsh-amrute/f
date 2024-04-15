@@ -96,7 +96,6 @@ interface FilterMultiSelectCheckboxProps{
 
 const FilterMultiSelectCheckbox = ({filterOptions, header,onChange,filterState}:FilterMultiSelectCheckboxProps)=>{
     const colorMap:string[] = ['#9A0101', '#EBBF2B', '#418D18']
-
     return(
         <>
            { filterOptions.map((option: {label:string, id:string}, index:number) =>{
@@ -394,25 +393,25 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
         
         if(filterId==='PF6'){
-            filterObj.attributeName='SKUCode';
+            filterObj.attributeName='SKU'; //enter sku
             filterObj.operator='='
         }
         if(filterId==='PF7'){
-            filterObj.attributeName='EnterDescription';
+            filterObj.attributeName='EnterDescription';  //omit
             filterObj.operator='='
         }
         if(filterId==='LF6'){
-            filterObj.attributeName='ForLocation';
+            filterObj.attributeName='Location'; //location
             filterObj.operator='='
         }
-        if(filterId ==='SCF2' || filterId==='SCF5'){
-            filterObj.attributeName='LocationCode';
+        if(filterId ==='SCF2' || filterId==='SCF5'){ //locatipon code tha og
+            filterObj.attributeName='Location';
             filterObj.operator='='
         }
-        if(filterId ==='SCF3' || filterId==='SCF6'){
-            filterObj.attributeName='LocationDescription';
-            filterObj.operator='='
-        }
+        // if(filterId ==='SCF3' || filterId==='SCF6'){   //omit
+        //     filterObj.attributeName='LocationDescription';
+        //     filterObj.operator='='
+        // }
         if(filterId==='SCF1'){
             filterObj.attributeName='ForLocation';
             filterObj.operator='='
@@ -455,6 +454,10 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         // let currentKey:any=""
         let finalValue:any | [];
         let selectedValues:any = [];
+
+        const getTrimmedValue = (finalValue:any) => {
+            return finalValue.split(' ')[0];
+        }
        
    
         if(e.value){
@@ -503,17 +506,18 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         else if(e.target){
             finalValue=e.target.value
         }
+
        else if(Array.isArray(e)){
         finalValue = e.map((ele: any) =>{
             const newfilterObj = {...filterObj}
-            newfilterObj.value = ele.label;
+            // newfilterObj.value = ele.label;
+            newfilterObj.value = getTrimmedValue(ele.label);
+          
+
             return newfilterObj
         })
        }
-        // else{
-        //     finalValue = e
-        // }
-   
+        
         const currGroup:string | undefined = Object.keys(multiFilter).find((key:string)=>{
             return multiFilter[key as keyof BPRFilterState].id ===parentId
         })
@@ -642,7 +646,9 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
 
     const {data,isLoading} = useGetAllSKUs()
     const options = data?.data?.data.map((ele: any)=> { 
-        return {label: ele.SKUCode, value: ele.SKUName}
+        // return {label: ele.sc, value: ele.sd}
+        return {label: `${ele.sc} (${ele.sd})`, value: ele.sc}
+
     })
 
     const getAPIValue = (filterId:any, filterState:any) => {
@@ -656,7 +662,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             }
         })
     }
-
 
    
     return(
@@ -713,7 +718,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                value={getAPIValue('SCF2', multiFilter.supplyChainFilter.filters)} 
                               setValue={(e:any)=>onFilterChange('SCF2',e,'1','value')} 
                               options={options} 
-                              placeholder={'Location Code'} 
+                              placeholder={'Enter Location'} 
                               handleListChild={()=>console.log("")} 
                               maxToShow={3} 
                               backgroundColor={'#F2F2F2'}
@@ -723,7 +728,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
 
                           />
                       </FilterComponent>
-                      <FilterComponent style={{ marginBottom:'5px'}}>           
+                      {/* <FilterComponent style={{ marginBottom:'5px'}}>           
                           <VFMasterFieldSearch
                              value={getAPIValue('SCF3', multiFilter.supplyChainFilter.filters)} 
                               setValue={(e:any)=>onFilterChange('SCF3',e,'1','value')} 
@@ -736,7 +741,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                               disabled={false}
                               boxShadow={'0'}
                           />
-                      </FilterComponent>
+                      </FilterComponent> */}
                       </>
                       : null 
                       } 
@@ -765,7 +770,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                value={getAPIValue('SCF5', multiFilter.supplyChainFilter.filters)}  
                               setValue={(e:any)=>onFilterChange('SCF5',e,'1','value')} 
                               options={options} 
-                              placeholder={'Location Code'} 
+                              placeholder={'Enter Location'} 
                               handleListChild={()=>console.log("")} 
                               maxToShow={3} 
                               backgroundColor={'#F2F2F2'}
@@ -774,7 +779,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                               boxShadow={'0'}
                           />
                       </FilterComponent>
-                      <FilterComponent style={{ marginBottom:'5px'}}>           
+                      {/* <FilterComponent style={{ marginBottom:'5px'}}>           
                           <VFMasterFieldSearch
                            value={getAPIValue('SCF6', multiFilter.supplyChainFilter.filters)} 
                               setValue={(e:any)=>onFilterChange('SCF6',e,'1','value')} 
@@ -787,7 +792,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                               disabled={false}
                               boxShadow={'0'}
                           />
-                      </FilterComponent>
+                      </FilterComponent> */}
                       </>
                       : null 
                       } 
@@ -819,7 +824,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                  value={getAPIValue('LF6', multiFilter.locationFilter.filters)}  
                                 setValue={(e:any)=>onFilterChange('LF6',e,'2','value')} 
                                 options={options} 
-                                placeholder={'For Location'} 
+                                placeholder={'Enter Location'} 
                                 handleListChild={()=>console.log("")} 
                                 maxToShow={3} 
                                 backgroundColor={'#F2F2F2'}
@@ -856,7 +861,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             value={getAPIValue('PF6', multiFilter.productFilter.filters)} 
                             setValue={(e:any)=>onFilterChange('PF6',e,'3','value')}
                             options={options} 
-                            placeholder={'Enter SKU Code'} 
+                            placeholder={'Enter SKU'} 
                             handleListChild={()=>console.log("")} 
                             maxToShow={3} 
                             backgroundColor={'#F2F2F2'}
@@ -867,7 +872,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             
                         />
                     </FilterComponent>
-                    <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', marginBottom:'7px'}}>           
+                    {/* <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', marginBottom:'7px'}}>           
                         <VFMasterFieldSearch
                              value={getAPIValue('PF7', multiFilter.productFilter.filters)} 
                             setValue={(e:any)=>onFilterChange('PF7',e,'3','value')}
@@ -882,7 +887,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             boxShadow={'0'}
                            
                         />
-                        </FilterComponent>
+                        </FilterComponent> */}
                 </FilterCardWrapper>
                 )}
                 
@@ -984,7 +989,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             <ButtonFilterWrapper>
                 <ButtonContainer>
                     <VFButtonOutline themeUi={user.user.theme_ui} onClick={onGoBack}>Go Back!</VFButtonOutline>
-                    <VFButton themeUi={user.user.theme_ui} onClick={onApplyFilter}>Apply Filter</VFButton>
+                    <VFButton themeUi={user.user.theme_ui} onClick={()=>(console.log(multiFilter))}>Apply Filter</VFButton>
 
                 </ButtonContainer>
             </ButtonFilterWrapper>
