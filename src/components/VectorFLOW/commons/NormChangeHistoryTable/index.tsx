@@ -6,8 +6,8 @@ import {ButtonWrapper, AgGridWrapper, AgContainer} from './styles'
 import VFButtonOutline from "../VFButtonOutline";
 import './styles.css'
 
-
 interface NormChangeHistoryTableProps {
+    data:any
     onGoBack:()=>void
 }
 
@@ -17,6 +17,7 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
     const themeUi=user?.user?.theme_ui
 
     const {
+        data,
         onGoBack
     } = props
 
@@ -25,16 +26,15 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
       };
 
       
-    const rowData = [
-        { col1: '21 June', col2: '2', col3: '3', col4:'stockout has occured today.stockout done today and ready for the next stock to be delieverd,'},
-        { col1: '22 June', col2: '3', col3: '4',col4:'stockout has occured today'},
-      ];
-    
+    // const rowData = [
+    //     { col1: '21 June', col2: '2', col3: '3', col4:'stockout has occured today.stockout done today and ready for the next stock to be delieverd,'},
+    //     { col1: '22 June', col2: '3', col3: '4',col4:'stockout has occured today'},
+    //   ];
     const columnDefs:ColDef[] = [
-        { headerName: 'Change Date', field: 'col1', colId:'c1' , minWidth:150,flex:1, cellStyle: {fontSize: '14px',alignItems:'center', display:'flex', justifyContent:'center'},headerComponent: ()=> <CustomHeader headerName="Change Date"/>},
-        { headerName: 'Old Norm', field: 'col2', colId:'c2', minWidth:110,flex:1, cellStyle: {fontSize: '14px',alignItems:'center', display:'flex', justifyContent:'center'},headerComponent: ()=> <CustomHeader headerName="Old Norm"/> },
-        { headerName: 'New Norm', field: 'col3', colId:'c3',minWidth:120 ,flex:1, cellStyle: {fontSize: '14px',alignItems:'center', display:'flex', justifyContent:'center'}, headerComponent: ()=> <CustomHeader headerName="New Norm"/>},
-        { headerName: 'Reason', field: 'col4', colId:'c4',minWidth:290, flex:2,cellRenderer: 'wrapTextCellRenderer',autoHeight: true,resizable: false,sortable: true, wrapText: true , cellStyle: {wordBreak: "normal",fontSize: '14px', lineHeight:'20px', alignItems:'center', display:'flex', textAlign:'left'}, headerComponent: ()=> <CustomHeader headerName="Reason"/> },
+        { headerName: 'Change Date', field: 'date', colId:'date' , minWidth:150,flex:1, cellStyle: {fontSize: '14px',alignItems:'center', display:'flex', justifyContent:'center'},headerComponent: ()=> <CustomHeader headerName="Change Date"/>},
+        { headerName: 'Old Norm', field: 'oldNorm', colId:'oldNorm', minWidth:110,flex:1, cellStyle: {fontSize: '14px',alignItems:'center', display:'flex', justifyContent:'center'},headerComponent: ()=> <CustomHeader headerName="Old Norm"/> },
+        { headerName: 'New Norm', field: 'newNorm', colId:'newNorm',minWidth:120 ,flex:1, cellStyle: {fontSize: '14px',alignItems:'center', display:'flex', justifyContent:'center'}, headerComponent: ()=> <CustomHeader headerName="New Norm"/>},
+        { headerName: 'Reason', field: 'reason', colId:'reason',minWidth:290, flex:2,cellRenderer: 'wrapTextCellRenderer',autoHeight: true,resizable: false,sortable: true, wrapText: true , cellStyle: {wordBreak: "normal",fontSize: '14px', lineHeight:'20px', alignItems:'center', display:'flex', textAlign:'left'}, headerComponent: ()=> <CustomHeader headerName="Reason"/> },
     ];
 
     return(
@@ -44,14 +44,14 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
                 <AgGridWrapper>
                     <div className="ag-theme-alpine "  style={{ height: '158px', width:'700px',textAlign:'center' }}> 
                         <AgGridReact
-                        rowData={rowData}
+                        rowData={data}
                         columnDefs={columnDefs}
                     />
                      </div>
                  </AgGridWrapper> 
             </AgContainer>
             <ButtonWrapper>
-                <VFButtonOutline themeUi={themeUi} onClick={() => console.log('')} width={125}>Go Back!</VFButtonOutline>
+                <VFButtonOutline themeUi={themeUi} onClick={onGoBack} width={125}>Go Back!</VFButtonOutline>
             </ButtonWrapper>
         </VFModalCard>
         </>

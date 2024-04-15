@@ -1,7 +1,7 @@
 import { useState,useMemo, useEffect, CSSProperties } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 
-import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { useUserData } from "../../../../../context"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
 import { mapBPRFieldsToColDefs } from "../../../../../helpers/utils"
@@ -28,6 +28,12 @@ const useBPR =()=>{
 
     const [isSubmitRemarkToolTipOpen,setIsSubmitRemarkToolTipOpen] = useState<boolean>(false)
     const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
+    const [showDailyDataGraphModal,toggleDailyDataGraphModal] = useState(false);
+    const [dailyDataParams,setDailyDataParams] = useState<any>();
+    const [normChangeData,setNormChangeData] = useState();
+    const [chartData,setChartData] = useState();
+    const [masterData,setMasterData] = useState<any>();
+    const [normChangeHistoryTable,toggleNormChangeHistoryTable] = useState<boolean>(false);
 
     const [remark,setRemark] = useState<string>('')
     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
@@ -40,6 +46,8 @@ const useBPR =()=>{
     const {mutateAsync:submitRemark} = useSubmitBPRRemark()
 
     const {mutateAsync:getRemarkHistory} = useGetBPRRemarkHistory()
+
+    const {mutateAsync:getDailyData} = useGetDailyData();
 
     useEffect(()=>{
         async function getBPRRowData(){
@@ -171,7 +179,23 @@ const useBPR =()=>{
         }
     }
 
-    const BPRColumns = mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory)
+    const onOpenDailyDataGraph = async (params:any) => {
+        setDailyDataParams(params);
+        console.log(params.data)
+        const payload:any = {
+            SKUCode:params['SKUCode'],
+            WHCode:params['WhCode']
+        }
+        const result = await getDailyData(payload)
+        setChartData(result.data.data['dailyData'])
+        setNormChangeData(result.data.data['normChangeHistory'])
+        setMasterData(result.data.data['MasterData'])
+
+
+        toggleDailyDataGraphModal(true);
+    }
+
+    const BPRColumns = mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph)
 
    
     return {
@@ -196,8 +220,16 @@ const useBPR =()=>{
         setActiveRow,
         onSubmitRemark,
         onCloseRemarkHistory,
-        onCloseSubmitRemark
+        onCloseSubmitRemark,
+        showDailyDataGraphModal,
+        toggleDailyDataGraphModal,
+        dailyDataParams,
+        normChangeData,
+        chartData,
+        masterData,
+        normChangeHistoryTable,
+        toggleNormChangeHistoryTable
     }
 }
 
-export default  useBPR
+export default useBPR
