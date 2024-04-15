@@ -10,7 +10,8 @@ import ChartView from '../../InsightsAndTrends/BufferTrends/ChartView';
 const BufferTrends = () => {
 
    const {currentTab,onFloatingTabChange,currentView,currentGraphData,BufferTrendsDataLoad,isLoading,
-    currentPageTab,onFloatingTabChangeOnPages,graphs,updateGraphState} =useBufferTrends();
+    currentPageTab,onFloatingTabChangeOnPages,graphs,updateGraphState,setHorizondays,handleSubmitClick,horizonDays
+    ,onGoBack,setMultiFilterState,handleApplyFilter} =useBufferTrends();
    
    const renderView=()=>{
     switch(currentView){
@@ -21,9 +22,15 @@ const BufferTrends = () => {
                     onFloatingTabChangeOnPages={onFloatingTabChangeOnPages} 
                     isLoading={isLoading}
                     graphs={graphs}
-                    updateGraphState={updateGraphState}/>   
+                    updateGraphState={updateGraphState}
+                    setHorizondays={setHorizondays}
+                    handleSubmitClick={handleSubmitClick}
+                    horizonDays={horizonDays}
+                    />   
         }
    }
+
+   
    
    useEffect(()=>{
     BufferTrendsDataLoad()
@@ -31,7 +38,7 @@ const BufferTrends = () => {
    
   return (
     <>
-     <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BufferTrend'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
+     <ActionToolBar view={'grid'} setCurrentTab={currentTab} currCategory={'BufferTrend'} currentTab={''} tabsList={[]} onFloatingTabChange={onFloatingTabChange} onGoBack={onGoBack} onViewChange={()=>console.log('')} onApplyFilter={handleApplyFilter}/>
 
     <div style={{display:'flex',justifyContent:'center',marginBottom:'8px'}}>
                         <VFFloatingTab
@@ -39,12 +46,12 @@ const BufferTrends = () => {
                                 {
                                     id:'technical View',
                                     label:'On-Hand inv. Availability Trend',
-                                    value:'technicalView'
+                                    value:'tech'
                                 },
                                 {
                                     id:'economicalView',
                                     label:'Pipeline Inv. Availability Trend',
-                                    value:'economicalView'
+                                    value:'eco'
                                 }
                             ]}
                             handleClick={onFloatingTabChange}
