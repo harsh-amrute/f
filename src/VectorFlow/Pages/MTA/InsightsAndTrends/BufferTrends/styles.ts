@@ -25,7 +25,31 @@ export const SCChartHeaderContainer = styled.div`
     display:flex;
     justify-content:center;
     align-items:center;
+    height: 54px;
 `
+
+export const SCChartSliderContainer = styled.div`
+    display: flex;
+    justify-content:space-between;
+    justify-content:center;
+    gap:13px;
+    align-items:center;
+    height:55px
+
+
+`
+
+export const SCChartMainContainer =styled.div`
+    display: flex;
+    justify-content:space-between;
+    
+`
+export const HorizonHeader = styled.p`
+    text-align:center;
+    font-weight:500;
+    font-size:10px;
+`
+
 export const SCChartHeader = styled.p`
     font-weight:500;
     font-size:16px;
