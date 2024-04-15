@@ -11,8 +11,8 @@ describe ("buffer trends services",()=>{
       process.env = { ...OLD_ENV }; // Make a copy
     });
   
-    process.env.REACT_APP_VF_API_HOST = 'http://10.8.1.10:8888';
-    process.env.REACT_APP_VF_MOCK_API_HOST='http://10.8.1.10:8081'
+    process.env.REACT_APP_VF_API_HOST ='http://10.8.1.10:8082';
+    //process.env.REACT_APP_VF_MOCK_API_HOST='http://10.8.1.10:8081'
   
     afterEach(() => {
       jest.clearAllMocks();
@@ -21,12 +21,11 @@ describe ("buffer trends services",()=>{
     it('should make a Post request to the /getBTGData', async () => {
         mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
         const mockBody = {
-            category:"Absolute",
-            type:"tech",
-          filters:[]
+          days:3,
+          bufferTrendType:"tech",
         }
         const response = await BufferTrendsService.getBufferTrendsGraph(mockBody);
-        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_MOCK_API_HOST + '/getBTGData',mockBody,{
+        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/api/SCIH/GetBufferTrendGraphData',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
         expect(response.status).toBe(200);
