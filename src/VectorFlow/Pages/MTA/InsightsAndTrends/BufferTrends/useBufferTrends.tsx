@@ -174,7 +174,6 @@ const useBufferTrends = () => {
         setHorizondays,
         handleSubmitClick,
         horizonDays,
-        setMultiFilterState,
         handleApplyFilter,
         onGoBack
     }

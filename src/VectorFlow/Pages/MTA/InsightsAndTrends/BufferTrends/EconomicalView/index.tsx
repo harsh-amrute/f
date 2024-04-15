@@ -3,7 +3,7 @@ import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import {CapsuleWrapper,ChartWrapper} from "./styles";
 import {SCChartHeaderContainer, SCChartContainer, SCHorizontalDivider,
-    SCChartSliderContainer,SCChartMainContainer,HorizonHeader} from '../styles';
+    SCChartSliderContainer,SCChartMainContainer} from '../styles';
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule";
 import { BufferTrendsGraphState } from '../../../../../types/BPR'

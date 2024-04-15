@@ -11,7 +11,7 @@ const BufferTrends = () => {
 
    const {currentTab,onFloatingTabChange,currentView,currentGraphData,BufferTrendsDataLoad,isLoading,
     currentPageTab,onFloatingTabChangeOnPages,graphs,updateGraphState,setHorizondays,handleSubmitClick,horizonDays
-    ,onGoBack,setMultiFilterState,handleApplyFilter} =useBufferTrends();
+    ,onGoBack,handleApplyFilter} =useBufferTrends();
    
    const renderView=()=>{
     switch(currentView){
