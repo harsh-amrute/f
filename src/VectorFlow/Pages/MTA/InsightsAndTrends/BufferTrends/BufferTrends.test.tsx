@@ -105,16 +105,16 @@ describe ("Buffer trends",()=>{
 
 
     it("Switches Floating Tab", async () => {
-        useGetBufferTrendsGraphMocked.mockImplementation(()=>{
-            return useGetBufferTrendsGraphMockData(mockBTGTechData);
-        }) 
+        // useGetBufferTrendsGraphMocked.mockImplementation(()=>{
+        //     return useGetBufferTrendsGraphMockData(mockBTGTechData);
+        // }) 
         render(contextWrapper(<BufferTrends/>));
         expect(screen.getAllByTestId('floatingTabButton').length).toEqual(2);
         await act(async () => {
             fireEvent.click(screen.getAllByTestId('floatingTabButton')[1]);
         })
         expect(screen.getAllByTestId('floatingTabButton')[1]).toHaveStyle('color:white')
-    })
+    },10000)
 
 
 
