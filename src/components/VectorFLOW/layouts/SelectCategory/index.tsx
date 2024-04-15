@@ -53,8 +53,7 @@ const SelectCategory=(props:CountProp)=>{
     const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
     const themeUi = user.user.theme_ui
 
-   
-   
+
 
     return(
     <>

@@ -77148,6 +77148,597 @@ export const GetAllSKUsMockResponse:any ={
     "conflictError": null
 } 
 
+export const GetAllLocationsMockResponse =
+    {
+        "recordCount": null,
+        "data": [
+            {
+                "wc": "4203",
+                "wd": "Mall of Jaipur"
+            },
+            {
+                "wc": "100900",
+                "wd": "US - SAMARTH LIFESTYLE TONK ROAD JAIPUR"
+            },
+            {
+                "wc": "4371",
+                "wd": "Sri Ganganagar - Goushala Road"
+            },
+            {
+                "wc": "4205",
+                "wd": "USPA-CELEBRATION MALL"
+            },
+            {
+                "wc": "3073",
+                "wd": "US-ARVIND LIFESTYLE BRANDS LTD-PINK QUARE"
+            },
+            {
+                "wc": "4058",
+                "wd": "ALBL Mansarovar"
+            },
+            {
+                "wc": "101563",
+                "wd": "M/S. KUBER ASSOCIATES - SIKAR"
+            },
+            {
+                "wc": "4264",
+                "wd": "US-URBAN SQUARE -UDAIPUR-SGS"
+            },
+            {
+                "wc": "4434",
+                "wd": "JAIPUR - WTP Mall"
+            },
+            {
+                "wc": "3991",
+                "wd": "RP LIFESTYLE_BAPU BAZAR"
+            },
+            {
+                "wc": "3161",
+                "wd": "US - SAMARTH LIFESTYLE KOTA"
+            },
+            {
+                "wc": "4458",
+                "wd": "Mittal Mall, Ajmer"
+            },
+            {
+                "wc": "4452",
+                "wd": "Bikaner - Panchshati Circle"
+            },
+            {
+                "wc": "4451",
+                "wd": "Bikaner - Nokha"
+            },
+            {
+                "wc": "4372",
+                "wd": "Kota - Gumanpura"
+            },
+            {
+                "wc": "100902",
+                "wd": "SAMARTH TRITON MALL"
+            },
+            {
+                "wc": "4972",
+                "wd": "BAAHU ENTERPRISES"
+            },
+            {
+                "wc": "4942",
+                "wd": "USPA AND FM GHOD DHOD ROAD SURAT"
+            },
+            {
+                "wc": "100915",
+                "wd": "USPA VAPI"
+            },
+            {
+                "wc": "4436",
+                "wd": "Bhuj - Bhuj-Mirzapur Highway"
+            },
+            {
+                "wc": "6011",
+                "wd": "Ahmedabad - Airport"
+            },
+            {
+                "wc": "4274",
+                "wd": "RUCHI LIFESTYLE-BHAVNAGAR"
+            },
+            {
+                "wc": "4128",
+                "wd": "SK FASHIONS ANAND"
+            },
+            {
+                "wc": "4199",
+                "wd": "US-SINDHU BHAVAN-AHMEDABAD-ZIAMIT"
+            },
+            {
+                "wc": "3115",
+                "wd": "US-WHITE OCEAN BUSINESS VENTURE AHMEDABAD"
+            },
+            {
+                "wc": "4198",
+                "wd": "US-MORBI-DREAM SHIVERA"
+            },
+            {
+                "wc": "4285",
+                "wd": "US-PARLE POINT SURAT-AMAZING"
+            },
+            {
+                "wc": "4088",
+                "wd": "US-FAD-KALAWAD"
+            },
+            {
+                "wc": "4204",
+                "wd": "US-YAGNIK ROAD RAJKOT-FAD SQUARE"
+            },
+            {
+                "wc": "4314",
+                "wd": "Rajkot - Twin Star"
+            },
+            {
+                "wc": "3117",
+                "wd": "US - WHITE OCEAN INORBIT VADODARA"
+            },
+            {
+                "wc": "4266",
+                "wd": "US-PMC AHMEDABAD PALLADIUM-WHITE"
+            },
+            {
+                "wc": "4168",
+                "wd": "AR-VIP ROAD-SURAT-PBH ENTERPRISE"
+            },
+            {
+                "wc": "4369",
+                "wd": "Ahmedabad - CG Road"
+            },
+            {
+                "wc": "4276",
+                "wd": "RUCHI APPARELS PVT LTD - INOX VADODARA"
+            },
+            {
+                "wc": "4377",
+                "wd": "GANDHINAGAR - Info City Super Mall"
+            },
+            {
+                "wc": "4245",
+                "wd": "JUNAGARH - MOTI BAGH - DANKO INC"
+            },
+            {
+                "wc": "4126",
+                "wd": "LULU MALL TRIVENDRUM"
+            },
+            {
+                "wc": "4362",
+                "wd": "Thrissur - Shoba City Mall"
+            },
+            {
+                "wc": "3142",
+                "wd": "FOCUS MALL"
+            },
+            {
+                "wc": "4091",
+                "wd": "RIYADH MALL, PAYYANUR, KERALA"
+            },
+            {
+                "wc": "4192",
+                "wd": "ALBL-MANJERI-MALAPPURAM-KURIKKAL"
+            },
+            {
+                "wc": "4748",
+                "wd": "US - PURACKAL FASHIONS KOTTAYAM"
+            },
+            {
+                "wc": "4370",
+                "wd": "COCHIN - Forum Mall"
+            },
+            {
+                "wc": "3058",
+                "wd": "US-ARVIND LIFESTYLE BRANDS LTD LULU MALL"
+            },
+            {
+                "wc": "4163",
+                "wd": "ALBL-KANHANGAD,KASARGOD-WONDER"
+            },
+            {
+                "wc": "4000",
+                "wd": "USPA-CALICUT MAVOOR ROAD"
+            },
+            {
+                "wc": "4375",
+                "wd": "Kannur - Thavakkara"
+            },
+            {
+                "wc": "101550",
+                "wd": "US - PELICAN ATTITUDE - CALICUT"
+            },
+            {
+                "wc": "4087",
+                "wd": "PSR RETAIL TIRUVALLA"
+            },
+            {
+                "wc": "4138",
+                "wd": "US-PERINTHALMANNA-P VENTURES"
+            },
+            {
+                "wc": "4270",
+                "wd": "VELLAYAMBALAM THIRUVANANTHAPURAM"
+            },
+            {
+                "wc": "4265",
+                "wd": "US-MG RD-COCHIN-A&A RETAIL VENTURES"
+            },
+            {
+                "wc": "4373",
+                "wd": "CALICUT - Hilite Mall"
+            },
+            {
+                "wc": "4476",
+                "wd": "Thrissur - West Fort"
+            },
+            {
+                "wc": "4118",
+                "wd": "Soubhagya THALASSERY"
+            },
+            {
+                "wc": "4210",
+                "wd": "Ideal Combination Kannur"
+            },
+            {
+                "wc": "4328",
+                "wd": "Kothrud|Pune"
+            },
+            {
+                "wc": "2110",
+                "wd": "City Centre|Nashik"
+            },
+            {
+                "wc": "2054",
+                "wd": "Skyzone|Mum"
+            },
+            {
+                "wc": "4085",
+                "wd": "Rcity Ghatakopar|MUM"
+            },
+            {
+                "wc": "2058",
+                "wd": "PMC|Pune"
+            },
+            {
+                "wc": "2048",
+                "wd": "Viva City Thane|MUM"
+            },
+            {
+                "wc": "4178",
+                "wd": "Amravati"
+            },
+            {
+                "wc": "2208",
+                "wd": "Oberoi|MUM"
+            },
+            {
+                "wc": "2019",
+                "wd": "Colaba|MUM"
+            },
+            {
+                "wc": "4156",
+                "wd": "Vasai|MUM"
+            },
+            {
+                "wc": "2108",
+                "wd": "Borivali|MUM"
+            },
+            {
+                "wc": "2151",
+                "wd": "Seawood|MUM"
+            },
+            {
+                "wc": "2046",
+                "wd": "Inorbit Vashi|MUM"
+            },
+            {
+                "wc": "2105",
+                "wd": "Powai|MUM"
+            },
+            {
+                "wc": "4396",
+                "wd": "Jalna Rd.|AUR"
+            },
+            {
+                "wc": "2204",
+                "wd": "PMC Kurla|MUM"
+            },
+            {
+                "wc": "2023",
+                "wd": "MG Rd.|Pune"
+            },
+            {
+                "wc": "2201",
+                "wd": "Infinity Malad|MUM"
+            },
+            {
+                "wc": "3979",
+                "wd": "Trilium|Nagpur"
+            },
+            {
+                "wc": "2062",
+                "wd": "ICC|Pune"
+            },
+            {
+                "wc": "4032",
+                "wd": "JM Rd.|Pune"
+            },
+            {
+                "wc": "4347",
+                "wd": "College Road|Nashik"
+            },
+            {
+                "wc": "4258",
+                "wd": "Lulu|Cochin"
+            },
+            {
+                "wc": "4340",
+                "wd": "Forum|Cochin"
+            },
+            {
+                "wc": "4256",
+                "wd": "JMR|Thrissur"
+            },
+            {
+                "wc": "2087",
+                "wd": "MOT"
+            },
+            {
+                "wc": "4068",
+                "wd": "Thiruvalla"
+            },
+            {
+                "wc": "4052",
+                "wd": "MG|Cochin"
+            },
+            {
+                "wc": "4105",
+                "wd": "Lulu|Thrivanth"
+            },
+            {
+                "wc": "2109",
+                "wd": "New CG Rd.|AHM"
+            },
+            {
+                "wc": "4034",
+                "wd": "Alpha|AHM"
+            },
+            {
+                "wc": "2036",
+                "wd": "CG Rd.|AHM"
+            },
+            {
+                "wc": "4172",
+                "wd": "VIP Rd.|Surat"
+            },
+            {
+                "wc": "4260",
+                "wd": "Parle Point|Surat"
+            },
+            {
+                "wc": "4333",
+                "wd": "Rajkot|Twin Star"
+            },
+            {
+                "wc": "4344",
+                "wd": "Gandhinagar"
+            },
+            {
+                "wc": "4252",
+                "wd": "Inorbit|Baroda"
+            },
+            {
+                "wc": "4327",
+                "wd": "Kalwad|Rajkot"
+            },
+            {
+                "wc": "2078",
+                "wd": "Alkapuri|Baroda"
+            },
+            {
+                "wc": "3845",
+                "wd": "Maninagar|AHM"
+            },
+            {
+                "wc": "4254",
+                "wd": "Palladium|AHM"
+            },
+            {
+                "wc": "4188",
+                "wd": "Pondy|CHN"
+            },
+            {
+                "wc": "4075",
+                "wd": "Madurai"
+            },
+            {
+                "wc": "3993",
+                "wd": "PMC|CHN"
+            },
+            {
+                "wc": "4330",
+                "wd": "Dindugal"
+            },
+            {
+                "wc": "2239",
+                "wd": "Annannagar|CHN"
+            },
+            {
+                "wc": "4329",
+                "wd": "Nexus Vijaya Mall|CHN"
+            },
+            {
+                "wc": "4255",
+                "wd": "Tiruppur"
+            },
+            {
+                "wc": "2013",
+                "wd": "Brookfield|CBR"
+            },
+            {
+                "wc": "2222",
+                "wd": "Express|CHN"
+            },
+            {
+                "wc": "3949",
+                "wd": "Rekhanjali|JPR"
+            },
+            {
+                "wc": "4240",
+                "wd": "Mansarovar|JPR"
+            },
+            {
+                "wc": "2221",
+                "wd": "Tonk Rd|JPR"
+            },
+            {
+                "wc": "2211",
+                "wd": "Jodhpur"
+            },
+            {
+                "wc": "2080",
+                "wd": "WTP|JPR"
+            },
+            {
+                "wc": "4092",
+                "wd": "MI Rd.|JPR"
+            },
+            {
+                "wc": "4253",
+                "wd": "Urban Sqaure|UPR"
+            },
+            {
+                "wc": "4185",
+                "wd": "Celeb|UPR"
+            },
+            {
+                "wc": "4249",
+                "wd": "Guntur"
+            },
+            {
+                "wc": "4392",
+                "wd": "Rajmundry"
+            },
+            {
+                "wc": "4236",
+                "wd": "Ongole"
+            },
+            {
+                "wc": "4056",
+                "wd": "Kalambagh|MUZ"
+            },
+            {
+                "wc": "4346",
+                "wd": "Bettiah"
+            },
+            {
+                "wc": "4331",
+                "wd": "Saguna Sarita|Patna"
+            },
+            {
+                "wc": "4318",
+                "wd": "AR-P&M Mall|Patna"
+            },
+            {
+                "wc": "2139",
+                "wd": "Grand|MUZ"
+            },
+            {
+                "wc": "4120",
+                "wd": "Kankarbagh|Patna"
+            },
+            {
+                "wc": "2113",
+                "wd": "Belgaum"
+            },
+            {
+                "wc": "4053",
+                "wd": "Orion Mall|BLR"
+            },
+            {
+                "wc": "2034",
+                "wd": "Mantri|BLR"
+            },
+            {
+                "wc": "2001",
+                "wd": "Brigade Rd.|BLR"
+            },
+            {
+                "wc": "4061",
+                "wd": "New Bel Rd.|BLR"
+            },
+            {
+                "wc": "4395",
+                "wd": "Kormangala|BLR"
+            },
+            {
+                "wc": "4332",
+                "wd": "Mall of Asia|BLR"
+            },
+            {
+                "wc": "4237",
+                "wd": "Falcon Kanakpura|BLR"
+            },
+            {
+                "wc": "4159",
+                "wd": "Basweshwar|BLR"
+            },
+            {
+                "wc": "8136",
+                "wd": "Kormangala|BLR"
+            },
+            {
+                "wc": "4182",
+                "wd": "Commercial St|BLR"
+            },
+            {
+                "wc": "3955",
+                "wd": "City Centre|MLR"
+            },
+            {
+                "wc": "4180",
+                "wd": "Kormangala|BLR"
+            },
+            {
+                "wc": "4084",
+                "wd": "Lulu|BLR"
+            },
+            {
+                "wc": "2050",
+                "wd": "Forum|MLR"
+            },
+            {
+                "wc": "2032",
+                "wd": "PMC|BLR"
+            },
+            {
+                "wc": "2153",
+                "wd": "Malleshwaram|BLR"
+            },
+            {
+                "wc": "4892",
+                "wd": "KAPSONS AGENCIES PVT.LTD.- SRINAGAR"
+            },
+            {
+                "wc": "4286",
+                "wd": "ARVIND LIFESTYLE BRANDS LTD WAVE MALL JAMMU"
+            },
+            {
+                "wc": "4207",
+                "wd": "US-CITY WALK MALL-SRINAGAR-DOLPHIN"
+            }
+        ],
+        "status": 200,
+        "msg": null,
+        "errorCount": null,
+        "error": null,
+        "conflictErrorCount": null,
+        "conflictError": null
+    }
+
+
+
 export const ResearchInsightsDummyCalenderData =[
     {
         "Type": "Self",
