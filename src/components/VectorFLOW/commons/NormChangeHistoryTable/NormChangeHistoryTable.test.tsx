@@ -10,6 +10,7 @@ const mockFunction = jest.fn()
 const queryClient = setupReactQuery()
 
 const dummyprops = {
+    data:[],
     onGoBack:mockFunction
 }
 

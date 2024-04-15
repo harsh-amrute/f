@@ -67,7 +67,7 @@ const MonitorGITParent = ({data}:{data:any})=>{
     }
 
 
-    const PlanningColumns = mapBPRFieldsToColDefs(bprUIConfigData?.data.data,()=>{console.log('hello')},()=>{console.log('hello')})
+    const PlanningColumns = mapBPRFieldsToColDefs(bprUIConfigData?.data.data,()=>{console.log('hello')},()=>{console.log('hello')},()=>{console.log('hello')})
 
     if(isLoading){
       return (

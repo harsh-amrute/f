@@ -174,6 +174,18 @@ describe('Testing the MDMService',  () => {
       })
       expect(response.status).toBe(200)
       })
+
+      it('should make a Post request to /GetDailyData', async () => {
+        const mockBody = {
+           SKUCode:'ABCD123',
+           WHCode:'3456'
+        }
+        await BPRService.getDailyData(mockBody);
+        expect(mockedAxios.post).toHaveBeenCalledWith('http://10.8.1.10:8081/GetDailyData',mockBody,{
+          headers: { 'Content-Type': 'application/json' }
+        })
+    
+      });
       
 
   });

@@ -42,8 +42,12 @@ export namespace BPRService {
       headers:{ 'Content-Type': 'application/json' }
     });
   }
+
+  export const getDailyData = async (payload:any) => {
+    return await axios.post(process.env.REACT_APP_VF_MOCK_API_HOST + `/GetDailyData`,payload,{
+      headers:{ 'Content-Type': 'application/json' }
+    }); 
+  }
 }
-
-
 
 
