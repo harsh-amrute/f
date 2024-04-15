@@ -6,12 +6,6 @@ import {ButtonWrapper, AgGridWrapper, AgContainer} from './styles'
 import VFButtonOutline from "../VFButtonOutline";
 import './styles.css'
 
-interface NormChangeData{
-    date:string,
-    oldNorm:string
-    newNorm:string
-    reason:string    
-}
 interface NormChangeHistoryTableProps {
     data:any
     onGoBack:()=>void

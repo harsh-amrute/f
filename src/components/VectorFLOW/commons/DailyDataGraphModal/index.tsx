@@ -6,27 +6,19 @@ import {
   SCSeasonalityDetailsTitle,
   SCSeasonalityDetailsBody,
   SCText,
-  SCCheckBoxRow,
-  SCCheckBoxContainer,
   SCHorizontalDivider,
   SCDataRow,
   SCDataNode,
   SCVerticalDivider
  } from "./styles";
- import Checkbox from "../../../commons/Checkbox";
+
  import {type NormChangeHistory, DailyDataChart } from '../../../../VectorFlow/types/BPR';
 //  import {enIN} from 'date-fns/locale';
- import { useRef, useState, useEffect } from "react";
- import SelectOptionLevel from '../../../commons/SelectOptionLevel'
+ import { useState } from "react";
 
 import VFRangeSlider from '../VFRangeSlider'
 import Select from 'react-select'
-import { AgCharts } from "ag-charts-community";
 import { AgChartsReact } from "ag-charts-react";
-import { AgChartOptions } from "ag-grid-enterprise/dist/lib/chart/agChartOptions";
-
-
-
 
 interface DailyDataGraphModalProps{
   rowData:any,

@@ -1576,7 +1576,7 @@ export const addPrefixToObjectKeys = (obj:any,prefix:string)=>{
   return newObj
 }
 
-export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[],masterId:number):ColDef[]=>{
+export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[]):ColDef[]=>{
 
   const result:any[] = []
   conflicts.map((conflict)=>{
@@ -1606,7 +1606,7 @@ export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,re
 
 }
 
-export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[],masterId:number):ColDef[]=>{
+export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[]):ColDef[]=>{
 
   const result:any[] = []
   if(Array.isArray(errorConflicts)){

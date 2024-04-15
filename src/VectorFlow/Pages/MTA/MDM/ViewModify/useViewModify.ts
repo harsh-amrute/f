@@ -1006,7 +1006,7 @@ const useViewModify = (pageType:string) => {
           else{
             // console.time('That took ')
             // console.log('Calculating...')
-            const tempCon = createConflictRowData(localConflictData,activeMaster.id)
+            const tempCon = createConflictRowData(localConflictData)
             const tempError = createErrorRowData(localErrorData,activeMaster.id)
             const tempResult:any = []
 
@@ -1057,7 +1057,7 @@ const useViewModify = (pageType:string) => {
           else{
             // console.time('That took ')
             // console.log('Calculating...')
-            const tempCon = createConflictRowData(localConflictData,activeMaster.id)
+            const tempCon = createConflictRowData(localConflictData)
             const tempError = createErrorRowData(localErrorData,activeMaster.id)
 
             const tempResult:any = []

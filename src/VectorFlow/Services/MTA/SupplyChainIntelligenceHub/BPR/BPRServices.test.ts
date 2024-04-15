@@ -180,7 +180,7 @@ describe('Testing the MDMService',  () => {
            SKUCode:'ABCD123',
            WHCode:'3456'
         }
-        const response = await BPRService.getDailyData(mockBody);
+        await BPRService.getDailyData(mockBody);
         expect(mockedAxios.post).toHaveBeenCalledWith('http://10.8.1.10:8081/GetDailyData',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
