@@ -67,7 +67,7 @@ export const SCViewBackground = styled.div`
 `
 export const SCVerticalDivider = styled.div`
     width:0.5px;
-    background-color:#6C696A;
+    background-color:#C6C6C6; //#6C696A
     height:30px;
     margin-right:16px;
     margin-left:16px;

@@ -42,7 +42,8 @@ const GuidedInsight=()=>{
 
     }
     
-    return(<><ActionToolBar  data-testid="chronicgridview"
+    return(<>
+            <ActionToolBar  data-testid="chronicgridview"
                         view={currentView} 
                         onFloatingTabChange={onFloatingTabChange}
                         onGoBack={onGoBack}
@@ -56,7 +57,7 @@ const GuidedInsight=()=>{
 
                         />
                       {renderView()} 
-                  </>) 
+            </>) 
    
 
 
