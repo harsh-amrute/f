@@ -8,7 +8,9 @@ import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
 import { useSpring, animated } from "react-spring";
 import Select from "react-select";
 import './styles.css';
-import { useGetAllSKUs } from "../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+
+import { useGetAllSKUs,  useGetAllLocations } from "../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+
 import VFLoader from "../../../../components/VectorFLOW/commons/VFLoader";
 import VFRangeSlider from "../VFRangeSlider";
 import {  BPRFilter, BPRFilterState } from "../../../../VectorFlow/types/BPR";
@@ -96,7 +98,7 @@ interface FilterMultiSelectCheckboxProps{
 
 const FilterMultiSelectCheckbox = ({filterOptions, header,onChange,filterState}:FilterMultiSelectCheckboxProps)=>{
     const colorMap:string[] = ['#9A0101', '#EBBF2B', '#418D18']
-    console.log(header)
+    // console.log(header)
     return(
         <>
            { filterOptions.map((option: {label:string, id:string}, index:number) =>{
@@ -412,25 +414,25 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
         
         if(filterId==='PF6'){
-            filterObj.attributeName='SKUCode';
+            filterObj.attributeName='SKU'; //enter sku
             filterObj.operator='='
         }
         if(filterId==='PF7'){
-            filterObj.attributeName='EnterDescription';
+            filterObj.attributeName='EnterDescription';  //omit
             filterObj.operator='='
         }
         if(filterId==='LF6'){
-            filterObj.attributeName='ForLocation';
+            filterObj.attributeName='Location'; //location
             filterObj.operator='='
         }
-        if(filterId ==='SCF2' || filterId==='SCF5'){
-            filterObj.attributeName='LocationCode';
+        if(filterId ==='SCF2' || filterId==='SCF5'){ //locatipon code tha og
+            filterObj.attributeName='Location';
             filterObj.operator='='
         }
-        if(filterId ==='SCF3' || filterId==='SCF6'){
-            filterObj.attributeName='LocationDescription';
-            filterObj.operator='='
-        }
+        // if(filterId ==='SCF3' || filterId==='SCF6'){   //omit
+        //     filterObj.attributeName='LocationDescription';
+        //     filterObj.operator='='
+        // }
         if(filterId==='SCF1'){
             filterObj.attributeName='ForLocation';
             filterObj.operator='='
@@ -473,6 +475,10 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         // let currentKey:any=""
         let finalValue:any | [];
         let selectedValues:any = [];
+
+        const getTrimmedValue = (finalValue:any) => {
+            return finalValue.split(' ')[0];
+        }
        
    
         if(e.value){
@@ -521,17 +527,18 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         else if(e.target){
             finalValue=e.target.value
         }
+
        else if(Array.isArray(e)){
         finalValue = e.map((ele: any) =>{
             const newfilterObj = {...filterObj}
-            newfilterObj.value = ele.label;
+            // newfilterObj.value = ele.label;
+            newfilterObj.value = getTrimmedValue(ele.label);
+          
+
             return newfilterObj
         })
        }
-        // else{
-        //     finalValue = e
-        // }
-   
+        
         const currGroup:string | undefined = Object.keys(multiFilter).find((key:string)=>{
             return multiFilter[key as keyof BPRFilterState].id ===parentId
         })
@@ -641,10 +648,36 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         loc_children_type:true,
     })
 
-    const {data,isLoading} = useGetAllSKUs()
-    const options = data?.data?.data.map((ele: any)=> { 
-        return {label: ele.SKUCode, value: ele.SKUName}
-    })
+    // const {data,isLoading} = useGetAllSKUs()
+
+    // const options = data?.data?.data.map((ele: any)=> { 
+    //     // return {label: ele.sc, value: ele.sd}
+    //     return {label: `${ele.sc} (${ele.sd})`, value: ele.sc}
+
+    // })
+
+
+    const { data, isLoading } = useGetAllSKUs();
+    const {data:locationData,isLoading:isLocationDataLoading} = useGetAllLocations()
+
+    const getOptions = (data:Array<any>,isSku?:boolean)=>{
+            
+        if(isSku){
+            return data.map((sku: any) => {
+                return { label:  `${sku.sc} (${sku.sd})`, value: sku.sc };
+            }) 
+        }
+        
+        return data.map((location: any) => {
+            return { label:  `${location.wc} (${location.wd})`, value: location.wc };
+        }) 
+        
+    }
+    
+
+
+
+
 
     const getAPIValue = (filterId:any, filterState:any) => {
        
@@ -663,7 +696,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         <>
         <VFModalCard zoom={'0.75'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
            {
-            isLoading
+            (isLoading || isLocationDataLoading)
             ?
             <VFLoader/>
             :
@@ -690,13 +723,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                       <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.location?'unset' : '50px'}}>
                           <FilterCheckboxAccordian filterType="For Locations" filterKey="location" isOpen={openStatus.location} setOpenStatus={setOpenStatus}>
                           <FilterCheckboxAccordian filterType="Location Type" filterKey="location_type" isOpen={child.location_type} setOpenStatus={setChild}  style={{paddingLeft:'50px', maxHeight:'unset'}}>
-                              {/* <FilterMultiSelectCheckbox filterOptions={[
-                                { label: 'Plant', id: '1' },
-                                { label: 'Supplier', id: '2' },
-                                { label: 'CWH', id: '3' },
-                              ]}
-                              filterState={multiFilter.supplyChainFilter.filters}
-                              onChange={(e:any, key:string)=>onFilterChange('SCF1',e,'1', key)}/> */}
                               <FilterMultiSelectCheckbox header={'ForLocation'} filterOptions={supplyChainForLocationCheckBoxList}
                               filterState={multiFilter.supplyChainFilter.filters}
                               onChange={(e:any, key:string)=>onFilterChange('SCF1',e,'1', key)}/>
@@ -712,8 +738,8 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                           <VFMasterFieldSearch
                                value={getAPIValue('SCF2', multiFilter.supplyChainFilter.filters)} 
                               setValue={(e:any)=>onFilterChange('SCF2',e,'1','value')} 
-                              options={options} 
-                              placeholder={'Location Code'} 
+                              options={getOptions(locationData?.data.data)} 
+                              placeholder={'Enter Location'} 
                               handleListChild={()=>console.log("")} 
                               maxToShow={3} 
                               backgroundColor={'#F2F2F2'}
@@ -723,32 +749,12 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
 
                           />
                       </FilterComponent>
-                      <FilterComponent style={{ marginBottom:'5px'}}>           
-                          <VFMasterFieldSearch
-                             value={getAPIValue('SCF3', multiFilter.supplyChainFilter.filters)} 
-                              setValue={(e:any)=>onFilterChange('SCF3',e,'1','value')} 
-                              options={options} 
-                              placeholder={'Location Description'} 
-                              handleListChild={()=>console.log("")} 
-                              maxToShow={3} 
-                              backgroundColor={'#F2F2F2'}
-                              borderRadius={40}
-                              disabled={false}
-                              boxShadow={'0'}
-                          />
-                      </FilterComponent>
                       </>
                       : null 
                       } 
                       <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.loc_children?'unset' : '50px'}}>
                           <FilterCheckboxAccordian filterType="For Children Of" filterKey="loc_children" isOpen={openStatus.loc_children} setOpenStatus={setOpenStatus}>
                           <FilterCheckboxAccordian filterType="Location Type" filterKey="loc_children_type" isOpen={child.loc_children_type} setOpenStatus={setChild} style={{paddingLeft:'50px'}}>
-                          {/* <FilterMultiSelectCheckbox filterOptions={[
-                              { label: 'Plant', id: '1' },
-                              { label: 'CWH', id: '2' },
-                              { label: 'RWH', id: '3' },
-                            ]}
-                            filterState={multiFilter.supplyChainFilter.filters} */}
                             <FilterMultiSelectCheckbox header={'ForChildren'} filterOptions={supplyChainForChildrenOfCheckBoxList}
                             filterState={multiFilter.supplyChainFilter.filters}
                            onChange={(e:any, key:string)=>onFilterChange('SCF4',e,'1',key)}/>
@@ -764,22 +770,8 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                           <VFMasterFieldSearch
                                value={getAPIValue('SCF5', multiFilter.supplyChainFilter.filters)}  
                               setValue={(e:any)=>onFilterChange('SCF5',e,'1','value')} 
-                              options={options} 
-                              placeholder={'Location Code'} 
-                              handleListChild={()=>console.log("")} 
-                              maxToShow={3} 
-                              backgroundColor={'#F2F2F2'}
-                              borderRadius={40}
-                              disabled={false}
-                              boxShadow={'0'}
-                          />
-                      </FilterComponent>
-                      <FilterComponent style={{ marginBottom:'5px'}}>           
-                          <VFMasterFieldSearch
-                           value={getAPIValue('SCF6', multiFilter.supplyChainFilter.filters)} 
-                              setValue={(e:any)=>onFilterChange('SCF6',e,'1','value')} 
-                              options={options} 
-                              placeholder={'Location Description'} 
+                              options={getOptions(locationData?.data.data)} 
+                              placeholder={'Enter Location'} 
                               handleListChild={()=>console.log("")} 
                               maxToShow={3} 
                               backgroundColor={'#F2F2F2'}
@@ -818,8 +810,8 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             <VFMasterFieldSearch 
                                  value={getAPIValue('LF6', multiFilter.locationFilter.filters)}  
                                 setValue={(e:any)=>onFilterChange('LF6',e,'2','value')} 
-                                options={options} 
-                                placeholder={'For Location'} 
+                                options={getOptions(locationData?.data.data)}  
+                                placeholder={'Enter Location'} 
                                 handleListChild={()=>console.log("")} 
                                 maxToShow={3} 
                                 backgroundColor={'#F2F2F2'}
@@ -855,8 +847,8 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         <VFMasterFieldSearch
                             value={getAPIValue('PF6', multiFilter.productFilter.filters)} 
                             setValue={(e:any)=>onFilterChange('PF6',e,'3','value')}
-                            options={options} 
-                            placeholder={'Enter SKU Code'} 
+                            options={getOptions(data?.data.data,true)}  
+                            placeholder={'Enter SKU'} 
                             handleListChild={()=>console.log("")} 
                             maxToShow={3} 
                             backgroundColor={'#F2F2F2'}
@@ -867,22 +859,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             
                         />
                     </FilterComponent>
-                    <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', marginBottom:'7px'}}>           
-                        <VFMasterFieldSearch
-                             value={getAPIValue('PF7', multiFilter.productFilter.filters)} 
-                            setValue={(e:any)=>onFilterChange('PF7',e,'3','value')}
-                            options={options} 
-                            placeholder={'Enter Description'} 
-                            handleListChild={()=>console.log("")} 
-                            maxToShow={3} 
-                            backgroundColor={'#F2F2F2'}
-                            borderRadius={40}
-                            disabled={false}
-                            margin-bottom={'10px'}
-                            boxShadow={'0'}
-                           
-                        />
-                        </FilterComponent>
                 </FilterCardWrapper>
                 )}
                 

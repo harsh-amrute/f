@@ -693,14 +693,14 @@ const useViewModify = (pageType:string) => {
           const result = JSON.parse(response.data)
           setIsOverlayVisible(false)
 
-          const ifErrorExists = result.find((data:any)=>data.error);
-          const ifWarningExists = result.find((data:any)=>data.warning);
+          const ifErrorExists = result.find((data:any)=>data.error.length > 0);
+          const ifWarningExists = result.find((data:any)=>data.warning.length > 0);
           if(ifErrorExists) {
             dispatch(UPDATE_PROGRESS_STATE('error'));
             addInvalidDataColDefs('error');
           }
-          else if(ifWarningExists){
-            dispatch(UPDATE_PROGRESS_STATE('error'));
+          if(ifWarningExists){
+            // dispatch(UPDATE_PROGRESS_STATE('error'));
             addInvalidDataColDefs('warning');
           }
           else{
