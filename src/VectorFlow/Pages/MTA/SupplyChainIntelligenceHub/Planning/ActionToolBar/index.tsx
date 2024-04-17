@@ -113,11 +113,8 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
 
     }
     
-
    }
    
-    
-
 
     const renderFloatingTab = () => {
    
@@ -160,8 +157,11 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 )
                                 
                             }
+
+                         
                              
                             {
+                                
                                 !disableChartAndGridViewToggle &&
                                 <SCViewBackground>
                                     <SCViewContainer>
@@ -174,7 +174,9 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                         <p style={{color:'#b0acac'}}>Grid View</p>
                                     </SCViewContainer>
                                 </SCViewBackground>
+                                
                             }
+                            
                         </SCCustomActionsContainer>
                     </SCTaskBarContainer>
             }
@@ -203,8 +205,14 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 <>
                                 <SCVerticalDivider/>
                                     <SCViewContainerWithBg>
-                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
-                                    <p>Excel Export</p>
+                                        {currCategory==="GuidedInsight" ? null : (
+                                            <>
+                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
+                                             <p>Excel Export</p>
+                                            </>
+                                        )}
+                                    {/* <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
+                                    <p>Excel Export</p> */}
                                 </SCViewContainerWithBg>
                                 <SCVerticalDivider/>  
                                 <SCViewContainerWithBg>
@@ -216,24 +224,26 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                     <p>Reset</p>
                                 
                                     </SCViewContainerWithBg>
-                                    {!disableChartAndGridViewToggle && <SCVerticalDivider/> }
+                                    {/* {!disableChartAndGridViewToggle && <SCVerticalDivider/> } */}
+                                    {
+                                        !disableChartAndGridViewToggle && (
+                                            (currCategory === 'ExcessInventory' || currCategory==="GITToChild" || currCategory==="OrderFulfillment" || currCategory==="ExpediteToChild" || currCategory==="ExpediteFromParent") ? <SCVerticalDivider/> : null 
+                                        )
+                                    }
                                 </>
                                 }
                                 
                                 
-                                   
-
-                    
                             {
-                                currCategory==='CustomScreens' || currCategory==='BufferTrend'? null : (
+                                (currCategory==='CustomScreens' || currCategory==='BufferTrend' || currCategory==="BPR" || currCategory==="RRR" || currCategory==="BOR" || currCategory==="BTR" || currCategory==="ResearchInsight" || currCategory==="DBMNorm" || currCategory==="GuidedInsight") ? null : (
                                 !disableChartAndGridViewToggle &&
                                 <SCViewBackground>
                                     <SCViewContainer onClick={() => onViewChange('chart')}>
                                         <SCViewImage src={"/assets/img/VectorFLOW/BPR/chart-view-grey.svg"} alt="" />
                                         <p style={{color:'#b0acac'}}>Chart View</p>
-                            
                                     </SCViewContainer>
                                     <div><SCVerticalDivider/></div>
+                                 
                                     <SCViewContainer>
                                         <SCViewImage src={"/assets/img/VectorFLOW/BPR/grid-view-pink.svg"} alt="" onClick={onGoBack} />
                                         <p style={{color:'#bc3d81'}}>Grid View</p>
