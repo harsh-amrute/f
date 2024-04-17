@@ -995,8 +995,9 @@ const useViewModify = (pageType:string) => {
               else{
                 errorRowData = createErrorRowData(errorData)
               }
-              addInvalidDataColDefs('error')
-              console.log(errorRowData)
+              if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+                addInvalidDataColDefs('error')
+              }
               if(errorRowData.length>0){
                 dispatch(UPDATE_ROW_DATA(errorRowData))
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
@@ -1046,7 +1047,9 @@ const useViewModify = (pageType:string) => {
               else{
                 errorRowData = createErrorRowData(errorData)
               }
-              addInvalidDataColDefs('error')
+              if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+                addInvalidDataColDefs('error')
+              }
               if(errorRowData.length>0){
                 dispatch(UPDATE_ROW_DATA(errorRowData))
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
