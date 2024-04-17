@@ -19,6 +19,7 @@ import {
     SCViewImage,
     SCCustomActionsContainer,
     SCViewContainerWithBg,
+    SCTaskFilterContainer
  
 } from './styles';
 import { useUserData } from '../../../../../../context/UserDataContext';
@@ -181,16 +182,18 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             {
                (view === 'grid') && 
                     <SCTaskBarContainer>
-                        <SCGoBackContainer onClick={onGoBack}>
-                            <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
-                            <SCGoBackText><b>Go Back</b></SCGoBackText>
-                        </SCGoBackContainer>
-                        {currCategory === 'GuidedInsight' ? null:
-                        
-                        <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
+                        <SCTaskFilterContainer>
+                            <SCGoBackContainer onClick={onGoBack}>
+                                <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
+                                <SCGoBackText><b>Go Back</b></SCGoBackText>
+                            </SCGoBackContainer>
+                            {currCategory === 'GuidedInsight' ? null:
+                            
+                            <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
 
-                        }
-                        {tabsList.length > 0 && renderFloatingTab()}
+                            }
+                            {tabsList.length > 0 && renderFloatingTab()}
+                        </SCTaskFilterContainer>
                         <SCCustomActionsContainer>
 
 

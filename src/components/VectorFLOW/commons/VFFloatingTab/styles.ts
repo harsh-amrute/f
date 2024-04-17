@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 export const VFFloatingTabWrapper = styled.div`
     position:relative;
-    height: 52px;
+    height:65px;  //52px
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: -3px 3px 12px #8B8B8B41;
     border-radius: 30px;

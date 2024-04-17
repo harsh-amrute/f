@@ -1,7 +1,9 @@
 import styled from 'styled-components'
 
 export const VFSelectedFiltersWrapper = styled.div`
-    max-width:800px;
+   // max-width:800px;
+   overflow:auto;
+   width:100%
     height: 51px;
     padding:5px;
     display:flex;
@@ -9,6 +11,7 @@ export const VFSelectedFiltersWrapper = styled.div`
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #95959529;
     border-radius: 30px;
+    margin-left: auto;
     // overflow-x:overlay;
 //     ::-webkit-scrollbar {
 //      width: 0.2px;
