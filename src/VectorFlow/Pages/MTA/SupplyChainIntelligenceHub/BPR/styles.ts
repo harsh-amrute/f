@@ -340,3 +340,15 @@ export const BPRGraphCellRendererWrapper = styled.img`
     width:20px;
     cursor:pointer;
 `
+
+export const TableHeader = styled.p`
+    text-align: left;
+    font-weight:500;
+    font-size:20px;
+    line-height:26px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #000000;
+    margin-left:40px;
+    padding:10px;
+`

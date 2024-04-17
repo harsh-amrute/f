@@ -73,9 +73,37 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
 
     const width = isSideBarOpen?"77%":'97%'
 
+    
+
     const getStepperState = ():StepItem[]=>{
         switch(masterProgress){
-            case "uploaded" || "deleteUploaded || 'conflicts":
+            case "uploaded" :
+                return [
+                    {
+                        label:'File Uploaded',
+                        status:'completed',
+                        description:''
+                    },
+                    {
+                        label:'Submit',
+                        status:'pending',
+                        description:''
+                    },
+                ]
+            case "deleteUploaded":
+                return [
+                    {
+                        label:'File Uploaded',
+                        status:'completed',
+                        description:''
+                    },
+                    {
+                        label:'Submit',
+                        status:'pending',
+                        description:''
+                    },
+                ]
+            case 'conflicts':
                 return [
                     {
                         label:'File Uploaded',
@@ -140,11 +168,6 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         description:''
                     },
                     {
-                        label:'Save',
-                        status:'completed',
-                        description:''
-                    },
-                    {
                         label:"Submit",
                         status:"completed",
                         description:""
@@ -155,11 +178,6 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     {
                          label:'Delete Online',
                         status:'completed',
-                        description:''
-                    },
-                    {
-                        label:'Save',
-                        status:'pending',
                         description:''
                     },
                     {
@@ -189,12 +207,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
             case "deleteOnlineSubmitted":
                 return [
                     {
-                         label:'Edit Online',
-                        status:'completed',
-                        description:''
-                    },
-                    {
-                        label:'Save',
+                         label:'Delete Online',
                         status:'completed',
                         description:''
                     },
@@ -210,6 +223,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 ]
         }
     }
+
 
     const BackButton =()=> {
         return(
@@ -478,6 +492,11 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                             Delete All
                         </VFButton>
                    </VFTaskBarButtonGroup>
+                   <div >
+                        <VFStepper
+                            items={getStepperState()}
+                        />
+                    </div>
                 </TaskBarContainer>
             )
         case "conflicts":

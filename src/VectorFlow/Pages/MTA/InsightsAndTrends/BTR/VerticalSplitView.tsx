@@ -34,7 +34,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                        pagination
                         paginationPageSize={50}
                         tooltipShowDelay={0}
-                        tooltipHideDelay={0}
+                        tooltipHideDelay={100000}
                     />
                     {/* <VFTableWrapper>
                         <AgGridReact
@@ -60,7 +60,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                         pagination
                         paginationPageSize={50}
                         tooltipShowDelay={0}
-                        tooltipHideDelay={0}
+                        tooltipHideDelay={100000}
                     />
                     {/* <VFTableWrapper>
                         <AgGridReact

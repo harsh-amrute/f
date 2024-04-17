@@ -12,7 +12,7 @@ const useViewPort = ()=>{
         laptopL: 1440,
         desktop: 1688,
       };
-    const {height:screenHeight,width:screenWidth} = screen
+    const {innerHeight:screenHeight,innerWidth:screenWidth} = window
 
     const getScreenZoomValue = useCallback(():number=>{
         if(screenWidth >size.laptop && screenWidth<size.desktop ){

@@ -492,14 +492,15 @@ export const generateOptions = (data:Master[]) => {
   const options:Option[] = [];
   if(!data)return options
   data.forEach((master:Master)=>{
-    master.fields.forEach((field:Field)=>{
+    const tempMasterFields = [...master.fields]
+    const tempFields = tempMasterFields.sort((a:Field, b:Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
+    tempFields.forEach((field:Field)=>{
       if(!temp.includes(field.displayName)){
         temp.push(field.displayName);
         options.push({value:field.key,label:field.displayName,})
       }
     })
   });
-
   return options;
 }
 
@@ -886,6 +887,7 @@ export const mapDraftDataToTableRowData = (rowData:any[])=>{
 }
 
 export const getExistingColumns = (rowData:any)=>{
+  console.log(rowData)
   return Object.keys(rowData)
 }
 

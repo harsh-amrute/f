@@ -8,13 +8,18 @@ import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphC
 
 import { useGetBPRData, useGetBPRUIConfiguration } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { isSameDay,format,addDays } from 'date-fns'
-import { ResearchInsightsDummyCalenderData } from '../../../../../mock-data/BPR'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
+import { useGetUpdatedGraphData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
+import { notifyError, notifyLoader } from '../../../../../helpers/notify'
+import { toast } from 'react-toastify'
 
 
 const useResearchInsights = ()=>{
 
     const {data,isLoading:isBPRUILoading} = useGetBPRUIConfiguration()
+
+    const {mutateAsync:getUpdatedGraphData,isLoading:isUpdatedGraphDataLoading} = useGetUpdatedGraphData()
+
     const [ResearchInsightsData,setResearchInsightsRowData] = useState<Array<any>>([])
     const {mutateAsync:getBPRData,isLoading:isBPRDataLoading} = useGetBPRData()
 
@@ -40,7 +45,7 @@ const useResearchInsights = ()=>{
     ])
 
 
-    const [selectedRowsDates,setSelectedRowsDates] = useState<Array<any>>(ResearchInsightsDummyCalenderData)
+    const [selectedRowsDates,setSelectedRowsDates] = useState<Array<any>>([])
 
 
     const ref = useRef<GridRef>();
@@ -157,12 +162,6 @@ const useResearchInsights = ()=>{
             result.push({ ...color, date: dateString });
         });
     
-        // result.sort((a:any, b:any) => {
-        //     const dateA = new Date(a.date);
-        //     const dateB = new Date(b.date);
-        //     return dateB - dateA;
-        // });
-    
         return result;
     }
     
@@ -187,18 +186,30 @@ const useResearchInsights = ()=>{
             return convertCustomObjToObjects(colorFrequencyArray.reverse())
     }
 
-    const handleOnUpdateGraph = ()=>{
+    const handleOnUpdateGraph = async()=>{
         const selectedRows =  ref.current?.api.getSelectedRows()
         if(selectedRows && selectedRows.length===0)return setGraphState('default')
-        if(selectedRows &&  selectedRows.length>1){
-            setSelectedRowsDates([...selectedRowsDates])
-            return setGraphState('graph')
+        const loaderId = notifyLoader('Loading graph data')
+        try{
+            const data = await getUpdatedGraphData({data:selectedRows?.map((s)=>{
+                return {
+                    "SKUCode":s.SKUCode,
+                    "WhCode":s.WhCode
+                }
+            })})
+            setSelectedRowsDates(data.data.data)
+            if(selectedRows &&  selectedRows.length>1){
+                return setGraphState('graph')
+            }
+            if(selectedRows){
+                return setGraphState('calender')
+            
+            }
+        }catch(error:any){
+            notifyError(error)
+        }finally{
+            toast.dismiss(loaderId)
         }
-       if(selectedRows){
-        setSelectedRowsDates([...selectedRowsDates])
-        return setGraphState('calender')
-       
-       }
     }
 
 
@@ -332,6 +343,7 @@ const useResearchInsights = ()=>{
         ResearchInsightsData,
         ResearchInsightsColumns,
         isLoading:isBPRDataLoading || isBPRUILoading,
+        isUpdatedGraphDataLoading,
         horizon,
         graphState,
         blackCount,

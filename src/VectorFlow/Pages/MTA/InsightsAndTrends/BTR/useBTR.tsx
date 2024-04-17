@@ -8,7 +8,9 @@ import HorizontalSplitView from "./HorizontalSplitView"
 
 import VerticalSplitView from "./VerticalSplitView"
 import { mapBTRRowDataToColDefs } from "../../../../../helpers/utils"
+
 import { useGetBTRData } from "../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR"
+
 import { ColDef } from "ag-grid-enterprise"
 import { BTRTableHeader } from "./styles"
 import CategoryCellRenderer from "./CategoryCellRenderer"
@@ -65,7 +67,6 @@ const useBTR = ()=>{
     // const [defaultColDefs,setDefaultColDefs] = useState<Array<ColDef>>([])
 
     const {mutateAsync:getBTRData,isLoading} = useGetBTRData()
-
     useEffect(()=>{
         const getData = async()=>{
             const data = await getBTRData()
@@ -113,9 +114,9 @@ const useBTR = ()=>{
                     />
                 )
             case "2":
-                return <><BTRTableHeader>On-Hand Inventory View Trend Report</BTRTableHeader><VFTable tooltipHideDelay={0}  tooltipShowDelay={0} tooltipMouseTrack={true} ref={techRef} disableZoomScaling columnDefs={techColDefs} rowData={rowData} {...gridProps} pagination paginationPageSize={50}/></>
+                return <><BTRTableHeader>On-Hand Inventory View Trend Report</BTRTableHeader><VFTable  tooltipHideDelay={100000}  tooltipShowDelay={0} tooltipMouseTrack={true} ref={techRef} disableZoomScaling columnDefs={techColDefs} rowData={rowData} {...gridProps} pagination paginationPageSize={50}/></>
             case "3":
-                return <><BTRTableHeader>Pipeline Inventory Trend Report</BTRTableHeader><VFTable tooltipHideDelay={0}  tooltipShowDelay={0} tooltipMouseTrack={true} ref={ecoRef} disableZoomScaling columnDefs={ecoColDefs} rowData={rowData} {...gridProps} pagination paginationPageSize={50}/></>
+                return <><BTRTableHeader>Pipeline Inventory Trend Report</BTRTableHeader><VFTable  tooltipHideDelay={100000}  tooltipShowDelay={0} tooltipMouseTrack={true} ref={ecoRef} disableZoomScaling columnDefs={ecoColDefs} rowData={rowData} {...gridProps} pagination paginationPageSize={50}/></>
             default:
                 return <VFTable  columnDefs={[]} rowData={[]} {...gridProps}/>
         }
@@ -126,7 +127,6 @@ const useBTR = ()=>{
        return []
     },[currentTab,rowData])
 
-    console.log(techColDefs)
 
     const ecoColDefs = useMemo(():Array<ColDef>=>{
         if(rowData.length>0)return mapBTRRowDataToColDefs(_.omit(rowData[0],['category','Tags','VirtualNorm']))
