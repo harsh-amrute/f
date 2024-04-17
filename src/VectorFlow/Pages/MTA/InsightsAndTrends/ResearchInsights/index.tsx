@@ -31,6 +31,7 @@ const ResearchInsights = ()=>{
         ResearchInsightsColumns,
         ResearchInsightsData,
         isLoading,
+        isUpdatedGraphDataLoading,
         horizon,
         graphState,
         setHorizon,
@@ -82,7 +83,14 @@ const ResearchInsights = ()=>{
                     </VFButtonOutline>
                 </ResearchInsightsTableTaskBar>
             </ResearchInsightsTableWrapper>
-            <AvailabilityTrendWrapper>
+            {
+                isUpdatedGraphDataLoading
+                ?
+                <AvailabilityTrendWrapper>
+                    <VFLoader/>
+                </AvailabilityTrendWrapper>
+                :
+                <AvailabilityTrendWrapper>
                 <AvailabilityTrendHeader>
                     Availability Trend
                 </AvailabilityTrendHeader>
@@ -496,6 +504,8 @@ const ResearchInsights = ()=>{
                     </React.Fragment>
                 )}
             </AvailabilityTrendWrapper>
+            }
+            
            
              <ExpandedGraph
                 onUpdateGraphs={updateGraphState}

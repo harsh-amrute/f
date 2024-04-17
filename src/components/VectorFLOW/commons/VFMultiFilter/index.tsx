@@ -14,11 +14,10 @@ import VFRangeSlider from "../VFRangeSlider";
 import {  BPRFilter, BPRFilterState } from "../../../../VectorFlow/types/BPR";
 
 interface VFMultiFilterProps{
-    onApplyFilter:()=>void
+    onApplyFilter:(params:any)=>void
     onGoBack:()=>void
     selectedOption?:()=>void
     toggleAdd?:()=>void
-
     placeholder?:string
     supplyChainNodeFilterActive?:boolean
     locationFilterActive?:boolean
@@ -28,7 +27,9 @@ interface VFMultiFilterProps{
     coverageFilterActive?:boolean
     horizonActive?:boolean
     multiFilter:BPRFilterState
-    setMultiFilter:any    
+    setMultiFilter:any 
+    supplyChainForLocationCheckBoxList:Array<any> 
+    supplyChainForChildrenOfCheckBoxList:Array<any>  
 }
 
 const FilterCheckboxAccordian = ({filterType,filterKey,isOpen,setOpenStatus,children}:any) => {
@@ -95,7 +96,7 @@ interface FilterMultiSelectCheckboxProps{
 
 const FilterMultiSelectCheckbox = ({filterOptions, header,onChange,filterState}:FilterMultiSelectCheckboxProps)=>{
     const colorMap:string[] = ['#9A0101', '#EBBF2B', '#418D18']
-
+    console.log(header)
     return(
         <>
            { filterOptions.map((option: {label:string, id:string}, index:number) =>{
@@ -103,8 +104,8 @@ const FilterMultiSelectCheckbox = ({filterOptions, header,onChange,filterState}:
                 return(
                     <>
                     <MultiSelectCheckBoxComponent key={option.id}>
-                        <input type="checkbox" name={option.label} style={{ width:'15px',height:'20px',marginRight:'14px;',borderRadius: '2px'}} onChange={(e:any)=>onChange(e,'value')} checked={filterState.find((filter)=>option.label===filter.value)}/>
-                        {header==='Coverage Filter' ? 
+                        <input type="checkbox" name={option.label} style={{ width:'15px',height:'20px',marginRight:'14px;',borderRadius: '2px'}} onChange={(e:any)=>onChange(e,'value')} checked={filterState.find((filter)=>option.label===filter.value && header===filter.attributeName)}/>
+                        {header==='Coverage' ? 
                             <div style={{height:'12px', width:'12px', backgroundColor:color}} ></div>
                         :null}
                         <label style={{fontFamily: 'Roboto',fontWeight: '300',fontSize: '16px',color:'#313131'}}>{option.label}</label>
@@ -381,6 +382,24 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     //     current:[]
     //  }
 
+    const{
+       
+        onGoBack,
+        multiFilter,
+        setMultiFilter,
+        supplyChainNodeFilterActive = false,
+        productFilterActive = false,
+        locationFilterActive = false,
+        availabilityFilterActive = false,
+        colorFilterActive = false,
+        coverageFilterActive = false,
+        horizonActive = false,
+        onApplyFilter,
+        supplyChainForLocationCheckBoxList,
+        supplyChainForChildrenOfCheckBoxList
+
+        
+    } = props
 
     const onFilterChange=(filterId:string,e:any,parentId:string,property:string, header?:string)=>{
 
@@ -604,21 +623,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     
    
     
-    const{
-       
-        onGoBack,
-        multiFilter,
-        setMultiFilter,
-        supplyChainNodeFilterActive = false,
-        productFilterActive = false,
-        locationFilterActive = false,
-        availabilityFilterActive = false,
-        colorFilterActive = false,
-        coverageFilterActive = false,
-        horizonActive = false,
-        onApplyFilter
-        
-    } = props
+    
 
     const [openStatus,setOpenStatus] = useState({
         category:false,
@@ -653,11 +658,10 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         })
     }
 
-
-   
+  
     return(
         <>
-        <VFModalCard zoom={'0.65'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
+        <VFModalCard zoom={'0.75'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
            {
             isLoading
             ?
@@ -686,11 +690,14 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                       <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.location?'unset' : '50px'}}>
                           <FilterCheckboxAccordian filterType="For Locations" filterKey="location" isOpen={openStatus.location} setOpenStatus={setOpenStatus}>
                           <FilterCheckboxAccordian filterType="Location Type" filterKey="location_type" isOpen={child.location_type} setOpenStatus={setChild}  style={{paddingLeft:'50px', maxHeight:'unset'}}>
-                              <FilterMultiSelectCheckbox filterOptions={[
+                              {/* <FilterMultiSelectCheckbox filterOptions={[
                                 { label: 'Plant', id: '1' },
                                 { label: 'Supplier', id: '2' },
                                 { label: 'CWH', id: '3' },
                               ]}
+                              filterState={multiFilter.supplyChainFilter.filters}
+                              onChange={(e:any, key:string)=>onFilterChange('SCF1',e,'1', key)}/> */}
+                              <FilterMultiSelectCheckbox header={'ForLocation'} filterOptions={supplyChainForLocationCheckBoxList}
                               filterState={multiFilter.supplyChainFilter.filters}
                               onChange={(e:any, key:string)=>onFilterChange('SCF1',e,'1', key)}/>
                           </FilterCheckboxAccordian>
@@ -736,11 +743,13 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                       <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.loc_children?'unset' : '50px'}}>
                           <FilterCheckboxAccordian filterType="For Children Of" filterKey="loc_children" isOpen={openStatus.loc_children} setOpenStatus={setOpenStatus}>
                           <FilterCheckboxAccordian filterType="Location Type" filterKey="loc_children_type" isOpen={child.loc_children_type} setOpenStatus={setChild} style={{paddingLeft:'50px'}}>
-                          <FilterMultiSelectCheckbox filterOptions={[
-                              { label: 'Child', id: '1' },
-                              { label: 'Kit', id: '2' },
-                              { label: 'Ok', id: '3' },
+                          {/* <FilterMultiSelectCheckbox filterOptions={[
+                              { label: 'Plant', id: '1' },
+                              { label: 'CWH', id: '2' },
+                              { label: 'RWH', id: '3' },
                             ]}
+                            filterState={multiFilter.supplyChainFilter.filters} */}
+                            <FilterMultiSelectCheckbox header={'ForChildren'} filterOptions={supplyChainForChildrenOfCheckBoxList}
                             filterState={multiFilter.supplyChainFilter.filters}
                            onChange={(e:any, key:string)=>onFilterChange('SCF4',e,'1',key)}/>
                           </FilterCheckboxAccordian>
@@ -896,7 +905,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tech_color?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="Execution Tech. color" filterKey="availabilty_tech_color" isOpen={openStatus.availabilty_tech_color} setOpenStatus={setOpenStatus}>
-                            <FilterMultiSelectCheckbox filterOptions={[
+                            <FilterMultiSelectCheckbox header={'ETC'} filterOptions={[
                                  { label: 'Red', id: '1' },
                                  { label: 'Yellow', id: '2' },
                                  { label: 'Green', id: '3' },
@@ -909,7 +918,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_eco_color?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="Execution Eco. color" filterKey="availabilty_eco_color" isOpen={openStatus.availabilty_eco_color} setOpenStatus={setOpenStatus}>
-                            <FilterMultiSelectCheckbox filterOptions={[
+                            <FilterMultiSelectCheckbox header={'EEC'}filterOptions={[
                                   { label: 'Red', id: '1' },
                                   { label: 'Yellow', id: '2' },
                                   { label: 'Green', id: '3' },
@@ -921,7 +930,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tags?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="Tags(PIPO, Seasonality)" filterKey="availabilty_tags" isOpen={openStatus.availabilty_tags} setOpenStatus={setOpenStatus}>
-                            <FilterMultiSelectCheckbox filterOptions={[ 
+                            <FilterMultiSelectCheckbox header={'PIPO,Seasonality'} filterOptions={[ 
                                 { label: 'Red', id: '1' },
                                 { label: 'Yellow', id: '2' },
                                 { label: 'Green', id: '3' },
@@ -958,7 +967,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         </FilterHeader>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', paddingTop:'12px'}}>
                             <FilterCheckboxAccordian filterType="Coverage" filterKey="coverage_filter" isOpen={openStatus.coverage_filter} setOpenStatus={setOpenStatus}>
-                            <FilterMultiSelectCheckbox header="Coverage Filter" filterOptions={[
+                            <FilterMultiSelectCheckbox header="Coverage" filterOptions={[
                                 {label:'Gap > 67%',id:'1'},
                                 {label:'33%<=Gap<=67%',id:'2'},
                                 {label:'Gap < 33%,',id:'3'},
@@ -975,7 +984,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             <ButtonFilterWrapper>
                 <ButtonContainer>
                     <VFButtonOutline themeUi={user.user.theme_ui} onClick={onGoBack}>Go Back!</VFButtonOutline>
-                    <VFButton themeUi={user.user.theme_ui} onClick={onApplyFilter}>Apply Filter</VFButton>
+                    <VFButton themeUi={user.user.theme_ui} onClick={()=>onApplyFilter(multiFilter)}>Apply Filter</VFButton>
 
                 </ButtonContainer>
             </ButtonFilterWrapper>

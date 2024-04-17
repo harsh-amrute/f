@@ -10,6 +10,8 @@ import BPRSubmiRemarkToolTip from "./BPRSubmitRemarkToolTip"
 import "allotment/dist/style.css";
 import BPRRemarkHistoryToolTip from "./BPRRemarkHistoryToolTip"
 import ActionToolBar from "../Planning/ActionToolBar"
+import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal"
+import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
 
 
 
@@ -35,6 +37,14 @@ const BPR = ()=>{
         onCloseSubmitRemark,
         onSubmitRemark,
         onCloseRemarkHistory,
+        showDailyDataGraphModal,
+        toggleDailyDataGraphModal,
+        dailyDataParams,
+        normChangeData,
+        chartData,
+        masterData,
+        normChangeHistoryTable,
+        toggleNormChangeHistoryTable
     } = useBPR();
 
     
@@ -50,6 +60,12 @@ const BPR = ()=>{
     return(
         <>
         <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BPR'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
+        {
+            showDailyDataGraphModal && <DailyDataGraphModal rowData={{...dailyDataParams?.data}} chartData={chartData? chartData : []} normChangeData={normChangeData} masterData={masterData} isModalOpen={showDailyDataGraphModal} toggleNormChangeHistoryTable={toggleNormChangeHistoryTable} closeModal={()=>toggleDailyDataGraphModal(false)} />
+        }
+        {
+            normChangeHistoryTable && <NormChangeHistoryTable data={normChangeData ? normChangeData : []} onGoBack={()=>toggleNormChangeHistoryTable(false)}/>
+        }
         
         <BPRLayout>
             {/* <BPRTaskBar style={{width:isSideBarOpen?'77%':'97%'}}>

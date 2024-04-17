@@ -289,10 +289,10 @@ const useDelete=()=>{
               if(localErrorCount>0 || errorCount>0){
                 let errorRowData
                 if(localErrorCount>0){
-                  errorRowData = createErrorRowData(localErrorData,activeMaster.id)
+                  errorRowData = createErrorRowData(localErrorData)
                 }
                 else{
-                  errorRowData = createErrorRowData(errorData,activeMaster.id)
+                  errorRowData = createErrorRowData(errorData)
                 }
                 addInvalidDataColDefs('error')
                 dispatch(UPDATE_ROW_DATA(errorRowData))
@@ -311,10 +311,10 @@ const useDelete=()=>{
               if(localErrorCount>0 || errorCount>0){
                 let errorRowData
                 if(localErrorCount>0){
-                  errorRowData = createErrorRowData(localErrorData,activeMaster.id)
+                  errorRowData = createErrorRowData(localErrorData)
                 }
                 else{
-                  errorRowData = createErrorRowData(errorData,activeMaster.id)
+                  errorRowData = createErrorRowData(errorData)
                 }
                 addInvalidDataColDefs('error')
                 dispatch(UPDATE_ROW_DATA(errorRowData))

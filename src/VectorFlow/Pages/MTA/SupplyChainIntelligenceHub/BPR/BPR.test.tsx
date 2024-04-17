@@ -4,8 +4,8 @@ import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { useGetBPRData, useGetBPRRemarkHistory, useGetBPRUIConfiguration, useSubmitBPRRemark } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
-import { GetBPRDataMockResponse, GetBPRUIConfigurationMockResponse } from '../../../../../mock-data/BPR';
+import { useGetBPRData, useGetBPRRemarkHistory, useGetBPRUIConfiguration, useSubmitBPRRemark, useGetDailyData } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import { GetBPRDataMockResponse, GetBPRUIConfigurationMockResponse, GetDailyDataMockResponse } from '../../../../../mock-data/BPR';
 
 import { ReactNode } from "react";
 import { Provider } from "react-redux";
@@ -40,6 +40,10 @@ const useSubmitBPRRemarkMock = useSubmitBPRRemark as jest.MockedFunction<
 const useGetBPRRemarkHistoryMock = useGetBPRRemarkHistory as jest.MockedFunction<
   typeof useGetBPRRemarkHistory
 >
+
+const useGetDailyDataMock = useGetDailyData as jest.MockedFunction<
+  typeof useGetDailyData
+> 
 
 // const contextWrapper = (children:any) => {
 //   return (
@@ -145,6 +149,17 @@ describe('BPR Component', () => {
         }
       }
     })
+  
+    useGetDailyDataMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: GetDailyDataMockResponse}
+          }
+        }
+      }
+      
+    })
 
   });
   it('renders loader when isLoading is true', () => {
@@ -182,6 +197,17 @@ describe("It handles all interactions",()=>{
         },
         isLoading:false
       }
+    })
+
+    useGetDailyDataMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: GetDailyDataMockResponse}
+          }
+        }
+      }
+      
     })
 
     useSubmitBPRRemarkMock.mockImplementation(():any=>{

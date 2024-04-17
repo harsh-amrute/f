@@ -990,10 +990,10 @@ const useViewModify = (pageType:string) => {
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
               if(localErrorCount>0){
-                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
+                errorRowData = createErrorRowData(localErrorData)
               }
               else{
-                errorRowData = createErrorRowData(errorData,activeMaster.id)
+                errorRowData = createErrorRowData(errorData)
               }
               addInvalidDataColDefs('error')
               console.log(errorRowData)
@@ -1010,8 +1010,8 @@ const useViewModify = (pageType:string) => {
           else{
             // console.time('That took ')
             // console.log('Calculating...')
-            const tempCon = createConflictRowData(localConflictData,activeMaster.id)
-            const tempError = createErrorRowData(localErrorData,activeMaster.id)
+            const tempCon = createConflictRowData(localConflictData)
+            const tempError = createErrorRowData(localErrorData)
             const tempResult:any = []
 
             tempCon.forEach((t:any)=>{
@@ -1041,10 +1041,10 @@ const useViewModify = (pageType:string) => {
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
               if(localErrorCount>0){
-                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
+                errorRowData = createErrorRowData(localErrorData)
               }
               else{
-                errorRowData = createErrorRowData(errorData,activeMaster.id)
+                errorRowData = createErrorRowData(errorData)
               }
               addInvalidDataColDefs('error')
               if(errorRowData.length>0){
@@ -1061,8 +1061,8 @@ const useViewModify = (pageType:string) => {
           else{
             // console.time('That took ')
             // console.log('Calculating...')
-            const tempCon = createConflictRowData(localConflictData,activeMaster.id)
-            const tempError = createErrorRowData(localErrorData,activeMaster.id)
+            const tempCon = createConflictRowData(localConflictData)
+            const tempError = createErrorRowData(localErrorData)
 
             const tempResult:any = []
 
@@ -1406,7 +1406,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const onIgnoreSubmitErrors = ()=>{
-      const errorRowData = createErrorRowData(errorData,activeMaster.id)
+      const errorRowData = createErrorRowData(errorData)
       if(errorRowData.length>0){
         addInvalidDataColDefs('error')
         dispatch(UPDATE_ROW_DATA(errorRowData))

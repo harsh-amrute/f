@@ -72,7 +72,7 @@ const ExpediteParentGrid = ({data}:{data:any})=>{
 
  
 
-    const PlanningColumns = mapBPRFieldsToColDefs(bprUIConfigData?.data.data,()=>{console.log('hello')},()=>{console.log('hello')})
+    const PlanningColumns = mapBPRFieldsToColDefs(bprUIConfigData?.data.data,()=>{console.log('hello')},()=>{console.log('hello')},()=>{console.log('hello')})
 
     return(
         <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={data ? data : []} customGridRowData={activeRow} customGridColDef={[]} showStockGrid isSubGridOpen={isSubGridOpen}/>
