@@ -277,3 +277,20 @@ export const mdmRoutes = [
     '/master-data-management/control-panel/add',
     '/master-data-management/control-panel/delete'
 ]
+
+export const suspensionMessages = [
+    { Key: 1, Value: "Suspended as part of exclusions" },
+    { Key: 2, Value: "Suspended as Norm is in Sleep Mode" },
+    { Key: 4, Value: "Suspended as Phase-In in progress" },
+    { Key: 8, Value: "Suspended as Phase-Out in progress" },
+    { Key: 16, Value: "Suspended as either norm<Min norm or norm<2 or RLT,RCP,GCP<3" },
+    { Key: 32, Value: "Suspended as Insufficient Data Points" },
+    { Key: 64, Value: "Suspended due to stock is in white" },
+    { Key: 128, Value: "Suspended due to Supply Issue" },
+    { Key: 256, Value: "Suspended due to New SKU introduction" },
+    { Key: 512, Value: "Suspended due to suggestion acceptance" },
+    { Key: 1024, Value: "Suspended due to Force Norm Changes" },
+    { Key: 2048, Value: "Suspended due to Spike" },
+    { Key: 4096, Value: "Suspended due to Suggestion acceptance" },
+    { Key: 8192, Value: "Suspended due to Seasonality" }
+]

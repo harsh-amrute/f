@@ -686,17 +686,21 @@ const useViewModify = (pageType:string) => {
           formData.append("screen_type",JSON.stringify({screenType:pageType}))
 
           const response = await validateMaster({formData,masterId:activeMaster.id});
-          const result = JSON.parse(response.data)
-          setIsOverlayVisible(false)
+          let result = JSON.parse(response.data)
+          const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
+          result = [...errorAndWarningData,... result.filter((data:any)=>data.error.length === 0 && data.warning.length === 0 )]
+          
+          setIsOverlayVisible(false);
 
-          const ifErrorExists = result.find((data:any)=>data.error);
-          const ifWarningExists = result.find((data:any)=>data.warning);
+          const ifErrorExists = result.find((data:any)=>data.error.length > 0);
+          const ifWarningExists = result.find((data:any)=>data.warning.length > 0);
+
           if(ifErrorExists) {
             dispatch(UPDATE_PROGRESS_STATE('error'));
             addInvalidDataColDefs('error');
           }
-          else if(ifWarningExists){
-            dispatch(UPDATE_PROGRESS_STATE('error'));
+          if(ifWarningExists){
+            // dispatch(UPDATE_PROGRESS_STATE('error'));
             addInvalidDataColDefs('warning');
           }
           else{
@@ -764,7 +768,7 @@ const useViewModify = (pageType:string) => {
         const erroneusData:any[] = [];
         const validData:any[] = [] 
         activeMaster.rowData.forEach((data:any)=>{
-          if(data.error || data.warning){
+          if(data['error'].length > 0){
             erroneusData.push(data);
           }
           else{
@@ -784,8 +788,6 @@ const useViewModify = (pageType:string) => {
           dispatch(SET_RECORD_COUNT(validData.length))
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         }
-        
-        
         
       }
       

@@ -40,18 +40,21 @@ interface NormData{
 
 
 
+
 const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModalOpen,closeModal,toggleNormChangeHistoryTable}:DailyDataGraphModalProps) => {
     // console.log(rowData);
     const suspensionOptions = [
-        {label:'Upward Stock Based',value:'upwardstockbased'},
-        {label:'Downward Stock Based',value:'downwardstockbased'},
-        {label:'Upward Consumption Based',value:'upwardconsumptionbased'},
-        {label:'Downward Consumption Based',value:'downwardconsumptionbased'}
+        {label:'Upward Stock Based',value:'upwardStockBased'},
+        {label:'Downward Stock Based',value:'downwardStockBased'},
+        {label:'Upward Consumption Based',value:'upwardConsumptionBased'},
+        {label:'Downward Consumption Based',value:'downwardConsumptionBased'}
 
     ]
     const [horizon,setHorizon] = useState<number>(30);
+    const [suspensionType,setSuspensionType] = useState('')
 
     const generateChartOptions = () => {
+      console.log(suspensionType)
         const adjustedChartData = chartData.slice(chartData.length-horizon,chartData.length);
         const sortedNormChangeData = normChangeData.sort((a:NormChangeHistory,b:NormChangeHistory) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
@@ -83,10 +86,43 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
 
             return {date:dailyData.dt,norm:tempNorm};
         }).slice(chartData.length-horizon,chartData.length);
-        normData = normData.map((data:NormData)=>{
+
+        // let upwardStockBasedData = chartData.map((dailyData:DailyDataChart) => {
+        //   if(dailyData.rrs > 0) return {date:dailyData.dt,norm:dailyData.norm};
+        //   return {}
+        // }).slice(chartData.length-horizon,chartData.length);
+
+        normData = normData.map((data:NormData,index:number)=>{
           const normBand = parseFloat((data.norm/3).toFixed(2))
-          return {...data,normRed:normBand,normGreen:normBand,normYellow:normBand}
+          // const dailyDataObj = adjustedChartData.find((obj:any)=>new Date(obj.dt)===new Date(data.date))
+          // console.log(dailyDataObj)
+          const normObj = {
+            ...data,normRed:normBand,
+            normGreen:normBand,
+            normYellow:normBand,
+            normBlue:data.norm + parseInt(adjustedChartData[index]['bz'],10),
+            upwardStockBasedNorm:adjustedChartData[index]['rrs'] > 0 ? data.norm : 0,
+            downwardStockBasedNorm:adjustedChartData[index]['grs'] > 0 ? data.norm : 0,
+            upwardConsumptionBasedNorm:adjustedChartData[index]['rrc'] > 0 ? data.norm : 0,
+            downwardConsumptionBasedNorm:adjustedChartData[index]['grc'] > 0 ? data.norm : 0
+          }
+          return normObj
         })
+
+        console.log(normData)
+
+        // function renderer(params: any) {
+        //   return `
+        //     <div style="background-color: ${params.color}">
+        //       ${"HELLO"}
+        //     </div>
+        //     <div>
+        //         ${"HELLO"}
+        //     </div>
+        //     `;
+        // }
+        
+
        
 
         const options:any = {
@@ -99,6 +135,32 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
               },
             },    
             series: [
+              {
+            
+                xKey: 'date',
+                xName:'Date',
+                yKey: 'normRed',
+                yName:'',
+                data:normData,
+                type:'area',
+                // strokeWidth: 3,
+                fill:'#ED4A4A',
+                stacked:true,
+                showInLegend:false   
+              },  
+              {
+            
+                xKey: 'date',
+                xName:'Date',
+                yKey: 'normYellow',
+                yName:'',
+                data:normData,
+                type:'area',
+                // strokeWidth: 3,
+                stacked:true,
+                fill:'#F5EE4E',
+                showInLegend:false    
+              },
               {
             
                 xKey: 'date',
@@ -117,28 +179,16 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
             
                 xKey: 'date',
                 xName:'Date',
-                yKey: 'normYellow',
+                yKey: 'normBlue',
                 yName:'',
                 data:normData,
                 type:'area',
                 // strokeWidth: 3,
-                stacked:true,
-                fill:'#F5EE4E',
-                showInLegend:false    
-              },
-              {
-            
-                xKey: 'date',
-                xName:'Date',
-                yKey: 'normRed',
-                yName:'',
-                data:normData,
-                type:'area',
-                // strokeWidth: 3,
-                fill:'#ED4A4A',
+                fill:'#355FD3',
                 stacked:true,
                 showInLegend:false   
               },
+            
               {
             
                 xKey: 'dt',
@@ -149,11 +199,12 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                 type:'line',
                 stroke:'#5D148B',
                 marker: {
-                  fill: "#5D148B",
-                  size: 5,
-                  stroke: "#5D148B",
-                  strokeWidth: 3,
-                  shape: "circle",
+                  enabled:false
+                  // fill: "#5D148B",
+                  // size: 5,
+                  // stroke: "#5D148B",
+                  // strokeWidth: 3,
+                  // shape: "circle",
                 },
               },
               {
@@ -186,8 +237,6 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                 type:'bar',
                 fill:'#EDB04D'
               },
-              
-             
             ],
             axes: [{
                 type: "category",
@@ -199,6 +248,66 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
             } as const,
            ],
         }
+        const upwardStockBasedOptions = {
+            
+          xKey: 'date',
+          xName:'Date',
+          yKey: 'upwardStockBasedNorm',
+          yName:'',
+          data:normData,
+          type:'area',
+          // strokeWidth: 3,
+          fill:'#808080',
+          fillOpacity:0.8,
+          showInLegend:false   
+        }
+        const downwardStockBasedOptions = {
+            
+          xKey: 'date',
+          xName:'Date',
+          yKey: 'downwardStockBasedNorm',
+          yName:'',
+          data:normData,
+          type:'area',
+          // strokeWidth: 3,
+          fill:'#808080',
+          fillOpacity:0.8,
+          showInLegend:false   
+        }
+
+        const upwardConsumptionBasedOptions = {
+            
+          xKey: 'date',
+          xName:'Date',
+          yKey: 'upwardConsumptionBasedNorm',
+          yName:'',
+          data:normData,
+          type:'area',
+          // strokeWidth: 3,
+          fill:'#808080',
+          fillOpacity:0.8,
+          showInLegend:false   
+        }
+
+        const downwardConsumptionBasedOptions = {
+            
+          xKey: 'date',
+          xName:'Date',
+          yKey: 'downwardConsumptionBasedNorm',
+          yName:'',
+          data:normData,
+          type:'area',
+          // strokeWidth: 3,
+          fill:'#808080',
+          fillOpacity:0.8,
+          showInLegend:false   
+        }
+
+        if(suspensionType === 'upwardStockBased') options['series'].push(upwardStockBasedOptions);
+        if(suspensionType === 'downwardStockBased') options['series'].push(downwardStockBasedOptions);
+        if(suspensionType === 'upwardConsumptionBased') options['series'].push(upwardConsumptionBasedOptions);
+        if(suspensionType === 'downwardConsumptionBased') options['series'].push(downwardConsumptionBasedOptions);
+
 
         return options;
 
@@ -235,7 +344,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                     <SCHorizontalDivider/>
                     <div style={{display:'flex',flexDirection:'column',marginBottom:'20px'}}>
                         <SCText fontSize={16} fontWeight={300}>Select Suspension Type:</SCText>
-                        <Select options={suspensionOptions} placeholder={"Select-"}/>
+                        <Select options={suspensionOptions} placeholder={"Select-"} onChange={(data:any)=>setSuspensionType(data.value)}  />
                     </div>
                     <SCHorizontalDivider/>
                     <div style={{display:'flex',flexDirection:'column',marginBottom:'20px'}}>
