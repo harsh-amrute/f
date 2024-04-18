@@ -501,22 +501,6 @@ describe("Handles all Interaction in ViewModify Component", () => {
     fireEvent.click(showAll);
   });
 
-  // it("Goes Back to Select Master screen when clicking on back button", () => {
-  //   const submit = screen.getByText("Submit");
-  //   fireEvent.click(submit);
-
-  //   const backBtn = screen.getByTestId("back-btn");
-  //   fireEvent.click(backBtn);
-  // });
-
-  // it("Resets the Filters and Data", () => {
-  //   const submit = screen.getByText("Submit");
-  //   fireEvent.click(submit);
-
-  //   const backBtn = screen.getByText("Reset");
-  //   fireEvent.click(backBtn);
-  // });
-
   it("Submits the Data", () => {
     const submit = screen.getByText("Submit");
     fireEvent.click(submit);
@@ -530,41 +514,6 @@ describe("Handles all Interaction in ViewModify Component", () => {
     fireEvent.click(applyFilter);
   });
 
-  
-
-  // it("Opens the UploadModal", () => {
-  //   const submit = screen.getByText("Submit");
-  //   fireEvent.click(submit);
-
-  //   // const modifyData = screen.getByText("Modify Selected Data");
-  //   // fireEvent.click(modifyData);
-
-  //   const downloadBtn = screen.getByText("Download");
-  //   fireEvent.click(downloadBtn);
-  // });
-
-  // it("Fetches the filter data on clicking on Apply Filter", async () => {
-  //   const submit = screen.getByText("Submit");
-  //   fireEvent.click(submit);
-  //   await waitFor(async () => {
-  //     const reactSelect = screen.getAllByRole("combobox")[0];
-  //     expect(reactSelect).toBeInTheDocument();
-  //     await select(reactSelect, ["SKU Code"]);
-  //   });
-  //   await waitFor(async () => {
-  //     const reactSelect = screen.getAllByRole("combobox")[1];
-  //     expect(reactSelect).toBeInTheDocument();
-  //     await select(reactSelect, ["Equals To"]);
-  //   });
-  //   const textInput = screen.getByTestId("text-input");
-  //   fireEvent.change(textInput, { target: { value: "a" } });
-
-  //   await act(async () => {
-  //     const applyFilter = await screen.findByText("Apply Filter");
-  //     userEvent.click(applyFilter);
-  //   });
-
-  // });
 
 });
 
@@ -640,7 +589,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     mockState.activeMaster.progress = 'error';
     mockState.isSelectMasterOpen = false;
-    mockState.activeMaster.rowData = [{error:"SKU Code Has Pipe and Comma",...mockMasterData.data[0]},mockMasterData.data[1]];
+    mockState.activeMaster.rowData = [{error:"SKU Code Has Pipe and Comma",...mockMasterData.data[0]},{error:'',...mockMasterData.data[1]}];
 
     const mockStore = createStore(mockState);
 
@@ -870,8 +819,6 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
   it("Check IF Seasonality UI is Loaded",async ()=>{
 
-    console.debug(mapMasterToColumnDefs(MasterData[0].fields,10));
-
     const updatedMockState:MDMStore = {
       allMasters:MasterData,
       masters:[{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:'Seasonality',colDefs:mapMasterToColumnDefs(MasterData[0].fields,10),rowData:mockMasterData.data}],
@@ -903,30 +850,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
     // fireEvent.click(screen.getByTestId('graph-icon'));
     
 
-  })
-
-  // it("Shows Chart When CLicked on Chart Icon in case of Seasonality Master",async ()=>{
-
-  //   const updatedMockState:MDMStore = {
-  //     allMasters:MasterData,
-  //     masters:MasterData,
-  //     options:[],
-  //     selectedOptions:[],
-  //     activeMaster:{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
-  //     isSelectMasterOpen:false,
-  //     draftId:''
-  //   }
-
-  //   const mockStore = createStore(updatedMockState);
-
-  //   render(contextWrapper(<ViewModify/>,mockStore));
-
-  //   fireEvent.click(screen.getByText("Reset"));
-    
-
-  // })
-
- 
+  }) 
 
   it("Saves To Draft",async ()=>{
    
@@ -1030,50 +954,3 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
   })
 
 })
-
-// describe("It handles react portals",()=>{
-//   beforeEach(()=>{
-
-
-
-//     const result: any = {
-//       isLoading: false,
-//       data: { data: { data: mockData } },
-//     };
-//     useGetMasterUIConfigurationMock.mockImplementation(() => {
-//       return result;
-//     });
-
-//     useGetMasterDataMock.mockImplementation(() => {
-//       return useMasterDataResult;
-//     });
-
-//     store.dispatch(RESET_STATE());
-      
-
-    
-   
-//   })
-
-//   it("Renderers the viewmodify page",()=>{
-//     render(contextWrapper(<ViewModify/>,store))
-//     // screen.debug()
-
-//     const submit = screen.getByText("Submit");
-//     fireEvent.click(submit);
-
-//     // const columnsToolPanel = screen.getByText('Columns');
-//     // fireEvent.click(columnsToolPanel);
-    
-//     // screen.logTestingPlaygroundURL();
-
-
-//     // const showAllBtn = screen.getByText("Show All");
-//     // fireEvent.click(showAllBtn);
-
-//     // const warningModalCloseIcon =  document.querySelectorAll('#root')[0]!
-//     // console.debug(warningModalCloseIcon)
-//     // fireEvent.click(warningModalCloseIcon)
-//   })
-
-// })
