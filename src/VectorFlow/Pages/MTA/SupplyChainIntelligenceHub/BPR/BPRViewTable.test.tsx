@@ -15,7 +15,7 @@ describe('BPRViewTable Component', () => {
   ];
 
   it('renders table header and row data correctly', () => {
-    render(<BPRViewTable colDefs={colDefs} rowData={rowData} />);
+    render(<BPRViewTable colDefs={colDefs} rowData={rowData} tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg"/>);
 
 
   });
@@ -26,7 +26,7 @@ describe('BPRViewTable Component', () => {
       { id: 2, name: 'Jane Smith' }, // Missing remarks data
     ];
 
-    render(<BPRViewTable colDefs={colDefs} rowData={rowDataWithNull} />);
+    render(<BPRViewTable colDefs={colDefs} rowData={rowDataWithNull} tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg" />);
 
     const remarksRow2 = screen.getByText('NULL');
 

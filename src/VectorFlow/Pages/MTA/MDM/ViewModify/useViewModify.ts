@@ -188,7 +188,10 @@ const useViewModify = (pageType:string) => {
         //   dispatch(REMOVE_COLDEFS(['error','warning']))
         // }
         if(activeMaster.progress === 'editOnline'){
-          return onEditOnline();
+          return onEditOnline('editOnline');
+        }
+        if(activeMaster.progress === 'deleteOnline'){
+          return onEditOnline('deleteOnline');
         }
       },[activeMaster.progress]);
 
@@ -477,9 +480,10 @@ const useViewModify = (pageType:string) => {
         actionType:getActionId(pathName[pathName.length-1]).id,
         draftId:draftId,
         draftData:masters.map((master:MDMMasterState)=>{
+
           return {
             masterId:master.id,
-            status:activeMaster.progress,
+            status:master.progress,
             gridState:master.id===activeMaster.id?JSON.stringify(activeMaster.colDefs):'',
             dataMaster:master.id===activeMaster.id?rowData:[]
           }
@@ -654,7 +658,7 @@ const useViewModify = (pageType:string) => {
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
     }
 
-    const onEditOnline = () => {
+    const onEditOnline = (progress:any) => {
       const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
         const isEditable = activeMaster.fields.find((field:Field)=>field.key === col.colId )?.isEdit;
         
@@ -662,7 +666,7 @@ const useViewModify = (pageType:string) => {
         return {...col}
       })
 
-      dispatch(UPDATE_PROGRESS_STATE('editOnline'))
+      dispatch(UPDATE_PROGRESS_STATE(progress))
       dispatch(UPDATE_COLDEFS(updatedColdefs))
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
 
@@ -692,8 +696,8 @@ const useViewModify = (pageType:string) => {
           
           setIsOverlayVisible(false);
 
-          const ifErrorExists = result.find((data:any)=>data.error.length > 0);
-          const ifWarningExists = result.find((data:any)=>data.warning.length > 0);
+          const ifErrorExists = result.find((data:any)=>data.error.length > 1);
+          const ifWarningExists = result.find((data:any)=>data.warning.length > 1);
 
           if(ifErrorExists) {
             dispatch(UPDATE_PROGRESS_STATE('error'));
@@ -993,8 +997,9 @@ const useViewModify = (pageType:string) => {
               else{
                 errorRowData = createErrorRowData(errorData)
               }
-              addInvalidDataColDefs('error')
-              console.log(errorRowData)
+              if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+                addInvalidDataColDefs('error')
+              }
               if(errorRowData.length>0){
                 dispatch(UPDATE_ROW_DATA(errorRowData))
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
@@ -1044,7 +1049,9 @@ const useViewModify = (pageType:string) => {
               else{
                 errorRowData = createErrorRowData(errorData)
               }
-              addInvalidDataColDefs('error')
+              if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+                addInvalidDataColDefs('error')
+              }
               if(errorRowData.length>0){
                 dispatch(UPDATE_ROW_DATA(errorRowData))
                 dispatch(SET_RECORD_COUNT(errorRowData.length))

@@ -53,8 +53,7 @@ const SelectCategory=(props:CountProp)=>{
     const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
     const themeUi = user.user.theme_ui
 
-   
-   
+
 
     return(
     <>
@@ -66,7 +65,7 @@ const SelectCategory=(props:CountProp)=>{
         <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>Edit Filter</VFButton>
             {
                 isFilterOpen && (
-                <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true} productFilterActive={true} supplyChainNodeFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))}></VFMultiFilter>
+                <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true} productFilterActive={true} supplyChainNodeFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m:any)=>['1','3','4'].includes(m.id))}></VFMultiFilter>
                
                 )
             }

@@ -113,8 +113,8 @@ const useTaskPendingForReview = ()=>{
             
             const masters:Master[] = uiConfigurationResponse.data.data
             const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
-            
             if(currentMasterFields){
+                console.log(currentTaskMaster.data[0].new)
                 const existingColumns = getExistingColumns(taskData.Actiontype==2 || currentTaskMasterId===13?JSON.parse(currentTaskMaster.data[0].new):currentTaskMaster.data[0])
                 const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
                 setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
@@ -126,6 +126,7 @@ const useTaskPendingForReview = ()=>{
             
         } catch (error) {
             toast.dismiss();
+            console.log(error)
             notifyError("Something Went Wrong");
             
         }

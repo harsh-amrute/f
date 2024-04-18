@@ -147,7 +147,7 @@ const AddRecord = () => {
 
               </VFTab>
               {
-                (!['default'].includes(activeMaster.progress) && !isSelectMasterOpen) 
+                (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen)) 
                   && 
                   <VFPagination 
                     selectedRows={selectedRowsCount} 
@@ -219,7 +219,7 @@ const AddRecord = () => {
             onSaveToDraft={onSaveToDraft}
             onEditOnlineSave={onEditOnlineSave}
             editOnline={editOnline}
-            onEditOnline={onEditOnline}
+            onEditOnline={()=>onEditOnline('editOnline')}
             onBack={onBackButton}
             onClearAndExportErrors={()=>onClearExportError(true)}
             onModifyData={()=>toggleUploadModal(true)}
