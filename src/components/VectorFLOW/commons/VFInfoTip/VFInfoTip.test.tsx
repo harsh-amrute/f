@@ -4,6 +4,7 @@ import VFInfoTip from ".";
 const dummyprops={
     text:["hello", "hi", "hiya"],
     singletext:['welcome']
+  
 }
 
 describe("VFInfoTip Component", () => {
