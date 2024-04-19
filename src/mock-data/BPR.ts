@@ -80822,7 +80822,76 @@ export const GetDailyDataMockResponse = {
             "rcp":8,
             "gcp":30,
             "rlt":8
-         }
+         },
+         "SuggestionHistoryData":[
+            {
+                "oln": 777934,
+                "nn": 1037246,
+                "sdate": "2024-02-25",
+                "rsn": "Virtual Stockout has occurred. Upward revision suggested."
+              },
+              {
+                "oln": 777934,
+                "nn": 1037246,
+                "sdate": "2024-02-13",
+                "rsn": "Virtual Stockout has occurred. Upward revision suggested."
+              },
+              {
+                "oln": 777934,
+                "nn": 1037246,
+                "sdate": "2024-02-14",
+                "rsn": "Virtual Stockout has occurred. Upward revision suggested."
+              },
+              {
+                "oln": 777934,
+                "nn": 1037246,
+                "sdate": "2024-02-15",
+                "rsn": "Virtual Stockout has occurred. Upward revision suggested."
+              },
+              {
+                "oln": 777934,
+                "nn": 1037246,
+                "sdate": "2024-02-16",
+                "rsn": "Virtual Stockout has occurred. Upward revision suggested."
+              },
+              {
+                "oln": 777934,
+                "nn": 1037246,
+                "sdate": "2024-02-17",
+                "rsn": "Virtual Stockout has occurred. Upward revision suggested."
+              },
+              {
+                "oln": 777934,
+                "nn": 1037246,
+                "sdate": "2024-02-18",
+                "rsn": "Virtual Stockout has occurred. Upward revision suggested."
+              },
+              {
+                "oln": 777934,
+                "nn": 1037246,
+                "sdate": "2024-02-19",
+                "rsn": "Virtual Stockout has occurred. Upward revision suggested."
+              },
+              {
+                "oln": 777934,
+                "nn": 1037246,
+                "sdate": "2024-02-20",
+                "rsn": "Virtual Stockout has occurred. Upward revision suggested."
+              },
+              {
+                "oln": 777934,
+                "nn": 1037246,
+                "sdate": "2024-02-21",
+                "rsn": "Virtual Stockout has occurred. Upward revision suggested."
+              },
+              {
+                "oln": 777934,
+                "nn": 1037246,
+                "sdate": "2024-02-22",
+                "rsn": "Virtual Stockout has occurred. Upward revision suggested."
+              }
+         ]
+
 
     },
     "status": 200,

@@ -23,7 +23,7 @@ export const SCSeasonalityStatusDetails = styled.div`
     height:100%;
     box-shadow: -6px 6px 16px #0000000F;
     @media (min-width:1024px) and (max-width:1688px){
-        zoom:0.8;
+        zoom:0.7;
     }
     
 `

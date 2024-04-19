@@ -169,6 +169,7 @@ const dummyprops = {
     chartData:GetDailyDataMockResponse.data.dailyData,
     normChangeData:GetDailyDataMockResponse.data.normChangeHistory,
     masterData:GetDailyDataMockResponse.data.MasterData,
+    suggestionData:GetDailyDataMockResponse.data.SuggestionHistoryData,
     isModalOpen:true,
     closeModal:mockFunction,
     toggleNormChangeHistoryTable:mockFunction

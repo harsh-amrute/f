@@ -44,7 +44,8 @@ const BPR = ()=>{
         chartData,
         masterData,
         normChangeHistoryTable,
-        toggleNormChangeHistoryTable
+        toggleNormChangeHistoryTable,
+        suggestionData
     } = useBPR();
 
     
@@ -61,7 +62,7 @@ const BPR = ()=>{
         <>
         <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BPR'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
         {
-            showDailyDataGraphModal && <DailyDataGraphModal rowData={{...dailyDataParams?.data}} chartData={chartData? chartData : []} normChangeData={normChangeData} masterData={masterData} isModalOpen={showDailyDataGraphModal} toggleNormChangeHistoryTable={toggleNormChangeHistoryTable} closeModal={()=>toggleDailyDataGraphModal(false)} />
+            showDailyDataGraphModal && <DailyDataGraphModal rowData={{...dailyDataParams?.data}} chartData={chartData? chartData : []} normChangeData={normChangeData} masterData={masterData} isModalOpen={showDailyDataGraphModal} toggleNormChangeHistoryTable={toggleNormChangeHistoryTable} closeModal={()=>toggleDailyDataGraphModal(false)} suggestionData={suggestionData} />
         }
         {
             normChangeHistoryTable && <NormChangeHistoryTable data={normChangeData ? normChangeData : []} onGoBack={()=>toggleNormChangeHistoryTable(false)}/>
