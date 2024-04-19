@@ -26,6 +26,7 @@ export const SCChartHeaderContainer = styled.div`
     justify-content:center;
     align-items:center;
     height: 54px;
+   
 `
 
 export const SCChartSliderContainer = styled.div`
