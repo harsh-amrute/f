@@ -87,7 +87,8 @@ const useResearchInsights = ()=>{
             },
         },
         pagination:true,
-        paginationPageSize:25,
+        // paginationPageSize:25,
+        paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
         suppressRowClickSelection:true,
         components:customCellRenderers,
         defaultColDef:{
