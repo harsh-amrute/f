@@ -31,10 +31,10 @@ describe("VFPagination Component", () => {
 
   
   it("clicks on the next and previous buttons", () => {
-    const customDummy =  {
+    const customDummy:any =  {
       selectedRows:10,
       totalRows:2,
-      rowsPerPage:10,
+      rowsPerPage:null,
       currentPage:1,
       handleChangePage:dummyFn,
       handleChangePerPage:dummyFn,
@@ -47,6 +47,7 @@ describe("VFPagination Component", () => {
     const previousBtn = screen.getAllByAltText('pagination-prev-arrow')
     const prevLastBtn = screen.getByAltText('pagination-last-prev-arrow')
     const nextLastBtn = screen.getByAltText('pagination-last-next-arrow')
+
     fireEvent.click(nextBtn[0])
     fireEvent.click(previousBtn[0])
     fireEvent.click(prevLastBtn)

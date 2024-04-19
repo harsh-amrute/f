@@ -123,7 +123,6 @@ const DeleteRecord = () => {
           />
       )
     }
-
     return(
         <React.Fragment>
           <SCContainer>
@@ -216,7 +215,7 @@ const DeleteRecord = () => {
                     selectedRows={selectedRowsCount} 
                     totalRows={recordCount} 
                     currentPage={currentPage} 
-                    rowsPerPage={rowsPerPage} 
+                    rowsPerPage={parseInt(process.env.REACT_APP_DELETERECORD_PAGE || '100')}
                     handleChangePage={(e)=>handleChangePage(e)}  
                   />
               }

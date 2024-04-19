@@ -22,7 +22,6 @@ const TaskPendingForReview = ()=>{
         viewTableRowData,
         showLoader,
         selectedRows,
-        rowsPerPage,
         onCancel,
         setSelectedRows,
         onTaskSubmit,
@@ -34,8 +33,6 @@ const TaskPendingForReview = ()=>{
         setSelectionType
     } = useTaskPendingForReview()
     
-
-
     if(showLoader){
         return <VFLoader/>
     }
@@ -53,7 +50,9 @@ const TaskPendingForReview = ()=>{
                       return { background: "#F7F7F7" };
                     },
                   }}
-                rowData={mapRowDataWithSrNo(viewTableRowData)}  
+                rowData={mapRowDataWithSrNo(viewTableRowData)}
+                pagination={true}
+                paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
             />
             </TaskPendingWrapper>
         )
@@ -90,10 +89,13 @@ const TaskPendingForReview = ()=>{
                     }
                     
                 }}
+
                 pagination={true}
-                paginationPageSize={rowsPerPage}
+                paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
                 // suppressPaginationPanel={true}
             />
+                    
+
             {/* <VFPagination
                 selectedRows={selectedRows}
                 totalRows={recordCount}

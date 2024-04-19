@@ -7,6 +7,9 @@ const ChronicGridView=({currentGridData}:ChronicGridViewProps)=>{
     
     const agGridProps:AgGridReactProps = {
         
+
+      paginationPageSize:parseInt(process.env.REACT_APP_GUIDEDINSIGHT_ROWS_PER_PAGE || '50'),
+
         suppressRowTransform:true,
         tooltipShowDelay:0.3,
         tooltipTrigger:'focus',

@@ -53,7 +53,6 @@ const AddRecord = () => {
         selectedRowsCount,
         recordCount,
         currentPage,
-        rowsPerPage,
         handleChangePage,
         editOnline,
         onEditOnline,
@@ -91,9 +90,14 @@ const AddRecord = () => {
       }
     },[isTableDataLoading])
 
+    console.log(process.env.REACT_APP_ADDRECORD_PAGE)
+
     if(isLoading){
         return <VFLoader/>
     }
+
+    
+
 
     if(isSelectMasterOpen){
       return(
@@ -108,6 +112,7 @@ const AddRecord = () => {
       )
     }
     const dispatch = useDispatch();
+
     return(
         <React.Fragment>
           <SCContainer>
@@ -153,7 +158,7 @@ const AddRecord = () => {
                     selectedRows={selectedRowsCount} 
                     totalRows={recordCount} 
                     currentPage={currentPage} 
-                    rowsPerPage={rowsPerPage} 
+                    rowsPerPage={parseInt(process.env.REACT_APP_ADDRECORD_PAGE  || '100')} 
                     handleChangePage={(e)=>handleChangePage(e)}  
                   />
               }

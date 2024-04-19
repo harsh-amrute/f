@@ -14,7 +14,6 @@ const BuyerOrderReport = ()=>{
         agGridProps,
         rowData,       
         currentPage,
-        rowsPerPage,
         recordCount,
         handleChangePage       
     } = useBOR()
@@ -50,13 +49,12 @@ const BuyerOrderReport = ()=>{
                {...agGridProps}
                 columnDefs={BORColumns}
                 rowData={rowData}
-   
              />
               <VFPagination 
                 selectedRows={0} 
                 totalRows={recordCount} 
                 currentPage={currentPage} 
-                rowsPerPage={rowsPerPage} 
+                rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')} 
                 handleChangePage={(e)=>handleChangePage(e)} 
               />
               

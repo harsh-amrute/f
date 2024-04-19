@@ -15,7 +15,8 @@ export const useBOR =()=>{
 
      const [recordCount,setRecordCount] = useState<number>(0)
      const [currentPage,setCurrentPage] = useState(1);
-     const rowsPerPage = 50;
+    //  const rowsPerPage=50;
+     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
      const handleChangePage = async (pageNo:any) => {
          setCurrentPage(pageNo);
          loadGridData(pageNo);
@@ -44,7 +45,8 @@ export const useBOR =()=>{
             filters:[],
              paginationParameter: {
         pageNumber: 1,
-    recordsPerPage: 50
+        // recordPerPage:20
+    recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
     }
         }
         const resultCount=await getBorDataCount(payload);
@@ -69,6 +71,7 @@ export const useBOR =()=>{
         suppressRowClickSelection:true,
         components:customCellRenderers,
         enableBrowserTooltips:true,
+        paginationPageSize:parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100'),
         gridOptions:{
             rowHeight:50,
             getRowStyle: (params: any) => {
