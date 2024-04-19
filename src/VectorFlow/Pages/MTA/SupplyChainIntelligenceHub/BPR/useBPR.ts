@@ -81,6 +81,7 @@ const useBPR =()=>{
         tooltipInteraction:true,
         // rowSelection:'single',
         readOnlyEdit:true,
+        paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
         onRowClicked:(params:any)=>{
             if(params.data.transit && params.data.transit.length>0){
                 setActiveRow(params.data.transit)
@@ -88,6 +89,7 @@ const useBPR =()=>{
             }
         },
         gridOptions:{
+            
             rowHeight:50,
             getRowStyle: (params: any) => {
             if (params.node.rowIndex % 2 === 0) {

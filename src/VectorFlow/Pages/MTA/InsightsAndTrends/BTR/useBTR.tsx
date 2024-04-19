@@ -55,7 +55,10 @@ const useBTR = ()=>{
                     availabilityCellRenderer:AvailabilityCellRenderer,
                     colorCellRenderer:ColorCellRenderer,
                     tagsCellRenderer:TagsCellRenderer,
-                    availabilityToolTip:AvailabilityToolTip
+                    availabilityToolTip:AvailabilityToolTip,
+                    // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
+
+
                 }
             }
         }
@@ -114,9 +117,9 @@ const useBTR = ()=>{
                     />
                 )
             case "2":
-                return <><BTRTableHeader>On-Hand Inventory View Trend Report</BTRTableHeader><VFTable  tooltipHideDelay={100000}  tooltipShowDelay={0} tooltipMouseTrack={true} ref={techRef} disableZoomScaling columnDefs={techColDefs} rowData={rowData} {...gridProps} pagination paginationPageSize={50}/></>
+                return <><BTRTableHeader>On-Hand Inventory View Trend Report</BTRTableHeader><VFTable  tooltipHideDelay={100000}  tooltipShowDelay={0} tooltipMouseTrack={true} ref={techRef} disableZoomScaling columnDefs={techColDefs} rowData={rowData} {...gridProps} pagination paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}/></>
             case "3":
-                return <><BTRTableHeader>Pipeline Inventory Trend Report</BTRTableHeader><VFTable  tooltipHideDelay={100000}  tooltipShowDelay={0} tooltipMouseTrack={true} ref={ecoRef} disableZoomScaling columnDefs={ecoColDefs} rowData={rowData} {...gridProps} pagination paginationPageSize={50}/></>
+                return <><BTRTableHeader>Pipeline Inventory Trend Report</BTRTableHeader><VFTable  tooltipHideDelay={100000}  tooltipShowDelay={0} tooltipMouseTrack={true} ref={ecoRef} disableZoomScaling columnDefs={ecoColDefs} rowData={rowData} {...gridProps} pagination paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}/></>
             default:
                 return <VFTable  columnDefs={[]} rowData={[]} {...gridProps}/>
         }
