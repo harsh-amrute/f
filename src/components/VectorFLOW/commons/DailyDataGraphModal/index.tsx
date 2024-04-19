@@ -19,11 +19,14 @@ import {
 import VFRangeSlider from '../VFRangeSlider'
 import Select from 'react-select'
 import { AgChartsReact } from "ag-charts-react";
+import { getFormattedDate } from "../../../../helpers/utils";
+import {suspensionMessages} from '../../../../helpers/BPRConstants';
 
 interface DailyDataGraphModalProps{
   rowData:any,
   chartData:any[]
   normChangeData:any,
+  suggestionData:any,
   masterData:any,
   isModalOpen:boolean,
   closeModal:()=>void,
@@ -41,7 +44,7 @@ interface NormData{
 
 
 
-const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModalOpen,closeModal,toggleNormChangeHistoryTable}:DailyDataGraphModalProps) => {
+const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,closeModal,toggleNormChangeHistoryTable}:DailyDataGraphModalProps) => {
     // console.log(rowData);
     const suspensionOptions = [
         {label:'Upward Stock Based',value:'upwardStockBased'},
@@ -54,7 +57,6 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
     const [suspensionType,setSuspensionType] = useState('')
 
     const generateChartOptions = () => {
-      console.log(suspensionType)
         const adjustedChartData = chartData.slice(chartData.length-horizon,chartData.length);
         const sortedNormChangeData = normChangeData.sort((a:NormChangeHistory,b:NormChangeHistory) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
@@ -87,15 +89,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
             return {date:dailyData.dt,norm:tempNorm};
         }).slice(chartData.length-horizon,chartData.length);
 
-        // let upwardStockBasedData = chartData.map((dailyData:DailyDataChart) => {
-        //   if(dailyData.rrs > 0) return {date:dailyData.dt,norm:dailyData.norm};
-        //   return {}
-        // }).slice(chartData.length-horizon,chartData.length);
-
+      
         normData = normData.map((data:NormData,index:number)=>{
           const normBand = parseFloat((data.norm/3).toFixed(2))
-          // const dailyDataObj = adjustedChartData.find((obj:any)=>new Date(obj.dt)===new Date(data.date))
-          // console.log(dailyDataObj)
+
           const normObj = {
             ...data,normRed:normBand,
             normGreen:normBand,
@@ -106,24 +103,121 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
             upwardConsumptionBasedNorm:adjustedChartData[index]['rrc'] > 0 ? data.norm : 0,
             downwardConsumptionBasedNorm:adjustedChartData[index]['grc'] > 0 ? data.norm : 0
           }
+
           return normObj
         })
 
-        console.log(normData)
+        function generateSuspensionReasons(rrs:number,grs:number,rrc:number,grc:number){
+          const suspensionReasons:Array<string> = [];
+          suspensionMessages.forEach((obj:{Key:number,Value:string})=>{
+            if(((obj.Key & rrs) > 0) || ((obj.Key & grs) > 0) || ((obj.Key & rrc) > 0) || ((obj.Key & grc) > 0)){
+              if(!suspensionReasons.includes(obj.Value)) suspensionReasons.push(obj.Value)
+            }
+          })
+          console.log(suspensionReasons)
+          let suspensionReasonsHTML = ``;
 
-        // function renderer(params: any) {
-        //   return `
-        //     <div style="background-color: ${params.color}">
-        //       ${"HELLO"}
-        //     </div>
-        //     <div>
-        //         ${"HELLO"}
-        //     </div>
-        //     `;
-        // }
-        
+          suspensionReasons.forEach((reason:string)=>{
+            suspensionReasonsHTML += `<li>${reason}</li>`
+          })
+          return suspensionReasonsHTML;
+        }
 
+        const generateRevisionSuggestedBlock = (oldNorm:number,newNorm:number,reason:string) => `
+            <div style="padding:5px;">
+              <span style="font-family:Roboto;font-weight:700;">Revision Suggested :</span>
+              <span>Old Norm - ${oldNorm} </span>
+              <span>New Norm - ${newNorm} </span>
+              <br>
+              <span style="font-family:Roboto;font-weight:700;">Reason : </span>
+              <span>${reason}</span>
+              <div style="width:100%;height:1px;background-color:#777777;margin-top:2px;"></div>
+            </div>
+          `
+
+        const generateSuspensionReasonsBlock = (reasons:string) => `
+          <div style="padding:5px;">
+            <p style="font-family:Roboto;font-weight:700;">Suspension Reasons :</p>
+            <ol>
+              ${reasons}
+            </ol>
+            <div style="width:100%;height:1px;background-color:#777777;margin-top:2px;"></div>
+          </div>
+        `
+
+        const generateDailyDataBlock = (stock:number,receipt:number,git:number,consumption:number,redNorm:number,yellowNorm:number,greenNorm:number) => `
+          <div style="padding:5px;">
+            <div style="display:flex;justify-content:flex-start;flex-wrap:wrap;gap:5px;margin-bottom:5px;">
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#5D148B;"></div>
+                <span style="font-family:Roboto;font-weight:700;">Stock :</span>
+                <span>${stock}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#8137BC;"></div>
+                <span style="font-family:Roboto;font-weight:700;">GIT :</span>
+                <span>${git}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#67B6E8;"></div>
+                <span style="font-family:Roboto;font-weight:700;">Receipt :</span>
+                <span>${receipt}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#EDB04D;"></div>
+                <span style="font-family:Roboto;font-weight:700;">Consumption :</span>
+                <span>${consumption}</span>
+              </div>
+              
+            </div>
+            <div style="display:flex;gap:5px;">
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#ED4A4A;"></div>
+                <span>${redNorm}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#F5EE4E;"></div>
+                <span>${yellowNorm}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#418D18;"></div>
+                <span>${greenNorm}</span>
+              </div>
+            </div>
+          <div>
+        `
+
+        function renderer(params: any) {
+          const suggestionObject = suggestionData.find((data:any)=>new Date(data['sdate']).getTime() === new Date(params.datum['date']).getTime())
+          const dailyDataObject = chartData.find((data:any)=>new Date(data['dt']).getTime() === new Date(params.datum['date']).getTime())
+          const suspensionReasons = generateSuspensionReasons(params.datum.upwardStockBasedNorm,params.datum.downwardStockBasedNorm,params.datum.upwardConsumptionBasedNorm,params.datum.downwardConsumptionBasedNorm)
        
+          let tooltip = `
+            <div style="text-align:center;font-family:Roboto;font-weight:700;padding:5px;border-bottom:1px dashed #777777;">
+              ${getFormattedDate(new Date(params.datum.date))}
+            </div>
+          `
+
+          if(suggestionObject) tooltip += generateRevisionSuggestedBlock(suggestionObject?.oln,suggestionObject?.nn,suggestionObject?.rsn);
+          if(suspensionReasons.length > 0) tooltip += generateSuspensionReasonsBlock(suspensionReasons);
+
+          tooltip += generateDailyDataBlock(dailyDataObject.stock,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.ceil(params.datum.normYellow*3))
+
+          const finalTooltipHTML = `
+            <div style="background-color:white;border:1px solid #777777;border-radius:5px;max-width:400px;">
+              ${tooltip}
+            </div>
+          `
+
+          return finalTooltipHTML;
+        }
+
+        function formatter(params:any) {
+          const suggestionObject = suggestionData.find((data:any)=>new Date(data['sdate']).getTime() === new Date(params.datum['dt']).getTime());
+          if(suggestionObject) return {size:7,fill:'#5D148B',stroke:'white',strokeWidth:1}
+          return {size:0};
+        }
+    
 
         const options:any = {
             title: {  
@@ -146,7 +240,13 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                 // strokeWidth: 3,
                 fill:'#ED4A4A',
                 stacked:true,
-                showInLegend:false   
+                showInLegend:false,
+                tooltip:{
+                  renderer:renderer
+                },
+                position:{
+                  type:'pointer'
+                }
               },  
               {
             
@@ -159,7 +259,14 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                 // strokeWidth: 3,
                 stacked:true,
                 fill:'#F5EE4E',
-                showInLegend:false    
+                showInLegend:false,
+                tooltip:{
+                  renderer:renderer
+                },
+                position:{
+                  type:'pointer'
+                }
+               
               },
               {
             
@@ -172,7 +279,13 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                 // strokeWidth: 3,
                 stacked:true,
                 fill:'#418D18',
-                showInLegend:false
+                showInLegend:false,
+                tooltip:{
+                  renderer:renderer
+                },
+                position:{
+                  type:'pointer'
+                }
                
               },
               {
@@ -186,27 +299,14 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                 // strokeWidth: 3,
                 fill:'#355FD3',
                 stacked:true,
-                showInLegend:false   
-              },
-            
-              {
-            
-                xKey: 'dt',
-                xName:'Date',
-                yKey: 'stock',
-                yName:'Stock',
-                data:adjustedChartData,
-                type:'line',
-                stroke:'#5D148B',
-                marker: {
-                  enabled:false
-                  // fill: "#5D148B",
-                  // size: 5,
-                  // stroke: "#5D148B",
-                  // strokeWidth: 3,
-                  // shape: "circle",
-                },
-              },
+                showInLegend:false,
+                tooltip:{
+                  renderer:renderer,
+                  position:{
+                    type:'pointer'
+                  }
+                }  
+              }, 
               {
             
                 xKey: 'dt',
@@ -215,7 +315,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                 yName:'GIT',
                 data:adjustedChartData,
                 type:'bar',
-                fill:'#8137BC'  
+                fill:'#8137BC',
+                tooltip:{
+                  enabled: false
+                }
               },
               {
             
@@ -225,7 +328,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                 yName:'Receipts',
                 data:adjustedChartData,
                 type:'bar',
-                fill:'#67B6E8'    
+                fill:'#67B6E8',
+                tooltip:{
+                  enabled: false
+                }   
               },
               {
             
@@ -235,7 +341,26 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                 yName:'Consumption',
                 data:adjustedChartData,
                 type:'bar',
-                fill:'#EDB04D'
+                fill:'#EDB04D',
+                tooltip:{
+                  enabled: false
+                }
+              },
+              {
+            
+                xKey: 'dt',
+                xName:'Date',
+                yKey: 'stock',
+                yName:'Stock',
+                data:adjustedChartData,
+                type:'line',
+                stroke:'#5D148B',
+                tooltip:{
+                  enabled: false
+                },
+                marker: {
+                  formatter
+                }
               },
             ],
             axes: [{
@@ -259,7 +384,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
           // strokeWidth: 3,
           fill:'#808080',
           fillOpacity:0.8,
-          showInLegend:false   
+          showInLegend:false,
+          tooltip:{
+            enabled: false
+          },   
         }
         const downwardStockBasedOptions = {
             
@@ -272,7 +400,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
           // strokeWidth: 3,
           fill:'#808080',
           fillOpacity:0.8,
-          showInLegend:false   
+          showInLegend:false,
+          tooltip:{
+            enabled: false
+          },   
         }
 
         const upwardConsumptionBasedOptions = {
@@ -286,7 +417,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
           // strokeWidth: 3,
           fill:'#808080',
           fillOpacity:0.8,
-          showInLegend:false   
+          showInLegend:false,
+          tooltip:{
+            enabled: false
+          },   
         }
 
         const downwardConsumptionBasedOptions = {
@@ -300,7 +434,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
           // strokeWidth: 3,
           fill:'#808080',
           fillOpacity:0.8,
-          showInLegend:false   
+          showInLegend:false,
+          tooltip:{
+            enabled: false
+          },   
         }
 
         if(suspensionType === 'upwardStockBased') options['series'].push(upwardStockBasedOptions);

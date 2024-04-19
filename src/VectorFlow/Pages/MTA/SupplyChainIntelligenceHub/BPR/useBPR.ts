@@ -34,6 +34,7 @@ const useBPR =()=>{
     const [chartData,setChartData] = useState();
     const [masterData,setMasterData] = useState<any>();
     const [normChangeHistoryTable,toggleNormChangeHistoryTable] = useState<boolean>(false);
+    const [suggestionData,setSuggestionData] = useState<any>();
 
     const [remark,setRemark] = useState<string>('')
     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
@@ -192,6 +193,7 @@ const useBPR =()=>{
         setChartData(result.data.data['dailyData'])
         setNormChangeData(result.data.data['normChangeHistory'])
         setMasterData(result.data.data['MasterData'])
+        setSuggestionData(result.data.data['SuggestionHistoryData'])
 
 
         toggleDailyDataGraphModal(true);
@@ -230,7 +232,8 @@ const useBPR =()=>{
         chartData,
         masterData,
         normChangeHistoryTable,
-        toggleNormChangeHistoryTable
+        toggleNormChangeHistoryTable,
+        suggestionData
     }
 }
 
