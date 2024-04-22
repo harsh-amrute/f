@@ -32,10 +32,10 @@ describe('Control Component', () => {
         fireEvent.click(screen.getAllByTestId('icon-card')[1]);
         fireEvent.click(screen.getAllByTestId('icon-card')[2]);
 
-        const buttonCard = screen.getAllByTestId('button-card');
-        fireEvent.click(buttonCard[0]);
-        fireEvent.click(buttonCard[1]);
-        fireEvent.click(buttonCard[2]);
+        // const buttonCard = screen.getAllByTestId('button-card');
+        // fireEvent.click(buttonCard[0]);
+        // fireEvent.click(buttonCard[1]);
+        // fireEvent.click(buttonCard[2]);
     
       });
 

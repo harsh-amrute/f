@@ -5,6 +5,7 @@ import { UserDataContext } from "../../../../context";
 import { setupReactQuery } from "../../../../config/react-query-config";
 import {ReactNode} from 'react'
 import { GetDailyDataMockResponse } from "../../../../mock-data/BPR";
+import {select} from 'react-select-event'
 
 const mockFunction = jest.fn()
 const queryClient = setupReactQuery();
@@ -168,6 +169,8 @@ const dummyprops = {
     chartData:GetDailyDataMockResponse.data.dailyData,
     normChangeData:GetDailyDataMockResponse.data.normChangeHistory,
     masterData:GetDailyDataMockResponse.data.MasterData,
+    suggestionData:GetDailyDataMockResponse.data.SuggestionHistoryData,
+    monitoringData:GetDailyDataMockResponse.data.MonitoringData,
     isModalOpen:true,
     closeModal:mockFunction,
     toggleNormChangeHistoryTable:mockFunction
@@ -222,6 +225,31 @@ const contextWrapper = (children: ReactNode) => {
         fireEvent.change(inputRange, { target: { value: '75' } });
     })
 
+    it('Selects Suspension Type',async ()=>{
+        const {getAllByRole} = render(contextWrapper(<DailyDataGraphModal {...dummyprops}></DailyDataGraphModal>))
+        await waitFor(async () => {
+            const reactSelect = getAllByRole('combobox')[0]
+            expect(reactSelect).toBeInTheDocument();
+            await select(reactSelect, ['Upward Stock Based']);
+        });
+        await waitFor(async () => {
+            const reactSelect = getAllByRole('combobox')[0]
+            expect(reactSelect).toBeInTheDocument();
+            await select(reactSelect, ['Downward Stock Based']);
+        });
+        await waitFor(async () => {
+            const reactSelect = getAllByRole('combobox')[0]
+            expect(reactSelect).toBeInTheDocument();
+            await select(reactSelect, ['Upward Consumption Based']);
+        });
+        await waitFor(async () => {
+            const reactSelect = getAllByRole('combobox')[0]
+            expect(reactSelect).toBeInTheDocument();
+            await select(reactSelect, ['Downward Consumption Based']);
+        });
+        })
+        
+        
 
   })
   

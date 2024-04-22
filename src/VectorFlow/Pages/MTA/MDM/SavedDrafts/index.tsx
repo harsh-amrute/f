@@ -30,7 +30,7 @@ const SavedDrafts = ()=>{
     return <VFLoader/>
   }
 
-
+console.log(process.env.REACT_APP_SAVEDRAFT_PAGE)
   return(
     <React.Fragment>
       <VFTable
@@ -94,7 +94,9 @@ const SavedDrafts = ()=>{
           })}
           rowData={mapDraftDataToTableRowData(allDrafts)}
           pagination={true}
-          paginationPageSize={50}
+          // paginationPageSize={50}
+          paginationPageSize={parseInt(process.env.REACT_APP_SAVEDRAFT_PAGE || '100')}
+
           gridOptions={{
             getRowStyle: (params: any) => {
               if (params.node.rowIndex % 2 === 0) {

@@ -7,7 +7,7 @@ import useViewPort from "../../../../../hooks/useViewPort";
 import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
 
-import { BPRSubmitRemarkCellRenderer, BPRRemarksCellRenderer } from "../BPR/BPRCellRenderers";
+import { BPRSubmitRemarkCellRenderer } from "../BPR/BPRCellRenderers";
 
 
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../helpers/notify";
@@ -91,7 +91,7 @@ const useOpenExpeditingRequests = () => {
 
     }
 
-    const onOpenRemarkHistory = async (e: React.MouseEvent<HTMLElement>, row: any) => {
+    const onOpenRemarkHistory = async (e: React.MouseEvent<HTMLElement>) => {
         try {
             setIsRemarkHistoryToolTipOpen(false)
             const toastId = notifyLoader("Getting remark history")

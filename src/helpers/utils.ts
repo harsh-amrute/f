@@ -15,7 +15,6 @@ import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingFo
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField } from '../VectorFlow/types/BPR';
 import {RRRField} from '../VectorFlow/types/RRR'
-import _ from 'lodash'
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -1606,14 +1605,12 @@ export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,re
       }
     })
   })
-
   return result
 
 
 }
 
-export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[]):ColDef[]=>{
-
+export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[],masterId:any):ColDef[]=>{
   const result:any[] = []
   if(Array.isArray(errorConflicts)){
     errorConflicts.map((currError:{errorData:any[],errorType:string})=>{
@@ -1625,9 +1622,20 @@ export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:str
           //   // return row[primaryKeys[0]]===errorRowData[primaryKeys[0]]
           // }
           // console.log(row)
-          
-          const omittedResultEntry = _.omit(row,['error'])
-          return JSON.stringify(omittedResultEntry)===JSON.stringify(errorRowData)
+          let isDuplicate = false
+        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        for (let i = 0; i < primaryKeys.length; i++){
+          if(row[primaryKeys[i]]===errorRowData[primaryKeys[i]]){
+            isDuplicate = true
+          }
+          else{
+            isDuplicate = false
+            break
+          }
+        }
+        return isDuplicate
+          // const omittedResultEntry = _.omit(row,['error'])
+          // return JSON.stringify(omittedResultEntry)===JSON.stringify(errorRowData)
         })
         
         
@@ -1643,7 +1651,7 @@ export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:str
       })
     })
   }
-
+  console.log(result)
   return result
 }
 

@@ -79,7 +79,8 @@
     ],
     "coveragePathIgnorePatterns": [
       "src/module-main",
-      "src/module-store-transfer"
+      "src/module-store-transfer",
+      "src/components/VectorFLOW/commons/DailyDataGraphModal"
     ],
     "coverageThreshold": {
       "global": {

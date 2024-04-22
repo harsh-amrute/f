@@ -38,7 +38,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             rowData={techTable.rowData}
                             tooltipMouseTrack={true}
                             pagination
-                            paginationPageSize={50}
+                            paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                             tooltipShowDelay={0}
                             tooltipHideDelay={100000}
                         />
@@ -56,7 +56,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             rowData={ecoTable.rowData}
                             tooltipMouseTrack={true}
                             pagination
-                            paginationPageSize={50}
+                            paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                             tooltipShowDelay={0}
                             tooltipHideDelay={100000}
                         />

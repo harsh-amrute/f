@@ -48,7 +48,7 @@ const useRRR =()=>{
             filters:[],
             paginationParameter:{
                 pageNumber:pageNo,
-                recordsPerPage:50
+                recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200')
             }
         })
         setRRRRowData(rowData?.data?.data)
@@ -79,6 +79,7 @@ const useRRR =()=>{
         pagination:false,
         // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
         // rowSelection:'multiple',
+        paginationPageSize:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200'),
         suppressRowClickSelection:true,
         components:customCellRenderers,
         enableBrowserTooltips:true,

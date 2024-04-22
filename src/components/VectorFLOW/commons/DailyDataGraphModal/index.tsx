@@ -19,12 +19,16 @@ import {
 import VFRangeSlider from '../VFRangeSlider'
 import Select from 'react-select'
 import { AgChartsReact } from "ag-charts-react";
+import { getFormattedDate } from "../../../../helpers/utils";
+import {suspensionMessages} from '../../../../helpers/BPRConstants';
 
 interface DailyDataGraphModalProps{
   rowData:any,
   chartData:any[]
   normChangeData:any,
+  suggestionData:any,
   masterData:any,
+  monitoringData:any,
   isModalOpen:boolean,
   closeModal:()=>void,
   toggleNormChangeHistoryTable:any
@@ -40,16 +44,18 @@ interface NormData{
 
 
 
-const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModalOpen,closeModal,toggleNormChangeHistoryTable}:DailyDataGraphModalProps) => {
+
+const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,closeModal,toggleNormChangeHistoryTable,monitoringData}:DailyDataGraphModalProps) => {
     // console.log(rowData);
     const suspensionOptions = [
-        {label:'Upward Stock Based',value:'upwardstockbased'},
-        {label:'Downward Stock Based',value:'downwardstockbased'},
-        {label:'Upward Consumption Based',value:'upwardconsumptionbased'},
-        {label:'Downward Consumption Based',value:'downwardconsumptionbased'}
+        {label:'Upward Stock Based',value:'upwardStockBased'},
+        {label:'Downward Stock Based',value:'downwardStockBased'},
+        {label:'Upward Consumption Based',value:'upwardConsumptionBased'},
+        {label:'Downward Consumption Based',value:'downwardConsumptionBased'}
 
     ]
     const [horizon,setHorizon] = useState<number>(30);
+    const [suspensionType,setSuspensionType] = useState('')
 
     const generateChartOptions = () => {
         const adjustedChartData = chartData.slice(chartData.length-horizon,chartData.length);
@@ -83,11 +89,136 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
 
             return {date:dailyData.dt,norm:tempNorm};
         }).slice(chartData.length-horizon,chartData.length);
-        normData = normData.map((data:NormData)=>{
+
+      
+        normData = normData.map((data:NormData,index:number)=>{
           const normBand = parseFloat((data.norm/3).toFixed(2))
-          return {...data,normRed:normBand,normGreen:normBand,normYellow:normBand}
+
+          const normObj = {
+            ...data,normRed:normBand,
+            normGreen:normBand,
+            normYellow:normBand,
+            normBlue:data.norm + parseInt(adjustedChartData[index]['bz'],10),
+            upwardStockBasedNorm:adjustedChartData[index]['rrs'] > 0 ? data.norm : 0,
+            downwardStockBasedNorm:adjustedChartData[index]['grs'] > 0 ? data.norm : 0,
+            upwardConsumptionBasedNorm:adjustedChartData[index]['rrc'] > 0 ? data.norm : 0,
+            downwardConsumptionBasedNorm:adjustedChartData[index]['grc'] > 0 ? data.norm : 0
+          }
+
+          return normObj
         })
+
+        function generateSuspensionReasons(rrs:number,grs:number,rrc:number,grc:number){
+          const suspensionReasons:Array<string> = [];
+          suspensionMessages.forEach((obj:{Key:number,Value:string})=>{
+            if(((obj.Key & rrs) > 0) || ((obj.Key & grs) > 0) || ((obj.Key & rrc) > 0) || ((obj.Key & grc) > 0)){
+              if(!suspensionReasons.includes(obj.Value)) suspensionReasons.push(obj.Value)
+            }
+          })
+          console.log(suspensionReasons)
+          let suspensionReasonsHTML = ``;
+
+          suspensionReasons.forEach((reason:string)=>{
+            suspensionReasonsHTML += `<li>${reason}</li>`
+          })
+          return suspensionReasonsHTML;
+        }
+
+        const generateRevisionSuggestedBlock = (oldNorm:number,newNorm:number,reason:string) => `
+            <div style="padding:5px;">
+              <span style="font-family:Roboto;font-weight:700;">Revision Suggested :</span>
+              <span>Old Norm - ${oldNorm} </span>
+              <span>New Norm - ${newNorm} </span>
+              <br>
+              <span style="font-family:Roboto;font-weight:700;">Reason : </span>
+              <span>${reason}</span>
+              <div style="width:100%;height:1px;background-color:#777777;margin-top:2px;"></div>
+            </div>
+          `
+
+        const generateSuspensionReasonsBlock = (reasons:string) => `
+          <div style="padding:5px;">
+            <p style="font-family:Roboto;font-weight:700;">Suspension Reasons :</p>
+            <ol>
+              ${reasons}
+            </ol>
+            <div style="width:100%;height:1px;background-color:#777777;margin-top:2px;"></div>
+          </div>
+        `
+
+        const generateDailyDataBlock = (stock:number,receipt:number,git:number,consumption:number,redNorm:number,yellowNorm:number,greenNorm:number) => `
+          <div style="padding:5px;">
+            <div style="display:flex;justify-content:flex-start;flex-wrap:wrap;gap:5px;margin-bottom:5px;">
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#5D148B;"></div>
+                <span style="font-family:Roboto;font-weight:700;">Stock :</span>
+                <span>${stock}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#8137BC;"></div>
+                <span style="font-family:Roboto;font-weight:700;">GIT :</span>
+                <span>${git}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#67B6E8;"></div>
+                <span style="font-family:Roboto;font-weight:700;">Receipt :</span>
+                <span>${receipt}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#EDB04D;"></div>
+                <span style="font-family:Roboto;font-weight:700;">Consumption :</span>
+                <span>${consumption}</span>
+              </div>
+              
+            </div>
+            <div style="display:flex;gap:5px;">
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#ED4A4A;"></div>
+                <span>${redNorm}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#F5EE4E;"></div>
+                <span>${yellowNorm}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#418D18;"></div>
+                <span>${greenNorm}</span>
+              </div>
+            </div>
+          <div>
+        `
+
+        function renderer(params: any) {
+          const suggestionObject = suggestionData.find((data:any)=>new Date(data['sdate']).getTime() === new Date(params.datum['date']).getTime())
+          const dailyDataObject = chartData.find((data:any)=>new Date(data['dt']).getTime() === new Date(params.datum['date']).getTime())
+          const suspensionReasons = generateSuspensionReasons(params.datum.upwardStockBasedNorm,params.datum.downwardStockBasedNorm,params.datum.upwardConsumptionBasedNorm,params.datum.downwardConsumptionBasedNorm)
        
+          let tooltip = `
+            <div style="text-align:center;font-family:Roboto;font-weight:700;padding:5px;border-bottom:1px dashed #777777;">
+              ${getFormattedDate(new Date(params.datum.date))}
+            </div>
+          `
+
+          if(suggestionObject) tooltip += generateRevisionSuggestedBlock(suggestionObject?.oln,suggestionObject?.nn,suggestionObject?.rsn);
+          if(suspensionReasons.length > 0 && suspensionType!=='') tooltip += generateSuspensionReasonsBlock(suspensionReasons);
+
+          tooltip += generateDailyDataBlock(dailyDataObject.stock,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.ceil(params.datum.normYellow*3))
+
+          const finalTooltipHTML = `
+            <div style="background-color:white;border:1px solid #777777;border-radius:5px;max-width:400px;">
+              ${tooltip}
+            </div>
+          `
+
+          return finalTooltipHTML;
+        }
+
+        function formatter(params:any) {
+          const suggestionObject = suggestionData.find((data:any)=>new Date(data['sdate']).getTime() === new Date(params.datum['dt']).getTime());
+          if(suggestionObject) return {size:7,fill:'#5D148B',stroke:'white',strokeWidth:1}
+          return {size:0};
+        }
+    
 
         const options:any = {
             title: {  
@@ -103,16 +234,21 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
             
                 xKey: 'date',
                 xName:'Date',
-                yKey: 'normGreen',
+                yKey: 'normRed',
                 yName:'',
                 data:normData,
                 type:'area',
                 // strokeWidth: 3,
+                fill:'#ED4A4A',
                 stacked:true,
-                fill:'#418D18',
-                showInLegend:false
-               
-              },
+                showInLegend:false,
+                tooltip:{
+                  renderer:renderer
+                },
+                position:{
+                  type:'pointer'
+                }
+              },  
               {
             
                 xKey: 'date',
@@ -124,20 +260,92 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                 // strokeWidth: 3,
                 stacked:true,
                 fill:'#F5EE4E',
-                showInLegend:false    
+                showInLegend:false,
+                tooltip:{
+                  renderer:renderer
+                },
+                position:{
+                  type:'pointer'
+                }
+               
               },
               {
             
                 xKey: 'date',
                 xName:'Date',
-                yKey: 'normRed',
+                yKey: 'normGreen',
                 yName:'',
                 data:normData,
                 type:'area',
                 // strokeWidth: 3,
-                fill:'#ED4A4A',
                 stacked:true,
-                showInLegend:false   
+                fill:'#418D18',
+                showInLegend:false,
+                tooltip:{
+                  renderer:renderer
+                },
+                position:{
+                  type:'pointer'
+                }
+               
+              },
+              {
+            
+                xKey: 'date',
+                xName:'Date',
+                yKey: 'normBlue',
+                yName:'',
+                data:normData,
+                type:'area',
+                // strokeWidth: 3,
+                fill:'#355FD3',
+                stacked:true,
+                showInLegend:false,
+                tooltip:{
+                  renderer:renderer,
+                  position:{
+                    type:'pointer'
+                  }
+                }  
+              }, 
+              {
+            
+                xKey: 'dt',
+                xName:'Date',
+                yKey: 'git',
+                yName:'GIT',
+                data:adjustedChartData,
+                type:'bar',
+                fill:'#8137BC',
+                tooltip:{
+                  enabled: false
+                }
+              },
+              {
+            
+                xKey: 'dt',
+                xName:'Date',
+                yKey: 'rp',
+                yName:'Receipts',
+                data:adjustedChartData,
+                type:'bar',
+                fill:'#67B6E8',
+                tooltip:{
+                  enabled: false
+                }   
+              },
+              {
+            
+                xKey: 'dt',
+                xName:'Date',
+                yKey: 'cs',
+                yName:'Consumption',
+                data:adjustedChartData,
+                type:'bar',
+                fill:'#EDB04D',
+                tooltip:{
+                  enabled: false
+                }
               },
               {
             
@@ -148,46 +356,13 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                 data:adjustedChartData,
                 type:'line',
                 stroke:'#5D148B',
-                marker: {
-                  fill: "#5D148B",
-                  size: 5,
-                  stroke: "#5D148B",
-                  strokeWidth: 3,
-                  shape: "circle",
+                tooltip:{
+                  enabled: false
                 },
+                marker: {
+                  formatter
+                }
               },
-              {
-            
-                xKey: 'dt',
-                xName:'Date',
-                yKey: 'git',
-                yName:'GIT',
-                data:adjustedChartData,
-                type:'bar',
-                fill:'#8137BC'  
-              },
-              {
-            
-                xKey: 'dt',
-                xName:'Date',
-                yKey: 'rp',
-                yName:'Receipts',
-                data:adjustedChartData,
-                type:'bar',
-                fill:'#67B6E8'    
-              },
-              {
-            
-                xKey: 'dt',
-                xName:'Date',
-                yKey: 'cs',
-                yName:'Consumption',
-                data:adjustedChartData,
-                type:'bar',
-                fill:'#EDB04D'
-              },
-              
-             
             ],
             axes: [{
                 type: "category",
@@ -199,9 +374,88 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
             } as const,
            ],
         }
+        const upwardStockBasedOptions = {
+            
+          xKey: 'date',
+          xName:'Date',
+          yKey: 'upwardStockBasedNorm',
+          yName:'',
+          data:normData,
+          type:'area',
+          // strokeWidth: 3,
+          fill:'#808080',
+          fillOpacity:0.8,
+          showInLegend:false,
+          tooltip:{
+            enabled: false
+          },   
+        }
+        const downwardStockBasedOptions = {
+            
+          xKey: 'date',
+          xName:'Date',
+          yKey: 'downwardStockBasedNorm',
+          yName:'',
+          data:normData,
+          type:'area',
+          // strokeWidth: 3,
+          fill:'#808080',
+          fillOpacity:0.8,
+          showInLegend:false,
+          tooltip:{
+            enabled: false
+          },   
+        }
+
+        const upwardConsumptionBasedOptions = {
+            
+          xKey: 'date',
+          xName:'Date',
+          yKey: 'upwardConsumptionBasedNorm',
+          yName:'',
+          data:normData,
+          type:'area',
+          // strokeWidth: 3,
+          fill:'#808080',
+          fillOpacity:0.8,
+          showInLegend:false,
+          tooltip:{
+            enabled: false
+          },   
+        }
+
+        const downwardConsumptionBasedOptions = {
+            
+          xKey: 'date',
+          xName:'Date',
+          yKey: 'downwardConsumptionBasedNorm',
+          yName:'',
+          data:normData,
+          type:'area',
+          // strokeWidth: 3,
+          fill:'#808080',
+          fillOpacity:0.8,
+          showInLegend:false,
+          tooltip:{
+            enabled: false
+          },   
+        }
+
+        if(suspensionType === 'upwardStockBased') options['series'].push(upwardStockBasedOptions);
+        if(suspensionType === 'downwardStockBased') options['series'].push(downwardStockBasedOptions);
+        if(suspensionType === 'upwardConsumptionBased') options['series'].push(upwardConsumptionBasedOptions);
+        if(suspensionType === 'downwardConsumptionBased') options['series'].push(downwardConsumptionBasedOptions);
+
 
         return options;
 
+    }
+
+    const getMonitoringDate = () => {
+        if(suspensionType === 'upwardStockBased') return monitoringData[0]['srrd'];
+        if(suspensionType === 'downwardStockBased') return monitoringData[0]['sgrd'];
+        if(suspensionType === 'upwardConsumptionBased') return monitoringData[0]['crrd'];
+        if(suspensionType === 'downwardConsumptionBased') return monitoringData[0]['cgrd'];
     }
 
     
@@ -209,7 +463,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
     const onChangeHorizon = (horizon:number) => {
         setHorizon(horizon)
     } 
-
+    console.log(rowData)
 
     return(
         <VFModalCard openModal={isModalOpen} closeModal={closeModal} headerIcon='' headerText="Daily Data Graph" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
@@ -235,7 +489,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                     <SCHorizontalDivider/>
                     <div style={{display:'flex',flexDirection:'column',marginBottom:'20px'}}>
                         <SCText fontSize={16} fontWeight={300}>Select Suspension Type:</SCText>
-                        <Select options={suspensionOptions} placeholder={"Select-"}/>
+                        <Select options={suspensionOptions} placeholder={"Select-"} onChange={(data:any)=>setSuspensionType(data.value)}  />
                     </div>
                     <SCHorizontalDivider/>
                     <div style={{display:'flex',flexDirection:'column',marginBottom:'20px'}}>
@@ -246,7 +500,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                     <SCDataRow>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Location :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{10}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{rowData['WhCode']}</SCText>
                       </SCDataNode>
                       <SCVerticalDivider/>
                       <SCDataNode>
@@ -279,17 +533,19 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,masterData,isModa
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>
-                    <SCDataRow>
-                      <SCDataNode>
-                        <SCText fontWeight={300} fontSize={16}>Total Consumption :</SCText>
+                    <div style={{display:'flex',alignItems:'center',gap:'5px'}}>
+                      <SCText fontWeight={300} fontSize={16}>Monitoring Date :</SCText>
+                      <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{getMonitoringDate()}</SCText>
+                      {/* <SCDataNode>
+                        <SCText fontWeight={300} fontSize={16}>Monitoring Date :</SCText>
                         <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{'5'}</SCText>
-                      </SCDataNode>
-                      <SCVerticalDivider/>
-                      <SCDataNode>
+                      </SCDataNode> */}
+                      {/* <SCVerticalDivider/> */}
+                      {/* <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Total Receipt :</SCText>
                         <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{3}</SCText>
-                      </SCDataNode>
-                    </SCDataRow>
+                      </SCDataNode> */}
+                    </div>
                   </SCSeasonalityDetailsBody>           
                 </SCSeasonalityStatusDetails>
             </SCSeasonalityContainer>

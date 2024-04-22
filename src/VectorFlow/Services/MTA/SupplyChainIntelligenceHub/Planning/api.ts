@@ -16,13 +16,13 @@ export namespace PlanningService {
     }
 
     export const getPlanningDataGrid = async (body:any) => {
-        return axios.post(process.env.REACT_APP_VF_MOCK_API_HOST + `/GetPlanningDataGrid`,body,{
+        return axios.post(process.env.REACT_APP_VF_API_HOST + `/GetPlanningDataGrid`,body,{
             headers: { 'Content-Type': 'application/json' }
             })
     }
 
     export const getPlanningDataCustom = async (body:any) => {
-        return axios.post(process.env.REACT_APP_VF_MOCK_API_HOST + `/GetPlanningDataCustom`,body,{
+        return axios.post(process.env.REACT_APP_VF_API_HOST + `/GetPlanningDataCustom`,body,{
             headers: { 'Content-Type': 'application/json' }
             })
     }

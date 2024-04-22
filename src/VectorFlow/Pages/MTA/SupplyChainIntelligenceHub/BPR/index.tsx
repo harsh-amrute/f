@@ -15,6 +15,7 @@ import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons
 
 
 
+
 const BPR = ()=>{
 
 
@@ -44,7 +45,9 @@ const BPR = ()=>{
         chartData,
         masterData,
         normChangeHistoryTable,
-        toggleNormChangeHistoryTable
+        toggleNormChangeHistoryTable,
+        suggestionData,
+        monitoringData
     } = useBPR();
 
     
@@ -61,7 +64,7 @@ const BPR = ()=>{
         <>
         <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BPR'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
         {
-            showDailyDataGraphModal && <DailyDataGraphModal rowData={{...dailyDataParams?.data}} chartData={chartData? chartData : []} normChangeData={normChangeData} masterData={masterData} isModalOpen={showDailyDataGraphModal} toggleNormChangeHistoryTable={toggleNormChangeHistoryTable} closeModal={()=>toggleDailyDataGraphModal(false)} />
+            showDailyDataGraphModal && <DailyDataGraphModal rowData={{...dailyDataParams?.data}} chartData={chartData? chartData : []} normChangeData={normChangeData} masterData={masterData} isModalOpen={showDailyDataGraphModal} toggleNormChangeHistoryTable={toggleNormChangeHistoryTable} closeModal={()=>toggleDailyDataGraphModal(false)} suggestionData={suggestionData} monitoringData={monitoringData} />
         }
         {
             normChangeHistoryTable && <NormChangeHistoryTable data={normChangeData ? normChangeData : []} onGoBack={()=>toggleNormChangeHistoryTable(false)}/>

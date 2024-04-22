@@ -146,5 +146,9 @@ export interface DailyDataChart{
     dt:string,
     git:number,
     rp:number,
-    stock:number
+    stock:number,
+    rrs:number,
+    grs:number,
+    rrc:number,
+    grc:number
 }

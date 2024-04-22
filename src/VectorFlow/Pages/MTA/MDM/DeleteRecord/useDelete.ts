@@ -289,10 +289,10 @@ const useDelete=()=>{
               if(localErrorCount>0 || errorCount>0){
                 let errorRowData
                 if(localErrorCount>0){
-                  errorRowData = createErrorRowData(localErrorData)
+                  errorRowData = createErrorRowData(localErrorData,activeMaster.id)
                 }
                 else{
-                  errorRowData = createErrorRowData(errorData)
+                  errorRowData = createErrorRowData(errorData,activeMaster.id)
                 }
                 if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
                   addInvalidDataColDefs('error')
@@ -313,10 +313,10 @@ const useDelete=()=>{
               if(localErrorCount>0 || errorCount>0){
                 let errorRowData
                 if(localErrorCount>0){
-                  errorRowData = createErrorRowData(localErrorData)
+                  errorRowData = createErrorRowData(localErrorData,activeMaster.id)
                 }
                 else{
-                  errorRowData = createErrorRowData(errorData)
+                  errorRowData = createErrorRowData(errorData,activeMaster.id)
                 }
                 if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
                   addInvalidDataColDefs('error')

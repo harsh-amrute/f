@@ -6,7 +6,7 @@ export const SCTaskBarContainer = styled.div`
     padding-left:10px;
     display:flex;
     align-items:center;
-    margin-bottom:20px;
+   // margin-bottom:20px;
     margin-left:20px;
     justify-content:space-between; //changed
 
@@ -68,9 +68,9 @@ export const SCViewBackground = styled.div`
 export const SCVerticalDivider = styled.div`
     width:0.5px;
     background-color:#C6C6C6; //#6C696A
-    height:30px;
-    margin-right:16px;
-    margin-left:16px;
+    height:40px;
+    margin-right:8px;
+    margin-left:8px;
     align-items:center;
 `
 export const SCViewImage = styled.img`
@@ -81,7 +81,8 @@ export const SCViewImage = styled.img`
 
 export const SCCustomActionsContainer = styled.div`
     display:flex;
-    gap:22px;
+    //gap:22px;
+    gap:10px;
     align-items:center;
     justify-content: flex-end;
     //width:100%

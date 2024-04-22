@@ -690,11 +690,15 @@ const useViewModify = (pageType:string) => {
           formData.append("screen_type",JSON.stringify({screenType:pageType}))
 
           const response = await validateMaster({formData,masterId:activeMaster.id});
-          const result = JSON.parse(response.data)
-          setIsOverlayVisible(false)
+          let result = JSON.parse(response.data)
+          const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
+          result = [...errorAndWarningData,... result.filter((data:any)=>data.error.length === 0 && data.warning.length === 0 )]
+          
+          setIsOverlayVisible(false);
 
-          const ifErrorExists = result.find((data:any)=>data.error.length > 0);
-          const ifWarningExists = result.find((data:any)=>data.warning.length > 0);
+          const ifErrorExists = result.find((data:any)=>data.error.length > 1);
+          const ifWarningExists = result.find((data:any)=>data.warning.length > 1);
+
           if(ifErrorExists) {
             dispatch(UPDATE_PROGRESS_STATE('error'));
             addInvalidDataColDefs('error');
@@ -703,12 +707,12 @@ const useViewModify = (pageType:string) => {
             // dispatch(UPDATE_PROGRESS_STATE('error'));
             addInvalidDataColDefs('warning');
           }
-          else{
-           if(activeMaster.progress==='deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-           else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+          if(!ifErrorExists){
+            if(activeMaster.progress==='deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+            else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
             addCheckBoxColDefs();
-          }
-         
+           }
+          
           dispatch(SET_RECORD_COUNT(result.length));
           dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
           dispatch(UPDATE_ROW_DATA(result));
@@ -768,7 +772,7 @@ const useViewModify = (pageType:string) => {
         const erroneusData:any[] = [];
         const validData:any[] = [] 
         activeMaster.rowData.forEach((data:any)=>{
-          if(data.error || data.warning){
+          if(data['error'].length > 0){
             erroneusData.push(data);
           }
           else{
@@ -788,8 +792,6 @@ const useViewModify = (pageType:string) => {
           dispatch(SET_RECORD_COUNT(validData.length))
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         }
-        
-        
         
       }
       
@@ -943,6 +945,7 @@ const useViewModify = (pageType:string) => {
             setErrorCount(pureErrorCount);
             setConflictData(conflictData);
             setErrorData(errorData)
+            console.log({isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} )
             return {isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} 
             
           }
@@ -990,10 +993,10 @@ const useViewModify = (pageType:string) => {
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
               if(localErrorCount>0){
-                errorRowData = createErrorRowData(localErrorData)
+                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
               }
               else{
-                errorRowData = createErrorRowData(errorData)
+                errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
               if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
                 addInvalidDataColDefs('error')
@@ -1012,7 +1015,7 @@ const useViewModify = (pageType:string) => {
             // console.time('That took ')
             // console.log('Calculating...')
             const tempCon = createConflictRowData(localConflictData,activeMaster.id)
-            const tempError = createErrorRowData(localErrorData)
+            const tempError = createErrorRowData(localErrorData,activeMaster.id)
             const tempResult:any = []
 
             tempCon.forEach((t:any)=>{
@@ -1042,10 +1045,10 @@ const useViewModify = (pageType:string) => {
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
               if(localErrorCount>0){
-                errorRowData = createErrorRowData(localErrorData)
+                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
               }
               else{
-                errorRowData = createErrorRowData(errorData)
+                errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
               if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
                 addInvalidDataColDefs('error')
@@ -1065,7 +1068,7 @@ const useViewModify = (pageType:string) => {
             // console.time('That took ')
             // console.log('Calculating...')
             const tempCon = createConflictRowData(localConflictData,activeMaster.id)
-            const tempError = createErrorRowData(localErrorData)
+            const tempError = createErrorRowData(localErrorData,activeMaster.id)
 
             const tempResult:any = []
 
@@ -1409,7 +1412,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const onIgnoreSubmitErrors = ()=>{
-      const errorRowData = createErrorRowData(errorData)
+      const errorRowData = createErrorRowData(errorData,activeMaster.id)
       if(errorRowData.length>0){
         addInvalidDataColDefs('error')
         dispatch(UPDATE_ROW_DATA(errorRowData))

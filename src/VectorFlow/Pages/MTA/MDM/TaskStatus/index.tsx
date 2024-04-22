@@ -89,6 +89,7 @@ const TaskStatus = ()=>{
         return <VFLoader/>
     }
 
+    console.log(process.env.REACT_APP_TASKSTATUS_PAGE)
     return(
         <React.Fragment>
             <VFTable
@@ -166,7 +167,9 @@ const TaskStatus = ()=>{
                     }
                 ])}
                 pagination
-                paginationPageSize={10}            
+                // paginationPageSize={10}            
+                paginationPageSize={parseInt(process.env.REACT_APP_TASKSTATUS_PAGE || '200')}            
+
             />
             <div style={{display:'none'}}>                
                   <VFTable

@@ -34,6 +34,8 @@ const useBPR =()=>{
     const [chartData,setChartData] = useState();
     const [masterData,setMasterData] = useState<any>();
     const [normChangeHistoryTable,toggleNormChangeHistoryTable] = useState<boolean>(false);
+    const [suggestionData,setSuggestionData] = useState<any>();
+    const [monitoringData,setMonitoringData] = useState<any>();
 
     const [remark,setRemark] = useState<string>('')
     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
@@ -80,6 +82,7 @@ const useBPR =()=>{
         tooltipInteraction:true,
         // rowSelection:'single',
         readOnlyEdit:true,
+        paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
         onRowClicked:(params:any)=>{
             if(params.data.transit && params.data.transit.length>0){
                 setActiveRow(params.data.transit)
@@ -190,7 +193,8 @@ const useBPR =()=>{
         setChartData(result.data.data['dailyData'])
         setNormChangeData(result.data.data['normChangeHistory'])
         setMasterData(result.data.data['MasterData'])
-
+        setSuggestionData(result.data.data['SuggestionHistoryData'])
+        setMonitoringData(result.data.data['MonitoringData'])
 
         toggleDailyDataGraphModal(true);
     }
@@ -228,7 +232,9 @@ const useBPR =()=>{
         chartData,
         masterData,
         normChangeHistoryTable,
-        toggleNormChangeHistoryTable
+        toggleNormChangeHistoryTable,
+        suggestionData,
+        monitoringData
     }
 }
 
