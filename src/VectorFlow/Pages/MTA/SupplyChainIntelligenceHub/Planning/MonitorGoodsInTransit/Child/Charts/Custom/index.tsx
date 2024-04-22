@@ -28,6 +28,7 @@ const MonitorGITChildCustomCharts = () => {
                 filters:[]
             }
             const result = await getPlanningDataCustom(body);
+            console.log(result.data.data);
             setRowData(result.data.data);
         }
         fetchCustomPlanningData()

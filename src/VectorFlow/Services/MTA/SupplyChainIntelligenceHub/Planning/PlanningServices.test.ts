@@ -51,7 +51,7 @@ describe('Testing the Planning Service',  () => {
           filters:[]
         }
         const response = await PlanningService.getPlanningDataGrid(mockBody);
-        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_MOCK_API_HOST + '/GetPlanningDataGrid',mockBody,{
+        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/GetPlanningDataGrid',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
         expect(response.status).toBe(200);
@@ -64,7 +64,7 @@ describe('Testing the Planning Service',  () => {
           filters:[]
         }
         const response = await PlanningService.getPlanningDataCustom(mockBody);
-        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_MOCK_API_HOST + '/GetPlanningDataCustom',mockBody,{
+        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/GetPlanningDataCustom',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
         expect(response.status).toBe(200);

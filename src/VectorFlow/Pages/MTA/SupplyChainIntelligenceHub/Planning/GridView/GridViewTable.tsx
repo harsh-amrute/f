@@ -6,6 +6,7 @@ import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
 import BPRViewTable from '../../BPR/BPRViewTable'
+// import VFPagination from "~/components/VectorFLOW/commons/VFPagination";
 
 
 interface GridViewTableProps {
@@ -32,6 +33,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                         columnDefs={agGridColDefs}
                         rowData={agGridRowData}
                     />
+                    {/* <VFPagination/> */}
                 </Allotment.Pane>
                 {isSubGridOpen && (
                     <Allotment.Pane >
