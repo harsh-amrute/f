@@ -15,7 +15,6 @@ import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingFo
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField } from '../VectorFlow/types/BPR';
 import {RRRField} from '../VectorFlow/types/RRR'
-import _ from 'lodash'
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -1578,38 +1577,40 @@ export const addPrefixToObjectKeys = (obj:any,prefix:string)=>{
   return newObj
 }
 
-export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[]):ColDef[]=>{
+export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[],masterId:any):ColDef[]=>{
 
   const result:any[] = []
   conflicts.map((conflict)=>{
      conflict.conflictdetails.map((conflictDetail)=>{
       const existingRowIndex = result.findIndex((row:any)=>{
-        // const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
-        // if(primaryKeys.length<3) return row[primaryKeys[0]]===conflictDetail.oldData[primaryKeys[0]]
-        const omittedResultEntry = _.omit(row,['users'])
-        return JSON.stringify(omittedResultEntry)===JSON.stringify(conflictDetail.oldData)
+        let isDuplicate = false
+        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        for (let i = 0; i < primaryKeys.length; i++){
+          if(row[primaryKeys[i]]===conflictDetail.oldData[primaryKeys[i]]){
+            isDuplicate = true
+          }
+          else{
+            isDuplicate = false
+            break
+          }
+        }
+        return isDuplicate
       })
 
       if(existingRowIndex===-1){
         result.push({...conflictDetail.requestedData,users:[{user:conflict.user,data:conflictDetail.oldData}]})
       }
       else{
-        // const existingUser = result[existingRowIndex].users.findIndex((user:any)=>user.user===conflict.user)
-        // if(existingUser!==-1){
-        //   result[existingRowIndex].users[existingUser].daa
-        // }
         result[existingRowIndex].users.push({user:conflict.user,data:conflictDetail.oldData})
       }
     })
   })
-
   return result
 
 
 }
 
-export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[]):ColDef[]=>{
-
+export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[],masterId:any):ColDef[]=>{
   const result:any[] = []
   if(Array.isArray(errorConflicts)){
     errorConflicts.map((currError:{errorData:any[],errorType:string})=>{
@@ -1621,9 +1622,20 @@ export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:str
           //   // return row[primaryKeys[0]]===errorRowData[primaryKeys[0]]
           // }
           // console.log(row)
-          
-          const omittedResultEntry = _.omit(row,['error'])
-          return JSON.stringify(omittedResultEntry)===JSON.stringify(errorRowData)
+          let isDuplicate = false
+        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        for (let i = 0; i < primaryKeys.length; i++){
+          if(row[primaryKeys[i]]===errorRowData[primaryKeys[i]]){
+            isDuplicate = true
+          }
+          else{
+            isDuplicate = false
+            break
+          }
+        }
+        return isDuplicate
+          // const omittedResultEntry = _.omit(row,['error'])
+          // return JSON.stringify(omittedResultEntry)===JSON.stringify(errorRowData)
         })
         
         
@@ -1639,7 +1651,7 @@ export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:str
       })
     })
   }
-
+  console.log(result)
   return result
 }
 

@@ -17,9 +17,11 @@ interface GridViewTableProps {
     customGridColDef:Array<{headerName:string,colId:string,field:string}>
     isSubGridOpen:boolean
     showStockGrid?:boolean
+    stockGridData?:Array<any>
+    onRequestExpediting?:()=>void
 }
 
-const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen}:GridViewTableProps) => {
+const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting}:GridViewTableProps) => {
     console.log(customGridColDef);
     console.log(customGridRowData);
     
@@ -86,50 +88,37 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                     />
                     {showStockGrid && (
                         <BPRViewTable
+                        onRequestExpediting={onRequestExpediting}
                         tableHeader="Details of parent"
                         tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg"
-                        rowData={[{}]}
+                        rowData={stockGridData?stockGridData:[]}
                         colDefs={[
                             {
-                                headerName:"LR Code",
-                                colId:'WHCode',
-                                field:'WHCode'
+                                headerName:"Stock at Parent",
+                                colId:'sp',
+                                field:'sp'
                             },
                             {
-                                headerName:"Creation Date",
-                                colId:'cd',
-                                field:'cd'
-                            },
-                            {
-                                headerName:"Ageing",
-                                colId:'ageing',
-                                field:'ageing'
-                            },
-                            {
-                                headerName:"ETA",
+                                headerName:"ETA from parent ",
                                 colId:'eta',
                                 field:'eta'
                             },
                             {
-                                headerName:"Current Location",
-                                colId:'cl',
-                                field:'cl'
-                            },
-                            {
-                                headerName:"Quantity",
-                                colId:'quantity',
-                                field:'quantity'
-                            },
-                            {
-                                headerName:"Execution Eco Color",
-                                colId:'eec',
-                                field:'eec'
+                                headerName:"Eco Color",
+                                colId:'ec',
+                                field:'ec'
                             },
                             {
                                 headerName:"Remarks",
                                 colId:'remarks',
                                 field:'remarks'
-                            }
+                            },
+                            {
+                                headerName:"Request Expediting",
+                                colId:'request',
+                                field:'request',
+                                onCellClicked:onRequestExpediting
+                            },
                         ]}
                     />
                     )}

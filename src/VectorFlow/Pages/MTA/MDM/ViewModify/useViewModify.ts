@@ -945,6 +945,7 @@ const useViewModify = (pageType:string) => {
             setErrorCount(pureErrorCount);
             setConflictData(conflictData);
             setErrorData(errorData)
+            console.log({isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} )
             return {isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} 
             
           }
@@ -992,10 +993,10 @@ const useViewModify = (pageType:string) => {
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
               if(localErrorCount>0){
-                errorRowData = createErrorRowData(localErrorData)
+                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
               }
               else{
-                errorRowData = createErrorRowData(errorData)
+                errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
               if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
                 addInvalidDataColDefs('error')
@@ -1013,8 +1014,8 @@ const useViewModify = (pageType:string) => {
           else{
             // console.time('That took ')
             // console.log('Calculating...')
-            const tempCon = createConflictRowData(localConflictData)
-            const tempError = createErrorRowData(localErrorData)
+            const tempCon = createConflictRowData(localConflictData,activeMaster.id)
+            const tempError = createErrorRowData(localErrorData,activeMaster.id)
             const tempResult:any = []
 
             tempCon.forEach((t:any)=>{
@@ -1044,10 +1045,10 @@ const useViewModify = (pageType:string) => {
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
               if(localErrorCount>0){
-                errorRowData = createErrorRowData(localErrorData)
+                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
               }
               else{
-                errorRowData = createErrorRowData(errorData)
+                errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
               if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
                 addInvalidDataColDefs('error')
@@ -1066,8 +1067,8 @@ const useViewModify = (pageType:string) => {
           else{
             // console.time('That took ')
             // console.log('Calculating...')
-            const tempCon = createConflictRowData(localConflictData)
-            const tempError = createErrorRowData(localErrorData)
+            const tempCon = createConflictRowData(localConflictData,activeMaster.id)
+            const tempError = createErrorRowData(localErrorData,activeMaster.id)
 
             const tempResult:any = []
 
@@ -1411,7 +1412,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const onIgnoreSubmitErrors = ()=>{
-      const errorRowData = createErrorRowData(errorData)
+      const errorRowData = createErrorRowData(errorData,activeMaster.id)
       if(errorRowData.length>0){
         addInvalidDataColDefs('error')
         dispatch(UPDATE_ROW_DATA(errorRowData))

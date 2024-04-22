@@ -41,8 +41,9 @@ height:310px;
 width:100%;
 display:flex;
 align-items:center;
-justify-content:space-evenly;
-margin-bottom:26px;
+justify-content:center;
+gap:80px;
+margin-bottom:80px;
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
         .size.desktop}) {
         zoom:0.75;

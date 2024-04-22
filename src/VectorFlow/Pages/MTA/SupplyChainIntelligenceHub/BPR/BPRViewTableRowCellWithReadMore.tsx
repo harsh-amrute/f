@@ -18,6 +18,7 @@ const BPRViewTableRowCellWithReadMore = (props:BPRViewTableRowCellWithReadMore)=
         value
     } = props
 
+    
 
     const {getScreenZoomValue} = useViewPort()
 
@@ -33,7 +34,7 @@ const BPRViewTableRowCellWithReadMore = (props:BPRViewTableRowCellWithReadMore)=
         const {top,left} = e.currentTarget.getBoundingClientRect()
         setoolTipPosition({
             top:top * screenSize -40,
-            left:left
+            left:left* screenSize -40
         })
         setIsOpen(true)
     }
@@ -41,12 +42,12 @@ const BPRViewTableRowCellWithReadMore = (props:BPRViewTableRowCellWithReadMore)=
     const onMouseOut = ()=>setIsOpen(false)
 
     return(
-        <BPRViewTableRowCell style={{display:'flex',flexDirection:"row",position:'relative'}}>
+        <BPRViewTableRowCell style={{display:'flex',flexDirection:"row",position:'relative',justifyContent:'center'}}>
             <p >{value.slice(0,15)}...</p>
             <p style={{color:'#BC3D81',cursor:'default'}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut}>Read full </p>
             {isOpen && (
                 <Portal wrapperId="viewtable">
-                    <BPRViewTableToolTip onMouseEnter={()=>setIsOpen(true)} onMouseLeave={()=>setIsOpen(false)} style={{top:toolTipPosition.top,right:40}}>
+                    <BPRViewTableToolTip onMouseEnter={()=>setIsOpen(true)} onMouseLeave={()=>setIsOpen(false)} style={{top:toolTipPosition.top,left:toolTipPosition.left}}>
                         {value}
                     </BPRViewTableToolTip>
                 </Portal>

@@ -270,12 +270,14 @@ const useAdd=()=>{
           if(isDisaster)return
             if(localErrorCount>0 || errorCount>0){
               if(localErrorCount > 0){
-                errorRowData = createErrorRowData(localErrorData)
+                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
               }
               else{
-                errorRowData = createErrorRowData(errorData)
+                errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
-              addInvalidDataColDefs('error')
+              if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+                addInvalidDataColDefs('error')
+              }
               dispatch(UPDATE_ROW_DATA(errorRowData))
               dispatch(SET_RECORD_COUNT(errorRowData.length))
              

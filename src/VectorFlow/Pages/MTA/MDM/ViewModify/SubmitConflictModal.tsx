@@ -24,13 +24,13 @@ const SubmitConflictModal=(props:SubmitConflictModalProps)=>{
     } = props
 
     const {user} = useUserData()
-
+    console.log(modificationCount)
 
     return (
         <VFModalCard headerText="Submit Data" openModal={true} headerIcon={""} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
             <SubmitDataTextContainer>
-                {recordCount>0 && <>{recordCount} Records submitted successfully!<br/><br/></>}
-                {modificationCount} out of {totalCount} records are under modification already
+                {recordCount>0 && <>{recordCount} {recordCount>1?"Records":"Record"} submitted successfully!<br/><br/></>}
+                {modificationCount>0 && <>{modificationCount} out of {totalCount} records are under modification already</>}
             </SubmitDataTextContainer>
             <SubmitDataButtonWrapper>
                 <VFButtonOutline themeUi={user.user.theme_ui}  onClick={onFailure} width={173} onHoverChild={
