@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react"
 import ChartView from '.';
-import { MonitorGITChildMockData,ExpediteParentMockData,MonitorGITChildCustomMockData } from "../../../../../../mock-data/Planning";
+import { MonitorGITChildMockData,ExpediteParentMockData,MonitorGITChildCustomMockData, getPlanningDataGridMockData } from "../../../../../../mock-data/Planning";
 import { UserDataContext } from "../../../../../../context/UserDataContext";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { setupReactQuery } from "../../../../../../config/react-query-config";
@@ -67,7 +67,7 @@ describe("Monitor GIT Child",()=>{
     })
     render(contextWrapper(<ChartView category="GITToChild" currentTab="custom" currentGraphData={MonitorGITChildCustomMockData}/>,store))
     render(contextWrapper(<ChartView category="GITToChild" currentTab="" currentGraphData={MonitorGITChildMockData}/>,store))
-    render(contextWrapper(<ChartView category="GITFromParent" currentTab="" currentGraphData={MonitorGITChildMockData}/>,store))
+    render(contextWrapper(<ChartView category="GITFromParent" currentTab="" currentGraphData={getPlanningDataGridMockData['data']}/>,store))
     render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="expediteDispatches" currentGraphData={ExpediteParentMockData}/>,store))
     render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="createAvailabilityAtParent" currentGraphData={ExpediteParentMockData}/>,store))
     render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="custom" currentGraphData={[]}/>,store))

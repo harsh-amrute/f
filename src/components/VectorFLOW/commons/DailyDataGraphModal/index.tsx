@@ -28,6 +28,7 @@ interface DailyDataGraphModalProps{
   normChangeData:any,
   suggestionData:any,
   masterData:any,
+  monitoringData:any,
   isModalOpen:boolean,
   closeModal:()=>void,
   toggleNormChangeHistoryTable:any
@@ -44,7 +45,7 @@ interface NormData{
 
 
 
-const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,closeModal,toggleNormChangeHistoryTable}:DailyDataGraphModalProps) => {
+const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,closeModal,toggleNormChangeHistoryTable,monitoringData}:DailyDataGraphModalProps) => {
     // console.log(rowData);
     const suspensionOptions = [
         {label:'Upward Stock Based',value:'upwardStockBased'},
@@ -199,7 +200,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           `
 
           if(suggestionObject) tooltip += generateRevisionSuggestedBlock(suggestionObject?.oln,suggestionObject?.nn,suggestionObject?.rsn);
-          if(suspensionReasons.length > 0) tooltip += generateSuspensionReasonsBlock(suspensionReasons);
+          if(suspensionReasons.length > 0 && suspensionType!=='') tooltip += generateSuspensionReasonsBlock(suspensionReasons);
 
           tooltip += generateDailyDataBlock(dailyDataObject.stock,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.ceil(params.datum.normYellow*3))
 
@@ -450,12 +451,19 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
 
     }
 
+    const getMonitoringDate = () => {
+        if(suspensionType === 'upwardStockBased') return monitoringData[0]['srrd'];
+        if(suspensionType === 'downwardStockBased') return monitoringData[0]['sgrd'];
+        if(suspensionType === 'upwardConsumptionBased') return monitoringData[0]['crrd'];
+        if(suspensionType === 'downwardConsumptionBased') return monitoringData[0]['cgrd'];
+    }
+
     
 
     const onChangeHorizon = (horizon:number) => {
         setHorizon(horizon)
     } 
-
+    console.log(rowData)
 
     return(
         <VFModalCard openModal={isModalOpen} closeModal={closeModal} headerIcon='' headerText="Daily Data Graph" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
@@ -492,7 +500,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                     <SCDataRow>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Location :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{10}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{rowData['WhCode']}</SCText>
                       </SCDataNode>
                       <SCVerticalDivider/>
                       <SCDataNode>
@@ -525,17 +533,19 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>
-                    <SCDataRow>
-                      <SCDataNode>
-                        <SCText fontWeight={300} fontSize={16}>Total Consumption :</SCText>
+                    <div style={{display:'flex',alignItems:'center',gap:'5px'}}>
+                      <SCText fontWeight={300} fontSize={16}>Monitoring Date :</SCText>
+                      <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{getMonitoringDate()}</SCText>
+                      {/* <SCDataNode>
+                        <SCText fontWeight={300} fontSize={16}>Monitoring Date :</SCText>
                         <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{'5'}</SCText>
-                      </SCDataNode>
-                      <SCVerticalDivider/>
-                      <SCDataNode>
+                      </SCDataNode> */}
+                      {/* <SCVerticalDivider/> */}
+                      {/* <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Total Receipt :</SCText>
                         <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{3}</SCText>
-                      </SCDataNode>
-                    </SCDataRow>
+                      </SCDataNode> */}
+                    </div>
                   </SCSeasonalityDetailsBody>           
                 </SCSeasonalityStatusDetails>
             </SCSeasonalityContainer>

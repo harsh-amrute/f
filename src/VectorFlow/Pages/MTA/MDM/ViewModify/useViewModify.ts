@@ -707,12 +707,12 @@ const useViewModify = (pageType:string) => {
             // dispatch(UPDATE_PROGRESS_STATE('error'));
             addInvalidDataColDefs('warning');
           }
-          else{
-           if(activeMaster.progress==='deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-           else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+          if(!ifErrorExists){
+            if(activeMaster.progress==='deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+            else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
             addCheckBoxColDefs();
-          }
-         
+           }
+          
           dispatch(SET_RECORD_COUNT(result.length));
           dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
           dispatch(UPDATE_ROW_DATA(result));

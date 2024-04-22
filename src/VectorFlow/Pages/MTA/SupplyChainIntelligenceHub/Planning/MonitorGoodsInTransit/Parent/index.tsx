@@ -1,19 +1,14 @@
 import GridViewTable from "../../GridView/GridViewTable"
 import { useMemo } from "react";
-import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTechColorCellRenderer,BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
-import { useGetBPRUIConfiguration } from "../../../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
-import VFLoader from "../../../../../../../components/VectorFLOW/commons/VFLoader";
-import {mapBPRFieldsToColDefs} from '../../../../../../../helpers/utils';
 
 const MonitorGITParent = ({data}:{data:any})=>{
 
-    const {data:bprUIConfigData,isLoading} = useGetBPRUIConfiguration();
+
 
     const customCellRenderers = useMemo(() => ({
         // grapCellRenderer:BPRGraphCellRenderer,
-        colorTechCellRenderer:BPRTechColorCellRenderer,
-        colorEcoCellRenderer:BPREcoColorCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
         submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
         remarksCellRenderer:BPRRemarksCellRenderer
@@ -42,7 +37,6 @@ const MonitorGITParent = ({data}:{data:any})=>{
             return { background: "#F7F7F7" };
             },
         },
-        pagination:true,
         suppressRowClickSelection:true,
         components:customCellRenderers,
         defaultColDef:{
@@ -66,18 +60,27 @@ const MonitorGITParent = ({data}:{data:any})=>{
         }
     }
 
-
-    const PlanningColumns = mapBPRFieldsToColDefs(bprUIConfigData?.data.data,()=>{console.log('hello')},()=>{console.log('hello')},()=>{console.log('hello')})
-
-    if(isLoading){
-      return (
-        <VFLoader/>
-      )
+    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
+        return columns.map((column:{header:string,colCode:string})=>{
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                header:column['header']
+            }
+        })
     }
+
+    const colDefs = mapUIConfigToColdefs(data['uiConfig'])
+
+    // if(isLoading){
+    //   return (
+    //     <VFLoader/>
+    //   )
+    // }
 
 
     return(
-        <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={data} customGridRowData={[]} customGridColDef={[]} isSubGridOpen={false}/>
+        <GridViewTable agGridProps={agGridProps} agGridColDefs={colDefs} agGridRowData={data['data']} customGridRowData={[]} customGridColDef={[]} isSubGridOpen={false}/>
     )
 }
 

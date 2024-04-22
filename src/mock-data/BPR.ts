@@ -80890,7 +80890,15 @@ export const GetDailyDataMockResponse = {
                 "sdate": "2024-02-22",
                 "rsn": "Virtual Stockout has occurred. Upward revision suggested."
               }
-         ]
+         ],
+         "MonitoringData": [
+            {
+              "srrd": "2022-04-25",
+              "sgrd": "2022-04-25",
+              "crrd": "2022-04-25",
+              "cgrd": "2022-04-25"
+            }
+          ]
 
 
     },
