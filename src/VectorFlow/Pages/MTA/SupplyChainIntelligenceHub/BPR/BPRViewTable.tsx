@@ -1,5 +1,6 @@
 
 import { ColDef } from 'ag-grid-enterprise';
+import BPRViewTableRequestCellRenderer from './BPRViewTableRequestCellRenderer';
 import BPRViewTableRowCellWithReadMore from './BPRViewTableRowCellWithReadMore';
 import {BPRViewTableWrapper,BPRViewTablePrefix,BPRViewTableGrid,BPRViewTableHeaderContainer,BPRViewTableHeader,BPRViewTableRowContainer,BPRViewTableRow,BPRViewTableRowCell, TableHeader} from './styles'
 
@@ -9,6 +10,7 @@ interface BPRViewTableProps{
     rowData:any[]
     tablePrefixSrc:string
     tableHeader?:string
+    onRequestExpediting?:()=>void
 }
 
 const BPRViewTable = (props:BPRViewTableProps)=>{
@@ -17,9 +19,15 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
         colDefs,
         rowData,
         tablePrefixSrc,
-        tableHeader
+        tableHeader,
+        onRequestExpediting
     } = props
 
+    const onReq = ()=>{
+        if(onRequestExpediting){
+            onRequestExpediting()
+        }
+    }
 
     return(
         <BPRViewTableWrapper>
@@ -52,6 +60,11 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
                                                         <BPRViewTableRowCellWithReadMore value={row[colDef.colId]} key={index}/>
                                                     )
                                                }
+                                               if(colDef.colId==='request'){
+                                                    return(
+                                                        <BPRViewTableRequestCellRenderer onClick={onReq} key={index}/>
+                                                    )
+                                                }
                                                return(
                                                 <BPRViewTableRowCell key={index}>
                                                     {row[colDef.colId]}

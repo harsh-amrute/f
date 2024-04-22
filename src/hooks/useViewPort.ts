@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useLocation } from "react-router";
 
 
 const useViewPort = ()=>{
@@ -14,8 +15,12 @@ const useViewPort = ()=>{
       };
     const {innerHeight:screenHeight,innerWidth:screenWidth} = window
 
+    const location = window.location
+
+    const urlDisableZoomScaling = ['/supply-chain-intelligence-hub/planning','/insights-and-trends/research-insights','/insights-and-trends/buffer-trends','/insights-and-trends/buffer-trend-report'];
+
     const getScreenZoomValue = useCallback(():number=>{
-        if(screenWidth >size.laptop && screenWidth<size.desktop ){
+        if(screenWidth >size.laptop && screenWidth<size.desktop && !urlDisableZoomScaling.includes(location.pathname)){
             return 0.75
         }
         if(screenWidth >size.desktop ){

@@ -69,7 +69,7 @@ const Header = (props:HeaderProps) => {
   const onMouseLeaveLogo = () => {
     timeoutId = setTimeout(() => {
       hideLogo()
-    }, 3000);
+    }, 1000);
   }
 
   const renderHeader = () => {

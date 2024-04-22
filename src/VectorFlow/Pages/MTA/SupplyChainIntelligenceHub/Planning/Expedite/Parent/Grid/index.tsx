@@ -1,10 +1,11 @@
-import {useState,useMemo} from 'react'
+import React,{useState,useMemo} from 'react'
 
 import GridViewTable from "../../../GridView/GridViewTable"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTechColorCellRenderer,BPRTagsCellRenderer } from "../../../../BPR/BPRCellRenderers";
 import { useGetBPRUIConfiguration } from "../../../../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { AgGridReactProps } from "ag-grid-react";
 import {mapBPRFieldsToColDefs} from '../../../../../../../../helpers/utils';
+import RequestExpeditingModal from '../../../../BPR/RequestExpeditingModal';
 
 const ExpediteParentGrid = ({data}:{data:any})=>{
 
@@ -12,6 +13,8 @@ const ExpediteParentGrid = ({data}:{data:any})=>{
 
     const [activeRow,setActiveRow] = useState()
     const [isSubGridOpen,toggleSubGrid] = useState(false)
+
+    const [isExpeditingModalOpen,toggleExpeditingModal] =  useState<boolean>(false)
 
 
     const customCellRenderers = useMemo(() => ({
@@ -75,7 +78,10 @@ const ExpediteParentGrid = ({data}:{data:any})=>{
     const PlanningColumns = mapBPRFieldsToColDefs(bprUIConfigData?.data.data,()=>{console.log('hello')},()=>{console.log('hello')},()=>{console.log('hello')})
 
     return(
-        <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={data ? data : []} customGridRowData={activeRow} customGridColDef={[]} showStockGrid isSubGridOpen={isSubGridOpen}/>
+        <React.Fragment>
+            <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={data ? data : []} customGridRowData={activeRow} customGridColDef={[]} showStockGrid stockGridData={[{remarks:'Testing to be done fro bpr, for POC which will enable us to proceed with BPR',request:'d'},{remarks:'Testing to be done fro bpr, for POC which will enable us to proceed with BPR',request:'d'}]} isSubGridOpen={isSubGridOpen} onRequestExpediting={()=>toggleExpeditingModal(true)}/>
+            <RequestExpeditingModal isOpen={isExpeditingModalOpen} onClose={()=>toggleExpeditingModal((prev:boolean)=>!prev)}/>
+        </React.Fragment>
     )
 }
 

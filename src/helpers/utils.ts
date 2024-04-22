@@ -1578,26 +1578,30 @@ export const addPrefixToObjectKeys = (obj:any,prefix:string)=>{
   return newObj
 }
 
-export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[]):ColDef[]=>{
+export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[],masterId:any):ColDef[]=>{
 
   const result:any[] = []
   conflicts.map((conflict)=>{
      conflict.conflictdetails.map((conflictDetail)=>{
       const existingRowIndex = result.findIndex((row:any)=>{
-        // const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
-        // if(primaryKeys.length<3) return row[primaryKeys[0]]===conflictDetail.oldData[primaryKeys[0]]
-        const omittedResultEntry = _.omit(row,['users'])
-        return JSON.stringify(omittedResultEntry)===JSON.stringify(conflictDetail.oldData)
+        let isDuplicate = false
+        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        for (let i = 0; i < primaryKeys.length; i++){
+          if(row[primaryKeys[i]]===conflictDetail.oldData[primaryKeys[i]]){
+            isDuplicate = true
+          }
+          else{
+            isDuplicate = false
+            break
+          }
+        }
+        return isDuplicate
       })
 
       if(existingRowIndex===-1){
         result.push({...conflictDetail.requestedData,users:[{user:conflict.user,data:conflictDetail.oldData}]})
       }
       else{
-        // const existingUser = result[existingRowIndex].users.findIndex((user:any)=>user.user===conflict.user)
-        // if(existingUser!==-1){
-        //   result[existingRowIndex].users[existingUser].daa
-        // }
         result[existingRowIndex].users.push({user:conflict.user,data:conflictDetail.oldData})
       }
     })

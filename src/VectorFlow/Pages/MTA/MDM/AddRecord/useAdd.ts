@@ -275,7 +275,9 @@ const useAdd=()=>{
               else{
                 errorRowData = createErrorRowData(errorData)
               }
-              addInvalidDataColDefs('error')
+              if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+                addInvalidDataColDefs('error')
+              }
               dispatch(UPDATE_ROW_DATA(errorRowData))
               dispatch(SET_RECORD_COUNT(errorRowData.length))
              

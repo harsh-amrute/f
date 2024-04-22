@@ -87,7 +87,7 @@ const useBPR =()=>{
             }
         },
         gridOptions:{
-            rowHeight:50,
+            rowHeight:40,
             getRowStyle: (params: any) => {
             if (params.node.rowIndex % 2 === 0) {
                 return { background: "#EBEBEB" };
