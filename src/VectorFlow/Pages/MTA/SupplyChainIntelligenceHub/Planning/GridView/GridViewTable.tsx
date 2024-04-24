@@ -1,4 +1,3 @@
-
 import { Allotment } from "allotment"
 import "allotment/dist/style.css";
 import { GridViewLayout } from "./styles";
@@ -6,6 +5,8 @@ import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
 import BPRViewTable from '../../BPR/BPRViewTable'
+import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
+import { type VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
 // import VFPagination from "~/components/VectorFLOW/commons/VFPagination";
 
 
@@ -19,23 +20,25 @@ interface GridViewTableProps {
     showStockGrid?:boolean
     stockGridData?:Array<any>
     onRequestExpediting?:()=>void
+    paginationProps?:VFPaginationProps
 }
 
-const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting}:GridViewTableProps) => {
-    console.log(customGridColDef);
-    console.log(customGridRowData);
+const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps}:GridViewTableProps) => {
     
     return(
         <GridViewLayout>
             <div style={{height:'100vh'}}>
                 <Allotment vertical defaultSizes={[400,400]}>
-                <Allotment.Pane >
-                    <VFTable
-                        {...agGridProps}
-                        columnDefs={agGridColDefs}
-                        rowData={agGridRowData}
-                    />
-                    {/* <VFPagination/> */}
+                <Allotment.Pane>
+                    
+                        <VFTable
+                            {...agGridProps}
+                            columnDefs={agGridColDefs}
+                            rowData={agGridRowData}
+                            height={500}
+                        />
+                        {paginationProps && <VFPagination {...paginationProps}/>}
+    
                 </Allotment.Pane>
                 {isSubGridOpen && (
                     <Allotment.Pane >
@@ -43,48 +46,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                     <BPRViewTable
                         tablePrefixSrc="/assets/img/VectorFLOW/BPR/in-transit.svg"
                         rowData={customGridRowData}
-                        colDefs={[
-                            {
-                                headerName:"LR Code",
-                                colId:'WHCode',
-                                field:'WHCode'
-                            },
-                            {
-                                headerName:"Creation Date",
-                                colId:'cd',
-                                field:'cd'
-                            },
-                            {
-                                headerName:"Ageing",
-                                colId:'ageing',
-                                field:'ageing'
-                            },
-                            {
-                                headerName:"ETA",
-                                colId:'eta',
-                                field:'eta'
-                            },
-                            {
-                                headerName:"Current Location",
-                                colId:'cl',
-                                field:'cl'
-                            },
-                            {
-                                headerName:"Quantity",
-                                colId:'quantity',
-                                field:'quantity'
-                            },
-                            {
-                                headerName:"Execution Eco Color",
-                                colId:'eec',
-                                field:'eec'
-                            },
-                            {
-                                headerName:"Remarks",
-                                colId:'remarks',
-                                field:'remarks'
-                            }
-                        ]}
+                        colDefs={customGridColDef}
                     />
                     {showStockGrid && (
                         <BPRViewTable
@@ -95,8 +57,8 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                         colDefs={[
                             {
                                 headerName:"Stock at Parent",
-                                colId:'sp',
-                                field:'sp'
+                                colId:'sap',
+                                field:'sap'
                             },
                             {
                                 headerName:"ETA from parent ",
@@ -110,8 +72,8 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             },
                             {
                                 headerName:"Remarks",
-                                colId:'remarks',
-                                field:'remarks'
+                                colId:'remark',
+                                field:'remark'
                             },
                             {
                                 headerName:"Request Expediting",

@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify";
+import { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/VFPagination";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
+import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { useGetPlanningDataCount,useGetPlanningDataGraph, useGetPlanningDataGrid } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 import { PlanningCategory, PlanningCounts } from "../../../../types/MTA"
+import {useSelector,useDispatch} from 'react-redux';
+import { type RootState } from "../../../../../redux/store/store";
+import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
+import { DailyDataGraph } from "../../../../types/MTA";
 const usePlanning = ()=>{
 
     const initialPlanningCounts = {
@@ -13,6 +19,8 @@ const usePlanning = ()=>{
         reviewExcessInventoryCount:0,
         reviewOrderFulfillmentCount:0,
     }
+
+    const dispatch = useDispatch(); 
 
    
     const [planningCounts,setPlanningCounts] = useState<PlanningCounts>(initialPlanningCounts)
@@ -36,6 +44,33 @@ const usePlanning = ()=>{
     const [currentTab,setCurrentTab] = useState<string>('');
 
     const [currentView,setCurrentView] = useState<string>('chart');
+
+    const [currentPage,setCurrentPage] = useState<number>(1);
+
+    const [totalRows,setTotalRows] = useState<number>(0);
+
+    const rowsPerPage = parseInt(process.env.REACT_APP_PLANNING_ROWS_PER_PAGE || '50');
+
+    const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
+    const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
+    const dailyData = useSelector((state:RootState) => state.mta.dailyData);
+
+    const {mutateAsync:getDailyData} = useGetDailyData();
+   
+
+    const paginationProps:VFPaginationProps = {
+        selectedRows:0,
+        totalRows:totalRows,
+        rowsPerPage:rowsPerPage,
+        currentPage:currentPage,
+        handleChangePage:() => {
+            if((currentPage + 1) <= totalRows){
+                fetchAndUpdateGridData(currentPage + 1);
+                setCurrentPage(currentPage + 1)
+            }
+        }
+        
+    }
 
     useEffect(()=>{
         fetchPlanningDataCount();
@@ -188,7 +223,7 @@ const usePlanning = ()=>{
         setIsOverlayVisible(false);
         const data = result.data.data;
         const tempPlanningCount = {...initialPlanningCounts};
-        data.forEach((planningCategoryObj:PlanningCategory) => {
+        data?.forEach((planningCategoryObj:PlanningCategory) => {
             if(planningCategoryObj.category === 'git/wip'){
                 if(planningCategoryObj.parentCount) tempPlanningCount.parentMonitorCount = planningCategoryObj.parentCount;
                 if(planningCategoryObj.childCount) tempPlanningCount.childMonitorCount = planningCategoryObj.childCount;
@@ -210,7 +245,6 @@ const usePlanning = ()=>{
 
 
     const handlePlanningQuadrantClick = async (category:string) => {
-        console.log(category)
         try {
             switch(category){
                 case 'GITFromParent':{
@@ -221,7 +255,7 @@ const usePlanning = ()=>{
                         filters:[],
                         paginationParameter:{
                             pageNumber:1,
-                            recordsPerPage:50
+                            recordsPerPage:rowsPerPage
                         }
                     }
                     const result = await getPlanningDataGrid(body);
@@ -229,6 +263,7 @@ const usePlanning = ()=>{
                     setCurrentCategory(category);
                     setCurrentGridData(result.data.data);
                     setIsSelectCategoryOpen(false);
+                    setTotalRows(planningCounts.parentMonitorCount)
                     toast.dismiss(toastId);
                     notifySuccess("Grid Data Fetched Successfully");
                     break;
@@ -335,10 +370,25 @@ const usePlanning = ()=>{
 
    
 
-    const fetchAndUpdateGridData = async () => {
+    const fetchAndUpdateGridData = async (currentPage:number) => {
         try {
             switch(currentCategory){
                 case 'GITFromParent':{
+                    const toastId = notifyLoader('Loading Grid Data');
+                    const body = {
+                        category:'git',
+                        type:'parent',
+                        filters:[],
+                        paginationParameter:{
+                            pageNumber:currentPage,
+                            recordsPerPage:rowsPerPage
+                        }
+                    }
+                    const result = await getPlanningDataGrid(body);
+                    setCurrentGridData(result.data.data);
+                    setTotalRows(planningCounts.childMonitorCount)
+                    toast.dismiss(toastId);
+                    notifySuccess("Grid Details Fetched Successfully");
                     break;
                 }
                 case 'GITToChild':{
@@ -348,12 +398,13 @@ const usePlanning = ()=>{
                         type:'child',
                         filters:[],
                         paginationParameter:{
-                            pageNumber:1,
-                            recordsPerPage:50
+                            pageNumber:currentPage,
+                            recordsPerPage:rowsPerPage
                         }
                     }
                     const result = await getPlanningDataGrid(body);
                     setCurrentGridData(result.data.data);
+                    setTotalRows(planningCounts.childMonitorCount)
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
                     break;
@@ -365,12 +416,13 @@ const usePlanning = ()=>{
                         type:'parent',
                         filters:[],
                         paginationParameter:{
-                            pageNumber:1,
-                            recordsPerPage:50
+                            pageNumber:currentPage,
+                            recordsPerPage:rowsPerPage
                         }
                     }
                     const result = await getPlanningDataGrid(body);
                     setCurrentGridData(result.data.data);
+                    setTotalRows(planningCounts.parentExpediteCount)
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
                     break;
@@ -382,12 +434,13 @@ const usePlanning = ()=>{
                         type:'child',
                         filters:[],
                         paginationParameter:{
-                            pageNumber:1,
-                            recordsPerPage:50
+                            pageNumber:currentPage,
+                            recordsPerPage:rowsPerPage
                         }
                     }
                     const result = await getPlanningDataGrid(body);
                     setCurrentGridData(result.data.data);
+                    setTotalRows(planningCounts.childExpediteCount)
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
                     break;
@@ -399,11 +452,12 @@ const usePlanning = ()=>{
                         type:'review',
                         filters:[],
                         paginationParameter:{
-                            pageNumber:1,
-                            recordsPerPage:50
+                            pageNumber:currentPage,
+                            recordsPerPage:rowsPerPage
                         }
                     }
                     const result = await getPlanningDataGrid(body);
+                    setTotalRows(planningCounts.reviewExcessInventoryCount)
                     setCurrentGridData(result.data.data);
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
@@ -416,11 +470,12 @@ const usePlanning = ()=>{
                         type:'review',
                         filters:[],
                         paginationParameter:{
-                            pageNumber:1,
-                            recordsPerPage:50
+                            pageNumber:currentPage,
+                            recordsPerPage:rowsPerPage
                         }
                     }
                     const result = await getPlanningDataGrid(body);
+                    setTotalRows(planningCounts.reviewOrderFulfillmentCount)
                     setCurrentGridData(result.data.data);
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
@@ -439,20 +494,40 @@ const usePlanning = ()=>{
     }
 
     const onGoBack = () => {
-        console.log('sadfa')
         setIsSelectCategoryOpen(true);
         setCurrentCategory('');
         setCurrentView('');
         setCurrentTab('');
+        setCurrentPage(1);
     }
 
-    const onViewChange = (view:string) => {
+    const onViewChange = async (view:string) => {
         const activeTab = getFloatingTabsList(view)[0];
         if(activeTab){
              setCurrentTab(getFloatingTabsList(view)[0].value);
         } 
+        await fetchAndUpdateGridData(currentPage);
         setCurrentView(view);
-        fetchAndUpdateGridData();
+        
+    }
+
+    const onOpenDailyDataGraph = async (params:any) => {
+        const payload:any = {
+            SKUCode:params['SKUCode'],
+            WHCode:params['WhCode']
+        }
+        const result = await getDailyData(payload)
+        const dailyData:DailyDataGraph = {
+            rowData:params.data,
+            chartData:result.data.data['dailyData'],
+            normChangeData:result.data.data['normChangeHistory'],
+            masterData:result.data.data['MasterData'],
+            suggestionData:result.data.data['SuggestionHistoryData'],
+            monitoringData:result.data.data['MonitoringData']
+        }
+
+        dispatch(UPDATE_DAILY_DATA(dailyData));
+        dispatch(TOGGLE_GRAPH_MODAL(true));
     }
 
  
@@ -471,6 +546,11 @@ const usePlanning = ()=>{
         setCurrentTab,
         getFloatingTabsList,
         currentGridData,
+        paginationProps,
+        showDailyDataGraphModal,
+        showNormChangeHistoryTable,
+        dailyData,
+        onOpenDailyDataGraph
     }
 
 

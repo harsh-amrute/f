@@ -5,16 +5,18 @@ import { useUserData } from "../../../../context";
 import {ButtonWrapper, AgGridWrapper, AgContainer} from './styles'
 import VFButtonOutline from "../VFButtonOutline";
 import './styles.css'
-
+import { useDispatch } from 'react-redux';
+import { TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
 interface NormChangeHistoryTableProps {
     data:any
-    onGoBack:()=>void
+    onGoBack?:()=>void
 }
 
 const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
 
     const {user} = useUserData()
-    const themeUi=user?.user?.theme_ui
+    const themeUi=user?.user?.theme_ui;
+    const dispatch = useDispatch();
 
     const {
         data,
@@ -39,7 +41,7 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
 
     return(
         <>
-        <VFModalCard openModal={true} closeModal={onGoBack} headerText={'Norm Change History'} headerIcon={''} closeIcon={'/assets/img/VectorFLOW/NMS/close-white.svg'} paddingLeftAndRight={0} headerBgColor={'black'}  headerTextColor={'white'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
+        <VFModalCard openModal={true} closeModal={()=>dispatch(TOGGLE_NORM_CHANGE_HISTORY_TABLE(false))} headerText={'Norm Change History'} headerIcon={''} closeIcon={'/assets/img/VectorFLOW/NMS/close-white.svg'} paddingLeftAndRight={0} headerBgColor={'black'}  headerTextColor={'white'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
             <AgContainer>
                 <AgGridWrapper>
                     <div className="ag-theme-alpine "  style={{ height: '158px', width:'700px',textAlign:'center' }}> 
@@ -51,7 +53,7 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
                  </AgGridWrapper> 
             </AgContainer>
             <ButtonWrapper>
-                <VFButtonOutline themeUi={themeUi} onClick={onGoBack} width={125}>Go Back!</VFButtonOutline>
+                <VFButtonOutline themeUi={themeUi} onClick={()=>dispatch(TOGGLE_NORM_CHANGE_HISTORY_TABLE(false))} width={125}>Go Back!</VFButtonOutline>
             </ButtonWrapper>
         </VFModalCard>
         </>

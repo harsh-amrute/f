@@ -21,6 +21,8 @@ import Select from 'react-select'
 import { AgChartsReact } from "ag-charts-react";
 import { getFormattedDate } from "../../../../helpers/utils";
 import {suspensionMessages} from '../../../../helpers/BPRConstants';
+import { useSelector, useDispatch } from 'react-redux';
+import { TOGGLE_GRAPH_MODAL, TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
 
 interface DailyDataGraphModalProps{
   rowData:any,
@@ -30,9 +32,6 @@ interface DailyDataGraphModalProps{
   masterData:any,
   monitoringData:any,
   isModalOpen:boolean,
-  closeModal:()=>void,
-  toggleNormChangeHistoryTable:any
-
 }
 
 interface NormData{
@@ -45,9 +44,11 @@ interface NormData{
 
 
 
-const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,closeModal,toggleNormChangeHistoryTable,monitoringData}:DailyDataGraphModalProps) => {
+const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,monitoringData}:DailyDataGraphModalProps) => {
     // console.log(rowData);
+    const dispatch = useDispatch();
     const suspensionOptions = [
+        {label:'Select Suspension Type',value:''},
         {label:'Upward Stock Based',value:'upwardStockBased'},
         {label:'Downward Stock Based',value:'downwardStockBased'},
         {label:'Upward Consumption Based',value:'upwardConsumptionBased'},
@@ -59,7 +60,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
 
     const generateChartOptions = () => {
         const adjustedChartData = chartData.slice(chartData.length-horizon,chartData.length);
-        const sortedNormChangeData = normChangeData.sort((a:NormChangeHistory,b:NormChangeHistory) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        const sortedNormChangeData = [...normChangeData].sort((a:NormChangeHistory,b:NormChangeHistory) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
         let tempNorm = 0;
         let normData = chartData.map((dailyData:DailyDataChart) => {
@@ -466,7 +467,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
     console.log(rowData)
 
     return(
-        <VFModalCard openModal={isModalOpen} closeModal={closeModal} headerIcon='' headerText="Daily Data Graph" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+        <VFModalCard openModal={isModalOpen} closeModal={()=>dispatch(TOGGLE_GRAPH_MODAL(false))} headerIcon='' headerText="Daily Data Graph" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
             <SCSeasonalityContainer>
                 <SCChartContainer>
                     <AgChartsReact options={generateChartOptions()}/>
@@ -481,7 +482,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                     <SCHorizontalDivider/>
                     <SCDataRow>
                         <SCText fontSize={16} fontWeight={300}>Norm Change History :</SCText>
-                        <div style={{display:'flex',gap:'5px'}} onClick={() => toggleNormChangeHistoryTable(true)}>
+                        <div style={{display:'flex',gap:'5px'}} onClick={() => dispatch(TOGGLE_NORM_CHANGE_HISTORY_TABLE(true))}>
                             <img src="/assets/img/VectorFLOW/BPR/eye-filled-purple.svg"/>
                             <SCText fontSize={16} fontWeight={700} style={{color:'#BC3D81'}}>Click To View</SCText>
                         </div>
@@ -489,7 +490,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                     <SCHorizontalDivider/>
                     <div style={{display:'flex',flexDirection:'column',marginBottom:'20px'}}>
                         <SCText fontSize={16} fontWeight={300}>Select Suspension Type:</SCText>
-                        <Select options={suspensionOptions} placeholder={"Select-"} onChange={(data:any)=>setSuspensionType(data.value)}  />
+                        <Select options={suspensionOptions} placeholder={"Select Suspension Type"} defaultValue={suspensionOptions[0]} onChange={(data:any)=>setSuspensionType(data.value)}  />
                     </div>
                     <SCHorizontalDivider/>
                     <div style={{display:'flex',flexDirection:'column',marginBottom:'20px'}}>

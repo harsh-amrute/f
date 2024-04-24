@@ -1,23 +1,42 @@
-import GridViewTable from "../../../../GridView/GridViewTable"
-import { useMemo} from "react";
-import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTechColorCellRenderer,BPRTagsCellRenderer } from "../../../../../BPR/BPRCellRenderers";
-import { useGetBPRUIConfiguration } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
+import {useState,useMemo} from 'react';
+import GridViewTable from "../../../../GridView/GridViewTable";
+import { BPRTagsCellRenderer } from "../../../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
-import {mapBPRFieldsToColDefs} from '../../../../../../../../../helpers/utils';
+import { VFPaginationProps } from "../../../../../../../../../components/VectorFLOW/commons/VFPagination";
+import { SideBarDef } from 'ag-grid-enterprise';
+import { createIconColumn } from '../../../../../../../../../helpers/utils';
+import BPRGraphCellRenderer from '../../../../../BPR/BPRGraphCellRenderer';
+import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 
-const MonitorGITChildTransporterWiseGrid = ({data}:{data:any})=>{
 
-    const {data:bprUIConfigData} = useGetBPRUIConfiguration()
+const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDataGraph}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any})=>{
 
-
+    const [activeRow,setActiveRow] = useState<any>();
+    const [isSubGridOpen,toggleSubGrid] = useState<any>(false);
+    
     const customCellRenderers = useMemo(() => ({
-        // grapCellRenderer:BPRGraphCellRenderer,
-        colorTechCellRenderer:BPRTechColorCellRenderer,
-        colorEcoCellRenderer:BPREcoColorCellRenderer,
+        grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
-        submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
-        remarksCellRenderer:BPRRemarksCellRenderer
+        colorCellRenderer:ColorCellRenderer
       }), []);
+
+      const sideBar:SideBarDef = {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            toolPanelParams: {
+              suppressPivots: true,
+              suppressPivotMode: true,
+            },
+          
+          },
+        ],
+        defaultToolPanel:'',
+      }
 
     const agGridProps:AgGridReactProps = {
         
@@ -29,8 +48,8 @@ const MonitorGITChildTransporterWiseGrid = ({data}:{data:any})=>{
         readOnlyEdit:true,
         onRowClicked:(params:any)=>{
             if(params.data.transit && params.data.transit.length>0){
-                // setActiveRow(params.data.transit)
-                // toggleSubGrid(true)
+                setActiveRow(params.data.transit)
+                toggleSubGrid(true)
             }
         },
         gridOptions:{
@@ -42,7 +61,7 @@ const MonitorGITChildTransporterWiseGrid = ({data}:{data:any})=>{
             return { background: "#F7F7F7" };
             },
         },
-        pagination:true,
+        sideBar:sideBar,
         suppressRowClickSelection:true,
         components:customCellRenderers,
         defaultColDef:{
@@ -66,12 +85,81 @@ const MonitorGITChildTransporterWiseGrid = ({data}:{data:any})=>{
         }
     }
 
- 
+    const customGridColDef = [
+        {
+            headerName:"SKU Code",
+            colId:'SKUCode',
+            field:'SKUCode'
+        },
+        {
+            headerName:"Qty",
+            colId:'InTransitQty',
+            field:'InTransitQty'
+        },
+        {
+            headerName:"Physical Inventory Color",
+            colId:'PhysicalInventoryColor',
+            field:'PhysicalInventoryColor'
+        },
+        {
+            headerName:"Pipeline Inventory Color",
+            colId:'PipelineInventoryColor',
+            field:'PipelineInventoryColor'
+        },
+        {
+            headerName:"Price",
+            colId:'Price',
+            field:'Price'
+        },
+        {
+            headerName:"Brand",
+            colId:'SL1',
+            field:'SL1'
+        },
+        {
+            headerName:"Sub Brand",
+            colId:'SL2',
+            field:'SL2'
+        },
+    ]
 
-    const PlanningColumns = mapBPRFieldsToColDefs(bprUIConfigData?.data.data,()=>{console.log('hello')},()=>{console.log('hello')},()=>{console.log('hello')})
+    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
+        let colDefs = [];
+        const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            if(['plp','pip'].includes(column.colCode)){
+                return {
+                    field:column['colCode'],
+                    colId:column['colCode'],
+                    headerName:column['header'],
+                    cellRenderer:'colorCellRenderer',
+                }
+            }
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [dailyDataColDef,...colDefs]
+    }
+
+    const colDefs = mapUIConfigToColdefs(data['uiConfig'])
+    
+
+
+   
 
     return(
-        <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={data ? data : []} customGridRowData={[]} customGridColDef={[]} isSubGridOpen={false}/>
+        <GridViewTable 
+            agGridProps={agGridProps} 
+            agGridColDefs={colDefs} 
+            agGridRowData={data['data']} 
+            customGridRowData={activeRow} 
+            customGridColDef={customGridColDef} 
+            isSubGridOpen={isSubGridOpen}
+            paginationProps={paginationProps}
+        />
     )
 }
 

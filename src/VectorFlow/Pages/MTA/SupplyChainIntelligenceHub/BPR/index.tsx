@@ -15,7 +15,6 @@ import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons
 
 
 
-
 const BPR = ()=>{
 
 
@@ -38,19 +37,12 @@ const BPR = ()=>{
         onCloseSubmitRemark,
         onSubmitRemark,
         onCloseRemarkHistory,
+        dailyData,
         showDailyDataGraphModal,
-        toggleDailyDataGraphModal,
-        dailyDataParams,
-        normChangeData,
-        chartData,
-        masterData,
-        normChangeHistoryTable,
-        toggleNormChangeHistoryTable,
-        suggestionData,
-        monitoringData
+        showNormChangeHistoryTable
+       
     } = useBPR();
 
-    
 
     
     if(isLoading){
@@ -64,10 +56,10 @@ const BPR = ()=>{
         <>
         <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BPR'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
         {
-            showDailyDataGraphModal && <DailyDataGraphModal rowData={{...dailyDataParams?.data}} chartData={chartData? chartData : []} normChangeData={normChangeData} masterData={masterData} isModalOpen={showDailyDataGraphModal} toggleNormChangeHistoryTable={toggleNormChangeHistoryTable} closeModal={()=>toggleDailyDataGraphModal(false)} suggestionData={suggestionData} monitoringData={monitoringData} />
+            showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} />
         }
         {
-            normChangeHistoryTable && <NormChangeHistoryTable data={normChangeData ? normChangeData : []} onGoBack={()=>toggleNormChangeHistoryTable(false)}/>
+            showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
         }
         
         <BPRLayout>

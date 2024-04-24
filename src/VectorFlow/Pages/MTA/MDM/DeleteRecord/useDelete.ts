@@ -5,7 +5,7 @@ import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
 import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,SET_RECORD_COUNT,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA, SYNC_ACTIVE_MASTER_TO_MASTER, REMOVE_COLDEFS,ADD_COLDEFS } from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { ColDef } from 'ag-grid-enterprise';
-import { useDeleteMasterData ,useDeleteTask} from '../../../../..//VectorFlow/Services/MTA/MDM';
+import { useDeleteMasterData ,useDeleteTask,useDeleteDraft} from '../../../../..//VectorFlow/Services/MTA/MDM';
 import {createErrorRowData } from '../../../../../helpers/utils';
 
 import _ from 'lodash';
@@ -16,7 +16,8 @@ const useDelete=()=>{
     const allMasters = useSelector((state:RootState)=>state.mdm.allMasters); 
     const activeMaster = useSelector((state:RootState)=>state.mdm.activeMaster)
     const selectedMasters = useSelector((state:RootState)=>state.mdm.masters)
-    const chunkSize = useSelector((state:RootState)=>state.mdm.chunkSize)
+    const chunkSize = useSelector((state:RootState)=>state.mdm.chunkSize);
+    const draftID = useSelector((state:RootState) => state.mdm.draftId);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -24,11 +25,14 @@ const useDelete=()=>{
 
     const {mutateAsync:deleteTask} = useDeleteTask();
 
+    const {mutateAsync:deleteDraft} = useDeleteDraft()
+
 
     const [TASK_ID,setTaskId] = useState<string>();
     const [conflictCount,setConflictCount] = useState<number>(0);
     const [errorCount,setErrorCount] = useState<number>(0);
     const [errorData,setErrorData] = useState<Array<any>>([]);
+    const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
 
     useEffect(()=>{
         if(activeMaster.progress === 'deleteOnline'){
@@ -272,7 +276,9 @@ const useDelete=()=>{
       }
 
       const onSubmit = async(ref:any,isOverWrite?:boolean) => {
+        if(isSubmitDisabled) return;
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
+        setIsSubmitDisabled(true)
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
      
@@ -299,6 +305,9 @@ const useDelete=()=>{
                 }
                 dispatch(UPDATE_ROW_DATA(errorRowData))
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
+              }
+              if(draftID.length > 0){
+                await deleteDraft(draftID);
               }
               dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
               notifySuccess(`Deletions Submitted Successfully`);
@@ -327,9 +336,13 @@ const useDelete=()=>{
               dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
               notifySuccess(`Deletions Submitted Successfully`);
               dispatch(UPDATE_PROGRESS_STATE('submitted'));
+              if(draftID.length > 0){
+                await deleteDraft(draftID);
+              }
             
          }
          dispatch(REMOVE_COLDEFS(['checkbox']));
+         setIsSubmitDisabled(false)
        
       }
 
