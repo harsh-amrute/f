@@ -5,6 +5,8 @@ import * as globalStyles from "../../../../../styles/global";
 export const TaskPendingWrapper = styled.div`
     width:100%;
     margin-bottom:100px;
+    padding-left:50px;
+    padding-top:20px;
 `
 
 export const ActionRendererWrapper = styled.div`

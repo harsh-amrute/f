@@ -30,9 +30,8 @@ const SavedDrafts = ()=>{
     return <VFLoader/>
   }
 
-console.log(process.env.REACT_APP_SAVEDRAFT_PAGE)
   return(
-    <React.Fragment>
+    <div style={{paddingTop:'20px'}}>
       <VFTable
           columnDefs={mapDraftToColumnDefs([
             {
@@ -117,7 +116,7 @@ console.log(process.env.REACT_APP_SAVEDRAFT_PAGE)
           <VFButton themeUi={user.user.theme_ui} onClick={onDeleteDraft}>Yes</VFButton>
         </div>
        </VFModalCard>
-    </React.Fragment>
+    </div>
   )
 }
 

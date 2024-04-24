@@ -89,9 +89,8 @@ const TaskStatus = ()=>{
         return <VFLoader/>
     }
 
-    console.log(process.env.REACT_APP_TASKSTATUS_PAGE)
     return(
-        <React.Fragment>
+        <div style={{paddingTop:'20px'}}>
             <VFTable
                 masterDetail
                 detailCellRenderer={TaskStatusMasterDetail}
@@ -178,7 +177,7 @@ const TaskStatus = ()=>{
                     {...tempAgGridProps}
                   />
                 </div>
-        </React.Fragment>
+        </div>
     )
 }
 
