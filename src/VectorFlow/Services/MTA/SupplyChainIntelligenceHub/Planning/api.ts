@@ -4,7 +4,7 @@ import axios from 'axios'
 export namespace PlanningService {
 
     export const getPlanningDataCount = async (body:any) => {
-        return axios.post(process.env.REACT_APP_VF_MOCK_API_HOST + `/GetPlanningDataCount`,body,{
+        return axios.post(process.env.REACT_APP_VF_API_HOST + `/GetPlanningDataCount`,body,{
             headers: { 'Content-Type': 'application/json' }
           })
       }

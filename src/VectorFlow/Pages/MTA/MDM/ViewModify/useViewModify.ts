@@ -63,6 +63,7 @@ const useViewModify = (pageType:string) => {
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
     const [currentPage,setCurrentPage] = useState(1);
     const rowsPerPage = 50;
+    const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
 
     const [seasonalityActiveQuickFilter,setSeasonalityActiveQuickFilter]  = useState<Array<Array<number>>>([])
     const ref = useRef<GridRef>();
@@ -961,7 +962,10 @@ const useViewModify = (pageType:string) => {
           
 
       const onSubmit = async(isOverWrite?:boolean) => {
+        if(isSubmitDisabled) return;
+        
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit");
+        setIsSubmitDisabled(true)
 
         if(activeMaster.progress === 'editOnline'){
           //remove Editable Coldefs
@@ -1010,6 +1014,9 @@ const useViewModify = (pageType:string) => {
             setSelectedRowsCount(0);
             dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+            if(draftID.length > 0){
+              await deleteDraft(draftID);
+            }
           }
           else{
             // console.time('That took ')
@@ -1059,10 +1066,14 @@ const useViewModify = (pageType:string) => {
               }
               
             }
+           
             notifySuccess(`Modifications Submitted Successfully`);
             setSelectedRowsCount(0);
             dispatch(UPDATE_PROGRESS_STATE('submitted'));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+            if(draftID.length > 0){
+              await deleteDraft(draftID);
+            }
           }
           else{
             // console.time('That took ')
@@ -1093,7 +1104,7 @@ const useViewModify = (pageType:string) => {
 
 
         }
-       
+       setIsSubmitDisabled(false)
       }
 
       const onSeasonalityStatusUpdate = async (status:string) => {

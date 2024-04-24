@@ -34,9 +34,9 @@ const colorMapper =(color:number)=> {
 
  const ColorCellRenderer = (params:any)=>{
 
-    const color = params.colorValue
+    const color = params.value
 
-    const cellColor = colorMapper(params.colorValue)
+    const cellColor = colorMapper(params.value)
     
 
     if(!color){
