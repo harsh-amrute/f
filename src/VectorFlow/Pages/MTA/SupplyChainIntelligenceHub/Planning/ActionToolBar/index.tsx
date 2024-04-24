@@ -2,7 +2,7 @@ import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton';
 import VFFloatingTab from '../../../../../../components/VectorFLOW/commons/VFFloatingTab';
 import VFSelectedFilters from '../../../../../../components/VectorFLOW/commons/VFSelectedFilters';
 import useBPRFilter from '../../../../../../hooks/useBPRFilter';
-import {useState} from 'react';
+import {CSSProperties, useState} from 'react';
 import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { useLocation} from "react-router-dom";
 import { MultiFilterSupplyChainCheckboxList } from '../../../../../../helpers/BPRConstants'
@@ -23,6 +23,7 @@ import {
  
 } from './styles';
 import { useUserData } from '../../../../../../context/UserDataContext';
+import { unset } from 'lodash';
 
 
 interface ActionToolBarProps {
@@ -35,7 +36,7 @@ interface ActionToolBarProps {
     onGoBack:()=>void
     onViewChange:(view:string)=>void,
     disableChartAndGridViewToggle?:boolean,
-    onApplyFilter?:(params:any)=>void
+    onApplyFilter?:(params:any)=>void,
     
 }
 
@@ -134,11 +135,22 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             {
                (view === 'chart') && 
                     <SCTaskBarContainer>
+                        <SCTaskFilterContainer
+                        style={{
+                            maxWidth: currCategory==="GuidedInsight" ? '100%' : '40%', 
+                            width: currCategory === "GuidedInsight" ? '100%' : 'unset',
+                            justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
+                            >
+                        {currCategory==="GuidedInsight" ? null : 
                         <SCGoBackContainer onClick={onGoBack}>
                             <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" />
                             <SCGoBackText><b>Go Back</b></SCGoBackText>
                         </SCGoBackContainer>
+                        }
+                          
                         {tabsList.length > 0 && renderFloatingTab()}
+                        </SCTaskFilterContainer>
+
 
                         <SCCustomActionsContainer>
                             {
@@ -184,11 +196,19 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             {
                (view === 'grid') && 
                     <SCTaskBarContainer>
-                        <SCTaskFilterContainer>
+                        <SCTaskFilterContainer
+                         style={{
+                                maxWidth: currCategory==="GuidedInsight" ? '100%' : '40%', 
+                                width: currCategory === "GuidedInsight" ? '100%' : 'unset',
+                                justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
+                                >
+                         {currCategory==="GuidedInsight" ? null : 
+                                                         
                             <SCGoBackContainer onClick={onGoBack}>
                                 <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
                                 <SCGoBackText><b>Go Back</b></SCGoBackText>
                             </SCGoBackContainer>
+                        }
                             {currCategory === 'GuidedInsight' ? null:
                             
                             <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>

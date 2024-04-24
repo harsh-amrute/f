@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, CSSProperties } from 'react'
 import {VFFloatingTabWrapper,VFFloatingTabButton,VFFloatingTabButtonActiveShadow} from './styles'
 
 export interface VFFloatingTabItemProps{
@@ -25,7 +25,7 @@ const VFFloatingTab = (props:VFFloatingTabProps)=>{
     const {
         tabs,
         defaultTab=0,
-        handleClick
+        handleClick,
     } = props
     
     const [activeIndex,setActiveIndex] = useState<number>(defaultTab)
