@@ -1,5 +1,4 @@
 import { createAction } from '@reduxjs/toolkit';
-import { ColDef } from 'ag-grid-enterprise';
 import { type DailyDataGraph } from '../../../VectorFlow/types/MTA';
 
 const actions =  {

@@ -4,11 +4,11 @@ import { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { useGetPlanningDataCount,useGetPlanningDataGraph, useGetPlanningDataGrid } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
-import { PlanningCategory, PlanningCounts } from "../../../../types/MTA"
+import { PlanningCategory, PlanningCounts, DailyDataGraph } from "../../../../types/MTA"
 import {useSelector,useDispatch} from 'react-redux';
 import { type RootState } from "../../../../../redux/store/store";
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
-import { DailyDataGraph } from "../../../../types/MTA";
+
 const usePlanning = ()=>{
 
     const initialPlanningCounts = {

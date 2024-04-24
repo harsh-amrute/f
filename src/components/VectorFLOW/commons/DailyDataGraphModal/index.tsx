@@ -21,7 +21,7 @@ import Select from 'react-select'
 import { AgChartsReact } from "ag-charts-react";
 import { getFormattedDate } from "../../../../helpers/utils";
 import {suspensionMessages} from '../../../../helpers/BPRConstants';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { TOGGLE_GRAPH_MODAL, TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
 
 interface DailyDataGraphModalProps{
@@ -464,8 +464,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
     const onChangeHorizon = (horizon:number) => {
         setHorizon(horizon)
     } 
-    console.log(rowData)
-
+   
     return(
         <VFModalCard openModal={isModalOpen} closeModal={()=>dispatch(TOGGLE_GRAPH_MODAL(false))} headerIcon='' headerText="Daily Data Graph" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
             <SCSeasonalityContainer>

@@ -9,7 +9,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "../../../../../../redux/store/store";
 import { useGetPlanningDataCustom } from "../../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
-import { VFPaginationProps } from "~/components/VectorFLOW/commons/VFPagination";
+import { VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
 
 // const mockFn = jest.fn()
 const queryClient = setupReactQuery();

@@ -19,8 +19,7 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
     const dispatch = useDispatch();
 
     const {
-        data,
-        onGoBack
+        data
     } = props
 
     const CustomHeader = ({headerName}: any) => {

@@ -20,18 +20,18 @@ const setDailyData = (state:any,action:PayloadAction<DailyDataGraph>)=>{
   
 
 
-const resetState = (state:any) => {
-    state.align = [];
-    state.masters=[];
-    state.options=[];
-    state.selectedOptions=[];
-    state.activeMaster={id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[]};
-    state.isSelectMasterOpen = true;
-    state.draftId = '';
-    state.recordCount = 0;
-    state.isDataAvailableLocally = false;
-    state.isUploadModalOpen = false
-}
+// const resetState = (state:any) => {
+//     state.align = [];
+//     state.masters=[];
+//     state.options=[];
+//     state.selectedOptions=[];
+//     state.activeMaster={id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[]};
+//     state.isSelectMasterOpen = true;
+//     state.draftId = '';
+//     state.recordCount = 0;
+//     state.isDataAvailableLocally = false;
+//     state.isUploadModalOpen = false
+// }
 
 
 

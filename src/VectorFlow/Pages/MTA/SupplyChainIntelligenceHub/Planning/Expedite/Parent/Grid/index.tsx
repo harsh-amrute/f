@@ -1,5 +1,4 @@
 import {useState,useMemo}from 'react';
-import React from 'react'
 import GridViewTable from "../../../GridView/GridViewTable";
 import { BPRTagsCellRenderer } from "../../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
@@ -169,7 +168,7 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph}:{data:an
     ]
 
     return(
-        <React.Fragment>
+        <>
             <GridViewTable 
                 agGridProps={agGridProps} 
                 agGridColDefs={colDefs} 
@@ -183,7 +182,7 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph}:{data:an
                 paginationProps={paginationProps}
             />
             <RequestExpeditingModal isOpen={isExpeditingModalOpen} onClose={()=>toggleExpeditingModal((prev:boolean)=>!prev)}/>
-        </React.Fragment>
+        </>
     )
 }
 
