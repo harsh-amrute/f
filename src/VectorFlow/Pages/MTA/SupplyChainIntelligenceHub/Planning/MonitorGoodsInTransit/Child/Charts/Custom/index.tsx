@@ -5,7 +5,7 @@ import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VF
 import { type GridRef } from "../../../../../../../../types/MDM";
 import { ColDef } from "ag-grid-enterprise";
 // import _ from "lodash";
-import '../../../styles';
+import '../../../styles.css';
 import { useGetPlanningDataCustom } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 import VFLoader from "../../../../../../../../../components/VectorFLOW/commons/VFLoader";
 import { SCDynamicContainer } from "../../../styles";

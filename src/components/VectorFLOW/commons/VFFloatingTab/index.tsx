@@ -1,5 +1,5 @@
 
-import { useEffect, useState, CSSProperties } from 'react'
+import { useEffect, useState } from 'react'
 import {VFFloatingTabWrapper,VFFloatingTabButton,VFFloatingTabButtonActiveShadow} from './styles'
 
 export interface VFFloatingTabItemProps{

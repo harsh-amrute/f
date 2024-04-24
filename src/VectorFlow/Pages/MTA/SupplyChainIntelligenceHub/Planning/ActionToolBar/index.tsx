@@ -2,7 +2,7 @@ import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton';
 import VFFloatingTab from '../../../../../../components/VectorFLOW/commons/VFFloatingTab';
 import VFSelectedFilters from '../../../../../../components/VectorFLOW/commons/VFSelectedFilters';
 import useBPRFilter from '../../../../../../hooks/useBPRFilter';
-import {CSSProperties, useState} from 'react';
+import {useState} from 'react';
 import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { useLocation} from "react-router-dom";
 import { MultiFilterSupplyChainCheckboxList } from '../../../../../../helpers/BPRConstants'
@@ -23,7 +23,6 @@ import {
  
 } from './styles';
 import { useUserData } from '../../../../../../context/UserDataContext';
-import { unset } from 'lodash';
 
 
 interface ActionToolBarProps {
