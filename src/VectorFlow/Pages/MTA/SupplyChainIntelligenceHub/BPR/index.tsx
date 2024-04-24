@@ -85,7 +85,7 @@ const BPR = ()=>{
                     Edit Filter
                 </VFButton>
             </BPRTaskBar> */}
-            <div style={{height:'100vh'}}>
+            <div style={{height:'100vh',marginLeft:'45px'}}>
             <Allotment vertical defaultSizes={[400,100]}>
               <Allotment.Pane >
               <VFTable

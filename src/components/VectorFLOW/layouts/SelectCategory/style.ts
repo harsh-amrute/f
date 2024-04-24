@@ -43,7 +43,7 @@ display:flex;
 align-items:center;
 justify-content:center;
 gap:80px;
-margin-bottom:80px;
+margin-bottom:70px;
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
         .size.desktop}) {
         zoom:0.75;

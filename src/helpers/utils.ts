@@ -494,7 +494,7 @@ export const generateOptions = (data:Master[]) => {
     const tempMasterFields = [...master.fields]
     const tempFields = tempMasterFields.sort((a:Field, b:Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
     tempFields.forEach((field:Field)=>{
-      if(!temp.includes(field.displayName)){
+      if(!temp.includes(field.displayName) && field.visible){
         temp.push(field.displayName);
         options.push({value:field.key,label:field.displayName,})
       }
@@ -518,7 +518,8 @@ export const generateRandomId =(length?:number)=>{
 }
 
 export const replaceKeyWithDisplayName = (message:string,master:MDMMasterState) => {
-  return new String(message).replaceAll(/".*?"/g,(m)=>{
+  console.log(message)
+  return new String(message).replaceAll(/",*?"/g,(m)=>{
     const displayName = master.fields.find((f:Field)=>f.key === m.replaceAll('"',''))?.displayName;
     if(displayName) return displayName
     return m;
@@ -529,7 +530,7 @@ export const checkError = (row:any,master:MDMMasterState,pageType:string) => {
   const masterSchema = pageType === 'remove' ?masterIdToDeleteSchemaMapper[master.id.toString()]:masterIdToSchemaMapper[master.id.toString()];
   let {error,warning}:any = masterSchema.validate(row,{context:row});
   if(error) error = replaceKeyWithDisplayName(error.message,master);
-  if(warning) warning = replaceKeyWithDisplayName(warning,master);
+  if(warning) warning = replaceKeyWithDisplayName(warning.message,master);
   return {error,warning};
 }
 
@@ -1611,6 +1612,7 @@ export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,re
 }
 
 export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[],masterId:any):ColDef[]=>{
+  console.log(masterId)
   const result:any[] = []
   if(Array.isArray(errorConflicts)){
     errorConflicts.map((currError:{errorData:any[],errorType:string})=>{
@@ -1624,13 +1626,15 @@ export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:str
           // console.log(row)
           let isDuplicate = false
         const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
-        for (let i = 0; i < primaryKeys.length; i++){
-          if(row[primaryKeys[i]]===errorRowData[primaryKeys[i]]){
-            isDuplicate = true
-          }
-          else{
-            isDuplicate = false
-            break
+        if(primaryKeys instanceof Array){
+          for (let i = 0; i < primaryKeys.length; i++){
+            if(row[primaryKeys[i]]===errorRowData[primaryKeys[i]]){
+              isDuplicate = true
+            }
+            else{
+              isDuplicate = false
+              break
+            }
           }
         }
         return isDuplicate

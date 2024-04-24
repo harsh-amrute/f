@@ -9,6 +9,8 @@ import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDiv
 import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { AgChartsReact } from "ag-charts-react";
 import { AgChartOptions} from "ag-charts-community";
+
+import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 interface ExpediteParentDispatchesProps{
     data:any
 }
@@ -260,6 +262,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
 
       const chartThemeOverridesG1 = useMemo<any>(() => { 
         return {
+            ...GraphSeriesOverrides,
             palette:{
                 fills:['#0c7528','#570dbf']
             },
@@ -290,6 +293,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
       }, []);
       const chartThemeOverridesG2 = useMemo<any>(() => { 
         return {
+            ...GraphSeriesOverrides,
             palette:{
                 fills:['#0c7528','#570dbf']
             },
@@ -375,6 +379,10 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }
@@ -401,6 +409,10 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                         </div>
                                     )
@@ -441,6 +453,10 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }
@@ -467,6 +483,10 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                         </div>
                                     )
@@ -507,6 +527,10 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                                 customChartThemes={{
                                                     'myCustomTheme':myCustomTheme
                                                 }}
+                                                defaultColDef={{
+                                                    floatingFilter:true,
+                                                    filter: "agMultiColumnFilter",
+                                                  }}
                                             />
                                         )
                                     }      

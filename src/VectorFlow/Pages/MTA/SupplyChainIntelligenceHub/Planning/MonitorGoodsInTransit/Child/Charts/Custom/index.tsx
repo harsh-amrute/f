@@ -149,7 +149,10 @@ const MonitorGITChildCustomCharts = () => {
                 sideBar={true}
                 enableCharts={true}
                 enableRangeSelection={true}
-
+                defaultColDef={{
+                floatingFilter:true,
+                filter: "agMultiColumnFilter",
+                }}
             />
         </>
     )

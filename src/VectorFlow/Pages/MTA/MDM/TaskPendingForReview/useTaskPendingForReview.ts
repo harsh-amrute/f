@@ -63,12 +63,12 @@ const useTaskPendingForReview = ()=>{
         let toastId;
         try {
             resetState()
-            setIsViewTableOpen(false)
+            
             setTaskId(taskData.TaskID)
             
             setTaskActionType(taskData.Actiontype)
             
-            
+            const tempToastId = notifyLoader('Laoding Data')
             const res:any = await getTaskCount(taskData.TaskID);
 
             const taskCount = JSON.parse(res.data.recordCount)[0].recordcount;
@@ -82,7 +82,7 @@ const useTaskPendingForReview = ()=>{
                     recordsPerPage:chunkSize
                 }
             }
-
+            toast.dismiss(tempToastId)
             toastId = notifyLoader(`Downloading Data 0 / ${taskCount}`)
 
 
@@ -123,6 +123,7 @@ const useTaskPendingForReview = ()=>{
             }
 
             notifySuccess("Task Details Fetched Successfully");
+            setIsViewTableOpen(false)
             
         } catch (error) {
             toast.dismiss();

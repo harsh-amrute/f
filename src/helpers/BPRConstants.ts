@@ -65,3 +65,42 @@ export const suspensionMessages = [
     { Key: 4096, Value: "Suspended due to Suggestion acceptance" },
     { Key: 8192, Value: "Suspended due to Seasonality" }
 ]
+
+export const GraphSeriesOverrides = {
+    column:{
+        series:{
+            highlightStyle:{
+                item:{
+                    fill:'rgb(255,255,255,0.2)'
+                }
+            }
+        },
+    },
+    pie:{
+        series:{
+            highlightStyle:{
+                item:{
+                    fill:'rgb(255,255,255,0.2)'
+                }
+            }
+        },
+    },
+    line:{
+        series:{
+            highlightStyle:{
+                item:{
+                    fill:'rgb(255,255,255,0.2)'
+                }
+            }
+        },
+    },
+    histogram:{
+        series:{
+            highlightStyle:{
+                item:{
+                    fill:'rgb(255,255,255,0.2)'
+                }
+            }
+        },
+    },
+}
