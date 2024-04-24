@@ -22,6 +22,12 @@ export const SCDynamicContainer = styled.div`
    
 `
 
+export const SCHorizontalAllignmentWrapper = styled.div`
+    width:100%;
+    padding:25px;
+    padding-top:0px;
+`
+
 export const SCChartContainer = styled.div<{height?:number}>`
     padding:5px;
     border-radius:12px;

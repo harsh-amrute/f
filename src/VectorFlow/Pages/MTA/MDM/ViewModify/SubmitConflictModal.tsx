@@ -24,7 +24,6 @@ const SubmitConflictModal=(props:SubmitConflictModalProps)=>{
     } = props
 
     const {user} = useUserData()
-    console.log(modificationCount)
 
     return (
         <VFModalCard headerText="Submit Data" openModal={true} headerIcon={""} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
@@ -33,19 +32,36 @@ const SubmitConflictModal=(props:SubmitConflictModalProps)=>{
                 {modificationCount>0 && <>{modificationCount} out of {totalCount} records are under modification already</>}
             </SubmitDataTextContainer>
             <SubmitDataButtonWrapper>
-                <VFButtonOutline themeUi={user.user.theme_ui}  onClick={onFailure} width={173} onHoverChild={
-                <>
-                    <img src="/assets/img/VectorFLOW/NMS/close-white.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
-                    Ignore  
-                </>
-                }>
-                    <img src="/assets/img/VectorFLOW/NMS/close.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
-                    Ignore 
-                </VFButtonOutline>
-                <VFButton themeUi={user.user.theme_ui} onClick={onSuccess} width={173}>
-                    <img src="/assets/img/VectorFLOW/NMS/feather-eye.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
-                    Review
-                </VFButton>
+                {
+                    modificationCount>0
+                    ?
+                    <>
+                    <VFButtonOutline themeUi={user.user.theme_ui}  onClick={onFailure} width={173} onHoverChild={
+                        <>
+                            <img src="/assets/img/VectorFLOW/NMS/close-white.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
+                            Ignore  
+                        </>
+                        }>
+                            <img src="/assets/img/VectorFLOW/NMS/close.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
+                            Ignore 
+                        </VFButtonOutline>
+                        <VFButton themeUi={user.user.theme_ui} onClick={onSuccess} width={173}>
+                            <img src="/assets/img/VectorFLOW/NMS/feather-eye.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
+                            Review
+                        </VFButton>
+                    </>
+                        :
+                        <VFButtonOutline themeUi={user.user.theme_ui}  onClick={onFailure} width={173} onHoverChild={
+                            <>
+                                <img src="/assets/img/VectorFLOW/NMS/close-white.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
+                                Ok  
+                            </>
+                            }>
+                                <img src="/assets/img/VectorFLOW/NMS/close.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
+                                Ok 
+                            </VFButtonOutline>
+
+                }
             </SubmitDataButtonWrapper>
         </VFModalCard>
     )

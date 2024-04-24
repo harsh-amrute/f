@@ -6,6 +6,7 @@ import { type GridRef } from "../../../../../../../../types/MDM";
 import { ChartRef, ColDef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../../styles';
 import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
+import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 
 
 interface CreateAvailabilityAtParentProps{
@@ -109,6 +110,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
 
       const chartThemeOverrides = useMemo<any>(() => { 
         return {
+            ...GraphSeriesOverrides,
             palette:{
                 fills:['#0c7528','#570dbf']
             },
@@ -204,6 +206,10 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }
@@ -272,6 +278,10 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }

@@ -469,6 +469,10 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }
@@ -537,6 +541,10 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                                         customChartThemes={{
                                             'myCustomTheme':myCustomTheme
                                         }}
+                                        defaultColDef={{
+                                            floatingFilter:true,
+                                            filter: "agMultiColumnFilter",
+                                          }}
                                     />
                                      )
                                     }
