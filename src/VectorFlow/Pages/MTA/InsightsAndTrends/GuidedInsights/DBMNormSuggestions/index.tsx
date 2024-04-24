@@ -779,7 +779,7 @@ if(isLoadingGraph1 || isLoadingGraph2 || isLoadingGraph3 || isLoadingGraph4){
                       
                                 </SCChartHeaderContainer>
                                 <SCHorizontalDivider/>
-                                <div style={{height:'570px',display:grid3DisplayStatus}}>
+                                <div style={{height:'460px',display:grid3DisplayStatus}}>
                                     {
                                      hideChart3 &&
                                      (
@@ -847,7 +847,7 @@ if(isLoadingGraph1 || isLoadingGraph2 || isLoadingGraph3 || isLoadingGraph4){
                       
                                 </SCChartHeaderContainer>
                                 <SCHorizontalDivider/>
-                                <div style={{height:'570px',display:grid4DisplayStatus}}>
+                                <div style={{height:'460px',display:grid4DisplayStatus}}>
                                     {
                                      hideChart4 &&
                                      (

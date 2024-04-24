@@ -492,7 +492,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                     {!hideChart3 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(3)}/>}
                                 </SCChartHeaderContainer>
                                 <SCHorizontalDivider/>
-                                <div>
+                                <div style={{height: hideChart3? '90%': "unset"}}>
                                     {
                                         hideChart3 && (
                                             <VFTable

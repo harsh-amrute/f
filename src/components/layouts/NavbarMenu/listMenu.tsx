@@ -32,7 +32,7 @@ export const listMenuParent: any = [
     id: 2,
     name: "navbar.listMenuParent.masterDataManagement.title",
     img: "/assets/img/nav/master_data",
-    url: "",
+    url: "/master-data-management/control-panel",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterApprover"],
     child: [
@@ -239,7 +239,7 @@ export const listMenuParent: any = [
     id: 9,
     name: "Replenishment and Replacement",
     img: "/assets/img/VectorFLOW/BPR/replacement",
-    url: "/",
+    url: "/supply-chain-intelligence-hub/planning",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
     avoidHeader:true,

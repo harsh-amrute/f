@@ -63,7 +63,7 @@ const AvailabilityTrend=()=>{
 if(isLoading){
         return <VFLoader/>
     }
-return <div>
+return <div style={{ margin:'25px 20px 0px 20px'}}>
   <div style={{width:650, display:"flex" }}>
   <label style={{fontStyle:"normal",
     fontVariant:"normal",
@@ -71,13 +71,14 @@ return <div>
     fontSize:20,
    paddingTop:20,
    paddingLeft:50,
-    fontFamily:"Roboto"}}> <b>Select Horizon: </b></label>
+    fontFamily:"Roboto", 
+   }}> <b>Select Horizon: </b></label>
                     <VFRangeSlider
                         showTriangle={false}
                         min={1}
                         max={90}
-                        milestones={[0,9,30,60,90]}
-                        strictMode={true}
+                        milestones={[-1,0,30,60,90]}
+                        strictMode={false}
                         width={250}
                         defaultValue={horizon}
                         handleChange={(e)=>setHorizon(e)}

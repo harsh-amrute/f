@@ -8,6 +8,7 @@ import { ColDef } from "ag-grid-enterprise";
 import '../../../styles';
 import { useGetPlanningDataCustom } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 import VFLoader from "../../../../../../../../../components/VectorFLOW/commons/VFLoader";
+import { SCDynamicContainer } from "../../../styles";
 
 
 
@@ -141,6 +142,7 @@ const MonitorGITChildCustomCharts = () => {
     
     return(
         <>
+        <SCDynamicContainer>
             <VFTable
                 ref={refGraph1}
                 columnDefs={customColDefsGraph1}
@@ -150,6 +152,7 @@ const MonitorGITChildCustomCharts = () => {
                 enableRangeSelection={true}
 
             />
+        </SCDynamicContainer>
         </>
     )
     

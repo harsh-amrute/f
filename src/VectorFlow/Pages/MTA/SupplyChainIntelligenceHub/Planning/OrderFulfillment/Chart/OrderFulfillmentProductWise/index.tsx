@@ -240,7 +240,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                                 {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                                <div style={{height:'260px',display:grid1DisplayStatus}}>
+                                <div style={{height:'90%',display:grid1DisplayStatus}}>
                                 {
                                     hideChart1 &&
                                     (
@@ -308,7 +308,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                                 {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                                <div style={{height:'260px',display:grid2DisplayStatus}}>
+                                <div style={{height:'90%',display:grid2DisplayStatus}}>
                                 {
                                     hideChart2 &&
                                     (

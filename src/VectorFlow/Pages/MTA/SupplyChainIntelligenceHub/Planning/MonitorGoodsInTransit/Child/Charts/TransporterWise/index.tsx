@@ -4,7 +4,7 @@ import "allotment/dist/style.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../../../../types/MDM";
 import { ColDef, ChartRef } from "ag-grid-enterprise";
-import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider} from '../../../styles';
+import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider, SCDynamicContainer} from '../../../styles';
 import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 
 
@@ -163,6 +163,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
     
     return(
         <>
+        <SCDynamicContainer>
             <Allotment>
                 <Allotment.Pane preferredSize={1000}>
                     <SCChartContainer height={547}>
@@ -266,6 +267,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                     </div>
                 </Allotment.Pane>
             </Allotment>
+        </SCDynamicContainer>
         </>
     )
     
