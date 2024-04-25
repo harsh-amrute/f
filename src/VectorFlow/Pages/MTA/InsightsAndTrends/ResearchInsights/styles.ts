@@ -25,13 +25,17 @@ export const ResearchInsightsTableTaskBar = styled.div`
 `
 
 export const AvailabilityTrendWrapper = styled.div`
-    height:calc(640px * 0.75);
+    // height:calc(640px * 0.75);
+    height:515px;
+    overflow-y:auto;
+    &::-webkit-scrollbar{
+       display:none;      
+    }
     width:100%;
     min-width:300px;
     background-color:white;
     border-radius:12px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-    overflow:hidden;
 `
 export const AvailabilityTrendHeader = styled.div`
     background-color:black;
