@@ -5,6 +5,7 @@ import { listMenuParent } from "./listMenu";
 import { MenuToolTip } from "../../../components/index";
 import { useState } from "react";
 import { useUserData } from "../../../context";
+import { useNavigate } from "react-router";
 
 const NavbarMenu = ({ setMenuItem, isHide }: any) => {
   const [listMenu, setListMenu] = useState(listMenuParent);
@@ -53,6 +54,7 @@ const NavbarMenu = ({ setMenuItem, isHide }: any) => {
     return srcImg;
   };
 
+  const navigate = useNavigate();
   return (
     <NavStyle.SCGridNav id="vector_nav" className="list-roles-per--content">
       <NavStyle.SCNavBox>
@@ -78,6 +80,8 @@ const NavbarMenu = ({ setMenuItem, isHide }: any) => {
                     src={renderImg(item.img, item.status, item.id)}
                     alt="logo"
                     widthIcon={item.widthIcon}
+                    onClick={()=>{navigate(item.url)}}
+
                   />
                   {!item.status && activeTooltip === item.id && (
                     <MenuToolTip item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} />

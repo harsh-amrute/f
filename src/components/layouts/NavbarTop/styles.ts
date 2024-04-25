@@ -83,7 +83,9 @@ export const SCTxt = styled.span<{ colorTheme: string }>`
       ? globalStyles.chooseThemeColor[props.colorTheme]?.color3
       : globalStyles.white};
   font-weight: 200;
-
+  margin-left:10px;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
       .size.laptopL}) {
     font-size: ${globalStyles.responsiveFontSize};

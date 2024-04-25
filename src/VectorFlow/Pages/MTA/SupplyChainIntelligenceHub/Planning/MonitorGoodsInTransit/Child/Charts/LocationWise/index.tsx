@@ -137,10 +137,10 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                         }
                       }
                   },
+             
                   highlight:{
                     range:'node'
-                  }
-                  
+                  },                  
               },
           };
       }, []);

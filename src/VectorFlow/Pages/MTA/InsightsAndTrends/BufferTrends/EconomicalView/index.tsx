@@ -173,7 +173,8 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
                                     fontVariant:"normal",
                                     fontWeight:400,
                                     fontSize:15,                              
-                                    fontFamily:"Roboto"}}> <b>Select Horizon: </b></label>               
+                                    fontFamily:"Roboto",
+                                    paddingLeft:'10px'}}> <b>Select Horizon: </b></label>               
                                 <VFRangeSlider
                                         showTriangle={false}
                                         min={1}

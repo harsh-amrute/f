@@ -4,6 +4,7 @@ import * as gridSystem from "../../../../../../styles/gridSystem";
 
 
 export const SCDynamicContainer = styled.div`
+    margin-top:25px;
     display:block;
     height:150vh;
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
@@ -20,7 +21,8 @@ export const SCChartContainer = styled.div<{height?:number}>`
     padding:5px;
     border-radius:12px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
-    box-shadow: -5px 5px 25px #86868633;
+    // box-shadow: -5px 5px 25px #86868633;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     margin-right:5px;
     // margin-top:60px;
     margin-bottom:20px;

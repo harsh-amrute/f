@@ -216,7 +216,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                 {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                                <div style={{display:grid1DisplayStatus}}>
+                                <div style={{display:grid1DisplayStatus, height:'90%'}}>
                                 {
                                     hideChart1 &&
                                     (
@@ -288,7 +288,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                 {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                                <div style={{display:grid2DisplayStatus}}>
+                                <div style={{display:grid2DisplayStatus,  height:'90%'}}>
                                 {
                                     hideChart2 &&
                                     (
