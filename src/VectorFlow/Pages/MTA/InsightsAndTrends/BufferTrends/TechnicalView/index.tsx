@@ -162,7 +162,6 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,ha
     
     return(
         <>
-        
             <Allotment>
                 <Allotment.Pane preferredSize={1000}>
                     <SCChartContainer height={375}>
@@ -175,7 +174,7 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,ha
                                     fontWeight:400,
                                     fontSize:15,
                                 
-                                    fontFamily:"Roboto"}}> <b>Select Horizon: </b></label>                
+                                    fontFamily:"Roboto",  paddingLeft:'10px'}}> <b>Select Horizon: </b></label>                
                                 <VFRangeSlider
                                         showTriangle={false}
                                         min={1}

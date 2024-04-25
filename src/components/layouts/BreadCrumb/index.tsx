@@ -8,6 +8,32 @@ const BreadCrumb = () => {
   if(location.pathname ==='/master-data-management/view-modify')return <span>MDM {">"} View / Modify</span>
   if(location.pathname ==='/master-data-management/saved-drafts')return <span>MDM {">"} Saved Drafts</span>
   if(location.pathname ==='/master-data-management/task-status')return <span>MDM {">"} Task Status</span>
+  if(location.pathname ==='/master-data-management/task-pending')return <span>MDM {">"} Task Pending For Review</span>
+
+  if(location.pathname ==='/supply-chain-intelligence-hub/planning')return <span>SCIH {">"} Planning</span>
+  if(location.pathname ==='/supply-chain-intelligence-hub/bpr')return <span>SCIH {">"} BPR</span>
+  if(location.pathname ==='/supply-chain-intelligence-hub/rrr')return <span>SCIH {">"} RRR</span>
+  if(location.pathname ==='/supply-chain-intelligence-hub/bor')return <span>SCIH {">"} BOR</span>
+  if(location.pathname ==='/supply-chain-intelligence-hub/buffer-trend-report')return <span>SCIH {">"} BTR</span>
+
+  if(location.pathname ==='/insights-and-trends/buffer-trend-report')return <span>Insights & Trends {">"} BTR</span>
+  if(location.pathname ==='/insights-and-trends/buffer-trends')return <span>Insights & Trends{">"} BT</span>
+  if(location.pathname ==='/insights-and-trends/guided-insights')return <span>Insights & Trends {">"} GI</span>
+  if(location.pathname ==='/insights-and-trends/research-insights')return <span>Insights & Trends {">"} RI</span>
+
+  if(location.pathname ==='/dbm/dbm-norm-suggestions')return <span>DBM {">"} DBM Norm Suggestion</span>
+
+
+  
+
+
+
+
+
+
+
+
+
 
   if (location.pathname === "/manual-upload") {
     return <span> {t("breadCrumb.ist")} {">"} {t("header.manualUpload")}</span>;

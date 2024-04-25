@@ -2,7 +2,7 @@ import styled from "styled-components"
 
 export const CapsuleWrapper = styled.div`
      width:100%;
-    max-width:120px;
+    // max-width:120px;
     margin-left:auto;
 `
 

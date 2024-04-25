@@ -18,7 +18,7 @@ interface MonitorGITChildLocationWiseProps{
 const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWiseProps) => {
 
     const refGraph1 = useRef<GridRef>();
-    const refGraph2 = useRef<GridRef>();
+    // const refGraph2 = useRef<GridRef>();
     const [hideChart1,toggleChart1] = useState<boolean>(false);
     // const [hideChart2,toggleChart2] = useState<boolean>(false);
     const [grid1DisplayStatus,setGrid1DisplayStatus] = useState<string>('none');
@@ -137,10 +137,10 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                         }
                       }
                   },
+             
                   highlight:{
                     range:'node'
-                  }
-                  
+                  },                  
               },
           };
       }, []);
@@ -159,9 +159,9 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
         'Delay : Transportation Lead Time > Standard Lead Time'
       ]
 
-      const graph2 = [
-        'This box plot graph displays the statistical distribution of delay days in transport for various locations. Each box represents the range of delay days as on today'
-      ]
+    //   const graph2 = [
+    //     'This box plot graph displays the statistical distribution of delay days in transport for various locations. Each box represents the range of delay days as on today'
+    //   ]
 
      
     return(
@@ -240,7 +240,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                             <VFInfoTip text={graph1}/>
                         </div>
                     </Allotment.Pane>
-                    <Allotment.Pane>
+                    {/* <Allotment.Pane>
                         <SCChartContainer height={547}>
                                 <SCChartHeaderContainer>
                                     <SCChartHeader>Statistical Overview of Delay Days in Transport at Receiving Locations</SCChartHeader>
@@ -272,7 +272,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                         <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph2}/>
                         </div>
-                    </Allotment.Pane>
+                    </Allotment.Pane> */}
                 </Allotment>
             </SCDynamicContainer>
         </>

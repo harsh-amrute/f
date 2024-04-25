@@ -6,7 +6,6 @@ import useViewPort from "../../../../hooks/useViewPort";
 
 const WarningCell = (props:ICellRendererParams)=>{
     const message = props.data.warning;
-
     const {getGridZoom,getScreenZoomValue} = useViewPort()
 
     const currScreenZoom = getScreenZoomValue()
@@ -15,6 +14,8 @@ const WarningCell = (props:ICellRendererParams)=>{
 
     const [errorCellPosition,setErrorCellPosition] = useState<CSSProperties>()
     const [isToolTipOpen,setIsToolTipOpen] = useState<boolean>(false)
+
+    console.debug(isToolTipOpen)
 
     const messages = message?.split('.').filter((msg:string)=>msg.length > 1)
     const getFomattedMessage = (msg:string) => {
@@ -66,7 +67,7 @@ const WarningCell = (props:ICellRendererParams)=>{
         <>
             {message &&
             <SCContainer style={{overflow:'visible'}} >
-                <img src="/assets/img/VectorFLOW/NMS/error-orange.svg" width={17} height={17} style={{marginRight:'7px',marginLeft:'5px',cursor:"pointer"}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} data-testid="errorImage"/>
+                <img src="/assets/img/VectorFLOW/NMS/error-orange.svg" width={17} height={17} style={{marginRight:'7px',marginLeft:'5px',cursor:"pointer"}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} data-testid="warningImage"/>
                 <p  >{getFomattedMessage(message)}</p>
                 {isToolTipOpen && (
                     <Portal wrapperId="error-tooltip">

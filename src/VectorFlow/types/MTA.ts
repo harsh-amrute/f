@@ -13,3 +13,19 @@ export interface PlanningCategory {
     parentCount?:number,
     reviewCount?:number
 }
+
+export interface DailyDataGraph {
+    normChangeData:any,
+    chartData:any,
+    masterData:any,
+    suggestionData:any,
+    monitoringData:any,
+    rowData:any
+
+}
+
+export interface MTAStore{
+    showDailyDataGraphModal:boolean,
+    showNormChangeHistoryTable:boolean
+    dailyData:DailyDataGraph
+}

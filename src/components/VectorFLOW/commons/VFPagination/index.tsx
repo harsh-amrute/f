@@ -27,6 +27,7 @@ const VFPagination  = (props:VFPaginationProps)=>{
     const totalPages = Math.ceil(totalRows / (props.rowsPerPage || defaultPaginationLimit));
 
    // const totalPages = Math.ceil(totalRows/rowsPerPage)
+   console.log('hello');
     
     const getTotalItemsString = () => {
         if(totalRows <= rowsPerPage) return `1 to ${totalRows}`;        

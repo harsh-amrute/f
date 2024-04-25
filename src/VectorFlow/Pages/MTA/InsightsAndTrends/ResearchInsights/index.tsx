@@ -70,7 +70,7 @@ const ResearchInsights = ()=>{
         <>
        <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'ResearchInsight'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
         <ResearchInsightsLayout>
-            <ResearchInsightsTableWrapper style={{zoom:0.8}}>
+            <ResearchInsightsTableWrapper style={{zoom:0.8, marginTop:'-15px'}}>
                 <VFTable
                     height={800}
                     {...agGridProps}

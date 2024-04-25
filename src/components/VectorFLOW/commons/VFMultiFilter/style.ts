@@ -94,6 +94,7 @@ display:flex;
 justify-content:flex-start;
 align-items:center;
 gap:6px;
+accent-color:#82104C;
 `
 
 export const TextFieldHeader=styled.div`

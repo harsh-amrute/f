@@ -1,5 +1,5 @@
 
- import {SCChartContainer, SCHorizontalDivider} from '../style';
+ import {SCChartContainer, SCDynamicContainer, SCHorizontalDivider} from '../style';
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { AgChartsReact } from "ag-charts-react";
 import { Allotment } from "allotment";
@@ -94,7 +94,11 @@ const graph2=['This graph highlights the date-wise trend of excess inventory in 
 if(isLoaderGraph1||isLoaderGraph2){
   <VFLoader/>
 }
-    return                 <Allotment>
+    return    (
+
+             
+            <SCDynamicContainer>
+       <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={493} >
 <div style={{top: '316px',
@@ -122,7 +126,9 @@ height: '493px'}}><AgChartsReact options={options2} /></div>
                         </div>
 </Allotment.Pane>
 </Allotment>
-    
+</SCDynamicContainer>
+  
+    )
 }
 
 export default ExcessInventoryTrend

@@ -13,19 +13,22 @@ import ExcessInventoryCustomCharts from "../ExcessInventory/Chart/Custom";
 import OrderFulfillmentLocation from '../OrderFulfillment/Chart/OrderFulfillmentLocationWise';
 import OrderFulfillmentProduct from '../OrderFulfillment/Chart/OrderFulfillmentProductWise';
 import OrderFulfillmentCustomCharts from '../OrderFulfillment/Chart/Custom';
+import { VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
 
 
 interface ChartViewProps {
     category:string,
     currentTab:string,
-    currentGraphData:any
+    currentGraphData:any,
+    paginationProps:VFPaginationProps,
+    onOpenDailyDataGraph:any
 
 }
-const ChartView = ({category,currentTab,currentGraphData}:ChartViewProps) => {
+const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenDailyDataGraph}:ChartViewProps) => {
     const renderGraphs = ()=>{
         switch(category){
             case 'GITFromParent':
-                return <MonitorGITParent data={currentGraphData?currentGraphData : []}/>
+                return <MonitorGITParent data={currentGraphData?currentGraphData : []} paginationProps={paginationProps} onOpenDailyDataGraph={onOpenDailyDataGraph}/>
             case 'GITToChild':
                 if(currentTab === 'locationWise'){
                     return (

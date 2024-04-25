@@ -2,11 +2,14 @@ import styled from "styled-components";
 
 
 export const ResearchInsightsLayout = styled.div`
-    margin-top:10px;
+    // margin-top:10px
+    margin-top:20px;
     min-height:100vh;
     display:grid;
     grid-template-columns:3fr 1fr;
     padding-bottom:50px;
+ 
+
     
 `
 
@@ -22,6 +25,7 @@ export const ResearchInsightsTableTaskBar = styled.div`
 `
 
 export const AvailabilityTrendWrapper = styled.div`
+    height:calc(640px * 0.75);
     width:100%;
     min-width:300px;
     background-color:white;
@@ -49,7 +53,7 @@ export const AvailabilityTrendSection = styled.div`
 
 export const HistoricalAvailabiltyHeader = styled.p`
     font-weight:500;
-    font-size:10px;
+    font-size:14px;
     margin-bottom:5px;
 `
 
@@ -87,7 +91,7 @@ export const HistoricalAvailabiltyContentSectionData = styled.p`
 export const HorizonHeader = styled.p`
     text-align:center;
     font-weight:500;
-    font-size:10px;
+    font-size:14px;
 `
 
 export const ChartHeader = styled.div`
@@ -112,7 +116,7 @@ export const ChartHeaderRadioGroup = styled.div`
     font-style:normal;
     font-variant:normal;
     font-weight:300;
-    font-size:10px;
+    font-size:14px;
     line-height:19px;
     font-family:Roboto;
 `

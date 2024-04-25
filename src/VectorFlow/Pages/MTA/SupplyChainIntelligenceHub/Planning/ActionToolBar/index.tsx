@@ -35,7 +35,7 @@ interface ActionToolBarProps {
     onGoBack:()=>void
     onViewChange:(view:string)=>void,
     disableChartAndGridViewToggle?:boolean,
-    onApplyFilter?:(params:any)=>void
+    onApplyFilter?:(params:any)=>void,
     
 }
 
@@ -139,11 +139,22 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             {
                (view === 'chart') && 
                     <SCTaskBarContainer>
+                        <SCTaskFilterContainer
+                        style={{
+                            maxWidth: currCategory==="GuidedInsight" ? '100%' : '50%', 
+                            width: currCategory === "GuidedInsight" ? '100%' : 'unset',
+                            justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
+                            >
+                        {currCategory==="GuidedInsight" ? null : 
                         <SCGoBackContainer onClick={onGoBack}>
                             <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" />
                             <SCGoBackText><b>Go Back</b></SCGoBackText>
                         </SCGoBackContainer>
+                        }
+                          
                         {tabsList.length > 0 && renderFloatingTab()}
+                        </SCTaskFilterContainer>
+
 
                         <SCCustomActionsContainer>
                             {
@@ -189,11 +200,19 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             {
                (view === 'grid') && 
                     <SCTaskBarContainer>
-                        <SCTaskFilterContainer>
+                        <SCTaskFilterContainer
+                         style={{
+                                maxWidth: currCategory==="GuidedInsight" ? '100%' : '50%', 
+                                width: currCategory === "GuidedInsight" ? '100%' : 'unset',
+                                justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
+                                >
+                         {currCategory==="GuidedInsight" ? null : 
+                                                         
                             <SCGoBackContainer onClick={onGoBack}>
                                 <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
                                 <SCGoBackText><b>Go Back</b></SCGoBackText>
                             </SCGoBackContainer>
+                        }
                             {currCategory === 'GuidedInsight' ? null:
                             
                             <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
@@ -211,17 +230,19 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 
                                 {currCategory==='BufferTrend' ? null :
                                 <>
+                                {currCategory==="GuidedInsight" ? null : 
+                                <>
                                 <SCVerticalDivider/>
                                     <SCViewContainerWithBg>
-                                        {currCategory==="GuidedInsight" ? null : (
                                             <>
                                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
                                              <p>Excel Export</p>
                                             </>
-                                        )}
                                     {/* <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
                                     <p>Excel Export</p> */}
                                 </SCViewContainerWithBg>
+                                </>
+                                }
                                 <SCVerticalDivider/>  
                                 <SCViewContainerWithBg>
                                     <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" onClick={onGoBack} />

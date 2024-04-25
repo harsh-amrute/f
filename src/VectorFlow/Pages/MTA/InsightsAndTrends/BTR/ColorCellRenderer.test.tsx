@@ -37,7 +37,7 @@ import ColorCellRenderer from './ColorCellRenderer';
 
 describe('ColorCellRenderer', () => {
   it('renders with the correct color and text', () => {
-    const { getByTestId } = render(<ColorCellRenderer colorValue={50} />);
+    const { getByTestId } = render(<ColorCellRenderer value={50} />);
     const colorCell = getByTestId('color-cell');
 
     expect(colorCell).toHaveStyle({ backgroundColor: '#EBBF2B', color: 'white' });
@@ -55,7 +55,7 @@ describe('ColorCellRenderer', () => {
 
 describe('colorMapper', () => {
   it('returns white text on black background for negative color', () => {
-    render(<ColorCellRenderer colorValue={-10} />)
+    render(<ColorCellRenderer value={-10} />)
     const color = colorMapper(-10);
     expect(color).toEqual({ bg: 'white', text: 'black' });
   });
@@ -66,13 +66,13 @@ describe('colorMapper', () => {
   });
 
   it('returns white text on yellow background for color between 33.33 and 66.66', () => {
-    render(<ColorCellRenderer colorValue={31} />)
+    render(<ColorCellRenderer value={31} />)
     const color = colorMapper(50);
     expect(color).toEqual({ bg: '#EBBF2B', text: 'white' });
   });
 
   it('returns white text on red background for color between 66.66 and 99.99', () => {
-    render(<ColorCellRenderer colorValue={70} />)
+    render(<ColorCellRenderer value={70} />)
     const color = colorMapper(80);
     expect(color).toEqual({ bg: '#F04D4D', text: 'white' });
   });
