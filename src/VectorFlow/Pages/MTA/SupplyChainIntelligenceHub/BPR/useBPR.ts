@@ -1,7 +1,7 @@
 import { useState,useMemo, useEffect, CSSProperties } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 
-import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { useUserData } from "../../../../../context"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
 import { mapBPRFieldsToColDefs } from "../../../../../helpers/utils"
@@ -19,6 +19,8 @@ const useBPR =()=>{
     const screenZoom = getScreenZoomValue() 
 
     const [isSubGridOpen,toggleSubGrid] = useState<boolean>(false)
+    const [currGridPage,setCurrGridPage] = useState<number>(1)
+    const [recordCount,setRecordCount] = useState<number>(0)
     const [activeRow,setActiveRow] = useState<any>()
     const [BPRRowData,setBPRRowData] = useState<any[]>([])
 
@@ -38,11 +40,14 @@ const useBPR =()=>{
     const [monitoringData,setMonitoringData] = useState<any>();
 
     const [remark,setRemark] = useState<string>('')
+    const [submitRemarkData,setSubmitRemarkData] = useState({
+        skucode:'',
+        whcode:''
+    })
     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
   
     const {data,isLoading:isBPRUILoading,isError} = useGetBPRUIConfiguration()
     
-  
     const {mutateAsync:getBPRData,isLoading:isBPRDataLoading} = useGetBPRData()
 
     const {mutateAsync:submitRemark} = useSubmitBPRRemark()
@@ -51,19 +56,42 @@ const useBPR =()=>{
 
     const {mutateAsync:getDailyData} = useGetDailyData();
 
+    const {mutateAsync:getBPRDataCount,isLoading:isBPRDataCountLoading} = useGetBPRDataCount()
+
     useEffect(()=>{
         async function getBPRRowData(){
-            const rowData =await  getBPRData({
-                filters:[],
-                paginationParameter:{
-                    pageNumber:1,
-                    recordsPerPage:50
-                }
-            })
-            setBPRRowData(rowData.data.data)
+
+            try{
+                const countData = await getBPRDataCount({
+                    id: 1,
+                    name: "",
+                    fields: [],
+                    filters:[],
+                    paginationParameter:{
+                        pageNumber:currGridPage,
+                        recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+                    }
+                })
+    
+                setRecordCount(countData.data.recordCount)
+    
+                const rowData =await  getBPRData({
+                    id: 1,
+                    name: "",
+                    fields: [],
+                    filters:[],
+                    paginationParameter:{
+                        pageNumber:currGridPage,
+                        recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+                    }
+                })
+                setBPRRowData(rowData.data.data)
+            }catch(err:any){
+                notifyError(err)
+            }
         }
         getBPRRowData()
-    },[])
+    },[currGridPage])
   
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -84,13 +112,13 @@ const useBPR =()=>{
         readOnlyEdit:true,
         paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
         onRowClicked:(params:any)=>{
-            if(params.data.transit && params.data.transit.length>0){
-                setActiveRow(params.data.transit)
+            if(params.data.intransit && params.data.intransit.length>0){
+                setActiveRow(params.data.intransit)
                 toggleSubGrid(true)
             }
         },
         gridOptions:{
-            rowHeight:40,
+            rowHeight:50,
             getRowStyle: (params: any) => {
             if (params.node.rowIndex % 2 === 0) {
                 return { background: "#EBEBEB" };
@@ -98,7 +126,6 @@ const useBPR =()=>{
             return { background: "#F7F7F7" };
             },
         },
-        pagination:true,
         suppressRowClickSelection:true,
         components:customCellRenderers,
         defaultColDef:{
@@ -131,7 +158,9 @@ const useBPR =()=>{
             if(remark.length===0) throw new Error("Remark cannot be empty")
             const toastId = notifyLoader("Submitting Remark")
             const {data} = await submitRemark({
-                remark:"The SKU is having trouble with the order delivery please help us with suitable actions"
+                remark:remark,
+                whcode:submitRemarkData.whcode,
+                skucode:submitRemarkData.skucode
             })
             toast.dismiss(toastId)
             // if(data.status!==200)notifyError('Something went wrong')
@@ -152,12 +181,13 @@ const useBPR =()=>{
     const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
 
 
-    const onOpenSubmitRemark = (e:React.MouseEvent<HTMLElement>)=>{
+    const onOpenSubmitRemark = (e:React.MouseEvent<HTMLElement>,row:any)=>{
         const {top,left} = e.currentTarget.getBoundingClientRect()
         setSubmitRemarkToolipPosition({
             top: top * gridZoom * screenZoom,
             left: left * gridZoom * screenZoom,
         })
+        setSubmitRemarkData(row)
         setIsSubmitRemarkToolTipOpen(true)
 
     }
@@ -184,7 +214,6 @@ const useBPR =()=>{
 
     const onOpenDailyDataGraph = async (params:any) => {
         setDailyDataParams(params);
-        console.log(params.data)
         const payload:any = {
             SKUCode:params['SKUCode'],
             WHCode:params['WhCode']
@@ -199,13 +228,17 @@ const useBPR =()=>{
         toggleDailyDataGraphModal(true);
     }
 
+    const handleOnPageChange = (pageNumber:number)=>setCurrGridPage(pageNumber)
+
+    const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
+
     const BPRColumns = mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph)
 
    
     return {
         isSideBarOpen,
         isSubGridOpen,
-        isLoading : isBPRDataLoading || isBPRUILoading,
+        isLoading : isBPRDataLoading || isBPRUILoading || isBPRDataCountLoading,
         isError,
         activeRow,
         BPRColumns,
@@ -233,8 +266,12 @@ const useBPR =()=>{
         masterData,
         normChangeHistoryTable,
         toggleNormChangeHistoryTable,
+        handleOnPageChange,
         suggestionData,
-        monitoringData
+        monitoringData,
+        recordCount,
+        currGridPage,
+        rowsPerPage
     }
 }
 

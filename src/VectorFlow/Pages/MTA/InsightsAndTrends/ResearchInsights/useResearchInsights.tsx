@@ -6,7 +6,7 @@ import { mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils
 import {BPRTagsCellRenderer,BPRTechColorCellRenderer,BPREcoColorCellRenderer} from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
 
-import { useGetBPRData, useGetBPRUIConfiguration } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetBPRData, useGetBPRUIConfiguration,useGetBPRDataCount } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { isSameDay,format,addDays } from 'date-fns'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
 import { useGetUpdatedGraphData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
@@ -22,6 +22,11 @@ const useResearchInsights = ()=>{
 
     const [ResearchInsightsData,setResearchInsightsRowData] = useState<Array<any>>([])
     const {mutateAsync:getBPRData,isLoading:isBPRDataLoading} = useGetBPRData()
+
+    const {mutateAsync:getBPRDataCount,isLoading:isBPRDataCountLoading} = useGetBPRDataCount()
+
+    const [currGridPage,setCurrGridPage] = useState<number>(1)
+    const [recordCount,setRecordCount] = useState<number>()
 
     const [isGraphOneOpen,setIsGraphOneOpen] = useState<boolean>(false)
     const [horizon,setHorizon] = useState<number>(10)
@@ -53,17 +58,36 @@ const useResearchInsights = ()=>{
 
     useEffect(()=>{
         async function getBPRRowData(){
+            resetState()
+            if(!recordCount){
+                const countData = await getBPRDataCount({
+                    id: 1,
+                    name: "",
+                    fields: [],
+                    filters:[],
+                    paginationParameter:{
+                        pageNumber:currGridPage,
+                        recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+                    }
+                })
+    
+                setRecordCount(countData.data.recordCount)
+            }
+
             const rowData =await  getBPRData({
+                id: 1,
+                name: "",
+                fields: [],
                 filters:[],
                 paginationParameter:{
-                    pageNumber:1,
-                    recordsPerPage:50
+                    pageNumber:currGridPage,
+                    recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
                 }
             })
             setResearchInsightsRowData(rowData.data.data)
         }
         getBPRRowData()
-    },[])
+    },[currGridPage])
 
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -86,7 +110,6 @@ const useResearchInsights = ()=>{
             return { background: "#F7F7F7" };
             },
         },
-        pagination:true,
         // paginationPageSize:25,
         paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
         suppressRowClickSelection:true,
@@ -151,6 +174,13 @@ const useResearchInsights = ()=>{
         return result;
     }
 
+    const resetState = ()=>{
+        setSelectedRowsDates([])
+        setResearchInsightsRowData([])
+        // ref.current?.api.setNodesSelected({nodes:[],newValue:false})
+        setGraphState('default')
+    }
+
     function convertCustomObjToObjects(colorArray:any) {
         const result:any = [];
     
@@ -195,7 +225,7 @@ const useResearchInsights = ()=>{
             const data = await getUpdatedGraphData({data:selectedRows?.map((s)=>{
                 return {
                     "SKUCode":s.SKUCode,
-                    "WhCode":s.WhCode
+                    "WhCode":s.WHCode
                 }
             })})
             setSelectedRowsDates(data.data.data)
@@ -338,12 +368,16 @@ const useResearchInsights = ()=>{
         return mapResearchInsightsFieldsToColDefs(data?.data.data)
     },[data])
 
+    const handleOnPageChange = (pageNumber:number)=>setCurrGridPage(pageNumber)
+
+    const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
+
     return {
         ref,
         agGridProps,
         ResearchInsightsData,
         ResearchInsightsColumns,
-        isLoading:isBPRDataLoading || isBPRUILoading,
+        isLoading:isBPRDataLoading || isBPRUILoading ||isBPRDataCountLoading,
         isUpdatedGraphDataLoading,
         horizon,
         graphState,
@@ -366,7 +400,11 @@ const useResearchInsights = ()=>{
         getColor,
         setCalenderType,
         handleOnUpdateGraph,
-        setSelectedRowsDates
+        setSelectedRowsDates,
+        currGridPage,
+        handleOnPageChange,
+        rowsPerPage,
+        recordCount
     }
 }
 

@@ -50,7 +50,18 @@ const BPRRemarkHistoryToolTip = (props:BPRRemarkHistoryToolTipProps)=>{
                     {remarkHistory.map((r:any)=>{
                         return(
                             <BPRRemarksToolTipContentRow>
-                            {Object.keys(r).map((key:string)=>{
+                                <BPRRemarksToolTipContentRowCell style={{width:130}}>
+                                    {r.rd}
+                                </BPRRemarksToolTipContentRowCell>
+                                <BPRRemarksToolTipContentRowCell >
+                                    <BPRRemarksToolTipContentRowNameCellSection>
+                                        Name - {r.un}
+                                    </BPRRemarksToolTipContentRowNameCellSection>
+                                    <BPRRemarksToolTipContentRowDataCellSection style={{fontWeight:500,color:" #464646"}}>
+                                        {r.r}
+                                    </BPRRemarksToolTipContentRowDataCellSection>
+                                </BPRRemarksToolTipContentRowCell>
+                            {/* {Object.keys(r).map((key:string)=>{
                                     if(key==="date" ){
                                         return(
                                             <BPRRemarksToolTipContentRowCell style={{width:130}}>
@@ -70,7 +81,7 @@ const BPRRemarkHistoryToolTip = (props:BPRRemarkHistoryToolTipProps)=>{
                                             </BPRRemarksToolTipContentRowCell>
                                         )
                                     }
-                            })}
+                            })} */}
                             </BPRRemarksToolTipContentRow>
                             )
                     })}

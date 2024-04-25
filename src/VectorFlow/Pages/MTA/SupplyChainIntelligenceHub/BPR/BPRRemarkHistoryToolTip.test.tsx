@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { render, screen, fireEvent } from '@testing-library/react';
 import BPRRemarkHistoryToolTip from './BPRRemarkHistoryToolTip';
 
@@ -6,8 +6,8 @@ describe('BPRRemarkHistoryToolTip Component', () => {
   const onCloseMock = jest.fn();
 
   const remarkHistoryData = [
-    { date: '2024-02-21', remark: 'Some remark 1', author: 'Author 1' },
-    { date: '2024-02-22', remark: 'Some remark 2', author: 'Author 2' },
+    { rd: '2024-02-21', r: 'Some remark 1', un: 'Author 1' },
+    { rd: '2024-02-22', r: 'Some remark 2', un: 'Author 2' },
   ];
 
   beforeEach(() => {

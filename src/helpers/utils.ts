@@ -1751,7 +1751,7 @@ export const createIconColumn = (params:any):ColDef=>{
   }
 }
 
-export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(params:any)=>void,onOpenRemarkHistory:(e:any,params:any)=>void,onOpenDailyDataGraph:(params:any)=>void):ColDef[]=>{
+export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(params:any,e:any)=>void,onOpenRemarkHistory:(e:any,params:any)=>void,onOpenDailyDataGraph:(params:any)=>void):ColDef[]=>{
 
   if(!fields || fields.length<1){
     return []
@@ -1768,6 +1768,7 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
      cellRendererParams:{
       onClick:onOpenSubmitRemark
      },
+     pinned:'right',
      cellStyle:{
       overflow:'visible',
       'min-width':180,
@@ -1782,6 +1783,7 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
       cellRendererParams:{
         onClick:onOpenRemarkHistory
        },
+       pinned:'right',
       cellStyle:{
         overflow:'visible',
         'min-width':180,

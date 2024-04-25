@@ -34,6 +34,12 @@ export const useGetBPRUIConfiguration = () => {
    
   }
 
+  export const useGetBPRDataCount = () => {
+    return useMutation(async (payload:BPRDataPayload) => {
+      return await BPRService.getBPRDataCount(payload);
+    });
+  }
+
 
 export const useGetBPRData = () => {
   return useMutation(async (payload:BPRDataPayload) => {

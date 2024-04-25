@@ -20,6 +20,7 @@ import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButt
 import { useUserData } from '../../../../../context'
 import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar'
 import ExpandedGraph from './ReseachInsightsExpandedGraph'
+import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 
 
 
@@ -50,7 +51,11 @@ const ResearchInsights = ()=>{
         expandedGraphAllFilterValues,
         toggleGraphModal,
         setIsGraphOneOpen,
-        updateGraphState
+        updateGraphState,
+        recordCount,
+        rowsPerPage,
+        currGridPage,
+        handleOnPageChange
     } = useResearchInsights()
 
     const {user} = useUserData()
@@ -72,6 +77,13 @@ const ResearchInsights = ()=>{
                     ref={ref}
                     columnDefs={ResearchInsightsColumns}
                     rowData={ResearchInsightsData}
+                />
+                <VFPagination
+                    selectedRows={0}
+                    totalRows={recordCount || 0}
+                    currentPage={currGridPage}
+                    rowsPerPage={rowsPerPage}
+                    handleChangePage={handleOnPageChange}
                 />
                 <ResearchInsightsTableTaskBar>
                     <VFButtonOutline

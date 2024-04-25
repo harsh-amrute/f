@@ -4,7 +4,7 @@ import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { useGetBPRData, useGetBPRRemarkHistory, useGetBPRUIConfiguration, useSubmitBPRRemark, useGetDailyData } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import { useGetBPRData, useGetBPRRemarkHistory, useGetBPRUIConfiguration, useSubmitBPRRemark, useGetDailyData,useGetBPRDataCount } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
 import { GetBPRDataMockResponse, GetBPRUIConfigurationMockResponse, GetDailyDataMockResponse } from '../../../../../mock-data/BPR';
 
 import { ReactNode } from "react";
@@ -33,6 +33,10 @@ const useGetBPRDataMock = useGetBPRData as jest.MockedFunction<
   typeof useGetBPRData
 >
 
+
+const useGetBPRDataCountMock = useGetBPRDataCount as jest.MockedFunction<
+  typeof useGetBPRDataCount
+>
 const useSubmitBPRRemarkMock = useSubmitBPRRemark as jest.MockedFunction<
   typeof useSubmitBPRRemark
 >
@@ -96,6 +100,24 @@ describe('BPR Component', () => {
       return {
         mutateAsync:()=>{
           return {data:GetBPRDataMockResponse}
+        }
+      }
+    })
+    useGetBPRDataCountMock.mockImplementation(():any=>{
+      return {
+        mutateAsync:()=>{
+          return{
+            data:{
+              "recordCount": "148129",
+              "data": null,
+              "status": 200,
+              "msg": null,
+              "errorCount": null,
+              "error": null,
+              "conflictErrorCount": null,
+              "conflictError": null
+            }
+          }
         }
       }
     })
@@ -208,6 +230,25 @@ describe("It handles all interactions",()=>{
         }
       }
       
+    })
+
+    useGetBPRDataCountMock.mockImplementation(():any=>{
+      return {
+        mutateAsync:()=>{
+          return{
+            data:{
+              "recordCount": "148129",
+              "data": null,
+              "status": 200,
+              "msg": null,
+              "errorCount": null,
+              "error": null,
+              "conflictErrorCount": null,
+              "conflictError": null
+            }
+          }
+        }
+      }
     })
 
     useSubmitBPRRemarkMock.mockImplementation(():any=>{
