@@ -4,9 +4,8 @@ import VFSelectedFilters from '../../../../../../components/VectorFLOW/commons/V
 import useBPRFilter from '../../../../../../hooks/useBPRFilter';
 import {useState} from 'react';
 import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
-import { useLocation} from "react-router-dom";
+import { useLocation, Link} from "react-router-dom";
 import { MultiFilterSupplyChainCheckboxList } from '../../../../../../helpers/BPRConstants'
-import { Link } from 'react-router-dom';
 
 
 
