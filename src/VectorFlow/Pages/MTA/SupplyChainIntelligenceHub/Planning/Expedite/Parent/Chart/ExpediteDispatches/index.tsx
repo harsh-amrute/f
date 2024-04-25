@@ -164,6 +164,11 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
         type: "pie",
         title: {
           text: "PRE",
+          fontSize: 12,
+          fontWeight: "bold",
+          color:'black'
+
+
         },
         fills: ["#ED1C24", "#000000", "#FFCB05", "#418D18", "#8B8B8B41"],
         angleKey: "pre",
@@ -179,6 +184,10 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
         type: "donut",
         title: {
           text: "POST",
+          fontSize: 12,
+          fontWeight: "bold",
+          color:'black'
+
         },
         fills: ["#ED1C24", "#000000", "#FFCB05", "#418D18", "#8B8B8B41"],
         angleKey: "post",

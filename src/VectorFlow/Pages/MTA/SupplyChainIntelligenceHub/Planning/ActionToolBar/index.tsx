@@ -6,6 +6,7 @@ import {useState} from 'react';
 import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { useLocation} from "react-router-dom";
 import { MultiFilterSupplyChainCheckboxList } from '../../../../../../helpers/BPRConstants'
+import { Link } from 'react-router-dom';
 
 
 
@@ -23,6 +24,7 @@ import {
  
 } from './styles';
 import { useUserData } from '../../../../../../context/UserDataContext';
+import VFButtonOutline from '../../../../../../components/VectorFLOW/commons/VFButtonOutline';
 
 
 interface ActionToolBarProps {
@@ -114,6 +116,8 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                 return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />
             }
             break;
+            case 'chronicunavailability':
+                return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />
         default:
             <></>
 
@@ -139,26 +143,46 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             {
                (view === 'chart') && 
                     <SCTaskBarContainer>
+                         {currCategory==="GuidedInsight" ? null : 
+                        <SCGoBackContainer onClick={onGoBack}>
+                            <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" />
+                            <SCGoBackText><b>Go Back</b></SCGoBackText>
+                        </SCGoBackContainer>
+                        }
+
                         <SCTaskFilterContainer
                         style={{
                             maxWidth: currCategory==="GuidedInsight" ? '100%' : '50%', 
                             width: currCategory === "GuidedInsight" ? '100%' : 'unset',
                             justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
                             >
-                        {currCategory==="GuidedInsight" ? null : 
-                        <SCGoBackContainer onClick={onGoBack}>
-                            <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" />
-                            <SCGoBackText><b>Go Back</b></SCGoBackText>
-                        </SCGoBackContainer>
-                        }
+
                           
                         {tabsList.length > 0 && renderFloatingTab()}
                         </SCTaskFilterContainer>
 
 
                         <SCCustomActionsContainer>
-                            {
-                                currentTab==='custom' &&
+                           
+                                {currentTab==="chronicunavailability" && 
+                                <>
+                                    <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
+                                    {isFilterOpen && renderFilter()}
+                                </>
+                                }
+                                {currentTab==="dbmnormsuggestions" && 
+                                <>
+                                    <Link to="/dbm/dbm-norm-suggestions" style={{textDecoration:'none'}}>
+                                        <VFButtonOutline onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false} style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px'}}>
+                                            <img src="/assets/img/VectorFLOW/BPR/NormAction.svg" ></img>
+                                            Norm Action
+                                        </VFButtonOutline>
+                                    </Link>       
+                                </>
+                                }
+                             {
+                                (currentTab==='availabilitytrend' ||  currentTab==="availabilityageingtrend" || currentTab==="dbmnormsuggestions" || currentTab==="chronicunavailability") &&
+
                                 (
                                     <>
                                         <SCViewContainerWithBg>
@@ -197,6 +221,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                         </SCCustomActionsContainer>
                     </SCTaskBarContainer>
             }
+
             {
                (view === 'grid') && 
                     <SCTaskBarContainer>
@@ -222,7 +247,6 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                         </SCTaskFilterContainer>
                         <SCCustomActionsContainer>
 
-
                         <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
                             {isFilterOpen && renderFilter()}
                          
@@ -230,7 +254,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 
                                 {currCategory==='BufferTrend' ? null :
                                 <>
-                                {currCategory==="GuidedInsight" ? null : 
+                                {(currCategory==="GuidedInsight")? null : 
                                 <>
                                 <SCVerticalDivider/>
                                     <SCViewContainerWithBg>
@@ -243,6 +267,9 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 </SCViewContainerWithBg>
                                 </>
                                 }
+                                {(currCategory==="GuidedInsight" && currentTab==="chronicunavailability")? null :
+                                <>
+                                
                                 <SCVerticalDivider/>  
                                 <SCViewContainerWithBg>
                                     <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" onClick={onGoBack} />
@@ -261,10 +288,13 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                     }
                                 </>
                                 }
+                                </>
+                                }
                                 
-                                
+
+                              
                             {
-                                (currCategory==='CustomScreens' || currCategory==='BufferTrend' || currCategory==="BPR" || currCategory==="RRR" || currCategory==="BOR" || currCategory==="BTR" || currCategory==="ResearchInsight" || currCategory==="DBMNorm" || currCategory==="GuidedInsight" || currCategory==="OpenExpeditingRequests") ? null : (
+                                (currCategory==='CustomScreens' || currCategory==='BufferTrend' || currCategory==="BPR" || currCategory==="RRR" || currCategory==="BOR" || currCategory==="BTR" || currCategory==="ResearchInsight" || currCategory==="DBMNorm" || (currCategory==="GuidedInsight" && currentTab!=="chronicunavailability") || currCategory==="OpenExpeditingRequests" ) ? null : (
                                 !disableChartAndGridViewToggle &&
                                 <SCViewBackground>
                                     <SCViewContainer onClick={() => onViewChange('chart')}>
@@ -285,6 +315,10 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             }
             
         </>
+
+
+
+
     )
 }
 

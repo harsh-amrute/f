@@ -61,7 +61,7 @@ const AvailabilityTrend = () => {
     return <VFLoader />;
   }
   return (
-    <div>
+    <div style={{marginTop:'25px'}}>
       <div style={{ width: 650, display: "flex" }}>
         <label
           style={{
@@ -81,8 +81,8 @@ const AvailabilityTrend = () => {
           showTriangle={false}
           min={1}
           max={90}
-          milestones={[0, 9, 30, 60, 90]}
-          strictMode={true}
+          milestones={[-1, 0, 30, 60, 90]}
+          strictMode={false}
           width={250}
           defaultValue={horizon}
           handleChange={(e) => setHorizon(e)}
