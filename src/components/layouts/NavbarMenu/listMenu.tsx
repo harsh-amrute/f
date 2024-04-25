@@ -268,12 +268,12 @@ export const listMenuParent: any = [
           //   url: "/supply-chain-intelligence-hub/dispatch-planning",
           //   role: ["IST Admin", "IST Requestor"],
           // },
-          // {
-          //   name: "Open Expediting Requests",
-          //   img: "/assets/img/nav/arrow_down.svg",
-          //   url: "//supply-chain-intelligence-hub/open-expediting-requests",
-          //   role: ["IST Admin", "IST Requestor"],
-          // },
+          {
+            name: "Open Expediting Requests",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/open-expediting-requests",
+            role: ["IST Admin", "IST Requestor"],
+          },
           // {
           //   name: "Vendor Dispatch Report",
           //   img: "/assets/img/nav/arrow_down.svg",

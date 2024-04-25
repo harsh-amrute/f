@@ -310,6 +310,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         case "submitted":
             return(
                 <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
+                    <BackButton/>
                     {showSubmittedExportError ? (
                          <VFButton onClick={onClearAndExportErrors} themeUi={themeUi} disabled={false} width={183}>
                                 Export Errors

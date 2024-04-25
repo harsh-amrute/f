@@ -1,7 +1,7 @@
 import { screen, render, fireEvent, cleanup } from "@testing-library/react"
 import { useGetPlanningDataCount, useGetPlanningDataGraph, useGetPlanningDataGrid } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 // import { UserDataContext } from "../../../../../context";
-import { getPlanningDataCountMockData, MonitorGITChildMockData,MonitorGITParentMockData ,getPlanningDataGridMockData, ExpediteParentMockData,ExpediteChildMockData, getPlanningDataGraphMockData } from "../../../../../mock-data/Planning";
+import { getPlanningDataCountMockData, MonitorGITChildMockData, getPlanningDataGridMockData, ExpediteParentMockData,ExpediteChildMockData, getPlanningDataGraphMockData } from "../../../../../mock-data/Planning";
 import Planning from ".";
 import { act } from "react-dom/test-utils";
 import { UserDataContext } from "../../../../../context/UserDataContext";
@@ -126,7 +126,7 @@ describe("Planning Quadrant", () => {
         expect(screen.getAllByTestId('floatingTabButton').length).toEqual(3);
         cleanup();
         useGetPlanningDataGridMock.mockImplementation(()=>{
-            return useGetPlanningDataGridMockData(MonitorGITParentMockData)
+            return useGetPlanningDataGridMockData(getPlanningDataGridMockData['data'])
         })
         render(contextWrapper(<Planning/>,store));
         await act(async () => {

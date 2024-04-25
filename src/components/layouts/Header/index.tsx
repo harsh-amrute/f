@@ -69,7 +69,7 @@ const Header = (props:HeaderProps) => {
   const onMouseLeaveLogo = () => {
     timeoutId = setTimeout(() => {
       hideLogo()
-    }, 3000);
+    }, 300);
   }
 
   const renderHeader = () => {
@@ -141,7 +141,7 @@ const Header = (props:HeaderProps) => {
             )}
           </HeaderStyled.SCHeaderBoxIst>
           <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{right: 0, marginTop: "-110px"}}>
-            <HeaderStyled.SCImg src="/assets/img/logoArvind.png" alt="logo" isHideLogo={isHideLogo} />
+            <HeaderStyled.SCImg src="/assets/img/header/VectorFlowLogoWhite.svg" alt="logo" isHideLogo={isHideLogo} />
           </HeaderStyled.SCWrapperImg>
         </>
       )
@@ -150,7 +150,7 @@ const Header = (props:HeaderProps) => {
     if(urlExcludeHeader.includes(location.pathname)){
       return(
         <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo}>
-            <HeaderStyled.SCImg src="/assets/img/logoArvind.png" alt="logo" isHideLogo={isHideLogo} />
+            <HeaderStyled.SCImg src="/assets/img/header/VectorFlowLogoWhite.svg" alt="logo" isHideLogo={isHideLogo} />
           </HeaderStyled.SCWrapperImg>
       )
     }
@@ -169,7 +169,7 @@ const Header = (props:HeaderProps) => {
             {renderNamePage()}
           </HeaderStyled.SCHeaderText>
           <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo}>
-            <HeaderStyled.SCImg src="/assets/img/logoArvind.png" alt="logo" isHideLogo={isHideLogo} />
+            <HeaderStyled.SCImg src="/assets/img/header/VectorFlowLogoWhite.svg" alt="logo" isHideLogo={isHideLogo} />
           </HeaderStyled.SCWrapperImg>
         </HeaderStyled.SCHeaderBox>
       )

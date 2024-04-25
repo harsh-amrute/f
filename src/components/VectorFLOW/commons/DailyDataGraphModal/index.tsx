@@ -21,6 +21,8 @@ import Select from 'react-select'
 import { AgChartsReact } from "ag-charts-react";
 import { getFormattedDate } from "../../../../helpers/utils";
 import {suspensionMessages} from '../../../../helpers/BPRConstants';
+import { useDispatch } from 'react-redux';
+import { TOGGLE_GRAPH_MODAL, TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
 
 interface DailyDataGraphModalProps{
   rowData:any,
@@ -28,10 +30,8 @@ interface DailyDataGraphModalProps{
   normChangeData:any,
   suggestionData:any,
   masterData:any,
+  monitoringData:any,
   isModalOpen:boolean,
-  closeModal:()=>void,
-  toggleNormChangeHistoryTable:any
-
 }
 
 interface NormData{
@@ -44,9 +44,11 @@ interface NormData{
 
 
 
-const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,closeModal,toggleNormChangeHistoryTable}:DailyDataGraphModalProps) => {
+const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,monitoringData}:DailyDataGraphModalProps) => {
     // console.log(rowData);
+    const dispatch = useDispatch();
     const suspensionOptions = [
+        {label:'Select Suspension Type',value:''},
         {label:'Upward Stock Based',value:'upwardStockBased'},
         {label:'Downward Stock Based',value:'downwardStockBased'},
         {label:'Upward Consumption Based',value:'upwardConsumptionBased'},
@@ -58,7 +60,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
 
     const generateChartOptions = () => {
         const adjustedChartData = chartData.slice(chartData.length-horizon,chartData.length);
-        const sortedNormChangeData = normChangeData.sort((a:NormChangeHistory,b:NormChangeHistory) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        const sortedNormChangeData = [...normChangeData].sort((a:NormChangeHistory,b:NormChangeHistory) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
         let tempNorm = 0;
         let normData = chartData.map((dailyData:DailyDataChart) => {
@@ -199,7 +201,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           `
 
           if(suggestionObject) tooltip += generateRevisionSuggestedBlock(suggestionObject?.oln,suggestionObject?.nn,suggestionObject?.rsn);
-          if(suspensionReasons.length > 0) tooltip += generateSuspensionReasonsBlock(suspensionReasons);
+          if(suspensionReasons.length > 0 && suspensionType!=='') tooltip += generateSuspensionReasonsBlock(suspensionReasons);
 
           tooltip += generateDailyDataBlock(dailyDataObject.stock,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.ceil(params.datum.normYellow*3))
 
@@ -450,15 +452,21 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
 
     }
 
+    const getMonitoringDate = () => {
+        if(suspensionType === 'upwardStockBased') return monitoringData[0]['srrd'];
+        if(suspensionType === 'downwardStockBased') return monitoringData[0]['sgrd'];
+        if(suspensionType === 'upwardConsumptionBased') return monitoringData[0]['crrd'];
+        if(suspensionType === 'downwardConsumptionBased') return monitoringData[0]['cgrd'];
+    }
+
     
 
     const onChangeHorizon = (horizon:number) => {
         setHorizon(horizon)
     } 
-
-
+   
     return(
-        <VFModalCard openModal={isModalOpen} closeModal={closeModal} headerIcon='' headerText="Daily Data Graph" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+        <VFModalCard openModal={isModalOpen} closeModal={()=>dispatch(TOGGLE_GRAPH_MODAL(false))} headerIcon='' headerText="Daily Data Graph" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
             <SCSeasonalityContainer>
                 <SCChartContainer>
                     <AgChartsReact options={generateChartOptions()}/>
@@ -473,7 +481,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                     <SCHorizontalDivider/>
                     <SCDataRow>
                         <SCText fontSize={16} fontWeight={300}>Norm Change History :</SCText>
-                        <div style={{display:'flex',gap:'5px'}} onClick={() => toggleNormChangeHistoryTable(true)}>
+                        <div style={{display:'flex',gap:'5px'}} onClick={() => dispatch(TOGGLE_NORM_CHANGE_HISTORY_TABLE(true))}>
                             <img src="/assets/img/VectorFLOW/BPR/eye-filled-purple.svg"/>
                             <SCText fontSize={16} fontWeight={700} style={{color:'#BC3D81'}}>Click To View</SCText>
                         </div>
@@ -481,7 +489,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                     <SCHorizontalDivider/>
                     <div style={{display:'flex',flexDirection:'column',marginBottom:'20px'}}>
                         <SCText fontSize={16} fontWeight={300}>Select Suspension Type:</SCText>
-                        <Select options={suspensionOptions} placeholder={"Select-"} onChange={(data:any)=>setSuspensionType(data.value)}  />
+                        <Select options={suspensionOptions} placeholder={"Select Suspension Type"} defaultValue={suspensionOptions[0]} onChange={(data:any)=>setSuspensionType(data.value)}  />
                     </div>
                     <SCHorizontalDivider/>
                     <div style={{display:'flex',flexDirection:'column',marginBottom:'20px'}}>
@@ -492,7 +500,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                     <SCDataRow>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Location :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{10}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{rowData['WhCode']}</SCText>
                       </SCDataNode>
                       <SCVerticalDivider/>
                       <SCDataNode>
@@ -525,17 +533,19 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>
-                    <SCDataRow>
-                      <SCDataNode>
-                        <SCText fontWeight={300} fontSize={16}>Total Consumption :</SCText>
+                    <div style={{display:'flex',alignItems:'center',gap:'5px'}}>
+                      <SCText fontWeight={300} fontSize={16}>Monitoring Date :</SCText>
+                      <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{getMonitoringDate()}</SCText>
+                      {/* <SCDataNode>
+                        <SCText fontWeight={300} fontSize={16}>Monitoring Date :</SCText>
                         <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{'5'}</SCText>
-                      </SCDataNode>
-                      <SCVerticalDivider/>
-                      <SCDataNode>
+                      </SCDataNode> */}
+                      {/* <SCVerticalDivider/> */}
+                      {/* <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Total Receipt :</SCText>
                         <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{3}</SCText>
-                      </SCDataNode>
-                    </SCDataRow>
+                      </SCDataNode> */}
+                    </div>
                   </SCSeasonalityDetailsBody>           
                 </SCSeasonalityStatusDetails>
             </SCSeasonalityContainer>

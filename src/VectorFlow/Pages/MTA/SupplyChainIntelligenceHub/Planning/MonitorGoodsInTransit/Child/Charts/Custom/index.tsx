@@ -29,6 +29,7 @@ const MonitorGITChildCustomCharts = () => {
                 filters:[]
             }
             const result = await getPlanningDataCustom(body);
+            console.log(result.data.data);
             setRowData(result.data.data);
         }
         fetchCustomPlanningData()
@@ -150,7 +151,10 @@ const MonitorGITChildCustomCharts = () => {
                 sideBar={true}
                 enableCharts={true}
                 enableRangeSelection={true}
-
+                defaultColDef={{
+                floatingFilter:true,
+                filter: "agMultiColumnFilter",
+                }}
             />
         </SCDynamicContainer>
         </>

@@ -1,4 +1,3 @@
-
 import { Allotment } from "allotment"
 import "allotment/dist/style.css";
 import { GridViewLayout } from "./styles";
@@ -6,6 +5,9 @@ import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
 import BPRViewTable from '../../BPR/BPRViewTable'
+import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
+import { type VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
+// import VFPagination from "~/components/VectorFLOW/commons/VFPagination";
 
 
 interface GridViewTableProps {
@@ -16,22 +18,27 @@ interface GridViewTableProps {
     customGridColDef:Array<{headerName:string,colId:string,field:string}>
     isSubGridOpen:boolean
     showStockGrid?:boolean
+    stockGridData?:Array<any>
+    onRequestExpediting?:()=>void
+    paginationProps?:VFPaginationProps
 }
 
-const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen}:GridViewTableProps) => {
-    console.log(customGridColDef);
-    console.log(customGridRowData);
+const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps}:GridViewTableProps) => {
     
     return(
         <GridViewLayout>
             <div style={{height:'100vh'}}>
                 <Allotment vertical defaultSizes={[400,400]}>
-                <Allotment.Pane >
-                    <VFTable
-                        {...agGridProps}
-                        columnDefs={agGridColDefs}
-                        rowData={agGridRowData}
-                    />
+                <Allotment.Pane>
+                    
+                        <VFTable
+                            {...agGridProps}
+                            columnDefs={agGridColDefs}
+                            rowData={agGridRowData}
+                            height={500}
+                        />
+                        {paginationProps && <VFPagination {...paginationProps}/>}
+    
                 </Allotment.Pane>
                 {isSubGridOpen && (
                     <Allotment.Pane >
@@ -39,95 +46,41 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                     <BPRViewTable
                         tablePrefixSrc="/assets/img/VectorFLOW/BPR/in-transit.svg"
                         rowData={customGridRowData}
-                        colDefs={[
-                            {
-                                headerName:"LR Code",
-                                colId:'WHCode',
-                                field:'WHCode'
-                            },
-                            {
-                                headerName:"Creation Date",
-                                colId:'cd',
-                                field:'cd'
-                            },
-                            {
-                                headerName:"Ageing",
-                                colId:'ageing',
-                                field:'ageing'
-                            },
-                            {
-                                headerName:"ETA",
-                                colId:'eta',
-                                field:'eta'
-                            },
-                            {
-                                headerName:"Current Location",
-                                colId:'cl',
-                                field:'cl'
-                            },
-                            {
-                                headerName:"Quantity",
-                                colId:'quantity',
-                                field:'quantity'
-                            },
-                            {
-                                headerName:"Execution Eco Color",
-                                colId:'eec',
-                                field:'eec'
-                            },
-                            {
-                                headerName:"Remarks",
-                                colId:'remarks',
-                                field:'remarks'
-                            }
-                        ]}
+                        colDefs={customGridColDef}
                     />
                     {showStockGrid && (
                         <BPRViewTable
+                        onRequestExpediting={onRequestExpediting}
                         tableHeader="Details of parent"
                         tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg"
-                        rowData={[{}]}
+                        rowData={stockGridData?stockGridData:[]}
                         colDefs={[
                             {
-                                headerName:"LR Code",
-                                colId:'WHCode',
-                                field:'WHCode'
+                                headerName:"Stock at Parent",
+                                colId:'sap',
+                                field:'sap'
                             },
                             {
-                                headerName:"Creation Date",
-                                colId:'cd',
-                                field:'cd'
-                            },
-                            {
-                                headerName:"Ageing",
-                                colId:'ageing',
-                                field:'ageing'
-                            },
-                            {
-                                headerName:"ETA",
+                                headerName:"ETA from parent ",
                                 colId:'eta',
                                 field:'eta'
                             },
                             {
-                                headerName:"Current Location",
-                                colId:'cl',
-                                field:'cl'
-                            },
-                            {
-                                headerName:"Quantity",
-                                colId:'quantity',
-                                field:'quantity'
-                            },
-                            {
-                                headerName:"Execution Eco Color",
-                                colId:'eec',
-                                field:'eec'
+                                headerName:"Eco Color",
+                                colId:'ec',
+                                field:'ec'
                             },
                             {
                                 headerName:"Remarks",
-                                colId:'remarks',
-                                field:'remarks'
-                            }
+                                colId:'remark',
+                                field:'remark'
+                            },
+                            {
+                                headerName:"Request Expediting",
+                                colId:'request',
+                                field:'request',
+                                onCellClicked:onRequestExpediting
+                            },
                         ]}
                     />
                     )}

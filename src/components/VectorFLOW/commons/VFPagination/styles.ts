@@ -4,9 +4,11 @@ export const PaginationWrapper = styled.div`
     display:flex;
     flex-direction:column;
     padding:0 15px;
-    background-color:white;
+    
     border-radius:inherit;
     margin-top:-15px;
+    position:relative;
+    z-index:20;
 `
 
 export const SelectedRowsCountWrapper = styled.div`
@@ -61,6 +63,7 @@ export const PaginationContainer = styled.div`
     color: black;
     border:1px solid #babfc7;
     border-top:none;
+    background-color:white;
 `
 
 export const StatusBarLabel = styled.div`

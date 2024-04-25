@@ -63,6 +63,7 @@ const useViewModify = (pageType:string) => {
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
     const [currentPage,setCurrentPage] = useState(1);
     const rowsPerPage = 50;
+    const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
 
     const [seasonalityActiveQuickFilter,setSeasonalityActiveQuickFilter]  = useState<Array<Array<number>>>([])
     const ref = useRef<GridRef>();
@@ -707,12 +708,12 @@ const useViewModify = (pageType:string) => {
             // dispatch(UPDATE_PROGRESS_STATE('error'));
             addInvalidDataColDefs('warning');
           }
-          else{
-           if(activeMaster.progress==='deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-           else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+          if(!ifErrorExists){
+            if(activeMaster.progress==='deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+            else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
             addCheckBoxColDefs();
-          }
-         
+           }
+          
           dispatch(SET_RECORD_COUNT(result.length));
           dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
           dispatch(UPDATE_ROW_DATA(result));
@@ -945,6 +946,7 @@ const useViewModify = (pageType:string) => {
             setErrorCount(pureErrorCount);
             setConflictData(conflictData);
             setErrorData(errorData)
+            console.log({isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} )
             return {isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} 
             
           }
@@ -960,7 +962,10 @@ const useViewModify = (pageType:string) => {
           
 
       const onSubmit = async(isOverWrite?:boolean) => {
+        if(isSubmitDisabled) return;
+        
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit");
+        setIsSubmitDisabled(true)
 
         if(activeMaster.progress === 'editOnline'){
           //remove Editable Coldefs
@@ -992,10 +997,10 @@ const useViewModify = (pageType:string) => {
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
               if(localErrorCount>0){
-                errorRowData = createErrorRowData(localErrorData)
+                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
               }
               else{
-                errorRowData = createErrorRowData(errorData)
+                errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
               if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
                 addInvalidDataColDefs('error')
@@ -1009,12 +1014,15 @@ const useViewModify = (pageType:string) => {
             setSelectedRowsCount(0);
             dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+            if(draftID.length > 0){
+              await deleteDraft(draftID);
+            }
           }
           else{
             // console.time('That took ')
             // console.log('Calculating...')
-            const tempCon = createConflictRowData(localConflictData)
-            const tempError = createErrorRowData(localErrorData)
+            const tempCon = createConflictRowData(localConflictData,activeMaster.id)
+            const tempError = createErrorRowData(localErrorData,activeMaster.id)
             const tempResult:any = []
 
             tempCon.forEach((t:any)=>{
@@ -1044,10 +1052,10 @@ const useViewModify = (pageType:string) => {
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
               if(localErrorCount>0){
-                errorRowData = createErrorRowData(localErrorData)
+                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
               }
               else{
-                errorRowData = createErrorRowData(errorData)
+                errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
               if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
                 addInvalidDataColDefs('error')
@@ -1058,16 +1066,20 @@ const useViewModify = (pageType:string) => {
               }
               
             }
+           
             notifySuccess(`Modifications Submitted Successfully`);
             setSelectedRowsCount(0);
             dispatch(UPDATE_PROGRESS_STATE('submitted'));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+            if(draftID.length > 0){
+              await deleteDraft(draftID);
+            }
           }
           else{
             // console.time('That took ')
             // console.log('Calculating...')
-            const tempCon = createConflictRowData(localConflictData)
-            const tempError = createErrorRowData(localErrorData)
+            const tempCon = createConflictRowData(localConflictData,activeMaster.id)
+            const tempError = createErrorRowData(localErrorData,activeMaster.id)
 
             const tempResult:any = []
 
@@ -1092,7 +1104,7 @@ const useViewModify = (pageType:string) => {
 
 
         }
-       
+       setIsSubmitDisabled(false)
       }
 
       const onSeasonalityStatusUpdate = async (status:string) => {
@@ -1411,7 +1423,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const onIgnoreSubmitErrors = ()=>{
-      const errorRowData = createErrorRowData(errorData)
+      const errorRowData = createErrorRowData(errorData,activeMaster.id)
       if(errorRowData.length>0){
         addInvalidDataColDefs('error')
         dispatch(UPDATE_ROW_DATA(errorRowData))

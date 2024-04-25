@@ -109,6 +109,11 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                 return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />;
             }
             break;
+        case 'OpenExpeditingRequests':
+            if(pathname==='/supply-chain-intelligence-hub/open-expediting-requests'){
+                return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />
+            }
+            break;
         default:
             <></>
 
@@ -259,7 +264,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 
                                 
                             {
-                                (currCategory==='CustomScreens' || currCategory==='BufferTrend' || currCategory==="BPR" || currCategory==="RRR" || currCategory==="BOR" || currCategory==="BTR" || currCategory==="ResearchInsight" || currCategory==="DBMNorm" || currCategory==="GuidedInsight") ? null : (
+                                (currCategory==='CustomScreens' || currCategory==='BufferTrend' || currCategory==="BPR" || currCategory==="RRR" || currCategory==="BOR" || currCategory==="BTR" || currCategory==="ResearchInsight" || currCategory==="DBMNorm" || currCategory==="GuidedInsight" || currCategory==="OpenExpeditingRequests") ? null : (
                                 !disableChartAndGridViewToggle &&
                                 <SCViewBackground>
                                     <SCViewContainer onClick={() => onViewChange('chart')}>

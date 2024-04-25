@@ -7,6 +7,7 @@ import { ColDef, ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider, SCDynamicContainer} from '../../../styles';
 import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 
+import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 
 interface MonitorGITChildTransporterWiseProps{
     data:any
@@ -17,6 +18,8 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
 
     const refGraph1 = useRef<GridRef>();
     const refGraph2 = useRef<GridRef>();
+
+    console.log(refGraph1)
     const [hideChart1,toggleChart1] = useState<boolean>(false);
     // const [hideChart2,toggleChart2] = useState<boolean>(false);
     const [grid1DisplayStatus,setGrid1DisplayStatus] = useState<string>('none');
@@ -113,10 +116,12 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
 
       const chartThemeOverridesG1 = useMemo<any>(() => { 
         return {
+            ...GraphSeriesOverrides,
             palette:{
                 fills:['#0c7528','#570dbf']
             },
               common: {
+                
                   legend:{
                     position:'top'
                   },
@@ -195,6 +200,10 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }
@@ -220,6 +229,10 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                             customChartThemes={{
                                                 'myCustomTheme':myCustomTheme
                                             }}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                             disableZoomScaling={true}
                                         />
                                         </div>

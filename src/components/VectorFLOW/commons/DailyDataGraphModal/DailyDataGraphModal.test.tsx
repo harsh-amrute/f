@@ -6,8 +6,9 @@ import { setupReactQuery } from "../../../../config/react-query-config";
 import {ReactNode} from 'react'
 import { GetDailyDataMockResponse } from "../../../../mock-data/BPR";
 import {select} from 'react-select-event'
+import { Provider } from "react-redux";
+import {store} from '../../../../redux/store/store'
 
-const mockFunction = jest.fn()
 const queryClient = setupReactQuery();
 
 const dummyRowData = {
@@ -170,18 +171,18 @@ const dummyprops = {
     normChangeData:GetDailyDataMockResponse.data.normChangeHistory,
     masterData:GetDailyDataMockResponse.data.MasterData,
     suggestionData:GetDailyDataMockResponse.data.SuggestionHistoryData,
+    monitoringData:GetDailyDataMockResponse.data.MonitoringData,
     isModalOpen:true,
-    closeModal:mockFunction,
-    toggleNormChangeHistoryTable:mockFunction
 }
 
 jest.mock("ag-charts-react", () => ({
     AgChartsReact: jest.fn(() => null)
   }));
 
-const contextWrapper = (children: ReactNode) => {
+const contextWrapper = (children: ReactNode,store:any) => {
     return (
       <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
             <UserDataContext.Provider
               value={{
                 user: { user: { theme_ui: "NOIRFUSION" } },
@@ -193,6 +194,7 @@ const contextWrapper = (children: ReactNode) => {
             >
               {children}
             </UserDataContext.Provider>
+        </Provider>
       </QueryClientProvider>
     );
   }
@@ -206,26 +208,25 @@ const contextWrapper = (children: ReactNode) => {
       };
 
     it('Renders the Daily Data Modal',()=>{
-        render(contextWrapper(<DailyDataGraphModal {...dummyprops}></DailyDataGraphModal>))
+        render(contextWrapper(<DailyDataGraphModal {...dummyprops}></DailyDataGraphModal>,store))
     })
 
     it('Opens the Norm Change History Table',async ()=>{
-        render(contextWrapper(<DailyDataGraphModal {...dummyprops}></DailyDataGraphModal>))
+        render(contextWrapper(<DailyDataGraphModal {...dummyprops}></DailyDataGraphModal>,store))
         const clickToViewBtn = screen.getByText('Click To View');
         await waitFor(()=>{
             fireEvent.click(clickToViewBtn)
         })
-        expect(mockFunction).toHaveBeenCalled();
     })
 
     it('Changes the Horizon',async ()=>{
-        const {getByRole} = render(contextWrapper(<DailyDataGraphModal {...dummyprops}></DailyDataGraphModal>))
+        const {getByRole} = render(contextWrapper(<DailyDataGraphModal {...dummyprops}></DailyDataGraphModal>,store))
         const inputRange = getByRole('slider');
         fireEvent.change(inputRange, { target: { value: '75' } });
     })
 
     it('Selects Suspension Type',async ()=>{
-        const {getAllByRole} = render(contextWrapper(<DailyDataGraphModal {...dummyprops}></DailyDataGraphModal>))
+        const {getAllByRole} = render(contextWrapper(<DailyDataGraphModal {...dummyprops}></DailyDataGraphModal>,store))
         await waitFor(async () => {
             const reactSelect = getAllByRole('combobox')[0]
             expect(reactSelect).toBeInTheDocument();

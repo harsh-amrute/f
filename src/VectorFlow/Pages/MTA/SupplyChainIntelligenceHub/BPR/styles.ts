@@ -186,6 +186,7 @@ export const BPRRemarksCellRendererWrapper = styled.div`
 
 export const BPRSubmitRemarkInput = styled.input`
     height:30px;
+    width:90%;
 `
 
 export const BPRRemarkToolTipTextArea = styled.textarea`
@@ -351,4 +352,61 @@ export const TableHeader = styled.p`
     color: #000000;
     margin-left:40px;
     padding:10px;
+`
+
+export const BPRViewTableRequestCellRendererWrapper = styled.div`
+    width:100%;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:30px;
+`
+
+export const BPRViewTableRequestCellRendererImg = styled.img`
+    height:20px;
+    width:20px;
+`
+
+export const BPRViewTableRequestCellRendererText = styled.p`
+    height:20px;
+    width:20px;
+    font-size:12px;
+    font-weight:500;
+    font-family:Roboto;
+    color:rgb(188, 61, 129);
+    margin-left:5px;
+`
+
+export const RequestExpeditingModalContent = styled.div`
+    display:flex;
+    flex-direction:column;
+    width:100%;
+`
+
+export const RequestExpeditingModalInput = styled.textarea`
+    max-height:150px;
+    width:600px;
+    min-height:150px;
+    max-width:600px;
+    min-width:600px;
+    font: normal normal 300 18px/26px Roboto;
+    letter-spacing: 0px;
+    color: #7E7E7E;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    border:none;
+    outline:none;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+    border-radius: 6px;
+    margin:10px;
+`
+
+export const RequestExpeditingModalButtonGroup = styled.div`
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:10px;
+    margin-top:10px;
+    padding:10px;
+    border-top:2px dashed #A0A0A0;
 `

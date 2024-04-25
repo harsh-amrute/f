@@ -15,7 +15,7 @@
 }
 
 .ag-row:hover{
-    background-color: rgb(188, 61, 129,0.2);
+    background-color: rgb(188, 61, 129,0.3) !important;
 }
 
 .ag-root-wrapper{
@@ -32,6 +32,10 @@
     font-family: Roboto;
     letter-spacing: 0px;
     color: #FFFFFF;
+}
+.ag-header-icon{
+    opacity:1 !important;
+    color:white;
 }
 
 .active-row {
@@ -99,4 +103,7 @@
     min-width:unset !important;
     max-width: unset !important;
     width: unset !important;
+}
+.ag-panel-title-bar-button{
+    color:white !important;
 }

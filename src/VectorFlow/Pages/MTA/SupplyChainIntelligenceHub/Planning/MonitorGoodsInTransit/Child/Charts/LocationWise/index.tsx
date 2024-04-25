@@ -8,6 +8,7 @@ import { ColDef, ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../../styles';
 import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 
+import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 
 interface MonitorGITChildLocationWiseProps{
     data:any
@@ -114,6 +115,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
 
       const chartThemeOverridesG1 = useMemo<any>(() => { 
         return {
+            ...GraphSeriesOverrides,
               common: {
                   legend:{
                     position:'top'
@@ -196,6 +198,10 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }

@@ -8,6 +8,9 @@ import { ColDef, ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../styles';
 import VFInfoTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 
+
+import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
+
 interface OrderFulfillmentProps{
     data:any
 }
@@ -148,6 +151,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
 
       const chartThemeOverridesG1 = useMemo<any>(() => { 
         return {
+            ...GraphSeriesOverrides,
               common: {
                   legend:{
                     position:'top'
@@ -176,6 +180,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
 
       const chartThemeOverridesG2 = useMemo<any>(() => { 
         return {
+                ...GraphSeriesOverrides,
               common: {
                   legend:{
                     position:'top'
@@ -263,6 +268,10 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                                                 'myCustomTheme':myCustomThemeG1
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }
@@ -331,6 +340,10 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                                                 'myCustomTheme':myCustomThemeG2
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }

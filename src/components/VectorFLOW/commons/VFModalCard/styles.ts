@@ -48,6 +48,7 @@ export const SCWrapperContent = styled.div<{paddingLeftAndRight:number | undefin
   text-align: left;
   height:auto;
   background-color:${props => props.backgroundColor ? props.backgroundColor :'white'};
+  border-radius:inherit;
 `;
 
 export const SCHeader = styled.div`

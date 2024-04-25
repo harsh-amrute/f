@@ -12,7 +12,7 @@ describe('Testing the Planning Service',  () => {
       process.env = { ...OLD_ENV }; // Make a copy
     });
   
-    process.env.REACT_APP_VF_API_HOST = 'http://10.8.1.10:8888';
+    process.env.REACT_APP_VF_API_HOST = 'http://10.8.1.10:8082';
     process.env.REACT_APP_VF_MOCK_API_HOST='http://10.8.1.10:8081'
   
     afterEach(() => {
@@ -25,7 +25,7 @@ describe('Testing the Planning Service',  () => {
         filters:[]
       }
       const response = await PlanningService.getPlanningDataCount(mockBody);
-      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_MOCK_API_HOST + '/GetPlanningDataCount',mockBody,{
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/GetPlanningDataCount',mockBody,{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
@@ -51,7 +51,7 @@ describe('Testing the Planning Service',  () => {
           filters:[]
         }
         const response = await PlanningService.getPlanningDataGrid(mockBody);
-        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_MOCK_API_HOST + '/GetPlanningDataGrid',mockBody,{
+        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/GetPlanningDataGrid',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
         expect(response.status).toBe(200);
@@ -64,7 +64,7 @@ describe('Testing the Planning Service',  () => {
           filters:[]
         }
         const response = await PlanningService.getPlanningDataCustom(mockBody);
-        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_MOCK_API_HOST + '/GetPlanningDataCustom',mockBody,{
+        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/GetPlanningDataCustom',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
         expect(response.status).toBe(200);

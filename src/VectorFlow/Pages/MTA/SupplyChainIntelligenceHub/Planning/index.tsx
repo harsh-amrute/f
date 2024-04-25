@@ -5,8 +5,8 @@ import VFOverlay from "../../../.././../components/VectorFLOW/commons/VFOverlay"
 import ChartView from "./ChartView";
 import ActionToolBar from './ActionToolBar';
 import GridView from "./GridView";
-
-
+import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
+import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
 const Planning = () => {
 
     const {
@@ -23,7 +23,12 @@ const Planning = () => {
         onGoBack,
         onViewChange,
         getFloatingTabsList,
-        currentGridData
+        currentGridData,
+        paginationProps,
+        showDailyDataGraphModal,
+        showNormChangeHistoryTable,
+        dailyData,
+        onOpenDailyDataGraph
     } = usePlanning();
 
 
@@ -32,9 +37,9 @@ const Planning = () => {
         switch(currentView){
             
             case 'chart':
-                return <ChartView currentTab={currentTab} category={currentCategory} currentGraphData={currentGraphData}/>
+                return <ChartView currentTab={currentTab} category={currentCategory} currentGraphData={currentGraphData} paginationProps={paginationProps} onOpenDailyDataGraph={onOpenDailyDataGraph}/>
             case 'grid':
-                return <GridView currentTab={currentTab} category={currentCategory} currentGridData={currentGridData}/>
+                return <GridView currentTab={currentTab} category={currentCategory} currentGridData={currentGridData} paginationProps={paginationProps} onOpenDailyDataGraph={onOpenDailyDataGraph}/>
 
         }
         
@@ -84,6 +89,12 @@ const Planning = () => {
                     
                     {renderView()}
                 </>
+            }
+            {
+                showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} />
+            }
+            {
+                showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
             }
             
         </>

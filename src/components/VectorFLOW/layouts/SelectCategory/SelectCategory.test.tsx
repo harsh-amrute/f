@@ -1,4 +1,4 @@
-import { screen,render,fireEvent, act } from "@testing-library/react";
+import { screen,render,fireEvent, act, waitFor } from "@testing-library/react";
 import SelectCategory from ".";
 import { UserDataContext } from "../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -52,7 +52,6 @@ const contextWrapper = (children: ReactNode,store:any) => {
 describe ("SelectCategory Component", () => {
     it("renders the Select Category component", async () => {
         render (contextWrapper(<SelectCategory{...dummyprops}></SelectCategory>,store));
-
         const btn = screen.getAllByText('From Parent')[0];
         fireEvent.click(btn);
         expect(btn).toBeInTheDocument();
@@ -67,5 +66,56 @@ describe ("SelectCategory Component", () => {
         })
   
     })
+
+    it("handles clicks", async () => {
+      render (contextWrapper(<SelectCategory{...dummyprops}></SelectCategory>,store));
+      
+
+      const fromBtn = screen.getAllByText('From Parent');
+      fromBtn.forEach((b)=>{
+        act(async()=>{
+          fireEvent.click(b)
+          await waitFor(()=>{
+            const goBackBtn = screen.getByText('Go Back')
+            fireEvent.click(goBackBtn)
+          })
+        })
+
+        
+      })
+
+      const toChild = screen.getAllByText('To Child');
+      toChild.forEach((b)=>{
+        act(async()=>{
+          fireEvent.click(b)
+          await waitFor(()=>{
+            const goBackBtn = screen.getByText('Go Back')
+            fireEvent.click(goBackBtn)
+          })
+        })
+
+        
+      })
+      const tChild = screen.getAllByText('To Child');
+      fireEvent.click(tChild[0])
+      screen.logTestingPlaygroundURL()
+      
+
+      const reviewBtn = screen.getAllByText('Review');
+      reviewBtn.forEach((b)=>{
+        act(async()=>{
+          fireEvent.click(b)
+          await waitFor(()=>{
+            const goBackBtn = screen.getByText('Go Back')
+            fireEvent.click(goBackBtn)
+          })
+        })
+
+        
+      })
+  })
+
+
+    
 
 })

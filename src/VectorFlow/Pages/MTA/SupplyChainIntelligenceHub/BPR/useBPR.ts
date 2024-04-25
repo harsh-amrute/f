@@ -9,14 +9,23 @@ import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
 import useViewPort from "../../../../../hooks/useViewPort"
+import type { RootState } from '../../../../../redux/store/store';
+import { useSelector, useDispatch } from 'react-redux';
+import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
+import { type DailyDataGraph } from "../../../../types/MTA";
 
 const useBPR =()=>{
 
     const {isSideBarOpen} = useUserData()
     const {getGridZoom,getScreenZoomValue} = useViewPort()
+    const dispatch = useDispatch();
 
     const gridZoom = getGridZoom()
     const screenZoom = getScreenZoomValue() 
+
+    const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
+    const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
+    const dailyData = useSelector((state:RootState) => state.mta.dailyData);
 
     const [isSubGridOpen,toggleSubGrid] = useState<boolean>(false)
     const [activeRow,setActiveRow] = useState<any>()
@@ -28,14 +37,7 @@ const useBPR =()=>{
 
     const [isSubmitRemarkToolTipOpen,setIsSubmitRemarkToolTipOpen] = useState<boolean>(false)
     const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
-    const [showDailyDataGraphModal,toggleDailyDataGraphModal] = useState(false);
-    const [dailyDataParams,setDailyDataParams] = useState<any>();
-    const [normChangeData,setNormChangeData] = useState();
-    const [chartData,setChartData] = useState();
-    const [masterData,setMasterData] = useState<any>();
-    const [normChangeHistoryTable,toggleNormChangeHistoryTable] = useState<boolean>(false);
-    const [suggestionData,setSuggestionData] = useState<any>();
-
+   
     const [remark,setRemark] = useState<string>('')
     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
   
@@ -49,6 +51,8 @@ const useBPR =()=>{
     const {mutateAsync:getRemarkHistory} = useGetBPRRemarkHistory()
 
     const {mutateAsync:getDailyData} = useGetDailyData();
+
+
 
     useEffect(()=>{
         async function getBPRRowData(){
@@ -89,8 +93,7 @@ const useBPR =()=>{
             }
         },
         gridOptions:{
-            
-            rowHeight:50,
+            rowHeight:40,
             getRowStyle: (params: any) => {
             if (params.node.rowIndex % 2 === 0) {
                 return { background: "#EBEBEB" };
@@ -183,21 +186,25 @@ const useBPR =()=>{
     }
 
     const onOpenDailyDataGraph = async (params:any) => {
-        setDailyDataParams(params);
-        console.log(params.data)
         const payload:any = {
             SKUCode:params['SKUCode'],
             WHCode:params['WhCode']
         }
         const result = await getDailyData(payload)
-        setChartData(result.data.data['dailyData'])
-        setNormChangeData(result.data.data['normChangeHistory'])
-        setMasterData(result.data.data['MasterData'])
-        setSuggestionData(result.data.data['SuggestionHistoryData'])
+        const dailyData:DailyDataGraph = {
+            rowData:params.data,
+            chartData:result.data.data['dailyData'],
+            normChangeData:result.data.data['normChangeHistory'],
+            masterData:result.data.data['MasterData'],
+            suggestionData:result.data.data['SuggestionHistoryData'],
+            monitoringData:result.data.data['MonitoringData']
+        }
 
-
-        toggleDailyDataGraphModal(true);
+        dispatch(UPDATE_DAILY_DATA(dailyData));
+        dispatch(TOGGLE_GRAPH_MODAL(true));
     }
+
+    
 
     const BPRColumns = mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph)
 
@@ -225,15 +232,10 @@ const useBPR =()=>{
         onSubmitRemark,
         onCloseRemarkHistory,
         onCloseSubmitRemark,
+        dailyData,
         showDailyDataGraphModal,
-        toggleDailyDataGraphModal,
-        dailyDataParams,
-        normChangeData,
-        chartData,
-        masterData,
-        normChangeHistoryTable,
-        toggleNormChangeHistoryTable,
-        suggestionData
+        showNormChangeHistoryTable,
+        
     }
 }
 

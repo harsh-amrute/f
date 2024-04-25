@@ -53,14 +53,16 @@ const SelectCategory=(props:CountProp)=>{
     const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
     const themeUi = user.user.theme_ui
 
-
+    console.debug(currCategory)
 
     return(
     <>
 
 
         <PlanningTaskBar>
-        <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
+        <div >
+            <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
+        </div>
         <ButtonFilterWrapper>
         <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>Edit Filter</VFButton>
             {
