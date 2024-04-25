@@ -7,7 +7,6 @@ import { type GridRef } from "../../../../../../../../types/MDM";
 import { ColDef, ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../../styles';
 import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
-import { HighlightStyle } from "ag-charts-community/dist/types/src/module-support";
 
 
 interface MonitorGITChildLocationWiseProps{

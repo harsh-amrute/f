@@ -136,7 +136,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                     <SCTaskBarContainer>
                         <SCTaskFilterContainer
                         style={{
-                            maxWidth: currCategory==="GuidedInsight" ? '100%' : '40%', 
+                            maxWidth: currCategory==="GuidedInsight" ? '100%' : '50%', 
                             width: currCategory === "GuidedInsight" ? '100%' : 'unset',
                             justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
                             >
@@ -197,7 +197,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                     <SCTaskBarContainer>
                         <SCTaskFilterContainer
                          style={{
-                                maxWidth: currCategory==="GuidedInsight" ? '100%' : '40%', 
+                                maxWidth: currCategory==="GuidedInsight" ? '100%' : '50%', 
                                 width: currCategory === "GuidedInsight" ? '100%' : 'unset',
                                 justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
                                 >
@@ -225,17 +225,19 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 
                                 {currCategory==='BufferTrend' ? null :
                                 <>
+                                {currCategory==="GuidedInsight" ? null : 
+                                <>
                                 <SCVerticalDivider/>
                                     <SCViewContainerWithBg>
-                                        {currCategory==="GuidedInsight" ? null : (
                                             <>
                                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
                                              <p>Excel Export</p>
                                             </>
-                                        )}
                                     {/* <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
                                     <p>Excel Export</p> */}
                                 </SCViewContainerWithBg>
+                                </>
+                                }
                                 <SCVerticalDivider/>  
                                 <SCViewContainerWithBg>
                                     <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" onClick={onGoBack} />

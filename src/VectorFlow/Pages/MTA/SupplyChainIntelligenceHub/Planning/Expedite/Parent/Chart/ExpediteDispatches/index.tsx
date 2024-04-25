@@ -166,7 +166,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
           {
             type:'donut',
             title:{
-                text:'POST'
+                text:'POST',
             },
             fills:['#ED1C24','#000000','#FFCB05','#418D18','#8B8B8B41'],
             angleKey:'post',
@@ -424,7 +424,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                 {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                                <div style={{height:'260px',display:grid2DisplayStatus}}>
+                                <div style={{height:'260px',display:grid2DisplayStatus, }}>
                                 {
                                     hideChart2 &&
                                     (
@@ -492,7 +492,7 @@ const ExpediteDispatches = ({data}:ExpediteParentDispatchesProps) => {
                                     {!hideChart3 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(3)}/>}
                                 </SCChartHeaderContainer>
                                 <SCHorizontalDivider/>
-                                <div style={{height: hideChart3? '90%': "unset"}}>
+                                <div id="hello" style={{height: hideChart3 ? '90%': "unset"}}>
                                     {
                                         hideChart3 && (
                                             <VFTable
