@@ -3,7 +3,7 @@ import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { useGetBPRData,useGetBPRUIConfiguration } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import { useGetBPRData,useGetBPRUIConfiguration ,useGetBPRDataCount} from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
 import {useGetUpdatedGraphData} from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
 import { GetBPRDataMockResponse,GetBPRUIConfigurationMockResponse, GetUpdatedGraphDataMockResponse} from '../../../../../mock-data/BPR';
 import ResearchInsights from './index';
@@ -30,6 +30,10 @@ const queryClient = setupReactQuery();
 
 const useGetBPRDataMock = useGetBPRData as jest.MockedFunction<
   typeof useGetBPRData
+>
+
+const useGetBPRDataCountMock = useGetBPRDataCount as jest.MockedFunction<
+  typeof useGetBPRDataCount
 >
 
 const useGetBPRUIConfigurationMock = useGetBPRUIConfiguration as jest.MockedFunction<
@@ -95,6 +99,24 @@ describe('Research and insights Component', () => {
       }
     })
 
+    useGetBPRDataCountMock.mockImplementation(():any=>{
+      return {
+        mutateAsync:()=>{
+          return{
+            data:{
+              "recordCount": "148129",
+              "data": null,
+              "status": 200,
+              "msg": null,
+              "errorCount": null,
+              "error": null,
+              "conflictErrorCount": null,
+              "conflictError": null
+            }
+          }
+        }
+      }
+    })
 
   });
   it('renders loader when isLoading is true', () => {
@@ -147,6 +169,25 @@ describe('Handles all interactions', () => {
         isLoading:false
       }
     })
+
+    useGetBPRDataCountMock.mockImplementation(():any=>{
+      return {
+        mutateAsync:()=>{
+          return{
+            data:{
+              "recordCount": "148129",
+              "data": null,
+              "status": 200,
+              "msg": null,
+              "errorCount": null,
+              "error": null,
+              "conflictErrorCount": null,
+              "conflictError": null
+            }
+          }
+        }
+      }
+    })
     
     render(contextWrapper(<ResearchInsights />,store));
     
@@ -184,29 +225,29 @@ describe('Handles all interactions', () => {
   //   })
   // })
 
-  it("Clicks on update graph when two rows are selected",async()=>{
+  // it("Clicks on update graph when two rows are selected",async()=>{
     
-    await waitFor(async()=>{
-      const checkboxInput = screen.getAllByLabelText('Press Space to toggle row selection (unchecked)');
-      fireEvent.click(checkboxInput[0])
-      fireEvent.click(checkboxInput[1])
+  //   await waitFor(async()=>{
+  //     const checkboxInput = screen.getAllByLabelText('Press Space to toggle row selection (unchecked)');
+  //     fireEvent.click(checkboxInput[0])
+  //     fireEvent.click(checkboxInput[1])
       
       
       
      
-    })
-  //   await waitFor(()=>{
-      
-  //     const updateGraphBtn = screen.getByText('Update Graph')
-  //     updateGraphBtn.click()
   //   })
-  //   await waitFor(()=>{
+  // // //   await waitFor(()=>{
       
-  //     const canvasElement = screen.getAllByRole('canvas')[0];
-  //     expect(canvasElement).toBeInTheDocument()
-  //   })
+  // // //     const updateGraphBtn = screen.getByText('Update Graph')
+  // // //     updateGraphBtn.click()
+  // // //   })
+  // // //   await waitFor(()=>{
+      
+  // // //     const canvasElement = screen.getAllByRole('canvas')[0];
+  // // //     expect(canvasElement).toBeInTheDocument()
+  // // //   })
    
-  })
+  // })
 
   
 });

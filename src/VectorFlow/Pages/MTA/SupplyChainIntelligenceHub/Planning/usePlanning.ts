@@ -63,11 +63,9 @@ const usePlanning = ()=>{
         totalRows:totalRows,
         rowsPerPage:rowsPerPage,
         currentPage:currentPage,
-        handleChangePage:() => {
-            if((currentPage + 1) <= totalRows){
-                fetchAndUpdateGridData(currentPage + 1);
-                setCurrentPage(currentPage + 1)
-            }
+        handleChangePage:(currPage:number) => {
+            fetchAndUpdateGridData(currPage);
+            setCurrentPage(currPage)
         }
         
     }
@@ -491,6 +489,9 @@ const usePlanning = ()=>{
 
     const onFloatingTabChange = (tab:any) => {
         setCurrentTab(tab.value);
+        if(currentCategory==='GITToChild' && currentView==='grid'){
+            fetchAndUpdateGridData(1)
+        }
     }
 
     const onGoBack = () => {

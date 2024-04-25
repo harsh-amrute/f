@@ -11,6 +11,9 @@ export interface BPRField {
 }
 
 export interface BPRDataPayload{
+    id: number,
+  name: string,
+  fields: Array<any>,
     filters:any[]
     paginationParameter:{
         pageNumber:number,
@@ -35,6 +38,8 @@ export interface BPRRemarkHistoryToolTipProps{
 
 export interface SubmitBPRRemarkPayload{
     remark:string
+    whcode:string
+    skucode:string
 }
 
 export interface GetDailyDataPayload{

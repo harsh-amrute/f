@@ -12,6 +12,7 @@ import BPRRemarkHistoryToolTip from "./BPRRemarkHistoryToolTip"
 import ActionToolBar from "../Planning/ActionToolBar"
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal"
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
+import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 
 
 
@@ -39,9 +40,15 @@ const BPR = ()=>{
         onCloseRemarkHistory,
         dailyData,
         showDailyDataGraphModal,
-        showNormChangeHistoryTable
-       
+        showNormChangeHistoryTable,
+        handleOnPageChange,
+        recordCount,
+        currGridPage,
+        rowsPerPage
     } = useBPR();
+
+    
+
 
 
     
@@ -85,6 +92,13 @@ const BPR = ()=>{
                 columnDefs={BPRColumns}
                 rowData={BPRRowData}
             />
+                <VFPagination
+                    selectedRows={0}
+                    totalRows={recordCount}
+                    currentPage={currGridPage}
+                    rowsPerPage={rowsPerPage}
+                    handleChangePage={handleOnPageChange}
+                />
               </Allotment.Pane>
               <Allotment.Pane maxSize={300}>
               {isSubGridOpen && (
@@ -94,8 +108,8 @@ const BPR = ()=>{
                     colDefs={[
                         {
                             headerName:"LR Code",
-                            colId:'WHCode',
-                            field:'WHCode'
+                            colId:'lc',
+                            field:'lc'
                         },
                         {
                             headerName:"Creation Date",
@@ -104,8 +118,8 @@ const BPR = ()=>{
                         },
                         {
                             headerName:"Ageing",
-                            colId:'ageing',
-                            field:'ageing'
+                            colId:'ag',
+                            field:'ag'
                         },
                         {
                             headerName:"ETA",
@@ -119,13 +133,13 @@ const BPR = ()=>{
                         },
                         {
                             headerName:"Quantity",
-                            colId:'quantity',
-                            field:'quantity'
+                            colId:'qty',
+                            field:'qty'
                         },
                         {
                             headerName:"Execution Eco Color",
-                            colId:'eec',
-                            field:'eec'
+                            colId:'exeecocolor',
+                            field:'exeecocolor'
                         },
                         {
                             headerName:"Remarks",

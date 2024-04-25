@@ -17,7 +17,7 @@ interface MonitorGITChildTransporterWiseProps{
 const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterWiseProps) => {
 
     const refGraph1 = useRef<GridRef>();
-    const refGraph2 = useRef<GridRef>();
+    // const refGraph2 = useRef<GridRef>();
 
     console.log(refGraph1)
     const [hideChart1,toggleChart1] = useState<boolean>(false);
@@ -161,9 +161,9 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
         'Delay : Transportation Lead Time > Standard Lead Time'
       ]
 
-      const graph2 = [
-        'This box plot graph displays the statistical distribution of delay days in transport for various transporters. Each box represents the range of delayed LRs as on today'
-      ]
+    //   const graph2 = [
+    //     'This box plot graph displays the statistical distribution of delay days in transport for various transporters. Each box represents the range of delayed LRs as on today'
+    //   ]
     
     
     return(
@@ -246,7 +246,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                         <VFInfoTip text={graph1}/>
                     </div>
                 </Allotment.Pane>
-                <Allotment.Pane>
+                {/* <Allotment.Pane>
                     <SCChartContainer height={547}>
                             <SCChartHeaderContainer>
                                 <SCChartHeader>Statistical Overview of Delay Days in Transport at Receiving Locations</SCChartHeader>
@@ -278,7 +278,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                     <div style={{marginLeft:'10px',marginRight:'10px'}}>
                         <VFInfoTip text={graph2}/>
                     </div>
-                </Allotment.Pane>
+                </Allotment.Pane> */}
             </Allotment>
         </SCDynamicContainer>
         </>
