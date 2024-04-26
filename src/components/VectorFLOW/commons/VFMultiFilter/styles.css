@@ -25,13 +25,18 @@
 }
 
 .accordian-body{
-    /* margin-top: 12px; */
+    /* margin-top: 12px; */  
     padding-left: 12px;
     overflow: overlay;
     max-height: 144px;
     margin-top:10px;
     /* overflow:scroll;*/
 } 
+.accordian-body:not(.accordian-body .accordian-body)::-webkit-scrollbar {
+    display: none;
+}
+
+
 
 .padded-image {
     padding-right: 10px;
