@@ -303,7 +303,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
         {value:'endswith',label:'Ends with'},
         {value:'doesnotendwith',label:'Does not end with'},
         {value:'hasvalue',label:'Has value'},
-        {value:'hasnovalue',label:'Has no value'},
+        // {value:'hasnovalue',label:'Has no value'},
     ]
     
     const getOperatorValue = ()=>{
@@ -412,7 +412,14 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             operator:"",
             name:filterId
         }
-        
+        if(filterId==='SCF2'){
+            filterObj.attributeName='ForLocationLocationCode';
+            filterObj.operator='=' 
+        }
+        if(filterId==='SCF5'){
+            filterObj.attributeName='ForChildrenLocationCode'; 
+            filterObj.operator='='
+        }
         if(filterId==='PF6'){
             filterObj.attributeName='SKU'; //enter sku
             filterObj.operator='='
@@ -425,10 +432,10 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             filterObj.attributeName='Location'; //location
             filterObj.operator='='
         }
-        if(filterId ==='SCF2' || filterId==='SCF5'){ //locatipon code tha og
-            filterObj.attributeName='Location';
-            filterObj.operator='='
-        }
+        // if(filterId ==='SCF2'){ //locatipon code tha og
+        //     filterObj.attributeName='Location';
+        //     filterObj.operator='='
+        // }
         // if(filterId ==='SCF3' || filterId==='SCF6'){   //omit
         //     filterObj.attributeName='LocationDescription';
         //     filterObj.operator='='
@@ -442,11 +449,11 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             filterObj.operator='='
         }
         if(filterId==='AF5'){
-            filterObj.attributeName='ETC';
+            filterObj.attributeName='OHIC';
             filterObj.operator='='
         }
         if(filterId==='AF6'){
-            filterObj.attributeName='EEC';
+            filterObj.attributeName='PIC';
             filterObj.operator='='
         }
         if(filterId==='AF7'){
@@ -538,6 +545,8 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             return newfilterObj
         })
        }
+
+
         
         const currGroup:string | undefined = Object.keys(multiFilter).find((key:string)=>{
             return multiFilter[key as keyof BPRFilterState].id ===parentId
@@ -694,7 +703,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
   
     return(
         <>
-        <VFModalCard zoom={'0.85'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
+        <VFModalCard zoom={'0.73'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
            {
             (isLoading || isLocationDataLoading)
             ?
@@ -707,7 +716,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                 <VFHorizonText>
                     <p>Horizon</p>
                 </VFHorizonText>
-                <VFRangeSlider min={0} max={90} milestones={[0,30,60,90]} strictMode={true} width={500} defaultValue={0} handleChange={()=>console.log('')} showTriangle></VFRangeSlider>  
+                <VFRangeSlider min={0} max={90} milestones={[-1,0,30,60,90]} strictMode={false} width={500} defaultValue={0} handleChange={()=>console.log('')} showTriangle></VFRangeSlider>  
             </RangeSliderComponent>
                 <hr style={{ marginLeft:'30px', marginRight:'30px'}}></hr> 
             </>
@@ -880,7 +889,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             <AvailabilityFilter placeholder={"Availabilty"} onChange={(e:any,key:string)=>onFilterChange('AF4',e,'4',key)} header="Availabilty Filter" filterState={multiFilter.availabilityFilter.filters} filterId={'AF4'}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tech_color?'unset' : '50px'}}>
-                            <FilterCheckboxAccordian filterType="Execution Tech. color" filterKey="availabilty_tech_color" isOpen={openStatus.availabilty_tech_color} setOpenStatus={setOpenStatus}>
+                            <FilterCheckboxAccordian filterType="On Hand Inventory Color" filterKey="availabilty_tech_color" isOpen={openStatus.availabilty_tech_color} setOpenStatus={setOpenStatus}>
                             <FilterMultiSelectCheckbox header={'ETC'} filterOptions={[
                                  { label: 'Red', id: '1' },
                                  { label: 'Yellow', id: '2' },
@@ -893,7 +902,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             </FilterCheckboxAccordian>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_eco_color?'unset' : '50px'}}>
-                            <FilterCheckboxAccordian filterType="Execution Eco. color" filterKey="availabilty_eco_color" isOpen={openStatus.availabilty_eco_color} setOpenStatus={setOpenStatus}>
+                            <FilterCheckboxAccordian filterType="Pipeline Inventory Color" filterKey="availabilty_eco_color" isOpen={openStatus.availabilty_eco_color} setOpenStatus={setOpenStatus}>
                             <FilterMultiSelectCheckbox header={'EEC'}filterOptions={[
                                   { label: 'Red', id: '1' },
                                   { label: 'Yellow', id: '2' },
@@ -961,7 +970,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                 <ButtonContainer>
                     <VFButtonOutline themeUi={user.user.theme_ui} onClick={onGoBack}>Go Back!</VFButtonOutline>
                     <VFButton themeUi={user.user.theme_ui} onClick={()=>onApplyFilter(multiFilter)}>Apply Filter</VFButton>
-
                 </ButtonContainer>
             </ButtonFilterWrapper>
             </React.Fragment>
