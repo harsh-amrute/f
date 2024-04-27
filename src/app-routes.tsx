@@ -30,6 +30,7 @@ import RRR from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/RationedRequi
 import GuidedInsights from './VectorFlow/Pages/MTA/InsightsAndTrends/GuidedInsights'
 import BufferTrends from './VectorFlow/Pages/MTA/InsightsAndTrends/BufferTrends'
 import BufferTrendReport from './VectorFlow/Pages/MTA/InsightsAndTrends/BTR'
+import DBM from './VectorFlow/Pages/MTA/DBM/DBMNormSuggestions'
 import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests'
 
 // to show loading state for desired page only instead of the entire screen
@@ -74,6 +75,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/insights-and-trends/guided-insights',
     '/insights-and-trends/research-insights',
     '/insights-and-trends/buffer-trend-report',
+    '/dbm/dbm-norm-suggestions'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -407,6 +409,17 @@ export const initRoutes = (): RouteObject[] => {
         },
         ...getStoreTransferModuleRoutes()
       ]
+    },
+    {
+     path: '/dbm/dbm-norm-suggestions',
+     element: <AppLayout />,
+     children: [
+       {
+         index: true,
+         element: lazyLoad(<DBM/>)
+       },
+       ...getStoreTransferModuleRoutes()
+     ]
     }
     
   ]

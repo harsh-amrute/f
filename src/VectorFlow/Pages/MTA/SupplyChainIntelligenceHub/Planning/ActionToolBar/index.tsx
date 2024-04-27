@@ -24,6 +24,7 @@ import {
  
 } from './styles';
 import { useUserData } from '../../../../../../context/UserDataContext';
+import { DBMApplyNormChange } from '../../../DBM/DBMNormSuggestions/applyNormButton';
 import { PlanningCounts } from '../../../../../../VectorFlow/types/MTA';
 import VFButtonOutline from '../../../../../../components/VectorFLOW/commons/VFButtonOutline';
 
@@ -38,6 +39,8 @@ interface ActionToolBarProps {
     onGoBack:()=>void
     onViewChange:(view:string)=>void,
     disableChartAndGridViewToggle?:boolean,
+    showAllTick?:any,
+    handleGoButton?:any
     onApplyFilter?:(params:any)=>void,
     planningCount?:PlanningCounts
     genericRecordCount:number
@@ -46,7 +49,7 @@ interface ActionToolBarProps {
 
 
 
-const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,genericRecordCount,onExportToExcelCallBack,onApplyFilter}:ActionToolBarProps) => {
+const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter}:ActionToolBarProps) => {
     const { user } = useUserData();
     const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
     const {onSaveState,onResetAllState,onExportToExcel} = useSaveAllState()
@@ -267,6 +270,14 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 <SCGoBackText><b>Go Back</b></SCGoBackText>
                             </SCGoBackContainer>
                         }
+                        {currCategory === 'DBMNorm' ? <DBMApplyNormChange onCheck={showAllTick}/>:null}
+                        {currCategory === 'DBMNorm' ? 
+                        <img 
+                            src="/assets/img/Group 627.svg" 
+                            height={50.02} 
+                            width={76.83} 
+                            onClick={handleGoButton} 
+                        />:null}
                             {currCategory === 'GuidedInsight' ? null:
                             
                             <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
