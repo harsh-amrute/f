@@ -19,11 +19,11 @@ import {
 import VFRangeSlider from '../VFRangeSlider'
 import Select from 'react-select'
 import { AgChartsReact } from "ag-charts-react";
-import { getFormattedDate } from "../../../../helpers/utils";
+import { getDatesBetween, getFormattedDate } from "../../../../helpers/utils";
 import {suspensionMessages} from '../../../../helpers/BPRConstants';
 import { useDispatch } from 'react-redux';
 import { TOGGLE_GRAPH_MODAL, TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
-
+import {subDays} from 'date-fns';
 interface DailyDataGraphModalProps{
   rowData:any,
   chartData:any[]
@@ -45,7 +45,33 @@ interface NormData{
 
 
 const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,monitoringData}:DailyDataGraphModalProps) => {
-    // console.log(rowData);
+
+    const fillNotAvailableDates = (data:any)=>{
+      const lastNinetyDates = getDatesBetween(subDays(new Date(),89),new Date());
+      const lastNinetyDaysData:DailyDataChart[] = [];
+      lastNinetyDates.forEach((date:Date)=>{
+        const dailyData = data.find((data:DailyDataChart)=>{
+          return ((new Date(data.dt).getDate() === date.getDate()) && (new Date(data.dt).getMonth() === date.getMonth()) && (new Date(data.dt).getFullYear() && date.getFullYear()))
+        })
+        if(dailyData) {
+          lastNinetyDaysData.push(dailyData);
+        }
+        else{
+          lastNinetyDaysData.push({
+            cs:null,
+            dt:getFormattedDate(date),
+            git:null,
+            rp:null,
+            stk:null,
+            rrs:null,
+            grs:null,
+            rrc:null,
+            grc:null
+          })
+        }
+      })
+    }
+    fillNotAvailableDates(chartData);
     const dispatch = useDispatch();
     const suspensionOptions = [
         {label:'Select Suspension Type',value:''},
@@ -60,7 +86,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
 
     const generateChartOptions = () => {
         const adjustedChartData = chartData.slice(chartData.length-horizon,chartData.length);
-        const sortedNormChangeData = [...normChangeData].sort((a:NormChangeHistory,b:NormChangeHistory) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        const sortedNormChangeData = [...normChangeData].sort((a:NormChangeHistory,b:NormChangeHistory) => new Date(a.nCD).getTime() - new Date(b.nCD).getTime());
 
         let tempNorm = 0;
         let normData = chartData.map((dailyData:DailyDataChart) => {
@@ -69,7 +95,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
             let closestNormChangeIndex = -1;
 
             sortedNormChangeData.forEach((o:NormChangeHistory,index:number) => {
-              if(new Date(dailyData.dt).getTime() >= new Date(o.date).getTime()){
+              if(new Date(dailyData.dt).getTime() >= new Date(o.nCD).getTime()){
                 closestNormChangeIndex = index;
               }
             });
@@ -85,7 +111,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
             //   }
             // }
             // else{
-              tempNorm = sortedNormChangeData[closestNormChangeIndex]['newNorm'];
+              tempNorm = sortedNormChangeData[closestNormChangeIndex]['nN'];
             // }  
 
             return {date:dailyData.dt,norm:tempNorm};
@@ -116,7 +142,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
               if(!suspensionReasons.includes(obj.Value)) suspensionReasons.push(obj.Value)
             }
           })
-          console.log(suspensionReasons)
+
           let suspensionReasonsHTML = ``;
 
           suspensionReasons.forEach((reason:string)=>{
@@ -352,7 +378,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
             
                 xKey: 'dt',
                 xName:'Date',
-                yKey: 'stock',
+                yKey: 'stk',
                 yName:'Stock',
                 data:adjustedChartData,
                 type:'line',
@@ -494,13 +520,13 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                     <SCHorizontalDivider/>
                     <div style={{display:'flex',flexDirection:'column',marginBottom:'20px'}}>
                         <SCText fontSize={18} fontWeight={300}>SKU:</SCText>
-                        <SCText fontSize={18} fontWeight={500} hideDefaultMargin>{rowData['SKUCode'] + rowData['SKUName']}</SCText>
+                        <SCText fontSize={18} fontWeight={500} hideDefaultMargin>{rowData['sc'] + rowData['skd']}</SCText>
                     </div>
                     <SCHorizontalDivider/>
                     <SCDataRow>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Location :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{rowData['WhCode']}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{rowData['wcd']}</SCText>
                       </SCDataNode>
                       <SCVerticalDivider/>
                       <SCDataNode>

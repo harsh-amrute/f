@@ -140,20 +140,20 @@ export interface BufferTrendsGraphState{
 }
 
 export interface NormChangeHistory{
-    date:string,
-    newNorm:number,
-    oldNorm:number,
-    reason:string
+    nCD:string,
+    nN:number,
+    olN:number,
+    rsn:string
 }
 
 export interface DailyDataChart{
-    cs:number,
+    cs:number | null,
     dt:string,
-    git:number,
-    rp:number,
-    stock:number,
-    rrs:number,
-    grs:number,
-    rrc:number,
-    grc:number
+    git:number | null,
+    rp:number | null,
+    stk:number | null,
+    rrs:number | null,
+    grs:number | null,
+    rrc:number | null,
+    grc:number | null
 }

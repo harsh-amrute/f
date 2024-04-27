@@ -123,9 +123,12 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDat
         },
     ]
 
-    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
+    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
         let colDefs = [];
         const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
+        columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
+            return column1.colPosition - column2.colPosition;
+        })
         colDefs = columns.map((column:{header:string,colCode:string})=>{
             if(['plp','pip'].includes(column.colCode)){
                 return {

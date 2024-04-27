@@ -558,17 +558,18 @@ const usePlanning = ()=>{
 
     const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
-            SKUCode:params['SKUCode'],
-            WHCode:params['WhCode']
+            SKUCode:params.data['sc'],
+            WHCode:params.data['wc']
         }
         const result = await getDailyData(payload)
+        const data = result.data.data[0];
         const dailyData:DailyDataGraph = {
             rowData:params.data,
-            chartData:result.data.data['dailyData'],
-            normChangeData:result.data.data['normChangeHistory'],
-            masterData:result.data.data['MasterData'],
-            suggestionData:result.data.data['SuggestionHistoryData'],
-            monitoringData:result.data.data['MonitoringData']
+            chartData:data['StockData'],
+            normChangeData:data['NormChangeHistoryData'],
+            masterData:data['MasterData'][0],
+            suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
+            monitoringData:data['MonitoringData']
         }
 
         dispatch(UPDATE_DAILY_DATA(dailyData));
