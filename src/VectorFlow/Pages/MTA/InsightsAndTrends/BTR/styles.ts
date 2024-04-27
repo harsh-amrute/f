@@ -9,6 +9,7 @@ export const BTRLayoutWrapper = styled.div`
 export const BTRLayoutTabsWrapper = styled.div`
     display:flex;
     justify-content:center;
+    margin-top:25px;
 `
 
 export  const ToggleViewBtnWrapper = styled.div`

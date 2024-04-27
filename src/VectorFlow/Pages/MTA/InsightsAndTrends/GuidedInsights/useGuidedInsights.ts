@@ -64,11 +64,11 @@ const ChronicUnavailabilityGridViewData=ChronicUnavailabilityGrid?.data?.data;
                             label:'Excess Inventory Trend',
                             value:'excessinventorytrend'
                         },
-                        {
-                            id:'CustomScreens',
-                            label:'Custom Screens',
-                            value:'customscreens'
-                        }
+                        // {
+                        //     id:'CustomScreens',
+                        //     label:'Custom Screens',
+                        //     value:'customscreens'
+                        // }
                     ])
       }
 

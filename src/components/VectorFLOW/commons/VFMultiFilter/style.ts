@@ -43,6 +43,7 @@ display:flex;
 // align-items:center;
 justify-content:center;
 flex-direction:column;
+
 `
 export const SearchComponent = styled.div`
 background: #F2F2F2 0% 0% no-repeat padding-box;

@@ -3,7 +3,7 @@ import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../../../../types/MDM";
-import { ColDef, ChartRef } from "ag-grid-enterprise";
+import { ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider, SCDynamicContainer} from '../../../styles';
 import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 
@@ -19,7 +19,6 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
     const refGraph1 = useRef<GridRef>();
     // const refGraph2 = useRef<GridRef>();
 
-    console.log(refGraph1)
     const [hideChart1,toggleChart1] = useState<boolean>(false);
     // const [hideChart2,toggleChart2] = useState<boolean>(false);
     const [grid1DisplayStatus,setGrid1DisplayStatus] = useState<string>('none');
@@ -27,23 +26,62 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
     let chartRef1:ChartRef |undefined;
     // let chartRef2:ChartRef | undefined; 
 
-    const coldefs1:ColDef[] = [
-        {
-            field:'tn',
-            headerName:'Transporter Name',
-            colId:'tn'
-        },
-        {
-            field:'d',
-            headerName:'Delay',
-            colId:'d'
-        },
-        {
-            field:'spd',
-            headerName:'Super Delay',
-            colId:'spd'
-        }
-    ]
+    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
+        let colDefs = [];
+
+        const customColdefs = [
+            {
+                field:'name',
+                colId:'name',
+                headerName:'Transporter Name'
+            },
+            {
+                field:'delay',
+                colId:'delay',
+                headerName:'Delay'
+            },
+            {
+                field:'superdelay',
+                colId:'superdelay',
+                headerName:'Super Delay'
+            }
+        ]
+        
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [...customColdefs,...colDefs];
+    }
+
+    const colDefs1 = mapUIConfigToColdefs(data['maxTechBlackRedColumn']['uiconfig'])
+
+    const convertToInt = (data:any)=>{
+        return data.map((row:any)=>{
+            const tempObj:any = {};
+            Object.keys(row).forEach((key:string)=>{
+                const value = parseFloat(row[key])
+                if(!isNaN(value)){
+                    tempObj[key] = value
+                }
+                else{
+                    tempObj[key] = row[key];
+                }
+            })
+            return {...tempObj}
+        })
+    }
+
+    const sortData = (data:any) => {
+        data.sort((row1:any,row2:any)=>{
+            return (row2['superdelay']+row2['delay']) - (row1['superdelay']+row1['delay'])
+        })
+        console.log(data);
+        return data;
+    }
 
     const generateChart = (graphNo:number,withOutContainer?:boolean) => {
        
@@ -52,7 +90,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                 chartRef1 = refGraph1.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
-                    columns: ['ln','spd','d'],
+                    columns: ['name','superdelay','delay'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     }
@@ -63,7 +101,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                 chartRef1 = refGraph1.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
-                    columns: ['ln','spd','d'],
+                    columns: ['name','superdelay','delay'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     },
@@ -183,8 +221,8 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                     (
                                         <VFTable
                                             ref={refGraph1}
-                                            columnDefs={coldefs1}
-                                            rowData={data['maxTechBlackRedColumn']}
+                                            columnDefs={colDefs1}
+                                            rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1,true)}
@@ -213,8 +251,8 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                         <div style={{display:'none'}}>
                                         <VFTable
                                             ref={refGraph1}
-                                            columnDefs={coldefs1}
-                                            rowData={data['maxTechBlackRedColumn']}
+                                            columnDefs={colDefs1}
+                                            rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1)}

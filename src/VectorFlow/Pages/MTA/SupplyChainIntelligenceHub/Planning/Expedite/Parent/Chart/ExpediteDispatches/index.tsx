@@ -37,23 +37,86 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
   let chartRef1: ChartRef | undefined;
   let chartRef2: ChartRef | undefined;
 
-  const colDefs1: ColDef[] = [
-    {
-      field: "ln",
-      headerName: "Location Name",
-      colId: "ln",
-    },
-    {
-      field: "trqa",
-      headerName: "Count of SKUs",
-      colId: "trqa",
-    },
-  ];
+  
+
+  const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
+    let colDefs = [];
+
+    const customColdefs: ColDef[] = [
+      {
+        field: "WHDescription",
+        headerName: "Location Name",
+        colId: "WHDescription",
+      },
+      {
+        field: "SKUCounts",
+        headerName: "Count of SKUs",
+        colId: "SKUCounts",
+      },
+    ];
+    
+    colDefs = columns.map((column:{header:string,colCode:string})=>{
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:column['header']
+        }
+    })
+    return [...customColdefs,...colDefs];
+}
+
+const colDefs1 = mapUIConfigToColdefs1(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['uiconfig']);
+
+const mapUIConfigToColdefs2 = (columns:Array<{header:string,colCode:string}>) => {
+    let colDefs = [];
+
+    const customColdefs: ColDef[] = [
+      {
+        field: "WHDescription",
+        headerName: "Receiving Location Name",
+        colId: "WHDescription",
+      },
+    ];
+    
+    colDefs = columns.map((column:{header:string,colCode:string})=>{
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:column['header']
+        }
+    })
+    return [...customColdefs,...colDefs];
+}
+
+const colDefs2 = mapUIConfigToColdefs2(data['maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig']['uiconfig']);
+
+const convertToInt = (data:any)=>{
+    return data.map((row:any)=>{
+        const tempObj:any = {};
+        Object.keys(row).forEach((key:string)=>{
+            const value = parseFloat(row[key])
+            if(!isNaN(value)){
+                tempObj[key] = value
+            }
+            else{
+                tempObj[key] = row[key];
+            }
+        })
+        return {...tempObj}
+    })
+}
+
+const sortData = (data:any,key:string) => {
+    data.sort((row1:any,row2:any)=>{
+        return (row2[key]) - (row1[key])
+    })
+    return [...data];
+}
 
   const getMaxParentLocationLength = (data: any) => {
     let maxParentLocationLength = 0;
     data?.forEach(
-      (row: { ln: string; count: Array<{ wc: string; count: string }> }) => {
+      (row: { WHDescription: string; count: Array<{ pwc: string; count: string }> }) => {
         maxParentLocationLength = Math.max(
           maxParentLocationLength,
           row["count"].length
@@ -77,13 +140,9 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
     return dynamicColdefs;
   };
 
-  const colDefs2: ColDef[] = [
-    {
-      field: "ln",
-      headerName: "Receiving Location Name",
-      colId: "ln",
-    },
-  ];
+  
+
+ 
 
   // const detailCellRendererParams = useMemo<any>(() => {
   //     return {
@@ -102,23 +161,26 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
   //     };
   //   }, []);
 
-  const colDefs3: ColDef[] = [
-    {
-      field: "color",
-      headerName: "Color",
-      colId: "color",
-    },
-    {
-      field: "pre",
-      headerName: "Availability Pre Rationing",
-      colId: "pre",
-    },
-    {
-      field: "post",
-      headerName: "Availability Post Rationing",
-      colId: "post",
-    },
-  ];
+
+const colDefs3: ColDef[] = [
+  {
+    field: "color",
+    headerName: "Color",
+    colId: "color",
+  },
+  {
+    field: "pre",
+    headerName: "Availability Pre Rationing",
+    colId: "pre",
+  },
+  {
+    field: "post",
+    headerName: "Availability Post Rationing",
+    colId: "post",
+  },
+];
+
+  
 
   const generateRowObj = (maxParentLocationLength: number) => {
     const rowObj: any = {
@@ -133,11 +195,10 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
   const mapDataToRowData = (data: any) => {
     let rowData: any = [];
     data.forEach(
-      (row: { ln: string; count: Array<{ wc: string; count: string }> }) => {
-        const rowObj = generateRowObj(getMaxParentLocationLength(data));
-        rowObj.ln = row["ln"];
+      (row:any) => {
+        const rowObj = {...row,...generateRowObj(getMaxParentLocationLength(data))};  
         row["count"].forEach(
-          (subRow: { wc: string; count: string }, index: number) => {
+          (subRow: { pwc: string; count: string }, index: number) => {
             rowObj[`p${index + 1}`] = parseInt(subRow.count, 10);
           }
         );
@@ -151,6 +212,7 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
       });
       return newRow;
     });
+
     return rowData;
   };
 
@@ -158,12 +220,17 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
     // title: {
     //   text: "PRE",
     // },
-    data: data["prePostRationing"],
+    data: convertToInt(data["prePostRationing"]),
     series: [
       {
         type: "pie",
         title: {
           text: "PRE",
+          fontSize: 12,
+          fontWeight: "bold",
+          color:'black'
+
+
         },
         fills: ["#ED1C24", "#000000", "#FFCB05", "#418D18", "#8B8B8B41"],
         angleKey: "pre",
@@ -179,6 +246,10 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
         type: "donut",
         title: {
           text: "POST",
+          fontSize: 12,
+          fontWeight: "bold",
+          color:'black'
+
         },
         fills: ["#ED1C24", "#000000", "#FFCB05", "#418D18", "#8B8B8B41"],
         angleKey: "post",
@@ -192,16 +263,15 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
       },
     ],
   };
-
+  
   const generateChart = (graphNo: number, withOutContainer?: boolean) => {
-    console.log(graphNo);
 
     if (graphNo === 1) {
       if (withOutContainer) {
         chartRef1 = refGraph1.current?.api.createRangeChart({
           chartType: "column",
           cellRange: {
-            columns: ["ln", "trqa"],
+            columns: ["WHDescription", "SKUCounts"],
             rowStartIndex: 0,
             rowEndIndex: 9,
           },
@@ -213,7 +283,7 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
         chartRef1 = refGraph1.current?.api.createRangeChart({
           chartType: "column",
           cellRange: {
-            columns: ["ln", "trqa"],
+            columns: ["WHDescription", "SKUCounts"],
             rowStartIndex: 0,
             rowEndIndex: 9,
           },
@@ -227,13 +297,13 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
           chartType: "stackedColumn",
           cellRange: {
             columns: [
-              "ln",
+              "WHDescription",
               ...Array.from(
                 {
                   length: getMaxParentLocationLength(
                     data[
-                      "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParent"
-                    ]
+                      "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
+                    ]['data']
                   ),
                 },
                 (el: undefined, index: number) => `p${index + 1}`
@@ -251,13 +321,13 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
           chartType: "stackedColumn",
           cellRange: {
             columns: [
-              "ln",
+              "WHDescription",
               ...Array.from(
                 {
                   length: getMaxParentLocationLength(
                     data[
-                      "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParent"
-                    ]
+                      "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
+                    ]['data']
                   ),
                 },
                 (el: undefined, index: number) => `p${index + 1}`
@@ -384,6 +454,8 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
     "This graph shows the potential improvement in eco availability assuming the entire rationed qty would become goods in transit.",
   ];
 
+
+
   return (
     <>
       <SCDynamicContainer>
@@ -412,11 +484,7 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
                       <VFTable
                         ref={refGraph1}
                         columnDefs={colDefs1}
-                        rowData={
-                          data[
-                            "maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocations"
-                          ]
-                        }
+                        rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
                         enableCharts={true}
                         enableRangeSelection={true}
                         onGridReady={() => generateChart(1, true)}
@@ -441,11 +509,7 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
                         <VFTable
                           ref={refGraph1}
                           columnDefs={colDefs1}
-                          rowData={
-                            data[
-                              "maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocations"
-                            ]
-                          }
+                          rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
                           enableCharts={true}
                           enableRangeSelection={true}
                           onGridReady={() => generateChart(1)}
@@ -497,17 +561,16 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
                       <VFTable
                         ref={refGraph2}
                         columnDefs={[
-                          ...colDefs2,
-                          ...getParentLocationColdefs(
+                          ...colDefs2,...getParentLocationColdefs(
                             data[
-                              "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParent"
-                            ]
+                              "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
+                            ]['data']
                           ),
                         ]}
                         rowData={mapDataToRowData(
                           data[
-                            "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParent"
-                          ]
+                            "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
+                          ]['data']
                         )}
                         enableCharts={true}
                         enableRangeSelection={true}
@@ -536,14 +599,14 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
                             ...colDefs2,
                             ...getParentLocationColdefs(
                               data[
-                                "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParent"
-                              ]
+                                "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
+                              ]['data']
                             ),
                           ]}
                           rowData={mapDataToRowData(
                             data[
-                              "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParent"
-                            ]
+                              "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
+                            ]['data']
                           )}
                           enableCharts={true}
                           enableRangeSelection={true}
@@ -597,7 +660,7 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
                   <VFTable
                     ref={refGraph3}
                     columnDefs={colDefs3}
-                    rowData={data["prePostRationing"]}
+                    rowData={convertToInt(data["prePostRationing"])}
                     enableCharts={true}
                     enableRangeSelection={true}
                     // onGridReady={generateChart}

@@ -5,7 +5,7 @@ import useBTR from "./useBTR"
 import {SCViewBackground,SCViewContainer,SCViewImage,SCVerticalDivider} from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar/styles'
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
-
+import ActionToolBar from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar"
 
 const BufferTrendReport = ()=>{
 
@@ -25,6 +25,10 @@ const BufferTrendReport = ()=>{
 
     return(
         <BTRLayoutWrapper>
+
+            <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BTR'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
+
+
             <BTRLayoutTabsWrapper>
                 <VFFloatingTab
                     handleClick={(tab:any)=>toggleCurrentTab(tab)}

@@ -83,7 +83,7 @@ const dummyprops={
             id:'1',
             label:'SupplyChain',
             filters:[  {
-                name: 'SCF2',attributeName: "Location",value: "ARES1136A004",operator: "=", },
+                name: 'SCF2',attributeName: "ForLocationLocationCode",value: "GW04",operator: "=", },
                 // {attributeName: 'Location', value: '4203', operator: '=', name: 'SCF2'}
         ]
         },

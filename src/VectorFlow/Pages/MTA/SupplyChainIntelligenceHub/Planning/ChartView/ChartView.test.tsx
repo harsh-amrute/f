@@ -51,6 +51,21 @@ const useGetPlanningDataCustomMock = useGetPlanningDataCustom as jest.MockedFunc
       return { data: {data:MonitorGITChildCustomMockData} };
     },
   };
+
+  const initialPlanningCounts = {
+    childMonitorCount:0,
+    parentMonitorCount:0,
+    childMonitorCustomCount:0,
+    parentExpediteCount:0,
+    parentExpediteCustomCount:0,
+    childExpediteCount:0,
+    childExpediteCustomCount:0,
+    reviewExcessInventoryCount:0,
+    reviewExcessInventoryCustomCount:0,
+    reviewOrderFulfillmentCount:0,
+    reviewOrderFulfillmentCustomCount:0
+    
+}
 const paginationProps:VFPaginationProps = {
   totalRows:100,
   currentPage:1,
@@ -66,21 +81,27 @@ describe("Monitor GIT Child",()=>{
     disconnect = jest.fn();
   };
 
+  const commonProps = {
+    paginationProps:paginationProps, 
+    planningCounts:initialPlanningCounts,
+    onOpenDailyDataGraph:jest.fn()
+  }
+
   it("Renders Chart View",() => {
-    render(contextWrapper(<ChartView category="" currentTab="" currentGraphData={[]} paginationProps={paginationProps} onOpenDailyDataGraph={jest.fn()}/>,store))
-    render(contextWrapper(<ChartView category="GITToChild" currentTab="locationWise" currentGraphData={MonitorGITChildMockData} paginationProps={paginationProps}  onOpenDailyDataGraph={jest.fn()}/>,store))
-    render(contextWrapper(<ChartView category="GITToChild" currentTab="transporterWise" currentGraphData={MonitorGITChildMockData} paginationProps={paginationProps}  onOpenDailyDataGraph={jest.fn()}/>,store))
+    render(contextWrapper(<ChartView category="" currentTab="" currentGraphData={[]} {...commonProps}/>,store))
+    render(contextWrapper(<ChartView category="GITToChild" currentTab="locationWise" currentGraphData={MonitorGITChildMockData} {...commonProps}/>,store))
+    render(contextWrapper(<ChartView category="GITToChild" currentTab="transporterWise" currentGraphData={MonitorGITChildMockData} {...commonProps}/>,store))
     useGetPlanningDataCustomMock.mockImplementation(()=>{
       return useGetPlanningDataCustomMockData
     })
-    render(contextWrapper(<ChartView category="GITToChild" currentTab="custom" currentGraphData={MonitorGITChildCustomMockData} paginationProps={paginationProps}  onOpenDailyDataGraph={jest.fn()}/>,store))
-    render(contextWrapper(<ChartView category="GITToChild" currentTab="" currentGraphData={MonitorGITChildMockData} paginationProps={paginationProps}  onOpenDailyDataGraph={jest.fn()}/>,store))
-    render(contextWrapper(<ChartView category="GITFromParent" currentTab="" currentGraphData={getPlanningDataGridMockData['data']} paginationProps={paginationProps}  onOpenDailyDataGraph={jest.fn()}/>,store))
-    render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="expediteDispatches" currentGraphData={ExpediteParentMockData} paginationProps={paginationProps}  onOpenDailyDataGraph={jest.fn()}/>,store))
-    render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="createAvailabilityAtParent" currentGraphData={ExpediteParentMockData} paginationProps={paginationProps}  onOpenDailyDataGraph={jest.fn()}/>,store))
-    render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="custom" currentGraphData={[]} paginationProps={paginationProps}  onOpenDailyDataGraph={jest.fn()}/>,store))
-    render(contextWrapper(<ChartView category="ExcessInventory" currentTab="CustomScreens" currentGraphData={[]} paginationProps={paginationProps}  onOpenDailyDataGraph={jest.fn()}/>,store))
-    render(contextWrapper(<ChartView category="OrderFulfillment" currentTab="CustomScreens" currentGraphData={[]} paginationProps={paginationProps} onOpenDailyDataGraph={jest.fn()}/>,store))
+    render(contextWrapper(<ChartView category="GITToChild" currentTab="custom" currentGraphData={MonitorGITChildCustomMockData} {...commonProps}/>,store))
+    render(contextWrapper(<ChartView category="GITToChild" currentTab="" currentGraphData={MonitorGITChildMockData} {...commonProps}/>,store))
+    render(contextWrapper(<ChartView category="GITFromParent" currentTab="" currentGraphData={getPlanningDataGridMockData['data']} {...commonProps}/>,store))
+    render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="expediteDispatches" currentGraphData={ExpediteParentMockData} {...commonProps}/>,store))
+    render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="createAvailabilityAtParent" currentGraphData={ExpediteParentMockData} {...commonProps}/>,store))
+    render(contextWrapper(<ChartView category="ExpediteFromParent" currentTab="custom" currentGraphData={[]} {...commonProps}/>,store))
+    render(contextWrapper(<ChartView category="ExcessInventory" currentTab="CustomScreens" currentGraphData={[]} {...commonProps}/>,store))
+    render(contextWrapper(<ChartView category="OrderFulfillment" currentTab="CustomScreens" currentGraphData={[]} {...commonProps}/>,store))
 
   })
 

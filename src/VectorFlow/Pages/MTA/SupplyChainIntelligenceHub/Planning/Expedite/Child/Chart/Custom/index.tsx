@@ -3,136 +3,85 @@ import {useEffect, useRef, useState } from "react";
 // import "./styles.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../../../../types/MDM";
-import { ColDef } from "ag-grid-enterprise";
 // import _ from "lodash";
-import '../../../styles';
+import '../../../styles.css';
 import { useGetPlanningDataCustom } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 import VFLoader from "../../../../../../../../../components/VectorFLOW/commons/VFLoader";
+import { SCDynamicContainer } from "../../../styles";
+import { notifyLoader,notifyError,notifySuccess } from "../../../../../../../../../helpers/notify";
+import { toast } from 'react-toastify';
 
 
 
 
-
-const ExpediteChildCustomCharts = () => {
+const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
 
     const refGraph1 = useRef<GridRef>();
-    const [rowData,setRowData] = useState<any>()
+    const [rowData,setRowData] = useState<any>();
+    const [colDefs,setColDefs] = useState<any>();
+
+    const chunkSize = 10000;
 
     const {mutateAsync:getPlanningDataCustom,isLoading} = useGetPlanningDataCustom();
 
+    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
+        let colDefs = [];
+
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header'],
+                enablePivot:true,
+                enableValue:true
+            }
+        })
+        return [...colDefs];
+    }
+
     useEffect(()=>{
         const fetchCustomPlanningData = async ()=> {
-            const body = {
-                category:'git',
-                type:'child',
-                filters:[]
-            }
-            const result = await getPlanningDataCustom(body);
-            setRowData(result.data.data);
+            const rows:any = [];
+            let uiconfig = [];
+            try {
+     
+                const numberOfPages = Math.ceil(recordCount/chunkSize);
+                const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
+                
+                for(let i=1; i<=numberOfPages; i++){
+                    const body = {
+                        category:'expedite',
+                        type:'child',
+                        filters:[],
+                        paginationParameter:{
+                            pageNumber:i,
+                            recordsPerPage:chunkSize
+                        }
+                    }
+                    const result = await getPlanningDataCustom(body);
+                    if(result.data.data === null) throw new Error("Something Went Wrong")
+                    if(uiconfig.length < 1){
+                        uiconfig = result.data.data['uiConfig']
+                    }
+                    rows.push(...result.data.data.data)
+                    if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
+                    else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
+                }
+                setColDefs(mapUIConfigToColdefs(uiconfig));
+                toast.dismiss(toastId);
+           
+                notifySuccess(`Data Fetched Successfully`);
+              } catch (error) {
+                toast.dismiss();
+                notifyError('Something Went Wrong');
+              }
+           
+            setRowData(rows);
+
         }
-        fetchCustomPlanningData()
+        fetchCustomPlanningData();
     },[])
    
-
-    const customColDefsGraph1:ColDef[] = [
-        {
-            field:'ln',
-            headerName:'Location Name',
-            colId:'ln',
-            // pivot:true,
-            enablePivot:true,
-            enableValue:true
-        },
-        {
-            field:'d',
-            headerName:'Delay',
-            colId:'d',
-            // pivot:true,
-            enablePivot:true,
-            enableValue:true
-        },
-        {
-            field:'spd',
-            headerName:' Super Delay',
-            colId:'spd',
-            // pivot:true,
-            enablePivot:true,
-            enableValue:true
-        },
-        {
-            field:'LL1',
-            headerName:'Location Level 1',
-            colId:'LL1',
-            // pivot:true,
-            enablePivot:true,
-            enableValue:true
-        },
-        {
-            field:'LL2',
-            headerName:'Location Level 2',
-            colId:'LL2',
-            // pivot:true,
-            enablePivot:true,
-            enableValue:true
-        },
-        {
-            field:'LL3',
-            headerName:'Location Level 3',
-            colId:'LL3',
-            // pivot:true,
-            enablePivot:true,
-            enableValue:true
-        },
-        {
-            field:'LL4',
-            headerName:'Location Level 4',
-            colId:'LL4',
-            // pivot:true,
-            enablePivot:true,
-            enableValue:true
-        },
-        {
-            field:'c1',
-            headerName:'Custom Attribute 1',
-            colId:'c1',
-            // pivot:true,
-            enablePivot:true,
-            enableValue:true
-        },
-        {
-            field:'c2',
-            headerName:'Custom Attribute 2',
-            colId:'c2',
-            // pivot:true,
-            enablePivot:true,
-            enableValue:true
-        },
-        {
-            field:'c3',
-            headerName:'Custom Attribute 3',
-            colId:'c3',
-            // pivot:true,
-            enablePivot:true,
-            enableValue:true
-        },
-        {
-            field:'c4',
-            headerName:'Custom Attribute 4',
-            colId:'c4',
-            // pivot:true,
-            enablePivot:true,
-            enableValue:true
-        },
-        {
-            field:'c5',
-            headerName:'Custom Attribute 5',
-            colId:'c5',
-            // pivot:true,
-            enablePivot:true,
-            enableValue:true
-        },
-
-    ]
 
     if(isLoading){
         return <VFLoader/>
@@ -141,15 +90,20 @@ const ExpediteChildCustomCharts = () => {
     
     return(
         <>
+        <SCDynamicContainer>
             <VFTable
                 ref={refGraph1}
-                columnDefs={customColDefsGraph1}
+                columnDefs={colDefs}
                 rowData={rowData}
                 sideBar={true}
                 enableCharts={true}
                 enableRangeSelection={true}
-
+                defaultColDef={{
+                floatingFilter:true,
+                filter: "agMultiColumnFilter",
+                }}
             />
+        </SCDynamicContainer>
         </>
     )
     

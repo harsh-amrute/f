@@ -15,10 +15,16 @@ const usePlanning = ()=>{
     const initialPlanningCounts = {
         childMonitorCount:0,
         parentMonitorCount:0,
+        childMonitorCustomCount:0,
         parentExpediteCount:0,
+        parentExpediteCustomCount:0,
         childExpediteCount:0,
+        childExpediteCustomCount:0,
         reviewExcessInventoryCount:0,
+        reviewExcessInventoryCustomCount:0,
         reviewOrderFulfillmentCount:0,
+        reviewOrderFulfillmentCustomCount:0
+        
     }
 
     const dispatch = useDispatch(); 
@@ -241,18 +247,23 @@ const usePlanning = ()=>{
             if(planningCategoryObj.category === 'git/wip'){
                 if(planningCategoryObj.parentCount) tempPlanningCount.parentMonitorCount = planningCategoryObj.parentCount;
                 if(planningCategoryObj.childCount) tempPlanningCount.childMonitorCount = planningCategoryObj.childCount;
+                if(planningCategoryObj.custom) tempPlanningCount.childMonitorCustomCount = planningCategoryObj.custom;
             }
             if(planningCategoryObj.category === 'expedite'){
                 if(planningCategoryObj.parentCount) tempPlanningCount.parentExpediteCount = planningCategoryObj.parentCount;
                 if(planningCategoryObj.childCount) tempPlanningCount.childExpediteCount = planningCategoryObj.childCount;
+                if(planningCategoryObj.custom) tempPlanningCount.childExpediteCustomCount = planningCategoryObj.custom;
             }
             if(planningCategoryObj.category === 'excessInventory'){
-                if(planningCategoryObj.reviewCount) tempPlanningCount.reviewExcessInventoryCount = planningCategoryObj.reviewCount 
+                if(planningCategoryObj.reviewCount) tempPlanningCount.reviewExcessInventoryCount = planningCategoryObj.reviewCount ;
+                if(planningCategoryObj.custom) tempPlanningCount.reviewExcessInventoryCustomCount = planningCategoryObj.custom;
             }
             if(planningCategoryObj.category === 'orderFulfillment'){
-                if(planningCategoryObj.reviewCount) tempPlanningCount.reviewOrderFulfillmentCount = planningCategoryObj.reviewCount 
+                if(planningCategoryObj.reviewCount) tempPlanningCount.reviewOrderFulfillmentCount = planningCategoryObj.reviewCount;
+                if(planningCategoryObj.custom) tempPlanningCount.reviewOrderFulfillmentCustomCount = planningCategoryObj.custom; 
             }
         });
+        console.log(tempPlanningCount);
 
         setPlanningCounts(tempPlanningCount);
     }
@@ -312,7 +323,7 @@ const usePlanning = ()=>{
                     }
                     const result = await getPlanningDataGraph(body);
                     setIsSelectCategoryOpen(false);
-                    setCurrentGraphData(result.data.data)
+                    setCurrentGraphData(result.data.data.data)
                     setCurrentTab('locationWise');
                     toast.dismiss(toastId);
                     notifySuccess("Graph Details Fetched Successfully");
@@ -330,7 +341,7 @@ const usePlanning = ()=>{
                     }
                     const result = await getPlanningDataGraph(body);
                     setIsSelectCategoryOpen(false);
-                    setCurrentGraphData(result.data.data)
+                    setCurrentGraphData(result.data.data.data);
                     setCurrentTab('expediteDispatches');
                     toast.dismiss(toastId);
                     notifySuccess("Graph Details Fetched Successfully");
@@ -347,7 +358,7 @@ const usePlanning = ()=>{
                     }
                     const result = await getPlanningDataGraph(body);
                     setIsSelectCategoryOpen(false);
-                    setCurrentGraphData(result.data.data)
+                    setCurrentGraphData(result.data.data.data);
                     setCurrentTab('expediteDispatches');
                     toast.dismiss(toastId);
                     notifySuccess("Graph Details Fetched Successfully");
@@ -364,7 +375,7 @@ const usePlanning = ()=>{
                     }
                     const result = await getPlanningDataGraph(body);
                     setIsSelectCategoryOpen(false);
-                    setCurrentGraphData(result.data.data)
+                    setCurrentGraphData(result.data.data.data)
                     setCurrentTab('excessInventoryLocation');
                     toast.dismiss(toastId);
                     notifySuccess("Graph Details Fetched Successfully");
@@ -381,7 +392,7 @@ const usePlanning = ()=>{
                     }
                     const result = await getPlanningDataGraph(body);
                     setIsSelectCategoryOpen(false);
-                    setCurrentGraphData(result.data.data)
+                    setCurrentGraphData(result.data.data.data);
                     setCurrentTab('orderFulfillmentLocation');
                     toast.dismiss(toastId);
                     notifySuccess("Graph Details Fetched Successfully");

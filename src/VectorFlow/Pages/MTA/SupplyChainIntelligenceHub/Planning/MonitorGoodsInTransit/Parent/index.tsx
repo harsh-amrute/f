@@ -52,7 +52,6 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
         readOnlyEdit:true,
         onRowClicked:(params:any)=>{
             if(params.data.transit && params.data.transit.length>0){
-                console.log(params.data.transit)
                 setActiveRow(params.data.transit)
                 toggleSubGrid(true)
             }

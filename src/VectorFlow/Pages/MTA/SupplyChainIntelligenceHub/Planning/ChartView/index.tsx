@@ -14,17 +14,19 @@ import OrderFulfillmentLocation from '../OrderFulfillment/Chart/OrderFulfillment
 import OrderFulfillmentProduct from '../OrderFulfillment/Chart/OrderFulfillmentProductWise';
 import OrderFulfillmentCustomCharts from '../OrderFulfillment/Chart/Custom';
 import { VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
+import {PlanningCounts} from '../../../../../types/MTA'
 
 
 interface ChartViewProps {
     category:string,
     currentTab:string,
     currentGraphData:any,
+    planningCounts:PlanningCounts
     paginationProps:VFPaginationProps,
     onOpenDailyDataGraph:any
 
 }
-const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenDailyDataGraph}:ChartViewProps) => {
+const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenDailyDataGraph,planningCounts}:ChartViewProps) => {
     const renderGraphs = ()=>{
         switch(category){
             case 'GITFromParent':
@@ -46,7 +48,7 @@ const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenD
                 }
                 if(currentTab === 'custom'){
                     return (
-                        <MonitorGITChildCustomCharts/>
+                        <MonitorGITChildCustomCharts recordCount={planningCounts.childMonitorCustomCount}/>
                     )
                 }
                 break;
@@ -67,7 +69,7 @@ const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenD
                 }
                 if(currentTab === 'custom'){
                     return (
-                        <ExpediteParentCustomCharts/>
+                        <ExpediteParentCustomCharts recordCount={planningCounts.parentExpediteCustomCount}/>
                     )
                 }
                 break; 
@@ -81,7 +83,7 @@ const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenD
                 }
                 if(currentTab === 'custom'){
                     return (
-                        <ExpediteChildCustomCharts/>
+                        <ExpediteChildCustomCharts recordCount={planningCounts.childExpediteCustomCount}/>
                     )
                 }
                 break;   
@@ -102,7 +104,7 @@ const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenD
                 }
                 if(currentTab === 'custom'){
                     return(
-                        <ExcessInventoryCustomCharts/>
+                        <ExcessInventoryCustomCharts recordCount={planningCounts.reviewExcessInventoryCustomCount}/>
                     )
                 }
                 break;
@@ -123,7 +125,7 @@ const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenD
                 }
                 if(currentTab === 'custom'){
                     return (
-                        <OrderFulfillmentCustomCharts/>
+                        <OrderFulfillmentCustomCharts recordCount={planningCounts.reviewOrderFulfillmentCustomCount}/>
                     )
                 }
                 break;

@@ -79,7 +79,7 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
         let colDefs = [];
         const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
         colDefs = columns.map((column:{header:string,colCode:string})=>{
-            if(['plp','pip'].includes(column.colCode)){
+            if(['plp','pip','pin'].includes(column.colCode)){
                 return {
                     field:column['colCode'],
                     colId:column['colCode'],

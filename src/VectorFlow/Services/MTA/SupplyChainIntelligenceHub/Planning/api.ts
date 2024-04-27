@@ -10,7 +10,7 @@ export namespace PlanningService {
       }
 
     export const getPlanningDataGraph = async (body:any) => {
-        return axios.post(process.env.REACT_APP_VF_MOCK_API_HOST + `/GetPlanningDataGraph`,body,{
+        return axios.post(process.env.REACT_APP_VF_API_HOST + `/GetPlanningDataGraph`,body,{
             headers: { 'Content-Type': 'application/json' }
             })
     }
