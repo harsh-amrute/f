@@ -5,6 +5,9 @@ import { useUserData } from "../../../../../../context";
 import { useState,useEffect } from "react";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
+import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
+
+
 
 const AvailabilityAgeingTrend=()=>{
  const [horizon,setHorizon] = useState<number>(9);
@@ -85,6 +88,10 @@ const AvailabilityAgeingTrend=()=>{
     ],
 
 }
+const graph1 = [
+  'This graph highlights the trends of #SKU-Location with continous black,red or white status, each greater than or equal to the selected mimimum agening'
+]
+
  const numbers = Array.from(Array(90), (_, index) => index + 1);
  if(isLoading){
         return <VFLoader/>
@@ -99,7 +106,7 @@ opacity: 1}}>
       <label style={{ fontStyle:"normal",
     fontVariant:"normal",
     fontWeight:400,
-    fontSize:20,
+    fontSize:16,
     fontFamily:"Roboto",}}><b>Minimum Ageing:</b>  </label>
        <select onChange={handleAgeChange} value={minAgeing} style={{width:50, height:40, border:"1px solid #707070", boxShadow:" 0px 6px 12px #8D8D8D29"}}>
       
@@ -113,7 +120,7 @@ opacity: 1}}>
   <label style={{fontStyle:"normal",
     fontVariant:"normal",
     fontWeight:400,
-    fontSize:20,
+    fontSize:15,
    paddingTop:20,
     fontFamily:"Roboto",  paddingLeft:'10px'}}> <b>Select Horizon: </b></label>
      
@@ -131,6 +138,11 @@ opacity: 1}}>
                    </div>
                     <VFButtonOutline themeUi={themeUi} onClick={()=>OnHorizonChange(horizon, minAgeing)}>Submit</VFButtonOutline>
                     </div>
-      <AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
+      <AgChartsReact options={AvailabilityAgeingTrendOptions} />
+      <div style={{marginLeft:'10px',marginRight:'10px'}}>
+        <VFInfoTip text={graph1}/>
+        </div>
+       </div>
+      
 }
 export default AvailabilityAgeingTrend

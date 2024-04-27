@@ -193,7 +193,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
       }
 
       const graph1 = [
-        'The graph illustrates the top 10 receiving locations having the maximum no. of SKUs in Tech Black/Red (shortage of on-hand inventory) experiencing high transport ageing (Transportation Time > Standard Lead Time)',
+        'The graph illustrates the top 10 receiving locations having the maximum no. of SKUs in On-Hand Black/Red (shortage of on-hand inventory) experiencing high transport ageing (Transportation Time > Standard Lead Time)',
         'Care needs to be taken to reduce the transportation time in these locations or adjust the RLTs for Norm calculation',
         'Super Delay : Transportation Lead Time >= 1.5 x Standard Lead Time',
         'Delay : Transportation Lead Time > Standard Lead Time'
@@ -211,7 +211,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                     <Allotment.Pane preferredSize={'80%'}>
                         <SCChartContainer height={547}>
                             <SCChartHeaderContainer>
-                                <SCChartHeader>Top 10 Locations: Max Tech Black/Red SKUs Along With High Transport Ageing</SCChartHeader>
+                                <SCChartHeader>Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader>
                                 {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>

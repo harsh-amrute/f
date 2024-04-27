@@ -3,9 +3,14 @@ import IconCard from "../../../../../components/VectorFLOW/commons/VFCard/IconCa
 import { Container,PanelGrid, PanelGridWrapper } from "./styles"
 import { useNavigate } from "react-router";
 
+import ButtonCard from "../../../../../components/VectorFLOW/commons/VFCard/ButtonCard";
+
+
 
 const ControlPanel = ()=>{
     const navigate = useNavigate();
+
+
 
     return (
         <Container>
@@ -16,13 +21,14 @@ const ControlPanel = ()=>{
                     <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/delete.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/delete-hover.svg'} text={'Delete Records '} onClick={()=>navigate('/master-data-management/control-panel/delete')}/>
                 </PanelGrid>
             </PanelGridWrapper>
-            {/* <PanelGridWrapper>
+            <PanelGridWrapper>
                 <PanelGrid>
-                    <ButtonCard text="Forced Norm Changes" onClick={()=>console.log("clciked")}/>
-                    <ButtonCard text="Phase-In Phase-Out" onClick={()=>console.log("clciked")}/>
+                    <ButtonCard opacity={"1"} text="Forced Norm Changes" onClick={()=>navigate('/master-data-management/control-panel/add')}/>
+
+                    <ButtonCard  text="Phase-In Phase-Out" onClick={()=>console.log("clciked")}/>
                     <ButtonCard text="Seasonality" onClick={()=>console.log("clciked")}/> 
                 </PanelGrid>
-            </PanelGridWrapper> */}
+            </PanelGridWrapper>
         </Container>
     )
 }
