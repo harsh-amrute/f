@@ -13,6 +13,7 @@ import ActionToolBar from "../Planning/ActionToolBar"
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal"
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
+import { GridStateContext } from "../../../../../context/GridStateContext"
 
 
 
@@ -44,15 +45,25 @@ const BPR = ()=>{
         handleOnPageChange,
         recordCount,
         currGridPage,
-        rowsPerPage
+        rowsPerPage,
+        ref,
+        columnState,
+        isSavedDataLoading,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack
     } = useBPR();
 
-    
-
 
 
     
-    if(isLoading){
+    if(isLoading || isSavedDataLoading){
       return (
         <VFLoader/>
       )
@@ -60,8 +71,30 @@ const BPR = ()=>{
 
 
     return(
-        <>
-        <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BPR'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
+        <GridStateContext.Provider
+            value={{
+                ref:ref,
+                exportExcelColumns:exportExcelColumns,
+                setExportExcelColumns:setExportExcelColumns,
+                tempDownloadData:tempDownloadData,
+                setTempDownloadData:setTempDownloadData,
+                exportExcelRowData:exportExcelRowData,
+                setExportExcelRowData:setExportExcelRowData
+    
+            }}
+        >
+        <ActionToolBar 
+            view={'grid'} 
+            setCurrentTab={''} 
+            currCategory={'BPR'} 
+            currentTab={''} 
+            tabsList={[]} 
+            onFloatingTabChange={()=>console.log('')} 
+            onGoBack={()=>console.log('')} 
+            onViewChange={()=>console.log('')} 
+            genericRecordCount={recordCount}
+            onExportToExcelCallBack={onExportToExcelCallBack}
+        />
         {
             showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} />
         }
@@ -88,9 +121,15 @@ const BPR = ()=>{
             <Allotment vertical defaultSizes={[400,100]}>
               <Allotment.Pane >
               <VFTable
+                ref={ref}
                 {...agGridProps}
                 columnDefs={BPRColumns}
                 rowData={BPRRowData}
+                onGridReady={(params)=>{
+                   if(columnState){
+                    params.columnApi.applyColumnState({state:columnState})
+                   }
+                }}
             />
                 <VFPagination
                     selectedRows={0}
@@ -169,8 +208,16 @@ const BPR = ()=>{
                     style={remarkHistoryToolipPosition}
                 />
             )}
+            <div style={{display:'none'}}>                
+                  <VFTable
+                    ref={tempRef}
+                    columnDefs={BPRColumns}
+                    rowData={exportExcelRowData}
+                    {...tempAgGridProps}
+                  />
+                </div>
         </BPRLayout>
-        </>
+        </GridStateContext.Provider>
     )
             }
 

@@ -6,16 +6,20 @@ import { mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils
 import {BPRTagsCellRenderer,BPRTechColorCellRenderer,BPREcoColorCellRenderer} from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
 
-import { useGetBPRData, useGetBPRUIConfiguration,useGetBPRDataCount } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetBPRData, useGetBPRUIConfiguration,useGetBPRDataCount,useGetState } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { isSameDay,format,addDays } from 'date-fns'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
 import { useGetUpdatedGraphData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
 import { notifyError, notifyLoader } from '../../../../../helpers/notify'
 import { toast } from 'react-toastify'
 
+import { useSelector } from 'react-redux'
+
+import { RootState } from '../../../../../redux/store/store'
+
 
 const useResearchInsights = ()=>{
-
+    
     const {data,isLoading:isBPRUILoading} = useGetBPRUIConfiguration()
 
     const {mutateAsync:getUpdatedGraphData,isLoading:isUpdatedGraphDataLoading} = useGetUpdatedGraphData()
@@ -54,6 +58,48 @@ const useResearchInsights = ()=>{
 
 
     const ref = useRef<GridRef>();
+    const tempRef = useRef()
+
+    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+    const [columnState,setColumnState] = useState<any>()
+    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+
+    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+
+    const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
+
+    const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
+
+    const sideBar = {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            toolPanelParams: {
+              suppressPivots: true,
+              suppressPivotMode: true,
+            },
+          
+          },
+        ],
+        defaultToolPanel:'',
+      }
+
+
+    useEffect(()=>{
+        const getTableState = async()=>{
+          try{
+            const data =  await getState("ResearchInsight")
+            setColumnState(JSON.parse(data.data.data))
+          }catch(err:any){
+            setColumnState(ResearchInsightsColumns)
+          }
+        }
+        getTableState()
+    },[currentGridState])
 
 
     useEffect(()=>{
@@ -110,6 +156,7 @@ const useResearchInsights = ()=>{
             return { background: "#F7F7F7" };
             },
         },
+        sideBar:sideBar,
         // paginationPageSize:25,
         paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
         suppressRowClickSelection:true,
@@ -134,6 +181,12 @@ const useResearchInsights = ()=>{
             },
         }
     }
+
+    const tempAgGridProps:AgGridReactProps = {
+        onRowDataUpdated:(event)=>{
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+        }
+      };
     
     const getColor = (date:any)=>{
         const doesExist = calenderData.find((d)=>isSameDay(d.date,date))
@@ -368,6 +421,21 @@ const useResearchInsights = ()=>{
         return mapResearchInsightsFieldsToColDefs(data?.data.data)
     },[data])
 
+    const onExportToExcelCallBack=async(pageNumber:number)=>{
+        const data =  await getBPRData({
+            id:1,
+            name:'',
+            fields:[],
+            filters:[],
+            paginationParameter:{
+                pageNumber:pageNumber,
+                recordsPerPage:5000
+            }
+        })
+        
+        return data.data.data
+    }
+
     const handleOnPageChange = (pageNumber:number)=>setCurrGridPage(pageNumber)
 
     const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
@@ -404,7 +472,18 @@ const useResearchInsights = ()=>{
         currGridPage,
         handleOnPageChange,
         rowsPerPage,
-        recordCount
+        recordCount,
+        isSavedDataLoading,
+        columnState,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack
     }
 }
 

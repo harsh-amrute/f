@@ -28,7 +28,7 @@ const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenD
     const renderGraphs = ()=>{
         switch(category){
             case 'GITFromParent':
-                return <MonitorGITParent data={currentGraphData?currentGraphData : []} paginationProps={paginationProps} onOpenDailyDataGraph={onOpenDailyDataGraph}/>
+                return <MonitorGITParent data={currentGraphData?currentGraphData : []} paginationProps={paginationProps} onOpenDailyDataGraph={onOpenDailyDataGraph} currentCategory={category} currentTab={currentTab}/>
             case 'GITToChild':
                 if(currentTab === 'locationWise'){
                     return (

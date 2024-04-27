@@ -1,3 +1,5 @@
+import {useRef,useMemo} from 'react'
+
 import SelectCategory from "../../../../../components/VectorFLOW/layouts/SelectCategory";
 
 import usePlanning from "./usePlanning";
@@ -7,6 +9,9 @@ import ActionToolBar from './ActionToolBar';
 import GridView from "./GridView";
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
+import { GridStateContext } from "../../../../../context/GridStateContext";
+import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+
 const Planning = () => {
 
     const {
@@ -28,7 +33,15 @@ const Planning = () => {
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
         dailyData,
-        onOpenDailyDataGraph
+        onOpenDailyDataGraph,
+        exportExcelColumns,
+        setExportExcelColumns,
+        tempAgGridProps,
+        tempDownloadData,
+        setTempDownloadData,
+        exportExcelRowData,
+        setExportExcelRowData,
+        onExportToExcelCallBack
     } = usePlanning();
 
 
@@ -45,9 +58,43 @@ const Planning = () => {
         
     }
 
+    const ref = useRef()
+    const tempRef = useRef()
+
+    const currentColDefs = useMemo(()=>{
+        if(currentGridData&& currentGridData.uiConfig){
+            let colDefs = [];
+        colDefs = currentGridData.uiConfig.map((column:{header:string,colCode:string})=>{
+            if(['plp','pip'].includes(column.colCode)){
+                return {
+                    field:column['colCode'],
+                    colId:column['colCode'],
+                    headerName:column['header'],
+                    cellRenderer:'colorCellRenderer',
+                }
+            }
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [...colDefs]
+        }
+        return []
+    },[currentGridData])
 
     return(
-        <>
+        <GridStateContext.Provider value={{
+            ref:ref,
+            exportExcelColumns:exportExcelColumns,
+            setExportExcelColumns:setExportExcelColumns,
+            tempDownloadData:tempDownloadData,
+            setTempDownloadData:setTempDownloadData,
+            exportExcelRowData:exportExcelRowData,
+            setExportExcelRowData:setExportExcelRowData
+
+        }}>
             {
                 isOverlayVisible && (
                 <VFOverlay>
@@ -76,6 +123,9 @@ const Planning = () => {
                 !isSelectCategoryOpen &&
                 <>
                     <ActionToolBar 
+                        genericRecordCount={0}
+                        onExportToExcelCallBack={onExportToExcelCallBack}
+                        planningCount={planningCounts}
                         currCategory={currentCategory}
                         view={currentView} 
                         onFloatingTabChange={onFloatingTabChange}
@@ -96,8 +146,16 @@ const Planning = () => {
             {
                 showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
             }
+            <div style={{display:'none'}}>                
+                  <VFTable
+                    ref={tempRef}
+                    columnDefs={currentColDefs}
+                    rowData={exportExcelRowData}
+                    {...tempAgGridProps}
+                  />
+                </div>
             
-        </>
+        </GridStateContext.Provider>
     )
 }
 

@@ -1,4 +1,4 @@
-import { CSSProperties, useMemo, useState } from "react";
+import { CSSProperties, useMemo, useState,useEffect ,useRef} from "react";
 
 import {toast} from 'react-toastify'
 
@@ -9,15 +9,21 @@ import { ColDef } from "ag-grid-enterprise";
 
 import { BPRSubmitRemarkCellRenderer } from "../BPR/BPRCellRenderers";
 
+import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../helpers/notify";
 import ColorCellRenderer from "./ColorCellRenderer";
 import ETACellRenderer from "./ETACellRenderer";
 import ShowRemarkCellRenderer from "./ShowRemarkCellRenderer";
+import { useSelector } from "react-redux";
+
+import { RootState } from "../../../../../redux/store/store";
 
 
 
 const useOpenExpeditingRequests = () => {
+
+    const ref = useRef()
 
     const [submitRemarkToolTipPosition,setSubmitRemarkToolipPosition] = useState<CSSProperties>({})
     const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
@@ -44,6 +50,41 @@ const useOpenExpeditingRequests = () => {
         remarksCellRenderer: ShowRemarkCellRenderer
     }), []);
 
+    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+    const [columnState,setColumnState] = useState<any>()
+    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+
+    const sideBar = {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            toolPanelParams: {
+              suppressPivots: true,
+              suppressPivotMode: true,
+            },
+          
+          },
+        ],
+        defaultToolPanel:'',
+      }
+
+
+    useEffect(()=>{
+        const getTableState = async()=>{
+          try{
+            const data =  await getState("OpenExpeditingRequests")
+            setColumnState(JSON.parse(data.data.data))
+          }catch(err:any){
+            setColumnState(tableColDefs)
+          }
+        }
+        getTableState()
+    },[currentGridState])
+
     const agGridProps: AgGridReactProps = {
 
         suppressRowTransform: true,
@@ -61,6 +102,7 @@ const useOpenExpeditingRequests = () => {
                 return { background: "#F7F7F7" };
             },
         },
+        sideBar:sideBar,
         pagination: true,
         suppressRowClickSelection: true,
         components: customCellRenderers,
@@ -206,6 +248,8 @@ const useOpenExpeditingRequests = () => {
         ]
     }, [])
 
+    
+
 
     return {
         agGridProps,
@@ -219,7 +263,10 @@ const useOpenExpeditingRequests = () => {
         updateRemark,
         onSubmitRemark,
         onCloseSubmitRemark,
-        onCloseRemarkHistory
+        onCloseRemarkHistory,
+        ref,columnState,
+        isSavedDataLoading,
+        
     }
 }
 

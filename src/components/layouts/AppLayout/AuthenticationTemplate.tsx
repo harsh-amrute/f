@@ -58,6 +58,7 @@ const AuthenticatedTemplate = (
       .then((res) => {
         setUserData(res.data.data)
         setLoading(false)
+        console.log(res.data.data.roles.permission)
         props.setMenuItem(getSelectedMenuItem(res.data.data.roles.permission))
       })
       .catch((err) => {

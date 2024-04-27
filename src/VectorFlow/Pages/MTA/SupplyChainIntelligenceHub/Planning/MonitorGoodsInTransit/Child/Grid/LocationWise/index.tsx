@@ -8,7 +8,7 @@ import { createIconColumn } from '../../../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 
-const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGraph}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any})=>{
+const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
     const [activeRow,setActiveRow] = useState<any>();
     const [isSubGridOpen,toggleSubGrid] = useState<any>(false);
@@ -161,6 +161,8 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
 
     return(
         <GridViewTable 
+            currentCategory={currentCategory}
+            currentTab={currentTab}
             agGridProps={agGridProps} 
             agGridColDefs={colDefs} 
             agGridRowData={data['data']} 

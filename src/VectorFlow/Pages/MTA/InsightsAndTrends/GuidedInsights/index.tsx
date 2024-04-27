@@ -7,10 +7,11 @@ import DBMNormSuggestions from './DBMNormSuggestions';
 import ExcessInventoryTrend from './ExcessInventoryTrend';
 import CustomScreens from './CustomScreens';
 import ChronicGridView from './ChronicGridView';
+import { GridStateContext } from '../../../../../context/GridStateContext';
 const GuidedInsight=()=>{
-  
+
     const {onFloatingTabChange,onGoBack, onViewChange,currentView, currentTab, setCurrentTab, getFloatingTabsList,
-    ChronicUnavailabilityGridViewData}=useGuidedInsights();
+    ChronicUnavailabilityGridViewData,ref}=useGuidedInsights();
 
     const renderView = () => {
 
@@ -42,7 +43,9 @@ const GuidedInsight=()=>{
 
     }
     
-    return(<>
+    return(<GridStateContext.Provider value={{
+        ref:ref
+    }}>
             <ActionToolBar  data-testid="chronicgridview"
                         view={currentView} 
                         onFloatingTabChange={onFloatingTabChange}
@@ -57,7 +60,7 @@ const GuidedInsight=()=>{
 
                         />
                       {renderView()} 
-            </>) 
+            </GridStateContext.Provider>) 
    
 
 

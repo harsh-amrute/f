@@ -1,7 +1,7 @@
-import { useState,useMemo, useEffect, CSSProperties } from "react"
+import { useState,useMemo, useEffect, CSSProperties,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 
-import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { useUserData } from "../../../../../context"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
 import { mapBPRFieldsToColDefs } from "../../../../../helpers/utils"
@@ -14,7 +14,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type DailyDataGraph } from "../../../../types/MTA";
 
+
 const useBPR =()=>{
+
+
+    const ref = useRef()
+    const tempRef = useRef()
 
     const {isSideBarOpen} = useUserData()
     const {getGridZoom,getScreenZoomValue} = useViewPort()
@@ -45,6 +50,13 @@ const useBPR =()=>{
         skucode:'',
         whcode:''
     })
+
+    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+
+    const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
+
+    const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
+
     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
   
     const {data,isLoading:isBPRUILoading,isError} = useGetBPRUIConfiguration()
@@ -58,6 +70,42 @@ const useBPR =()=>{
     const {mutateAsync:getDailyData} = useGetDailyData();
 
     const {mutateAsync:getBPRDataCount,isLoading:isBPRDataCountLoading} = useGetBPRDataCount()
+
+    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+    const [columnState,setColumnState] = useState<any>()
+    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+
+    const sideBar = {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            toolPanelParams: {
+              suppressPivots: true,
+              suppressPivotMode: true,
+            },
+          
+          },
+        ],
+        defaultToolPanel:'',
+      }
+
+
+    useEffect(()=>{
+        const getTableState = async()=>{
+          try{
+            const data =  await getState("BPR")
+            setColumnState(JSON.parse(data.data.data))
+          }catch(err:any){
+            setColumnState(BPRColumns)
+          }
+        }
+        getTableState()
+    },[currentGridState])
+  
 
     useEffect(()=>{
         async function getBPRRowData(){
@@ -111,6 +159,7 @@ const useBPR =()=>{
         tooltipInteraction:true,
         // rowSelection:'single',
         readOnlyEdit:true,
+        sideBar:sideBar,
         paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
         onRowClicked:(params:any)=>{
             if(params.data.intransit && params.data.intransit.length>0){
@@ -149,6 +198,13 @@ const useBPR =()=>{
             },
         }
     }
+
+    const tempAgGridProps:AgGridReactProps = {
+        onRowDataUpdated:(event)=>{
+            console.log('calledonce')
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+        }
+      };
 
     const updateRemark = (e:any)=>setRemark(e.currentTarget.value)
     
@@ -232,6 +288,22 @@ const useBPR =()=>{
         dispatch(TOGGLE_GRAPH_MODAL(true));
     }
 
+    const onExportToExcelCallBack=async(pageNumber:number)=>{
+        const data =  await getBPRData({
+            id:1,
+            name:'',
+            fields:[],
+            filters:[],
+            paginationParameter:{
+                pageNumber:pageNumber,
+                recordsPerPage:5000
+            }
+        })
+        
+        return data.data.data
+    }
+
+
     const handleOnPageChange = (pageNumber:number)=>setCurrGridPage(pageNumber)
 
     const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
@@ -268,7 +340,19 @@ const useBPR =()=>{
         recordCount,
         currGridPage,
         rowsPerPage,
-        showNormChangeHistoryTable      
+        showNormChangeHistoryTable,
+        ref,
+        isSavedDataLoading,
+        columnState,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack
     }
 }
 

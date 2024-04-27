@@ -6,6 +6,8 @@ import BPRRemarkHistoryToolTip from "../BPR/BPRRemarkHistoryToolTip"
 import BPRSubmiRemarkToolTip from "../BPR/BPRSubmitRemarkToolTip"
 
 import useOpenExpeditingRequests from "./useOpenExpeditingRequests"
+import { GridStateContext } from "../../../../../context/GridStateContext"
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 
 
 
@@ -21,14 +23,25 @@ const OpenExpeditingRequests = ()=>{
         isRemarkHistoryToolTipOpen,
         submitRemarkToolTipPosition,
         remarkHistoryToolipPosition,
+        isSavedDataLoading,
+        ref,
+        columnState,
         updateRemark,
         onSubmitRemark,
         onCloseSubmitRemark,
         onCloseRemarkHistory
     } = useOpenExpeditingRequests()
 
+    if(isSavedDataLoading){
+      return <VFLoader/>
+    }
+
     return(
-        <React.Fragment>
+        <GridStateContext.Provider
+          value={{
+            ref:ref
+          }}
+        >
                 <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'OpenExpeditingRequests'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
             <VFTable
             columnDefs={tableColDefs}
@@ -180,6 +193,12 @@ const OpenExpeditingRequests = ()=>{
               ]
               }
             {...agGridProps}
+            ref={ref}
+            onGridReady={(params)=>{
+              if(columnState){
+                params.columnApi.applyColumnState({state:columnState})
+              }
+            }}
         />
         {isSubmitRemarkToolTipOpen && (
             <BPRSubmiRemarkToolTip
@@ -198,7 +217,7 @@ const OpenExpeditingRequests = ()=>{
                 style={remarkHistoryToolipPosition}
             />
         )}
-        </React.Fragment>
+        </GridStateContext.Provider>
     )
 }
 

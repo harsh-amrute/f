@@ -64,3 +64,21 @@ export const useGetDailyData = () => {
     return await BPRService.getDailyData(payload);
   });
 }
+
+export const useSaveState = () => {
+  return useMutation(async (payload:{reportname:string,state:string}) => {
+    return await BPRService.saveState(payload);
+  });
+}
+
+export const useGetState = () => {
+  return useMutation(async (payload:string) => {
+    return await BPRService.getState(payload);
+  });
+}
+
+export const useResetState = () => {
+  return useMutation(async (payload:string) => {
+    return await BPRService.resetState(payload);
+  });
+}

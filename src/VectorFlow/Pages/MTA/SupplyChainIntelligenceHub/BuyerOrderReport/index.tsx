@@ -5,6 +5,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
  import {useBOR} from "./useBOR"
  import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
  import ActionToolBar from "../Planning/ActionToolBar"
+import { GridStateContext } from "../../../../../context/GridStateContext";
 
 const BuyerOrderReport = ()=>{
 
@@ -15,19 +16,53 @@ const BuyerOrderReport = ()=>{
         rowData,       
         currentPage,
         recordCount,
-        handleChangePage       
+        ref,
+        columnState,
+        isSavedDataLoading,
+        handleChangePage,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack      
     } = useBOR()
 
 
-    if(isLoading){
+    if(isLoading || isSavedDataLoading){
       return (
         <VFLoader/>
       )
     }
 
     return(
-     <>
-        <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BOR'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
+     <GridStateContext.Provider
+     value={{
+        ref:ref,
+        exportExcelColumns:exportExcelColumns,
+        setExportExcelColumns:setExportExcelColumns,
+        tempDownloadData:tempDownloadData,
+        setTempDownloadData:setTempDownloadData,
+        exportExcelRowData:exportExcelRowData,
+        setExportExcelRowData:setExportExcelRowData
+
+    }}
+     >
+        <ActionToolBar 
+            view={'grid'} 
+            setCurrentTab={''} 
+            currCategory={'BOR'} 
+            currentTab={''} 
+            tabsList={[]} 
+            onFloatingTabChange={()=>console.log('')} 
+            onGoBack={()=>console.log('')} 
+            onViewChange={()=>console.log('')}
+            genericRecordCount={recordCount}
+            onExportToExcelCallBack={onExportToExcelCallBack}
+        />
         <BORLayout>
             {/* <BORTaskBar style={{width:'74%'}}>
                 <VFButtonOutline
@@ -49,6 +84,10 @@ const BuyerOrderReport = ()=>{
                {...agGridProps}
                 columnDefs={BORColumns}
                 rowData={rowData}
+                ref={ref}
+                onGridReady={(params)=>{
+                    if(columnState)params.columnApi.applyColumnState({state:columnState})
+                }}
              />
               <VFPagination 
                 selectedRows={0} 
@@ -59,9 +98,16 @@ const BuyerOrderReport = ()=>{
               />
               
              </div>
-            
+             <div style={{display:'none'}}>                
+                  <VFTable
+                    ref={tempRef}
+                    columnDefs={BORColumns}
+                    rowData={exportExcelRowData}
+                    {...tempAgGridProps}
+                  />
+                </div>
         </BORLayout>
-    </>
+    </GridStateContext.Provider>
     )
 }
 

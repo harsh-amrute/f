@@ -8,7 +8,7 @@ import { createIconColumn } from '../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 
-const OrderFulfillmentGrid = ({data,paginationProps,onOpenDailyDataGraph}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any})=>{
+const OrderFulfillmentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
    
     const customCellRenderers = useMemo(() => ({
@@ -102,6 +102,8 @@ const OrderFulfillmentGrid = ({data,paginationProps,onOpenDailyDataGraph}:{data:
 
     return(
         <GridViewTable 
+            currentTab={currentTab}
+            currentCategory={currentCategory}
             agGridProps={agGridProps} 
             agGridColDefs={colDefs} 
             agGridRowData={data['data']} 

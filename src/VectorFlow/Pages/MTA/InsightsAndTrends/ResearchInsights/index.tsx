@@ -21,6 +21,7 @@ import { useUserData } from '../../../../../context'
 import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar'
 import ExpandedGraph from './ReseachInsightsExpandedGraph'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
+import { GridStateContext } from '../../../../../context/GridStateContext'
 
 
 
@@ -55,7 +56,18 @@ const ResearchInsights = ()=>{
         recordCount,
         rowsPerPage,
         currGridPage,
-        handleOnPageChange
+        isSavedDataLoading,
+        columnState,
+        handleOnPageChange,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack
     } = useResearchInsights()
 
     const {user} = useUserData()
@@ -63,12 +75,31 @@ const ResearchInsights = ()=>{
     const themeUi = user.user.theme_ui
 
     
-    if(isLoading){
+    if(isLoading || isSavedDataLoading){
         return <VFLoader/>
     }
     return(
-        <>
-       <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'ResearchInsight'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
+        <GridStateContext.Provider value={{
+            ref:ref,
+            exportExcelColumns:exportExcelColumns,
+            setExportExcelColumns:setExportExcelColumns,
+            tempDownloadData:tempDownloadData,
+            setTempDownloadData:setTempDownloadData,
+            exportExcelRowData:exportExcelRowData,
+            setExportExcelRowData:setExportExcelRowData
+
+        }}>
+       <ActionToolBar 
+            view={'grid'} 
+            setCurrentTab={''} 
+            currCategory={'ResearchInsight'} 
+            currentTab={''} tabsList={[]} 
+            onFloatingTabChange={()=>console.log('')} 
+            onGoBack={()=>console.log('')} 
+            onViewChange={()=>console.log('')}
+            genericRecordCount={recordCount || 0}
+            onExportToExcelCallBack={onExportToExcelCallBack}
+        />
         <ResearchInsightsLayout>
             <ResearchInsightsTableWrapper style={{zoom:0.8, marginTop:'-15px'}}>
                 <VFTable
@@ -77,6 +108,9 @@ const ResearchInsights = ()=>{
                     ref={ref}
                     columnDefs={ResearchInsightsColumns}
                     rowData={ResearchInsightsData}
+                    onGridReady={(params)=>{
+                        if(columnState)params.columnApi.applyColumnState({state:columnState})
+                    }}
                 />
                 <VFPagination
                     selectedRows={0}
@@ -529,9 +563,16 @@ const ResearchInsights = ()=>{
                 isOpen={isGraphOneOpen}
                 onClose={()=>setIsGraphOneOpen(false)}
             />
-           
+           <div style={{display:'none'}}>                
+                  <VFTable
+                    ref={tempRef}
+                    columnDefs={ResearchInsightsColumns}
+                    rowData={exportExcelRowData}
+                    {...tempAgGridProps}
+                  />
+                </div>
         </ResearchInsightsLayout>
-        </>
+        </GridStateContext.Provider>
     )
 }
 

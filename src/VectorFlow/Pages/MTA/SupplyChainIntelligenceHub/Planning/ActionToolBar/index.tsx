@@ -2,10 +2,11 @@ import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton';
 import VFFloatingTab from '../../../../../../components/VectorFLOW/commons/VFFloatingTab';
 import VFSelectedFilters from '../../../../../../components/VectorFLOW/commons/VFSelectedFilters';
 import useBPRFilter from '../../../../../../hooks/useBPRFilter';
-import {useState} from 'react';
+import {useState,useMemo} from 'react';
 import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { useLocation} from "react-router-dom";
 import { MultiFilterSupplyChainCheckboxList } from '../../../../../../helpers/BPRConstants'
+import useSaveAllState from '../../../../../../hooks/useSaveAllState'
 
 
 
@@ -23,6 +24,8 @@ import {
  
 } from './styles';
 import { useUserData } from '../../../../../../context/UserDataContext';
+import { PlanningCounts } from '../../../../../../VectorFlow/types/MTA';
+import { useGetPlanningDataGrid } from '../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/Planning';
 
 
 interface ActionToolBarProps {
@@ -36,14 +39,17 @@ interface ActionToolBarProps {
     onViewChange:(view:string)=>void,
     disableChartAndGridViewToggle?:boolean,
     onApplyFilter?:(params:any)=>void,
-    
+    planningCount?:PlanningCounts
+    genericRecordCount:number
+    onExportToExcelCallBack:any
 }
 
 
 
-const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,onApplyFilter}:ActionToolBarProps) => {
+const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,genericRecordCount,onExportToExcelCallBack,onApplyFilter}:ActionToolBarProps) => {
     const { user } = useUserData();
     const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
+    const {onSaveState,onResetAllState,onExportToExcel} = useSaveAllState()
     const { pathname } = useLocation();
 
     const themeUi = user?.user?.theme_ui;
@@ -53,6 +59,31 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
        if(onApplyFilter) onApplyFilter(params)
         toggleFilter(false)
     }
+
+    const currentPageRecordCount = useMemo(()=>{
+        switch(currCategory){
+            case "GITFromParent":
+                return planningCount?.parentMonitorCount
+            case "GITToChild":
+                return planningCount?.childMonitorCount
+            case "ExpediteFromParent":
+                return planningCount?.parentExpediteCount
+            case "ExpediteToChild":
+                return planningCount?.childExpediteCount
+            case "ExcessInventory":
+                return planningCount?.reviewExcessInventoryCount
+            case "OrderFulfillment":
+                return planningCount?.reviewOrderFulfillmentCount
+            default:
+                return genericRecordCount
+        }
+    },[currCategory])
+
+
+    const handleExportToExcel = ()=>{
+        onExportToExcel({pagination:{recordCount:currentPageRecordCount || 0,chunkSize:5000},callBack:onExportToExcelCallBack})
+    }
+
 
 
    const renderFilter = () => {
@@ -161,12 +192,12 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 currentTab==='custom' &&
                                 (
                                     <>
-                                        <SCViewContainerWithBg>
-                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" onClick={onGoBack} />
+                                        <SCViewContainerWithBg onClick={onGoBack}>
+                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt=""  />
                                             <p>Save</p>
                                         </SCViewContainerWithBg>
-                                        <SCViewContainerWithBg>
-                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt="" onClick={onGoBack} />
+                                        <SCViewContainerWithBg onClick={onGoBack}>
+                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt=""  />
                                             <p>Reset</p>
                                         </SCViewContainerWithBg>
                                         {!disableChartAndGridViewToggle && <SCVerticalDivider/> } 
@@ -233,9 +264,9 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 {currCategory==="GuidedInsight" ? null : 
                                 <>
                                 <SCVerticalDivider/>
-                                    <SCViewContainerWithBg>
+                                    <SCViewContainerWithBg onClick={handleExportToExcel} >
                                             <>
-                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
+                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" />
                                              <p>Excel Export</p>
                                             </>
                                     {/* <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
@@ -244,12 +275,12 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 </>
                                 }
                                 <SCVerticalDivider/>  
-                                <SCViewContainerWithBg>
-                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" onClick={onGoBack} />
+                                <SCViewContainerWithBg  onClick={()=>onSaveState(`${currCategory}${currentTab}`)}>
+                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
                                     <p>Save</p>
                                 </SCViewContainerWithBg>
-                                <SCViewContainerWithBg>
-                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt="" onClick={onGoBack} />
+                                <SCViewContainerWithBg onClick={()=>onResetAllState(`${currCategory}${currentTab}`)}>
+                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt=""  />
                                     <p>Reset</p>
                                 
                                     </SCViewContainerWithBg>
