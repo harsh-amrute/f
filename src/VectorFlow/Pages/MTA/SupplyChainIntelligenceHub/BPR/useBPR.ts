@@ -2,7 +2,6 @@ import { useState,useMemo, useEffect, CSSProperties,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 
 import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
-import { useUserData } from "../../../../../context"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
 import { mapBPRFieldsToColDefs } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
@@ -21,7 +20,6 @@ const useBPR =()=>{
     const ref = useRef()
     const tempRef = useRef()
 
-    const {isSideBarOpen} = useUserData()
     const {getGridZoom,getScreenZoomValue} = useViewPort()
     const dispatch = useDispatch();
 
@@ -106,7 +104,6 @@ const useBPR =()=>{
         getTableState()
     },[currentGridState])
   
-
     useEffect(()=>{
         async function getBPRRowData(){
 
@@ -308,11 +305,12 @@ const useBPR =()=>{
 
     const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
 
-    const BPRColumns = mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph)
+    const BPRColumns =mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph)
+
+
 
    
     return {
-        isSideBarOpen,
         isSubGridOpen,
         isLoading : isBPRDataLoading || isBPRUILoading || isBPRDataCountLoading,
         isError,

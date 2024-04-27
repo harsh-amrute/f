@@ -130,6 +130,7 @@ const BPR = ()=>{
                     params.columnApi.applyColumnState({state:columnState})
                    }
                 }}
+                
             />
                 <VFPagination
                     selectedRows={0}

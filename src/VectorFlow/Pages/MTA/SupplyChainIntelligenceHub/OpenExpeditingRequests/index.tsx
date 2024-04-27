@@ -1,4 +1,4 @@
-import React from "react"
+
 
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import ActionToolBar from "../Planning/ActionToolBar"
@@ -29,7 +29,15 @@ const OpenExpeditingRequests = ()=>{
         updateRemark,
         onSubmitRemark,
         onCloseSubmitRemark,
-        onCloseRemarkHistory
+        onCloseRemarkHistory,
+        tempDownloadData,
+        setTempDownloadData,
+
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack
     } = useOpenExpeditingRequests()
 
     if(isSavedDataLoading){
@@ -38,11 +46,29 @@ const OpenExpeditingRequests = ()=>{
 
     return(
         <GridStateContext.Provider
-          value={{
-            ref:ref
-          }}
+        value={{
+          ref:ref,
+          exportExcelColumns:exportExcelColumns,
+          setExportExcelColumns:setExportExcelColumns,
+          tempDownloadData:tempDownloadData,
+          setTempDownloadData:setTempDownloadData,
+          exportExcelRowData:exportExcelRowData,
+          setExportExcelRowData:setExportExcelRowData
+
+      }}
         >
-                <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'OpenExpeditingRequests'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
+              <ActionToolBar 
+                view={'grid'} 
+                setCurrentTab={''} 
+                currCategory={'OpenExpeditingRequests'} 
+                currentTab={''} 
+                tabsList={[]} 
+                onFloatingTabChange={()=>console.log('')} 
+                onGoBack={()=>console.log('')} 
+                onViewChange={()=>console.log('')}
+                genericRecordCount={12}
+                onExportToExcelCallBack={onExportToExcelCallBack}
+              />
             <VFTable
             columnDefs={tableColDefs}
             rowData={[

@@ -26,7 +26,7 @@ const BufferTrendReport = ()=>{
     return(
         <BTRLayoutWrapper>
 
-            <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BTR'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
+            <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BTR'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')} onExportToExcelCallBack genericRecordCount={0}/>
 
 
             <BTRLayoutTabsWrapper>

@@ -25,7 +25,6 @@ import {
 } from './styles';
 import { useUserData } from '../../../../../../context/UserDataContext';
 import { PlanningCounts } from '../../../../../../VectorFlow/types/MTA';
-import { useGetPlanningDataGrid } from '../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/Planning';
 import VFButtonOutline from '../../../../../../components/VectorFLOW/commons/VFButtonOutline';
 
 

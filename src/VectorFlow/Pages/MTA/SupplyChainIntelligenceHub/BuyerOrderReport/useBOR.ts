@@ -158,7 +158,7 @@ export const useBOR =()=>{
          if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
         }
       };
-
+      console.log(columnState)
       const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getBorData({
             filters:[],

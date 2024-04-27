@@ -263,7 +263,6 @@ const usePlanning = ()=>{
                 if(planningCategoryObj.custom) tempPlanningCount.reviewOrderFulfillmentCustomCount = planningCategoryObj.custom; 
             }
         });
-        console.log(tempPlanningCount);
 
         setPlanningCounts(tempPlanningCount);
     }

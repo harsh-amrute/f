@@ -416,7 +416,7 @@ const useResearchInsights = ()=>{
         }
     },[selectedRowsDates,graphs])
 
-
+    console.log(columnState)
     const ResearchInsightsColumns = useMemo(()=>{
         return mapResearchInsightsFieldsToColDefs(data?.data.data)
     },[data])

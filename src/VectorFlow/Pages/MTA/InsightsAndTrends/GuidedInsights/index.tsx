@@ -44,7 +44,14 @@ const GuidedInsight=()=>{
     }
     
     return(<GridStateContext.Provider value={{
-        ref:ref
+        ref:ref,
+        exportExcelColumns:[],
+        setExportExcelColumns:()=>{return},
+        tempDownloadData:false,
+        setTempDownloadData:()=>{return},
+        exportExcelRowData:[],
+        setExportExcelRowData:()=>{return}
+
     }}>
             <ActionToolBar  data-testid="chronicgridview"
                         view={currentView} 
@@ -54,7 +61,9 @@ const GuidedInsight=()=>{
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
                         tabsList={getFloatingTabsList()}
+                        genericRecordCount={0}
                        disableChartAndGridViewToggle={currentTab==='chronicunavailability'|| currentView==='grid'?false:true}
+                       onExportToExcelCallBack
                 //   disableChartAndGridViewToggle={(currentTab==='chronicunavailability'|| currentTab==='customscreens' )|| (currentView==='grid'|| currentView==='chart') ?false:true}
                 currCategory={'GuidedInsight' }
 

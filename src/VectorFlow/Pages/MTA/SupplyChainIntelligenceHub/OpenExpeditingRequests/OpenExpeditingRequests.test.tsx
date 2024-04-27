@@ -3,7 +3,9 @@ import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
+import {GetStateMockResponse,ResetStateMockResponse,SaveStateMockResponse} from '../../../../../mock-data/BPR';
 
+import {useGetState,useResetState,useSaveState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 import { ReactNode } from "react";
 import { Provider } from "react-redux";
 import {store} from "../../../../../redux/store/store";
@@ -23,7 +25,17 @@ jest.mock('../../../../Services/MTA/SupplyChainIntelligenceHub/BPR')
 // Mock the query client
 const queryClient = setupReactQuery();
 
+const useGetStateMock = useGetState as jest.MockedFunction<
+typeof useGetState
+>
 
+const useSaveStateMock = useSaveState as jest.MockedFunction<
+typeof useSaveState
+>
+
+const useResetStateMock = useResetState as jest.MockedFunction<
+typeof useResetState
+>
 
 // const contextWrapper = (children:any) => {
 //   return (
@@ -71,6 +83,38 @@ describe("It handles all interactions",()=>{
 
 
   beforeEach(() => {
+    useGetStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: GetStateMockResponse}
+          }
+        }
+      }
+      
+    })
+
+    useSaveStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: SaveStateMockResponse}
+          }
+        }
+      }
+      
+    })
+
+    useResetStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: ResetStateMockResponse}
+          }
+        }
+      }
+      
+    })
 
     render(contextWrapper(<OpenExpeditingRequests/>,store))
   });

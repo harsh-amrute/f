@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import {
   useResetState,
   useSaveState,
@@ -20,7 +20,7 @@ interface exportToExcelParameters {
 }
 
 const useSaveAllState = () => {
-  const { ref,tempDownloadData,setTempDownloadData,exportExcelColumns,setExportExcelColumns,exportExcelRowData,setExportExcelRowData } = useContext(GridStateContext);
+  const { ref,tempDownloadData,setTempDownloadData,exportExcelColumns,setExportExcelColumns,setExportExcelRowData } = useContext(GridStateContext);
   const { currentGridState } = useSelector((state: RootState) => state.mta);
   
 
@@ -28,6 +28,12 @@ const useSaveAllState = () => {
 
   const { mutateAsync: saveState } = useSaveState();
   const { mutateAsync: resetState } = useResetState();
+
+  useEffect(()=>{
+    if(tempDownloadData){
+      setTempDownloadData(false)
+    }
+  },[tempDownloadData])
 
 
   const onExportToExcel = async (params:exportToExcelParameters)=>{
