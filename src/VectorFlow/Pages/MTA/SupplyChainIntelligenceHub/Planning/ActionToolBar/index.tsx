@@ -22,6 +22,7 @@ import {
  
 } from './styles';
 import { useUserData } from '../../../../../../context/UserDataContext';
+import { DBMApplyNormChange } from '../../../DBM/DBMNormSuggestions/applyNormButton';
 
 
 interface ActionToolBarProps {
@@ -34,12 +35,13 @@ interface ActionToolBarProps {
     onGoBack:()=>void
     onViewChange:(view:string)=>void,
     disableChartAndGridViewToggle?:boolean,
-    
+    showAllTick?:any,
+    handleGoButton?:any
 }
 
 
 
-const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle}:ActionToolBarProps) => {
+const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,showAllTick,handleGoButton}:ActionToolBarProps) => {
     const { user } = useUserData();
     const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
     const { pathname } = useLocation();
@@ -180,6 +182,14 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                             <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
                             <SCGoBackText><b>Go Back</b></SCGoBackText>
                         </SCGoBackContainer>
+                        {currCategory === 'DBMNorm' ? <DBMApplyNormChange onCheck={showAllTick}/>:null}
+                        {currCategory === 'DBMNorm' ? 
+                        <img 
+                            src="/assets/img/Group 627.svg" 
+                            height={50.02} 
+                            width={76.83} 
+                            onClick={handleGoButton} 
+                        />:null}
                         {currCategory === 'GuidedInsight' ? null:
                         
                         <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
