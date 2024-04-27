@@ -3,9 +3,9 @@ import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { useGetBPRData,useGetBPRUIConfiguration ,useGetBPRDataCount} from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import { useGetBPRData,useGetBPRUIConfiguration ,useGetBPRDataCount,useSaveState,useGetState,useResetState} from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
 import {useGetUpdatedGraphData} from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
-import { GetBPRDataMockResponse,GetBPRUIConfigurationMockResponse, GetUpdatedGraphDataMockResponse} from '../../../../../mock-data/BPR';
+import { GetBPRDataMockResponse,GetBPRUIConfigurationMockResponse, GetUpdatedGraphDataMockResponse,GetStateMockResponse,ResetStateMockResponse,SaveStateMockResponse} from '../../../../../mock-data/BPR';
 import ResearchInsights from './index';
 
 import { ReactNode } from "react";
@@ -43,6 +43,18 @@ const useGetBPRUIConfigurationMock = useGetBPRUIConfiguration as jest.MockedFunc
   const useGetUpdatedGraphDataMock = useGetUpdatedGraphData as jest.MockedFunction<
     typeof useGetUpdatedGraphData
   >;
+
+  const useGetStateMock = useGetState as jest.MockedFunction<
+  typeof useGetState
+>
+
+const useSaveStateMock = useSaveState as jest.MockedFunction<
+  typeof useSaveState
+>
+
+const useResetStateMock = useResetState as jest.MockedFunction<
+  typeof useResetState
+>
 
 
   const contextWrapper = (children: ReactNode,store:any) => {
@@ -117,6 +129,38 @@ describe('Research and insights Component', () => {
         }
       }
     })
+    useGetStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: GetStateMockResponse}
+          }
+        }
+      }
+      
+    })
+
+    useSaveStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: SaveStateMockResponse}
+          }
+        }
+      }
+      
+    })
+
+    useResetStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: ResetStateMockResponse}
+          }
+        }
+      }
+      
+    })
 
   });
   it('renders loader when isLoading is true', () => {
@@ -187,6 +231,39 @@ describe('Handles all interactions', () => {
           }
         }
       }
+    })
+
+    useGetStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: GetStateMockResponse}
+          }
+        }
+      }
+      
+    })
+
+    useSaveStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: SaveStateMockResponse}
+          }
+        }
+      }
+      
+    })
+
+    useResetStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: ResetStateMockResponse}
+          }
+        }
+      }
+      
     })
     
     render(contextWrapper(<ResearchInsights />,store));

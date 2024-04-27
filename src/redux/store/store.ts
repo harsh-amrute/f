@@ -28,7 +28,8 @@ const mtaState:MTAStore = {
         suggestionData:[],
         monitoringData:[],
         rowData:{}
-    }
+    },
+    currentGridState:[]
     
 }
 

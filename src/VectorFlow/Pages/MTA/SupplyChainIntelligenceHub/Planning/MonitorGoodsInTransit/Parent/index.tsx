@@ -7,11 +7,16 @@ import { SideBarDef } from 'ag-grid-enterprise';
 import { createIconColumn } from '../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
-const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any})=>{
+import { useDispatch, useSelector } from 'react-redux';
+import { UPDATE_GRID_STATE } from '../../../../../../../redux/actions/MTA';
+import { RootState } from '../../../../../../../redux/store/store';
+const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
     const [activeRow,setActiveRow] = useState<any>();
     const [isSubGridOpen,toggleSubGrid] = useState<any>(false);
-    
+    const dispatch = useDispatch()
+
+    const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -102,10 +107,15 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph}:{data:any,
                 headerName:column['header']
             }
         })
+        dispatch(UPDATE_GRID_STATE([dailyDataColDef,...colDefs]))
         return [dailyDataColDef,...colDefs]
     }
 
-    const colDefs = mapUIConfigToColdefs(data['uiConfig'])
+    const colDefs = useMemo(()=>{
+        
+        return currentGridState.length>0?currentGridState:  mapUIConfigToColdefs(data['uiConfig'])
+    },[currentGridState])
+
 
     // if(isLoading){
     //   return (
@@ -164,6 +174,8 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph}:{data:any,
 
     return(
         <GridViewTable 
+            currentCategory={currentCategory}
+            currentTab={currentTab}
             agGridProps={agGridProps} 
             agGridColDefs={colDefs} 
             agGridRowData={data['data']} 

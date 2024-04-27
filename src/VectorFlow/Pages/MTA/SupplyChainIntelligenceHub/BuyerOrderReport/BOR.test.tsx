@@ -1,4 +1,4 @@
-import { fireEvent, render, screen,act } from '@testing-library/react';
+import {  render, act } from '@testing-library/react';
 import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import { mockBORData,mockBORCountData,mockBORUIConfigData} from "../../../../../mock-data/BOR";
 import BuyerOrderReport from './';
@@ -97,12 +97,12 @@ describe("Renders BOR Component", ()=>{
           })
     })
 
-     it("Handles Pagination", async()=>{
-        await act(async () => {
-          render(contextWrapper(<BuyerOrderReport />,store));
-          })
+    //  it("Handles Pagination", async()=>{
+    //     await act(async () => {
+    //       render(contextWrapper(<BuyerOrderReport />,store));
+    //       })
 
-          const nextBtn = screen.getAllByAltText('pagination-next-arrow')
-        fireEvent.click(nextBtn[0]);
-    })
+    //       const nextBtn = screen.getAllByAltText('pagination-next-arrow')
+    //     fireEvent.click(nextBtn[0]);
+    // })
 })

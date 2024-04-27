@@ -56,6 +56,7 @@ export const SCViewContainerWithBg = styled.div`
     align-items:center;
     width:82px;
     height:58px; 
+    cursor:pointer;
 `
 export const SCViewBackground = styled.div`
     display:flex;
@@ -77,6 +78,7 @@ export const SCViewImage = styled.img`
     width:38px;
     height:20px;
     margin-bottom:7px;
+    cursor:pointer;
 `
 
 export const SCCustomActionsContainer = styled.div`

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState,useMemo } from "react"
 import { toast } from "react-toastify";
 import { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/VFPagination";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
@@ -8,6 +8,7 @@ import { PlanningCategory, PlanningCounts, DailyDataGraph } from "../../../../ty
 import {useSelector,useDispatch} from 'react-redux';
 import { type RootState } from "../../../../../redux/store/store";
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
+import { AgGridReactProps } from 'ag-grid-react';
 
 const usePlanning = ()=>{
 
@@ -43,9 +44,15 @@ const usePlanning = ()=>{
 
     const [currentCategory,setCurrentCategory] = useState<string>('');
 
+    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+
     const [currentGraphData,setCurrentGraphData] = useState();
 
-    const [currentGridData,setCurrentGridData] = useState();
+    const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
+
+    const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
+
+    const [currentGridData,setCurrentGridData] = useState<any>();
 
     const [currentTab,setCurrentTab] = useState<string>('');
 
@@ -75,6 +82,15 @@ const usePlanning = ()=>{
         }
         
     }
+
+    const tempAgGridProps:AgGridReactProps = {
+        onRowDataUpdated:(event)=>{
+            
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+        }
+      };
+  
+
 
     useEffect(()=>{
         fetchPlanningDataCount();
@@ -247,11 +263,28 @@ const usePlanning = ()=>{
                 if(planningCategoryObj.custom) tempPlanningCount.reviewOrderFulfillmentCustomCount = planningCategoryObj.custom; 
             }
         });
-        console.log(tempPlanningCount);
 
         setPlanningCounts(tempPlanningCount);
     }
 
+    const onExportToExcelCallBack = async(pageNumber:number)=>{
+        const data =  await getPlanningDataGrid({
+            category:currentPageData.category,
+            type:currentPageData.type,
+            filters:[],
+            paginationParameter:{
+                pageNumber:pageNumber,
+                recordsPerPage:5000
+            }
+        })
+        if(currentPageData.category==='git' && currentPageData.type==='child'){
+            if(currentTab==='transporterWise'){
+                return data.data.data.transporterWise.data
+            }
+            return data.data.data.locationWise.data
+        }
+        return data.data.data.data
+    }
 
     const handlePlanningQuadrantClick = async (category:string) => {
         try {
@@ -395,7 +428,7 @@ const usePlanning = ()=>{
                     }
                     const result = await getPlanningDataGrid(body);
                     setCurrentGridData(result.data.data);
-                    setTotalRows(planningCounts.childMonitorCount)
+                    setTotalRows(planningCounts.parentMonitorCount)
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
                     break;
@@ -542,6 +575,47 @@ const usePlanning = ()=>{
         dispatch(TOGGLE_GRAPH_MODAL(true));
     }
 
+
+
+    const currentPageData = useMemo(()=>{
+        switch(currentCategory){
+            case "GITFromParent":
+                return {
+                    category:'git',
+                    type:'parent'
+                }
+            case "GITToChild":
+                return {
+                    category:'git',
+                    type:'child'
+                }
+            case "ExpediteFromParent":
+                return {
+                    category:'expedite',
+                    type:'parent'
+                }
+            case "ExpediteToChild":
+                return {
+                    category:'expedite',
+                    type:'child'
+                }
+            case "ExcessInventory":
+                return {
+                    category:'excessInventory',
+                    type:'review'
+                }
+            case "OrderFulfillment":
+                return {
+                    category:'orderFulfillment',
+                    type:'review'
+                }
+            default:
+                return  {
+                    category:'orderFulfillment',
+                    type:'review'
+                }
+        }
+    },[currentCategory])
  
     return {
         planningCounts,
@@ -562,7 +636,15 @@ const usePlanning = ()=>{
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
         dailyData,
-        onOpenDailyDataGraph
+        exportExcelColumns,
+        setExportExcelColumns,
+        onOpenDailyDataGraph,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        onExportToExcelCallBack
     }
 
 

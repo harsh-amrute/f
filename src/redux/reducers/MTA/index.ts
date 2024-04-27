@@ -3,7 +3,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createReducer } from '@reduxjs/toolkit';
 import { DailyDataGraph, MTAStore } from '../../../VectorFlow/types/MTA';
-import {TOGGLE_GRAPH_MODAL,TOGGLE_NORM_CHANGE_HISTORY_TABLE,UPDATE_DAILY_DATA} from '../../actions/MTA';
+import {TOGGLE_GRAPH_MODAL,TOGGLE_NORM_CHANGE_HISTORY_TABLE,UPDATE_DAILY_DATA, UPDATE_GRID_STATE} from '../../actions/MTA';
 
 
 const toggleDailyDataGraphModal=(state:any,action:PayloadAction<boolean>)=>{
@@ -16,6 +16,10 @@ const toggleNormChangeHistoryTable = (state:any,action:PayloadAction<boolean>)=>
 
 const setDailyData = (state:any,action:PayloadAction<DailyDataGraph>)=>{
     state.dailyData = action.payload;
+}
+
+const updateGridState = (state:any,action:PayloadAction<any>)=>{
+    state.currentGridState = action.payload
 }
   
 
@@ -40,6 +44,7 @@ const mtaReducer = (initialState:MTAStore) => createReducer(initialState, (build
       .addCase(TOGGLE_GRAPH_MODAL,toggleDailyDataGraphModal)
       .addCase(TOGGLE_NORM_CHANGE_HISTORY_TABLE,toggleNormChangeHistoryTable)
       .addCase(UPDATE_DAILY_DATA,setDailyData)
+      .addCase(UPDATE_GRID_STATE,updateGridState)
      
   })
 

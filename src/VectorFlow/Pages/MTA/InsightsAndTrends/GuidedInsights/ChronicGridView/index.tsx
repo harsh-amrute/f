@@ -89,7 +89,7 @@ const ChronicGridView=({currentGridData}:ChronicGridViewProps)=>{
       headerName:"RationedStockatparent",  enablePivot:true}
     ]
 
-    return <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={currentGridData} customGridRowData={[]} customGridColDef={[]} isSubGridOpen={false}/>
+    return <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={currentGridData} customGridRowData={[]} customGridColDef={[]} isSubGridOpen={false} currentCategory={"GuidedInsightchronicunavailability"} currentTab={''}/>
     
    
 }

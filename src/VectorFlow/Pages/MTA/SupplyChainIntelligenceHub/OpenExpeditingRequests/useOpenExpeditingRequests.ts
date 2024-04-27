@@ -1,4 +1,4 @@
-import { CSSProperties, useMemo, useState } from "react";
+import { CSSProperties, useMemo, useState,useEffect ,useRef} from "react";
 
 import {toast} from 'react-toastify'
 
@@ -9,21 +9,34 @@ import { ColDef } from "ag-grid-enterprise";
 
 import { BPRSubmitRemarkCellRenderer } from "../BPR/BPRCellRenderers";
 
+import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../helpers/notify";
 import ColorCellRenderer from "./ColorCellRenderer";
 import ETACellRenderer from "./ETACellRenderer";
 import ShowRemarkCellRenderer from "./ShowRemarkCellRenderer";
+import { useSelector } from "react-redux";
+
+import { RootState } from "../../../../../redux/store/store";
 
 
 
 const useOpenExpeditingRequests = () => {
+
+    const ref = useRef()
+    const tempRef = useRef()
 
     const [submitRemarkToolTipPosition,setSubmitRemarkToolipPosition] = useState<CSSProperties>({})
     const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
 
     const [remark,setRemark] = useState<string>('')
     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
+
+    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+
+    const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
+
+    const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
 
     const [isSubmitRemarkToolTipOpen,setIsSubmitRemarkToolTipOpen] = useState<boolean>(false)
     const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
@@ -44,6 +57,41 @@ const useOpenExpeditingRequests = () => {
         remarksCellRenderer: ShowRemarkCellRenderer
     }), []);
 
+    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+    const [columnState,setColumnState] = useState<any>()
+    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+
+    const sideBar = {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            toolPanelParams: {
+              suppressPivots: true,
+              suppressPivotMode: true,
+            },
+          
+          },
+        ],
+        defaultToolPanel:'',
+      }
+
+
+    useEffect(()=>{
+        const getTableState = async()=>{
+          try{
+            const data =  await getState("OpenExpeditingRequests")
+            setColumnState(JSON.parse(data.data.data))
+          }catch(err:any){
+            setColumnState(tableColDefs)
+          }
+        }
+        getTableState()
+    },[currentGridState])
+
     const agGridProps: AgGridReactProps = {
 
         suppressRowTransform: true,
@@ -61,6 +109,7 @@ const useOpenExpeditingRequests = () => {
                 return { background: "#F7F7F7" };
             },
         },
+        sideBar:sideBar,
         pagination: true,
         suppressRowClickSelection: true,
         components: customCellRenderers,
@@ -79,7 +128,12 @@ const useOpenExpeditingRequests = () => {
         }
     }
 
-    
+    const tempAgGridProps:AgGridReactProps = {
+        onRowDataUpdated:(event)=>{
+            console.log('calledonce')
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+        }
+      };
 
     const onOpenSubmitRemark = (e: React.MouseEvent<HTMLElement>) => {
         const { top, left } = e.currentTarget.getBoundingClientRect()
@@ -206,6 +260,166 @@ const useOpenExpeditingRequests = () => {
         ]
     }, [])
 
+    const onExportToExcelCallBack=async(pageNumber:number)=>{
+        // const data =  await getBPRData({
+        //     id:1,
+        //     name:'',
+        //     fields:[],
+        //     filters:[],
+        //     paginationParameter:{
+        //         pageNumber:pageNumber,
+        //         recordsPerPage:5000
+        //     }
+        // })
+        console.log(pageNumber)
+        return [
+            {
+              "sc": "456ZY...",
+              "rl": "Mumbai, Maharashtra",
+              "sl": "Delhi, Delhi",
+              "rr": 2,
+              "rp": "White",
+              "br": "7 Days",
+              "plpd": "₹ 6.2L",
+              "action": "Pending",
+              "eta": "2023-11-28",
+              "history": ""
+            },
+            {
+              "sc": "789WX...",
+              "rl": "Bangalore, Karnataka",
+              "sl": "Kolkata, West Bengal",
+              "rr": 3,
+              "rp": "Blue",
+              "br": "14 Days",
+              "plpd": "₹ 4.8L",
+              "action": "Approved",
+              "eta": "2023-10-05",
+              "history": ""
+            },
+            {
+              "sc": "234AB...",
+              "rl": "Chennai, Tamil Nadu",
+              "sl": "Hyderabad, Telangana",
+              "rr": 1,
+              "rp": "Red",
+              "br": "5 Days",
+              "plpd": "₹ 7.3L",
+              "action": "Completed",
+              "eta": "2023-12-20",
+              "history": ""
+            },
+            {
+                "sc": "456ZY...",
+                "rl": "Mumbai, Maharashtra",
+                "sl": "Delhi, Delhi",
+                "rr": 2,
+                "rp": "White",
+                "br": "7 Days",
+                "plpd": "₹ 6.2L",
+                "action": "Pending",
+                "eta": "2023-11-28",
+                "history": ""
+              },
+              {
+                "sc": "789WX...",
+                "rl": "Bangalore, Karnataka",
+                "sl": "Kolkata, West Bengal",
+                "rr": 3,
+                "rp": "Blue",
+                "br": "14 Days",
+                "plpd": "₹ 4.8L",
+                "action": "Approved",
+                "eta": "2023-10-05",
+                "history": ""
+              },
+              {
+                "sc": "234AB...",
+                "rl": "Chennai, Tamil Nadu",
+                "sl": "Hyderabad, Telangana",
+                "rr": 1,
+                "rp": "Red",
+                "br": "5 Days",
+                "plpd": "₹ 7.3L",
+                "action": "Completed",
+                "eta": "2023-12-20",
+                "history": ""
+              },
+              {
+                "sc": "456ZY...",
+                "rl": "Mumbai, Maharashtra",
+                "sl": "Delhi, Delhi",
+                "rr": 2,
+                "rp": "White",
+                "br": "7 Days",
+                "plpd": "₹ 6.2L",
+                "action": "Pending",
+                "eta": "2023-11-28",
+                "history": ""
+              },
+              {
+                "sc": "789WX...",
+                "rl": "Bangalore, Karnataka",
+                "sl": "Kolkata, West Bengal",
+                "rr": 3,
+                "rp": "Blue",
+                "br": "14 Days",
+                "plpd": "₹ 4.8L",
+                "action": "Approved",
+                "eta": "2023-10-05",
+                "history": ""
+              },
+              {
+                "sc": "234AB...",
+                "rl": "Chennai, Tamil Nadu",
+                "sl": "Hyderabad, Telangana",
+                "rr": 1,
+                "rp": "Red",
+                "br": "5 Days",
+                "plpd": "₹ 7.3L",
+                "action": "Completed",
+                "eta": "2023-12-20",
+                "history": ""
+              },
+              {
+                "sc": "456ZY...",
+                "rl": "Mumbai, Maharashtra",
+                "sl": "Delhi, Delhi",
+                "rr": 2,
+                "rp": "White",
+                "br": "7 Days",
+                "plpd": "₹ 6.2L",
+                "action": "Pending",
+                "eta": "2023-11-28",
+                "history": ""
+              },
+              {
+                "sc": "789WX...",
+                "rl": "Bangalore, Karnataka",
+                "sl": "Kolkata, West Bengal",
+                "rr": 3,
+                "rp": "Blue",
+                "br": "14 Days",
+                "plpd": "₹ 4.8L",
+                "action": "Approved",
+                "eta": "2023-10-05",
+                "history": ""
+              },
+              {
+                "sc": "234AB...",
+                "rl": "Chennai, Tamil Nadu",
+                "sl": "Hyderabad, Telangana",
+                "rr": 1,
+                "rp": "Red",
+                "br": "5 Days",
+                "plpd": "₹ 7.3L",
+                "action": "Completed",
+                "eta": "2023-12-20",
+                "history": ""
+              }
+          ]
+    }
+
 
     return {
         agGridProps,
@@ -219,7 +433,18 @@ const useOpenExpeditingRequests = () => {
         updateRemark,
         onSubmitRemark,
         onCloseSubmitRemark,
-        onCloseRemarkHistory
+        onCloseRemarkHistory,
+        ref,columnState,
+        isSavedDataLoading,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack
     }
 }
 

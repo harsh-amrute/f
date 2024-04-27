@@ -1,4 +1,4 @@
-import React from "react"
+
 
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import ActionToolBar from "../Planning/ActionToolBar"
@@ -6,6 +6,8 @@ import BPRRemarkHistoryToolTip from "../BPR/BPRRemarkHistoryToolTip"
 import BPRSubmiRemarkToolTip from "../BPR/BPRSubmitRemarkToolTip"
 
 import useOpenExpeditingRequests from "./useOpenExpeditingRequests"
+import { GridStateContext } from "../../../../../context/GridStateContext"
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 
 
 
@@ -21,15 +23,52 @@ const OpenExpeditingRequests = ()=>{
         isRemarkHistoryToolTipOpen,
         submitRemarkToolTipPosition,
         remarkHistoryToolipPosition,
+        isSavedDataLoading,
+        ref,
+        columnState,
         updateRemark,
         onSubmitRemark,
         onCloseSubmitRemark,
-        onCloseRemarkHistory
+        onCloseRemarkHistory,
+        tempDownloadData,
+        setTempDownloadData,
+
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack
     } = useOpenExpeditingRequests()
 
+    if(isSavedDataLoading){
+      return <VFLoader/>
+    }
+
     return(
-        <React.Fragment>
-                <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'OpenExpeditingRequests'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
+        <GridStateContext.Provider
+        value={{
+          ref:ref,
+          exportExcelColumns:exportExcelColumns,
+          setExportExcelColumns:setExportExcelColumns,
+          tempDownloadData:tempDownloadData,
+          setTempDownloadData:setTempDownloadData,
+          exportExcelRowData:exportExcelRowData,
+          setExportExcelRowData:setExportExcelRowData
+
+      }}
+        >
+              <ActionToolBar 
+                view={'grid'} 
+                setCurrentTab={''} 
+                currCategory={'OpenExpeditingRequests'} 
+                currentTab={''} 
+                tabsList={[]} 
+                onFloatingTabChange={()=>console.log('')} 
+                onGoBack={()=>console.log('')} 
+                onViewChange={()=>console.log('')}
+                genericRecordCount={12}
+                onExportToExcelCallBack={onExportToExcelCallBack}
+              />
             <VFTable
             columnDefs={tableColDefs}
             rowData={[
@@ -180,6 +219,12 @@ const OpenExpeditingRequests = ()=>{
               ]
               }
             {...agGridProps}
+            ref={ref}
+            onGridReady={(params)=>{
+              if(columnState){
+                params.columnApi.applyColumnState({state:columnState})
+              }
+            }}
         />
         {isSubmitRemarkToolTipOpen && (
             <BPRSubmiRemarkToolTip
@@ -198,7 +243,7 @@ const OpenExpeditingRequests = ()=>{
                 style={remarkHistoryToolipPosition}
             />
         )}
-        </React.Fragment>
+        </GridStateContext.Provider>
     )
 }
 

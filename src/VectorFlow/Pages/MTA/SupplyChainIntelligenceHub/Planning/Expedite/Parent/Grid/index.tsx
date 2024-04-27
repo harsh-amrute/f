@@ -9,7 +9,7 @@ import BPRGraphCellRenderer from '../../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import RequestExpeditingModal from '../../../../BPR/RequestExpeditingModal';
 
-const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any})=>{
+const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
     const [isExpeditingModalOpen,toggleExpeditingModal] =  useState<boolean>(false)
 
@@ -170,6 +170,8 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph}:{data:an
     return(
         <>
             <GridViewTable 
+                currentCategory={currentCategory}
+                currentTab={currentTab}
                 agGridProps={agGridProps} 
                 agGridColDefs={colDefs} 
                 agGridRowData={data['data']} 

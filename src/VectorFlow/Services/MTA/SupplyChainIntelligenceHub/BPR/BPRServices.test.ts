@@ -187,4 +187,64 @@ describe('Testing the MDMService',  () => {
     
       });
 
+      it('should make a Post request to /SaveState', async () => {
+        mockedAxios.post.mockResolvedValueOnce({
+          "recordCount": null,
+          "data": "2",
+          "status": 200,
+          "msg": null,
+          "errorCount": null,
+          "error": null,
+          "conflictErrorCount": null,
+          "conflictError": null
+      });
+        const mockBody = {
+          "reportname": "BPR",
+          "state": "[{\"colId\":\"graph\",\"width\":40,\"hide\":true,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"tags\",\"width\":100,\"hide\":true,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"SKUCode\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"SKUName\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"WHCode\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"WHName\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"Norm\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"Stock\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"TechPen\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"TechColor\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"GIT\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"EcoPen\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"EcoColor\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"LocAttr2\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"SKULocAttr1\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"SKUAttr9\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"SKUAttr10\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"SKUAttr11\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"SKUAttr12\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"SKUAttr13\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"SKUAttr14\",\"width\":200,\"hide\":false,\"pinned\":null,\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"remarks\",\"width\":200,\"hide\":true,\"pinned\":\"right\",\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null},{\"colId\":\"rh\",\"width\":200,\"hide\":true,\"pinned\":\"right\",\"sort\":null,\"sortIndex\":null,\"aggFunc\":null,\"rowGroup\":false,\"rowGroupIndex\":null,\"pivot\":false,\"pivotIndex\":null,\"flex\":null}]"
+      }
+        const response = await BPRService.saveState(mockBody);
+        expect(mockedAxios.post).toHaveBeenCalledWith('http://10.8.1.10:8082/SaveState',mockBody,{
+          headers: { 'Content-Type': 'application/json' }
+        })
+        expect(response.status).toBe(200);
+    
+      });
+      it('should make a Post request to /ResetState', async () => {
+        mockedAxios.post.mockResolvedValueOnce({
+          "recordCount": null,
+          "data": "1",
+          "status": 200,
+          "msg": null,
+          "errorCount": null,
+          "error": null,
+          "conflictErrorCount": null,
+          "conflictError": null
+      });
+        const response = await BPRService.resetState('BPR');
+        expect(mockedAxios.post).toHaveBeenCalledWith('http://10.8.1.10:8082/ResetState',"BPR",{
+          headers: { 'Content-Type': 'application/json' }
+        })
+        expect(response.status).toBe(200);
+    
+      });
+
+      it('should make a Post request to /GetState', async () => {
+        mockedAxios.post.mockResolvedValueOnce({
+          "recordCount": null,
+          "data": "",
+          "status": 200,
+          "msg": null,
+          "errorCount": null,
+          "error": null,
+          "conflictErrorCount": null,
+          "conflictError": null
+      });
+        const response = await BPRService.getState('BPR');
+        expect(mockedAxios.post).toHaveBeenCalledWith('http://10.8.1.10:8082/GetState',"BPR",{
+          headers: { 'Content-Type': 'application/json' }
+        })
+        expect(response.status).toBe(200);
+    
+      });
+
   });

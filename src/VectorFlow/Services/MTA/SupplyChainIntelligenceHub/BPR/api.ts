@@ -55,6 +55,24 @@ export namespace BPRService {
       headers:{ 'Content-Type': 'application/json' }
     }); 
   }
+
+  export const saveState = async (payload:{reportname:string,state:string}) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/SaveState`,payload,{
+      headers:{ 'Content-Type': 'application/json' }
+    }); 
+  }
+
+  export const getState = async (payload:string) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/GetState`,payload,{
+      headers:{ 'Content-Type': 'application/json' }
+    }); 
+  }
+
+  export const resetState = async (payload:string) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/ResetState`,payload,{
+      headers:{ 'Content-Type': 'application/json' }
+    }); 
+  }
 }
 
 

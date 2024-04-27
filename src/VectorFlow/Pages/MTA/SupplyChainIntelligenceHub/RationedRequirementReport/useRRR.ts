@@ -1,5 +1,6 @@
-import { useState,useMemo,useEffect } from "react"
+import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
+import { SideBarDef } from 'ag-grid-enterprise';
 
 import { useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
@@ -13,13 +14,39 @@ const useRRR =()=>{
     const [RRRRowData,setRRRRowData] = useState<any[]>([])
     const [RRRDataCount, setRRRDataCount]=useState<any>();
 
+    const tempRef = useRef()
+
     const [currentPage,setCurrentPage] = useState<any>(1);
+
+    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+
+    const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
+
+    const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
 
     const {data,isLoading:isRRRConfigLoading} = useGetRRRUIConfiguration()
     const {mutateAsync:getRRRData,isLoading:isRRRDataLoading} =useGetRRRData();
     const {mutateAsync:getRRRDataCount}=useGetRRRDataCount();
 
     const RRRColumns = mapRRRFieldsToColDefs(data?.data.data)
+
+    const sideBar:SideBarDef = {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            toolPanelParams: {
+              suppressPivots: true,
+              suppressPivotMode: true,
+            },
+          
+          },
+        ],
+        defaultToolPanel:'',
+      }
 
     const handleChangePage = async (pageNo:any) => {
         setCurrentPage(pageNo);
@@ -77,6 +104,7 @@ const useRRR =()=>{
             },
         },
         pagination:false,
+        sideBar:sideBar,
         // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
         // rowSelection:'multiple',
         paginationPageSize:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200'),
@@ -113,6 +141,24 @@ const useRRR =()=>{
         }
     }
 
+    const tempAgGridProps:AgGridReactProps = {
+        onRowDataUpdated:(event)=>{
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+        }
+      };
+
+    const onExportToExcelCallBack=async(pageNumber:number)=>{
+        const data =  await getRRRData({
+            filters:[],
+            paginationParameter:{
+                pageNumber:pageNumber,
+                recordsPerPage:5000
+            }
+        })
+        
+        return data.data.data
+    }
+
     return {
         isSideBarOpen,
         RRRColumns,
@@ -121,8 +167,16 @@ const useRRR =()=>{
         RRRRowData,
         handleChangePage,
         RRRDataCount,
-        currentPage
-       
+        currentPage,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack
     }
 }
 

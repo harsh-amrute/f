@@ -34,4 +34,5 @@ export interface MTAStore{
     showDailyDataGraphModal:boolean,
     showNormChangeHistoryTable:boolean
     dailyData:DailyDataGraph
+    currentGridState:any
 }

@@ -9,7 +9,7 @@ import BPRGraphCellRenderer from '../../../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 
 
-const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDataGraph}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any})=>{
+const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
     const [activeRow,setActiveRow] = useState<any>();
     const [isSubGridOpen,toggleSubGrid] = useState<any>(false);
@@ -152,6 +152,8 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDat
 
     return(
         <GridViewTable 
+            currentCategory={currentCategory}
+            currentTab={currentTab}
             agGridProps={agGridProps} 
             agGridColDefs={colDefs} 
             agGridRowData={data['data']} 

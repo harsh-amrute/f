@@ -1,12 +1,18 @@
 import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
+import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 import { mapBORFieldsToColDefs } from "../../../../../helpers/utils"
-import { useState,useMemo, useEffect } from "react"
+import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import {DispatchColorCellRenderer} from "./CellRenderer"
 import { SeasonalityGraphCellRenderer } from "../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers"
 
+import { useSelector } from "react-redux"
+
+import { RootState } from "../../../../../redux/store/store"
+
 export const useBOR =()=>{
-    
+    const ref=  useRef()
+    const tempRef = useRef()
      //const [activeRow,setActiveRow] = useState<any>()
      const {data} = useGetBORUIConfiguration();
    
@@ -15,6 +21,12 @@ export const useBOR =()=>{
 
      const [recordCount,setRecordCount] = useState<number>(0)
      const [currentPage,setCurrentPage] = useState(1);
+
+     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+
+     const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
+ 
+     const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
     //  const rowsPerPage=50;
      const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
      const handleChangePage = async (pageNo:any) => {
@@ -34,6 +46,41 @@ export const useBOR =()=>{
 
       
       const BORColumns = mapBORFieldsToColDefs(data?.data.data)
+
+      const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+    const [columnState,setColumnState] = useState<any>()
+    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+
+    const sideBar = {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            toolPanelParams: {
+              suppressPivots: true,
+              suppressPivotMode: true,
+            },
+          
+          },
+        ],
+        defaultToolPanel:'',
+      }
+
+
+    useEffect(()=>{
+        const getTableState = async()=>{
+          try{
+            const data =  await getState("BOR")
+            setColumnState(JSON.parse(data.data.data))
+          }catch(err:any){
+            setColumnState(BORColumns)
+          }
+        }
+        getTableState()
+    },[currentGridState])
 
       useEffect(()=>{
         getRecordsCount();
@@ -62,6 +109,8 @@ export const useBOR =()=>{
         setRowData(result?.data.data)
 
     }
+
+    
   
   
      const agGridProps:AgGridReactProps = {
@@ -82,6 +131,7 @@ export const useBOR =()=>{
             },
         },
          pagination:false,
+         sideBar:sideBar,
         // pivotMode:true,
          defaultColDef:{
             floatingFilter: true,
@@ -101,9 +151,28 @@ export const useBOR =()=>{
             },
            
         }
-}
+      }
 
-     return {       
+      const tempAgGridProps:AgGridReactProps = {
+        onRowDataUpdated:(event)=>{
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+        }
+      };
+      console.log(columnState)
+      const onExportToExcelCallBack=async(pageNumber:number)=>{
+        const data =  await getBorData({
+            filters:[],
+            paginationParameter:{
+                pageNumber:pageNumber,
+                recordsPerPage:5000
+            }
+        })
+        
+        return data.data.data
+    }
+
+     return {   
+        ref,    
         isLoading,      
         BORColumns,
         agGridProps,
@@ -111,6 +180,17 @@ export const useBOR =()=>{
         currentPage,
         rowsPerPage,
         recordCount,
-        handleChangePage   
+        columnState,
+        isSavedDataLoading,
+        handleChangePage,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack 
     }
 }
