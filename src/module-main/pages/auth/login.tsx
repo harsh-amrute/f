@@ -20,7 +20,8 @@ function LoginContainer() {
   useEffect(() => {
     if(token) {
       const urlPermission: any = JSON.parse(localStorage?.getItem('url_permission') || "");
-      const url = urlPermission.includes("/") ? "/" : urlPermission[0]
+      console.log(urlPermission);
+      const url = urlPermission.includes("/") ? "/" : urlPermission.includes('/master-data-management/control-panel') ? '/master-data-management/control-panel' : urlPermission[0]
       navigate(url, { replace: true });
     } else {
       localStorage.clear();
@@ -62,7 +63,7 @@ function LoginContainer() {
             const rolePermission = data?.data?.data.roles.permission;
             const isRolePresent =  rolePermission.some((permission:any) => !permission.name.startsWith("IST"));
             // const url = urlPermission.includes("/") && isRolePresent ? "/" : !urlPermission.includes("/") && isRolePresent ? '/master-data-management/control-panel' : urlPermission[0];
-            const url = urlPermission.includes("/") && isRolePresent ? "/" : urlPermission[0];
+            const url = urlPermission.includes("/") && isRolePresent ? "/" : urlPermission.includes('/master-data-management/control-panel') ? '/master-data-management/control-panel' : urlPermission[0];
             console.log(url);
             navigate(url, { replace: true });
             notifySuccess(t("loginPage.notify.success"));

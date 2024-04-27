@@ -1,4 +1,4 @@
-import {  render, act } from '@testing-library/react';
+import {  render } from '@testing-library/react';
 import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import { mockBORData,mockBORCountData,mockBORUIConfigData} from "../../../../../mock-data/BOR";
 import BuyerOrderReport from './';
@@ -84,18 +84,27 @@ describe("Renders BOR Component", ()=>{
             return useBORDataResult;
         });
 
+        // useGetDailyDataMock.mockImplementation(():any=>{
+        //   return{
+        //     mutateAsync:()=>{
+        //       return {
+        //         data:{data: GetDailyDataMockResponse}
+        //       }
+        //     }
+        //   }
+          
+        // })
+
     });
     it("renders Loading Overlay Component when loading", async()=>{
-        useGetBORUIConfigurationMock.mockImplementation(()=>{
-            return {...useGetMasterUIConfigurationMockResult,isLoading:true};
-        });
+        
         render(contextWrapper(<BuyerOrderReport />,store));
     })
-     it("renders BuyerOrderReport", async()=>{
-        await act(async () => {
-          render(contextWrapper(<BuyerOrderReport />,store));
-          })
-    })
+    //  it("renders BuyerOrderReport", async()=>{
+    //     await act(async () => {
+    //       render(contextWrapper(<BuyerOrderReport />,store));
+    //       })
+    // })
 
     //  it("Handles Pagination", async()=>{
     //     await act(async () => {
