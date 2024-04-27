@@ -227,7 +227,7 @@ const colDefs3: ColDef[] = [
         title: {
           text: "PRE",
         },
-        fills: ["#ED1C24", "#000000", "#FFCB05", "#418D18", "#8B8B8B41"],
+        fills: ["#000000","#ED1C24","#FFCB05", "#418D18", "#BCBCBC","#355FD3"],
         angleKey: "pre",
         sectorLabelKey: "pre",
         outerRadiusRatio: 0.5,
@@ -242,7 +242,7 @@ const colDefs3: ColDef[] = [
         title: {
           text: "POST",
         },
-        fills: ["#ED1C24", "#000000", "#FFCB05", "#418D18", "#8B8B8B41"],
+        fills: ["#000000","#ED1C24","#FFCB05", "#418D18", "#BCBCBC","#355FD3"],
         angleKey: "post",
         sectorLabelKey: "post",
         innerRadiusRatio: 0.7,
