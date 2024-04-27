@@ -361,6 +361,15 @@ const ChronicUnavailabilityCharts = () => {
             palette:{
                 fills:['#0c7528','#570dbf']
             },
+            column:{
+                series:{
+                    highlightStyle:{
+                        item:{
+                            fill:'rgb(255,255,255,0.2)'
+                        }
+                    }
+                }
+             },
               common: {
                   legend:{
                     position:'top'
@@ -382,7 +391,6 @@ const ChronicUnavailabilityCharts = () => {
                         }
                       }
                   },
-                  
               },
           };
       }, []);
@@ -391,6 +399,15 @@ const chartThemeOverrides2 = useMemo<any>(() => {
             palette:{
                 fills:['#0c7528','#570dbf']
             },
+             column:{
+                series:{
+                    highlightStyle:{
+                        item:{
+                            fill:'rgb(255,255,255,0.2)'
+                        }
+                    }
+                }
+             },
               common: {
                   legend:{
                     position:'top'
@@ -412,6 +429,7 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                         }
                       }
                   },
+                 
                   
               },
           };
@@ -425,11 +443,11 @@ const chartThemeOverrides2 = useMemo<any>(() => {
       }
 
       const graph1 = [
-        'This graph highlights the top 10 locations with the highest number of SKUs continuously in eco black, red or combination of black and red, surpassing the RLT'
+        'This graph highlights the top 10 locations with the highest number of SKUs continuously in Pipeline black, red or combination of black and red, surpassing the RLT'
       ]
 
       const graph2 = [
-    'This graph highlights the top 10 products based on the number of locations where the SKU remains in continuous eco black, red or combination of black and red, surpassing the RLT'   
+    'This graph highlights the top 10 products based on the number of locations where the SKU remains in continuous Pipeline black, red or combination of black and red, surpassing the RLT'   
     ]
 
    if(isLoadingChronicSku || isLoadingChronicLoc){
@@ -442,7 +460,7 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={547}>
                             <SCChartHeaderContainer>
-                                <SCChartHeader>Top 10 Locations: Max SKUs in Continuous Eco Black or Red Ageing greater than RLT</SCChartHeader>
+                                <SCChartHeader>Top 10 Locations: Max SKUs in Continuous Pipeline Black or Red Ageing greater than RLT</SCChartHeader>
                                 {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt=""  data-testid="minimizechart1"onClick={()=>handleChartClose(1)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
@@ -514,7 +532,7 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                     <Allotment.Pane>
                         <SCChartContainer height={547}>
                                 <SCChartHeaderContainer>
-                                    <SCChartHeader>Top 10 Skus: Max Number Of Locations Where The SKU has Eco Black/Red Ageing Greater Than Rlt</SCChartHeader>
+                                    <SCChartHeader>Top 10 Skus: Max Number Of Locations Where The SKU has Pipeline Black/Red Ageing Greater Than Rlt</SCChartHeader>
                                      {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}
                       
                                 </SCChartHeaderContainer>

@@ -20,7 +20,7 @@ const RejectAllModal=(props:RejectAllModalProps)=>{
     const {user} = useUserData()
 
     return(
-        <VFModalCard headerText={'Approve All'} closeModal={onClose} openModal={true} headerIcon={""} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+        <VFModalCard headerText={'Reject All'} closeModal={onClose} openModal={true} headerIcon={"/assets/img/VectorFLOW/NMS/Rejectall.svg"} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
             <RadioContainer>
                 <RadioButtonGroup> 
                     <input type="radio" value="option1" onChange={()=>setSelectionType('All')} name="Approve" id="ApproveAll"/>
