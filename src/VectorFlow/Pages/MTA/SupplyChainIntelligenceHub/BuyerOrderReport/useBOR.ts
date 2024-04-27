@@ -1,20 +1,24 @@
 import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
-import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
+import {useGetState,useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 import { mapBORFieldsToColDefs } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import {DispatchColorCellRenderer} from "./CellRenderer"
-import { SeasonalityGraphCellRenderer } from "../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers"
+import BPRGraphCellRenderer from "../../../../Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
 
-import { useSelector } from "react-redux"
+import { useSelector,useDispatch } from "react-redux"
 
 import { RootState } from "../../../../../redux/store/store"
+import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
+import { type DailyDataGraph } from "../../../../types/MTA";
+
 
 export const useBOR =()=>{
     const ref=  useRef()
     const tempRef = useRef()
      //const [activeRow,setActiveRow] = useState<any>()
      const {data} = useGetBORUIConfiguration();
+     const dispatch = useDispatch();
    
     // const [isSubGridOpen,toggleSubGrid] = useState<boolean>(false);
      const [rowData,setRowData] = useState([]);
@@ -27,6 +31,10 @@ export const useBOR =()=>{
      const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
  
      const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
+
+     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
+     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
+     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
     //  const rowsPerPage=50;
      const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
      const handleChangePage = async (pageNo:any) => {
@@ -37,15 +45,37 @@ export const useBOR =()=>{
 
      const {mutateAsync:getBorData, isLoading} = useBORData();
      const {mutateAsync:getBorDataCount} = useBORDataCount();
+     const {mutateAsync:getDailyData} = useGetDailyData();
 
      const customCellRenderers = useMemo(() => ({
-        grapCellRenderer:SeasonalityGraphCellRenderer,
+        grapCellRenderer:BPRGraphCellRenderer,
         colorDispatchCellRenderer:DispatchColorCellRenderer,
         
       }), []);
 
+      const onOpenDailyDataGraph = async (params:any) => {
+        console.log(params);
+        const payload:any = {
+            SKUCode:params.data['SKUCode'],
+            WHCode:params.data['WHCode']
+        }
+        const result = await getDailyData(payload)
+        const data = result.data.data[0];
+        const dailyData:DailyDataGraph = {
+            rowData:params.data,
+            chartData:data['StockData'],
+            normChangeData:data['NormChangeHistoryData'],
+            masterData:data['MasterData'][0],
+            suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
+            monitoringData:data['MonitoringData']
+        }
+  
+        dispatch(UPDATE_DAILY_DATA(dailyData));
+        dispatch(TOGGLE_GRAPH_MODAL(true));
+    }
+
       
-      const BORColumns = mapBORFieldsToColDefs(data?.data.data)
+      const BORColumns = mapBORFieldsToColDefs(data?.data.data,onOpenDailyDataGraph)
 
       const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
     const [columnState,setColumnState] = useState<any>()
@@ -171,6 +201,8 @@ export const useBOR =()=>{
         return data.data.data
     }
 
+    
+
      return {   
         ref,    
         isLoading,      
@@ -191,6 +223,9 @@ export const useBOR =()=>{
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
-        onExportToExcelCallBack 
+        onExportToExcelCallBack,
+        showDailyDataGraphModal,
+        showNormChangeHistoryTable,
+        dailyData 
     }
 }

@@ -173,6 +173,8 @@ const dummyprops = {
     suggestionData:GetDailyDataMockResponse.data.SuggestionHistoryData,
     monitoringData:GetDailyDataMockResponse.data.MonitoringData,
     isModalOpen:true,
+    skuKey:'sc',
+    whKey:'wc'
 }
 
 jest.mock("ag-charts-react", () => ({

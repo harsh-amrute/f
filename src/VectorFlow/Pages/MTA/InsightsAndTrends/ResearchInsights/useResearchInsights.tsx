@@ -6,21 +6,23 @@ import { mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils
 import {BPRTagsCellRenderer,BPRTechColorCellRenderer,BPREcoColorCellRenderer} from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
 
-import { useGetBPRData, useGetBPRUIConfiguration,useGetBPRDataCount,useGetState } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetBPRData, useGetBPRUIConfiguration,useGetBPRDataCount,useGetState,useGetDailyData } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { isSameDay,format,addDays } from 'date-fns'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
 import { useGetUpdatedGraphData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
 import { notifyError, notifyLoader } from '../../../../../helpers/notify'
 import { toast } from 'react-toastify'
 
-import { useSelector } from 'react-redux'
+import { useSelector,useDispatch } from 'react-redux'
 
 import { RootState } from '../../../../../redux/store/store'
-
+import { type DailyDataGraph } from "../../../../types/MTA";
+import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 
 const useResearchInsights = ()=>{
     
     const {data,isLoading:isBPRUILoading} = useGetBPRUIConfiguration()
+    const dispatch = useDispatch();
 
     const {mutateAsync:getUpdatedGraphData,isLoading:isUpdatedGraphDataLoading} = useGetUpdatedGraphData()
 
@@ -37,6 +39,11 @@ const useResearchInsights = ()=>{
     const [graphState,setGraphState] = useState<'default' | 'calender' | 'graph'>('default')
     const [calenderType,setCalenderType] = useState<'Tech' | 'Eco'>('Tech')
     const [expandedGraphId,setExpandedGraphId] = useState<1 | 2>(1)
+
+    const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
+    const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
+    const dailyData = useSelector((state:RootState) => state.mta.dailyData);
+
 
     const [graphs,setGraphs] = useState<Array<ReseachInsightsGraphState>>([
         {
@@ -69,6 +76,8 @@ const useResearchInsights = ()=>{
     const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
 
     const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
+
+    const {mutateAsync:getDailyData} = useGetDailyData();
 
     const sideBar = {
         toolPanels: [
@@ -417,8 +426,30 @@ const useResearchInsights = ()=>{
     },[selectedRowsDates,graphs])
 
     console.log(columnState)
+
+    const onOpenDailyDataGraph = async (params:any) => {
+        const payload:any = {
+            SKUCode:params.data['SKUCode'],
+            WHCode:params.data['WHCode']
+        }
+        console.log(params)
+        const result = await getDailyData(payload)
+        const data = result.data.data[0];
+        const dailyData:DailyDataGraph = {
+            rowData:params.data,
+            chartData:data['StockData'],
+            normChangeData:data['NormChangeHistoryData'],
+            masterData:data['MasterData'][0],
+            suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
+            monitoringData:data['MonitoringData']
+        }
+
+        dispatch(UPDATE_DAILY_DATA(dailyData));
+        dispatch(TOGGLE_GRAPH_MODAL(true));
+    }
+
     const ResearchInsightsColumns = useMemo(()=>{
-        return mapResearchInsightsFieldsToColDefs(data?.data.data)
+        return mapResearchInsightsFieldsToColDefs(data?.data.data,onOpenDailyDataGraph)
     },[data])
 
     const onExportToExcelCallBack=async(pageNumber:number)=>{
@@ -483,7 +514,10 @@ const useResearchInsights = ()=>{
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
-        onExportToExcelCallBack
+        onExportToExcelCallBack,
+        showDailyDataGraphModal,
+        showNormChangeHistoryTable,
+        dailyData
     }
 }
 

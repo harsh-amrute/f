@@ -11,6 +11,8 @@ import ResearchInsights from './index';
 import { ReactNode } from "react";
 import { Provider } from "react-redux";
 import {store} from "../../../../../redux/store/store";
+import { useGetDailyData } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import { GetDailyDataMockResponse } from '../../../../../mock-data/BPR';
 
 
 // Mock context data
@@ -55,6 +57,10 @@ const useSaveStateMock = useSaveState as jest.MockedFunction<
 const useResetStateMock = useResetState as jest.MockedFunction<
   typeof useResetState
 >
+
+const useGetDailyDataMock = useGetDailyData as jest.MockedFunction<
+typeof useGetDailyData
+> 
 
 
   const contextWrapper = (children: ReactNode,store:any) => {
@@ -162,6 +168,17 @@ describe('Research and insights Component', () => {
       
     })
 
+    useGetDailyDataMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: GetDailyDataMockResponse}
+          }
+        }
+      }
+      
+    })
+
   });
   it('renders loader when isLoading is true', () => {
     useGetBPRUIConfigurationMock.mockImplementation(():any=>{
@@ -260,6 +277,17 @@ describe('Handles all interactions', () => {
         mutateAsync:()=>{
           return {
             data:{data: ResetStateMockResponse}
+          }
+        }
+      }
+      
+    })
+
+    useGetDailyDataMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: GetDailyDataMockResponse}
           }
         }
       }

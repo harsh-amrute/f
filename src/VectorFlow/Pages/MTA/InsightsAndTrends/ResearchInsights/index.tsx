@@ -22,7 +22,8 @@ import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolB
 import ExpandedGraph from './ReseachInsightsExpandedGraph'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 import { GridStateContext } from '../../../../../context/GridStateContext'
-
+import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal"
+import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
 
 
 const ResearchInsights = ()=>{
@@ -67,7 +68,10 @@ const ResearchInsights = ()=>{
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
-        onExportToExcelCallBack
+        onExportToExcelCallBack,
+        showDailyDataGraphModal,
+        showNormChangeHistoryTable,
+        dailyData
     } = useResearchInsights()
 
     const {user} = useUserData()
@@ -100,7 +104,14 @@ const ResearchInsights = ()=>{
             genericRecordCount={recordCount || 0}
             onExportToExcelCallBack={onExportToExcelCallBack}
         />
+        
         <ResearchInsightsLayout>
+            {
+                showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
+            }
+            {
+                showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
+            }
             <ResearchInsightsTableWrapper style={{zoom:0.8, marginTop:'-15px'}}>
                 <VFTable
                     height={800}

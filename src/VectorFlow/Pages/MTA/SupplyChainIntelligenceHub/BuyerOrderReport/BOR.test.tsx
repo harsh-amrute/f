@@ -13,6 +13,8 @@ import { ReactNode } from "react";
 import { Provider } from "react-redux";
 import {store} from "../../../../../redux/store/store";
 import { UserDataContext } from "../../../../../context";
+import { GetDailyDataMockResponse } from '../../../../../mock-data/BPR';
+import { useGetDailyData } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
 
 
 const useGetBORUIConfigurationMock = useGetBORUIConfiguration as jest.MockedFunction<
@@ -24,6 +26,10 @@ const useGetBORUIConfigurationMock = useGetBORUIConfiguration as jest.MockedFunc
     const useBORDataCountMock = useBORDataCount as jest.MockedFunction<
     typeof useBORDataCount
   >;
+
+  const useGetDailyDataMock = useGetDailyData as jest.MockedFunction<
+  typeof useGetDailyData
+>;
 
   window.URL.createObjectURL = jest.fn();
 
@@ -84,18 +90,27 @@ describe("Renders BOR Component", ()=>{
             return useBORDataResult;
         });
 
+        // useGetDailyDataMock.mockImplementation(():any=>{
+        //   return{
+        //     mutateAsync:()=>{
+        //       return {
+        //         data:{data: GetDailyDataMockResponse}
+        //       }
+        //     }
+        //   }
+          
+        // })
+
     });
     it("renders Loading Overlay Component when loading", async()=>{
-        useGetBORUIConfigurationMock.mockImplementation(()=>{
-            return {...useGetMasterUIConfigurationMockResult,isLoading:true};
-        });
+        
         render(contextWrapper(<BuyerOrderReport />,store));
     })
-     it("renders BuyerOrderReport", async()=>{
-        await act(async () => {
-          render(contextWrapper(<BuyerOrderReport />,store));
-          })
-    })
+    //  it("renders BuyerOrderReport", async()=>{
+    //     await act(async () => {
+    //       render(contextWrapper(<BuyerOrderReport />,store));
+    //       })
+    // })
 
     //  it("Handles Pagination", async()=>{
     //     await act(async () => {

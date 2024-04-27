@@ -32,6 +32,8 @@ interface DailyDataGraphModalProps{
   masterData:any,
   monitoringData:any,
   isModalOpen:boolean,
+  skuKey:string,
+  whKey:string
 }
 
 interface NormData{
@@ -44,7 +46,7 @@ interface NormData{
 
 
 
-const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,monitoringData}:DailyDataGraphModalProps) => {
+const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,monitoringData,skuKey,whKey}:DailyDataGraphModalProps) => {
 
     const fillNotAvailableDates = (data:any)=>{
       const lastNinetyDates = getDatesBetween(subDays(new Date(),89),new Date());
@@ -229,7 +231,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           if(suggestionObject) tooltip += generateRevisionSuggestedBlock(suggestionObject?.oln,suggestionObject?.nn,suggestionObject?.rsn);
           if(suspensionReasons.length > 0 && suspensionType!=='') tooltip += generateSuspensionReasonsBlock(suspensionReasons);
 
-          tooltip += generateDailyDataBlock(dailyDataObject.stock,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.ceil(params.datum.normYellow*3))
+          tooltip += generateDailyDataBlock(dailyDataObject.stk,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.ceil(params.datum.normYellow*3))
 
           const finalTooltipHTML = `
             <div style="background-color:white;border:1px solid #777777;border-radius:5px;max-width:400px;">
@@ -520,13 +522,13 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                     <SCHorizontalDivider/>
                     <div style={{display:'flex',flexDirection:'column',marginBottom:'20px'}}>
                         <SCText fontSize={18} fontWeight={300}>SKU:</SCText>
-                        <SCText fontSize={18} fontWeight={500} hideDefaultMargin>{rowData['sc'] + rowData['skd']}</SCText>
+                        <SCText fontSize={18} fontWeight={500} hideDefaultMargin>{rowData[skuKey]}</SCText>
                     </div>
                     <SCHorizontalDivider/>
                     <SCDataRow>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Location :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{rowData['wcd']}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{rowData[whKey]}</SCText>
                       </SCDataNode>
                       <SCVerticalDivider/>
                       <SCDataNode>

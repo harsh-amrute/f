@@ -1842,7 +1842,7 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
   return [{...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result,...BPRSpecificColumns]
 }
 
-export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
+export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDailyDataGraph:any):ColDef[]=>{
 
   if(!fields || fields.length<1){
     return []
@@ -1905,10 +1905,10 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[]):ColDef[]=>
       }
     }
   })
-  return [checkboxColDef,createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),tagsColDef,...result]
+  return [checkboxColDef,{...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result]
 }
 
-export const mapBORFieldsToColDefs = (fields:UiConfigField[]):ColDef[]=>{
+export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
 
   if(!fields || fields.length<1){
     return []
@@ -1925,7 +1925,10 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[]):ColDef[]=>{
       lockPosition:'left',
       floatingFilter:false,
       tooltipField:"DailyDataGraph",
-      cellRenderer:'grapCellRenderer'
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      }
       
 
       // tooltipComponent:'remarksToolTipComponent'
