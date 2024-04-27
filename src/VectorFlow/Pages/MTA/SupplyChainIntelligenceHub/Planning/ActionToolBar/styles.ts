@@ -6,8 +6,9 @@ export const SCTaskBarContainer = styled.div`
     padding-left:10px;
     display:flex;
     align-items:center;
-    margin-bottom:20px;
-    justify-content:space-between;
+   // margin-bottom:20px;
+    margin-left:20px;
+    justify-content:space-between; //changed
 
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
         .size.desktop}) {
@@ -23,7 +24,8 @@ export const SCGoBackContainer = styled.div`
     align-items:center;
     gap:10px;
     cursor:pointer;
-
+    text-wrap:nowrap;
+    width:max-content;
 `
 
 export const SCGoBackText = styled.div`
@@ -37,10 +39,10 @@ export const SCGoBackText = styled.div`
 export const SCViewContainer = styled.div`
     display:flex;
     flex-direction:column;
-    
     align-items:center;
     cursor:pointer;
     overflow:hidden;
+
 `
 
 export const SCViewContainerWithBg = styled.div`
@@ -53,8 +55,8 @@ export const SCViewContainerWithBg = styled.div`
     justify-content:center;
     align-items:center;
     width:82px;
-    height:58px;
-
+    height:58px; 
+    cursor:pointer;
 `
 export const SCViewBackground = styled.div`
     display:flex;
@@ -62,26 +64,35 @@ export const SCViewBackground = styled.div`
     box-shadow: -5px 4px 10px #8584843F;
     border-radius:5px;
     padding:10px;
-    // height:58px;
-    
+    // height:58px;    
 `
 export const SCVerticalDivider = styled.div`
     width:0.5px;
-    background-color:#6C696A;
-    height:30px;
-    margin-right:16px;
-    margin-left:16px;
+    background-color:#C6C6C6; //#6C696A
+    height:40px;
+    margin-right:8px;
+    margin-left:8px;
     align-items:center;
 `
 export const SCViewImage = styled.img`
     width:38px;
     height:20px;
     margin-bottom:7px;
+    cursor:pointer;
 `
 
 export const SCCustomActionsContainer = styled.div`
     display:flex;
-    gap:22px;
+    //gap:22px;
+    gap:10px;
     align-items:center;
-
+    justify-content: flex-end;
+    //width:100%
+`
+export const SCTaskFilterContainer =styled.div`
+    display:flex;
+    justify-content:space-between;
+    gap:30px;
+    max-width:40%;
+    align-items:center;
 `

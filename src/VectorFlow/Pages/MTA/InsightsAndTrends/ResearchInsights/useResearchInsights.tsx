@@ -6,17 +6,31 @@ import { mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils
 import {BPRTagsCellRenderer,BPRTechColorCellRenderer,BPREcoColorCellRenderer} from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
 
-import { useGetBPRData, useGetBPRUIConfiguration } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetBPRData, useGetBPRUIConfiguration,useGetBPRDataCount,useGetState } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { isSameDay,format,addDays } from 'date-fns'
-import { ResearchInsightsDummyCalenderData } from '../../../../../mock-data/BPR'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
+import { useGetUpdatedGraphData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
+import { notifyError, notifyLoader } from '../../../../../helpers/notify'
+import { toast } from 'react-toastify'
+
+import { useSelector } from 'react-redux'
+
+import { RootState } from '../../../../../redux/store/store'
 
 
 const useResearchInsights = ()=>{
-
+    
     const {data,isLoading:isBPRUILoading} = useGetBPRUIConfiguration()
+
+    const {mutateAsync:getUpdatedGraphData,isLoading:isUpdatedGraphDataLoading} = useGetUpdatedGraphData()
+
     const [ResearchInsightsData,setResearchInsightsRowData] = useState<Array<any>>([])
     const {mutateAsync:getBPRData,isLoading:isBPRDataLoading} = useGetBPRData()
+
+    const {mutateAsync:getBPRDataCount,isLoading:isBPRDataCountLoading} = useGetBPRDataCount()
+
+    const [currGridPage,setCurrGridPage] = useState<number>(1)
+    const [recordCount,setRecordCount] = useState<number>()
 
     const [isGraphOneOpen,setIsGraphOneOpen] = useState<boolean>(false)
     const [horizon,setHorizon] = useState<number>(10)
@@ -40,25 +54,86 @@ const useResearchInsights = ()=>{
     ])
 
 
-    const [selectedRowsDates,setSelectedRowsDates] = useState<Array<any>>(ResearchInsightsDummyCalenderData)
+    const [selectedRowsDates,setSelectedRowsDates] = useState<Array<any>>([])
 
 
     const ref = useRef<GridRef>();
+    const tempRef = useRef()
+
+    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+    const [columnState,setColumnState] = useState<any>()
+    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+
+    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+
+    const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
+
+    const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
+
+    const sideBar = {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            toolPanelParams: {
+              suppressPivots: true,
+              suppressPivotMode: true,
+            },
+          
+          },
+        ],
+        defaultToolPanel:'',
+      }
+
+
+    useEffect(()=>{
+        const getTableState = async()=>{
+          try{
+            const data =  await getState("ResearchInsight")
+            setColumnState(JSON.parse(data.data.data))
+          }catch(err:any){
+            setColumnState(ResearchInsightsColumns)
+          }
+        }
+        getTableState()
+    },[currentGridState])
 
 
     useEffect(()=>{
         async function getBPRRowData(){
+            resetState()
+            if(!recordCount){
+                const countData = await getBPRDataCount({
+                    id: 1,
+                    name: "",
+                    fields: [],
+                    filters:[],
+                    paginationParameter:{
+                        pageNumber:currGridPage,
+                        recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+                    }
+                })
+    
+                setRecordCount(countData.data.recordCount)
+            }
+
             const rowData =await  getBPRData({
+                id: 1,
+                name: "",
+                fields: [],
                 filters:[],
                 paginationParameter:{
-                    pageNumber:1,
-                    recordsPerPage:50
+                    pageNumber:currGridPage,
+                    recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
                 }
             })
             setResearchInsightsRowData(rowData.data.data)
         }
         getBPRRowData()
-    },[])
+    },[currGridPage])
 
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -81,8 +156,9 @@ const useResearchInsights = ()=>{
             return { background: "#F7F7F7" };
             },
         },
-        pagination:true,
-        paginationPageSize:25,
+        sideBar:sideBar,
+        // paginationPageSize:25,
+        paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
         suppressRowClickSelection:true,
         components:customCellRenderers,
         defaultColDef:{
@@ -105,6 +181,12 @@ const useResearchInsights = ()=>{
             },
         }
     }
+
+    const tempAgGridProps:AgGridReactProps = {
+        onRowDataUpdated:(event)=>{
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+        }
+      };
     
     const getColor = (date:any)=>{
         const doesExist = calenderData.find((d)=>isSameDay(d.date,date))
@@ -145,6 +227,13 @@ const useResearchInsights = ()=>{
         return result;
     }
 
+    const resetState = ()=>{
+        setSelectedRowsDates([])
+        setResearchInsightsRowData([])
+        // ref.current?.api.setNodesSelected({nodes:[],newValue:false})
+        setGraphState('default')
+    }
+
     function convertCustomObjToObjects(colorArray:any) {
         const result:any = [];
     
@@ -156,12 +245,6 @@ const useResearchInsights = ()=>{
     
             result.push({ ...color, date: dateString });
         });
-    
-        // result.sort((a:any, b:any) => {
-        //     const dateA = new Date(a.date);
-        //     const dateB = new Date(b.date);
-        //     return dateB - dateA;
-        // });
     
         return result;
     }
@@ -187,18 +270,30 @@ const useResearchInsights = ()=>{
             return convertCustomObjToObjects(colorFrequencyArray.reverse())
     }
 
-    const handleOnUpdateGraph = ()=>{
+    const handleOnUpdateGraph = async()=>{
         const selectedRows =  ref.current?.api.getSelectedRows()
         if(selectedRows && selectedRows.length===0)return setGraphState('default')
-        if(selectedRows &&  selectedRows.length>1){
-            setSelectedRowsDates([...selectedRowsDates])
-            return setGraphState('graph')
+        const loaderId = notifyLoader('Loading graph data')
+        try{
+            const data = await getUpdatedGraphData({data:selectedRows?.map((s)=>{
+                return {
+                    "SKUCode":s.SKUCode,
+                    "WhCode":s.WHCode
+                }
+            })})
+            setSelectedRowsDates(data.data.data)
+            if(selectedRows &&  selectedRows.length>1){
+                return setGraphState('graph')
+            }
+            if(selectedRows){
+                return setGraphState('calender')
+            
+            }
+        }catch(error:any){
+            notifyError(error)
+        }finally{
+            toast.dismiss(loaderId)
         }
-       if(selectedRows){
-        setSelectedRowsDates([...selectedRowsDates])
-        return setGraphState('calender')
-       
-       }
     }
 
 
@@ -321,17 +416,37 @@ const useResearchInsights = ()=>{
         }
     },[selectedRowsDates,graphs])
 
-
+    console.log(columnState)
     const ResearchInsightsColumns = useMemo(()=>{
         return mapResearchInsightsFieldsToColDefs(data?.data.data)
     },[data])
+
+    const onExportToExcelCallBack=async(pageNumber:number)=>{
+        const data =  await getBPRData({
+            id:1,
+            name:'',
+            fields:[],
+            filters:[],
+            paginationParameter:{
+                pageNumber:pageNumber,
+                recordsPerPage:5000
+            }
+        })
+        
+        return data.data.data
+    }
+
+    const handleOnPageChange = (pageNumber:number)=>setCurrGridPage(pageNumber)
+
+    const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
 
     return {
         ref,
         agGridProps,
         ResearchInsightsData,
         ResearchInsightsColumns,
-        isLoading:isBPRDataLoading || isBPRUILoading,
+        isLoading:isBPRDataLoading || isBPRUILoading ||isBPRDataCountLoading,
+        isUpdatedGraphDataLoading,
         horizon,
         graphState,
         blackCount,
@@ -353,7 +468,22 @@ const useResearchInsights = ()=>{
         getColor,
         setCalenderType,
         handleOnUpdateGraph,
-        setSelectedRowsDates
+        setSelectedRowsDates,
+        currGridPage,
+        handleOnPageChange,
+        rowsPerPage,
+        recordCount,
+        isSavedDataLoading,
+        columnState,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack
     }
 }
 

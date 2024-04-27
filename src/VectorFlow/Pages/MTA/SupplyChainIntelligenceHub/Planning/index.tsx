@@ -1,3 +1,5 @@
+import {useRef,useMemo} from 'react'
+
 import SelectCategory from "../../../../../components/VectorFLOW/layouts/SelectCategory";
 
 import usePlanning from "./usePlanning";
@@ -5,7 +7,10 @@ import VFOverlay from "../../../.././../components/VectorFLOW/commons/VFOverlay"
 import ChartView from "./ChartView";
 import ActionToolBar from './ActionToolBar';
 import GridView from "./GridView";
-
+import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
+import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
+import { GridStateContext } from "../../../../../context/GridStateContext";
+import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
 const Planning = () => {
 
@@ -23,7 +28,20 @@ const Planning = () => {
         onGoBack,
         onViewChange,
         getFloatingTabsList,
-        currentGridData
+        currentGridData,
+        paginationProps,
+        showDailyDataGraphModal,
+        showNormChangeHistoryTable,
+        dailyData,
+        onOpenDailyDataGraph,
+        exportExcelColumns,
+        setExportExcelColumns,
+        tempAgGridProps,
+        tempDownloadData,
+        setTempDownloadData,
+        exportExcelRowData,
+        setExportExcelRowData,
+        onExportToExcelCallBack
     } = usePlanning();
 
 
@@ -32,17 +50,51 @@ const Planning = () => {
         switch(currentView){
             
             case 'chart':
-                return <ChartView currentTab={currentTab} category={currentCategory} currentGraphData={currentGraphData}/>
+                return <ChartView currentTab={currentTab} category={currentCategory} currentGraphData={currentGraphData} paginationProps={paginationProps} onOpenDailyDataGraph={onOpenDailyDataGraph} planningCounts={planningCounts}/>
             case 'grid':
-                return <GridView currentTab={currentTab} category={currentCategory} currentGridData={currentGridData}/>
+                return <GridView currentTab={currentTab} category={currentCategory} currentGridData={currentGridData} paginationProps={paginationProps} onOpenDailyDataGraph={onOpenDailyDataGraph}/>
 
         }
         
     }
 
+    const ref = useRef()
+    const tempRef = useRef()
+
+    const currentColDefs = useMemo(()=>{
+        if(currentGridData&& currentGridData.uiConfig){
+            let colDefs = [];
+        colDefs = currentGridData.uiConfig.map((column:{header:string,colCode:string})=>{
+            if(['plp','pip'].includes(column.colCode)){
+                return {
+                    field:column['colCode'],
+                    colId:column['colCode'],
+                    headerName:column['header'],
+                    cellRenderer:'colorCellRenderer',
+                }
+            }
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [...colDefs]
+        }
+        return []
+    },[currentGridData])
 
     return(
-        <>
+        <GridStateContext.Provider value={{
+            ref:ref,
+            exportExcelColumns:exportExcelColumns,
+            setExportExcelColumns:setExportExcelColumns,
+            tempDownloadData:tempDownloadData,
+            setTempDownloadData:setTempDownloadData,
+            exportExcelRowData:exportExcelRowData,
+            setExportExcelRowData:setExportExcelRowData
+
+        }}>
             {
                 isOverlayVisible && (
                 <VFOverlay>
@@ -71,6 +123,9 @@ const Planning = () => {
                 !isSelectCategoryOpen &&
                 <>
                     <ActionToolBar 
+                        genericRecordCount={0}
+                        onExportToExcelCallBack={onExportToExcelCallBack}
+                        planningCount={planningCounts}
                         currCategory={currentCategory}
                         view={currentView} 
                         onFloatingTabChange={onFloatingTabChange}
@@ -85,8 +140,22 @@ const Planning = () => {
                     {renderView()}
                 </>
             }
+            {
+                showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} />
+            }
+            {
+                showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
+            }
+            <div style={{display:'none'}}>                
+                  <VFTable
+                    ref={tempRef}
+                    columnDefs={currentColDefs}
+                    rowData={exportExcelRowData}
+                    {...tempAgGridProps}
+                  />
+                </div>
             
-        </>
+        </GridStateContext.Provider>
     )
 }
 

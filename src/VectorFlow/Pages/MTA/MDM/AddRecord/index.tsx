@@ -53,7 +53,6 @@ const AddRecord = () => {
         selectedRowsCount,
         recordCount,
         currentPage,
-        rowsPerPage,
         handleChangePage,
         editOnline,
         onEditOnline,
@@ -91,9 +90,14 @@ const AddRecord = () => {
       }
     },[isTableDataLoading])
 
+    console.log(process.env.REACT_APP_ADDRECORD_PAGE)
+
     if(isLoading){
         return <VFLoader/>
     }
+
+    
+
 
     if(isSelectMasterOpen){
       return(
@@ -108,6 +112,7 @@ const AddRecord = () => {
       )
     }
     const dispatch = useDispatch();
+
     return(
         <React.Fragment>
           <SCContainer>
@@ -147,13 +152,13 @@ const AddRecord = () => {
 
               </VFTab>
               {
-                (!['default'].includes(activeMaster.progress) && !isSelectMasterOpen) 
+                (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen)) 
                   && 
                   <VFPagination 
                     selectedRows={selectedRowsCount} 
                     totalRows={recordCount} 
                     currentPage={currentPage} 
-                    rowsPerPage={rowsPerPage} 
+                    rowsPerPage={parseInt(process.env.REACT_APP_ADDRECORD_PAGE  || '100')} 
                     handleChangePage={(e)=>handleChangePage(e)}  
                   />
               }
@@ -219,7 +224,7 @@ const AddRecord = () => {
             onSaveToDraft={onSaveToDraft}
             onEditOnlineSave={onEditOnlineSave}
             editOnline={editOnline}
-            onEditOnline={onEditOnline}
+            onEditOnline={()=>onEditOnline('editOnline')}
             onBack={onBackButton}
             onClearAndExportErrors={()=>onClearExportError(true)}
             onModifyData={()=>toggleUploadModal(true)}

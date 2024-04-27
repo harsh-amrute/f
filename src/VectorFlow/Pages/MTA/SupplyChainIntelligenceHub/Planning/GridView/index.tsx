@@ -1,3 +1,4 @@
+import { VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import ExcessInventoryGrid from "../ExcessInventory/Grid";
 import ExpediteChildGrid from "../Expedite/Child/Grid";
 import ExpediteParentGrid from "../Expedite/Parent/Grid";
@@ -10,25 +11,27 @@ import OrderFulfillmentGrid from '../OrderFulfillment/Grid';
 interface GridViewProps {
     category:string,
     currentTab:string,
-    currentGridData:any
+    currentGridData:any,
+    paginationProps:VFPaginationProps,
+    onOpenDailyDataGraph:any
 
 }
-const GridView = ({category,currentTab,currentGridData}:GridViewProps) => {
+const GridView = ({category,currentTab,currentGridData,paginationProps,onOpenDailyDataGraph}:GridViewProps) => {
     const renderGrid = ()=>{
         switch(category){
             case 'GITFromParent':
-                return <MonitorGITParent data={currentGridData}/>
+                return <MonitorGITParent data={currentGridData} paginationProps={paginationProps} onOpenDailyDataGraph = {onOpenDailyDataGraph} currentCategory={category} currentTab={currentTab}/>
             case 'GITToChild':
-                if(currentTab==='locationWise') return <MonitorGITChildLocationWiseGrid data={currentGridData ? currentGridData['locationWise'] : []}/>
-                else return <MonitorGITChildTransporterWiseGrid data={currentGridData ? currentGridData['transporterWise'] : []}/>
+                if(currentTab==='locationWise') return <MonitorGITChildLocationWiseGrid data={currentGridData ? currentGridData['locationWise'] : []} paginationProps={paginationProps} onOpenDailyDataGraph = {onOpenDailyDataGraph} currentCategory={category} currentTab={currentTab}/>
+                else return <MonitorGITChildTransporterWiseGrid data={currentGridData ? currentGridData['transporterWise'] : []} paginationProps={paginationProps} onOpenDailyDataGraph = {onOpenDailyDataGraph} currentCategory={category} currentTab={currentTab}/>
             case 'ExpediteFromParent':
-                return <ExpediteParentGrid data={currentGridData ? currentGridData : []}/>  
+                return <ExpediteParentGrid data={currentGridData ? currentGridData : []} paginationProps={paginationProps} onOpenDailyDataGraph = {onOpenDailyDataGraph} currentCategory={category} currentTab={currentTab}/>  
             case 'ExpediteToChild':
-                return <ExpediteChildGrid data={currentGridData ? currentGridData : []}/>    
+                return <ExpediteChildGrid data={currentGridData ? currentGridData : []} paginationProps={paginationProps} onOpenDailyDataGraph = {onOpenDailyDataGraph} currentCategory={category} currentTab={currentTab}/>    
             case 'ExcessInventory':
-                return <ExcessInventoryGrid data={currentGridData ? currentGridData : []}/>
+                return <ExcessInventoryGrid data={currentGridData ? currentGridData : []} paginationProps={paginationProps} onOpenDailyDataGraph = {onOpenDailyDataGraph} currentCategory={category} currentTab={currentTab}/>
             case 'OrderFulfillment':
-                return <OrderFulfillmentGrid data={currentGridData ? currentGridData : []}/>
+                return <OrderFulfillmentGrid data={currentGridData ? currentGridData : []} paginationProps={paginationProps} onOpenDailyDataGraph = {onOpenDailyDataGraph} currentCategory={category} currentTab={currentTab}/>
             default:
                 return <></>
         }

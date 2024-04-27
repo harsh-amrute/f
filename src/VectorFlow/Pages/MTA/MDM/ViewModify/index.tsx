@@ -349,7 +349,7 @@ import _ from "lodash";
             onSaveToDraft={onSaveToDraft}
             onEditOnlineSave={onEditOnlineSave}
             editOnline={editOnline}
-            onEditOnline={onEditOnline}
+            onEditOnline={()=>onEditOnline('editOnline')}
             onBack={onBackButton}
             onClearAndExportErrors={onClearExportError}
             onModifyData={()=>toggleUploadModal(true)}

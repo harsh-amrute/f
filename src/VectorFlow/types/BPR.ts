@@ -11,6 +11,9 @@ export interface BPRField {
 }
 
 export interface BPRDataPayload{
+    id: number,
+  name: string,
+  fields: Array<any>,
     filters:any[]
     paginationParameter:{
         pageNumber:number,
@@ -35,6 +38,13 @@ export interface BPRRemarkHistoryToolTipProps{
 
 export interface SubmitBPRRemarkPayload{
     remark:string
+    whcode:string
+    skucode:string
+}
+
+export interface GetDailyDataPayload{
+    SKUCode:string,
+    WhCode:string
 }
 
 export interface BPRFilter{
@@ -127,4 +137,23 @@ export interface BufferTrendsGraphState{
     pen:BufferTrendsGraphPenState
     id:number
     filters:Array<BufferTrendsGraphDateStateFilter>
+}
+
+export interface NormChangeHistory{
+    nCD:string,
+    nN:number,
+    olN:number,
+    rsn:string
+}
+
+export interface DailyDataChart{
+    cs:number | null,
+    dt:string,
+    git:number | null,
+    rp:number | null,
+    stk:number | null,
+    rrs:number | null,
+    grs:number | null,
+    rrc:number | null,
+    grc:number | null
 }

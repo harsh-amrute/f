@@ -7,10 +7,11 @@ import DBMNormSuggestions from './DBMNormSuggestions';
 import ExcessInventoryTrend from './ExcessInventoryTrend';
 import CustomScreens from './CustomScreens';
 import ChronicGridView from './ChronicGridView';
+import { GridStateContext } from '../../../../../context/GridStateContext';
 const GuidedInsight=()=>{
-  
+
     const {onFloatingTabChange,onGoBack, onViewChange,currentView, currentTab, setCurrentTab, getFloatingTabsList,
-    ChronicUnavailabilityGridViewData}=useGuidedInsights();
+    ChronicUnavailabilityGridViewData,ref}=useGuidedInsights();
 
     const renderView = () => {
 
@@ -42,7 +43,17 @@ const GuidedInsight=()=>{
 
     }
     
-    return(<><ActionToolBar  data-testid="chronicgridview"
+    return(<GridStateContext.Provider value={{
+        ref:ref,
+        exportExcelColumns:[],
+        setExportExcelColumns:()=>{return},
+        tempDownloadData:false,
+        setTempDownloadData:()=>{return},
+        exportExcelRowData:[],
+        setExportExcelRowData:()=>{return}
+
+    }}>
+            <ActionToolBar  data-testid="chronicgridview"
                         view={currentView} 
                         onFloatingTabChange={onFloatingTabChange}
                         onGoBack={onGoBack}
@@ -50,13 +61,15 @@ const GuidedInsight=()=>{
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
                         tabsList={getFloatingTabsList()}
+                        genericRecordCount={0}
                        disableChartAndGridViewToggle={currentTab==='chronicunavailability'|| currentView==='grid'?false:true}
+                       onExportToExcelCallBack
                 //   disableChartAndGridViewToggle={(currentTab==='chronicunavailability'|| currentTab==='customscreens' )|| (currentView==='grid'|| currentView==='chart') ?false:true}
                 currCategory={'GuidedInsight' }
 
                         />
                       {renderView()} 
-                  </>) 
+            </GridStateContext.Provider>) 
    
 
 

@@ -43,6 +43,7 @@ display:flex;
 // align-items:center;
 justify-content:center;
 flex-direction:column;
+
 `
 export const SearchComponent = styled.div`
 background: #F2F2F2 0% 0% no-repeat padding-box;
@@ -94,6 +95,7 @@ display:flex;
 justify-content:flex-start;
 align-items:center;
 gap:6px;
+accent-color:#82104C;
 `
 
 export const TextFieldHeader=styled.div`

@@ -15,11 +15,13 @@ export const VFCapsuleWrapper = styled.div<{themeUi:string}>`
 `
 
 export const VFCapsuleButton = styled.button<{isActive:boolean,themeUi:string}>`
-    width: 60px;
+    width:100%;
     height: 25px;
     font-weight:300;
     font-family:Roboto;
     font-size:10px;
+    display:block;
+    text-wrap: nowrap;
     color:${(props)=>props.isActive?'white':'#8E8E8E'};
     background: ${(props)=>props.isActive?globalStyles.chooseThemeColor[props.themeUi]?.color4:'#FFFFFF 0% 0% no-repeat padding-box'};
     opacity: 1;

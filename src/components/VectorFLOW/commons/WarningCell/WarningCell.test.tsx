@@ -1,4 +1,4 @@
-import { render,screen } from '@testing-library/react';
+import { render,screen, fireEvent, waitFor } from '@testing-library/react';
 import WarningCell from '.';
 
 const props:any = {
@@ -27,4 +27,22 @@ describe("Renders Error Cell",() => {
         render(<WarningCell {...props}/>);
         
     })
+    it("Handles mouse event", async () => {
+        const message = "dummydumm";
+        props.data.warning = message;
+        render(<WarningCell {...props} />);
+        
+        const warningIcon = screen.getByTestId('warningImage');
+        
+        fireEvent.mouseEnter(warningIcon);
+        await waitFor(() => {
+            expect(screen.getByTestId('tooltip-wrapper')).toBeInTheDocument();
+        });
+    
+        fireEvent.mouseLeave(warningIcon);
+        await waitFor(() => {
+            expect(screen.queryByTestId('tooltip-wrapper')).not.toBeInTheDocument();
+        });
+    });
+    
 })

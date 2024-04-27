@@ -4,16 +4,18 @@ import "allotment/dist/style.css";
 import "../../styles.css";
 import VFTable from "../../../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../../../types/MDM";
-import { ColDef, ChartRef } from "ag-grid-enterprise";
+import { ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../styles';
 import VFInfoTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 
+import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
 interface ExcessInventoryProps{
     data:any
 }
 
 
 const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
+    console.log(data);
 
     const refGraph1 = useRef<GridRef>();
     const refGraph2 = useRef<GridRef>();
@@ -27,32 +29,86 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
 
     let chartRef1:ChartRef |undefined;
     let chartRef2:ChartRef | undefined;
+
+    const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
+        let colDefs = [];
+
+        const customColdefs = [
+            {
+                field:'WHDescription',
+                colId:'WHDescription',
+                headerName:'Location Name'
+            },
+            {
+                field:'SKUCounts',
+                colId:'SKUCounts',
+                headerName:'Count of SKUs'
+            }
+        ]
+        
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [...customColdefs,...colDefs];
+    }
+
+    const colDefs1 = mapUIConfigToColdefs1(data['topTenLocationsWithExcessInventorySkuCount']['uiconfig']);
+
+    const mapUIConfigToColdefs2 = (columns:Array<{header:string,colCode:string}>) => {
+        let colDefs = [];
+
+        const customColdefs = [
+            {
+                field:'WHDescription',
+                colId:'WHDescription',
+                headerName:'Location Name'
+            },
+            {
+                field:'SumOfAmount',
+                colId:'SumOfAmount',
+                headerName:'Value in (Lakhs)'
+            }
+        ]
+        
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [...customColdefs,...colDefs];
+    }
+
+    const colDefs2 = mapUIConfigToColdefs2(data['topTenLocationsWithExcessInventoryValue']['uiconfig']);
+
+    const convertToInt = (data:any)=>{
+        return data.map((row:any)=>{
+            const tempObj:any = {};
+            Object.keys(row).forEach((key:string)=>{
+                const value = parseFloat(row[key])
+                if(!isNaN(value)){
+                    tempObj[key] = value
+                }
+                else{
+                    tempObj[key] = row[key];
+                }
+            })
+            return {...tempObj}
+        })
+    }
+
+    const sortData = (data:any,key:string) => {
+        data.sort((row1:any,row2:any)=>{
+            return (row2[key]) - (row1[key])
+        })
+        return [...data];
+    }
     
-    const colDefs1:ColDef[] = [
-        {
-            field:'ln',
-            headerName:'Location Name',
-            colId:'ln',
-        },
-        {
-            field:'ev',
-            headerName:'Count of SKUs',
-            colId:'ev',
-        },
-    ]
-    
-    const colDefs2:ColDef[] = [
-        {
-            field:'ln',
-            headerName:'Location Name',
-            colId:'ln',
-        },
-        {
-            field:'eiv',
-            headerName:'Value (In Lakhs)',
-            colId:'eiv',
-        },
-    ];
    
     const generateChart = (graphNo:number,withOutContainer?:boolean) => {
        
@@ -61,7 +117,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                 chartRef1 = refGraph1.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                    columns: ['ln','ev'],
+                    columns: ['WHDescription','SKUCounts'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     }
@@ -72,7 +128,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                 chartRef1 = refGraph1.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                    columns: ['ln','ev'],
+                    columns: ['WHDescription','SKUCounts'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     },
@@ -87,7 +143,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                 chartRef2 = refGraph2.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                        columns: ['ln','eiv'],
+                        columns: ['WHDescription','SumOfAmount'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     }
@@ -98,7 +154,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                 chartRef2 = refGraph2.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                        columns: ['ln','eiv'],
+                        columns: ['WHDescription','SumOfAmount'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     },
@@ -130,6 +186,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
             // palette:{
             //     fills:['#848484','#848484']
             // },
+            ...GraphSeriesOverrides,
               common: {
                   legend:{
                     position:'top'
@@ -161,6 +218,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
             // palette:{
             //     fills:['#848484','#848484']
             // },
+            ...GraphSeriesOverrides,
               common: {
                   legend:{
                     position:'top'
@@ -213,14 +271,14 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                 {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                                <div style={{display:grid1DisplayStatus}}>
+                                <div style={{display:grid1DisplayStatus, height:'90%'}}>
                                 {
                                     hideChart1 &&
                                     (
                                         <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
-                                            rowData={data['topTenLocationsWithExcessInventorySkuCount']}
+                                            rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data']),'SKUCounts')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1,true)}
@@ -236,6 +294,10 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }
@@ -246,7 +308,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                         <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
-                                            rowData={data['topTenLocationsWithExcessInventorySkuCount']}
+                                            rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data']),'SKUCounts')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1)}
@@ -281,14 +343,14 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                 {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                                <div style={{display:grid2DisplayStatus}}>
+                                <div style={{display:grid2DisplayStatus,  height:'90%'}}>
                                 {
                                     hideChart2 &&
                                     (
                                         <VFTable
                                             ref={refGraph2}
                                             columnDefs={colDefs2}
-                                            rowData={data['topTenLocationsWithExcessInventoryValue']}
+                                            rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data']),'SumOfAmount')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2,true)}
@@ -304,6 +366,10 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }
@@ -314,7 +380,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                         <VFTable
                                             ref={refGraph2}
                                             columnDefs={colDefs2}
-                                            rowData={data['topTenLocationsWithExcessInventoryValue']}
+                                            rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data']),'SumOfAmount')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2)}

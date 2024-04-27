@@ -1,23 +1,46 @@
-import GridViewTable from "../../GridView/GridViewTable"
-import { useMemo } from "react";
-import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTechColorCellRenderer,BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
-import { useGetBPRUIConfiguration } from "../../../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
+import {useState,useMemo} from 'react';
+import GridViewTable from "../../GridView/GridViewTable";
+import { BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
-import VFLoader from "../../../../../../../components/VectorFLOW/commons/VFLoader";
-import {mapBPRFieldsToColDefs} from '../../../../../../../helpers/utils';
+import { VFPaginationProps } from "../../../../../../../components/VectorFLOW/commons/VFPagination";
+import { SideBarDef } from 'ag-grid-enterprise';
+import { createIconColumn } from '../../../../../../../helpers/utils';
+import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
+import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
+import { useDispatch, useSelector } from 'react-redux';
+import { UPDATE_GRID_STATE } from '../../../../../../../redux/actions/MTA';
+import { RootState } from '../../../../../../../redux/store/store';
+const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
-const MonitorGITParent = ({data}:{data:any})=>{
+    const [activeRow,setActiveRow] = useState<any>();
+    const [isSubGridOpen,toggleSubGrid] = useState<any>(false);
+    const dispatch = useDispatch()
 
-    const {data:bprUIConfigData,isLoading} = useGetBPRUIConfiguration();
+    const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
     const customCellRenderers = useMemo(() => ({
-        // grapCellRenderer:BPRGraphCellRenderer,
-        colorTechCellRenderer:BPRTechColorCellRenderer,
-        colorEcoCellRenderer:BPREcoColorCellRenderer,
+        grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
-        submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
-        remarksCellRenderer:BPRRemarksCellRenderer
+        colorCellRenderer:ColorCellRenderer
       }), []);
+
+      const sideBar:SideBarDef = {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            toolPanelParams: {
+              suppressPivots: true,
+              suppressPivotMode: true,
+            },
+          
+          },
+        ],
+        defaultToolPanel:'',
+      }
 
     const agGridProps:AgGridReactProps = {
         
@@ -29,8 +52,8 @@ const MonitorGITParent = ({data}:{data:any})=>{
         readOnlyEdit:true,
         onRowClicked:(params:any)=>{
             if(params.data.transit && params.data.transit.length>0){
-                // setActiveRow(params.data.transit)
-                // toggleSubGrid(true)
+                setActiveRow(params.data.transit)
+                toggleSubGrid(true)
             }
         },
         gridOptions:{
@@ -42,7 +65,7 @@ const MonitorGITParent = ({data}:{data:any})=>{
             return { background: "#F7F7F7" };
             },
         },
-        pagination:true,
+        sideBar:sideBar,
         suppressRowClickSelection:true,
         components:customCellRenderers,
         defaultColDef:{
@@ -66,18 +89,101 @@ const MonitorGITParent = ({data}:{data:any})=>{
         }
     }
 
-
-    const PlanningColumns = mapBPRFieldsToColDefs(bprUIConfigData?.data.data,()=>{console.log('hello')},()=>{console.log('hello')})
-
-    if(isLoading){
-      return (
-        <VFLoader/>
-      )
+    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
+        let colDefs = [];
+        const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            if(['plp','pip'].includes(column.colCode)){
+                return {
+                    field:column['colCode'],
+                    colId:column['colCode'],
+                    headerName:column['header'],
+                    cellRenderer:'colorCellRenderer',
+                }
+            }
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        dispatch(UPDATE_GRID_STATE([dailyDataColDef,...colDefs]))
+        return [dailyDataColDef,...colDefs]
     }
+
+    const colDefs = useMemo(()=>{
+        
+        return currentGridState.length>0?currentGridState:  mapUIConfigToColdefs(data['uiConfig'])
+    },[currentGridState])
+
+
+    // if(isLoading){
+    //   return (
+    //     <VFLoader/>
+    //   )
+    // }
+
+    const customGridColDef = [
+        {
+            headerName:"Order No/Tracking No",
+            colId:'lc',
+            field:'lc'
+        },
+        {
+            headerName:"Creation Date",
+            colId:'cd',
+            field:'cd'
+        },
+        {
+            headerName:"SLT",
+            colId:'slt',
+            field:'slt'
+        },
+        {
+            headerName:"TLT",
+            colId:'tlt',
+            field:'tlt'
+        },
+        {
+            headerName:"Ageing",
+            colId:'ag',
+            field:'ag'
+        },
+        {
+            headerName:"ETA",
+            colId:'eta',
+            field:'eta'
+        },
+        {
+            headerName:"Current Location",
+            colId:'cl',
+            field:'cl'
+        },
+        {
+            headerName:"Quantity",
+            colId:'qty',
+            field:'qty'
+        },
+        {
+            headerName:"Remarks",
+            colId:'remarks',
+            field:'remarks'
+        }
+    ]
 
 
     return(
-        <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={data} customGridRowData={[]} customGridColDef={[]}/>
+        <GridViewTable 
+            currentCategory={currentCategory}
+            currentTab={currentTab}
+            agGridProps={agGridProps} 
+            agGridColDefs={colDefs} 
+            agGridRowData={data['data']} 
+            customGridRowData={activeRow} 
+            customGridColDef={customGridColDef} 
+            isSubGridOpen={isSubGridOpen}
+            paginationProps={paginationProps}
+        />
     )
 }
 

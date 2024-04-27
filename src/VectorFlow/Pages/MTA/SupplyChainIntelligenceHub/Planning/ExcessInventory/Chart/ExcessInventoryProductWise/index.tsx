@@ -4,9 +4,11 @@ import "allotment/dist/style.css";
 import "../../styles.css";
 import VFTable from "../../../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../../../types/MDM";
-import { ColDef, ChartRef } from "ag-grid-enterprise";
+import { ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../styles';
 import VFInfoTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
+
+import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
 
 interface ExcessInventoryProps{
     data:any
@@ -28,55 +30,108 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
     let chartRef2:ChartRef | undefined;
   
     
-    const colDefs1:ColDef[] = [
-        {
-            field:'product',
-            headerName:'Product Name',
-            colId:'product',
-        },
-        {
-            field:'count',
-            headerName:'Count of Locations',
-            colId:'count',
-        },
-    ];
-  
-    const colDefs2:ColDef[] = [
-        {
-            field:'product',
-            headerName:'Product Name',
-            colId:'product',
-        },
-        {
-            field:'count',
-            headerName:'Value In Lakhs',
-            colId:'count',
-        },
-    ];
+    const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
+        let colDefs = [];
+
+        const customColdefs = [
+            {
+                field:'SKUDescription',
+                colId:'SKUDescription',
+                headerName:'Product Name'
+            },
+            {
+                field:'WHCount',
+                colId:'WHCount',
+                headerName:'Count of Locations'
+            }
+        ]
+        
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [...customColdefs,...colDefs];
+    }
+
+    const colDefs1 = mapUIConfigToColdefs1(data['topTenProductsWithExcessInventoryNumberOfLocations']['uiconfig']);
+
+    const mapUIConfigToColdefs2 = (columns:Array<{header:string,colCode:string}>) => {
+        let colDefs = [];
+
+        const customColdefs = [
+            {
+                field:'SKUDescription',
+                colId:'SKUDescription',
+                headerName:'Product Name'
+            },
+            {
+                field:'SumAmount',
+                colId:'SumAmount',
+                headerName:'Value in (Lakhs)'
+            }
+        ]
+        
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [...customColdefs,...colDefs];
+    }
+
+    const colDefs2 = mapUIConfigToColdefs2(data['topTenProductsWithExcessInventoryNumberOfLocations']['uiconfig']);
+
+    const convertToInt = (data:any)=>{
+        return data.map((row:any)=>{
+            const tempObj:any = {};
+            Object.keys(row).forEach((key:string)=>{
+                const value = parseFloat(row[key])
+                if(!isNaN(value)){
+                    tempObj[key] = value
+                }
+                else{
+                    tempObj[key] = row[key];
+                }
+            })
+            return {...tempObj}
+        })
+    }
+
+    const sortData = (data:any,key:string) => {
+        data.sort((row1:any,row2:any)=>{
+            return (row2[key]) - (row1[key])
+        })
+        return [...data];
+    }
 
     const generateChart = (graphNo:number,withOutContainer?:boolean) => {
        
         if(graphNo === 1){
             if(withOutContainer) {
-                chartRef2 = refGraph2.current?.api.createRangeChart({
+                chartRef1 = refGraph1.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                        columns: ['product','count'],
+                        columns: ['SKUDescription','WHCount'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     }
                 })
             }
             else{
-                const container2 = document.getElementById('ExcessInventoryProductG1') as HTMLElement
-                chartRef2 = refGraph2.current?.api.createRangeChart({
+                const container1 = document.getElementById('ExcessInventoryProductG1') as HTMLElement
+                chartRef1 = refGraph1.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                        columns: ['product','count'],
+                        columns: ['SKUDescription','WHCount'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     },
-                    chartContainer:container2
+                    chartContainer:container1
                 })
             }
             
@@ -87,7 +142,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                 chartRef2 = refGraph2.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                        columns: ['product','count'],
+                        columns: ['SKUDescription','SumAmount'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     }
@@ -98,7 +153,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                 chartRef2 = refGraph2.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                        columns: ['product','count'],
+                        columns: ['SKUDescription','SumAmount'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     },
@@ -130,6 +185,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
             // palette:{
             //     fills:['#848484','#848484']
             // },
+            ...GraphSeriesOverrides,
               common: {
                   legend:{
                     position:'top'
@@ -161,6 +217,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
             // palette:{
             //     fills:['#848484','#848484']
             // },
+            ...GraphSeriesOverrides,
               common: {
                   legend:{
                     position:'top'
@@ -215,14 +272,14 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                 {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                                <div style={{height:'260px',display:grid1DisplayStatus}}>
+                                <div style={{display:grid1DisplayStatus, height:'90%'}}>
                                 {
                                     hideChart1 &&
                                     (
                                         <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
-                                            rowData={data['topTenProductsWithExcessInventoryNumberOfLocations']}
+                                            rowData={sortData(convertToInt(data['topTenProductsWithExcessInventoryNumberOfLocations']['data']),'WHCount')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1,true)}
@@ -238,6 +295,10 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }
@@ -248,7 +309,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                         <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
-                                            rowData={data['topTenProductsWithExcessInventoryNumberOfLocations']}
+                                            rowData={sortData(convertToInt(data['topTenProductsWithExcessInventoryNumberOfLocations']['data']),'WHCount')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1)}
@@ -283,14 +344,14 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                 {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                                <div style={{height:'260px',display:grid2DisplayStatus}}>
+                                <div style={{display:grid2DisplayStatus, height:'90%'}}>
                                 {
                                     hideChart2 &&
                                     (
                                         <VFTable
                                             ref={refGraph2}
                                             columnDefs={colDefs2}
-                                            rowData={data['topTenProductsWithExcessInventoryInValue']}
+                                            rowData={sortData(convertToInt(data['topTenProductsWithExcessInventoryInValue']['data']),'SumAmount')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2,true)}
@@ -306,6 +367,10 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }
@@ -316,7 +381,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                         <VFTable
                                             ref={refGraph2}
                                             columnDefs={colDefs2}
-                                            rowData={data['topTenProductsWithExcessInventoryInValue']}
+                                            rowData={sortData(convertToInt(data['topTenProductsWithExcessInventoryInValue']['data']),'SumAmount')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2)}

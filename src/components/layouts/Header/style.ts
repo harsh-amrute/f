@@ -152,7 +152,7 @@ export const SCHeaderIconProfile = styled.img`
 export const SCWrapperImg = styled.div<{ isHideLogo: boolean }>`
   position: fixed;
   right: 0px;
-  top:120px;
+  top:135px;
   width: ${(props) => (props.isHideLogo ? "176px" : "1vw")};
   height: 55px;
   margin-top: -22px;

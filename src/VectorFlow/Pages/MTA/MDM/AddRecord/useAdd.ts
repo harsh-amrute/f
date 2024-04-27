@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { notifyError,notifyLoader,notifySuccess } from '../../../../../helpers/notify';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
-import { useAddMasterData,useDeleteTask } from '../../../../../VectorFlow/Services/MTA/MDM';
+import { useAddMasterData,useDeleteTask,useDeleteDraft } from '../../../../../VectorFlow/Services/MTA/MDM';
 import { createErrorRowData} from '../../../../../helpers/utils'
 import { ColDef } from 'ag-grid-enterprise';
 
@@ -23,17 +23,20 @@ const useAdd=()=>{
 
 
     const isSelectMasterOpen = useSelector((state:RootState)=>state.mdm.isSelectMasterOpen)
-
+    const draftID = useSelector((state:RootState) => state.mdm.draftId);
 
     const {mutateAsync:addMaster} = useAddMasterData()
 
     const {mutateAsync:deleteTask} = useDeleteTask();
+
+    const {mutateAsync:deleteDraft} = useDeleteDraft()
 
     
     const [TASK_ID,setTaskId] = useState<string>();
     const [conflictCount,setConflictCount] = useState<number>(0);
     const [errorCount,setErrorCount] = useState<number>(0);
     const [errorData,setErrorData] = useState<Array<any>>([]);
+    const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
 
     const invalidDataColdefs:ColDef[] = [
         {
@@ -256,8 +259,11 @@ const useAdd=()=>{
       }
 
       const onSubmit = async(isOverWrite?:boolean) => {
+        if(isSubmitDisabled) return;
  
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
+
+        setIsSubmitDisabled(true)
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
      
@@ -275,18 +281,24 @@ const useAdd=()=>{
               else{
                 errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
-              addInvalidDataColDefs('error')
+              if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+                addInvalidDataColDefs('error')
+              }
               dispatch(UPDATE_ROW_DATA(errorRowData))
               dispatch(SET_RECORD_COUNT(errorRowData.length))
              
             }
             dispatch(REMOVE_COLDEFS(['checkbox']));
 
+
             if(errorRowData.length > 0) notifyError("Addition Unsuccessfull")
             else notifySuccess(`Additions Submitted Successfully`);
-            
             dispatch(UPDATE_PROGRESS_STATE('submitted'));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+            if(draftID.length > 0){
+              await deleteDraft(draftID);
+            }
+            setIsSubmitDisabled(false)
 
           
       }

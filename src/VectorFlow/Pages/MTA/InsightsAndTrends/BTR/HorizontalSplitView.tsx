@@ -1,5 +1,6 @@
 import { AgGridReactProps } from "ag-grid-react"
 import { Allotment } from "allotment"
+import useViewPort from "../../../../../hooks/useViewPort"
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import { BTRTableHeader, BTRTableWrapper ,BTRAllomentSection} from "./styles"
 
@@ -19,24 +20,27 @@ const VerticalSplitView = (props:SplitViewProps)=>{
         ecoTable
     } = props
    
+    const {screenHeight} = useViewPort()
+
    return (
-        <BTRTableWrapper>
+        <BTRTableWrapper style={{height:screenHeight - 100,margin:'0'}}>
             <Allotment vertical={true}>
                 <Allotment.Pane >
                     <BTRAllomentSection>
                         <BTRTableHeader>{techTable.header}</BTRTableHeader>
                         <VFTable 
+                            
                             disableZoomScaling
-                        gridOptions={{
-                            components:techTable.gridOptions?.components
-                        }}
-                        columnDefs={techTable.columnDefs}
-                        rowData={techTable.rowData}
-                        tooltipMouseTrack={true}
-                        pagination
-                        paginationPageSize={50}
-                        tooltipShowDelay={0}
-                        tooltipHideDelay={0}
+                            gridOptions={{
+                                components:techTable.gridOptions?.components
+                            }}
+                            columnDefs={techTable.columnDefs}
+                            rowData={techTable.rowData}
+                            tooltipMouseTrack={true}
+                            pagination
+                            paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
+                            tooltipShowDelay={0}
+                            tooltipHideDelay={100000}
                         />
                     </BTRAllomentSection>
                 </Allotment.Pane>
@@ -52,9 +56,9 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             rowData={ecoTable.rowData}
                             tooltipMouseTrack={true}
                             pagination
-                            paginationPageSize={50}
+                            paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                             tooltipShowDelay={0}
-                            tooltipHideDelay={0}
+                            tooltipHideDelay={100000}
                         />
                     </BTRAllomentSection>
                 </Allotment.Pane>

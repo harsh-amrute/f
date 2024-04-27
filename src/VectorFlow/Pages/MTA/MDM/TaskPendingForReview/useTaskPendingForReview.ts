@@ -63,12 +63,12 @@ const useTaskPendingForReview = ()=>{
         let toastId;
         try {
             resetState()
-            setIsViewTableOpen(false)
+            
             setTaskId(taskData.TaskID)
             
             setTaskActionType(taskData.Actiontype)
             
-            
+            const tempToastId = notifyLoader('Laoding Data')
             const res:any = await getTaskCount(taskData.TaskID);
 
             const taskCount = JSON.parse(res.data.recordCount)[0].recordcount;
@@ -82,7 +82,7 @@ const useTaskPendingForReview = ()=>{
                     recordsPerPage:chunkSize
                 }
             }
-
+            toast.dismiss(tempToastId)
             toastId = notifyLoader(`Downloading Data 0 / ${taskCount}`)
 
 
@@ -113,8 +113,8 @@ const useTaskPendingForReview = ()=>{
             
             const masters:Master[] = uiConfigurationResponse.data.data
             const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
-            
             if(currentMasterFields){
+                console.log(currentTaskMaster.data[0].new)
                 const existingColumns = getExistingColumns(taskData.Actiontype==2 || currentTaskMasterId===13?JSON.parse(currentTaskMaster.data[0].new):currentTaskMaster.data[0])
                 const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
                 setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
@@ -123,9 +123,11 @@ const useTaskPendingForReview = ()=>{
             }
 
             notifySuccess("Task Details Fetched Successfully");
+            setIsViewTableOpen(false)
             
         } catch (error) {
             toast.dismiss();
+            console.log(error)
             notifyError("Something Went Wrong");
             
         }

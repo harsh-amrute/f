@@ -6,6 +6,8 @@ import * as gridSystem from "../../../../../styles/gridSystem";
 export const SCDynamicContainer = styled.div`
     display:block;
     height:150vh;
+    padding-top:20px;
+    margin:0px 20px 0px 20px;
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
         .size.desktop}) {
         height:150vh
@@ -15,14 +17,20 @@ export const SCDynamicContainer = styled.div`
       height:100vh
     }
 `
+export const SCHorizontalAllignmentWrapper = styled.div`
+    width:100%;
+    padding:20px;
+    height:200vh;
+`
 
 export const SCChartContainer = styled.div<{height?:number}>`
     padding:5px;
     border-radius:12px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
-    box-shadow: -5px 5px 25px #86868633;
+    // box-shadow: -5px 5px 25px #86868633;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     margin-right:5px;
-    // margin-top:60px;
+    margin-top:25px;
     margin-bottom:20px;
     margin-left:5px;
     // height:547px;

@@ -1,5 +1,5 @@
 import { useQuery,useMutation } from '@tanstack/react-query'
-import { BPRDataPayload, SubmitBPRRemarkPayload } from '../../../../../VectorFlow/types/BPR';
+import { BPRDataPayload, GetDailyDataPayload, SubmitBPRRemarkPayload } from '../../../../../VectorFlow/types/BPR';
 
 import { BPRService } from './api'
 
@@ -7,7 +7,10 @@ import { BPRService } from './api'
 export const QUERY_KEYS = {
   useGetBPRUIConfiguration: ['BPRService.useGetBPRUIConfiguration'],
   userGetBPRData:['BPRService.userGetBPRData'],
-  useGetAllSKUs:['BPRService.useGetAllSKUs']
+  useGetAllSKUs:['BPRService.useGetAllSKUs'],
+  useGetAllLocations:['BPRService.useGetAllLocations']
+
+
 }
 
 
@@ -22,6 +25,19 @@ export const useGetBPRUIConfiguration = () => {
       return await BPRService.getAllSKUs();
     });
    
+  }
+
+  export const useGetAllLocations=()=>{
+    return useQuery(QUERY_KEYS.useGetAllLocations,async () => {
+      return await BPRService.getAllLocations();
+    });
+   
+  }
+
+  export const useGetBPRDataCount = () => {
+    return useMutation(async (payload:BPRDataPayload) => {
+      return await BPRService.getBPRDataCount(payload);
+    });
   }
 
 
@@ -40,5 +56,29 @@ export const useGetBPRRemarkHistory = () => {
 export const useSubmitBPRRemark = () => {
   return useMutation(async (payload:SubmitBPRRemarkPayload) => {
     return await BPRService.submitRemark(payload);
+  });
+}
+
+export const useGetDailyData = () => {
+  return useMutation(async (payload:GetDailyDataPayload) => {
+    return await BPRService.getDailyData(payload);
+  });
+}
+
+export const useSaveState = () => {
+  return useMutation(async (payload:{reportname:string,state:string}) => {
+    return await BPRService.saveState(payload);
+  });
+}
+
+export const useGetState = () => {
+  return useMutation(async (payload:string) => {
+    return await BPRService.getState(payload);
+  });
+}
+
+export const useResetState = () => {
+  return useMutation(async (payload:string) => {
+    return await BPRService.resetState(payload);
   });
 }

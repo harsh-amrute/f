@@ -12,14 +12,18 @@ interface ChartViewProps {
   isLoading:boolean
   graphs:BufferTrendsGraphState[]
   updateGraphState:(id:number, property:string, value:any)=>void
+  setHorizondays:any
+  handleSubmitClick:()=>void
+  horizonDays:number
 
 }
 
-const ChartView = ({currentTab,currentGraphData,currentPageTab,onFloatingTabChangeOnPages,isLoading,graphs,updateGraphState}:ChartViewProps) => {
+const ChartView = ({currentTab,currentGraphData,currentPageTab,onFloatingTabChangeOnPages,isLoading,graphs,
+           updateGraphState,setHorizondays,handleSubmitClick,horizonDays}:ChartViewProps) => {
 
  const renderGraphs = () =>{
 
-  if(currentTab=="technicalView"){
+  if(currentTab=="tech"){
     return (
     <TechnicalWise
       data={currentGraphData ? currentGraphData:[]}
@@ -28,11 +32,14 @@ const ChartView = ({currentTab,currentGraphData,currentPageTab,onFloatingTabChan
       isLoading={isLoading}
       graphs={graphs}
       updateGraphState={updateGraphState}
-  />)
+      setHorizondays={setHorizondays}
+      handleSubmitClick={handleSubmitClick}
+      horizonDays={horizonDays}
+    />)
   }
 
   
-  if(currentTab=="economicalView"){
+  if(currentTab=="eco"){
     return (
       <EconomicalWise
         data={currentGraphData ? currentGraphData:[]}
@@ -41,6 +48,9 @@ const ChartView = ({currentTab,currentGraphData,currentPageTab,onFloatingTabChan
         isLoading={isLoading}
         graphs={graphs}
         updateGraphState={updateGraphState}
+        setHorizondays={setHorizondays}
+        handleSubmitClick={handleSubmitClick}
+        horizonDays={horizonDays}
     />
     )
   }

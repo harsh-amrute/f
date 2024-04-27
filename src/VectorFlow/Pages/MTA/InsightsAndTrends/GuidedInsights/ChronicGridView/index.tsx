@@ -7,6 +7,9 @@ const ChronicGridView=({currentGridData}:ChronicGridViewProps)=>{
     
     const agGridProps:AgGridReactProps = {
         
+
+      paginationPageSize:parseInt(process.env.REACT_APP_GUIDEDINSIGHT_ROWS_PER_PAGE || '50'),
+
         suppressRowTransform:true,
         tooltipShowDelay:0.3,
         tooltipTrigger:'focus',
@@ -86,7 +89,7 @@ const ChronicGridView=({currentGridData}:ChronicGridViewProps)=>{
       headerName:"RationedStockatparent",  enablePivot:true}
     ]
 
-    return <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={currentGridData} customGridRowData={[]} customGridColDef={[]}/>
+    return <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={currentGridData} customGridRowData={[]} customGridColDef={[]} isSubGridOpen={false} currentCategory={"GuidedInsightchronicunavailability"} currentTab={''}/>
     
    
 }

@@ -20,6 +20,8 @@ import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButt
 import { useUserData } from '../../../../../context'
 import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar'
 import ExpandedGraph from './ReseachInsightsExpandedGraph'
+import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
+import { GridStateContext } from '../../../../../context/GridStateContext'
 
 
 
@@ -31,6 +33,7 @@ const ResearchInsights = ()=>{
         ResearchInsightsColumns,
         ResearchInsightsData,
         isLoading,
+        isUpdatedGraphDataLoading,
         horizon,
         graphState,
         setHorizon,
@@ -49,7 +52,22 @@ const ResearchInsights = ()=>{
         expandedGraphAllFilterValues,
         toggleGraphModal,
         setIsGraphOneOpen,
-        updateGraphState
+        updateGraphState,
+        recordCount,
+        rowsPerPage,
+        currGridPage,
+        isSavedDataLoading,
+        columnState,
+        handleOnPageChange,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        onExportToExcelCallBack
     } = useResearchInsights()
 
     const {user} = useUserData()
@@ -57,20 +75,49 @@ const ResearchInsights = ()=>{
     const themeUi = user.user.theme_ui
 
     
-    if(isLoading){
+    if(isLoading || isSavedDataLoading){
         return <VFLoader/>
     }
     return(
-        <>
-       <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'ResearchInsight'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')}/>
+        <GridStateContext.Provider value={{
+            ref:ref,
+            exportExcelColumns:exportExcelColumns,
+            setExportExcelColumns:setExportExcelColumns,
+            tempDownloadData:tempDownloadData,
+            setTempDownloadData:setTempDownloadData,
+            exportExcelRowData:exportExcelRowData,
+            setExportExcelRowData:setExportExcelRowData
+
+        }}>
+       <ActionToolBar 
+            view={'grid'} 
+            setCurrentTab={''} 
+            currCategory={'ResearchInsight'} 
+            currentTab={''} tabsList={[]} 
+            onFloatingTabChange={()=>console.log('')} 
+            onGoBack={()=>console.log('')} 
+            onViewChange={()=>console.log('')}
+            genericRecordCount={recordCount || 0}
+            onExportToExcelCallBack={onExportToExcelCallBack}
+        />
         <ResearchInsightsLayout>
-            <ResearchInsightsTableWrapper style={{zoom:0.8}}>
+            <ResearchInsightsTableWrapper style={{zoom:0.8, marginTop:'-15px'}}>
                 <VFTable
                     height={800}
                     {...agGridProps}
                     ref={ref}
                     columnDefs={ResearchInsightsColumns}
                     rowData={ResearchInsightsData}
+                    onGridReady={(params)=>{
+                        if(columnState)params.columnApi.applyColumnState({state:columnState})
+                    }}
+                />
+                <VFPagination
+                    selectedRows={0}
+                    totalRows={recordCount || 0}
+                    currentPage={currGridPage}
+                    rowsPerPage={rowsPerPage}
+                    handleChangePage={handleOnPageChange}
                 />
                 <ResearchInsightsTableTaskBar>
                     <VFButtonOutline
@@ -82,7 +129,14 @@ const ResearchInsights = ()=>{
                     </VFButtonOutline>
                 </ResearchInsightsTableTaskBar>
             </ResearchInsightsTableWrapper>
-            <AvailabilityTrendWrapper>
+            {
+                isUpdatedGraphDataLoading
+                ?
+                <AvailabilityTrendWrapper>
+                    <VFLoader/>
+                </AvailabilityTrendWrapper>
+                :
+                <AvailabilityTrendWrapper>
                 <AvailabilityTrendHeader>
                     Availability Trend
                 </AvailabilityTrendHeader>
@@ -496,6 +550,8 @@ const ResearchInsights = ()=>{
                     </React.Fragment>
                 )}
             </AvailabilityTrendWrapper>
+            }
+            
            
              <ExpandedGraph
                 onUpdateGraphs={updateGraphState}
@@ -507,9 +563,16 @@ const ResearchInsights = ()=>{
                 isOpen={isGraphOneOpen}
                 onClose={()=>setIsGraphOneOpen(false)}
             />
-           
+           <div style={{display:'none'}}>                
+                  <VFTable
+                    ref={tempRef}
+                    columnDefs={ResearchInsightsColumns}
+                    rowData={exportExcelRowData}
+                    {...tempAgGridProps}
+                  />
+                </div>
         </ResearchInsightsLayout>
-        </>
+        </GridStateContext.Provider>
     )
 }
 

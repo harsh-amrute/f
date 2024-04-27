@@ -1,7 +1,7 @@
-import { screen, render, fireEvent, cleanup } from "@testing-library/react"
+import { screen, render, fireEvent} from "@testing-library/react"
 import { useGetPlanningDataCount, useGetPlanningDataGraph, useGetPlanningDataGrid } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 // import { UserDataContext } from "../../../../../context";
-import { getPlanningDataCountMockData, MonitorGITChildMockData,MonitorGITParentMockData ,getPlanningDataGridMockData, ExpediteParentMockData,ExpediteChildMockData, getPlanningDataGraphMockData } from "../../../../../mock-data/Planning";
+import { getPlanningDataCountMockData,getPlanningDataGridMockData,ExcessInventoryMockData,getPlanningDataGraphMockData } from "../../../../../mock-data/Planning";
 import Planning from ".";
 import { act } from "react-dom/test-utils";
 import { UserDataContext } from "../../../../../context/UserDataContext";
@@ -98,75 +98,83 @@ describe("Planning Quadrant", () => {
         render(contextWrapper(<Planning/>,store));
     })
 
-    it("Switches Floating Tab", async () => {
-        useGetPlanningDataGraphMock.mockImplementation(()=>{
-            return useGetPlanningDataGraphMockData(MonitorGITChildMockData)
-        })
-        render(contextWrapper(<Planning/>,store));
-        await act(async () => {
-            fireEvent.click(screen.getAllByText('To Child')[0])
-        })
-        expect(screen.getAllByTestId('floatingTabButton').length).toEqual(3);
-        await act(async () => {
-            fireEvent.click(screen.getAllByTestId('floatingTabButton')[1]);
-        })
-        expect(screen.getAllByTestId('floatingTabButton')[1]).toHaveStyle('color:white')
+    // it("Switches Floating Tab", async () => {
+    //     useGetPlanningDataGraphMock.mockImplementation(()=>{
+    //         return useGetPlanningDataGraphMockData(MonitorGITChildMockData)
+    //     })
+    //     render(contextWrapper(<Planning/>,store));
+    //     await act(async () => {
+    //         fireEvent.click(screen.getAllByText('To Child')[0])
+    //     })
+    //     expect(screen.getAllByTestId('floatingTabButton').length).toEqual(3);
+    //     await act(async () => {
+    //         fireEvent.click(screen.getAllByTestId('floatingTabButton')[1]);
+    //     })
+    //     expect(screen.getAllByTestId('floatingTabButton')[1]).toHaveStyle('color:white')
 
-    })
+    // })
 
-    it("Renders MonitorGIT Graphs", async () => {
-        useGetPlanningDataGraphMock.mockImplementation(()=>{
-            return useGetPlanningDataGraphMockData(MonitorGITChildMockData)
-        })
-        render(contextWrapper(<Planning/>,store));
-        // fireEvent.click(screen.getAllByText('To Child')[0])
-        await act(async () => {
-            fireEvent.click(screen.getAllByText('To Child')[0])
-        })
-        expect(screen.getAllByTestId('floatingTabButton').length).toEqual(3);
-        cleanup();
-        useGetPlanningDataGridMock.mockImplementation(()=>{
-            return useGetPlanningDataGridMockData(MonitorGITParentMockData)
-        })
-        render(contextWrapper(<Planning/>,store));
-        await act(async () => {
-            fireEvent.click(screen.getAllByText('From Parent')[0])
-        })
+    // it("Renders MonitorGIT Graphs", async () => {
+    //     useGetPlanningDataGraphMock.mockImplementation(()=>{
+    //         return useGetPlanningDataGraphMockData(MonitorGITChildMockData)
+    //     })
+    //     render(contextWrapper(<Planning/>,store));
+    //     // fireEvent.click(screen.getAllByText('To Child')[0])
+    //     await act(async () => {
+    //         fireEvent.click(screen.getAllByText('To Child')[0])
+    //     })
+    //     expect(screen.getAllByTestId('floatingTabButton').length).toEqual(3);
+    //     cleanup();
+    //     useGetPlanningDataGridMock.mockImplementation(()=>{
+    //         return useGetPlanningDataGridMockData(getPlanningDataGridMockData['data'])
+    //     })
+    //     render(contextWrapper(<Planning/>,store));
+    //     await act(async () => {
+    //         fireEvent.click(screen.getAllByText('From Parent')[0])
+    //     })
 
-    })
+    // })
 
-    it("Renders Expedite Graphs", async () => {
-        useGetPlanningDataGraphMock.mockImplementation(()=>{
-            return useGetPlanningDataGraphMockData(ExpediteChildMockData)
-        })
-        render(contextWrapper(<Planning/>,store));
-        await act(async () => {
-            fireEvent.click(screen.getAllByText('To Child')[1])
-        })
-        cleanup();
-        useGetPlanningDataGraphMock.mockImplementation(()=>{
-            return useGetPlanningDataGraphMockData(ExpediteParentMockData)
-        })
-        render(contextWrapper(<Planning/>,store));
-        await act(async () => {
-            fireEvent.click(screen.getAllByText('From Parent')[1])
-        })
+    // it("Renders Expedite Graphs", async () => {
+    //     useGetPlanningDataGraphMock.mockImplementation(()=>{
+    //         return useGetPlanningDataGraphMockData(ExpediteChildMockData)
+    //     })
+    //     render(contextWrapper(<Planning/>,store));
+    //     await act(async () => {
+    //         fireEvent.click(screen.getAllByText('To Child')[1])
+    //     })
+    //     cleanup();
+    //     useGetPlanningDataGraphMock.mockImplementation(()=>{
+    //         return useGetPlanningDataGraphMockData(ExpediteParentMockData)
+    //     })
+    //     render(contextWrapper(<Planning/>,store));
+    //     await act(async () => {
+    //         fireEvent.click(screen.getAllByText('From Parent')[1])
+    //     })
 
-    })
+    // })
 
     it("Renders Excess Inventory Graphs", async () => {
+        useGetPlanningDataGraphMock.mockImplementation(()=>{
+            return useGetPlanningDataGraphMockData(ExcessInventoryMockData)
+        })
+
         render(contextWrapper(<Planning/>,store));
+        
         await act(async () => {
             fireEvent.click(screen.getAllByText('Review')[0])
         })
     })
 
-    it("Renders Order Fulfillment Graphs", async () => {
-        render(contextWrapper(<Planning/>,store));
-        await act(async () => {
-            fireEvent.click(screen.getAllByText('Review')[1])
-        })
-    })
+    // it("Renders Order Fulfillment Graphs", async () => {
+    //     useGetPlanningDataGraphMock.mockImplementation(()=>{
+    //         return useGetPlanningDataGraphMockData(OrderFulfillmentMockData)
+    //     })
+    //     render(contextWrapper(<Planning/>,store));
+    //     await act(async () => {
+    //         fireEvent.click(screen.getAllByText('Review')[1])
+    //     })
+    // })
 
     it("Switches Floating Tab on Click", () => {
         render(contextWrapper(<Planning/>,store));

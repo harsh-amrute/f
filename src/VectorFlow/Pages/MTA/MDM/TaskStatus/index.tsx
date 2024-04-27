@@ -90,7 +90,7 @@ const TaskStatus = ()=>{
     }
 
     return(
-        <React.Fragment>
+        <div style={{paddingTop:'20px'}}>
             <VFTable
                 masterDetail
                 detailCellRenderer={TaskStatusMasterDetail}
@@ -166,7 +166,9 @@ const TaskStatus = ()=>{
                     }
                 ])}
                 pagination
-                paginationPageSize={10}            
+                // paginationPageSize={10}            
+                paginationPageSize={parseInt(process.env.REACT_APP_TASKSTATUS_PAGE || '200')}            
+
             />
             <div style={{display:'none'}}>                
                   <VFTable
@@ -175,7 +177,7 @@ const TaskStatus = ()=>{
                     {...tempAgGridProps}
                   />
                 </div>
-        </React.Fragment>
+        </div>
     )
 }
 

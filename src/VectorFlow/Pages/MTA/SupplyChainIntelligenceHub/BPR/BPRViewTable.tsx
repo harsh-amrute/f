@@ -1,26 +1,43 @@
 
 import { ColDef } from 'ag-grid-enterprise';
+import BPRViewTableRequestCellRenderer from './BPRViewTableRequestCellRenderer';
 import BPRViewTableRowCellWithReadMore from './BPRViewTableRowCellWithReadMore';
-import {BPRViewTableWrapper,BPRViewTablePrefix,BPRViewTableGrid,BPRViewTableHeaderContainer,BPRViewTableHeader,BPRViewTableRowContainer,BPRViewTableRow,BPRViewTableRowCell} from './styles'
+import {BPRViewTableWrapper,BPRViewTablePrefix,BPRViewTableGrid,BPRViewTableHeaderContainer,BPRViewTableHeader,BPRViewTableRowContainer,BPRViewTableRow,BPRViewTableRowCell, TableHeader} from './styles'
 
 
 interface BPRViewTableProps{
     colDefs:ColDef[]
     rowData:any[]
+    tablePrefixSrc:string
+    tableHeader?:string
+    onRequestExpediting?:()=>void
 }
 
 const BPRViewTable = (props:BPRViewTableProps)=>{
 
     const {
         colDefs,
-        rowData
+        rowData,
+        tablePrefixSrc,
+        tableHeader,
+        onRequestExpediting
     } = props
 
+    const onReq = ()=>{
+        if(onRequestExpediting){
+            onRequestExpediting()
+        }
+    }
 
     return(
         <BPRViewTableWrapper>
-            <BPRViewTablePrefix src="/assets/img/VectorFLOW/BPR/in-transit.svg"/>
+            <BPRViewTablePrefix src={tablePrefixSrc}/>
             <BPRViewTableGrid>
+                {tableHeader && (
+                    <TableHeader>
+                        {tableHeader}
+                    </TableHeader>
+                )}
                 <BPRViewTableHeaderContainer>
                     {colDefs.map((colDef:ColDef)=>{
                         return(
@@ -43,6 +60,11 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
                                                         <BPRViewTableRowCellWithReadMore value={row[colDef.colId]} key={index}/>
                                                     )
                                                }
+                                               if(colDef.colId==='request'){
+                                                    return(
+                                                        <BPRViewTableRequestCellRenderer onClick={onReq} key={index}/>
+                                                    )
+                                                }
                                                return(
                                                 <BPRViewTableRowCell key={index}>
                                                     {row[colDef.colId]}

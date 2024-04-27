@@ -106,7 +106,7 @@ export const BPREcoColorCellRenderer = (params:any)=>{
 export const BPRTagsCellRenderer = (params:any)=>{
     return(
         <BPRTagsCellRendererWrapper>
-            {params.data.tags}
+            {params.value}
         </BPRTagsCellRendererWrapper>
     )
 }
@@ -121,7 +121,7 @@ export const BPRSubmitRemarkCellRenderer = (params:any)=>{
                 if (!ref) return;
 
                 ref.onclick = (e:any) => {
-                    params.onClick(e)
+                    params.onClick(e,{skucode:params.data.SKUCode,whcode:params.data.WHCode})
                     e.stopPropagation();
                 };
             }}/>
@@ -141,37 +141,7 @@ export const BPRRemarksCellRenderer = (params:any)=>{
                 if (!ref) return;
         
                 ref.onclick = (e:any) => {
-                 params.onClick(e, {
-                    "tags": "PIPO",
-                    "sc": "ARES0798C004",
-                    "sd": "AR CORE SHIRTS, 42",
-                    "norm": 3,
-                    "stock": 3,
-                    "etc": 0,
-                    "transit": [
-                      {
-                        "lc": "USTSHC0054",
-                        "cd": "Feb-23",
-                        "slt": 2,
-                        "tlt": 2,
-                        "remarks": "Testing to be done fro bpr, for POC which will enable us to proceed with BPR"
-                      },
-                      {
-                        "lc": "ARGT6025A",
-                        "cd": "Nov-22",
-                        "slt": 2,
-                        "tlt": 2,
-                        "remarks": "Testing to be done fro bpr, for POC which will enable us to proceed with BPR"
-                      },
-                      {
-                        "lc": "ARGT6005AB",
-                        "cd": "Nov-22",
-                        "slt": 2,
-                        "tlt": 2,
-                        "remarks": "Testing to be done fro bpr, for POC which will enable us to proceed with BPR"
-                      }
-                    ]
-              })
+                 params.onClick(e, {skucode:params.data.SKUCode,whcode:params.data.WHCode})
                   e.stopPropagation();
                 };
               }}

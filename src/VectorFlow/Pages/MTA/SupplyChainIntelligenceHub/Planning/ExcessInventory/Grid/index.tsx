@@ -1,23 +1,38 @@
-import GridViewTable from "../../GridView/GridViewTable"
-import { useMemo } from "react";
-import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTechColorCellRenderer,BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
-import { useGetBPRUIConfiguration } from "../../../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
+import {useMemo} from 'react';
+import GridViewTable from "../../GridView/GridViewTable";
+import { BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
-import {mapBPRFieldsToColDefs} from '../../../../../../../helpers/utils';
+import { VFPaginationProps } from "../../../../../../../components/VectorFLOW/commons/VFPagination";
+import { SideBarDef } from 'ag-grid-enterprise';
+import { createIconColumn } from '../../../../../../../helpers/utils';
+import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
+import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 
-const ExcessInventoryGrid = ({data}:{data:any})=>{
-
-    const {data:bprUIConfigData} = useGetBPRUIConfiguration()
-
+const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
     const customCellRenderers = useMemo(() => ({
-        // grapCellRenderer:BPRGraphCellRenderer,
-        colorTechCellRenderer:BPRTechColorCellRenderer,
-        colorEcoCellRenderer:BPREcoColorCellRenderer,
+        grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
-        submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
-        remarksCellRenderer:BPRRemarksCellRenderer
+        colorCellRenderer:ColorCellRenderer
       }), []);
+
+      const sideBar:SideBarDef = {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            toolPanelParams: {
+              suppressPivots: true,
+              suppressPivotMode: true,
+            },
+          
+          },
+        ],
+        defaultToolPanel:'',
+      }
 
     const agGridProps:AgGridReactProps = {
         
@@ -27,12 +42,6 @@ const ExcessInventoryGrid = ({data}:{data:any})=>{
         tooltipInteraction:true,
         // rowSelection:'single',
         readOnlyEdit:true,
-        onRowClicked:(params:any)=>{
-            if(params.data.transit && params.data.transit.length>0){
-                // setActiveRow(params.data.transit)
-                // toggleSubGrid(true)
-            }
-        },
         gridOptions:{
             rowHeight:50,
             getRowStyle: (params: any) => {
@@ -42,7 +51,7 @@ const ExcessInventoryGrid = ({data}:{data:any})=>{
             return { background: "#F7F7F7" };
             },
         },
-        pagination:true,
+        sideBar:sideBar,
         suppressRowClickSelection:true,
         components:customCellRenderers,
         defaultColDef:{
@@ -66,12 +75,44 @@ const ExcessInventoryGrid = ({data}:{data:any})=>{
         }
     }
 
- 
+    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
+        let colDefs = [];
+        const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
+        columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
+            return column1.colPosition - column2.colPosition;
+        })
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            if(['plp','pip','pin'].includes(column.colCode)){
+                return {
+                    field:column['colCode'],
+                    colId:column['colCode'],
+                    headerName:column['header'],
+                    cellRenderer:'colorCellRenderer',
+                }
+            }
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [dailyDataColDef,...colDefs]
+    }
 
-    const PlanningColumns = mapBPRFieldsToColDefs(bprUIConfigData?.data.data,()=>{console.log('hello')},()=>{console.log('hello')})
+    const colDefs = mapUIConfigToColdefs(data['uiConfig'])
 
     return(
-        <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={data ? data : []} customGridRowData={[]} customGridColDef={[]}/>
+        <GridViewTable 
+            currentCategory={currentCategory}
+            currentTab={currentTab}
+            agGridProps={agGridProps} 
+            agGridColDefs={colDefs} 
+            agGridRowData={data['data']} 
+            customGridRowData={[]} 
+            customGridColDef={[]} 
+            isSubGridOpen={false}
+            paginationProps={paginationProps}        
+        />
     )
 }
 

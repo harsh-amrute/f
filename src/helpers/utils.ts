@@ -15,7 +15,7 @@ import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingFo
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField } from '../VectorFlow/types/BPR';
 import {RRRField} from '../VectorFlow/types/RRR'
-import _ from 'lodash'
+// import _ from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
 // clear cached token and redirect to sso login
 
@@ -493,14 +493,15 @@ export const generateOptions = (data:Master[]) => {
   const options:Option[] = [];
   if(!data)return options
   data.forEach((master:Master)=>{
-    master.fields.forEach((field:Field)=>{
-      if(!temp.includes(field.displayName)){
+    const tempMasterFields = [...master.fields]
+    const tempFields = tempMasterFields.sort((a:Field, b:Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
+    tempFields.forEach((field:Field)=>{
+      if(!temp.includes(field.displayName) && field.visible){
         temp.push(field.displayName);
         options.push({value:field.key,label:field.displayName,})
       }
     })
   });
-
   return options;
 }
 
@@ -519,7 +520,8 @@ export const generateRandomId =(length?:number)=>{
 }
 
 export const replaceKeyWithDisplayName = (message:string,master:MDMMasterState) => {
-  return new String(message).replaceAll(/".*?"/g,(m)=>{
+  console.log(message)
+  return new String(message).replaceAll(/",*?"/g,(m)=>{
     const displayName = master.fields.find((f:Field)=>f.key === m.replaceAll('"',''))?.displayName;
     if(displayName) return displayName
     return m;
@@ -530,7 +532,7 @@ export const checkError = (row:any,master:MDMMasterState,pageType:string) => {
   const masterSchema = pageType === 'remove' ?masterIdToDeleteSchemaMapper[master.id.toString()]:masterIdToSchemaMapper[master.id.toString()];
   let {error,warning}:any = masterSchema.validate(row,{context:row});
   if(error) error = replaceKeyWithDisplayName(error.message,master);
-  if(warning) warning = replaceKeyWithDisplayName(warning,master);
+  if(warning) warning = replaceKeyWithDisplayName(warning.message,master);
   return {error,warning};
 }
 
@@ -887,6 +889,7 @@ export const mapDraftDataToTableRowData = (rowData:any[])=>{
 }
 
 export const getExistingColumns = (rowData:any)=>{
+  console.log(rowData)
   return Object.keys(rowData)
 }
 
@@ -1577,37 +1580,40 @@ export const addPrefixToObjectKeys = (obj:any,prefix:string)=>{
   return newObj
 }
 
-export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[],masterId:number):ColDef[]=>{
-  console.log(masterId)
+export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[],masterId:any):ColDef[]=>{
+
   const result:any[] = []
   conflicts.map((conflict)=>{
      conflict.conflictdetails.map((conflictDetail)=>{
       const existingRowIndex = result.findIndex((row:any)=>{
-        // const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
-        // if(primaryKeys.length<3) return row[primaryKeys[0]]===conflictDetail.oldData[primaryKeys[0]]
-        const omittedResultEntry = _.omit(row,['users'])
-        return JSON.stringify(omittedResultEntry)===JSON.stringify(conflictDetail.oldData)
+        let isDuplicate = false
+        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        for (let i = 0; i < primaryKeys.length; i++){
+          if(row[primaryKeys[i]]===conflictDetail.oldData[primaryKeys[i]]){
+            isDuplicate = true
+          }
+          else{
+            isDuplicate = false
+            break
+          }
+        }
+        return isDuplicate
       })
 
       if(existingRowIndex===-1){
         result.push({...conflictDetail.requestedData,users:[{user:conflict.user,data:conflictDetail.oldData}]})
       }
       else{
-        // const existingUser = result[existingRowIndex].users.findIndex((user:any)=>user.user===conflict.user)
-        // if(existingUser!==-1){
-        //   result[existingRowIndex].users[existingUser].daa
-        // }
         result[existingRowIndex].users.push({user:conflict.user,data:conflictDetail.oldData})
       }
     })
   })
-
   return result
 
 
 }
 
-export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[],masterId:number):ColDef[]=>{
+export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:string}[],masterId:any):ColDef[]=>{
   console.log(masterId)
   const result:any[] = []
   if(Array.isArray(errorConflicts)){
@@ -1620,9 +1626,22 @@ export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:str
           //   // return row[primaryKeys[0]]===errorRowData[primaryKeys[0]]
           // }
           // console.log(row)
-          
-          const omittedResultEntry = _.omit(row,['error'])
-          return JSON.stringify(omittedResultEntry)===JSON.stringify(errorRowData)
+          let isDuplicate = false
+        const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
+        if(primaryKeys instanceof Array){
+          for (let i = 0; i < primaryKeys.length; i++){
+            if(row[primaryKeys[i]]===errorRowData[primaryKeys[i]]){
+              isDuplicate = true
+            }
+            else{
+              isDuplicate = false
+              break
+            }
+          }
+        }
+        return isDuplicate
+          // const omittedResultEntry = _.omit(row,['error'])
+          // return JSON.stringify(omittedResultEntry)===JSON.stringify(errorRowData)
         })
         
         
@@ -1638,7 +1657,7 @@ export const createErrorRowData = (errorConflicts:{errorData:any[],errorType:str
       })
     })
   }
-
+  console.log(result)
   return result
 }
 
@@ -1734,7 +1753,7 @@ export const createIconColumn = (params:any):ColDef=>{
   }
 }
 
-export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(params:any)=>void,onOpenRemarkHistory:(e:any,params:any)=>void):ColDef[]=>{
+export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(params:any,e:any)=>void,onOpenRemarkHistory:(e:any,params:any)=>void,onOpenDailyDataGraph:(params:any)=>void):ColDef[]=>{
 
   if(!fields || fields.length<1){
     return []
@@ -1751,6 +1770,7 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
      cellRendererParams:{
       onClick:onOpenSubmitRemark
      },
+     pinned:'right',
      cellStyle:{
       overflow:'visible',
       'min-width':180,
@@ -1765,6 +1785,7 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
       cellRendererParams:{
         onClick:onOpenRemarkHistory
        },
+       pinned:'right',
       cellStyle:{
         overflow:'visible',
         'min-width':180,
@@ -1818,7 +1839,7 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
       }
     }
   })
-  return [createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),tagsColDef,...result,...BPRSpecificColumns]
+  return [{...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result,...BPRSpecificColumns]
 }
 
 export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{

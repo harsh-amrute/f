@@ -25,6 +25,7 @@ const VFButtonOutline = (props:VFButtonOutlineProps)=>{
         children,
         color,
         onHoverChild,
+        style
       
     } = props
 
@@ -46,7 +47,8 @@ const VFButtonOutline = (props:VFButtonOutlineProps)=>{
         themeUi={themeUi} 
         isDisabled={disabled} 
         customWidth={width} 
-        hoverState={hoverState}  
+        hoverState={hoverState} 
+        style={style} 
         // onMouseOver={props.isHoverDisabled ? undefined : () => setHoverState(true)}
         //onMouseOut={props.isHoverDisabled ? undefined : () => setHoverState(false)} 
         data-testid="vf-button-outline">

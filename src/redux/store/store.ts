@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { MTAStore } from '../../VectorFlow/types/MTA';
 import { MDMStore } from '../../VectorFlow/types/MDM';
 import mdmReducer from '../reducers/MDM';
+import mtaReducer from '../reducers/MTA';
 
-const initialState:MDMStore = {
+const mdmState:MDMStore = {
     allMasters:[],
     masters:[],
     options:[],
@@ -16,12 +18,28 @@ const initialState:MDMStore = {
     isDataAvailableLocally:false
 }
 
-export const createStore = (initialState:MDMStore) => configureStore({
+const mtaState:MTAStore = {
+    showDailyDataGraphModal:false,
+    showNormChangeHistoryTable:false,
+    dailyData:{
+        normChangeData:[],
+        chartData:[],
+        masterData:[],
+        suggestionData:[],
+        monitoringData:[],
+        rowData:{}
+    },
+    currentGridState:[]
+    
+}
+
+export const createStore = (mdmState:MDMStore) => configureStore({
     reducer: {
-        mdm:mdmReducer(initialState)
+        mdm:mdmReducer(mdmState),
+        mta:mtaReducer(mtaState)
     },
 });
 
-export const store = createStore(initialState);
+export const store = createStore(mdmState);
 
 export type RootState = ReturnType<typeof store.getState>

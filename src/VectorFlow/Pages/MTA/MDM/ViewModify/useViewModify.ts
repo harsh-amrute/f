@@ -63,6 +63,7 @@ const useViewModify = (pageType:string) => {
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
     const [currentPage,setCurrentPage] = useState(1);
     const rowsPerPage = 50;
+    const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
 
     const [seasonalityActiveQuickFilter,setSeasonalityActiveQuickFilter]  = useState<Array<Array<number>>>([])
     const ref = useRef<GridRef>();
@@ -188,7 +189,10 @@ const useViewModify = (pageType:string) => {
         //   dispatch(REMOVE_COLDEFS(['error','warning']))
         // }
         if(activeMaster.progress === 'editOnline'){
-          return onEditOnline();
+          return onEditOnline('editOnline');
+        }
+        if(activeMaster.progress === 'deleteOnline'){
+          return onEditOnline('deleteOnline');
         }
       },[activeMaster.progress]);
 
@@ -477,9 +481,10 @@ const useViewModify = (pageType:string) => {
         actionType:getActionId(pathName[pathName.length-1]).id,
         draftId:draftId,
         draftData:masters.map((master:MDMMasterState)=>{
+
           return {
             masterId:master.id,
-            status:activeMaster.progress,
+            status:master.progress,
             gridState:master.id===activeMaster.id?JSON.stringify(activeMaster.colDefs):'',
             dataMaster:master.id===activeMaster.id?rowData:[]
           }
@@ -654,7 +659,7 @@ const useViewModify = (pageType:string) => {
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
     }
 
-    const onEditOnline = () => {
+    const onEditOnline = (progress:any) => {
       const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
         const isEditable = activeMaster.fields.find((field:Field)=>field.key === col.colId )?.isEdit;
         
@@ -662,7 +667,7 @@ const useViewModify = (pageType:string) => {
         return {...col}
       })
 
-      dispatch(UPDATE_PROGRESS_STATE('editOnline'))
+      dispatch(UPDATE_PROGRESS_STATE(progress))
       dispatch(UPDATE_COLDEFS(updatedColdefs))
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
 
@@ -686,25 +691,29 @@ const useViewModify = (pageType:string) => {
           formData.append("screen_type",JSON.stringify({screenType:pageType}))
 
           const response = await validateMaster({formData,masterId:activeMaster.id});
-          const result = JSON.parse(response.data)
-          setIsOverlayVisible(false)
+          let result = JSON.parse(response.data)
+          const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
+          result = [...errorAndWarningData,... result.filter((data:any)=>data.error.length === 0 && data.warning.length === 0 )]
+          
+          setIsOverlayVisible(false);
 
-          const ifErrorExists = result.find((data:any)=>data.error);
-          const ifWarningExists = result.find((data:any)=>data.warning);
+          const ifErrorExists = result.find((data:any)=>data.error.length > 1);
+          const ifWarningExists = result.find((data:any)=>data.warning.length > 1);
+
           if(ifErrorExists) {
             dispatch(UPDATE_PROGRESS_STATE('error'));
             addInvalidDataColDefs('error');
           }
-          else if(ifWarningExists){
-            dispatch(UPDATE_PROGRESS_STATE('error'));
+          if(ifWarningExists){
+            // dispatch(UPDATE_PROGRESS_STATE('error'));
             addInvalidDataColDefs('warning');
           }
-          else{
-           if(activeMaster.progress==='deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-           else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+          if(!ifErrorExists){
+            if(activeMaster.progress==='deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+            else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
             addCheckBoxColDefs();
-          }
-         
+           }
+          
           dispatch(SET_RECORD_COUNT(result.length));
           dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
           dispatch(UPDATE_ROW_DATA(result));
@@ -764,7 +773,7 @@ const useViewModify = (pageType:string) => {
         const erroneusData:any[] = [];
         const validData:any[] = [] 
         activeMaster.rowData.forEach((data:any)=>{
-          if(data.error || data.warning){
+          if(data['error'].length > 0){
             erroneusData.push(data);
           }
           else{
@@ -784,8 +793,6 @@ const useViewModify = (pageType:string) => {
           dispatch(SET_RECORD_COUNT(validData.length))
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         }
-        
-        
         
       }
       
@@ -939,6 +946,7 @@ const useViewModify = (pageType:string) => {
             setErrorCount(pureErrorCount);
             setConflictData(conflictData);
             setErrorData(errorData)
+            console.log({isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} )
             return {isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} 
             
           }
@@ -954,7 +962,10 @@ const useViewModify = (pageType:string) => {
           
 
       const onSubmit = async(isOverWrite?:boolean) => {
+        if(isSubmitDisabled) return;
+        
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit");
+        setIsSubmitDisabled(true)
 
         if(activeMaster.progress === 'editOnline'){
           //remove Editable Coldefs
@@ -991,8 +1002,9 @@ const useViewModify = (pageType:string) => {
               else{
                 errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
-              addInvalidDataColDefs('error')
-              console.log(errorRowData)
+              if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+                addInvalidDataColDefs('error')
+              }
               if(errorRowData.length>0){
                 dispatch(UPDATE_ROW_DATA(errorRowData))
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
@@ -1002,6 +1014,9 @@ const useViewModify = (pageType:string) => {
             setSelectedRowsCount(0);
             dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+            if(draftID.length > 0){
+              await deleteDraft(draftID);
+            }
           }
           else{
             // console.time('That took ')
@@ -1042,17 +1057,23 @@ const useViewModify = (pageType:string) => {
               else{
                 errorRowData = createErrorRowData(errorData,activeMaster.id)
               }
-              addInvalidDataColDefs('error')
+              if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+                addInvalidDataColDefs('error')
+              }
               if(errorRowData.length>0){
                 dispatch(UPDATE_ROW_DATA(errorRowData))
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
               }
               
             }
+           
             notifySuccess(`Modifications Submitted Successfully`);
             setSelectedRowsCount(0);
             dispatch(UPDATE_PROGRESS_STATE('submitted'));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+            if(draftID.length > 0){
+              await deleteDraft(draftID);
+            }
           }
           else{
             // console.time('That took ')
@@ -1083,7 +1104,7 @@ const useViewModify = (pageType:string) => {
 
 
         }
-       
+       setIsSubmitDisabled(false)
       }
 
       const onSeasonalityStatusUpdate = async (status:string) => {

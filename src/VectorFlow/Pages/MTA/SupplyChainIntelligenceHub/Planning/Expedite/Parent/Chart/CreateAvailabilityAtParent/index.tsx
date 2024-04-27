@@ -3,9 +3,10 @@ import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../../../../types/MDM";
-import { ChartRef, ColDef } from "ag-grid-enterprise";
+import { ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../../styles';
 import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
+import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 
 
 interface CreateAvailabilityAtParentProps{
@@ -22,30 +23,87 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
     const [grid1DisplayStatus,setGrid1DisplayStatus] = useState<string>('none');
     const [grid2DisplayStatus,setGrid2DisplayStatus] = useState<string>('none');
 
-    const coldefs1:ColDef[] = [
-        {
-            field:'ln',
-            headerName:'Location Name',
-            colId:'ln',
-        },
-        {
-            field:'trqn',
-            headerName:'SKU Location Count',
-            colId:'trqn',
-        }
-    ]
-    const coldefs2:ColDef[] = [
-        {
-            field:'ln',
-            headerName:'Location Name',
-            colId:'ln',
-        },
-        {
-            field:'trqcn',
-            headerName:'SKU Location Count',
-            colId:'trqcn',
-        }
-    ];
+    const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
+        let colDefs = [];
+
+        const customColdefs = [
+            {
+                field:'WHDescription',
+                colId:'WHDescription',
+                headerName:'Parent Location Name'
+            },
+            {
+                field:'Counts',
+                colId:'Counts',
+                headerName:'Count of SKU Locations'
+            }
+        ]
+        
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [...customColdefs,...colDefs];
+    }
+
+    const colDefs1 = mapUIConfigToColdefs1(data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']['uiconfig']);
+
+    const mapUIConfigToColdefs2 = (columns:Array<{header:string,colCode:string}>) => {
+        let colDefs = [];
+
+
+        const customColdefs = [
+            {
+                field:'WHDescription',
+                colId:'WHDescription',
+                headerName:'Parent Location Name'
+            },
+            {
+                field:'SKUCounts',
+                colId:'SKUCounts',
+                headerName:'Count of SKU Locations'
+            }
+        ]
+        
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [...customColdefs,...colDefs];
+    }
+
+    const colDefs2 = mapUIConfigToColdefs2(data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']['uiconfig']);
+
+    const convertToInt = (data:any)=>{
+        return data.map((row:any)=>{
+            const tempObj:any = {};
+            Object.keys(row).forEach((key:string)=>{
+                const value = parseFloat(row[key])
+                if(!isNaN(value)){
+                    tempObj[key] = value
+                }
+                else{
+                    tempObj[key] = row[key];
+                }
+            })
+            return {...tempObj}
+        })
+    }
+
+    const sortData = (data:any,key:string) => {
+        data.sort((row1:any,row2:any)=>{
+            return (row2[key]) - (row1[key])
+        })
+        return [...data];
+    }
+
+
 
     let chartRef1:ChartRef |undefined;
     let chartRef2:ChartRef | undefined;
@@ -58,7 +116,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                 chartRef1 = refGraph1.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                    columns: ['ln','trqn'],
+                    columns: ['WHDescription','Counts'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     }
@@ -69,7 +127,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                 chartRef1 = refGraph1.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                    columns: ['ln','trqn'],
+                    columns: ['WHDescription','Counts'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     },
@@ -83,7 +141,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                 chartRef2 = refGraph2.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                        columns: ['ln','trqcn'],
+                        columns: ['WHDescription','SKUCounts'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     }
@@ -94,7 +152,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                 chartRef2 = refGraph2.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
-                        columns: ['ln','trqcn'],
+                        columns: ['WHDescription','SKUCounts'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     },
@@ -109,6 +167,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
 
       const chartThemeOverrides = useMemo<any>(() => { 
         return {
+            ...GraphSeriesOverrides,
             palette:{
                 fills:['#0c7528','#570dbf']
             },
@@ -187,8 +246,8 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                     (
                                         <VFTable
                                             ref={refGraph1}
-                                            columnDefs={coldefs1}
-                                            rowData={data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']}
+                                            columnDefs={colDefs1}
+                                            rowData={sortData(convertToInt(data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']['data']),'Counts')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1,true)}
@@ -204,6 +263,10 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }
@@ -213,8 +276,8 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                         <div style={{display:'none'}}>
                                         <VFTable
                                             ref={refGraph1}
-                                            columnDefs={coldefs1}
-                                            rowData={data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']}
+                                            columnDefs={colDefs1}
+                                            rowData={sortData(convertToInt(data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']['data']),'Counts')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1)}
@@ -255,8 +318,8 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                     (
                                         <VFTable
                                             ref={refGraph2}
-                                            columnDefs={coldefs2}
-                                            rowData={data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']}
+                                            columnDefs={colDefs2}
+                                            rowData={sortData(convertToInt(data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']['data']),'SKUCounts')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2,true)}
@@ -272,6 +335,10 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                                 'myCustomTheme':myCustomTheme
                                             }}
                                             disableZoomScaling={true}
+                                            defaultColDef={{
+                                                floatingFilter:true,
+                                                filter: "agMultiColumnFilter",
+                                              }}
                                         />
                                     )
                                 }
@@ -281,8 +348,8 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                         <div style={{display:'none'}}>
                                         <VFTable
                                             ref={refGraph2}
-                                            columnDefs={coldefs2}
-                                            rowData={data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']}
+                                            columnDefs={colDefs2}
+                                            rowData={sortData(convertToInt(data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']['data']),'SKUCounts')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2)}

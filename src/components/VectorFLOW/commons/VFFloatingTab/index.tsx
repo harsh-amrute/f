@@ -25,7 +25,7 @@ const VFFloatingTab = (props:VFFloatingTabProps)=>{
     const {
         tabs,
         defaultTab=0,
-        handleClick
+        handleClick,
     } = props
     
     const [activeIndex,setActiveIndex] = useState<number>(defaultTab)

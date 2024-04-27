@@ -28,7 +28,7 @@ const DBM = () => {
 
   return (
     <>
-      <ActionToolBar view={'grid'} setCurrentTab={()=>{return}} currCategory={'DBMNorm'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')} showAllTick={showAllCheckbox} handleGoButton={handleGoButton}/>
+      <ActionToolBar view={'grid'} setCurrentTab={()=>{return}} currCategory={'DBMNorm'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')} showAllTick={showAllCheckbox} handleGoButton={handleGoButton} genericRecordCount={0} onExportToExcelCallBack={()=>console.log('')}/>
       <DBMLayout>
         <div style={{height:'100vf'}}>
 

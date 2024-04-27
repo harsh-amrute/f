@@ -4,8 +4,8 @@ import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { useGetBPRData, useGetBPRRemarkHistory, useGetBPRUIConfiguration, useSubmitBPRRemark } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
-import { GetBPRDataMockResponse, GetBPRUIConfigurationMockResponse } from '../../../../../mock-data/BPR';
+import { useGetBPRData, useGetBPRRemarkHistory, useGetBPRUIConfiguration, useSubmitBPRRemark, useGetDailyData,useGetBPRDataCount, useGetState, useSaveState, useResetState } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import { GetBPRDataMockResponse, GetBPRUIConfigurationMockResponse, GetDailyDataMockResponse, GetStateMockResponse, ResetStateMockResponse, SaveStateMockResponse } from '../../../../../mock-data/BPR';
 
 import { ReactNode } from "react";
 import { Provider } from "react-redux";
@@ -33,12 +33,32 @@ const useGetBPRDataMock = useGetBPRData as jest.MockedFunction<
   typeof useGetBPRData
 >
 
+
+const useGetBPRDataCountMock = useGetBPRDataCount as jest.MockedFunction<
+  typeof useGetBPRDataCount
+>
 const useSubmitBPRRemarkMock = useSubmitBPRRemark as jest.MockedFunction<
   typeof useSubmitBPRRemark
 >
 
 const useGetBPRRemarkHistoryMock = useGetBPRRemarkHistory as jest.MockedFunction<
   typeof useGetBPRRemarkHistory
+>
+
+const useGetDailyDataMock = useGetDailyData as jest.MockedFunction<
+  typeof useGetDailyData
+> 
+
+const useGetStateMock = useGetState as jest.MockedFunction<
+  typeof useGetState
+>
+
+const useSaveStateMock = useSaveState as jest.MockedFunction<
+  typeof useSaveState
+>
+
+const useResetStateMock = useResetState as jest.MockedFunction<
+  typeof useResetState
 >
 
 // const contextWrapper = (children:any) => {
@@ -95,6 +115,24 @@ describe('BPR Component', () => {
         }
       }
     })
+    useGetBPRDataCountMock.mockImplementation(():any=>{
+      return {
+        mutateAsync:()=>{
+          return{
+            data:{
+              "recordCount": "148129",
+              "data": null,
+              "status": 200,
+              "msg": null,
+              "errorCount": null,
+              "error": null,
+              "conflictErrorCount": null,
+              "conflictError": null
+            }
+          }
+        }
+      }
+    })
 
     useSubmitBPRRemarkMock.mockImplementation(():any=>{
       return{
@@ -145,6 +183,50 @@ describe('BPR Component', () => {
         }
       }
     })
+  
+    useGetDailyDataMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: GetDailyDataMockResponse}
+          }
+        }
+      }
+      
+    })
+
+    useGetStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: GetStateMockResponse}
+          }
+        }
+      }
+      
+    })
+
+    useSaveStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: SaveStateMockResponse}
+          }
+        }
+      }
+      
+    })
+
+    useResetStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: ResetStateMockResponse}
+          }
+        }
+      }
+      
+    })
 
   });
   it('renders loader when isLoading is true', () => {
@@ -184,6 +266,36 @@ describe("It handles all interactions",()=>{
       }
     })
 
+    useGetDailyDataMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: GetDailyDataMockResponse}
+          }
+        }
+      }
+      
+    })
+
+    useGetBPRDataCountMock.mockImplementation(():any=>{
+      return {
+        mutateAsync:()=>{
+          return{
+            data:{
+              "recordCount": "148129",
+              "data": null,
+              "status": 200,
+              "msg": null,
+              "errorCount": null,
+              "error": null,
+              "conflictErrorCount": null,
+              "conflictError": null
+            }
+          }
+        }
+      }
+    })
+
     useSubmitBPRRemarkMock.mockImplementation(():any=>{
       return{
         mutateAsync:()=>{
@@ -199,6 +311,39 @@ describe("It handles all interactions",()=>{
         }}
         }
       }
+    })
+
+    useGetStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: GetStateMockResponse}
+          }
+        }
+      }
+      
+    })
+
+    useSaveStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: SaveStateMockResponse}
+          }
+        }
+      }
+      
+    })
+
+    useResetStateMock.mockImplementation(():any=>{
+      return{
+        mutateAsync:()=>{
+          return {
+            data:{data: ResetStateMockResponse}
+          }
+        }
+      }
+      
     })
 
     useGetBPRRemarkHistoryMock.mockImplementation(():any=>{

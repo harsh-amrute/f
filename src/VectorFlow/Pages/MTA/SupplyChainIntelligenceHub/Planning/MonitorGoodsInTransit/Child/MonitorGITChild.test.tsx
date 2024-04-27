@@ -82,7 +82,7 @@ describe("Monitor GIT Child",()=>{
     useGetPlanningDataCustomMock.mockImplementation(()=>{
       return useGetPlanningDataCustomMockData
     })
-    render(contextWrapper(<MonitorGITChildCustomCharts />,store))
+    render(contextWrapper(<MonitorGITChildCustomCharts recordCount={1000}/>,store))
   })
 
 })

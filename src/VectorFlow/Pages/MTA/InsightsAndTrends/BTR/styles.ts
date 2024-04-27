@@ -9,6 +9,7 @@ export const BTRLayoutWrapper = styled.div`
 export const BTRLayoutTabsWrapper = styled.div`
     display:flex;
     justify-content:center;
+    margin-top:25px;
 `
 
 export  const ToggleViewBtnWrapper = styled.div`
@@ -19,7 +20,8 @@ export  const ToggleViewBtnWrapper = styled.div`
 export const BTRTableWrapper = styled.div`
     display:flex;
     flex-direction:column;
-    height:80vh;
+    aspect-ratio:2.5;
+    width:100%;
     margin-top:20px;
     margin-bottom:20px;
 `
@@ -27,6 +29,7 @@ export const BTRTableWrapper = styled.div`
 export const BTRAllomentSection = styled.div`
     display:flex;
     flex-direction:column;
+    max-height:100%;
 `
 
 export const BTRTableHeader = styled.p`

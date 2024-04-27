@@ -2,10 +2,11 @@ import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton';
 import VFFloatingTab from '../../../../../../components/VectorFLOW/commons/VFFloatingTab';
 import VFSelectedFilters from '../../../../../../components/VectorFLOW/commons/VFSelectedFilters';
 import useBPRFilter from '../../../../../../hooks/useBPRFilter';
-import {useState} from 'react';
+import {useState,useMemo} from 'react';
 import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
-import { useLocation} from "react-router-dom";
+import { useLocation, Link} from "react-router-dom";
 import { MultiFilterSupplyChainCheckboxList } from '../../../../../../helpers/BPRConstants'
+import useSaveAllState from '../../../../../../hooks/useSaveAllState'
 
 
 
@@ -19,10 +20,13 @@ import {
     SCViewImage,
     SCCustomActionsContainer,
     SCViewContainerWithBg,
+    SCTaskFilterContainer
  
 } from './styles';
 import { useUserData } from '../../../../../../context/UserDataContext';
 import { DBMApplyNormChange } from '../../../DBM/DBMNormSuggestions/applyNormButton';
+import { PlanningCounts } from '../../../../../../VectorFlow/types/MTA';
+import VFButtonOutline from '../../../../../../components/VectorFLOW/commons/VFButtonOutline';
 
 
 interface ActionToolBarProps {
@@ -37,84 +41,122 @@ interface ActionToolBarProps {
     disableChartAndGridViewToggle?:boolean,
     showAllTick?:any,
     handleGoButton?:any
+    onApplyFilter?:(params:any)=>void,
+    planningCount?:PlanningCounts
+    genericRecordCount:number
+    onExportToExcelCallBack:any
 }
 
 
 
-const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,showAllTick,handleGoButton}:ActionToolBarProps) => {
+const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter}:ActionToolBarProps) => {
     const { user } = useUserData();
     const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
+    const {onSaveState,onResetAllState,onExportToExcel} = useSaveAllState()
     const { pathname } = useLocation();
 
     const themeUi = user?.user?.theme_ui;
  const [isFilterOpen,toggleFilter] = useState<boolean>(false)
+
+    const handleApplyFilter = (params:any)=>{
+       if(onApplyFilter) onApplyFilter(params)
+        toggleFilter(false)
+    }
+
+    const currentPageRecordCount = useMemo(()=>{
+        switch(currCategory){
+            case "GITFromParent":
+                return planningCount?.parentMonitorCount
+            case "GITToChild":
+                return planningCount?.childMonitorCount
+            case "ExpediteFromParent":
+                return planningCount?.parentExpediteCount
+            case "ExpediteToChild":
+                return planningCount?.childExpediteCount
+            case "ExcessInventory":
+                return planningCount?.reviewExcessInventoryCount
+            case "OrderFulfillment":
+                return planningCount?.reviewOrderFulfillmentCount
+            default:
+                return genericRecordCount
+        }
+    },[currCategory])
+
+
+    const handleExportToExcel = ()=>{
+        onExportToExcel({pagination:{recordCount:currentPageRecordCount || 0,chunkSize:5000},callBack:onExportToExcelCallBack})
+    }
 
 
 
    const renderFilter = () => {
     switch(currCategory){
         case 'GITFromParent':
-            return <VFMultiFilter onApplyFilter={()=>{toggleFilter(false)}} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList}/>;
+            return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList}/>;
         case 'GITToChild':
-            return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />;
+            return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />;
         case 'ExpediteFromParent':
-            return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />;
+            return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />;
         case 'ExpediteToChild':
-            return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />;
+            return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />;
         case 'ExcessInventory':
-            return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />;
+            return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />;
         case 'OrderFulfillment':
-            return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} coverageFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList}/>;
+            return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} coverageFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList}/>;
         case 'BPR':
             if(pathname==='/supply-chain-intelligence-hub/bpr'){
-                return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />    
+                return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />    
             }
             break;
         case 'RRR':
             if(pathname==='/supply-chain-intelligence-hub/rrr'){
-                 return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />;
+                 return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />;
             }
             break;
         case 'BOR':
             if(pathname==='/supply-chain-intelligence-hub/bor'){
-                return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList}  />;
+                return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList}  />;
             }
             break;
         case 'BTR':
             if(pathname==='/insights-and-trends/buffer-trend-report'){
-                return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} colorFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} horizonActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />;
+                return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} colorFilterActive={true} locationFilterActive={true} availabilityFilterActive={true} horizonActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList} />;
             }
             break;
         case 'BufferTrend':
             if(pathname==='/insights-and-trends/buffer-trends'){
-                 return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />;
+                 return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />;
              }
             break;
          case 'ResearchInsight':
             if(pathname==='/insights-and-trends/research-insights'){
-                return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList}  />;
+                return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true} availabilityFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList}  />;
             }
             break;
             case 'GuidedInsight':
                 if(pathname==='/insights-and-trends/guided-insights'){
-                    return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />;
+                    return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />;
                 }
                break;
         case 'DBMNorm':
             if(pathname==='/dbm/dbm-norm-suggestions'){
-                return <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />;
+                return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />;
             }
             break;
+        case 'OpenExpeditingRequests':
+            if(pathname==='/supply-chain-intelligence-hub/open-expediting-requests'){
+                return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />
+            }
+            break;
+            case 'chronicunavailability':
+                return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />
         default:
             <></>
 
     }
     
-
    }
    
-    
-
 
     const renderFloatingTab = () => {
    
@@ -133,23 +175,54 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             {
                (view === 'chart') && 
                     <SCTaskBarContainer>
+                         {currCategory==="GuidedInsight" ? null : 
                         <SCGoBackContainer onClick={onGoBack}>
                             <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" />
                             <SCGoBackText><b>Go Back</b></SCGoBackText>
                         </SCGoBackContainer>
+                        }
+
+                        <SCTaskFilterContainer
+                        style={{
+                            maxWidth: currCategory==="GuidedInsight" ? '100%' : '50%', 
+                            width: currCategory === "GuidedInsight" ? '100%' : 'unset',
+                            justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
+                            >
+
+                          
                         {tabsList.length > 0 && renderFloatingTab()}
+                        </SCTaskFilterContainer>
+
 
                         <SCCustomActionsContainer>
-                            {
-                                currentTab==='custom' &&
+                           
+                                {currentTab==="chronicunavailability" && 
+                                <>
+                                    <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
+                                    {isFilterOpen && renderFilter()}
+                                </>
+                                }
+                                {currentTab==="dbmnormsuggestions" && 
+                                <>
+                                    <Link to="/dbm/dbm-norm-suggestions" style={{textDecoration:'none'}}>
+                                        <VFButtonOutline onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false} style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px'}}>
+                                            <img src="/assets/img/VectorFLOW/BPR/NormAction.svg" ></img>
+                                            Norm Action
+                                        </VFButtonOutline>
+                                    </Link>       
+                                </>
+                                }
+                             {
+                                (currentTab==='availabilitytrend' ||  currentTab==="availabilityageingtrend" || currentTab==="dbmnormsuggestions" || currentTab==="chronicunavailability") &&
+
                                 (
                                     <>
-                                        <SCViewContainerWithBg>
-                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" onClick={onGoBack} />
+                                        <SCViewContainerWithBg onClick={onGoBack}>
+                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt=""  />
                                             <p>Save</p>
                                         </SCViewContainerWithBg>
-                                        <SCViewContainerWithBg>
-                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt="" onClick={onGoBack} />
+                                        <SCViewContainerWithBg onClick={onGoBack}>
+                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt=""  />
                                             <p>Reset</p>
                                         </SCViewContainerWithBg>
                                         {!disableChartAndGridViewToggle && <SCVerticalDivider/> } 
@@ -157,8 +230,11 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 )
                                 
                             }
+
+                         
                              
                             {
+                                
                                 !disableChartAndGridViewToggle &&
                                 <SCViewBackground>
                                     <SCViewContainer>
@@ -171,17 +247,29 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                         <p style={{color:'#b0acac'}}>Grid View</p>
                                     </SCViewContainer>
                                 </SCViewBackground>
+                                
                             }
+                            
                         </SCCustomActionsContainer>
                     </SCTaskBarContainer>
             }
+
             {
                (view === 'grid') && 
                     <SCTaskBarContainer>
-                        <SCGoBackContainer onClick={onGoBack}>
-                            <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
-                            <SCGoBackText><b>Go Back</b></SCGoBackText>
-                        </SCGoBackContainer>
+                        <SCTaskFilterContainer
+                         style={{
+                                maxWidth: currCategory==="GuidedInsight" ? '100%' : '50%', 
+                                width: currCategory === "GuidedInsight" ? '100%' : 'unset',
+                                justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
+                                >
+                         {currCategory==="GuidedInsight" ? null : 
+                                                         
+                            <SCGoBackContainer onClick={onGoBack}>
+                                <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
+                                <SCGoBackText><b>Go Back</b></SCGoBackText>
+                            </SCGoBackContainer>
+                        }
                         {currCategory === 'DBMNorm' ? <DBMApplyNormChange onCheck={showAllTick}/>:null}
                         {currCategory === 'DBMNorm' ? 
                         <img 
@@ -190,46 +278,71 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                             width={76.83} 
                             onClick={handleGoButton} 
                         />:null}
-                        {currCategory === 'GuidedInsight' ? null:
-                        
-                        <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
+                            {currCategory === 'GuidedInsight' ? null:
+                            
+                            <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
 
-                        }
-                        {tabsList.length > 0 && renderFloatingTab()}
+                            }
+                            {tabsList.length > 0 && renderFloatingTab()}
+                        </SCTaskFilterContainer>
                         <SCCustomActionsContainer>
-
 
                         <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
                             {isFilterOpen && renderFilter()}
                          
                                 {/* <VFButton themeUi={themeUi} onClick={()=>console.log("test")}>   Edit Filter</VFButton> */}
+                                
+                                {currCategory==='BufferTrend' ? null :
+                                <>
+                                {(currCategory==="GuidedInsight")? null : 
+                                <>
                                 <SCVerticalDivider/>
-                                <SCViewContainerWithBg>
-                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
-                                    <p>Excel Export</p>
+                                    <SCViewContainerWithBg onClick={handleExportToExcel} >
+                                            <>
+                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" />
+                                             <p>Excel Export</p>
+                                            </>
+                                    {/* <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
+                                    <p>Excel Export</p> */}
                                 </SCViewContainerWithBg>
+                                </>
+                                }
+                                {(currCategory==="GuidedInsight" && currentTab==="chronicunavailability")? null :
+                                <>
+                                
                                 <SCVerticalDivider/>  
-                                <SCViewContainerWithBg>
-                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" onClick={onGoBack} />
+                                <SCViewContainerWithBg  onClick={()=>onSaveState(`${currCategory}${currentTab}`)}>
+                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
                                     <p>Save</p>
                                 </SCViewContainerWithBg>
-                                <SCViewContainerWithBg>
-                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt="" onClick={onGoBack} />
+                                <SCViewContainerWithBg onClick={()=>onResetAllState(`${currCategory}${currentTab}`)}>
+                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt=""  />
                                     <p>Reset</p>
+                                
                                     </SCViewContainerWithBg>
-                                    {!disableChartAndGridViewToggle && <SCVerticalDivider/> }
+                                    {/* {!disableChartAndGridViewToggle && <SCVerticalDivider/> } */}
+                                    {
+                                        !disableChartAndGridViewToggle && (
+                                            (currCategory === 'ExcessInventory' || currCategory==="GITToChild" || currCategory==="OrderFulfillment" || currCategory==="ExpediteToChild" || currCategory==="ExpediteFromParent") ? <SCVerticalDivider/> : null 
+                                        )
+                                    }
+                                </>
+                                }
+                                </>
+                                }
+                                
 
-                        
+                              
                             {
-                                currCategory==='CustomScreens' ? null : (
+                                (currCategory==='CustomScreens' || currCategory==='BufferTrend' || currCategory==="BPR" || currCategory==="RRR" || currCategory==="BOR" || currCategory==="BTR" || currCategory==="ResearchInsight" || currCategory==="DBMNorm" || (currCategory==="GuidedInsight" && currentTab!=="chronicunavailability") || currCategory==="OpenExpeditingRequests" ) ? null : (
                                 !disableChartAndGridViewToggle &&
                                 <SCViewBackground>
                                     <SCViewContainer onClick={() => onViewChange('chart')}>
                                         <SCViewImage src={"/assets/img/VectorFLOW/BPR/chart-view-grey.svg"} alt="" />
                                         <p style={{color:'#b0acac'}}>Chart View</p>
-                            
                                     </SCViewContainer>
                                     <div><SCVerticalDivider/></div>
+                                 
                                     <SCViewContainer>
                                         <SCViewImage src={"/assets/img/VectorFLOW/BPR/grid-view-pink.svg"} alt="" onClick={onGoBack} />
                                         <p style={{color:'#bc3d81'}}>Grid View</p>
@@ -242,6 +355,10 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             }
             
         </>
+
+
+
+
     )
 }
 

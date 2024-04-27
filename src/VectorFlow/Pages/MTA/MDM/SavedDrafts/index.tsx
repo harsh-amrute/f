@@ -30,9 +30,8 @@ const SavedDrafts = ()=>{
     return <VFLoader/>
   }
 
-
   return(
-    <React.Fragment>
+    <div style={{paddingTop:'20px'}}>
       <VFTable
           columnDefs={mapDraftToColumnDefs([
             {
@@ -94,7 +93,9 @@ const SavedDrafts = ()=>{
           })}
           rowData={mapDraftDataToTableRowData(allDrafts)}
           pagination={true}
-          paginationPageSize={50}
+          // paginationPageSize={50}
+          paginationPageSize={parseInt(process.env.REACT_APP_SAVEDRAFT_PAGE || '100')}
+
           gridOptions={{
             getRowStyle: (params: any) => {
               if (params.node.rowIndex % 2 === 0) {
@@ -115,7 +116,7 @@ const SavedDrafts = ()=>{
           <VFButton themeUi={user.user.theme_ui} onClick={onDeleteDraft}>Yes</VFButton>
         </div>
        </VFModalCard>
-    </React.Fragment>
+    </div>
   )
 }
 
