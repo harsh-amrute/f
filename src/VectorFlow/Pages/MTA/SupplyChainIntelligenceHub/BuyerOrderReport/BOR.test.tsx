@@ -1,4 +1,4 @@
-import {  render, act } from '@testing-library/react';
+import {  render } from '@testing-library/react';
 import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import { mockBORData,mockBORCountData,mockBORUIConfigData} from "../../../../../mock-data/BOR";
 import BuyerOrderReport from './';
@@ -13,8 +13,6 @@ import { ReactNode } from "react";
 import { Provider } from "react-redux";
 import {store} from "../../../../../redux/store/store";
 import { UserDataContext } from "../../../../../context";
-import { GetDailyDataMockResponse } from '../../../../../mock-data/BPR';
-import { useGetDailyData } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
 
 
 const useGetBORUIConfigurationMock = useGetBORUIConfiguration as jest.MockedFunction<
@@ -26,10 +24,6 @@ const useGetBORUIConfigurationMock = useGetBORUIConfiguration as jest.MockedFunc
     const useBORDataCountMock = useBORDataCount as jest.MockedFunction<
     typeof useBORDataCount
   >;
-
-  const useGetDailyDataMock = useGetDailyData as jest.MockedFunction<
-  typeof useGetDailyData
->;
 
   window.URL.createObjectURL = jest.fn();
 

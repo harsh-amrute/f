@@ -3,16 +3,15 @@ import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { useGetBPRData,useGetBPRUIConfiguration ,useGetBPRDataCount,useSaveState,useGetState,useResetState} from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import { useGetBPRData,useGetBPRUIConfiguration ,useGetBPRDataCount,useSaveState,useGetState,useResetState,useGetDailyData} from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
 import {useGetUpdatedGraphData} from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
-import { GetBPRDataMockResponse,GetBPRUIConfigurationMockResponse, GetUpdatedGraphDataMockResponse,GetStateMockResponse,ResetStateMockResponse,SaveStateMockResponse} from '../../../../../mock-data/BPR';
+import { GetBPRDataMockResponse,GetBPRUIConfigurationMockResponse, GetUpdatedGraphDataMockResponse,GetStateMockResponse,ResetStateMockResponse,SaveStateMockResponse,GetDailyDataMockResponse} from '../../../../../mock-data/BPR';
 import ResearchInsights from './index';
 
 import { ReactNode } from "react";
 import { Provider } from "react-redux";
 import {store} from "../../../../../redux/store/store";
-import { useGetDailyData } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
-import { GetDailyDataMockResponse } from '../../../../../mock-data/BPR';
+
 
 
 // Mock context data
