@@ -251,7 +251,7 @@ const useTaskPendingForReview = ()=>{
             {
                 field:"PendingSince",
                 colId:"PendingSince",
-                headerName:"Pending since",
+                headerName:"Pending Since",
             },
             {
                 field:"ageing",

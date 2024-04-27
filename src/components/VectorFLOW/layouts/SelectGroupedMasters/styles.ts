@@ -61,7 +61,7 @@ padding-bottom:15px;
 export const VFMasterGroupCardHeader= styled.div`
 height: 60px;
 width:100%;
-background: black;
+background: #E3E3E3;
 border-radius: 8px 8px 0px 0px;
 opacity: 1;
 `
@@ -75,7 +75,7 @@ font-size:20px;
 line-height:40px;
 font-family:Roboto;
 letter-spacing: 0px;
-color: white;
+color: black;
 opacity: 1;
 height:70px;
 `
@@ -84,7 +84,6 @@ margin-top:12px;
 margin-left:54px;
 margin-bottom:12px;
 display: flex;
-gap: 25px;
 `
 export const VFMasterGroupCardContent=styled.div<{theme:any}>`
 width: 95%;

@@ -441,17 +441,17 @@ console.log(convertToInt(data["prePostRationing"]));
   };
 
   const graph1 = [
-    "This graph highlights the top 10 parent locations with max SKUs in Eco Black/Red which have rationed qty available for receiving locations",
+    "This graph highlights the top 10 parent locations with max SKUs in Pipeline Black/Red which have rationed qty available for receiving locations",
     "To improve availability, expedite dispatches from these parent locations.",
   ];
 
   const graph2 = [
-    "This graph highlights the top 10 receiving locations with maximum SKUs in eco black/red which have rationed quantity available at parent location.",
+    "This graph highlights the top 10 receiving locations with maximum SKUs in Pipeline black/red which have rationed quantity available at parent location.",
     "To improve availability, expedite dispatches to these locations.",
   ];
 
   const graph3 = [
-    "This graph shows the potential improvement in eco availability assuming the entire rationed qty would become goods in transit.",
+    "This graph shows the potential improvement in Pipeline availability assuming the entire rationed qty would become goods in transit.",
   ];
 
 
@@ -467,7 +467,7 @@ console.log(convertToInt(data["prePostRationing"]));
                 <SCChartContainer >
                   <SCChartHeaderContainer>
                     <SCChartHeader>
-                      Top 10 Parent Location: Max Eco Black/Red SKUs With
+                      Top 10 Parent Location: Max Pipeline Black/Red SKUs With
                       Available Rationed Qty For Receiving Locations
                     </SCChartHeader>
                     {!hideChart1 && (

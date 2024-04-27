@@ -7,6 +7,7 @@ justify-content:space-between;
 align-items:center;
 width:100%;
 height:40px;
+border-radius:0px 0px 12px 12px;
 background-color:${props => props.headerBgColor ? props.headerBgColor : '#FFFFFF'}
 `;
 
@@ -22,6 +23,7 @@ export const SCModalContent = styled.div`
 
 export const SCTextTitle = styled.span<{headerTextColor:string | undefined}>`
   display: flex;
+  padding-top:3px;
   justify-content: center;
   width: 100%;
   flex-direction:row;
@@ -48,7 +50,9 @@ export const SCWrapperContent = styled.div<{paddingLeftAndRight:number | undefin
   text-align: left;
   height:auto;
   background-color:${props => props.backgroundColor ? props.backgroundColor :'white'};
-  border-radius:inherit;
+  // border-radius:inherit;
+  border-raduis:12px 12px 12px 12px;
+
 `;
 
 export const SCHeader = styled.div`
