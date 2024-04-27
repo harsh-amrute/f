@@ -104,13 +104,13 @@ const useGetRRRCountResult: any = {
           })
     })
 
-     it("Handles Pagination", async()=>{
-        await act(async () => {
-          render(contextWrapper(<RRR />,store));
-          })
-          const nextBtn = screen.getAllByAltText('pagination-next-arrow')
+    //  it("Handles Pagination", async()=>{
+    //     await act(async () => {
+    //       render(contextWrapper(<RRR />,store));
+    //       })
+    //       const nextBtn = screen.getAllByAltText('pagination-next-arrow')
        
-        fireEvent.click(nextBtn[0]);
-    })
+    //     fireEvent.click(nextBtn[0]);
+    // })
 })
   

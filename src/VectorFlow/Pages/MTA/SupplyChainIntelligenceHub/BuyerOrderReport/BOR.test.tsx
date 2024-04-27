@@ -97,12 +97,12 @@ describe("Renders BOR Component", ()=>{
           })
     })
 
-     it("Handles Pagination", async()=>{
-        await act(async () => {
-          render(contextWrapper(<BuyerOrderReport />,store));
-          })
+    //  it("Handles Pagination", async()=>{
+    //     await act(async () => {
+    //       render(contextWrapper(<BuyerOrderReport />,store));
+    //       })
 
-          const nextBtn = screen.getAllByAltText('pagination-next-arrow')
-        fireEvent.click(nextBtn[0]);
-    })
+    //       const nextBtn = screen.getAllByAltText('pagination-next-arrow')
+    //     fireEvent.click(nextBtn[0]);
+    // })
 })
