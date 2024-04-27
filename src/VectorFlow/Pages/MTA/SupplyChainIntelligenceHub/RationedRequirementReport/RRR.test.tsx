@@ -1,6 +1,6 @@
 
 
-import { fireEvent,render,screen,act } from "@testing-library/react";
+import { render,act } from "@testing-library/react";
 import {useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount} from '../../../../Services/MTA/SupplyChainIntelligenceHub/RRR'
 
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -28,7 +28,7 @@ const queryClient = setupReactQuery();
             <UserDataContext.Provider
               value={{
                 user: { user: { theme_ui: "NOIRFUSION" } },
-                changeColorTheme: (color) => {
+                changeColorTheme: (color:any) => {
                   return color;
                 },
                 isSideBarOpen:true,toggleSideBar:jest.fn

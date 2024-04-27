@@ -1,4 +1,4 @@
-import { fireEvent, render, screen,act } from '@testing-library/react';
+import {  render, act } from '@testing-library/react';
 import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import { mockBORData,mockBORCountData,mockBORUIConfigData} from "../../../../../mock-data/BOR";
 import BuyerOrderReport from './';
