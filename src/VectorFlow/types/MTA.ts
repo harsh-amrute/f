@@ -1,17 +1,23 @@
 export interface PlanningCounts {
     childMonitorCount:number,
     parentMonitorCount:number,
+    childMonitorCustomCount:number,
     parentExpediteCount:number,
+    parentExpediteCustomCount:number,
     childExpediteCount:number,
+    childExpediteCustomCount:number,
     reviewExcessInventoryCount:number,
+    reviewExcessInventoryCustomCount:number,
     reviewOrderFulfillmentCount:number,
+    reviewOrderFulfillmentCustomCount:number
 }
 
 export interface PlanningCategory {
     category:string,
     childCount?:number,
     parentCount?:number,
-    reviewCount?:number
+    reviewCount?:number,
+    custom?:number
 }
 
 export interface DailyDataGraph {

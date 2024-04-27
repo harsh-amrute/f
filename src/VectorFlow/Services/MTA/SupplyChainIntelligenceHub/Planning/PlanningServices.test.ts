@@ -38,7 +38,7 @@ describe('Testing the Planning Service',  () => {
           filters:[]
         }
         const response = await PlanningService.getPlanningDataGraph(mockBody);
-        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_MOCK_API_HOST + '/GetPlanningDataGraph',mockBody,{
+        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/GetPlanningDataGraph',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
         expect(response.status).toBe(200);

@@ -30,53 +30,107 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
 
     let chartRef1:ChartRef |undefined;
     let chartRef2:ChartRef | undefined;
-    
-    const colDefs1:ColDef[] = [
-        {
-            field:'location',
-            headerName:'Location Name',
-            colId:'location',
-        },
-        {
-            field:'overdue',
-            headerName:'Overdue',
-            colId:'overdue',
-        },
-        {
-            field:'due',
-            headerName:'Due',
-            colId:'due',
-        },
-        {
-            field:'others',
-            headerName:'Others',
-            colId:'others',
-        },
-      
-    ]
-    
-    const colDefs2:ColDef[] = [
-        {
-            field:'location',
-            headerName:'Location Name',
-            colId:'location',
-        },
-        {
-            field:'greater',
-            headerName:'Gap > 67%',
-            colId:'greater',
-        },
-        {
-            field:'between',
-            headerName:'33% <= Gap <= 67%',
-            colId:'between',
-        },
-        {
-            field:'smaller',
-            headerName:'Gap < 33%',
-            colId:'smaller',
-        },
-    ];
+
+    const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
+        let colDefs = [];
+
+        const customColdefs:ColDef[] = [
+            {
+                field:'location',
+                headerName:'Location Name',
+                colId:'location',
+            },
+            {
+                field:'overdue',
+                headerName:'Overdue',
+                colId:'overdue',
+            },
+            {
+                field:'due',
+                headerName:'Due',
+                colId:'due',
+            },
+            {
+                field:'others',
+                headerName:'Others',
+                colId:'others',
+            },
+          
+        ]
+        
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [...customColdefs,...colDefs];
+    }
+
+    const colDefs1 = mapUIConfigToColdefs1(data['maximumOverdueOrders']['uiconfig']);
+
+    const mapUIConfigToColdefs2 = (columns:Array<{header:string,colCode:string}>) => {
+        let colDefs = [];
+
+        const customColdefs:ColDef[] = [
+            {
+                field:'location',
+                headerName:'Location Name',
+                colId:'location',
+            },
+            {
+                field:'greater',
+                headerName:'Gap > 67%',
+                colId:'greater',
+            },
+            {
+                field:'between',
+                headerName:'33% <= Gap <= 67%',
+                colId:'between',
+            },
+            {
+                field:'smaller',
+                headerName:'Gap < 33%',
+                colId:'smaller',
+            },
+        ];
+        
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [...customColdefs,...colDefs];
+    }
+
+    const colDefs2 = mapUIConfigToColdefs2(data['maxNumberOfLocationsWithGap']['uiconfig']);
+
+    const convertToInt = (data:any)=>{
+        return data.map((row:any)=>{
+            const tempObj:any = {};
+            Object.keys(row).forEach((key:string)=>{
+                const value = parseFloat(row[key])
+                if(!isNaN(value)){
+                    tempObj[key] = value
+                }
+                else{
+                    tempObj[key] = row[key];
+                }
+            })
+            return {...tempObj}
+        })
+    }
+
+    const sortData = (data:any,key1:string,key2:string,key3:string) => {
+        data.sort((row1:any,row2:any)=>{
+            return (row2[key1]+row2[key2]+row2[key3]) - (row1[key1]+row1[key2]+row1[key3])
+        })
+        return [...data];
+    }
+
    
     const generateChart = (graphNo:number,withOutContainer?:boolean) => {
        
@@ -257,7 +311,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                         <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
-                                            rowData={data['maximumOverdueOrders']}
+                                            rowData={sortData(convertToInt(data['maximumOverdueOrders']['data']),'overdue','due','others')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1,true)}
@@ -287,7 +341,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                         <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
-                                            rowData={data['maximumOverdueOrders']}
+                                            rowData={sortData(convertToInt(data['maximumOverdueOrders']['data']),'overdue','due','others')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1)}
@@ -329,7 +383,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                         <VFTable
                                             ref={refGraph2}
                                             columnDefs={colDefs2}
-                                            rowData={data['maxSkuWithGap']}
+                                            rowData={sortData(convertToInt(data['maxSkuWithGap']['data']),'greater','between','smaller')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2,true)}
@@ -359,7 +413,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                         <VFTable
                                             ref={refGraph2}
                                             columnDefs={colDefs2}
-                                            rowData={data['maxSkuWithGap']}
+                                            rowData={sortData(convertToInt(data['maxSkuWithGap']['data']),'greater','between','smaller')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2)}
