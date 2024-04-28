@@ -2,7 +2,7 @@ import styled from "styled-components";
 import * as gridSystem from "../../../../styles/gridSystem";
 
 export const DateContainer=styled.div`
-height:160px;
+height:70px;
 width:100%;
 display:flex;
 justify-content:center;

@@ -33,6 +33,7 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
   // const [hideChart3,toggleChart3] = useState<boolean>(false);
   const [grid1DisplayStatus, setGrid1DisplayStatus] = useState<string>("none");
   const [grid2DisplayStatus, setGrid2DisplayStatus] = useState<string>("none");
+  const [grid3DisplayStatus, setGrid3DisplayStatus] = useState<string>("none");
 
   let chartRef1: ChartRef | undefined;
   let chartRef2: ChartRef | undefined;
@@ -355,7 +356,7 @@ console.log(convertToInt(data["prePostRationing"]));
     }
     if (graphNo === 3) {
       toggleChart3(true);
-      // setGrid2DisplayStatus('block')
+      setGrid3DisplayStatus('block')
     }
   };
 
@@ -461,25 +462,29 @@ console.log(convertToInt(data["prePostRationing"]));
       <SCDynamicContainer>
         <Allotment>
           <Allotment.Pane preferredSize={"60%"}>
-            <Allotment vertical defaultSizes={[400,400]}>
-              <Allotment.Pane maxSize={520}>
+            <Allotment vertical>
+              <Allotment.Pane maxSize={280}>
                 <SCHorizontalAllignmentWrapper>
-                <SCChartContainer >
+                <SCChartContainer height={200}>
                   <SCChartHeaderContainer>
-                    <SCChartHeader>
-                      Top 10 Parent Location: Max Pipeline Black/Red SKUs With
-                      Available Rationed Qty For Receiving Locations
-                    </SCChartHeader>
-                    {!hideChart1 && (
-                      <img
-                        src="/assets/img/VectorFLOW/BPR/minimize.svg"
-                        alt=""
-                        onClick={() => handleChartClose(1)}
-                      />
-                    )}
+                    <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
+                      <SCChartHeader>
+                        Top 10 Parent Location: Max Pipeline Black/Red SKUs With
+                        Available Rationed Qty For Receiving Locations
+                      </SCChartHeader>
+                    </div>
+                    <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                      {!hideChart1 && (
+                        <img
+                          src="/assets/img/VectorFLOW/BPR/minimize.svg"
+                          alt=""
+                          onClick={() => handleChartClose(1)}
+                        />
+                      )}
+                    </div>
                   </SCChartHeaderContainer>
                   <SCHorizontalDivider />
-                  <div style={{ height: "260px", display: grid1DisplayStatus }}>
+                  <div style={{ height: "220px", display: grid1DisplayStatus }}>
                     {hideChart1 && (
                       <VFTable
                         ref={refGraph1}
@@ -530,11 +535,11 @@ console.log(convertToInt(data["prePostRationing"]));
                   {!hideChart1 && (
                     <div
                       id="ExpediteDispatchesG1"
-                      style={{ height: "260px" }}
+                      style={{ height: "150px" }}
                     ></div>
                   )}
                 </SCChartContainer>
-                <div style={{ marginLeft: "10px", marginRight: "10px" }}>
+                <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
                   <VFInfoTip text={graph1} />
                 </div>
                 </SCHorizontalAllignmentWrapper>
@@ -543,20 +548,24 @@ console.log(convertToInt(data["prePostRationing"]));
                 <SCHorizontalAllignmentWrapper>
                 <SCChartContainer >
                   <SCChartHeaderContainer>
-                    <SCChartHeader>
-                      Top 10 Receiving Locations: Max Pipeline Inv. Black/Red
-                      SKUs With Rationed Quantity Available At Parent
-                    </SCChartHeader>
-                    {!hideChart2 && (
-                      <img
-                        src="/assets/img/VectorFLOW/BPR/minimize.svg"
-                        alt=""
-                        onClick={() => handleChartClose(2)}
-                      />
-                    )}
+                    <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
+                      <SCChartHeader>
+                        Top 10 Receiving Locations: Max Pipeline Inv. Black/Red
+                        SKUs With Rationed Quantity Available At Parent
+                      </SCChartHeader>
+                    </div>
+                    <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                      {!hideChart2 && (
+                        <img
+                          src="/assets/img/VectorFLOW/BPR/minimize.svg"
+                          alt=""
+                          onClick={() => handleChartClose(2)}
+                        />
+                      )}
+                    </div>
                   </SCChartHeaderContainer>
                   <SCHorizontalDivider />
-                  <div style={{ height: "260px", display: grid2DisplayStatus }}>
+                  <div style={{ height: "220px", display: grid2DisplayStatus }}>
                     {hideChart2 && (
                       <VFTable
                         ref={refGraph2}
@@ -628,11 +637,11 @@ console.log(convertToInt(data["prePostRationing"]));
                   {!hideChart2 && (
                     <div
                       id="ExpediteDispatchesG2"
-                      style={{ height: "260px" }}
+                      style={{ height: "150px" }}
                     ></div>
                   )}
                 </SCChartContainer>
-                <div style={{ marginLeft: "10px", marginRight: "10px" }}>
+                <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
                   <VFInfoTip text={graph2} />
                 </div>
                 </SCHorizontalAllignmentWrapper>
@@ -643,19 +652,23 @@ console.log(convertToInt(data["prePostRationing"]));
             <SCHorizontalAllignmentWrapper>
             <SCChartContainer >
               <SCChartHeaderContainer>
-                <SCChartHeader>
-                  Comparision of Availability: Pre Rationing vs Post Rationing
-                </SCChartHeader>
-                {!hideChart3 && (
-                  <img
-                    src="/assets/img/VectorFLOW/BPR/minimize.svg"
-                    alt=""
-                    onClick={() => handleChartClose(3)}
-                  />
-                )}
+                <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
+                  <SCChartHeader>
+                    Comparision of Availability: Pre Rationing vs Post Rationing
+                  </SCChartHeader>
+                </div>
+                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                  {!hideChart3 && (
+                    <img
+                      src="/assets/img/VectorFLOW/BPR/minimize.svg"
+                      alt=""
+                      onClick={() => handleChartClose(3)}
+                    />
+                  )}
+                </div>
               </SCChartHeaderContainer>
               <SCHorizontalDivider />
-              <div>
+              <div style={{ height: "330px", display: grid3DisplayStatus }}>
                 {hideChart3 && (
                   <VFTable
                     ref={refGraph3}
@@ -681,12 +694,12 @@ console.log(convertToInt(data["prePostRationing"]));
                 )}
               </div>
               {!hideChart3 && (
-                <div id="ExpediteDispatchesG3" style={{height:750 * 0.75}}>
+                <div id="ExpediteDispatchesG3" style={{height:600 * 0.75}}>
                   <AgChartsReact options={options} />
                 </div>
               )}
             </SCChartContainer>
-            <div style={{ marginLeft: "10px", marginRight: "10px" }}>
+            <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
               <VFInfoTip text={graph3} />
             </div>
             </SCHorizontalAllignmentWrapper>

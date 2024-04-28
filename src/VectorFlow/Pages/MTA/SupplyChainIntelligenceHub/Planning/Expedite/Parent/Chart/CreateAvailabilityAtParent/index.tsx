@@ -234,13 +234,13 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane>
-                        <SCChartContainer height={547}>
+                        <SCChartContainer height={410}>
                             <SCChartHeaderContainer>
                                 <SCChartHeader>Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock for Receiving Locations</SCChartHeader>
                                 {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                            <div style={{height:'486px',display:grid1DisplayStatus}}>
+                            <div style={{height:'380px',display:grid1DisplayStatus}}>
                                 {
                                     hideChart1 &&
                                     (
@@ -299,20 +299,20 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                 }
                                
                             </div>
-                            {!hideChart1 && <div id="CreateAvailabilityAtParentG1" style={{height:'460px'}}></div>}
+                            {!hideChart1 && <div id="CreateAvailabilityAtParentG1" style={{height:'340px'}}></div>}
                         </SCChartContainer>
                         <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>
                         </div>
                     </Allotment.Pane>
                     <Allotment.Pane>
-                        <SCChartContainer height={547}>
+                        <SCChartContainer height={410}>
                                 <SCChartHeaderContainer>
                                     <SCChartHeader>Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location</SCChartHeader>
                                     {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}
                                 </SCChartHeaderContainer>
                                 <SCHorizontalDivider/>
-                                <div style={{height:'486px',display:grid2DisplayStatus}}>
+                                <div style={{height:'380px',display:grid2DisplayStatus}}>
                                 {
                                     hideChart2 &&
                                     (
@@ -371,7 +371,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                 }
                                
                                 </div>
-                                {!hideChart2 && <div id="CreateAvailabilityAtParentG2" style={{height:'460px'}}></div>}
+                                {!hideChart2 && <div id="CreateAvailabilityAtParentG2" style={{height:'340px'}}></div>}
                         </SCChartContainer>
                         <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph2}/>

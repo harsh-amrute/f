@@ -8,7 +8,7 @@ border-radius: 6px;
 // box-shadow: -5px 5px 15px #0000000F;
 `
 export const IconTextContainer=styled.div <{ gap: string }>`
-margin:26px 10px 25px 20px;
+margin:13px 10px 12px 20px;
 display:flex;
 align-items:center;
 gap: ${(props) => props.gap};

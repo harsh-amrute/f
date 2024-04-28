@@ -9,7 +9,7 @@ export const SCDynamicContainer = styled.div`
     height:150vh;
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
         .size.desktop}) {
-        height:150vh
+        height:85vh
     }
   
     @media (min-width: ${gridSystem.size.desktop}) {
@@ -43,7 +43,7 @@ export const SCChartHeaderContainer = styled.div`
     height:60px;
     background-color:white;
     display:flex;
-    justify-content:space-evenly;
+    justify-content:space-between;
     align-items:center;
 `
 export const SCChartHeader = styled.p`

@@ -298,10 +298,10 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={547}>
+                        <SCChartContainer height={380}>
                             <SCChartHeaderContainer>
-                                <SCChartHeader>Top 10 Locations: Maximum Overdue Orders</SCChartHeader>
-                                {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Locations: Maximum Overdue Orders</SCChartHeader></div>
+                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                                 <div style={{display:grid1DisplayStatus, height:'90%'}}>
@@ -363,17 +363,17 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                 }
                                
                                 </div>
-                                {!hideChart1 && <div id="OrderFulfillmentG1" style={{height:'460px'}}></div>}
+                                {!hideChart1 && <div id="OrderFulfillmentG1" style={{height:'300px'}}></div>}
                         </SCChartContainer>
                         <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>
                         </div>
                     </Allotment.Pane>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={547}>
+                        <SCChartContainer height={380}>
                             <SCChartHeaderContainer>
-                                <SCChartHeader>Top 10 Locations: Max SKUs With Gap &gt; 67% of Requirement</SCChartHeader>
-                                {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Locations: Max SKUs With Gap &gt; 67% of Requirement</SCChartHeader></div>
+                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                                 <div style={{display:grid2DisplayStatus, height:'90%'}}>
@@ -435,7 +435,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                 }
                                
                                 </div>
-                                {!hideChart2 && <div id="OrderFulfillmentG2" style={{height:'460px'}}></div>}
+                                {!hideChart2 && <div id="OrderFulfillmentG2" style={{height:'300px'}}></div>}
                         </SCChartContainer>
                         <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph2}/>

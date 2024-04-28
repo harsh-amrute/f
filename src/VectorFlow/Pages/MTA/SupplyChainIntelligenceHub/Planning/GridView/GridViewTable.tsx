@@ -58,7 +58,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
 
     return(
         <GridViewLayout>
-            <div style={{height:'100vh'}}>
+            <div style={{height:'90vh'}}>
                 <Allotment vertical defaultSizes={[400,400]}>
                 <Allotment.Pane>
                     
