@@ -197,7 +197,14 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                             text:'Product Name',
                             position:'bottom',
 
+                        },
+                        label:{
+                            formatter:(params:any)=>{
+                                if(params.value.length > 15) return params.value.toString().slice(0,15) + '...';
+                                return params.value;
+                            }
                         }
+                        
                     },
                     number:{
                         title:{
@@ -229,6 +236,12 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                             text:'Product Name',
                             position:'bottom',
 
+                        },
+                        label:{
+                            formatter:(params:any)=>{
+                                if(params.value.length > 15) return params.value.toString().slice(0,15) + '...';
+                                return params.value;
+                            }
                         }
                     },
                     number:{
@@ -266,10 +279,10 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={547}>
+                        <SCChartContainer height={450}>
                             <SCChartHeaderContainer>
-                                <SCChartHeader>Top 10 Products with Excess Inventory: Number of Locations</SCChartHeader>
-                                {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Products with Excess Inventory: Number of Locations</SCChartHeader></div>
+                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                                 <div style={{display:grid1DisplayStatus, height:'90%'}}>
@@ -331,17 +344,17 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                 }
                                
                                 </div>
-                                {!hideChart1 && <div id="ExcessInventoryProductG1" style={{height:'460px'}}></div>}
+                                {!hideChart1 && <div id="ExcessInventoryProductG1" style={{height:'300px'}}></div>}
                         </SCChartContainer>
                         <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>
                         </div>
                     </Allotment.Pane>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={547}>
+                        <SCChartContainer height={450}>
                             <SCChartHeaderContainer>
-                                <SCChartHeader>Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader>
-                                {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader></div>
+                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                                 <div style={{display:grid2DisplayStatus, height:'90%'}}>
@@ -403,7 +416,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                 }
                                
                                 </div>
-                                {!hideChart2 && <div id="ExcessInventoryProductG2" style={{height:'460px'}}></div>}
+                                {!hideChart2 && <div id="ExcessInventoryProductG2" style={{height:'300px'}}></div>}
                         </SCChartContainer>
                         <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph2}/>
