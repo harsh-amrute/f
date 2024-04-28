@@ -48,15 +48,18 @@ const BPRRemarkHistoryToolTip = (props:BPRRemarkHistoryToolTipProps)=>{
                 
                     <BPRRemarksToolTipContentRowContainer  className="custom-scrollbar">
                     {remarkHistory.map((r:any)=>{
+                       if(r){
                         return(
                             <BPRRemarksToolTipContentRow>
                                 <BPRRemarksToolTipContentRowCell style={{width:130}}>
                                     {r.rd}
                                 </BPRRemarksToolTipContentRowCell>
                                 <BPRRemarksToolTipContentRowCell >
-                                    <BPRRemarksToolTipContentRowNameCellSection>
-                                        Name - {r.un}
-                                    </BPRRemarksToolTipContentRowNameCellSection>
+                                    {(r.un && r.un.length>0) &&(
+                                        <BPRRemarksToolTipContentRowNameCellSection>
+                                            Name - {r.un}
+                                        </BPRRemarksToolTipContentRowNameCellSection>
+                                    )}
                                     <BPRRemarksToolTipContentRowDataCellSection style={{fontWeight:500,color:" #464646"}}>
                                         {r.r}
                                     </BPRRemarksToolTipContentRowDataCellSection>
@@ -84,6 +87,7 @@ const BPRRemarkHistoryToolTip = (props:BPRRemarkHistoryToolTipProps)=>{
                             })} */}
                             </BPRRemarksToolTipContentRow>
                             )
+                       }
                     })}
                 </BPRRemarksToolTipContentRowContainer>
                 

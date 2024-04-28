@@ -1,8 +1,7 @@
-import {useEffect, useRef, useState } from "react";
+import {useEffect, useContext, useState } from "react";
 
 // import "./styles.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
-import { type GridRef } from "../../../../../../../../types/MDM";
 // import _ from "lodash";
 import '../../../styles.css';
 import { useGetPlanningDataCustom } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
@@ -10,17 +9,25 @@ import VFLoader from "../../../../../../../../../components/VectorFLOW/commons/V
 import { SCDynamicContainer } from "../../../styles";
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../../../../../helpers/notify";
 import { toast } from 'react-toastify';
+import { useGetState } from "../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { GridStateContext } from "../../../../../../../../../context/GridStateContext";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../../../../../redux/store/store";
 
 
 
 const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
 
-    const refGraph1 = useRef<GridRef>();
+    const {ref} = useContext(GridStateContext)
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
 
+    const [columnState,setColumnState] = useState<any>()
+    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+
     const chunkSize = 10000;
 
+    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
     const {mutateAsync:getPlanningDataCustom,isLoading} = useGetPlanningDataCustom();
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
@@ -37,6 +44,18 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
         })
         return [...colDefs];
     }
+
+    useEffect(()=>{
+        const getTableState = async()=>{
+          try{
+            const data =  await getState("GITToChildcustom")
+            setColumnState(JSON.parse(data.data.data))
+          }catch(err:any){
+            setColumnState(colDefs)
+          }
+        }
+        getTableState()
+    },[currentGridState])
 
     useEffect(()=>{
         const fetchCustomPlanningData = async ()=> {
@@ -92,7 +111,7 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
         <>
         <SCDynamicContainer>
             <VFTable
-                ref={refGraph1}
+                ref={ref}
                 columnDefs={colDefs}
                 rowData={rowData}
                 sideBar={true}
@@ -102,6 +121,11 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}
+                onGridReady={(params)=>{
+                    if(columnState){
+                     params.columnApi.applyColumnState({state:columnState})
+                    }
+                 }}
             />
         </SCDynamicContainer>
         </>

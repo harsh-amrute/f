@@ -1,6 +1,13 @@
 
 import { ColDef } from 'ag-grid-enterprise'
-import React, { useMemo } from 'react'
+import React, { useMemo,useEffect ,useState} from 'react'
+import { useSelector } from 'react-redux'
+import { useLocation } from 'react-router'
+import { RootState } from '../../../../redux/store/store'
+import { routerToAnalyticsStringMap } from '../../../../helpers/BPRConstants'
+import { useGetAnalyticsData } from '../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR'
+
+import {isBefore} from 'date-fns'
 import {
     BPRDailyAnalyticsHeader,
     BPRDailyAnalyticsContainer,
@@ -18,26 +25,124 @@ import {
     BPRDailyAnalyticsTableCellHeader,
     BPRDailyAnalyticsTableCellText
 } from './styles'
+import { notifyError } from '../../../../helpers/notify'
 
 interface BPRDailyAnalyticsProps{
     colDefs:ColDef[]
-    rowData:any[]
 }
 
 const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
 
     const {
-        colDefs,
-        rowData
-    } = props
+        colDefs
+    } =props
+    const [rowData,setRowData] = useState<Array<any>>([])
 
-    let summation = 0
+    const location = useLocation()
+    const {currentCategory,currentTab,currentView} = useSelector((state:RootState)=>state.mta.planning)
+    const {mutateAsync:getAnalyticsData,isLoading} = useGetAnalyticsData()
 
-    useMemo(()=>{
-        rowData.forEach((row:any)=>{
-            summation +=row.techCount
+
+
+
+    
+    const summation = useMemo(()=>{
+        let temp = 0
+         rowData.forEach((row:any)=>{
+            temp +=row.techCount
         })
-    },[])
+        return temp
+    },[rowData])
+
+    function calculatePercentIncrease(data:Array<any>) {
+        if (data.length < 2) {
+          notifyError("Insufficient data to calculate percent increase")
+        }
+        
+        const todaysDateIndex = isBefore(data[0].ReportDate,data[1].ReportDate)?1:0
+        const yesterdayDateIndex = (todaysDateIndex - 1 + data.length) % data.length;
+
+        const today = data[todaysDateIndex];
+        const yesterday = data[yesterdayDateIndex];
+
+        const percentIncrease:any = {};
+
+        const colors = ["Black", "Red", "Yellow", "Green", "White"]
+
+        for (const color of colors) {
+            const onHandToday = today[`OnHand${color}`];
+            const onHandYesterday = yesterday[`OnHand${color}`];
+            const pipelineToday = today[`Pipeline${color}`];
+            const pipelineYesterday = yesterday[`Pipeline${color}`];
+        
+            percentIncrease[`OnHand${color}`] = (onHandYesterday !== undefined && onHandYesterday !== 0) ? parseFloat((((onHandToday - onHandYesterday) / onHandYesterday) * 100).toFixed(2)) : Infinity;
+            percentIncrease[`Pipeline${color}`] = (pipelineYesterday !== undefined && pipelineYesterday !== 0) ? parseFloat((((pipelineToday - pipelineYesterday) / pipelineYesterday) * 100).toFixed(2)) : Infinity;
+          }
+          const result = []
+          for (const color of colors) {
+            
+            const obj ={
+                color:color,
+                techCount:today[`OnHand${color}`],
+                techChange:percentIncrease[`OnHand${color}`],
+                ecoCount:today[`Pipeline${color}`],
+                ecoChange:percentIncrease[`Pipeline${color}`]
+            }
+            result.push(obj)
+          }
+        return result;
+      }
+      
+
+
+    const onGetAnalyticsData = async()=>{
+        const pathname:string = location.pathname
+        let payloadString = ""
+        if(location.pathname==='/supply-chain-intelligence-hub/planning'){
+            if(currentCategory!==""){
+                
+                switch(currentCategory){
+                    case "GITFromParent":
+                        payloadString = "gitparent"
+                        break
+                    case "GITToChild":
+                        if(currentTab==="locationWise")payloadString = "gitchildlocation"
+                        else payloadString = "gitchildtransporter"
+                        break
+                    case "ExpediteFromParent":
+                        payloadString = "expediteparent"
+                        break
+                    case "ExpediteToChild":
+                        payloadString = "expeditechild"
+                        break
+                    case "ExcessInventory":
+                        payloadString = "excessinventory"
+                        break
+                    case "OrderFulfillment":
+                        payloadString = "orderfulfillment"
+                        break
+                    default:
+                        return 
+                }
+            }
+            else{
+                return 
+            }
+            
+        }
+        else payloadString = routerToAnalyticsStringMap[pathname]
+        try{
+            const data = await getAnalyticsData(payloadString)
+        setRowData(calculatePercentIncrease(data.data.data))
+        }catch(err:any){
+            notifyError(err)
+        }
+
+    }
+
+    useEffect(()=>{
+        onGetAnalyticsData()
+    },[location.pathname,currentCategory,currentView,currentTab])
 
     const getCellText = (text:any,colKey:string)=>{
 
@@ -68,6 +173,27 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
             )
         
     }
+
+    
+    
+    
+    if(isLoading){
+        return(
+            <BPRDailyAnalyticsWrapper>
+                <BPRDailyAnalyticsContainer style={{aspectRatio:'0.9',width:'90%'}}>
+                    <BPRDailyAnalyticsHeader>
+                        Analytics (SKU Locations)
+                    </BPRDailyAnalyticsHeader>
+                    <div style={{width:'100%',height:'100%',display:'grid',placeItems:'center'}}>
+                    <p style={{color:'white'}}>________</p>
+                    </div>
+                </BPRDailyAnalyticsContainer>
+            </BPRDailyAnalyticsWrapper>
+        )
+    }
+    
+    
+
 
     return(
         <BPRDailyAnalyticsWrapper>

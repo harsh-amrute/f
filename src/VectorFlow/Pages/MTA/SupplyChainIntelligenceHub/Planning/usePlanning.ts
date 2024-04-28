@@ -7,7 +7,7 @@ import { useGetPlanningDataCount,useGetPlanningDataGraph, useGetPlanningDataGrid
 import { PlanningCategory, PlanningCounts, DailyDataGraph } from "../../../../types/MTA"
 import {useSelector,useDispatch} from 'react-redux';
 import { type RootState } from "../../../../../redux/store/store";
-import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
+import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA, UPDATE_PLANNING_DATA} from '../../../../../redux/actions/MTA';
 import { AgGridReactProps } from 'ag-grid-react';
 
 const usePlanning = ()=>{
@@ -95,6 +95,14 @@ const usePlanning = ()=>{
     useEffect(()=>{
         fetchPlanningDataCount();
     },[])
+
+    useEffect(()=>{
+        dispatch(UPDATE_PLANNING_DATA({
+            currentTab:currentTab,
+            currentCategory:currentCategory,
+            currentView:currentView
+        }))
+    },[currentCategory,currentTab,currentView])
    
     const getFloatingTabsList = (view:string) => {
         switch(currentCategory){

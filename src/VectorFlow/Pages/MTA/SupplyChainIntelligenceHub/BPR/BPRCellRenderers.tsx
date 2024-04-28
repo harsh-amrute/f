@@ -65,7 +65,7 @@ export const BPRTechColorCellRenderer = (params:any)=>{
     const techColor = params.data.TechColor
     const cellColor = colorMapper(params.data.TechColor)
 
-    if(!techColor || techColor.length<1){
+    if(!techColor || techColor.length<0){
         return(
             <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}} data-testid='bpr-tech-color-cell'>
                 NULL
@@ -88,7 +88,7 @@ export const BPREcoColorCellRenderer = (params:any)=>{
 
     const cellColor = colorMapper(ecoColor)
 
-    if(!ecoColor || ecoColor.length<1){
+    if(!ecoColor || ecoColor.length<0){
         return(
             <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
                 NULL
@@ -104,6 +104,9 @@ export const BPREcoColorCellRenderer = (params:any)=>{
 }
 
 export const BPRTagsCellRenderer = (params:any)=>{
+    if(!params.value ||  params.value.length===0){
+        return null
+    }
     return(
         <BPRTagsCellRendererWrapper>
             {params.value}

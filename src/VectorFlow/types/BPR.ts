@@ -14,7 +14,7 @@ export interface BPRDataPayload{
     id: number,
   name: string,
   fields: Array<any>,
-    filters:any[]
+    filters:any
     paginationParameter:{
         pageNumber:number,
         recordsPerPage:number

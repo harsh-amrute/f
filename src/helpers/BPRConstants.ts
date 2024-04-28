@@ -104,3 +104,17 @@ export const GraphSeriesOverrides = {
         },
     },
 }
+export interface RouterToAnalyticsStringMap {
+    [route: string]: string;
+  }
+
+
+export const routerToAnalyticsStringMap:RouterToAnalyticsStringMap = {
+    // "/supply-chain-intelligence-hub/planning": "planning",
+    "/supply-chain-intelligence-hub/bpr": "bpr",
+    "/supply-chain-intelligence-hub/rrr": "rrr",
+    "/supply-chain-intelligence-hub/bor": "bor",
+    "/dbm/dbm-norm-suggestions": "dbm",
+    "/insights-and-trends/research-insights": "ri",
+  };
+  

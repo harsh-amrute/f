@@ -7,7 +7,6 @@ import useViewPort from "../../../../../hooks/useViewPort";
 import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
 
-import { BPRSubmitRemarkCellRenderer } from "../BPR/BPRCellRenderers";
 
 import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 
@@ -18,6 +17,8 @@ import ShowRemarkCellRenderer from "./ShowRemarkCellRenderer";
 import { useSelector } from "react-redux";
 
 import { RootState } from "../../../../../redux/store/store";
+import { useAddRemarkForExpedite, useGetOpenExpediteRequestData, useGetRemarkDetailsForExpedite } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests";
+import SubmitRemarkCellRenderer from "./SubmitRemarkCellRenderer";
 
 
 
@@ -26,10 +27,18 @@ const useOpenExpeditingRequests = () => {
     const ref = useRef()
     const tempRef = useRef()
 
+    const {data,isLoading} = useGetOpenExpediteRequestData()
+    const {mutateAsync:addRemark} = useAddRemarkForExpedite()
+    const {mutateAsync:getRemark} = useGetRemarkDetailsForExpedite()
+
     const [submitRemarkToolTipPosition,setSubmitRemarkToolipPosition] = useState<CSSProperties>({})
     const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
 
     const [remark,setRemark] = useState<string>('')
+    const [activeRow,setActiveRow] = useState<any>({
+      sc:'',
+      wc:''
+    })
     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
 
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
@@ -53,7 +62,7 @@ const useOpenExpeditingRequests = () => {
         // tagsCellRenderer:BPRTagsCellRenderer,
         etaCellRenderer:ETACellRenderer,
         colorCellRenderer:ColorCellRenderer,
-        submitRemarkCellRenderer: BPRSubmitRemarkCellRenderer,
+        submitRemarkCellRenderer: SubmitRemarkCellRenderer,
         remarksCellRenderer: ShowRemarkCellRenderer
     }), []);
 
@@ -86,7 +95,7 @@ const useOpenExpeditingRequests = () => {
             const data =  await getState("OpenExpeditingRequests")
             setColumnState(JSON.parse(data.data.data))
           }catch(err:any){
-            setColumnState(tableColDefs)
+            setColumnState(colDefs)
           }
         }
         getTableState()
@@ -130,12 +139,12 @@ const useOpenExpeditingRequests = () => {
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-            console.log('calledonce')
          if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
         }
       };
 
-    const onOpenSubmitRemark = (e: React.MouseEvent<HTMLElement>) => {
+    const onOpenSubmitRemark = (e: React.MouseEvent<HTMLElement>,data:any) => {
+        setActiveRow(data)
         const { top, left } = e.currentTarget.getBoundingClientRect()
         setSubmitRemarkToolipPosition({
             top: top * gridZoom * screenZoom,
@@ -145,11 +154,16 @@ const useOpenExpeditingRequests = () => {
 
     }
 
-    const onOpenRemarkHistory = async (e: React.MouseEvent<HTMLElement>) => {
+    const onOpenRemarkHistory = async (e: React.MouseEvent<HTMLElement>,data:any) => {
+      console.log(data)
         try {
             setIsRemarkHistoryToolTipOpen(false)
             const toastId = notifyLoader("Getting remark history")
             const { top, left } = e.currentTarget.getBoundingClientRect()
+            const remarkData = await getRemark({
+              whcode:data.wc,
+              skucode:data.sc
+            })
             setRemarkHistoryToolipPosition({
                 top: top * gridZoom * screenZoom,
                 left: left * gridZoom * screenZoom,
@@ -157,7 +171,7 @@ const useOpenExpeditingRequests = () => {
                 width: 350
             })
             toast.dismiss(toastId)
-            setRemarkHistory([])
+            setRemarkHistory(remarkData.data.data)
             setIsRemarkHistoryToolTipOpen(true)
         } catch (err: any) {
             notifyError(err.message)
@@ -165,18 +179,22 @@ const useOpenExpeditingRequests = () => {
     }
 
     const onSubmitRemark = async()=>{
-        
         try{
             if(remark.length===0) throw new Error("Remark cannot be empty")
             const toastId = notifyLoader("Submitting Remark")
-            // const {data} = await submitRemark({
-            //     remark:"The SKU is having trouble with the order delivery please help us with suitable actions"
-            // })
+            await addRemark({
+                sc:activeRow.sc,
+                wc:activeRow.wc,
+                remark:remark
+            })
             toast.dismiss(toastId)
-            // if(data.status!==200)notifyError('Something went wrong')
             
             notifySuccess('Remark has been submitted')
             setRemark('')
+            setActiveRow({
+              sc:'',
+              wc:''
+            })
             
             setIsSubmitRemarkToolTipOpen(false)
         }catch(err:any){
@@ -191,240 +209,58 @@ const useOpenExpeditingRequests = () => {
 
     const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
 
-    const tableColDefs = useMemo((): Array<ColDef> => {
-        return [
-            {
-                headerName: "SKU Code",
-                colId: 'sc',
-                field: 'sc'
-            },
-            {
-                headerName: "Receiver Location",
-                colId: 'rl',
-                field: 'rl'
-            },
-            {
-                headerName: "Sender Location",
-                colId: 'sl',
-                field: 'sl'
-            },
-            {
-                headerName: "RR Qty",
-                colId: 'rr',
-                field: 'rr'
-            },
-            {
-                headerName: "Recv Priority",
-                colId: 'rp',
-                field: 'rp',
-                cellRenderer:'colorCellRenderer'
-            },
-            {
-                headerName: "Black + Red Ageing",
-                colId: 'br',
-                field: 'br'
-            },
-            {
-                headerName: "Potential Loss Per Day",
-                colId: 'plpd',
-                field: 'plpd'
-            },
-            {
-                headerName: "Action",
-                colId: 'action',
-                field: 'action',
-                cellRenderer: 'submitRemarkCellRenderer',
-                cellRendererParams:{
-                    onClick:onOpenSubmitRemark
-                },
-                floatingFilter:false
-            },
-            {
-                headerName: "ETA",
-                colId: 'eta',
-                field: 'eta',
-                cellRenderer:'etaCellRenderer',
-                floatingFilter:false
-            },
-            {
-                headerName: "",
-                colId: 'history',
-                field: 'history',
-                cellRenderer:'remarksCellRenderer',
-                cellRendererParams:{
-                    onClick:onOpenRemarkHistory
-                },
-                floatingFilter:false,
-                maxWidth:70
-            }
-        ]
-    }, [])
 
-    const onExportToExcelCallBack=async(pageNumber:number)=>{
-        // const data =  await getBPRData({
-        //     id:1,
-        //     name:'',
-        //     fields:[],
-        //     filters:[],
-        //     paginationParameter:{
-        //         pageNumber:pageNumber,
-        //         recordsPerPage:5000
-        //     }
-        // })
-        console.log(pageNumber)
-        return [
-            {
-              "sc": "456ZY...",
-              "rl": "Mumbai, Maharashtra",
-              "sl": "Delhi, Delhi",
-              "rr": 2,
-              "rp": "White",
-              "br": "7 Days",
-              "plpd": "₹ 6.2L",
-              "action": "Pending",
-              "eta": "2023-11-28",
-              "history": ""
-            },
-            {
-              "sc": "789WX...",
-              "rl": "Bangalore, Karnataka",
-              "sl": "Kolkata, West Bengal",
-              "rr": 3,
-              "rp": "Blue",
-              "br": "14 Days",
-              "plpd": "₹ 4.8L",
-              "action": "Approved",
-              "eta": "2023-10-05",
-              "history": ""
-            },
-            {
-              "sc": "234AB...",
-              "rl": "Chennai, Tamil Nadu",
-              "sl": "Hyderabad, Telangana",
-              "rr": 1,
-              "rp": "Red",
-              "br": "5 Days",
-              "plpd": "₹ 7.3L",
-              "action": "Completed",
-              "eta": "2023-12-20",
-              "history": ""
-            },
-            {
-                "sc": "456ZY...",
-                "rl": "Mumbai, Maharashtra",
-                "sl": "Delhi, Delhi",
-                "rr": 2,
-                "rp": "White",
-                "br": "7 Days",
-                "plpd": "₹ 6.2L",
-                "action": "Pending",
-                "eta": "2023-11-28",
-                "history": ""
-              },
-              {
-                "sc": "789WX...",
-                "rl": "Bangalore, Karnataka",
-                "sl": "Kolkata, West Bengal",
-                "rr": 3,
-                "rp": "Blue",
-                "br": "14 Days",
-                "plpd": "₹ 4.8L",
-                "action": "Approved",
-                "eta": "2023-10-05",
-                "history": ""
-              },
-              {
-                "sc": "234AB...",
-                "rl": "Chennai, Tamil Nadu",
-                "sl": "Hyderabad, Telangana",
-                "rr": 1,
-                "rp": "Red",
-                "br": "5 Days",
-                "plpd": "₹ 7.3L",
-                "action": "Completed",
-                "eta": "2023-12-20",
-                "history": ""
-              },
-              {
-                "sc": "456ZY...",
-                "rl": "Mumbai, Maharashtra",
-                "sl": "Delhi, Delhi",
-                "rr": 2,
-                "rp": "White",
-                "br": "7 Days",
-                "plpd": "₹ 6.2L",
-                "action": "Pending",
-                "eta": "2023-11-28",
-                "history": ""
-              },
-              {
-                "sc": "789WX...",
-                "rl": "Bangalore, Karnataka",
-                "sl": "Kolkata, West Bengal",
-                "rr": 3,
-                "rp": "Blue",
-                "br": "14 Days",
-                "plpd": "₹ 4.8L",
-                "action": "Approved",
-                "eta": "2023-10-05",
-                "history": ""
-              },
-              {
-                "sc": "234AB...",
-                "rl": "Chennai, Tamil Nadu",
-                "sl": "Hyderabad, Telangana",
-                "rr": 1,
-                "rp": "Red",
-                "br": "5 Days",
-                "plpd": "₹ 7.3L",
-                "action": "Completed",
-                "eta": "2023-12-20",
-                "history": ""
-              },
-              {
-                "sc": "456ZY...",
-                "rl": "Mumbai, Maharashtra",
-                "sl": "Delhi, Delhi",
-                "rr": 2,
-                "rp": "White",
-                "br": "7 Days",
-                "plpd": "₹ 6.2L",
-                "action": "Pending",
-                "eta": "2023-11-28",
-                "history": ""
-              },
-              {
-                "sc": "789WX...",
-                "rl": "Bangalore, Karnataka",
-                "sl": "Kolkata, West Bengal",
-                "rr": 3,
-                "rp": "Blue",
-                "br": "14 Days",
-                "plpd": "₹ 4.8L",
-                "action": "Approved",
-                "eta": "2023-10-05",
-                "history": ""
-              },
-              {
-                "sc": "234AB...",
-                "rl": "Chennai, Tamil Nadu",
-                "sl": "Hyderabad, Telangana",
-                "rr": 1,
-                "rp": "Red",
-                "br": "5 Days",
-                "plpd": "₹ 7.3L",
-                "action": "Completed",
-                "eta": "2023-12-20",
-                "history": ""
-              }
-          ]
-    }
+    const rowData = data?.data.data.data
 
+    const colDefs = useMemo(()=>{
+      const config = data?.data.data.config
+      let result:Array<ColDef> = []
+      if(config){
+        result =  config.map((col:any)=>{
+          return{
+            headerName: col.header,
+            colId: col.colCode,
+            field: col.colCode
+        }
+        })
+        result = [...result,{
+          headerName: "Action",
+          colId: 'action',
+          field: 'action',
+          cellRenderer: 'submitRemarkCellRenderer',
+          cellRendererParams:{
+              onClick:onOpenSubmitRemark
+          },
+          floatingFilter:false
+      },
+      {
+          headerName: "ETA",
+          colId: 'eta',
+          field: 'eta',
+          cellRenderer:'etaCellRenderer',
+          floatingFilter:false
+      },
+      {
+          headerName: "",
+          colId: 'history',
+          field: 'history',
+          cellRenderer:'remarksCellRenderer',
+          cellRendererParams:{
+              onClick:onOpenRemarkHistory
+          },
+          floatingFilter:false,
+          maxWidth:70
+      }]
+      }
+      return result
+    },[data])
 
     return {
         agGridProps,
-        tableColDefs,
+        rowData,
+        colDefs,
         remark,
+        isLoading,
         remarkHistory,
         isSubmitRemarkToolTipOpen,
         isRemarkHistoryToolTipOpen,
@@ -444,7 +280,6 @@ const useOpenExpeditingRequests = () => {
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
-        onExportToExcelCallBack
     }
 }
 

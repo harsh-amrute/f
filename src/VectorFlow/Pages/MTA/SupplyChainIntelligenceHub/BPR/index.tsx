@@ -57,17 +57,18 @@ const BPR = ()=>{
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
-        onExportToExcelCallBack
+        onExportToExcelCallBack,
+        getBPRRowData
     } = useBPR();
 
 
 
     
-    if(isLoading || isSavedDataLoading){
-      return (
-        <VFLoader/>
-      )
-    }
+    // if(isLoading || isSavedDataLoading){
+    //   return (
+    //     <VFLoader/>
+    //   )
+    // }
 
 
     return(
@@ -90,6 +91,7 @@ const BPR = ()=>{
             currentTab={''} 
             tabsList={[]} 
             onFloatingTabChange={()=>console.log('')} 
+            onApplyFilter={(e)=>getBPRRowData(e)}
             onGoBack={()=>console.log('')} 
             onViewChange={()=>console.log('')} 
             genericRecordCount={recordCount}
@@ -102,7 +104,12 @@ const BPR = ()=>{
             showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
         }
         
-        <BPRLayout>
+        {(isLoading || isSavedDataLoading )?(
+            <VFLoader/>
+        )
+        :
+        (
+            <BPRLayout>
             {/* <BPRTaskBar style={{width:isSideBarOpen?'77%':'97%'}}>
                 <VFButtonOutline
                     themeUi="NOIRFUSION"
@@ -218,6 +225,8 @@ const BPR = ()=>{
                   />
                 </div>
         </BPRLayout>
+        )
+    }
         </GridStateContext.Provider>
     )
             }

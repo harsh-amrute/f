@@ -73,6 +73,12 @@ export namespace BPRService {
       headers:{ 'Content-Type': 'application/json' }
     }); 
   }
+
+  export const getAnalyticsData = async (payload:string) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/GetAnalyticsData`,payload,{
+      headers:{ 'Content-Type': 'application/json' }
+    }); 
+  }
 }
 
 

@@ -8,6 +8,9 @@ import { createIconColumn } from '../../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import RequestExpeditingModal from '../../../../BPR/RequestExpeditingModal';
+import { useSubmitOpenExpediteRequest } from '../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/Planning';
+import { notifyError, notifyLoader, notifySuccess } from '../../../../../../../../helpers/notify';
+import { toast } from 'react-toastify';
 
 const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
@@ -16,6 +19,28 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
     const [activeRow,setActiveRow] = useState<any>();
     const [isSubGridOpen,toggleSubGrid] = useState<any>(false);
     
+    const {mutateAsync:submitRemark} = useSubmitOpenExpediteRequest()
+    const submitOpenExpediteRemark = async(remark:string)=>{
+        notifyLoader('Submiting request')
+        try{
+            await submitRemark({
+                data:[
+                    {
+                        "sc": currentRowData.sc,
+                        "wc":"GE04",
+                        "pwc":"",
+                        "Request":remark
+                      }
+                ]
+            })
+        toast.dismiss()
+        notifySuccess('Request submitted sucessfully')
+        }catch(err:any){
+            notifyError(err)
+        }finally{
+            toggleExpeditingModal(false)
+        }
+    }
 
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -182,7 +207,7 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
                 onRequestExpediting={()=>toggleExpeditingModal(true)}
                 paginationProps={paginationProps}
             />
-            <RequestExpeditingModal isOpen={isExpeditingModalOpen} onClose={()=>toggleExpeditingModal((prev:boolean)=>!prev)}/>
+            <RequestExpeditingModal isOpen={isExpeditingModalOpen} onClose={()=>toggleExpeditingModal((prev:boolean)=>!prev)} onSubmit={submitOpenExpediteRemark}/>
         </>
     )
 }

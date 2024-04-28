@@ -21,6 +21,7 @@ import TagsCellRenderer from "./TagsCellRenderer"
 import AvailabilityToolTip from "./AvailabilityToolTip"
 import CategoryToolTip from "./CategoryToolTip"
 import { SeasonalityGraphCellRenderer } from "../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers"
+import { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/VFPagination"
 
 const useBTR = ()=>{
 
@@ -45,6 +46,40 @@ const useBTR = ()=>{
         }
     ]
 
+    const [techCurrentPage,setTechCurrentPage] = useState<number>(1);
+
+    const [techTotalRows,setTechTotalRows] = useState<number>(0);
+
+    const [ecoCurrentPage,setEcoCurrentPage] = useState<number>(1);
+
+    const [ecoTotalRows,seteEoTotalRows] = useState<number>(0);
+
+    const rowsPerPage = parseInt(process.env.REACT_APP_PLANNING_ROWS_PER_PAGE || '50');
+
+    const ecoPaginationProps:VFPaginationProps = {
+        selectedRows:0,
+        totalRows:ecoTotalRows,
+        rowsPerPage:rowsPerPage,
+        currentPage:ecoCurrentPage,
+        handleChangePage:(currPage:number) => {
+            // fetchAndUpdateGridData(currPage);
+            setEcoCurrentPage(currPage)
+        }
+        
+    }
+
+    const techPaginationProps:VFPaginationProps = {
+        selectedRows:0,
+        totalRows:techTotalRows,
+        rowsPerPage:rowsPerPage,
+        currentPage:techCurrentPage,
+        handleChangePage:(currPage:number) => {
+            // fetchAndUpdateGridData(currPage);
+            setTechCurrentPage(currPage)
+        }
+        
+    }
+
     const gridProps = useMemo(():AgGridReactProps=>{
         return {
             gridOptions:{
@@ -59,21 +94,32 @@ const useBTR = ()=>{
                     // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
 
 
-                }
+                },
+                rowHeight:30
             }
         }
     },[])
 
     const [currentTab,setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0])
     const [verticalView,setVerticalView] = useState<boolean>(true)
-    const [rowData,setRowData] = useState([])
+    const [techRowData,setTechRowData] = useState<Array<any>>([])
+    const [ecoRowData,setEcoRowData]  = useState<Array<any>>([])
     // const [defaultColDefs,setDefaultColDefs] = useState<Array<ColDef>>([])
 
     const {mutateAsync:getBTRData,isLoading} = useGetBTRData()
     useEffect(()=>{
         const getData = async()=>{
-            const data = await getBTRData()
-            setRowData(data.data.data)
+            const data = await getBTRData({
+                "id": 1,
+                "name": "",
+                "fields": [],
+                "filters": [],
+                "paginationParameter": {
+                    "pageNumber": 1,
+                    "recordsPerPage": 100
+                }
+            })
+            
         }
         getData()
     },[])
@@ -89,13 +135,13 @@ const useBTR = ()=>{
                     <VerticalSplitView 
                         techTable={{
                             columnDefs:techColDefs,
-                            rowData:rowData,
+                            rowData:techRowData,
                             header:"On-Hand Inventory View Trend Report",
                             ...gridProps
                         }} 
                         ecoTable={{
                             columnDefs:ecoColDefs,
-                            rowData:rowData,
+                            rowData:ecoRowData,
                             header:"Pipeline Inventory Trend Report",
                             ...gridProps
                         }}
@@ -105,36 +151,36 @@ const useBTR = ()=>{
                     <HorizontalSplitView 
                         techTable={{
                             columnDefs:techColDefs,
-                            rowData:rowData,
+                            rowData:techRowData,
                             header:"On-Hand Inventory View Trend Report",
                             ...gridProps
                         }} 
                         ecoTable={{
                             columnDefs:ecoColDefs,
-                            rowData:rowData,
+                            rowData:ecoRowData,
                             header:"Pipeline Inventory Trend Report",
                             ...gridProps}}
                     />
                 )
             case "2":
-                return <><BTRTableHeader>On-Hand Inventory View Trend Report</BTRTableHeader><VFTable  tooltipHideDelay={100000}  tooltipShowDelay={0} tooltipMouseTrack={true} ref={techRef} disableZoomScaling columnDefs={techColDefs} rowData={rowData} {...gridProps} pagination paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}/></>
+                return <><BTRTableHeader>On-Hand Inventory View Trend Report</BTRTableHeader><VFTable  tooltipHideDelay={100000}  tooltipShowDelay={0} tooltipMouseTrack={true} ref={techRef} disableZoomScaling columnDefs={techColDefs} rowData={techRowData} {...gridProps} pagination paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}/></>
             case "3":
-                return <><BTRTableHeader>Pipeline Inventory Trend Report</BTRTableHeader><VFTable  tooltipHideDelay={100000}  tooltipShowDelay={0} tooltipMouseTrack={true} ref={ecoRef} disableZoomScaling columnDefs={ecoColDefs} rowData={rowData} {...gridProps} pagination paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}/></>
+                return <><BTRTableHeader>Pipeline Inventory Trend Report</BTRTableHeader><VFTable  tooltipHideDelay={100000}  tooltipShowDelay={0} tooltipMouseTrack={true} ref={ecoRef} disableZoomScaling columnDefs={ecoColDefs} rowData={ecoRowData} {...gridProps} pagination paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}/></>
             default:
                 return <VFTable  columnDefs={[]} rowData={[]} {...gridProps}/>
         }
     }
 
     const techColDefs = useMemo(():Array<ColDef>=>{
-       if(rowData.length>0) return mapBTRRowDataToColDefs(rowData[0],()=>console.log(''))
+    //    if(rowData.length>0) return mapBTRRowDataToColDefs(rowData[0],()=>console.log(''))
        return []
-    },[currentTab,rowData])
+    },[currentTab])
 
 
     const ecoColDefs = useMemo(():Array<ColDef>=>{
-        if(rowData.length>0)return mapBTRRowDataToColDefs(_.omit(rowData[0],['category','Tags','VirtualNorm']))
+        // if(rowData.length>0)return mapBTRRowDataToColDefs(_.omit(rowData[0],['category','Tags','VirtualNorm']))
         return []
-    },[currentTab,rowData])
+    },[currentTab])
 
     return{
         currentTab,

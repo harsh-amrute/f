@@ -12,6 +12,7 @@ import type { RootState } from '../../../../../redux/store/store';
 import { useSelector, useDispatch } from 'react-redux';
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type DailyDataGraph } from "../../../../types/MTA";
+import { BPRFilterState } from "../../../../../VectorFlow/types/BPR"
 
 
 const useBPR =()=>{
@@ -105,37 +106,7 @@ const useBPR =()=>{
     },[currentGridState])
   
     useEffect(()=>{
-        async function getBPRRowData(){
-
-            try{
-                const countData = await getBPRDataCount({
-                    id: 1,
-                    name: "",
-                    fields: [],
-                    filters:[],
-                    paginationParameter:{
-                        pageNumber:currGridPage,
-                        recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
-                    }
-                })
-    
-                setRecordCount(countData.data.recordCount)
-    
-                const rowData =await  getBPRData({
-                    id: 1,
-                    name: "",
-                    fields: [],
-                    filters:[],
-                    paginationParameter:{
-                        pageNumber:currGridPage,
-                        recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
-                    }
-                })
-                setBPRRowData(rowData.data.data)
-            }catch(err:any){
-                notifyError(err)
-            }
-        }
+        
         getBPRRowData()
     },[currGridPage])
   
@@ -202,6 +173,40 @@ const useBPR =()=>{
          if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
         }
       };
+
+      const getBPRRowData=async(filter?:BPRFilterState)=>{
+
+        try{
+            if(recordCount===0 || filter){
+                const countData = await getBPRDataCount({
+                    id: 1,
+                    name: "",
+                    fields: [],
+                    filters:filter || {},
+                    paginationParameter:{
+                        pageNumber:currGridPage,
+                        recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+                    }
+                })
+    
+                setRecordCount(countData.data.recordCount)
+            }
+
+            const rowData =await  getBPRData({
+                id: 1,
+                name: "",
+                fields: [],
+                filters:filter || {},
+                paginationParameter:{
+                    pageNumber:currGridPage,
+                    recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+                }
+            })
+            setBPRRowData(rowData.data.data)
+        }catch(err:any){
+            notifyError(err)
+        }
+    }
 
     const updateRemark = (e:any)=>setRemark(e.currentTarget.value)
     
@@ -350,6 +355,7 @@ const useBPR =()=>{
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
+        getBPRRowData,
         onExportToExcelCallBack
     }
 }

@@ -1,5 +1,5 @@
 import * as NavStyle from "./styles";
-import { useState } from "react";
+import { useState,useEffect,useCallback } from "react";
 import { SCMenuLeft, SCMenuItem, SCItemChild } from "./styles";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useUserData } from "../../../context";
@@ -14,6 +14,7 @@ import {useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 import BPRDailyAnalytics from "../../../components/VectorFLOW/layouts/BPRDailyAnalytics";
+import { UPDATE_PLANNING_DATA } from "../../../redux/actions/MTA";
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -24,6 +25,8 @@ const NavbarItem = ({
   const { t } = useTranslation();
   const { user,isSideBarOpen,toggleSideBar } = useUserData();
   const permission: any = user?.roles?.permission;
+  const {currentView,currentCategory,currentTab} = useSelector((state:RootState)=>state.mta.planning)
+  const analyticsPaths:Array<string> = ["/supply-chain-intelligence-hub/bpr","/supply-chain-intelligence-hub/rrr","/supply-chain-intelligence-hub/bor","/dbm/dbm-norm-suggestions","/insights-and-trends/research-insights"]
   const themeUi = user?.user?.theme_ui;
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,6 +34,22 @@ const NavbarItem = ({
   
   const mdm = useSelector((state:RootState) => state.mdm);
   const dispatch = useDispatch();
+  useEffect(()=>{
+    // if(location.pathname==="/supply-chain-intelligence-hub/planning" && currentCategory===""){
+    //   dispatch(UPDATE_PLANNING_DATA({
+    //     currentView:'null',
+    //     currentTab:'',
+    //     currentCategory:''
+    //   }))
+    // }
+    // if(location.pathname!=="/supply-chain-intelligence-hub/planning"){
+    //   dispatch(UPDATE_PLANNING_DATA({
+    //     currentView:'null',
+    //     currentTab:'',
+    //     currentCategory:''
+    //   }))
+    // }
+  },[location.pathname])
 
   const resetState = () => {
     dispatch(RESET_STATE());
@@ -83,6 +102,22 @@ const NavbarItem = ({
       </SCMenuItem>
     );
   };
+
+
+  const renderAnalyticsGrid = useCallback(()=>{
+    
+    if(location.pathname==="/supply-chain-intelligence-hub/planning"){
+     
+      if(currentView!=='chart' && currentCategory!==""){
+        return  true
+      }
+    }
+    if(analyticsPaths.includes(pathname)){
+      return true
+    }
+    return false
+  },[location.pathname,currentCategory,currentView])
+
 
   const renderListMenuChild = (listChild: any,status:boolean) => {
     return listChild.map((item: any) => {``
@@ -176,7 +211,7 @@ const NavbarItem = ({
             <SCMenuLeft><RenderListMenu listMenu={menuItem}/></SCMenuLeft>
           )}
         </NavStyle.SCNavBox>
-        {isHide && (pathname === "/supply-chain-intelligence-hub/bpr" || pathname ==="/insights-and-trends/research-insights") && menuItem.id === 9 && (
+        {isHide  && renderAnalyticsGrid() && menuItem.id === 9 && (
           <BPRDailyAnalytics
             colDefs={[
               {
@@ -190,7 +225,6 @@ const NavbarItem = ({
                 headerName:'Eco.'
               },
             ]}
-            rowData={[{"color":"Black","techCount":2345,"techChange":34,"ecoCount":3856,"ecoChange":-6},{"color":"Red","techCount":345,"techChange":23,"ecoCount":349,"ecoChange":-12},{"color":"Yellow","techCount":23,"techChange":-21,"ecoCount":123,"ecoChange":28},{"color":"Green","techCount":657,"techChange":-2,"ecoCount":453,"ecoChange":2},{"color":"Blue","techCount":345,"techChange":0,"ecoCount":1234,"ecoChange":-43},{"color":"White","techCount":2345,"techChange":12,"ecoCount":45,"ecoChange":0}]}
           />
         )}
 
