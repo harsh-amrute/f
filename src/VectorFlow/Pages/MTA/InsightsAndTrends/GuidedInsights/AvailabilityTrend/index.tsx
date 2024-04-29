@@ -107,7 +107,7 @@ const AvailabilityTrend = () => {
         </VFButtonOutline>
       </div>
 
-      <div>
+      <div style={{ marginLeft:'20px'}}>
         <AgChartsReact options={options} />
         <div style={{marginLeft:'10px',marginRight:'10px'}}>
         <VFInfoTip text={graph1}/>

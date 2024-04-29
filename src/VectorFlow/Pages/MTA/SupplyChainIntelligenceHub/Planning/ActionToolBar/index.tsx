@@ -286,13 +286,15 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 width: currCategory === "GuidedInsight" ? '100%' : 'unset',
                                 justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
                                 >
-                         {currCategory==="GuidedInsight" ? null : 
-                                                         
+                                    
+                        {currCategory==="GITFromParent" || currCategory==="GITToChild" || currCategory==="ExpediteFromParent" || currCategory==="ExpediteToParent" || currCategory==="ExcessInventory" || currCategory==="OrderFulfillment" ?
                             <SCGoBackContainer onClick={onGoBack}>
-                                <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
-                                <SCGoBackText><b>Go Back</b></SCGoBackText>
+                            <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
+                            <SCGoBackText><b>Go Back</b></SCGoBackText>
                             </SCGoBackContainer>
-                        }
+                            : null
+                    
+                         }
                         {currCategory === 'DBMNorm' ? <DBMApplyNormChange onCheck={showAllTick}/>:null}
                         {currCategory === 'DBMNorm' ? 
                         <img 

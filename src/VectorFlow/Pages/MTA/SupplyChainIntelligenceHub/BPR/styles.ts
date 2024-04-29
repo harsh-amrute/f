@@ -78,7 +78,7 @@ export const BPRViewTableHeader = styled.div`
     font-style:normal;
     font-variant:normal;
     font-weight:500;
-    font-size:16px;
+    font-size:13px;
     line-height:21px;
     font-family:Roboto;
     letter-spacing: 0px;
@@ -103,6 +103,7 @@ export const BPRViewTableRowContainer = styled.div`
     display:flex;
     flex-direction:column;
     max-height:250px;
+    margin-top:20px;
 `
 
 export const BPRViewTableRow = styled.div`

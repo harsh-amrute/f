@@ -80,7 +80,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                 {isSubGridOpen && (
                     <Allotment.Pane >
                 
-                    <BPRViewTable
+                    <BPRViewTable 
                         tablePrefixSrc="/assets/img/VectorFLOW/BPR/in-transit.svg"
                         rowData={customGridRowData}
                         colDefs={customGridColDef}

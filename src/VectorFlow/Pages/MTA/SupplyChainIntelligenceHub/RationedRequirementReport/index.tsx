@@ -66,7 +66,7 @@ const RRR = () => {
   <ActionToolBar 
     view={'grid'} 
     setCurrentTab={''} 
-    currCategory={'BPR'} 
+    currCategory={'RRR'} 
     currentTab={''} 
     tabsList={[]} 
     onFloatingTabChange={()=>console.log('')} 

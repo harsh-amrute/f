@@ -4,12 +4,29 @@ import { Container,PanelGrid, PanelGridWrapper } from "./styles"
 import { useNavigate } from "react-router";
 
 import ButtonCard from "../../../../../components/VectorFLOW/commons/VFCard/ButtonCard";
+import { useDispatch } from "react-redux";
+import { useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { ADD_MASTER,TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
+import { mapMasterToMasterState } from "../../../../../helpers/utils";
 
 
 
 const ControlPanel = ()=>{
     const navigate = useNavigate();
 
+    const {mutateAsync:getUiConfig} = useGetMasterUIConfiguration()
+
+    const dispatch = useDispatch()
+    const handleFNC = async()=>{
+        const data = await getUiConfig('add')
+        const fncData:any = data.data.data.find((m:any)=>m.id==="13")
+        if(fncData){
+          dispatch(ADD_MASTER(mapMasterToMasterState([fncData])[0]))
+          dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
+        }
+        navigate('/master-data-management/control-panel/add')
+        
+    }
 
 
     return (
@@ -23,7 +40,7 @@ const ControlPanel = ()=>{
             </PanelGridWrapper>
             <PanelGridWrapper>
                 <PanelGrid>
-                    <ButtonCard opacity={"1"} text="Forced Norm Changes" onClick={()=>navigate('/master-data-management/control-panel/add')}/>
+                    <ButtonCard opacity={"1"} text="Forced Norm Changes" onClick={handleFNC}/>
 
                     <ButtonCard  text="Phase-In Phase-Out" onClick={()=>console.log("clciked")}/>
                     <ButtonCard text="Seasonality" onClick={()=>console.log("clciked")}/> 
