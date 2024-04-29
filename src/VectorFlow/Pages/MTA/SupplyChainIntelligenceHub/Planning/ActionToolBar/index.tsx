@@ -2,7 +2,7 @@ import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton';
 import VFFloatingTab from '../../../../../../components/VectorFLOW/commons/VFFloatingTab';
 import VFSelectedFilters from '../../../../../../components/VectorFLOW/commons/VFSelectedFilters';
 import useBPRFilter from '../../../../../../hooks/useBPRFilter';
-import {useState,useMemo} from 'react';
+import {useState,useMemo,useContext} from 'react';
 import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { useLocation, Link} from "react-router-dom";
 import { MultiFilterSupplyChainCheckboxList } from '../../../../../../helpers/BPRConstants'
@@ -27,6 +27,10 @@ import { useUserData } from '../../../../../../context/UserDataContext';
 import { DBMApplyNormChange } from '../../../DBM/DBMNormSuggestions/applyNormButton';
 import { PlanningCounts } from '../../../../../../VectorFlow/types/MTA';
 import VFButtonOutline from '../../../../../../components/VectorFLOW/commons/VFButtonOutline';
+import { GridStateContext } from '../../../../../../context/GridStateContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { UPDATE_PLANNING_DATA } from '../../../../../../redux/actions/MTA';
+import { RootState } from '../../../../../../redux/store/store';
 
 
 interface ActionToolBarProps {
@@ -51,10 +55,12 @@ interface ActionToolBarProps {
 
 const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter}:ActionToolBarProps) => {
     const { user } = useUserData();
+    const {ref} = useContext(GridStateContext)
     const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
     const {onSaveState,onResetAllState,onExportToExcel} = useSaveAllState()
+    const {currentCategory} = useSelector((state:RootState)=>state.mta.planning)
     const { pathname } = useLocation();
-
+    const dispatch = useDispatch()
     const themeUi = user?.user?.theme_ui;
  const [isFilterOpen,toggleFilter] = useState<boolean>(false)
 
@@ -84,6 +90,10 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
 
 
     const handleExportToExcel = ()=>{
+        if(pathname==='/supply-chain-intelligence-hub/open-expediting-requests'){
+            return ref.current.api.exportDataAsExcel()
+        }
+
         onExportToExcel({pagination:{recordCount:currentPageRecordCount || 0,chunkSize:5000},callBack:onExportToExcelCallBack})
     }
 
@@ -168,7 +178,6 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                 />
         )
     }
-
     
     return (
         <>
@@ -212,16 +221,23 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                     </Link>       
                                 </>
                                 }
+                                
+                                {currentTab==='custom' && (
+                                    <SCViewContainerWithBg onClick={()=>ref.current.api.exportDataAsExcel()} >
+                                        <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" />
+                                        <p>Excel Export</p>
+                                    </SCViewContainerWithBg>
+                                )}
                              {
-                                (currentTab==='availabilitytrend' ||  currentTab==="availabilityageingtrend" || currentTab==="dbmnormsuggestions" || currentTab==="chronicunavailability") &&
+                                (currentTab==='availabilitytrend' ||  currentTab==="availabilityageingtrend" || currentTab==="dbmnormsuggestions" || currentTab==="chronicunavailability" || currentTab==='custom') &&
 
                                 (
                                     <>
-                                        <SCViewContainerWithBg onClick={onGoBack}>
+                                        <SCViewContainerWithBg onClick={()=>onSaveState(`${currCategory}${currentTab}`)}>
                                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt=""  />
                                             <p>Save</p>
                                         </SCViewContainerWithBg>
-                                        <SCViewContainerWithBg onClick={onGoBack}>
+                                        <SCViewContainerWithBg onClick={()=>onResetAllState(`${currCategory}${currentTab}`)}>
                                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt=""  />
                                             <p>Reset</p>
                                         </SCViewContainerWithBg>
@@ -242,7 +258,14 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                         <p style={{color:'#bc3d81'}}>Chart View</p>
                                     </SCViewContainer>
                                     <div><SCVerticalDivider/></div>
-                                    <SCViewContainer onClick={() => onViewChange('grid')}>
+                                    <SCViewContainer onClick={() =>{
+                                        onViewChange('grid')
+                                        dispatch(UPDATE_PLANNING_DATA({
+                                            currentTab:currentTab,
+                                            currentCategory:currentCategory,
+                                            currentView:'grid'
+                                        }))
+                                    }}>
                                         <SCViewImage src={"/assets/img/VectorFLOW/BPR/grid-view-grey.svg"} alt=""  />
                                         <p style={{color:'#b0acac'}}>Grid View</p>
                                     </SCViewContainer>
@@ -263,13 +286,15 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 width: currCategory === "GuidedInsight" ? '100%' : 'unset',
                                 justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
                                 >
-                         {currCategory==="GuidedInsight" ? null : 
-                                                         
+                                    
+                        {currCategory==="GITFromParent" || currCategory==="GITToChild" || currCategory==="ExpediteFromParent" || currCategory==="ExpediteToParent" || currCategory==="ExcessInventory" || currCategory==="OrderFulfillment" ?
                             <SCGoBackContainer onClick={onGoBack}>
-                                <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
-                                <SCGoBackText><b>Go Back</b></SCGoBackText>
+                            <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
+                            <SCGoBackText><b>Go Back</b></SCGoBackText>
                             </SCGoBackContainer>
-                        }
+                            : null
+                    
+                         }
                         {currCategory === 'DBMNorm' ? <DBMApplyNormChange onCheck={showAllTick}/>:null}
                         {currCategory === 'DBMNorm' ? 
                         <img 
@@ -294,7 +319,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 
                                 {currCategory==='BufferTrend' ? null :
                                 <>
-                                {(currCategory==="GuidedInsight")? null : 
+                                {(currCategory==="GuidedInsight" || (currCategory==="BTR" && currentTab==="both"))? null : 
                                 <>
                                 <SCVerticalDivider/>
                                     <SCViewContainerWithBg onClick={handleExportToExcel} >
@@ -307,7 +332,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 </SCViewContainerWithBg>
                                 </>
                                 }
-                                {(currCategory==="GuidedInsight" && currentTab==="chronicunavailability")? null :
+                                {((currCategory==="GuidedInsight" && currentTab==="chronicunavailability") || (currCategory==="BTR" && currentTab==="both"))? null :
                                 <>
                                 
                                 <SCVerticalDivider/>  
@@ -337,7 +362,14 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 (currCategory==='CustomScreens' || currCategory==='BufferTrend' || currCategory==="BPR" || currCategory==="RRR" || currCategory==="BOR" || currCategory==="BTR" || currCategory==="ResearchInsight" || currCategory==="DBMNorm" || (currCategory==="GuidedInsight" && currentTab!=="chronicunavailability") || currCategory==="OpenExpeditingRequests" ) ? null : (
                                 !disableChartAndGridViewToggle &&
                                 <SCViewBackground>
-                                    <SCViewContainer onClick={() => onViewChange('chart')}>
+                                    <SCViewContainer onClick={() =>{
+                                        onViewChange('chart')
+                                        dispatch(UPDATE_PLANNING_DATA({
+                                            currentTab:currentTab,
+                                            currentCategory:currentCategory,
+                                            currentView:'grid'
+                                        }))
+                                    }}>
                                         <SCViewImage src={"/assets/img/VectorFLOW/BPR/chart-view-grey.svg"} alt="" />
                                         <p style={{color:'#b0acac'}}>Chart View</p>
                                     </SCViewContainer>

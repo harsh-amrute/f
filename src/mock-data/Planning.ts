@@ -36901,11 +36901,11 @@ export const getPlanningDataGridMockData = {
               "colCode": "g"
           },
           {
-              "header": "PhysicalInventoryPen",
+              "header": "On-HandPen",
               "colCode": "pip"
           },
           {
-              "header": "PhysicalInventoryColor",
+              "header": "On-HandColor",
               "colCode": "pic"
           },
           {

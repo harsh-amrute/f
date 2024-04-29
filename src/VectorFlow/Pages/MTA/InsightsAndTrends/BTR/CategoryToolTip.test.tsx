@@ -4,7 +4,7 @@ import CategoryToolTip from './CategoryToolTip';
 
 // Mock ITooltipParams
 const mockTooltipParams:any = {
-  value: '1,2,3,5,9', // Mocked value
+  value: '1|2|3|5|9', // Mocked value
 };
 
 // Mock BTRCategoryMapper

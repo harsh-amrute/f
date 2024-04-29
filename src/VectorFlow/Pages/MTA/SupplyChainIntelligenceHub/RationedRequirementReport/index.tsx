@@ -49,13 +49,6 @@ const RRR = () => {
         }
         getTableState()
     },[currentGridState])
-  
- if(isLoading || isSavedDataLoading){
-  return(
-    <VFLoader/>
-  )
- }
-
  
   return (
   <GridStateContext.Provider
@@ -73,7 +66,7 @@ const RRR = () => {
   <ActionToolBar 
     view={'grid'} 
     setCurrentTab={''} 
-    currCategory={'BPR'} 
+    currCategory={'RRR'} 
     currentTab={''} 
     tabsList={[]} 
     onFloatingTabChange={()=>console.log('')} 
@@ -103,7 +96,11 @@ const RRR = () => {
                     Reset Filter
             </VFButton>
         </RRRTaskBar> */}
-        <div style={{height:'100vf'}}>
+        {(isLoading || isSavedDataLoading)?(
+          <VFLoader/>
+        ):
+        (
+          <div style={{height:'100vf'}}>
 
           <VFTable
                   ref={ref}
@@ -124,6 +121,7 @@ const RRR = () => {
                 handleChangePage={(e)=>handleChangePage(e)} 
               />  
         </div>
+        )}
         <div style={{display:'none'}}>                
           <VFTable
             ref={tempRef}

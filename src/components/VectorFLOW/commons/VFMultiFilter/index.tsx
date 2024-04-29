@@ -916,10 +916,9 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tags?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="Tags(PIPO, Seasonality)" filterKey="availabilty_tags" isOpen={openStatus.availabilty_tags} setOpenStatus={setOpenStatus}>
                             <FilterMultiSelectCheckbox header={'PIPO,Seasonality'} filterOptions={[ 
-                                { label: 'Red', id: '1' },
-                                { label: 'Yellow', id: '2' },
-                                { label: 'Green', id: '3' },
-                                { label: 'Black', id: '4' },
+                                { label: 'PIPO', id: '1' },
+                                { label: 'Seasonality', id: '2' },
+                               
                                 ]} 
                                 filterState={multiFilter.availabilityFilter.filters.filter((f)=>f.name==='AF7')}
                                 onChange={(e:any,key:string)=>onFilterChange('AF7',e,'4',key)} filterId={'AF7'}/>

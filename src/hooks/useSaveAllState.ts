@@ -37,18 +37,20 @@ const useSaveAllState = () => {
 
 
   const onExportToExcel = async (params:exportToExcelParameters)=>{
-   
     const {pagination,callBack} = params
     const {recordCount,chunkSize} = pagination
 
     try {
-      
+      //buggy line below
       const numberOfPages = Math.ceil(recordCount/chunkSize);
+      console.log(recordCount)
+      
       const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
       const rows = [];
       for(let i=1; i<=numberOfPages; i++){
       
         const result = await callBack(i);
+
         if(result === null) {
           // throw new Error("Something Went Wrong")
           break
@@ -57,6 +59,7 @@ const useSaveAllState = () => {
         if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
         else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
       }
+      
       setExportExcelColumns(exportExcelColumns)
       setExportExcelRowData(rows)
       setTempDownloadData(true);
@@ -65,6 +68,7 @@ const useSaveAllState = () => {
 
       notifySuccess(`Data Exported Successfully`);
     } catch (error) {
+      
       toast.dismiss();
       notifyError('Something Went Wrong');
     }
