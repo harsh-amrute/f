@@ -48,14 +48,12 @@ const AvailabilityAgeingTrend=()=>{
         xKey: "date",
         yKey: "red",
         yName: "red",
-        strokeWidth: 3,
-        stroke: "#DA3535",
-        marker: {
-          fill: "#DA3535",
-          size: 5,
-         
-         
-        },
+        stroke:"#DA3535",
+        marker:{
+          fill: 'red',
+        stroke: 'red'
+        }
+        
       },
       {
         type: "line" as const,
@@ -63,28 +61,26 @@ const AvailabilityAgeingTrend=()=>{
         yKey: "black",
         yName: "black",
         strokeWidth: 3,
-        stroke: "#000000",
-        marker: {
-          fill: "#000000",
-          size: 5,
-        
-         
-        },
+        stroke:"#000000",
+        marker:{
+          fill: 'black',
+        stroke: 'black'
+        }
+       
       },
+      
+
       {
         type: "line" as const,
         xKey: "date",
         yKey: "white",
         yName: "white",
         strokeWidth: 3,
-        stroke: "#BFBFBF",
-        marker: {
-          fill: "#BFBFBF",
-          size: 5,
-       
-         
-        },
-      },
+        stroke:"#BFBFBF",marker:{
+          fill: 'grey',
+        stroke: 'grey'
+        }
+       },
     ],
 
 }
@@ -96,32 +92,35 @@ const graph1 = [
  if(isLoading){
         return <VFLoader/>
     }
+
     return <div style={{ margin:'25px 20px 0px 20px'}}>
       <div style={{display:"flex", top: 221,
       left: 239,
-width: 970,
-height: 59,
-opacity: 1}}>
-  <div style={{paddingLeft:20, paddingTop:10, width:250,  }}>
+      width: 970,
+      height: 59,
+      opacity: 1}}>
+     <div style={{paddingLeft:20, paddingTop:10, width:250,  }}>
       <label style={{ fontStyle:"normal",
-    fontVariant:"normal",
-    fontWeight:400,
-    fontSize:16,
-    fontFamily:"Roboto",}}><b>Minimum Ageing:</b>  </label>
+        fontVariant:"normal",
+        fontWeight:400,
+        fontSize:16,
+        fontFamily:"Roboto",}}>
+        <b>Minimum Ageing:</b>  
+      </label>
        <select onChange={handleAgeChange} value={minAgeing} style={{width:50, height:40, border:"1px solid #707070", boxShadow:" 0px 6px 12px #8D8D8D29"}}>
       
         {numbers.map((number) => (
           <option key={number} value={number}>
             {number}
           </option>))}
-  </select>
-  </div>
-  <div style={{width:450, display:"flex" }}>
-  <label style={{fontStyle:"normal",
-    fontVariant:"normal",
-    fontWeight:400,
-    fontSize:15,
-   paddingTop:20,
+        </select>
+        </div>
+        <div style={{width:450, display:"flex" }}>
+        <label style={{fontStyle:"normal",
+          fontVariant:"normal",
+          fontWeight:400,
+          fontSize:15,
+        paddingTop:20,
     fontFamily:"Roboto",  paddingLeft:'10px'}}> <b>Select Horizon: </b></label>
      
                     <VFRangeSlider

@@ -69,7 +69,7 @@ const OpenExpeditingRequests = ()=>{
                 genericRecordCount={12}
                 onExportToExcelCallBack={onExportToExcelCallBack}
               />
-            <VFTable
+            <VFTable height={800}
             columnDefs={tableColDefs}
             rowData={[
                 {

@@ -35,7 +35,15 @@ export const VFTastStatusDownloadWrapper = styled.div`
 export const VFTaskStatusStepperLabel = styled.p`
     font-size:18px;
     text-align:center;
+    width:100px;
+    height:40px;
+    display:flex;
+    justify-content:center;
+    align-items: center;
+    text-overflow:ellipsis;
+    border:1px solid #EBEBEB;
 `
+
 
 export const VFTaskStatusNoData = styled.div`
     width:100%;

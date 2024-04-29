@@ -21,7 +21,7 @@ export const ResearchInsightsTableWrapper = styled.div`
 export const ResearchInsightsTableTaskBar = styled.div`
     width:100%;
     padding:10px 15px;
-    margin-top:-10px;
+    // margin-top:-10px;
 `
 
 export const AvailabilityTrendWrapper = styled.div`
@@ -36,6 +36,8 @@ export const AvailabilityTrendWrapper = styled.div`
     background-color:white;
     border-radius:12px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border:2px solid;
+
 `
 export const AvailabilityTrendHeader = styled.div`
     background-color:black;

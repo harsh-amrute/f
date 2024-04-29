@@ -98,11 +98,11 @@ const useGetRRRCountResult: any = {
         render(contextWrapper(<RRR/>,store));
     })
 
-     it("renders RRReport", async()=>{
-        await act(async () => {
-          render(contextWrapper(<RRR />,store));
-          })
-    })
+    //  it("renders RRReport", async()=>{
+    //     await act(async () => {
+    //       render(contextWrapper(<RRR />,store));
+    //       })
+    // })
 
     //  it("Handles Pagination", async()=>{
     //     await act(async () => {
