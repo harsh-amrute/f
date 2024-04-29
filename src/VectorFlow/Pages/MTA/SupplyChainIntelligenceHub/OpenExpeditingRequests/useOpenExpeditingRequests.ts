@@ -155,7 +155,6 @@ const useOpenExpeditingRequests = () => {
     }
 
     const onOpenRemarkHistory = async (e: React.MouseEvent<HTMLElement>,data:any) => {
-      console.log(data)
         try {
             setIsRemarkHistoryToolTipOpen(false)
             const toastId = notifyLoader("Getting remark history")
@@ -217,6 +216,14 @@ const useOpenExpeditingRequests = () => {
       let result:Array<ColDef> = []
       if(config){
         result =  config.map((col:any)=>{
+          if(col.colCode==="pic"){
+            return{
+              headerName: col.header,
+              colId: col.colCode,
+              field: col.colCode,
+              cellRenderer:'colorCellRenderer'
+            }
+          }
           return{
             headerName: col.header,
             colId: col.colCode,

@@ -6,12 +6,32 @@ const mockTechTableProps = {
   header: 'Tech Table',
   columnDefs: [], // Mocked column definitions
   rowData: [], // Mocked row data
+  paginationProps:{
+    selectedRows:0,
+    totalRows:0,
+    rowsPerPage:100,
+    currentPage:1,
+    handleChangePage:() => {
+       return 
+    }
+    
+}
 };
 
 const mockEcoTableProps = {
   header: 'Eco Table',
   columnDefs: [], // Mocked column definitions
   rowData: [], // Mocked row data
+  paginationProps:{
+    selectedRows:0,
+    totalRows:0,
+    rowsPerPage:100,
+    currentPage:1,
+    handleChangePage:() => {
+       return 
+    }
+    
+}
 };
 
 const mockSplitViewProps: SplitViewProps = {

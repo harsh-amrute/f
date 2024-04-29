@@ -2,7 +2,6 @@ import {useEffect, useContext, useState } from "react";
 
 // import "./styles.css";
 import VFTable from "../../../../../../../../components/VectorFLOW/commons/VFTable";
-import { type GridRef } from "../../../../../../../types/MDM";
 // import _ from "lodash";
 import '../../styles.css';
 import { useGetPlanningDataCustom } from "../../../../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";

@@ -67,14 +67,14 @@ export const BPRTechColorCellRenderer = (params:any)=>{
 
     if(!techColor || techColor.length<0){
         return(
-            <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}} data-testid='bpr-tech-color-cell'>
+            <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}} data-testid='bpr-tech-color-cell'>
                 NULL
             </BPRColorCellRendererWrapper>
         )
     }
 
     return(
-        <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
+        <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
             {params.data.TechPen}%
         </BPRColorCellRendererWrapper>
     )
@@ -90,14 +90,14 @@ export const BPREcoColorCellRenderer = (params:any)=>{
 
     if(!ecoColor || ecoColor.length<0){
         return(
-            <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
+            <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
                 NULL
             </BPRColorCellRendererWrapper>
         )
     }
 
     return(
-        <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}}>
+        <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
             {params.data.EcoPen}%
         </BPRColorCellRendererWrapper>
     )

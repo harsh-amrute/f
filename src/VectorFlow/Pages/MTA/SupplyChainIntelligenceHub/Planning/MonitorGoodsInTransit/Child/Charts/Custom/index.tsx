@@ -27,7 +27,7 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
 
     const chunkSize = 10000;
 
-    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+    const {mutateAsync:getState} = useGetState()
     const {mutateAsync:getPlanningDataCustom,isLoading} = useGetPlanningDataCustom();
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {

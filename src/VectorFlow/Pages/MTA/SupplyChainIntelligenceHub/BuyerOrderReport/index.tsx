@@ -32,12 +32,6 @@ const BuyerOrderReport = ()=>{
     } = useBOR()
 
 
-    if(isLoading || isSavedDataLoading){
-      return (
-        <VFLoader/>
-      )
-    }
-
     return(
      <GridStateContext.Provider
      value={{
@@ -78,7 +72,11 @@ const BuyerOrderReport = ()=>{
                     Edit Filter
                 </VFButton>
             </BORTaskBar> */}
-            <div style={{height:'100vh'}}>
+            {(isLoading || isSavedDataLoading)?(
+              <VFLoader/>
+            ):
+            (
+              <div style={{height:'100vh'}}>
            
               <VFTable
                {...agGridProps}
@@ -98,6 +96,7 @@ const BuyerOrderReport = ()=>{
               />
               
              </div>
+            )}
              <div style={{display:'none'}}>                
                   <VFTable
                     ref={tempRef}

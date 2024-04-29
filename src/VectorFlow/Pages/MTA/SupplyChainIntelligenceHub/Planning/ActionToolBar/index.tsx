@@ -90,6 +90,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
         if(pathname==='/supply-chain-intelligence-hub/open-expediting-requests'){
             return ref.current.api.exportDataAsExcel()
         }
+
         onExportToExcel({pagination:{recordCount:currentPageRecordCount || 0,chunkSize:5000},callBack:onExportToExcelCallBack})
     }
 
@@ -174,7 +175,6 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                 />
         )
     }
-
     
     return (
         <>
@@ -306,7 +306,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 
                                 {currCategory==='BufferTrend' ? null :
                                 <>
-                                {(currCategory==="GuidedInsight")? null : 
+                                {(currCategory==="GuidedInsight" || (currCategory==="BTR" && currentTab==="both"))? null : 
                                 <>
                                 <SCVerticalDivider/>
                                     <SCViewContainerWithBg onClick={handleExportToExcel} >
@@ -319,7 +319,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 </SCViewContainerWithBg>
                                 </>
                                 }
-                                {(currCategory==="GuidedInsight" && currentTab==="chronicunavailability")? null :
+                                {((currCategory==="GuidedInsight" && currentTab==="chronicunavailability") || (currCategory==="BTR" && currentTab==="both"))? null :
                                 <>
                                 
                                 <SCVerticalDivider/>  

@@ -135,7 +135,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
             const data = await getAnalyticsData(payloadString)
         setRowData(calculatePercentIncrease(data.data.data))
         }catch(err:any){
-            notifyError(err)
+            setRowData([])
         }
 
     }
@@ -192,6 +192,18 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
         )
     }
     
+    if(rowData.length===0){
+        <BPRDailyAnalyticsWrapper>
+                <BPRDailyAnalyticsContainer style={{aspectRatio:'0.9',width:'90%'}}>
+                    <BPRDailyAnalyticsHeader>
+                        Analytics (SKU Locations)
+                    </BPRDailyAnalyticsHeader>
+                    <div style={{width:'100%',height:'100%',display:'grid',placeItems:'center'}}>
+                    <p style={{color:'white'}}>No data</p>
+                    </div>
+                </BPRDailyAnalyticsContainer>
+            </BPRDailyAnalyticsWrapper>
+    }
     
 
 

@@ -4,9 +4,7 @@ import TagsCellRenderer from './TagsCellRenderer';
 describe('TagsCellRenderer', () => {
   it('renders with the correct tags', () => {
     const mockParams = {
-      data: {
-        Tags: 'tag1, tag2, tag3', // Mocked tags string
-      },
+      value:'tag1, tag2, tag3',
     };
 
     const { getByText } = render(<TagsCellRenderer {...mockParams} />);

@@ -50,6 +50,8 @@ const useBPR =()=>{
         whcode:''
     })
 
+    const [currFilter,setCurrFilter] = useState<any>({})
+
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
 
     const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
@@ -169,20 +171,21 @@ const useBPR =()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-            console.log('calledonce')
          if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
         }
       };
 
       const getBPRRowData=async(filter?:BPRFilterState)=>{
-
+        setActiveRow({})
+        setCurrFilter(filter)
+        toggleSubGrid(false)
         try{
             if(recordCount===0 || filter){
                 const countData = await getBPRDataCount({
                     id: 1,
                     name: "",
                     fields: [],
-                    filters:filter || {},
+                    filters:filter || currFilter,
                     paginationParameter:{
                         pageNumber:currGridPage,
                         recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
@@ -190,13 +193,14 @@ const useBPR =()=>{
                 })
     
                 setRecordCount(countData.data.recordCount)
+                setCurrGridPage(1)
             }
 
             const rowData =await  getBPRData({
                 id: 1,
                 name: "",
                 fields: [],
-                filters:filter || {},
+                filters:filter || currFilter,
                 paginationParameter:{
                     pageNumber:currGridPage,
                     recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
@@ -295,7 +299,7 @@ const useBPR =()=>{
             id:1,
             name:'',
             fields:[],
-            filters:[],
+            filters:{},
             paginationParameter:{
                 pageNumber:pageNumber,
                 recordsPerPage:5000

@@ -9,7 +9,7 @@ export const QUERY_KEYS = {
 }
 
 export const useGetBTRDataCount = () => {
-  return useQuery(QUERY_KEYS.useGetBTRDataCount,async (body:any) => {
+  return useQuery(QUERY_KEYS.useGetBTRDataCount,async () => {
     return await BTRService.getBTRDataCount()
   });
 }

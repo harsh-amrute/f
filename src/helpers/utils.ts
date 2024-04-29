@@ -5,7 +5,7 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef,CellClickedEvent} from 'ag-grid-community';
-import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper,taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData } from './MDMConstants';
+import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper,taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData, BTRDefaultColDefs } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,format, differenceInSeconds,parse} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
@@ -1999,17 +1999,42 @@ export const BPRColorMapper =(color:string):{bg:string,text:string}=> {
   }
 }
 
+export const mapBTRRowData =(rows:Array<any>):Array<any>=>{
+  return rows.map((r)=>{
+    const tempRow = {...r}
+    let tempAvailabilty = 0
+    let nonBlackCount = 0
+    for (let index = 1; index <= 90; index++) {
+     
+      if(tempRow[`D${index}`] &&  tempRow[`D${index}`]<100){
+        nonBlackCount = nonBlackCount + 1
+      }
+    
+      
+    }
+    tempAvailabilty = parseFloat(((nonBlackCount/90) * 100).toFixed(2))
+    return {
+      ...tempRow,
+      Availability:tempAvailabilty
+    }
+  })
+
+}
+
 
 export const mapBTRRowDataToColDefs = (row:any,onShowChart?:()=>void):Array<ColDef>=>{
   const graphCellRenderer:ColDef={
     field:'graph',
     colId:'graph',
     headerName:'',
-    width:40,
     cellRenderer:'graphCellRenderer',
     cellRendererParams:{
       onShowChart:onShowChart
     },
+    cellStyle:{
+      'zoom':'0.7'
+    },
+    minWidth:60,
     // cellStyle:{
     //   'max-width':100,
     //   'margin-left':20,
@@ -2033,7 +2058,7 @@ export const mapBTRRowDataToColDefs = (row:any,onShowChart?:()=>void):Array<ColD
         },
         floatingFilter: true,
         filter: "agMultiColumnFilter",
-        ...defaultColDefs
+        ...BTRDefaultColDefs
       }
     }
 
@@ -2045,7 +2070,7 @@ export const mapBTRRowDataToColDefs = (row:any,onShowChart?:()=>void):Array<ColD
         cellRenderer:'tagsCellRenderer',
         floatingFilter: true,
         filter: "agMultiColumnFilter",
-        ...defaultColDefs
+        ...BTRDefaultColDefs
       }
     }
     
@@ -2059,11 +2084,11 @@ export const mapBTRRowDataToColDefs = (row:any,onShowChart?:()=>void):Array<ColD
         tooltipComponent:'availabilityToolTip',
         floatingFilter: true,
         filter: "agMultiColumnFilter",
-        ...defaultColDefs
+        ...BTRDefaultColDefs
       }
     }
 
-    if(key==='category'){
+    if(key==='Category'){
       return {
         field:key,
         colId:key,
@@ -2073,7 +2098,7 @@ export const mapBTRRowDataToColDefs = (row:any,onShowChart?:()=>void):Array<ColD
         tooltipField:key,
         tooltipComponent:'categoryToolTip',
         filter: "agMultiColumnFilter",
-        ...defaultColDefs
+        ...BTRDefaultColDefs
       }
     }
 
@@ -2083,7 +2108,7 @@ export const mapBTRRowDataToColDefs = (row:any,onShowChart?:()=>void):Array<ColD
       headerName:key,
       floatingFilter: true,
       filter: "agMultiColumnFilter",
-      ...defaultColDefs
+      ...BTRDefaultColDefs
     }
   })
   if(onShowChart)result = [graphCellRenderer,...result]

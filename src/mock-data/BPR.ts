@@ -87253,3 +87253,41 @@ export const GetDailyDataMockResponse = {
     "conflictErrorCount": null,
     "conflictError": null
 }
+
+export const GetDailyAnalyticsMockResponse = {
+    "recordCount": null,
+    "data": [
+        {
+            "ReportDate": "2024-04-28",
+            "OnHandBlack": 1812,
+            "OnHandRed": 1328,
+            "OnHandYellow": 716,
+            "OnHandGreen": 825,
+            "OnHandWhite": 1974,
+            "PipelineBlack": 1436,
+            "PipelineRed": 1114,
+            "PipelineYellow": 700,
+            "PipelineGreen": 977,
+            "PipelineWhite": 2420
+        },
+        {
+            "ReportDate": "2024-04-27",
+            "OnHandBlack": 1960,
+            "OnHandRed": 1386,
+            "OnHandYellow": 655,
+            "OnHandGreen": 853,
+            "OnHandWhite": 1798,
+            "PipelineBlack": 1606,
+            "PipelineRed": 1152,
+            "PipelineYellow": 717,
+            "PipelineGreen": 1044,
+            "PipelineWhite": 2123
+        }
+    ],
+    "status": 200,
+    "msg": null,
+    "errorCount": null,
+    "error": null,
+    "conflictErrorCount": null,
+    "conflictError": null
+}

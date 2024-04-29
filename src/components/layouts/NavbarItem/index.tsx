@@ -14,7 +14,6 @@ import {useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 import BPRDailyAnalytics from "../../../components/VectorFLOW/layouts/BPRDailyAnalytics";
-import { UPDATE_PLANNING_DATA } from "../../../redux/actions/MTA";
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -25,7 +24,7 @@ const NavbarItem = ({
   const { t } = useTranslation();
   const { user,isSideBarOpen,toggleSideBar } = useUserData();
   const permission: any = user?.roles?.permission;
-  const {currentView,currentCategory,currentTab} = useSelector((state:RootState)=>state.mta.planning)
+  const {currentView,currentCategory} = useSelector((state:RootState)=>state.mta.planning)
   const analyticsPaths:Array<string> = ["/supply-chain-intelligence-hub/bpr","/supply-chain-intelligence-hub/rrr","/supply-chain-intelligence-hub/bor","/dbm/dbm-norm-suggestions","/insights-and-trends/research-insights"]
   const themeUi = user?.user?.theme_ui;
   const navigate = useNavigate();

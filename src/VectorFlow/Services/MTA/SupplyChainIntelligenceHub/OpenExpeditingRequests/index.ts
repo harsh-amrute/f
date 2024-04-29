@@ -1,5 +1,4 @@
 import { useQuery,useMutation } from '@tanstack/react-query'
-import { BPRDataPayload, GetDailyDataPayload, SubmitBPRRemarkPayload } from '../../../../../VectorFlow/types/BPR';
 
 import { OpenExpeditingRequestsService } from './api'
 
