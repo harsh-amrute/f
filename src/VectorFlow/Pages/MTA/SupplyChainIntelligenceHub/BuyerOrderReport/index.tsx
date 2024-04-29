@@ -36,12 +36,6 @@ const BuyerOrderReport = ()=>{
     } = useBOR()
 
 
-    if(isLoading || isSavedDataLoading){
-      return (
-        <VFLoader/>
-      )
-    }
-
     return(
      <GridStateContext.Provider
      value={{
@@ -82,13 +76,17 @@ const BuyerOrderReport = ()=>{
                     Edit Filter
                 </VFButton>
             </BORTaskBar> */}
+            {(isLoading || isSavedDataLoading)?(
+              <VFLoader/>
+            ):
+            (
+              <div style={{height:'100vh'}}>
               {
                 showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHDescription'} />
               }
               {
                   showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
               }
-            <div style={{height:'100vh'}}>
            
               <VFTable
                {...agGridProps}
@@ -108,6 +106,7 @@ const BuyerOrderReport = ()=>{
               />
               
              </div>
+            )}
              <div style={{display:'none'}}>                
                   <VFTable
                     ref={tempRef}

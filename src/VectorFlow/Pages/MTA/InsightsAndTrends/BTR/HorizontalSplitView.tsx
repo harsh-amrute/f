@@ -1,11 +1,13 @@
 import { AgGridReactProps } from "ag-grid-react"
 import { Allotment } from "allotment"
 import useViewPort from "../../../../../hooks/useViewPort"
-import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import { BTRTableHeader, BTRTableWrapper ,BTRAllomentSection} from "./styles"
+import CustomVFTable from "./CustomVFTable"
+import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 
 interface SpliViewTableProps extends AgGridReactProps{
     header:string
+    paginationProps:any
 }
 
 export interface SplitViewProps{
@@ -24,12 +26,12 @@ const VerticalSplitView = (props:SplitViewProps)=>{
 
    return (
         <BTRTableWrapper style={{height:screenHeight - 100,margin:'0'}}>
-            <Allotment vertical={true}>
+            <Allotment vertical={true} defaultSizes={[400,200]}>
                 <Allotment.Pane >
                     <BTRAllomentSection>
                         <BTRTableHeader>{techTable.header}</BTRTableHeader>
-                        <VFTable 
-                            
+                        <CustomVFTable 
+                            rowHeight={25}
                             disableZoomScaling
                             gridOptions={{
                                 components:techTable.gridOptions?.components
@@ -37,17 +39,21 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             columnDefs={techTable.columnDefs}
                             rowData={techTable.rowData}
                             tooltipMouseTrack={true}
-                            pagination
-                            paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                             tooltipShowDelay={0}
                             tooltipHideDelay={100000}
                         />
+                        <div style={{zoom:0.7,marginBottom:'20px'}}>
+                            <VFPagination
+                                {...techTable.paginationProps}
+                            />
+                         </div>
                     </BTRAllomentSection>
                 </Allotment.Pane>
                 <Allotment.Pane>
                     <BTRAllomentSection>
                         <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
-                        <VFTable 
+                        <CustomVFTable 
+                            rowHeight={25}
                             disableZoomScaling
                             gridOptions={{
                                 components:ecoTable.gridOptions?.components
@@ -55,11 +61,14 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             columnDefs={ecoTable.columnDefs}
                             rowData={ecoTable.rowData}
                             tooltipMouseTrack={true}
-                            pagination
-                            paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                             tooltipShowDelay={0}
                             tooltipHideDelay={100000}
                         />
+                         <div style={{zoom:0.7,marginBottom:'20px'}}>
+                            <VFPagination
+                                {...ecoTable.paginationProps}
+                            />
+                         </div>
                     </BTRAllomentSection>
                 </Allotment.Pane>
             </Allotment>

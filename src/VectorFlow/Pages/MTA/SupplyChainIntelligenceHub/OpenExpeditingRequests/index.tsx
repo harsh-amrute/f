@@ -16,8 +16,9 @@ const OpenExpeditingRequests = ()=>{
 
     const {
         agGridProps,
-        tableColDefs,
+        rowData,
         remark,
+        isLoading,
         remarkHistory,
         isSubmitRemarkToolTipOpen,
         isRemarkHistoryToolTipOpen,
@@ -32,17 +33,12 @@ const OpenExpeditingRequests = ()=>{
         onCloseRemarkHistory,
         tempDownloadData,
         setTempDownloadData,
-
+        colDefs,
         exportExcelRowData,
         setExportExcelRowData,
         exportExcelColumns,
-        setExportExcelColumns,
-        onExportToExcelCallBack
+        setExportExcelColumns
     } = useOpenExpeditingRequests()
-
-    if(isSavedDataLoading){
-      return <VFLoader/>
-    }
 
     return(
         <GridStateContext.Provider
@@ -67,157 +63,17 @@ const OpenExpeditingRequests = ()=>{
                 onGoBack={()=>console.log('')} 
                 onViewChange={()=>console.log('')}
                 genericRecordCount={12}
-                onExportToExcelCallBack={onExportToExcelCallBack}
+                onExportToExcelCallBack={()=>{return }}
               />
+          {(isLoading|| isSavedDataLoading)?
+          (
+            <VFLoader/>
+          )
+            :
+          (
             <VFTable
-            columnDefs={tableColDefs}
-            rowData={[
-                {
-                  "sc": "456ZY...",
-                  "rl": "Mumbai, Maharashtra",
-                  "sl": "Delhi, Delhi",
-                  "rr": 2,
-                  "rp": "White",
-                  "br": "7 Days",
-                  "plpd": "₹ 6.2L",
-                  "action": "Pending",
-                  "eta": "2023-11-28",
-                  "history": ""
-                },
-                {
-                  "sc": "789WX...",
-                  "rl": "Bangalore, Karnataka",
-                  "sl": "Kolkata, West Bengal",
-                  "rr": 3,
-                  "rp": "Blue",
-                  "br": "14 Days",
-                  "plpd": "₹ 4.8L",
-                  "action": "Approved",
-                  "eta": "2023-10-05",
-                  "history": ""
-                },
-                {
-                  "sc": "234AB...",
-                  "rl": "Chennai, Tamil Nadu",
-                  "sl": "Hyderabad, Telangana",
-                  "rr": 1,
-                  "rp": "Red",
-                  "br": "5 Days",
-                  "plpd": "₹ 7.3L",
-                  "action": "Completed",
-                  "eta": "2023-12-20",
-                  "history": ""
-                },
-                {
-                    "sc": "456ZY...",
-                    "rl": "Mumbai, Maharashtra",
-                    "sl": "Delhi, Delhi",
-                    "rr": 2,
-                    "rp": "White",
-                    "br": "7 Days",
-                    "plpd": "₹ 6.2L",
-                    "action": "Pending",
-                    "eta": "2023-11-28",
-                    "history": ""
-                  },
-                  {
-                    "sc": "789WX...",
-                    "rl": "Bangalore, Karnataka",
-                    "sl": "Kolkata, West Bengal",
-                    "rr": 3,
-                    "rp": "Blue",
-                    "br": "14 Days",
-                    "plpd": "₹ 4.8L",
-                    "action": "Approved",
-                    "eta": "2023-10-05",
-                    "history": ""
-                  },
-                  {
-                    "sc": "234AB...",
-                    "rl": "Chennai, Tamil Nadu",
-                    "sl": "Hyderabad, Telangana",
-                    "rr": 1,
-                    "rp": "Red",
-                    "br": "5 Days",
-                    "plpd": "₹ 7.3L",
-                    "action": "Completed",
-                    "eta": "2023-12-20",
-                    "history": ""
-                  },
-                  {
-                    "sc": "456ZY...",
-                    "rl": "Mumbai, Maharashtra",
-                    "sl": "Delhi, Delhi",
-                    "rr": 2,
-                    "rp": "White",
-                    "br": "7 Days",
-                    "plpd": "₹ 6.2L",
-                    "action": "Pending",
-                    "eta": "2023-11-28",
-                    "history": ""
-                  },
-                  {
-                    "sc": "789WX...",
-                    "rl": "Bangalore, Karnataka",
-                    "sl": "Kolkata, West Bengal",
-                    "rr": 3,
-                    "rp": "Blue",
-                    "br": "14 Days",
-                    "plpd": "₹ 4.8L",
-                    "action": "Approved",
-                    "eta": "2023-10-05",
-                    "history": ""
-                  },
-                  {
-                    "sc": "234AB...",
-                    "rl": "Chennai, Tamil Nadu",
-                    "sl": "Hyderabad, Telangana",
-                    "rr": 1,
-                    "rp": "Red",
-                    "br": "5 Days",
-                    "plpd": "₹ 7.3L",
-                    "action": "Completed",
-                    "eta": "2023-12-20",
-                    "history": ""
-                  },
-                  {
-                    "sc": "456ZY...",
-                    "rl": "Mumbai, Maharashtra",
-                    "sl": "Delhi, Delhi",
-                    "rr": 2,
-                    "rp": "White",
-                    "br": "7 Days",
-                    "plpd": "₹ 6.2L",
-                    "action": "Pending",
-                    "eta": "2023-11-28",
-                    "history": ""
-                  },
-                  {
-                    "sc": "789WX...",
-                    "rl": "Bangalore, Karnataka",
-                    "sl": "Kolkata, West Bengal",
-                    "rr": 3,
-                    "rp": "Blue",
-                    "br": "14 Days",
-                    "plpd": "₹ 4.8L",
-                    "action": "Approved",
-                    "eta": "2023-10-05",
-                    "history": ""
-                  },
-                  {
-                    "sc": "234AB...",
-                    "rl": "Chennai, Tamil Nadu",
-                    "sl": "Hyderabad, Telangana",
-                    "rr": 1,
-                    "rp": "Red",
-                    "br": "5 Days",
-                    "plpd": "₹ 7.3L",
-                    "action": "Completed",
-                    "eta": "2023-12-20",
-                    "history": ""
-                  }
-              ]
-              }
+            columnDefs={colDefs}
+            rowData={rowData}
             {...agGridProps}
             ref={ref}
             onGridReady={(params)=>{
@@ -226,6 +82,8 @@ const OpenExpeditingRequests = ()=>{
               }
             }}
         />
+          )
+        }
         {isSubmitRemarkToolTipOpen && (
             <BPRSubmiRemarkToolTip
                 remark={remark}

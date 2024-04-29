@@ -1,40 +1,54 @@
 import {BTRCategoryMapperType} from '../VectorFlow/types/BTR'
 
 export const BTRCategoryMapper:BTRCategoryMapperType = {
-    "1":{
+    "2":{
         bgColor:"black",
         color:'white',
         cellLabel:"CTB",
         toolTipHeader:"Cont Tech Black",
         toolTipDescription:"*Total Tech black days > RLT"
     },
-    "2":{
+    "5":{
         bgColor:"#8E8E8E",
         color:'white',
         cellLabel:"SE",
         toolTipHeader:"Stagnated Excess",
         toolTipDescription:"*Consecutive white for 2 RLTs & No consumption in last 2 RLTs"
     },
-    "3":{
+    "4":{
         bgColor:" #F02424",
         color:'white',
         cellLabel:"SD",
         toolTipHeader:"Super Delay",
         toolTipDescription:"*>=2*SLt"
     },
-    "4":{
+    "1":{
         bgColor:"#355FD3",
         color:'white',
         cellLabel:"SI",
         toolTipHeader:'Supply Chain Issue',
         toolTipDescription:'*Eco Black ageing > 1.5 RLTs'
     },
-    "5":{
+    "3":{
         bgColor:"linear-gradient(90deg, rgba(41,41,41,1) 50%, rgba(240,36,36,1) 50%)",
         color:'white',
         cellLabel:"B+R",
         toolTipHeader:"Cont Tech Black+Red",
         toolTipDescription:"*Total Tech black + red days >=RLT"
+    },
+    "6":{
+        bgColor:"#D0A928",
+        color:'white',
+        cellLabel:"UN",
+        toolTipHeader:'Upward Norm Revision',
+        toolTipDescription:'*any open suggestions for norm increase'
+    },
+    "7":{
+        bgColor:"#E3812D",
+        color:'white',
+        cellLabel:"DN",
+        toolTipHeader:"Downward Norm Revision",
+        toolTipDescription:"*any open suggestions for norm decrease"
     }
 }
 
@@ -104,3 +118,17 @@ export const GraphSeriesOverrides = {
         },
     },
 }
+export interface RouterToAnalyticsStringMap {
+    [route: string]: string;
+  }
+
+
+export const routerToAnalyticsStringMap:RouterToAnalyticsStringMap = {
+    // "/supply-chain-intelligence-hub/planning": "planning",
+    "/supply-chain-intelligence-hub/bpr": "bpr",
+    "/supply-chain-intelligence-hub/rrr": "rrr",
+    "/supply-chain-intelligence-hub/bor": "bor",
+    "/dbm/dbm-norm-suggestions": "dbm",
+    "/insights-and-trends/research-insights": "ri",
+  };
+  

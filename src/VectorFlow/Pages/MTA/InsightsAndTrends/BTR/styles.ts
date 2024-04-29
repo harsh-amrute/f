@@ -14,13 +14,16 @@ export const BTRLayoutTabsWrapper = styled.div`
 
 export  const ToggleViewBtnWrapper = styled.div`
     position:absolute;
-    right:10px;
+    right:35px;
+    zoom:0.6;
+    z-index:20;
+    margin-top:-10px;
 `
 
 export const BTRTableWrapper = styled.div`
     display:flex;
     flex-direction:column;
-    aspect-ratio:2.5;
+    height:100vh;
     width:100%;
     margin-top:20px;
     margin-bottom:20px;
@@ -33,9 +36,9 @@ export const BTRAllomentSection = styled.div`
 `
 
 export const BTRTableHeader = styled.p`
-    font-size:16px;
+    font-size:13px;
     font-weight:500;
-    margin:10px 25px;
+    margin:0px 25px;
 `
 
 export const BTRAvailabiltyCellRendererWrapper = styled.div`
@@ -48,8 +51,9 @@ export const BTRAvailabiltyCellRendererWrapper = styled.div`
 
 export const BTRAvailabiltyCellRenderer = styled.div<{value:number}>`
     position:relative;
-    height:20px;
-    width:70px;
+    height:100%;
+    max-height:15px;
+    width:45px;
     background: #DEDEDE 0% 0% no-repeat padding-box;
     &::before {
         content: '';
@@ -71,10 +75,10 @@ export const CategoryCellRendererWrapper = styled.div`
 `
 
 export const CategoryCellRendererChip = styled.div`
-    width: 30px;
-    height: 30px;
+    width: 18px;
+    height: 18px;
     display:flex;
-    font-size:12px;
+    font-size:8px;
     font-family:Roboto;
     align-items:center;
     justify-content:center;
@@ -93,12 +97,13 @@ export const AvailabilityToolTipWrapper = styled.div`
     color:white;
     padding:15px;
     border-radius: 4px;
+    font-size:9px;
 `
 
 export const CategoryToolTipWrapper = styled.div`
     display:flex;
     flex-direction:column;
-    width: 215px;
+    width: 150px;
     border-radius:4px;
     overflow:hidden;
 `
@@ -112,16 +117,16 @@ export  const CategoryToolTipSection = styled.div`
 
 export const CategoryToolTipSectionHeader = styled.p`
     font-weight:500;
-    font-size:16px;
-    line-height:24px;
+    width:100%;
+    font-size:10px;
     text-align:center;
     font-family:Roboto;
 `
 
 export const CategoryToolTipSectionDescription = styled.div`
     font-weight:300;
-    font-size:12px;
-    line-height:19px;
+    font-size:9px;
     text-align:center;
     font-family:Roboto;
+    margin-top:5px;
 `

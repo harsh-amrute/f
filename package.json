@@ -81,7 +81,8 @@
       "src/module-main",
       "src/module-store-transfer",
       "src/components/VectorFLOW/commons/DailyDataGraphModal",
-      "src/components/VectorFLOW/commons/VFMultiFilter"
+      "src/components/VectorFLOW/commons/VFMultiFilter",
+      "src/components/VectorFLOW/layouts/BPRDailyAnalytics"
     ],
     "coverageThreshold": {
       "global": {
