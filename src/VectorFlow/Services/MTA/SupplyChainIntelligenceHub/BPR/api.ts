@@ -38,20 +38,20 @@ export namespace BPRService {
 
   export const getAllSKUs=async()=>{
     // return await axios.get(`https://requestly.tech/api/mockv2/GetAllSKU?username=user1708583815102&`,{
-      return await axios.get(`http://10.8.1.10:8082/SKUDesc`,{
+      return await axios.get(process.env.REACT_APP_VF_API_HOST + '/SKUDesc',{
       headers:{ 'Content-Type': 'application/json' }
     });
   }
 
   export const getAllLocations=async()=>{
     // return await axios.get(`https://requestly.tech/api/mockv2/GetAllSKU?username=user1708583815102&`,{
-      return await axios.get(`http://10.8.1.10:8082/WHDesc`,{
+      return await axios.get(process.env.REACT_APP_VF_API_HOST + `/WHDesc`,{
       headers:{ 'Content-Type': 'application/json' }
     });
   }
 
   export const getDailyData = async (payload:any) => {
-    return await axios.post(process.env.REACT_APP_VF_MOCK_API_HOST + `/GetDailyData`,payload,{
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/DailyDataGraph`,payload,{
       headers:{ 'Content-Type': 'application/json' }
     }); 
   }

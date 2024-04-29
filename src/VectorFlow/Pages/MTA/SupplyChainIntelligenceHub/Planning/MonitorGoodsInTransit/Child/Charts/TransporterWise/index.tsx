@@ -193,7 +193,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
       }
 
       const graph1 = [
-        'The graph illustrates the top 10 transporters having the maximum no. of LRs with SKUs in Tech Black/Red (shortage of on-handinventory) experiencing high transport ageing (Transportation Time > Standard Lead Time)',
+        'The graph illustrates the top 10 transporters having the maximum no. of LRs with SKUs in On-Hand Black/Red (shortage of on-handinventory) experiencing high transport ageing (Transportation Time > Standard Lead Time)',
         'Care needs to be taken to reduce the transportation time of LRs corresponding to above transporters',
         'Super Delay : Transportation Lead Time >= 1.5 x Standard Lead Time',
         'Delay : Transportation Lead Time > Standard Lead Time'
@@ -209,13 +209,13 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
         <SCDynamicContainer>
             <Allotment>
                 <Allotment.Pane preferredSize={1000}>
-                    <SCChartContainer height={547}>
+                    <SCChartContainer height={350}>
                         <SCChartHeaderContainer>
-                            <SCChartHeader>Top 10 Transporters: Max LRs With Tech Black/Red SKUs Along With High Transport Ageing</SCChartHeader>
-                            {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}
+                            <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Transporters: Max LRs With On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader></div>
+                            <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
                         </SCChartHeaderContainer>
                         <SCHorizontalDivider/>
-                        <div style={{height:'460px',display:grid1DisplayStatus}}>
+                        <div style={{height:'280px',display:grid1DisplayStatus}}>
                                 {
                                     hideChart1 &&
                                     (
@@ -278,7 +278,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                 }
                                
                             </div>
-                            {!hideChart1 && <div id="TransporterWiseG1" style={{height:'460px'}}></div>}
+                            {!hideChart1 && <div id="TransporterWiseG1" style={{height:'270px'}}></div>}
                     </SCChartContainer>
                     <div style={{marginLeft:'10px',marginRight:'10px'}}>
                         <VFInfoTip text={graph1}/>

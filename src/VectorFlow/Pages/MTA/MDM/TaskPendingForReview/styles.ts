@@ -44,10 +44,10 @@ export const LinkWrapper = styled.div`
     height:100%;
 `
 export const RadioContainer = styled.div`
-    display:flex;
+    // display:flex;
     justify-content: space-between;
     align-items: center; 
-    gap:44px;
+    // gap:20px;
 `
 export const RadioButtonGroup = styled.div`
     font-style: normal;
@@ -56,11 +56,11 @@ export const RadioButtonGroup = styled.div`
     font-size: 18px;
     line-height: 21px; 
     font-family:Roboto;
-    margin-bottom:57px;
+    margin-bottom:20px;
     accent-color:#BC3D81;
     display:flex;
-    gap:12px;
-    margin-top:45px;
+    gap:8px;
+    margin-top:20px;
 `
 export const SubmitButtonWrapper = styled.div`
     display: flex;
@@ -88,8 +88,8 @@ margin-bottom:100px;
 display:flex;
 flex-direction:row;
 gap:35px;
-margin-right:210px;
-margin-left:164px;
+// margin-right:210px;
+// margin-left:164px;
 `
 
 export const ApproveModalText=styled.div`

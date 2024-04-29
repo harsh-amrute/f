@@ -1,4 +1,4 @@
-import {useMemo} from 'react';
+import {useMemo,useState} from 'react';
 import GridViewTable from "../../GridView/GridViewTable";
 import { BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
@@ -10,7 +10,9 @@ import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRender
 
 const OrderFulfillmentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
-   
+    const [activeRow,setActiveRow] = useState<any>();
+    const [isSubGridOpen,toggleSubGrid] = useState<any>(false);
+
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
@@ -52,6 +54,12 @@ const OrderFulfillmentGrid = ({data,paginationProps,onOpenDailyDataGraph,current
             return { background: "#F7F7F7" };
             },
         },
+        onRowClicked:(params:any)=>{
+            if(params.data.transit && params.data.transit.length>0){
+                setActiveRow(params.data.transit)
+                toggleSubGrid(true)
+            }
+        },
         sideBar:sideBar,
         suppressRowClickSelection:true,
         components:customCellRenderers,
@@ -76,10 +84,20 @@ const OrderFulfillmentGrid = ({data,paginationProps,onOpenDailyDataGraph,current
         }
     }
 
-    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
+    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
         let colDefs = [];
+        columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
+            return column1.colPosition - column2.colPosition;
+        })
         const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
-        colDefs = columns.map((column:{header:string,colCode:string})=>{
+        const tagsColDef =  {
+            colId:'tags',
+            field:'tags',
+            headerName:"Tags",
+            cellRenderer:'tagsCellRenderer',
+            width:100
+          }
+        colDefs = columns.map((column:{header:string,colCode:string,colPosition:number})=>{
             if(['plp','pip'].includes(column.colCode)){
                 return {
                     field:column['colCode'],
@@ -91,13 +109,42 @@ const OrderFulfillmentGrid = ({data,paginationProps,onOpenDailyDataGraph,current
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
-                headerName:column['header']
+                headerName:column['header'],
             }
         })
-        return [dailyDataColDef,...colDefs]
+        return [dailyDataColDef,tagsColDef,...colDefs]
     }
 
     const colDefs = mapUIConfigToColdefs(data['uiConfig'])
+
+    const customGridColDef = [
+        {
+            headerName:"Order No/Tracking No",
+            colId:'on',
+            field:'on'
+        },
+        {
+            headerName:"Creation Date",
+            colId:'id',
+            field:'id'
+        },
+        {
+            headerName:"Due Date",
+            colId:'dd',
+            field:'dd'
+        },
+        {
+            headerName:"Price",
+            colId:'p',
+            field:'p'
+        },
+        {
+            headerName:"Order Status",
+            colId:'os',
+            field:'os'
+        },
+      
+    ]
     
 
     return(
@@ -107,9 +154,9 @@ const OrderFulfillmentGrid = ({data,paginationProps,onOpenDailyDataGraph,current
             agGridProps={agGridProps} 
             agGridColDefs={colDefs} 
             agGridRowData={data['data']} 
-            customGridRowData={[]} 
-            customGridColDef={[]} 
-            isSubGridOpen={false}
+            customGridRowData={activeRow} 
+            customGridColDef={customGridColDef} 
+            isSubGridOpen={isSubGridOpen}
             paginationProps={paginationProps}
         />
     )

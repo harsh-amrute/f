@@ -80180,40 +80180,40 @@ export const GetDailyDataMockResponse = {
     "data": {
          "normChangeHistory":[
             {
-                "date":"2024-02-15",
-                "oldNorm":30,
-                "newNorm":10,
-                "reason":"Stockout has occured today. Upward revision suggested"
+                "nCD":"2024-02-15",
+                "olN":30,
+                "nN":10,
+                "rsn":"Stockout has occured today. Upward revision suggested"
             },
             {
-                "date":"2024-02-20",
-                "oldNorm":10,
-                "newNorm":20,
-                "reason":"Stockout has occured today. Upward revision suggested"
+                "nCD":"2024-02-20",
+                "olN":10,
+                "nN":20,
+                "rsn":"Stockout has occured today. Upward revision suggested"
             },
             {
-                "date":"2024-02-25",
-                "oldNorm":20,
-                "newNorm":30,
-                "reason":"Stockout has occured today. Upward revision suggested"
+                "nCD":"2024-02-25",
+                "olN":20,
+                "nN":30,
+                "rsn":"Stockout has occured today. Upward revision suggested"
             },
             {
-                "date":"2024-04-01",
-                "oldNorm":30,
-                "newNorm":20,
-                "reason":"Stockout has occured today. Upward revision suggested"
+                "nCD":"2024-04-01",
+                "olN":30,
+                "nN":20,
+                "rsn":"Stockout has occured today. Upward revision suggested"
             },
             {
-                "date":"2024-04-25",
-                "oldNorm":20,
-                "newNorm":25,
-                "reason":"Stockout has occured today. Upward revision suggested"
+                "nCD":"2024-04-25",
+                "olN":20,
+                "nN":25,
+                "rsn":"Stockout has occured today. Upward revision suggested"
             },
             {
-                "date":"2024-05-15",
-                "oldNorm":25,
-                "newNorm":20,
-                "reason":"Stockout has occured today. Upward revision suggested"
+                "nCD":"2024-05-15",
+                "olN":25,
+                "nN":20,
+                "rsn":"Stockout has occured today. Upward revision suggested"
             }
          ],
          "dailyData":[
@@ -80857,68 +80857,68 @@ export const GetDailyDataMockResponse = {
          },
          "SuggestionHistoryData":[
             {
-                "oln": 777934,
-                "nn": 1037246,
+                "olN": 777934,
+                "nN": 1037246,
                 "sdate": "2024-02-25",
                 "rsn": "Virtual Stockout has occurred. Upward revision suggested."
               },
               {
                 "oln": 777934,
-                "nn": 1037246,
+                "nN": 1037246,
                 "sdate": "2024-02-13",
                 "rsn": "Virtual Stockout has occurred. Upward revision suggested."
               },
               {
                 "oln": 777934,
-                "nn": 1037246,
+                "nN": 1037246,
                 "sdate": "2024-02-14",
                 "rsn": "Virtual Stockout has occurred. Upward revision suggested."
               },
               {
                 "oln": 777934,
-                "nn": 1037246,
+                "nN": 1037246,
                 "sdate": "2024-02-15",
                 "rsn": "Virtual Stockout has occurred. Upward revision suggested."
               },
               {
                 "oln": 777934,
-                "nn": 1037246,
+                "nN": 1037246,
                 "sdate": "2024-02-16",
                 "rsn": "Virtual Stockout has occurred. Upward revision suggested."
               },
               {
                 "oln": 777934,
-                "nn": 1037246,
+                "nN": 1037246,
                 "sdate": "2024-02-17",
                 "rsn": "Virtual Stockout has occurred. Upward revision suggested."
               },
               {
                 "oln": 777934,
-                "nn": 1037246,
+                "nN": 1037246,
                 "sdate": "2024-02-18",
                 "rsn": "Virtual Stockout has occurred. Upward revision suggested."
               },
               {
                 "oln": 777934,
-                "nn": 1037246,
+                "nN": 1037246,
                 "sdate": "2024-02-19",
                 "rsn": "Virtual Stockout has occurred. Upward revision suggested."
               },
               {
                 "oln": 777934,
-                "nn": 1037246,
+                "nN": 1037246,
                 "sdate": "2024-02-20",
                 "rsn": "Virtual Stockout has occurred. Upward revision suggested."
               },
               {
                 "oln": 777934,
-                "nn": 1037246,
+                "nN": 1037246,
                 "sdate": "2024-02-21",
                 "rsn": "Virtual Stockout has occurred. Upward revision suggested."
               },
               {
                 "oln": 777934,
-                "nn": 1037246,
+                "nN": 1037246,
                 "sdate": "2024-02-22",
                 "rsn": "Virtual Stockout has occurred. Upward revision suggested."
               }

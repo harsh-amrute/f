@@ -152,7 +152,7 @@ describe('Testing the MDMService',  () => {
            WHCode:'3456'
         }
         await BPRService.getDailyData(mockBody);
-        expect(mockedAxios.post).toHaveBeenCalledWith('http://10.8.1.10:8081/GetDailyData',mockBody,{
+        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/DailyDataGraph',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
     

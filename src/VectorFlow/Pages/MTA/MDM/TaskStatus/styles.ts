@@ -4,6 +4,7 @@ export const VFTaskStatusWrapper = styled.div`
     display:flex;
     flex-direction:column;
     background-color:white;
+    height:225px;
 `
 export const VFTaskStatusContentWrapper = styled.div`
     display:flex;
@@ -32,7 +33,7 @@ export const VFTastStatusDownloadWrapper = styled.div`
 `
 
 export const VFTaskStatusStepperLabel = styled.p`
-    font-size:20px;
+    font-size:18px;
     text-align:center;
 `
 

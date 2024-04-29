@@ -15,6 +15,8 @@ import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingFo
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField } from '../VectorFlow/types/BPR';
 import {RRRField} from '../VectorFlow/types/RRR'
+// import _ from 'lodash'
+import { DBMField } from '../VectorFlow/types/DBM';
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -1840,7 +1842,7 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
   return [{...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result,...BPRSpecificColumns]
 }
 
-export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
+export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDailyDataGraph:any):ColDef[]=>{
 
   if(!fields || fields.length<1){
     return []
@@ -1903,10 +1905,10 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[]):ColDef[]=>
       }
     }
   })
-  return [checkboxColDef,createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),tagsColDef,...result]
+  return [checkboxColDef,{...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result]
 }
 
-export const mapBORFieldsToColDefs = (fields:UiConfigField[]):ColDef[]=>{
+export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
 
   if(!fields || fields.length<1){
     return []
@@ -1923,7 +1925,10 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[]):ColDef[]=>{
       lockPosition:'left',
       floatingFilter:false,
       tooltipField:"DailyDataGraph",
-      cellRenderer:'grapCellRenderer'
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      }
       
 
       // tooltipComponent:'remarksToolTipComponent'
@@ -2114,4 +2119,65 @@ export const mapBTRRowDataToColDefs = (row:any,onShowChart?:()=>void):Array<ColD
   if(onShowChart)result = [graphCellRenderer,...result]
   return result
 
+}
+
+export const mapDBMFieldsToColDefs = (fields:DBMField[]):ColDef[]=>{
+
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  fields.sort((a:DBMField,b:DBMField)=>a.Col_Position-b.Col_Position);
+  // console.log(fields);
+
+  let result:ColDef[] = []
+
+  
+  const DBMTickColumn:ColDef={
+    field:'checkbox',
+    colId:'checkbox',
+    headerName:'',
+    floatingFilter:false,
+    checkboxSelection:true,
+    headerCheckboxSelectionCurrentPageOnly:true,
+    width:10,
+    lockPosition:'left',
+  }
+
+  const DBMGraphColumn:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:80,
+      lockPosition:true,
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer'
+      
+
+    }
+  ]
+
+   const DBMSleepColumn:ColDef[] =[
+  {
+       headerName:'Sleep',
+       lockPosition:true,
+       cellRenderer:'sleepCellRenderer'
+     }
+   ]
+
+  
+
+  result =  fields.map((f:DBMField)=>{
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible
+    }
+  })
+   return [DBMTickColumn,...DBMGraphColumn,...DBMSleepColumn,...result]
+  
 }

@@ -96,12 +96,15 @@ export const HorizonHeader = styled.p`
     text-align:center;
     font-weight:500;
     font-size:14px;
+    margin-bottom:-10px;
+
 `
 
 export const ChartHeader = styled.div`
     width:100%;
     display:flex;
     align-items:center:
+
     
 `
 
@@ -130,6 +133,7 @@ export const CapsuleWrapper = styled.div`
     width:100%;
     max-width:80px;
     margin-left:auto;
+
 `
 
 export const CalenderWrapper = styled.div`
@@ -143,6 +147,7 @@ export const CalenderWrapper = styled.div`
     border-radius:4px;
     zoom:0.9;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    margin-top:15px;
 `
 export const CalenderHeader = styled.p`
     width:100%;

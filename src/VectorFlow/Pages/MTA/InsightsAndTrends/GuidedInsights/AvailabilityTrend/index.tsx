@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { useUserData } from "../../../../../../context";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
+import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
+
 const AvailabilityTrend = () => {
   const [AvailabilityTrend, setAvailabilityData] = useState();
   const { mutateAsync: GetAvailabilityTrend, isLoading } =
@@ -60,6 +62,12 @@ const AvailabilityTrend = () => {
   if (isLoading) {
     return <VFLoader />;
   }
+
+  const graph1 = [
+    'This graph highlights day wise availabilty perecentage across locations',
+    'Availabilty Perecentage = (Total instances excluding black/Total instances)*100'
+  ]
+
   return (
     <div style={{marginTop:'25px'}}>
       <div style={{ width: 650, display: "flex" }}>
@@ -68,7 +76,7 @@ const AvailabilityTrend = () => {
             fontStyle: "normal",
             fontVariant: "normal",
             fontWeight: 400,
-            fontSize: 20,
+            fontSize: 16,
             paddingTop: 20,
             paddingLeft: 50,
             fontFamily: "Roboto",
@@ -101,6 +109,9 @@ const AvailabilityTrend = () => {
 
       <div>
         <AgChartsReact options={options} />
+        <div style={{marginLeft:'10px',marginRight:'10px'}}>
+        <VFInfoTip text={graph1}/>
+        </div>
       </div>
     </div>
   );

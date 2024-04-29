@@ -6,7 +6,8 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
  import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
  import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from "../../../../../context/GridStateContext";
-
+import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
+import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
 const BuyerOrderReport = ()=>{
 
     const {     
@@ -28,7 +29,10 @@ const BuyerOrderReport = ()=>{
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
-        onExportToExcelCallBack      
+        onExportToExcelCallBack,
+        showDailyDataGraphModal,
+        showNormChangeHistoryTable,
+        dailyData      
     } = useBOR()
 
 
@@ -77,6 +81,12 @@ const BuyerOrderReport = ()=>{
             ):
             (
               <div style={{height:'100vh'}}>
+              {
+                showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHDescription'} />
+              }
+              {
+                  showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
+              }
            
               <VFTable
                {...agGridProps}

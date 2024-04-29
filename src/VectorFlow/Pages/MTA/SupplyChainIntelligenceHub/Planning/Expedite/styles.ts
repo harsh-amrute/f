@@ -17,10 +17,10 @@ import styled from "styled-components";
 
 export const SCDynamicContainer = styled.div`
     display:block;
-    aspect-ratio:1;
+    // aspect-ratio:1;
     width:100%;
-    margin-top:25px;
-   
+    margin-top:10px;
+    height:90vh;
 `
 
 export const SCHorizontalAllignmentWrapper = styled.div`
@@ -33,13 +33,14 @@ export const SCChartContainer = styled.div<{height?:number}>`
     padding:5px;
     border-radius:12px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;    margin-right:5px;
+    // box-shadow: -5px 5px 25px #86868633;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    margin-right:5px;
     // margin-top:60px;
-    margin-bottom:20px;
+    margin-bottom:10px;
     margin-left:5px;
     // height:547px;
     height:${props => props.height ? props.height +'px' : 'auto'}
-    
 `
 
 export const SCChartLayout = styled.div`
@@ -51,7 +52,7 @@ export const SCChartLayout = styled.div`
 `;
 
 export const SCChartHeaderContainer = styled.div`
-    height:60px;
+    height:30px;
     background-color:white;
     display:flex;
     justify-content:space-evenly;
@@ -65,6 +66,7 @@ export const SCChartHeader = styled.p`
     letter-spacing: 0px;
     color: #000000;
     text-align:center;
+    zoom:0.7;
 `
 
 export const SCHorizontalDivider = styled.hr`
