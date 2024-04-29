@@ -255,6 +255,8 @@ const useAdd=()=>{
           }
           toast.dismiss(toastId)
           return {isDisaster:true,errorCount,errorData,conflictCount,conflictData} 
+        }finally{
+          toast.dismiss(toastId)
         }
       }
 
@@ -271,6 +273,7 @@ const useAdd=()=>{
  
         
           const {isDisaster,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          console.log(errorCount)
           let errorRowData = [];
 
           if(isDisaster)return
@@ -299,6 +302,7 @@ const useAdd=()=>{
               await deleteDraft(draftID);
             }
             setIsSubmitDisabled(false)
+            toast.dismiss()
 
           
       }

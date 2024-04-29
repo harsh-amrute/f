@@ -769,7 +769,7 @@ const useViewModify = (pageType:string) => {
         
       }
 
-      const onClearExportError = (skipClear?:boolean) => {
+      const onClearExportError = () => {
         const erroneusData:any[] = [];
         const validData:any[] = [] 
         activeMaster.rowData.forEach((data:any)=>{
@@ -783,7 +783,7 @@ const useViewModify = (pageType:string) => {
         setTempGridData(erroneusData);
         setTempDownloadData(true);
 
-        if(!skipClear){
+        if(activeMaster.progress!=='submitted'){
           dispatch(UPDATE_ROW_DATA(validData));
         
           dispatch(REMOVE_COLDEFS(['error','warning']));
