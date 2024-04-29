@@ -54,6 +54,16 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
         headerName: "Count of SKUs",
         colId: "SKUCounts",
       },
+      {
+        field:'black',
+        colId:'black',
+        headerName:'Black'
+      },
+      {
+          field:'red',
+          colId:'red',
+          headerName:'Red'
+      },
     ];
     
     colDefs = columns.map((column:{header:string,colCode:string})=>{
@@ -216,7 +226,7 @@ const colDefs3: ColDef[] = [
 
     return rowData;
   };
-console.log(convertToInt(data["prePostRationing"]));
+
   const options: AgChartOptions = {
     // title: {
     //   text: "PRE",
@@ -240,6 +250,7 @@ console.log(convertToInt(data["prePostRationing"]));
         sectorLabel: {
           color: "white",
           fontWeight: "bold",
+          fontSize:8,
           formatter: ({ value }) => `${value}%`,
         },
       },
@@ -259,6 +270,7 @@ console.log(convertToInt(data["prePostRationing"]));
         sectorLabel: {
           color: "white",
           fontWeight: "bold",
+          fontSize:8,
           formatter: ({ value }) => `${value}%`,
         },
       },
@@ -270,9 +282,9 @@ console.log(convertToInt(data["prePostRationing"]));
     if (graphNo === 1) {
       if (withOutContainer) {
         chartRef1 = refGraph1.current?.api.createRangeChart({
-          chartType: "column",
+          chartType: "stackedColumn",
           cellRange: {
-            columns: ["WHDescription", "SKUCounts"],
+            columns: ["WHDescription", 'black','red'],
             rowStartIndex: 0,
             rowEndIndex: 9,
           },
@@ -282,9 +294,9 @@ console.log(convertToInt(data["prePostRationing"]));
           "ExpediteDispatchesG1"
         ) as HTMLElement;
         chartRef1 = refGraph1.current?.api.createRangeChart({
-          chartType: "column",
+          chartType: "stackedColumn",
           cellRange: {
-            columns: ["WHDescription", "SKUCounts"],
+            columns: ["WHDescription", 'black','red'],
             rowStartIndex: 0,
             rowEndIndex: 9,
           },
@@ -384,6 +396,10 @@ console.log(convertToInt(data["prePostRationing"]));
               text: "Parent Location Name",
               position: "bottom",
             },
+            label:{
+              fontSize:8,
+              fontFamily:'Roboto'
+            }
           },
           number: {
             title: {
@@ -411,6 +427,10 @@ console.log(convertToInt(data["prePostRationing"]));
               text: "Receiving Location Name",
               position: "bottom",
             },
+            label:{
+              fontSize:8,
+              fontFamily:'Roboto'
+            }
           },
           number: {
             title: {
@@ -429,7 +449,7 @@ console.log(convertToInt(data["prePostRationing"]));
 
   const myCustomThemeG1: any = {
     palette: {
-      fills: ["#860202"],
+      fills: ['#000000','#DA3535'],
       strokes: ["#ffffff", "#ffffff"],
     },
   };
@@ -455,7 +475,17 @@ console.log(convertToInt(data["prePostRationing"]));
     "This graph shows the potential improvement in Pipeline availability assuming the entire rationed qty would become goods in transit.",
   ];
 
+  const splitDataIntoRandomPercentage = (data:any,key:string) => {
+    return data.map((row:any)=>{
+        const redPercentage = Math.random() * 100;
+        const blackPercentage = 100 - redPercentage;
 
+        const red = (parseFloat(row[key]) * redPercentage) / 100;
+        const black = (parseFloat(row[key]) * blackPercentage) / 100;
+        return {...row,red:Math.round(red),black:Math.round(black)};
+        
+    })
+  }
 
   return (
     <>
@@ -484,12 +514,12 @@ console.log(convertToInt(data["prePostRationing"]));
                     </div>
                   </SCChartHeaderContainer>
                   <SCHorizontalDivider />
-                  <div style={{ height: "220px", display: grid1DisplayStatus }}>
+                  <div style={{ height: "130px", display: grid1DisplayStatus }}>
                     {hideChart1 && (
                       <VFTable
                         ref={refGraph1}
                         columnDefs={colDefs1}
-                        rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
+                        rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts'),'SKUCounts')}
                         enableCharts={true}
                         enableRangeSelection={true}
                         onGridReady={() => generateChart(1, true)}
@@ -514,7 +544,7 @@ console.log(convertToInt(data["prePostRationing"]));
                         <VFTable
                           ref={refGraph1}
                           columnDefs={colDefs1}
-                          rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
+                          rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts'),'SKUCounts')}
                           enableCharts={true}
                           enableRangeSelection={true}
                           onGridReady={() => generateChart(1)}
@@ -565,7 +595,7 @@ console.log(convertToInt(data["prePostRationing"]));
                     </div>
                   </SCChartHeaderContainer>
                   <SCHorizontalDivider />
-                  <div style={{ height: "220px", display: grid2DisplayStatus }}>
+                  <div style={{ height: "130px", display: grid2DisplayStatus }}>
                     {hideChart2 && (
                       <VFTable
                         ref={refGraph2}

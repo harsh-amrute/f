@@ -36,7 +36,18 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                 field:'Counts',
                 colId:'Counts',
                 headerName:'Count of SKU Locations'
-            }
+            },
+            {
+                field:'black',
+                colId:'black',
+                headerName:'Black'
+            },
+            {
+                field:'red',
+                colId:'red',
+                headerName:'Red'
+            },
+          
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
@@ -65,7 +76,17 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                 field:'SKUCounts',
                 colId:'SKUCounts',
                 headerName:'Count of SKU Locations'
-            }
+            },
+            {
+                field:'black',
+                colId:'black',
+                headerName:'Black'
+            },
+            {
+                field:'red',
+                colId:'red',
+                headerName:'Red'
+            },
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
@@ -114,9 +135,9 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
         if(graphNo === 1){
             if(withOutContainer) {
                 chartRef1 = refGraph1.current?.api.createRangeChart({
-                    chartType:'column',
+                    chartType:'stackedColumn',
                     cellRange: {
-                    columns: ['WHDescription','Counts'],
+                    columns: ['WHDescription','black','red'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     }
@@ -125,9 +146,9 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             else{
                 const container1 = document.getElementById('CreateAvailabilityAtParentG1') as HTMLElement
                 chartRef1 = refGraph1.current?.api.createRangeChart({
-                    chartType:'column',
+                    chartType:'stackedColumn',
                     cellRange: {
-                    columns: ['WHDescription','Counts'],
+                    columns: ['WHDescription','black','red'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     },
@@ -139,9 +160,9 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
         if(graphNo === 2){
             if(withOutContainer) {
                 chartRef2 = refGraph2.current?.api.createRangeChart({
-                    chartType:'column',
+                    chartType:'stackedColumn',
                     cellRange: {
-                        columns: ['WHDescription','SKUCounts'],
+                        columns: ['WHDescription','black','red'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     }
@@ -150,9 +171,9 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             else{
                 const container2 = document.getElementById('CreateAvailabilityAtParentG2') as HTMLElement
                 chartRef2 = refGraph2.current?.api.createRangeChart({
-                    chartType:'column',
+                    chartType:'stackedColumn',
                     cellRange: {
-                        columns: ['WHDescription','SKUCounts'],
+                        columns: ['WHDescription','black','red'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     },
@@ -169,7 +190,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
         return {
             ...GraphSeriesOverrides,
             palette:{
-                fills:['#0c7528','#570dbf']
+                fills:['#000000','#DA3535']
             },
               common: {
                   legend:{
@@ -182,6 +203,14 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                             text:'Parent Location Name',
                             position:'bottom',
 
+                        },
+                        label:{
+                            formatter:(params:any)=>{
+                                if(params.value.length > 15) return params.value.toString().slice(0,15) + '...';
+                                return params.value;
+                            },
+                            fontSize:8,
+                            fontFamily:'Roboto'
                         }
                     },
                     number:{
@@ -199,7 +228,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
 
       const myCustomTheme:any = {
         palette: {
-            fills: ['#9A0101', '#F02424'],
+            fills: ['#000000', '#DA3535'],
             strokes: ['#ffffff', '#ffffff'],
           },
       }
@@ -227,6 +256,18 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
         }
       }
 
+      const splitDataIntoRandomPercentage = (data:any,key:string) => {
+        return data.map((row:any)=>{
+            const redPercentage = Math.random() * 100;
+            const blackPercentage = 100 - redPercentage;
+
+            const red = (parseFloat(row[key]) * redPercentage) / 100;
+            const black = (parseFloat(row[key]) * blackPercentage) / 100;
+            return {...row,red:Math.round(red),black:Math.round(black)};
+            
+        })
+      }
+
 
      
     return(
@@ -247,7 +288,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                         <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
-                                            rowData={sortData(convertToInt(data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']['data']),'Counts')}
+                                            rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']['data']),'Counts'),'Counts')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1,true)}
@@ -277,7 +318,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                         <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
-                                            rowData={sortData(convertToInt(data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']['data']),'Counts')}
+                                            rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']['data']),'Counts'),'Counts')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(1)}
@@ -319,7 +360,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                         <VFTable
                                             ref={refGraph2}
                                             columnDefs={colDefs2}
-                                            rowData={sortData(convertToInt(data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']['data']),'SKUCounts')}
+                                            rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']['data']),'SKUCounts'),'SKUCounts')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2,true)}
@@ -349,7 +390,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                         <VFTable
                                             ref={refGraph2}
                                             columnDefs={colDefs2}
-                                            rowData={sortData(convertToInt(data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']['data']),'SKUCounts')}
+                                            rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']['data']),'SKUCounts'),'SKUCounts')}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2)}

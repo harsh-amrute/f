@@ -198,6 +198,10 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                             text:'Location Name',
                             position:'bottom',
 
+                        },
+                        label:{
+                            fontSize:8,
+                            fontFamily:'Roboto'
                         }
                     },
                     number:{
@@ -235,7 +239,9 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                             formatter:(params:any)=>{
                                 if(params.value.length > 15) return params.value.toString().slice(0,15) + '...';
                                 return params.value;
-                            }
+                            },
+                            fontSize:8,
+                            fontFamily:'Roboto'
                         }
                     },
                     number:{
@@ -265,6 +271,14 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
       const graph2 = [
         'This graph highlights the top 10 locations with the highest excess inventory, assessed in terms of monetary value.'
       ]
+
+      const scaleDown = (data:any,key:string,divisor:number)=>{
+        return data.map((row:any)=>{
+            const temp = {...row};
+            temp[key] = parseInt(row[key],10)/divisor;
+            return temp;
+        })
+      }
      
     return(
         <>
@@ -356,7 +370,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                         <VFTable
                                             ref={refGraph2}
                                             columnDefs={colDefs2}
-                                            rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data']),'SumOfAmount')}
+                                            rowData={scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data']),'SumOfAmount'),'SumOfAmount',100000)}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2,true)}
@@ -386,7 +400,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                         <VFTable
                                             ref={refGraph2}
                                             columnDefs={colDefs2}
-                                            rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data']),'SumOfAmount')}
+                                            rowData={scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data']),'SumOfAmount'),'SumOfAmount',100000)}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2)}

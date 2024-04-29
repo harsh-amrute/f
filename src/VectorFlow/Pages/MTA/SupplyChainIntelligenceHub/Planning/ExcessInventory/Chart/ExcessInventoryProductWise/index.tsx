@@ -202,7 +202,9 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                             formatter:(params:any)=>{
                                 if(params.value.length > 15) return params.value.toString().slice(0,15) + '...';
                                 return params.value;
-                            }
+                            },
+                            fontSize:8,
+                            fontFamily:'Roboto'
                         }
                         
                     },
@@ -241,7 +243,9 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                             formatter:(params:any)=>{
                                 if(params.value.length > 15) return params.value.toString().slice(0,15) + '...';
                                 return params.value;
-                            }
+                            },
+                            fontSize:8,
+                            fontFamily:'Roboto'
                         }
                     },
                     number:{
@@ -273,6 +277,13 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
         'This graph highlights the top 10 products with the highest excess inventory, assessed in terms of monetary value.'
       ]
 
+      const scaleDown = (data:any,key:string,divisor:number)=>{
+        return data.map((row:any)=>{
+            const temp = {...row};
+            temp[key] = parseInt(row[key],10)/divisor;
+            return temp;
+        })
+      }
      
     return(
         <>
@@ -364,7 +375,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                         <VFTable
                                             ref={refGraph2}
                                             columnDefs={colDefs2}
-                                            rowData={sortData(convertToInt(data['topTenProductsWithExcessInventoryInValue']['data']),'SumAmount')}
+                                            rowData={scaleDown(sortData(convertToInt(data['topTenProductsWithExcessInventoryInValue']['data']),'SumAmount'),'SumAmount',100000)}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2,true)}
@@ -394,7 +405,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                         <VFTable
                                             ref={refGraph2}
                                             columnDefs={colDefs2}
-                                            rowData={sortData(convertToInt(data['topTenProductsWithExcessInventoryInValue']['data']),'SumAmount')}
+                                            rowData={scaleDown(sortData(convertToInt(data['topTenProductsWithExcessInventoryInValue']['data']),'SumAmount'),'SumAmount',100000)}
                                             enableCharts={true}
                                             enableRangeSelection={true}
                                             onGridReady={()=>generateChart(2)}

@@ -158,6 +158,7 @@ const OrderFulfillmentGrid = ({data,paginationProps,onOpenDailyDataGraph,current
             customGridColDef={customGridColDef} 
             isSubGridOpen={isSubGridOpen}
             paginationProps={paginationProps}
+            tablePrefixSrc={'/assets/img/VectorFLOW/BPR/order-fullfilment-table-prefix.svg'}
         />
     )
 }

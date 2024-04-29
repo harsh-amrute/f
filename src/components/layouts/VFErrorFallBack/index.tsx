@@ -7,7 +7,7 @@ import { VFErrorFallBackHeader, VFErrorFallBackWrapper,VFErrorFallBackContainer,
 const VFErrorFallBack = ()=>{
 
     const handleGoHome =()=>{
-        window.location.href = '/'
+        window.location.href = '/master-data-management/control-panel'
     }
 
     return(

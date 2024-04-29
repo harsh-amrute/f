@@ -635,27 +635,31 @@ const DBMNormSuggestions = () => {
     <>
       <SCDynamicContainer>
         <Allotment vertical>
-          <Allotment.Pane>
+          <Allotment.Pane preferredSize={395}>
             <SCHorizontalAllignmentWrapper>
               <Allotment>
                 <Allotment.Pane preferredSize={"50%"}>
-                  <SCChartContainer >
+                  <SCChartContainer height={300} >
                     <SCChartHeaderContainer>
-                      <SCChartHeader>
-                        Top 10 Locations: Max No. of DBM Suggestions
-                      </SCChartHeader>
-                      {!hideChart1 && (
-                        <img
-                          src="/assets/img/VectorFLOW/BPR/minimize.svg"
-                          alt=""
-                          data-testid="minimizechart1"
-                          onClick={() => handleChartClose(1)}
-                        />
-                      )}
+                      <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
+                        <SCChartHeader>
+                          Top 10 Locations: Max No. of DBM Suggestions
+                        </SCChartHeader>
+                      </div>
+                      <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                        {!hideChart1 && (
+                          <img
+                            src="/assets/img/VectorFLOW/BPR/minimize.svg"
+                            alt=""
+                            data-testid="minimizechart1"
+                            onClick={() => handleChartClose(1)}
+                          />
+                        )}
+                      </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
                     <div
-                      style={{ height: "460px", display: grid1DisplayStatus }}
+                      style={{ height: "225px", display: grid1DisplayStatus }}
                     >
                       {hideChart1 && (
                         <VFTable
@@ -705,26 +709,28 @@ const DBMNormSuggestions = () => {
                       )}
                     </div>
                     {!hideChart1 && (
-                      <div id="g1" style={{ height: "460px" }}></div>
+                      <div id="g1" style={{ height: "220px" }}></div>
                     )}
                     <div id="SKUWiseGraph1"></div>
                   </SCChartContainer>
-                  <div style={{ marginLeft: "10px", marginRight: "10px" }}>
+                  <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8 }}>
                     <VFInfoTip text={graph1} />
                   </div>
                 </Allotment.Pane>
                 <Allotment.Pane>
-                  <SCChartContainer >
+                  <SCChartContainer height={300}>
                     <SCChartHeaderContainer>
-                      <SCChartHeader>
-                        Distribution Of Current Active DBM Suggestions
-                      </SCChartHeader>
-                      {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}
+                      <div style={{display:'flex',width:'100%',justifyContent:'center',zoom:'0.8'}}>
+                        <SCChartHeader>
+                          Distribution Of Current Active DBM Suggestions
+                        </SCChartHeader>
+                      </div>
+                      <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}</div>
                       
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
                     <div
-                      style={{ height: "460px", display: grid2DisplayStatus }}
+                      style={{ height: "225px", display: grid2DisplayStatus }}
                     >
                       {hideChart2 && (
                         <VFTable
@@ -773,11 +779,11 @@ const DBMNormSuggestions = () => {
                       )}
                     </div>
                     {!hideChart2 && (
-                      <div id="g2" style={{ height: "460px" }}></div>
+                      <div id="g2" style={{ height: "220px" }}></div>
                     )}
                     <div id="SKUWiseGraph2"></div>
                   </SCChartContainer>
-                  <div style={{ marginLeft: "10px", marginRight: "10px" }}>
+                  <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8}}>
                     <VFInfoTip text={graph2} />
                   </div>
                 </Allotment.Pane>
@@ -788,23 +794,27 @@ const DBMNormSuggestions = () => {
             <SCHorizontalAllignmentWrapper>
               <Allotment>
                 <Allotment.Pane>
-                  <SCChartContainer >
+                  <SCChartContainer height={300}>
                     <SCChartHeaderContainer>
-                      <SCChartHeader>
-                        Top 10 Products: Max No. of DBM Suggestions{" "}
-                      </SCChartHeader>
-                      {!hideChart3 && (
-                        <img
-                          src="/assets/img/VectorFLOW/BPR/minimize.svg"
-                          alt=""
-                          data-testid="minimizechart3"
-                          onClick={() => handleChartClose(3)}
-                        />
-                      )}
+                      <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
+                        <SCChartHeader>
+                          Top 10 Products: Max No. of DBM Suggestions{" "}
+                        </SCChartHeader>
+                      </div>
+                      <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                        {!hideChart3 && (
+                          <img
+                            src="/assets/img/VectorFLOW/BPR/minimize.svg"
+                            alt=""
+                            data-testid="minimizechart3"
+                            onClick={() => handleChartClose(3)}
+                          />
+                        )}
+                      </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
                     <div
-                      style={{ height: "570px", display: grid3DisplayStatus }}
+                      style={{ height: "225px", display: grid3DisplayStatus }}
                     >
                       {hideChart3 && (
                         <VFTable
@@ -853,32 +863,36 @@ const DBMNormSuggestions = () => {
                       )}
                     </div>
                     {!hideChart3 && (
-                      <div id="g3" style={{ height: "460px" }}></div>
+                      <div id="g3" style={{ height: "220px" }}></div>
                     )}
                     <div id="graph3"></div>
                   </SCChartContainer>
-                  <div style={{ marginLeft: "10px", marginRight: "10px" }}>
+                  <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8 }}>
                     <VFInfoTip text={graph3} />
                   </div>
                 </Allotment.Pane>
                 <Allotment.Pane>
-                  <SCChartContainer >
+                  <SCChartContainer height={300}>
                     <SCChartHeaderContainer>
-                      <SCChartHeader>
-                        Ageing categorization of DBM suggestions
-                      </SCChartHeader>
-                      {!hideChart4 && (
-                        <img
-                          src="/assets/img/VectorFLOW/BPR/minimize.svg"
-                          alt=""
-                          data-testid="minimizechart4"
-                          onClick={() => handleChartClose(4)}
-                        />
-                      )}
+                      <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
+                        <SCChartHeader>
+                          Ageing categorization of DBM suggestions
+                        </SCChartHeader>
+                      </div>
+                      <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                        {!hideChart4 && (
+                          <img
+                            src="/assets/img/VectorFLOW/BPR/minimize.svg"
+                            alt=""
+                            data-testid="minimizechart4"
+                            onClick={() => handleChartClose(4)}
+                          />
+                        )}
+                      </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
                     <div
-                      style={{ height: "570px", display: grid4DisplayStatus }}
+                      style={{ height: "225px", display: grid4DisplayStatus }}
                     >
                       {hideChart4 && (
                         <VFTable
@@ -927,11 +941,11 @@ const DBMNormSuggestions = () => {
                       )}
                     </div>
                     {!hideChart4 && (
-                      <div id="g4" style={{ height: "460px" }}></div>
+                      <div id="g4" style={{ height: "220px" }}></div>
                     )}
                     <div id="graph4"></div>
                   </SCChartContainer>
-                  <div style={{ marginLeft: "10px", marginRight: "10px" }}>
+                  <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8 }}>
                     <VFInfoTip text={graph4} />
                   </div>
                 </Allotment.Pane>
