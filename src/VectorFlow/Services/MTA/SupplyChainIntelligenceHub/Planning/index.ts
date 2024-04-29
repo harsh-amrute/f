@@ -33,4 +33,10 @@ export const useGetPlanningDataCustom = ()=>{
   })
 }
 
+export const useSubmitOpenExpediteRequest = ()=>{
+  return useMutation(async(body:any)=>{
+    return await PlanningService.submitOpenExpediteRequest(body);
+})
+}
+
 

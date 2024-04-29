@@ -93,6 +93,17 @@ export const defaultColDefs:ColDef = {
     flex: 1,
 }
 
+export const BTRDefaultColDefs:ColDef = {
+    minWidth:100,
+    cellStyle: {
+      "text-align": "center",
+      'text-overflow':'ellipsis',
+      'white-space':'nowrap'
+    },
+    flex: 1,
+    cellClass:'btr_cell_style'
+}
+
 export const taskPendingCustomColDefs :any[] = [
     {
         field:'action',

@@ -14,7 +14,7 @@ import { mapMasterToMasterState } from "../../../../../helpers/utils";
 const ControlPanel = ()=>{
     const navigate = useNavigate();
 
-    const {mutateAsync:getUiConfig,isLoading} = useGetMasterUIConfiguration()
+    const {mutateAsync:getUiConfig} = useGetMasterUIConfiguration()
 
     const dispatch = useDispatch()
     const handleFNC = async()=>{

@@ -29,7 +29,12 @@ const mtaState:MTAStore = {
         monitoringData:[],
         rowData:{}
     },
-    currentGridState:[]
+    currentGridState:[],
+    planning:{
+        currentTab:'',
+        currentCategory:'',
+        currentView:''
+    }
     
 }
 

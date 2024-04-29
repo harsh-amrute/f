@@ -1,27 +1,34 @@
-import {useEffect, useRef, useState } from "react";
+import {useEffect, useContext, useState } from "react";
 
 // import "./styles.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
-import { type GridRef } from "../../../../../../../../types/MDM";
 // import _ from "lodash";
 import '../../../styles.css';
 import { useGetPlanningDataCustom } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 import VFLoader from "../../../../../../../../../components/VectorFLOW/commons/VFLoader";
 import { SCDynamicContainer } from "../../../styles";
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../../../../../helpers/notify";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../../../../../redux/store/store";
 import { toast } from 'react-toastify';
+import { useGetState } from "../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { GridStateContext } from "../../../../../../../../../context/GridStateContext";
 
 
 
 
 const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
 
-    const refGraph1 = useRef<GridRef>();
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
+    const {ref} = useContext(GridStateContext)
+
+    const [columnState,setColumnState] = useState<any>()
+    const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
     const chunkSize = 10000;
 
+    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
     const {mutateAsync:getPlanningDataCustom,isLoading} = useGetPlanningDataCustom();
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
@@ -38,6 +45,18 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
         })
         return [...colDefs];
     }
+
+    useEffect(()=>{
+        const getTableState = async()=>{
+          try{
+            const data =  await getState("ExpediteToChildcustom")
+            setColumnState(JSON.parse(data.data.data))
+          }catch(err:any){
+            setColumnState(colDefs)
+          }
+        }
+        getTableState()
+    },[currentGridState])
 
     useEffect(()=>{
         const fetchCustomPlanningData = async ()=> {
@@ -83,7 +102,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
     },[])
    
 
-    if(isLoading){
+    if(isLoading || isSavedDataLoading){
         return <VFLoader/>
     }
 
@@ -92,7 +111,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
         <>
         <SCDynamicContainer>
             <VFTable
-                ref={refGraph1}
+                ref={ref}
                 columnDefs={colDefs}
                 rowData={rowData}
                 sideBar={true}
@@ -102,6 +121,11 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}
+                onGridReady={(params)=>{
+                    if(columnState){
+                     params.columnApi.applyColumnState({state:columnState})
+                    }
+                 }}
             />
         </SCDynamicContainer>
         </>

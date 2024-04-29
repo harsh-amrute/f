@@ -41,14 +41,14 @@ const colorMapper =(color:string)=> {
 
     if(!color){
         return(
-            <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}} data-testid='color-cell'>
+            <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}} data-testid='color-cell'>
                 NULL
             </BPRColorCellRendererWrapper>
         )
     }
 
     return(
-        <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text}} data-testid='color-cell'>
+        <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}} data-testid='color-cell'>
             {color}
         </BPRColorCellRendererWrapper>
     )

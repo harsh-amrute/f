@@ -82,3 +82,9 @@ export const useResetState = () => {
     return await BPRService.resetState(payload);
   });
 }
+
+export const useGetAnalyticsData = () => {
+  return useMutation(async (payload:string) => {
+    return await BPRService.getAnalyticsData(payload);
+  });
+}

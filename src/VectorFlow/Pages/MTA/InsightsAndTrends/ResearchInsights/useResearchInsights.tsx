@@ -119,7 +119,7 @@ const useResearchInsights = ()=>{
                     id: 1,
                     name: "",
                     fields: [],
-                    filters:[],
+                    filters:{},
                     paginationParameter:{
                         pageNumber:currGridPage,
                         recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
@@ -133,7 +133,7 @@ const useResearchInsights = ()=>{
                 id: 1,
                 name: "",
                 fields: [],
-                filters:[],
+                filters:{},
                 paginationParameter:{
                     pageNumber:currGridPage,
                     recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 

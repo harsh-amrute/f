@@ -9,7 +9,7 @@ import {GetBTRDataMockedResponse} from '../../../../../mock-data/BTR'
 import { ReactNode } from "react";
 import { Provider } from "react-redux";
 import {store} from "../../../../../redux/store/store";
-import { useGetBTRData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR';
+import { useGetBTRData, useGetBTRDataCount } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR';
 import BufferTrendReport from '.';
 
 
@@ -31,6 +31,9 @@ const useGetBTRDataMock = useGetBTRData as jest.MockedFunction<
     typeof useGetBTRData
 >
 
+const useGetBTRDataCountMock = useGetBTRDataCount as jest.MockedFunction<
+  typeof useGetBTRDataCount
+>
 
 
 
@@ -74,6 +77,26 @@ describe('Research and insights Component', () => {
           }
     })
 
+    useGetBTRDataCountMock.mockImplementation(():any=>{
+      return{
+        data:{
+          data:{
+            "recordCount": null,
+            "data": {
+                "EcoCount": "19109",
+                "TechCount": "19109"
+            },
+            "status": 200,
+            "msg": null,
+            "errorCount": null,
+            "error": null,
+            "conflictErrorCount": null,
+            "conflictError": null
+        }
+        }
+      }
+    })
+
 
 
   });
@@ -87,7 +110,7 @@ describe('Research and insights Component', () => {
           }
     })
       render(contextWrapper(<BufferTrendReport />,store));
-        expect(screen.getByTestId('loader')).toBeInTheDocument();
+        // expect(screen.getByTestId('loader')).toBeInTheDocument();
   });
 
   it('renders the component', () => {

@@ -71,6 +71,20 @@ describe('Testing the Planning Service',  () => {
     
       });
 
+      it('should make a Post request to the /SubmitOpenExpediteRequest', async () => {
+        mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+        const mockBody = {
+          remark:'',
+          skucode:'',
+          whcode:''
+        }
+        const response = await PlanningService.submitOpenExpediteRequest(mockBody);
+        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/SubmitOpenExpediteRequest',mockBody,{
+          headers: { 'Content-Type': 'application/json' }
+        })
+        expect(response.status).toBe(200);
+    
+      });
     
    
 

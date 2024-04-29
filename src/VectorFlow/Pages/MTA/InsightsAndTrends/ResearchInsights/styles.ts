@@ -36,7 +36,6 @@ export const AvailabilityTrendWrapper = styled.div`
     background-color:white;
     border-radius:12px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-    border:2px solid;
 
 `
 export const AvailabilityTrendHeader = styled.div`

@@ -4,32 +4,71 @@ import useBTR from "./useBTR"
 
 import {SCViewBackground,SCViewContainer,SCViewImage,SCVerticalDivider} from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar/styles'
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
+import { GridStateContext } from "../../../../../context/GridStateContext"
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import ActionToolBar from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar"
+import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 
 const BufferTrendReport = ()=>{
 
     const {
         currentTab,
         isLoading,
+        techColDefs,
+        techRef,
+        techTotalRows,
         verticalView,
         toggleVerticalView,
         toggleCurrentTab,
-        renderView
+        renderView,
+        tempRef,
+        onExportToExcelCallBack,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
     } = useBTR()
 
-    if(isLoading){
-        return <VFLoader/>
-    }
+    // if(isLoading){
+    //     return <VFLoader/>
+    // }
     
 
     return(
+        <GridStateContext.Provider
+            value={{
+                ref:techRef,
+                exportExcelColumns:exportExcelColumns,
+                setExportExcelColumns:setExportExcelColumns,
+                tempDownloadData:tempDownloadData,
+                setTempDownloadData:setTempDownloadData,
+                exportExcelRowData:exportExcelRowData,
+                setExportExcelRowData:setExportExcelRowData
+    
+            }}
+        >
         <BTRLayoutWrapper>
 
-            <ActionToolBar view={'grid'} setCurrentTab={''} currCategory={'BTR'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')} onExportToExcelCallBack genericRecordCount={0}/>
-
+        <div style={{zoom:0.8}}>
+        <ActionToolBar 
+            view={'grid'} 
+            setCurrentTab={''} 
+            currCategory={'BTR'} 
+            currentTab={currentTab.value} 
+            tabsList={[]} 
+            onFloatingTabChange={()=>console.log('')} 
+            onGoBack={()=>console.log('')} 
+            onViewChange={()=>console.log('')} 
+            onExportToExcelCallBack={(pageNumber:number)=>{return onExportToExcelCallBack(pageNumber,currentTab.value)}}
+            genericRecordCount={parseInt(techTotalRows)}
+        />
+        </div>
 
             <BTRLayoutTabsWrapper>
+                <div style={{zoom:0.6,marginTop:-100}}>
                 <VFFloatingTab
                     handleClick={(tab:any)=>toggleCurrentTab(tab)}
                     tabs={[
@@ -50,6 +89,7 @@ const BufferTrendReport = ()=>{
                         }
                     ]}  
                 />
+                </div>
                 {currentTab?.id==='1' && (
                     <ToggleViewBtnWrapper>
                     <SCViewBackground>
@@ -66,8 +106,18 @@ const BufferTrendReport = ()=>{
                 </ToggleViewBtnWrapper>
                 )}
             </BTRLayoutTabsWrapper>
-            {renderView()}
+            {isLoading && <VFLoader/>}
+            {!isLoading && renderView()}
+            <div style={{display:'none'}}>                
+                <VFTable
+                ref={tempRef}
+                columnDefs={techColDefs}
+                rowData={exportExcelRowData}
+                {...tempAgGridProps}
+                />
+            </div>
         </BTRLayoutWrapper>
+        </GridStateContext.Provider>
     )
 }
 

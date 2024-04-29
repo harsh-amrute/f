@@ -41,7 +41,6 @@ export const VFTaskStatusStepperLabel = styled.p`
     justify-content:center;
     align-items: center;
     text-overflow:ellipsis;
-    border:1px solid #EBEBEB;
 `
 
 

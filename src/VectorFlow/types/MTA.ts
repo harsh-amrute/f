@@ -35,4 +35,9 @@ export interface MTAStore{
     showNormChangeHistoryTable:boolean
     dailyData:DailyDataGraph
     currentGridState:any
+    planning:{
+        currentTab:string
+        currentCategory:string
+        currentView:string
+    }
 }
