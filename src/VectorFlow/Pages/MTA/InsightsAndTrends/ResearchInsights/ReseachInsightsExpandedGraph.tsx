@@ -115,7 +115,9 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             yName: "Red",
                             
                             marker:{
-                                fill:'red'
+                                fill:'red',
+                                size:2,
+                                stroke:"red"
                             },
                             stroke:'red'                       
                         },
@@ -125,7 +127,9 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             yKey: "Green",
                             yName: "Green",
                             marker:{
-                                fill:'green'
+                                fill:'green',
+                                size:2,
+                                stroke:"green"
                             },
                             stroke:'green'
                         },
@@ -135,7 +139,9 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             yKey: "Yellow",
                             yName: "Yellow",
                             marker:{
-                                fill:'yellow'
+                                fill:'yellow',
+                                size:2,
+                                stroke:"yellow"
                             },
                             stroke:'yellow'
                         },
@@ -145,7 +151,9 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             yKey: "Black",
                             yName: "Black",
                             marker:{
-                                fill:'black'
+                                fill:'black',
+                                size:2,
+                                stroke:"black"
                             },
                             stroke:'black'
                         },
@@ -155,7 +163,9 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             yKey: "Blue",
                             yName: "Blue",
                             marker:{
-                                fill:'blue'
+                                fill:'blue',
+                                size:2,
+                                stroke:"blue"
                             },
                             stroke:'blue'
                         },
@@ -165,7 +175,9 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             yKey: "White",
                             yName: "White",
                             marker:{
-                                fill:'gray'
+                                fill:'gray',
+                                size:2,
+                                stroke:"gray"
                             },
                             stroke:'gray',
                         }

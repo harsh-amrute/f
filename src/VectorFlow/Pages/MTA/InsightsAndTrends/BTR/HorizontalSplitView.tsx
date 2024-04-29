@@ -34,13 +34,14 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             rowHeight={25}
                             disableZoomScaling
                             gridOptions={{
-                                components:techTable.gridOptions?.components
+                               ...techTable.gridOptions
                             }}
                             columnDefs={techTable.columnDefs}
                             rowData={techTable.rowData}
                             tooltipMouseTrack={true}
                             tooltipShowDelay={0}
                             tooltipHideDelay={100000}
+                            
                         />
                         <div style={{zoom:0.7,marginBottom:'20px'}}>
                             <VFPagination
@@ -56,7 +57,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             rowHeight={25}
                             disableZoomScaling
                             gridOptions={{
-                                components:ecoTable.gridOptions?.components
+                                ...ecoTable.gridOptions
                             }}
                             columnDefs={ecoTable.columnDefs}
                             rowData={ecoTable.rowData}

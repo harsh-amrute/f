@@ -79,9 +79,6 @@ const ResearchInsights = ()=>{
     const themeUi = user.user.theme_ui
 
     
-    if(isLoading || isSavedDataLoading){
-        return <VFLoader/>
-    }
     return(
         <GridStateContext.Provider value={{
             ref:ref,
@@ -105,7 +102,10 @@ const ResearchInsights = ()=>{
             onExportToExcelCallBack={onExportToExcelCallBack}
         />
         
-        <ResearchInsightsLayout>
+        {(isLoading || isSavedDataLoading)?(
+            <VFLoader/>
+        ):(
+            <ResearchInsightsLayout>
             {
                 showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
             }
@@ -362,7 +362,9 @@ const ResearchInsights = ()=>{
                                 yName: "Red",
                                 
                                 marker:{
-                                    fill:'red'
+                                    fill:'red',
+                                    size:2,
+                                    stroke:"red"
                                 },
                                 stroke:'red'
                                 
@@ -373,7 +375,9 @@ const ResearchInsights = ()=>{
                                 yKey: "Green",
                                 yName: "Green",
                                 marker:{
-                                    fill:'green'
+                                    fill:'green',
+                                    size:2,
+                                    stroke:'green'
                                 },
                                 stroke:'green'
                             },
@@ -383,7 +387,9 @@ const ResearchInsights = ()=>{
                                 yKey: "Yellow",
                                 yName: "Yellow",
                                 marker:{
-                                    fill:'yellow'
+                                    fill:'yellow',
+                                    size:2,
+                                    stroke:'yellow'
                                 },
                                 stroke:'yellow'
                             },
@@ -393,7 +399,9 @@ const ResearchInsights = ()=>{
                                 yKey: "Black",
                                 yName: "Black",
                                 marker:{
-                                    fill:'black'
+                                    fill:'black',
+                                    size:2,
+                                    stroke:"black"
                                 },
                                 stroke:'black'
                             },
@@ -403,7 +411,9 @@ const ResearchInsights = ()=>{
                                 yKey: "Blue",
                                 yName: "Blue",
                                 marker:{
-                                    fill:'blue'
+                                    fill:'blue',
+                                    size:2,
+                                    stroke:"blue"
                                 },
                                 stroke:'blue'
                             },
@@ -413,7 +423,9 @@ const ResearchInsights = ()=>{
                                 yKey: "White",
                                 yName: "White",
                                 marker:{
-                                    fill:'gray'
+                                    fill:'gray',
+                                    size:2,
+                                    stroke:"gray"
                                 },
                                 stroke:'gray'
                             }
@@ -496,7 +508,9 @@ const ResearchInsights = ()=>{
                                     yName: "Red",
                                     
                                     marker:{
-                                        fill:'red'
+                                        fill:'red',
+                                        size:2,
+                                        stroke:"red"
                                     },
                                     stroke:'red'
                                     
@@ -507,7 +521,9 @@ const ResearchInsights = ()=>{
                                     yKey: "Green",
                                     yName: "Green",
                                     marker:{
-                                        fill:'green'
+                                        fill:'green',
+                                        size:2,
+                                        stroke:"green"
                                     },
                                     stroke:'green'
                                 },
@@ -517,7 +533,9 @@ const ResearchInsights = ()=>{
                                     yKey: "Yellow",
                                     yName: "Yellow",
                                     marker:{
-                                        fill:'yellow'
+                                        fill:'yellow',
+                                        size:2,
+                                        stroke:"yellow"
                                     },
                                     stroke:'yellow'
                                 },
@@ -527,9 +545,12 @@ const ResearchInsights = ()=>{
                                     yKey: "Black",
                                     yName: "Black",
                                     marker:{
-                                        fill:'black'
+                                        fill:'black',
+                                        size:2,
+                                        stroke:"black"
                                     },
-                                    stroke:'black'
+                                    stroke:'black',
+                                    
                                 },
                                 {
                                     type: "line",
@@ -537,7 +558,9 @@ const ResearchInsights = ()=>{
                                     yKey: "Blue",
                                     yName: "Blue",
                                     marker:{
-                                        fill:'blue'
+                                        fill:'blue',
+                                        size:2,
+                                        stroke:"blue"
                                     },
                                     stroke:'blue'
                                 },
@@ -547,7 +570,9 @@ const ResearchInsights = ()=>{
                                     yKey: "White",
                                     yName: "White",
                                     marker:{
-                                        fill:'gray'
+                                        fill:'gray',
+                                        size:2,
+                                        stroke:"gray"
                                     },
                                     stroke:'gray'
                                 }
@@ -583,6 +608,7 @@ const ResearchInsights = ()=>{
                   />
                 </div>
         </ResearchInsightsLayout>
+        )}
         </GridStateContext.Provider>
     )
 }

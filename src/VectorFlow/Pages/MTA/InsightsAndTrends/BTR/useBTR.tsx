@@ -107,9 +107,15 @@ const useBTR = ()=>{
                     // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
 
 
-                }
+                },
+                getRowStyle: (params: any) => {
+                    if (params.node.rowIndex % 2 === 0) {
+                      return { background: "#EBEBEB" };
+                    }
+                    return { background: "#F7F7F7" };
+                  },
             },
-            rowHeight:25
+            rowHeight:25,
         }
     },[])
 

@@ -135,7 +135,7 @@ export const ReadMoreToolTip = styled.div`
 `
 
 export const BPRColorCellRendererWrapper = styled.div`
-    display:flex;
+    display:block;
     justify-content:center;
     align-items:center;
     width: 100%;
