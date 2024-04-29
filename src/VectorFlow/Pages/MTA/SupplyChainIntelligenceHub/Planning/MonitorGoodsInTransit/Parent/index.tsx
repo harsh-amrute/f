@@ -10,6 +10,7 @@ import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRender
 import { useDispatch, useSelector } from 'react-redux';
 import { UPDATE_GRID_STATE } from '../../../../../../../redux/actions/MTA';
 import { RootState } from '../../../../../../../redux/store/store';
+import { AgeingCellRenderer } from '../../../../../../../components/VectorFLOW/commons/AgeingCellRenderer';
 const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
     const [activeRow,setActiveRow] = useState<any>();
@@ -21,7 +22,8 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
-        colorCellRenderer:ColorCellRenderer
+        colorCellRenderer:ColorCellRenderer,
+        ageingCellRenderer:AgeingCellRenderer
       }), []);
 
       const sideBar:SideBarDef = {
@@ -89,9 +91,27 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
         }
     }
 
-    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
+    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
         let colDefs = [];
         const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
+        const tagsColDef =  {
+            colId:'tags',
+            field:'t',
+            headerName:"Tags",
+            cellRenderer:'tagsCellRenderer',
+            width:100,
+        }
+        const ageingColDef =  {
+            colId:'AgeingOrder',
+            field:'AgeingOrder',
+            headerName:"",
+            cellRenderer:'ageingCellRenderer',
+            width:100,
+            floatingFilter:false
+        }
+        columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
+            return column1.colPosition - column2.colPosition;
+        })
         colDefs = columns.map((column:{header:string,colCode:string})=>{
             if(['plp','pip'].includes(column.colCode)){
                 return {
@@ -101,14 +121,17 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
                     cellRenderer:'colorCellRenderer',
                 }
             }
+            if(column.colCode === 't'){
+                return tagsColDef
+            }
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
                 headerName:column['header']
             }
         })
-        dispatch(UPDATE_GRID_STATE([dailyDataColDef,...colDefs]))
-        return [dailyDataColDef,...colDefs]
+        dispatch(UPDATE_GRID_STATE([ageingColDef,dailyDataColDef,...colDefs]))
+        return [ageingColDef,dailyDataColDef,...colDefs]
     }
 
     const colDefs = useMemo(()=>{

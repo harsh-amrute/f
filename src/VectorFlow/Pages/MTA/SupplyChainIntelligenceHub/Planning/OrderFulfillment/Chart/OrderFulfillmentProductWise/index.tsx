@@ -216,6 +216,14 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                             text:'Product Name',
                             position:'bottom',
 
+                        },
+                        label:{
+                            formatter:(params:any)=>{
+                                if(params.value.length > 15) return params.value.toString().slice(0,15) + '...';
+                                return params.value;
+                            },
+                            fontSize:8,
+                            fontFamily:'Roboto'
                         }
                     },
                     number:{
@@ -245,6 +253,14 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                             text:'Product Name',
                             position:'bottom',
 
+                        },
+                        label:{
+                            formatter:(params:any)=>{
+                                if(params.value.length > 15) return params.value.toString().slice(0,15) + '...';
+                                return params.value;
+                            },
+                            fontSize:8,
+                            fontFamily:'Roboto'
                         }
                     },
                     number:{

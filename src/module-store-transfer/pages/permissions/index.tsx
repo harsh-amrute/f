@@ -85,9 +85,9 @@ const Permissions = ({ roles }: any) => {
         <SCOverviewInfo>
           <SCOverviewWrap>
             <SCOverviewWrapTitle>
-              {t(
+              {/* {t(
                 "profile.tabContent.permissions.roleAndPermissions.interStoreTransfer"
-              )}
+              )} */}
             </SCOverviewWrapTitle>
             <SCOverviewWrapItem checkBackGround={roles.permission.length === 3}>
               {roles.permission.map((item: any, index: number) => (

@@ -40,11 +40,9 @@ const SubmitErrorModal=(props:SubmitErrorModalProps)=>{
             <SubmitDataButtonWrapper>
                 <VFButtonOutline themeUi={user.user.theme_ui} color={"gray"} onClick={onSuccess} width={173} onHoverChild={
                 <>
-                    <img src="/assets/img/VectorFLOW/NMS/close-white.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
                     OK  
                 </>
                 }>
-                    <img src="/assets/img/VectorFLOW/NMS/close.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
                     OK 
                 </VFButtonOutline>
             </SubmitDataButtonWrapper>

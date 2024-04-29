@@ -29,15 +29,12 @@ const SubmitDataModal=(props:SubmitDataModalProps)=>{
             <SubmitDataButtonWrapper>
                 <VFButtonOutline themeUi={user.user.theme_ui} onClick={onFailure} onHoverChild={
                 <>
-                    <img src="/assets/img/VectorFLOW/NMS/close-white.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
                     No   
                 </>
                 }>
-                    <img src="/assets/img/VectorFLOW/NMS/close.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
                     No
                 </VFButtonOutline>
                 <VFButton themeUi={user.user.theme_ui} onClick={onSuccess}>
-                    <img src="/assets/img/VectorFLOW/NMS/tick.svg" style={{width:'13px', height:'13px',marginRight:'13px'}}></img>
                     Yes
                 </VFButton>
             </SubmitDataButtonWrapper>

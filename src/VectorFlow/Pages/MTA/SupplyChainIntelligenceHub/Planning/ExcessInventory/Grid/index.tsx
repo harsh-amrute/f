@@ -13,7 +13,7 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
-        colorCellRenderer:ColorCellRenderer
+        colorCellRenderer:ColorCellRenderer,
       }), []);
 
       const sideBar:SideBarDef = {
@@ -81,6 +81,13 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
         columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
             return column1.colPosition - column2.colPosition;
         })
+        const tagsColDef =  {
+            colId:'tags',
+            field:'t',
+            headerName:"Tags",
+            cellRenderer:'tagsCellRenderer',
+            width:100,
+        }
         colDefs = columns.map((column:{header:string,colCode:string})=>{
             if(['plp','pip','pin'].includes(column.colCode)){
                 return {
@@ -89,6 +96,9 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
                     headerName:column['header'],
                     cellRenderer:'colorCellRenderer',
                 }
+            }
+            if(column.colCode === 't'){
+                return tagsColDef
             }
             return {
                 field:column['colCode'],
@@ -111,7 +121,8 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
             customGridRowData={[]} 
             customGridColDef={[]} 
             isSubGridOpen={false}
-            paginationProps={paginationProps}        
+            paginationProps={paginationProps}
+            gridHeight={650}        
         />
     )
 }

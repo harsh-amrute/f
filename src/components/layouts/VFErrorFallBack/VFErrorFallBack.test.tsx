@@ -3,6 +3,7 @@ import VFErrorFallBack from "."
 
 
 describe('VFErrorFallBack Componenet',()=>{
+    
     it("Should render on the dom",()=>{
         render(<VFErrorFallBack/>)
     })
@@ -10,6 +11,11 @@ describe('VFErrorFallBack Componenet',()=>{
     it('Clicks on Go Home button',()=>{
         render(<VFErrorFallBack/>)
         const btn = screen.getByText('Go Home')
+        fireEvent.click(btn)
+    })
+    it('Clicks on Go Contact Support button',()=>{
+        render(<VFErrorFallBack/>)
+        const btn = screen.getByText('Contact Support')
         fireEvent.click(btn)
     })
 })

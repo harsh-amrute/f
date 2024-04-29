@@ -1,6 +1,6 @@
 
 
-import { render,act } from "@testing-library/react";
+import { render} from "@testing-library/react";
 import {useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount} from '../../../../Services/MTA/SupplyChainIntelligenceHub/RRR'
 
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -98,11 +98,11 @@ const useGetRRRCountResult: any = {
         render(contextWrapper(<RRR/>,store));
     })
 
-     it("renders RRReport", async()=>{
-        await act(async () => {
-          render(contextWrapper(<RRR />,store));
-          })
-    })
+    //  it("renders RRReport", async()=>{
+    //     await act(async () => {
+    //       render(contextWrapper(<RRR />,store));
+    //       })
+    // })
 
     //  it("Handles Pagination", async()=>{
     //     await act(async () => {

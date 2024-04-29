@@ -54,6 +54,16 @@ const ExpediteDispatches = ({ data }: ExpediteChildDispatchesProps) => {
         headerName: "Count of SKUs",
         colId: "SKUCounts",
       },
+      {
+        field:'black',
+        colId:'black',
+        headerName:'Black'
+      },
+      {
+          field:'red',
+          colId:'red',
+          headerName:'Red'
+      },
     ];
     
     colDefs = columns.map((column:{header:string,colCode:string})=>{
@@ -235,6 +245,8 @@ const colDefs3: ColDef[] = [
         sectorLabel: {
           color: "white",
           fontWeight: "bold",
+          fontSize:10,
+          fontFamily:'Roboto',
           formatter: ({ value }) => `${value}%`,
         },
       },
@@ -250,6 +262,8 @@ const colDefs3: ColDef[] = [
         sectorLabel: {
           color: "white",
           fontWeight: "bold",
+          fontSize:10,
+          fontFamily:'Roboto',
           formatter: ({ value }) => `${value}%`,
         },
       },
@@ -263,7 +277,7 @@ const colDefs3: ColDef[] = [
         chartRef1 = refGraph1.current?.api.createRangeChart({
           chartType: "column",
           cellRange: {
-            columns: ["WHDescription", "SKUCounts"],
+            columns: ["WHDescription", 'black','red'],
             rowStartIndex: 0,
             rowEndIndex: 9,
           },
@@ -275,7 +289,7 @@ const colDefs3: ColDef[] = [
       chartRef1 = refGraph1.current?.api.createRangeChart({
         chartType: "column",
         cellRange: {
-          columns: ["WHDescription", "SKUCounts"],
+          columns: ["WHDescription", 'black','red'],
           rowStartIndex: 0,
           rowEndIndex: 9,
         },
@@ -401,8 +415,11 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Parent Location Name",
               position: "bottom",
-              
             },
+            label:{
+              fontSize:8,
+              fontFamily:'Roboto'
+            }
           },
           number: {
             title: {
@@ -430,6 +447,10 @@ const colDefs3: ColDef[] = [
               text: "Receiving Location Name",
               position: "bottom",
             },
+            label:{
+              fontSize:8,
+              fontFamily:'Roboto'
+            }
           },
           number: {
             title: {
@@ -448,7 +469,7 @@ const colDefs3: ColDef[] = [
 
   const myCustomThemeG1: any = {
     palette: {
-      fills: ["#860202"],
+      fills: ['#000000','#DA3535'],
       strokes: ["#ffffff", "#ffffff"],
     },
   };
@@ -474,7 +495,17 @@ const colDefs3: ColDef[] = [
     "This graph shows the potential improvement in Pipeline availability assuming the entire rationed qty would become goods in transit.",
   ];
 
+  const splitDataIntoRandomPercentage = (data:any,key:string) => {
+    return data.map((row:any)=>{
+        const redPercentage = Math.random() * 100;
+        const blackPercentage = 100 - redPercentage;
 
+        const red = (parseFloat(row[key]) * redPercentage) / 100;
+        const black = (parseFloat(row[key]) * blackPercentage) / 100;
+        return {...row,red:Math.round(red),black:Math.round(black)};
+        
+    })
+  }
 
   return (
     <>
@@ -508,7 +539,7 @@ const colDefs3: ColDef[] = [
                       <VFTable
                         ref={refGraph1}
                         columnDefs={colDefs1}
-                        rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
+                        rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts'),'SKUCounts')}
                         enableCharts={true}
                         enableRangeSelection={true}
                         onGridReady={() => generateChart(1, true)}
@@ -533,7 +564,7 @@ const colDefs3: ColDef[] = [
                         <VFTable
                           ref={refGraph1}
                           columnDefs={colDefs1}
-                          rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
+                          rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts'),'SKUCounts')}
                           enableCharts={true}
                           enableRangeSelection={true}
                           onGridReady={() => generateChart(1)}

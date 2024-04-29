@@ -120,6 +120,13 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
         columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
             return column1.colPosition - column2.colPosition;
         })
+        const tagsColDef =  {
+            colId:'tags',
+            field:'t',
+            headerName:"Tags",
+            cellRenderer:'tagsCellRenderer',
+            width:100,
+        }
         colDefs = columns.map((column:{header:string,colCode:string})=>{
             if(['plp','pip','pin'].includes(column.colCode)){
                 return {
@@ -128,6 +135,9 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
                     headerName:column['header'],
                     cellRenderer:'colorCellRenderer',
                 }
+            }
+            if(column.colCode === 't'){
+                return tagsColDef
             }
             return {
                 field:column['colCode'],
@@ -209,6 +219,7 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
                 isSubGridOpen={isSubGridOpen} 
                 onRequestExpediting={()=>toggleExpeditingModal(true)}
                 paginationProps={paginationProps}
+                gridHeight={300}
             />
             <RequestExpeditingModal isOpen={isExpeditingModalOpen} onClose={()=>toggleExpeditingModal((prev:boolean)=>!prev)} onSubmit={submitOpenExpediteRemark}/>
         </>
