@@ -496,15 +496,15 @@
         "L3": "L3",
         "productPermission": {
           "title": "Product Permission",
-          "brand": "Brand",
-          "subBrand": "Sub Brand",
-          "category": "Category"
+          "brand": "Business",
+          "subBrand": "Category",
+          "category": "Family"
         },
         "locationPermission": {
           "title": "Location Permission",
-          "locationRegion": "Location Region",
-          "locationType": "Location Type",
-          "locationCluster": "Location Cluster"
+          "locationRegion": "Zone",
+          "locationType": "Location Group",
+          "locationCluster": "WH Type"
         }
       },
       "manageUsers": {

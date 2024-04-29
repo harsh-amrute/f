@@ -7,6 +7,7 @@ import { SideBarDef } from 'ag-grid-enterprise';
 import { createIconColumn } from '../../../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
+import { AgeingCellRenderer } from '../../../../../../../../../components/VectorFLOW/commons/AgeingCellRenderer';
 
 const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
@@ -16,7 +17,8 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
-        colorCellRenderer:ColorCellRenderer
+        colorCellRenderer:ColorCellRenderer,
+        ageingCellRenderer:AgeingCellRenderer
       }), []);
 
       const sideBar:SideBarDef = {
@@ -135,6 +137,21 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
         let colDefs = [];
         const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
+        const tagsColDef =  {
+            colId:'tags',
+            field:'t',
+            headerName:"Tags",
+            cellRenderer:'tagsCellRenderer',
+            width:100,
+        }
+        const ageingColDef =  {
+            colId:'AgeingOrder',
+            field:'AgeingOrder',
+            headerName:"",
+            cellRenderer:'ageingCellRenderer',
+            width:100,
+            floatingFilter:false
+        }
         columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
             return column1.colPosition - column2.colPosition;
         })
@@ -147,13 +164,17 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
                     cellRenderer:'colorCellRenderer',
                 }
             }
+            if(column.colCode === 't'){
+                return tagsColDef
+            }
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
                 headerName:column['header']
             }
         })
-        return [dailyDataColDef,...colDefs]
+        // dispatch(UPDATE_GRID_STATE([ageingColDef,dailyDataColDef,...colDefs]))
+        return [ageingColDef,dailyDataColDef,...colDefs]
     }
 
     const colDefs = mapUIConfigToColdefs(data['uiConfig'])

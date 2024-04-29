@@ -19,7 +19,7 @@ export default forwardRef(({ ...props }: any, ref) => {
   const [lcRegion, setLcRegion] = useState<any>([]);
   const [lcType, setLcType] = useState<any>([]);
   const [lcCluster, setLcCluster] = useState<any>([]);
-  const [select, setSelect] = useState<any>();
+  // const [select, setSelect] = useState<any>();
 
   useEffect(() => {
     const newListLcRegion: any = [];
@@ -147,28 +147,28 @@ export default forwardRef(({ ...props }: any, ref) => {
       handleAction: handleSelectLcCluster,
       disabled: false,
     },
-    {
-      title: "P-L4",
-      placeholder: "",
-      options: [],
-      value: select,
-      setValue: setSelect,
-      handleAction: () => {
-        return;
-      },
-      disabled: false,
-    },
-    {
-      title: "P-L5",
-      placeholder: "",
-      options: [],
-      value: select,
-      setValue: setSelect,
-      handleAction: () => {
-        return;
-      },
-      disabled: false,
-    },
+    // {
+    //   title: "P-L4",
+    //   placeholder: "",
+    //   options: [],
+    //   value: select,
+    //   setValue: setSelect,
+    //   handleAction: () => {
+    //     return;
+    //   },
+    //   disabled: false,
+    // },
+    // {
+    //   title: "P-L5",
+    //   placeholder: "",
+    //   options: [],
+    //   value: select,
+    //   setValue: setSelect,
+    //   handleAction: () => {
+    //     return;
+    //   },
+    //   disabled: false,
+    // },
   ];
 
   return (

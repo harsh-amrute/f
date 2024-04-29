@@ -220,6 +220,10 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                             text:'Location Name',
                             position:'bottom',
 
+                        },
+                        label:{
+                            fontSize:8,
+                            fontFamily:'Roboto'
                         }
                     },
                     number:{
@@ -252,7 +256,12 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                             text:'Location Name',
                             position:'bottom',
 
+                        },
+                        label:{
+                            fontSize:8,
+                            fontFamily:'Roboto'
                         }
+                    
                     },
                     number:{
                         title:{

@@ -14,6 +14,7 @@ import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import { notifyError } from "../../../../../../helpers/notify";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../../redux/store/store";
+
 // import VFPagination from "~/components/VectorFLOW/commons/VFPagination";
 
 
@@ -29,10 +30,12 @@ interface GridViewTableProps {
     onRequestExpediting?:()=>void
     paginationProps?:VFPaginationProps
     currentTab:string
-    currentCategory:string
+    currentCategory:string,
+    gridHeight?:number,
+    tablePrefixSrc?:string,
 }
 
-const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,currentTab,currentCategory}:GridViewTableProps) => {
+const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,currentTab,currentCategory,gridHeight,tablePrefixSrc}:GridViewTableProps) => {
     
     const {ref} = useContext(GridStateContext)
     const {mutateAsync:getState,isLoading} = useGetState()
@@ -58,16 +61,16 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
 
     return(
         <GridViewLayout>
-            <div style={{height:'90vh'}}>
-                <Allotment vertical defaultSizes={[400,400]}>
-                <Allotment.Pane>
+            <div style={{height:'80vh'}}>
+                <Allotment vertical>
+                <Allotment.Pane minSize={350}>
                     
                         <VFTable
                             ref={ref}
                             {...agGridProps}
                             columnDefs={agGridColDefs}
                             rowData={agGridRowData}
-                            height={500}
+                            height={gridHeight ? gridHeight : 380}
                             onGridReady={(params)=>{
                                 if(columnState){
                                     params.columnApi.applyColumnState({state:columnState})
@@ -80,8 +83,8 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                 {isSubGridOpen && (
                     <Allotment.Pane >
                 
-                    <BPRViewTable 
-                        tablePrefixSrc="/assets/img/VectorFLOW/BPR/in-transit.svg"
+                    <BPRViewTable
+                        tablePrefixSrc={tablePrefixSrc ? tablePrefixSrc : "/assets/img/VectorFLOW/BPR/in-transit.svg"}
                         rowData={customGridRowData}
                         colDefs={customGridColDef}
                     />
