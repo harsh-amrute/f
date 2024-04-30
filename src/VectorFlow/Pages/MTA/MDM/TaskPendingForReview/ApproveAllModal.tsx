@@ -24,11 +24,11 @@ const ApproveAllModal=(props:ApproveAllModalProps)=>{
             <RadioContainer>
                 <RadioButtonGroup> 
                     <input type="radio" value="option1" onChange={()=>setSelectionType('All')} name="Approve" id="ApproveAll"/>
-                    <label htmlFor="ApproveAll">Approve all across the pages</label>
+                    <label htmlFor="ApproveAll">Approve across all the pages</label>
                 </RadioButtonGroup>  
                 <RadioButtonGroup> 
                     <input type="radio" value="option2" onChange={()=>setSelectionType('Current')} name="Approve" id="ApproveCurrent"/>
-                    <label htmlFor="ApproveCurrent">Approve all only current page</label>
+                    <label htmlFor="ApproveCurrent">Approve only the current page</label>
                 </RadioButtonGroup> 
             </RadioContainer>
             <SubmitButtonWrapper>
