@@ -10,7 +10,7 @@ import { GridRef, Master } from "../../../../../VectorFlow/types/MDM"
 import { AgGridReactProps } from "ag-grid-react"
 import { notifyError } from "../../../../../helpers/notify"
 import { ColDef } from "ag-grid-enterprise"
-import { differenceInSeconds} from "date-fns"
+import { differenceInDays, differenceInSeconds, format} from "date-fns"
 
 
 const TaskStatus = ()=>{
@@ -35,6 +35,28 @@ const TaskStatus = ()=>{
           if(tempDownloadData)event.api.exportDataAsExcel({fileName:currentMasterName });
         }
       };
+
+      const formatDate =  (dateString:string)=>{
+
+        // Split the date string into its components
+        const parts = dateString.split(/[/: ]/);
+
+        // Parse the components
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // Months are zero-based
+        const year = parseInt(parts[2], 10);
+        let hours = parseInt(parts[3], 10);
+        const minutes = parseInt(parts[4], 10);
+        const period = parts[5].toLowerCase(); // "AM" or "PM"
+
+        // Adjust hours for PM
+        if (period === "pm" && hours < 12) {
+        hours += 12;
+        }
+
+        // Create a Date object
+        return new Date(year, month, day, hours, minutes);
+      }
 
     const onDownloadTaskDetails = async(payload:any)=>{
         
@@ -76,7 +98,7 @@ const TaskStatus = ()=>{
     //     }
     // })
     rowData.sort((a:any,b:any)=>{
-       return differenceInSeconds(b.PendingSince,a.PendingSince) 
+       return differenceInSeconds(formatDate(b.PendingSince),formatDate(a.PendingSince)) 
     })
     // rowData = rowData.map((r:any)=>{
     //     return {

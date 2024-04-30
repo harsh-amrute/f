@@ -73,7 +73,6 @@ const getStepperState = (data:any):StepItem[]=>{
                 }
             ]
         case "Approved - DB Updated":
-            console.log(data)
             return [
                 {
                     label:"Submission",

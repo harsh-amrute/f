@@ -53,7 +53,6 @@ const NavbarItem = ({
   const resetState = () => {
     dispatch(RESET_STATE());
   }
-  console.log("Menu Item",menuItem);
   const RenderListMenu = (props:{listMenu:any}) => {
 
     const [toggle, setToggle] = useState(true);
@@ -61,7 +60,6 @@ const NavbarItem = ({
       listMenu
     } = props
 
-    console.log(listMenu)
     return (
       <SCMenuItem
         key={listMenu.id}

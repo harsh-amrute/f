@@ -75,8 +75,8 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
             const pipelineToday = today[`Pipeline${color}`];
             const pipelineYesterday = yesterday[`Pipeline${color}`];
         
-            percentIncrease[`OnHand${color}`] = (onHandYesterday !== undefined && onHandYesterday !== 0) ? parseFloat((((onHandToday - onHandYesterday) / onHandYesterday) * 100).toFixed(2)) : Infinity;
-            percentIncrease[`Pipeline${color}`] = (pipelineYesterday !== undefined && pipelineYesterday !== 0) ? parseFloat((((pipelineToday - pipelineYesterday) / pipelineYesterday) * 100).toFixed(2)) : Infinity;
+            percentIncrease[`OnHand${color}`] = (onHandYesterday !== undefined && onHandYesterday !== 0) ? parseFloat((((onHandToday - onHandYesterday) / onHandYesterday) * 100).toFixed(2)) : null;
+            percentIncrease[`Pipeline${color}`] = (pipelineYesterday !== undefined && pipelineYesterday !== 0) ? parseFloat((((pipelineToday - pipelineYesterday) / pipelineYesterday) * 100).toFixed(2)) : null;
           }
           const result = []
           for (const color of colors) {
@@ -145,8 +145,9 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     },[location.pathname,currentCategory,currentView,currentTab])
 
     const getCellText = (text:any,colKey:string)=>{
-
+        console.log(text)
         if(colKey==='techChange' || colKey==='ecoChange'){
+            if(!text)return "N/A"
             text = String(text)
             if(text.startsWith('-')){
                 return `${text.slice(1)}%`

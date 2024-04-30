@@ -161,7 +161,7 @@ export const SCWrapperImg = styled.div<{ isHideLogo: boolean }>`
   background: #ffffff 0% 0% no-repeat padding-box;
   cursor: pointer;
   transition: ${globalStyles.customTransition};
-  z-index:100;
+  z-index:1000;
 `;
 
 export const SCImg = styled.img<{ isHideLogo: boolean }>`
@@ -172,4 +172,5 @@ export const SCImg = styled.img<{ isHideLogo: boolean }>`
   margin-left: ${(props) => (props.isHideLogo ? "20px" : "100px")};
   display: ${props => props.isHideLogo ? "block": "none"};
   transition: ${globalStyles.customTransition};
+
 `;
