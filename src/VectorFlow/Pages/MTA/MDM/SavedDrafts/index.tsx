@@ -104,6 +104,7 @@ const SavedDrafts = ()=>{
               return { background: "#F7F7F7" };
             },
           }}
+          height={900 }
           
         />
 

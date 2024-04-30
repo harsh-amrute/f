@@ -189,7 +189,8 @@ const TaskStatus = ()=>{
                 ])}
                 pagination
                 // paginationPageSize={10}            
-                paginationPageSize={parseInt(process.env.REACT_APP_TASKSTATUS_PAGE || '200')}            
+                paginationPageSize={parseInt(process.env.REACT_APP_TASKSTATUS_PAGE || '200')}  
+                height={900}          
 
             />
             <div style={{display:'none'}}>                

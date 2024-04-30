@@ -41,6 +41,7 @@ const TaskPendingForReview = ()=>{
         return(
             <TaskPendingWrapper>
                 <VFTable
+                height={900}
                 columnDefs={viewTableColDefs}
                 gridOptions={{
                     getRowStyle: (params: any) => {

@@ -275,7 +275,7 @@ const colDefs3: ColDef[] = [
     if (graphNo === 1) {
       if (withOutContainer) {
         chartRef1 = refGraph1.current?.api.createRangeChart({
-          chartType: "column",
+          chartType: "stackedColumn",
           cellRange: {
             columns: ["WHDescription", 'black','red'],
             rowStartIndex: 0,
@@ -287,7 +287,7 @@ const colDefs3: ColDef[] = [
         "ExpediteDispatchesG1"
       ) as HTMLElement;
       chartRef1 = refGraph1.current?.api.createRangeChart({
-        chartType: "column",
+        chartType: "stackedColumn",
         cellRange: {
           columns: ["WHDescription", 'black','red'],
           rowStartIndex: 0,

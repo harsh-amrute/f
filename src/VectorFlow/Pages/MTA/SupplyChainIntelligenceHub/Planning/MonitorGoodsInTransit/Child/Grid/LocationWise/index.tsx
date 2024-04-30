@@ -194,6 +194,7 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
             customGridColDef={customGridColDef} 
             isSubGridOpen={isSubGridOpen}
             paginationProps={paginationProps}
+            gridHeight={600}
         />
     )
 }

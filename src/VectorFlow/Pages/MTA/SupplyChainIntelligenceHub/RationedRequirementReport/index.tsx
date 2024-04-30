@@ -112,6 +112,7 @@ const RRR = () => {
                       params.columnApi.applyColumnState({state:columnState})
                     }
                   }}
+                  height={800}
               />  
               <VFPagination 
                 selectedRows={0} 

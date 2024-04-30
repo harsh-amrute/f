@@ -41,6 +41,7 @@ const BufferTrends = () => {
      <ActionToolBar view={'grid'} setCurrentTab={currentTab} currCategory={'BufferTrend'} currentTab={''} tabsList={[]} onFloatingTabChange={onFloatingTabChange} onGoBack={onGoBack} onViewChange={()=>console.log('')} onApplyFilter={handleApplyFilter} onExportToExcelCallBack genericRecordCount={0}/>
 
     <div style={{display:'flex',justifyContent:'center',marginBottom:'8px'}}>
+                        <div style={{zoom:0.7}}>
                         <VFFloatingTab
                             tabs={[
                                 {
@@ -55,7 +56,9 @@ const BufferTrends = () => {
                                 }
                             ]}
                             handleClick={onFloatingTabChange}
+                        
                         />
+                        </div>
                     </div>
                     {isLoading?<VFLoader/>: renderView()}      
                    

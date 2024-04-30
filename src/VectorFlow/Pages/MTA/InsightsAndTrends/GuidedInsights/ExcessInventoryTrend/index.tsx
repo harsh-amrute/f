@@ -100,11 +100,11 @@ if(isLoaderGraph1||isLoaderGraph2){
             <SCDynamicContainer>
        <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={493} >
+                        <SCChartContainer height={450} >
 <div style={{top: '316px',
 left: '293px',
-width: '677px',
-height: '493px'}}><AgChartsReact options={options1} /></div>
+width: '550px',
+height: '400px'}}><AgChartsReact options={options1} /></div>
   <SCHorizontalDivider/>
 </SCChartContainer>
  <div style={{marginLeft:'10px',marginRight:'10px'}}>
@@ -113,11 +113,11 @@ height: '493px'}}><AgChartsReact options={options1} /></div>
                         </div>
 </Allotment.Pane>
 <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={493}>
+                        <SCChartContainer height={450}>
 <div style={{top: '316px',
 left: '1191px',
-width: '677px',
-height: '493px'}}><AgChartsReact options={options2} /></div>
+width: '550px',
+height: '400px'}}><AgChartsReact options={options2} /></div>
   <SCHorizontalDivider/>
 </SCChartContainer>
  <div style={{marginLeft:'10px',marginRight:'10px'}}>

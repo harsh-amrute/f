@@ -4,9 +4,15 @@ import { useGetDBMUIConfiguration,useGetDBMData,useGetDBMDataCount,useGetDBMAppl
 import { useUserData } from "../../../../../context"
 import { mapDBMFieldsToColDefs } from "../../../../../helpers/utils"
 //import { useRef } from "react"
-import {DBMGraphCellRenderer,DBMSleepCellRenderer} from "./Sleep"
+import {DBMSleepCellRenderer} from "./Sleep"
+import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
 import {DBMTickCellRenderer} from "./dbmTick"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
+import {useSelector, useDispatch} from 'react-redux';
+import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
+import { type RootState } from "../../../../../redux/store/store";
+import { DailyDataGraph } from "../../../../types/MTA"
+import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 
 const useDBM =()=>{
     //const [DBMApplySelectedNormData,setDBMApplySelectedNormData] = useState<any[]>([])
@@ -22,13 +28,40 @@ const useDBM =()=>{
     const {mutateAsync:getDBMApplySelectedNorm,isLoading:isDBMApplySelectedNorm} =useGetDBMApplySelectedNorm();
     const {mutateAsync:getDBMDataCount}=useGetDBMDataCount();
 
+    const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
+    const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
+    const dailyData = useSelector((state:RootState) => state.mta.dailyData);
+
+    const {mutateAsync:getDailyData} = useGetDailyData();
+
+    const dispatch = useDispatch();
+
     const customCellRenderers = useMemo(() => ({
         tickCellRenderer:DBMTickCellRenderer,
-        grapCellRenderer:DBMGraphCellRenderer,
+        grapCellRenderer:BPRGraphCellRenderer,
         sleepCellRenderer:DBMSleepCellRenderer,
       }), []);
 
-    const DBMColumns = mapDBMFieldsToColDefs(data?.data.data)
+    const onOpenDailyDataGraph = async (params:any) => {
+        const payload:any = {
+            SKUCode:params.data['SKUCode'],
+            WHCode:params.data['WHCode']
+        }
+        const result = await getDailyData(payload)
+        const data = result.data.data[0];
+        const dailyData:DailyDataGraph = {
+            rowData:params.data,
+            chartData:data['StockData'] ? data['NormChangeHistoryData'] : [],
+            normChangeData:data['NormChangeHistoryData'] ? data['NormChangeHistoryData'] : [],
+            masterData:data['MasterData'][0],
+            suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
+            monitoringData:data['MonitoringData']
+        }
+    
+        dispatch(UPDATE_DAILY_DATA(dailyData));
+        dispatch(TOGGLE_GRAPH_MODAL(true));
+    }
+    const DBMColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph)
 
     const showAllCheckbox = () => {
         const rows:any[] = []
@@ -141,6 +174,8 @@ const useDBM =()=>{
         }
     }
 
+    
+
     return {
         isSideBarOpen,
         DBMColumns,
@@ -153,6 +188,9 @@ const useDBM =()=>{
         DBMDataCount,
         currentPage,
         handleGoButton,
+        showDailyDataGraphModal,
+        showNormChangeHistoryTable,
+        dailyData
     }
 }
 

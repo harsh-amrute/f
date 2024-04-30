@@ -158,11 +158,11 @@ const usePlanning = ()=>{
                         label:'Create Availability At Parent',
                         value:'createAvailabilityAtParent'
                     },
-                    {
-                        id:'custom',
-                        label:'Custom Screens',
-                        value:'custom'
-                    }
+                    // {
+                    //     id:'custom',
+                    //     label:'Custom Screens',
+                    //     value:'custom'
+                    // }
                 ])
             }
             else{
@@ -552,6 +552,7 @@ const usePlanning = ()=>{
         setCurrentView('');
         setCurrentTab('');
         setCurrentPage(1);
+        toast.dismiss();
     }
 
     const onViewChange = async (view:string) => {

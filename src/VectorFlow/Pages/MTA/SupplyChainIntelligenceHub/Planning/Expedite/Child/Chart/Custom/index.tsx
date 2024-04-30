@@ -40,7 +40,11 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                 colId:column['colCode'],
                 headerName:column['header'],
                 enablePivot:true,
-                enableValue:true
+                enableValue:true,
+                // rowGroup:true,
+                // enableRowGroup:true,
+                suppressDragLeaveHidesColumns:true
+
             }
         })
         return [...colDefs];
