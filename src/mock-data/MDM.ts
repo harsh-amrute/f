@@ -990,182 +990,384 @@ export const getTaskDetailsMockData = {
 }
 
 export const getTaskStatusDataMockData = {
-  recordCount: null,
-  data: [
+  "recordCount": null,
+  "data": [
       {
-          TaskID: "1_20231206175429",
-          PendingSince: "2023-12-06T17:59:01.667",
-          TaskName: "M_SKU",
-          Approver: "Approver1,Approver2",
-          Requester: "Admin",
-          TaskStatus: "Pending",
-          Approvers: [
-              {
-                  TaskID: "1_20231206175429",
-                  PendingSince: "2023-12-06T17:59:01.667",
-                  TaskName: "M_SKU",
-                  Approver: "Approver1",
-                  Requester: "Admin",
-                  TaskStatus: "Pending",
-                  ApproverId: "1"
-              },
-              {
-                  TaskID: "1_20231206175429",
-                  PendingSince: "2023-12-06T17:59:01.667",
-                  TaskName: "M_SKU",
-                  Approver: "Approver2",
-                  Requester: "Admin",
-                  TaskStatus: "Pending",
-                  ApproverId: "2"
-              }
-          ]
+          "TaskID": "2_20240427194750",
+          "PendingSince": "27/04/2024 07:47 PM",
+          "ageing": 3,
+          "TaskName": "Modify-SKUMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 2
       },
       {
-          TaskID: "1_20231206182017",
-          PendingSince: "2023-12-06T18:20:36.320",
-          TaskName: "M_SKU",
-          Approver: "Approver2",
-          Requester: "Admin",
-          TaskStatus: "Pending",
-          Approvers: [
-              {
-                  TaskID: "1_20231206182017",
-                  PendingSince: "2023-12-06T18:20:36.320",
-                  TaskName: "M_SKU",
-                  Approver: "Approver1",
-                  Requester: "Admin",
-                  TaskStatus: "Pending",
-                  ApproverId: "1"
-              },
-              {
-                  TaskID: "1_20231206182017",
-                  PendingSince: "2023-12-06T18:20:36.320",
-                  TaskName: "M_SKU",
-                  Approver: "Approver2",
-                  Requester: "Admin",
-                  TaskStatus: "Pending",
-                  ApproverId: "2"
-              }
-          ]
+          "TaskID": "4_20240428152628",
+          "PendingSince": "28/04/2024 03:26 PM",
+          "ageing": 2,
+          "TaskName": "Modify-SKUMaster",
+          "RequesterName": "Akanksha",
+          "Actiontype": 2
       },
       {
-          TaskID: "1_202312061821491222",
-          PendingSince: "2023-12-06T18:20:36.320",
-          TaskName: "M_SKU",
-          Approver: "Approver1,Approver2",
-          Requester: "Admin",
-          TaskStatus: "Pending",
-          Approvers: [
-              {
-                  TaskID: "1_202312061821491222",
-                  PendingSince: "2023-12-06T18:20:36.320",
-                  TaskName: "M_SKU",
-                  Approver: "Approver1",
-                  Requester: "Admin",
-                  TaskStatus: "Pending",
-                  ApprovedDate: "15/12/2023 01:51 AM",
-                  ApproverId: "1"
-              },
-              {
-                  TaskID: "1_202312061821491222",
-                  PendingSince: "2023-12-06T18:20:36.320",
-                  TaskName: "M_SKU",
-                  Approver: "Approver2",
-                  Requester: "Admin",
-                  TaskStatus: "Pending",
-                  ApproverId: "2"
-              }
-          ]
+          "TaskID": "2_20240429105701",
+          "PendingSince": "29/04/2024 10:57 AM",
+          "ageing": 1,
+          "TaskName": "Modify-SKUMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 2
       },
       {
-          TaskID: "1_20231206182149",
-          PendingSince: "2023-12-06T18:21:59.460",
-          TaskName: "M_SKU",
-          Approver: "Approver1,Approver2",
-          Requester: "Admin",
-          TaskStatus: "Pending",
-          Approvers: [
-              {
-                  TaskID: "1_20231206182149",
-                  PendingSince: "2023-12-06T18:21:59.460",
-                  TaskName: "M_SKU",
-                  Approver: "Approver1",
-                  Requester: "Admin",
-                  TaskStatus: "Partially Approved - DB update Pending",
-                  ApprovedDate: "Dec 12 2023 12:15PM",
-                  ApproverId: "1"
-              },
-              {
-                  TaskID: "1_20231206182149",
-                  PendingSince: "2023-12-06T18:21:59.460",
-                  TaskName: "M_SKU",
-                  Approver: "Approver2",
-                  Requester: "Admin",
-                  TaskStatus: "Partially Approved - DB update Pending",
-                  ApprovedDate: "Dec 12 2023 12:15PM",
-                  ApproverId: "2"
-              }
-          ]
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
       },
       {
-          TaskID: "1_20231207113016",
-          PendingSince: "2023-12-07T11:34:47.813",
-          TaskName: "M_LOC",
-          Approver: "Approver1",
-          Requester: "Admin",
-          TaskStatus: "Pending",
-          Approvers: [
-              {
-                  TaskID: "1_20231207113016",
-                  PendingSince: "2023-12-07T11:34:47.813",
-                  TaskName: "M_LOC",
-                  Approver: "Approver1",
-                  Requester: "Admin",
-                  TaskStatus: "Partially Approved - DB update Pending",
-                  ApproverId: "1"
-              },
-              {
-                  TaskID: "1_20231207113016",
-                  PendingSince: "2023-12-07T11:34:47.813",
-                  TaskName: "M_LOC",
-                  Approver: "Approver2",
-                  Requester: "Admin",
-                  TaskStatus: "Approved - DB Update Pending",
-                  ApproverId: "NA"
-              }
-          ]
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
       },
       {
-          TaskID: "1_20231207113620",
-          PendingSince: "2023-12-07T11:36:24.930",
-          TaskName: "M_LOC",
-          Approver: "Approver1",
-          Requester: "Admin",
-          TaskStatus: "Pending",
-          Approvers: [
-              {
-                  TaskID: "1_20231207113620",
-                  PendingSince: "2023-12-07T11:36:24.930",
-                  TaskName: "M_LOC",
-                  Requester: "Admin",
-                  TaskStatus: "Approved",
-                  ApproverId: "NA"
-              },
-              {
-                  TaskID: "1_20231207113620",
-                  PendingSince: "2023-12-07T11:36:24.930",
-                  TaskName: "M_LOC",
-                  Approver: "Approver1",
-                  Requester: "Admin",
-                  TaskStatus: "Approved - DB Updated",
-                  ApproverId: "1"
-              }
-          ]
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "2_20240429154939",
+          "PendingSince": "29/04/2024 03:49 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 3
+      },
+      {
+          "TaskID": "4_20240429162944",
+          "PendingSince": "29/04/2024 04:29 PM",
+          "ageing": 1,
+          "TaskName": "Modify-LocationMaster",
+          "RequesterName": "Akanksha",
+          "Actiontype": 2
+      },
+      {
+          "TaskID": "4_20240429163007",
+          "PendingSince": "29/04/2024 04:30 PM",
+          "ageing": 1,
+          "TaskName": "Modify-LocationMaster",
+          "RequesterName": "Akanksha",
+          "Actiontype": 2
+      },
+      {
+          "TaskID": "2_20240429163443",
+          "PendingSince": "29/04/2024 04:34 PM",
+          "ageing": 1,
+          "TaskName": "Add-SKUMaster",
+          "RequesterName": "jayesh",
+          "Actiontype": 1
+      },
+      {
+          "TaskID": "4_20240429165332",
+          "PendingSince": "29/04/2024 04:53 PM",
+          "ageing": 1,
+          "TaskName": "Modify-SKUMaster",
+          "RequesterName": "Akanksha",
+          "Actiontype": 2
+      },
+      {
+          "TaskID": "4_20240429165339",
+          "PendingSince": "29/04/2024 04:53 PM",
+          "ageing": 1,
+          "TaskName": "Modify-SKUMaster",
+          "RequesterName": "Akanksha",
+          "Actiontype": 2
+      },
+      {
+          "TaskID": "4_20240429165533",
+          "PendingSince": "29/04/2024 04:55 PM",
+          "ageing": 1,
+          "TaskName": "Modify-SKUMaster",
+          "RequesterName": "Akanksha",
+          "Actiontype": 2
+      },
+      {
+          "TaskID": "4_20240429200710",
+          "PendingSince": "29/04/2024 08:07 PM",
+          "ageing": 1,
+          "TaskName": "Remove-SkuLocationMaster",
+          "RequesterName": "Akanksha",
+          "Actiontype": 3
       }
   ],
-  status: 200,
-  msg: null
-} 
+  "status": 200,
+  "msg": "Data fetched successfully",
+  "errorCount": null,
+  "error": null,
+  "conflictErrorCount": null,
+  "conflictError": null
+}
 
 
 export const getTaskDetailsDownloadDataMockData = {

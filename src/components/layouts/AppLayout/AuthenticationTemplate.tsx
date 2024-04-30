@@ -31,14 +31,17 @@ export const AuthenticationTemplate = ({
 
 const getSelectedMenuItem = (permission:string[]) => {
   return listMenuParent.find((menu:any)=>{
-    let flag = false;
-    permission.forEach((permission:string)=>{
-      if(!menu.role.includes(permission)){
-        flag = true;
-      }
+    // let flag = false;
+    // permission.forEach((permission:string)=>{
+    //   if(!menu.role.includes(permission)){
+    //     flag = true;
+    //   }
+    // })
+    // if(flag) return false;
+    // return true;
+    return permission.find((p:string)=>{
+      return menu.role.includes(p)
     })
-    if(flag) return false;
-    return true;
   })  
 }
 
@@ -58,7 +61,6 @@ const AuthenticatedTemplate = (
       .then((res) => {
         setUserData(res.data.data)
         setLoading(false)
-        console.log(res.data.data.roles.permission)
         props.setMenuItem(getSelectedMenuItem(res.data.data.roles.permission))
       })
       .catch((err) => {

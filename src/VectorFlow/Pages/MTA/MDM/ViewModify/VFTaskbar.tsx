@@ -249,7 +249,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                             Export Data
                         </VFButtonOutline>
                         {/* <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
-                       Save to draft
+                       Save as draft
                     </VFButtonOutline> */}
                         <VFButtonOutline onClick={onEditOnline} themeUi={themeUi} disabled={!editOnline} width={164} onHoverChild={
                             <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
@@ -275,7 +275,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <VFTaskBarButtonGroup>
                         <BackButton/>          
                         <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
-                        Save to draft
+                        Save as draft
                         </VFButtonOutline>            
                         <VFButton onClick={()=>onClearAndExportErrors(false)} themeUi={themeUi} disabled={false} width={183}>
                             Clear & Export Errors
@@ -293,7 +293,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         Delete Selected
                         </VFButtonOutline>
                         <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
-                        Save to draft
+                        Save as draft
                         </VFButtonOutline>
                         <VFButton onClick={onSubmit} themeUi={themeUi} disabled={disableSubmit} width={139}>
                             Submit All
@@ -390,7 +390,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                             Resume
                     </VFButtonOutline >
                     <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
-                        Save to draft
+                        Save as draft
                         </VFButtonOutline> 
                     <VFButtonOutline themeUi={themeUi} onClick={onSeasonalityStop} disabled={disableStopSeasonality()}>
                             Stop Selected
@@ -407,7 +407,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                             Stop Selected
                         </VFButton>
                         <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
-                        Save to draft
+                        Save as draft
                         </VFButtonOutline> 
                     </VFTaskBarButtonGroup>
                 </TaskBarContainer>
@@ -436,7 +436,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         Reset
                     </VFButtonOutline >
                     <VFButton themeUi={themeUi} onClick={onSaveToDraft}>
-                            Save to draft
+                            Save as draft
                         </VFButton>
                         <VFButtonOutline themeUi={themeUi} onClick={onSubmit}>  
                         Submit
@@ -487,7 +487,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                             Remove Selected
                     </VFButtonOutline >
                     <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
-                        Save to draft
+                        Save as draft
                         </VFButtonOutline>
                     <VFButton themeUi={themeUi} onClick={onSubmit}>
                             Delete All
