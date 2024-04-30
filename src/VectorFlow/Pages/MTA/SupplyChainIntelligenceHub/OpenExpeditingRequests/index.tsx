@@ -81,6 +81,7 @@ const OpenExpeditingRequests = ()=>{
                 params.columnApi.applyColumnState({state:columnState})
               }
             }}
+            height={800}
         />
           )
         }
