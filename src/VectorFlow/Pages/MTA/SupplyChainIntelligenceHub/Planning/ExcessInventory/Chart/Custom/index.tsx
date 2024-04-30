@@ -47,6 +47,18 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                     
                 } 
             }
+            if(column.colCode === 'sl2') {
+                return {
+                    field:column['colCode'],
+                    colId:column['colCode'],
+                    headerName:column['header'],
+                    enablePivot:true,
+                    enableValue:true,
+                    rowGroup:true,
+                    enableRowGroup:true,
+                    
+                } 
+            }
             return {
                 field:column['colCode'],
                 colId:column['colCode'],

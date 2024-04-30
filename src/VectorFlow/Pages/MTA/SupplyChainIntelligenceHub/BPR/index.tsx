@@ -125,7 +125,7 @@ const BPR = ()=>{
                 </VFButton>
             </BPRTaskBar> */}
             <div style={{height:'100vh',marginLeft:'45px'}}>
-            <Allotment vertical defaultSizes={[400,100]}>
+            <Allotment vertical defaultSizes={[300,100]}>
               <Allotment.Pane >
               <VFTable
                 ref={ref}
@@ -150,7 +150,7 @@ const BPR = ()=>{
               <Allotment.Pane maxSize={300}>
               {isSubGridOpen && (
                 <BPRViewTable
-                    tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg"
+                    tablePrefixSrc="/assets/img/VectorFLOW/BPR/in-transit.svg"
                     rowData={activeRow}
                     colDefs={[
                         {
