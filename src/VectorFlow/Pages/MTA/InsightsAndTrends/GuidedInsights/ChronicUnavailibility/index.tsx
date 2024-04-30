@@ -458,13 +458,13 @@ const chartThemeOverrides2 = useMemo<any>(() => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={547}>
+                        <SCChartContainer height={450}>
                             <SCChartHeaderContainer>
                                 <SCChartHeader>Top 10 Locations: Max SKUs in Continuous Pipeline Black or Red Ageing greater than RLT</SCChartHeader>
                                 {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt=""  data-testid="minimizechart1"onClick={()=>handleChartClose(1)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                            <div style={{height:'460px',display:grid1DisplayStatus}}>
+                            <div style={{height:'400px',display:grid1DisplayStatus}}>
                                 {
                                     hideChart1 &&
                                     (
@@ -523,21 +523,21 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                                 }
                                
                                 </div>
-                                {!hideChart1 && <div id="LocationWiseG1" style={{height:'460px'}}></div>}
+                                {!hideChart1 && <div id="LocationWiseG1" style={{height:'380px'}}></div>}
                         </SCChartContainer>
                         <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>
                         </div>
                     </Allotment.Pane>
                     <Allotment.Pane>
-                        <SCChartContainer height={547}>
+                        <SCChartContainer height={450}>
                                 <SCChartHeaderContainer>
                                     <SCChartHeader>Top 10 Skus: Max Number Of Locations Where The SKU has Pipeline Black/Red Ageing Greater Than Rlt</SCChartHeader>
                                      {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}
                       
                                 </SCChartHeaderContainer>
                                 <SCHorizontalDivider/>
-                                <div style={{height:'460px',display:grid2DisplayStatus}}>
+                                <div style={{height:'400px',display:grid2DisplayStatus}}>
                                     {
                                      hideChart2 &&
                                      (
@@ -576,7 +576,7 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                                             rowData={ChronicUnavailabilitySkuData}
                                             enableCharts={true}
                                             enableRangeSelection={true}
-                                            onRowDataUpdated={()=>generateChart(2)}
+                                            onGridReady={()=>generateChart(2)}
                                             getChartToolbarItems={getChartToolbarItems}
                                             chartToolPanelsDef={
                                                 {
@@ -594,8 +594,8 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                                     )
                                 }
                                 </div>
-                                  {!hideChart2 && <div id="SKUWiseG2" style={{height:'460px'}}></div>}
-                                <div id="SKUWiseGraph2"></div>
+                                  {!hideChart2 && <div id="SKUWiseG2" style={{height:'380px'}}></div>}
+                                {/* <div id="SKUWiseGraph2"></div> */}
                         </SCChartContainer>
                         <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph2}/>

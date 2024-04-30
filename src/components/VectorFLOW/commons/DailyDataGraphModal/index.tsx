@@ -90,7 +90,9 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
         const adjustedChartData = chartData.slice(chartData.length-horizon,chartData.length);
         const sortedNormChangeData = [...normChangeData].sort((a:NormChangeHistory,b:NormChangeHistory) => new Date(a.nCD).getTime() - new Date(b.nCD).getTime());
 
+        console.log(sortedNormChangeData);
         let tempNorm = 0;
+        console.log(chartData)
         let normData = chartData.map((dailyData:DailyDataChart) => {
 
             //Find Closest Norm Change History to current Date

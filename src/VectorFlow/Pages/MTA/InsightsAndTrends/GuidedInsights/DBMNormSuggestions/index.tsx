@@ -502,6 +502,10 @@ const DBMNormSuggestions = () => {
               text: "Location Name",
               position: "bottom",
             },
+            label:{
+              fontSize:8,
+              fontFamily:'Roboto'
+            }
           },
           series: {
             title: {
@@ -531,6 +535,10 @@ const DBMNormSuggestions = () => {
               text: "SKU Code",
               position: "bottom",
             },
+            label:{
+              fontSize:8,
+              fontFamily:'Roboto'
+            }
           },
           series: {
             title: {
@@ -560,6 +568,10 @@ const DBMNormSuggestions = () => {
               text: "SKU Code",
               position: "bottom",
             },
+            label:{
+              fontSize:8,
+              fontFamily:'Roboto'
+            }
           },
           series: {
             title: {

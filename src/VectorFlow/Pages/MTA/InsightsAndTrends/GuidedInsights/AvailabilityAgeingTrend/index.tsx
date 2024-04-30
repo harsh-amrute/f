@@ -137,10 +137,10 @@ const graph1 = [
                    </div>
                     <VFButtonOutline themeUi={themeUi} onClick={()=>OnHorizonChange(horizon, minAgeing)}>Submit</VFButtonOutline>
                     </div>
-      <AgChartsReact options={AvailabilityAgeingTrendOptions} />
-      <div style={{marginLeft:'10px',marginRight:'10px'}}>
-        <VFInfoTip text={graph1}/>
-        </div>
+                    <div style={{marginLeft:'10px',marginRight:'10px',height:'400px'}}><AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
+          <div style={{marginLeft:'10px',marginRight:'10px',marginTop:'5px'}}>
+            <VFInfoTip text={graph1}/>
+          </div>
        </div>
       
 }

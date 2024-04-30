@@ -287,7 +287,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
                                 >
                                     
-                        {currCategory==="GITFromParent" || currCategory==="GITToChild" || currCategory==="ExpediteFromParent" || currCategory==="ExpediteToParent" || currCategory==="ExcessInventory" || currCategory==="OrderFulfillment" ?
+                        {currCategory==="GITFromParent" || currCategory==="GITToChild" || currCategory==="ExpediteFromParent" || currCategory==="ExpediteToChild" || currCategory==="ExcessInventory" || currCategory==="OrderFulfillment" ?
                             <SCGoBackContainer onClick={onGoBack}>
                             <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" onClick={onGoBack} />
                             <SCGoBackText><b>Go Back</b></SCGoBackText>

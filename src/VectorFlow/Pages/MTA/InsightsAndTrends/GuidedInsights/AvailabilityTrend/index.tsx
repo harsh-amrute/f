@@ -108,9 +108,9 @@ const AvailabilityTrend = () => {
       </div>
 
       <div style={{ marginLeft:'20px'}}>
-        <AgChartsReact options={options} />
-        <div style={{marginLeft:'10px',marginRight:'10px'}}>
-        <VFInfoTip text={graph1}/>
+        <div style={{marginLeft:'10px',marginRight:'10px',height:'400px'}}><AgChartsReact options={options} /></div>
+        <div style={{marginLeft:'10px',marginRight:'10px',marginTop:'5px'}}>
+          <VFInfoTip text={graph1}/>
         </div>
       </div>
     </div>

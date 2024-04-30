@@ -35,12 +35,24 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
         let colDefs = [];
 
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            if(column.colCode === 'sl1') {
+                return {
+                    field:column['colCode'],
+                    colId:column['colCode'],
+                    headerName:column['header'],
+                    enablePivot:true,
+                    enableValue:true,
+                    rowGroup:true,
+                    enableRowGroup:true,
+                    
+                } 
+            }
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
                 headerName:column['header'],
                 enablePivot:true,
-                enableValue:true
+                enableValue:true,
             }
         })
         return [...colDefs];

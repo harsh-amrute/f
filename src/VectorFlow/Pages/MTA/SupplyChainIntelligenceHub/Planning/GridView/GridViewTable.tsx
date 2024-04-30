@@ -58,12 +58,36 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
     if(isLoading){
         return <VFLoader/>
     }
-
+    console.log(gridHeight)
     return(
         <GridViewLayout>
-            <div style={{height:'80vh'}}>
-                <Allotment vertical>
-                <Allotment.Pane minSize={350}>
+            <div style={{height:'95vh'}}>
+                <Allotment defaultSizes={[200,50]} vertical>
+                {
+                    (isSubGridOpen || showStockGrid ) && (
+                        <Allotment.Pane >
+                    
+                        <VFTable
+                            ref={ref}
+                            {...agGridProps}
+                            columnDefs={agGridColDefs}
+                            rowData={agGridRowData}
+                            height={380}
+                            onGridReady={(params)=>{
+                                if(columnState){
+                                    params.columnApi.applyColumnState({state:columnState})
+                                }
+                            }}
+                        />
+                        {paginationProps && <VFPagination {...paginationProps}/>}
+    
+                        </Allotment.Pane>
+                    ) 
+                }    
+                
+                {
+                    !(isSubGridOpen || showStockGrid ) && (
+                        <Allotment.Pane >
                     
                         <VFTable
                             ref={ref}
@@ -79,9 +103,11 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                         />
                         {paginationProps && <VFPagination {...paginationProps}/>}
     
-                </Allotment.Pane>
+                        </Allotment.Pane>
+                    ) 
+                }
                 {isSubGridOpen && (
-                    <Allotment.Pane >
+                    <Allotment.Pane  >
                 
                     <BPRViewTable
                         tablePrefixSrc={tablePrefixSrc ? tablePrefixSrc : "/assets/img/VectorFLOW/BPR/in-transit.svg"}

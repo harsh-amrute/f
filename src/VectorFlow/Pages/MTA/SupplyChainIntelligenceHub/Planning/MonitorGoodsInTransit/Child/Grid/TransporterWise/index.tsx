@@ -111,12 +111,12 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDat
             field:'Price'
         },
         {
-            headerName:"Brand",
+            headerName:"Business",
             colId:'SL1',
             field:'SL1'
         },
         {
-            headerName:"Sub Brand",
+            headerName:"Category",
             colId:'SL2',
             field:'SL2'
         },
@@ -184,6 +184,7 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDat
             customGridColDef={customGridColDef} 
             isSubGridOpen={isSubGridOpen}
             paginationProps={paginationProps}
+            gridHeight={600}
         />
     )
 }

@@ -2121,7 +2121,7 @@ export const mapBTRRowDataToColDefs = (row:any,onShowChart?:()=>void):Array<ColD
 
 }
 
-export const mapDBMFieldsToColDefs = (fields:DBMField[]):ColDef[]=>{
+export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any):ColDef[]=>{
 
 
   if(!fields || fields.length<1){
@@ -2154,7 +2154,10 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[]):ColDef[]=>{
       lockPosition:true,
       floatingFilter:false,
       tooltipField:"DailyDataGraph",
-      cellRenderer:'grapCellRenderer'
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      }
       
 
     }
