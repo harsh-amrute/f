@@ -335,6 +335,7 @@ const useDelete=()=>{
               }
               dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
               notifySuccess(`Deletions Submitted Successfully`);
+              toast.dismiss();
               dispatch(UPDATE_PROGRESS_STATE('submitted'));
               if(draftID.length > 0){
                 await deleteDraft(draftID);
