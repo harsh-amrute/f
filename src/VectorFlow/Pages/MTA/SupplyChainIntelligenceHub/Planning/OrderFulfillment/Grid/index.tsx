@@ -7,6 +7,7 @@ import { SideBarDef } from 'ag-grid-enterprise';
 import { createIconColumn } from '../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
+import { OrderCoverageCellRenderer } from '../../../../../../../components/VectorFLOW/commons/OrderCoverageCellRenderer';
 
 const OrderFulfillmentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
@@ -16,7 +17,8 @@ const OrderFulfillmentGrid = ({data,paginationProps,onOpenDailyDataGraph,current
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
-        colorCellRenderer:ColorCellRenderer
+        colorCellRenderer:ColorCellRenderer,
+        orderCoverageCellRenderer:OrderCoverageCellRenderer
       }), []);
 
       const sideBar:SideBarDef = {
@@ -97,6 +99,8 @@ const OrderFulfillmentGrid = ({data,paginationProps,onOpenDailyDataGraph,current
             cellRenderer:'tagsCellRenderer',
             width:100
           }
+        
+
         colDefs = columns.map((column:{header:string,colCode:string,colPosition:number})=>{
             if(['plp','pip'].includes(column.colCode)){
                 return {
@@ -104,6 +108,15 @@ const OrderFulfillmentGrid = ({data,paginationProps,onOpenDailyDataGraph,current
                     colId:column['colCode'],
                     headerName:column['header'],
                     cellRenderer:'colorCellRenderer',
+                }
+            }
+            if(column.colCode === 'c'){
+                return {
+                    field:column['colCode'],
+                    colId:column['colCode'],
+                    headerName:column['header'],
+                    cellRenderer:'orderCoverageCellRenderer',
+                    minWidth:250,
                 }
             }
             return {

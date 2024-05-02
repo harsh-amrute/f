@@ -51,7 +51,7 @@ const useDBM =()=>{
         const data = result.data.data[0];
         const dailyData:DailyDataGraph = {
             rowData:params.data,
-            chartData:data['StockData'] ? data['NormChangeHistoryData'] : [],
+            chartData:data['StockData'] ? data['StockData'] : [],
             normChangeData:data['NormChangeHistoryData'] ? data['NormChangeHistoryData'] : [],
             masterData:data['MasterData'][0],
             suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],

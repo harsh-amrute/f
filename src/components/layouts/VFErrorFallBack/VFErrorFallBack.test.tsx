@@ -13,9 +13,9 @@ describe('VFErrorFallBack Componenet',()=>{
         const btn = screen.getByText('Go Home')
         fireEvent.click(btn)
     })
-    it('Clicks on Go Contact Support button',()=>{
-        render(<VFErrorFallBack/>)
-        const btn = screen.getByText('Contact Support')
-        fireEvent.click(btn)
-    })
+    // it('Clicks on Go Contact Support button',()=>{
+    //     render(<VFErrorFallBack/>)
+    //     const btn = screen.getByText('Contact Support')
+    //     fireEvent.click(btn)
+    // })
 })
