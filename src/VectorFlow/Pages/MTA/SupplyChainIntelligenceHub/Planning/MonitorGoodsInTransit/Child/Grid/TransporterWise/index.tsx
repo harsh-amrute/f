@@ -4,18 +4,15 @@ import { BPRTagsCellRenderer } from "../../../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
 import { VFPaginationProps } from "../../../../../../../../../components/VectorFLOW/commons/VFPagination";
 import { ColDef, SideBarDef } from 'ag-grid-enterprise';
-import { createIconColumn } from '../../../../../../../../../helpers/utils';
-import BPRGraphCellRenderer from '../../../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { AgeingCellRenderer } from '../../../../../../../../../components/VectorFLOW/commons/AgeingCellRenderer';
 
-const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
+const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
     const [activeRow,setActiveRow] = useState<any>();
     const [isSubGridOpen,toggleSubGrid] = useState<any>(false);
     
     const customCellRenderers = useMemo(() => ({
-        grapCellRenderer:BPRGraphCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer,
         colorCellRenderer:ColorCellRenderer,
         ageingCellRenderer:AgeingCellRenderer
@@ -124,7 +121,6 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDat
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
         let colDefs = [];
-        const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
         const tagsColDef =  {
             colId:'tags',
             field:'t',
@@ -164,7 +160,7 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDat
             }
         })
         // dispatch(UPDATE_GRID_STATE([ageingColDef,dailyDataColDef,...colDefs]))
-        return [ageingColDef,dailyDataColDef,...colDefs]
+        return [ageingColDef,...colDefs]
     }
 
     const colDefs = mapUIConfigToColdefs(data['uiConfig'])

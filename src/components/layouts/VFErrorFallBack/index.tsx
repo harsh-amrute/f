@@ -1,4 +1,4 @@
-import VFButton from "../../VectorFLOW/commons/VFButton"
+// import VFButton from "../../VectorFLOW/commons/VFButton"
 import VFButtonOutline from "../../VectorFLOW/commons/VFButtonOutline"
 import { VFErrorFallBackHeader, VFErrorFallBackWrapper,VFErrorFallBackContainer,VFErrorFallBackButtonGroup } from "./styles"
 
@@ -19,9 +19,9 @@ const VFErrorFallBack = ()=>{
                         Go Home
                     </VFButtonOutline>
                     <div style={{width:20}}/>
-                    <VFButton themeUi="NOIRFUSION" onClick={()=>console.log('')} width={150}>
+                    {/* <VFButton themeUi="NOIRFUSION" onClick={()=>console.log('')} width={150}>
                         Contact Support
-                    </VFButton>
+                    </VFButton> */}
                 </VFErrorFallBackButtonGroup>
             </VFErrorFallBackContainer>
         </VFErrorFallBackWrapper>

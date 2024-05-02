@@ -280,7 +280,6 @@ const useBPR =()=>{
             SKUCode:params.data['SKUCode'],
             WHCode:params.data['WHCode']
         }
-        console.log(params)
         const result = await getDailyData(payload)
         const data = result.data.data[0];
         const dailyData:DailyDataGraph = {

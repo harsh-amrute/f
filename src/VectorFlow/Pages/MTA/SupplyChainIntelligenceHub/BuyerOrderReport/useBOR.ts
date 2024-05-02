@@ -54,7 +54,6 @@ export const useBOR =()=>{
       }), []);
 
       const onOpenDailyDataGraph = async (params:any) => {
-        console.log(params);
         const payload:any = {
             SKUCode:params.data['SKUCode'],
             WHCode:params.data['WHCode']

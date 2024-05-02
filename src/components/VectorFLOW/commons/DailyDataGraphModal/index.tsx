@@ -90,9 +90,8 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
         const adjustedChartData = chartData.slice(chartData.length-horizon,chartData.length);
         const sortedNormChangeData = [...normChangeData].sort((a:NormChangeHistory,b:NormChangeHistory) => new Date(a.nCD).getTime() - new Date(b.nCD).getTime());
 
-        console.log(sortedNormChangeData);
         let tempNorm = 0;
-        console.log(chartData)
+
         let normData = chartData.map((dailyData:DailyDataChart) => {
 
             //Find Closest Norm Change History to current Date
@@ -103,21 +102,14 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                 closestNormChangeIndex = index;
               }
             });
-
-            // if(closestNormChangeIndex === -1){
-            //   const normChangeOldest = sortedNormChangeData[0];
-            //   const normChangeLatest = sortedNormChangeData[sortedNormChangeData.length-1]
-            //   if(new Date(dailyData.dt).getTime() > new Date(normChangeOldest.date).getTime()){
-            //     tempNorm = normChangeOldest['oldNorm'];
-            //   }
-            //   if(new Date(dailyData.dt).getTime() < new Date(normChangeLatest.date).getTime()){
-            //     tempNorm = normChangeLatest['newNorm'];
-            //   }
-            // }
-            // else{
+            
+            if(normChangeData.length > 0 && closestNormChangeIndex !== -1){
               tempNorm = sortedNormChangeData[closestNormChangeIndex]['nN'];
-            // }  
-
+            }
+            else{
+              tempNorm = masterData['nm'];
+            }
+              
             return {date:dailyData.dt,norm:tempNorm};
         }).slice(chartData.length-horizon,chartData.length);
 
