@@ -14,6 +14,7 @@ const {data:ChronicUnavailabilityGrid} = useGetChronicUnavailabilityGridView();
 const ChronicUnavailabilityGridViewData=ChronicUnavailabilityGrid?.data?.data;
  const onFloatingTabChange = (tab:any) => {
         setCurrentTab(tab.value);
+        setCurrentView("chart");
     }
      const onGoBack = () => {
         // setIsSelectCategoryOpen(true);
