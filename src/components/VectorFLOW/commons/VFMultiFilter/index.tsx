@@ -412,11 +412,11 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             operator:"",
             name:filterId
         }
-        if(filterId==='SCF2'){
-            filterObj.attributeName='ForLocationLocationCode';
-            filterObj.operator='=' 
-        }
-        if(filterId==='SCF5'){
+        // if(filterId==='SCF2'){
+        //     filterObj.attributeName='ForLocationLocationCode';
+        //     filterObj.operator='=' 
+        // }
+        if(filterId==='SCF3'){
             filterObj.attributeName='ForChildrenLocationCode'; 
             filterObj.operator='='
         }
@@ -444,7 +444,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             filterObj.attributeName='ForLocation';
             filterObj.operator='='
         }
-        if(filterId==='SCF4'){
+        if(filterId==='SCF2'){
             filterObj.attributeName='ForChildren';
             filterObj.operator='='
         }
@@ -738,7 +738,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                           </FilterCheckboxAccordian>
                           </FilterCheckboxAccordian>
                       </FilterComponent>
-                      {openStatus.location ?
+                      {/* {openStatus.location ?
                       <>
                       <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', marginBottom:'5px'}}>  
                           <TextFieldHeader>
@@ -759,14 +759,14 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                           />
                       </FilterComponent>
                       </>
-                      : null 
-                      } 
+                       : null 
+                      }   */}
                       <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.loc_children?'unset' : '50px'}}>
                           <FilterCheckboxAccordian filterType="For Children Of" filterKey="loc_children" isOpen={openStatus.loc_children} setOpenStatus={setOpenStatus}>
                           <FilterCheckboxAccordian filterType="Location Type" filterKey="loc_children_type" isOpen={child.loc_children_type} setOpenStatus={setChild} style={{paddingLeft:'50px'}}>
                             <FilterMultiSelectCheckbox header={'ForChildren'} filterOptions={supplyChainForChildrenOfCheckBoxList}
                             filterState={multiFilter.supplyChainFilter.filters}
-                           onChange={(e:any, key:string)=>onFilterChange('SCF4',e,'1',key)}/>
+                           onChange={(e:any, key:string)=>onFilterChange('SCF2',e,'1',key)}/>
                           </FilterCheckboxAccordian>
                           </FilterCheckboxAccordian>
                       </FilterComponent>
@@ -777,8 +777,8 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                               <p>Specific Locations</p>
                           </TextFieldHeader>         
                           <VFMasterFieldSearch
-                               value={getAPIValue('SCF5', multiFilter.supplyChainFilter.filters)}  
-                              setValue={(e:any)=>onFilterChange('SCF5',e,'1','value')} 
+                               value={getAPIValue('SCF3', multiFilter.supplyChainFilter.filters)}  
+                              setValue={(e:any)=>onFilterChange('SCF3',e,'1','value')} 
                               options={getOptions(locationData?.data.data)} 
                               placeholder={'Enter Location'} 
                               handleListChild={()=>console.log("")} 
@@ -890,27 +890,29 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tech_color?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="On Hand Inventory Color" filterKey="availabilty_tech_color" isOpen={openStatus.availabilty_tech_color} setOpenStatus={setOpenStatus}>
-                            <FilterMultiSelectCheckbox header={'ETC'} filterOptions={[
+                            <FilterMultiSelectCheckbox header={'OHIC'} filterOptions={[
                                  { label: 'Red', id: '1' },
                                  { label: 'Yellow', id: '2' },
                                  { label: 'Green', id: '3' },
                                  { label: 'Black', id: '4' },
                                 
                             ]} 
+                           
                             filterState={multiFilter.availabilityFilter.filters.filter((f)=>f.name==='AF5')}
-                            onChange={(e:any,key:string)=>onFilterChange('AF5',e,'4',key)} filterId={'AF5'}/>
+                            onChange={(e:any,key:string)=>onFilterChange('AF5',e,'4',key)} filterId={'AF5'}/> 
                             </FilterCheckboxAccordian>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_eco_color?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="Pipeline Inventory Color" filterKey="availabilty_eco_color" isOpen={openStatus.availabilty_eco_color} setOpenStatus={setOpenStatus}>
-                            <FilterMultiSelectCheckbox header={'EEC'}filterOptions={[
+                            <FilterMultiSelectCheckbox header={'PIC'}filterOptions={[
                                   { label: 'Red', id: '1' },
                                   { label: 'Yellow', id: '2' },
                                   { label: 'Green', id: '3' },
                                   { label: 'Black', id: '4' },
                             ]} 
+                          
                             filterState={multiFilter.availabilityFilter.filters.filter((f)=>f.name==='AF6')}
-                            onChange={(e:any,key:string)=>onFilterChange('AF6',e,'4',key)} filterId={'AF6'}/>
+                            onChange={(e:any,key:string)=>onFilterChange('AF6',e,'4',key)} filterId={'AF6'}/> 
                             </FilterCheckboxAccordian>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tags?'unset' : '50px'}}>
@@ -918,10 +920,10 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             <FilterMultiSelectCheckbox header={'PIPO,Seasonality'} filterOptions={[ 
                                 { label: 'PIPO', id: '1' },
                                 { label: 'Seasonality', id: '2' },
-                               
                                 ]} 
+                                
                                 filterState={multiFilter.availabilityFilter.filters.filter((f)=>f.name==='AF7')}
-                                onChange={(e:any,key:string)=>onFilterChange('AF7',e,'4',key)} filterId={'AF7'}/>
+                                onChange={(e:any,key:string)=>onFilterChange('AF7',e,'4',key)} filterId={'AF7'}/> 
                             </FilterCheckboxAccordian>
                         </FilterComponent>
                 </FilterCardWrapper>
@@ -962,7 +964,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         </FilterComponent>
                     </FilterCardWrapper>
                 )} 
-
             </FilterBody>
             
             <ButtonFilterWrapper>
