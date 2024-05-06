@@ -85,7 +85,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         description:''
                     },
                     {
-                        label:'Submit',
+                        label:'Submitted',
                         status:'pending',
                         description:''
                     },
@@ -98,7 +98,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         description:''
                     },
                     {
-                        label:'Submit',
+                        label:'Submitted',
                         status:'pending',
                         description:''
                     },
@@ -111,7 +111,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         description:''
                     },
                     {
-                        label:'Submit',
+                        label:'Submitted',
                         status:'pending',
                         description:''
                     },
@@ -124,7 +124,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         description:''
                     },
                     {
-                        label:'Submit',
+                        label:'Submitted',
                         status:'completed',
                         description:''
                     },
@@ -137,7 +137,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         description:''
                     },
                     {
-                        label:"Submit",
+                        label:"Submitted",
                         status:"pending",
                         description:""
                     }
@@ -168,7 +168,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         description:''
                     },
                     {
-                        label:"Submit",
+                        label:"Submitted",
                         status:"completed",
                         description:""
                     }
@@ -181,7 +181,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         description:''
                     },
                     {
-                        label:"Submit",
+                        label:"Submitted",
                         status:"pending",
                         description:""
                     }
@@ -212,7 +212,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         description:''
                     },
                     {
-                        label:"Submit",
+                        label:"Submitted",
                         status:"completed",
                         description:""
                     }

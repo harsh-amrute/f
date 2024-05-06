@@ -16,7 +16,7 @@ export  const ToggleViewBtnWrapper = styled.div`
     position:absolute;
     right:35px;
     zoom:0.6;
-    z-index:20;
+    z-index:0;
     margin-top:-10px;
 `
 
