@@ -7,9 +7,6 @@ import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMul
 import { useLocation, Link} from "react-router-dom";
 import { MultiFilterSupplyChainCheckboxList } from '../../../../../../helpers/BPRConstants'
 import useSaveAllState from '../../../../../../hooks/useSaveAllState'
-
-
-
 import {
     SCTaskBarContainer, 
     SCGoBackContainer, 

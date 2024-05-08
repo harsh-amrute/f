@@ -4,9 +4,8 @@ import { BPRLayout } from "./styles"
 import BPRViewTable from "./BPRViewTable"
 import { Allotment } from "allotment"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
-import useBPR from "./useBPR"
-import BPRSubmiRemarkToolTip from "./BPRSubmitRemarkToolTip"
-
+import useBPR from "./useBPR";
+import BPRSubmiRemarkToolTip from "./BPRSubmitRemarkToolTip";
 import "allotment/dist/style.css";
 import BPRRemarkHistoryToolTip from "./BPRRemarkHistoryToolTip"
 import ActionToolBar from "../Planning/ActionToolBar"
