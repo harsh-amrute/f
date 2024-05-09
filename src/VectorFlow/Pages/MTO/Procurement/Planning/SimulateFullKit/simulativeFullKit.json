@@ -1,0 +1,1568 @@
+[
+    {
+        "id": 1,
+        "icon": "",
+        "cp": "11",
+        "oli": "100",
+        "ordNo": "BMN1231",
+        "fgCode": "AREB5092381",
+        "fgDesc": "SB-02-NOTCH-KOTCH",
+        "ordQty": 66,
+        "bs": 40,
+        "ksm": 50,
+        "Availability": 36,
+        "cn": "Parrek Amit",
+        "cc": 5466788,
+        "ord": "23-jul-31",
+        "odd": "23-jul-31",
+        "orlsd": "23-jul-31",
+        "type": "parent",
+        "children": [
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "icon": "",
+        "cp": "11",
+        "oli": "100",
+        "ordNo": "BMN1231",
+        "fgCode": "AREB5092381",
+        "fgDesc": "SB-02-NOTCH-KOTCH",
+        "ordQty": 66,
+        "bs": 40,
+        "ksm": 50,
+        "Availability": 56,
+        "cn": "Parrek Amit",
+        "cc": 5466788,
+        "ord": "23-jul-31",
+        "odd": "23-jul-31",
+        "orlsd": "23-jul-31",
+        "type": "parent",
+        "children": [
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "icon": "",
+        "cp": "11",
+        "oli": "100",
+        "ordNo": "BMN1231",
+        "fgCode": "AREB5092381",
+        "fgDesc": "SB-02-NOTCH-KOTCH",
+        "ordQty": 66,
+        "bs": 40,
+        "ksm": 50,
+        "Availability": 56,
+        "cn": "Parrek Amit",
+        "cc": 5466788,
+        "ord": "23-jul-31",
+        "odd": "23-jul-31",
+        "orlsd": "23-jul-31",
+        "type": "parent",
+        "children": [
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "icon": "",
+        "cp": "11",
+        "oli": "100",
+        "ordNo": "BMN1231",
+        "fgCode": "AREB5092381",
+        "fgDesc": "SB-02-NOTCH-KOTCH",
+        "ordQty": 66,
+        "bs": 40,
+        "ksm": 50,
+        "Availability": 56,
+        "cn": "Parrek Amit",
+        "cc": 5466788,
+        "ord": "23-jul-31",
+        "odd": "23-jul-31",
+        "orlsd": "23-jul-31",
+        "type": "parent",
+        "children": [
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "icon": "",
+        "cp": "11",
+        "oli": "100",
+        "ordNo": "BMN1231",
+        "fgCode": "AREB5092381",
+        "fgDesc": "SB-02-NOTCH-KOTCH",
+        "ordQty": 66,
+        "bs": 40,
+        "ksm": 50,
+        "Availability": 56,
+        "cn": "Parrek Amit",
+        "cc": 5466788,
+        "ord": "23-jul-31",
+        "odd": "23-jul-31",
+        "orlsd": "23-jul-31",
+        "type": "parent",
+        "children": [
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "icon": "",
+        "cp": "11",
+        "oli": "100",
+        "ordNo": "BMN1231",
+        "fgCode": "AREB5092381",
+        "fgDesc": "SB-02-NOTCH-KOTCH",
+        "ordQty": 66,
+        "bs": 40,
+        "ksm": 50,
+        "Availability": 56,
+        "cn": "Parrek Amit",
+        "cc": 5466788,
+        "ord": "23-jul-31",
+        "odd": "23-jul-31",
+        "orlsd": "23-jul-31",
+        "type": "parent",
+        "children": [
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "icon": "",
+        "cp": "11",
+        "oli": "100",
+        "ordNo": "BMN1231",
+        "fgCode": "AREB5092381",
+        "fgDesc": "SB-02-NOTCH-KOTCH",
+        "ordQty": 66,
+        "bs": 40,
+        "ksm": 50,
+        "Availability": 56,
+        "cn": "Parrek Amit",
+        "cc": 5466788,
+        "ord": "23-jul-31",
+        "odd": "23-jul-31",
+        "orlsd": "23-jul-31",
+        "type": "parent",
+        "children": [
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            }
+        ]
+    },
+    {
+        "id": 8,
+        "icon": "",
+        "cp": "11",
+        "oli": "100",
+        "ordNo": "BMN1231",
+        "fgCode": "AREB5092381",
+        "fgDesc": "SB-02-NOTCH-KOTCH",
+        "ordQty": 66,
+        "bs": 40,
+        "ksm": 50,
+        "Availability": 56,
+        "cn": "Parrek Amit",
+        "cc": 5466788,
+        "ord": "23-jul-31",
+        "odd": "23-jul-31",
+        "orlsd": "23-jul-31",
+        "type": "parent",
+        "children": [
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            }
+        ]
+    },
+    {
+        "id": 9,
+        "icon": "",
+        "cp": "11",
+        "oli": "100",
+        "ordNo": "BMN1231",
+        "fgCode": "AREB5092381",
+        "fgDesc": "SB-02-NOTCH-KOTCH",
+        "ordQty": 66,
+        "bs": 40,
+        "ksm": 50,
+        "Availability": 56,
+        "cn": "Parrek Amit",
+        "cc": 5466788,
+        "ord": "23-jul-31",
+        "odd": "23-jul-31",
+        "orlsd": "23-jul-31",
+        "type": "parent",
+        "children": [
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            },
+            {
+                "rmcode": "AREB5092381",
+                "rmdesc": "SB-02-NOTCH-KOTCH",
+                "rmreqty": 33,
+                "rmavai": 33,
+                "rmall": 33,
+                "color": "black",
+                "type": "child"
+            }
+        ]
+    }
+]

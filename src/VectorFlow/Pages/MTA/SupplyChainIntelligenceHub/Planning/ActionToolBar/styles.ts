@@ -89,10 +89,19 @@ export const SCCustomActionsContainer = styled.div`
     justify-content: flex-end;
     //width:100%
 `
-export const SCTaskFilterContainer =styled.div`
+export const SCTaskFilterContainer = styled.div`
     display:flex;
     justify-content:space-between;
     gap:30px;
     max-width:40%;
     align-items:center;
+`
+export const ReleaseText = styled.div`
+//display: flex;
+  height: 100%;
+  width: 15000px;
+  background-color: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Elevation */
+  padding: 10px;
+  font-size: 2.2em; /* Increased font size */
 `

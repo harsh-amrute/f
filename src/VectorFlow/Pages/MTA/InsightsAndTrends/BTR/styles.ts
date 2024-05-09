@@ -12,7 +12,7 @@ export const BTRLayoutTabsWrapper = styled.div`
     margin-top:25px;
 `
 
-export  const ToggleViewBtnWrapper = styled.div`
+export const ToggleViewBtnWrapper = styled.div`
     position:absolute;
     right:35px;
     zoom:0.6;
@@ -49,7 +49,7 @@ export const BTRAvailabiltyCellRendererWrapper = styled.div`
     justify-content:center;
 `
 
-export const BTRAvailabiltyCellRenderer = styled.div<{value:number}>`
+export const BTRAvailabiltyCellRenderer = styled.div<{ value: number }>`
     position:relative;
     height:100%;
     max-height:15px;
@@ -61,17 +61,32 @@ export const BTRAvailabiltyCellRenderer = styled.div<{value:number}>`
         top: 0;
         left: 0;
         bottom:0;
-        width:${(props)=>props.value}%;
+        width:${(props) => props.value}%;
         background: transparent linear-gradient(270deg, #EB73B3 0%, #820F4C 100%) 0% 0% no-repeat padding-box;
+      }
+`
+export const ColorPriorityCellRenderer = styled.div<{ value: number }>`
+    position:relative;
+    height:20px;
+    width:70px;
+    background: #000000 0% 0% no-repeat padding-box;
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom:0;
+        width:${(props) => props.value}%;
+        background: transparent linear-gradient(270deg, #E53F3F 50% , #EBBF2C 80%,  #000000 100%) 0% 0% no-repeat padding-box;
       }
 `
 
 export const CategoryCellRendererWrapper = styled.div`
-    height:100%;
-    width:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+height: 100 %;
+width: 100 %;
+display: flex;
+align - items: center;
+justify - content: center;
 `
 
 export const CategoryCellRendererChip = styled.div`
@@ -108,11 +123,11 @@ export const CategoryToolTipWrapper = styled.div`
     overflow:hidden;
 `
 
-export  const CategoryToolTipSection = styled.div`
-    width:100%;
-    padding:10px;
-    display:flex;
-    flex-direction:column;
+export const CategoryToolTipSection = styled.div`
+width: 100 %;
+padding: 10px;
+display: flex;
+flex - direction: column;
 `
 
 export const CategoryToolTipSectionHeader = styled.p`

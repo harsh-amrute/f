@@ -1,0 +1,131 @@
+/* Ag-Grid styles */
+.ag-theme-balham {
+    --ag-header-foreground-color: #fff;
+}
+
+/* Styles for Ag-Grid table header */
+.ag-header {
+    background-color: #f2f2f2;
+    /* Light gray background */
+    border-bottom: 1px solid #ccc;
+    /* Light gray border bottom */
+    height: 30px;
+    /* Smaller header height */
+}
+
+/* Styles for Ag-Grid table header cells */
+.ag-header-cell {
+    /* Add padding */
+    font-size: 12px;
+    /* Smaller font size for header cells */
+    font-weight: bold;
+    /* Bold font weight for header cells */
+    color: #fff;
+    background-color: #000;
+    /* Dark text color */
+}
+
+.vertical-header .ag-header-cell-label {
+    writing-mode: vertical-rl;
+    /* Vertical writing mode */
+    transform: rotate(180deg);
+    /* Rotate the text */
+    white-space: nowrap;
+    /* Prevent text wrapping */
+}
+
+/* .ag-header-cell-label {
+  //  justify-content: center;
+} */
+
+/* for child header */
+.ag-pinned-left-cols-container .ag-theme-balham {
+    background-color: #CC222244;
+}
+
+.ag-header-cell:hover {
+    background-color: #4e4949;
+    color: #000;
+    /* Change this to your desired hover color */
+}
+
+
+/* Styles for Ag-Grid table body */
+.ag-body {
+    border-bottom: 1px solid #ccc;
+    /* Light gray border bottom */
+}
+
+/* Styles for Ag-Grid table body rows */
+.ag-row:nth-child(even) {
+    background-color: #f9f9f9;
+    /* Alternate row background color */
+}
+
+/* Styles for Ag-Grid table body cells */
+.ag-cell {
+    /* Add padding */
+    font-size: 10px;
+    /* Smaller font size for body cells */
+    color: #666;
+    /* Dark gray text color */
+}
+
+/* Styles for Ag-Grid table hover effect */
+.ag-row-hover {
+    background-color: #eaeaea;
+    /* Light gray background on hover */
+}
+
+/* Customize checkbox colors */
+.ag-theme-balham .ag-checkbox {
+    --ag-checkbox-checked-color: #BC3D81;
+    --ag-checkbox-unchecked-color: #333;
+}
+
+.ag-theme-balham .ag-toggle-button {
+    /* Apply your styles for checked state here */
+    --ag-toggle-button-on-background-color: #BC3D81
+}
+
+/* styles.css */
+.appContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.rightAligned {
+    text-align: right;
+}
+
+.toggleButton {
+    /* Add your styles for the toggle button */
+}
+
+.rectangle {
+    width: 100px;
+    /* Width of the rectangle */
+    height: 300px;
+    /* Height of the rectangle */
+    display: flex;
+    flex-direction: column;
+}
+
+.color1 {
+    flex: 1;
+    /* Make this div take up all remaining space */
+    background-color: red;
+}
+
+.color2 {
+    flex: 1;
+    /* Make this div take up all remaining space */
+    background-color: blue;
+}
+
+.color3 {
+    flex: 1;
+    /* Make this div take up all remaining space */
+    background-color: green;
+}
