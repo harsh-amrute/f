@@ -23,7 +23,7 @@ export const useBOR =()=>{
      const {data} = useGetBORUIConfiguration();
      const dispatch = useDispatch();
    
-     const [toggleSubGrid] = useState<boolean>(false);
+    //  const [toggleSubGrid] = useState<boolean>(false);
      const [currGridPage,setCurrGridPage] = useState<number>(1)
 
      const [rowData,setRowData] = useState([]);
@@ -189,7 +189,6 @@ export const useBOR =()=>{
 
       const getBORRowData=async(filter:BPRFilterState)=>{
         setActiveRow({})
-        toggleSubGrid(false)
         if(filter)setCurrFilter(filter)
         try{
             if(recordCount===0 || filter){
