@@ -5,22 +5,27 @@ import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import {DispatchColorCellRenderer} from "./CellRenderer"
 import BPRGraphCellRenderer from "../../../../Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
+import { BPRFilterState } from "../../../../../VectorFlow/types/BPR"
 
 import { useSelector,useDispatch } from "react-redux"
 
 import { RootState } from "../../../../../redux/store/store"
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type DailyDataGraph } from "../../../../types/MTA";
+import { notifyError} from "../../../../../helpers/notify"
+
 
 
 export const useBOR =()=>{
     const ref=  useRef()
     const tempRef = useRef()
-     //const [activeRow,setActiveRow] = useState<any>()
+     const [setActiveRow] = useState<any>()
      const {data} = useGetBORUIConfiguration();
      const dispatch = useDispatch();
    
-    // const [isSubGridOpen,toggleSubGrid] = useState<boolean>(false);
+     const [toggleSubGrid] = useState<boolean>(false);
+     const [currGridPage,setCurrGridPage] = useState<number>(1)
+
      const [rowData,setRowData] = useState([]);
 
      const [recordCount,setRecordCount] = useState<number>(0)
@@ -39,7 +44,7 @@ export const useBOR =()=>{
      const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
      const handleChangePage = async (pageNo:any) => {
          setCurrentPage(pageNo);
-         loadGridData(pageNo);
+         loadGridData(pageNo,currFilter);
       }
 
 
@@ -75,10 +80,10 @@ export const useBOR =()=>{
 
       
       const BORColumns = mapBORFieldsToColDefs(data?.data.data,onOpenDailyDataGraph)
-
+      const [currFilter,setCurrFilter] = useState<any>({})
       const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+      const [columnState,setColumnState] = useState<any>()
+      const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
     const sideBar = {
         toolPanels: [
@@ -94,8 +99,7 @@ export const useBOR =()=>{
             },
           
           },
-        ],
-        defaultToolPanel:'',
+        ]
       }
 
 
@@ -111,16 +115,19 @@ export const useBOR =()=>{
         getTableState()
     },[currentGridState])
 
-      useEffect(()=>{
-        getRecordsCount();
-        loadGridData(currentPage);
-      },[])
+      useEffect(()=>{       
+        const fetchData = async () => {
+            await getRecordsCount();
+            await loadGridData(currentPage);
+        };
+        fetchData();
+    }, [currentPage, currFilter]);
 
-      const getRecordsCount=async()=>{
+      const getRecordsCount=async(filter?:any)=>{
             const payload={
-            filters:[],
+            filters:filter || {},
              paginationParameter: {
-        pageNumber: 1,
+        pageNumber: currentPage,
         // recordPerPage:20
     recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
     }
@@ -129,9 +136,10 @@ export const useBOR =()=>{
         setRecordCount(resultCount?.data?.recordCount);
       }
     
-    const loadGridData = async (pageNo:any)=> {
+    const loadGridData = async (pageNo:any,filter?:any)=> {
+      console.log(filter)
         const payload={
-            filters:[],
+            filters:filter || {},
             paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
         }
         const result = await getBorData(payload);
@@ -139,9 +147,6 @@ export const useBOR =()=>{
 
     }
 
-    
-  
-  
      const agGridProps:AgGridReactProps = {
         tooltipShowDelay:0,
         tooltipTrigger:"focus",
@@ -182,12 +187,28 @@ export const useBOR =()=>{
         }
       }
 
+      const getBORRowData=async(filter:BPRFilterState)=>{
+        setActiveRow({})
+        toggleSubGrid(false)
+        if(filter)setCurrFilter(filter)
+        try{
+            if(recordCount===0 || filter){
+                await getRecordsCount(filter)
+                setCurrGridPage(currGridPage)
+            }
+
+            await loadGridData(currentPage,filter)
+         }
+       catch(err:any){
+            notifyError(err)
+        }
+    }
+
       const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
          if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
         }
       };
-      console.log(columnState)
       const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getBorData({
             filters:[],
@@ -200,8 +221,7 @@ export const useBOR =()=>{
         return data.data.data
     }
 
-    
-
+  
      return {   
         ref,    
         isLoading,      
@@ -225,6 +245,7 @@ export const useBOR =()=>{
         onExportToExcelCallBack,
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
-        dailyData 
+        dailyData,
+        getBORRowData
     }
 }

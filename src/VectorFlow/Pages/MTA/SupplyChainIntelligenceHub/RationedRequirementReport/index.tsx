@@ -31,7 +31,8 @@ const RRR = () => {
   setExportExcelRowData,
   exportExcelColumns,
   setExportExcelColumns,
-  onExportToExcelCallBack
+  onExportToExcelCallBack,
+  getRRRrowData
 } = useRRR();
  const ref = useRef()
 
@@ -69,6 +70,7 @@ const RRR = () => {
     currCategory={'RRR'} 
     currentTab={''} 
     tabsList={[]} 
+    onApplyFilter={(e)=>getRRRrowData(e)}
     onFloatingTabChange={()=>console.log('')} 
     onGoBack={()=>console.log('')} 
     onViewChange={()=>console.log('')}

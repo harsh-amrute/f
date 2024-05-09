@@ -32,7 +32,8 @@ const BuyerOrderReport = ()=>{
         onExportToExcelCallBack,
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
-        dailyData      
+        dailyData,
+        getBORRowData   
     } = useBOR()
 
 
@@ -55,6 +56,7 @@ const BuyerOrderReport = ()=>{
             currCategory={'BOR'} 
             currentTab={''} 
             tabsList={[]} 
+            onApplyFilter={(e)=>getBORRowData(e)}
             onFloatingTabChange={()=>console.log('')} 
             onGoBack={()=>console.log('')} 
             onViewChange={()=>console.log('')}

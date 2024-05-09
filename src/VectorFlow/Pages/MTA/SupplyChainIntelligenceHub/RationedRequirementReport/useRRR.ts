@@ -1,11 +1,13 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { SideBarDef } from 'ag-grid-enterprise';
+import { BPRFilterState } from "../../../../../VectorFlow/types/BPR"
 
 import { useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
 import { mapRRRFieldsToColDefs } from "../../../../../helpers/utils"
+import { notifyError} from "../../../../../helpers/notify"
 
 
 const useRRR =()=>{
@@ -13,10 +15,14 @@ const useRRR =()=>{
     const {isSideBarOpen} = useUserData()
     const [RRRRowData,setRRRRowData] = useState<any[]>([])
     const [RRRDataCount, setRRRDataCount]=useState<any>();
+    const [setActiveRow] = useState<any>()
+
 
     const tempRef = useRef()
 
     const [currentPage,setCurrentPage] = useState<any>(1);
+
+    const [recordCount,setRecordCount] = useState<number>(0)
 
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
 
@@ -27,8 +33,15 @@ const useRRR =()=>{
     const {data,isLoading:isRRRConfigLoading} = useGetRRRUIConfiguration()
     const {mutateAsync:getRRRData,isLoading:isRRRDataLoading} =useGetRRRData();
     const {mutateAsync:getRRRDataCount}=useGetRRRDataCount();
+    const [currGridPage,setCurrGridPage] = useState<number>(1)
+    // const [rowData,setRowData] = useState([]);
+
+    const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
 
     const RRRColumns = mapRRRFieldsToColDefs(data?.data.data)
+
+    const [currFilter,setCurrFilter] = useState<any>({})
+
 
     const sideBar:SideBarDef = {
         toolPanels: [
@@ -51,17 +64,43 @@ const useRRR =()=>{
     const handleChangePage = async (pageNo:any) => {
         setCurrentPage(pageNo);
         getRRRRowData(pageNo);
+        // loadGridData(pageNo,currFilter);
      }
-
+  
     useEffect(()=>{       
-        getDataCount();
-        getRRRRowData(currentPage);
-    },[])
+        const fetchData = async () => {
+            await getDataCount();
+            await getRRRRowData(currentPage);
+        };
+        fetchData();
+    }, [currentPage, currFilter]);
 
+    const getRecordsCount=async(filter?:any)=>{
+        const payload={
+        filters:filter || currFilter,
+        paginationParameter: {
+        pageNumber: currentPage,
+        // recordPerPage:20
+        recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
+        }
+    }
+    const resultCount=await getRRRDataCount(payload);
+    setRecordCount(resultCount?.data?.recordCount);
+    }
 
-    const getDataCount=async () => {
+    const loadGridData = async (pageNo:any,filter?:any)=> {
+    const payload={
+        filters:filter || currFilter,
+        paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
+    }
+    const result = await getRRRData(payload);
+    setRRRRowData(result?.data.data)
+
+    }
+
+    const getDataCount=async (filter?:any) => {
         const rowDataCount =await getRRRDataCount({
-            filters:[],
+            filters:filter || currFilter,
             paginationParameter:{
                 pageNumber:1,
                 recordsPerPage:50
@@ -70,14 +109,20 @@ const useRRR =()=>{
         setRRRDataCount(rowDataCount?.data?.recordCount)
     }
 
-    const getRRRRowData= async(pageNo:any)=>{
+    const getRRRRowData= async(pageNo:any, filter?:any)=>{
+        if(filter)setCurrFilter(filter)
+        getDataCount(filter);
         const rowData =await getRRRData({
-            filters:[],
+            filters:filter || currFilter,
             paginationParameter:{
                 pageNumber:pageNo,
                 recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200')
             }
         })
+        
+       
+       // setRecordCount(rowData.data.recordCount)
+        setCurrGridPage(1)
         setRRRRowData(rowData?.data?.data)
     }
 
@@ -141,6 +186,25 @@ const useRRR =()=>{
         }
     }
 
+    const getRRRrowData=async(filter:BPRFilterState)=>{
+        setActiveRow({})
+        setCurrFilter(filter)
+
+        if(filter)setCurrFilter(filter)
+        try{
+            if(recordCount===0 || filter){
+                await getRecordsCount(filter)
+                setCurrGridPage(currGridPage)
+            }
+
+            await loadGridData(currentPage,filter)
+         }
+       catch(err:any){
+            notifyError(err)
+        }
+    }
+
+
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
          if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
@@ -176,8 +240,11 @@ const useRRR =()=>{
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
-        onExportToExcelCallBack
+        onExportToExcelCallBack,
+         getRRRrowData,
     }
 }
 
 export default  useRRR
+
+
