@@ -6,25 +6,25 @@ export const listMenuParent: any = [
     widthIcon: "28px",
     url: "/profile",
     status: false,
-    role: ["IST Admin","Admin"],
+    role: ["IST Admin", "Admin"],
     child: [
       {
         name: "navbar.listMenuParent.userManagement.administration",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/profile",
-        role: ["IST Admin","Admin"],
+        role: ["IST Admin", "Admin"],
       },
       {
         name: "navbar.listMenuParent.userManagement.analytics_usage",
         img: "/assets/img/nav/arrow_down.svg",
         url: "",
-        role: ["IST Admin","Admin"],
+        role: ["IST Admin", "Admin"],
       },
       {
         name: "navbar.listMenuParent.userManagement.issueLogs",
         img: "/assets/img/nav/arrow_down.svg",
         url: "",
-        role: ["IST Admin","Admin"],
+        role: ["IST Admin", "Admin"],
       },
     ],
   },
@@ -34,31 +34,31 @@ export const listMenuParent: any = [
     img: "/assets/img/nav/master_data",
     url: "",
     status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterApprover"],
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterApprover"],
     child: [
       {
         name: "navbar.listMenuParent.masterDataManagement.controlPanel",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/master-data-management/control-panel",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
       },
       {
         name: "navbar.listMenuParent.masterDataManagement.savedDrafts",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/master-data-management/saved-drafts",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
       },
       {
         name: "navbar.listMenuParent.masterDataManagement.taskPendingForReview",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/master-data-management/task-pending",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant",'MasterApprover'],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", 'MasterApprover'],
       },
       {
         name: "navbar.listMenuParent.masterDataManagement.taskStatus",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/master-data-management/task-status",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
       },
     ],
   },
@@ -242,14 +242,14 @@ export const listMenuParent: any = [
     url: "/",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-    avoidHeader:true,
+    avoidHeader: true,
     child: [
       {
         name: "Supply Chain Intelligence Hub",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/supply-chain-intelligence-hub",
         role: ["IST Admin", "IST Requestor"],
-        child:[
+        child: [
           {
             name: "Planning",
             img: "/assets/img/nav/arrow_down.svg",
@@ -315,7 +315,7 @@ export const listMenuParent: any = [
         img: "/assets/img/nav/arrow_down.svg",
         url: "/insights-and-trends",
         role: ["IST Admin", "IST Requestor"],
-        child:[
+        child: [
           {
             name: "Buffer Trend Report (BTR)",
             img: "/assets/img/nav/arrow_down.svg",
@@ -353,7 +353,7 @@ export const listMenuParent: any = [
         img: "/assets/img/nav/arrow_down.svg",
         url: "/dbm",
         role: ["IST Admin", "IST Requestor"],
-        child:[
+        child: [
           {
             name: "DBM Norm Suggestions",
             img: "/assets/img/nav/arrow_down.svg",
@@ -473,4 +473,62 @@ export const listMenuParent: any = [
       // },
     ],
   },
+  {
+    id: 19,
+    name: "Procurement",
+    img: "/assets/img/nav/miscellaneousReports",
+    url: "",
+    status: false,
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+    child: [
+      {
+        name: "Material Coverage For Open Sales",
+        img: "/assets/img/nav/arrow_down.svg",
+        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+        url: "/procurement/material-coverage-open-sales",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      },
+      {
+        name: "Procurement Planning",
+        img: "/assets/img/nav/arrow_down.svg",
+        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+        url: "/procrmenPlanning/planning",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      },
+      {
+        name: "Performance moniter",
+        img: "/assets/img/nav/arrow_down.svg",
+        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+        url: "/api/download-reports/fr",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      },
+      {
+        name: "Material Requirement",
+        img: "/assets/img/nav/arrow_down.svg",
+        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+        url: "/api/download-reports/fr",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      },
+    ],
+  },
+  // {
+  //   id: 20,
+  //   name: "Procurement",
+  //   img: "/assets/img/nav/miscellaneousReports",
+  //   url: "/procrmenPlanning",
+  //   status: false,
+  //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+  //   child: [
+
+  //     {
+  //       name: "Procurement Planning",
+  //       img: "/assets/img/nav/arrow_down.svg",
+  //       imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+  //       url: "/procrmenPlanning/planning",
+  //       role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+  //     },
+
+  //   ],
+  // },
+
 ];

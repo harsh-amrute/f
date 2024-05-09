@@ -1,37 +1,36 @@
-import {  AgGridReactProps } from "ag-grid-react"
+import { AgGridReactProps } from "ag-grid-react"
 import { Allotment } from "allotment"
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
-import { BTRTableWrapper,BTRTableHeader } from "./styles"
+import { BTRTableWrapper, BTRTableHeader } from "./styles"
 
-interface SpliViewTableProps extends AgGridReactProps{
-    header:string
+interface SpliViewTableProps extends AgGridReactProps {
+    header: string
 }
 
-export interface SplitViewProps{
-    techTable:SpliViewTableProps
-    ecoTable:SpliViewTableProps
+export interface SplitViewProps {
+    techTable: SpliViewTableProps
+    ecoTable: SpliViewTableProps
 }
 
-const VerticalSplitView = (props:SplitViewProps)=>{
-
-    const{
+const VerticalSplitView = (props: SplitViewProps) => {
+    const {
         techTable,
         ecoTable,
     } = props
-   return (
+    return (
         <BTRTableWrapper>
             <Allotment vertical={false}>
                 <Allotment.Pane >
-                <BTRTableHeader>{techTable.header}</BTRTableHeader>
-                    <VFTable 
+                    <BTRTableHeader>{techTable.header}</BTRTableHeader>
+                    <VFTable
                         disableZoomScaling
-                       gridOptions={{
-                           components:techTable.gridOptions?.components
-                       }}
-                       columnDefs={techTable.columnDefs}
-                       rowData={techTable.rowData}
-                       tooltipMouseTrack={true}
-                       pagination
+                        gridOptions={{
+                            components: techTable.gridOptions?.components
+                        }}
+                        columnDefs={techTable.columnDefs}
+                        rowData={techTable.rowData}
+                        tooltipMouseTrack={true}
+                        pagination
                         paginationPageSize={50}
                         tooltipShowDelay={0}
                         tooltipHideDelay={100000}
@@ -49,10 +48,10 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                 </Allotment.Pane>
                 <Allotment.Pane>
                     <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
-                    <VFTable 
+                    <VFTable
                         disableZoomScaling
                         gridOptions={{
-                            components:ecoTable.gridOptions?.components
+                            components: ecoTable.gridOptions?.components
                         }}
                         columnDefs={ecoTable.columnDefs}
                         rowData={ecoTable.rowData}

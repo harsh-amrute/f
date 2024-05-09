@@ -68,20 +68,6 @@ const BPR = ()=>{
         }
         
         <BPRLayout>
-            {/* <BPRTaskBar style={{width:isSideBarOpen?'77%':'97%'}}>
-                <VFButtonOutline
-                    themeUi="NOIRFUSION"
-                    onClick={()=>console.log('')}
-                >
-                    Excel Export 
-                </VFButtonOutline>
-                <VFButton
-                    themeUi="NOIRFUSION"
-                    onClick={()=>console.log('')}
-                >
-                    Edit Filter
-                </VFButton>
-            </BPRTaskBar> */}
             <div style={{height:'100vh'}}>
             <Allotment vertical defaultSizes={[400,100]}>
               <Allotment.Pane >

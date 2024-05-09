@@ -8,8 +8,6 @@ import { useUserData } from "../../../../context"
 import VFMultiFilter from "../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { MultiFilterSupplyChainCheckboxList } from '../../../../helpers/BPRConstants'
 
-
-
 interface CountProp{
     childMonitorCount:number;
     parentMonitorCount:number;
