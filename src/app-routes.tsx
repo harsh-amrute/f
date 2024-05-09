@@ -33,6 +33,8 @@ import BufferTrendReport from './VectorFlow/Pages/MTA/InsightsAndTrends/BTR'
 import DBM from './VectorFlow/Pages/MTA/DBM/DBMNormSuggestions'
 import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests'
 import MaterialCov from './VectorFlow/Pages/MTO/Procurement/MaterialCoverage/MaterialCov'
+import ProcurementPlanning from './VectorFlow/Pages/MTO/Procurement/Planning';
+import SimulateFullKit from './VectorFlow/Pages/MTO/Procurement/Planning/SimulateFullKit';
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -78,7 +80,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/insights-and-trends/buffer-trend-report',
     '/dbm/dbm-norm-suggestions',
     '/procurement/material-coverage-open-sales',
-
+    '/procrmenPlanning/planning',
+    '/planning/simulativeFullKit'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -431,6 +434,28 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<MaterialCov />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procrmenPlanning/planning',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ProcurementPlanning />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/planning/simulativeFullKit',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<SimulateFullKit />)
         },
         ...getStoreTransferModuleRoutes()
       ]
