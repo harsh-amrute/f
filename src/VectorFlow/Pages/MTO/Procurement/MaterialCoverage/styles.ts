@@ -182,3 +182,7 @@ export const underLine = styled.div`
     style:"border: 1px solid #000" 
     color:"#000"    
 `
+export const ProcurementLayout = styled.div`
+    height: 900px;
+    width: 1200px;
+`

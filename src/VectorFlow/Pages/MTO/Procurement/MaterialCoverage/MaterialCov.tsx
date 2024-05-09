@@ -6,7 +6,7 @@ import {
 
 } from '../MaterialCoverage/styles';
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
-import ActionToolBar from "../../../MTA/SupplyChainIntelligenceHub/Planning/ActionToolBar/index";
+import ActionToolBar from "../../../MTA/SupplyChainIntelligenceHub/Planning/ActionToolBar";
 import FutureCov from './FutureCov';
 import CurrentCov from './CurrentCov';
 import { ColorsMTO } from '../../Common/Colors';
@@ -24,17 +24,21 @@ const MaterialCov = () => {
 
   return (
     <div style={{ width: "85%" }}>
-      {/* <ActionToolBar
+      <ActionToolBar
         view={'grid'}
-        setCurrentTab={''}
+        setCurrentTab={() => { return }}
         currCategory={'MaterialCov'}
         currentTab={''}
         tabsList={[]}
         onFloatingTabChange={() => console.log('')}
         onGoBack={() => console.log('')}
         onViewChange={() => console.log('')}
-      /> */}
-      {toggleComponent ?
+        showAllTick={''}
+        handleGoButton={''}
+        genericRecordCount={0}
+        onExportToExcelCallBack={() => console.log('')}
+      />
+      {!toggleComponent ?
         <>
           <BTRLayoutTabsWrapper>
             <VFFloatingTab

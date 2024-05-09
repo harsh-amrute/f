@@ -7,7 +7,7 @@ import {
 } from './styles';
 import { mapOrderDetails } from './CommonFunc';
 import { ColorsMTO } from '../../Common/Colors';
-import MaterialSODetailed from './MaterialSODetailed';
+
 
 interface CurrentCovProps {
     handleToggleComponent: any
