@@ -23,7 +23,7 @@ export const useBOR =()=>{
      const {data} = useGetBORUIConfiguration();
      const dispatch = useDispatch();
    
-     const [toggleSubGrid] = useState<boolean>(false);
+    //  const [toggleSubGrid] = useState<boolean>(false);
      const [currGridPage,setCurrGridPage] = useState<number>(1)
 
      const [rowData,setRowData] = useState([]);
