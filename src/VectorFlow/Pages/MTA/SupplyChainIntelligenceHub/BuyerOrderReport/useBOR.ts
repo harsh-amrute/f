@@ -189,7 +189,6 @@ export const useBOR =()=>{
 
       const getBORRowData=async(filter:BPRFilterState)=>{
         setActiveRow({})
-        toggleSubGrid(false)
         if(filter)setCurrFilter(filter)
         try{
             if(recordCount===0 || filter){
