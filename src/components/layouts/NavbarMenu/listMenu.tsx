@@ -296,20 +296,20 @@ export const listMenuParent: any = [
           }
         ]
       },
-      // {
-      //   name: "Logistics",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   url: "/logistics",
-      //   role: ["IST Admin", "IST Requestor"],
-      //   child:[
-      //     {
-      //       name: "InTransit Whereabouts",
-      //       img: "/assets/img/nav/arrow_down.svg",
-      //       url: "/logistics/intransit-whereabouts",
-      //       role: ["IST Admin", "IST Requestor"],
-      //     }
-      //   ]
-      // },
+      {
+        name: "Logistics",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/logistics",
+        role: ["IST Admin", "IST Requestor"],
+        child:[
+          {
+            name: "InTransit Whereabouts",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/logistics/intransit-whereabouts",
+            role: ["IST Admin", "IST Requestor"],
+          }
+        ]
+      },
       {
         name: "Insights & Trends",
         img: "/assets/img/nav/arrow_down.svg",

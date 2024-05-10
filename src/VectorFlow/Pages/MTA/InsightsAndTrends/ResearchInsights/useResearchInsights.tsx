@@ -425,7 +425,6 @@ const useResearchInsights = ()=>{
         }
     },[selectedRowsDates,graphs])
 
-    console.log(columnState)
 
     const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {

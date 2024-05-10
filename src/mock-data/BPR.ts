@@ -87291,3 +87291,537 @@ export const GetDailyAnalyticsMockResponse = {
     "conflictErrorCount": null,
     "conflictError": null
 }
+
+export const GetInTransitWhereAboutsMockResponse={
+    "recordCount": null,
+    "data": [
+        {
+          "OrderNo": "VectorOrder_10088",
+          "SKUCode": "CFHSPL48BRN1S",
+          "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+          "ReceiverLoc": "GE03",
+          "SenderLocation": "W016",
+          "DispatchDate": "2024-03-31",
+          "Ageing": 107,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSPL48BRN1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "White"
+            },
+            {
+              "SKUCode": "CFHSPL48BRN1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Red"
+            },
+            {
+              "SKUCode": "CFHSPL48BRN1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Red"
+            },
+            {
+                "SKUCode": "CFHSPL48BRN1S",
+                "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                "InTransitQty": 50,
+                "PhysicalInventoryColor": "Red"
+              },
+            {
+              "SKUCode": "CFHSPL48BRN1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": null
+            },
+            {
+                "SKUCode": "CFHSPL48BRN1S",
+                "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                "InTransitQty": 50,
+                "PhysicalInventoryColor": "White"
+              },
+              {
+                "SKUCode": "CFHSPL48BRN1S",
+                "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                "InTransitQty": 50,
+                "PhysicalInventoryColor": "Black"
+              },
+              {
+                "SKUCode": "CFHSPL48BRN1S",
+                "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                "InTransitQty": 50,
+                "PhysicalInventoryColor": "Red"
+              },
+              {
+                  "SKUCode": "CFHSPL48BRN1S",
+                  "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                  "InTransitQty": 50,
+                  "PhysicalInventoryColor": "Green"
+                },
+              {
+                "SKUCode": "CFHSPL48BRN1S",
+                "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                "InTransitQty": 50,
+                "PhysicalInventoryColor": null
+              },
+              {
+                "SKUCode": "CFHSPL48BRN1S",
+                "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                "InTransitQty": 50,
+                "PhysicalInventoryColor": "White"
+              },
+              {
+                "SKUCode": "CFHSPL48BRN1S",
+                "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                "InTransitQty": 50,
+                "PhysicalInventoryColor": "White"
+              },
+              {
+                "SKUCode": "CFHSPL48BRN1S",
+                "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                "InTransitQty": 50,
+                "PhysicalInventoryColor": "Yellow"
+              },
+              {
+                  "SKUCode": "CFHSPL48BRN1S",
+                  "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                  "InTransitQty": 50,
+                  "PhysicalInventoryColor": "Yellow"
+                },
+              {
+                "SKUCode": "CFHSPL48BRN1S",
+                "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                "InTransitQty": 50,
+                "PhysicalInventoryColor": null
+              }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-02-05",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10095",
+          "SKUCode": "CFHSPL48BRN1S",
+          "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+          "ReceiverLoc": "GS05",
+          "SenderLocation": "W016",
+          "DispatchDate": "2024-04-06",
+          "Ageing": 14,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSPL48BRN1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": null
+            },
+            {
+                "SKUCode": "CFHSPL48BRN1S",
+                "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                "InTransitQty": 50,
+                "PhysicalInventoryColor": "Black"
+              },
+              {
+                "SKUCode": "CFHSPL48BRN1S",
+                "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                "InTransitQty": 50,
+                "PhysicalInventoryColor": "Red"
+              },
+              {
+                "SKUCode": "CFHSPL48BRN1S",
+                "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+                "InTransitQty": 50,
+                "PhysicalInventoryColor": null
+              }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-05-08",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10102",
+          "SKUCode": "CFHSPL48BRN1S",
+          "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+          "ReceiverLoc": "W016",
+          "SenderLocation": "MF04",
+          "DispatchDate": "2024-04-16",
+          "Ageing": 21,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSPL48BRN1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Red"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-05-01",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10108",
+          "SKUCode": "CFHSPL48BRN1S",
+          "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+          "ReceiverLoc": "WN05",
+          "SenderLocation": "W016",
+          "DispatchDate": "2024-03-17",
+          "Ageing": 27,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSPL48BRN1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Black"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-04-25",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10109",
+          "SKUCode": "CFHSPL48BRN1S",
+          "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+          "ReceiverLoc": "WS01",
+          "SenderLocation": "W016",
+          "DispatchDate": "2024-04-06",
+          "Ageing": 28,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSPL48BRN1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "White"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-04-24",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10110",
+          "SKUCode": "CFHSPL48BRN1S",
+          "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+          "ReceiverLoc": "WW02",
+          "SenderLocation": "W016",
+          "DispatchDate": "2024-04-18",
+          "Ageing": 29,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSPL48BRN1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M BROWN 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Black"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-04-23",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10119",
+          "SKUCode": "CFHSPL48IVY1S",
+          "SKUDescription": "HIGH SPEED PLUS 1.2M IVY 1S",
+          "ReceiverLoc": "GS05",
+          "SenderLocation": "W020",
+          "DispatchDate": "2024-04-06",
+          "Ageing": 38,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSPL48IVY1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M IVY 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Red"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-04-14",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10126",
+          "SKUCode": "CFHSPL48IVY1S",
+          "SKUDescription": "HIGH SPEED PLUS 1.2M IVY 1S",
+          "ReceiverLoc": "W016",
+          "SenderLocation": "MF04",
+          "DispatchDate": "2024-04-04",
+          "Ageing": 45,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSPL48IVY1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M IVY 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Black"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-04-07",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10138",
+          "SKUCode": "CFHSPL48OPW1S",
+          "SKUDescription": "HIGH SPEED PLUS 1.2M OPALWHT 1S",
+          "ReceiverLoc": "GE03",
+          "SenderLocation": "W016",
+          "DispatchDate": "2024-03-17",
+          "Ageing": 57,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSPL48OPW1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M OPALWHT 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "White"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-03-26",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10139",
+          "SKUCode": "CFHSPL48OPW1S",
+          "SKUDescription": "HIGH SPEED PLUS 1.2M OPALWHT 1S",
+          "ReceiverLoc": "GE04",
+          "SenderLocation": "W016",
+          "DispatchDate": "2024-03-17",
+          "Ageing": 58,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSPL48OPW1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M OPALWHT 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "White"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-03-25",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10156",
+          "SKUCode": "CFHSPL48OPW1S",
+          "SKUDescription": "HIGH SPEED PLUS 1.2M OPALWHT 1S",
+          "ReceiverLoc": "WN03",
+          "SenderLocation": "W016",
+          "DispatchDate": "2024-04-19",
+          "Ageing": 75,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSPL48OPW1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M OPALWHT 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Black"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-03-08",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10160",
+          "SKUCode": "CFHSPL48OPW1S",
+          "SKUDescription": "HIGH SPEED PLUS 1.2M OPALWHT 1S",
+          "ReceiverLoc": "WW02",
+          "SenderLocation": "W016",
+          "DispatchDate": "2024-04-18",
+          "Ageing": 79,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSPL48OPW1S",
+              "SKUDescription": "HIGH SPEED PLUS 1.2M OPALWHT 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Black"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-03-04",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10195",
+          "SKUCode": "CFHSRIV36OPW1S",
+          "SKUDescription": "HISPEED RIVIERA 0.9MM OPAL WHT",
+          "ReceiverLoc": "GS05",
+          "SenderLocation": "W020",
+          "DispatchDate": "2024-04-16",
+          "Ageing": 14,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSRIV36OPW1S",
+              "SKUDescription": "HISPEED RIVIERA 0.9MM OPAL WHT",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Red"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-05-08",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10273",
+          "SKUCode": "CFHSRIV48BNC1S",
+          "SKUDescription": "HS RIVIERA 48 BIANCO 1S",
+          "ReceiverLoc": "GS05",
+          "SenderLocation": "W009",
+          "DispatchDate": "2024-04-16",
+          "Ageing": 92,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSRIV48BNC1S",
+              "SKUDescription": "HS RIVIERA 48 BIANCO 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Green"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-02-20",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10274",
+          "SKUCode": "CFHSRIV48BNC1S",
+          "SKUDescription": "HS RIVIERA 48 BIANCO 1S",
+          "ReceiverLoc": "GS06",
+          "SenderLocation": "W009",
+          "DispatchDate": "2024-04-09",
+          "Ageing": 93,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSRIV48BNC1S",
+              "SKUDescription": "HS RIVIERA 48 BIANCO 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Yellow"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-02-19",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10275",
+          "SKUCode": "CFHSRIV48BNC1S",
+          "SKUDescription": "HS RIVIERA 48 BIANCO 1S",
+          "ReceiverLoc": "GS07",
+          "SenderLocation": "W009",
+          "DispatchDate": "2024-04-16",
+          "Ageing": 94,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSRIV48BNC1S",
+              "SKUDescription": "HS RIVIERA 48 BIANCO 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "White"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-02-18",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10281",
+          "SKUCode": "CFHSRIV48BNC1S",
+          "SKUDescription": "HS RIVIERA 48 BIANCO 1S",
+          "ReceiverLoc": "W009",
+          "SenderLocation": "MF01",
+          "DispatchDate": "2024-04-16",
+          "Ageing": 100,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSRIV48BNC1S",
+              "SKUDescription": "HS RIVIERA 48 BIANCO 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Red"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-02-12",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10283",
+          "SKUCode": "CFHSRIV48BNC1S",
+          "SKUDescription": "HS RIVIERA 48 BIANCO 1S",
+          "ReceiverLoc": "WE05",
+          "SenderLocation": "W009",
+          "DispatchDate": "2024-03-31",
+          "Ageing": 102,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSRIV48BNC1S",
+              "SKUDescription": "HS RIVIERA 48 BIANCO 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "White"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-02-10",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10285",
+          "SKUCode": "CFHSRIV48BNC1S",
+          "SKUDescription": "HS RIVIERA 48 BIANCO 1S",
+          "ReceiverLoc": "WN03",
+          "SenderLocation": "W009",
+          "DispatchDate": "2024-04-17",
+          "Ageing": 104,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSRIV48BNC1S",
+              "SKUDescription": "HS RIVIERA 48 BIANCO 1S",
+              "InTransitQty": 50,
+              "PhysicalInventoryColor": "Yellow"
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-02-08",
+          "Qty": 50
+        },
+        {
+          "OrderNo": "VectorOrder_10291",
+          "SKUCode": "CFHSRIV48BRN1S",
+          "SKUDescription": "HS RIVIERA 48 BROWN 1S",
+          "ReceiverLoc": "GE03",
+          "SenderLocation": "W009",
+          "DispatchDate": "2024-03-31",
+          "Ageing": 10,
+          "skuDetails": [
+            {
+              "SKUCode": "CFHSRIV48BRN1S",
+              "SKUDescription": "HS RIVIERA 48 BROWN 1S",
+              "InTransitQty": 50
+            }
+          ],
+          "CurrentLoc": "555",
+          "Action": "",
+          "ETA": "2024-05-12",
+          "Qty": 50
+        }
+      ],
+    "status": 200,
+    "msg": null,
+    "errorCount": null,
+    "error": null,
+    "conflictErrorCount": null,
+    "conflictError": null
+}
+
