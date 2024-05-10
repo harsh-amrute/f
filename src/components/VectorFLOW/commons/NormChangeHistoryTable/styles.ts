@@ -12,6 +12,7 @@ export const AgContainer = styled.div`
 display:flex;
 justify-content:center;
 padding:29px 15px 20px 15px;
+height:200px;
 `
 export const AgGridWrapper = styled.div`
 //zoom:0.8;

@@ -16,7 +16,7 @@ const IconCard = (props:IconCardProps)=>{
     const {
         iconOnMouseOut,
         text,
-        onClick
+        onClick,
     } = props
 
 
