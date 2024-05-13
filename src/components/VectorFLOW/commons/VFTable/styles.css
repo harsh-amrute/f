@@ -1,5 +1,6 @@
 .ag-theme-alpine {
   /* --ag-foreground-color: #EBEBEB; */
+  --ag-range-selection-border-color:#BC3D81;
   /* --ag-background-color: rgb(255, 255, 255); */
   --ag-header-foreground-color: rgb(255, 255, 255);
   --ag-header-background-color: rgb(0, 0, 0);

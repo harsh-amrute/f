@@ -65,16 +65,16 @@ const SavedDrafts = ()=>{
               "col_Position":'3',
               "isApplicable":true
             },
-            {
-              displayName: "Search Key",
-              key: "SearchKeys",
-              visible: true,
-              isAdd:true,
-              isDownload:true,
-              isEdit:true,
-              "col_Position":'4',
-              "isApplicable":true
-            },
+            // {
+            //   displayName: "Search Key",
+            //   key: "SearchKeys",
+            //   visible: true,
+            //   isAdd:true,
+            //   isDownload:true,
+            //   isEdit:true,
+            //   "col_Position":'4',
+            //   "isApplicable":true
+            // },
             {
                 displayName:"Action",
                 key:"action",

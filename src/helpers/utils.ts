@@ -1021,6 +1021,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
           cellStyle:(params:any)=>{
             return{
               "color":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?'#BC3D81':'black',
+              "font-weight":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?'500':'300',
               "text-align":"center",
               "border-left":"solid 1px #B9B9B9",
             }

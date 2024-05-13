@@ -898,7 +898,7 @@ const useViewModify = (pageType:string) => {
                 taskId = TASK_ID;
               }
 
-              setTaskId(data.data.taskId  );
+              setTaskId(data.data.taskId);
               
               if(data.data.conflictErrorCount){
                 conflictCount += parseInt(data.data.conflictErrorCount,10);
@@ -1227,7 +1227,24 @@ const useViewModify = (pageType:string) => {
       }
 
       const onSaveToDraft = async () => {
-        let newData = activeMaster.rowData
+        let newData:any = []
+        const errorOrWarning = activeMaster.rowData.find((row:any)=>(Object.keys(row).includes('error'))||(Object.keys(row).includes('warning')));
+        if(errorOrWarning){
+          newData = activeMaster.rowData.map((row:any)=>{
+            const temp = {...row};
+            if(!temp['error']){
+              temp['error'] = '';
+            }
+            if(!temp['warning']){
+              temp['warning'] = '';
+            }
+            return temp;
+          });
+        }
+        else{
+          newData = activeMaster.rowData;
+        }
+       
         const selectedData = ref.current?.api.getSelectedRows();
 
         if(activeMaster.id==10 || activeMaster.id==6){
