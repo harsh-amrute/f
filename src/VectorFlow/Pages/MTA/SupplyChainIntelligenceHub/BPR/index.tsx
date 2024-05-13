@@ -62,7 +62,7 @@ const BPR = ()=>{
     } = useBPR();
 
 
-
+    console.log(recordCount)
     
     // if(isLoading || isSavedDataLoading){
     //   return (

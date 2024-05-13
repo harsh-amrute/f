@@ -86,7 +86,9 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             default:
                 return genericRecordCount
         }
-    },[currCategory])
+    },[currCategory,genericRecordCount])
+
+    console.log(currentPageRecordCount)
 
 
     const handleExportToExcel = ()=>{
@@ -155,6 +157,11 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             break;
         case 'OpenExpeditingRequests':
             if(pathname==='/supply-chain-intelligence-hub/open-expediting-requests'){
+                return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />
+            }
+            break;
+        case 'InTransitWhereabouts':
+            if(pathname==='/logistics/intransit-whereabouts'){
                 return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />
             }
             break;
@@ -359,7 +366,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
 
                               
                             {
-                                (currCategory==='CustomScreens' || currCategory==='BufferTrend' || currCategory==="BPR" || currCategory==="RRR" || currCategory==="BOR" || currCategory==="BTR" || currCategory==="ResearchInsight" || currCategory==="DBMNorm" || (currCategory==="GuidedInsight" && currentTab!=="chronicunavailability") || currCategory==="OpenExpeditingRequests" ) ? null : (
+                                (currCategory==='CustomScreens' || currCategory==='BufferTrend' || currCategory==="BPR" || currCategory==="RRR" || currCategory==="BOR" || currCategory==="BTR" || currCategory==="ResearchInsight" || currCategory==="DBMNorm" || (currCategory==="GuidedInsight" && currentTab!=="chronicunavailability") || currCategory==="OpenExpeditingRequests" ) || currCategory==="InTransitWhereabouts" ? null : (
                                 !disableChartAndGridViewToggle &&
                                 <SCViewBackground>
                                     <SCViewContainer onClick={() =>{

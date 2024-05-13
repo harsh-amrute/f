@@ -19,7 +19,6 @@ import { notifyError} from "../../../../../helpers/notify"
 export const useBOR =()=>{
     const ref=  useRef()
     const tempRef = useRef()
-     const [setActiveRow] = useState<any>()
      const {data} = useGetBORUIConfiguration();
      const dispatch = useDispatch();
    
@@ -188,7 +187,6 @@ export const useBOR =()=>{
       }
 
       const getBORRowData=async(filter:BPRFilterState)=>{
-        setActiveRow({})
         if(filter)setCurrFilter(filter)
         try{
             if(recordCount===0 || filter){
@@ -210,7 +208,7 @@ export const useBOR =()=>{
       };
       const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getBorData({
-            filters:[],
+            filters:currFilter,
             paginationParameter:{
                 pageNumber:pageNumber,
                 recordsPerPage:5000

@@ -68,6 +68,7 @@ export const BPRViewTableHeaderContainer = styled.div`
     top:0;
     background-color: white;
     z-index:100;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
 `
 
 export const BPRViewTableHeader = styled.div`
@@ -136,7 +137,7 @@ export const ReadMoreToolTip = styled.div`
 `
 
 export const BPRColorCellRendererWrapper = styled.div`
-    display:block;
+    display:flex;
     justify-content:center;
     align-items:center;
     width: 100%;
