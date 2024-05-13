@@ -64,7 +64,7 @@ function LoginContainer() {
             const rolePermission = data?.data?.data.roles.permission;
             const isRolePresent =  rolePermission.some((permission:any) => !permission.name.startsWith("IST"));
             // const url = urlPermission.includes("/") && isRolePresent ? "/" : !urlPermission.includes("/") && isRolePresent ? '/master-data-management/control-panel' : urlPermission[0];
-            const url = urlPermission.includes("/") && isRolePresent ? "/" : urlPermission.includes('/master-data-management/control-panel') ? '/master-data-management/control-panel' : urlPermission[0];
+            const url = urlPermission.includes("/") && isRolePresent ? "/" : urlPermission.includes('/supply-chain-intelligence-hub/planning') ? '/supply-chain-intelligence-hub/planning' : urlPermission[0];
             console.log(url);
             navigate(url, { replace: true });
             notifySuccess(t("loginPage.notify.success"));

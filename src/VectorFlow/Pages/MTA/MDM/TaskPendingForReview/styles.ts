@@ -7,6 +7,9 @@ export const TaskPendingWrapper = styled.div`
     margin-bottom:100px;
     padding-left:50px;
     padding-top:20px;
+    ::ng-deep .ag-cell:focus{
+        outline: none;
+      }
 `
 
 export const ActionRendererWrapper = styled.div`

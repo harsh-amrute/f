@@ -486,7 +486,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                    <VFTaskBarButtonGroup>
                     <BackButton/>
-                    <VFButtonOutline themeUi={themeUi} onClick={onDeleteSelected}>  
+                    <VFButtonOutline themeUi={themeUi} onClick={onDeleteSelected} width={139}>  
                             Remove Selected
                     </VFButtonOutline >
                     <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
