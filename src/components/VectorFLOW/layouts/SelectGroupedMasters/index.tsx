@@ -80,6 +80,7 @@ const Card=(props:CardProps)=>{
         </VFMasterGroupCardContent>
     )
 }
+
 const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{   
     const{
         onSubmit,
@@ -99,33 +100,48 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
              <p>What kind of records do you want to {text}?</p>
             </TextContainer>
         </TextFilterWrapper>
+
         <VFMasterGroupCardContainer> 
         {
         masterGroupMapper.map(masterGroup=>{
          if(masterGroup.masters.length<1)return 
             return(
+       
             <VFMasterGroupCard> 
+
                 <VFMasterGroupCardHeader>
                     <VFMasterGroupCardHeaderText> 
                         <p>{masterGroup.name}</p>
                     </VFMasterGroupCardHeaderText>
                        
                 </VFMasterGroupCardHeader>
+                <div className="custom-scrollbar" style={{ overflow:'auto', width:'100%', paddingLeft:'10px', paddingRight:'10px'}}>
+
                 {allMasters.map((currentMaster)=>{
                             if(masterGroup.masters.includes(currentMaster.id.toString())){
                             return(
                             <Card master={currentMaster} handleOnClickMaster={handleOnClickMaster} selectedMasters={selectedMasters}/>
                         )}})} 
-            </VFMasterGroupCard>
+                                    </div>
+
+            </VFMasterGroupCard>                             
+
+
                     )
+
             })
         }
+
+           
+
         </VFMasterGroupCardContainer> 
+
             <VFButtonWrapper>
                 <VFButtonOutline onClick={onCancel} themeUi={user.user.theme_ui} style={{marginRight:'25px'}}>Cancel</VFButtonOutline>
                 <VFButton onClick={onSubmit} themeUi={user.user.theme_ui} disabled={selectedMasters.length===0}>Submit</VFButton>
             </VFButtonWrapper> 
     </ContentWrapper>
+
     )
 }
 

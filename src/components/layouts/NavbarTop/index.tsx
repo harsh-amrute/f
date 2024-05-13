@@ -15,6 +15,8 @@ import { useUserData } from "../../../context";
 import BreadCrumb from "../BreadCrumb";
 import { useState } from "react";
 import { ModalReportIssue, ModalSuccess } from "../../index";
+import {  useNavigate} from "react-router-dom";
+
 
 const NavbarTop = ({
   setIsOpenNavbarRight,
@@ -43,6 +45,12 @@ const NavbarTop = ({
     setIsOpenReportSuccess(false);
   }
 
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/supply-chain-intelligence-hub/planning"); // Navigating to the desired route
+  };
+
   return (
     <>
       <SCWrap colorTheme={colorTheme}>
@@ -54,6 +62,7 @@ const NavbarTop = ({
                   ? "/assets/img/header/VectorFlowLogoBlackNew.svg"
                   : "/assets/img/header/VectorFlowLogoWhite.svg"
               }
+              onClick={handleClick}
             />
           </SCWrapLogo>
 

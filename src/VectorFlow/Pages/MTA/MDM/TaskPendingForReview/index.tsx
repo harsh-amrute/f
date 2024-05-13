@@ -66,9 +66,11 @@ const TaskPendingForReview = ()=>{
                 columnDefs={detailTableColDefs}
                 gridOptions={{
                     getRowStyle: (params: any) => {
+                        
                     if (params.node.rowIndex % 2 === 0) {
                         return { background: "#EBEBEB" };
                     }
+                    
                     return { background: "#F7F7F7" };
                     },
                 }}

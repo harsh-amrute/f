@@ -35,7 +35,8 @@ border-radius: 7px;
 opacity: 1;
 margin-left:30px;
 zoom:0.8;
-overflow:overlay;
+// overflow:overlay;
+overflow: hidden;
 &::-webkit-scrollbar{
     width: 7px;
     height:8px;       
@@ -86,7 +87,7 @@ margin-bottom:12px;
 display: flex;
 `
 export const VFMasterGroupCardContent=styled.div<{theme:any}>`
-width: 95%;
+width: 100%;
 height: 80px;
 margin-top:16px;
 background: #FFFFFF 0% 0% no-repeat padding-box;

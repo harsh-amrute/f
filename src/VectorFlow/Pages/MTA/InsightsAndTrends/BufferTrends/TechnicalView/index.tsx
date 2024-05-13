@@ -105,8 +105,8 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,ha
             yName: "Yellow",
             stroke: "Yellow" ,
             marker:{
-                fill:"Yellow",
-                stroke:"Yellow"
+                fill:"#FFBF00",
+                stroke:"#FFBF00"
             }
           },
           {
@@ -187,7 +187,7 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,ha
                                         labelValueFormatter={(value:number)=>value>1?`${value} Days`:`${value} Day`}
                                     />
                                 <div style={{zoom:0.8}}>
-                                <VFButtonOutline themeUi="" onClick={handleSubmitClick} width={120} disabled={false}>
+                                <VFButtonOutline themeUi="" onClick={handleSubmitClick} width={110} disabled={false} style={{fontSize:'14px',height:'40px'}}>
                                         Submit
                                     </VFButtonOutline>
                                 </div>
