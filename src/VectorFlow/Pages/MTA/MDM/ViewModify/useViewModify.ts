@@ -75,7 +75,7 @@ const useViewModify = (pageType:string) => {
 
     const {mutateAsync:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
 
-    const [TASK_ID,setTaskId] = useState<string>();
+    const [TASK_ID,setTaskId] = useState<string>('');
 
     // const [isDataAvailableLocally,setIsDataAvailableLocally] = useState(false);
    
@@ -876,7 +876,7 @@ const useViewModify = (pageType:string) => {
           for(let i=0; i < rowData.length; i+=chunkSize){
           
               if(i+chunkSize < rowData.length){
-                payload.data = activeMaster.rowData.slice(i,i+chunkSize);
+                payload.data = rowData.slice(i,i+chunkSize);
                 toast.update(toastId,{render:`Submitting Data ${i+chunkSize}/${rowData.length}`})
                 submitProgress+=chunkSize;
               }

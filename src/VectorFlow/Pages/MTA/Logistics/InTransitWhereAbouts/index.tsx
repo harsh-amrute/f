@@ -2,7 +2,6 @@
 
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import ActionToolBar from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar"
-import BPRRemarkHistoryToolTip from "../../SupplyChainIntelligenceHub/BPR/BPRRemarkHistoryToolTip"
 import BPRSubmiRemarkToolTip from "../../SupplyChainIntelligenceHub/BPR/BPRSubmitRemarkToolTip"
 
 
@@ -10,6 +9,8 @@ import { GridStateContext } from "../../../../../context/GridStateContext"
 import useInTransitWhereAbouts from "./useInTransitWhereAbouts"
 import ContactDetailsModal from "./ContactDetailsModal"
 import RemarkModal from "./RemarkModal"
+import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 
 
 
@@ -26,10 +27,7 @@ const InTransitWhereAbouts = ()=>{
         isSubmitRemarkToolTipOpen,
         isRemarkHistoryToolTipOpen,
         submitRemarkToolTipPosition,
-        remarkHistoryToolipPosition,
-        isSavedDataLoading,
         ref,
-        columnState,
         updateRemark,
         onSubmitRemark,
         onCloseSubmitRemark,
@@ -43,10 +41,22 @@ const InTransitWhereAbouts = ()=>{
         setExportExcelColumns,
         currentUserDetails,
         isContactModalOpen,
-        onCloseContactModal
+        onCloseContactModal,
+        isSubmitETAToolTipOpen,
+        etaValue,
+        setETAValue,
+        submitETAToolTipPosition,
+        onCloseSubmitETA,
+        isSubmitCurrentLocationTipOpen,
+        submitCurrentLocationToolTipPosition,
+        currentLocationValue,
+        setCurrentLocationValue,
+        onCloseSubmitCurentLocation,
+        recordCount,
+        currentPage,
+        getRowData
     } = useInTransitWhereAbouts()
 
-    console.log(rowData)
 
     return(
         <GridStateContext.Provider
@@ -61,7 +71,6 @@ const InTransitWhereAbouts = ()=>{
 
       }}
         >
-              <>
                 <ActionToolBar 
                 view={'grid'} 
                 setCurrentTab={''} 
@@ -75,13 +84,30 @@ const InTransitWhereAbouts = ()=>{
                 onExportToExcelCallBack={()=>{return }}
               />
           
-            <VFTable
-            columnDefs={colDefs}
-            rowData={rowData}
-            {...agGridProps}
-            ref={ref}
-            height={800}
-        />
+        {
+            isLoading
+            ?
+            <VFLoader/>
+            :
+            <>
+                <VFTable
+                    columnDefs={colDefs}
+                    rowData={rowData}
+                    {...agGridProps}
+                    ref={ref}
+                    height={600}
+                />
+                <div style={{marginBottom:'40px'}}>
+                <VFPagination
+                    selectedRows={0}
+                    totalRows={recordCount}
+                    currentPage={currentPage}
+                    rowsPerPage={100}
+                    handleChangePage={(e:number)=>getRowData(e,recordCount)}
+                />
+                </div>
+            </>
+        }
           
         
         {isSubmitRemarkToolTipOpen && (
@@ -94,17 +120,28 @@ const InTransitWhereAbouts = ()=>{
                 
             />
         )}
-
-        {/* {isRemarkHistoryToolTipOpen && (
-            <BPRRemarkHistoryToolTip
-                remarkHistory={remarkHistory}
-                onClose={onCloseRemarkHistory}
-                style={remarkHistoryToolipPosition}
+        {isSubmitETAToolTipOpen && (
+            <BPRSubmiRemarkToolTip
+                remark={etaValue}
+                setRemark={(e)=>setETAValue(e.target.value)}
+                style={submitETAToolTipPosition}
+                onSuccess={onSubmitRemark}
+                onClose={onCloseSubmitETA}
+                
             />
-        )} */}
-              </>
+        )}
+         {isSubmitCurrentLocationTipOpen && (
+            <BPRSubmiRemarkToolTip
+                remark={currentLocationValue}
+                setRemark={(e)=>setCurrentLocationValue(e.target.value)}
+                style={submitCurrentLocationToolTipPosition}
+                onSuccess={onSubmitRemark}
+                onClose={onCloseSubmitCurentLocation}
+                
+            />
+        )}
             <ContactDetailsModal isOpen={isContactModalOpen} onClose={onCloseContactModal} data={currentUserDetails}/>
-            <RemarkModal isOpen={isRemarkHistoryToolTipOpen} onClose={onCloseRemarkHistory} data={[]}/>
+            <RemarkModal isOpen={isRemarkHistoryToolTipOpen} onClose={onCloseRemarkHistory} data={remarkHistory}/>
         </GridStateContext.Provider>
     )
 }

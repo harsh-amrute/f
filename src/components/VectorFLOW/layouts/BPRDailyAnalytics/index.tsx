@@ -145,7 +145,6 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     },[location.pathname,currentCategory,currentView,currentTab])
 
     const getCellText = (text:any,colKey:string)=>{
-        console.log(text)
         if(colKey==='techChange' || colKey==='ecoChange'){
             if(!text)return "N/A"
             text = String(text)

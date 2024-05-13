@@ -213,7 +213,7 @@ const useRRR =()=>{
 
     const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getRRRData({
-            filters:[],
+            filters:{},
             paginationParameter:{
                 pageNumber:pageNumber,
                 recordsPerPage:5000

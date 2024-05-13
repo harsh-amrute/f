@@ -3,7 +3,6 @@ import { CSSProperties, useMemo, useState,useEffect ,useRef} from "react";
 
 import {toast} from 'react-toastify'
 
-import useViewPort from "../../../../../hooks/useViewPort";
 
 import { AgGridReactProps } from "ag-grid-react";
 
@@ -11,30 +10,39 @@ import { AgGridReactProps } from "ag-grid-react";
 import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../helpers/notify";
-import ETACellRenderer from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/ETACellRenderer";
 import ShowRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/ShowRemarkCellRenderer";
 import { useSelector } from "react-redux";
 
 import { RootState } from "../../../../../redux/store/store";
-import { useAddRemarkForExpedite, useGetOpenExpediteRequestData, useGetRemarkDetailsForExpedite } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests";
 import SubmitRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/SubmitRemarkCellRenderer";
 import MasterDetail from "./MasterDetail";
-import { ColorGroupCellRenderer, CurrentLocationCellRenderer } from "./CellRenderers";
-import { GetInTransitWhereAboutsMockResponse } from "../../../../../mock-data/BPR";
+import { ColorGroupCellRenderer, CurrentLocationCellRenderer, ETACellRenderer } from "./CellRenderers";
 import { mapInTransitWhereAboutsRowData } from "../../../../../helpers/utils";
+import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount } from "../../../../../VectorFlow/Services/MTA/Logistics/InTransitWhereAbouts";
 
 const useInTransitWhereAbouts = ()=>{
     const ref = useRef()
     const tempRef = useRef()
 
-    const {data,isLoading} = useGetOpenExpediteRequestData()
-    const {mutateAsync:addRemark} = useAddRemarkForExpedite()
-    const {mutateAsync:getRemark} = useGetRemarkDetailsForExpedite()
+    const {mutateAsync:getDataCount,isLoading:isCountLoading} = useGetInTransitWhereAboutsDataCount()
+    const {mutateAsync:getData,isLoading:isDataLoading} = useGetInTransitWhereAboutsData()
 
     const [submitRemarkToolTipPosition,setSubmitRemarkToolipPosition] = useState<CSSProperties>({})
-    const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
+    const [submitETAToolTipPosition,setSubmitETAToolipPosition] = useState<CSSProperties>({})
+    const [submitCurrentLocationToolTipPosition,setSubmitCurrentLocationToolipPosition] = useState<CSSProperties>({})
+
+    const [rowData,setRowData] = useState<Array<any>>([])
+
+    const [recordCount,setRecordCount] = useState<number>(0)
+
+    const [currentPage,setCurrentPage] = useState<number>(1)
 
     const [remark,setRemark] = useState<string>('')
+
+    const [etaValue,setETAValue] = useState<string>('')
+
+    const [currentLocationValue,setCurrentLocationValue] = useState<string>('')
+
     const [activeRow,setActiveRow] = useState<any>({
       sc:'',
       wc:''
@@ -56,13 +64,13 @@ const useInTransitWhereAbouts = ()=>{
   })
 
     const [isSubmitRemarkToolTipOpen,setIsSubmitRemarkToolTipOpen] = useState<boolean>(false)
+    const [isSubmitETAToolTipOpen,setIsSubmitETAToolTipOpen] = useState<boolean>(false)
+    const [isSubmitCurrentLocationTipOpen,setIsSubmitCurrentLocationToolTipOpen] = useState<boolean>(false)
     const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
 
-    const { getGridZoom, getScreenZoomValue } = useViewPort()
 
-    const gridZoom = getGridZoom()
-    const screenZoom = getScreenZoomValue()
 
+    console.debug(activeRow)
     const customCellRenderers = useMemo(() => ({
         // grapCellRenderer:BPRGraphCellRenderer,
         // colorTechCellRenderer:BPRTechColorCellRenderer,
@@ -108,6 +116,7 @@ const useInTransitWhereAbouts = ()=>{
           }
         }
         getTableState()
+        getRowData(1)
     },[currentGridState])
 
     
@@ -148,7 +157,6 @@ const useInTransitWhereAbouts = ()=>{
             },
         },
         sideBar:sideBar,
-        pagination: true,
         suppressRowClickSelection: true,
         components: customCellRenderers,
         defaultColDef: {
@@ -172,34 +180,115 @@ const useInTransitWhereAbouts = ()=>{
         }
       };
 
+
+      const getRowData = async(pageNo:number,dataCount?:number)=>{
+        try{
+          setCurrentPage(pageNo)
+          if(!dataCount || dataCount===0){
+            const countData = await getDataCount()
+            const {count} = JSON.parse(countData.data.recordCount)[0]
+            setRecordCount(count)
+          }
+          const data = await getData({
+            pageNumber:pageNo,
+            recordsPerPage:100
+          })
+          setRowData(mapInTransitWhereAboutsRowData(data.data.data))
+        }catch(err:any){
+            notifyError(err)
+        }
+
+      }
+
     const onOpenSubmitRemark = (e: React.MouseEvent<HTMLElement>,data:any) => {
         setActiveRow(data)
         const { top, left } = e.currentTarget.getBoundingClientRect()
         setSubmitRemarkToolipPosition({
-            top: top * gridZoom * screenZoom,
-            left: left * gridZoom * screenZoom,
-        })
+            top: top,
+            left: left
+    })
         setIsSubmitRemarkToolTipOpen(true)
 
     }
 
+    const onOpenSubmitETA = (e: React.MouseEvent<HTMLInputElement>,data:any) => {
+      setActiveRow(data)
+      setETAValue(e.currentTarget.value)
+      const { top, left } = e.currentTarget.getBoundingClientRect()
+      setSubmitETAToolipPosition({
+          top: top ,
+          left: left 
+      })
+      setIsSubmitETAToolTipOpen(true)
+
+  }
+
+  const onOpenSubmitCurentLocation = (e: React.MouseEvent<HTMLInputElement>,data:any) => {
+    setActiveRow(data)
+    setCurrentLocationValue(e.currentTarget.value)
+    const { top, left } = e.currentTarget.getBoundingClientRect()
+    setSubmitCurrentLocationToolipPosition({
+        top: top ,
+        left: left 
+    })
+    setIsSubmitCurrentLocationToolTipOpen(true)
+
+}
+
     const onOpenRemarkHistory = async (e: React.MouseEvent<HTMLElement>,data:any) => {
+      console.debug(e,data)
         try {
             setIsRemarkHistoryToolTipOpen(false)
             const toastId = notifyLoader("Getting remark history")
-            const { top, left } = e.currentTarget.getBoundingClientRect()
-            const remarkData = await getRemark({
-              whcode:data.wc,
-              skucode:data.sc
-            })
-            setRemarkHistoryToolipPosition({
-                top: top * gridZoom * screenZoom,
-                left: left * gridZoom * screenZoom,
-                height: 360,
-                width: 350
-            })
+            // const remarkData = await getRemark({
+            //   whcode:data.wc,
+            //   skucode:data.sc
+            // })
             toast.dismiss(toastId)
-            setRemarkHistory(remarkData.data.data)
+            setRemarkHistory([
+              {
+                  name:'JP',
+                  remark:"Moved from Mumbai and Reached Nagpur",
+                  date:'2023 - 09 - 20 | 12 pm',
+                  eta:'2024-05-07',
+                  currentLocation:'Pune'
+              },
+              {
+                  name:'RT',
+                  remark:"Moved from Mumbai and Reached Nagpur",
+                  date:'2023 - 09 - 20 | 12 pm',
+                  eta:'2024-05-07',
+                  currentLocation:'Mumbai'
+              },
+              {
+                  name:'MD',
+                  remark:"Moved from Mumbai and Reached Nagpur",
+                  date:'2023 - 09 - 20 | 12 pm',
+                  eta:'2024-05-07',
+                  currentLocation:'Delhi'
+              },
+              {
+                  name:'AF',
+                  remark:"Moved from Mumbai and Reached Nagpur",
+                  date:'2023 - 09 - 20 | 12 pm',
+                  eta:'2024-05-07',
+                  currentLocation:'Pune'
+              },
+              {
+                  name:'FD',
+                  remark:"Moved from Mumbai and Reached Nagpur",
+                  date:'2023 - 09 - 20 | 12 pm',
+                  eta:'2024-05-07',
+                  currentLocation:'Mumbai'
+              },
+              {
+                  name:'AF',
+                  remark:"Moved from Mumbai and Reached Nagpur",
+                  date:'2023 - 09 - 20 | 12 pm',
+                  eta:'2024-05-07',
+                  currentLocation:'Delhi'
+              }
+          ])
             setIsRemarkHistoryToolTipOpen(true)
         } catch (err: any) {
             notifyError(err.message)
@@ -210,11 +299,11 @@ const useInTransitWhereAbouts = ()=>{
         try{
             if(remark.length===0) throw new Error("Remark cannot be empty")
             const toastId = notifyLoader("Submitting Remark")
-            await addRemark({
-                sc:activeRow.sc,
-                wc:activeRow.wc,
-                remark:remark
-            })
+            // await addRemark({
+            //     sc:activeRow.sc,
+            //     wc:activeRow.wc,
+            //     remark:remark
+            // })
             toast.dismiss(toastId)
             
             notifySuccess('Remark has been submitted')
@@ -234,6 +323,9 @@ const useInTransitWhereAbouts = ()=>{
 
     const onCloseSubmitRemark =()=>setIsSubmitRemarkToolTipOpen(false)
 
+    const onCloseSubmitETA = ()=>setIsSubmitETAToolTipOpen(false)
+
+    const onCloseSubmitCurentLocation = ()=>setIsSubmitCurrentLocationToolTipOpen(false)
 
     const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
 
@@ -243,15 +335,14 @@ const useInTransitWhereAbouts = ()=>{
     }
 
     function onCloseContactModal(){
-      setCurrentUserDetails({
-        name:'',
-        phone:'',
-        email:''
-      })
+      // setCurrentUserDetails({
+      //   name:'',
+      //   phone:'',
+      //   email:''
+      // })
       toggleContactModal(false)
     }
 
-    const rowData = mapInTransitWhereAboutsRowData(GetInTransitWhereAboutsMockResponse.data)
   
       
       
@@ -288,7 +379,10 @@ const useInTransitWhereAbouts = ()=>{
         colId: 'CurrentLoc',
         field: 'CurrentLoc',
         floatingFilter:false,
-        cellRenderer:'currentLocationCellRenderer'
+        cellRenderer:'currentLocationCellRenderer',
+        cellRendererParams:{
+          onClick:onOpenSubmitCurentLocation
+      },
     },
     {
         headerName: "On-Hand Inventory penetration",
@@ -312,6 +406,9 @@ const useInTransitWhereAbouts = ()=>{
         colId: 'ETA',
         field: 'ETA',
         cellRenderer:'etaCellRenderer',
+        cellRendererParams:{
+          onClick:onOpenSubmitETA
+        },
         floatingFilter:false
     },
       {
@@ -332,12 +429,11 @@ const useInTransitWhereAbouts = ()=>{
         rowData,
         colDefs,
         remark,
-        isLoading,
+        isLoading : isDataLoading || isCountLoading,
         remarkHistory,
         isSubmitRemarkToolTipOpen,
         isRemarkHistoryToolTipOpen,
         submitRemarkToolTipPosition,
-        remarkHistoryToolipPosition,
         updateRemark,
         onSubmitRemark,
         onCloseSubmitRemark,
@@ -355,7 +451,22 @@ const useInTransitWhereAbouts = ()=>{
         isContactModalOpen,
         onOpenContactModal,
         currentUserDetails,
-        onCloseContactModal
+        onCloseContactModal,
+        onOpenSubmitETA,
+        isSubmitETAToolTipOpen,
+        etaValue,
+        setETAValue,
+        submitETAToolTipPosition,
+        onCloseSubmitETA,
+        isSubmitCurrentLocationTipOpen,
+        submitCurrentLocationToolTipPosition,
+        currentLocationValue,
+        setCurrentLocationValue,
+        onOpenSubmitCurentLocation,
+        onCloseSubmitCurentLocation,
+        currentPage,
+        recordCount,
+        getRowData
     }
 }
 

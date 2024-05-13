@@ -16,17 +16,17 @@ export const useGetDBMUIConfiguration =  () => {
     });
   }
   export const useGetDBMData=()=>{
-    return useMutation(async (body:{filters:Array<{attributeName:string,op:string,value:string}>,paginationParameter:{pageNumber:number,recordsPerPage:number}}) => {
+    return useMutation(async (body:{filters:any,paginationParameter:{pageNumber:number,recordsPerPage:number}}) => {
       return await DBMServices.getDBMData(body);
     });
   }
   export const useGetDBMDataCount  = ()=>{
-    return useMutation(QUERY_KEYS.useGetDBMDataCount,async (body:{filters:Array<{attributeName:string,op:string,value:string}>,paginationParameter:{pageNumber:number,recordsPerPage:number}})=>{
+    return useMutation(QUERY_KEYS.useGetDBMDataCount,async (body:{filters:any,paginationParameter:{pageNumber:number,recordsPerPage:number}})=>{
       return await DBMServices.getDBMDataCount(body);
     })
   }
   export const useGetDBMApplySelectedNorm  = ()=>{
-    return useMutation(QUERY_KEYS.useGetDBMApplySelectedNorm,async (body:{data:Array<{SKUCode:string,LocCode:string}>,paginationParameter:{pageNumber:number,recordsPerPage:number},filters:Array<{attributeName:string,op:string,value:string}>})=>{
+    return useMutation(QUERY_KEYS.useGetDBMApplySelectedNorm,async (body:{data:Array<{SKUCode:string,LocCode:string}>,paginationParameter:{pageNumber:number,recordsPerPage:number},filters:any})=>{
       return await DBMServices.getDBMApplySelectedNorm(body);
     })
   }

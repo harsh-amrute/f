@@ -456,7 +456,7 @@ const useResearchInsights = ()=>{
             id:1,
             name:'',
             fields:[],
-            filters:[],
+            filters:{},
             paginationParameter:{
                 pageNumber:pageNumber,
                 recordsPerPage:5000

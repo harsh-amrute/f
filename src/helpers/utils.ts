@@ -2194,7 +2194,7 @@ export const mapInTransitWhereAboutsRowData = (rowData:Array<any>):Array<any>=>{
       "Black":0,
       "Red":0,
       "Yellow":0,
-      "Greeen":0,
+      "Green":0,
       "White":0
     }
     r.skuDetails.forEach((sd:any)=>{

@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import { useUserData } from "../../../../../context";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";

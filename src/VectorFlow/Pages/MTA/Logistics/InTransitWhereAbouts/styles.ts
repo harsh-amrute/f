@@ -1,8 +1,10 @@
 import styled from "styled-components"
 
-export const CurrentLocationCellRendererWrapper = styled.div`
+export const CurrentLocationCellRendererWrapper = styled.input`
     border: 0.5px solid #C6C6C6;
     border-radius: 2px;
+    height:30px;
+    width:90%;
 `
 
 export const ColorGroupCellRendererWrapper = styled.div`
@@ -83,41 +85,100 @@ export const ContactModalContentValue = styled.p`
 export const RemarkModalContentWrapper = styled.div`
     display:flex;
     flex-direction:column;
+    margin:0 -74px;
 `
 
 export const RemarkModalTable = styled.div`
     display:flex;
     flex-direction:column;
+    // padding:0px 10px;
 `
 
 export const RemarkModalTableHeaderContainer = styled.div`
-    display:flex;
-    flex-direction:row;
+    display:grid;
+    grid-template-columns:60px 300px 90px 90px;
+    border-bottom:solid 1px #707070;
+    padding:0 10px;
 `
 
 export const RemarkModalTableHeader = styled.p`
     font-family:Roboto;
-    font-size:16px;
+    font-size:12px;
     font-weight:500;
+    // padding:0px 5px;
+    white-space: nowrap;
 `
 
 export const RemarkModalTableRowContainer = styled.div`
     display:flex;
-    flex-direction:row;
+    flex-direction:column;
+    margin-top:10px;
+    padding:0 10px;
+    max-height:300px;
+    overflow-y:auto;
 `
 export const RemarkModalTableRow = styled.div`
-    display:flex;
-    flex-direction:row;
+    display:grid;
+    grid-template-columns:60px 300px 90px 90px;
+    width:100%;
+    margin-bottom:10px;
+    padding-top:5px;
 `
 
 export const RemarkModalTableCell = styled.div`
-
+    font-family:Roboto;
+    font-size:10px;
+    font-weight:500;
 `
 
 export const RemarkModalUserIcon = styled.div`
-    width: 56px;
-    height: 56px;
+    width: 50px;
+    height: 50px;
     background: #CCCCCC 0% 0% no-repeat padding-box;
     border-radius:50%;
-    border: 0.5px solid #707070;
+    font-family:Roboto;
+    font-size:16px;
+    font-weight:500;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 `
+
+export const RemarkModalRemarkCelLRenderer = styled.div`
+    display:flex;
+    flex-direction:column;
+`
+
+export const RemarkText = styled.p`
+    font-family:Roboto;
+    font-size:10px;
+    font-weight:500;
+`
+
+export const RemarkDate = styled.p`
+    font-family:Roboto;
+    font-size:10px;
+    font-weight:500;
+    opacity:0.7;
+`
+
+export const ButtonWrapper = styled.div`
+    width:100%;
+    display:flex;
+    justify-content:flex-end;
+    padding:10px 10px 0px 0px;
+    border-top:solid 1px #707070;
+    zoom:0.8;
+`
+
+export const ETACellRendererCellValue = styled.input`
+    justify-content:center;
+    align-items:center;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 6px 12px #77777729;
+    border: 0.4000000059604645px solid #707070;
+    border-radius: 2px;
+    height:30px;
+    width:100%;
+    padding:4px;
+    `

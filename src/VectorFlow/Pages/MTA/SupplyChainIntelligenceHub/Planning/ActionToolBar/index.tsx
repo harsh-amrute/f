@@ -86,7 +86,9 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             default:
                 return genericRecordCount
         }
-    },[currCategory])
+    },[currCategory,genericRecordCount])
+
+    console.log(currentPageRecordCount)
 
 
     const handleExportToExcel = ()=>{

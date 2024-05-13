@@ -87292,6 +87292,17 @@ export const GetDailyAnalyticsMockResponse = {
     "conflictError": null
 }
 
+export const GetInTransitWhereAboutsDataCountMockResponse = {
+    "recordCount": "[{\"count\":18751}]",
+    "data": null,
+    "status": 200,
+    "msg": null,
+    "errorCount": null,
+    "error": null,
+    "conflictErrorCount": null,
+    "conflictError": null
+}
+
 export const GetInTransitWhereAboutsMockResponse={
     "recordCount": null,
     "data": [

@@ -1,6 +1,7 @@
 
-import React, { CSSProperties, useState } from 'react'
-import {ColorGroupCellRendererWrapper, ColorGroupColorCell, ColorGroupColorCellToolTip, CurrentLocationCellRendererWrapper} from './styles'
+import React, { useState } from 'react'
+import { ETACellRendererWrapper } from '../../SupplyChainIntelligenceHub/OpenExpeditingRequests/styles'
+import {ColorGroupCellRendererWrapper, ColorGroupColorCell, ColorGroupColorCellToolTip, CurrentLocationCellRendererWrapper, ETACellRendererCellValue} from './styles'
 
 const colorMapper =(color:string)=> {
 
@@ -47,9 +48,7 @@ const colorMapper =(color:string)=> {
 export const CurrentLocationCellRenderer = (params:any)=>{
     const isEven = (params.rowIndex%2)===1
     return(
-        <CurrentLocationCellRendererWrapper style={{backgroundColor:isEven?"#EFEFEF":'white'}}>
-            {params.value}
-        </CurrentLocationCellRendererWrapper>
+        <CurrentLocationCellRendererWrapper value={params.value} onClick={params.onClick} style={{backgroundColor:isEven?"#EFEFEF":'white'}}/>
     )
 }
 
@@ -62,7 +61,6 @@ export const ColorGroupColorCellWrapper = (props:{color:string,value:number,tota
 
     const onMouseIn = (e: React.MouseEvent<HTMLElement>) => {
         const { bottom, left,width } = e.currentTarget.getBoundingClientRect();
-        console.log(width)
         const tooltipHeight =110/* Height of your tooltip */;
     
         const tooltipTop = (bottom) + 10;
@@ -100,7 +98,7 @@ export const ColorGroupColorCellWrapper = (props:{color:string,value:number,tota
                             left:errorCellPosition.left
                         }}
                     >
-                        {((props.value/props.totalCount) *100).toFixed(0)} % {currColorObj.label}
+                       {currColorObj.label} {((props.value/props.totalCount) *100).toFixed(0)}% 
                     </ColorGroupColorCellToolTip>
                 )}
             </ColorGroupColorCell>
@@ -109,12 +107,10 @@ export const ColorGroupColorCellWrapper = (props:{color:string,value:number,tota
 }
 
 export const ColorGroupCellRenderer = (params:any)=>{
-    if(!params.value ){
-        return null
-    }
 
-    if(!params.data.count || params.data.count===0){
-        return <>There is no data</>
+
+    if(!params.value ||!params.data.count || params.data.count===0){
+        return <>No data</>
     }
 
     return(
@@ -125,5 +121,13 @@ export const ColorGroupCellRenderer = (params:any)=>{
                    )
             })}
         </ColorGroupCellRendererWrapper>
+    )
+}
+
+export const ETACellRenderer = (params:any)=>{
+    return(
+        <ETACellRendererWrapper>
+            <ETACellRendererCellValue value={params.value} onClick={params.onClick}/>
+        </ETACellRendererWrapper>
     )
 }
