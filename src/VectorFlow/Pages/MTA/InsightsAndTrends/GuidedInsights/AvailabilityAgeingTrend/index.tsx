@@ -98,7 +98,8 @@ const graph1 = [
       left: 239,
       width: 970,
       height: 59,
-      opacity: 1}}>
+      opacity: 1,
+      alignItems:'center'}}>
      <div style={{paddingLeft:20, paddingTop:10, width:250,  }}>
       <label style={{ fontStyle:"normal",
         fontVariant:"normal",
@@ -135,7 +136,7 @@ const graph1 = [
                         labelValueFormatter={(value:number)=>value>1?`${value} Days`:`${value} Day`}
                     />
                    </div>
-                    <VFButtonOutline themeUi={themeUi} onClick={()=>OnHorizonChange(horizon, minAgeing)}>Submit</VFButtonOutline>
+                    <VFButtonOutline themeUi={themeUi} onClick={()=>OnHorizonChange(horizon, minAgeing)} width={90} style={{height:'35px',fontSize:'14px'}}>Submit</VFButtonOutline>
                     </div>
                     <div style={{marginLeft:'10px',marginRight:'10px',height:'400px'}}><AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
           <div style={{marginLeft:'10px',marginRight:'10px',marginTop:'5px'}}>

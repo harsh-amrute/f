@@ -310,6 +310,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         case "submitted":
             return(
                 <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
+                    <div style={{display:'flex', gap:'20px'}}>
                     <BackButton/>
                     {showSubmittedExportError ? (
                          <VFButton onClick={onClearAndExportErrors} themeUi={themeUi} disabled={false} width={183}>
@@ -318,7 +319,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     ):
                         <div style={{width:'100%'}}/>
                     }
+                    </div>
                     <div >
+                    
                         
                         <VFStepper
                             items={getStepperState()}
