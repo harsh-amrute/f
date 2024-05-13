@@ -114,7 +114,18 @@ const RRR = () => {
                       params.columnApi.applyColumnState({state:columnState})
                     }
                   }}
-                  height={800}
+                  enableRangeSelection={true} // Added property
+                rowSelection="multiple"
+                statusBar = {{
+                    statusPanels: [
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                      { statusPanel: 'agAggregationComponent', align:'left' },
+                    ],
+                  }}
+                  height={750}
               />  
               <VFPagination 
                 selectedRows={0} 

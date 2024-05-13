@@ -56,6 +56,8 @@ export const SCViewContainerWithBg = styled.div`
     align-items:center;
     width:82px;
     height:58px; 
+    font-size:13px;
+    min-width:95px;
     cursor:pointer;
 `
 export const SCViewBackground = styled.div`
@@ -64,6 +66,8 @@ export const SCViewBackground = styled.div`
     box-shadow: -5px 4px 10px #8584843F;
     border-radius:5px;
     padding:10px;
+    min-width:170px;
+    font-size:13px;
     // height:58px;    
 `
 export const SCVerticalDivider = styled.div`

@@ -53,6 +53,7 @@ const GuidedInsight=()=>{
         setExportExcelRowData:()=>{return}
 
     }}>
+        <div style={{zoom:0.8}}>
             <ActionToolBar  data-testid="chronicgridview"
                         view={currentView} 
                         onFloatingTabChange={onFloatingTabChange}
@@ -66,8 +67,8 @@ const GuidedInsight=()=>{
                        onExportToExcelCallBack
                 //   disableChartAndGridViewToggle={(currentTab==='chronicunavailability'|| currentTab==='customscreens' )|| (currentView==='grid'|| currentView==='chart') ?false:true}
                 currCategory={'GuidedInsight' }
-
                         />
+         </div>               
                       {renderView()} 
             </GridStateContext.Provider>) 
    

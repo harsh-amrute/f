@@ -229,7 +229,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                     </SCViewContainerWithBg>
                                 )}
                              {
-                                (currentTab==='availabilitytrend' ||  currentTab==="availabilityageingtrend" || currentTab==="dbmnormsuggestions" || currentTab==="chronicunavailability" || currentTab==='custom') &&
+                                ( currentTab==='availabilitytrend' ||  currentTab==="availabilityageingtrend" || currentTab==="dbmnormsuggestions" || currentTab==="chronicunavailability" || currentTab==='custom' ) &&
 
                                 (
                                     <>

@@ -38,7 +38,9 @@ const BufferTrends = () => {
    
   return (
     <>
-     <ActionToolBar view={'grid'} setCurrentTab={currentTab} currCategory={'BufferTrend'} currentTab={''} tabsList={[]} onFloatingTabChange={onFloatingTabChange} onGoBack={onGoBack} onViewChange={()=>console.log('')} onApplyFilter={handleApplyFilter} onExportToExcelCallBack genericRecordCount={0}/>
+        <div style={{zoom:0.8}}>
+            <ActionToolBar view={'grid'} setCurrentTab={currentTab} currCategory={'BufferTrend'} currentTab={''} tabsList={[]} onFloatingTabChange={onFloatingTabChange} onGoBack={onGoBack} onViewChange={()=>console.log('')} onApplyFilter={handleApplyFilter} onExportToExcelCallBack genericRecordCount={0}/>
+        </div>
 
     <div style={{display:'flex',justifyContent:'center',marginBottom:'8px'}}>
                         <div style={{zoom:0.7}}>

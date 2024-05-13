@@ -38,7 +38,7 @@ const ChronicUnavailabilityCharts = () => {
             colId:'location',
         },
         
-  {
+        {
             field:'whcode',
             headerName:'Location Code',
             colId:'whcode',
@@ -152,8 +152,9 @@ const ChronicUnavailabilityCharts = () => {
             field:'C15',
             headerName:'C15',
             colId:'C15',
-        }
+        },
     ]
+
      const coldefs2:ColDef[] = [
         {
             field:'sku',

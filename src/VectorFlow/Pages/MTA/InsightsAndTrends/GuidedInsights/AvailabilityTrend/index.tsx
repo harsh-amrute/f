@@ -100,10 +100,10 @@ const AvailabilityTrend = () => {
         />
 
         <VFButtonOutline
-        style={{height:'35px', fontSize:'14px'}}
+        style={{height:'35px', fontSize:'12px'}}
           themeUi={themeUi}
           onClick={() => OnHorizonChange(horizon)}
-          width={90}
+          width={95}
         >
           Submit
         </VFButtonOutline>

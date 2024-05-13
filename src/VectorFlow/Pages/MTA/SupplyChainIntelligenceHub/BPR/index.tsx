@@ -137,7 +137,17 @@ const BPR = ()=>{
                     params.columnApi.applyColumnState({state:columnState})
                    }
                 }}
-                
+                enableRangeSelection={true} // Added property
+                rowSelection="multiple"
+                statusBar = {{
+                    statusPanels: [
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                      { statusPanel: 'agAggregationComponent', align:'left' },
+                    ],
+                  }}
             />
                 <VFPagination
                     selectedRows={0}
@@ -193,8 +203,12 @@ const BPR = ()=>{
                             colId:'remarks',
                             field:'remarks'
                         }
-                    ]}
+                    ]
+                }
+
+                    
                 />
+               
             )}
               </Allotment.Pane>
             </Allotment>

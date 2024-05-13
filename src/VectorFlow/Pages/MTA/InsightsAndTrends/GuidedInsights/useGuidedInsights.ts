@@ -3,7 +3,7 @@
  import { toast } from "react-toastify";
  import { useGetChronicUnavailabilityGridView} from "../../../../Services/MTA/InsightsAndTrends";
  const useGuidedInsights = ()=>{
-const [currentTab,setCurrentTab] = useState<string>('');
+const [currentTab,setCurrentTab] = useState<string>('availabilitytrend');
 const [currentCategory,setCurrentCategory] = useState<string>('');
 const [currentView,setCurrentView] = useState<string>('chart');
 const [currentGridData,setCurrentGridData] = useState([{}]);

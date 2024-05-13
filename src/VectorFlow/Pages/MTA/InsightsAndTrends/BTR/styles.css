@@ -12,6 +12,8 @@
     --ag-grid-size:6px ;
     --ag-font-size: 14px;
     /* --ag-font-family: monospace; */
+    --ag-header-cell-hover-background-color: rgb(143, 146, 146);
+
     
   }
   

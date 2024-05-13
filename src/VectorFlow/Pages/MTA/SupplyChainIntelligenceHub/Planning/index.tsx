@@ -122,7 +122,8 @@ const Planning = () => {
             {
                 !isSelectCategoryOpen &&
                 <>
-                    <ActionToolBar 
+                <div style={{zoom:0.8}}>        
+                          <ActionToolBar 
                         genericRecordCount={0}
                         onExportToExcelCallBack={onExportToExcelCallBack}
                         planningCount={planningCounts}
@@ -136,6 +137,7 @@ const Planning = () => {
                         tabsList={getFloatingTabsList(currentView)}
                         disableChartAndGridViewToggle={['GITFromParent',].includes(currentCategory)}
                         />
+                </div>  
                     
                     {renderView()}
                 </>

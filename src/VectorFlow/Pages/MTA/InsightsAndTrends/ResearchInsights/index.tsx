@@ -90,6 +90,7 @@ const ResearchInsights = ()=>{
             setExportExcelRowData:setExportExcelRowData
 
         }}>
+            <div style={{zoom:0.8}}>
        <ActionToolBar 
             view={'grid'} 
             setCurrentTab={''} 
@@ -101,6 +102,7 @@ const ResearchInsights = ()=>{
             genericRecordCount={recordCount || 0}
             onExportToExcelCallBack={onExportToExcelCallBack}
         />
+        </div>
         
         {(isLoading || isSavedDataLoading)?(
             <VFLoader/>
@@ -122,6 +124,17 @@ const ResearchInsights = ()=>{
                     onGridReady={(params)=>{
                         if(columnState)params.columnApi.applyColumnState({state:columnState})
                     }}
+                    enableRangeSelection={true} // Added property
+                    rowSelection="multiple"
+                    statusBar = {{
+                        statusPanels: [
+                          { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                          { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                          { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                          { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                          { statusPanel: 'agAggregationComponent', align:'left' },
+                        ],
+                      }}
                 />
                 <VFPagination
                     selectedRows={0}
