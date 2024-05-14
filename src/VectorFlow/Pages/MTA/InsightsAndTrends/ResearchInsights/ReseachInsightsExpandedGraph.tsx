@@ -90,11 +90,11 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                         activeBtn={activeCapsuleIndex}
                         capsules={[
                             {
-                                label:'Tech',
+                                label:'On-Hand Inventory',
                                 value:'Tech'
                             },
                             {
-                                label:'Eco',
+                                label:'Pipeline Inventory',
                                 value:'Eco'
                             }
                         ]}
@@ -139,11 +139,11 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             yKey: "Yellow",
                             yName: "Yellow",
                             marker:{
-                                fill:'yellow',
+                                fill:'#FFBF00',
                                 size:2,
-                                stroke:"yellow"
+                                stroke:"#FFBF00"
                             },
-                            stroke:'yellow'
+                            stroke:'#FFBF00'
                         },
                         {
                             type: "line",

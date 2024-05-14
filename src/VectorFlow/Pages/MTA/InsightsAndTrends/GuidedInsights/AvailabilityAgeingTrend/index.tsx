@@ -96,19 +96,19 @@ const graph1 = [
     return <div style={{ margin:'25px 20px 0px 20px'}}>
       <div style={{display:"flex", top: 221,
       left: 239,
-      width: 970,
+      width: 680,
       height: 59,
       opacity: 1,
       alignItems:'center'}}>
-     <div style={{paddingLeft:20, paddingTop:10, width:250,  }}>
+     <div style={{paddingLeft:20, width:210,  }}>
       <label style={{ fontStyle:"normal",
         fontVariant:"normal",
-        fontWeight:400,
-        fontSize:16,
+        fontWeight:300,
+        fontSize:15,
         fontFamily:"Roboto",}}>
         <b>Minimum Ageing:</b>  
       </label>
-       <select onChange={handleAgeChange} value={minAgeing} style={{width:50, height:40, border:"1px solid #707070", boxShadow:" 0px 6px 12px #8D8D8D29"}}>
+       <select onChange={handleAgeChange} value={minAgeing} style={{marginLeft:'4px',textAlign:'center',width:45, height:35, border:"1px solid #707070", boxShadow:" 0px 6px 12px #8D8D8D29",}}>
       
         {numbers.map((number) => (
           <option key={number} value={number}>
@@ -119,8 +119,8 @@ const graph1 = [
         <div style={{width:450, display:"flex" }}>
         <label style={{fontStyle:"normal",
           fontVariant:"normal",
-          fontWeight:400,
-          fontSize:15,
+          fontWeight:300,
+          fontSize:14,
         paddingTop:20,
     fontFamily:"Roboto",  paddingLeft:'10px'}}> <b>Select Horizon: </b></label>
      

@@ -68,6 +68,8 @@ export const BPRViewTableHeaderContainer = styled.div`
     top:0;
     background-color: white;
     z-index:100;
+    border-bottom: 1px solid #919191B3;
+   padding-bottom:5px;
 `
 
 export const BPRViewTableHeader = styled.div`
@@ -103,12 +105,16 @@ export const BPRViewTableRowContainer = styled.div`
     display:flex;
     flex-direction:column;
     max-height:250px;
-    margin-top:20px;
+    // margin-top:20px;
 `
 
 export const BPRViewTableRow = styled.div`
     width:100%;
+    height:40px;
     display:flex;
+    &:nth-child(even) {
+        background-color: #8D8D8D29; /* You can use a specific shade of yellow if needed */
+    }
 
 `
 

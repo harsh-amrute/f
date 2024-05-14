@@ -223,11 +223,11 @@ const ResearchInsights = ()=>{
                                     activeBtn={{label:calenderType,value:calenderType}}
                                     capsules={[
                                         {
-                                            label:"Tech",
+                                            label:"On-Hand Inventory",
                                             value:'Tech'
                                         },
                                         {
-                                            label:"Eco",
+                                            label:"Pipeline Inventory",
                                             value:'Eco'
                                         }
                                     ]}
@@ -331,11 +331,11 @@ const ResearchInsights = ()=>{
                                 activeBtn={graphs[0].pen}
                                 capsules={[
                                     {
-                                        label:"Tech",
+                                        label:"On-Hand Inv.",
                                         value:'Tech'
                                     },
                                     {
-                                        label:"Eco",
+                                        label:"Pipeline Inv.",
                                         value:'Eco'
                                     }
                                 ]}
@@ -400,11 +400,11 @@ const ResearchInsights = ()=>{
                                 yKey: "Yellow",
                                 yName: "Yellow",
                                 marker:{
-                                    fill:'yellow',
+                                    fill:'#FFBF00',
                                     size:2,
-                                    stroke:'yellow'
+                                    stroke:'#FFBF00'
                                 },
-                                stroke:'yellow'
+                                stroke:'#FFBF00'
                             },
                             {
                                 type: "line",
@@ -477,11 +477,11 @@ const ResearchInsights = ()=>{
                                 activeBtn={graphs[1].pen}
                                 capsules={[
                                     {
-                                        label:"Tech",
+                                        label:"On-Hand Inv.",
                                         value:'Tech'
                                     },
                                     {
-                                        label:"Eco",
+                                        label:"Pipeline Inv.",
                                         value:'Eco'
                                     }
                                 ]}
@@ -546,11 +546,11 @@ const ResearchInsights = ()=>{
                                     yKey: "Yellow",
                                     yName: "Yellow",
                                     marker:{
-                                        fill:'yellow',
+                                        fill:'#FFBF00',
                                         size:2,
-                                        stroke:"yellow"
+                                        stroke:"#FFBF00"
                                     },
-                                    stroke:'yellow'
+                                    stroke:'#FFBF00'
                                 },
                                 {
                                     type: "line",

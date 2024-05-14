@@ -104,7 +104,9 @@ export const HorizonHeader = styled.p`
 export const ChartHeader = styled.div`
     width:100%;
     display:flex;
-    align-items:center:
+    // align-items:center:
+    gap:12px;
+    justify-content:space-between;
 
     
 `
@@ -131,9 +133,9 @@ export const ChartHeaderRadioGroup = styled.div`
 
 
 export const CapsuleWrapper = styled.div`
-    width:100%;
-    max-width:80px;
-    margin-left:auto;
+    // width:100%;
+    // max-width:80px;
+    // margin-left:auto;
 
 `
 
@@ -272,7 +274,8 @@ export const ExpandedChartSelectLabel = styled.p`
 `
 
 export const ExpandedChartCapsuleWrapper = styled.div`
-    width:100px;
+    // width:100px;
     margin-left:auto;
+    // margin-right:5px;
     zoom:0.8;
 `

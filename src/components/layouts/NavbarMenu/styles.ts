@@ -11,6 +11,7 @@ export const SCGridNav = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
 `;
 
 export const SCNavbar = styled.div``;
@@ -18,6 +19,7 @@ export const SCNavbar = styled.div``;
 export const SCNavMenu = styled.div`
   padding: 15px 0;
   position: relative;
+
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
       .size.laptopL}) {
     padding: 7px 0;

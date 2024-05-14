@@ -27,6 +27,7 @@ const AvailabilityTrend = () => {
     setAvailabilityData(AvailabilityTrendData);
   };
   const options = {
+    
     title: {
       text: "Week Wise Availabilty Trend",
     },
@@ -57,7 +58,9 @@ const AvailabilityTrend = () => {
           format: "#{.0f} %",
         },
       } as const,
+      
     ],
+  
   };
   if (isLoading) {
     return <VFLoader />;
@@ -70,14 +73,13 @@ const AvailabilityTrend = () => {
 
   return (
     <div style={{marginTop:'25px'}}>
-      <div style={{ width: 650, display: "flex", alignItems:'center' }}>
+      <div style={{ width: 550, display: "flex", alignItems:'center' }}>
         <label
           style={{
             fontStyle: "normal",
             fontVariant: "normal",
-            fontWeight: 400,
-            fontSize: 16,
-            paddingTop: 20,
+            fontWeight: 300,
+            fontSize: 15,
             paddingLeft: 50,
             fontFamily: "Roboto",
           }}
