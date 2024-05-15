@@ -9,12 +9,16 @@ export const openSOSummary = [
         bucket: 0
     },
     {
-        color: 'Black',
-        kit: 'PK',
-        ordCount: 28,
-        custCount: 29,
-        ordValue: 2,
-        bucket: 0
+        color: 'Black',//mto_order_data && bpr
+        kit: 'PK', //batchwise_allocation
+        ordCount: 28, // batchwise_allocation
+        custCount: 29, //import order at bom
+        ordValue: 2, //import order at bom
+        bucket: 0,
+        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
+        //S:0,
+        //E:0,
+
     },
     {
         color: 'Black',
@@ -392,6 +396,52 @@ export const openSOSummary = [
         ordValue: 4.3,
         bucket: 0
     },
+//]
+// BK: [
+//     {
+//         buk: 1,
+//         S: 0,
+//         E: 7
+//     },
+//     {
+//         buk: 2,
+//         S: 8,
+//         E: 11
+//     },
+//     {
+//         buk: 3,
+//         S: 12,
+//         E: 16
+//     },
+//     {
+//         buk: 4,
+//         S: 17,
+//         E: 29
+//     }
+// ]
+]
+
+export const bucketOrderData = [
+    {
+        buk: 1,
+        S: 0,
+        E: 7
+    },
+    {
+        buk: 2,
+        S: 8,
+        E: 11
+    },
+    {
+        buk: 3,
+        S: 12,
+        E: 16
+    },
+    {
+        buk: 4,
+        S: 17,
+        E: 29
+    }
 ]
 
 export const OrderDetailsData = [
@@ -987,3 +1037,23 @@ export const OrderDetailsData = [
         ]
     }
 ]
+
+
+// {
+//     c: ["c1","c2"],
+//     kit: "nk"
+// }
+
+//color prioirty: mto_oder_data
+//order line item: mto_lineitem_data
+//order number: mto_order_data
+//Order Qty:mto_order_data
+//batch size: bom
+//full kit availbale: batchwise_allocation
+//cust Name: ProjectionOrderData table
+//cust Code: ProjectionOrderData table
+//FG Code: ProjectionOrderData table
+//FG description: SKU master table
+//Order Receipt Date: ProjectionOrderData table
+//Order Due Date: MTOOrderData
+//Order Release date: MTOOrderData

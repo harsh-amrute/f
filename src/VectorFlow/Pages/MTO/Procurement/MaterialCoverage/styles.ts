@@ -67,7 +67,10 @@ export const BtnGroup = styled.div`
 export const Btns = styled.button`
     width: 100%;
     padding-top:5px;
-    padding-right:5px
+    padding-right:5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `
 
 export const TextXAxis = styled.h3`
@@ -118,7 +121,7 @@ export const ImgDiv = styled.div`
     align-items: center;
     justify-content: center;
     padding:1px;
-    
+    font-weight:bold;
 `
 
 export const ColorOnLeft = styled.div<{ color: string, height: string }>`
@@ -146,7 +149,10 @@ export const ColorOnLeft = styled.div<{ color: string, height: string }>`
 
 export const Separator = styled.div<{ color: any }>`
     border-right:1px solid ${(props) => props.color};
-    height:100%`
+    height:85%;
+    margin:auto
+    `
+
 
 export const BTRLayoutTabsWrapper = styled.div`
     display:flex;

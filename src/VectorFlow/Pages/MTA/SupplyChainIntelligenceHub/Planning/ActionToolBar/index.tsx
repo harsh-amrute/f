@@ -342,7 +342,10 @@ const ActionToolBar = ({ view, currentTab, tabsList, onFloatingTabChange, onGoBa
                     </SCTaskFilterContainer>
                     <SCCustomActionsContainer>
 
-                        <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
+                        <VFButton
+                            onClick={() => toggleFilter(true)}
+                            themeUi={themeUi}
+                            disabled={false}>Edit Filter</VFButton>
                         {isFilterOpen && renderFilter()}
 
                         {/* <VFButton themeUi={themeUi} onClick={()=>console.log("test")}>   Edit Filter</VFButton> */}

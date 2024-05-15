@@ -20,15 +20,24 @@ export const boxDesign = (kitStatus: string, { c1, c2, c3 }: any, height: string
     return (
         <>
             <ColorOnLeft color={c1} height={height}>
-            </ColorOnLeft>
-            <ColorOnLeft color={c2} height={height}>
-            </ColorOnLeft>
-            <ColorOnLeft color={c3} height={height}>
-                <TextOnColor>
+                <TextOnColor style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: '50%',
+                    transform: 'translate(-50%, -50%) rotate(-90deg)',
+                    width: '100%',
+                }}>
                     {text}
                 </TextOnColor>
             </ColorOnLeft>
-
+            {
+                c2 && <ColorOnLeft color={c2} height={height}>
+                </ColorOnLeft>
+            }
+            {
+                c3 && <ColorOnLeft color={c3} height={height}>
+                </ColorOnLeft>
+            }
             <TextOnBox>
                 <ImgDiv>
                     {

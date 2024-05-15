@@ -6,7 +6,7 @@ import {
 
 } from '../MaterialCoverage/styles';
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
-import ActionToolBar from "../../../MTA/SupplyChainIntelligenceHub/Planning/ActionToolBar";
+import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
 import FutureCov from './FutureCov';
 import CurrentCov from './CurrentCov';
 import { ColorsMTO } from '../../Common/Colors';
@@ -24,20 +24,7 @@ const MaterialCov = () => {
 
   return (
     <div style={{ width: "85%" }}>
-      <ActionToolBar
-        view={'grid'}
-        setCurrentTab={() => { return }}
-        currCategory={'MaterialCov'}
-        currentTab={''}
-        tabsList={[]}
-        onFloatingTabChange={() => console.log('')}
-        onGoBack={() => console.log('')}
-        onViewChange={() => console.log('')}
-        showAllTick={''}
-        handleGoButton={''}
-        genericRecordCount={0}
-        onExportToExcelCallBack={() => console.log('')}
-      />
+      <ActionToolBar />
       {!toggleComponent ?
         <>
           <BTRLayoutTabsWrapper>
@@ -88,7 +75,7 @@ const MaterialCov = () => {
               width: "10%",
               border: `1px solid ${ColorsMTO.Black}`,
               color: ColorsMTO.White,
-
+              margin: 'auto'
             }}>
             </div>
           </TextYAxis>
