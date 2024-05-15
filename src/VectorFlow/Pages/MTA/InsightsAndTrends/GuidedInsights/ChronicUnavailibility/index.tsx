@@ -371,31 +371,34 @@ const ChronicUnavailabilityCharts = () => {
                     }
                 }
              },
-              common: {
-                  legend:{
+             common: {
+                 legend:{
                     position:'top'
-                  },
-                  axes:{
+                 },
+                 axes:{
                     category:{
                         title:{
                             enabled:true,
-                            text:'Location Name',
+                            text:'Date',
                             position:'bottom',
-
                         }
                     },
-                    series:{
+                    number:{
                         title:{
                             enabled:true,
-                            text:"Count of SKUs",
-                            position:"left"
-                        }
-                      }
-                  },
-              },
+                            text:'count of SKUS',
+                            position:'left',
+                        },
+                        label: {
+                            format: "#{.0f} %",
+                        },
+                    },
+                 },
+             },
           };
-      }, []);
-const chartThemeOverrides2 = useMemo<any>(() => { 
+    }, []);
+    
+    const chartThemeOverrides2 = useMemo<any>(() => { 
         return {
             palette:{
                 fills:['#0c7528','#570dbf']
@@ -417,25 +420,25 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                     category:{
                         title:{
                             enabled:true,
-                            text:'SKU Code',
+                            text:'Date',
                             position:'bottom',
-
                         }
                     },
-                    series:{
+                    number:{
                         title:{
                             enabled:true,
-                            text:"Count of Locations",
-                            position:"left"
-                        }
-                      }
+                            text:'Count of Locations',
+                            position:'left',
+                        },
+                        label: {
+                            format: "#{.0f} %",
+                        },
+                    },
                   },
-                 
-                  
               },
           };
-      }, []);
-
+    }, []);
+    
       const myCustomTheme:any = {
         palette: {
             fills: ['#9A0101', '#F02424'],

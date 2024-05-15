@@ -58,7 +58,7 @@ export const AvailabilityTrendSection = styled.div`
 
 export const HistoricalAvailabiltyHeader = styled.p`
     font-weight:500;
-    font-size:14px;
+    font-size:12px;
     margin-bottom:5px;
 `
 
@@ -80,16 +80,16 @@ export const HistoricalAvailabiltyContentSection = styled.span`
 
 export const HistoricalAvailabiltyContentSectionHeader = styled.p`
     display:inline;
-    font-weight:500;
-    font-size:9px;
+    font-weight:400;
+    font-size:7px;
     line-height:10px;
     color:#383737;
 `
 
 export const HistoricalAvailabiltyContentSectionData = styled.p`
     display:inline;
-    font-weight:500;
-    font-size:9px;
+    font-weight:700;
+    font-size:11px;
     color:black;
 `
 

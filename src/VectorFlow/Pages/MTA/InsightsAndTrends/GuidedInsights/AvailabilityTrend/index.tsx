@@ -6,6 +6,8 @@ import { useUserData } from "../../../../../../context";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
+import { AgChartOptions } from "ag-charts-community";
+import { colorToRgba } from "@react-spring/shared";
 
 const AvailabilityTrend = () => {
   const [AvailabilityTrend, setAvailabilityData] = useState();
@@ -26,7 +28,7 @@ const AvailabilityTrend = () => {
     const AvailabilityTrendData = AvailabilityTrend?.data?.data;
     setAvailabilityData(AvailabilityTrendData);
   };
-  const options = {
+  const options:AgChartOptions = {
     
     title: {
       text: "Week Wise Availabilty Trend",
@@ -37,29 +39,52 @@ const AvailabilityTrend = () => {
         xKey: "week",
         yKey: "percentage",
         strokeWidth: 3,
-        stroke: "#BC3D81",
+        stroke: "#4E4E4E",
         marker: {
           fill: "#BC3D81",
           size: 12,
           stroke: "white",
           strokeWidth: 3,
         },
+        title: "Distributor"
       },
     ],
+    // axes: [
+    //   {
+    //     type: "category",
+    //     position: "bottom",
+    //   } as const,
+    //   {
+    //     type: "number",
+    //     position: "left",
+    //     label: {
+    //       format: "#{.0f} %",
+    //     },
+    //   } as const,
+      
+    // ],
     axes: [
       {
-        type: "category",
-        position: "bottom",
+          type: "category",
+          position: "bottom",
+          title: {
+              text: 'Date',
+          },
       } as const,
       {
-        type: "number",
-        position: "left",
-        label: {
-          format: "#{.0f} %",
-        },
-      } as const,
-      
-    ],
+          type: "number",
+          position: "left",
+          label: {
+                  format: "#{.0f} %",
+                },
+          title: {
+              text: 'Availability %',
+          },
+      } as const
+  ],
+    legend: {
+      position: "bottom",
+    },
   
   };
   if (isLoading) {
