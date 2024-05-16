@@ -19,8 +19,7 @@ const RRR = () => {
   RRRColumns,
   agGridProps,
   RRRRowData, 
-  isLoading
-  ,handleChangePage,
+  isLoading,
   RRRDataCount,
   currentPage,
   tempRef,
@@ -32,7 +31,11 @@ const RRR = () => {
   exportExcelColumns,
   setExportExcelColumns,
   onExportToExcelCallBack,
-  getRRRrowData
+  getRRRRowData,
+  onApplyFilter,
+  currFilter,
+  setCurrFilter,
+  onDelete
 } = useRRR();
  const ref = useRef()
 
@@ -70,12 +73,15 @@ const RRR = () => {
     currCategory={'RRR'} 
     currentTab={''} 
     tabsList={[]} 
-    onApplyFilter={(e)=>getRRRrowData(e)}
+    onApplyFilter={(e)=>onApplyFilter(e)}
     onFloatingTabChange={()=>console.log('')} 
     onGoBack={()=>console.log('')} 
     onViewChange={()=>console.log('')}
     genericRecordCount={RRRDataCount}
     onExportToExcelCallBack={onExportToExcelCallBack}
+    multiFilter={currFilter}
+    setMultiFilter={setCurrFilter}
+    onDelete={onDelete}
   />
     <RRRLayout>
         {/* <RRRTaskBar style={{width:isSideBarOpen? '77%':'97%'}}>
@@ -102,7 +108,7 @@ const RRR = () => {
           <VFLoader/>
         ):
         (
-          <div style={{height:'100vf'}}>
+          <div style={{height:'100vh'}}>
 
           <VFTable
                   ref={ref}
@@ -121,7 +127,7 @@ const RRR = () => {
                 totalRows={RRRDataCount} 
                 currentPage={currentPage} 
                 rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200')}
-                handleChangePage={(e)=>handleChangePage(e)} 
+                handleChangePage={(e)=>getRRRRowData(e)} 
               />  
         </div>
         )}

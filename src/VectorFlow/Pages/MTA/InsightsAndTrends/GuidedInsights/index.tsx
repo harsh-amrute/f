@@ -11,7 +11,9 @@ import { GridStateContext } from '../../../../../context/GridStateContext';
 const GuidedInsight=()=>{
 
     const {onFloatingTabChange,onGoBack, onViewChange,currentView, currentTab, setCurrentTab, getFloatingTabsList,
-    ChronicUnavailabilityGridViewData,ref}=useGuidedInsights();
+    chroniceRowData,ref, currentFilter,
+    setCurrentFilter,
+    onDelete,onApplyFilter}=useGuidedInsights();
 
     const renderView = () => {
 
@@ -37,7 +39,7 @@ const GuidedInsight=()=>{
 
         }}else{
 
- return <ChronicGridView currentGridData={ChronicUnavailabilityGridViewData}/>
+ return <ChronicGridView currentGridData={chroniceRowData}/>
 
         }
 
@@ -65,7 +67,11 @@ const GuidedInsight=()=>{
                        disableChartAndGridViewToggle={currentTab==='chronicunavailability'|| currentView==='grid'?false:true}
                        onExportToExcelCallBack
                 //   disableChartAndGridViewToggle={(currentTab==='chronicunavailability'|| currentTab==='customscreens' )|| (currentView==='grid'|| currentView==='chart') ?false:true}
-                currCategory={'GuidedInsight' }
+                    currCategory={'GuidedInsight' }
+                    multiFilter={currentFilter}
+                    setMultiFilter={setCurrentFilter}
+                    onDelete={onDelete}
+                    onApplyFilter={onApplyFilter}
 
                         />
                       {renderView()} 

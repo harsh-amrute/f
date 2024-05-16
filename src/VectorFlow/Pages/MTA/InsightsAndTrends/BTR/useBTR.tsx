@@ -24,6 +24,9 @@ import CustomVFTable from "./CustomVFTable"
 import { notifyError, notifyLoader } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 
+import useBPRFilter from "../../../../../hooks/useBPRFilter";
+
+
 const useBTR = ()=>{
 
     
@@ -50,7 +53,7 @@ const useBTR = ()=>{
 
     const [currentPage,setCurrentPage] = useState<number>(1);
 
-
+    const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
 
     const rowsPerPage = parseInt(process.env.REACT_APP_PLANNING_ROWS_PER_PAGE || '50');
@@ -75,7 +78,7 @@ const useBTR = ()=>{
         rowsPerPage:rowsPerPage,
         currentPage:currentPage,
         handleChangePage:(currPage:number) => {
-            getData(currPage);
+            getData(currFilter,currPage);
             setCurrentPage(currPage)
         }
         
@@ -87,7 +90,7 @@ const useBTR = ()=>{
         rowsPerPage:rowsPerPage,
         currentPage:currentPage,
         handleChangePage:(currPage:number) => {
-            getData(currPage);
+            getData(currFilter,currPage);
             setCurrentPage(currPage)
         }
         
@@ -122,7 +125,7 @@ const useBTR = ()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:currentTab.value==='on-hand'?"OnHandInv":"PipelineInv"});
         }
       };
 
@@ -131,12 +134,12 @@ const useBTR = ()=>{
     const [techRowData,setTechRowData] = useState<Array<any>>([])
     const [ecoRowData,setEcoRowData]  = useState<Array<any>>([])
     // const [defaultColDefs,setDefaultColDefs] = useState<Array<ColDef>>([])
-
-    const getData = async(pageNumber?:number)=>{
+    const getData = async(filter:any,pageNumber:number)=>{
+        console.debug(filter)
         const loaderId = notifyLoader("Loading data")
         try{
             const data = await getBTRData({
-                pageNumber: pageNumber || 1,
+                pageNumber: pageNumber,
                 recordsPerPage: 100
             })
             
@@ -152,8 +155,13 @@ const useBTR = ()=>{
 
     useEffect(()=>{
         
-        getData()
+        getData(currFilter,1)
     },[])
+
+    const onApplyFilter = async(filter:any)=>{
+        setCurrFilter(filter)
+        getData(filter,1)
+    }
 
     const toggleVerticalView = (isVertical:boolean)=>setVerticalView(isVertical)
 
@@ -291,6 +299,10 @@ const useBTR = ()=>{
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
+        currFilter,
+        setCurrFilter,
+        onDelete,
+        onApplyFilter
     }
 }
 

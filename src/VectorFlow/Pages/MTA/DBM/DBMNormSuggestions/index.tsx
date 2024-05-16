@@ -6,6 +6,7 @@ import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolB
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import DailyDataGraphModal from '../../../../../components/VectorFLOW/commons/DailyDataGraphModal';
 import NormChangeHistoryTable from '../../../../../components/VectorFLOW/commons/NormChangeHistoryTable';
+import { GridStateContext } from '../../../../../context/GridStateContext';
 
 const DBM = () => {
 
@@ -22,7 +23,20 @@ const DBM = () => {
   handleGoButton,
   showDailyDataGraphModal,
   showNormChangeHistoryTable,
-  dailyData
+  dailyData,
+  tempRef,
+  tempDownloadData,
+  setTempDownloadData,
+  tempAgGridProps,
+  exportExcelRowData,
+  setExportExcelRowData,
+  exportExcelColumns,
+  setExportExcelColumns,
+  handleApplyFilter,
+  currentFilter,
+  setCurrentFilter,
+  onDelete,
+  onExportToExcelCallBack
 } = useDBM();
 
  if(isLoading){
@@ -32,10 +46,36 @@ const DBM = () => {
 }
 
   return (
-    <>
-      <ActionToolBar view={'grid'} setCurrentTab={()=>{return}} currCategory={'DBMNorm'} currentTab={''} tabsList={[]} onFloatingTabChange={()=>console.log('')} onGoBack={()=>console.log('')} onViewChange={()=>console.log('')} showAllTick={showAllCheckbox} handleGoButton={handleGoButton} genericRecordCount={0} onExportToExcelCallBack={()=>console.log('')}/>
+    <GridStateContext.Provider value={{
+      ref:gridRef,
+      exportExcelColumns:exportExcelColumns,
+      setExportExcelColumns:setExportExcelColumns,
+      tempDownloadData:tempDownloadData,
+      setTempDownloadData:setTempDownloadData,
+      exportExcelRowData:exportExcelRowData,
+      setExportExcelRowData:setExportExcelRowData
+
+  }}>
+      <ActionToolBar 
+        view={'grid'} 
+        setCurrentTab={()=>{return}} 
+        currCategory={'DBMNorm'} 
+        currentTab={''} 
+        tabsList={[]} 
+        onFloatingTabChange={()=>console.log('')} 
+        onGoBack={()=>console.log('')} 
+        onViewChange={()=>console.log('')} 
+        showAllTick={showAllCheckbox} 
+        handleGoButton={handleGoButton} 
+        genericRecordCount={DBMDataCount} 
+        onExportToExcelCallBack={(e:number)=>onExportToExcelCallBack(e)}
+        onApplyFilter={handleApplyFilter}
+        multiFilter={currentFilter}
+        setMultiFilter={setCurrentFilter}
+        onDelete={onDelete}
+      />
       <DBMLayout>
-        <div style={{height:'100vf'}}>
+        <div style={{height:'100vh'}}>
             {
                 showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHCode'} />
             }
@@ -58,8 +98,16 @@ const DBM = () => {
                 handleChangePage={(e)=>handleChangePage(e)} 
               />  
         </div>
+        <div style={{display:'none'}}>                
+          <VFTable
+            ref={tempRef}
+            columnDefs={DBMColumns}
+            rowData={exportExcelRowData}
+            {...tempAgGridProps}
+          />
+        </div>
       </DBMLayout>
-    </>
+      </GridStateContext.Provider>
   )
 }
 

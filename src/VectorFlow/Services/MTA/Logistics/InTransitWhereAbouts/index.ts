@@ -7,13 +7,13 @@ export const QUERY_KEYS = {
 }
 
 export const useGetInTransitWhereAboutsDataCount = () => {
-  return useMutation(async () => {
-    return await InTransitWhereAboutsService.getInTransitWhereAboutsDataCount()
+  return useMutation(async (body:any) => {
+    return await InTransitWhereAboutsService.getInTransitWhereAboutsDataCount(body)
   });
 }
 
 export const useGetInTransitWhereAboutsData = () => {
-  return useMutation(async (body:{pageNumber:number,recordsPerPage:number}) => {
+  return useMutation(async (body:any) => {
     return await InTransitWhereAboutsService.getInTransitWhereAboutsData(body)
   });
 }

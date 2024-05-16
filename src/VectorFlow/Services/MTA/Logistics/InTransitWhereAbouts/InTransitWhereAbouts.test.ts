@@ -17,7 +17,7 @@ describe('Testing the BORService',  () => {
   
     it('should make a Post request to the /api/SCIH/GetInTransitWhereAboutsDataCount', async () => {
       mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
-      const response = await InTransitWhereAboutsService.getInTransitWhereAboutsDataCount();
+      const response = await InTransitWhereAboutsService.getInTransitWhereAboutsDataCount({});
       expect(response.status).toBe(200);
   
     });

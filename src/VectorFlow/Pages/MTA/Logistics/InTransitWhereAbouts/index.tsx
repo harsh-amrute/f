@@ -54,7 +54,14 @@ const InTransitWhereAbouts = ()=>{
         onCloseSubmitCurentLocation,
         recordCount,
         currentPage,
-        getRowData
+        getRowData,
+        currentFilter,
+        setCurrFilter,
+        onDelete,
+        onApplyFilter,
+        onExportToExcelCallBack,
+        tempRef,
+        tempAgGridProps
     } = useInTransitWhereAbouts()
 
 
@@ -80,8 +87,12 @@ const InTransitWhereAbouts = ()=>{
                 onFloatingTabChange={()=>console.log('')} 
                 onGoBack={()=>console.log('')} 
                 onViewChange={()=>console.log('')}
-                genericRecordCount={12}
-                onExportToExcelCallBack={()=>{return }}
+                genericRecordCount={recordCount}
+                onExportToExcelCallBack={onExportToExcelCallBack}
+                multiFilter={currentFilter}
+                setMultiFilter={setCurrFilter}
+                onDelete={onDelete}
+                onApplyFilter={onApplyFilter}
               />
           
         {
@@ -142,6 +153,14 @@ const InTransitWhereAbouts = ()=>{
         )}
             <ContactDetailsModal isOpen={isContactModalOpen} onClose={onCloseContactModal} data={currentUserDetails}/>
             <RemarkModal isOpen={isRemarkHistoryToolTipOpen} onClose={onCloseRemarkHistory} data={remarkHistory}/>
+            <div style={{display:'none'}}>                
+                  <VFTable
+                    ref={tempRef}
+                    columnDefs={colDefs}
+                    rowData={exportExcelRowData}
+                    {...tempAgGridProps}
+                  />
+                </div>
         </GridStateContext.Provider>
     )
 }

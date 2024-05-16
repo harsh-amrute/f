@@ -33,7 +33,10 @@ const BuyerOrderReport = ()=>{
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
         dailyData,
-        getBORRowData   
+        currFilter,
+        setCurrFilter,
+        onDelete, 
+        onApplyFilter 
     } = useBOR()
 
 
@@ -56,12 +59,15 @@ const BuyerOrderReport = ()=>{
             currCategory={'BOR'} 
             currentTab={''} 
             tabsList={[]} 
-            onApplyFilter={(e)=>getBORRowData(e)}
+            onApplyFilter={(e)=>onApplyFilter(e)}
             onFloatingTabChange={()=>console.log('')} 
             onGoBack={()=>console.log('')} 
             onViewChange={()=>console.log('')}
             genericRecordCount={recordCount}
             onExportToExcelCallBack={onExportToExcelCallBack}
+            multiFilter={currFilter}
+            setMultiFilter={setCurrFilter}
+            onDelete={onDelete}
         />
         <BORLayout>
             {/* <BORTaskBar style={{width:'74%'}}>

@@ -2212,6 +2212,7 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
 }
 
 export const mapInTransitWhereAboutsRowData = (rowData:Array<any>):Array<any>=>{
+  if(!rowData || !Array.isArray(rowData))return []
   // PhysicalInventoryColor
   return rowData.map((r:any)=>{
     if(!r.skuDetails || r.skuDetails.length<1)return r
