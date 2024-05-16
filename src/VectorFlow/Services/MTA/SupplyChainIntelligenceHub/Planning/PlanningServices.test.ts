@@ -87,7 +87,17 @@ describe('Testing the Planning Service',  () => {
       });
     
    
-
+      it('should make a Post request to the /GetPlanningDataGridCount', async () => {
+        mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+        const mockBody = {
+          remark:'',
+          skucode:'',
+          whcode:''
+        }
+        const response = await PlanningService.submitOpenExpediteRequest(mockBody);
+        expect(response.status).toBe(200);
+    
+      });
    
 
   });
