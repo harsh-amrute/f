@@ -2182,6 +2182,31 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
       hide:!f.Visible
     }
   })
+
+  const additionalColumns: ColDef[] = [
+    {
+      colId: 'OldNormValue',
+      field: 'OldNormValue',
+      headerName: 'Old Norm',
+      hide: false
+    },
+    {
+      colId: 'NewNormValue',
+      field: 'NewNormValue',
+      headerName: 'New Norm',
+      hide: false
+    },
+    {
+      colId: 'Comment',
+      field: 'Comment',
+      headerName: 'Reason',
+      hide: false
+    }
+  ]
+ 
+  const insertPosition = 4;
+  result.splice(insertPosition, 0, ...additionalColumns);
+
    return [DBMTickColumn,...DBMGraphColumn,...DBMSleepColumn,...result]
   
 }
