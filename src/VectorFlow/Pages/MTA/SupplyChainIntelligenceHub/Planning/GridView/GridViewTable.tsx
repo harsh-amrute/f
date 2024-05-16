@@ -38,27 +38,26 @@ interface GridViewTableProps {
 const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,currentTab,currentCategory,gridHeight,tablePrefixSrc}:GridViewTableProps) => {
     
     const {ref} = useContext(GridStateContext)
-    const {mutateAsync:getState,isLoading} = useGetState()
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
-    useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState(`${currentCategory}${currentTab}`)
-            setColumnState(JSON.parse(data.data.data))
-          }catch(err:any){
-            notifyError(err)
-            setColumnState(agGridColDefs)
-          }
-        }
-        getTableState()
-    },[currentGridState])
+    // const {mutateAsync:getState,isLoading} = useGetState()
+    // const [columnState,setColumnState] = useState<any>()
+    // const {currentGridState} = useSelector((state:RootState)=>state.mta)
+    // useEffect(()=>{
+    //     const getTableState = async()=>{
+    //       try{
+    //         const data =  await getState(`${currentCategory}${currentTab}`)
+    //         setColumnState(JSON.parse(data.data.data))
+    //       }catch(err:any){
+    //         notifyError(err)
+    //         setColumnState(agGridColDefs)
+    //       }
+    //     }
+    //     getTableState()
+    // },[currentGridState])
 
 
-    if(isLoading){
-        return <VFLoader/>
-    }
-    console.log(gridHeight)
+    // if(isLoading){
+    //     return <VFLoader/>
+    // }
     return(
         <GridViewLayout>
             <div style={{height:'95vh'}}>
@@ -73,11 +72,11 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             columnDefs={agGridColDefs}
                             rowData={agGridRowData}
                             height={380}
-                            onGridReady={(params)=>{
-                                if(columnState){
-                                    params.columnApi.applyColumnState({state:columnState})
-                                }
-                            }}
+                            // onGridReady={(params)=>{
+                            //     if(columnState){
+                            //         params.columnApi.applyColumnState({state:columnState})
+                            //     }
+                            // }}
                         />
                         {paginationProps && <VFPagination {...paginationProps}/>}
     
@@ -95,11 +94,11 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             columnDefs={agGridColDefs}
                             rowData={agGridRowData}
                             height={gridHeight ? gridHeight : 380}
-                            onGridReady={(params)=>{
-                                if(columnState){
-                                    params.columnApi.applyColumnState({state:columnState})
-                                }
-                            }}
+                            // onGridReady={(params)=>{
+                            //     if(columnState){
+                            //         params.columnApi.applyColumnState({state:columnState})
+                            //     }
+                            // }}
                         />
                         {paginationProps && <VFPagination {...paginationProps}/>}
     

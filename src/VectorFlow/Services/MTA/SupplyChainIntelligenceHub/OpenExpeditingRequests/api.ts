@@ -4,8 +4,8 @@ import axios from 'axios'
 
 export namespace OpenExpeditingRequestsService {
 
-  export const getOpenExpediteRequestData = async () => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/GetOpenExpediteRequest`,{
+  export const getOpenExpediteRequestData = async (body:any) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/GetOpenExpediteRequest`,body,{
       headers:{ 'Content-Type': 'application/json' }
     });
   }

@@ -20,7 +20,7 @@ interface exportToExcelParameters {
 }
 
 const useSaveAllState = () => {
-  const { ref,tempDownloadData,setTempDownloadData,exportExcelColumns,setExportExcelColumns,setExportExcelRowData } = useContext(GridStateContext);
+  const { ref,tempDownloadData,setTempDownloadData,setExportExcelRowData } = useContext(GridStateContext);
   const { currentGridState } = useSelector((state: RootState) => state.mta);
   
 
@@ -39,7 +39,6 @@ const useSaveAllState = () => {
   const onExportToExcel = async (params:exportToExcelParameters)=>{
     const {pagination,callBack} = params
     const {recordCount,chunkSize} = pagination
-
     try {
       //buggy line below
       const numberOfPages = Math.ceil(recordCount/chunkSize);
@@ -49,6 +48,7 @@ const useSaveAllState = () => {
       for(let i=1; i<=numberOfPages; i++){
       
         const result = await callBack(i);
+     
 
         if(result === null) {
           // throw new Error("Something Went Wrong")
@@ -59,7 +59,7 @@ const useSaveAllState = () => {
         else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
       }
       
-      setExportExcelColumns(exportExcelColumns)
+      // setExportExcelColumns(exportExcelColumns)
       setExportExcelRowData(rows)
       setTempDownloadData(true);
       toast.dismiss(toastId);

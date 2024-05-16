@@ -17,7 +17,7 @@ describe('Testing the BORService',  () => {
   
     it('should make a Post request to the /GetOpenExpediteRequest', async () => {
       mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
-      const response = await OpenExpeditingRequestsService.getOpenExpediteRequestData();
+      const response = await OpenExpeditingRequestsService.getOpenExpediteRequestData({});
       expect(response.status).toBe(200);
   
     });

@@ -59,7 +59,6 @@ const ResearchInsights = ()=>{
         currGridPage,
         isSavedDataLoading,
         columnState,
-        handleOnPageChange,
         tempRef,
         tempDownloadData,
         setTempDownloadData,
@@ -71,7 +70,12 @@ const ResearchInsights = ()=>{
         onExportToExcelCallBack,
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
-        dailyData
+        dailyData,
+        handlePageChange,
+        onApplyFilter,
+        onDelete,
+        currentFilter,
+        setCurrentFilter
     } = useResearchInsights()
 
     const {user} = useUserData()
@@ -94,12 +98,17 @@ const ResearchInsights = ()=>{
             view={'grid'} 
             setCurrentTab={''} 
             currCategory={'ResearchInsight'} 
-            currentTab={''} tabsList={[]} 
+            currentTab={''} 
+            tabsList={[]} 
             onFloatingTabChange={()=>console.log('')} 
             onGoBack={()=>console.log('')} 
             onViewChange={()=>console.log('')}
             genericRecordCount={recordCount || 0}
             onExportToExcelCallBack={onExportToExcelCallBack}
+            onApplyFilter={onApplyFilter}
+            multiFilter={currentFilter}
+            setMultiFilter={setCurrentFilter}
+            onDelete={onDelete}
         />
         
         {(isLoading || isSavedDataLoading)?(
@@ -128,7 +137,7 @@ const ResearchInsights = ()=>{
                     totalRows={recordCount || 0}
                     currentPage={currGridPage}
                     rowsPerPage={rowsPerPage}
-                    handleChangePage={handleOnPageChange}
+                    handleChangePage={handlePageChange}
                 />
                 <ResearchInsightsTableTaskBar>
                     <VFButtonOutline

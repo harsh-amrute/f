@@ -19,6 +19,8 @@ import MasterDetail from "./MasterDetail";
 import { ColorGroupCellRenderer, CurrentLocationCellRenderer, ETACellRenderer } from "./CellRenderers";
 import { mapInTransitWhereAboutsRowData } from "../../../../../helpers/utils";
 import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount } from "../../../../../VectorFlow/Services/MTA/Logistics/InTransitWhereAbouts";
+import useBPRFilter from "../../../../../hooks/useBPRFilter";
+
 
 const useInTransitWhereAbouts = ()=>{
     const ref = useRef()
@@ -26,6 +28,7 @@ const useInTransitWhereAbouts = ()=>{
 
     const {mutateAsync:getDataCount,isLoading:isCountLoading} = useGetInTransitWhereAboutsDataCount()
     const {mutateAsync:getData,isLoading:isDataLoading} = useGetInTransitWhereAboutsData()
+    const {state:currentFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
     const [submitRemarkToolTipPosition,setSubmitRemarkToolipPosition] = useState<CSSProperties>({})
     const [submitETAToolTipPosition,setSubmitETAToolipPosition] = useState<CSSProperties>({})
@@ -83,9 +86,9 @@ const useInTransitWhereAbouts = ()=>{
         remarksCellRenderer: ShowRemarkCellRenderer
     }), []);
 
-    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+    // const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+    // const [columnState,setColumnState] = useState<any>()
+    // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
     const sideBar = {
         toolPanels: [
@@ -106,18 +109,26 @@ const useInTransitWhereAbouts = ()=>{
       }
 
 
+    // useEffect(()=>{
+    //     const getTableState = async()=>{
+    //       try{
+    //         const data =  await getState("OpenExpeditingRequests")
+    //         setColumnState(JSON.parse(data.data.data))
+    //       }catch(err:any){
+    //         setColumnState(colDefs)
+    //       }
+    //     }
+    //     getTableState()
+    //     getRowData(currentFilter,1)
+    // },[currentGridState])
+
     useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState("OpenExpeditingRequests")
-            setColumnState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setColumnState(colDefs)
-          }
-        }
-        getTableState()
-        getRowData(1)
-    },[currentGridState])
+      const getInitialData =async()=>{
+        await getRecordCount(currentFilter)
+        await getRowData(currentFilter,1)
+      }
+      getInitialData()
+    },[]) 
 
     
 
@@ -176,29 +187,26 @@ const useInTransitWhereAbouts = ()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'InTransitWhereAbouts'});
         }
       };
 
 
-      const getRowData = async(pageNo:number,dataCount?:number)=>{
-        try{
-          setCurrentPage(pageNo)
-          if(!dataCount || dataCount===0){
-            const countData = await getDataCount()
-            const {count} = JSON.parse(countData.data.recordCount)[0]
-            setRecordCount(count)
-          }
-          const data = await getData({
-            pageNumber:pageNo,
-            recordsPerPage:100
-          })
-          setRowData(mapInTransitWhereAboutsRowData(data.data.data))
-        }catch(err:any){
-            notifyError(err)
-        }
 
-      }
+    const getRecordCount = async(filter:any)=>{
+      const countData = await getDataCount(filter)
+      const {count} = JSON.parse(countData.data.recordCount)[0]
+      setRecordCount(count)
+    }
+
+    const getRowData = async(filter:any,pageNo:number)=>{
+      console.debug(filter)
+      const data = await getData({
+        pageNumber:pageNo,
+        recordsPerPage:100
+      })
+      setRowData(mapInTransitWhereAboutsRowData(data.data.data))
+    }
 
     const onOpenSubmitRemark = (e: React.MouseEvent<HTMLElement>,data:any) => {
         setActiveRow(data)
@@ -344,6 +352,24 @@ const useInTransitWhereAbouts = ()=>{
     }
 
   
+    const onApplyFilter = async(filter:any)=>{
+      setCurrFilter(filter)
+      setCurrentPage(1)
+      await(getRecordCount(filter))
+      await getRowData(filter,1)
+      
+
+    }
+
+    const onExportToExcelCallBack = async(pageNo:number)=>{
+     
+      const data = await getData({
+        pageNumber:pageNo,
+        recordsPerPage:5000
+      })
+      console.log(data)
+      return data.data.data
+    }
       
       
 
@@ -438,8 +464,9 @@ const useInTransitWhereAbouts = ()=>{
         onSubmitRemark,
         onCloseSubmitRemark,
         onCloseRemarkHistory,
-        ref,columnState,
-        isSavedDataLoading,
+        ref,
+        // columnState,
+        // isSavedDataLoading,
         tempRef,
         tempDownloadData,
         setTempDownloadData,
@@ -466,7 +493,12 @@ const useInTransitWhereAbouts = ()=>{
         onCloseSubmitCurentLocation,
         currentPage,
         recordCount,
-        getRowData
+        getRowData,
+        currentFilter,
+        setCurrFilter,
+        onDelete,
+        onApplyFilter,
+        onExportToExcelCallBack
     }
 }
 

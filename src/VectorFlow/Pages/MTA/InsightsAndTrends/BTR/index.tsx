@@ -30,6 +30,10 @@ const BufferTrendReport = ()=>{
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
+        currFilter,
+        setCurrFilter,
+        onDelete,
+        onApplyFilter
     } = useBTR()
 
     // if(isLoading){
@@ -64,6 +68,10 @@ const BufferTrendReport = ()=>{
             onViewChange={()=>console.log('')} 
             onExportToExcelCallBack={(pageNumber:number)=>{return onExportToExcelCallBack(pageNumber,currentTab.value)}}
             genericRecordCount={parseInt(techTotalRows)}
+            multiFilter={currFilter}
+            setMultiFilter={setCurrFilter}
+            onDelete={onDelete}
+            onApplyFilter={onApplyFilter}
         />
         </div>
 

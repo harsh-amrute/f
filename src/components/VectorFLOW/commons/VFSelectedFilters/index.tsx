@@ -9,12 +9,11 @@ interface VFSelectedFiltersProps{
 
 
 const VFSelectedFilters = (props:VFSelectedFiltersProps)=>{
-
+    
     const {
         filters,
         onRemoveFilter,
     } = props
-
     const areFiltersValid = (groupedFilters:Array<BPRFilter>):boolean=>{
         return groupedFilters.some((f:BPRFilter)=>f.attributeName!="" && f.value!="" && f.operator!="")
     }

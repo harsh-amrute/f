@@ -24,7 +24,9 @@ interface CountProp{
     onExcessInventoryReviewClick:()=>void;
     onOrderFulfillmentReviewClick:()=>void;
     currCategory?:any;
-
+    multiFilter:any
+    setMultiFilter:any
+    onDelete:any
 }
 
 const SelectCategory=(props:CountProp)=>{
@@ -41,7 +43,10 @@ const SelectCategory=(props:CountProp)=>{
         onExpediteChildClick,
         onExcessInventoryReviewClick,
         onOrderFulfillmentReviewClick,
-        currCategory
+        currCategory,
+        multiFilter,
+        setMultiFilter,
+        onDelete
     } = props;
 
     const date= new Date();
@@ -50,7 +55,7 @@ const SelectCategory=(props:CountProp)=>{
     const [isFilterOpen,toggleFilter] = useState<boolean>(false)
 
     const {user} = useUserData()
-    const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
+    // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
     const themeUi = user.user.theme_ui
 
     console.debug(currCategory)

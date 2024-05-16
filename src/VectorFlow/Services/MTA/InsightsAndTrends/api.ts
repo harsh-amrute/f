@@ -53,8 +53,8 @@ export const getAvaialabilityTrend = async (body:{horison:number}) => {
       headers: { 'Content-Type': 'application/json' }
     })
   }
-  export const getChronicUnavailabilityGridView = async () => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/ChronicUnavailabilityGridViewData`,{
+  export const getChronicUnavailabilityGridView = async (body:any) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/ChronicUnavailabilityGridViewData`,body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }

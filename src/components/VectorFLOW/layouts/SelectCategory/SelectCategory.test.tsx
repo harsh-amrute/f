@@ -21,6 +21,10 @@ const dummyprops = {
     onExpediteChildClick:jest.fn(),
     onExcessInventoryReviewClick:jest.fn(),
     onOrderFulfillmentReviewClick:jest.fn(),
+    currCategory:'',
+    multiFilter:{},
+    setMultiFilter:()=>{return},
+    onDelete:()=>{return}
 }
 
 const queryClient = setupReactQuery();
