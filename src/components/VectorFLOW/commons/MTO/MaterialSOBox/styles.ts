@@ -1,38 +1,7 @@
 import styled from 'styled-components';
-import { ColorsMTO } from '../../Common/Colors';
+import { ColorsMTO } from "../../../../../VectorFlow/Pages/MTO/Common/Colors";
 
-export const Main = styled.div`
-    display:flex;
-    padding:10px;
-    align-items:center;
-    justify-content: center;
-    width: 100%;
-    flex-wrap:wrap;
-`
 
-export const MainContainer = styled.div`
-  display: flex;
-  gap: 20px;
-  margin-left:20px;
-  padding: 1rem;
-`
-
-export const Box = styled.div`
-    width: 250px;
-    height: 200px;
-    background: #FFFFFF 0% 0% no-repeat padding-box;
-    box-shadow:0px 6px 12px #74747429;
-    //box-shadow: -5px 4px 20px #91919133;
-    opacity: 1;
-    border-radius: 6px;
-    position: relative;
-    display: flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content: space-between;
-    margin-right:30px;
-    margin-bottom:10px
-`
 
 export const PercentBorderContainer = styled.div`
     height: 100%;
@@ -72,23 +41,6 @@ export const Btns = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
-`
-
-export const TextXAxis = styled.h3`
-    font-size:16px;
-    text-align:center;
-    transform:rotate(-90deg);   
-    width:max-content;
-    text-wrap:nowrap;
-    //text-decoration:underline;
-`
-
-export const TextYAxis = styled.h3`
-    font-size:16px;
-    text-align:center;
-    //text-decoration:underline;
-    padding-bottom:5px;
-    
 `
 
 export const ViewOrder = styled.button`
@@ -192,41 +144,4 @@ export const underLine = styled.div`
 export const ProcurementLayout = styled.div`
     height: '100%';
     width: 1200px;
-`
-
-/***Analytical screen css */
-export const BPRDailyAnalyticsWrapper = styled.div`
-    padding:10px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    
-`
-export const BPRDailyAnalyticsContainer = styled.div`
-    display:flex;
-    flex-direction:column;
-    width:90%;
-    background: #383737 0% 0% no-repeat padding-box;
-    box-shadow: 0px 6px 12px #00000034;
-    padding:4px 8px;
-    border-radius:4px;
-`
-export const BPRDailyAnalyticsHeader = styled.div`
-   color:white; 
-   margin-bottom:6px;
-`
-export const BPRDailyAnalyticsTableContainer = styled.div`
-    // width: "100%";
-    // height: "100%";
-    flex-direction:row;
-    display:flex;
-`
-
-export const BPRDailyAnalyticsTableHeader = styled.div`
-    width:100%;
-    text-align: left;
-    margin-bottom:5px;
-    color:${ColorsMTO.White};
-    display:flex;
-    flex-direction:column;
 `

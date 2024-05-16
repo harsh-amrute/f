@@ -5,7 +5,7 @@ import {
     Box,
     Main,
 } from '../MaterialCoverage/styles';
-import { boxDesign } from './CommonFunc';
+import MTOMaterialSO from '../../../../../components/VectorFLOW/commons/MTO/MaterialSOBox/MTOMaterialSO';
 import { mapOrderDetails } from './CommonFunc';
 
 const FutureCov = () => {
@@ -102,49 +102,119 @@ const FutureCov = () => {
 
             <MainContainer>
                 <Box>
-                    {boxDesign("No Kit", { c1: ColorsMTO.Blue, c2: null, c3: null }, "96px", "8-15 days", BRYNkCustCunt, BRYNkOrdCunt, BRYNkOrdVal)}
+                    <MTOMaterialSO
+                        kit={"No Kit"}
+                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null}}
+                        height={"96px"}
+                        text={"8-15 day"}
+                        orderCount={BRYNkOrdCunt}
+                        cutCount={BRYNkCustCunt}
+                        orderValue={BRYNkOrdVal}
+                    />
                 </Box>
                 <Box>
-                    {boxDesign("Partial Kit", { c1: ColorsMTO.Blue, c2: null, c3: null }, "96px", "8-15 days", secBlockCustCnt, secBlockOrdCnt, secOrderVal)}
+                    <MTOMaterialSO
+                        kit={"Partial Kit"}
+                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
+                        height={"96px"}
+                        text={"8-15 days"}
+                        orderCount={secBlockCustCnt}
+                        cutCount={secBlockOrdCnt}
+                        orderValue={secOrderVal}
+                    />
                 </Box>
                 <Box>
-                    {boxDesign("Full Kit", { c1: ColorsMTO.Blue, c2: null, c3: null }, "96px", "8-15 days", thrdBlockCustCnt, thrdBlockOrdCnt, thrdOrderVal)}
+                    <MTOMaterialSO
+                        kit={"Full Kit"}
+                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
+                        height={"96px"}
+                        text={"8-15 days"}
+                        orderCount={thrdBlockCustCnt}
+                        cutCount={thrdBlockOrdCnt}
+                        orderValue={thrdOrderVal}
+                    />
                 </Box>
-
             </MainContainer>
 
 
 
             <MainContainer>
-
                 <Box>
-                    {boxDesign("No Kit", { c1: ColorsMTO.Blue, c2: null, c3: null }, "96px", "16-22 days", frthBlockCustCnt, frthBlockOrdCnt, frthOrderVal)}
+                    <MTOMaterialSO
+                        kit={"No Kit"}
+                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
+                        height={"96px"}
+                        text={"16-22 days"}
+                        orderCount={frthBlockCustCnt}
+                        cutCount={frthBlockOrdCnt}
+                        orderValue={frthOrderVal}
+                    />
+
                 </Box>
 
                 <Box>
-                    {boxDesign("Partial Kit", { c1: ColorsMTO.Blue, c2: null, c3: null }, "96px", "16-22 days", fifthBlockCustCnt, fifthBlockOrdCnt, fifthOrderVal)}
+                    <MTOMaterialSO
+                        kit={"No Kit"}
+                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
+                        height={"96px"}
+                        text={"16-22 days"}
+                        orderCount={fifthBlockCustCnt}
+                        cutCount={fifthBlockOrdCnt}
+                        orderValue={fifthOrderVal}
+                    />
+                   
                 </Box>
 
                 <Box>
-                    {boxDesign("Full Kit", { c1: ColorsMTO.Blue, c2: null, c3: null }, "96px", "16-22 days", sxthBlockCustCnt, sxthBlockOrdCnt, sxthdOrderVal)}
+                    <MTOMaterialSO
+                        kit={"No Kit"}
+                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
+                        height={"96px"}
+                        text={"16-22 days"}
+                        orderCount={sxthBlockCustCnt}
+                        cutCount={sxthBlockOrdCnt}
+                        orderValue={sxthdOrderVal}
+                    />
+                   
                 </Box>
             </MainContainer>
 
             <MainContainer>
-
                 <Box>
-                    {boxDesign("No Kit", { c1: ColorsMTO.Blue, c2: null, c3: null }, "96px", "23-30 days", svthBlockCustCnt, svthBlockOrdCnt, svthdOrderVal)}
+                    <MTOMaterialSO
+                        kit={"No Kit"}
+                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
+                        height={"96px"}
+                        text={"23-30 days"}
+                        orderCount={svthBlockCustCnt}
+                        cutCount={svthBlockOrdCnt}
+                        orderValue={svthdOrderVal}
+                    />
+                    
                 </Box>
-
-
                 <Box>
-                    {boxDesign("Partial Kit", { c1: ColorsMTO.Blue, c2: null, c3: null }, "96px", "23-30 days", egthBlockCustCnt, egthBlockOrdCnt, egthdOrderVal)}
+                    <MTOMaterialSO
+                        kit={"No Kit"}
+                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
+                        height={"96px"}
+                        text={"23-30 days"}
+                        orderCount={egthBlockCustCnt}
+                        cutCount={egthBlockOrdCnt}
+                        orderValue={egthdOrderVal}
+                    />
+                
                 </Box>
-
-
-
                 <Box>
-                    {boxDesign("Full  Kit", { c1: ColorsMTO.Blue, c2: null, c3: null }, "96px", "23-30 days", nthBlockCustCnt, nthBlockOrdCnt, nthhdOrderVal)}
+                    <MTOMaterialSO
+                        kit={"No Kit"}
+                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
+                        height={"96px"}
+                        text={"23-30 days"}
+                        orderCount={nthBlockCustCnt}
+                        cutCount={nthBlockOrdCnt}
+                        orderValue={nthhdOrderVal}
+                    />
+                    
                 </Box>
 
             </MainContainer>

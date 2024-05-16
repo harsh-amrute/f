@@ -14,7 +14,7 @@ export const openSOSummary = [
         ordCount: 28, // batchwise_allocation
         custCount: 29, //import order at bom
         ordValue: 2, //import order at bom
-        bucket: 0,
+        //bucket: 0,
         //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
@@ -396,29 +396,29 @@ export const openSOSummary = [
         ordValue: 4.3,
         bucket: 0
     },
-//]
-// BK: [
-//     {
-//         buk: 1,
-//         S: 0,
-//         E: 7
-//     },
-//     {
-//         buk: 2,
-//         S: 8,
-//         E: 11
-//     },
-//     {
-//         buk: 3,
-//         S: 12,
-//         E: 16
-//     },
-//     {
-//         buk: 4,
-//         S: 17,
-//         E: 29
-//     }
-// ]
+    //]
+    // BK: [
+    //     {
+    //         buk: 1,
+    //         S: 0,
+    //         E: 7
+    //     },
+    //     {
+    //         buk: 2,
+    //         S: 8,
+    //         E: 11
+    //     },
+    //     {
+    //         buk: 3,
+    //         S: 12,
+    //         E: 16
+    //     },
+    //     {
+    //         buk: 4,
+    //         S: 17,
+    //         E: 29
+    //     }
+    // ]
 ]
 
 export const bucketOrderData = [
@@ -446,7 +446,6 @@ export const bucketOrderData = [
 
 export const OrderDetailsData = [
     {
-        "id": 1,
         "icon": "",
         "cp": "11",
         "oli": "12",
@@ -462,190 +461,81 @@ export const OrderDetailsData = [
         "Availability": 56,
         "penD": 1,
         "edit": 0,
-        "tsfs": 100,
-        "type": "parent",
+        "value": "Black",
         "children": [
             {
-                "RM code": "BMN1231",
-                "RM Descp": 66,
-                "RM RegdQty": "Prameet Jha",
-                "RM Available": 5466618,
-                "RM Allocatte": "22-Jul-13",
+                "RMcode": "BMN1231",
+                "RMDescp": 66,
+                "RMRegdQty": "Prameet Jha",
+                "RMAvailable": 5466618,
+                "RMAllocatte": "22-Jul-13",
             },
             {
-                "orderNo": "BSW1231",
-                "orderQty": 58,
-                "custName": "Komal Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "black",
-                "type": "child"
+                "RMcode": "BMN1231",
+                "RMDescp": 66,
+                "RMRegdQty": "Prameet Jha",
+                "RMAvailable": 5466618,
+                "RMAllocatte": "22-Jul-13",
             },
             {
-                "orderNo": "BDA1241",
-                "orderQty": 48,
-                "custName": "SS RAJA",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "pink",
-                "type": "child"
+                "RMcode": "BMN1231",
+                "RMDescp": 66,
+                "RMRegdQty": "Prameet Jha",
+                "RMAvailable": 5466618,
+                "RMAllocatte": "22-Jul-13",
             },
             {
-                "orderNo": "BMV1251",
-                "orderQty": 66,
-                "custName": "Akshay Jha",
-                "custCode": 5466618,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "pink",
-                "type": "child"
+                "RMcode": "BMN1231",
+                "RMDescp": 66,
+                "RMRegdQty": "Prameet Jha",
+                "RMAvailable": 5466618,
+                "RMAllocatte": "22-Jul-13",
             },
             {
-                "orderNo": "BSE1431",
-                "orderQty": 58,
-                "custName": "Meena Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "yellow",
-                "type": "child"
+                "RMcode": "BMN1231",
+                "RMDescp": 66,
+                "RMRegdQty": "Prameet Jha",
+                "RMAvailable": 5466618,
+                "RMAllocatte": "22-Jul-13",
             },
             {
-                "orderNo": "BAW1281",
-                "orderQty": 48,
-                "custName": "Veena Singh",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "yellow",
-                "type": "child"
+                "RMcode": "BMN1231",
+                "RMDescp": 66,
+                "RMRegdQty": "Prameet Jha",
+                "RMAvailable": 5466618,
+                "RMAllocatte": "22-Jul-13",
             },
             {
-                "orderNo": "BMN1231",
-                "orderQty": 66,
-                "custName": "Prameet Jha",
-                "custCode": 5466618,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "black",
-                "type": "child"
+                "RMcode": "BMN1231",
+                "RMDescp": 66,
+                "RMRegdQty": "Prameet Jha",
+                "RMAvailable": 5466618,
+                "RMAllocatte": "22-Jul-13",
             },
             {
-                "orderNo": "BSW1231",
-                "orderQty": 58,
-                "custName": "Komal Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "black",
-                "type": "child"
+                "RMcode": "BMN1231",
+                "RMDescp": 66,
+                "RMRegdQty": "Prameet Jha",
+                "RMAvailable": 5466618,
+                "RMAllocatte": "22-Jul-13",
             },
             {
-                "orderNo": "BDA1241",
-                "orderQty": 48,
-                "custName": "SS RAJA",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "pink",
-                "type": "child"
+                "RMcode": "BMN1231",
+                "RMDescp": 66,
+                "RMRegdQty": "Prameet Jha",
+                "RMAvailable": 5466618,
+                "RMAllocatte": "22-Jul-13",
             },
             {
-                "orderNo": "BMV1251",
-                "orderQty": 66,
-                "custName": "Akshay Jha",
-                "custCode": 5466618,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "pink",
-                "type": "child"
+                "RMcode": "BMN1231",
+                "RMDescp": 66,
+                "RMRegdQty": "Prameet Jha",
+                "RMAvailable": 5466618,
+                "RMAllocatte": "22-Jul-13",
             },
-            {
-                "orderNo": "BSE1431",
-                "orderQty": 58,
-                "custName": "Meena Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "yellow",
-                "type": "child"
-            },
-            {
-                "orderNo": "BAW1281",
-                "orderQty": 48,
-                "custName": "Veena Singh",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "yellow",
-                "type": "child"
-            },
-            {
-                "orderNo": "BMN1231",
-                "orderQty": 66,
-                "custName": "Prameet Jha",
-                "custCode": 5466618,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "black",
-                "type": "child"
-            },
-            {
-                "orderNo": "BSW1231",
-                "orderQty": 58,
-                "custName": "Komal Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "black",
-                "type": "child"
-            },
-            {
-                "orderNo": "BDA1241",
-                "orderQty": 48,
-                "custName": "SS RAJA",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "pink",
-                "type": "child"
-            },
-            {
-                "orderNo": "BMV1251",
-                "orderQty": 66,
-                "custName": "Akshay Jha",
-                "custCode": 5466618,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "pink",
-                "type": "child"
-            },
-            {
-                "orderNo": "BSE1431",
-                "orderQty": 58,
-                "custName": "Meena Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "yellow",
-                "type": "child"
-            },
-            {
-                "orderNo": "BAW1281",
-                "orderQty": 48,
-                "custName": "Veena Singh",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "color": "yellow",
-                "type": "child"
-            }
         ]
     },
     {
-        "id": 2,
         "icon": "",
         "cp": "11",
         "oli": "12",
@@ -663,6 +553,7 @@ export const OrderDetailsData = [
         "edit": 0,
         "tsfs": 100,
         "type": "parent",
+        "value": "Black",
         "children": [
             {
                 "orderNo": "BMN1231",
@@ -694,7 +585,6 @@ export const OrderDetailsData = [
         ]
     },
     {
-        "id": 3,
         "icon": "",
         "cp": "11",
         "oli": "12",
@@ -712,6 +602,7 @@ export const OrderDetailsData = [
         "edit": 0,
         "tsfs": 100,
         "type": "parent",
+        "value": "Black",
         "children": [
             {
                 "orderNo": "BMN1231",
@@ -743,7 +634,6 @@ export const OrderDetailsData = [
         ]
     },
     {
-        "id": 4,
         "icon": "",
         "cp": "67",
         "oli": "12",
@@ -761,6 +651,7 @@ export const OrderDetailsData = [
         "edit": 0,
         "tsfs": 100,
         "type": "parent",
+        "value": "Red",
         "children": [
             {
                 "orderNo": "BMN1231",
@@ -792,7 +683,6 @@ export const OrderDetailsData = [
         ]
     },
     {
-        "id": 5,
         "icon": "",
         "cp": "80",
         "oli": "12",
@@ -810,6 +700,7 @@ export const OrderDetailsData = [
         "edit": 0,
         "tsfs": 100,
         "type": "parent",
+        "value": "Red",
         "children": [
             {
                 "orderNo": "BMN1231",
@@ -841,7 +732,6 @@ export const OrderDetailsData = [
         ]
     },
     {
-        "id": 6,
         "icon": "",
         "cp": "25",
         "oli": "12",
@@ -859,6 +749,7 @@ export const OrderDetailsData = [
         "edit": 0,
         "tsfs": 100,
         "type": "parent",
+        "value": "Yellow",
         "children": [
             {
                 "orderNo": "BMN1231",
@@ -890,7 +781,6 @@ export const OrderDetailsData = [
         ]
     },
     {
-        "id": 7,
         "icon": "",
         "cp": "13",
         "oli": "12",
@@ -908,6 +798,7 @@ export const OrderDetailsData = [
         "edit": 0,
         "tsfs": 100,
         "type": "parent",
+        "value": "Yellow",
         "children": [
             {
                 "orderNo": "BMN1231",
@@ -939,7 +830,7 @@ export const OrderDetailsData = [
         ]
     },
     {
-        "id": 8,
+
         "icon": "",
         "cp": "12",
         "oli": "12",
@@ -957,6 +848,7 @@ export const OrderDetailsData = [
         "edit": 0,
         "tsfs": 100,
         "type": "parent",
+        "value": "Yellow",
         "children": [
             {
                 "orderNo": "BMN1231",
@@ -988,7 +880,6 @@ export const OrderDetailsData = [
         ]
     },
     {
-        "id": 9,
         "icon": "",
         "cp": "9",
         "oli": "12",
@@ -1006,6 +897,7 @@ export const OrderDetailsData = [
         "edit": 0,
         "tsfs": 100,
         "type": "parent",
+        "value": "Black",
         "children": [
             {
                 "orderNo": "BMN1231",
@@ -1057,3 +949,208 @@ export const OrderDetailsData = [
 //Order Receipt Date: ProjectionOrderData table
 //Order Due Date: MTOOrderData
 //Order Release date: MTOOrderData
+
+
+export const dayWiseCove = [
+    {
+        "No-Kit": [
+            {
+                "O_No": "Order number",
+                "O_RD": "Order Receive Due Date",
+                "O_DD": "Order Due Date",
+                "O_QTY": "Order Quantity",
+                "C_Name": "Customer name",
+                "C_code": "Customer Code",
+                "FG_Code": "Finished Good Code",
+                "FG_Desc": "Finished good Description",
+                "RM_Code": "Raw material code",
+                "RM_Desc": "Raw material description",
+                "RM_Qty": "Raw material quantity",
+                "RM_Req": "Raw material required",
+                "RM_All": "Raw material allocated"
+            },
+            {
+                "O_No": "Order number",
+                "O_RD": "Order Receive Due Date",
+                "O_DD": "Order Due Date",
+                "O_QTY": "Order Quantity",
+                "C_Name": "Customer name",
+                "C_code": "Customer Code",
+                "FG_Code": "Finished Good Code",
+                "FG_Desc": "Finished good Description",
+                "RM_Code": "Raw material code",
+                "RM_Desc": "Raw material description",
+                "RM_Qty": "Raw material quantity",
+                "RM_Req": "Raw material required",
+                "RM_All": "Raw material allocated"
+            },
+            {
+                "O_No": "Order number",
+                "O_RD": "Order Receive Due Date",
+                "O_DD": "Order Due Date",
+                "O_QTY": "Order Quantity",
+                "C_Name": "Customer name",
+                "C_code": "Customer Code",
+                "FG_Code": "Finished Good Code",
+                "FG_Desc": "Finished good Description",
+                "RM_Code": "Raw material code",
+                "RM_Desc": "Raw material description",
+                "RM_Qty": "Raw material quantity",
+                "RM_Req": "Raw material required",
+                "RM_All": "Raw material allocated"
+            },
+            {
+                "count": '3',
+            }
+
+        ],
+        "Full-Kit": [
+            {
+                "O_No": "Order number",
+                "O_RD": "Order Receive Due Date",
+                "O_DD": "Order Due Date",
+                "O_QTY": "Order Quantity",
+                "C_Name": "Customer name",
+                "C_code": "Customer Code",
+                "FG_Code": "Finished Good Code",
+                "FG_Desc": "Finished good Description",
+                "RM_Code": "Raw material code",
+                "RM_Desc": "Raw material description",
+                "RM_Qty": "Raw material quantity",
+                "RM_Req": "Raw material required",
+                "RM_All": "Raw material allocated"
+            },
+            {
+                "O_No": "Order number",
+                "O_RD": "Order Receive Due Date",
+                "O_DD": "Order Due Date",
+                "O_QTY": "Order Quantity",
+                "C_Name": "Customer name",
+                "C_code": "Customer Code",
+                "FG_Code": "Finished Good Code",
+                "FG_Desc": "Finished good Description",
+                "RM_Code": "Raw material code",
+                "RM_Desc": "Raw material description",
+                "RM_Qty": "Raw material quantity",
+                "RM_Req": "Raw material required",
+                "RM_All": "Raw material allocated"
+            },
+            {
+                "O_No": "Order number",
+                "O_RD": "Order Receive Due Date",
+                "O_DD": "Order Due Date",
+                "O_QTY": "Order Quantity",
+                "C_Name": "Customer name",
+                "C_code": "Customer Code",
+                "FG_Code": "Finished Good Code",
+                "FG_Desc": "Finished good Description",
+                "RM_Code": "Raw material code",
+                "RM_Desc": "Raw material description",
+                "RM_Qty": "Raw material quantity",
+                "RM_Req": "Raw material required",
+                "RM_All": "Raw material allocated"
+            },
+            {
+                "O_No": "Order number",
+                "O_RD": "Order Receive Due Date",
+                "O_DD": "Order Due Date",
+                "O_QTY": "Order Quantity",
+                "C_Name": "Customer name",
+                "C_code": "Customer Code",
+                "FG_Code": "Finished Good Code",
+                "FG_Desc": "Finished good Description",
+                "RM_Code": "Raw material code",
+                "RM_Desc": "Raw material description",
+                "RM_Qty": "Raw material quantity",
+                "RM_Req": "Raw material required",
+                "RM_All": "Raw material allocated"
+            },
+            {
+                'count':'4'
+            }
+
+        ],
+        "Partial-kit": [
+            {
+                "O_No": "Order number",
+                "O_RD": "Order Receive Due Date",
+                "O_DD": "Order Due Date",
+                "O_QTY": "Order Quantity",
+                "C_Name": "Customer name",
+                "C_code": "Customer Code",
+                "FG_Code": "Finished Good Code",
+                "FG_Desc": "Finished good Description",
+                "RM_Code": "Raw material code",
+                "RM_Desc": "Raw material description",
+                "RM_Qty": "Raw material quantity",
+                "RM_Req": "Raw material required",
+                "RM_All": "Raw material allocated"
+            },
+            {
+                "O_No": "Order number",
+                "O_RD": "Order Receive Due Date",
+                "O_DD": "Order Due Date",
+                "O_QTY": "Order Quantity",
+                "C_Name": "Customer name",
+                "C_code": "Customer Code",
+                "FG_Code": "Finished Good Code",
+                "FG_Desc": "Finished good Description",
+                "RM_Code": "Raw material code",
+                "RM_Desc": "Raw material description",
+                "RM_Qty": "Raw material quantity",
+                "RM_Req": "Raw material required",
+                "RM_All": "Raw material allocated"
+            },
+            {
+                "O_No": "Order number",
+                "O_RD": "Order Receive Due Date",
+                "O_DD": "Order Due Date",
+                "O_QTY": "Order Quantity",
+                "C_Name": "Customer name",
+                "C_code": "Customer Code",
+                "FG_Code": "Finished Good Code",
+                "FG_Desc": "Finished good Description",
+                "RM_Code": "Raw material code",
+                "RM_Desc": "Raw material description",
+                "RM_Qty": "Raw material quantity",
+                "RM_Req": "Raw material required",
+                "RM_All": "Raw material allocated"
+            },
+            {
+                "O_No": "Order number",
+                "O_RD": "Order Receive Due Date",
+                "O_DD": "Order Due Date",
+                "O_QTY": "Order Quantity",
+                "C_Name": "Customer name",
+                "C_code": "Customer Code",
+                "FG_Code": "Finished Good Code",
+                "FG_Desc": "Finished good Description",
+                "RM_Code": "Raw material code",
+                "RM_Desc": "Raw material description",
+                "RM_Qty": "Raw material quantity",
+                "RM_Req": "Raw material required",
+                "RM_All": "Raw material allocated"
+            },
+            {
+                "O_No": "Order number",
+                "O_RD": "Order Receive Due Date",
+                "O_DD": "Order Due Date",
+                "O_QTY": "Order Quantity",
+                "C_Name": "Customer name",
+                "C_code": "Customer Code",
+                "FG_Code": "Finished Good Code",
+                "FG_Desc": "Finished good Description",
+                "RM_Code": "Raw material code",
+                "RM_Desc": "Raw material description",
+                "RM_Qty": "Raw material quantity",
+                "RM_Req": "Raw material required",
+                "RM_All": "Raw material allocated"
+            },
+            {
+                'count':5
+            }
+        ]
+
+    }
+
+]

@@ -197,3 +197,42 @@ display:flex;
     display:none;
   }
 `
+
+/**release date */
+export const VFReleaseDateWrap = styled.div`
+    display: flex;
+    justifyContent: space-between;
+    alignItems:center;
+    marginRight: 3px;
+    fontSize: 18px;
+    fontWeight: bold;
+    width: 70%;
+`
+export const VFReleaseDateCompWrap = styled.div`
+    top: 133px;
+    left: 638px;
+    width: 204px;
+    height: 43px;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    border: 0.5px solid #ACACAC;
+    borderRadius: 4px;
+    opacity: 1;
+`
+
+export const VFInputDate = styled.input`
+    top: 141px;
+    left: 651px;
+    width: 100%;
+    height: 100%;
+    textAlign: left;
+    font: 24px;
+    letterSpacing: 0px;
+    color: #000;
+    opacity: 1;
+    fontSize: 18px;
+    padding: 4px;
+    fontWeight: bold;
+    fontFamily: Roboto;
+    border: 0.5px solid #ACACAC;
+`
+/**release date */

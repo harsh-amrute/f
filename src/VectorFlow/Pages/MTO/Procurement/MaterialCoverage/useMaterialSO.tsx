@@ -4,6 +4,7 @@ import { useUserData } from "../../../../../context"
 import { OrderDetailsData } from '../MaterialCoverage/Data';
 //import AvailabilityToolTip from "../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import AvailabilityCellRenderer from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer";
+import { ColorCellRenderer } from "../../../../../components/VectorFLOW/commons/MTO/ColorCellRenderer";
 
 const useMaterialSO = () => {
     const { isSideBarOpen } = useUserData()
@@ -25,55 +26,114 @@ const useMaterialSO = () => {
                 initialWidth: 150,
                 autoHeaderHeight: true,
                 wrapHeaderText: true,
+                cellRenderer: ColorCellRenderer,
             },
             {
-                headerName: "Order Line Item", field: "oli", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true,
+                headerName: "Order Line Item",
+                field: "oli",
+                autoHeaderHeight: true,
+                wrapHeaderText: true,
+                initialWidth: 150,
+                filter: 'agMultiColumnFilter',
+                floatingFilter: true,
             },
             {
-                headerName: "Order No", field: "rmCode", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true,
+                headerName: "Order No",
+                field: "rmCode",
+                autoHeaderHeight: true,
+                wrapHeaderText: true,
+                initialWidth: 150,
+                filter: 'agMultiColumnFilter',
+                floatingFilter: true,
             },
             {
-                headerName: "Order Qty", field: "rmDesc", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 180, filter: 'agMultiColumnFilter', floatingFilter: true
+                headerName: "Order Qty",
+                field: "rmDesc",
+                autoHeaderHeight: true,
+                wrapHeaderText: true,
+                initialWidth: 180,
+                filter: 'agMultiColumnFilter',
+                floatingFilter: true
             },
             {
-                headerName: "Batch Size", field: "noOfOrdImp",
-                autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
+                headerName: "Batch Size",
+                field: "noOfOrdImp",
+                autoHeaderHeight: true,
+                wrapHeaderText: true,
+                initialWidth: 150,
+                filter: 'agMultiColumnFilter',
+                floatingFilter: true
             },
             {
-                headerName: "Full Kit Avail", field: "totalReq", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true
+                headerName: "Full Kit Avail",
+                field: "totalReq",
+                autoHeaderHeight: true,
+                wrapHeaderText: true,
+                initialWidth: 150,
+                filter: 'agMultiColumnFilter',
+                floatingFilter: true
             },
             {
-                headerName: "", field: "Availability", initialWidth: 150, autoHeaderHeight: true, wrapHeaderText: true,
+                headerName: "",
+                field: "Availability",
+                initialWidth: 150,
+                autoHeaderHeight: true,
+                wrapHeaderText: true,
                 cellRenderer: AvailabilityCellRenderer,
             },
             {
-                headerName: "Cust Name", field: "uom", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
+                headerName: "Cust Name",
+                field: "uom",
+                autoHeaderHeight: true,
+                wrapHeaderText: true,
+                initialWidth: 150,
+                filter: 'agMultiColumnFilter',
+                floatingFilter: true
             },
             {
-                headerName: "Cust Code", field: "soh", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true
+                headerName: "Cust Code",
+                field: "soh",
+                autoHeaderHeight: true,
+                wrapHeaderText: true,
+                initialWidth: 150,
+                filter: 'agMultiColumnFilter',
+                floatingFilter: true
             },
             {
-                headerName: "FG Code", field: "sq", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
+                headerName: "FG Code",
+                field: "sq",
+                autoHeaderHeight: true,
+                wrapHeaderText: true,
+                initialWidth: 150,
+                filter: 'agMultiColumnFilter',
+                floatingFilter: true
             },
             {
-                headerName: "FG Descp", field: "st", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
+                headerName: "FG Descp",
+                field: "st",
+                autoHeaderHeight: true,
+                wrapHeaderText: true,
+                initialWidth: 150,
+                filter: 'agMultiColumnFilter',
+                floatingFilter: true
             },
             {
-                headerName: "Order Receipt Date", field: "gap", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
+                headerName: "Order Receipt Date",
+                field: "gap",
+                autoHeaderHeight: true,
+                wrapHeaderText: true,
+                initialWidth: 150,
+                filter: 'agMultiColumnFilter',
+                floatingFilter: true
             },
             {
-                headerName: "Order Due Date", field: "penD", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
+                headerName: "Order Due Date",
+                field: "penD",
+                autoHeaderHeight: true,
+                wrapHeaderText: true,
+                initialWidth: 150,
+                filter: 'agMultiColumnFilter',
+                floatingFilter: true
             },
             {
                 headerName: "Order Release Date",
@@ -111,11 +171,11 @@ const useMaterialSO = () => {
             // level 2 grid options
             detailGridOptions: {
                 columnDefs: [
-                    { field: "orderNo", headerName: "RM code" },
-                    { field: "orderQty", headerName: "RM Descp" },
-                    { field: "custName", headerName: "RM RegdQty" },
-                    { field: "custCode", headerName: "RM Available" },
-                    { field: "orderDueDate", headerName: "RM Allocatte" },
+                    { field: "RMcode", headerName: "RM code" },
+                    { field: "RMDescp", headerName: "RM Descp" },
+                    { field: "RMRegdQty", headerName: "RM RegdQty" },
+                    { field: "RMAvailable", headerName: "RM Available" },
+                    { field: "RMAllocatte", headerName: "RM Allocatte" },
                 ],
                 defaultColDef: {
                     flex: 0,

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { boxDesign } from './CommonFunc';
+import React, { useEffect, useState } from 'react';
 import {
     MainContainer,
     Box,
@@ -7,6 +6,7 @@ import {
 } from './styles';
 import { mapOrderDetails } from './CommonFunc';
 import { ColorsMTO } from '../../Common/Colors';
+import MTOMaterialSO from '../../../../../components/VectorFLOW/commons/MTO/MaterialSOBox/MTOMaterialSO';
 
 
 interface CurrentCovProps {
@@ -112,20 +112,42 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
         setToggleSubPage(true);
         handleToggleComponent(isSubPageOpen);
     }
-
-
     return (
         <Main>
             {/**1st row */}
             <MainContainer>
                 <Box onClick={handleToggle}>
-                    {boxDesign("No Kit", { c1: ColorsMTO.Black, c2: ColorsMTO.Red, c3: ColorsMTO.Yellow }, "24px", "", BRYNkCustCunt, BRYNkOrdCunt, BRYNkOrdVal)}
+                    <MTOMaterialSO
+                        kit={"No Kit"}
+                        colors={{ c1: ColorsMTO.Black, c2: ColorsMTO.Red, c3: ColorsMTO.Yellow }}
+                        height={"24px"}
+                        text={""}
+                        orderCount={BRYNkOrdCunt}
+                        cutCount={BRYNkCustCunt}
+                        orderValue={BRYNkOrdVal}
+                    />
                 </Box>
                 <Box>
-                    {boxDesign("Partial Kit", { c1: ColorsMTO.Black, c2: ColorsMTO.Red, c3: ColorsMTO.Yellow }, "24px", "", secBlockCustCnt, secBlockOrdCnt, secOrderVal)}
+                    <MTOMaterialSO
+                        kit={"Partial Kit"}
+                        colors={{ c1: ColorsMTO.Black, c2: ColorsMTO.Red, c3: ColorsMTO.Yellow }}
+                        height={"24px"}
+                        text={""}
+                        orderCount={secBlockCustCnt}
+                        cutCount={secBlockOrdCnt}
+                        orderValue={secOrderVal}
+                    />
                 </Box>
                 <Box>
-                    {boxDesign("Full  Kit", { c1: ColorsMTO.Black, c2: ColorsMTO.Red, c3: ColorsMTO.Yellow }, "24px", "", thrdBlockCustCnt, thrdBlockOrdCnt, thrdOrderVal)}
+                    <MTOMaterialSO
+                        kit={"Full  Kit"}
+                        colors={{ c1: ColorsMTO.Black, c2: ColorsMTO.Red, c3: ColorsMTO.Yellow }}
+                        height={"24px"}
+                        text={""}
+                        orderCount={thrdBlockCustCnt}
+                        cutCount={thrdBlockOrdCnt}
+                        orderValue={thrdOrderVal}
+                    />
                 </Box>
             </MainContainer>
 
@@ -134,17 +156,42 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
             <MainContainer>
                 {/** 1st Box */}
                 <Box>
-                    {boxDesign("No Kit", { c1: ColorsMTO.Green, c2: null, c3: null }, "48px", "", frthBlockCustCnt, frthBlockOrdCnt, frthOrderVal)}
+                    <MTOMaterialSO
+                        kit={"No Kit"}
+                        colors={{ c1: ColorsMTO.Green, c2: null, c3: null }}
+                        height={"48px"}
+                        text={""}
+                        orderCount={frthBlockCustCnt}
+                        cutCount={frthBlockOrdCnt}
+                        orderValue={frthOrderVal}
+                    />
+
                 </Box>
 
                 <Box>
-                    {boxDesign("Partial Kit", { c1: ColorsMTO.Green, c2: null, c3: null }, "48px", "",
-                        fifthBlockCustCnt, fifthBlockOrdCnt, fifthOrderVal)}
+                    <MTOMaterialSO
+                        kit={"Partial Kit"}
+                        colors={{ c1: ColorsMTO.Green, c2: null, c3: null }}
+                        height={"48px"}
+                        text={""}
+                        orderCount={fifthBlockCustCnt}
+                        cutCount={fifthBlockOrdCnt}
+                        orderValue={fifthOrderVal}
+                    />
+
                 </Box>
 
                 <Box>
-                    {boxDesign("Full Kit", { c1: ColorsMTO.Green, c2: null, c3: null }, "48px", "",
-                        sxthBlockCustCnt, sxthBlockOrdCnt, sxthdOrderVal)}
+                    <MTOMaterialSO
+                        kit={"Full Kit"}
+                        colors={{ c1: ColorsMTO.Green, c2: null, c3: null }}
+                        height={"48px"}
+                        text={""}
+                        orderCount={sxthBlockCustCnt}
+                        cutCount={sxthBlockOrdCnt}
+                        orderValue={sxthdOrderVal}
+                    />
+
                 </Box>
             </MainContainer>
 
@@ -159,13 +206,40 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
 
             <MainContainer>
                 <Box>
-                    {boxDesign("No Kit", { c1: ColorsMTO.Blue, c2: null, c3: null }, "96px", "7-14 days", svthBlockCustCnt, svthBlockOrdCnt, svthdOrderVal)}
+                    <MTOMaterialSO
+                        kit={"No Kit"}
+                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
+                        height={"96px"}
+                        text={"7-14 days"}
+                        orderCount={svthBlockCustCnt}
+                        cutCount={svthBlockOrdCnt}
+                        orderValue={svthdOrderVal}
+                    />
+
                 </Box>
                 <Box>
-                    {boxDesign("Partial Kit", { c1: ColorsMTO.Blue, c2: null, c3: null }, "96px", "7-14 days", egthBlockCustCnt, egthBlockOrdCnt, egthdOrderVal)}
+                    <MTOMaterialSO
+                        kit={"Partial Kit"}
+                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
+                        height={"96px"}
+                        text={"7-14 days"}
+                        orderCount={egthBlockCustCnt}
+                        cutCount={egthBlockOrdCnt}
+                        orderValue={egthdOrderVal}
+                    />
+
                 </Box>
                 <Box>
-                    {boxDesign("Full  Kit", { c1: ColorsMTO.Blue, c2: null, c3: null }, "96px", "7-14 days", nthBlockCustCnt, nthBlockOrdCnt, nthhdOrderVal)}
+                    <MTOMaterialSO
+                        kit={"Full Kit"}
+                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
+                        height={"96px"}
+                        text={"7-14 days"}
+                        orderCount={nthBlockCustCnt}
+                        cutCount={nthBlockOrdCnt}
+                        orderValue={nthhdOrderVal}
+                    />
+
                 </Box>
             </MainContainer>
 

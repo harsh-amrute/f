@@ -21,6 +21,7 @@ import {
     VFSelectedFiltersWrapper,
     VFFilterScrollBar,
     /**search filter styles end*/
+    VFReleaseDateWrap,
 } from './styles'
 
 const MTOActionToolBar = () => {
@@ -34,13 +35,13 @@ const MTOActionToolBar = () => {
                 }}
             >
                 {/**Go back button starts */}
-                {/* <SCGoBackContainer>
+                <SCGoBackContainer>
                     <img
                         src="/assets/img/VectorFLOW/BPR/goback.svg"
                         alt=""
                     />
                     <SCGoBackText><b>Go Back</b></SCGoBackText>
-                </SCGoBackContainer> */}
+                </SCGoBackContainer>
                 {/**Go back button end */}
 
                 <div style={{
@@ -79,10 +80,9 @@ const MTOActionToolBar = () => {
                                 fontSize:'18px',
                                 padding:'4px',
                                 fontWeight:'bold',
-                                fontFamily:'Roboto'
+                                fontFamily:'Roboto',
+                                border: '0.5px solid #ACACAC',
                             }}
-                        //         font: 'normal normal medium 18px/24px Roboto',
-
                         />
                     </div>
                 </div>
