@@ -6,6 +6,7 @@ import { useState,useEffect } from "react";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
+import { AgChartOptions } from "ag-charts-community";
 
 
 
@@ -37,53 +38,70 @@ const AvailabilityAgeingTrend=()=>{
         OnHorizonChange(horizon, minAgeing);
       },[])
    
-    const AvailabilityAgeingTrendOptions={
-   title: {
-      text: "Trend of #SKU-Loations with Continuous Black/Red/White Status >= Selected Minimum Ageing",
-    },
-    data: AvailabilityAgeingTrendData,
-    series: [
-      {
-        type: "line" as const,
-        xKey: "date",
-        yKey: "red",
-        yName: "red",
-        stroke:"#DA3535",
-        marker:{
-          fill: 'red',
-        stroke: 'red'
-        }
-        
-      },
-      {
-        type: "line" as const,
-        xKey: "date",
-        yKey: "black",
-        yName: "black",
-        strokeWidth: 3,
-        stroke:"#000000",
-        marker:{
-          fill: 'black',
-        stroke: 'black'
-        }
-       
-      },
-      
-
-      {
-        type: "line" as const,
-        xKey: "date",
-        yKey: "white",
-        yName: "white",
-        strokeWidth: 3,
-        stroke:"#BFBFBF",marker:{
-          fill: 'grey',
-        stroke: 'grey'
-        }
-       },
-    ],
-
-}
+      const AvailabilityAgeingTrendOptions:AgChartOptions = {
+        title: {
+          text: "Trend of #SKU-Loations with Continuous Black/Red/White Status >= Selected Minimum Ageing",
+          fontWeight: "bold",
+        },
+        data: AvailabilityAgeingTrendData,
+        series: [
+          {
+            type: "line" as const,
+            xKey: "date",
+            yKey: "red",
+            yName: "red",
+            stroke: "#DA3535",
+            marker: {
+              fill: 'red',
+              stroke: 'red'
+            }
+          },
+          {
+            type: "line" as const,
+            xKey: "date",
+            yKey: "black",
+            yName: "black",
+            strokeWidth: 3,
+            stroke: "#000000",
+            marker: {
+              fill: 'black',
+              stroke: 'black'
+            }
+          },
+          {
+            type: "line" as const,
+            xKey: "date",
+            yKey: "white",
+            yName: "white",
+            strokeWidth: 3,
+            stroke: "#BFBFBF",
+            marker: {
+              fill: 'grey',
+              stroke: 'grey'
+            }
+          },
+        ],
+        legend: {
+          position: 'bottom'
+        },
+        axes: [
+          {
+            type: 'category',
+            position: 'bottom',
+            title: {
+              text: 'Date'
+            }
+          },
+          {
+            type: 'number',
+            position: 'left',
+            title: {
+              text: 'No of SKU-Locations' 
+            }
+          }
+        ]
+      };
+    
 const graph1 = [
   'This graph highlights the trends of #SKU-Location with continous black,red or white status, each greater than or equal to the selected mimimum agening'
 ]

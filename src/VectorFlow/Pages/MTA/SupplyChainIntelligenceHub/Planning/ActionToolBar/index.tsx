@@ -205,12 +205,12 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
 
                         <SCCustomActionsContainer>
                            
-                                {currentTab==="chronicunavailability" && 
-                                <>
-                                    <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
-                                    {isFilterOpen && renderFilter()}
-                                </>
-                                }
+                        {!(currentTab === "chronicunavailability" || currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" || currentTab==="dbmnormsuggestions") &&
+                             <>
+                                <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
+                                {isFilterOpen && renderFilter()}
+                             </>
+                        }
                                 {currentTab==="dbmnormsuggestions" && 
                                 <>
                                     <Link to="/dbm/dbm-norm-suggestions" style={{textDecoration:'none'}}>

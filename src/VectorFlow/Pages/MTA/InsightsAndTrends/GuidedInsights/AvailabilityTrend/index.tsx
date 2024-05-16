@@ -31,7 +31,8 @@ const AvailabilityTrend = () => {
   const options:AgChartOptions = {
     
     title: {
-      text: "Week Wise Availabilty Trend",
+      text: "Availabilty Trend",
+      fontWeight: "500"
     },
     data: AvailabilityTrend,
     series: [
