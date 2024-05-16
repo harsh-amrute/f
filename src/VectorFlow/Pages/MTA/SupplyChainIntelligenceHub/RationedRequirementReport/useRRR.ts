@@ -1,7 +1,6 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { SideBarDef } from 'ag-grid-enterprise';
-import { BPRFilterState } from "../../../../../VectorFlow/types/BPR"
 
 import { useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"

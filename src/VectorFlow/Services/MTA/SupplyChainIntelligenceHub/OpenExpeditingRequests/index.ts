@@ -1,4 +1,4 @@
-import { useQuery,useMutation } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 
 import { OpenExpeditingRequestsService } from './api'
 

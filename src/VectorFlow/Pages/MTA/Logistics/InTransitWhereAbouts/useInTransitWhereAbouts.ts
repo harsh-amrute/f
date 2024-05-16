@@ -7,13 +7,10 @@ import {toast} from 'react-toastify'
 import { AgGridReactProps } from "ag-grid-react";
 
 
-import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../helpers/notify";
 import ShowRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/ShowRemarkCellRenderer";
-import { useSelector } from "react-redux";
 
-import { RootState } from "../../../../../redux/store/store";
 import SubmitRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/SubmitRemarkCellRenderer";
 import MasterDetail from "./MasterDetail";
 import { ColorGroupCellRenderer, CurrentLocationCellRenderer, ETACellRenderer } from "./CellRenderers";
@@ -194,9 +191,13 @@ const useInTransitWhereAbouts = ()=>{
 
 
     const getRecordCount = async(filter:any)=>{
-      const countData = await getDataCount(filter)
-      const {count} = JSON.parse(countData.data.recordCount)[0]
-      setRecordCount(count)
+      try{
+        const countData = await getDataCount(filter)
+        const {count} = JSON.parse(countData.data.recordCount)[0]
+        setRecordCount(count)
+      }catch(err:any){
+        notifyError(err)
+      }
     }
 
     const getRowData = async(filter:any,pageNo:number)=>{
@@ -205,6 +206,7 @@ const useInTransitWhereAbouts = ()=>{
         pageNumber:pageNo,
         recordsPerPage:100
       })
+      console.debug(data.data.data.data)
       setRowData(mapInTransitWhereAboutsRowData(data.data.data))
     }
 

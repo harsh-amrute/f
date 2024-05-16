@@ -37005,3 +37005,18 @@ export const getPlanningDataGraphMockData = {
     conflictError: null
 }
 
+export const getPlanningDataGridCountMockResponse = {
+  "recordCount": null,
+  "data": [
+      {
+          "locationwise": 15,
+          "transporterwise": 14
+      }
+  ],
+  "status": 200,
+  "msg": null,
+  "errorCount": null,
+  "error": null,
+  "conflictErrorCount": null,
+  "conflictError": null
+}

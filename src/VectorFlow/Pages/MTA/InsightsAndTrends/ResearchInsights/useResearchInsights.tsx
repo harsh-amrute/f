@@ -45,7 +45,7 @@ const useResearchInsights = ()=>{
     const {mutateAsync:getUpdatedGraphData,isLoading:isUpdatedGraphDataLoading} = useGetUpdatedGraphData()
 
     const [ResearchInsightsData,setResearchInsightsRowData] = useState<Array<any>>([])
-    const {mutateAsync:getBPRData,isLoading:isBPRDataLoading} = useGetBPRData()
+    const {mutateAsync:getBPRData} = useGetBPRData()
 
     const {mutateAsync:getBPRDataCount,isLoading:isBPRDataCountLoading} = useGetBPRDataCount()
 

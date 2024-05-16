@@ -1,7 +1,6 @@
 import { CategoryWrapper, DateContainer, DateWrapper, CardContainer, CardWrapper, TextWrapper, IconWrapper, CountWrapper, CountText, ButtonWrapper, Separator, ButtonComponent, PlanningTaskBar, ButtonFilterWrapper  } from "./style";
 import { format } from "date-fns";
 import VFSelectedFilters from '../../../../components/VectorFLOW/commons/VFSelectedFilters';
-import useBPRFilter from "../../../../hooks/useBPRFilter";
 import {useState} from 'react'
 import VFButton from "../../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../../context"

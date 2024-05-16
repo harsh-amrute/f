@@ -12,7 +12,6 @@ import type { RootState } from '../../../../../redux/store/store';
 import { useSelector, useDispatch } from 'react-redux';
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type DailyDataGraph } from "../../../../types/MTA";
-import { BPRFilterState } from "../../../../../VectorFlow/types/BPR"
 import useBPRFilter from "../../../../../hooks/useBPRFilter"
 
 
@@ -63,7 +62,7 @@ const useBPR =()=>{
   
     const {data,isLoading:isBPRUILoading,isError} = useGetBPRUIConfiguration()
     
-    const {mutateAsync:getBPRData,isLoading:isBPRDataLoading} = useGetBPRData()
+    const {mutateAsync:getBPRData} = useGetBPRData()
 
     const {mutateAsync:submitRemark} = useSubmitBPRRemark()
 

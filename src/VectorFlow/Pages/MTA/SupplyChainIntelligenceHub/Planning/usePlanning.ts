@@ -2,7 +2,7 @@ import { useEffect, useState,useMemo,useRef } from "react"
 import { toast } from "react-toastify";
 import { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/VFPagination";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
-import { useGetDailyData, useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { useGetPlanningDataCount,useGetPlanningDataGraph, useGetPlanningDataGrid, useGetPlanningDataGridCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 import { PlanningCategory, PlanningCounts, DailyDataGraph } from "../../../../types/MTA"
 import {useSelector,useDispatch} from 'react-redux';
@@ -39,7 +39,6 @@ const usePlanning = ()=>{
 
     const [isSelectCategoryOpen,setIsSelectCategoryOpen] = useState(true);
 
-    const {mutateAsync:getGridState,isLoading} = useGetState()
 
     const {mutateAsync:getPlanningDataCount} = useGetPlanningDataCount();
 
@@ -71,7 +70,7 @@ const usePlanning = ()=>{
 
     const [totalRows,setTotalRows] = useState<number>(0);
 
-    const [currentGridState,setCurrentGridState] = useState<any>()
+    // const [currentGridState,setCurrentGridState] = useState<any>()
 
 
     const rowsPerPage = parseInt(process.env.REACT_APP_PLANNING_ROWS_PER_PAGE || '50');
@@ -432,17 +431,17 @@ const usePlanning = ()=>{
 
     }
 
-    const getAndApplyGridState = async()=>{
-        try{
-            const result  = await getGridState(`${currentCategory}${currentTab}`)
-            const tempState = JSON.parse(result.data.data)
-            setCurrentGridState(tempState)
+    // const getAndApplyGridState = async()=>{
+    //     try{
+    //         const result  = await getGridState(`${currentCategory}${currentTab}`)
+    //         const tempState = JSON.parse(result.data.data)
+    //         // setCurrentGridState(tempState)
             
-        }catch(error:any){
-            console.log(error)
-            notifyError(error)
-        }
-    }
+    //     }catch(error:any){
+    //         console.log(error)
+    //         notifyError(error)
+    //     }
+    // }
 
    
 
