@@ -94,7 +94,7 @@ describe('Testing the Planning Service',  () => {
           skucode:'',
           whcode:''
         }
-        const response = await PlanningService.submitOpenExpediteRequest(mockBody);
+        const response = await PlanningService.getPlanningDataGridCount(mockBody);
         expect(response.status).toBe(200);
     
       });
