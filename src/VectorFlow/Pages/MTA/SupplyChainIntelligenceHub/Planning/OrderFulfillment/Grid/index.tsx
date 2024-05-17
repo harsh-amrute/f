@@ -2,7 +2,6 @@ import {useMemo, useState} from 'react';
 import GridViewTable from "../../GridView/GridViewTable";
 import { BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
-import { VFPaginationProps } from "../../../../../../../components/VectorFLOW/commons/VFPagination";
 import { SideBarDef } from 'ag-grid-enterprise';
 import { createIconColumn } from '../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';

@@ -7,7 +7,6 @@ import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFB
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { AgChartOptions } from "ag-charts-community";
-import { colorToRgba } from "@react-spring/shared";
 
 const AvailabilityTrend = () => {
   const [AvailabilityTrend, setAvailabilityData] = useState();

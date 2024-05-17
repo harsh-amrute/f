@@ -216,8 +216,17 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                             columnDefs={colDefs1}
                                             rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
                                             enableCharts={true}
-                                            enableRangeSelection={true}
-                                            onGridReady={()=>generateChart(1,true)}
+                                            enableRangeSelection={true} 
+                                            rowSelection="multiple"
+                                            statusBar = {{
+                                                statusPanels: [
+                                                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agAggregationComponent', align:'left' },
+                                                ],
+                                              }}                                            onGridReady={()=>generateChart(1,true)}
                                             getChartToolbarItems={getChartToolbarItems}
                                             chartToolPanelsDef={
                                                 {
@@ -234,7 +243,9 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                                 floatingFilter:true,
                                                 filter: "agMultiColumnFilter",
                                               }}
+                                            height={480}
                                         />
+                                        
                                 </div>
                                 
                         </VFModalCard>
@@ -244,8 +255,17 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                 columnDefs={colDefs1}
                                 rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
                                 enableCharts={true}
-                                enableRangeSelection={true}
-                                onGridReady={()=>generateChart(1)}
+                                enableRangeSelection={true} 
+                                rowSelection="multiple"
+                                statusBar = {{
+                                    statusPanels: [
+                                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                      { statusPanel: 'agAggregationComponent', align:'left' },
+                                    ],
+                                  }}                                onGridReady={()=>generateChart(1)}
                                 getChartToolbarItems={getChartToolbarItems}
                                 chartToolPanelsDef={
                                     {
