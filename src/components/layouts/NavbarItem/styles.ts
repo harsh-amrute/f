@@ -85,6 +85,7 @@ export const SCNavbar = styled.div`
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+
 `;
 
 export const SCProfile = styled.div<{ isHide: boolean }>`
@@ -206,8 +207,8 @@ export const SCNavMenu = styled.div`
   align-items: center;
   gap: 6rem;
   padding-top: 20px;
-  font-size: 2rem;
-  font-weight: 500;
+  font-size: 1.5rem;
+  font-weight: 300;
   color: #333333;
   padding-left: 10px;
   position: relative;
@@ -268,6 +269,7 @@ export const SCNavName = styled.span`
   font-weight: 500;
   color: ${globalStyles.black};
   padding-left: 10px;
+
 `;
 
 export const SCNavChild = styled.span<{ themeUi: string; active: boolean }>`
@@ -283,8 +285,9 @@ export const SCNavChild = styled.span<{ themeUi: string; active: boolean }>`
   @media (min-width: ${gridSystem.size.laptopL}) and (max-width: ${gridSystem
       .size.desktop}) {
     padding-left: 8px;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
+
 `;
 
 export const SCNavBox = styled.div`

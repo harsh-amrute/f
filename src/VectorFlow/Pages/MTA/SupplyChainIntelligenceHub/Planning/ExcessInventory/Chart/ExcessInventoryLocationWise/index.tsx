@@ -290,8 +290,17 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                         columnDefs={colDefs1}
                                         rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data']),'SKUCounts')}
                                         enableCharts={true}
-                                        enableRangeSelection={true}
-                                        onGridReady={()=>generateChart(1,true)}
+                                        enableRangeSelection={true} 
+                                        rowSelection="multiple"
+                                        statusBar = {{
+                                            statusPanels: [
+                                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                              { statusPanel: 'agAggregationComponent', align:'left' },
+                                            ],
+                                          }}                                        onGridReady={()=>generateChart(1,true)}
                                         getChartToolbarItems={getChartToolbarItems}
                                         chartToolPanelsDef={
                                             {
@@ -318,8 +327,17 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                     columnDefs={colDefs1}
                                     rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data']),'SKUCounts')}
                                     enableCharts={true}
-                                    enableRangeSelection={true}
-                                    onGridReady={()=>generateChart(1)}
+                                    enableRangeSelection={true} 
+                                    rowSelection="multiple"
+                                    statusBar = {{
+                                        statusPanels: [
+                                          { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                          { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                          { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                          { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                          { statusPanel: 'agAggregationComponent', align:'left' },
+                                        ],
+                                      }}                                    onGridReady={()=>generateChart(1)}
                                     getChartToolbarItems={getChartToolbarItems}
                                     chartToolPanelsDef={
                                         {
@@ -354,8 +372,17 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                         columnDefs={colDefs2}
                                         rowData={scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data']),'SumOfAmount'),'SumOfAmount',100000)}
                                         enableCharts={true}
-                                        enableRangeSelection={true}
-                                        onGridReady={()=>generateChart(2,true)}
+                                        enableRangeSelection={true} 
+                                        rowSelection="multiple"
+                                        statusBar = {{
+                                            statusPanels: [
+                                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                              { statusPanel: 'agAggregationComponent', align:'left' },
+                                            ],
+                                          }}                                        onGridReady={()=>generateChart(2,true)}
                                         getChartToolbarItems={getChartToolbarItems}
                                         chartToolPanelsDef={
                                             {
@@ -382,8 +409,17 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                         columnDefs={colDefs2}
                                         rowData={scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data']),'SumOfAmount'),'SumOfAmount',100000)}
                                         enableCharts={true}
-                                        enableRangeSelection={true}
-                                        onGridReady={()=>generateChart(2)}
+                                        enableRangeSelection={true} 
+                                        rowSelection="multiple"
+                                        statusBar = {{
+                                            statusPanels: [
+                                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                              { statusPanel: 'agAggregationComponent', align:'left' },
+                                            ],
+                                          }}                                        onGridReady={()=>generateChart(2)}
                                         getChartToolbarItems={getChartToolbarItems}
                                         chartToolPanelsDef={
                                             {

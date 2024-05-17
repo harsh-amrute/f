@@ -55,6 +55,7 @@ const GuidedInsight=()=>{
         setExportExcelRowData:()=>{return}
 
     }}>
+        <div style={{zoom:0.8}}>
             <ActionToolBar  data-testid="chronicgridview"
                         view={currentView} 
                         onFloatingTabChange={onFloatingTabChange}
@@ -74,6 +75,7 @@ const GuidedInsight=()=>{
                     onApplyFilter={onApplyFilter}
 
                         />
+         </div>               
                       {renderView()} 
             </GridStateContext.Provider>) 
    

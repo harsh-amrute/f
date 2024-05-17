@@ -137,7 +137,8 @@ const Planning = () => {
             {
                 !isSelectCategoryOpen &&
                 <>
-                    <ActionToolBar 
+                <div style={{zoom:0.8}}>        
+                          <ActionToolBar 
                         genericRecordCount={0}
                         onExportToExcelCallBack={onExportToExcelCallBack}
                         planningCount={planningCounts}
@@ -155,6 +156,7 @@ const Planning = () => {
                         setMultiFilter={setCurrentFilter}
                         onDelete={onDelete}
                         />
+                </div>  
                     
                     {renderView()}
                 </>

@@ -68,6 +68,8 @@ export const BPRViewTableHeaderContainer = styled.div`
     top:0;
     background-color: white;
     z-index:100;
+    border-bottom: 1px solid #919191B3;
+   padding-bottom:5px;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
 `
 
@@ -80,7 +82,7 @@ export const BPRViewTableHeader = styled.div`
     font-variant:normal;
     font-weight:500;
     font-size:13px;
-    line-height:21px;
+    line-height:13px;
     font-family:Roboto;
     letter-spacing: 0px;
     color: #000000;
@@ -104,12 +106,16 @@ export const BPRViewTableRowContainer = styled.div`
     display:flex;
     flex-direction:column;
     max-height:250px;
-    margin-top:20px;
+    // margin-top:20px;
 `
 
 export const BPRViewTableRow = styled.div`
     width:100%;
+    height:40px;
     display:flex;
+    &:nth-child(even) {
+        background-color: #8D8D8D29; /* You can use a specific shade of yellow if needed */
+    }
 
 `
 

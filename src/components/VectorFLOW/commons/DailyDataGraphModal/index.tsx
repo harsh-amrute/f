@@ -509,9 +509,9 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                         </div>
                     </SCDataRow>
                     <SCHorizontalDivider/>
-                    <div style={{display:'flex',flexDirection:'column',marginBottom:'20px'}}>
-                        <SCText fontSize={16} fontWeight={300}>Select Suspension Type:</SCText>
-                        <Select options={suspensionOptions} placeholder={"Select Suspension Type"} defaultValue={suspensionOptions[0]} onChange={(data:any)=>setSuspensionType(data.value)}  />
+                    <div style={{display:'flex',flexDirection:'column',marginBottom:'20px', fontSize:'16px'}}>
+                        <SCText fontSize={18} fontWeight={300}>Select Suspension Type:</SCText>
+                        <Select options={suspensionOptions} placeholder={"Select Suspension Type"} defaultValue={suspensionOptions[0]} onChange={(data:any)=>setSuspensionType(data.value)} />
                     </div>
                     <SCHorizontalDivider/>
                     <div style={{display:'flex',flexDirection:'column',marginBottom:'20px'}}>

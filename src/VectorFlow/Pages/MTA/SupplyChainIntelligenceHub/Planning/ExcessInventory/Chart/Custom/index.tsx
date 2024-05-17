@@ -139,8 +139,17 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                 rowData={rowData}
                 sideBar={true}
                 enableCharts={true}
-                enableRangeSelection={true}
-                defaultColDef={{
+                enableRangeSelection={true} 
+                rowSelection="multiple"
+                statusBar = {{
+                    statusPanels: [
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                      { statusPanel: 'agAggregationComponent', align:'left' },
+                    ],
+                  }}                defaultColDef={{
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}

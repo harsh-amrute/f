@@ -38,7 +38,7 @@ const ChronicUnavailabilityCharts = () => {
             colId:'location',
         },
         
-  {
+        {
             field:'whcode',
             headerName:'Location Code',
             colId:'whcode',
@@ -152,8 +152,9 @@ const ChronicUnavailabilityCharts = () => {
             field:'C15',
             headerName:'C15',
             colId:'C15',
-        }
+        },
     ]
+
      const coldefs2:ColDef[] = [
         {
             field:'sku',
@@ -370,31 +371,34 @@ const ChronicUnavailabilityCharts = () => {
                     }
                 }
              },
-              common: {
-                  legend:{
+             common: {
+                 legend:{
                     position:'top'
-                  },
-                  axes:{
+                 },
+                 axes:{
                     category:{
                         title:{
                             enabled:true,
-                            text:'Location Name',
+                            text:'Date',
                             position:'bottom',
-
                         }
                     },
-                    series:{
+                    number:{
                         title:{
                             enabled:true,
-                            text:"Count of SKUs",
-                            position:"left"
-                        }
-                      }
-                  },
-              },
+                            text:'count of SKUS',
+                            position:'left',
+                        },
+                        label: {
+                            format: "#{.0f} %",
+                        },
+                    },
+                 },
+             },
           };
-      }, []);
-const chartThemeOverrides2 = useMemo<any>(() => { 
+    }, []);
+    
+    const chartThemeOverrides2 = useMemo<any>(() => { 
         return {
             palette:{
                 fills:['#0c7528','#570dbf']
@@ -416,25 +420,25 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                     category:{
                         title:{
                             enabled:true,
-                            text:'SKU Code',
+                            text:'Date',
                             position:'bottom',
-
                         }
                     },
-                    series:{
+                    number:{
                         title:{
                             enabled:true,
-                            text:"Count of Locations",
-                            position:"left"
-                        }
-                      }
+                            text:'Count of Locations',
+                            position:'left',
+                        },
+                        label: {
+                            format: "#{.0f} %",
+                        },
+                    },
                   },
-                 
-                  
               },
           };
-      }, []);
-
+    }, []);
+    
       const myCustomTheme:any = {
         palette: {
             fills: ['#9A0101', '#F02424'],
@@ -473,8 +477,17 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                                             columnDefs={coldefs1}
                                             rowData={ChronicUnavailabilityLocData}
                                             enableCharts={true}
-                                            enableRangeSelection={true}
-                                            onRowDataUpdated={()=>generateChart(1, true)}
+                                            enableRangeSelection={true} 
+                                            rowSelection="multiple"
+                                            statusBar = {{
+                                                statusPanels: [
+                                                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agAggregationComponent', align:'left' },
+                                                ],
+                                              }}                                             onRowDataUpdated={()=>generateChart(1, true)}
                                             getChartToolbarItems={getChartToolbarItems}
                                             chartToolPanelsDef={
                                                 {
@@ -503,8 +516,17 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                                             columnDefs={coldefs1}
                                             rowData={ChronicUnavailabilityLocData}
                                             enableCharts={true}
-                                            enableRangeSelection={true}
-                                            onRowDataUpdated={()=>generateChart(1)}
+                                            enableRangeSelection={true} 
+                                            rowSelection="multiple"
+                                            statusBar = {{
+                                                statusPanels: [
+                                                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agAggregationComponent', align:'left' },
+                                                ],
+                                              }}                                             onRowDataUpdated={()=>generateChart(1)}
                                             getChartToolbarItems={getChartToolbarItems}
                                             chartToolPanelsDef={
                                                 {
@@ -546,8 +568,17 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                                         columnDefs={coldefs2}
                                         rowData={ChronicUnavailabilitySkuData}
                                         enableCharts={true}
-                                        enableRangeSelection={true}
-                                        onRowDataUpdated={()=>generateChart(2,true)}
+                                        enableRangeSelection={true} 
+                                        rowSelection="multiple"
+                                        statusBar = {{
+                                            statusPanels: [
+                                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                              { statusPanel: 'agAggregationComponent', align:'left' },
+                                            ],
+                                          }}                                         onRowDataUpdated={()=>generateChart(2,true)}
                                         getChartToolbarItems={getChartToolbarItems}
                                         chartToolPanelsDef={
                                             {
@@ -575,8 +606,17 @@ const chartThemeOverrides2 = useMemo<any>(() => {
                                             columnDefs={coldefs2}
                                             rowData={ChronicUnavailabilitySkuData}
                                             enableCharts={true}
-                                            enableRangeSelection={true}
-                                            onGridReady={()=>generateChart(2)}
+                                            enableRangeSelection={true} 
+                                            rowSelection="multiple"
+                                            statusBar = {{
+                                                statusPanels: [
+                                                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agAggregationComponent', align:'left' },
+                                                ],
+                                              }}                                             onGridReady={()=>generateChart(2)}
                                             getChartToolbarItems={getChartToolbarItems}
                                             chartToolPanelsDef={
                                                 {

@@ -6,6 +6,7 @@ import { useUserData } from "../../../../../../context";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
+import { AgChartOptions } from "ag-charts-community";
 
 const AvailabilityTrend = () => {
   const [AvailabilityTrend, setAvailabilityData] = useState();
@@ -26,9 +27,11 @@ const AvailabilityTrend = () => {
     const AvailabilityTrendData = AvailabilityTrend?.data?.data;
     setAvailabilityData(AvailabilityTrendData);
   };
-  const options = {
+  const options:AgChartOptions = {
+    
     title: {
-      text: "Week Wise Availabilty Trend",
+      text: "Availabilty Trend",
+      fontWeight: "500"
     },
     data: AvailabilityTrend,
     series: [
@@ -36,28 +39,53 @@ const AvailabilityTrend = () => {
         xKey: "week",
         yKey: "percentage",
         strokeWidth: 3,
-        stroke: "#BC3D81",
+        stroke: "#4E4E4E",
         marker: {
           fill: "#BC3D81",
           size: 12,
           stroke: "white",
           strokeWidth: 3,
         },
+        title: "Distributor"
       },
     ],
+    // axes: [
+    //   {
+    //     type: "category",
+    //     position: "bottom",
+    //   } as const,
+    //   {
+    //     type: "number",
+    //     position: "left",
+    //     label: {
+    //       format: "#{.0f} %",
+    //     },
+    //   } as const,
+      
+    // ],
     axes: [
       {
-        type: "category",
-        position: "bottom",
+          type: "category",
+          position: "bottom",
+          title: {
+              text: 'Date',
+          },
       } as const,
       {
-        type: "number",
-        position: "left",
-        label: {
-          format: "#{.0f} %",
-        },
-      } as const,
-    ],
+          type: "number",
+          position: "left",
+          label: {
+                  format: "#{.0f} %",
+                },
+          title: {
+              text: 'Availability %',
+          },
+      } as const
+  ],
+    legend: {
+      position: "bottom",
+    },
+  
   };
   if (isLoading) {
     return <VFLoader />;
@@ -70,14 +98,13 @@ const AvailabilityTrend = () => {
 
   return (
     <div style={{marginTop:'25px'}}>
-      <div style={{ width: 650, display: "flex", alignItems:'center' }}>
+      <div style={{ width: 550, display: "flex", alignItems:'center' }}>
         <label
           style={{
             fontStyle: "normal",
             fontVariant: "normal",
-            fontWeight: 400,
-            fontSize: 16,
-            paddingTop: 20,
+            fontWeight: 300,
+            fontSize: 15,
             paddingLeft: 50,
             fontFamily: "Roboto",
           }}
@@ -100,10 +127,10 @@ const AvailabilityTrend = () => {
         />
 
         <VFButtonOutline
-        style={{height:'35px', fontSize:'14px'}}
+        style={{height:'35px', fontSize:'12px'}}
           themeUi={themeUi}
           onClick={() => OnHorizonChange(horizon)}
-          width={90}
+          width={95}
         >
           Submit
         </VFButtonOutline>

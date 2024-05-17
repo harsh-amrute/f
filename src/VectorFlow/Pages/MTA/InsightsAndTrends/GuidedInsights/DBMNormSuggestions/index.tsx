@@ -679,8 +679,17 @@ const DBMNormSuggestions = () => {
                           columnDefs={coldefs1}
                           rowData={DBMSuggestionLocData}
                           enableCharts={true}
-                          enableRangeSelection={true}
-                          onRowDataUpdated={() => generateChart(1, true)}
+                          enableRangeSelection={true} 
+                          rowSelection="multiple"
+                          statusBar = {{
+                              statusPanels: [
+                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                { statusPanel: 'agAggregationComponent', align:'left' },
+                              ],
+                            }}                           onRowDataUpdated={() => generateChart(1, true)}
                           getChartToolbarItems={getChartToolbarItems}
                           chartToolPanelsDef={{
                             panels: [],
@@ -704,8 +713,17 @@ const DBMNormSuggestions = () => {
                             columnDefs={coldefs1}
                             rowData={DBMSuggestionLocData}
                             enableCharts={true}
-                            enableRangeSelection={true}
-                            onRowDataUpdated={() => generateChart(1)}
+                            enableRangeSelection={true} 
+                            rowSelection="multiple"
+                            statusBar = {{
+                                statusPanels: [
+                                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                  { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                  { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                  { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                  { statusPanel: 'agAggregationComponent', align:'left' },
+                                ],
+                              }}                             onRowDataUpdated={() => generateChart(1)}
                             getChartToolbarItems={getChartToolbarItems}
                             chartToolPanelsDef={{
                               panels: [],
@@ -750,8 +768,17 @@ const DBMNormSuggestions = () => {
                           columnDefs={coldefs2}
                           rowData={pieData}
                           enableCharts={true}
-                          enableRangeSelection={true}
-                          onFirstDataRendered={() => generateChart(2, true)}
+                          enableRangeSelection={true} 
+                          rowSelection="multiple"
+                          statusBar = {{
+                              statusPanels: [
+                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                { statusPanel: 'agAggregationComponent', align:'left' },
+                              ],
+                            }}                           onFirstDataRendered={() => generateChart(2, true)}
                           getChartToolbarItems={getChartToolbarItems}
                           chartToolPanelsDef={{
                             panels: [],
@@ -774,8 +801,17 @@ const DBMNormSuggestions = () => {
                             columnDefs={coldefs2}
                             rowData={pieData}
                             enableCharts={true}
-                            enableRangeSelection={true}
-                            onFirstDataRendered={() => generateChart(2)}
+                            enableRangeSelection={true} 
+                            rowSelection="multiple"
+                            statusBar = {{
+                                statusPanels: [
+                                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                  { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                  { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                  { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                  { statusPanel: 'agAggregationComponent', align:'left' },
+                                ],
+                              }}                             onFirstDataRendered={() => generateChart(2)}
                             getChartToolbarItems={getChartToolbarItems}
                             chartToolPanelsDef={{
                               panels: [],
@@ -834,8 +870,17 @@ const DBMNormSuggestions = () => {
                           columnDefs={coldefs3}
                           rowData={DBMSuggestionSkuData}
                           enableCharts={true}
-                          enableRangeSelection={true}
-                          onRowDataUpdated={() => generateChart(3, true)}
+                          enableRangeSelection={true} 
+                          rowSelection="multiple"
+                          statusBar = {{
+                              statusPanels: [
+                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                { statusPanel: 'agAggregationComponent', align:'left' },
+                              ],
+                            }}                           onRowDataUpdated={() => generateChart(3, true)}
                           getChartToolbarItems={getChartToolbarItems}
                           chartToolPanelsDef={{
                             panels: [],
@@ -858,8 +903,17 @@ const DBMNormSuggestions = () => {
                             columnDefs={coldefs3}
                             rowData={DBMSuggestionSkuData}
                             enableCharts={true}
-                            enableRangeSelection={true}
-                            onRowDataUpdated={() => generateChart(3)}
+                            enableRangeSelection={true} 
+                            rowSelection="multiple"
+                            statusBar = {{
+                                statusPanels: [
+                                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                  { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                  { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                  { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                  { statusPanel: 'agAggregationComponent', align:'left' },
+                                ],
+                              }}                             onRowDataUpdated={() => generateChart(3)}
                             getChartToolbarItems={getChartToolbarItems}
                             chartToolPanelsDef={{
                               panels: [],
@@ -916,8 +970,17 @@ const DBMNormSuggestions = () => {
                           columnDefs={coldefs4}
                           rowData={DBMSuggestionAgeingData}
                           enableCharts={true}
-                          enableRangeSelection={true}
-                          onRowDataUpdated={() => generateChart(4, true)}
+                          enableRangeSelection={true} 
+                          rowSelection="multiple"
+                          statusBar = {{
+                              statusPanels: [
+                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                { statusPanel: 'agAggregationComponent', align:'left' },
+                              ],
+                            }}                           onRowDataUpdated={() => generateChart(4, true)}
                           getChartToolbarItems={getChartToolbarItems}
                           chartToolPanelsDef={{
                             panels: [],
@@ -936,8 +999,17 @@ const DBMNormSuggestions = () => {
                             columnDefs={coldefs4}
                             rowData={DBMSuggestionAgeingData}
                             enableCharts={true}
-                            enableRangeSelection={true}
-                            onRowDataUpdated={() => generateChart(4)}
+                            enableRangeSelection={true} 
+                            rowSelection="multiple"
+                            statusBar = {{
+                                statusPanels: [
+                                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                  { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                  { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                  { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                  { statusPanel: 'agAggregationComponent', align:'left' },
+                                ],
+                              }}                             onRowDataUpdated={() => generateChart(4)}
                             getChartToolbarItems={getChartToolbarItems}
                             chartToolPanelsDef={{
                               panels: [],

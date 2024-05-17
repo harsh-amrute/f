@@ -1,92 +1,94 @@
-
- import {SCChartContainer, SCDynamicContainer, SCHorizontalDivider} from '../style';
+import { SCChartContainer, SCDynamicContainer, SCHorizontalDivider } from '../style';
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { AgChartsReact } from "ag-charts-react";
 import { Allotment } from "allotment";
-import {useGetExcessInventorySku,useGetExcessInventoryValue}from "../../../../../Services/MTA/InsightsAndTrends";
+import { useGetExcessInventorySku, useGetExcessInventoryValue } from "../../../../../Services/MTA/InsightsAndTrends";
 import VFLoader from '../../../../../../components/VectorFLOW/commons/VFLoader';
 
-const ExcessInventoryTrend=()=>{
-    const {data:ExcessInventorySkuData, isLoading:isLoaderGraph1}=useGetExcessInventorySku();
-    const {data:ExcessInventoryValueData, isLoading:isLoaderGraph2}=useGetExcessInventoryValue();
-            
-    const ExcessInventorySku=ExcessInventorySkuData?.data?.data;
-    const ExcessInventoryValue=ExcessInventoryValueData?.data?.data;
+const ExcessInventoryTrend = () => {
+    const { data: ExcessInventorySkuData, isLoading: isLoaderGraph1 } = useGetExcessInventorySku();
+    const { data: ExcessInventoryValueData, isLoading: isLoaderGraph2 } = useGetExcessInventoryValue();
+
+    const ExcessInventorySku = ExcessInventorySkuData?.data?.data;
+    const ExcessInventoryValue = ExcessInventoryValueData?.data?.data;
 
     const options1 = {
-    title: {  
-      text: 'Excess Inventory Trend (Count Of SKU)-Last 90 Days',
-    },
-     data: ExcessInventorySku,     
-    series: [
-      {
-    
-        xKey: 'date',
-        xName:'Date',
-        yKey: 'countSku',
-        yName:'Count of SKU',
-      
-        strokeWidth: 3,
-        stroke: "#000000",
-        marker: {
-          fill: "#BC3D81",
-          size: 12,
-          stroke: "white",
-          strokeWidth: 2,
-         
-        },        
-      }
-     
-    ],
-    axes: [{
-        type: "category",
-        position: "bottom",
-      
-  } as const,
-      {         
-        type: "number",
-        position: "left"
-       
-      }as const
-]
-}
-const options2 = {
-    title: {  
-      text: 'Excess Inventory Trend (In Value)-Last 90 Days',
-    },
-     data: ExcessInventoryValue,     
-    series: [
-      {
-    
-        xKey: 'date',
-        xName:'Date',
-        yKey: 'value',
-        yName:'Value In Lakhs',
-      
-        strokeWidth: 3,
-        stroke: "#000000",
-        marker: {
-          fill: "#BC3D81",
-          size: 12,
-          stroke: "white",
-          strokeWidth: 2,
-         
-        },        
-      }
-     
-    ],
-    axes: [{
-        type: "category",
-        position: "bottom",
-      
-  } as const,
-      {         
-        type: "number",
-        position: "left"
-       
-      }as const
-]
-}
+        title: {
+            text: 'Excess Inventory Trend (Count Of SKU)-Last 90 Days',
+        },
+        data: ExcessInventorySku,
+        series: [
+            {
+                xKey: 'date',
+                xName: 'Date',
+                yKey: 'countSku',
+                yName: 'Count of SKU',
+                strokeWidth: 3,
+                stroke: "#A5A5A5",
+                marker: {
+                    fill: "#BC3D81",
+                    size: 12,
+                    stroke: "white",
+                    strokeWidth: 2,
+                },
+            }
+        ],
+        axes: [
+            {
+                type: "category",
+                position: "bottom",
+                title: {
+                    text: 'Date',
+                },
+            } as const,
+            {
+                type: "number",
+                position: "left",
+                title: {
+                    text: 'Value In Lakhs',
+                },
+            } as const
+        ]
+    };
+
+    const options2 = {
+        title: {
+            text: 'Excess Inventory Trend (In Value)-Last 90 Days',
+        },
+        data: ExcessInventoryValue,
+        series: [
+            {
+                xKey: 'date',
+                xName: 'Date',
+                yKey: 'value',
+                yName: 'Value In Lakhs',
+                strokeWidth: 3,
+                stroke: "#A5A5A5",
+                marker: {
+                    fill: "#BC3D81",
+                    size: 12,
+                    stroke: "white",
+                    strokeWidth: 2,
+                },
+            }
+        ],
+        axes: [
+            {
+                type: "category",
+                position: "bottom",
+                title: {
+                    text: 'Date',
+                },
+            } as const,
+            {
+                type: "number",
+                position: "left",
+                title: {
+                    text: 'Count of SKUs',
+                },
+            } as const
+        ]
+    };
 const graph1=['This graph highlights the date-wise trend of excess inventory across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
 
 const graph2=['This graph highlights the date-wise trend of excess inventory in value across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']

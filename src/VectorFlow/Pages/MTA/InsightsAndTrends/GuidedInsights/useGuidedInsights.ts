@@ -6,7 +6,7 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter";
  
 
 const useGuidedInsights = ()=>{
-const [currentTab,setCurrentTab] = useState<string>('');
+const [currentTab,setCurrentTab] = useState<string>('availabilitytrend');
 const [currentCategory,setCurrentCategory] = useState<string>('');
 const [currentView,setCurrentView] = useState<string>('chart');
 const [currentGridData,setCurrentGridData] = useState([{}]);

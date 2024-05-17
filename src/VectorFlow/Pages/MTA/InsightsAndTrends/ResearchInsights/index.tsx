@@ -94,6 +94,7 @@ const ResearchInsights = ()=>{
             setExportExcelRowData:setExportExcelRowData
 
         }}>
+            <div style={{zoom:0.8}}>
        <ActionToolBar 
             view={'grid'} 
             setCurrentTab={''} 
@@ -110,6 +111,7 @@ const ResearchInsights = ()=>{
             setMultiFilter={setCurrentFilter}
             onDelete={onDelete}
         />
+        </div>
         
         {(isLoading || isSavedDataLoading)?(
             <VFLoader/>
@@ -131,6 +133,17 @@ const ResearchInsights = ()=>{
                     onGridReady={(params)=>{
                         if(columnState)params.columnApi.applyColumnState({state:columnState})
                     }}
+                    enableRangeSelection={true} // Added property
+                    rowSelection="multiple"
+                    statusBar = {{
+                        statusPanels: [
+                          { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                          { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                          { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                          { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                          { statusPanel: 'agAggregationComponent', align:'left' },
+                        ],
+                      }}
                 />
                 <VFPagination
                     selectedRows={0}
@@ -219,11 +232,11 @@ const ResearchInsights = ()=>{
                                     activeBtn={{label:calenderType,value:calenderType}}
                                     capsules={[
                                         {
-                                            label:"Tech",
+                                            label:"On-Hand Inventory",
                                             value:'Tech'
                                         },
                                         {
-                                            label:"Eco",
+                                            label:"Pipeline Inventory",
                                             value:'Eco'
                                         }
                                     ]}
@@ -327,11 +340,11 @@ const ResearchInsights = ()=>{
                                 activeBtn={graphs[0].pen}
                                 capsules={[
                                     {
-                                        label:"Tech",
+                                        label:"On-Hand Inv.",
                                         value:'Tech'
                                     },
                                     {
-                                        label:"Eco",
+                                        label:"Pipeline Inv.",
                                         value:'Eco'
                                     }
                                 ]}
@@ -396,11 +409,11 @@ const ResearchInsights = ()=>{
                                 yKey: "Yellow",
                                 yName: "Yellow",
                                 marker:{
-                                    fill:'yellow',
+                                    fill:'#FFBF00',
                                     size:2,
-                                    stroke:'yellow'
+                                    stroke:'#FFBF00'
                                 },
-                                stroke:'yellow'
+                                stroke:'#FFBF00'
                             },
                             {
                                 type: "line",
@@ -473,11 +486,11 @@ const ResearchInsights = ()=>{
                                 activeBtn={graphs[1].pen}
                                 capsules={[
                                     {
-                                        label:"Tech",
+                                        label:"On-Hand Inv.",
                                         value:'Tech'
                                     },
                                     {
-                                        label:"Eco",
+                                        label:"Pipeline Inv.",
                                         value:'Eco'
                                     }
                                 ]}
@@ -542,11 +555,11 @@ const ResearchInsights = ()=>{
                                     yKey: "Yellow",
                                     yName: "Yellow",
                                     marker:{
-                                        fill:'yellow',
+                                        fill:'#FFBF00',
                                         size:2,
-                                        stroke:"yellow"
+                                        stroke:"#FFBF00"
                                     },
-                                    stroke:'yellow'
+                                    stroke:'#FFBF00'
                                 },
                                 {
                                     type: "line",

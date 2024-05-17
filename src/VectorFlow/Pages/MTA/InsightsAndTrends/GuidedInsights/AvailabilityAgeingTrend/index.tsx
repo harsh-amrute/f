@@ -6,6 +6,7 @@ import { useState,useEffect } from "react";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
+import { AgChartOptions } from "ag-charts-community";
 
 
 
@@ -37,53 +38,70 @@ const AvailabilityAgeingTrend=()=>{
         OnHorizonChange(horizon, minAgeing);
       },[])
    
-    const AvailabilityAgeingTrendOptions={
-   title: {
-      text: "Trend of #SKU-Loations with Continuous Black/Red/White Status >= Selected Minimum Ageing",
-    },
-    data: AvailabilityAgeingTrendData,
-    series: [
-      {
-        type: "line" as const,
-        xKey: "date",
-        yKey: "red",
-        yName: "red",
-        stroke:"#DA3535",
-        marker:{
-          fill: 'red',
-        stroke: 'red'
-        }
-        
-      },
-      {
-        type: "line" as const,
-        xKey: "date",
-        yKey: "black",
-        yName: "black",
-        strokeWidth: 3,
-        stroke:"#000000",
-        marker:{
-          fill: 'black',
-        stroke: 'black'
-        }
-       
-      },
-      
-
-      {
-        type: "line" as const,
-        xKey: "date",
-        yKey: "white",
-        yName: "white",
-        strokeWidth: 3,
-        stroke:"#BFBFBF",marker:{
-          fill: 'grey',
-        stroke: 'grey'
-        }
-       },
-    ],
-
-}
+      const AvailabilityAgeingTrendOptions:AgChartOptions = {
+        title: {
+          text: "Trend of #SKU-Loations with Continuous Black/Red/White Status >= Selected Minimum Ageing",
+          fontWeight: "bold",
+        },
+        data: AvailabilityAgeingTrendData,
+        series: [
+          {
+            type: "line" as const,
+            xKey: "date",
+            yKey: "red",
+            yName: "red",
+            stroke: "#DA3535",
+            marker: {
+              fill: 'red',
+              stroke: 'red'
+            }
+          },
+          {
+            type: "line" as const,
+            xKey: "date",
+            yKey: "black",
+            yName: "black",
+            strokeWidth: 3,
+            stroke: "#000000",
+            marker: {
+              fill: 'black',
+              stroke: 'black'
+            }
+          },
+          {
+            type: "line" as const,
+            xKey: "date",
+            yKey: "white",
+            yName: "white",
+            strokeWidth: 3,
+            stroke: "#BFBFBF",
+            marker: {
+              fill: 'grey',
+              stroke: 'grey'
+            }
+          },
+        ],
+        legend: {
+          position: 'bottom'
+        },
+        axes: [
+          {
+            type: 'category',
+            position: 'bottom',
+            title: {
+              text: 'Date'
+            }
+          },
+          {
+            type: 'number',
+            position: 'left',
+            title: {
+              text: 'No of SKU-Locations' 
+            }
+          }
+        ]
+      };
+    
 const graph1 = [
   'This graph highlights the trends of #SKU-Location with continous black,red or white status, each greater than or equal to the selected mimimum agening'
 ]
@@ -96,19 +114,19 @@ const graph1 = [
     return <div style={{ margin:'25px 20px 0px 20px'}}>
       <div style={{display:"flex", top: 221,
       left: 239,
-      width: 970,
+      width: 680,
       height: 59,
       opacity: 1,
       alignItems:'center'}}>
-     <div style={{paddingLeft:20, paddingTop:10, width:250,  }}>
+     <div style={{paddingLeft:20, width:210,  }}>
       <label style={{ fontStyle:"normal",
         fontVariant:"normal",
-        fontWeight:400,
-        fontSize:16,
+        fontWeight:300,
+        fontSize:15,
         fontFamily:"Roboto",}}>
         <b>Minimum Ageing:</b>  
       </label>
-       <select onChange={handleAgeChange} value={minAgeing} style={{width:50, height:40, border:"1px solid #707070", boxShadow:" 0px 6px 12px #8D8D8D29"}}>
+       <select onChange={handleAgeChange} value={minAgeing} style={{marginLeft:'4px',textAlign:'center',width:45, height:35, border:"1px solid #707070", boxShadow:" 0px 6px 12px #8D8D8D29",}}>
       
         {numbers.map((number) => (
           <option key={number} value={number}>
@@ -119,8 +137,8 @@ const graph1 = [
         <div style={{width:450, display:"flex" }}>
         <label style={{fontStyle:"normal",
           fontVariant:"normal",
-          fontWeight:400,
-          fontSize:15,
+          fontWeight:300,
+          fontSize:14,
         paddingTop:20,
     fontFamily:"Roboto",  paddingLeft:'10px'}}> <b>Select Horizon: </b></label>
      
@@ -136,7 +154,7 @@ const graph1 = [
                         labelValueFormatter={(value:number)=>value>1?`${value} Days`:`${value} Day`}
                     />
                    </div>
-                    <VFButtonOutline themeUi={themeUi} onClick={()=>OnHorizonChange(horizon, minAgeing)} width={90} style={{height:'35px',fontSize:'14px'}}>Submit</VFButtonOutline>
+                    <VFButtonOutline themeUi={themeUi} onClick={()=>OnHorizonChange(horizon, minAgeing)} width={95} style={{height:'35px',fontSize:'12px'}}>Submit</VFButtonOutline>
                     </div>
                     <div style={{marginLeft:'10px',marginRight:'10px',height:'400px'}}><AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
           <div style={{marginLeft:'10px',marginRight:'10px',marginTop:'5px'}}>
