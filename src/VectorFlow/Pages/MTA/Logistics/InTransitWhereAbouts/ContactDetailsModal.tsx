@@ -5,11 +5,7 @@ import { ContactModalContentHeader, ContactModalContentValue, ContactModalConten
 interface ContactDetailsModalProps{
     isOpen:boolean
     onClose:()=>void
-    data:{
-        name:string
-        phone:string
-        email:string
-    }
+    data:any
 }
 
 const ContactDetailsModal =(props:ContactDetailsModalProps)=>{
@@ -19,6 +15,7 @@ const ContactDetailsModal =(props:ContactDetailsModalProps)=>{
         onClose,data
     } = props
 
+    console.log(data)
     return(
         <VFModalCard openModal={isOpen} headerIcon="/assets/img/VectorFLOW/BPR/user.svg" headerText="Contact Details" closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg" closeModal={onClose}>
             <ContactModalContentWrapper>
@@ -26,19 +23,19 @@ const ContactDetailsModal =(props:ContactDetailsModalProps)=>{
                     Name
                 </ContactModalContentHeader>
                 <ContactModalContentValue>
-                    {data.name}
+                    {data.TransporterName}
                 </ContactModalContentValue>
                 <ContactModalContentHeader>
                     Phone No
                 </ContactModalContentHeader>
                 <ContactModalContentValue>
-                    {data.phone}
+                    {data.TransporterContact}
                 </ContactModalContentValue>
                 <ContactModalContentHeader>
                     Email ID
                 </ContactModalContentHeader>
                 <ContactModalContentValue>
-                    {data.email}
+                    {data.TransporterEmail}
                 </ContactModalContentValue>
             </ContactModalContentWrapper>
         </VFModalCard>

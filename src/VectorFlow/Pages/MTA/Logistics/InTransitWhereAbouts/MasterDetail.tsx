@@ -13,7 +13,6 @@ const MasterDetail = (params:any)=>{
     //     "PhysicalInventoryColor": "Red"
     //   }
     const {onContactDetails} = params
-    console.log(params)
     const {user} = useUserData()
     const theme_ui = user.user.theme_ui
     // useEffect(()=>{
@@ -29,11 +28,7 @@ const MasterDetail = (params:any)=>{
                 <MasterDetailHeader>SKU Details</MasterDetailHeader>
                 <VFButtonOutline
                     themeUi={theme_ui}
-                    onClick={()=>onContactDetails({
-                        name:"Rohan",
-                        email:"rohan@email.com",
-                        phone:'1234567891'
-                    })}
+                    onClick={()=>onContactDetails(params.data)}
                 >
                     Contact Details
                 </VFButtonOutline>

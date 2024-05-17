@@ -87836,3 +87836,90 @@ export const GetInTransitWhereAboutsMockResponse={
     "conflictError": null
 }
 
+export const GetRemarkDetailsForInTransitMockResponse = {
+    "recordCount": null,
+    "data": [
+        {
+            "Remarks": "csacasvavavavavba",
+            "ETA": "2024-03-01",
+            "CurrentLocation": "555",
+            "RemarksDate": "2024-05-16T18:09:41",
+            "UserName": "admin"
+        },
+        {
+            "Remarks": "vavdsvsddbsbsvs",
+            "ETA": "2024-03-01",
+            "CurrentLocation": "555",
+            "RemarksDate": "2024-05-16T18:09:38",
+            "UserName": "admin"
+        },
+        {
+            "Remarks": "vsvsdvsdvs",
+            "ETA": "2024-03-01",
+            "CurrentLocation": "555",
+            "RemarksDate": "2024-05-16T18:09:36",
+            "UserName": "admin"
+        },
+        {
+            "Remarks": "gsdgsvasvs",
+            "ETA": "2024-03-01",
+            "CurrentLocation": "555",
+            "RemarksDate": "2024-05-16T18:09:33",
+            "UserName": "admin"
+        },
+        {
+            "Remarks": "gsdgsdgs",
+            "ETA": "2024-03-01",
+            "CurrentLocation": "555",
+            "RemarksDate": "2024-05-16T18:09:31",
+            "UserName": "admin"
+        },
+        {
+            "Remarks": "agsgagas",
+            "ETA": "2024-03-01",
+            "CurrentLocation": "555",
+            "RemarksDate": "2024-05-16T18:09:30",
+            "UserName": "admin"
+        },
+        {
+            "Remarks": "fagsgbs",
+            "ETA": "2024-03-01",
+            "CurrentLocation": "555",
+            "RemarksDate": "2024-05-16T18:08:20",
+            "UserName": "admin"
+        }
+    ],
+    "status": 200,
+    "msg": null,
+    "errorCount": null,
+    "error": null,
+    "conflictErrorCount": null,
+    "conflictError": null
+}
+
+export const SubmitRemarksForInTransitMockResponse = {
+    "recordCount": null,
+    "data": null,
+    "status": 0,
+    "msg": "Data submitted successfully",
+    "errorCount": null,
+    "error": null,
+    "conflictErrorCount": null,
+    "conflictError": null
+}
+
+export const GetTransporterDetailsMockResponse = {
+    "recordCount": null,
+    "data": [
+        {
+            "TransporterName": "Prime Logistics",
+            "TransporterContact": "1122334459"
+        }
+    ],
+    "status": 200,
+    "msg": null,
+    "errorCount": null,
+    "error": null,
+    "conflictErrorCount": null,
+    "conflictError": null
+}

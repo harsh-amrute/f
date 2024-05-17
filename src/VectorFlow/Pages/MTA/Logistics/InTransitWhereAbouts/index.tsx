@@ -61,7 +61,10 @@ const InTransitWhereAbouts = ()=>{
         onApplyFilter,
         onExportToExcelCallBack,
         tempRef,
-        tempAgGridProps
+        tempAgGridProps,
+        onSubmitCurrentLocation,
+        onSubmitETA,
+        handlePageChange
     } = useInTransitWhereAbouts()
 
 
@@ -114,7 +117,7 @@ const InTransitWhereAbouts = ()=>{
                     totalRows={recordCount}
                     currentPage={currentPage}
                     rowsPerPage={100}
-                    handleChangePage={(e:number)=>getRowData(e,recordCount)}
+                    handleChangePage={handlePageChange}
                 />
                 </div>
             </>
@@ -136,7 +139,7 @@ const InTransitWhereAbouts = ()=>{
                 remark={etaValue}
                 setRemark={(e)=>setETAValue(e.target.value)}
                 style={submitETAToolTipPosition}
-                onSuccess={onSubmitRemark}
+                onSuccess={onSubmitETA}
                 onClose={onCloseSubmitETA}
                 
             />
@@ -146,7 +149,7 @@ const InTransitWhereAbouts = ()=>{
                 remark={currentLocationValue}
                 setRemark={(e)=>setCurrentLocationValue(e.target.value)}
                 style={submitCurrentLocationToolTipPosition}
-                onSuccess={onSubmitRemark}
+                onSuccess={onSubmitCurrentLocation}
                 onClose={onCloseSubmitCurentLocation}
                 
             />
