@@ -54,7 +54,6 @@ const InTransitWhereAbouts = ()=>{
         onCloseSubmitCurentLocation,
         recordCount,
         currentPage,
-        getRowData,
         currentFilter,
         setCurrFilter,
         onDelete,
