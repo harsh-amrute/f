@@ -4,10 +4,9 @@ import "allotment/dist/style.css";
 import "../../styles.css";
 import VFTable from "../../../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../../../types/MDM";
-import { ColDef, ChartRef } from "ag-grid-enterprise";
+import { ColDef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../styles';
-import VFInfoTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
-
+import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
 
@@ -24,12 +23,6 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
     const [hideChart1,toggleChart1] = useState<boolean>(false);
     const [hideChart2,toggleChart2] = useState<boolean>(false);
  
-    const [grid1DisplayStatus,setGrid1DisplayStatus] = useState<string>('none');
-    const [grid2DisplayStatus,setGrid2DisplayStatus] = useState<string>('none');
-   
-    let chartRef1:ChartRef |undefined;
-    let chartRef2:ChartRef | undefined;
-
     const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
         let colDefs = [];
 
@@ -135,7 +128,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
        
         if(graphNo === 1){
             if(withOutContainer) {
-                chartRef1 = refGraph1.current?.api.createRangeChart({
+                refGraph1.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
                         columns: ['product','overdue','due','others'],
@@ -146,7 +139,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
             }
             else{
                 const container1 = document.getElementById('OrderFulfillmentProductG1') as HTMLElement
-                chartRef1 = refGraph1.current?.api.createRangeChart({
+                refGraph1.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
                         columns: ['product','overdue','due','others'],
@@ -161,7 +154,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
       
         if(graphNo === 2){
             if(withOutContainer) {
-                chartRef2 = refGraph2.current?.api.createRangeChart({
+                refGraph2.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
                         columns: ['product','greater','between','smaller'],
@@ -172,7 +165,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
             }
             else{
                 const container2 = document.getElementById('OrderFulfillmentProductG2') as HTMLElement
-                chartRef2 = refGraph2.current?.api.createRangeChart({
+                refGraph2.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
                         columns: ['product','greater','between','smaller'],
@@ -188,14 +181,14 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
 
       const handleChartClose = (graphNo:number) => {
         if(graphNo === 1){
-            chartRef1?.destroyChart()
+            // chartRef1?.destroyChart()
             toggleChart1(true);
-            setGrid1DisplayStatus('block')
+            // setGrid1DisplayStatus('block')
         }
         if(graphNo === 2){
-            chartRef2?.destroyChart()
+            // chartRef2?.destroyChart()
             toggleChart2(true);
-            setGrid2DisplayStatus('block')
+            // setGrid2DisplayStatus('block')
         }
       }
 
@@ -291,16 +284,16 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
       }
 
    
-      const graph1 = [
-        'This graph highlights the top 10 products with maximum number of over due quantities and distribution of due and other quantities from pending orders file.',
-        'Overdue qty indicate those with past due dates, due represents qty with due dates of today in the future, while others include qty without due dates.'
-      ]
+    //   const graph1 = [
+    //     'This graph highlights the top 10 products with maximum number of over due quantities and distribution of due and other quantities from pending orders file.',
+    //     'Overdue qty indicate those with past due dates, due represents qty with due dates of today in the future, while others include qty without due dates.'
+    //   ]
 
-      const graph2 = [
-        'This Graph highlights the top 10 products with max no of locations where Gap in the product > 67% of requirement.',
-        'Gap = Requirement - Stock - GIT - Rationed Qty',
-        'Requirement = Norm Requirement + Spike Requirement + Relevant PSO & CNR Requirement'
-      ]
+    //   const graph2 = [
+    //     'This Graph highlights the top 10 products with max no of locations where Gap in the product > 67% of requirement.',
+    //     'Gap = Requirement - Stock - GIT - Rationed Qty',
+    //     'Requirement = Norm Requirement + Spike Requirement + Relevant PSO & CNR Requirement'
+    //   ]
 
      
     return(
@@ -308,148 +301,132 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={365}>
+                        <SCChartContainer height={380}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Products: Categorization of Pending Quantity</SCChartHeader></div>
-                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
+                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                                <div style={{height:'90%',display:grid1DisplayStatus}}>
-                                {
-                                    hideChart1 &&
-                                    (
-                                        <VFTable
-                                            ref={refGraph1}
-                                            columnDefs={colDefs1}
-                                            rowData={sortData(convertToInt(data['categorizationOfPendingQuantity']['data']),'overdue','due','others')}
-                                            enableCharts={true}
-                                            enableRangeSelection={true}
-                                            onGridReady={()=>generateChart(1,true)}
-                                            getChartToolbarItems={getChartToolbarItems}
-                                            chartToolPanelsDef={
-                                                {
-                                                    panels:[]
-                                                }
+                            <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Products: Categorization of Pending Quantity" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                                <div style={{width:'1000px'}}>
+                                    <VFTable
+                                        ref={refGraph1}
+                                        columnDefs={colDefs1}
+                                        rowData={sortData(convertToInt(data['categorizationOfPendingQuantity']['data']),'overdue','due','others')}
+                                        enableCharts={true}
+                                        enableRangeSelection={true}
+                                        onGridReady={()=>generateChart(1,true)}
+                                        getChartToolbarItems={getChartToolbarItems}
+                                        chartToolPanelsDef={
+                                            {
+                                                panels:[]
                                             }
-                                            chartThemeOverrides={chartThemeOverridesG1}
-                                            chartThemes={['myCustomTheme']}
-                                            customChartThemes={{
-                                                'myCustomTheme':myCustomThemeG1
+                                        }
+                                        chartThemeOverrides={chartThemeOverridesG1}
+                                        chartThemes={['myCustomTheme']}
+                                        customChartThemes={{
+                                            'myCustomTheme':myCustomThemeG1
+                                        }}
+                                        disableZoomScaling={true}
+                                        defaultColDef={{
+                                            floatingFilter:true,
+                                            filter: "agMultiColumnFilter",
                                             }}
-                                            disableZoomScaling={true}
-                                            defaultColDef={{
-                                                floatingFilter:true,
-                                                filter: "agMultiColumnFilter",
-                                              }}
-                                        />
-                                    )
-                                }
-                                {
-                                    !hideChart1 &&
-                                    (
-                                        <div style={{display:'none'}}>
-                                        <VFTable
-                                            ref={refGraph1}
-                                            columnDefs={colDefs1}
-                                            rowData={sortData(convertToInt(data['categorizationOfPendingQuantity']['data']),'overdue','due','others')}
-                                            enableCharts={true}
-                                            enableRangeSelection={true}
-                                            onGridReady={()=>generateChart(1)}
-                                            getChartToolbarItems={getChartToolbarItems}
-                                            chartToolPanelsDef={
-                                                {
-                                                    panels:[]
-                                                }
-                                            }
-                                            chartThemeOverrides={chartThemeOverridesG1}
-                                            chartThemes={['myCustomTheme']}
-                                            customChartThemes={{
-                                                'myCustomTheme':myCustomThemeG1
-                                            }}
-                                            disableZoomScaling={true}
-                                        />
-                                        </div>
-                                    )
-                                }
-                               
+                                        height={480}
+                                    />
                                 </div>
-                                {!hideChart1 && <div id="OrderFulfillmentProductG1" style={{height:'285px'}}></div>}
+                            </VFModalCard>                                   
+                            <div style={{display:'none'}}>
+                                <VFTable
+                                    ref={refGraph1}
+                                    columnDefs={colDefs1}
+                                    rowData={sortData(convertToInt(data['categorizationOfPendingQuantity']['data']),'overdue','due','others')}
+                                    enableCharts={true}
+                                    enableRangeSelection={true}
+                                    onGridReady={()=>generateChart(1)}
+                                    getChartToolbarItems={getChartToolbarItems}
+                                    chartToolPanelsDef={
+                                        {
+                                            panels:[]
+                                        }
+                                    }
+                                    chartThemeOverrides={chartThemeOverridesG1}
+                                    chartThemes={['myCustomTheme']}
+                                    customChartThemes={{
+                                        'myCustomTheme':myCustomThemeG1
+                                    }}
+                                    disableZoomScaling={true}
+                                />
+                            </div>
+                            <div id="OrderFulfillmentProductG1" style={{height:'300px'}}></div>
                         </SCChartContainer>
-                        <div style={{marginLeft:'10px',marginRight:'10px'}}>
+                        {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>
-                        </div>
+                        </div> */}
                     </Allotment.Pane>
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={380}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Products: Max No Of Locations with Gap &gt; 67% of Requirement</SCChartHeader></div>
-                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(2)}/>}</div>
+                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(2)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                                <div style={{height:'90%',display:grid2DisplayStatus}}>
-                                {
-                                    hideChart2 &&
-                                    (
-                                        <VFTable
-                                            ref={refGraph2}
-                                            columnDefs={colDefs2}
-                                            rowData={sortData(convertToInt(data['maxNumberOfLocationsWithGap']['data']),'greater','between','smaller')}
-                                            enableCharts={true}
-                                            enableRangeSelection={true}
-                                            onGridReady={()=>generateChart(2,true)}
-                                            getChartToolbarItems={getChartToolbarItems}
-                                            chartToolPanelsDef={
-                                                {
-                                                    panels:[]
-                                                }
+                            <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Products: Max No Of Locations with Gap &gt; 67% of Requirement" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                                <div style={{width:'1000px'}}>
+                                    <VFTable
+                                        ref={refGraph1}
+                                        columnDefs={colDefs1}
+                                        rowData={sortData(convertToInt(data['categorizationOfPendingQuantity']['data']),'overdue','due','others')}
+                                        enableCharts={true}
+                                        enableRangeSelection={true}
+                                        onGridReady={()=>generateChart(1,true)}
+                                        getChartToolbarItems={getChartToolbarItems}
+                                        chartToolPanelsDef={
+                                            {
+                                                panels:[]
                                             }
-                                            chartThemeOverrides={chartThemeOverridesG2}
-                                            chartThemes={['myCustomTheme']}
-                                            customChartThemes={{
-                                                'myCustomTheme':myCustomThemeG2
+                                        }
+                                        chartThemeOverrides={chartThemeOverridesG1}
+                                        chartThemes={['myCustomTheme']}
+                                        customChartThemes={{
+                                            'myCustomTheme':myCustomThemeG1
+                                        }}
+                                        disableZoomScaling={true}
+                                        defaultColDef={{
+                                            floatingFilter:true,
+                                            filter: "agMultiColumnFilter",
                                             }}
-                                            disableZoomScaling={true}
-                                            defaultColDef={{
-                                                floatingFilter:true,
-                                                filter: "agMultiColumnFilter",
-                                              }}
-                                        />
-                                    )
-                                }
-                                {
-                                    !hideChart2 &&
-                                    (
-                                        <div style={{display:'none'}}>
-                                        <VFTable
-                                            ref={refGraph2}
-                                            columnDefs={colDefs2}
-                                            rowData={sortData(convertToInt(data['maxNumberOfLocationsWithGap']['data']),'greater','between','smaller')}
-                                            enableCharts={true}
-                                            enableRangeSelection={true}
-                                            onGridReady={()=>generateChart(2)}
-                                            getChartToolbarItems={getChartToolbarItems}
-                                            chartToolPanelsDef={
-                                                {
-                                                    panels:[]
-                                                }
-                                            }
-                                            chartThemeOverrides={chartThemeOverridesG2}
-                                            chartThemes={['myCustomTheme']}
-                                            customChartThemes={{
-                                                'myCustomTheme':myCustomThemeG2
-                                            }}
-                                            disableZoomScaling={true}
-                                        />
-                                        </div>
-                                    )
-                                }
-                               
+                                        height={480}
+                                    />
                                 </div>
-                                {!hideChart2 && <div id="OrderFulfillmentProductG2" style={{height:'300px'}}></div>}
+                            </VFModalCard> 
+                            <div style={{display:'none'}}>
+                                <VFTable
+                                    ref={refGraph2}
+                                    columnDefs={colDefs2}
+                                    rowData={sortData(convertToInt(data['maxNumberOfLocationsWithGap']['data']),'greater','between','smaller')}
+                                    enableCharts={true}
+                                    enableRangeSelection={true}
+                                    onGridReady={()=>generateChart(2)}
+                                    getChartToolbarItems={getChartToolbarItems}
+                                    chartToolPanelsDef={
+                                        {
+                                            panels:[]
+                                        }
+                                    }
+                                    chartThemeOverrides={chartThemeOverridesG2}
+                                    chartThemes={['myCustomTheme']}
+                                    customChartThemes={{
+                                        'myCustomTheme':myCustomThemeG2
+                                    }}
+                                    disableZoomScaling={true}
+                                />
+                            </div>
+                            <div id="OrderFulfillmentProductG2" style={{height:'300px'}}></div>
                         </SCChartContainer>
-                        <div style={{marginLeft:'10px',marginRight:'10px'}}>
+                        {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph2}/>
-                        </div>
+                        </div> */}
                     </Allotment.Pane>
                   
                 </Allotment>
