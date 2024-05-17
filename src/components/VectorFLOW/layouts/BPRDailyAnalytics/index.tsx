@@ -145,7 +145,6 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     },[location.pathname,currentCategory,currentView,currentTab])
 
     const getCellText = (text:any,colKey:string)=>{
-        console.log(text)
         if(colKey==='techChange' || colKey==='ecoChange'){
             if(!text)return "N/A"
             text = String(text)
@@ -177,7 +176,6 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
 
     
     
-    
     if(isLoading){
         return(
             <BPRDailyAnalyticsWrapper>
@@ -193,8 +191,9 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
         )
     }
     
-    if(rowData.length===0){
-        <BPRDailyAnalyticsWrapper>
+    if(!rowData  || rowData.length===0){
+        return(
+            <BPRDailyAnalyticsWrapper>
                 <BPRDailyAnalyticsContainer style={{aspectRatio:'0.9',width:'90%'}}>
                     <BPRDailyAnalyticsHeader>
                         Analytics (SKU Locations)
@@ -204,6 +203,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                     </div>
                 </BPRDailyAnalyticsContainer>
             </BPRDailyAnalyticsWrapper>
+        )
     }
     
 

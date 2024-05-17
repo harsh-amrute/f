@@ -1,4 +1,4 @@
-import {useRef,useMemo} from 'react'
+import {useMemo} from 'react'
 
 import SelectCategory from "../../../../../components/VectorFLOW/layouts/SelectCategory";
 
@@ -41,7 +41,13 @@ const Planning = () => {
         setTempDownloadData,
         exportExcelRowData,
         setExportExcelRowData,
-        onExportToExcelCallBack
+        onExportToExcelCallBack,
+        ref,
+        tempRef,
+        onApplyFilter,
+        currentFilter,
+        setCurrentFilter,
+        onDelete
     } = usePlanning();
 
 
@@ -58,13 +64,18 @@ const Planning = () => {
         
     }
 
-    const ref = useRef()
-    const tempRef = useRef()
+    
 
     const currentColDefs = useMemo(()=>{
-        if(currentGridData&& currentGridData.uiConfig){
+        if(currentGridData){
+            let currUiConfig = []
+            if(currentCategory==="GITToChild"){
+                if(currentTab==="locationWise")currUiConfig=currentGridData['locationWise'].uiConfig
+                else currUiConfig=currentGridData['transporterWise'].uiConfig
+            }
+            else currUiConfig = currentGridData.uiConfig
             let colDefs = [];
-        colDefs = currentGridData.uiConfig.map((column:{header:string,colCode:string})=>{
+        colDefs = currUiConfig.map((column:{header:string,colCode:string})=>{
             if(['plp','pip'].includes(column.colCode)){
                 return {
                     field:column['colCode'],
@@ -83,6 +94,7 @@ const Planning = () => {
         }
         return []
     },[currentGridData])
+
 
     return(
         <GridStateContext.Provider value={{
@@ -117,6 +129,9 @@ const Planning = () => {
                     onExpediteParentClick={()=>handlePlanningQuadrantClick('ExpediteFromParent')}
                     onExcessInventoryReviewClick={()=>handlePlanningQuadrantClick('ExcessInventory')}
                     onOrderFulfillmentReviewClick={()=>handlePlanningQuadrantClick('OrderFulfillment')}
+                    multiFilter={currentFilter}
+                    setMultiFilter={setCurrentFilter}
+                    onDelete={onDelete}
                 />
             }
             {
@@ -136,6 +151,10 @@ const Planning = () => {
                         setCurrentTab={setCurrentTab}
                         tabsList={getFloatingTabsList(currentView)}
                         disableChartAndGridViewToggle={['GITFromParent',].includes(currentCategory)}
+                        onApplyFilter={onApplyFilter}
+                        multiFilter={currentFilter}
+                        setMultiFilter={setCurrentFilter}
+                        onDelete={onDelete}
                         />
                 </div>  
                     

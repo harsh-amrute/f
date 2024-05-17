@@ -9,10 +9,9 @@ import VFLoader from "../../../../../../../../../components/VectorFLOW/commons/V
 import { SCDynamicContainer } from "../../../styles";
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../../../../../helpers/notify";
 import { toast } from 'react-toastify';
-import { useGetState } from "../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+
 import { GridStateContext } from "../../../../../../../../../context/GridStateContext";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../../../../../../redux/store/store";
+
 
 
 
@@ -22,12 +21,9 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
 
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
     const chunkSize = 10000;
 
-    const {mutateAsync:getState} = useGetState()
     const {mutateAsync:getPlanningDataCustom,isLoading} = useGetPlanningDataCustom();
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
@@ -45,17 +41,17 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
         return [...colDefs];
     }
 
-    useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState("GITToChildcustom")
-            setColumnState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setColumnState(colDefs)
-          }
-        }
-        getTableState()
-    },[currentGridState])
+    // useEffect(()=>{
+    //     const getTableState = async()=>{
+    //       try{
+    //         const data =  await getState("GITToChildcustom")
+    //         setColumnState(JSON.parse(data.data.data))
+    //       }catch(err:any){
+    //         setColumnState(colDefs)
+    //       }
+    //     }
+    //     getTableState()
+    // },[currentGridState])
 
     useEffect(()=>{
         const fetchCustomPlanningData = async ()=> {
@@ -121,11 +117,11 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}
-                onGridReady={(params)=>{
-                    if(columnState){
-                     params.columnApi.applyColumnState({state:columnState})
-                    }
-                 }}
+                // onGridReady={(params)=>{
+                //     if(columnState){
+                //      params.columnApi.applyColumnState({state:columnState})
+                //     }
+                //  }}
             />
         </SCDynamicContainer>
         </>

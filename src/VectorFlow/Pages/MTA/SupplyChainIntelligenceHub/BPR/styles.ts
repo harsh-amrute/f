@@ -70,6 +70,7 @@ export const BPRViewTableHeaderContainer = styled.div`
     z-index:100;
     border-bottom: 1px solid #919191B3;
    padding-bottom:5px;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
 `
 
 export const BPRViewTableHeader = styled.div`
@@ -81,7 +82,7 @@ export const BPRViewTableHeader = styled.div`
     font-variant:normal;
     font-weight:500;
     font-size:13px;
-    line-height:21px;
+    line-height:13px;
     font-family:Roboto;
     letter-spacing: 0px;
     color: #000000;
@@ -142,7 +143,7 @@ export const ReadMoreToolTip = styled.div`
 `
 
 export const BPRColorCellRendererWrapper = styled.div`
-    display:block;
+    display:flex;
     justify-content:center;
     align-items:center;
     width: 100%;

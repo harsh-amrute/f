@@ -12,7 +12,7 @@ import type { RootState } from '../../../../../redux/store/store';
 import { useSelector, useDispatch } from 'react-redux';
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type DailyDataGraph } from "../../../../types/MTA";
-import { BPRFilterState } from "../../../../../VectorFlow/types/BPR"
+import useBPRFilter from "../../../../../hooks/useBPRFilter"
 
 
 const useBPR =()=>{
@@ -50,7 +50,7 @@ const useBPR =()=>{
         whcode:''
     })
 
-    const [currFilter,setCurrFilter] = useState<any>({})
+    const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
 
@@ -62,7 +62,7 @@ const useBPR =()=>{
   
     const {data,isLoading:isBPRUILoading,isError} = useGetBPRUIConfiguration()
     
-    const {mutateAsync:getBPRData,isLoading:isBPRDataLoading} = useGetBPRData()
+    const {mutateAsync:getBPRData} = useGetBPRData()
 
     const {mutateAsync:submitRemark} = useSubmitBPRRemark()
 
@@ -109,8 +109,8 @@ const useBPR =()=>{
   
     useEffect(()=>{
         
-        getBPRRowData()
-    },[currGridPage])
+        getInitialBPRRowData()
+    },[])
   
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -171,45 +171,48 @@ const useBPR =()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BufferPenetrationReport'});
         }
       };
 
-      const getBPRRowData=async(filter?:BPRFilterState)=>{
-        setActiveRow({})
-        setCurrFilter(filter)
-        toggleSubGrid(false)
+      const getInitialBPRRowData=async()=>{
         try{
-            if(recordCount===0 || filter){
-                const countData = await getBPRDataCount({
-                    id: 1,
-                    name: "",
-                    fields: [],
-                    filters:filter || currFilter,
-                    paginationParameter:{
-                        pageNumber:currGridPage,
-                        recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
-                    }
-                })
-    
-                setRecordCount(countData.data.recordCount)
-                setCurrGridPage(1)
-            }
-
-            const rowData =await  getBPRData({
-                id: 1,
-                name: "",
-                fields: [],
-                filters:filter || currFilter,
-                paginationParameter:{
-                    pageNumber:currGridPage,
-                    recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
-                }
-            })
-            setBPRRowData(rowData.data.data)
+            await getBPRRecordCount(currFilter)
+            await getBPRRowData(currFilter,1)
         }catch(err:any){
             notifyError(err)
         }
+    }
+
+    const getBPRRecordCount = async(filter:any)=>{
+        const countData = await getBPRDataCount({
+            id: 1,
+            name: "",
+            fields: [],
+            filters:filter,
+            paginationParameter:{
+                pageNumber:currGridPage,
+                recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+            }
+        })
+
+        setRecordCount(countData.data.recordCount)
+    }
+
+    const getBPRRowData = async(filter:any,pageNo:number)=>{
+        notifyLoader("Loading Grid Data")
+        const rowData =await  getBPRData({
+            id: 1,
+            name: "",
+            fields: [],
+            filters:filter,
+            paginationParameter:{
+                pageNumber:pageNo,
+                recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+            }
+        })
+        toast.dismiss()
+        setBPRRowData(rowData.data.data)
     }
 
     const updateRemark = (e:any)=>setRemark(e.currentTarget.value)
@@ -300,7 +303,7 @@ const useBPR =()=>{
             id:1,
             name:'',
             fields:[],
-            filters:{},
+            filters:currFilter,
             paginationParameter:{
                 pageNumber:pageNumber,
                 recordsPerPage:5000
@@ -311,7 +314,17 @@ const useBPR =()=>{
     }
 
 
-    const handleOnPageChange = (pageNumber:number)=>setCurrGridPage(pageNumber)
+    const handleOnPageChange = async(pageNumber:number)=>{
+        setCurrGridPage(pageNumber)
+        await getBPRRowData(currFilter,pageNumber)
+    }
+
+    const onApplyFilter = (filter:any)=>{
+        setCurrFilter(filter)
+        getBPRRecordCount(filter)
+        setCurrGridPage(1)
+        getBPRRowData(filter,1)
+    }
 
     const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
 
@@ -322,7 +335,7 @@ const useBPR =()=>{
    
     return {
         isSubGridOpen,
-        isLoading : isBPRDataLoading || isBPRUILoading || isBPRDataCountLoading,
+        isLoading :  isBPRUILoading || isBPRDataCountLoading,
         isError,
         activeRow,
         BPRColumns,
@@ -361,7 +374,11 @@ const useBPR =()=>{
         exportExcelColumns,
         setExportExcelColumns,
         getBPRRowData,
-        onExportToExcelCallBack
+        onExportToExcelCallBack,
+        currFilter,
+        onDelete,
+        setCurrFilter,
+        onApplyFilter
     }
 }
 

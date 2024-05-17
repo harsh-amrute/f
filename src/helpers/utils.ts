@@ -889,7 +889,6 @@ export const mapDraftDataToTableRowData = (rowData:any[])=>{
 }
 
 export const getExistingColumns = (rowData:any)=>{
-  console.log(rowData)
   return Object.keys(rowData)
 }
 
@@ -1181,6 +1180,7 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
   return dirtyRowData.map(entry => {
 
     if(taskType==='modify' || masterId===13){
+      console.log(entry.RN,entry.new, JSON.parse(entry.new))
       const oldData = JSON.parse(entry.old);
       const newData = JSON.parse(entry.new);
       
@@ -2182,6 +2182,60 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
       hide:!f.Visible
     }
   })
+
+  const additionalColumns: ColDef[] = [
+    {
+      colId: 'OldNormValue',
+      field: 'OldNormValue',
+      headerName: 'Old Norm',
+      hide: false
+    },
+    {
+      colId: 'NewNormValue',
+      field: 'NewNormValue',
+      headerName: 'New Norm',
+      hide: false
+    },
+    {
+      colId: 'Comment',
+      field: 'Comment',
+      headerName: 'Reason',
+      hide: false
+    }
+  ]
+ 
+  const insertPosition = 4;
+  result.splice(insertPosition, 0, ...additionalColumns);
+
    return [DBMTickColumn,...DBMGraphColumn,...DBMSleepColumn,...result]
   
+}
+
+export const mapInTransitWhereAboutsRowData = (rowData:Array<any>):Array<any>=>{
+  if(!rowData || !Array.isArray(rowData))return []
+  // PhysicalInventoryColor
+  return rowData.map((r:any)=>{
+    if(!r.skuDetails || r.skuDetails.length<1)return r
+    let legalCount = 0
+    const colorArrayMap:any = {
+      "Black":0,
+      "Red":0,
+      "Yellow":0,
+      "Green":0,
+      "White":0
+    }
+    r.skuDetails.forEach((sd:any)=>{
+      if(sd.PhysicalInventoryColor){
+        colorArrayMap[sd.PhysicalInventoryColor] = colorArrayMap[sd.PhysicalInventoryColor] + 1
+        legalCount+=1
+      }
+      
+    })
+    return {
+      ...r,
+      on_hand_penetration:colorArrayMap,
+      count:legalCount
+    }
+  })
+
 }

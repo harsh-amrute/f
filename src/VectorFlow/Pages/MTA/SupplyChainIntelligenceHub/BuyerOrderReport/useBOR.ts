@@ -12,15 +12,20 @@ import { useSelector,useDispatch } from "react-redux"
 import { RootState } from "../../../../../redux/store/store"
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type DailyDataGraph } from "../../../../types/MTA";
-import { notifyError} from "../../../../../helpers/notify"
+import { notifyError, notifyLoader} from "../../../../../helpers/notify"
+import { toast } from "react-toastify"
+
+import useBPRFilter from "../../../../../hooks/useBPRFilter";
 
 
 
 export const useBOR =()=>{
     const ref=  useRef()
     const tempRef = useRef()
-     const [setActiveRow] = useState<any>()
-     const {data} = useGetBORUIConfiguration();
+
+    const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
+
+     const {data,isLoading} = useGetBORUIConfiguration();
      const dispatch = useDispatch();
    
     //  const [toggleSubGrid] = useState<boolean>(false);
@@ -48,7 +53,7 @@ export const useBOR =()=>{
       }
 
 
-     const {mutateAsync:getBorData, isLoading} = useBORData();
+     const {mutateAsync:getBorData} = useBORData();
      const {mutateAsync:getBorDataCount} = useBORDataCount();
      const {mutateAsync:getDailyData} = useGetDailyData();
 
@@ -80,7 +85,6 @@ export const useBOR =()=>{
 
       
       const BORColumns = mapBORFieldsToColDefs(data?.data.data,onOpenDailyDataGraph)
-      const [currFilter,setCurrFilter] = useState<any>({})
       const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
       const [columnState,setColumnState] = useState<any>()
       const {currentGridState} = useSelector((state:RootState)=>state.mta)
@@ -121,7 +125,7 @@ export const useBOR =()=>{
             await loadGridData(currentPage);
         };
         fetchData();
-    }, [currentPage, currFilter]);
+    }, []);
 
       const getRecordsCount=async(filter?:any)=>{
             const payload={
@@ -137,14 +141,27 @@ export const useBOR =()=>{
       }
     
     const loadGridData = async (pageNo:any,filter?:any)=> {
-      console.log(filter)
-        const payload={
+
+        try{
+          notifyLoader("loading Grid Data")
+          const payload={
             filters:filter || {},
             paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
         }
         const result = await getBorData(payload);
         setRowData(result?.data.data)
+        toast.dismiss()
+        }catch(err:any){
+          notifyError(err)
+        }
 
+    }
+
+    const onApplyFilter = async(filter:any)=>{
+      await getRecordsCount(filter)
+      await loadGridData(1,filter)
+      setCurrFilter(filter)
+      setCurrentPage(1)
     }
 
      const agGridProps:AgGridReactProps = {
@@ -188,7 +205,6 @@ export const useBOR =()=>{
       }
 
       const getBORRowData=async(filter:BPRFilterState)=>{
-        setActiveRow({})
         if(filter)setCurrFilter(filter)
         try{
             if(recordCount===0 || filter){
@@ -205,12 +221,12 @@ export const useBOR =()=>{
 
       const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport'});
         }
       };
       const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getBorData({
-            filters:[],
+            filters:currFilter,
             paginationParameter:{
                 pageNumber:pageNumber,
                 recordsPerPage:5000
@@ -245,6 +261,10 @@ export const useBOR =()=>{
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
         dailyData,
-        getBORRowData
+        getBORRowData,
+        onApplyFilter,
+        currFilter,
+        setCurrFilter,
+        onDelete,
     }
 }

@@ -72,6 +72,6 @@ export const useGetExcessInventoryValue = ()=>{
 }
 
   export const useGetChronicUnavailabilityGridView = ()=>{
-  return useQuery(QUERY_KEYS.useGetChronicUnavailabilityGridView,async()=>{
-    return await InsightsAndTrendsService.getChronicUnavailabilityGridView()
+  return useMutation(async(body:any)=>{
+    return await InsightsAndTrendsService.getChronicUnavailabilityGridView(body)
   })}

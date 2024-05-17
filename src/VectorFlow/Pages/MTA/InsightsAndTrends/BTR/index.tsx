@@ -28,7 +28,11 @@ const BufferTrendReport = () => {
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
-    } = useBTR();
+        currFilter,
+        setCurrFilter,
+        onDelete,
+        onApplyFilter
+    } = useBTR()
 
     return (
         <GridStateContext.Provider
@@ -42,21 +46,28 @@ const BufferTrendReport = () => {
                 setExportExcelRowData: setExportExcelRowData
             }}
         >
-            <BTRLayoutWrapper>
-                <div style={{ zoom: 0.8 }}>
-                    <ActionToolBar
-                        view={'grid'}
-                        setCurrentTab={''}
-                        currCategory={'BTR'}
-                        currentTab={currentTab.value}
-                        tabsList={[]}
-                        onFloatingTabChange={() => console.log('')}
-                        onGoBack={() => console.log('')}
-                        onViewChange={() => console.log('')}
-                        onExportToExcelCallBack={(pageNumber: number) => { return onExportToExcelCallBack(pageNumber, currentTab.value) }}
-                        genericRecordCount={parseInt(techTotalRows)}
-                    />
-                </div>
+        <BTRLayoutWrapper>
+
+        <div style={{zoom:0.8}}>
+        <ActionToolBar 
+            view={'grid'} 
+            setCurrentTab={''} 
+            currCategory={'BTR'} 
+            currentTab={currentTab.value} 
+            tabsList={[]} 
+            onFloatingTabChange={()=>console.log('')} 
+            onGoBack={()=>console.log('')} 
+            onViewChange={()=>console.log('')} 
+            onExportToExcelCallBack={(pageNumber:number)=>{return onExportToExcelCallBack(pageNumber,currentTab.value)}}
+            genericRecordCount={parseInt(techTotalRows)}
+            multiFilter={currFilter}
+            setMultiFilter={setCurrFilter}
+            onDelete={onDelete}
+            onApplyFilter={onApplyFilter}
+        />
+        </div>
+
+            
 
                 <BTRLayoutTabsWrapper>
                     <div style={{ zoom: 0.6, marginTop: -100 }}>

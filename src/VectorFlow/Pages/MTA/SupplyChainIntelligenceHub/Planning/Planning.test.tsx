@@ -1,7 +1,7 @@
 import { screen, render, fireEvent} from "@testing-library/react"
-import { useGetPlanningDataCount, useGetPlanningDataGraph, useGetPlanningDataGrid } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
+import { useGetPlanningDataCount, useGetPlanningDataGraph, useGetPlanningDataGrid,useGetPlanningDataGridCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 // import { UserDataContext } from "../../../../../context";
-import { getPlanningDataCountMockData,getPlanningDataGridMockData,ExcessInventoryMockData,getPlanningDataGraphMockData } from "../../../../../mock-data/Planning";
+import { getPlanningDataCountMockData,getPlanningDataGridMockData,ExcessInventoryMockData,getPlanningDataGraphMockData,getPlanningDataGridCountMockResponse } from "../../../../../mock-data/Planning";
 import Planning from ".";
 import { act } from "react-dom/test-utils";
 import { UserDataContext } from "../../../../../context/UserDataContext";
@@ -42,6 +42,10 @@ jest.mock("ag-charts-react", () => ({
 
 jest.mock("../../../../Services/MTA/SupplyChainIntelligenceHub/Planning");
 
+const useGetPlanningDataGridCountMock = useGetPlanningDataGridCount as jest.MockedFunction<
+    typeof useGetPlanningDataGridCount
+>
+
 const useGetPlanningDataCountMock = useGetPlanningDataCount as jest.MockedFunction<
     typeof useGetPlanningDataCount
 >;
@@ -53,6 +57,12 @@ const useGetPlanningDataGraphMock = useGetPlanningDataGraph as jest.MockedFuncti
 const useGetPlanningDataGridMock = useGetPlanningDataGrid as jest.MockedFunction<
     typeof useGetPlanningDataGrid
 >;
+
+const useuseGetPlanningDataGridCountMockData:any = {
+    mutateAsync: () => {
+        return { data: getPlanningDataGridCountMockResponse };
+    },
+};
 
 const useGetPlanningDataCountMockData: any = {
     mutateAsync: () => {
@@ -83,6 +93,11 @@ describe("Planning Quadrant", () => {
       };
 
     beforeEach(() => {
+
+        useGetPlanningDataGridCountMock.mockImplementation(()=>{
+            return useuseGetPlanningDataGridCountMockData
+        })
+        
         useGetPlanningDataCountMock.mockImplementation(()=>{
             return useGetPlanningDataCountMockData
         }) 

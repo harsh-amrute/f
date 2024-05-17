@@ -3,6 +3,7 @@ import { notifyError,notifySuccess } from '../../../../../helpers/notify'
 import { toast } from "react-toastify";
 import { useGetBufferTrendsGraph } from "../../../../Services/MTA/InsightsAndTrends/BufferTrends";
 import { BufferTrendsGraphState } from '../../../../../VectorFlow/types/BPR'
+import useBPRFilter from '../../../../../hooks/useBPRFilter';
 
 const initialGraphData  ={
     data: {
@@ -12,7 +13,7 @@ const initialGraphData  ={
   };
 
 const useBufferTrends = () => {
-    const [multiFilterState,setMultiFilterState] = useState<any>({})
+    const {state:multiFilterState,setState:setMultiFilterState,onDelete} = useBPRFilter()
     const [currentTab,setCurrentTab]=useState<string>('tech')
     const [currentPageTab,setCurrentPageTab]=useState<string>('absolute')
     const [currentView,setCurrentView] = useState<string>('chart');
@@ -175,6 +176,9 @@ const useBufferTrends = () => {
         handleSubmitClick,
         horizonDays,
         handleApplyFilter,
+        multiFilterState,
+        setMultiFilterState,
+        onDelete,
         onGoBack
     }
   

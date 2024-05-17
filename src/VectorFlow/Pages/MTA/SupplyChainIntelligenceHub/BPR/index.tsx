@@ -58,10 +58,11 @@ const BPR = ()=>{
         exportExcelColumns,
         setExportExcelColumns,
         onExportToExcelCallBack,
-        getBPRRowData
+        currFilter,
+        onDelete,
+        setCurrFilter,
+        onApplyFilter
     } = useBPR();
-
-
 
     
     // if(isLoading || isSavedDataLoading){
@@ -91,11 +92,14 @@ const BPR = ()=>{
             currentTab={''} 
             tabsList={[]} 
             onFloatingTabChange={()=>console.log('')} 
-            onApplyFilter={(e)=>getBPRRowData(e)}
+            onApplyFilter={(e)=>onApplyFilter(e)}
             onGoBack={()=>console.log('')} 
             onViewChange={()=>console.log('')} 
             genericRecordCount={recordCount}
             onExportToExcelCallBack={onExportToExcelCallBack}
+            multiFilter={currFilter}
+            onDelete={onDelete}
+            setMultiFilter={setCurrFilter}
         />
         {
             showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
@@ -137,7 +141,7 @@ const BPR = ()=>{
                     params.columnApi.applyColumnState({state:columnState})
                    }
                 }}
-                enableRangeSelection={true} // Added property
+                enableRangeSelection={true} 
                 rowSelection="multiple"
                 statusBar = {{
                     statusPanels: [

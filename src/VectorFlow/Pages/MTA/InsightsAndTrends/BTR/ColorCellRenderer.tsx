@@ -37,7 +37,6 @@ const colorMapper =(color:number)=> {
     const color = params.value
 
     const cellColor = colorMapper(params.value)
-    console.log(color)
 
     if(!color){
         return(
