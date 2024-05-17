@@ -4,7 +4,7 @@ import "allotment/dist/style.css";
 import "../../../styles.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../../../../types/MDM";
-import { ColDef, ChartRef } from "ag-grid-enterprise";
+import { ColDef } from "ag-grid-enterprise";
 import {
   SCChartHeaderContainer,
   SCChartHeader,
@@ -13,12 +13,11 @@ import {
   SCDynamicContainer,
   SCHorizontalAllignmentWrapper,
 } from "../../../styles";
-import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { AgChartsReact } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
 
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
-
+import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 interface ExpediteChildDispatchesProps {
   data: any;
 }
@@ -31,15 +30,7 @@ const ExpediteDispatches = ({ data }: ExpediteChildDispatchesProps) => {
   const [hideChart2, toggleChart2] = useState<boolean>(false);
   const [hideChart3, toggleChart3] = useState<boolean>(false);
   // const [hideChart3,toggleChart3] = useState<boolean>(false);
-  const [grid1DisplayStatus, setGrid1DisplayStatus] = useState<string>("none");
-  const [grid2DisplayStatus, setGrid2DisplayStatus] = useState<string>("none");
-  const [grid3DisplayStatus, setGrid3DisplayStatus] = useState<string>("none");
-
-  let chartRef1: ChartRef | undefined;
-  let chartRef2: ChartRef | undefined;
-
   
-
   const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
     let colDefs = [];
 
@@ -274,7 +265,7 @@ const colDefs3: ColDef[] = [
 
     if (graphNo === 1) {
       if (withOutContainer) {
-        chartRef1 = refGraph1.current?.api.createRangeChart({
+        refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
             columns: ["WHDescription", 'black','red'],
@@ -286,7 +277,7 @@ const colDefs3: ColDef[] = [
       const container1 = document.getElementById(
         "ExpediteDispatchesG1"
       ) as HTMLElement;
-      chartRef1 = refGraph1.current?.api.createRangeChart({
+      refGraph1.current?.api.createRangeChart({
         chartType: "stackedColumn",
         cellRange: {
           columns: ["WHDescription", 'black','red'],
@@ -299,7 +290,7 @@ const colDefs3: ColDef[] = [
   }
   if (graphNo === 2) {
     if (withOutContainer) {
-      chartRef2 = refGraph2.current?.api.createRangeChart({
+      refGraph2.current?.api.createRangeChart({
         chartType: "stackedColumn",
         cellRange: {
           columns: [
@@ -323,7 +314,7 @@ const colDefs3: ColDef[] = [
       const container2 = document.getElementById(
         "ExpediteDispatchesG2"
       ) as HTMLElement;
-      chartRef2 = refGraph2.current?.api.createRangeChart({
+      refGraph2.current?.api.createRangeChart({
         chartType: "stackedColumn",
         cellRange: {
           columns: [
@@ -377,18 +368,18 @@ const colDefs3: ColDef[] = [
 
   const handleChartClose = (graphNo: number) => {
     if (graphNo === 1) {
-      chartRef1?.destroyChart();
+      // chartRef1?.destroyChart();
       toggleChart1(true);
-      setGrid1DisplayStatus("block");
+      // setGrid1DisplayStatus("block");
     }
     if (graphNo === 2) {
-      chartRef2?.destroyChart();
+      // chartRef2?.destroyChart();
       toggleChart2(true);
-      setGrid2DisplayStatus("block");
+      // setGrid2DisplayStatus("block");
     }
     if (graphNo === 3) {
       toggleChart3(true);
-      setGrid3DisplayStatus('block')
+      // setGrid3DisplayStatus('block')
     }
   };
 
@@ -481,19 +472,19 @@ const colDefs3: ColDef[] = [
     },
   };
 
-  const graph1 = [
-    "This graph highlights the top 10 parent locations with max SKUs in Pipeline Black/Red which have rationed qty available for receiving locations",
-    "To improve availability, expedite dispatches from these parent locations.",
-  ];
+  // const graph1 = [
+  //   "This graph highlights the top 10 parent locations with max SKUs in Pipeline Black/Red which have rationed qty available for receiving locations",
+  //   "To improve availability, expedite dispatches from these parent locations.",
+  // ];
 
-  const graph2 = [
-    "This graph highlights the top 10 receiving locations with maximum SKUs in Pipeline black/red which have rationed quantity available at parent location.",
-    "To improve availability, expedite dispatches to these locations.",
-  ];
+  // const graph2 = [
+  //   "This graph highlights the top 10 receiving locations with maximum SKUs in Pipeline black/red which have rationed quantity available at parent location.",
+  //   "To improve availability, expedite dispatches to these locations.",
+  // ];
 
-  const graph3 = [
-    "This graph shows the potential improvement in Pipeline availability assuming the entire rationed qty would become goods in transit.",
-  ];
+  // const graph3 = [
+  //   "This graph shows the potential improvement in Pipeline availability assuming the entire rationed qty would become goods in transit.",
+  // ];
 
   const splitDataIntoRandomPercentage = (data:any,key:string) => {
     return data.map((row:any)=>{
@@ -513,7 +504,7 @@ const colDefs3: ColDef[] = [
         <Allotment>
           <Allotment.Pane preferredSize={"60%"}>
             <Allotment vertical>
-              <Allotment.Pane maxSize={280}>
+              <Allotment.Pane maxSize={220}>
                 <SCHorizontalAllignmentWrapper>
                 <SCChartContainer height={200}>
                   <SCChartHeaderContainer>
@@ -526,7 +517,7 @@ const colDefs3: ColDef[] = [
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                         {!hideChart1 && (
                           <img
-                            src="/assets/img/VectorFLOW/BPR/minimize.svg"
+                            src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
                             alt=""
                             onClick={() => handleChartClose(1)}
                           />
@@ -534,40 +525,16 @@ const colDefs3: ColDef[] = [
                       </div>
                   </SCChartHeaderContainer>
                   <SCHorizontalDivider />
-                  <div style={{ height: "220px", display: grid1DisplayStatus,zoom:'0.7' }}>
-                    {hideChart1 && (
-                      <VFTable
-                        ref={refGraph1}
-                        columnDefs={colDefs1}
-                        rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts'),'SKUCounts')}
-                        enableCharts={true}
-                        enableRangeSelection={true}
-                        onGridReady={() => generateChart(1, true)}
-                        getChartToolbarItems={getChartToolbarItems}
-                        chartToolPanelsDef={{
-                          panels: [],
-                        }}
-                        chartThemeOverrides={chartThemeOverridesG1}
-                        chartThemes={["myCustomTheme"]}
-                        customChartThemes={{
-                          myCustomTheme: myCustomThemeG1,
-                        }}
-                        disableZoomScaling={true}
-                        defaultColDef={{
-                            floatingFilter:true,
-                            filter: "agMultiColumnFilter",
-                          }}
-                      />
-                    )}
-                    {!hideChart1 && (
-                      <div style={{ display: "none" }}>
+                  <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Parent Location: Max Pipeline Black/Red SKUs With
+                        Available Rationed Qty For Receiving Locations" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                      <div style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph1}
                           columnDefs={colDefs1}
                           rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts'),'SKUCounts')}
                           enableCharts={true}
                           enableRangeSelection={true}
-                          onGridReady={() => generateChart(1)}
+                          onGridReady={() => generateChart(1, true)}
                           getChartToolbarItems={getChartToolbarItems}
                           chartToolPanelsDef={{
                             panels: [],
@@ -578,25 +545,44 @@ const colDefs3: ColDef[] = [
                             myCustomTheme: myCustomThemeG1,
                           }}
                           disableZoomScaling={true}
+                          defaultColDef={{
+                              floatingFilter:true,
+                              filter: "agMultiColumnFilter",
+                            }}
+                          height={480}
                         />
                       </div>
-                    )}
+                  </VFModalCard>
+                  <div style={{ display: "none" }}>
+                    <VFTable
+                      ref={refGraph1}
+                      columnDefs={colDefs1}
+                      rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts'),'SKUCounts')}
+                      enableCharts={true}
+                      enableRangeSelection={true}
+                      onGridReady={() => generateChart(1)}
+                      getChartToolbarItems={getChartToolbarItems}
+                      chartToolPanelsDef={{
+                        panels: [],
+                      }}
+                      chartThemeOverrides={chartThemeOverridesG1}
+                      chartThemes={["myCustomTheme"]}
+                      customChartThemes={{
+                        myCustomTheme: myCustomThemeG1,
+                      }}
+                      disableZoomScaling={true}
+                    />
                   </div>
-                  {!hideChart1 && (
-                    <div
-                      id="ExpediteDispatchesG1"
-                      style={{ height: "150px" }}
-                    ></div>
-                  )}
+                  <div id="ExpediteDispatchesG1" style={{ height: "150px" }}></div>
                 </SCChartContainer>
-                <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
+                {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
                   <VFInfoTip text={graph1} />
-                </div>
+                </div> */}
                 </SCHorizontalAllignmentWrapper>
               </Allotment.Pane>
               <Allotment.Pane>
                 <SCHorizontalAllignmentWrapper>
-                <SCChartContainer height={200}>
+                <SCChartContainer style={{marginTop:'10px'}}>
                   <SCChartHeaderContainer>
                     <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                       <SCChartHeader>
@@ -607,7 +593,7 @@ const colDefs3: ColDef[] = [
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                         {!hideChart2 && (
                           <img
-                            src="/assets/img/VectorFLOW/BPR/minimize.svg"
+                            src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
                             alt=""
                             onClick={() => handleChartClose(2)}
                           />
@@ -615,48 +601,13 @@ const colDefs3: ColDef[] = [
                       </div>
                   </SCChartHeaderContainer>
                   <SCHorizontalDivider />
-                  <div style={{ height: "220px", display: grid2DisplayStatus,zoom:"0.7" }}>
-                    {hideChart2 && (
-                      <VFTable
-                        ref={refGraph2}
-                        columnDefs={[
-                          ...colDefs2,...getParentLocationColdefs(
-                            data[
-                              "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
-                            ]['data']
-                          ),
-                        ]}
-                        rowData={mapDataToRowData(
-                          data[
-                            "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
-                          ]['data']
-                        )}
-                        enableCharts={true}
-                        enableRangeSelection={true}
-                        onGridReady={() => generateChart(2, true)}
-                        getChartToolbarItems={getChartToolbarItems}
-                        chartToolPanelsDef={{
-                          panels: [],
-                        }}
-                        chartThemeOverrides={chartThemeOverridesG2}
-                        chartThemes={["myCustomTheme"]}
-                        customChartThemes={{
-                          myCustomTheme: myCustomThemeG2,
-                        }}
-                        disableZoomScaling={true}
-                        defaultColDef={{
-                            floatingFilter:true,
-                            filter: "agMultiColumnFilter",
-                          }}
-                      />
-                    )}
-                    {!hideChart2 && (
-                      <div style={{ display: "none" }}>
+                  <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Receiving Locations: Max Pipeline Inv. Black/Red
+                        SKUs With Rationed Quantity Available At Parent" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                      <div style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph2}
                           columnDefs={[
-                            ...colDefs2,
-                            ...getParentLocationColdefs(
+                            ...colDefs2,...getParentLocationColdefs(
                               data[
                                 "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
                               ]['data']
@@ -669,7 +620,7 @@ const colDefs3: ColDef[] = [
                           )}
                           enableCharts={true}
                           enableRangeSelection={true}
-                          onGridReady={() => generateChart(2)}
+                          onGridReady={() => generateChart(2, true)}
                           getChartToolbarItems={getChartToolbarItems}
                           chartToolPanelsDef={{
                             panels: [],
@@ -680,20 +631,50 @@ const colDefs3: ColDef[] = [
                             myCustomTheme: myCustomThemeG2,
                           }}
                           disableZoomScaling={true}
+                          defaultColDef={{
+                              floatingFilter:true,
+                              filter: "agMultiColumnFilter",
+                            }}
+                          height={480}
                         />
                       </div>
-                    )}
+                  </VFModalCard>
+                  <div style={{ display: "none" }}>
+                    <VFTable
+                      ref={refGraph2}
+                      columnDefs={[
+                        ...colDefs2,
+                        ...getParentLocationColdefs(
+                          data[
+                            "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
+                          ]['data']
+                        ),
+                      ]}
+                      rowData={mapDataToRowData(
+                        data[
+                          "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
+                        ]['data']
+                      )}
+                      enableCharts={true}
+                      enableRangeSelection={true}
+                      onGridReady={() => generateChart(2)}
+                      getChartToolbarItems={getChartToolbarItems}
+                      chartToolPanelsDef={{
+                        panels: [],
+                      }}
+                      chartThemeOverrides={chartThemeOverridesG2}
+                      chartThemes={["myCustomTheme"]}
+                      customChartThemes={{
+                        myCustomTheme: myCustomThemeG2,
+                      }}
+                      disableZoomScaling={true}
+                    />
                   </div>
-                  {!hideChart2 && (
-                    <div
-                      id="ExpediteDispatchesG2"
-                      style={{ height: "150px" }}
-                    ></div>
-                  )}
+                  <div id="ExpediteDispatchesG2" style={{ height: "150px" }}></div>
                 </SCChartContainer>
-                <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
+                {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
                   <VFInfoTip text={graph2} />
-                </div>
+                </div> */}
                 </SCHorizontalAllignmentWrapper>
               </Allotment.Pane>
             </Allotment>
@@ -710,7 +691,7 @@ const colDefs3: ColDef[] = [
                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                   {!hideChart3 && (
                     <img
-                      src="/assets/img/VectorFLOW/BPR/minimize.svg"
+                      src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
                       alt=""
                       onClick={() => handleChartClose(3)}
                     />
@@ -718,8 +699,8 @@ const colDefs3: ColDef[] = [
                 </div>
               </SCChartHeaderContainer>
               <SCHorizontalDivider />
-              <div style={{ height: "330px", display: grid3DisplayStatus }}>
-                {hideChart3 && (
+              <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                <div style={{width:'1000px'}}>
                   <VFTable
                     ref={refGraph3}
                     columnDefs={colDefs3}
@@ -740,18 +721,19 @@ const colDefs3: ColDef[] = [
                         floatingFilter:true,
                         filter: "agMultiColumnFilter",
                       }}
+                    height={480}
                   />
-                )}
-              </div>
+                </div>
+              </VFModalCard>
               {!hideChart3 && (
                 <div id="ExpediteDispatchesG3" style={{height:600 * 0.75}}>
                   <AgChartsReact options={options} />
                 </div>
               )}
             </SCChartContainer>
-            <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
+            {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
               <VFInfoTip text={graph3} />
-            </div>
+            </div> */}
             </SCHorizontalAllignmentWrapper>
           </Allotment.Pane>
         </Allotment>
