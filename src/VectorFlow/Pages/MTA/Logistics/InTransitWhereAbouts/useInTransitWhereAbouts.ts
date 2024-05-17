@@ -14,8 +14,8 @@ import ShowRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpedit
 import SubmitRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/SubmitRemarkCellRenderer";
 import MasterDetail from "./MasterDetail";
 import { ColorGroupCellRenderer, CurrentLocationCellRenderer, ETACellRenderer } from "./CellRenderers";
-import { mapInTransitWhereAboutsRowData } from "../../../../../helpers/utils";
-import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount } from "../../../../../VectorFlow/Services/MTA/Logistics/InTransitWhereAbouts";
+import { mapInTransitWhereAboutsRowData, mapSubmitRemarkData } from "../../../../../helpers/utils";
+import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount,useGetRemarkDetailsForInTransit, useGetTransporterDetails, useSubmitRemarksForInTransit } from "../../../../../VectorFlow/Services/MTA/Logistics/InTransitWhereAbouts";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 
 
@@ -24,11 +24,21 @@ const useInTransitWhereAbouts = ()=>{
     const tempRef = useRef()
 
     const {mutateAsync:getDataCount,isLoading:isCountLoading} = useGetInTransitWhereAboutsDataCount()
+
     const {mutateAsync:getData,isLoading:isDataLoading} = useGetInTransitWhereAboutsData()
+
+    const {mutateAsync:getRemarkDetails} = useGetRemarkDetailsForInTransit()
+
+    const {mutateAsync:submitRemark} = useSubmitRemarksForInTransit()
+
+    const {mutateAsync:getTransporterDetails} = useGetTransporterDetails()
+
     const {state:currentFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
     const [submitRemarkToolTipPosition,setSubmitRemarkToolipPosition] = useState<CSSProperties>({})
+
     const [submitETAToolTipPosition,setSubmitETAToolipPosition] = useState<CSSProperties>({})
+
     const [submitCurrentLocationToolTipPosition,setSubmitCurrentLocationToolipPosition] = useState<CSSProperties>({})
 
     const [rowData,setRowData] = useState<Array<any>>([])
@@ -206,7 +216,15 @@ const useInTransitWhereAbouts = ()=>{
         pageNumber:pageNo,
         recordsPerPage:100
       })
-      console.debug(data.data.data.data)
+      setRowData(mapInTransitWhereAboutsRowData(data.data.data))
+    }
+
+    const handlePageChange = async(pageNo:number)=>{
+      const data = await getData({
+        pageNumber:pageNo,
+        recordsPerPage:100
+      })
+      setCurrentPage(pageNo)
       setRowData(mapInTransitWhereAboutsRowData(data.data.data))
     }
 
@@ -233,8 +251,9 @@ const useInTransitWhereAbouts = ()=>{
 
   }
 
-  const onOpenSubmitCurentLocation = (e: React.MouseEvent<HTMLInputElement>,data:any) => {
+  const onOpenSubmitCurrentLocation = (e: React.MouseEvent<HTMLInputElement>,data:any) => {
     setActiveRow(data)
+    console.log(data)
     setCurrentLocationValue(e.currentTarget.value)
     const { top, left } = e.currentTarget.getBoundingClientRect()
     setSubmitCurrentLocationToolipPosition({
@@ -250,55 +269,55 @@ const useInTransitWhereAbouts = ()=>{
         try {
             setIsRemarkHistoryToolTipOpen(false)
             const toastId = notifyLoader("Getting remark history")
-            // const remarkData = await getRemark({
-            //   whcode:data.wc,
-            //   skucode:data.sc
-            // })
+            const remarkData = await getRemarkDetails({
+              orderNo:data.OrderNo
+            })
             toast.dismiss(toastId)
-            setRemarkHistory([
-              {
-                  name:'JP',
-                  remark:"Moved from Mumbai and Reached Nagpur",
-                  date:'2023 - 09 - 20 | 12 pm',
-                  eta:'2024-05-07',
-                  currentLocation:'Pune'
-              },
-              {
-                  name:'RT',
-                  remark:"Moved from Mumbai and Reached Nagpur",
-                  date:'2023 - 09 - 20 | 12 pm',
-                  eta:'2024-05-07',
-                  currentLocation:'Mumbai'
-              },
-              {
-                  name:'MD',
-                  remark:"Moved from Mumbai and Reached Nagpur",
-                  date:'2023 - 09 - 20 | 12 pm',
-                  eta:'2024-05-07',
-                  currentLocation:'Delhi'
-              },
-              {
-                  name:'AF',
-                  remark:"Moved from Mumbai and Reached Nagpur",
-                  date:'2023 - 09 - 20 | 12 pm',
-                  eta:'2024-05-07',
-                  currentLocation:'Pune'
-              },
-              {
-                  name:'FD',
-                  remark:"Moved from Mumbai and Reached Nagpur",
-                  date:'2023 - 09 - 20 | 12 pm',
-                  eta:'2024-05-07',
-                  currentLocation:'Mumbai'
-              },
-              {
-                  name:'AF',
-                  remark:"Moved from Mumbai and Reached Nagpur",
-                  date:'2023 - 09 - 20 | 12 pm',
-                  eta:'2024-05-07',
-                  currentLocation:'Delhi'
-              }
-          ])
+          //   setRemarkHistory([
+          //     {
+          //         name:'JP',
+          //         remark:"Moved from Mumbai and Reached Nagpur",
+          //         date:'2023 - 09 - 20 | 12 pm',
+          //         eta:'2024-05-07',
+          //         currentLocation:'Pune'
+          //     },
+          //     {
+          //         name:'RT',
+          //         remark:"Moved from Mumbai and Reached Nagpur",
+          //         date:'2023 - 09 - 20 | 12 pm',
+          //         eta:'2024-05-07',
+          //         currentLocation:'Mumbai'
+          //     },
+          //     {
+          //         name:'MD',
+          //         remark:"Moved from Mumbai and Reached Nagpur",
+          //         date:'2023 - 09 - 20 | 12 pm',
+          //         eta:'2024-05-07',
+          //         currentLocation:'Delhi'
+          //     },
+          //     {
+          //         name:'AF',
+          //         remark:"Moved from Mumbai and Reached Nagpur",
+          //         date:'2023 - 09 - 20 | 12 pm',
+          //         eta:'2024-05-07',
+          //         currentLocation:'Pune'
+          //     },
+          //     {
+          //         name:'FD',
+          //         remark:"Moved from Mumbai and Reached Nagpur",
+          //         date:'2023 - 09 - 20 | 12 pm',
+          //         eta:'2024-05-07',
+          //         currentLocation:'Mumbai'
+          //     },
+          //     {
+          //         name:'AF',
+          //         remark:"Moved from Mumbai and Reached Nagpur",
+          //         date:'2023 - 09 - 20 | 12 pm',
+          //         eta:'2024-05-07',
+          //         currentLocation:'Delhi'
+          //     }
+          // ])
+          setRemarkHistory(remarkData.data.data)
             setIsRemarkHistoryToolTipOpen(true)
         } catch (err: any) {
             notifyError(err.message)
@@ -309,25 +328,53 @@ const useInTransitWhereAbouts = ()=>{
         try{
             if(remark.length===0) throw new Error("Remark cannot be empty")
             const toastId = notifyLoader("Submitting Remark")
-            // await addRemark({
-            //     sc:activeRow.sc,
-            //     wc:activeRow.wc,
-            //     remark:remark
-            // })
+            await submitRemark(mapSubmitRemarkData({...activeRow,remark:remark}))
             toast.dismiss(toastId)
             
             notifySuccess('Remark has been submitted')
             setRemark('')
-            setActiveRow({
-              sc:'',
-              wc:''
-            })
+            setActiveRow({})
             
             setIsSubmitRemarkToolTipOpen(false)
         }catch(err:any){
             notifyError(err.message)
         }
     }
+
+    const onSubmitCurrentLocation = async()=>{
+        try{
+            if(currentLocationValue.length===0) throw new Error("Location cannot be empty")
+            const toastId = notifyLoader("Submitting data")
+            await submitRemark(mapSubmitRemarkData({...activeRow,CurrentLoc:currentLocationValue}))
+            toast.dismiss(toastId)
+            
+            notifySuccess('Data has been submitted')
+            setRemark('')
+            setActiveRow({})
+            
+            setIsSubmitCurrentLocationToolTipOpen(false)
+        }catch(err:any){
+            notifyError(err.message)
+        }
+    }
+
+    const onSubmitETA = async()=>{
+      try{
+          if(etaValue.length===0) throw new Error("ETA cannot be empty")
+          const toastId = notifyLoader("Submitting data")
+          await submitRemark(mapSubmitRemarkData({...activeRow,ETA:etaValue}))
+          toast.dismiss(toastId)
+          
+          notifySuccess('Data has been submitted')
+          setRemark('')
+          setActiveRow({})
+          
+          setIsSubmitETAToolTipOpen(false)
+      }catch(err:any){
+          notifyError(err.message)
+      }
+  }
+
 
     const updateRemark = (e:any)=>setRemark(e.currentTarget.value)
 
@@ -339,9 +386,18 @@ const useInTransitWhereAbouts = ()=>{
 
     const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
 
-    function onOpenContactModal(data:any){
-      setCurrentUserDetails(data)
+    async function onOpenContactModal (data:any){
+      console.log(data)
+     try{
+      notifyLoader("Loading Details")
+      const contactData = await getTransporterDetails({orderNo:'VectorOrder_6662'})
+      setCurrentUserDetails(contactData.data.data[0])
       toggleContactModal(true)
+      toast.dismiss()
+      notifySuccess('Data loaded successfully')
+     }catch(err:any){
+      notifyError(err)
+     }
     }
 
     function onCloseContactModal(){
@@ -369,7 +425,6 @@ const useInTransitWhereAbouts = ()=>{
         pageNumber:pageNo,
         recordsPerPage:5000
       })
-      console.log(data)
       return data.data.data
     }
       
@@ -409,7 +464,7 @@ const useInTransitWhereAbouts = ()=>{
         floatingFilter:false,
         cellRenderer:'currentLocationCellRenderer',
         cellRendererParams:{
-          onClick:onOpenSubmitCurentLocation
+          onClick:onOpenSubmitCurrentLocation
       },
     },
     {
@@ -491,7 +546,7 @@ const useInTransitWhereAbouts = ()=>{
         submitCurrentLocationToolTipPosition,
         currentLocationValue,
         setCurrentLocationValue,
-        onOpenSubmitCurentLocation,
+        onOpenSubmitCurrentLocation,
         onCloseSubmitCurentLocation,
         currentPage,
         recordCount,
@@ -500,7 +555,10 @@ const useInTransitWhereAbouts = ()=>{
         setCurrFilter,
         onDelete,
         onApplyFilter,
-        onExportToExcelCallBack
+        onExportToExcelCallBack,
+        onSubmitCurrentLocation,
+        onSubmitETA,
+        handlePageChange
     }
 }
 

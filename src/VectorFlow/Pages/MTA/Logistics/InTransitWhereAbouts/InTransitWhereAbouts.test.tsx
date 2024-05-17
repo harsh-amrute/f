@@ -3,14 +3,14 @@ import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import {GetInTransitWhereAboutsDataCountMockResponse, GetInTransitWhereAboutsMockResponse, GetStateMockResponse,ResetStateMockResponse,SaveStateMockResponse} from '../../../../../mock-data/BPR';
+import {GetInTransitWhereAboutsDataCountMockResponse, GetInTransitWhereAboutsMockResponse, GetRemarkDetailsForInTransitMockResponse, GetStateMockResponse,GetTransporterDetailsMockResponse,ResetStateMockResponse,SaveStateMockResponse, SubmitRemarksForInTransitMockResponse} from '../../../../../mock-data/BPR';
 
 import {useGetState,useResetState,useSaveState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 import { ReactNode } from "react";
 import { Provider } from "react-redux";
 import {store} from "../../../../../redux/store/store";
 import InTransitWhereAbouts from './index'
-import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount } from '../../../../Services/MTA/Logistics/InTransitWhereAbouts';
+import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount,useGetRemarkDetailsForInTransit,useSubmitRemarksForInTransit,useGetTransporterDetails } from '../../../../Services/MTA/Logistics/InTransitWhereAbouts';
 
 // Mock context data
 
@@ -45,6 +45,18 @@ const useGetInTransitWhereAboutsDataCountMock = useGetInTransitWhereAboutsDataCo
 
 const useGetInTransitWhereAboutsDataMock = useGetInTransitWhereAboutsData as jest.MockedFunction<
     typeof useGetInTransitWhereAboutsData
+>
+
+const useGetRemarkDetailsForInTransitMock = useGetRemarkDetailsForInTransit as jest.MockedFunction<
+  typeof useGetRemarkDetailsForInTransit
+>
+
+const useSubmitRemarksForInTransitMock = useSubmitRemarksForInTransit as jest.MockedFunction<
+  typeof useSubmitRemarksForInTransit
+>
+
+const useGetTransporterDetailsMock = useGetTransporterDetails as jest.MockedFunction<
+  typeof useGetTransporterDetails
 >
 
 // const contextWrapper = (children:any) => {
@@ -142,6 +154,39 @@ describe("It handles all interactions",()=>{
           mutateAsync:()=>{
             return {
               data:{data: GetInTransitWhereAboutsMockResponse}
+            }
+          }
+        }
+        
+      })
+
+      useGetRemarkDetailsForInTransitMock.mockImplementation(():any=>{
+        return{
+          mutateAsync:()=>{
+            return {
+              data:{data: GetRemarkDetailsForInTransitMockResponse}
+            }
+          }
+        }
+        
+      })
+
+      useSubmitRemarksForInTransitMock.mockImplementation(():any=>{
+        return{
+          mutateAsync:()=>{
+            return {
+              data:{data: SubmitRemarksForInTransitMockResponse}
+            }
+          }
+        }
+        
+      })
+
+      useGetTransporterDetailsMock.mockImplementation(():any=>{
+        return{
+          mutateAsync:()=>{
+            return {
+              data:{data: GetTransporterDetailsMockResponse}
             }
           }
         }

@@ -34,7 +34,9 @@ const colorMapper =(color:number)=> {
 
  const ColorCellRenderer = (params:any)=>{
 
-    const color = params.value
+    const color = parseFloat(params.value)
+
+
 
     const cellColor = colorMapper(params.value)
 
@@ -46,7 +48,7 @@ const colorMapper =(color:number)=> {
         )
     }
 
-    if(parseInt(color)<0){
+    if(color<0){
         return(
             <BPRColorCellRendererWrapper style={{maxWidth:85}} data-testid='color-cell'>
                 N/A
@@ -56,7 +58,7 @@ const colorMapper =(color:number)=> {
 
     return(
         <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:85}} data-testid='color-cell'>
-            {color.toString().slice(0,3)}%
+            {color.toFixed(2)}%
         </BPRColorCellRendererWrapper>
     )
 }

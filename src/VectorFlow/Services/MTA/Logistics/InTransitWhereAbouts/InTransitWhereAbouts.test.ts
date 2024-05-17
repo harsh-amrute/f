@@ -32,6 +32,27 @@ describe('Testing the BORService',  () => {
     
       }); 
 
+      it('should make a Post request to the /api/SCIH/GetRemarkDetailsForInTransit', async () => {
+        mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+        const response = await InTransitWhereAboutsService.getRemarkDetailsForInTransit({});
+        expect(response.status).toBe(200);
+    
+      }); 
+
+      it('should make a Post request to the /api/SCIH/SubmitRemarksForInTransit', async () => {
+        mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+        const response = await InTransitWhereAboutsService.submitRemarksForInTransit({});
+        expect(response.status).toBe(200);
+    
+      }); 
+
+      it('should make a Post request to the /api/SCIH/GetTransporterDetails', async () => {
+        mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+        const response = await InTransitWhereAboutsService.getTransporterDetails({});
+        expect(response.status).toBe(200);
+    
+      }); 
+
 
   });
 
