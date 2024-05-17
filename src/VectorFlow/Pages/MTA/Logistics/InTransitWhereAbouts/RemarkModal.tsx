@@ -39,33 +39,37 @@ const RemarkModal = (props:RemarkModalProps)=>{
                         </RemarkModalTableHeader>
                     </RemarkModalTableHeaderContainer>
                     <RemarkModalTableRowContainer>
-                        {data.map((d:any,index:number)=>{
-                            return(
-                            <RemarkModalTableRow key={index} style={{borderTop:index===0?'none':'dashed 1px gray'}}>
-                                <RemarkModalTableCell>
-                                    <RemarkModalUserIcon>
-                                        {d.name}
-                                    </RemarkModalUserIcon>
-                                </RemarkModalTableCell>
-                                <RemarkModalTableCell>
-                                    <RemarkModalRemarkCelLRenderer>
-                                        <RemarkText>
-                                           {d.remark}
-                                        </RemarkText>
-                                        <RemarkDate>
-                                           {d.date}
-                                        </RemarkDate>
-                                    </RemarkModalRemarkCelLRenderer>
-                                </RemarkModalTableCell>
-                                <RemarkModalTableCell>
-                                   {d.eta}
-                                </RemarkModalTableCell>
-                                <RemarkModalTableCell>
-                                   {d.currentLocation}
-                                </RemarkModalTableCell>
-                            </RemarkModalTableRow>
-                            )
-                        })}
+                        {(!data || data.length===0)?(
+                            <p style={{textAlign:'center',height:200}}>No data to show</p>
+                        ):(
+                            data.map((d:any,index:number)=>{
+                                return(
+                                <RemarkModalTableRow key={index} style={{borderTop:index===0?'none':'dashed 1px gray'}}>
+                                    <RemarkModalTableCell>
+                                        <RemarkModalUserIcon>
+                                            {d.UserName.slice(0,1)}
+                                        </RemarkModalUserIcon>
+                                    </RemarkModalTableCell>
+                                    <RemarkModalTableCell>
+                                        <RemarkModalRemarkCelLRenderer>
+                                            <RemarkText>
+                                               {d.Remarks}
+                                            </RemarkText>
+                                            <RemarkDate>
+                                               {d.RemarksDate}
+                                            </RemarkDate>
+                                        </RemarkModalRemarkCelLRenderer>
+                                    </RemarkModalTableCell>
+                                    <RemarkModalTableCell>
+                                       {d.ETA}
+                                    </RemarkModalTableCell>
+                                    <RemarkModalTableCell>
+                                       {d.CurrentLocation}
+                                    </RemarkModalTableCell>
+                                </RemarkModalTableRow>
+                                )
+                            })
+                        )}
                     </RemarkModalTableRowContainer>
                 </RemarkModalTable>
                 <ButtonWrapper>

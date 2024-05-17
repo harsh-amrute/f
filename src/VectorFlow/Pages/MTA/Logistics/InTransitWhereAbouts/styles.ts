@@ -105,6 +105,9 @@ export const RemarkModalTableHeader = styled.p`
     font-family:Roboto;
     font-size:12px;
     font-weight:500;
+    height:40px;
+    display:flex;
+    align-items:center;
     // padding:0px 5px;
     white-space: nowrap;
 `

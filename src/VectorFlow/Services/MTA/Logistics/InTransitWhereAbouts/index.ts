@@ -18,3 +18,20 @@ export const useGetInTransitWhereAboutsData = () => {
   });
 }
 
+export const useGetRemarkDetailsForInTransit = () => {
+  return useMutation(async (body:any) => {
+    return await InTransitWhereAboutsService.getRemarkDetailsForInTransit(body)
+  });
+}
+
+export const useSubmitRemarksForInTransit = () => {
+  return useMutation(async (body:any) => {
+    return await InTransitWhereAboutsService.submitRemarksForInTransit(body)
+  });
+}
+
+export const useGetTransporterDetails = () => {
+  return useMutation(async (body:any) => {
+    return await InTransitWhereAboutsService.getTransporterDetails(body)
+  });
+}

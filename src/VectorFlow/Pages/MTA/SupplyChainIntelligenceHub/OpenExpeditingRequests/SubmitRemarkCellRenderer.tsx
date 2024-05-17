@@ -7,7 +7,7 @@ const SubmitRemarkCellRenderer = (params:any)=>{
                 if (!ref) return;
 
                 ref.onclick = (e:any) => {
-                    params.onClick(e,{sc:params.data.sc,wc:params.data.wc})
+                    params.onClick(e,params.data)
                     e.stopPropagation();
                 };
             }}/>

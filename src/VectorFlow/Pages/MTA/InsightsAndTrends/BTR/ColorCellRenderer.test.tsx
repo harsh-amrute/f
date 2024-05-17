@@ -40,7 +40,7 @@ describe('ColorCellRenderer', () => {
     const colorCell = getByTestId('color-cell');
 
     expect(colorCell).toHaveStyle({ backgroundColor: '#EBBF2B', color: 'white' });
-    expect(colorCell.textContent).toBe('50%');
+    expect(colorCell.textContent).toBe('50.00%');
   });
 
   // it('renders NULL when color is not provided', () => {
