@@ -1,4 +1,4 @@
-import { BTRLayoutTabsWrapper, BTRLayoutWrapper, ToggleViewBtnWrapper } from "./styles";
+import { BTRLayoutTabsWrapper, BTRLayoutWrapper, LockBtn, LockBtnWrapper, ToggleViewBtnWrapper } from "./styles";
 import useBTR from "./useBTR";
 import { SCViewBackground, SCViewContainer, SCViewImage, SCVerticalDivider } from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar/styles';
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
@@ -31,7 +31,9 @@ const BufferTrendReport = () => {
         currFilter,
         setCurrFilter,
         onDelete,
-        onApplyFilter
+        onApplyFilter,
+        isLockMode,
+        toggleLockMode
     } = useBTR()
 
     return (

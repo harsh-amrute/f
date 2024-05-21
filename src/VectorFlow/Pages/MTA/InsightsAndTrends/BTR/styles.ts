@@ -10,6 +10,7 @@ export const BTRLayoutTabsWrapper = styled.div`
     display:flex;
     justify-content:center;
     margin-top:25px;
+    z-index:200;
 `
 
 export  const ToggleViewBtnWrapper = styled.div`
@@ -23,7 +24,7 @@ export  const ToggleViewBtnWrapper = styled.div`
 export const BTRTableWrapper = styled.div`
     display:flex;
     flex-direction:column;
-    height:100vh;
+    height:90vh;
     width:100%;
     margin-top:20px;
     margin-bottom:20px;
@@ -129,4 +130,22 @@ export const CategoryToolTipSectionDescription = styled.div`
     text-align:center;
     font-family:Roboto;
     margin-top:5px;
+`
+
+export  const LockBtnWrapper = styled.div`
+    position:relative;
+    z-index:300;
+`
+
+export const LockBtn = styled.img<{active:boolean}>`
+    position:absolute;
+    height:25px;
+    width:25px;
+    cursor:pointer;
+    opacity:${(props)=>props.active?0.6:1};
+`
+
+export  const HorizontalViewWrapper = styled.div`
+      display:flex;
+      width:100%;
 `
