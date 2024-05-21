@@ -98,7 +98,7 @@ const AvailabilityTrend = () => {
 
   return (
     <div style={{marginTop:'25px'}}>
-      <div style={{ width: 550, display: "flex", alignItems:'center' }}>
+      <div style={{ width: 600, display: "flex", alignItems:'center' }}>
         <label
           style={{
             fontStyle: "normal",
@@ -127,10 +127,11 @@ const AvailabilityTrend = () => {
         />
 
         <VFButtonOutline
-        style={{height:'35px', fontSize:'12px'}}
+        style={{height:'30px', fontSize:'13px', marginLeft:'30px', fontWeight:500}}
           themeUi={themeUi}
           onClick={() => OnHorizonChange(horizon)}
-          width={95}
+          width={150}
+          
         >
           Submit
         </VFButtonOutline>
