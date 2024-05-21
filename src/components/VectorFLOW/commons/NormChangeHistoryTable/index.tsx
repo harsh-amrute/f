@@ -40,7 +40,7 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
 
     return(
         <>
-        <VFModalCard openModal={true} closeModal={()=>dispatch(TOGGLE_NORM_CHANGE_HISTORY_TABLE(false))} headerText={'Norm Change History'} headerIcon={''} closeIcon={'/assets/img/VectorFLOW/NMS/close-white.svg'} paddingLeftAndRight={0} headerBgColor={'black'}  headerTextColor={'white'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
+        <VFModalCard openModal={true} closeModal={()=>dispatch(TOGGLE_NORM_CHANGE_HISTORY_TABLE(false))} headerText={'Norm Change History'} headerIcon={''} closeIcon={'/assets/img/VectorFLOW/NMS/close-white.svg'} paddingLeftAndRight={0}  headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
             <AgContainer>
                 <AgGridWrapper>
                     <div className="ag-theme-alpine "  style={{ height: '200px', width:'700px',textAlign:'center' }}>  
@@ -52,7 +52,7 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
                  </AgGridWrapper> 
             </AgContainer>
             <ButtonWrapper>
-                <VFButtonOutline themeUi={themeUi} onClick={()=>dispatch(TOGGLE_NORM_CHANGE_HISTORY_TABLE(false))} width={125}>Go Back!</VFButtonOutline>
+                <VFButtonOutline themeUi={themeUi} onClick={()=>dispatch(TOGGLE_NORM_CHANGE_HISTORY_TABLE(false))} width={160} style={{height:'38px', color:'black',border: '1px solid #707070'}}>Go Back!</VFButtonOutline>
             </ButtonWrapper>
         </VFModalCard>
         </>

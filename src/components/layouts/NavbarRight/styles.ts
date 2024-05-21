@@ -61,6 +61,7 @@ export const SCWrap = styled.div<{ isOpenNavbarRight: any }>`
   z-index: 9992;
   background-color: ${globalStyles.white};
   transition: ${globalStyles.customTransition};
+
 `;
 
 export const SCWrapTop = styled.div`
@@ -90,6 +91,7 @@ export const SCWrapItem = styled.div`
   font-size: 18px;
   align-items: center;
   padding: 15px 0;
+
 `;
 
 export const SCWrapItemLeft = styled.div`
