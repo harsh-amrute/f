@@ -4,155 +4,22 @@ import { useUserData } from "../../../../../context"
 import { OrderDetailsData } from '../MaterialCoverage/Data';
 //import AvailabilityToolTip from "../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import AvailabilityCellRenderer from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer";
-import { ColorCellRenderer } from "../../../../../components/VectorFLOW/commons/MTO/ColorCellRenderer";
+import ColorCellRenderer from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/ColorCellRenderer";
+import { OrderDetailsHeaderData } from '../MaterialCoverage/Data';
+import { mapOrderFieldsToColDefs } from '../../../../../helpers/utils'
 
 const useMaterialSO = () => {
     const { isSideBarOpen } = useUserData()
     // const [rowData, setRowData] = useState(OrderDetailsData);
     // const [coverageAvlRow, setCoverageAvlData] = useState(coverageAvlData);
-    const gridOptions = {
-        ShortcolumnDef: [
-            {
-                headerName: "",
-                field: "icon",
-                initialWidth: 25,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                cellRenderer: "agGroupCellRenderer",
-            },
-            {
-                headerName: "Color Priority",
-                field: "cp",
-                initialWidth: 150,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                cellRenderer: ColorCellRenderer,
-            },
-            {
-                headerName: "Order Line Item",
-                field: "oli",
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 150,
-                filter: 'agMultiColumnFilter',
-                floatingFilter: true,
-            },
-            {
-                headerName: "Order No",
-                field: "rmCode",
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 150,
-                filter: 'agMultiColumnFilter',
-                floatingFilter: true,
-            },
-            {
-                headerName: "Order Qty",
-                field: "rmDesc",
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 180,
-                filter: 'agMultiColumnFilter',
-                floatingFilter: true
-            },
-            {
-                headerName: "Batch Size",
-                field: "noOfOrdImp",
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 150,
-                filter: 'agMultiColumnFilter',
-                floatingFilter: true
-            },
-            {
-                headerName: "Full Kit Avail",
-                field: "totalReq",
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 150,
-                filter: 'agMultiColumnFilter',
-                floatingFilter: true
-            },
-            {
-                headerName: "",
-                field: "Availability",
-                initialWidth: 150,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                cellRenderer: AvailabilityCellRenderer,
-            },
-            {
-                headerName: "Cust Name",
-                field: "uom",
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 150,
-                filter: 'agMultiColumnFilter',
-                floatingFilter: true
-            },
-            {
-                headerName: "Cust Code",
-                field: "soh",
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 150,
-                filter: 'agMultiColumnFilter',
-                floatingFilter: true
-            },
-            {
-                headerName: "FG Code",
-                field: "sq",
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 150,
-                filter: 'agMultiColumnFilter',
-                floatingFilter: true
-            },
-            {
-                headerName: "FG Descp",
-                field: "st",
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 150,
-                filter: 'agMultiColumnFilter',
-                floatingFilter: true
-            },
-            {
-                headerName: "Order Receipt Date",
-                field: "gap",
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 150,
-                filter: 'agMultiColumnFilter',
-                floatingFilter: true
-            },
-            {
-                headerName: "Order Due Date",
-                field: "penD",
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 150,
-                filter: 'agMultiColumnFilter',
-                floatingFilter: true
-            },
-            {
-                headerName: "Order Release Date",
-                field: "edit",
-                //   cellRenderer: inputbox,
-                editable: true,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 150,
-                filter: 'agMultiColumnFilter',
-                floatingFilter: true,
-            }
-        ],
-
-    }
-
-    const [columnDef] = useState(gridOptions.ShortcolumnDef);
+    const {HeaderData} = OrderDetailsHeaderData;
+    const columnDef = mapOrderFieldsToColDefs(HeaderData);
     // const [covAvlDef] = useState(gridOptions.CoverageAvlColumnDef);
 
+    const customCellRenderers = useMemo(() => (
+        {
+            "availabilityCellRenderer": AvailabilityCellRenderer,
+        }), []);
     const icons = useMemo(() => {
         return {
             groupExpanded: `<img src="${'/assets/img/VectorFLOW/NMS/minus_circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
@@ -213,6 +80,7 @@ const useMaterialSO = () => {
             suppressRowClickSelection: true,
             enableBrowserTooltips: true,
             enableRangeSelection: true,
+            components:customCellRenderers,
             icons: icons,
             defaultColDef: {
                 cellStyle: {

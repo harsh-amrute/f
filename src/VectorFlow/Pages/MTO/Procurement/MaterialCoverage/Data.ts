@@ -6,7 +6,10 @@ export const openSOSummary = [
         ordCount: 28,
         custCount: 29,
         ordValue: 2,
-        bucket: 0
+        bucket: 0,
+        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
+        //S:0,
+        //E:0,
     },
     {
         color: 'Black',//mto_order_data && bpr
@@ -14,7 +17,7 @@ export const openSOSummary = [
         ordCount: 28, // batchwise_allocation
         custCount: 29, //import order at bom
         ordValue: 2, //import order at bom
-        //bucket: 0,
+        bucket: 0,
         //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
@@ -26,7 +29,10 @@ export const openSOSummary = [
         ordCount: 28,
         custCount: 29,
         ordValue: 2,
-        bucket: 0
+        bucket: 0,
+        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
+        //S:0,
+        //E:0,
     },
     {
         color: 'Red',
@@ -34,7 +40,10 @@ export const openSOSummary = [
         ordCount: 28,
         custCount: 29,
         ordValue: 2,
-        bucket: 0
+        bucket: 0,
+        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
+        //S:0,
+        //E:0,
     },
     {
         color: 'Red',
@@ -42,7 +51,10 @@ export const openSOSummary = [
         ordCount: 28,
         custCount: 29,
         ordValue: 2,
-        bucket: 0
+        bucket: 0,
+        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
+        //S:0,
+        //E:0,
     },
     {
         color: 'Red',
@@ -50,14 +62,20 @@ export const openSOSummary = [
         ordCount: 28,
         custCount: 29,
         ordValue: 2,
-        bucket: 0
+        bucket: 0,
+        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
+        //S:0,
+        //E:0,
     }, {
         color: 'Yellow',
         kit: 'NK',
         ordCount: 28,
         custCount: 29,
         ordValue: 2,
-        bucket: 0
+        bucket: 0,
+        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
+        //S:0,
+        //E:0,
     },
     {
         color: 'Yellow',
@@ -65,7 +83,10 @@ export const openSOSummary = [
         ordCount: 28,
         custCount: 29,
         ordValue: 2,
-        bucket: 0
+        bucket: 0,
+        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
+        //S:0,
+        //E:0,
     },
     {
         color: 'Yellow',
@@ -73,7 +94,10 @@ export const openSOSummary = [
         ordCount: 28,
         custCount: 29,
         ordValue: 2,
-        bucket: 0
+        bucket: 0,
+        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
+        //S:0,
+        //E:0,
     },
     {
         color: 'Green',
@@ -81,7 +105,10 @@ export const openSOSummary = [
         ordCount: 28,
         custCount: 29,
         ordValue: 2,
-        bucket: 0
+        bucket: 0,
+        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
+        //S:0,
+        //E:0,
     },
     {
         color: 'Green',
@@ -89,7 +116,10 @@ export const openSOSummary = [
         ordCount: 28,
         custCount: 29,
         ordValue: 2,
-        bucket: 0
+        bucket: 0,
+        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
+        //S:0,
+        //E:0,
     },
     {
         color: 'Green',
@@ -97,7 +127,10 @@ export const openSOSummary = [
         ordCount: 28,
         custCount: 29,
         ordValue: 2,
-        bucket: 0
+        bucket: 0,
+        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
+        //S:0,
+        //E:0,
     },
     {
         color: 'Blue',
@@ -105,7 +138,10 @@ export const openSOSummary = [
         ordCount: 28,
         custCount: 29,
         ordValue: 2,
-        bucket: 1
+        bucket: 1,
+        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
+        //S:0,
+        //E:0,
     },
     {
         color: 'Blue',
@@ -446,489 +482,337 @@ export const bucketOrderData = [
 
 export const OrderDetailsData = [
     {
-        "icon": "",
         "cp": "11",
         "oli": "12",
-        "rmCode": "ARE220023",
-        "rmDesc": "bottle 1",
-        "noOfOrdImp": 66,
-        "totalReq": 100,
-        "uom": "kg",
-        "soh": 75,
-        "sq": 12,
-        "st": 10,
-        "gap": 1,
-        "Availability": 56,
-        "penD": 1,
-        "edit": 0,
-        "value": "Black",
+        "on": "ARE220023",
+        "oq": "bottle 1",
+        "bs": 66,
+        "fka": 100,
+        "cn": "kg",
+        "cc": 75,
+        "fgc": 12,
+        "fgd": 10,
+        "Availability":66,
+        "ord": 1,
+        "odd": 56,
+        "ordRD": 1,
         "children": [
             {
-                "RMcode": "BMN1231",
-                "RMDescp": 66,
-                "RMRegdQty": "Prameet Jha",
-                "RMAvailable": 5466618,
-                "RMAllocatte": "22-Jul-13",
+                "rmc": "BMN1231",
+                "rmd": 66,
+                "rmrq": "Prameet Jha",
+                "rma": 5466618,
+                "rmall": "22-Jul-13",
             },
             {
-                "RMcode": "BMN1231",
-                "RMDescp": 66,
-                "RMRegdQty": "Prameet Jha",
-                "RMAvailable": 5466618,
-                "RMAllocatte": "22-Jul-13",
+                "rmc": "BMN1231",
+                "rmd": 66,
+                "rmrq": "Prameet Jha",
+                "rma": 5466618,
+                "rmall": "22-Jul-13",
             },
             {
-                "RMcode": "BMN1231",
-                "RMDescp": 66,
-                "RMRegdQty": "Prameet Jha",
-                "RMAvailable": 5466618,
-                "RMAllocatte": "22-Jul-13",
+                "rmc": "BMN1231",
+                "rmd": 66,
+                "rmrq": "Prameet Jha",
+                "rma": 5466618,
+                "rmall": "22-Jul-13",
             },
             {
-                "RMcode": "BMN1231",
-                "RMDescp": 66,
-                "RMRegdQty": "Prameet Jha",
-                "RMAvailable": 5466618,
-                "RMAllocatte": "22-Jul-13",
-            },
-            {
-                "RMcode": "BMN1231",
-                "RMDescp": 66,
-                "RMRegdQty": "Prameet Jha",
-                "RMAvailable": 5466618,
-                "RMAllocatte": "22-Jul-13",
-            },
-            {
-                "RMcode": "BMN1231",
-                "RMDescp": 66,
-                "RMRegdQty": "Prameet Jha",
-                "RMAvailable": 5466618,
-                "RMAllocatte": "22-Jul-13",
-            },
-            {
-                "RMcode": "BMN1231",
-                "RMDescp": 66,
-                "RMRegdQty": "Prameet Jha",
-                "RMAvailable": 5466618,
-                "RMAllocatte": "22-Jul-13",
-            },
-            {
-                "RMcode": "BMN1231",
-                "RMDescp": 66,
-                "RMRegdQty": "Prameet Jha",
-                "RMAvailable": 5466618,
-                "RMAllocatte": "22-Jul-13",
-            },
-            {
-                "RMcode": "BMN1231",
-                "RMDescp": 66,
-                "RMRegdQty": "Prameet Jha",
-                "RMAvailable": 5466618,
-                "RMAllocatte": "22-Jul-13",
-            },
-            {
-                "RMcode": "BMN1231",
-                "RMDescp": 66,
-                "RMRegdQty": "Prameet Jha",
-                "RMAvailable": 5466618,
-                "RMAllocatte": "22-Jul-13",
+                "rmc": "BMN1231",
+                "rmd": 66,
+                "rmrq": "Prameet Jha",
+                "rma": 5466618,
+                "rmall": "22-Jul-13",
             },
         ]
     },
     {
-        "icon": "",
         "cp": "11",
         "oli": "12",
-        "rmCode": "BNS774453",
-        "rmDesc": "bottle 2",
-        "noOfOrdImp": 22,
-        "totalReq": 100,
-        "uom": "kg",
-        "soh": 75,
-        "sq": 12,
-        "st": 10,
-        "gap": 1,
-        "Availability": 56,
-        "penD": 1,
-        "edit": 0,
-        "tsfs": 100,
-        "type": "parent",
-        "value": "Black",
+        "on": "ARE220023",
+        "oq": "bottle 1",
+        "bs": 66,
+        "fka": 100,
+        "cn": "kg",
+        "cc": 75,
+        "fgc": 12,
+        "fgd": 10,
+        "ord": 1,
+        "odd": 56,
+        "ordRD": 1,
         "children": [
             {
-                "orderNo": "BMN1231",
-                "orderQty": 66,
-                "custName": "Prameet Jha",
-                "custCode": 5466618,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
+                "rmc": "BMN1231",
+                "rmd": 66,
+                "rmrq": "Prameet Jha",
+                "rma": 5466618,
+                "rmall": "22-Jul-13",
             },
             {
-                "orderNo": "BSW1231",
-                "orderQty": 58,
-                "custName": "Komal Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
+                "rmc": "BMN1231",
+                "rmd": 66,
+                "rmrq": "Prameet Jha",
+                "rma": 5466618,
+                "rmall": "22-Jul-13",
             },
             {
-                "orderNo": "BDW1231",
-                "orderQty": 48,
-                "custName": "Pawan Dubey",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            }
+                "rmc": "BMN1231",
+                "rmd": 66,
+                "rmrq": "Prameet Jha",
+                "rma": 5466618,
+                "rmall": "22-Jul-13",
+            },
+            {
+                "rmc": "BMN1231",
+                "rmd": 66,
+                "rmrq": "Prameet Jha",
+                "rma": 5466618,
+                "rmall": "22-Jul-13",
+            },
         ]
     },
     {
-        "icon": "",
         "cp": "11",
         "oli": "12",
-        "rmCode": "KPT667730",
-        "rmDesc": "bottle 3",
-        "noOfOrdImp": 33,
-        "totalReq": 100,
-        "uom": "kg",
-        "soh": 75,
-        "sq": 12,
-        "st": 10,
-        "gap": 1,
-        "Availability": 56,
-        "penD": 1,
-        "edit": 0,
-        "tsfs": 100,
-        "type": "parent",
-        "value": "Black",
+        "on": "ARE220023",
+        "oq": "bottle 1",
+        "bs": 66,
+        "fka": 100,
+        "cn": "kg",
+        "cc": 75,
+        "fgc": 12,
+        "fgd": 10,
+        "ord": 1,
+        "odd": 56,
+        "ordRD": 1,
         "children": [
             {
-                "orderNo": "BMN1231",
-                "orderQty": 66,
-                "custName": "Prameet Jha",
-                "custCode": 5466618,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
+                "rmc": "BMN1231",
+                "rmd": 66,
+                "rmrq": "Prameet Jha",
+                "rma": 5466618,
+                "rmall": "22-Jul-13",
             },
             {
-                "orderNo": "BSW1231",
-                "orderQty": 58,
-                "custName": "Komal Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
+                "rmc": "BMN1231",
+                "rmd": 66,
+                "rmrq": "Prameet Jha",
+                "rma": 5466618,
+                "rmall": "22-Jul-13",
             },
             {
-                "orderNo": "BDW1231",
-                "orderQty": 48,
-                "custName": "Pawan Dubey",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            }
+                "rmc": "BMN1231",
+                "rmd": 66,
+                "rmrq": "Prameet Jha",
+                "rma": 5466618,
+                "rmall": "22-Jul-13",
+            },
+            {
+                "rmc": "BMN1231",
+                "rmd": 66,
+                "rmrq": "Prameet Jha",
+                "rma": 5466618,
+                "rmall": "22-Jul-13",
+            },
         ]
     },
-    {
-        "icon": "",
-        "cp": "67",
-        "oli": "12",
-        "rmCode": "TYE009987",
-        "rmDesc": "bottle 4",
-        "noOfOrdImp": 13,
-        "totalReq": 100,
-        "uom": "kg",
-        "soh": 75,
-        "sq": 12,
-        "st": 10,
-        "gap": 1,
-        "Availability": 56,
-        "penD": 1,
-        "edit": 0,
-        "tsfs": 100,
-        "type": "parent",
-        "value": "Red",
-        "children": [
-            {
-                "orderNo": "BMN1231",
-                "orderQty": 66,
-                "custName": "Prameet Jha",
-                "custCode": 5466618,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            },
-            {
-                "orderNo": "BSW1231",
-                "orderQty": 58,
-                "custName": "Komal Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            },
-            {
-                "orderNo": "BDW1231",
-                "orderQty": 48,
-                "custName": "Pawan Dubey",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            }
-        ]
-    },
-    {
-        "icon": "",
-        "cp": "80",
-        "oli": "12",
-        "rmCode": "NBC009988",
-        "rmDesc": "bottle 5",
-        "noOfOrdImp": 5,
-        "totalReq": 100,
-        "uom": "kg",
-        "soh": 75,
-        "sq": 12,
-        "st": 10,
-        "gap": 1,
-        "Availability": 56,
-        "penD": 1,
-        "edit": 0,
-        "tsfs": 100,
-        "type": "parent",
-        "value": "Red",
-        "children": [
-            {
-                "orderNo": "BMN1231",
-                "orderQty": 66,
-                "custName": "Prameet Jha",
-                "custCode": 5466618,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            },
-            {
-                "orderNo": "BSW1231",
-                "orderQty": 58,
-                "custName": "Komal Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            },
-            {
-                "orderNo": "BDW1231",
-                "orderQty": 48,
-                "custName": "Pawan Dubey",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            }
-        ]
-    },
-    {
-        "icon": "",
-        "cp": "25",
-        "oli": "12",
-        "rmCode": "PPE009944",
-        "rmDesc": "bottle 5",
-        "noOfOrdImp": 86,
-        "totalReq": 100,
-        "uom": "kg",
-        "soh": 75,
-        "sq": 12,
-        "st": 10,
-        "gap": 1,
-        "Availability": 56,
-        "penD": 1,
-        "edit": 0,
-        "tsfs": 100,
-        "type": "parent",
-        "value": "Yellow",
-        "children": [
-            {
-                "orderNo": "BMN1231",
-                "orderQty": 66,
-                "custName": "Prameet Jha",
-                "custCode": 5466618,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            },
-            {
-                "orderNo": "BSW1231",
-                "orderQty": 58,
-                "custName": "Komal Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            },
-            {
-                "orderNo": "BDW1231",
-                "orderQty": 48,
-                "custName": "Pawan Dubey",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            }
-        ]
-    },
-    {
-        "icon": "",
-        "cp": "13",
-        "oli": "12",
-        "rmCode": "KPL554422",
-        "rmDesc": "bottle 6",
-        "noOfOrdImp": 78,
-        "totalReq": 100,
-        "uom": "kg",
-        "soh": 75,
-        "sq": 12,
-        "st": 10,
-        "gap": 1,
-        "Availability": 56,
-        "penD": 1,
-        "edit": 0,
-        "tsfs": 100,
-        "type": "parent",
-        "value": "Yellow",
-        "children": [
-            {
-                "orderNo": "BMN1231",
-                "orderQty": 66,
-                "custName": "Prameet Jha",
-                "custCode": 5466618,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            },
-            {
-                "orderNo": "BSW1231",
-                "orderQty": 58,
-                "custName": "Komal Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            },
-            {
-                "orderNo": "BDW1231",
-                "orderQty": 48,
-                "custName": "Pawan Dubey",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            }
-        ]
-    },
-    {
+  
+]
 
-        "icon": "",
-        "cp": "12",
-        "oli": "12",
-        "rmCode": "MOM442231",
-        "rmDesc": "bottle 7",
-        "noOfOrdImp": 29,
-        "totalReq": 100,
-        "uom": "kg",
-        "soh": 75,
-        "sq": 12,
-        "st": 10,
-        "gap": 1,
-        "Availability": 56,
-        "penD": 1,
-        "edit": 0,
-        "tsfs": 100,
-        "type": "parent",
-        "value": "Yellow",
-        "children": [
-            {
-                "orderNo": "BMN1231",
-                "orderQty": 66,
-                "custName": "Prameet Jha",
-                "custCode": 5466618,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            },
-            {
-                "orderNo": "BSW1231",
-                "orderQty": 58,
-                "custName": "Komal Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            },
-            {
-                "orderNo": "BDW1231",
-                "orderQty": 48,
-                "custName": "Pawan Dubey",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            }
-        ]
-    },
+export const OrderDetailsChildrenHeader = [
     {
-        "icon": "",
-        "cp": "9",
-        "oli": "12",
-        "rmCode": "GST654213",
-        "rmDesc": "bottle 8",
-        "noOfOrdImp": 54,
-        "totalReq": 100,
-        "uom": "kg",
-        "soh": 75,
-        "sq": 12,
-        "st": 10,
-        "gap": 1,
-        "Availability": 56,
-        "penD": 1,
-        "edit": 0,
-        "tsfs": 100,
-        "type": "parent",
-        "value": "Black",
-        "children": [
+        "HeaderChildren": [
             {
-                "orderNo": "BMN1231",
-                "orderQty": 66,
-                "custName": "Prameet Jha",
-                "custCode": 5466618,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
+                "rn": "ProcPlanningReportChildren",
+                "jf": "rmc",
+                "cp": 1,
+                "hdr": "RM Code",
+                "vs": true,
+                "ca": "left",
+                "val": "*Error*"
             },
             {
-                "orderNo": "BSW1231",
-                "orderQty": 58,
-                "custName": "Komal Rai",
-                "custCode": 5468718,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
+                "rn": "ProcPlanningReportChildren",
+                "jf": "rmd",
+                "cp": 2,
+                "hdr": "RM Descp",
+                "vs": true,
+                "ca": "left",
+                "val": "*Error*"
             },
             {
-                "orderNo": "BDW1231",
-                "orderQty": 48,
-                "custName": "Pawan Dubey",
-                "custCode": 5465518,
-                "orderDueDate": "22-Jul-13",
-                "orderRlsDate": "22-Jul-13",
-                "type": "child"
-            }
+                "rn": "ProcPlanningReportChildren",
+                "jf": "rmrq",
+                "cp": 3,
+                "hdr": "RM ReqdQty",
+                "vs": true,
+                "ca": "left",
+                "val": "*Error*"
+            },
+            {
+                "rn": "ProcPlanningReportChildren",
+                "jf": "rma",
+                "cp": 4,
+                "hdr": "RM Available",
+                "vs": true,
+                "ca": "left",
+                "val": "*Error*"
+            },
+            {
+                "rn": "ProcPlanningReportChildren",
+                "jf": "rmall",
+                "cp": 5,
+                "hdr": "RM Allocated",
+                "vs": true,
+                "ca": "left",
+                "val": "*Error*"
+            },
         ]
     }
 ]
+
+export const OrderDetailsHeaderData = 
+    {
+        "HeaderData": [
+            {
+                "rn": "materialCovReport",
+                "jf": "ic",
+                "cp": 1,
+                "hdr": "",
+                "vs": true,
+                "ca": "left",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "cp",
+                "cp": 2,
+                "hdr": "Color Priority",
+                "vs": true,
+                "ca": "left",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "oli",
+                "cp": 3,
+                "hdr": "Order Line Item",
+                "vs": true,
+                "ca": "left",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "on",
+                "cp": 4,
+                "hdr": "Order No",
+                "vs": true,
+                "ca": "left",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "oq",
+                "cp": 5,
+                "hdr": "Order Qty",
+                "vs": true,
+                "ca": "left",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "bs",
+                "cp": 6,
+                "hdr": "Batch Size",
+                "vs": true,
+                "ca": "right",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "fka",
+                "cp": 7,
+                "hdr": "Full Kit Avail",
+                "vs": true,
+                "ca": "right",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "avl",
+                "cp": 8,
+                "hdr": "",
+                "vs": true,
+                "ca": "right",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "cn",
+                "cp": 9,
+                "hdr": "Cust Name",
+                "vs": true,
+                "ca": "right",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "cc",
+                "cp": 10,
+                "hdr": "Cust Code",
+                "vs": true,
+                "ca": "right",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "fgc",
+                "cp": 11,
+                "hdr": "FG Code",
+                "vs": true,
+                "ca": "right",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "fgd",
+                "cp": 12,
+                "hdr": "FG Descp",
+                "vs": true,
+                "ca": "right",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "ord",
+                "cp": 13,
+                "hdr": "Order Receipt Date",
+                "vs": true,
+                "ca": "right",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "odd",
+                "cp": 14,
+                "hdr": "Order Due Date",
+                "vs": true,
+                "ca": "right",
+                "val": "*Error*"
+            },
+            {
+                "rn": "materialCovReport",
+                "jf": "ordRD",
+                "cp": 14,
+                "hdr": "Order Release Date",
+                "vs": true,
+                "ca": "right",
+                "val": "*Error*"
+            }
+        ]
+    }
+
 
 
 // {
@@ -951,7 +835,7 @@ export const OrderDetailsData = [
 //Order Release date: MTOOrderData
 
 
-export const dayWiseCove = [
+export const dayWiseCoverage = [
     {
         "No-Kit": [
             {
@@ -961,13 +845,26 @@ export const dayWiseCove = [
                 "O_QTY": "Order Quantity",
                 "C_Name": "Customer name",
                 "C_code": "Customer Code",
-                "FG_Code": "Finished Good Code",
                 "FG_Desc": "Finished good Description",
-                "RM_Code": "Raw material code",
-                "RM_Desc": "Raw material description",
-                "RM_Qty": "Raw material quantity",
-                "RM_Req": "Raw material required",
-                "RM_All": "Raw material allocated"
+                "FG_Code": "Finishe Good code",
+                "children": [
+                    {
+                        "RM_Code": "Raw material code", //if the code is same has FG Code
+                        "RM_Desc": "Raw material description", // place Finished good description
+                        "RM_Qty": "Raw material quantity",
+                        "RM_Avail": "Raw material Available",
+                        "RM_All": "Raw material allocated",
+                        "RM_Miss": "Raw material missing",
+                    },
+                    {
+                        "RM_Code": "Raw material code", //if the code is same has FG Code
+                        "RM_Desc": "Raw material description", // place Finished good description
+                        "RM_Qty": "Raw material quantity",
+                        "RM_Avail": "Raw material Available",
+                        "RM_All": "Raw material allocated",
+                        "RM_Miss": "Raw material missing",
+                    }
+                ]
             },
             {
                 "O_No": "Order number",
@@ -978,11 +875,16 @@ export const dayWiseCove = [
                 "C_code": "Customer Code",
                 "FG_Code": "Finished Good Code",
                 "FG_Desc": "Finished good Description",
-                "RM_Code": "Raw material code",
-                "RM_Desc": "Raw material description",
-                "RM_Qty": "Raw material quantity",
-                "RM_Req": "Raw material required",
-                "RM_All": "Raw material allocated"
+                "children": [
+                    {
+                        "RM_Code": "Raw material code", //if the code is same has FG Code
+                        "RM_Desc": "Raw material description", // place Finished good description
+                        "RM_Qty": "Raw material quantity",
+                        "RM_Avail": "Raw material Available",
+                        "RM_All": "Raw material allocated",
+                        "RM_Miss": "Raw material missing",
+                    }
+                ]
             },
             {
                 "O_No": "Order number",
@@ -993,11 +895,16 @@ export const dayWiseCove = [
                 "C_code": "Customer Code",
                 "FG_Code": "Finished Good Code",
                 "FG_Desc": "Finished good Description",
-                "RM_Code": "Raw material code",
-                "RM_Desc": "Raw material description",
-                "RM_Qty": "Raw material quantity",
-                "RM_Req": "Raw material required",
-                "RM_All": "Raw material allocated"
+                "children": [
+                    {
+                        "RM_Code": "Raw material code", //if the code is same has FG Code
+                        "RM_Desc": "Raw material description", // place Finished good description
+                        "RM_Qty": "Raw material quantity",
+                        "RM_Avail": "Raw material Available",
+                        "RM_All": "Raw material allocated",
+                        "RM_Miss": "Raw material missing",
+                    }
+                ]
             },
             {
                 "count": '3',
@@ -1014,11 +921,16 @@ export const dayWiseCove = [
                 "C_code": "Customer Code",
                 "FG_Code": "Finished Good Code",
                 "FG_Desc": "Finished good Description",
-                "RM_Code": "Raw material code",
-                "RM_Desc": "Raw material description",
-                "RM_Qty": "Raw material quantity",
-                "RM_Req": "Raw material required",
-                "RM_All": "Raw material allocated"
+                "children": [
+                    {
+                        "RM_Code": "Raw material code", //if the code is same has FG Code
+                        "RM_Desc": "Raw material description", // place Finished good description
+                        "RM_Qty": "Raw material quantity",
+                        "RM_Avail": "Raw material Available",
+                        "RM_All": "Raw material allocated",
+                        "RM_Miss": "Raw material missing",
+                    }
+                ]
             },
             {
                 "O_No": "Order number",
@@ -1029,11 +941,16 @@ export const dayWiseCove = [
                 "C_code": "Customer Code",
                 "FG_Code": "Finished Good Code",
                 "FG_Desc": "Finished good Description",
-                "RM_Code": "Raw material code",
-                "RM_Desc": "Raw material description",
-                "RM_Qty": "Raw material quantity",
-                "RM_Req": "Raw material required",
-                "RM_All": "Raw material allocated"
+                "children": [
+                    {
+                        "RM_Code": "Raw material code", //if the code is same has FG Code
+                        "RM_Desc": "Raw material description", // place Finished good description
+                        "RM_Qty": "Raw material quantity",
+                        "RM_Avail": "Raw material Available",
+                        "RM_All": "Raw material allocated",
+                        "RM_Miss": "Raw material missing",
+                    }
+                ]
             },
             {
                 "O_No": "Order number",
@@ -1044,11 +961,16 @@ export const dayWiseCove = [
                 "C_code": "Customer Code",
                 "FG_Code": "Finished Good Code",
                 "FG_Desc": "Finished good Description",
-                "RM_Code": "Raw material code",
-                "RM_Desc": "Raw material description",
-                "RM_Qty": "Raw material quantity",
-                "RM_Req": "Raw material required",
-                "RM_All": "Raw material allocated"
+                "children": [
+                    {
+                        "RM_Code": "Raw material code", //if the code is same has FG Code
+                        "RM_Desc": "Raw material description", // place Finished good description
+                        "RM_Qty": "Raw material quantity",
+                        "RM_Avail": "Raw material Available",
+                        "RM_All": "Raw material allocated",
+                        "RM_Miss": "Raw material missing",
+                    }
+                ]
             },
             {
                 "O_No": "Order number",
@@ -1059,14 +981,19 @@ export const dayWiseCove = [
                 "C_code": "Customer Code",
                 "FG_Code": "Finished Good Code",
                 "FG_Desc": "Finished good Description",
-                "RM_Code": "Raw material code",
-                "RM_Desc": "Raw material description",
-                "RM_Qty": "Raw material quantity",
-                "RM_Req": "Raw material required",
-                "RM_All": "Raw material allocated"
+                "children": [
+                    {
+                        "RM_Code": "Raw material code", //if the code is same has FG Code
+                        "RM_Desc": "Raw material description", // place Finished good description
+                        "RM_Qty": "Raw material quantity",
+                        "RM_Avail": "Raw material Available",
+                        "RM_All": "Raw material allocated",
+                        "RM_Miss": "Raw material missing",
+                    }
+                ]
             },
             {
-                'count':'4'
+                'count': '4'
             }
 
         ],
@@ -1080,11 +1007,16 @@ export const dayWiseCove = [
                 "C_code": "Customer Code",
                 "FG_Code": "Finished Good Code",
                 "FG_Desc": "Finished good Description",
-                "RM_Code": "Raw material code",
-                "RM_Desc": "Raw material description",
-                "RM_Qty": "Raw material quantity",
-                "RM_Req": "Raw material required",
-                "RM_All": "Raw material allocated"
+                "children": [
+                    {
+                        "RM_Code": "Raw material code", //if the code is same has FG Code
+                        "RM_Desc": "Raw material description", // place Finished good description
+                        "RM_Qty": "Raw material quantity",
+                        "RM_Avail": "Raw material Available",
+                        "RM_All": "Raw material allocated",
+                        "RM_Miss": "Raw material missing",
+                    }
+                ]
             },
             {
                 "O_No": "Order number",
@@ -1095,11 +1027,16 @@ export const dayWiseCove = [
                 "C_code": "Customer Code",
                 "FG_Code": "Finished Good Code",
                 "FG_Desc": "Finished good Description",
-                "RM_Code": "Raw material code",
-                "RM_Desc": "Raw material description",
-                "RM_Qty": "Raw material quantity",
-                "RM_Req": "Raw material required",
-                "RM_All": "Raw material allocated"
+                "children": [
+                    {
+                        "RM_Code": "Raw material code", //if the code is same has FG Code
+                        "RM_Desc": "Raw material description", // place Finished good description
+                        "RM_Qty": "Raw material quantity",
+                        "RM_Avail": "Raw material Available",
+                        "RM_All": "Raw material allocated",
+                        "RM_Miss": "Raw material missing",
+                    }
+                ]
             },
             {
                 "O_No": "Order number",
@@ -1110,11 +1047,16 @@ export const dayWiseCove = [
                 "C_code": "Customer Code",
                 "FG_Code": "Finished Good Code",
                 "FG_Desc": "Finished good Description",
-                "RM_Code": "Raw material code",
-                "RM_Desc": "Raw material description",
-                "RM_Qty": "Raw material quantity",
-                "RM_Req": "Raw material required",
-                "RM_All": "Raw material allocated"
+                "children": [
+                    {
+                        "RM_Code": "Raw material code", //if the code is same has FG Code
+                        "RM_Desc": "Raw material description", // place Finished good description
+                        "RM_Qty": "Raw material quantity",
+                        "RM_Avail": "Raw material Available",
+                        "RM_All": "Raw material allocated",
+                        "RM_Miss": "Raw material missing",
+                    }
+                ]
             },
             {
                 "O_No": "Order number",
@@ -1125,11 +1067,16 @@ export const dayWiseCove = [
                 "C_code": "Customer Code",
                 "FG_Code": "Finished Good Code",
                 "FG_Desc": "Finished good Description",
-                "RM_Code": "Raw material code",
-                "RM_Desc": "Raw material description",
-                "RM_Qty": "Raw material quantity",
-                "RM_Req": "Raw material required",
-                "RM_All": "Raw material allocated"
+                "children": [
+                    {
+                        "RM_Code": "Raw material code", //if the code is same has FG Code
+                        "RM_Desc": "Raw material description", // place Finished good description
+                        "RM_Qty": "Raw material quantity",
+                        "RM_Avail": "Raw material Available",
+                        "RM_All": "Raw material allocated",
+                        "RM_Miss": "Raw material missing",
+                    }
+                ]
             },
             {
                 "O_No": "Order number",
@@ -1140,17 +1087,95 @@ export const dayWiseCove = [
                 "C_code": "Customer Code",
                 "FG_Code": "Finished Good Code",
                 "FG_Desc": "Finished good Description",
-                "RM_Code": "Raw material code",
-                "RM_Desc": "Raw material description",
-                "RM_Qty": "Raw material quantity",
-                "RM_Req": "Raw material required",
-                "RM_All": "Raw material allocated"
+                "children": [
+                    {
+                        "RM_Code": "Raw material code", //if the code is same has FG Code
+                        "RM_Desc": "Raw material description", // place Finished good description
+                        "RM_Qty": "Raw material quantity",
+                        "RM_Avail": "Raw material Available",
+                        "RM_All": "Raw material allocated",
+                        "RM_Miss": "Raw material missing",
+                    }
+                ]
             },
             {
-                'count':5
+                'count': 5
             }
         ]
 
     }
 
+]
+
+export const monthWiseCoverage = [
+    {
+        "May": [
+            {
+                'D': '1',
+                'C': 'G',
+            },
+            {
+                'D': '2',
+                'C': 'G',
+            },
+            {
+                'D': '3',
+                'C': 'G',
+            },
+            {
+                'D': '4',
+                'C': 'R',
+            },
+            {
+                'D': '5',
+                'C': 'G',
+            },
+            {
+                'D': '6',
+                'C': 'R',
+            },
+            {
+                'D': '1',
+                'C': 'G',
+            },
+            {
+                'D': '1',
+                'C': 'G',
+            }
+        ],
+        "June": [
+            {
+                'D': '1',
+                'C': 'G',
+            },
+            {
+                'D': '2',
+                'C': 'G',
+            },
+            {
+                'D': '3',
+                'C': 'G',
+            },
+            {
+                'D': '4',
+                'C': 'R',
+            },
+            {
+                'D': '5',
+                'C': 'G',
+            },
+            {
+                'D': '6',
+                'C': 'R',
+            },
+            {
+                'D': '1',
+                'C': 'G',
+            },
+            {
+                'D': '1',
+                'C': 'G',
+            }
+        ]
+    }
 ]

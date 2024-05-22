@@ -3,8 +3,11 @@ import useMaterialSO from './useMaterialSO';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
 const MaterialSODetailed = () => {
-    const { columnDef,
-        agGridProps, RRRRowData } = useMaterialSO();
+    const {
+        columnDef,
+        agGridProps,
+        RRRRowData
+    } = useMaterialSO();
     return (
         <>
             <div>

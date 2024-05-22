@@ -14,10 +14,11 @@ import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForR
 import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField } from '../VectorFlow/types/BPR';
-import {RRRField} from '../VectorFlow/types/RRR'
+import {RRRField} from '../VectorFlow/types/RRR';
 // import _ from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
 // clear cached token and redirect to sso login
+import { ODFields } from '../VectorFlow/types/SOD';
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -2183,4 +2184,54 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
   })
    return [DBMTickColumn,...DBMGraphColumn,...DBMSleepColumn,...result]
   
+}
+
+
+export const mapOrderFieldsToColDefs = (fields:ODFields[]):ColDef[]=>{
+  if (!fields || fields.length < 1) {
+      return [];
+    }
+    let result: ColDef[] = [];
+    const PPColumns: ColDef[] = [
+    ]
+    result = fields.map((f: ODFields) => {
+      if (f.jf === 'ic') {
+        return {
+          colId: f.jf,
+          field: f.jf,
+          headerName: f.hdr,
+          hide: !f.vs,
+          cellRenderer: 'agGroupCellRenderer',
+          initialWidth: 25,
+        }
+      }
+      if (f.jf === 'avl') {
+        return {
+          colId: f.jf,
+          field: f.jf,
+          headerName: f.hdr,
+          hide: !f.vs,
+          cellRenderer: "availabilityCellRenderer",
+          initialWidth: 160,
+          autoHeaderHeight: true,
+          wrapHeaderText: true,
+        }
+      }
+      return {
+        colId: f.jf,
+        [f.jf]: f.val,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        autoHeaderHeight: true,
+        wrapHeaderText: true,
+        initialWidth: 160,
+        filter: 'agMultiColumnFilter',
+        floatingFilter: true,
+      }
+    })
+   
+    return [...result, ...PPColumns];
+
+ 
 }
