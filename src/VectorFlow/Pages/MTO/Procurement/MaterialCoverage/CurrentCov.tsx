@@ -7,14 +7,17 @@ import {
 import { mapOrderDetails } from './CommonFunc';
 import { ColorsMTO } from '../../Common/Colors';
 import MTOMaterialSO from '../../../../../components/VectorFLOW/commons/MTO/MaterialSOBox/MTOMaterialSO';
-
+import { useDispatch } from 'react-redux';
+import {SAVE_ANALYTICS_DATA} from '../../../../../redux/actions/MTO/index'
 
 interface CurrentCovProps {
     handleToggleComponent: any
 
 }
 
+
 const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
+    const dispatch = useDispatch();
 
     const [isSubPageOpen, setToggleSubPage] = useState<boolean>(false)
 
@@ -55,7 +58,11 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
     const [nthBlockOrdCnt, setnthBlockOrdCnt] = useState<number>(0);
     const [nthhdOrderVal, setnthhdOrderVal] = useState<number>(0);
 
-
+    const [blackOrderCnt, setBlackOrderCnt] = useState<number>(0);
+    const [redOrderCnt, setRedOrderCnt] = useState<number>(0);
+    const [yellowOrderCnt, setYellowOrderCnt] = useState<number>(0);
+    const [greenOrderCnt, setGreenOrderCnt] = useState<number>(0);
+    const [blueOrderCnt, setBlueOrderCnt] = useState<number>(0);
 
     const loadInitialData = () => {
         const firstBlock: any = mapOrderDetails("Black", "Red", "Yellow", "NK", 0);
@@ -106,7 +113,24 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
 
     useEffect(() => {
         loadInitialData();
+        setAnalyticalData();
     }, [])
+
+    const setAnalyticalData = () => {
+        const blackCount = mapOrderDetails("Black", "", "", "", 4)
+        const redCount = mapOrderDetails("Red", "", "", "", 4)
+        const yellowCount = mapOrderDetails("Yellow", "", "", "", 4)
+        const greenCount = mapOrderDetails("Green", "", "", "", 4)
+        const blueCount = mapOrderDetails("Blue", "", "", "", 4)
+        const TotalCountObj = {
+            "Black": blackCount,
+            "Red": redCount,
+            "Yellow": yellowCount,
+            "Green": greenCount,
+            "Blue": blueCount
+        }
+        dispatch(SAVE_ANALYTICS_DATA(TotalCountObj))
+    }
 
     const handleToggle = () => {
         setToggleSubPage(true);

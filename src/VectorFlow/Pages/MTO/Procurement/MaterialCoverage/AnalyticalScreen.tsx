@@ -14,8 +14,9 @@ import {
     BPRDailyAnalyticsTableCellHeader,
     BPRDailyAnalyticsTableCellText
 } from './styles';
-
+import { useSelector } from 'react-redux';
 import { ColDef } from "ag-grid-community";
+import { RootState } from '../../../../../redux/store/store';
 import { AgGridReact } from "ag-grid-react"; // React Grid Logic
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
@@ -30,7 +31,9 @@ interface BPRDailyAnalyticsProps {
 }
 
 const AnalyticalScreen = (props: BPRDailyAnalyticsProps) => {
-
+    //AnalyticsData
+    const options = useSelector((state: RootState) => state.mto.AnalyticsData);
+    console.log('anaytical=',options)
     // const [rowData, setRowData] = useState<IRow[]>([
 
     // ]);
