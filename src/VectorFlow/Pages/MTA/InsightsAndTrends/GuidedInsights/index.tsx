@@ -8,77 +8,78 @@ import ExcessInventoryTrend from './ExcessInventoryTrend';
 import CustomScreens from './CustomScreens';
 import ChronicGridView from './ChronicGridView';
 import { GridStateContext } from '../../../../../context/GridStateContext';
-const GuidedInsight=()=>{
+const GuidedInsight = () => {
 
-    const {onFloatingTabChange,onGoBack, onViewChange,currentView, currentTab, setCurrentTab, getFloatingTabsList,
-    chroniceRowData,ref, currentFilter,
-    setCurrentFilter,
-    onDelete,onApplyFilter}=useGuidedInsights();
+    const { onFloatingTabChange, onGoBack, onViewChange, currentView, currentTab, setCurrentTab, getFloatingTabsList,
+        chroniceRowData, ref, currentFilter,
+        setCurrentFilter,
+        onDelete, onApplyFilter } = useGuidedInsights();
 
     const renderView = () => {
 
-        if(currentView==='chart'){
-        switch(currentTab){
-            
-            case 'availabilitytrend':
-                return <AvailabilityTrend />
-            case 'chronicunavailability':
-                return <ChronicUnavailability />
-             case 'availabilityageingtrend':
-                return <AvailabilityAgeingTrend />
-            case 'dbmnormsuggestions':
-                return <DBMNormSuggestions />
-            case 'excessinventorytrend':
-                return <ExcessInventoryTrend />
-            case 'customscreens':
-                return <CustomScreens/>
+        if (currentView === 'chart') {
+            switch (currentTab) {
 
-            default:
-                return <AvailabilityTrend />
-            
+                case 'availabilitytrend':
+                    return <AvailabilityTrend />
+                case 'chronicunavailability':
+                    return <ChronicUnavailability />
+                case 'availabilityageingtrend':
+                    return <AvailabilityAgeingTrend />
+                case 'dbmnormsuggestions':
+                    return <DBMNormSuggestions />
+                case 'excessinventorytrend':
+                    return <ExcessInventoryTrend />
+                case 'customscreens':
+                    return <CustomScreens />
 
-        }}else{
+                default:
+                    return <AvailabilityTrend />
 
- return <ChronicGridView currentGridData={chroniceRowData}/>
+
+            }
+        } else {
+
+            return <ChronicGridView currentGridData={chroniceRowData} />
 
         }
 
     }
-    
-    return(<GridStateContext.Provider value={{
-        ref:ref,
-        exportExcelColumns:[],
-        setExportExcelColumns:()=>{return},
-        tempDownloadData:false,
-        setTempDownloadData:()=>{return},
-        exportExcelRowData:[],
-        setExportExcelRowData:()=>{return}
+
+    return (<GridStateContext.Provider value={{
+        ref: ref,
+        exportExcelColumns: [],
+        setExportExcelColumns: () => { return },
+        tempDownloadData: false,
+        setTempDownloadData: () => { return },
+        exportExcelRowData: [],
+        setExportExcelRowData: () => { return }
 
     }}>
-        <div style={{zoom:0.8}}>
-            <ActionToolBar  data-testid="chronicgridview"
-                        view={currentView} 
-                        onFloatingTabChange={onFloatingTabChange}
-                        onGoBack={onGoBack}
-                        onViewChange={onViewChange}
-                        currentTab={currentTab}
-                        setCurrentTab={setCurrentTab}
-                        tabsList={getFloatingTabsList()}
-                        genericRecordCount={0}
-                       disableChartAndGridViewToggle={currentTab==='chronicunavailability'|| currentView==='grid'?false:true}
-                       onExportToExcelCallBack
+        <div style={{ zoom: 0.8 }}>
+            <ActionToolBar data-testid="chronicgridview"
+                view={currentView}
+                onFloatingTabChange={onFloatingTabChange}
+                onGoBack={onGoBack}
+                onViewChange={onViewChange}
+                currentTab={currentTab}
+                setCurrentTab={setCurrentTab}
+                tabsList={getFloatingTabsList()}
+                genericRecordCount={0}
+                disableChartAndGridViewToggle={currentTab === 'chronicunavailability' || currentView === 'grid' ? false : true}
+                onExportToExcelCallBack
                 //   disableChartAndGridViewToggle={(currentTab==='chronicunavailability'|| currentTab==='customscreens' )|| (currentView==='grid'|| currentView==='chart') ?false:true}
-                    currCategory={'GuidedInsight' }
-                    multiFilter={currentFilter}
-                    setMultiFilter={setCurrentFilter}
-                    onDelete={onDelete}
-                    onApplyFilter={onApplyFilter}
+                currCategory={'GuidedInsight'}
+                multiFilter={currentFilter}
+                setMultiFilter={setCurrentFilter}
+                onDelete={onDelete}
+                onApplyFilter={onApplyFilter}
 
-                        />
-         </div>               
-                      {renderView()} 
-            </GridStateContext.Provider>) 
-   
+            />
+        </div>
+        {renderView()}
+    </GridStateContext.Provider>)
+
 
 
 

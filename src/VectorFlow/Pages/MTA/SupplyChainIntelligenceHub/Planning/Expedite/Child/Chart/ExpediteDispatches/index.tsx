@@ -408,6 +408,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Parent Location Name",
               position: "bottom",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
             label:{
               fontSize:8,
@@ -419,6 +421,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Count of SKUs",
               position: "left",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
           },
         },
@@ -439,10 +443,12 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Receiving Location Name",
               position: "bottom",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
             label:{
               fontSize:8,
-              fontFamily:'Roboto'
+              fontFamily:'Roboto',
             }
           },
           number: {
@@ -450,6 +456,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Count of SKUs",
               position: "left",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
           },
         },

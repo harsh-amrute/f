@@ -386,6 +386,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Parent Location Name",
               position: "bottom",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
             label:{
               fontSize:8,
@@ -397,6 +399,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Count of SKUs",
               position: "left",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
           },
         },
@@ -417,6 +421,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Receiving Location Name",
               position: "bottom",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
             label:{
               fontSize:8,
@@ -428,6 +434,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Count of SKUs",
               position: "left",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
           },
         },
@@ -508,7 +516,7 @@ const colDefs3: ColDef[] = [
                   <SCHorizontalDivider />
                   <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Parent Location: Max Pipeline Black/Red SKUs With
                         Available Rationed Qty For Receiving Locations" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                      <div style={{width:'1000px'}}>
+                      <div className="ag-theme-planning" style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph1}
                           columnDefs={colDefs1}
@@ -585,7 +593,7 @@ const colDefs3: ColDef[] = [
               </Allotment.Pane>
               <Allotment.Pane>
                 <SCHorizontalAllignmentWrapper>
-                <SCChartContainer style={{marginTop:'10px'}}>
+                <SCChartContainer className="ag-theme-planning" style={{marginTop:'10px'}}>
                   <SCChartHeaderContainer>
                     <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
                       <SCChartHeader style={{marginRight:10}}>
@@ -607,7 +615,7 @@ const colDefs3: ColDef[] = [
                   <SCHorizontalDivider />
                   <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Receiving Locations: Max Pipeline Inv. Black/Red
                         SKUs With Rationed Quantity Available At Parent" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                      <div style={{width:'1000px'}}>
+                      <div className="ag-theme-planning" style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph2}
                           enableRangeSelection={true} 
@@ -715,7 +723,7 @@ const colDefs3: ColDef[] = [
               </SCChartHeaderContainer>
               <SCHorizontalDivider />
               <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                      <div style={{width:'1000px'}}>
+                      <div className="ag-theme-planning" style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph3}
                           columnDefs={colDefs3}
