@@ -7,6 +7,7 @@ import { type GridRef } from "../../../../../../../types/MDM";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../styles';
 import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
+import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
 interface ExcessInventoryProps{
     data:any
@@ -187,6 +188,8 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                             enabled:true,
                             text:'Product Name',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
 
                         },
                         label:{
@@ -203,7 +206,9 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                         title:{
                             enabled:true,
                             text:"Count of Locations",
-                            position:"left"
+                            position:"left",
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                       }
                   },
@@ -228,6 +233,8 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                             enabled:true,
                             text:'Product Name',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
 
                         },
                         label:{
@@ -243,7 +250,9 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                         title:{
                             enabled:true,
                             text:"Value in Lakhs",
-                            position:"left"
+                            position:"left",
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                       }
                   },
@@ -260,13 +269,13 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
       }
 
    
-    //   const graph1 = [
-    //     'This graph highlights the top 10 products with surplus inventory, in maximum number of locations',
-    //   ]
+      const graph1 = [
+        'This graph highlights the top 10 products with surplus inventory, in maximum number of locations',
+      ]
 
-    //   const graph2 = [
-    //     'This graph highlights the top 10 products with the highest excess inventory, assessed in terms of monetary value.'
-    //   ]
+      const graph2 = [
+        'This graph highlights the top 10 products with the highest excess inventory, assessed in terms of monetary value.'
+      ]
 
       const scaleDown = (data:any,key:string,divisor:number)=>{
         return data.map((row:any)=>{
@@ -283,12 +292,12 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={450}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Products with Excess Inventory: Number of Locations</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: Number of Locations</SCChartHeader><VFInfoToolTip infoList={graph1}/></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                             <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Products with Excess Inventory: Number of Locations" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                                <div style={{width:'1000px'}}>
+                                <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
                                         ref={refGraph1}
                                         columnDefs={colDefs1}
@@ -366,12 +375,12 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={450}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader><VFInfoToolTip infoList={graph2}/></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(2)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                             <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                                <div style={{width:'1000px'}}>
+                                <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}

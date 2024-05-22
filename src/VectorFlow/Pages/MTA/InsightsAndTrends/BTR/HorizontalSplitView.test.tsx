@@ -37,6 +37,8 @@ const mockEcoTableProps = {
 const mockSplitViewProps: SplitViewProps = {
   techTable: mockTechTableProps,
   ecoTable: mockEcoTableProps,
+  isLocked:true,
+  toggleLockMode:jest.fn()
   
 };
 

@@ -7,6 +7,7 @@ import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDiv
 
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
+import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 interface MonitorGITChildTransporterWiseProps{
     data:any
 }
@@ -163,6 +164,8 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                             enabled:true,
                             text:'Transporter Name',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
 
                         }
                     },
@@ -170,7 +173,9 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                         title:{
                             enabled:true,
                             text:"Count of LRs",
-                            position:"left"
+                            position:"left",
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                       }
                   },
@@ -186,12 +191,12 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
           },
       }
 
-    //   const graph1 = [
-    //     'The graph illustrates the top 10 transporters having the maximum no. of LRs with SKUs in On-Hand Black/Red (shortage of on-handinventory) experiencing high transport ageing (Transportation Time > Standard Lead Time)',
-    //     'Care needs to be taken to reduce the transportation time of LRs corresponding to above transporters',
-    //     'Super Delay : Transportation Lead Time >= 1.5 x Standard Lead Time',
-    //     'Delay : Transportation Lead Time > Standard Lead Time'
-    //   ]
+      const graph1 = [
+        'The graph illustrates the top 10 transporters having the maximum no. of LRs with SKUs in On-Hand Black/Red (shortage of on-handinventory) experiencing high transport ageing (Transportation Time > Standard Lead Time)',
+        'Care needs to be taken to reduce the transportation time of LRs corresponding to above transporters',
+        'Super Delay : Transportation Lead Time >= 1.5 x Standard Lead Time',
+        'Delay : Transportation Lead Time > Standard Lead Time'
+      ]
 
     //   const graph2 = [
     //     'This box plot graph displays the statistical distribution of delay days in transport for various transporters. Each box represents the range of delayed LRs as on today'
@@ -205,12 +210,12 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                 <Allotment.Pane preferredSize={1000}>
                     <SCChartContainer height={430}>
                         <SCChartHeaderContainer>
-                            <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Transporters: Max LRs With On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader></div>
+                            <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Transporters: Max LRs With On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader><VFInfoToolTip infoList={graph1}/></div>
                             <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
                         </SCChartHeaderContainer>
                         <SCHorizontalDivider/>
                         <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                                <div style={{width:'1000px'}}>
+                                <div className="ag-theme-planning" style={{width:'1000px'}}>
                                 <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}

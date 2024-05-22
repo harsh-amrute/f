@@ -180,8 +180,8 @@ import _ from "lodash";
                       
                     </SCFilterControls>
                     <SCFilterAddControls>
-                      {activeMaster.filters.map((f:Filter)=>{
-                          if(f.masterId===activeMaster?.id){
+                      {activeMaster.filters.map((f:Filter,index:number)=>{
+                          if(f.masterId===activeMaster?.id && index===0){
                             return (
                               <SCFilterAddButtonWrapper>
                                 <SCFilterAddButton

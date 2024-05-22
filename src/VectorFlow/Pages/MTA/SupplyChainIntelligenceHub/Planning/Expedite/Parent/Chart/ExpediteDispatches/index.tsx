@@ -18,6 +18,7 @@ import { AgChartOptions } from "ag-charts-community";
 
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
+import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
 interface ExpediteParentDispatchesProps {
   data: any;
@@ -385,6 +386,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Parent Location Name",
               position: "bottom",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
             label:{
               fontSize:8,
@@ -396,6 +399,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Count of SKUs",
               position: "left",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
           },
         },
@@ -416,6 +421,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Receiving Location Name",
               position: "bottom",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
             label:{
               fontSize:8,
@@ -427,6 +434,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Count of SKUs",
               position: "left",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
           },
         },
@@ -451,19 +460,19 @@ const colDefs3: ColDef[] = [
     },
   };
 
-  // const graph1 = [
-  //   "This graph highlights the top 10 parent locations with max SKUs in Pipeline Black/Red which have rationed qty available for receiving locations",
-  //   "To improve availability, expedite dispatches from these parent locations.",
-  // ];
+  const graph1 = [
+    "This graph highlights the top 10 parent locations with max SKUs in Pipeline Black/Red which have rationed qty available for receiving locations",
+    "To improve availability, expedite dispatches from these parent locations.",
+  ];
 
-  // const graph2 = [
-  //   "This graph highlights the top 10 receiving locations with maximum SKUs in Pipeline black/red which have rationed quantity available at parent location.",
-  //   "To improve availability, expedite dispatches to these locations.",
-  // ];
+  const graph2 = [
+    "This graph highlights the top 10 receiving locations with maximum SKUs in Pipeline black/red which have rationed quantity available at parent location.",
+    "To improve availability, expedite dispatches to these locations.",
+  ];
 
-  // const graph3 = [
-  //   "This graph shows the potential improvement in Pipeline availability assuming the entire rationed qty would become goods in transit.",
-  // ];
+  const graph3 = [
+    "This graph shows the potential improvement in Pipeline availability assuming the entire rationed qty would become goods in transit.",
+  ];
 
   const splitDataIntoRandomPercentage = (data:any,key:string) => {
     return data.map((row:any)=>{
@@ -487,13 +496,14 @@ const colDefs3: ColDef[] = [
                 <SCHorizontalAllignmentWrapper>
                 <SCChartContainer height={200}>
                   <SCChartHeaderContainer>
-                    <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
-                      <SCChartHeader>
+                    <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
+                      <SCChartHeader style={{marginRight:10}}>
                         Top 10 Parent Location: Max Pipeline Black/Red SKUs With
                         Available Rationed Qty For Receiving Locations
                       </SCChartHeader>
+                      <VFInfoToolTip infoList={graph1}/>
                     </div>
-                    <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                    <div style={{display:'flex',alignItems:'center',marginRight:'18px',}}>
                       {!hideChart1 && (
                         <img
                           src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
@@ -506,7 +516,7 @@ const colDefs3: ColDef[] = [
                   <SCHorizontalDivider />
                   <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Parent Location: Max Pipeline Black/Red SKUs With
                         Available Rationed Qty For Receiving Locations" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                      <div style={{width:'1000px'}}>
+                      <div className="ag-theme-planning" style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph1}
                           columnDefs={colDefs1}
@@ -583,13 +593,14 @@ const colDefs3: ColDef[] = [
               </Allotment.Pane>
               <Allotment.Pane>
                 <SCHorizontalAllignmentWrapper>
-                <SCChartContainer style={{marginTop:'10px'}}>
+                <SCChartContainer className="ag-theme-planning" style={{marginTop:'10px'}}>
                   <SCChartHeaderContainer>
-                    <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
-                      <SCChartHeader>
+                    <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
+                      <SCChartHeader style={{marginRight:10}}>
                         Top 10 Receiving Locations: Max Pipeline Inv. Black/Red
                         SKUs With Rationed Quantity Available At Parent
                       </SCChartHeader>
+                      <VFInfoToolTip infoList={graph2}/>
                     </div>
                     <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                       {!hideChart2 && (
@@ -604,7 +615,7 @@ const colDefs3: ColDef[] = [
                   <SCHorizontalDivider />
                   <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Receiving Locations: Max Pipeline Inv. Black/Red
                         SKUs With Rationed Quantity Available At Parent" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                      <div style={{width:'1000px'}}>
+                      <div className="ag-theme-planning" style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph2}
                           enableRangeSelection={true} 
@@ -694,10 +705,11 @@ const colDefs3: ColDef[] = [
             <SCHorizontalAllignmentWrapper>
             <SCChartContainer >
               <SCChartHeaderContainer>
-                <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
-                  <SCChartHeader>
+                <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
+                  <SCChartHeader style={{marginRight:10}}>
                     Comparision of Availability: Pre Rationing vs Post Rationing
                   </SCChartHeader>
+                  <VFInfoToolTip infoList={graph3}/>
                 </div>
                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                   {!hideChart3 && (
@@ -711,7 +723,7 @@ const colDefs3: ColDef[] = [
               </SCChartHeaderContainer>
               <SCHorizontalDivider />
               <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                      <div style={{width:'1000px'}}>
+                      <div className="ag-theme-planning" style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph3}
                           columnDefs={colDefs3}

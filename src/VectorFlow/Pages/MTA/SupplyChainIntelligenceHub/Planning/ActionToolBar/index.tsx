@@ -206,7 +206,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                         style={{
                             maxWidth: currCategory==="GuidedInsight" ? '100%' : '50%', 
                             width: currCategory === "GuidedInsight" ? '100%' : 'unset',
-                            justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
+                            justifyContent: currCategory === "GuidedInsight" ? 'flex-start' : 'unset'}}
                             >
 
                           
@@ -305,7 +305,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                          style={{
                                 maxWidth: currCategory==="GuidedInsight" ? '100%' : '50%', 
                                 width: currCategory === "GuidedInsight" ? '100%' : 'unset',
-                                justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
+                                justifyContent: currCategory === "GuidedInsight" ? 'flex-start' : 'unset'}}
                                 >
                                     
                         {currCategory==="GITFromParent" || currCategory==="GITToChild" || currCategory==="ExpediteFromParent" || currCategory==="ExpediteToChild" || currCategory==="ExcessInventory" || currCategory==="OrderFulfillment" ?

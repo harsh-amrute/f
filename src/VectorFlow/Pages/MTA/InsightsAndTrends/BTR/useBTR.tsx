@@ -53,6 +53,8 @@ const useBTR = ()=>{
 
     const [currentPage,setCurrentPage] = useState<number>(1);
 
+    const [isLockMode,toggleLockMode] = useState<boolean>(false)
+
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
 
@@ -135,7 +137,6 @@ const useBTR = ()=>{
     const [ecoRowData,setEcoRowData]  = useState<Array<any>>([])
     // const [defaultColDefs,setDefaultColDefs] = useState<Array<ColDef>>([])
     const getData = async(filter:any,pageNumber:number)=>{
-        console.debug(filter)
         const loaderId = notifyLoader("Loading data")
         try{
             const data = await getBTRData({
@@ -186,6 +187,8 @@ const useBTR = ()=>{
                             header:"Pipeline Inventory Trend Report",
                             ...gridProps
                         }}
+                        isLocked={isLockMode}
+                        toggleLockMode={toggleLockMode}
                     />
                 )
                 return (
@@ -203,6 +206,8 @@ const useBTR = ()=>{
                             header:"Pipeline Inventory Trend Report",
                             paginationProps:ecoPaginationProps,
                             ...gridProps}}
+                            isLocked={isLockMode}
+                            toggleLockMode={toggleLockMode}
                     />
                 )
             case "2":
@@ -293,8 +298,8 @@ const useBTR = ()=>{
         renderView,
         onExportToExcelCallBack,
         tempDownloadData,
-
-        
+        isLockMode,
+        toggleLockMode,
         setTempDownloadData,
         tempAgGridProps,
         exportExcelRowData,

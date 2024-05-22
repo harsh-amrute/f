@@ -48,7 +48,7 @@ const BufferTrends = () => {
                             tabs={[
                                 {
                                     id:'technical View',
-                                    label:'On-Hand inv. Availability Trend',
+                                    label:'On-Hand Inv. Availability Trend',
                                     value:'tech'
                                 },
                                 {

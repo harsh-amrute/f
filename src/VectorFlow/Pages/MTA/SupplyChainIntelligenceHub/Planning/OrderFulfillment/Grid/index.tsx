@@ -148,6 +148,11 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
             field: 'id'
         },
         {
+            headerName: "Pending Quantity",
+            colId: 'pq',
+            field: 'pq'
+        },
+        {
             headerName: "Due Date",
             colId: 'dd',
             field: 'dd'
