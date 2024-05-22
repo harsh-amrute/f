@@ -1,6 +1,6 @@
-
+import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
-import VFInfoToolTip from './index'
+import VFInfoToolTip from './'
 
 // Mock the Portal component
 jest.mock('../../layouts/Portal', () => {
@@ -34,7 +34,7 @@ describe('VFInfoToolTip', () => {
         // Check if the tooltip is rendered with correct content
         const tooltip = screen.getByTestId('portal')
         expect(tooltip).toBeInTheDocument()
-        infoList.forEach((info, index) => {
+        infoList.forEach((info) => {
             expect(screen.getByText(info)).toBeInTheDocument()
         })
     })
