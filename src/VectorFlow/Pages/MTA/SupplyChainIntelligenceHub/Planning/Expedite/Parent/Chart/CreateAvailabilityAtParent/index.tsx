@@ -198,6 +198,8 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                             enabled:true,
                             text:'Parent Location Name',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
 
                         },
                         label:{
@@ -213,7 +215,9 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                         title:{
                             enabled:true,
                             text:"Count of SKUs",
-                            position:"left"
+                            position:"left",
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                       }
                   },
@@ -283,7 +287,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                             <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock for Receiving Locations" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                                    <div style={{width:'1100px'}}>
+                                    <div className="ag-theme-planning" style={{width:'1100px'}}>
                                         <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
@@ -370,7 +374,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                 </SCChartHeaderContainer>
                                 <SCHorizontalDivider/>
                                 <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                                    <div style={{width:'1100px'}}>
+                                    <div className="ag-theme-planning" style={{width:'1100px'}}>
                                         <VFTable
                                                 ref={refGraph2}
                                                 columnDefs={colDefs2}

@@ -9,7 +9,7 @@ import {
 import "allotment/dist/style.css";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../types/MDM";
-import { ColDef, ChartRef } from "ag-grid-enterprise";
+import { ColDef } from "ag-grid-enterprise";
 import {
   SCChartHeaderContainer,
   SCChartHeader,
@@ -18,8 +18,8 @@ import {
   SCDynamicContainer,
   SCHorizontalAllignmentWrapper,
 } from "../style";
-import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
+import VFModalCard from "../../../../../../components/VectorFLOW/commons/VFModalCard";
 
 import {GraphSeriesOverrides} from '../../../../../../helpers/BPRConstants'
 
@@ -58,15 +58,6 @@ const DBMNormSuggestions = () => {
   const [hideChart3, toggleChart3] = useState<boolean>(false);
   const [hideChart4, toggleChart4] = useState<boolean>(false);
 
-  const [grid1DisplayStatus, setGrid1DisplayStatus] = useState<string>("none");
-  const [grid2DisplayStatus, setGrid2DisplayStatus] = useState<string>("none");
-  const [grid3DisplayStatus, setGrid3DisplayStatus] = useState<string>("none");
-  const [grid4DisplayStatus, setGrid4DisplayStatus] = useState<string>("none");
-
-  let chartRef1: ChartRef | undefined;
-  let chartRef2: ChartRef | undefined;
-  let chartRef3: ChartRef | undefined;
-  let chartRef4: ChartRef | undefined;
 
   const coldefs1: ColDef[] = [
     {
@@ -366,7 +357,7 @@ const DBMNormSuggestions = () => {
   const generateChart = (graphNo: number, withOutContainer?: boolean) => {
     if (graphNo === 1) {
       if (withOutContainer) {
-        chartRef1 = refGraph1.current?.api.createRangeChart({
+        refGraph1.current?.api.createRangeChart({
           //chartType:'column',
           chartType: "stackedColumn",
           cellRange: {
@@ -377,7 +368,7 @@ const DBMNormSuggestions = () => {
         });
       } else {
         const container1 = document.getElementById("g1") as HTMLElement;
-        chartRef1 = refGraph1.current?.api.createRangeChart({
+        refGraph1.current?.api.createRangeChart({
           //chartType:'column',
           chartType: "stackedColumn",
           cellRange: {
@@ -391,7 +382,7 @@ const DBMNormSuggestions = () => {
     }
     if (graphNo === 2) {
       if (withOutContainer) {
-        chartRef2 = refGraph2.current?.api.createRangeChart({
+        refGraph2.current?.api.createRangeChart({
           chartType: "pie",
           cellRange: {
             columns: ["suggestion", "count"],
@@ -401,7 +392,7 @@ const DBMNormSuggestions = () => {
         });
       } else {
         const container2 = document.getElementById("g2") as HTMLElement;
-        chartRef2 = refGraph2.current?.api.createRangeChart({
+        refGraph2.current?.api.createRangeChart({
           chartType: "pie",
           cellRange: {
             columns: ["suggestion", "count"],
@@ -414,7 +405,7 @@ const DBMNormSuggestions = () => {
     }
     if (graphNo === 3) {
       if (withOutContainer) {
-        chartRef3 = refGraph3.current?.api.createRangeChart({
+        refGraph3.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
             columns: ["sku", "NormInc", "NormDec"],
@@ -424,7 +415,7 @@ const DBMNormSuggestions = () => {
         });
       } else {
         const container3 = document.getElementById("g3") as HTMLElement;
-        chartRef3 = refGraph3.current?.api.createRangeChart({
+        refGraph3.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
             columns: ["sku", "NormInc", "NormDec"],
@@ -437,7 +428,7 @@ const DBMNormSuggestions = () => {
     }
     if (graphNo === 4) {
       if (withOutContainer) {
-        chartRef4 = refGraph4.current?.api.createRangeChart({
+        refGraph4.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
             columns: ["age", "NormInc", "NormDec"],
@@ -447,7 +438,7 @@ const DBMNormSuggestions = () => {
         });
       } else {
         const container4 = document.getElementById("g4") as HTMLElement;
-        chartRef4 = refGraph4.current?.api.createRangeChart({
+        refGraph4.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
             columns: ["age", "NormInc", "NormDec"],
@@ -462,24 +453,24 @@ const DBMNormSuggestions = () => {
 
   const handleChartClose = (graphNo: number) => {
     if (graphNo === 1) {
-      chartRef1?.destroyChart();
+      // chartRef1?.destroyChart();
       toggleChart1(true);
-      setGrid1DisplayStatus("block");
+      // setGrid1DisplayStatus("block");
     }
     if (graphNo === 2) {
-      chartRef2?.destroyChart();
+      // chartRef2?.destroyChart();
       toggleChart2(true);
-      setGrid2DisplayStatus("block");
+      // setGrid2DisplayStatus("block");
     }
     if (graphNo === 3) {
-      chartRef3?.destroyChart();
+      // chartRef3?.destroyChart();
       toggleChart3(true);
-      setGrid3DisplayStatus("block");
+      // setGrid3DisplayStatus("block");
     }
     if (graphNo === 4) {
-      chartRef4?.destroyChart();
+      // chartRef4?.destroyChart();
       toggleChart4(true);
-      setGrid4DisplayStatus("block");
+      // setGrid4DisplayStatus("block");
     }
   };
 
@@ -621,19 +612,20 @@ const DBMNormSuggestions = () => {
     },
   };
 
-  const graph1 = [
-    "This chart highlights the top 10 locations based on the maximum no. of suggestions for norm increase or decrease.",
-  ];
+  // const graph1 = [
+  //   "This chart highlights the top 10 locations based on the maximum no. of suggestions for norm increase or decrease.",
+  // ];
 
-  const graph2 = [
-    "This pie chart highlights the distribution of SKU Location-wise DBM Suggestion status as on today.",
-  ];
-  const graph3 = [
-    "This chart highlights the top 10 products based on the maximum no. of suggestions for norm increase or decrease",
-  ];
-  const graph4 = [
-    "This chart highlights the pendency of DBM suggestions. DBM Suggestion Age = Today - Suggestion Generation Date",
-  ];
+  // const graph2 = [
+  //   "This pie chart highlights the distribution of SKU Location-wise DBM Suggestion status as on today.",
+  // ];
+  // const graph3 = [
+  //   "This chart highlights the top 10 products based on the maximum no. of suggestions for norm increase or decrease",
+  // ];
+  // const graph4 = [
+  //   "This chart highlights the pendency of DBM suggestions. DBM Suggestion Age = Today - Suggestion Generation Date",
+  // ];
+
   if (
     isLoadingGraph1 ||
     isLoadingGraph2 ||
@@ -647,11 +639,11 @@ const DBMNormSuggestions = () => {
     <>
       <SCDynamicContainer>
         <Allotment vertical>
-          <Allotment.Pane preferredSize={395}>
+          <Allotment.Pane preferredSize={250}>
             <SCHorizontalAllignmentWrapper>
               <Allotment>
                 <Allotment.Pane preferredSize={"50%"}>
-                  <SCChartContainer height={300} >
+                  <SCChartContainer height={220} style={{marginTop:'1px'}} >
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -661,7 +653,7 @@ const DBMNormSuggestions = () => {
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                         {!hideChart1 && (
                           <img
-                            src="/assets/img/VectorFLOW/BPR/minimize.svg"
+                            src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
                             alt=""
                             data-testid="minimizechart1"
                             onClick={() => handleChartClose(1)}
@@ -670,44 +662,8 @@ const DBMNormSuggestions = () => {
                       </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
-                    <div
-                      style={{ height: "225px", display: grid1DisplayStatus }}
-                    >
-                      {hideChart1 && (
-                        <VFTable
-                          ref={refGraph1}
-                          columnDefs={coldefs1}
-                          rowData={DBMSuggestionLocData}
-                          enableCharts={true}
-                          enableRangeSelection={true} 
-                          rowSelection="multiple"
-                          statusBar = {{
-                              statusPanels: [
-                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                { statusPanel: 'agAggregationComponent', align:'left' },
-                              ],
-                            }}                           onRowDataUpdated={() => generateChart(1, true)}
-                          getChartToolbarItems={getChartToolbarItems}
-                          chartToolPanelsDef={{
-                            panels: [],
-                          }}
-                          defaultColDef={{
-                            floatingFilter:true,
-                            filter: "agMultiColumnFilter",
-                          }}
-                          chartThemeOverrides={chartThemeOverrides1}
-                          chartThemes={["myCustomTheme"]}
-                          customChartThemes={{
-                            myCustomTheme: myCustomTheme,
-                          }}
-                          disableZoomScaling={true}
-                        />
-                      )}
-                      {!hideChart1 && (
-                        <div style={{ display: "none" }}>
+                    <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max No. of DBM Suggestions" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                        <div style={{width:'1000px'}}>
                           <VFTable
                             ref={refGraph1}
                             columnDefs={coldefs1}
@@ -723,10 +679,14 @@ const DBMNormSuggestions = () => {
                                   { statusPanel: 'agSelectedRowCountComponent', align:'left' },
                                   { statusPanel: 'agAggregationComponent', align:'left' },
                                 ],
-                              }}                             onRowDataUpdated={() => generateChart(1)}
+                              }}                           onRowDataUpdated={() => generateChart(1, true)}
                             getChartToolbarItems={getChartToolbarItems}
                             chartToolPanelsDef={{
                               panels: [],
+                            }}
+                            defaultColDef={{
+                              floatingFilter:true,
+                              filter: "agMultiColumnFilter",
                             }}
                             chartThemeOverrides={chartThemeOverrides1}
                             chartThemes={["myCustomTheme"]}
@@ -734,68 +694,60 @@ const DBMNormSuggestions = () => {
                               myCustomTheme: myCustomTheme,
                             }}
                             disableZoomScaling={true}
+                            height={480}
                           />
                         </div>
-                      )}
+                    </VFModalCard>
+                    <div style={{ display: "none" }}>
+                      <VFTable
+                        ref={refGraph1}
+                        columnDefs={coldefs1}
+                        rowData={DBMSuggestionLocData}
+                        enableCharts={true}
+                        enableRangeSelection={true} 
+                        rowSelection="multiple"
+                        statusBar = {{
+                            statusPanels: [
+                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                              { statusPanel: 'agAggregationComponent', align:'left' },
+                            ],
+                          }}                             onRowDataUpdated={() => generateChart(1)}
+                        getChartToolbarItems={getChartToolbarItems}
+                        chartToolPanelsDef={{
+                          panels: [],
+                        }}
+                        chartThemeOverrides={chartThemeOverrides1}
+                        chartThemes={["myCustomTheme"]}
+                        customChartThemes={{
+                          myCustomTheme: myCustomTheme,
+                        }}
+                        disableZoomScaling={true}
+                      />
                     </div>
-                    {!hideChart1 && (
-                      <div id="g1" style={{ height: "220px" }}></div>
-                    )}
+                    <div id="g1" style={{ height: "160px" }}></div>
                     <div id="SKUWiseGraph1"></div>
                   </SCChartContainer>
-                  <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8 }}>
+                  {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8 }}>
                     <VFInfoTip text={graph1} />
-                  </div>
+                  </div> */}
                 </Allotment.Pane>
                 <Allotment.Pane>
-                  <SCChartContainer height={300}>
+                  <SCChartContainer height={220} style={{marginTop:'1px'}}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center',zoom:'0.8'}}>
                         <SCChartHeader>
                           Distribution Of Current Active DBM Suggestions
                         </SCChartHeader>
                       </div>
-                      <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}</div>
+                      <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}</div>
                       
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
-                    <div
-                      style={{ height: "225px", display: grid2DisplayStatus }}
-                    >
-                      {hideChart2 && (
-                        <VFTable
-                          ref={refGraph2}
-                          columnDefs={coldefs2}
-                          rowData={pieData}
-                          enableCharts={true}
-                          enableRangeSelection={true} 
-                          rowSelection="multiple"
-                          statusBar = {{
-                              statusPanels: [
-                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                { statusPanel: 'agAggregationComponent', align:'left' },
-                              ],
-                            }}                           onFirstDataRendered={() => generateChart(2, true)}
-                          getChartToolbarItems={getChartToolbarItems}
-                          chartToolPanelsDef={{
-                            panels: [],
-                          }}
-                          defaultColDef={{
-                            floatingFilter:true,
-                            filter: "agMultiColumnFilter",
-                          }}
-                          chartThemeOverrides={chartThemeOverrides2}
-                          chartThemes={["myCustomTheme"]}
-                          customChartThemes={{
-                            myCustomTheme: myCustomTheme,
-                          }}
-                        />
-                      )}
-                      {!hideChart2 && (
-                        <div style={{ display: "none" }}>
+                    <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Distribution Of Current Active DBM Suggestions" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                        <div style={{width:'1000px'}}>
                           <VFTable
                             ref={refGraph2}
                             columnDefs={coldefs2}
@@ -811,29 +763,59 @@ const DBMNormSuggestions = () => {
                                   { statusPanel: 'agSelectedRowCountComponent', align:'left' },
                                   { statusPanel: 'agAggregationComponent', align:'left' },
                                 ],
-                              }}                             onFirstDataRendered={() => generateChart(2)}
+                              }}                           onFirstDataRendered={() => generateChart(2, true)}
                             getChartToolbarItems={getChartToolbarItems}
                             chartToolPanelsDef={{
                               panels: [],
+                            }}
+                            defaultColDef={{
+                              floatingFilter:true,
+                              filter: "agMultiColumnFilter",
                             }}
                             chartThemeOverrides={chartThemeOverrides2}
                             chartThemes={["myCustomTheme"]}
                             customChartThemes={{
                               myCustomTheme: myCustomTheme,
                             }}
-                            disableZoomScaling={true}
+                            height={480}
                           />
                         </div>
-                      )}
-                    </div>
-                    {!hideChart2 && (
-                      <div id="g2" style={{ height: "220px" }}></div>
-                    )}
+                    </VFModalCard>
+                    <div style={{ display: "none" }}>
+                      <VFTable
+                        ref={refGraph2}
+                        columnDefs={coldefs2}
+                        rowData={pieData}
+                        enableCharts={true}
+                        enableRangeSelection={true} 
+                        rowSelection="multiple"
+                        statusBar = {{
+                            statusPanels: [
+                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                              { statusPanel: 'agAggregationComponent', align:'left' },
+                            ],
+                          }}                             onFirstDataRendered={() => generateChart(2)}
+                        getChartToolbarItems={getChartToolbarItems}
+                        chartToolPanelsDef={{
+                          panels: [],
+                        }}
+                        chartThemeOverrides={chartThemeOverrides2}
+                        chartThemes={["myCustomTheme"]}
+                        customChartThemes={{
+                          myCustomTheme: myCustomTheme,
+                        }}
+                        disableZoomScaling={true}
+                      />
+                    </div>  
+                    <div id="g2" style={{ height: "160px" }}></div>
                     <div id="SKUWiseGraph2"></div>
                   </SCChartContainer>
-                  <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8}}>
+                  {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8}}>
                     <VFInfoTip text={graph2} />
-                  </div>
+                  </div> */}
                 </Allotment.Pane>
               </Allotment>
             </SCHorizontalAllignmentWrapper>
@@ -842,7 +824,7 @@ const DBMNormSuggestions = () => {
             <SCHorizontalAllignmentWrapper>
               <Allotment>
                 <Allotment.Pane>
-                  <SCChartContainer height={300}>
+                  <SCChartContainer height={220} style={{marginTop:'1px'}}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -852,7 +834,7 @@ const DBMNormSuggestions = () => {
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                         {!hideChart3 && (
                           <img
-                            src="/assets/img/VectorFLOW/BPR/minimize.svg"
+                            src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
                             alt=""
                             data-testid="minimizechart3"
                             onClick={() => handleChartClose(3)}
@@ -861,43 +843,8 @@ const DBMNormSuggestions = () => {
                       </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
-                    <div
-                      style={{ height: "225px", display: grid3DisplayStatus }}
-                    >
-                      {hideChart3 && (
-                        <VFTable
-                          ref={refGraph3}
-                          columnDefs={coldefs3}
-                          rowData={DBMSuggestionSkuData}
-                          enableCharts={true}
-                          enableRangeSelection={true} 
-                          rowSelection="multiple"
-                          statusBar = {{
-                              statusPanels: [
-                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                { statusPanel: 'agAggregationComponent', align:'left' },
-                              ],
-                            }}                           onRowDataUpdated={() => generateChart(3, true)}
-                          getChartToolbarItems={getChartToolbarItems}
-                          chartToolPanelsDef={{
-                            panels: [],
-                          }}
-                          defaultColDef={{
-                            floatingFilter:true,
-                            filter: "agMultiColumnFilter",
-                          }}
-                          chartThemeOverrides={chartThemeOverrides3}
-                          chartThemes={["myCustomTheme"]}
-                          customChartThemes={{
-                            myCustomTheme: myCustomTheme,
-                          }}
-                        />
-                      )}
-                      {!hideChart3 && (
-                        <div style={{ display: "none" }}>
+                    <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Top 10 Products: Max No. of DBM Suggestions" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                        <div style={{width:'1000px'}}>
                           <VFTable
                             ref={refGraph3}
                             columnDefs={coldefs3}
@@ -913,32 +860,62 @@ const DBMNormSuggestions = () => {
                                   { statusPanel: 'agSelectedRowCountComponent', align:'left' },
                                   { statusPanel: 'agAggregationComponent', align:'left' },
                                 ],
-                              }}                             onRowDataUpdated={() => generateChart(3)}
+                              }}                           onRowDataUpdated={() => generateChart(3, true)}
                             getChartToolbarItems={getChartToolbarItems}
                             chartToolPanelsDef={{
                               panels: [],
+                            }}
+                            defaultColDef={{
+                              floatingFilter:true,
+                              filter: "agMultiColumnFilter",
                             }}
                             chartThemeOverrides={chartThemeOverrides3}
                             chartThemes={["myCustomTheme"]}
                             customChartThemes={{
                               myCustomTheme: myCustomTheme,
                             }}
-                            disableZoomScaling={true}
+                            height={480}
                           />
                         </div>
-                      )}
+                    </VFModalCard>
+                    <div style={{ display: "none" }}>
+                      <VFTable
+                        ref={refGraph3}
+                        columnDefs={coldefs3}
+                        rowData={DBMSuggestionSkuData}
+                        enableCharts={true}
+                        enableRangeSelection={true} 
+                        rowSelection="multiple"
+                        statusBar = {{
+                            statusPanels: [
+                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                              { statusPanel: 'agAggregationComponent', align:'left' },
+                            ],
+                          }}                             onRowDataUpdated={() => generateChart(3)}
+                        getChartToolbarItems={getChartToolbarItems}
+                        chartToolPanelsDef={{
+                          panels: [],
+                        }}
+                        chartThemeOverrides={chartThemeOverrides3}
+                        chartThemes={["myCustomTheme"]}
+                        customChartThemes={{
+                          myCustomTheme: myCustomTheme,
+                        }}
+                        disableZoomScaling={true}
+                      />
                     </div>
-                    {!hideChart3 && (
-                      <div id="g3" style={{ height: "220px" }}></div>
-                    )}
+                    <div id="g3" style={{ height: "160px" }}></div>
                     <div id="graph3"></div>
                   </SCChartContainer>
-                  <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8 }}>
+                  {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8 }}>
                     <VFInfoTip text={graph3} />
-                  </div>
+                  </div> */}
                 </Allotment.Pane>
                 <Allotment.Pane>
-                  <SCChartContainer height={300}>
+                  <SCChartContainer height={220} style={{marginTop:'1px'}}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -948,7 +925,7 @@ const DBMNormSuggestions = () => {
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                         {!hideChart4 && (
                           <img
-                            src="/assets/img/VectorFLOW/BPR/minimize.svg"
+                            src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
                             alt=""
                             data-testid="minimizechart4"
                             onClick={() => handleChartClose(4)}
@@ -957,10 +934,8 @@ const DBMNormSuggestions = () => {
                       </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
-                    <div
-                      style={{ height: "225px", display: grid4DisplayStatus }}
-                    >
-                      {hideChart4 && (
+                    <VFModalCard openModal={hideChart4} closeModal={()=>toggleChart4(false)} headerIcon='' headerText="Ageing categorization of DBM suggestions" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                      <div style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph4}
                           defaultColDef={{
@@ -990,48 +965,45 @@ const DBMNormSuggestions = () => {
                           customChartThemes={{
                             myCustomTheme: myCustomTheme,
                           }}
+                          height={480}
                         />
-                      )}
-                      {!hideChart4 && (
-                        <div style={{ display: "none" }}>
-                          <VFTable
-                            ref={refGraph4}
-                            columnDefs={coldefs4}
-                            rowData={DBMSuggestionAgeingData}
-                            enableCharts={true}
-                            enableRangeSelection={true} 
-                            rowSelection="multiple"
-                            statusBar = {{
-                                statusPanels: [
-                                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                  { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                  { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                  { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                  { statusPanel: 'agAggregationComponent', align:'left' },
-                                ],
-                              }}                             onRowDataUpdated={() => generateChart(4)}
-                            getChartToolbarItems={getChartToolbarItems}
-                            chartToolPanelsDef={{
-                              panels: [],
-                            }}
-                            chartThemeOverrides={chartThemeOverrides4}
-                            chartThemes={["myCustomTheme"]}
-                            customChartThemes={{
-                              myCustomTheme: myCustomTheme,
-                            }}
-                            disableZoomScaling={true}
-                          />
-                        </div>
-                      )}
+                      </div>
+                    </VFModalCard>
+                    <div style={{ display: "none" }}>
+                      <VFTable
+                        ref={refGraph4}
+                        columnDefs={coldefs4}
+                        rowData={DBMSuggestionAgeingData}
+                        enableCharts={true}
+                        enableRangeSelection={true} 
+                        rowSelection="multiple"
+                        statusBar = {{
+                            statusPanels: [
+                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                              { statusPanel: 'agAggregationComponent', align:'left' },
+                            ],
+                          }}                             onRowDataUpdated={() => generateChart(4)}
+                        getChartToolbarItems={getChartToolbarItems}
+                        chartToolPanelsDef={{
+                          panels: [],
+                        }}
+                        chartThemeOverrides={chartThemeOverrides4}
+                        chartThemes={["myCustomTheme"]}
+                        customChartThemes={{
+                          myCustomTheme: myCustomTheme,
+                        }}
+                        disableZoomScaling={true}
+                      />
                     </div>
-                    {!hideChart4 && (
-                      <div id="g4" style={{ height: "220px" }}></div>
-                    )}
+                    <div id="g4" style={{ height: "160px" }}></div>
                     <div id="graph4"></div>
                   </SCChartContainer>
-                  <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8 }}>
+                  {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8 }}>
                     <VFInfoTip text={graph4} />
-                  </div>
+                  </div> */}
                 </Allotment.Pane>
               </Allotment>
             </SCHorizontalAllignmentWrapper>

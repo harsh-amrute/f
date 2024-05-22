@@ -40,7 +40,8 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
                 colId:column['colCode'],
                 headerName:column['header'],
                 enablePivot:true,
-                enableValue:true
+                enableValue:true,
+                enableRowGroup:true,
             }
         })
         return [...colDefs];

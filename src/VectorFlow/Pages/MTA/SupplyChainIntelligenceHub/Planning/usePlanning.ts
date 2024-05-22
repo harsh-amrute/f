@@ -72,6 +72,8 @@ const usePlanning = ()=>{
 
     // const [currentGridState,setCurrentGridState] = useState<any>()
 
+    const [isDataLoading,setIsDataLoading] = useState(false);
+
 
     const rowsPerPage = parseInt(process.env.REACT_APP_PLANNING_ROWS_PER_PAGE || '50');
 
@@ -448,6 +450,7 @@ const usePlanning = ()=>{
     const fetchAndUpdateGridData = async (currentPage:number,fromPagination:boolean,filter?:any,tab?:string) => {
       
         try {
+            setIsDataLoading(true);
             // await getAndApplyGridState()
             switch(currentCategory){
                 case 'GITFromParent':{
@@ -611,10 +614,12 @@ const usePlanning = ()=>{
                     break;
                 }
             }
+            setIsDataLoading(false);
             
         } catch (error) {
             toast.dismiss();
             notifyError('Something Went Wrong')
+            setIsDataLoading(false);
         }
     }
 
@@ -647,8 +652,8 @@ const usePlanning = ()=>{
         const activeTab = getFloatingTabsList(view)[0];
         if(activeTab){
              setCurrentTab(getFloatingTabsList(view)[0].value);
-        } 
-        await fetchAndUpdateGridData(currentPage,false,currentFilter);
+        }
+        if(view==='grid') await fetchAndUpdateGridData(currentPage,false,currentFilter);
         setCurrentView(view);
         
     }
@@ -749,7 +754,8 @@ const usePlanning = ()=>{
         currentFilter,
         setCurrentFilter,
         onDelete,
-        onApplyFilter
+        onApplyFilter,
+        isDataLoading
     }
 
 

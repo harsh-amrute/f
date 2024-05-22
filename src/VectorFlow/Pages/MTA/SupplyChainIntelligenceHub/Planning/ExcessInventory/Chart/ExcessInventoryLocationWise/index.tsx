@@ -189,6 +189,8 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                             enabled:true,
                             text:'Location Name',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
 
                         },
                         label:{
@@ -200,7 +202,9 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                         title:{
                             enabled:true,
                             text:"Count of SKUs",
-                            position:"left"
+                            position:"left",
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                       }
                   },
@@ -225,6 +229,8 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                             enabled:true,
                             text:'Location Name',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
 
                         },
                         label:{
@@ -240,7 +246,9 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                         title:{
                             enabled:true,
                             text:"Value in Lakhs",
-                            position:"left"
+                            position:"left",
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                       }
                   },
@@ -284,7 +292,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                             <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations with Excess Inventory: Count of SKUs" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                                <div style={{width:'1000px'}}>
+                                <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
                                         ref={refGraph1}
                                         columnDefs={colDefs1}
@@ -366,7 +374,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                             <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Locations with Excess Inventory: In Value (Rupee Lakhs)" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                                <div style={{width:'1000px'}}>
+                                <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}

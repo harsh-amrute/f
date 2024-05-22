@@ -308,7 +308,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                             <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Maximum Overdue Orders" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                                <div style={{width:'1000px'}}>
+                                <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
                                         ref={refGraph1}
                                         columnDefs={colDefs1}
@@ -390,7 +390,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                             <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Locations: Max SKUs With Gap &gt; 67% of Requirement" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                                <div style={{width:'1000px'}}>
+                                <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}

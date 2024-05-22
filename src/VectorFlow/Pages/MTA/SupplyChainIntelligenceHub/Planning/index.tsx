@@ -11,6 +11,7 @@ import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/Da
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
 import { GridStateContext } from "../../../../../context/GridStateContext";
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 
 const Planning = () => {
 
@@ -47,7 +48,8 @@ const Planning = () => {
         onApplyFilter,
         currentFilter,
         setCurrentFilter,
-        onDelete
+        onDelete,
+        isDataLoading
     } = usePlanning();
 
 
@@ -94,6 +96,10 @@ const Planning = () => {
         }
         return []
     },[currentGridData])
+
+    if(isDataLoading){
+        return <VFLoader/>
+    }
 
 
     return(

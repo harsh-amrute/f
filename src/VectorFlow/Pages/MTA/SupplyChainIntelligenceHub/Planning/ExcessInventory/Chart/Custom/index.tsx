@@ -42,8 +42,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                     headerName:column['header'],
                     enablePivot:true,
                     enableValue:true,
-                    rowGroup:true,
-                    enableRowGroup:true,
+                    // enableRowGroup:true,
                     
                 } 
             }
@@ -54,8 +53,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                     headerName:column['header'],
                     enablePivot:true,
                     enableValue:true,
-                    rowGroup:true,
-                    enableRowGroup:true,
+                    // enableRowGroup:true,
                     
                 } 
             }
@@ -65,6 +63,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                 headerName:column['header'],
                 enablePivot:true,
                 enableValue:true,
+                enableRowGroup:true,
             }
         })
         return [...colDefs];
@@ -132,7 +131,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
     
     return(
         <>
-        <SCDynamicContainer>
+        <SCDynamicContainer className="ag-theme-planning-custom">
             <VFTable
                 ref={ref}
                 columnDefs={colDefs}
@@ -158,6 +157,9 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                      params.columnApi.applyColumnState({state:columnState})
                     }
                  }}
+                suppressDragLeaveHidesColumns={true}
+                disableZoomScaling={true}
+                rowHeight={30}
             />
         </SCDynamicContainer>
         </>
