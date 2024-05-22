@@ -8,6 +8,7 @@ import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDiv
 
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants';
 import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
+import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
 interface MonitorGITChildLocationWiseProps{
     data:any
@@ -189,12 +190,12 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
           },
       }
 
-    //   const graph1 = [
-    //     'The graph illustrates the top 10 receiving locations having the maximum no. of SKUs in On-Hand Black/Red (shortage of on-hand inventory) experiencing high transport ageing (Transportation Time > Standard Lead Time)',
-    //     'Care needs to be taken to reduce the transportation time in these locations or adjust the RLTs for Norm calculation',
-    //     'Super Delay : Transportation Lead Time >= 1.5 x Standard Lead Time',
-    //     'Delay : Transportation Lead Time > Standard Lead Time'
-    //   ]
+      const graph1 = [
+        'The graph illustrates the top 10 receiving locations having the maximum no. of SKUs in On-Hand Black/Red (shortage of on-hand inventory) experiencing high transport ageing (Transportation Time > Standard Lead Time)',
+        'Care needs to be taken to reduce the transportation time in these locations or adjust the RLTs for Norm calculation',
+        'Super Delay : Transportation Lead Time >= 1.5 x Standard Lead Time',
+        'Delay : Transportation Lead Time > Standard Lead Time'
+      ]
 
     //   const graph2 = [
     //     'This box plot graph displays the statistical distribution of delay days in transport for various locations. Each box represents the range of delay days as on today'
@@ -208,7 +209,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                     <Allotment.Pane preferredSize={'80%'}>
                         <SCChartContainer height={430}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader><VFInfoToolTip infoList={graph1}/></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>

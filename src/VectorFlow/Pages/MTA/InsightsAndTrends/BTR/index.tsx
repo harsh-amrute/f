@@ -31,7 +31,7 @@ const BufferTrendReport = () => {
         currFilter,
         setCurrFilter,
         onDelete,
-        onApplyFilter
+        onApplyFilter,
     } = useBTR()
 
     return (

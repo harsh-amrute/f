@@ -83,7 +83,7 @@
       color:black;
   }
   
-  .ag-body-horizontal-scroll{
+  /* .ag-body-horizontal-scroll{
       height: unset !important;
       max-height: unset !important;
       min-height: 29px !important;
@@ -109,7 +109,7 @@
       min-width:unset !important;
       max-width: unset !important;
       width: unset !important;
-  }
+  } */
   .ag-panel-title-bar-button{
       color:white !important;
   }

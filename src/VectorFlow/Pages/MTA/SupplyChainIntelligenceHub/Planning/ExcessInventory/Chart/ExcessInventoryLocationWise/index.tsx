@@ -8,13 +8,13 @@ import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDiv
 import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
+import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 interface ExcessInventoryProps{
     data:any
 }
 
 
 const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
-    console.log(data);
 
     const refGraph1 = useRef<GridRef>();
     const refGraph2 = useRef<GridRef>();
@@ -256,13 +256,13 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
           },
       }
 
-    //   const graph1 = [
-    //     'This graph highlights the top 10 locations with the highest excess inventory, measured in terms of the count of SKUs'
-    //   ]
+      const graph1 = [
+        'This graph highlights the top 10 locations with the highest excess inventory, measured in terms of the count of SKUs'
+      ]
 
-    //   const graph2 = [
-    //     'This graph highlights the top 10 locations with the highest excess inventory, assessed in terms of monetary value.'
-    //   ]
+      const graph2 = [
+        'This graph highlights the top 10 locations with the highest excess inventory, assessed in terms of monetary value.'
+      ]
 
       const scaleDown = (data:any,key:string,divisor:number)=>{
         return data.map((row:any)=>{
@@ -279,7 +279,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={450}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Locations with Excess Inventory: Count of SKUs</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations with Excess Inventory: Count of SKUs</SCChartHeader><VFInfoToolTip infoList={graph1}/></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
@@ -361,7 +361,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={450}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Locations with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader><VFInfoToolTip infoList={graph2}/></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(2)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>

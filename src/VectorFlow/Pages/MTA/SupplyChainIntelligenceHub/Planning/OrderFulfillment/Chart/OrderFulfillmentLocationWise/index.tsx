@@ -9,6 +9,8 @@ import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDiv
 import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
+import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+
 
 interface OrderFulfillmentProps{
     data:any
@@ -282,16 +284,16 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
           },
       }
 
-    //   const graph1 = [
-    //     'This graph highlights the top 10 locations with max number of over due orders. It also captures the status of due & other orders from pending orders file.',
-    //     'Overdue orders - Due date crossed | Due Orders - Due dates of today or in the future | Other Orders - PSO Quantity'
-    //   ]
+      const graph1 = [
+        'This graph highlights the top 10 locations with max number of over due orders. It also captures the status of due & other orders from pending orders file.',
+        'Overdue orders - Due date crossed | Due Orders - Due dates of today or in the future | Other Orders - PSO Quantity'
+      ]
 
-    //   const graph2 = [
-    //     'This Graph highlights the top 10 locations with max no of SKUs with Gap > 67% of requirement.',
-    //     'Gap = Requirement - Stock - GIT - Rationed Qty',
-    //     'Requirement = Norm Requirement + Spike Requirement + Relevant PSO & CNR Requirement'
-    //   ]
+      const graph2 = [
+        'This Graph highlights the top 10 locations with max no of SKUs with Gap > 67% of requirement.',
+        'Gap = Requirement - Stock - GIT - Rationed Qty',
+        'Requirement = Norm Requirement + Spike Requirement + Relevant PSO & CNR Requirement'
+      ]
 
      
     return(
@@ -301,7 +303,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={380}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Locations: Maximum Overdue Orders</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations: Maximum Overdue Orders</SCChartHeader><VFInfoToolTip infoList={graph1}/></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
@@ -383,7 +385,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={380}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Locations: Max SKUs With Gap &gt; 67% of Requirement</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations: Max SKUs With Gap &gt; 67% of Requirement</SCChartHeader><VFInfoToolTip infoList={graph2}/></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(2)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
