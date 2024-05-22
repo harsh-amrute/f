@@ -6,6 +6,7 @@ import { type GridRef } from "../../../../../../../../types/MDM";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../../styles';
 import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
+import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
 
 interface CreateAvailabilityAtParentProps{
@@ -228,15 +229,15 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
           },
       }
 
-    //   const graph1 = [
-    //     'This graph highlights the top 10 parent locations with max SKUs in Pipeline black/red with insufficient/nil rationed stock available for receiving locations',
-    //     'To improve availability, expedite production/sourcing at these parent locations.'
-    //   ]
+      const graph1 = [
+        'This graph highlights the top 10 parent locations with max SKUs in Pipeline black/red with insufficient/nil rationed stock available for receiving locations',
+        'To improve availability, expedite production/sourcing at these parent locations.'
+      ]
 
-    //   const graph2 = [
-    //     'This graph highlights the top 10 parent locations with max number of SKUs in continuous Pipeline Black/Red > RLT and have nil rationed stock available for receiving locations.',
-    //     'To improve availability, expedite production/sourcing at these parent locations.'
-    //   ]
+      const graph2 = [
+        'This graph highlights the top 10 parent locations with max number of SKUs in continuous Pipeline Black/Red > RLT and have nil rationed stock available for receiving locations.',
+        'To improve availability, expedite production/sourcing at these parent locations.'
+      ]
 
       const handleChartClose = (graphNo:number) => {
         if(graphNo === 1){
@@ -272,7 +273,12 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                     <Allotment.Pane>
                         <SCChartContainer height={410}>
                             <SCChartHeaderContainer>
-                                <SCChartHeader>Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock for Receiving Locations</SCChartHeader>
+                                <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+                                    <SCChartHeader>Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock for Receiving Locations</SCChartHeader>
+                                    <div style={{marginRight:'17px'}}>
+                                        <VFInfoToolTip infoList={graph1}/>
+                                    </div>
+                                </div>
                                 {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
@@ -354,7 +360,12 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                     <Allotment.Pane>
                         <SCChartContainer height={410}>
                                 <SCChartHeaderContainer>
-                                    <SCChartHeader>Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location</SCChartHeader>
+                                    <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+                                        <SCChartHeader>Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location</SCChartHeader>
+                                        <div style={{marginRight:'17px'}}>
+                                            <VFInfoToolTip infoList={graph2}/>
+                                        </div>
+                                    </div>
                                     {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(2)}/>}
                                 </SCChartHeaderContainer>
                                 <SCHorizontalDivider/>
