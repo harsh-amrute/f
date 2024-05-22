@@ -24,6 +24,7 @@ export const SCNavMenu = styled.div`
       .size.laptopL}) {
     padding: 7px 0;
   }
+
 `;
 
 export const SCNavIcon = styled.img<{widthIcon: string}>`
@@ -33,6 +34,7 @@ export const SCNavIcon = styled.img<{widthIcon: string}>`
       .size.laptopL}) {
         width: ${props => props.widthIcon ? '25px' : '19px' };
   }
+
 `;
 
 export const SCNavBox = styled.div`
@@ -44,6 +46,7 @@ export const SCNavBox = styled.div`
       .size.laptopL}) {
     margin-top: 35px;
   }
+
 `;
 
 export const SCNavLogout = styled.div`
@@ -58,6 +61,7 @@ export const SCNavLogout = styled.div`
       .size.laptopL}) {
     padding: 10px 0 20px 0;
   }
+
 `;
 
 export const SCIconLogout = styled.img`
@@ -82,4 +86,5 @@ export const SCMenuItem = styled.div<{
   cursor: pointer;
   background-color: ${(props) => (props.active ? globalStyles.chooseThemeColor[props.themeUi]?.color2 : "")};
   border-left: ${(props) => (props.active ? '5px solid' + globalStyles.chooseThemeColor[props.themeUi]?.color5 : "unset")};
+
 `;

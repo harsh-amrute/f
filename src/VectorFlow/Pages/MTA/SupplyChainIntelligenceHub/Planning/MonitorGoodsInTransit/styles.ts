@@ -48,7 +48,7 @@ export const SCChartHeaderContainer = styled.div`
     
 `
 export const SCChartHeader = styled.p`
-    font-weight:500;
+    font-weight:700;
     font-size:16px;
     line-height:21px;
     font-family:Roboto;
