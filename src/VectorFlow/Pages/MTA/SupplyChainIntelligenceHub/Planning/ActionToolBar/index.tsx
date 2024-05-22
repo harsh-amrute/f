@@ -220,24 +220,31 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                              <>
                                 <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
                                 {isFilterOpen && renderFilter()}
+                                <SCVerticalDivider/>
+
                              </>
                         }
                                 {currentTab==="dbmnormsuggestions" && 
                                 <>
                                     <Link to="/dbm/dbm-norm-suggestions" style={{textDecoration:'none'}}>
-                                        <VFButtonOutline onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false} style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px'}}>
-                                            <img src="/assets/img/VectorFLOW/BPR/NormAction.svg" ></img>
+                                        <VFButtonOutline onClick={()=>toggleFilter(true)} themeUi={themeUi} width={140} disabled={false} style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:'5px', paddingLeft:'12px', paddingRight:'13px'}}>
+                                            <img src="/assets/img/VectorFLOW/BPR/NormAction.svg"></img>
                                             Norm Action
                                         </VFButtonOutline>
-                                    </Link>       
+                                    </Link>  
+                                    <SCVerticalDivider/>
+     
                                 </>
                                 }
                                 
                                 {currentTab==='custom' && (
-                                    <SCViewContainerWithBg onClick={()=>ref.current.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`})} >
+                                    <>
+\                                    <SCViewContainerWithBg onClick={()=>ref.current.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`})} >
                                         <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" />
                                         <p>Excel Export</p>
                                     </SCViewContainerWithBg>
+                                    <SCVerticalDivider/>
+                                    </>
                                 )}
                              {
                                 ( currentTab==='availabilitytrend' ||  currentTab==="availabilityageingtrend" || currentTab==="dbmnormsuggestions" || currentTab==="chronicunavailability" || currentTab==='custom' ) &&
@@ -263,6 +270,8 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                             {
                                 
                                 !disableChartAndGridViewToggle &&
+                                <>
+                                 {/* <SCVerticalDivider/> */}
                                 <SCViewBackground>
                                     <SCViewContainer>
                                         <SCViewImage src={"/assets/img/VectorFLOW/BPR/chart-view-pink.svg"} alt="" />
@@ -281,6 +290,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                         <p style={{color:'#b0acac'}}>Grid View</p>
                                     </SCViewContainer>
                                 </SCViewBackground>
+                                </>
                                 
                             }
                             
@@ -373,6 +383,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                             {
                                 (currCategory==='CustomScreens' || currCategory==='BufferTrend' || currCategory==="BPR" || currCategory==="RRR" || currCategory==="BOR" || currCategory==="BTR" || currCategory==="ResearchInsight" || currCategory==="DBMNorm" || (currCategory==="GuidedInsight" && currentTab!=="chronicunavailability") || currCategory==="OpenExpeditingRequests" ) || currCategory==="InTransitWhereabouts" ? null : (
                                 !disableChartAndGridViewToggle &&
+                                <>
                                 <SCViewBackground>
                                     <SCViewContainer onClick={() =>{
                                         onViewChange('chart')
@@ -392,7 +403,9 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                         <p style={{color:'#bc3d81'}}>Grid View</p>
                                     </SCViewContainer>
                                 </SCViewBackground>
+                                </>
                                 )
+                            
                             }           
                         </SCCustomActionsContainer>
                     </SCTaskBarContainer>

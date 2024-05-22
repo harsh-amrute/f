@@ -1,5 +1,5 @@
 import { SCButton } from "./styles"
-import React from 'react';
+import React,{CSSProperties} from 'react';
 
 interface VFButtonProps{
     onClick:() => void,
@@ -7,6 +7,8 @@ interface VFButtonProps{
     disabled?:boolean,
     width?:number,
     children:React.ReactNode
+    style?:CSSProperties
+
 }
 
 const VFButton = (props:VFButtonProps)=>{
@@ -16,12 +18,13 @@ const VFButton = (props:VFButtonProps)=>{
         themeUi,
         disabled,
         width,
+        style,
         children,
     } = props
 
     
     return(
-        <SCButton onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width} data-testid="vf-button">
+        <SCButton onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width} style={style} data-testid="vf-button">
             {children}
         </SCButton>
     )
