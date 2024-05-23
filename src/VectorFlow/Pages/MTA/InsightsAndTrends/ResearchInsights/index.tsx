@@ -24,6 +24,7 @@ import VFPagination from '../../../../../components/VectorFLOW/commons/VFPaginat
 import { GridStateContext } from '../../../../../context/GridStateContext'
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal"
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
+import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
 
 
 const ResearchInsights = ()=>{
@@ -153,13 +154,13 @@ const ResearchInsights = ()=>{
                     handleChangePage={handlePageChange}
                 />
                 <ResearchInsightsTableTaskBar>
-                    <VFButtonOutline
+                    <VFButton
                         themeUi={themeUi}
                         onClick={handleOnUpdateGraph}
                         // disabled={graphState==='default'}
                     >
                         Update Graph
-                    </VFButtonOutline>
+                    </VFButton>
                 </ResearchInsightsTableTaskBar>
             </ResearchInsightsTableWrapper>
             {
@@ -473,12 +474,12 @@ const ResearchInsights = ()=>{
                     </AvailabilityTrendSection>
                     <AvailabilityTrendSection style={{border:'none'}}>
                     <ChartHeader>
-                        <ChartHeaderRadioGroup>
-                            <input type="radio" value="parent" name="location" id="parent" defaultChecked onChange={()=>updateGraphState(2,'type',{label:"Parent",value:'Parent'})}/>
+                        <ChartHeaderRadioGroup style={{gap:'2px'}}>
+                            <input type="radio" value="parent" name="location" id="parent" defaultChecked onChange={()=>updateGraphState(2,'type',{label:"Parent",value:'Parent'})} style={{margin:0}}/>
                             <label htmlFor="parent">Parent</label>
                         </ChartHeaderRadioGroup>
-                        <ChartHeaderRadioGroup style={{marginLeft:'10px'}}>
-                            <input type="radio" value="child" name="location" id="child" onChange={()=>updateGraphState(2,'type',{label:"Child",value:'Child'})}/>
+                        <ChartHeaderRadioGroup style={{marginLeft:'10px',gap:'2px'}}>
+                            <input type="radio" value="child" name="location" id="child" onChange={()=>updateGraphState(2,'type',{label:"Child",value:'Child'})} style={{margin:0}}/>
                             <label htmlFor="child">Child</label>
                         </ChartHeaderRadioGroup>
                         <CapsuleWrapper>

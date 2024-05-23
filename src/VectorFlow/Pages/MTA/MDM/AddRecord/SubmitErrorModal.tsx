@@ -2,6 +2,7 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 import {SubmitDataTextContainer, SubmitDataButtonWrapper} from './styles'
 import { useUserData } from "../../../../../context";
+import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 
 interface SubmitErrorModalProps{
     totalCount:number;
@@ -38,13 +39,13 @@ const SubmitErrorModal=(props:SubmitErrorModalProps)=>{
                 </SubmitDataTextContainer>
             }
             <SubmitDataButtonWrapper>
-                <VFButtonOutline themeUi={user.user.theme_ui} color={"gray"} onClick={onSuccess} width={173} onHoverChild={
+                <VFButton themeUi={user.user.theme_ui} style={{color:'gray'}} onClick={onSuccess} width={173} onHoverChild={
                 <>
-                    OK  
+                    Yes 
                 </>
                 }>
-                    OK 
-                </VFButtonOutline>
+                    Yes 
+                </VFButton>
             </SubmitDataButtonWrapper>
         </VFModalCard>
     )

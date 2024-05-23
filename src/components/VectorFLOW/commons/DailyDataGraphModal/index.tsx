@@ -488,7 +488,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
     } 
    
     return(
-        <VFModalCard openModal={isModalOpen} closeModal={()=>dispatch(TOGGLE_GRAPH_MODAL(false))} headerIcon='' headerText="Daily Data Graph" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+        <VFModalCard openModal={isModalOpen} closeModal={()=>dispatch(TOGGLE_GRAPH_MODAL(false))} headerIcon='' headerText="Daily Data Graph" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
             <SCSeasonalityContainer>
                 <SCChartContainer>
                     <AgChartsReact options={generateChartOptions()}/>
@@ -511,8 +511,36 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                     <SCHorizontalDivider/>
                     <div style={{display:'flex',flexDirection:'column',marginBottom:'20px', fontSize:'16px'}}>
                         <SCText fontSize={18} fontWeight={300}>Select Suspension Type:</SCText>
-                        <Select options={suspensionOptions} placeholder={"Select Suspension Type"} defaultValue={suspensionOptions[0]} onChange={(data:any)=>setSuspensionType(data.value)} />
+                        <Select options={suspensionOptions} placeholder={"Select Suspension Type"} defaultValue={suspensionOptions[0]} onChange={(data:any)=>setSuspensionType(data.value)}
+                        styles={{
+                            
+                          option: (baseStyles, { isSelected, isFocused, isDisabled }) => ({
+                              ...baseStyles,
+                              backgroundColor: isSelected ? "#BC3D80" : "white",
+                             
+                             
+                              "&:hover": {
+                                  backgroundColor: '#bc3d814d',
+                                  color:"black",
+                              }
+                          }),
+                          control: (baseStyles, { menuIsOpen, isFocused }) => (
+                              {
+                                  ...baseStyles, 
+                                  borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
+                                  // border: "none",
+                                  // borderBottom: error ? "3px solid #D03E3E;" : menuIsOpen || isFocused ? '3px solid #820F4C' : '3px solid #A1A1A1',
+                                  boxShadow: 'none',
+                                  "&:hover":{
+                                      borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
+
+                                  }
+                              }),
+                      }}
+                        
+                        />
                     </div>
+
                     <SCHorizontalDivider/>
                     <div style={{display:'flex',flexDirection:'column',marginBottom:'20px'}}>
                         <SCText fontSize={18} fontWeight={300}>SKU:</SCText>

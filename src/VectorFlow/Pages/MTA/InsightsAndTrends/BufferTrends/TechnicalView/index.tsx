@@ -192,7 +192,7 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,ha
                                         labelValueFormatter={(value:number)=>value>1?`${value} Days`:`${value} Day`}
                                     />
                                 <div style={{zoom:0.8}}>
-                                <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={183} disabled={false} style={{fontSize:'15px',height:'38px',fontWeight:500}}>
+                                <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
                                         Submit
                                     </VFButtonOutline>
                                 </div>

@@ -107,6 +107,7 @@ const AvailabilityTrend = () => {
             fontSize: 15,
             paddingLeft: 50,
             fontFamily: "Roboto",
+            marginRight:'-190px'
           }}
         >
           {" "}
@@ -127,10 +128,10 @@ const AvailabilityTrend = () => {
         />
 
         <VFButtonOutline
-        style={{height:'30px', fontSize:'13px', marginLeft:'30px', fontWeight:500}}
+        style={{height:'35px', fontSize:'13px', marginLeft:'-190px', fontWeight:500}}
           themeUi={themeUi}
           onClick={() => OnHorizonChange(horizon)}
-          width={150}
+          width={100}
           
         >
           Submit

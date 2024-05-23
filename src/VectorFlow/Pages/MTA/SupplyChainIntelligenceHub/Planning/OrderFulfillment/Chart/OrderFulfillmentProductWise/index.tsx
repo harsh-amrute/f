@@ -308,7 +308,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                            <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Products: Categorization of Pending Quantity" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                            <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Products: Categorization of Pending Quantity" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                                 <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
                                         ref={refGraph1}
@@ -390,7 +390,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(2)}/>}</div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                            <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Products: Max No Of Locations with Gap &gt; 67% of Requirement" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                            <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Products: Max No Of Locations with Gap &gt; 67% of Requirement" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                                 <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
                                         ref={refGraph1}
