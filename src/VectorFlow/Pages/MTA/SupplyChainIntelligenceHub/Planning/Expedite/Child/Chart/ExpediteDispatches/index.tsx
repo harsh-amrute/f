@@ -523,9 +523,9 @@ const colDefs3: ColDef[] = [
                         Top 10 Parent Location: Max Pipeline Black/Red SKUs With
                         Available Rationed Qty For Receiving Locations
                       </SCChartHeader>
-                      <VFInfoToolTip infoList={graph1}/>
                     </div>
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                        <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
                         {!hideChart1 && (
                           <img
                             src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
@@ -618,9 +618,9 @@ const colDefs3: ColDef[] = [
                         Top 10 Receiving Locations: Max Pipeline Inv. Black/Red
                         SKUs With Rationed Quantity Available At Parent
                       </SCChartHeader>
-                      <VFInfoToolTip infoList={graph2}/>
                     </div>
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                        <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
                         {!hideChart2 && (
                           <img
                             src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
@@ -736,9 +736,9 @@ const colDefs3: ColDef[] = [
                   <SCChartHeader style={{marginRight:10}}>
                     Comparision of Availability: Pre Rationing vs Post Rationing
                   </SCChartHeader>
-                  <VFInfoToolTip infoList={graph3}/>
                 </div>
                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                  <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph3}/></div>
                   {!hideChart3 && (
                     <img
                       src="/assets/img/VectorFLOW/BPR/expand-graph.svg"

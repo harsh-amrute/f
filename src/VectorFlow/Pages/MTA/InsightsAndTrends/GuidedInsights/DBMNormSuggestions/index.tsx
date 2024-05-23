@@ -20,7 +20,7 @@ import {
 } from "../style";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFModalCard from "../../../../../../components/VectorFLOW/commons/VFModalCard";
-
+import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import {GraphSeriesOverrides} from '../../../../../../helpers/BPRConstants'
 
 //import 'ag-grid-enterprise';
@@ -612,19 +612,19 @@ const DBMNormSuggestions = () => {
     },
   };
 
-  // const graph1 = [
-  //   "This chart highlights the top 10 locations based on the maximum no. of suggestions for norm increase or decrease.",
-  // ];
+  const graph1 = [
+    "This chart highlights the top 10 locations based on the maximum no. of suggestions for norm increase or decrease.",
+  ];
 
-  // const graph2 = [
-  //   "This pie chart highlights the distribution of SKU Location-wise DBM Suggestion status as on today.",
-  // ];
-  // const graph3 = [
-  //   "This chart highlights the top 10 products based on the maximum no. of suggestions for norm increase or decrease",
-  // ];
-  // const graph4 = [
-  //   "This chart highlights the pendency of DBM suggestions. DBM Suggestion Age = Today - Suggestion Generation Date",
-  // ];
+  const graph2 = [
+    "This pie chart highlights the distribution of SKU Location-wise DBM Suggestion status as on today.",
+  ];
+  const graph3 = [
+    "This chart highlights the top 10 products based on the maximum no. of suggestions for norm increase or decrease",
+  ];
+  const graph4 = [
+    "This chart highlights the pendency of DBM suggestions. DBM Suggestion Age = Today - Suggestion Generation Date",
+  ];
 
   if (
     isLoadingGraph1 ||
@@ -643,7 +643,7 @@ const DBMNormSuggestions = () => {
             <SCHorizontalAllignmentWrapper>
               <Allotment>
                 <Allotment.Pane preferredSize={"50%"}>
-                  <SCChartContainer height={220} style={{marginTop:'1px'}} >
+                  <SCChartContainer height={220} >
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -651,6 +651,7 @@ const DBMNormSuggestions = () => {
                         </SCChartHeader>
                       </div>
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                        <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
                         {!hideChart1 && (
                           <img
                             src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
@@ -735,15 +736,17 @@ const DBMNormSuggestions = () => {
                   </div> */}
                 </Allotment.Pane>
                 <Allotment.Pane>
-                  <SCChartContainer height={220} style={{marginTop:'1px'}}>
+                  <SCChartContainer height={220}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center',zoom:'0.8'}}>
                         <SCChartHeader>
                           Distribution Of Current Active DBM Suggestions
                         </SCChartHeader>
                       </div>
-                      <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}</div>
-                      
+                      <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                        <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
+                        {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}
+                      </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
                     <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Distribution Of Current Active DBM Suggestions" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
@@ -824,7 +827,7 @@ const DBMNormSuggestions = () => {
             <SCHorizontalAllignmentWrapper>
               <Allotment>
                 <Allotment.Pane>
-                  <SCChartContainer height={220} style={{marginTop:'1px'}}>
+                  <SCChartContainer height={220}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -832,6 +835,7 @@ const DBMNormSuggestions = () => {
                         </SCChartHeader>
                       </div>
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                        <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph3}/></div>
                         {!hideChart3 && (
                           <img
                             src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
@@ -915,7 +919,7 @@ const DBMNormSuggestions = () => {
                   </div> */}
                 </Allotment.Pane>
                 <Allotment.Pane>
-                  <SCChartContainer height={220} style={{marginTop:'1px'}}>
+                  <SCChartContainer height={220}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -923,6 +927,7 @@ const DBMNormSuggestions = () => {
                         </SCChartHeader>
                       </div>
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                        <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph4}/></div>
                         {!hideChart4 && (
                           <img
                             src="/assets/img/VectorFLOW/BPR/expand-graph.svg"

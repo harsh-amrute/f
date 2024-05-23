@@ -11,7 +11,7 @@ const fadeIn = keyframes`
 
 export const Wrapper = styled.div`
     position:relative;
-    z-index:200;
+    // z-index:200;
 `
 
 export const Icon = styled.img`
