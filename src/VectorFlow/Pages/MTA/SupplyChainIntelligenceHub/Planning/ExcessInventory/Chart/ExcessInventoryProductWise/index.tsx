@@ -292,8 +292,11 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={450}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: Number of Locations</SCChartHeader><VFInfoToolTip infoList={graph1}/></div>
-                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: Number of Locations</SCChartHeader></div>
+                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                                    <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
+                                    {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}
+                                </div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                             <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Products with Excess Inventory: Number of Locations" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
@@ -375,8 +378,11 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={450}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader><VFInfoToolTip infoList={graph2}/></div>
-                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(2)}/>}</div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader></div>
+                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                                    <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
+                                    {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(2)}/>}
+                                </div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                             <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
