@@ -105,21 +105,15 @@ const InTransitWhereAbouts = ()=>{
             <>
                 <VFTable
                     columnDefs={colDefs}
-                    rowData={rowData}
+                    rowData={[...rowData]}
                     {...agGridProps}
                     ref={ref}
+                    processCellForClipboard={(params)=>{
+                        console.log(params)
+                        return params.value
+                    }}
                     height={600}
-                    enableRangeSelection={true} 
-                    rowSelection="multiple"
-                    statusBar = {{
-                        statusPanels: [
-                          { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                          { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                          { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                          { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                          { statusPanel: 'agAggregationComponent', align:'left' },
-                        ],
-                      }}
+                    
                 />
                 <div style={{marginBottom:'40px'}}>
                 <VFPagination
@@ -151,6 +145,7 @@ const InTransitWhereAbouts = ()=>{
                 style={submitETAToolTipPosition}
                 onSuccess={onSubmitETA}
                 onClose={onCloseSubmitETA}
+                isDate
                 
             />
         )}
