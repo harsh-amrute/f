@@ -15,7 +15,6 @@ const ContactDetailsModal =(props:ContactDetailsModalProps)=>{
         onClose,data
     } = props
 
-    console.log(data)
     return(
         <VFModalCard openModal={isOpen} headerIcon="/assets/img/VectorFLOW/BPR/user.svg" headerText="Contact Details" closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg" closeModal={onClose}>
             <ContactModalContentWrapper>

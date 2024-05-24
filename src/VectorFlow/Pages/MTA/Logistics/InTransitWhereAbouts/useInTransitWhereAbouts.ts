@@ -19,6 +19,9 @@ import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount,use
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 
 
+
+
+
 const useInTransitWhereAbouts = ()=>{
     const ref = useRef()
     const tempRef = useRef()
@@ -149,6 +152,7 @@ const useInTransitWhereAbouts = ()=>{
       detailCellRendererParams:{
         onContactDetails:onOpenContactModal
       },
+      onCellEditingStopped:(params)=>console.log(params.newValue),
       detailRowAutoHeight:true,
       // detailCellRendererParams:{
       //   detailGridOptions: {
@@ -164,7 +168,6 @@ const useInTransitWhereAbouts = ()=>{
         tooltipTrigger: 'focus',
         tooltipInteraction: true,
         // rowSelection:'single',
-        readOnlyEdit: true,
         gridOptions: {
             rowHeight: 50,
             getRowStyle: (params: any) => {
@@ -173,9 +176,10 @@ const useInTransitWhereAbouts = ()=>{
                 }
                 return { background: "#F7F7F7" };
             },
+            readOnlyEdit:true
         },
         sideBar:sideBar,
-        suppressRowClickSelection: true,
+        // suppressRowClickSelection: true,
         components: customCellRenderers,
         defaultColDef: {
             floatingFilter: true,
@@ -188,8 +192,22 @@ const useInTransitWhereAbouts = ()=>{
               'text-overflow':'ellipsis',
               'white-space':'nowrap'
             },
+            editable:true,
             flex: 1,
-        }
+        },
+        enableRangeSelection:true ,
+        rowSelection:"multiple",
+        // onPasteEnd:(params)=>console.log(params),
+        // enableGroupEdit:true,
+        statusBar : {
+            statusPanels: [
+              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+              { statusPanel: 'agAggregationComponent', align:'left' },
+            ],
+          }
     }
 
     const tempAgGridProps:AgGridReactProps = {
@@ -202,8 +220,18 @@ const useInTransitWhereAbouts = ()=>{
 
     const getRecordCount = async(filter:any)=>{
       try{
-        const countData = await getDataCount(filter)
-        const {count} = JSON.parse(countData.data.recordCount)[0]
+        const payload = {
+          "id": 0,
+          "name": "",
+          "fields": [],
+          "paginationParameter": {
+            "pageNumber": 0,
+            "recordsPerPage": 0
+          },
+          filters:filter
+        }
+        const countData = await getDataCount(payload)
+        const count= JSON.parse(countData.data.recordCount)
         setRecordCount(count)
       }catch(err:any){
         notifyError(err)
@@ -211,24 +239,39 @@ const useInTransitWhereAbouts = ()=>{
     }
 
     const getRowData = async(filter:any,pageNo:number)=>{
-      console.debug(filter)
-      const data = await getData({
-        pageNumber:pageNo,
-        recordsPerPage:100
-      })
+      const payload = {
+        "id": 0,
+        "name": "",
+        "fields": [],
+        "paginationParameter": {
+          pageNumber:pageNo,
+          recordsPerPage:100
+        },
+        filters:filter
+      }
+      const data = await getData(payload)
       setRowData(mapInTransitWhereAboutsRowData(data.data.data))
     }
 
     const handlePageChange = async(pageNo:number)=>{
-      const data = await getData({
-        pageNumber:pageNo,
-        recordsPerPage:100
-      })
+      const payload = {
+        "id": 0,
+        "name": "",
+        "fields": [],
+        "paginationParameter": {
+          pageNumber:pageNo,
+          recordsPerPage:100
+        },
+        filters:currentFilter
+      }
+      const data = await getData(payload)
       setCurrentPage(pageNo)
       setRowData(mapInTransitWhereAboutsRowData(data.data.data))
     }
 
     const onOpenSubmitRemark = (e: React.MouseEvent<HTMLElement>,data:any) => {
+      setIsSubmitETAToolTipOpen(false)
+      setIsSubmitCurrentLocationToolTipOpen(false)
         setActiveRow(data)
         const { top, left } = e.currentTarget.getBoundingClientRect()
         setSubmitRemarkToolipPosition({
@@ -240,6 +283,8 @@ const useInTransitWhereAbouts = ()=>{
     }
 
     const onOpenSubmitETA = (e: React.MouseEvent<HTMLInputElement>,data:any) => {
+      setIsSubmitCurrentLocationToolTipOpen(false)
+      setIsSubmitRemarkToolTipOpen(false)
       setActiveRow(data)
       setETAValue(e.currentTarget.value)
       const { top, left } = e.currentTarget.getBoundingClientRect()
@@ -252,6 +297,8 @@ const useInTransitWhereAbouts = ()=>{
   }
 
   const onOpenSubmitCurrentLocation = (e: React.MouseEvent<HTMLInputElement>,data:any) => {
+    setIsSubmitRemarkToolTipOpen(false)
+    setIsSubmitETAToolTipOpen(false)
     setActiveRow(data)
     console.log(data)
     setCurrentLocationValue(e.currentTarget.value)
@@ -387,14 +434,19 @@ const useInTransitWhereAbouts = ()=>{
     const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
 
     async function onOpenContactModal (data:any){
-      console.log(data)
+      console.debug(data)
      try{
       notifyLoader("Loading Details")
       const contactData = await getTransporterDetails({orderNo:'VectorOrder_6662'})
-      setCurrentUserDetails(contactData.data.data[0])
-      toggleContactModal(true)
-      toast.dismiss()
-      notifySuccess('Data loaded successfully')
+      if(contactData.data.data[0]){
+        setCurrentUserDetails(contactData.data.data[0])
+        toggleContactModal(true)
+        
+        notifySuccess('Data loaded successfully')
+      }else{
+        toast.dismiss()
+        notifyError("Contact details not found")
+      }
      }catch(err:any){
       notifyError(err)
      }
@@ -420,11 +472,17 @@ const useInTransitWhereAbouts = ()=>{
     }
 
     const onExportToExcelCallBack = async(pageNo:number)=>{
-     
-      const data = await getData({
-        pageNumber:pageNo,
-        recordsPerPage:5000
-      })
+      const payload = {
+        "id": 0,
+        "name": "",
+        "fields": [],
+        "paginationParameter": {
+          pageNumber:pageNo,
+          recordsPerPage:5000
+        },
+        filters:currentFilter
+      }
+      const data = await getData(payload)
       return data.data.data
     }
       

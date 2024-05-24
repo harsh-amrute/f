@@ -34,6 +34,7 @@ const BufferTrendReport = () => {
         onApplyFilter,
     } = useBTR()
 
+
     return (
         <GridStateContext.Provider
             value={{

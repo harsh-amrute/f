@@ -84,6 +84,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                         gridOptions={{
                             ...techTable.gridOptions
                         }}
+                        debounceVerticalScrollbar
                         columnDefs={techTable.columnDefs}
                         rowData={techTable.rowData}
                         tooltipMouseTrack={true}
@@ -119,6 +120,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                         gridOptions={{
                             ...ecoTable.gridOptions
                         }}
+                        debounceVerticalScrollbar
                         columnDefs={ecoTable.columnDefs}
                         rowData={ecoTable.rowData}
                         tooltipMouseTrack={true}
@@ -146,7 +148,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                 </Allotment.Pane>
             </Allotment>
             <LockBtnWrapper>
-                <LockBtn style={{left:lockBtnPosition -12}} src={"/assets/img/VectorFLOW/BPR/lock.svg"} active={isLocked} onClick={()=>toggleLockMode(!isLocked)}/>
+                <LockBtn style={{left:lockBtnPosition -12}} src={isLocked?"/assets/img/VectorFLOW/BPR/lock.svg":"/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={()=>toggleLockMode(!isLocked)}/>
             </LockBtnWrapper>
 
         </BTRTableWrapper>

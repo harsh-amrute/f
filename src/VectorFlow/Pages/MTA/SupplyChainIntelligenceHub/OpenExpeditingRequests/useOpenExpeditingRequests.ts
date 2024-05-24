@@ -200,8 +200,8 @@ const useOpenExpeditingRequests = () => {
             if(remark.length===0) throw new Error("Remark cannot be empty")
             const toastId = notifyLoader("Submitting Remark")
             await addRemark({
-                sc:activeRow.sc,
-                wc:activeRow.wc,
+                SKUCode:activeRow.sc,
+                WHCode:activeRow.wc,
                 remark:remark
             })
             toast.dismiss(toastId)

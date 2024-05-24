@@ -77,6 +77,7 @@ export const CategoryCellRendererWrapper = styled.div`
 
 export const CategoryCellRendererChip = styled.div`
     width: 18px;
+    min-width:18px;
     height: 18px;
     display:flex;
     font-size:8px;
@@ -137,12 +138,11 @@ export  const LockBtnWrapper = styled.div`
     z-index:300;
 `
 
-export const LockBtn = styled.img<{active:boolean}>`
+export const LockBtn = styled.img`
     position:absolute;
     height:25px;
     width:25px;
     cursor:pointer;
-    opacity:${(props)=>props.active?0.6:1};
 `
 
 export  const HorizontalViewWrapper = styled.div`

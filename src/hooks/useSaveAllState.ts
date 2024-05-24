@@ -42,7 +42,6 @@ const useSaveAllState = () => {
     try {
       //buggy line below
       const numberOfPages = Math.ceil(recordCount/chunkSize);
-      
       const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
       const rows = [];
       for(let i=1; i<=numberOfPages; i++){

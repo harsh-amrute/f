@@ -37,11 +37,24 @@ const contextWrapper = (children: ReactNode,store:any) => {
 }
   
 
-it('Clicks on GoBack button',()=>{
+describe("Handle allNormChangeModal interactions",()=>{
+  global.ResizeObserver = class MockedResizeObserver {
+    observe = jest.fn();
+    unobserve = jest.fn();
+    disconnect = jest.fn();
+  };
+  it('Clicks on GoBack button',()=>{
     render(contextWrapper(<NormChangeHistoryTable {...dummyprops}></NormChangeHistoryTable>,store))
         const goBackButton = screen.getByText("Go Back!"); 
         expect(goBackButton).toBeInTheDocument()
          fireEvent.click(goBackButton)
+})
+// it('Clicks on X button',()=>{
+//   render(contextWrapper(<NormChangeHistoryTable {...dummyprops}></NormChangeHistoryTable>,store))
+//       const goBackButton = screen.getByTestId('close-modal-icon'); 
+//       expect(goBackButton).toBeInTheDocument()
+//        fireEvent.click(goBackButton)
+// })
 })
 
 
