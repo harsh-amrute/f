@@ -71,7 +71,7 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
 
                                 
                             })),
-                            option: (baseStyles, { isSelected, isFocused, isDisabled }) => ({
+                            option: (baseStyles, { isSelected }) => ({
                                 ...baseStyles,
                                 backgroundColor: isSelected ? "#BC3D80" : "white",
                                
@@ -81,7 +81,7 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                                     color:"black",
                                 }
                             }),
-                            control: (baseStyles, { menuIsOpen, isFocused }) => (
+                            control: (baseStyles, {isFocused }) => (
                                 {
                                     ...baseStyles, 
                                     borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
@@ -107,7 +107,7 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                                 ...baseStyles,
                                 width:250
                             })),
-                            option: (baseStyles, { isSelected, isFocused, isDisabled }) => ({
+                            option: (baseStyles, { isSelected }) => ({
                                 ...baseStyles,
                                 backgroundColor: isSelected ? "#BC3D80" : "white",
                                
@@ -117,7 +117,7 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                                     color:"black",
                                 }
                             }),
-                            control: (baseStyles, { menuIsOpen, isFocused }) => (
+                            control: (baseStyles, {  isFocused }) => (
                                 {
                                     ...baseStyles, 
                                     borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",

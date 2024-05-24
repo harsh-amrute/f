@@ -1,4 +1,3 @@
-import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 import {SubmitDataTextContainer, SubmitDataButtonWrapper} from './styles'
 import { useUserData } from "../../../../../context";

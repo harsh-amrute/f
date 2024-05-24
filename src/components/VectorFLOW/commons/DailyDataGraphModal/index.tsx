@@ -514,7 +514,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                         <Select options={suspensionOptions} placeholder={"Select Suspension Type"} defaultValue={suspensionOptions[0]} onChange={(data:any)=>setSuspensionType(data.value)}
                         styles={{
                             
-                          option: (baseStyles, { isSelected, isFocused, isDisabled }) => ({
+                          option: (baseStyles, { isSelected }) => ({
                               ...baseStyles,
                               backgroundColor: isSelected ? "#BC3D80" : "white",
                              
@@ -524,7 +524,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                                   color:"black",
                               }
                           }),
-                          control: (baseStyles, { menuIsOpen, isFocused }) => (
+                          control: (baseStyles, { isFocused }) => (
                               {
                                   ...baseStyles, 
                                   borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
