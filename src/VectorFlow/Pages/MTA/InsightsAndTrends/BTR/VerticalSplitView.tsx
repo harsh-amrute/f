@@ -148,7 +148,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                 </Allotment.Pane>
             </Allotment>
             <LockBtnWrapper>
-                <LockBtn style={{left:lockBtnPosition -12}} src={"/assets/img/VectorFLOW/BPR/lock.svg"} active={isLocked} onClick={()=>toggleLockMode(!isLocked)}/>
+                <LockBtn style={{left:lockBtnPosition -12}} src={isLocked?"/assets/img/VectorFLOW/BPR/lock.svg":"/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={()=>toggleLockMode(!isLocked)}/>
             </LockBtnWrapper>
 
         </BTRTableWrapper>

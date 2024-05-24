@@ -79,20 +79,24 @@ describe('Research and insights Component', () => {
 
     useGetBTRDataCountMock.mockImplementation(():any=>{
       return{
-        data:{
-          data:{
-            "recordCount": null,
-            "data": {
-                "EcoCount": "19109",
-                "TechCount": "19109"
-            },
-            "status": 200,
-            "msg": null,
-            "errorCount": null,
-            "error": null,
-            "conflictErrorCount": null,
-            "conflictError": null
-        }
+        mutateAsync:()=>{
+          return{
+            data:{
+              data:{
+                "recordCount": null,
+                "data": {
+                    "EcoCount": "19109",
+                    "TechCount": "19109"
+                },
+                "status": 200,
+                "msg": null,
+                "errorCount": null,
+                "error": null,
+                "conflictErrorCount": null,
+                "conflictError": null
+            }
+            }
+          }
         }
       }
     })

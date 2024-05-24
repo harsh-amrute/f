@@ -57,4 +57,8 @@ describe('VFButton Component', () => {
     fireEvent.mouseOver(button);
     fireEvent.mouseOut(button);
   })
+
+  it("renders with different color",() => {
+    render(<VFButtonOutline onClick={()=> {console.log("test")}} disabled={false} themeUi="REGALBLAZE" color={"#3342FF"} onHoverChild={<p>Helo</p>}>Hello</VFButtonOutline> );
+  })
 });

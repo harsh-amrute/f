@@ -23,18 +23,15 @@ const VFButton = (props:VFButtonProps)=>{
         width,
         style,
         children,
-        onHoverChild,
 
     } = props
-
-    const hoverState =false;
     
     const getChildren = ()=>{
-        if(onHoverChild){
-            if(hoverState){
-                return onHoverChild
-            }
-        }
+        // if(onHoverChild){
+        //     if(hoverState){
+        //         return onHoverChild
+        //     }
+        // }
         return children
     }
     

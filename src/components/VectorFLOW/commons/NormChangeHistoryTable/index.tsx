@@ -40,7 +40,7 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
 
     return(
         <>
-        <VFModalCard openModal={true} closeModal={()=>dispatch(TOGGLE_NORM_CHANGE_HISTORY_TABLE(false))} headerText={'Norm Change History'} headerIcon={'/assets/img/VectorFLOW/BPR/historynorm.svg'} closeIcon={'/assets/img/VectorFLOW/NMS/close-white.svg'} paddingLeftAndRight={0}  headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
+        <VFModalCard openModal={true}  headerText={'Norm Change History'} headerIcon={'/assets/img/VectorFLOW/BPR/historynorm.svg'} closeIcon={''} paddingLeftAndRight={0}  headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
             <AgContainer>
                 <AgGridWrapper>
                     <div className="ag-theme-alpine "  style={{ height: '200px', width:'700px',textAlign:'center' }}>  

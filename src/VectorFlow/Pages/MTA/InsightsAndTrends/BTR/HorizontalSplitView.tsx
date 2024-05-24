@@ -125,7 +125,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
             
         </BTRTableWrapper>
         <LockBtnWrapper style={{height:screenHeight - 100}}>
-            <LockBtn style={{top:lockBtnPosition-12,right:-10}} src={"/assets/img/VectorFLOW/BPR/lock.svg"} active={isLocked} onClick={()=>toggleLockMode(!isLocked)}/>
+            <LockBtn style={{top:lockBtnPosition -12}} src={isLocked?"/assets/img/VectorFLOW/BPR/lock.svg":"/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={()=>toggleLockMode(!isLocked)}/>        
         </LockBtnWrapper>
         </HorizontalViewWrapper>
     )

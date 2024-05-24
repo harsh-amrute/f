@@ -62,11 +62,11 @@ const useBTR = ()=>{
 
     const {mutateAsync:getBTRData,isLoading} = useGetBTRData()
 
-    const {data:countData} = useGetBTRDataCount()
+    const {data:countData,mutateAsync:getBTRDataCount,isLoading:isBTRCountLoading} = useGetBTRDataCount()
 
-    const ecoTotalRows = useMemo(()=>{return countData?.data.data.EcoCount},[countData])
+    const ecoTotalRows = useMemo(()=>{return countData?.data.data.EcoCount},[isBTRCountLoading])
 
-    const techTotalRows = useMemo(()=>{return countData?.data.data.TechCount},[countData])
+    const techTotalRows = useMemo(()=>{return countData?.data.data.TechCount},[isBTRCountLoading])
 
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
 
@@ -136,13 +136,23 @@ const useBTR = ()=>{
     const [techRowData,setTechRowData] = useState<Array<any>>([])
     const [ecoRowData,setEcoRowData]  = useState<Array<any>>([])
     // const [defaultColDefs,setDefaultColDefs] = useState<Array<ColDef>>([])
+
+
+
     const getData = async(filter:any,pageNumber:number)=>{
-        const loaderId = notifyLoader("Loading data")
-        try{
-            const data = await getBTRData({
+        const payload = {
+            id: 0,
+            name: '',
+            fields: [],
+            filters:filter,
+            paginationParameter:{
                 pageNumber: pageNumber,
                 recordsPerPage: 100
-            })
+            },
+        }
+        const loaderId = notifyLoader("Loading data")
+        try{
+            const data = await getBTRData(payload)
             
             setEcoRowData(mapBTRRowData(data.data.data.eco))
             setTechRowData(mapBTRRowData(data.data.data.tech))
@@ -155,12 +165,33 @@ const useBTR = ()=>{
     }
 
     useEffect(()=>{
-        
+        const payload = {
+            id: 0,
+            name: '',
+            fields: [],
+            filters:currFilter,
+            paginationParameter:{
+                pageNumber: 1,
+                recordsPerPage: 100
+            },
+        }
+        getBTRDataCount(payload)
         getData(currFilter,1)
     },[])
 
     const onApplyFilter = async(filter:any)=>{
         setCurrFilter(filter)
+        const payload = {
+            id: 0,
+            name: '',
+            fields: [],
+            filters:filter,
+            paginationParameter:{
+                pageNumber: 1,
+                recordsPerPage: 100
+            },
+        }
+        getBTRDataCount(payload)
         getData(filter,1)
     }
 
@@ -264,10 +295,17 @@ const useBTR = ()=>{
     }
 
     const onExportToExcelCallBack = async(pageNumber:number,page:string)=>{
-        const data = await getBTRData({
-            pageNumber: pageNumber ,
-            recordsPerPage: 5000
-        })
+        const payload = {
+            id: 0,
+            name: '',
+            fields: [],
+            filters:currFilter,
+            paginationParameter:{
+                pageNumber: pageNumber,
+                recordsPerPage: 5000
+            },
+        }
+        const data = await getBTRData(payload)
         if(page=='on-hand')return data.data.data.tech
         return data.data.data.eco
 
