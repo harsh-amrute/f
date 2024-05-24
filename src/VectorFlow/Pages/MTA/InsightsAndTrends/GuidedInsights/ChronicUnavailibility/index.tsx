@@ -8,7 +8,7 @@ import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDiv
 import { useGetChronicUnavailabilityLoc,useGetChronicUnavailabilitySku} from "../../../../../Services/MTA/InsightsAndTrends";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFModalCard from "../../../../../../components/VectorFLOW/commons/VFModalCard";
-
+import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
 const ChronicUnavailabilityCharts = () => {
 
@@ -440,13 +440,13 @@ const ChronicUnavailabilityCharts = () => {
           },
       }
 
-    //   const graph1 = [
-    //     'This graph highlights the top 10 locations with the highest number of SKUs continuously in Pipeline black, red or combination of black and red, surpassing the RLT'
-    //   ]
+      const graph1 = [
+        'This graph highlights the top 10 locations with the highest number of SKUs continuously in Pipeline black, red or combination of black and red, surpassing the RLT'
+      ]
 
-    //   const graph2 = [
-    // 'This graph highlights the top 10 products based on the number of locations where the SKU remains in continuous Pipeline black, red or combination of black and red, surpassing the RLT'   
-    // ]
+      const graph2 = [
+    'This graph highlights the top 10 products based on the number of locations where the SKU remains in continuous Pipeline black, red or combination of black and red, surpassing the RLT'   
+    ]
 
    if(isLoadingChronicSku || isLoadingChronicLoc){
         return <VFLoader/>
@@ -459,7 +459,10 @@ const ChronicUnavailabilityCharts = () => {
                         <SCChartContainer height={450}>
                             <SCChartHeaderContainer>
                                 <SCChartHeader>Top 10 Locations: Max SKUs in Continuous Pipeline Black or Red Ageing greater than RLT</SCChartHeader>
-                                {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt=""  data-testid="minimizechart1"onClick={()=>handleChartClose(1)}/>}
+                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                                    <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
+                                    {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt=""  data-testid="minimizechart1"onClick={()=>handleChartClose(1)}/>}
+                                </div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
                             <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Maximum Overdue Orders" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
@@ -542,7 +545,12 @@ const ChronicUnavailabilityCharts = () => {
                         <SCChartContainer height={450}>
                                 <SCChartHeaderContainer>
                                     <SCChartHeader>Top 10 Skus: Max Number Of Locations Where The SKU has Pipeline Black/Red Ageing Greater Than Rlt</SCChartHeader>
-                                     {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}
+                                    <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                                    <div style={{marginBottom:'-5px',marginRight:'10px'}}>
+                                        <VFInfoToolTip infoList={graph2}/></div>
+                                        {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}
+                                    </div>
+                                     
                  
                                 </SCChartHeaderContainer>
                                 <SCHorizontalDivider/>
