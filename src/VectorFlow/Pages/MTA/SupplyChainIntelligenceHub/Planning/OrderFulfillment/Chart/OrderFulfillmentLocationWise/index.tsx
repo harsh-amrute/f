@@ -205,7 +205,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
             ...GraphSeriesOverrides,
               common: {
                   legend:{
-                    position:'top'
+                    position:'bottom'
                   },
                   axes:{
                     category:{
@@ -213,6 +213,8 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                             enabled:true,
                             text:'Location Name',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
 
                         },
                         label:{
@@ -224,7 +226,9 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                         title:{
                             enabled:true,
                             text:"No of Orders",
-                            position:"left"
+                            position:"left",
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                       }
                   },
@@ -241,7 +245,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
             ...GraphSeriesOverrides,
               common: {
                   legend:{
-                    position:'top'
+                    position:'bottom'
                   },
                   axes:{
                     category:{
@@ -249,6 +253,8 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                             enabled:true,
                             text:'Location Name',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
 
                         },
                         label:{
@@ -261,7 +267,9 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                         title:{
                             enabled:true,
                             text:"No of SKUs",
-                            position:"left"
+                            position:"left",
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                       }
                   },

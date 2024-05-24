@@ -4,6 +4,10 @@ import { AgChartsReact } from "ag-charts-react";
 import { Allotment } from "allotment";
 import { useGetExcessInventorySku, useGetExcessInventoryValue } from "../../../../../Services/MTA/InsightsAndTrends";
 import VFLoader from '../../../../../../components/VectorFLOW/commons/VFLoader';
+import VFRangeSlider from '../../../../../../components/VectorFLOW/commons/VFRangeSlider';
+import { useUserData } from "../../../../../../context";
+import VFButtonOutline from '../../../../../../components/VectorFLOW/commons/VFButtonOutline';
+
 
 const ExcessInventoryTrend = () => {
     const { data: ExcessInventorySkuData, isLoading: isLoaderGraph1 } = useGetExcessInventorySku();
@@ -11,6 +15,10 @@ const ExcessInventoryTrend = () => {
 
     const ExcessInventorySku = ExcessInventorySkuData?.data?.data;
     const ExcessInventoryValue = ExcessInventoryValueData?.data?.data;
+
+
+    const { user } = useUserData();
+  const themeUi = user?.user?.theme_ui;
 
     const options1 = {
         title: {
@@ -39,6 +47,8 @@ const ExcessInventoryTrend = () => {
                 position: "bottom",
                 title: {
                     text: 'Date',
+                    fontSize:10,
+                    fontFamily:'Roboto'
                 },
             } as const,
             {
@@ -46,6 +56,8 @@ const ExcessInventoryTrend = () => {
                 position: "left",
                 title: {
                     text: 'Value In Lakhs',
+                    fontSize:10,
+                    fontFamily:'Roboto'
                 },
             } as const
         ]
@@ -54,6 +66,7 @@ const ExcessInventoryTrend = () => {
     const options2 = {
         title: {
             text: 'Excess Inventory Trend (In Value)-Last 90 Days',
+            
         },
         data: ExcessInventoryValue,
         series: [
@@ -78,6 +91,8 @@ const ExcessInventoryTrend = () => {
                 position: "bottom",
                 title: {
                     text: 'Date',
+                    fontSize:10,
+                    fontFamily:'Roboto'
                 },
             } as const,
             {
@@ -85,49 +100,143 @@ const ExcessInventoryTrend = () => {
                 position: "left",
                 title: {
                     text: 'Count of SKUs',
+                    fontSize:10,
+                    fontFamily:'Roboto'
                 },
             } as const
         ]
     };
-const graph1=['This graph highlights the date-wise trend of excess inventory across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
+// const graph1=['This graph highlights the date-wise trend of excess inventory across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
 
-const graph2=['This graph highlights the date-wise trend of excess inventory in value across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
+// const graph2=['This graph highlights the date-wise trend of excess inventory in value across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
 
 if(isLoaderGraph1||isLoaderGraph2){
   <VFLoader/>
 }
     return    (
-
-             
-            <SCDynamicContainer>
-       <Allotment>
-                    <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={450} >
-<div style={{top: '316px',
-left: '293px',
-width: '550px',
-height: '400px'}}><AgChartsReact options={options1} /></div>
-  <SCHorizontalDivider/>
-</SCChartContainer>
- <div style={{marginLeft:'10px',marginRight:'10px'}}>
+  
+<SCDynamicContainer>
+    <Allotment>
+        <Allotment.Pane preferredSize={'50%'}>
+            <div className="main" style={{marginTop:'20px',backgroundColor:'white',height:'400px', width:'580px'}}>
+                <div className="horiozn one" style={{ width:'560px', height:'50px', display:'flex', justifyContent:'center', alignItems:'center', gap:'10px', zoom:'0.8'}}>
+                <label
+                style={{
+                    fontStyle: "normal",
+                    fontVariant: "normal",
+                    fontWeight: 300,
+                    fontSize: 15,
+                    fontFamily: "Roboto",
+                    paddingLeft:'10px'
+                }}
+                >
+                {" "}
+                <b>Select Horizon: </b>
+                </label>
+                <VFRangeSlider
+                showTriangle={false}
+                min={1}
+                max={90}
+                milestones={[-1, 0, 30, 60, 90]}
+                strictMode={false}
+                width={250}
+                defaultValue={0}
+                handleChange={()=>console.log('')}
+                labelValueFormatter={(value: number) =>
+                    value > 1 ? `${value} Days` : `${value} Day`
+            
+                }
+                />
+        <VFButtonOutline
+        style={{height:'35px', fontSize:'13px', fontWeight:500}}
+          themeUi={themeUi}
+          onClick={() =>console.log('')}
+          width={100}>
+          Submit
+        </VFButtonOutline>
+        </div>
+            <SCChartContainer >
+                <div style={{top: '316px',
+                    left: '293px',
+                    width: '550px',
+                    height: '300px',
+                    borderTop:'1px solid rgb(178, 178, 178)',
+                   }}>
+                    <AgChartsReact options={options1} />
+                </div>
+                <SCHorizontalDivider/>
+            </SCChartContainer>
+                 {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>
-                           
-                        </div>
-</Allotment.Pane>
-<Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={450}>
-<div style={{top: '316px',
-left: '1191px',
-width: '550px',
-height: '400px'}}><AgChartsReact options={options2} /></div>
-  <SCHorizontalDivider/>
-</SCChartContainer>
- <div style={{marginLeft:'10px',marginRight:'10px'}}>
+                </div> */}
+            </div>
+
+
+
+
+
+
+
+
+
+
+        </Allotment.Pane>
+        <Allotment.Pane preferredSize={'50%'}>
+        <div className="main" style={{marginTop:'20px',backgroundColor:'white',height:'400px', width:'580px'}}>
+                <div className="horiozn one" style={{ width:'560px', height:'50px', display:'flex', justifyContent:'center', alignItems:'center', gap:'10px', zoom:'0.8'}}>
+                <label
+                style={{
+                    fontStyle: "normal",
+                    fontVariant: "normal",
+                    fontWeight: 300,
+                    fontSize: 15,
+                    fontFamily: "Roboto",
+                    paddingLeft:'10px'
+                }}
+                >
+                {" "}
+                <b>Select Horizon: </b>
+                </label>
+                <VFRangeSlider
+                showTriangle={false}
+                min={1}
+                max={90}
+                milestones={[-1, 0, 30, 60, 90]}
+                strictMode={false}
+                width={250}
+                defaultValue={0}
+                handleChange={()=>console.log('')}
+                labelValueFormatter={(value: number) =>
+                    value > 1 ? `${value} Days` : `${value} Day`
+            
+                }
+                />
+                 <VFButtonOutline
+        style={{height:'35px', fontSize:'13px', fontWeight:500}}
+          themeUi={themeUi}
+          onClick={() =>console.log('')}
+          width={100}>
+          Submit
+        </VFButtonOutline>
+        </div>
+
+            <SCChartContainer height={450}>
+                <div style={{top: '316px',
+                    left: '1191px',
+                    width: '550px',
+                    height: '400px'}}>
+                    <AgChartsReact options={options2} />
+                </div>
+            <SCHorizontalDivider/>
+            </SCChartContainer>
+            {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph2}/>
 
-                        </div>
-</Allotment.Pane>
-</Allotment>
+                        </div> */}
+                                    </div>
+
+        </Allotment.Pane>
+    </Allotment>
 </SCDynamicContainer>
   
     )

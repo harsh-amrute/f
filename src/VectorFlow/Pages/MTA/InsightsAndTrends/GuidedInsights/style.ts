@@ -24,7 +24,7 @@ export const SCHorizontalAllignmentWrapper = styled.div`
 `
 
 export const SCChartContainer = styled.div<{height?:number}>`
-    padding:5px;
+    padding:0px 5px 5px 5px;
     border-radius:12px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     // box-shadow: -5px 5px 25px #86868633;
