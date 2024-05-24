@@ -36,7 +36,7 @@ export const AvailabilityTrendWrapper = styled.div`
     background-color:white;
     border-radius:12px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-
+    position:relative;
 `
 export const AvailabilityTrendHeader = styled.div`
     background-color:black;
@@ -47,6 +47,8 @@ export const AvailabilityTrendHeader = styled.div`
     font-size:14px;
     font-weight:500;
     font-family:Roboto;
+    position:sticky;
+    top:0;
 `
 
 export const AvailabilityTrendSection = styled.div`
@@ -58,7 +60,7 @@ export const AvailabilityTrendSection = styled.div`
 
 export const HistoricalAvailabiltyHeader = styled.p`
     font-weight:500;
-    font-size:12px;
+    font-size:10px;
     margin-bottom:5px;
 `
 

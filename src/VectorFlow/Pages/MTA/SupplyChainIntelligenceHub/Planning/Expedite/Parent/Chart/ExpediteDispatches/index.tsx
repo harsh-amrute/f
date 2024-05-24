@@ -515,7 +515,7 @@ const colDefs3: ColDef[] = [
                   </SCChartHeaderContainer>
                   <SCHorizontalDivider />
                   <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Parent Location: Max Pipeline Black/Red SKUs With
-                        Available Rationed Qty For Receiving Locations" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                        Available Rationed Qty For Receiving Locations" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                       <div className="ag-theme-planning" style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph1}
@@ -614,7 +614,7 @@ const colDefs3: ColDef[] = [
                   </SCChartHeaderContainer>
                   <SCHorizontalDivider />
                   <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Receiving Locations: Max Pipeline Inv. Black/Red
-                        SKUs With Rationed Quantity Available At Parent" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                        SKUs With Rationed Quantity Available At Parent" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                       <div className="ag-theme-planning" style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph2}
@@ -722,7 +722,7 @@ const colDefs3: ColDef[] = [
                 </div>
               </SCChartHeaderContainer>
               <SCHorizontalDivider />
-              <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+              <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                       <div className="ag-theme-planning" style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph3}

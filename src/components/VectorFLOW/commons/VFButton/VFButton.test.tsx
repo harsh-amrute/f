@@ -42,4 +42,11 @@ describe('VFButton Component', () => {
     const button = screen.getByText('Click Me');
     expect(button).toHaveStyle(`background-image:#C7810F`)
   });
+  
+  it("onHoverChild on Hover",() => {
+    render(<VFButton onClick={()=> {console.log("test")}} themeUi="REGALBLAZE"  onHoverChild={<p>Helo</p>}>Hello</VFButton> );
+    const button = screen.getByText("Hello");
+    fireEvent.mouseOver(button);
+    fireEvent.mouseOut(button);
+  })
 });

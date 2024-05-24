@@ -11,6 +11,8 @@
   .modal-title-forced{
     padding: 12px 18px;
     justify-content: center;
+    background-color: white !important;
+    color:black !important
   }
   
   .modal-forced--block{
