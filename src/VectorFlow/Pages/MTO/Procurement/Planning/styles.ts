@@ -4,6 +4,7 @@ export const CapsuleWrapper = styled.div`
     width: 100%;
     max-width: 120px;
     margin: 0 auto;
+    height:'80%';
 `
 export const ChartWrapper = styled.div`
     position:relative;
@@ -15,7 +16,7 @@ export const ChartWrapper = styled.div`
     height:90%
 `
 export const ProcurementLayout = styled.div`
-    height: '550px',
+    height: '1200px',
     width: '1200px'
 `
 export const ProcuementTaskBar = styled.div`

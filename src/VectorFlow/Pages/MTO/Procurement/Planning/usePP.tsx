@@ -1,18 +1,74 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef, useCallback } from "react"
 import { AgGridReactProps } from "ag-grid-react"
+import { AgGridReact } from "@ag-grid-community/react";
 import { useUserData } from "../../../../../context"
-import data from './data.json';
-import coverageAvlData from './coverageAvlData.json';
 import ColoPriority from "../../../MTA/InsightsAndTrends/BTR/ColorPriority";
-import colorPriority from "./colorPriority";
+import ChildrenColor from "../../../MTA/InsightsAndTrends/BTR/ChildrenColor";
 import AvailabilityToolTip from "../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
-import inputbox from './inputbox';
 import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import { useNavigate } from "react-router-dom";
+import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
+import { IAccount } from "../interface";
+import GetProcPlanningData from './GetProcPlanningData.json';
+import GetProcPlanningDataColumn from './GetProcPlanningDataColumn.json';
+import GetProcHeaderChildren from './GetProcHeaderChildren.json';
+import { mapPPFieldsToColDefs, mapPPChildrenFieldsToColDefs } from '../../../../../helpers/utils';
+
+
+const getRows = (params: ProcessRowGroupForExportParams) => {
+    const rows: ExcelRow[] = [
+        {
+            outlineLevel: 1,
+            cells: [
+                cell(""),
+                cell(""),
+                cell("Order No", "header"),
+                cell("Order Qty", "header"),
+                cell("Cust Name", "header"),
+                cell("Cust Code", "header"),
+                cell("Order Due Date", "header"),
+                cell("Order Release Date", "header"),
+            ],
+        },
+    ].concat(
+        ...params.node.data.children.map((record: any) => [
+            {
+                outlineLevel: 1,
+                cells: [
+                    cell(""),
+                    cell(""),
+                    cell(record.on, "body"),
+                    cell(record.oq, "body"),
+                    cell(record.cn, "body"),
+                    cell(record.cc, "body"),
+                    cell(record.odd, "body"),
+                    cell(record.ord, "body"),
+                ],
+            },
+        ]),
+    );
+    return rows;
+};
+const cell: (text: string, styleId?: string) => ExcelCell = (
+    text: string,
+    styleId?: string,
+) => {
+    return {
+        styleId: styleId,
+        data: {
+            type: /^\d+$/.test(text) ? "Number" : "String",
+            value: String(text),
+        },
+    };
+};
 
 const usePP = () => {
+    const { HeaderChildren } = GetProcHeaderChildren;
+    const { HeaderData } = GetProcPlanningDataColumn;
+    const { data } = GetProcPlanningData;
+    const gridRef = useRef<AgGridReact<IAccount>>(null);
     const { isSideBarOpen } = useUserData()
     const [currentPage, setCurrentPage] = useState<any>(1);
     const navigate = useNavigate();
@@ -29,184 +85,60 @@ const usePP = () => {
         }
     ];
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
-    const [rowData, setRowData] = useState(data);
-    const [coverageAvlRow, setCoverageAvlData] = useState(coverageAvlData);
-    const gridOptions = {
-        ShortcolumnDef: [
-            {
-                headerName: "", field: "icon", initialWidth: 25, autoHeaderHeight: true, wrapHeaderText: true,
-                cellRenderer: "agGroupCellRenderer",
-            },
-            {
-                headerName: "Color Priority", field: "cp", initialWidth: 150, autoHeaderHeight: true, wrapHeaderText: true,
-                cellRenderer: ColoPriority, tooltipComponent: AvailabilityToolTip
-            },
-            {
-                headerName: "Order Line Item", field: "oli", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true,
-            },
-            {
-                headerName: "RM Code", field: "rmCode", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true,
-            },
-            {
-                headerName: "RM Description", field: "rmDesc", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 180, filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "No of Orders Impacted", field: "noOfOrdImp",
-                autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Total Req", field: "totalReq", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "UOM", field: "uom", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Stock On Hand", field: "soh", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Stock in QC", field: "sq", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Stock In Transit", field: "st", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Gap", field: "gap", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Pending PO", field: "penD", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Expected Add Stock",
-                field: "edit",
-                cellRenderer: inputbox,
-                editable: true,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 150,
-                filter: 'agMultiColumnFilter',
-                floatingFilter: true,
-            },
-            {
-                headerName: "Total Stock For Simulation", field: "tsfs", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true
-            }
-        ],
-        CoverageAvlColumnDef: [
-            {
-                headerName: "", field: "icon", initialWidth: 25, autoHeaderHeight: true, wrapHeaderText: true,
-                cellRenderer: "agGroupCellRenderer",
-            },
-            {
-                headerName: "Color Priority", field: "cp", initialWidth: 150, autoHeaderHeight: true, wrapHeaderText: true,
-                cellRenderer: ColoPriority, tooltipComponent: AvailabilityToolTip
-            },
-            {
-                headerName: "Order Line Item", field: "oli", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true,
-            },
-            {
-                headerName: "RM Code", field: "rmCode", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true,
-            },
-            {
-                headerName: "RM Description", field: "rmDesc", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 180, filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "No of Orders Impacted", field: "noOfOrdImp",
-                autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Total Req", field: "totalReq", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "UOM", field: "uom", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Stock On Hand", field: "soh", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Stock in QC", field: "sq", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Stock In Transit", field: "st", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Gap", field: "gap", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Pending PO", field: "penD", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Total Stock For Simulation", field: "tsfs", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true
-            }
-        ],
-    }
+    const initializeData = (data: any, headerData: any) => {
+        const calculateData = data.map((item: any) => ({
+            ...item,
+            gap: item.req - item.soh - item.siqc - item.sit,
+        }));
+        const ShortageData = calculateData.filter((item: any) => item.gap > 0);
+        const CompleteAvailableData = calculateData.filter((item: any) => item.gap === 0);
 
-    const [columnDef] = useState(gridOptions.ShortcolumnDef);
-    const [covAvlDef] = useState(gridOptions.CoverageAvlColumnDef);
+        const CompleteHeaderData = headerData.map((header: any) => {
+            if (header.jf === 'eas') {
+                return { ...header, vs: false };
+            }
+            return header;
+        });
 
+        const ShortageHeaderData = headerData.map((header: any) => {
+            if (header.jf === 'eas') {
+                return { ...header, vs: true };
+            }
+            return header;
+        });
+        return { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData };
+    };
+
+    const { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData } = initializeData(data, HeaderData);
+    const ShortageColumns = mapPPFieldsToColDefs(ShortageHeaderData);
+    const CompleteAvailableColumns = mapPPFieldsToColDefs(CompleteHeaderData);
+
+    const PPChildrenColumns = mapPPChildrenFieldsToColDefs(HeaderChildren);
+    const [ShortageDatas, SetShortageData] = useState(ShortageData);
+    const [CompleteAvailableDatas, setCompleteAvailableData] = useState(CompleteAvailableData);
     const icons = useMemo(() => {
         return {
             groupExpanded: `<img src="${'/assets/img/VectorFLOW/NMS/minus_circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
             groupContracted: `<img src="${'/assets/img/VectorFLOW/NMS/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
         };
     }, []);
-
     const autoGroupColumnDef = useMemo(() => {
         return {
             minWidth: 250,
         };
     }, []);
-
+    const customChildrenCellRenderers = useMemo(() => (
+        {
+            "coloPriorityOfBall": ChildrenColor
+        }), []);
     const detailCellRendererParams = useMemo(() => {
         return {
-            // level 2 grid options
             detailGridOptions: {
-                columnDefs: [
-                    {
-                        field: "orderNo", headerName: "Order No",
-                        cellRendererSelector: (params: any) => {
-                            const moodDetails = {
-                                component: colorPriority,
-                                params: { values: ["BMN1231", "BSW1231"] },
-                            };
-
-                            if (params.data) {
-                                if (params.data.type === "child") return moodDetails;
-                            }
-                            return undefined;
-                        },
-                    },
-                    { field: "orderQty", headerName: "Order Qty" },
-                    { field: "custName", headerName: "Cust Name" },
-                    { field: "custCode", headerName: "Cust Code" },
-                    { field: "orderDueDate", headerName: "Order Due Date" },
-                    { field: "orderRlsDate", headerName: "Order Release Date" },
-                ],
+                columnDefs: PPChildrenColumns,
                 defaultColDef: {
-                    flex: 0,
+                    flex: -0,
                 },
+                components: customChildrenCellRenderers,
                 masterDetail: true,
                 rowSelection: "multiple",
                 suppressRowClickSelection: true,
@@ -214,19 +146,62 @@ const usePP = () => {
                 pagination: true,
                 paginationAutoPageSize: true,
                 alwaysShowVerticalScroll: true,
+                // statusBar: {
+                //     statusPanels: [
+                //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                //     ]
+                // }
             },
             getDetailRowData: (params: any) => {
                 if (undefined != params.data.children) {
                     params.successCallback(params.data.children);
                 }
-            },
+            }
         };
     }, []);
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
     const navigateToSimulateScreen = () => {
         navigate("/planning/simulativeFullKit");
     }
+    const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
+        return {
+            getCustomContentBelowRow: (params) => getRows(params) as ExcelRow[],
+            columnWidth: 120,
+            fileName: "ag-grid.xlsx",
+        };
+    }, []);
+    const excelDownload = useCallback(() => {
+        gridRef.current!.api.exportDataAsExcel();
+    }, []);
+    const excelStyles = useMemo<ExcelStyle[]>(() => {
+        return [
+            {
+                id: "header",
+                interior: {
+                    color: "#aaaaaa",
+                    pattern: "Solid",
+                },
+            },
+            {
+                id: "body",
+                interior: {
+                    color: "#dddddd",
+                    pattern: "Solid",
+                },
+            },
+        ];
+    }, []);
 
+    const customCellRenderers = useMemo(() => (
+        {
+            "availabilityToolTip": AvailabilityToolTip,
+            "coloPriority": ColoPriority,
+        }), []);
+    const sideBar = useMemo(() => {
+        return {
+            toolPanels: ['columns'],
+        };
+    }, []);
     const renderView = () => {
         switch (currentTab.id) {
             case "ca":
@@ -234,11 +209,18 @@ const usePP = () => {
                     <div>
                         <VFTable
                             {...agGridProps}
-                            columnDefs={covAvlDef}
-                            rowData={coverageAvlRow}
+                            columnDefs={CompleteAvailableColumns}
+                            rowData={CompleteAvailableDatas}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
+                            height={750}
+                            ref={gridRef}
+                            statusBar={{
+                                statusPanels: [
+                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                                ]
+                            }}
                         />
                     </div>
                 );
@@ -247,11 +229,18 @@ const usePP = () => {
                     <div>
                         <VFTable
                             {...agGridProps}
-                            columnDefs={columnDef}
-                            rowData={rowData}
+                            columnDefs={ShortageColumns}
+                            rowData={ShortageDatas}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
+                            height={750}
+                            ref={gridRef}
+                            statusBar={{
+                                statusPanels: [
+                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                                ]
+                            }}
                         />
                         <div style={{ textAlign: 'right' }}>
                             <VFButton onClick={navigateToSimulateScreen} themeUi="" disabled={false} width={250}>Simulate improvement in Full Kits</VFButton>
@@ -273,7 +262,7 @@ const usePP = () => {
                     background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
                 };
             },
-            pagination: false,
+            components: customCellRenderers,
             rowSelection: 'multiple',
             suppressRowClickSelection: true,
             enableBrowserTooltips: true,
@@ -300,17 +289,40 @@ const usePP = () => {
         paginationAutoPageSize: true,
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,
-    };
+        groupDefaultExpanded: 0,
+        defaultExcelExportParams: defaultExcelExportParams,
+        excelStyles: excelStyles,
+        sideBar: sideBar,
+        onCellEditingStopped(event: any) {
+            const field = event.colDef.field;
+            const newValue = event.newValue;
+            const rowIndex = event.rowIndex;
 
+            if (!field || rowIndex == null) {
+                return;
+            }
+
+            SetShortageData((prevData: any) => {
+                const newData = [...prevData];
+                const updatedRow = {
+                    ...newData[rowIndex],
+                    [field]: newValue,
+                    tsfs: newData[rowIndex].soh + newValue
+                };
+                newData[rowIndex] = updatedRow;
+                return newData;
+            });
+            gridRef.current?.api.refreshCells({ force: true });
+        }
+    };
     return {
         isSideBarOpen,
-        columnDef,
         agGridProps,
-        RRRRowData: data,
         currentPage,
         toggleCurrentTab,
         renderView,
-        currentTab
+        currentTab,
+        excelDownload,
     }
 }
 

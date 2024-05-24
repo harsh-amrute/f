@@ -87,7 +87,6 @@ const useRRR =()=>{
         colorTechCellRenderer:RRRTechColorCellRenderer,
         colorEcoCellRenderer:RRREcoColorCellRenderer,
         colorDispatchRender:RRRDispatchColorCellRenderer
-        
       }), []);
 
     const agGridProps:AgGridReactProps = {

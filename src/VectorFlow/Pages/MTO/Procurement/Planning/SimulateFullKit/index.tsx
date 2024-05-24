@@ -9,19 +9,20 @@ const SimulateFullKit = () => {
     const { renderView, currentTab, toggleCurrentTab } = useSimFullKit();
     return (
         <>
-            {/* <ActionToolBar
-                //filter={'add'}
+            <ActionToolBar
                 view={'grid'}
-                setCurrentTab={''}
+                setCurrentTab={() => { return }}
                 currCategory={'PP'}
                 currentTab={''}
                 tabsList={[]}
                 onFloatingTabChange={() => console.log('')}
                 onGoBack={() => console.log('')}
                 onViewChange={() => console.log('')}
-                ////hideGoBack={true}
-                //visibilityToPP={true}
-            /> */}
+                showAllTick={''}
+                handleGoButton={''}
+                genericRecordCount={0}
+                onExportToExcelCallBack={() => console.log('')}
+            />
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 
                 <VFFloatingTab
@@ -44,7 +45,6 @@ const SimulateFullKit = () => {
             <ProcurementLayout>
                 <div>
                     {renderView()}
-
                 </div>
             </ProcurementLayout>
         </>

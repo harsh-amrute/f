@@ -86,6 +86,8 @@ const ActionToolBar = ({ view, currentTab, tabsList, onFloatingTabChange, onGoBa
     }, [currCategory])
 
 
+
+
     const handleExportToExcel = () => {
         if (pathname === '/supply-chain-intelligence-hub/open-expediting-requests') {
             return ref.current.api.exportDataAsExcel()

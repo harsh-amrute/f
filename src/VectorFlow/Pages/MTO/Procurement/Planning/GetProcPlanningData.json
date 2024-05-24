@@ -1,0 +1,164 @@
+{
+    "data": [
+        {
+            "cp": [
+                {
+                    "B": 50,
+                    "R": 20,
+                    "Y": 30
+                }
+            ],
+            "rm": "AREB5092381",
+            "rmd": "SB2-NOTCH-KOTH-ABC-11",
+            "nooi": 100,
+            "req": 100,
+            "uom": "Kg",
+            "soh": 40,
+            "siqc": 20,
+            "sit": 10,
+            "ppo": 30,
+            "eas": 0,
+            "tsfs": 0,
+            "children": [
+                {
+                    "on": "BMN1231",
+                    "oq": 66,
+                    "cn": "Pareek Amit",
+                    "cc": 546788,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Black"
+                },
+                {
+                    "on": "BMN1212",
+                    "oq": 22,
+                    "cn": "Sourabh Shah",
+                    "cc": 5466721,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Red"
+                },
+                {
+                    "on": "BMN1256",
+                    "oq": 43,
+                    "cn": "Shiv Mishra",
+                    "cc": 5466676,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Yellow"
+                }
+            ]
+        },
+        {
+            "cp": [
+                {
+                    "B": 30,
+                    "R": 40,
+                    "Y": 30
+                }
+            ],
+            "rm": "AREB5092383",
+            "rmd": "SB2-NOTCH-KOTH-ABC-15",
+            "nooi": 100,
+            "req": 100,
+            "uom": "Kg",
+            "soh": 40,
+            "siqc": 20,
+            "sit": 10,
+            "ppo": 30,
+            "eas": 0,
+            "tsfs": 0,
+            "children": [
+                {
+                    "on": "BMN1231",
+                    "oq": 66,
+                    "cn": "Pareek Amit",
+                    "cc": 546788,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Red"
+                }
+            ]
+        },
+        {
+            "cp": [
+                {
+                    "B": 10,
+                    "R": 30,
+                    "Y": 60
+                }
+            ],
+            "rm": "AREB5092385",
+            "rmd": "SB2-NOTCH-KOTH-ABC-12",
+            "nooi": 100,
+            "req": 100,
+            "uom": "Kg",
+            "soh": 40,
+            "siqc": 20,
+            "sit": 10,
+            "ppo": 30,
+            "eas": 0,
+            "tsfs": 0,
+            "children": [
+                {
+                    "on": "BMN1231",
+                    "oq": 66,
+                    "cn": "Pareek Amit",
+                    "cc": 546788,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Black"
+                }
+            ]
+        },
+        {
+            "cp": [
+                {
+                    "B": 50,
+                    "R": 20,
+                    "Y": 30
+                }
+            ],
+            "rm": "AREB5092381",
+            "rmd": "SB2-NOTCH-KOTH-ABC-11",
+            "nooi": 100,
+            "req": 100,
+            "uom": "Kg",
+            "soh": 50,
+            "siqc": 30,
+            "sit": 20,
+            "ppo": 30,
+            "eas": 0,
+            "tsfs": 0,
+            "children": [
+                {
+                    "on": "BMN1231",
+                    "oq": 66,
+                    "cn": "Pareek Amit",
+                    "cc": 546788,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Black"
+                },
+                {
+                    "on": "BMN1212",
+                    "oq": 22,
+                    "cn": "Sourabh Shah",
+                    "cc": 5466721,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Red"
+                },
+                {
+                    "on": "BMN1256",
+                    "oq": 43,
+                    "cn": "Shiv Mishra",
+                    "cc": 5466676,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Yellow"
+                }
+            ]
+        }
+    ]
+}

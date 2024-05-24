@@ -65,21 +65,33 @@ export const BTRAvailabiltyCellRenderer = styled.div<{ value: number }>`
         background: transparent linear-gradient(270deg, #EB73B3 0%, #820F4C 100%) 0% 0% no-repeat padding-box;
       }
 `
-export const ColorPriorityCellRenderer = styled.div<{ value: number }>`
-    position:relative;
-    height:20px;
-    width:70px;
+interface ColorValues {
+    B: number;
+    R: number;
+    Y: number;
+}
+export const ColorPriorityCellRenderer = styled.div<ColorValues>`
+    position: relative;
+    height: 20px;
+    width: 70px;
     background: #000000 0% 0% no-repeat padding-box;
     &::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
-        bottom:0;
-        width:${(props) => props.value}%;
-        background: transparent linear-gradient(270deg, #E53F3F 50% , #EBBF2C 80%,  #000000 100%) 0% 0% no-repeat padding-box;
-      }
-`
+        bottom: 0;
+        width: 100%;
+        background: ${(props) => `
+            linear-gradient(
+                to right,
+                #000000 ${props.B}%,
+                #E53F3F ${props.B}% ${props.B + props.Y}%,
+                #EBBF2C ${props.B + props.Y}% 100%
+            )
+        `};
+    }
+`;
 
 export const CategoryCellRendererWrapper = styled.div`
 height: 100 %;
@@ -145,3 +157,23 @@ export const CategoryToolTipSectionDescription = styled.div`
     font-family:Roboto;
     margin-top:5px;
 `
+export const ProcPlanningChildrenColor = styled.div`
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+`
+const determineColor = (value: any) => {
+    if (value === "Red") return 'Red';
+    if (value === "Yellow") return 'Yellow';
+    if (value === "Black") return 'Black';
+};
+export const ChildrenColorCellRenderer = styled.div<{ value: string }>`
+display: flex;
+align-items: center;
+justify-content: center;
+width: 15px;
+height: 15px;
+border-radius: 50%;
+margin-top: 14px;
+background-color: ${(props) => determineColor(props.value)};
+`;

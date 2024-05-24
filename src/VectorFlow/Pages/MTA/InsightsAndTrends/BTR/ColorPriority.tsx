@@ -1,14 +1,27 @@
+import { ICellRendererParams } from "ag-grid-enterprise";
+import { BTRAvailabiltyCellRendererWrapper, ColorPriorityCellRenderer } from "./styles";
 
-import { ICellRendererParams } from "ag-grid-enterprise"
-
-import { ColorPriorityCellRenderer, BTRAvailabiltyCellRendererWrapper } from './styles'
-
-const ColoPriority = (props: ICellRendererParams) => {
-    return (
-        <BTRAvailabiltyCellRendererWrapper data-testid="availability-cell-renderer">
-            <ColorPriorityCellRenderer value={props.data.cp} />
-        </BTRAvailabiltyCellRendererWrapper>
-    )
+interface ColorValues {
+    B: number;
+    R: number;
+    Y: number;
 }
 
-export default ColoPriority
+const ColorPriority = (props: ICellRendererParams) => {
+    const colorValues: ColorValues = props.data.cp[0];
+
+    return (
+        <BTRAvailabiltyCellRendererWrapper data-testid="availability-cell-renderer">
+            <ColorPriorityCellRenderer
+                B={colorValues.B}
+                R={colorValues.R}
+                Y={colorValues.Y}
+            />
+        </BTRAvailabiltyCellRendererWrapper>
+    );
+};
+
+export default ColorPriority;
+
+
+

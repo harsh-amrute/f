@@ -3,12 +3,11 @@ import { AgGridReactProps } from "ag-grid-react"
 import { useUserData } from "../../../../../../context"
 import simulativeData from '../SimulateFullKit/simulativeFullKit.json'
 import AvailabilityCellRenderer from "../../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer";
-//import CategoryCellRenderer from "../../../../MTA/InsightsAndTrends/BTR/CategoryCellRenderer";
-import colorPriority from ".././colorPriority";
+//import colorPriority from ".././colorPriority";
 import AvailabilityToolTip from "../../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
-
+import { ColorCellRenderer } from '../../../Common/ColorCellRenderer';
 
 const useSimFullKit = () => {
     const { isSideBarOpen } = useUserData()
@@ -35,7 +34,8 @@ const useSimFullKit = () => {
             },
             {
                 headerName: "Color Priority", field: "cp", initialWidth: 150, autoHeaderHeight: true, wrapHeaderText: true,
-                //cellRenderer: CategoryCellRenderer, tooltipComponent: AvailabilityToolTip
+                //  cellRenderer: ColorCellRenderer,
+                tooltipComponent: AvailabilityToolTip
             },
             {
                 headerName: "Order Line Item", field: "oli", autoHeaderHeight: true, wrapHeaderText: true,
@@ -117,17 +117,17 @@ const useSimFullKit = () => {
                 columnDefs: [
                     {
                         field: "rmcode", headerName: "RM Code",
-                        cellRendererSelector: (params: any) => {
-                            const moodDetails = {
-                                component: colorPriority,
-                                params: { values: ["BMN1231", "BSW1231"] },
-                            };
+                        // cellRendererSelector: (params: any) => {
+                        //     const moodDetails = {
+                        //         component: colorPriority,
+                        //         params: { values: ["BMN1231", "BSW1231"] },
+                        //     };
 
-                            if (params.data) {
-                                if (params.data.type === "child") return moodDetails;
-                            }
-                            return undefined;
-                        },
+                        //     if (params.data) {
+                        //         if (params.data.type === "child") return moodDetails;
+                        //     }
+                        //     return undefined;
+                        // },
                     },
                     { field: "rmdesc", headerName: "RM Descp" },
                     { field: "rmreqty", headerName: "RM Reqdty" },
