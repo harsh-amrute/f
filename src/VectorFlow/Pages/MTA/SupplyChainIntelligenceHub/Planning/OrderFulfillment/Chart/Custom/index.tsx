@@ -40,7 +40,8 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
                 colId:column['colCode'],
                 headerName:column['header'],
                 enablePivot:true,
-                enableValue:true
+                enableValue:true,
+                enableRowGroup:true,
             }
         })
         return [...colDefs];
@@ -110,7 +111,7 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
     
     return(
         <>
-        <SCDynamicContainer>
+        <SCDynamicContainer className="ag-theme-planning-custom">
             <VFTable
                 ref={ref}
                 columnDefs={colDefs}
@@ -131,11 +132,13 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}
+                disableZoomScaling={true}
                 onGridReady={(params)=>{
                     if(columnState){
                      params.columnApi.applyColumnState({state:columnState})
                     }
                  }}
+                rowHeight={30}
             />
         </SCDynamicContainer>
         </>

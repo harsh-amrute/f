@@ -164,6 +164,8 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                             enabled:true,
                             text:'Transporter Name',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
 
                         }
                     },
@@ -171,7 +173,9 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                         title:{
                             enabled:true,
                             text:"Count of LRs",
-                            position:"left"
+                            position:"left",
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                       }
                   },
@@ -206,12 +210,15 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                 <Allotment.Pane preferredSize={1000}>
                     <SCChartContainer height={430}>
                         <SCChartHeaderContainer>
-                            <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Transporters: Max LRs With On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader><VFInfoToolTip infoList={graph1}/></div>
-                            <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
+                            <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Transporters: Max LRs With On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader></div>
+                            <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                                <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
+                                {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}
+                            </div>
                         </SCChartHeaderContainer>
                         <SCHorizontalDivider/>
-                        <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                                <div style={{width:'1000px'}}>
+                        <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                                <div className="ag-theme-planning" style={{width:'1000px'}}>
                                 <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}

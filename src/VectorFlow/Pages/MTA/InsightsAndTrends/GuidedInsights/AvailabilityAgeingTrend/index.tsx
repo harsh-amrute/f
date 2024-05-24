@@ -154,7 +154,7 @@ const graph1 = [
                         labelValueFormatter={(value:number)=>value>1?`${value} Days`:`${value} Day`}
                     />
                    </div>
-                    <VFButtonOutline themeUi={themeUi} onClick={()=>OnHorizonChange(horizon, minAgeing)} width={150} style={{height:'35px',fontSize:'13px', fontWeight:500}}>Submit</VFButtonOutline>
+                    <VFButtonOutline themeUi={themeUi} onClick={()=>OnHorizonChange(horizon, minAgeing)} width={100} style={{height:'35px',fontSize:'13px', fontWeight:500}}>Submit</VFButtonOutline>
                     </div>
                     <div style={{marginLeft:'10px',marginRight:'10px',height:'400px'}}><AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
           <div style={{marginLeft:'10px',marginRight:'10px',marginTop:'5px'}}>

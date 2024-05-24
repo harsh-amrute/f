@@ -19,7 +19,7 @@ export const SCDynamicContainer = styled.div`
 `
 export const SCHorizontalAllignmentWrapper = styled.div`
     width:100%;
-    padding:20px;
+    // padding:20px;
     height:200vh;
 `
 
@@ -30,7 +30,7 @@ export const SCChartContainer = styled.div<{height?:number}>`
     // box-shadow: -5px 5px 25px #86868633;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     margin-right:5px;
-    margin-top:8px;
+    margin-top:10px;
     margin-bottom:12px;
     margin-left:5px;
     // height:547px;

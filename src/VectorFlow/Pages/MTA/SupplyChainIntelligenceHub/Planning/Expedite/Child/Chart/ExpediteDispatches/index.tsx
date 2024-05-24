@@ -408,6 +408,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Parent Location Name",
               position: "bottom",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
             label:{
               fontSize:8,
@@ -419,6 +421,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Count of SKUs",
               position: "left",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
           },
         },
@@ -439,10 +443,12 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Receiving Location Name",
               position: "bottom",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
             label:{
               fontSize:8,
-              fontFamily:'Roboto'
+              fontFamily:'Roboto',
             }
           },
           number: {
@@ -450,6 +456,8 @@ const colDefs3: ColDef[] = [
               enabled: true,
               text: "Count of SKUs",
               position: "left",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
           },
         },
@@ -515,9 +523,9 @@ const colDefs3: ColDef[] = [
                         Top 10 Parent Location: Max Pipeline Black/Red SKUs With
                         Available Rationed Qty For Receiving Locations
                       </SCChartHeader>
-                      <VFInfoToolTip infoList={graph1}/>
                     </div>
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                        <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
                         {!hideChart1 && (
                           <img
                             src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
@@ -529,7 +537,7 @@ const colDefs3: ColDef[] = [
                   </SCChartHeaderContainer>
                   <SCHorizontalDivider />
                   <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Parent Location: Max Pipeline Black/Red SKUs With
-                        Available Rationed Qty For Receiving Locations" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                        Available Rationed Qty For Receiving Locations" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                       <div style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph1}
@@ -610,9 +618,9 @@ const colDefs3: ColDef[] = [
                         Top 10 Receiving Locations: Max Pipeline Inv. Black/Red
                         SKUs With Rationed Quantity Available At Parent
                       </SCChartHeader>
-                      <VFInfoToolTip infoList={graph2}/>
                     </div>
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                        <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
                         {!hideChart2 && (
                           <img
                             src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
@@ -624,7 +632,7 @@ const colDefs3: ColDef[] = [
                   </SCChartHeaderContainer>
                   <SCHorizontalDivider />
                   <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Receiving Locations: Max Pipeline Inv. Black/Red
-                        SKUs With Rationed Quantity Available At Parent" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                        SKUs With Rationed Quantity Available At Parent" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                       <div style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph2}
@@ -728,9 +736,9 @@ const colDefs3: ColDef[] = [
                   <SCChartHeader style={{marginRight:10}}>
                     Comparision of Availability: Pre Rationing vs Post Rationing
                   </SCChartHeader>
-                  <VFInfoToolTip infoList={graph3}/>
                 </div>
                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                  <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph3}/></div>
                   {!hideChart3 && (
                     <img
                       src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
@@ -741,7 +749,7 @@ const colDefs3: ColDef[] = [
                 </div>
               </SCChartHeaderContainer>
               <SCHorizontalDivider />
-              <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+              <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                 <div style={{width:'1000px'}}>
                   <VFTable
                     ref={refGraph3}

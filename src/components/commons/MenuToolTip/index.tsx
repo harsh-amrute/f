@@ -74,10 +74,13 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any
     const result = getNestedChildren(items.child)
       return(
         result.map((itemChild: any, index: number) => {
+          const checkRole = user?.roles?.permission?.some((value: any) =>
+          itemChild?.role?.includes(value)
+          );
           if (
-            user.url_permission.includes(itemChild.url) ||
+            (user.url_permission.includes(itemChild.url) ||
             itemChild.url === "" ||
-            itemChild.url === "/profile" || reportUrls.includes(itemChild.url)
+            itemChild.url === "/profile" || reportUrls.includes(itemChild.url)) && checkRole
           ) {
             return (
               

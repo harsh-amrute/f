@@ -305,7 +305,6 @@ dispay:flex;
 text-align:center;
 justify-content:center;
 margin-top:26px;  //42
-margin-bottom:32px; //44
 `
 
 export const SubmitDataButtonWrapper = styled.div`

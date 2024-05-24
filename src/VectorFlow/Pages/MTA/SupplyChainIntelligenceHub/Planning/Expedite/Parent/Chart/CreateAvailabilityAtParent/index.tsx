@@ -198,6 +198,8 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                             enabled:true,
                             text:'Parent Location Name',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
 
                         },
                         label:{
@@ -213,7 +215,9 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                         title:{
                             enabled:true,
                             text:"Count of SKUs",
-                            position:"left"
+                            position:"left",
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                       }
                   },
@@ -275,15 +279,16 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                                     <SCChartHeader>Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock for Receiving Locations</SCChartHeader>
-                                    <div style={{marginRight:'17px'}}>
-                                        <VFInfoToolTip infoList={graph1}/>
-                                    </div>
                                 </div>
-                                {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}
+                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                                    <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
+                                    {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}
+                                </div>
+                                
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                            <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock for Receiving Locations" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                                    <div style={{width:'1100px'}}>
+                            <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock for Receiving Locations" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                                    <div className="ag-theme-planning" style={{width:'1100px'}}>
                                         <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
@@ -361,16 +366,16 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                         <SCChartContainer height={410}>
                                 <SCChartHeaderContainer>
                                     <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-                                        <SCChartHeader>Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location</SCChartHeader>
-                                        <div style={{marginRight:'17px'}}>
-                                            <VFInfoToolTip infoList={graph2}/>
-                                        </div>
+                                        <SCChartHeader>Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location</SCChartHeader>   
                                     </div>
-                                    {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(2)}/>}
+                                    <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                                        <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
+                                        {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(2)}/>}
+                                    </div>
                                 </SCChartHeaderContainer>
                                 <SCHorizontalDivider/>
-                                <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
-                                    <div style={{width:'1100px'}}>
+                                <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                                    <div className="ag-theme-planning" style={{width:'1100px'}}>
                                         <VFTable
                                                 ref={refGraph2}
                                                 columnDefs={colDefs2}

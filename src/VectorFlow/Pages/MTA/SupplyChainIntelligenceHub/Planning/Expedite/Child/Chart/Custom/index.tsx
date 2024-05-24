@@ -43,7 +43,8 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                 enableValue:true,
                 // rowGroup:true,
                 // enableRowGroup:true,
-                suppressDragLeaveHidesColumns:true
+                // suppressDragLeaveHidesColumns:true,
+                enableRowGroup:true,
 
             }
         })
@@ -113,7 +114,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
     
     return(
         <>
-        <SCDynamicContainer>
+        <SCDynamicContainer className="ag-theme-planning-custom">
             <VFTable
                 ref={ref}
                 columnDefs={colDefs}
@@ -139,6 +140,8 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                      params.columnApi.applyColumnState({state:columnState})
                     }
                  }}
+                disableZoomScaling={true}
+                rowHeight={30}
             />
         </SCDynamicContainer>
         </>

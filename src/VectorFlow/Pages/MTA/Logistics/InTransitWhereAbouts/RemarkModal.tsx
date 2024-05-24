@@ -23,9 +23,9 @@ const RemarkModal = (props:RemarkModalProps)=>{
     return(
         <VFModalCard openModal={isOpen} headerIcon="/assets/img/VectorFLOW/BPR/remark.svg" headerText="Remarks" closeIcon="/assets/img/VectorFLOW/NMS/close-white.svg" closeModal={onClose}>
             <RemarkModalContentWrapper>
-                <RemarkModalTable>
+                <RemarkModalTable className="custom-scrollbar">
                     <RemarkModalTableHeaderContainer>
-                        <RemarkModalTableHeader style={{textAlign:'center'}}>
+                        <RemarkModalTableHeader style={{textAlign:'center', paddingRight:'5px'}}>
                             Name
                         </RemarkModalTableHeader>
                         <RemarkModalTableHeader>

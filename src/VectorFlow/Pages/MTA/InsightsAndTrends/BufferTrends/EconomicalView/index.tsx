@@ -9,7 +9,7 @@ import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule
 import { BufferTrendsGraphState } from '../../../../../types/BPR'
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
-
+import { useUserData } from "../../../../../../context";
 
 import { AgChartsReact } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
@@ -33,6 +33,8 @@ interface EconomicalWiseProps{
 
 const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
             ,handleSubmitClick,horizonDays}:EconomicalWiseProps) => {
+
+    const {user} = useUserData()
 
     const numericData = data.map((item:any) => ({
         ...item,
@@ -187,7 +189,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
                                         labelValueFormatter={(value:number)=>value>1?`${value} Days`:`${value} Day`}
                                     />
                                 <div style={{zoom:0.8}}>
-                                    <VFButtonOutline themeUi="" onClick={handleSubmitClick} width={110} style={{fontSize:'14px',height:'40px'}} disabled={false}>
+                                <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
                                         Submit
                                     </VFButtonOutline>
                                 </div>

@@ -80,6 +80,7 @@ export const ContactModalContentValue = styled.p`
     font-size:20px;
     font-weight:500;
     margin-bottom:10px;
+
 `
 
 export const RemarkModalContentWrapper = styled.div`
@@ -92,6 +93,8 @@ export const RemarkModalTable = styled.div`
     display:flex;
     flex-direction:column;
     // padding:0px 10px;
+    padding-left:5px;
+
 `
 
 export const RemarkModalTableHeaderContainer = styled.div`
@@ -118,7 +121,7 @@ export const RemarkModalTableRowContainer = styled.div`
     margin-top:10px;
     padding:0 10px;
     max-height:300px;
-    overflow-y:auto;
+    // overflow-y:auto;
 `
 export const RemarkModalTableRow = styled.div`
     display:grid;

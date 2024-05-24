@@ -35,7 +35,8 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                 colId:column['colCode'],
                 headerName:column['header'],
                 enablePivot:true,
-                enableValue:true
+                enableValue:true,
+                enableRowGroup:true,
             }
         })
         return [...colDefs];
@@ -126,11 +127,13 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}
+                disableZoomScaling={true}
                 // onGridReady={(params)=>{
                 //     if(columnState){
                 //      params.columnApi.applyColumnState({state:columnState})
                 //     }
                 //  }}
+                rowHeight={30}
             />
         </SCDynamicContainer>
         </>
