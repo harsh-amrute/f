@@ -33,10 +33,10 @@ interface GridViewTableProps {
     currentCategory:string,
     gridHeight?:number,
     tablePrefixSrc?:string,
+    tableHeader?:string
 }
 
-const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,gridHeight,tablePrefixSrc}:GridViewTableProps) => {
-    
+const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,gridHeight,tablePrefixSrc,tableHeader}:GridViewTableProps) => {
     const {ref} = useContext(GridStateContext)
     // const {mutateAsync:getState,isLoading} = useGetState()
     // const [columnState,setColumnState] = useState<any>()
@@ -58,10 +58,74 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
     // if(isLoading){
     //     return <VFLoader/>
     // }
+
+    const renderSubGrid = ()=>{
+        if(showStockGrid){
+            return(
+                <Allotment>
+                    <Allotment.Pane className="sub-grid-allotment">
+                        <BPRViewTable
+                            tableHeader={tableHeader ||'In Transit/WIP'}
+                            tablePrefixSrc={tablePrefixSrc ? tablePrefixSrc : "/assets/img/VectorFLOW/BPR/in-transit.svg"}
+                            rowData={customGridRowData}
+                            colDefs={customGridColDef}
+                        />
+                    </Allotment.Pane>
+                    <Allotment.Pane className="sub-grid-allotment">
+                        {showStockGrid && (
+                            <BPRViewTable
+                                onRequestExpediting={onRequestExpediting}
+                                tableHeader="Stocks (Detail Of Parent)"
+                                tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg"
+                                rowData={stockGridData?stockGridData:[]}
+                                colDefs={[
+                                    {
+                                        headerName:"Stock at Parent",
+                                        colId:'sap',
+                                        field:'sap'
+                                    },
+                                    {
+                                        headerName:"ETA from parent ",
+                                        colId:'eta',
+                                        field:'eta'
+                                    },
+                                    {
+                                        headerName:"Eco Color",
+                                        colId:'ec',
+                                        field:'ec'
+                                    },
+                                    {
+                                        headerName:"Remarks",
+                                        colId:'remark',
+                                        field:'remark'
+                                    },
+                                    {
+                                        headerName:"Request Expediting",
+                                        colId:'request',
+                                        field:'request',
+                                        onCellClicked:onRequestExpediting
+                                    },
+                                ]}
+                            />
+                        )}
+                    </Allotment.Pane>
+                </Allotment>
+            )
+        }
+        return(
+            <BPRViewTable
+                tableHeader={tableHeader ||'In Transit/WIP'}
+                tablePrefixSrc={tablePrefixSrc ? tablePrefixSrc : "/assets/img/VectorFLOW/BPR/in-transit.svg"}
+                rowData={customGridRowData}
+                colDefs={customGridColDef}
+            />
+        )
+    }
+
     return(
         <GridViewLayout>
             <div style={{height:'95vh'}}>
-                <Allotment defaultSizes={[200,50]} vertical>
+                <Allotment defaultSizes={[200,100]} vertical>
                 {
                     (isSubGridOpen || showStockGrid ) && (
                         <Allotment.Pane >
@@ -107,50 +171,8 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                 }
                 {isSubGridOpen && (
                     <Allotment.Pane  >
-                
-                    <BPRViewTable
-                        tablePrefixSrc={tablePrefixSrc ? tablePrefixSrc : "/assets/img/VectorFLOW/BPR/in-transit.svg"}
-                        rowData={customGridRowData}
-                        colDefs={customGridColDef}
-                    />
-                    {showStockGrid && (
-                        <BPRViewTable
-                        onRequestExpediting={onRequestExpediting}
-                        tableHeader="Details of parent"
-                        tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg"
-                        rowData={stockGridData?stockGridData:[]}
-                        colDefs={[
-                            {
-                                headerName:"Stock at Parent",
-                                colId:'sap',
-                                field:'sap'
-                            },
-                            {
-                                headerName:"ETA from parent ",
-                                colId:'eta',
-                                field:'eta'
-                            },
-                            {
-                                headerName:"Eco Color",
-                                colId:'ec',
-                                field:'ec'
-                            },
-                            {
-                                headerName:"Remarks",
-                                colId:'remark',
-                                field:'remark'
-                            },
-                            {
-                                headerName:"Request Expediting",
-                                colId:'request',
-                                field:'request',
-                                onCellClicked:onRequestExpediting
-                            },
-                        ]}
-                    />
-                    )}
-                
-                </Allotment.Pane>
+                        {renderSubGrid()}
+                    </Allotment.Pane>
                 )}
                 </Allotment>
             </div>

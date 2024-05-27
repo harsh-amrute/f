@@ -31,7 +31,7 @@ const useBPR =()=>{
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
 
-    const [isSubGridOpen,toggleSubGrid] = useState<boolean>(false)
+    const [isSubGridOpen,toggleSubGrid] = useState<boolean>(true)
     const [currGridPage,setCurrGridPage] = useState<number>(1)
     const [recordCount,setRecordCount] = useState<number>(0)
     const [activeRow,setActiveRow] = useState<any>()

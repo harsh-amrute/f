@@ -34,9 +34,9 @@ function getBorderAndTextColor(props:any) {
 
 
 export const SCButtonOutline = styled.button<{themeUi: string, isDisabled:boolean | undefined, hoverState:boolean, customWidth:number | undefined, color:string | undefined}>`
-  color: ${props => props.hoverState ? 'white' : getBorderAndTextColor(props)};
-  // background:${(props)=>props.hoverState ? getColor(props) : '#fefefe'} ;
-  background:${(props)=>getColor(props)} ;
+  color: ${props => getBorderAndTextColor(props)};
+  background:#fefefe ;
+  // background:${(props)=>getColor(props)} ;
   // padding: 15px 7px;
   border-radius: 6px;
   font-size:16px;
