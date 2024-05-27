@@ -4,7 +4,7 @@ import { useUserData } from '../../../../../context';
 import { SCTabButton } from '../../../../../components/VectorFLOW/commons/VFTab/styles';
 import BPRViewTableRequestCellRenderer from './BPRViewTableRequestCellRenderer';
 import BPRViewTableRowCellWithReadMore from './BPRViewTableRowCellWithReadMore';
-import {BPRViewTableWrapper,BPRViewTablePrefix,BPRViewTableGrid,BPRViewTableHeaderContainer,BPRViewTableHeader,BPRViewTableRowContainer,BPRViewTableRow,BPRViewTableRowCell, TableHeader,BPRViewTablePrefixWrapper, BPRViewTablePrefixText, BPRViewTablePrefixIcon, BPRViewTableNoDataContainer, BPRViewTableNoDataHeader, BPRViewTableNoDataText} from './styles'
+import {BPRViewTableWrapper,BPRViewTablePrefix,BPRViewTableGrid,BPRViewTableHeaderContainer,BPRViewTableHeader,BPRViewTableRowContainer,BPRViewTableRow,BPRViewTableRowCell,BPRViewTablePrefixWrapper, BPRViewTablePrefixText, BPRViewTablePrefixIcon, BPRViewTableNoDataContainer, BPRViewTableNoDataHeader, BPRViewTableNoDataText} from './styles'
 import AgeingCellRenderer from './AgeingCellRenderer';
 import WhereAboutsCellRenderer from './WhereAboutsCellRenderer';
 
