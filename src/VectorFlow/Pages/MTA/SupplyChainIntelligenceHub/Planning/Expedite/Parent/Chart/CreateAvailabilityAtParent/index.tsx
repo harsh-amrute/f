@@ -37,15 +37,15 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                 headerName:'Count of SKU Locations'
             },
             {
-                field:'black',
-                colId:'black',
+                field:'BlackCount',
+                colId:'BlackCount',
                 headerName:'Black'
-            },
-            {
-                field:'red',
-                colId:'red',
-                headerName:'Red'
-            },
+              },
+              {
+                  field:'RedCount',
+                  colId:'RedCount',
+                  headerName:'Red'
+              },
           
         ]
         
@@ -77,15 +77,15 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                 headerName:'Count of SKU Locations'
             },
             {
-                field:'black',
-                colId:'black',
+                field:'BlackCount',
+                colId:'BlackCount',
                 headerName:'Black'
-            },
-            {
-                field:'red',
-                colId:'red',
-                headerName:'Red'
-            },
+              },
+              {
+                  field:'RedCount',
+                  colId:'RedCount',
+                  headerName:'Red'
+              },
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
@@ -133,7 +133,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                 refGraph1.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
-                    columns: ['WHDescription','black','red'],
+                    columns: ["WHDescription", 'BlackCount','RedCount'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     }
@@ -144,7 +144,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                 refGraph1.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
-                    columns: ['WHDescription','black','red'],
+                    columns: ["WHDescription", 'BlackCount','RedCount'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     },
@@ -158,7 +158,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                 refGraph2.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
-                        columns: ['WHDescription','black','red'],
+                        columns: ["WHDescription", 'BlackCount','RedCount'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     }
@@ -169,7 +169,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                 refGraph2.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
-                        columns: ['WHDescription','black','red'],
+                        columns: ["WHDescription", 'BlackCount','RedCount'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     },

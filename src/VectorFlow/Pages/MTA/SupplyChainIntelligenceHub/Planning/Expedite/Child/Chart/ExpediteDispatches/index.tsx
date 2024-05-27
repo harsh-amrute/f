@@ -48,13 +48,13 @@ const ExpediteDispatches = ({ data }: ExpediteChildDispatchesProps) => {
         colId: "SKUCounts",
       },
       {
-        field:'black',
-        colId:'black',
+        field:'BlackCount',
+        colId:'BlackCount',
         headerName:'Black'
       },
       {
-          field:'red',
-          colId:'red',
+          field:'RedCount',
+          colId:'RedCount',
           headerName:'Red'
       },
     ];
@@ -146,7 +146,6 @@ const sortData = (data:any,key:string) => {
         }
       })
     })
-    console.log(dynamicColdefs)
     return dynamicColdefs;
   };
 
@@ -218,7 +217,6 @@ const mapDataToRowData = (data: any) => {
       rowData.push(rowObj);
     }
   );
-  console.log(rowData)
 
   return rowData;
 };
@@ -273,7 +271,7 @@ const mapDataToRowData = (data: any) => {
         refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
-            columns: ["WHDescription", 'black','red'],
+            columns: ["WHDescription", 'BlackCount','RedCount'],
             rowStartIndex: 0,
             rowEndIndex: 9,
           },
@@ -285,7 +283,7 @@ const mapDataToRowData = (data: any) => {
       refGraph1.current?.api.createRangeChart({
         chartType: "stackedColumn",
         cellRange: {
-          columns: ["WHDescription", 'black','red'],
+          columns: ["WHDescription", 'BlackCount','RedCount'],
           rowStartIndex: 0,
           rowEndIndex: 9,
         },
