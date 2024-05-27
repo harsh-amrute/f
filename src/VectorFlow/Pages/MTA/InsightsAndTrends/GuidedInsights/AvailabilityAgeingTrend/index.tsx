@@ -5,7 +5,6 @@ import { useUserData } from "../../../../../../context";
 import { useState,useEffect } from "react";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
-import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { AgChartOptions } from "ag-charts-community";
 
 

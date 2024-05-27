@@ -50,7 +50,7 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
     return(
         <VFModalCard 
             openModal={isOpen} 
-            headerIcon="" 
+            headerIcon="/assets/img/VectorFLOW/NMS/close-dark.svg" 
             headerBgColor="white" 
             headerText="Technical Trend | Horizon - 7 Days" 
             headerTextColor="black" 
