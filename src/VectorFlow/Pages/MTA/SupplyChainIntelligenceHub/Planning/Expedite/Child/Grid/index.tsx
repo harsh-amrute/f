@@ -17,10 +17,14 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
     const [isExpeditingModalOpen,toggleExpeditingModal] =  useState<boolean>(false)
     const [currentRowData,setCurrentRowData] = useState<any>();
     const [activeRow,setActiveRow] = useState<any>();
-    const [isSubGridOpen,toggleSubGrid] = useState<any>(false);
-    
+    const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
+    console.log(currentRowData)
     const {mutateAsync:submitRemark} = useSubmitOpenExpediteRequest()
     const submitOpenExpediteRemark = async(remark:string)=>{
+        if(remark.length===0){
+            notifyError('Message cannot be empty')
+            return
+        }
         notifyLoader('Submiting request')
         try{
             await submitRemark({
@@ -173,46 +177,51 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
             colId:'lc',
             field:'lc'
         },
-        {
-            headerName:"Creation Date",
-            colId:'cd',
-            field:'cd'
-        },
-        {
-            headerName:"SLT",
-            colId:'slt',
-            field:'slt'
-        },
-        {
-            headerName:"TLT",
-            colId:'tlt',
-            field:'tlt'
-        },
+        // {
+        //     headerName:"Creation Date",
+        //     colId:'cd',
+        //     field:'cd'
+        // },
+        // {
+        //     headerName:"SLT",
+        //     colId:'slt',
+        //     field:'slt'
+        // },
+        // {
+        //     headerName:"TLT",
+        //     colId:'tlt',
+        //     field:'tlt'
+        // },
         {
             headerName:"Ageing",
             colId:'ag',
             field:'ag'
         },
-        {
-            headerName:"ETA",
-            colId:'eta',
-            field:'eta'
-        },
-        {
-            headerName:"Current Location",
-            colId:'cl',
-            field:'cl'
-        },
+        // {
+        //     headerName:"ETA",
+        //     colId:'eta',
+        //     field:'eta'
+        // },
+        // {
+        //     headerName:"Current Location",
+        //     colId:'cl',
+        //     field:'cl'
+        // },
         {
             headerName:"Quantity",
             colId:'qty',
             field:'qty'
         },
         {
-            headerName:"Remarks",
-            colId:'remarks',
-            field:'remarks'
+            headerName:"Whereabouts",
+            colId:'whereabouts',
+            field:'whereabouts'
         }
+        // {
+        //     headerName:"Remarks",
+        //     colId:'remarks',
+        //     field:'remarks'
+        // }
     ]
 
     return(
@@ -226,7 +235,7 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
                 customGridRowData={activeRow} 
                 customGridColDef={customGridColDef} 
                 showStockGrid 
-                stockGridData={[{...currentRowData,request:'d'}]} 
+                stockGridData={currentRowData?[{...currentRowData}]:[]} 
                 isSubGridOpen={isSubGridOpen} 
                 onRequestExpediting={()=>toggleExpeditingModal(true)}
                 paginationProps={paginationProps}

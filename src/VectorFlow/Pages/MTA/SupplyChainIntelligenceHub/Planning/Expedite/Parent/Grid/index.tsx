@@ -18,7 +18,7 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCa
 
     const [activeRow,setActiveRow] = useState<any>();
     const [currentRowData,setCurrentRowData] = useState<any>();
-    const [isSubGridOpen,toggleSubGrid] = useState<any>(false);
+    const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
 
     const {mutateAsync:submitRemark} = useSubmitOpenExpediteRequest()
     const submitOpenExpediteRemark = async(remark:string)=>{
@@ -228,7 +228,7 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCa
                 customGridRowData={activeRow} 
                 customGridColDef={customGridColDef} 
                 showStockGrid 
-                stockGridData={[{...currentRowData,request:'d'}]} 
+                stockGridData={currentRowData?[{...currentRowData}]:[]} 
                 isSubGridOpen={isSubGridOpen} 
                 onRequestExpediting={()=>toggleExpeditingModal(true)}
                 paginationProps={paginationProps}

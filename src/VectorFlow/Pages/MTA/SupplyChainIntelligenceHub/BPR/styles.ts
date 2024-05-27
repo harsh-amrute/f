@@ -24,26 +24,48 @@ export const BPRTaskBar  = styled.div`
 export const BPRViewTableWrapper = styled.div`
     width:100%;
     display:flex;
+    flex-direction:column;
     margin-top:20px;
 `
 
-export const BPRViewTablePrefix = styled.img`
-    width: 52px;
-    height: 150px;
-    transform:translateX(11px);
+export const BPRViewTablePrefixWrapper = styled.div`
+    // width:100%;
+    display:flex;
+    zoom:0.8;
+`
+
+export const BPRViewTablePrefix = styled.div`
+   min-width:270px;
+//    margin-left:7px;
+`
+
+export const BPRViewTablePrefixText = styled.div`
+    // font: normal normal normal 16px/21px Roboto Medium;
+    font-size:16px;
+    font-weight:400;
+    font-family:Roboto;
+    color: #FFFFFF;
+`
+
+export const BPRViewTablePrefixIcon = styled.img`
+    // height:33px;
+    // width:33px;
+    margin-left:10px;
 `
 
 export const BPRViewTableGrid = styled.div`
     display:flex;
     flex-direction:column;
     width:100%;
+    min-height:100px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #9B9B9B29;
     border-radius:8px;
     overflow-y:scroll;
-    scrollbar-gutter: stable both-edges;
+    // scrollbar-gutter: stable both-edges;
     &::-webkit-scrollbar{
-        width: 7px;       
+        width: 4px;      
+        height:4px; 
     }
     
     &::-webkit-scrollbar-track{
@@ -68,16 +90,18 @@ export const BPRViewTableHeaderContainer = styled.div`
     top:0;
     background-color: white;
     z-index:100;
-    border-bottom: 1px solid #919191B3;
-   padding-bottom:5px;
-    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+   
 `
 
 export const BPRViewTableHeader = styled.div`
     position:relative;
     width:100%;
+   overflow:hidden;
+    min-width:120px;
     height:45px;
+    
     padding:10px;
+    padding-top:15px;
     font-style:normal;
     font-variant:normal;
     font-weight:500;
@@ -86,6 +110,8 @@ export const BPRViewTableHeader = styled.div`
     font-family:Roboto;
     letter-spacing: 0px;
     color: #000000;
+    border-bottom: 1px solid #919191B3;
+    box-shadow: 0px 6px 12px #9B9B9B29;
     text-align:center;
     &::after{
         content:'';
@@ -99,6 +125,8 @@ export const BPRViewTableHeader = styled.div`
     &:last-child::after {
         display: none;
     }
+    white-space:nowrap;
+    text-overflow:ellipsis;
 `
 
 export const BPRViewTableRowContainer = styled.div`
@@ -121,12 +149,14 @@ export const BPRViewTableRow = styled.div`
 
 export const BPRViewTableRowCell = styled.span`
     width:100%;
+   overflow:hidden;
+    min-width:120px;
     height:50px;
     padding:6px;
     text-align:center;
     font-style:normal;
     font-variant:normal;
-    font-weight:medium;
+    font-weight:500;
     font-size:14px;
     line-height:24px;
     font-family:Roboto;
@@ -369,6 +399,8 @@ export const BPRViewTableRequestCellRendererWrapper = styled.div`
     align-items:center;
     justify-content:center;
     height:30px;
+    min-width:120px;
+    // z-index:1;
 `
 
 export const BPRViewTableRequestCellRendererImg = styled.img`
@@ -398,7 +430,9 @@ export const RequestExpeditingModalInput = styled.textarea`
     min-height:150px;
     max-width:600px;
     min-width:600px;
-    font: normal normal 300 18px/26px Roboto;
+    font-weight:300;
+    font-size:18px;
+    font-family:Roboto;
     letter-spacing: 0px;
     color: #7E7E7E;
     background: #FFFFFF 0% 0% no-repeat padding-box;
@@ -417,4 +451,97 @@ export const RequestExpeditingModalButtonGroup = styled.div`
     margin-top:10px;
     padding:10px;
     border-top:2px dashed #A0A0A0;
+`
+
+export const BPRViewTableNoDataContainer = styled.div`
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+`
+
+export const BPRViewTableNoDataHeader = styled.p`
+    font-weight:500;
+    font-size:16px;
+    font-family:Roboto;
+`
+
+export const BPRViewTableNoDataText = styled.p`
+    font-weight:300;
+    font-size:16px;
+    font-family:Roboto;
+`
+
+export const AgeingCell = styled.div`
+    height:100%;
+    width:100%;
+    display:flex;
+    justify-content:center;
+`
+
+export const AgeingText = styled.div`
+    font-weight:500;
+    font-size:14px;
+    font-family:Roboto;
+`
+
+export const AgeingIcon = styled.img`
+    margin-left:10px;
+    height:15px;
+    width:15px;
+    margin-top:4px;
+`
+
+export const AgeingToolTipWrapper = styled.div`
+    display:flex;
+    flex-direction:column;
+    width:120px;
+`
+
+export const AgeingToolTipSection = styled.div`
+    display:flex;
+    width:100%;
+    justify-content:space-between;
+`
+
+export const AgeingToolTipText = styled.div`
+    font-weight:500;
+    font-size:8px;
+    font-family:Roboto;
+    color: #FFFFFF;
+`
+
+export const WhereAboutsCell = styled.div`
+    display:flex;
+    flex-direction:column;
+    padding:0px 10px;
+`
+
+export const WhereAboutsCellSection = styled.div`
+    display:flex;
+    
+`
+
+export const WhereAboutsCellSectionHeader = styled.div`
+    font-weight:300;
+    font-size:12px;
+    font-family:Roboto;
+`
+export const WhereAboutsCellSectionValue = styled.div`
+    font-weight:500;
+    font-size:12px;
+    font-family:Roboto;
+    margin:0px 5px;
+`
+
+export const WhereAboutsMoreInfo = styled.div`
+    font-weight:400;
+    font-size:14px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #BC3D81;
+    margin-left:5px;
+    text-decoration: underline;
+    cursor:default;
 `

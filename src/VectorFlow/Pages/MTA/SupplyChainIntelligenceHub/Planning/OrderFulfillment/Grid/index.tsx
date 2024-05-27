@@ -11,7 +11,7 @@ import { OrderCoverageCellRenderer } from '../../../../../../../components/Vecto
 const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, currentCategory, currentTab}:any) => {
 
     const [activeRow, setActiveRow] = useState<any>();
-    const [isSubGridOpen, toggleSubGrid] = useState<any>(false);
+    const [isSubGridOpen, toggleSubGrid] = useState<any>(true);
 
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer: BPRGraphCellRenderer,
@@ -181,6 +181,7 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
             isSubGridOpen={isSubGridOpen}
             paginationProps={paginationProps}
             tablePrefixSrc={'/assets/img/VectorFLOW/BPR/order-fullfilment-table-prefix.svg'}
+            tableHeader="Order Details"
         />
     )
 }

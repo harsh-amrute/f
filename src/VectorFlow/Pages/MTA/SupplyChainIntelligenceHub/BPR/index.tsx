@@ -164,6 +164,7 @@ const BPR = ()=>{
               <Allotment.Pane maxSize={300}>
               {isSubGridOpen && (
                 <BPRViewTable
+                tableHeader="In Transit/WIP"
                     tablePrefixSrc="/assets/img/VectorFLOW/BPR/in-transit.svg"
                     rowData={activeRow}
                     colDefs={[
@@ -172,41 +173,46 @@ const BPR = ()=>{
                             colId:'lc',
                             field:'lc'
                         },
-                        {
-                            headerName:"Creation Date",
-                            colId:'cd',
-                            field:'cd'
-                        },
+                        // {
+                        //     headerName:"Creation Date",
+                        //     colId:'cd',
+                        //     field:'cd'
+                        // },
                         {
                             headerName:"Ageing",
                             colId:'ag',
                             field:'ag'
                         },
-                        {
-                            headerName:"ETA",
-                            colId:'eta',
-                            field:'eta'
-                        },
-                        {
-                            headerName:"Current Location",
-                            colId:'cl',
-                            field:'cl'
-                        },
+                        // {
+                        //     headerName:"ETA",
+                        //     colId:'eta',
+                        //     field:'eta'
+                        // },
+                        // {
+                        //     headerName:"Current Location",
+                        //     colId:'cl',
+                        //     field:'cl'
+                        // },
                         {
                             headerName:"Quantity",
                             colId:'qty',
                             field:'qty'
                         },
                         {
-                            headerName:"Execution Eco Color",
-                            colId:'exeecocolor',
-                            field:'exeecocolor'
-                        },
-                        {
-                            headerName:"Remarks",
-                            colId:'remarks',
-                            field:'remarks'
+                            headerName:"Whereabouts",
+                            colId:'whereabouts',
+                            field:'whereabouts'
                         }
+                        // {
+                        //     headerName:"Execution Eco Color",
+                        //     colId:'exeecocolor',
+                        //     field:'exeecocolor'
+                        // },
+                        // {
+                        //     headerName:"Remarks",
+                        //     colId:'remarks',
+                        //     field:'remarks'
+                        // }
                     ]
                 }
 

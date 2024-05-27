@@ -10,7 +10,7 @@ import { AgeingCellRenderer } from '../../../../../../../../../components/Vector
 const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
     const [activeRow,setActiveRow] = useState<any>();
-    const [isSubGridOpen,toggleSubGrid] = useState<any>(false);
+    const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
     
     const customCellRenderers = useMemo(() => ({
         tagsCellRenderer:BPRTagsCellRenderer,
