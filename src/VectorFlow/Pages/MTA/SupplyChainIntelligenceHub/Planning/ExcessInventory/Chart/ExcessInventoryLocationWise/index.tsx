@@ -181,7 +181,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
             ...GraphSeriesOverrides,
               common: {
                   legend:{
-                    position:'top'
+                    position:'bottom'
                   },
                   axes:{
                     category:{
@@ -221,7 +221,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
             ...GraphSeriesOverrides,
               common: {
                   legend:{
-                    position:'top'
+                    position:'bottom'
                   },
                   axes:{
                     category:{

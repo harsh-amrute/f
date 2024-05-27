@@ -18,13 +18,13 @@ const dummyProps = {
           colId:'color'
         },
         {
-          headerName:'Tech.'
+          headerName:'On-Hand.'
         },
         {
           headerName:''
         },
         {
-          headerName:'Eco.'
+          headerName:'Pipeline.'
         },
         {
           headerName:''

@@ -217,10 +217,10 @@ const NavbarItem = ({
                 colId:'color'
               },
               {
-                headerName:'Tech.'
+                headerName:'On-Hand.'
               },
               {
-                headerName:'Eco.'
+                headerName:'Pipeline.'
               },
             ]}
           />

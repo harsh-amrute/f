@@ -378,7 +378,7 @@ const colDefs3: ColDef[] = [
         },
       common: {
         legend: {
-          position: "top",
+          position: "bottom",
         },
         axes: {
           category: {
@@ -413,7 +413,7 @@ const colDefs3: ColDef[] = [
         ...GraphSeriesOverrides,
       common: {
         legend: {
-          position: "top",
+          position: "bottom",
         },
         axes: {
           category: {

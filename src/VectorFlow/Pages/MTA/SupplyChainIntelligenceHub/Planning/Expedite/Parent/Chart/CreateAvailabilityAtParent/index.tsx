@@ -190,7 +190,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             },
               common: {
                   legend:{
-                    position:'top'
+                    position:'bottom'
                   },
                   axes:{
                     category:{

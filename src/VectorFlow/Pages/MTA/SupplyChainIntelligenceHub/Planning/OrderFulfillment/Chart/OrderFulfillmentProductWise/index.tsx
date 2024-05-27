@@ -201,7 +201,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
             ...GraphSeriesOverrides,
               common: {
                   legend:{
-                    position:'top'
+                    position:'bottom'
                   },
                   axes:{
                     category:{
@@ -209,6 +209,8 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                             enabled:true,
                             text:'Product Name',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
 
                         },
                         label:{
@@ -224,7 +226,9 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                         title:{
                             enabled:true,
                             text:"Pending Quantity",
-                            position:"left"
+                            position:"left",
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                       }
                   },
@@ -238,7 +242,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                 ...GraphSeriesOverrides,
               common: {
                   legend:{
-                    position:'top'
+                    position:'bottom'
                   },
                   axes:{
                     category:{
@@ -246,6 +250,8 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                             enabled:true,
                             text:'Product Name',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
 
                         },
                         label:{
@@ -261,7 +267,9 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                         title:{
                             enabled:true,
                             text:"No. Of Locations",
-                            position:"left"
+                            position:"left",
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                       }
                   },

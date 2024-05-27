@@ -12,10 +12,11 @@ interface VFRangeSliderProps {
   showTriangle:boolean
   handleChange:(number:number)=>void
   labelValueFormatter?:(number:number)=>string
+  style?:any
 }
 
 
-const VFRangeSlider: React.FC<VFRangeSliderProps> = ({ milestones,min,max,strictMode,width,defaultValue,showTriangle,handleChange,labelValueFormatter }) => {
+const VFRangeSlider: React.FC<VFRangeSliderProps> = ({ milestones,min,max,strictMode,width,defaultValue,showTriangle,handleChange,labelValueFormatter, style }) => {
   const [value, setValue] = useState<number>(defaultValue);
   const [currMileStoneIndex,setCurrMileStoneIndex] = useState<number>(0)
 
@@ -54,7 +55,8 @@ const VFRangeSlider: React.FC<VFRangeSliderProps> = ({ milestones,min,max,strict
 
 
   return (
-    <RangeSliderContainer style={{width:width}}>
+    <RangeSliderContainer style={{width, ...style}}>
+
         <RangeSliderInput
             type="range"
             data-testid="range-slider"

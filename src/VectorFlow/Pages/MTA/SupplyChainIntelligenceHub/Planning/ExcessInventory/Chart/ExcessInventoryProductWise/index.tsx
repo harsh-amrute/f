@@ -180,7 +180,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
             ...GraphSeriesOverrides,
               common: {
                   legend:{
-                    position:'top'
+                    position:'bottom'
                   },
                   axes:{
                     category:{
@@ -225,7 +225,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
             ...GraphSeriesOverrides,
               common: {
                   legend:{
-                    position:'top'
+                    position:'bottom'
                   },
                   axes:{
                     category:{

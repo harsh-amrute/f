@@ -5,7 +5,6 @@ import { useUserData } from "../../../../../../context";
 import { useState,useEffect } from "react";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
-import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { AgChartOptions } from "ag-charts-community";
 
 
@@ -41,7 +40,8 @@ const AvailabilityAgeingTrend=()=>{
       const AvailabilityAgeingTrendOptions:AgChartOptions = {
         title: {
           text: "Trend of #SKU-Loations with Continuous Black/Red/White Status >= Selected Minimum Ageing",
-          fontWeight: "bold",
+          fontWeight: "500",
+          fontSize:14
         },
         data: AvailabilityAgeingTrendData,
         series: [
@@ -89,22 +89,26 @@ const AvailabilityAgeingTrend=()=>{
             type: 'category',
             position: 'bottom',
             title: {
-              text: 'Date'
+              text: 'Date',
+              fontSize:10,
+              fontFamily:'Roboto'
             }
           },
           {
             type: 'number',
             position: 'left',
             title: {
-              text: 'No of SKU-Locations' 
+              text: 'No of SKU-Locations' ,
+              fontSize:10,
+              fontFamily:'Roboto'
             }
           }
         ]
       };
     
-const graph1 = [
-  'This graph highlights the trends of #SKU-Location with continous black,red or white status, each greater than or equal to the selected mimimum agening'
-]
+// const graph1 = [
+//   'This graph highlights the trends of #SKU-Location with continous black,red or white status, each greater than or equal to the selected mimimum agening'
+// ]
 
  const numbers = Array.from(Array(90), (_, index) => index + 1);
  if(isLoading){
@@ -158,7 +162,7 @@ const graph1 = [
                     </div>
                     <div style={{marginLeft:'10px',marginRight:'10px',height:'400px'}}><AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
           <div style={{marginLeft:'10px',marginRight:'10px',marginTop:'5px'}}>
-            <VFInfoTip text={graph1}/>
+            {/* <VFInfoTip text={graph1}/> */}
           </div>
        </div>
       

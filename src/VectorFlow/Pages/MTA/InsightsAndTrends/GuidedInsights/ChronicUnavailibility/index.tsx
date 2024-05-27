@@ -375,6 +375,8 @@ const ChronicUnavailabilityCharts = () => {
                             enabled:true,
                             text:'Date',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                     },
                     number:{
@@ -382,6 +384,8 @@ const ChronicUnavailabilityCharts = () => {
                             enabled:true,
                             text:'count of SKUS',
                             position:'left',
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         },
                         label: {
                             format: "#{.0f} %",
@@ -416,6 +420,8 @@ const ChronicUnavailabilityCharts = () => {
                             enabled:true,
                             text:'Date',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                     },
                     number:{
@@ -423,6 +429,8 @@ const ChronicUnavailabilityCharts = () => {
                             enabled:true,
                             text:'Count of Locations',
                             position:'left',
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         },
                         label: {
                             format: "#{.0f} %",
