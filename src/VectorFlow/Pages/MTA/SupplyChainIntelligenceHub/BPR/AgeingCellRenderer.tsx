@@ -32,8 +32,8 @@ const AgeingCellRenderer = (props:AgeingCellRendererProps)=>{
     const onMouseIn = (e:React.MouseEvent<HTMLElement>)=>{
         const {top,left} = e.currentTarget.getBoundingClientRect()
         setoolTipPosition({
-            top:(top * screenSize) -60,
-            left:(left* screenSize ) - 60
+            top:(top * screenSize) -80,
+            left:(left* screenSize ) - 75
         })
         setIsOpen(true)
     }

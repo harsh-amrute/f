@@ -89,11 +89,11 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                                         colId:'eta',
                                         field:'eta'
                                     },
-                                    {
-                                        headerName:"Eco Color",
-                                        colId:'ec',
-                                        field:'ec'
-                                    },
+                                    // {
+                                    //     headerName:"Eco Color",
+                                    //     colId:'ec',
+                                    //     field:'ec'
+                                    // },
                                     {
                                         headerName:"Remarks",
                                         colId:'remark',
