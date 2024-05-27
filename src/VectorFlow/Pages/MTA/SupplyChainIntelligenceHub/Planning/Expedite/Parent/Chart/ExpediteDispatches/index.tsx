@@ -48,13 +48,13 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
         colId: "SKUCounts",
       },
       {
-        field:'black',
-        colId:'black',
+        field:'BlackCount',
+        colId:'BlackCount',
         headerName:'Black'
       },
       {
-          field:'red',
-          colId:'red',
+          field:'RedCount',
+          colId:'RedCount',
           headerName:'Red'
       },
     ];
@@ -146,7 +146,6 @@ const sortData = (data:any,key:string) => {
         }
       })
     })
-    console.log(dynamicColdefs)
     return dynamicColdefs;
   };
 
@@ -218,8 +217,6 @@ const colDefs3: ColDef[] = [
         rowData.push(rowObj);
       }
     );
-    console.log(rowData)
-
     return rowData;
   };
 
@@ -280,7 +277,7 @@ const colDefs3: ColDef[] = [
         refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
-            columns: ["WHDescription", 'black','red'],
+            columns: ["WHDescription", 'BlackCount','RedCount'],
             rowStartIndex: 0,
             rowEndIndex: 9,
           },
@@ -292,7 +289,7 @@ const colDefs3: ColDef[] = [
         refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
-            columns: ["WHDescription", 'black','red'],
+            columns: ["WHDescription", 'BlackCount','RedCount'],
             rowStartIndex: 0,
             rowEndIndex: 9,
           },
@@ -463,18 +460,6 @@ const colDefs3: ColDef[] = [
     "This graph shows the potential improvement in Pipeline availability assuming the entire rationed qty would become goods in transit.",
   ];
 
-  const splitDataIntoRandomPercentage = (data:any,key:string) => {
-    return data.map((row:any)=>{
-        const redPercentage = Math.random() * 100;
-        const blackPercentage = 100 - redPercentage;
-
-        const red = (parseFloat(row[key]) * redPercentage) / 100;
-        const black = (parseFloat(row[key]) * blackPercentage) / 100;
-        return {...row,red:Math.round(red),black:Math.round(black)};
-        
-    })
-  }
-
   return (
     <>
       <SCDynamicContainer>
@@ -509,7 +494,7 @@ const colDefs3: ColDef[] = [
                         <VFTable
                           ref={refGraph1}
                           columnDefs={colDefs1}
-                          rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts'),'SKUCounts')}
+                          rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
                           enableCharts={true}
                           onGridReady={() => generateChart(1, true)}
                           enableRangeSelection={true} 
@@ -547,7 +532,7 @@ const colDefs3: ColDef[] = [
                     <VFTable
                       ref={refGraph1}
                       columnDefs={colDefs1}
-                      rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts'),'SKUCounts')}
+                      rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
                       enableCharts={true}
                       enableRangeSelection={true} 
                       rowSelection="multiple"
