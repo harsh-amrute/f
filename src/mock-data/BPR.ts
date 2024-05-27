@@ -59,7 +59,7 @@ export const GetBPRUIConfigurationMockResponse = {
         "ReportName": "AdminBPR",
         "Col_Code": "TechPen",
         "Col_Position": 7,
-        "Header": "Tech. Penetration",
+        "Header": "On-Hand Penetration",
         "Visible": true,
         "CellAlignment": "right     ",
         "Value": "*Error*"
@@ -68,7 +68,7 @@ export const GetBPRUIConfigurationMockResponse = {
         "ReportName": "AdminBPR",
         "Col_Code": "TechColor",
         "Col_Position": 8,
-        "Header": "Tech. Color",
+        "Header": "On-Hand. Color",
         "Visible": true,
         "CellAlignment": "left      ",
         "Value": "*Error*"

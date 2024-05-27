@@ -484,7 +484,7 @@ const DBMNormSuggestions = () => {
       },
       common: {
         legend: {
-          position: "top",
+          position: "bottom",
         },
         axes: {
           category: {
@@ -492,6 +492,8 @@ const DBMNormSuggestions = () => {
               enabled: true,
               text: "Location Name",
               position: "bottom",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
             label:{
               fontSize:8,
@@ -503,6 +505,8 @@ const DBMNormSuggestions = () => {
               enabled: true,
               text: "NORM SUggestions",
               position: "bottom",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
           },
         },
@@ -517,7 +521,7 @@ const DBMNormSuggestions = () => {
       },
       common: {
         legend: {
-          position: "top",
+          position: "bottom",
         },
         axes: {
           category: {
@@ -525,6 +529,8 @@ const DBMNormSuggestions = () => {
               enabled: true,
               text: "SKU Code",
               position: "bottom",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
             label:{
               fontSize:8,
@@ -536,6 +542,8 @@ const DBMNormSuggestions = () => {
               enabled: true,
               text: "Count of Locations",
               position: "left",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
           },
         },
@@ -550,7 +558,7 @@ const DBMNormSuggestions = () => {
       },
       common: {
         legend: {
-          position: "top",
+          position: "bottom",
         },
         axes: {
           category: {
@@ -558,6 +566,8 @@ const DBMNormSuggestions = () => {
               enabled: true,
               text: "SKU Code",
               position: "bottom",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
             label:{
               fontSize:8,
@@ -569,6 +579,8 @@ const DBMNormSuggestions = () => {
               enabled: true,
               text: "No of suggestions",
               position: "left",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
           },
         },
@@ -583,7 +595,7 @@ const DBMNormSuggestions = () => {
       },
       common: {
         legend: {
-          position: "top",
+          position: "bottom",
         },
         axes: {
           category: {
@@ -591,6 +603,8 @@ const DBMNormSuggestions = () => {
               enabled: true,
               text: "Ageing",
               position: "bottom",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
           },
           series: {
@@ -598,6 +612,8 @@ const DBMNormSuggestions = () => {
               enabled: true,
               text: "No of suggestions",
               position: "left",
+              fontSize:10,
+              fontFamily:'Roboto'
             },
           },
         },
@@ -663,7 +679,7 @@ const DBMNormSuggestions = () => {
                       </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
-                    <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max No. of DBM Suggestions" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                    <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max No. of DBM Suggestions" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div style={{width:'1000px'}}>
                           <VFTable
                             ref={refGraph1}
@@ -738,7 +754,7 @@ const DBMNormSuggestions = () => {
                 <Allotment.Pane>
                   <SCChartContainer height={220}>
                     <SCChartHeaderContainer>
-                      <div style={{display:'flex',width:'100%',justifyContent:'center',zoom:'0.8'}}>
+                      <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
                           Distribution Of Current Active DBM Suggestions
                         </SCChartHeader>
@@ -749,7 +765,7 @@ const DBMNormSuggestions = () => {
                       </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
-                    <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Distribution Of Current Active DBM Suggestions" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                    <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Distribution Of Current Active DBM Suggestions" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div style={{width:'1000px'}}>
                           <VFTable
                             ref={refGraph2}
@@ -847,7 +863,7 @@ const DBMNormSuggestions = () => {
                       </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
-                    <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Top 10 Products: Max No. of DBM Suggestions" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                    <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Top 10 Products: Max No. of DBM Suggestions" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div style={{width:'1000px'}}>
                           <VFTable
                             ref={refGraph3}
@@ -939,7 +955,7 @@ const DBMNormSuggestions = () => {
                       </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
-                    <VFModalCard openModal={hideChart4} closeModal={()=>toggleChart4(false)} headerIcon='' headerText="Ageing categorization of DBM suggestions" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+                    <VFModalCard openModal={hideChart4} closeModal={()=>toggleChart4(false)} headerIcon='' headerText="Ageing categorization of DBM suggestions" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                       <div style={{width:'1000px'}}>
                         <VFTable
                           ref={refGraph4}

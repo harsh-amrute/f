@@ -39,11 +39,13 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                 field:'delay',
                 colId:'delay',
                 headerName:'Delay'
+                
             },
             {
                 field:'superdelay',
                 colId:'superdelay',
-                headerName:'Super Delay'
+                headerName:'Super Delay',
+            
             }
         ]
         
@@ -156,7 +158,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
             ...GraphSeriesOverrides,
               common: {
                   legend:{
-                    position:'top'
+                    position:'bottom'
                   },
                   axes:{
                     category:{
@@ -182,7 +184,8 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
              
                   highlight:{
                     range:'node'
-                  },                  
+                  }, 
+                                  
               },
           };
       }, []);

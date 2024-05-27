@@ -31,7 +31,8 @@ const AvailabilityTrend = () => {
     
     title: {
       text: "Availabilty Trend",
-      fontWeight: "500"
+      fontWeight: "500",
+      fontSize:14
     },
     data: AvailabilityTrend,
     series: [
@@ -69,6 +70,8 @@ const AvailabilityTrend = () => {
           position: "bottom",
           title: {
               text: 'Date',
+              fontSize:10,
+              fontFamily:'Roboto'
           },
       } as const,
       {
@@ -79,6 +82,8 @@ const AvailabilityTrend = () => {
                 },
           title: {
               text: 'Availability %',
+              fontSize:10,
+              fontFamily:'Roboto'
           },
       } as const
   ],
