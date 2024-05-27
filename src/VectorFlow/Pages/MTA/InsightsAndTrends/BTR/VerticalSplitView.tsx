@@ -84,7 +84,6 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                         gridOptions={{
                             ...techTable.gridOptions
                         }}
-                        debounceVerticalScrollbar
                         columnDefs={techTable.columnDefs}
                         rowData={techTable.rowData}
                         tooltipMouseTrack={true}
@@ -120,7 +119,6 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                         gridOptions={{
                             ...ecoTable.gridOptions
                         }}
-                        debounceVerticalScrollbar
                         columnDefs={ecoTable.columnDefs}
                         rowData={ecoTable.rowData}
                         tooltipMouseTrack={true}

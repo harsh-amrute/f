@@ -104,13 +104,13 @@ export const BPRViewTableHeader = styled.div`
     padding-top:15px;
     font-style:normal;
     font-variant:normal;
-    font-weight:500;
+    font-weight:400;
     font-size:13px;
     line-height:13px;
     font-family:Roboto;
     letter-spacing: 0px;
     color: #000000;
-    border-bottom: 1px solid #919191B3;
+    // border-bottom: 1px solid #919191B3;
     box-shadow: 0px 6px 12px #9B9B9B29;
     text-align:center;
     &::after{
@@ -496,7 +496,7 @@ export const AgeingIcon = styled.img`
 export const AgeingToolTipWrapper = styled.div`
     display:flex;
     flex-direction:column;
-    width:120px;
+    width:150px;
 `
 
 export const AgeingToolTipSection = styled.div`
@@ -507,7 +507,7 @@ export const AgeingToolTipSection = styled.div`
 
 export const AgeingToolTipText = styled.div`
     font-weight:500;
-    font-size:8px;
+    font-size:12px;
     font-family:Roboto;
     color: #FFFFFF;
 `
