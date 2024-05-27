@@ -117,30 +117,36 @@ const sortData = (data:any,key:string) => {
     return [...data];
 }
 
-  const getMaxParentLocationLength = (data: any) => {
-    let maxParentLocationLength = 0;
-    data?.forEach(
-      (row: { WHDescription: string; count: Array<{ pwc: string; count: string }> }) => {
-        maxParentLocationLength = Math.max(
-          maxParentLocationLength,
-          row["count"].length
-        );
-      }
-    );
-    return maxParentLocationLength;
-  };
+  // const getMaxParentLocationLength = (data: any) => {
+  //   let maxParentLocationLength = 0;
+  //   data?.forEach(
+  //     (row: { WHDescription: string; count: Array<{ pwc: string; count: string }> }) => {
+  //       maxParentLocationLength = Math.max(
+  //         maxParentLocationLength,
+  //         row["count"].length
+  //       );
+  //     }
+  //   );
+  //   return maxParentLocationLength;
+  // };
 
-  const getParentLocationColdefs = (data: any) => {
-    const maxParentLocationLength = getMaxParentLocationLength(data);
-    const dynamicColdefs: ColDef[] = [];
-    for (let i = 0; i < maxParentLocationLength; i++) {
-      dynamicColdefs.push({
-        field: `p${i + 1}`,
-        headerName: `Parent ${i + 1}`,
-        colId: `p${i + 1}`,
-      });
-    }
-    console.log(dynamicColdefs);
+  const getParentLocationColdefs = (data: any):any => {
+    const dynamicColdefs: ColDef[] = [];  
+    const columnHash:any = {};
+
+    data.forEach((row:any)=>{
+      row['count'].forEach((colObj:any)=>{
+        if(!columnHash[colObj['pwc']]){
+          columnHash[colObj['pwc']] = 1;
+          dynamicColdefs.push({
+            field: colObj['pwc'],
+            headerName: colObj['pwc'],
+            colId: colObj['pwc'],
+          });
+        }
+      })
+    })
+    console.log(dynamicColdefs)
     return dynamicColdefs;
   };
 
@@ -186,39 +192,36 @@ const colDefs3: ColDef[] = [
 
   
 
-  const generateRowObj = (maxParentLocationLength: number) => {
-    const rowObj: any = {
-      ln: "",
-    };
-    for (let i = 0; i < maxParentLocationLength; i++) {
-      rowObj[`p${i + 1}`] = "";
+const generateRowObj = (data:any) => {
+  const parentLocationColdefs = getParentLocationColdefs(data);
+  const rowObj: any = {
+    ln: "",
+  };
+  parentLocationColdefs.forEach((colDef:any)=>{
+    rowObj[colDef['field']] = 0
+  })
+  
+  return rowObj;
+};
+
+const mapDataToRowData = (data: any) => {
+    
+  const rowData: any = [];
+  data.forEach(
+    (row:any) => {
+      const rowObj = {...row,...generateRowObj(data)}; 
+      row["count"].forEach(
+        (subRow: { pwc: string; count: string }) => {
+          rowObj[subRow.pwc] = parseInt(subRow.count, 10);
+        }
+      );
+      rowData.push(rowObj);
     }
-    return rowObj;
-  };
+  );
+  console.log(rowData)
 
-  const mapDataToRowData = (data: any) => {
-    let rowData: any = [];
-    data.forEach(
-      (row:any) => {
-        const rowObj = {...row,...generateRowObj(getMaxParentLocationLength(data))};  
-        row["count"].forEach(
-          (subRow: { pwc: string; count: string }, index: number) => {
-            rowObj[`p${index + 1}`] = parseInt(subRow.count, 10);
-          }
-        );
-        rowData.push(rowObj);
-      }
-    );
-    rowData = rowData.map((row: any) => {
-      const newRow: any = { ...row };
-      Object.keys(newRow).forEach((key: string) => {
-        if (newRow[key] === "") newRow[key] = 0;
-      });
-      return newRow;
-    });
-
-    return rowData;
-  };
+  return rowData;
+};
 
   const options: AgChartOptions = {
     // title: {
@@ -295,22 +298,15 @@ const colDefs3: ColDef[] = [
       refGraph2.current?.api.createRangeChart({
         chartType: "stackedColumn",
         cellRange: {
-          columns: [
-            "WHDescription",
-            ...Array.from(
-              {
-                length: getMaxParentLocationLength(
-                  data[
-                    "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
-                  ]['data']
-                ),
-              },
-              (el: undefined, index: number) => `p${index + 1}`
-            ),
-          ],
-          rowStartIndex: 0,
-          rowEndIndex: 9,
-        },
+            columns: [
+              "WHDescription",
+              ...getParentLocationColdefs(data[
+                "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
+              ]['data']).map((coldef:ColDef)=>coldef.colId)
+            ],
+            rowStartIndex: 0,
+            rowEndIndex: 9,
+          },
       });
     } else {
       const container2 = document.getElementById(
@@ -321,16 +317,9 @@ const colDefs3: ColDef[] = [
         cellRange: {
           columns: [
             "WHDescription",
-            ...Array.from(
-              {
-                length: getMaxParentLocationLength(
-                  data[
-                    "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
-                  ]['data']
-                ),
-              },
-              (el: undefined, index: number) => `p${index + 1}`
-            ),
+            ...getParentLocationColdefs(data[
+              "maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig"
+            ]['data']).map((coldef:ColDef)=>coldef.colId)
           ],
           rowStartIndex: 0,
           rowEndIndex: 9,
