@@ -48,7 +48,6 @@ const Planning = () => {
         onApplyFilter,
         currentFilter,
         setCurrentFilter,
-        onDelete,
         onDeleteFilter,
         isDataLoading
     } = usePlanning();
