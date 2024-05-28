@@ -71,6 +71,7 @@ const ChronicUnavailabilityCharts = () => {
         field:'blackCount',
         colId:'blackCount',
         headerName:'Black count Of Skus'
+        
         },
         {
         field:'redCount',
@@ -412,7 +413,7 @@ const ChronicUnavailabilityCharts = () => {
              },
              common: {
                  legend:{
-                    position:'top'
+                    position:'bottom'
                  },
                  axes:{
                     category:{
@@ -457,7 +458,7 @@ const ChronicUnavailabilityCharts = () => {
              },
               common: {
                   legend:{
-                    position:'top'
+                    position:'bottom'
                   },
                   axes:{
                     category:{
