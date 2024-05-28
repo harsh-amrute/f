@@ -80,6 +80,7 @@ const InTransitWhereAbouts = ()=>{
 
       }}
         >
+            <div style={{zoom:'0.8'}}>
                 <ActionToolBar 
                 view={'grid'} 
                 setCurrentTab={''} 
@@ -96,6 +97,7 @@ const InTransitWhereAbouts = ()=>{
                 onDelete={onDelete}
                 onApplyFilter={onApplyFilter}
               />
+              </div>
           
         {
             isLoading

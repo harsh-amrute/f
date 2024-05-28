@@ -53,6 +53,7 @@ const BuyerOrderReport = ()=>{
 
     }}
      >
+      <div style={{zoom:'1'}}>
         <ActionToolBar 
             view={'grid'} 
             setCurrentTab={''} 
@@ -69,6 +70,7 @@ const BuyerOrderReport = ()=>{
             setMultiFilter={setCurrFilter}
             onDelete={onDelete}
         />
+       </div> 
         <BORLayout>
             {/* <BORTaskBar style={{width:'74%'}}>
                 <VFButtonOutline
