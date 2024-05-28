@@ -3,7 +3,6 @@ import { AgeingCell, AgeingIcon, AgeingText, AgeingToolTipSection, AgeingToolTip
 import Portal from '../../../../../components/VectorFLOW/layouts/Portal'
 
 import React, { CSSProperties, useState } from "react"
-import useViewPort from "../../../../../hooks/useViewPort"
 
 
 interface AgeingCellRendererProps{
@@ -19,9 +18,7 @@ const AgeingCellRenderer = (props:AgeingCellRendererProps)=>{
 
     
 
-    const {getScreenZoomValue} = useViewPort()
 
-    const screenSize = getScreenZoomValue()
 
     const [isOpen,setIsOpen] = useState(false)
 
@@ -32,8 +29,8 @@ const AgeingCellRenderer = (props:AgeingCellRendererProps)=>{
     const onMouseIn = (e:React.MouseEvent<HTMLElement>)=>{
         const {top,left} = e.currentTarget.getBoundingClientRect()
         setoolTipPosition({
-            top:(top * screenSize) -80,
-            left:(left* screenSize ) - 75
+            top:(top * 0.75) -80,
+            left:(left* 0.75 ) - 100
         })
         setIsOpen(true)
     }
@@ -50,7 +47,7 @@ const AgeingCellRenderer = (props:AgeingCellRendererProps)=>{
             </AgeingCell>
             {isOpen && (
                 <Portal wrapperId="viewtable">
-                    <BPRViewTableToolTip onMouseEnter={()=>setIsOpen(true)} onMouseLeave={()=>setIsOpen(false)} style={{top:toolTipPosition.top,left:toolTipPosition.left}}>
+                    <BPRViewTableToolTip onMouseEnter={()=>setIsOpen(true)} onMouseLeave={()=>setIsOpen(false)} style={{top:toolTipPosition.top,left:toolTipPosition.left,maxWidth:250}}>
                         <AgeingToolTipWrapper>
                             <AgeingToolTipSection>
                                 <AgeingToolTipText>Creation Date -</AgeingToolTipText>

@@ -130,5 +130,7 @@ export const routerToAnalyticsStringMap:RouterToAnalyticsStringMap = {
     "/supply-chain-intelligence-hub/bor": "bor",
     "/dbm/dbm-norm-suggestions": "dbm",
     "/insights-and-trends/research-insights": "ri",
+    "/insights-and-trends/buffer-trends":'btr',
+    "/insights-and-trends/buffer-trend-report":'btr'
   };
   

@@ -124,18 +124,18 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
 
     return(
         <GridViewLayout>
-            <div style={{height:'95vh'}}>
-                <Allotment defaultSizes={[200,100]} vertical>
+            <div style={{height:'95vh',zoom:0.75}}>
+                <Allotment defaultSizes={[350,150]} vertical>
                 {
                     (isSubGridOpen || showStockGrid ) && (
-                        <Allotment.Pane >
+                        <Allotment.Pane className="planning-grid-allotment">
                     
                         <VFTable
                             ref={ref}
                             {...agGridProps}
                             columnDefs={agGridColDefs}
                             rowData={agGridRowData}
-                            height={380}
+                            height={650}
                             // onGridReady={(params)=>{
                             //     if(columnState){
                             //         params.columnApi.applyColumnState({state:columnState})
@@ -170,7 +170,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                     ) 
                 }
                 {isSubGridOpen && (
-                    <Allotment.Pane  >
+                    <Allotment.Pane minSize={180} maxSize={260}>
                         {renderSubGrid()}
                     </Allotment.Pane>
                 )}

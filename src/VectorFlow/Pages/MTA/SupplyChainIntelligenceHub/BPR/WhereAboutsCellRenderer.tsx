@@ -19,12 +19,12 @@ const WhereAboutsCellRenderer = ({value}:{value:any})=>{
 
     const onMouseIn = (e:React.MouseEvent<HTMLElement>)=>{
 
-        const calTop = (160/40) * 16
+        const calTop = (value.remarks.length/40) * 16
         const {top,left} = e.currentTarget.getBoundingClientRect()
         console.log(left* screenSize)
         setoolTipPosition({
-            top:(top *screenSize) -calTop,
-            left:(left * screenSize) 
+            top:(top *0.75) -calTop,
+            left:(left * 0.75) 
         })
         setIsOpen(true)
     }
