@@ -6,6 +6,8 @@ import { useState,useEffect } from "react";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import { AgChartOptions } from "ag-charts-community";
+import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip';
+
 
 
 
@@ -38,11 +40,11 @@ const AvailabilityAgeingTrend=()=>{
       },[])
    
       const AvailabilityAgeingTrendOptions:AgChartOptions = {
-        title: {
-          text: "Trend of #SKU-Loations with Continuous Black/Red/White Status >= Selected Minimum Ageing",
-          fontWeight: "500",
-          fontSize:14
-        },
+        // title: {
+        //   text: "Trend of #SKU-Loations with Continuous Black/Red/White Status >= Selected Minimum Ageing",
+        //   fontWeight: "500",
+        //   fontSize:14
+        // },
         data: AvailabilityAgeingTrendData,
         series: [
           {
@@ -106,9 +108,9 @@ const AvailabilityAgeingTrend=()=>{
         ]
       };
     
-// const graph1 = [
-//   'This graph highlights the trends of #SKU-Location with continous black,red or white status, each greater than or equal to the selected mimimum agening'
-// ]
+const graph1 = [
+  'This graph highlights the trends of #SKU-Location with continous black,red or white status, each greater than or equal to the selected mimimum agening'
+]
 
  const numbers = Array.from(Array(90), (_, index) => index + 1);
  if(isLoading){
@@ -160,7 +162,15 @@ const AvailabilityAgeingTrend=()=>{
                    </div>
                     <VFButtonOutline themeUi={themeUi} onClick={()=>OnHorizonChange(horizon, minAgeing)} width={100} style={{height:'35px',fontSize:'13px', fontWeight:500}}>Submit</VFButtonOutline>
                     </div>
-                    <div style={{marginLeft:'10px',marginRight:'10px',height:'400px'}}><AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
+                    <div style={{marginLeft:'10px',marginRight:'10px',height:'340px'}}>
+                    <div className="Title" style={{height:'50px', backgroundColor:'white',display:'flex',justifyContent:'center', alignItems:'center'}}>
+                       <div style={{fontSize:'14px', fontWeight:500, textAlign:'center'}}>
+                          Trend of #SKU-Loations with Continuous Black/Red/White Status {">"}= Selected Minimum Ageing          </div>
+                        <div style={{marginLeft:10}}>
+                      <VFInfoToolTip infoList={graph1} />
+                        </div>
+                    </div>
+                      <AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
           <div style={{marginLeft:'10px',marginRight:'10px',marginTop:'5px'}}>
             {/* <VFInfoTip text={graph1}/> */}
           </div>
