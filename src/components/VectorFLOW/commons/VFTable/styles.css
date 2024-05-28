@@ -15,6 +15,10 @@
   
 }
 
+.ag-theme-alpine .ag-full-width-row:hover{
+    background-color: white !important;
+}
+
 .ag-row:hover{
     background-color: rgb(188, 61, 129,0.3) !important;
 }
@@ -48,6 +52,8 @@
 .ag-row{
     overflow: visible;
 }
+
+
 
 .ag-header-row:nth-child(2){
     background-color: #F7F7F7;

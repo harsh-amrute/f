@@ -257,9 +257,9 @@ const usePlanning = ()=>{
         }
     }
 
-    const fetchPlanningDataCount = async () => {
+    const fetchPlanningDataCount = async (filter?:any) => {
         setIsOverlayVisible(true);
-        const result = await getPlanningDataCount({filters:[]});
+        const result = await getPlanningDataCount({...filter} || {});
         setIsOverlayVisible(false);
         const data = result.data.data;
         const tempPlanningCount = {...initialPlanningCounts};
@@ -623,10 +623,19 @@ const usePlanning = ()=>{
         }
     }
 
-    const onApplyFilter = (filter:any)=>{
+    const onApplyFilter = async(filter:any)=>{
+        if(isSelectCategoryOpen){
+            await fetchPlanningDataCount(filter)
+            return 
+        }
         setCurrentFilter(filter)
         setCurrentPage(1)
         fetchAndUpdateGridData(currentPage,false,filter)
+    }
+
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+        const updatedFilter = onDelete(parentId,filterId,value)
+        await onApplyFilter(updatedFilter)
     }
 
 
@@ -755,6 +764,7 @@ const usePlanning = ()=>{
         setCurrentFilter,
         onDelete,
         onApplyFilter,
+        onDeleteFilter,
         isDataLoading
     }
 

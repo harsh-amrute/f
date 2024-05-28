@@ -40,3 +40,13 @@ opacity: 1;
 .planning-grid-allotment{
     padding-bottom: 40px;
 }
+
+.intransit_header{
+    background-color: white;
+    color: black;
+}
+
+.intransit_header:hover{
+    background-color: white  !important;
+    color: black  !important;
+}

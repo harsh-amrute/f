@@ -108,10 +108,6 @@ const InTransitWhereAbouts = ()=>{
                     rowData={[...rowData]}
                     {...agGridProps}
                     ref={ref}
-                    processCellForClipboard={(params)=>{
-                        console.log(params)
-                        return params.value
-                    }}
                     height={600}
                     
                 />
