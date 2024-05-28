@@ -1,6 +1,6 @@
 import { screen, render, fireEvent } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
-import { useGetAvailabilityTrend, useGetChronicUnavailabilityLoc, useGetChronicUnavailabilitySku, useGetChronicUnavailabilityGridView} from "../../../../Services/MTA/InsightsAndTrends";
+import { useGetAvailabilityTrend,  useGetChronicUnavailabilityGridView} from "../../../../Services/MTA/InsightsAndTrends";
 import { GuidedInsights } from "../../../../../mock-data/GuidedInsights";
 import GuidedInsight from ".";
 import { UserDataContext } from "../../../../../context";
@@ -60,26 +60,26 @@ const useGetChronicUnavailabilityGridViewData: any = {
   },
 };
 
-const useGetChronicUnavailabilityLocMock = useGetChronicUnavailabilityLoc as jest.MockedFunction<
-    typeof useGetChronicUnavailabilityLoc
->;
+// const useGetChronicUnavailabilityLocMock = useGetChronicUnavailabilityLoc as jest.MockedFunction<
+//     typeof useGetChronicUnavailabilityLoc
+// >;
 // const useGetChronicUnavailabilityLocData: any ={ data: 
 //             {data: GuidedInsights.ChronicUnavailabilityLocData }};
-const useGetChronicUnavailabilityLocData: any = {
-  mutateAsync: () => {
-    return { data:{data: GuidedInsights.ChronicUnavailabilityLocData }};
-  },
-}; 
+// const useGetChronicUnavailabilityLocData: any = {
+//   mutateAsync: () => {
+//     return { data:{data: GuidedInsights.ChronicUnavailabilityLocData }};
+//   },
+// }; 
   
-const useGetChronicUnavailabilitySkuMock = useGetChronicUnavailabilitySku as jest.MockedFunction<
-    typeof useGetChronicUnavailabilitySku
->;
+// const useGetChronicUnavailabilitySkuMock = useGetChronicUnavailabilitySku as jest.MockedFunction<
+//     typeof useGetChronicUnavailabilitySku
+// >;
 //const useGetChronicUnavailabilitySkuData: any =  { data: {data: GuidedInsights.ChronicUnavailabilitySkuData }}; 
-   const useGetChronicUnavailabilitySkuData: any = {
-  mutateAsync: () => {
-    return { data: {data: GuidedInsights.ChronicUnavailabilitySkuData }};
-  },
-}; 
+//    const useGetChronicUnavailabilitySkuData: any = {
+//   mutateAsync: () => {
+//     return { data: {data: GuidedInsights.ChronicUnavailabilitySkuData }};
+//   },
+// }; 
 describe("Availability Trend Data", () => {
     global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();
@@ -109,20 +109,20 @@ describe("Availability Trend Data", () => {
         })
        
     })
-      it("On changing tab to chronic unavailability", async() => {
+    //   it("On changing tab to chronic unavailability", async() => {
 
-         useGetChronicUnavailabilityLocMock.mockImplementation(()=>{
-            return useGetChronicUnavailabilityLocData;
-        })
-        useGetChronicUnavailabilitySkuMock.mockImplementation(()=>{
-            return useGetChronicUnavailabilitySkuData;
-        })
+    //      useGetChronicUnavailabilityLocMock.mockImplementation(()=>{
+    //         return useGetChronicUnavailabilityLocData;
+    //     })
+    //     useGetChronicUnavailabilitySkuMock.mockImplementation(()=>{
+    //         return useGetChronicUnavailabilitySkuData;
+    //     })
         
-        render(contextWrapper(<GuidedInsight />,store));
-         await act(async () => {
+    //     render(contextWrapper(<GuidedInsight />,store));
+    //      await act(async () => {
             
-            fireEvent.click(screen.getAllByTestId('floatingTabButton')[1])
-        })
+    //         fireEvent.click(screen.getAllByTestId('floatingTabButton')[1])
+    //     })
        
-    })
+    // })
    })

@@ -45,7 +45,8 @@ const ChronicUnavailabilityCharts = () => {
         data?.sort((row1:any,row2:any)=>{
             return (row2[key]) - (row1[key])
         })
-        return [data];
+
+        return [...data];
     }
 
     const coldefs1:ColDef[] = [
