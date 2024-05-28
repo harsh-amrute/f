@@ -129,8 +129,8 @@ const BPR = ()=>{
                 </VFButton>
             </BPRTaskBar> */}
             <div style={{height:'100vh',marginLeft:'45px'}}>
-            <Allotment vertical defaultSizes={[300,100]}>
-              <Allotment.Pane >
+            <Allotment vertical defaultSizes={[300,150]}>
+              <Allotment.Pane className="planning-grid-allotment">
               <VFTable
                 ref={ref}
                 {...agGridProps}
@@ -161,7 +161,7 @@ const BPR = ()=>{
                     handleChangePage={handleOnPageChange}
                 />
               </Allotment.Pane>
-              <Allotment.Pane maxSize={300}>
+              <Allotment.Pane maxSize={200} minSize={180}>
               {isSubGridOpen && (
                 <BPRViewTable
                 tableHeader="In Transit/WIP"

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import * as globalStyles from "../../../../../styles/global";
 
 export const BPRLayout = styled.div`
    margin-top:25px;
@@ -25,7 +26,7 @@ export const BPRViewTableWrapper = styled.div`
     width:100%;
     display:flex;
     flex-direction:column;
-    margin-top:20px;
+    margin-top:10px;
 `
 
 export const BPRViewTablePrefixWrapper = styled.div`
@@ -57,7 +58,8 @@ export const BPRViewTableGrid = styled.div`
     display:flex;
     flex-direction:column;
     width:100%;
-    min-height:100px;
+    min-height:150px;
+    max-height:205px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #9B9B9B29;
     border-radius:8px;
@@ -130,10 +132,11 @@ export const BPRViewTableHeader = styled.div`
 `
 
 export const BPRViewTableRowContainer = styled.div`
+position:relative;
     width:100%;
     display:flex;
     flex-direction:column;
-    max-height:250px;
+    // max-height:250px;
     // margin-top:20px;
 `
 
@@ -372,6 +375,16 @@ export const BPRViewTableToolTip = styled.div`
     max-width:200px;
     padding:5px;
     z-index:10000;
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0%;
+        left: 50%;
+        transform: translate(-50%, 100%);
+        border-width: 6px;
+        border-style: solid;
+        border-color: #4E4E4E transparent transparent transparent; /* Updated to black */
+    }
 `
 
 export const BPRGraphCellRendererWrapper = styled.img`
@@ -454,7 +467,11 @@ export const RequestExpeditingModalButtonGroup = styled.div`
 `
 
 export const BPRViewTableNoDataContainer = styled.div`
-    width:100%;
+    position:absolute;
+    left:0;
+    right:0;
+    top:45px;
+    bottom:0;
     display:flex;
     flex-direction:column;
     justify-content:center;
@@ -496,7 +513,8 @@ export const AgeingIcon = styled.img`
 export const AgeingToolTipWrapper = styled.div`
     display:flex;
     flex-direction:column;
-    width:150px;
+    width:200px;
+    padding:0px 5px;
 `
 
 export const AgeingToolTipSection = styled.div`
@@ -527,12 +545,14 @@ export const WhereAboutsCellSectionHeader = styled.div`
     font-weight:300;
     font-size:12px;
     font-family:Roboto;
+    line-height:15px;
 `
 export const WhereAboutsCellSectionValue = styled.div`
     font-weight:500;
     font-size:12px;
     font-family:Roboto;
     margin:0px 5px;
+    line-height:15px;
 `
 
 export const WhereAboutsMoreInfo = styled.div`
@@ -544,4 +564,52 @@ export const WhereAboutsMoreInfo = styled.div`
     margin-left:5px;
     text-decoration: underline;
     cursor:default;
+    line-height:15px;
+    
 `
+
+export const BPRViewTableHeaderTab = styled.div<{
+    status: string
+    zIndex: number
+    marLeft: true | false
+    themeUi: string
+  }>`
+    color: ${(props) => (props.status==='active' ? '#FFFFFF' : '')};
+    opacity: 1;
+    min-height: 60px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    position: relative;
+    z-index: ${(props) => props.zIndex};
+    margin-left: ${(props) => (props.marLeft ? '-1.5em' : '0')};
+    padding-left: ${(props) => (props.marLeft ? '1.5em' : '0')};
+  
+    cursor: pointer;
+    
+    // pointer-events:${(props)=>props.status === 'completed' ? 'none' : 'all'};
+  
+    ::before {
+      border: 0.5px solid #cccccc;
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: -1;
+      border-bottom: none;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      background: ${(props) =>
+        props.themeUi === "REGALBLAZE"
+          ? globalStyles.chooseThemeColor[props.themeUi]?.color5
+          : "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box"};
+        no-repeat padding-box;
+      box-shadow: 0px 5px 25px #9d9d9d29;
+      transform: scale(1.2, 1.3) perspective(0.5em) rotateX(2.5deg);
+      transform-origin: bottom left;
+    }
+  `

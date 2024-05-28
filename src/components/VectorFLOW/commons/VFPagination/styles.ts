@@ -8,7 +8,7 @@ export const PaginationWrapper = styled.div`
     border-radius:inherit;
     margin-top:-15px;
     position:relative;
-    z-index:20;
+    // z-index:20;
 `
 
 export const SelectedRowsCountWrapper = styled.div`

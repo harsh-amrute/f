@@ -25,7 +25,7 @@ const NavbarItem = ({
   const { user,isSideBarOpen,toggleSideBar } = useUserData();
   const permission: any = user?.roles?.permission;
   const {currentView,currentCategory} = useSelector((state:RootState)=>state.mta.planning)
-  const analyticsPaths:Array<string> = ["/supply-chain-intelligence-hub/bpr","/supply-chain-intelligence-hub/rrr","/supply-chain-intelligence-hub/bor","/dbm/dbm-norm-suggestions","/insights-and-trends/research-insights"]
+  const analyticsPaths:Array<string> = ["/supply-chain-intelligence-hub/bpr","/supply-chain-intelligence-hub/rrr","/supply-chain-intelligence-hub/bor","/dbm/dbm-norm-suggestions","/insights-and-trends/research-insights","/insights-and-trends/buffer-trend-report","/insights-and-trends/buffer-trends"]
   const themeUi = user?.user?.theme_ui;
   const navigate = useNavigate();
   const location = useLocation();
@@ -107,6 +107,9 @@ const NavbarItem = ({
     if(location.pathname==="/supply-chain-intelligence-hub/planning"){
      
       if(currentView!=='chart' && currentCategory!==""){
+        return  true
+      }
+      if( currentCategory===""){
         return  true
       }
     }

@@ -67,7 +67,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
 
         const percentIncrease:any = {};
 
-        const colors = ["Black", "Red", "Yellow", "Green", "White"]
+        const colors = ["Black", "Red", "Yellow", "Green", "White","Blue"]
 
         for (const color of colors) {
             const onHandToday = today[`OnHand${color}`];
@@ -126,7 +126,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                 }
             }
             else{
-                return 
+                payloadString = "planning"
             }
             
         }
