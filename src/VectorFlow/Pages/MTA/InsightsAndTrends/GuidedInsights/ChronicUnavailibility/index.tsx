@@ -12,6 +12,7 @@ import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInf
 
 const ChronicUnavailabilityCharts = () => {
 
+
     const {data:ChronicUnavailabilityLoc, isLoading:isLoadingChronicLoc}=useGetChronicUnavailabilityLoc();
     const {data:ChronicUnavailabilitySku, isLoading:isLoadingChronicSku}=useGetChronicUnavailabilitySku();
 
@@ -24,6 +25,28 @@ const ChronicUnavailabilityCharts = () => {
     const [hideChart1,toggleChart1] = useState<boolean>(false);
     const [hideChart2,toggleChart2] = useState<boolean>(false);
 
+    const convertToInt = (data:any)=>{
+        return data.map((row:any)=>{
+            const tempObj:any = {};
+            Object.keys(row).forEach((key:string)=>{
+                const value = parseFloat(row[key])
+                if(!isNaN(value)){
+                    tempObj[key] = value
+                }
+                else{
+                    tempObj[key] = row[key];
+                }
+            })
+            return {...tempObj}
+        })
+    }
+
+    const sortData = (data:any,key:string) => {
+        data.sort((row1:any,row2:any)=>{
+            return (row2[key]) - (row1[key])
+        })
+        return [...data];
+    }
 
     const coldefs1:ColDef[] = [
         {
@@ -41,6 +64,17 @@ const ChronicUnavailabilityCharts = () => {
             field:'countSku',
             headerName:'Count Of Skus',
             colId:'countSku',
+        }
+        ,
+        {
+        field:'blackCount',
+        colId:'blackCount',
+        headerName:'Black count Of Skus'
+        },
+        {
+        field:'redCount',
+        colId:'redCount',
+        headerName:'Red count Of Skus'
         },
          {
             field:'LogisticsLocation',
@@ -159,6 +193,16 @@ const ChronicUnavailabilityCharts = () => {
             field:'countloc',
             headerName:'Count Of Locations',
             colId:'countloc',
+        },
+          {
+            field:'blackCount',
+            colId:'blackCount',
+            headerName:'Black Count of locations'
+          },
+           {
+            field:'redCount',
+            colId:'redCount',
+            headerName:'Red Count of Locations'
         },
          {
             field:'SKUDescription',
@@ -287,9 +331,9 @@ const ChronicUnavailabilityCharts = () => {
         if(graphNo === 1){
             if(withOutContainer) {
                 refGraph1.current?.api.createRangeChart({
-                    chartType:'column',
+                    chartType:'stackedColumn',
                     cellRange: {
-                    columns: ['location','countSku'],
+                    columns: ['location','blackCount','redCount'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     }
@@ -298,9 +342,9 @@ const ChronicUnavailabilityCharts = () => {
             else{
                 const container1 = document.getElementById('LocationWiseG1') as HTMLElement
                 refGraph1.current?.api.createRangeChart({
-                    chartType:'column',
+                    chartType:'stackedColumn',
                     cellRange: {
-                    columns: ['location','countSku'],
+                    columns: ['location','blackCount','redCount'],
                     rowStartIndex:0,
                     rowEndIndex:9
                     },
@@ -312,9 +356,9 @@ const ChronicUnavailabilityCharts = () => {
         if(graphNo === 2){
             if(withOutContainer) {
                 refGraph2.current?.api.createRangeChart({
-                    chartType:'column',
+                    chartType:'stackedColumn',
                     cellRange: {
-                        columns: ['sku','countloc'],
+                        columns: ['sku','blackCount','redCount'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     }
@@ -323,9 +367,9 @@ const ChronicUnavailabilityCharts = () => {
             else{
                 const container2 = document.getElementById('SKUWiseG2') as HTMLElement
                 refGraph2.current?.api.createRangeChart({
-                    chartType:'column',
+                    chartType:'stackedColumn',
                     cellRange: {
-                        columns: ['sku','countloc'],
+                        columns: ['sku','blackCount','redCount'],
                         rowStartIndex:0,
                         rowEndIndex:9
                     },
@@ -443,7 +487,7 @@ const ChronicUnavailabilityCharts = () => {
     
       const myCustomTheme:any = {
         palette: {
-            fills: ['#9A0101', '#F02424'],
+            fills: [ '#0a0a0a','#F02424'],
             strokes: ['#ffffff', '#ffffff'],
           },
       }
@@ -478,7 +522,7 @@ const ChronicUnavailabilityCharts = () => {
                                     <VFTable
                                         ref={refGraph1}
                                         columnDefs={coldefs1}
-                                        rowData={ChronicUnavailabilityLocData}
+                                        rowData={sortData(convertToInt(ChronicUnavailabilityLocData),'countSku')}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -567,7 +611,7 @@ const ChronicUnavailabilityCharts = () => {
                                     <VFTable
                                             ref={refGraph2}
                                             columnDefs={coldefs2}
-                                            rowData={ChronicUnavailabilitySkuData}
+                                            rowData={sortData(convertToInt(ChronicUnavailabilitySkuData),'countLoc')}
                                             enableCharts={true}
                                             enableRangeSelection={true} 
                                             rowSelection="multiple"
