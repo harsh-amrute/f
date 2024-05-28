@@ -5,8 +5,9 @@ import { useState, useEffect } from "react";
 import { useUserData } from "../../../../../../context";
 import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
-import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { AgChartOptions } from "ag-charts-community";
+import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip';
+
 
 const AvailabilityTrend = () => {
   const [AvailabilityTrend, setAvailabilityData] = useState();
@@ -27,13 +28,15 @@ const AvailabilityTrend = () => {
     const AvailabilityTrendData = AvailabilityTrend?.data?.data;
     setAvailabilityData(AvailabilityTrendData);
   };
+ 
+
   const options:AgChartOptions = {
     
-    title: {
-      text: "Availabilty Trend",
-      fontWeight: "500",
-      fontSize:14
-    },
+    // title: {
+    //   // text: "Availabilty Trend",
+    //   // fontWeight: "500",
+    //   // fontSize:14,
+    // },
     data: AvailabilityTrend,
     series: [
       {
@@ -141,12 +144,28 @@ const AvailabilityTrend = () => {
         >
           Submit
         </VFButtonOutline>
+
+       
       </div>
 
+
+    
+   
       <div style={{ marginLeft:'20px'}}>
-        <div style={{marginLeft:'10px',marginRight:'10px',height:'400px'}}><AgChartsReact options={options} /></div>
+        <div style={{marginLeft:'10px',marginRight:'10px',height:'330px'}}>
+        <div className="Title" style={{height:'50px', backgroundColor:'white',display:'flex',justifyContent:'center', alignItems:'center'}}>
+          <div style={{fontSize:'14px', fontWeight:500, textAlign:'center'}}>
+          Availabilty Trend
+          </div>
+          <div style={{marginLeft:10}}>
+            <VFInfoToolTip infoList={graph1} />
+          </div>
+
+        </div>
+
+          <AgChartsReact options={options} /></div>
         <div style={{marginLeft:'10px',marginRight:'10px',marginTop:'5px'}}>
-          <VFInfoTip text={graph1}/>
+          {/* <VFInfoTip text={graph1}/> */}
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { SCChartContainer, SCDynamicContainer, SCHorizontalDivider } from '../style';
+import { SCChartContainer, SCDynamicContainer } from '../style';
 import { AgChartsReact } from "ag-charts-react";
 import { Allotment } from "allotment";
 import { useGetExcessInventorySku, useGetExcessInventoryValue } from "../../../../../Services/MTA/InsightsAndTrends";
@@ -21,9 +21,11 @@ const ExcessInventoryTrend = () => {
   const themeUi = user?.user?.theme_ui;
 
     const options1 = {
-        title: {
-            text: 'Excess Inventory Trend (Count Of SKU)-Last 90 Days',
-        },
+        // title: {
+        //     text: 'Excess Inventory Trend (Count Of SKU)-Last 90 Days',
+        //     fontWeight:500,
+        //     fontSize:14
+        // },
         data: ExcessInventorySku,
         series: [
             {
@@ -64,10 +66,12 @@ const ExcessInventoryTrend = () => {
     };
 
     const options2 = {
-        title: {
-            text: 'Excess Inventory Trend (In Value)-Last 90 Days',
+        // title: {
+        //     text: 'Excess Inventory Trend (In Value)-Last 90 Days',
+        //     fontWeight:500,
+        //     fontSize:14
             
-        },
+        // },
         data: ExcessInventoryValue,
         series: [
             {
@@ -116,18 +120,17 @@ if(isLoaderGraph1||isLoaderGraph2){
     return    (
   
 <SCDynamicContainer>
-    <Allotment>
-        <Allotment.Pane preferredSize={'50%'}>
-            <div className="main" style={{marginTop:'20px',backgroundColor:'white',height:'300px', width:'580px'}}>
-                <div className="horiozn one" style={{ width:'100%', height:'50px', display:'flex', justifyContent:'space-evenly', alignItems:'center', gap:'10px',paddingLeft:'6px'}}>
+    <Allotment minSize={0} maxSize={590}>
+        <Allotment.Pane preferredSize={'50%'} >
+            <div className="main" style={{marginTop:'20px',backgroundColor:'white',height:'415px',boxShadow: '-5px 5px 12px #0000001C',marginRight:'15px'}}>
+                <div className="horiozn one" style={{ width:'100%', height:'50px', display:'flex', justifyContent:'space-evenly', alignItems:'center',zoom:'0.9'}}>
                     <label
                     style={{
                         fontStyle: "normal",
                         fontVariant: "normal",
                         fontWeight: 300,
                         fontSize: 15,
-                        fontFamily: "Roboto",
-                        paddingLeft:'10px'
+                        fontFamily: "Roboto"
                     }}
                     >
                     {" "}
@@ -156,20 +159,29 @@ if(isLoaderGraph1||isLoaderGraph2){
                     width={100}>
                     Submit
                     </VFButtonOutline>
-                    <div className="tooltip">
-                            <VFInfoToolTip infoList={graph1}></VFInfoToolTip>
-                    </div>
+                   
                 </div>
                 <SCChartContainer >
-                    <div style={{top: '316px',
-                        left: '293px',
-                        width: '550px',
+                    <div style={{
+                        // top: '316px',
+                        // left: '293px',
+                        // width: '550px',
                         height: '300px',
                         borderTop:'1px solid rgb(178, 178, 178)',
                     }}>
+
+                    <div className="Title" style={{height:'50px', backgroundColor:'white',display:'flex',justifyContent:'center', alignItems:'center'}}>
+                        <div style={{fontSize:'14px', fontWeight:500, textAlign:'center'}}>
+                            Excess Inventory Trend (Count Of SKU)-Last 90 Days
+                        </div>
+                        <div style={{marginLeft:10}}>
+                            <VFInfoToolTip infoList={graph1} />
+                        </div>
+
+                    </div>
                     <AgChartsReact options={options1} />
             </div>
-                <SCHorizontalDivider/>
+                {/* <SCHorizontalDivider/> */}
             </SCChartContainer>
                  {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>
@@ -177,17 +189,16 @@ if(isLoaderGraph1||isLoaderGraph2){
             </div>
 
         </Allotment.Pane>
-        <Allotment.Pane preferredSize={'50%'}>
-        <div className="main" style={{marginTop:'20px',backgroundColor:'white',height:'300px', width:'580px'}}>
-            <div className="horiozn one" style={{ width:'100%', height:'50px', display:'flex', justifyContent:'space-evenly', alignItems:'center', gap:'10px', paddingLeft:'6px'}}>
+        {/* <Allotment.Pane preferredSize={'50%'}> */}
+        <div className="main" style={{marginTop:'20px',backgroundColor:'white',height:'415px',boxShadow: '-5px 5px 12px #0000001C', marginLeft:'15px'}}>
+            <div className="horiozn one" style={{ width:'100%', height:'50px', display:'flex', justifyContent:'space-evenly', alignItems:'center',zoom:'0.9'}}>
                 <label
                 style={{
                     fontStyle: "normal",
                     fontVariant: "normal",
                     fontWeight: 300,
                     fontSize: 15,
-                    fontFamily: "Roboto",
-                    paddingLeft:'10px'
+                    fontFamily: "Roboto"
                 }}
                 >
                 {" "}
@@ -216,22 +227,29 @@ if(isLoaderGraph1||isLoaderGraph2){
                     width={100}>
                     Submit
                 </VFButtonOutline>
-                <div className="tooltip">
-                            <VFInfoToolTip infoList={graph2}></VFInfoToolTip>
-                    </div>
-
             </div>
 
             <SCChartContainer>
-                <div style={{top: '316px',
-                    left: '1191px',
-                    width: '550px',
+                <div style={{
+                    // top: '316px',
+                    // left: '1191px',
+                    // width: '550px',
                     height: '300px',
                     borderTop:'1px solid rgb(178, 178, 178)',
                 }}>
+
+                <div className="Title" style={{height:'50px', backgroundColor:'white',display:'flex',justifyContent:'center', alignItems:'center'}}>
+                    <div style={{fontSize:'14px', fontWeight:500, textAlign:'center'}}>
+                        Excess Inventory Trend (In Value)-Last 90 Days              
+                    </div>
+                    <div style={{marginLeft:10}}>
+                        <VFInfoToolTip infoList={graph2} />
+                 </div>
+
+                    </div>
                     <AgChartsReact options={options2} />
                 </div>
-            <SCHorizontalDivider/>
+            {/* <SCHorizontalDivider/> */}
             </SCChartContainer>
             {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph2}/>
@@ -239,7 +257,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                         </div> */}
                                     </div>
 
-        </Allotment.Pane>
+        {/* </Allotment.Pane> */}
     </Allotment>
 </SCDynamicContainer>
   
