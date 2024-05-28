@@ -26,7 +26,7 @@ const ChronicUnavailabilityCharts = () => {
     const [hideChart2,toggleChart2] = useState<boolean>(false);
 
     const convertToInt = (data:any)=>{
-        return data.map((row:any)=>{
+        return data?.map((row:any)=>{
             const tempObj:any = {};
             Object.keys(row).forEach((key:string)=>{
                 const value = parseFloat(row[key])
@@ -42,10 +42,10 @@ const ChronicUnavailabilityCharts = () => {
     }
 
     const sortData = (data:any,key:string) => {
-        data.sort((row1:any,row2:any)=>{
+        data?.sort((row1:any,row2:any)=>{
             return (row2[key]) - (row1[key])
         })
-        return [...data];
+        return [data];
     }
 
     const coldefs1:ColDef[] = [
