@@ -1,5 +1,5 @@
 export interface PPField {
-    jf: string
+    jf: string 
     cp: number
     hdr: string
     vs: boolean

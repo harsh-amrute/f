@@ -8,6 +8,7 @@ import AvailabilityToolTip from "../../../MTA/InsightsAndTrends/BTR/Availability
 import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
+import VFImageButtonOutline from "../../../../../components/VectorFLOW/commons/VFImageButtonOutline";
 import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
 import GetProcPlanningData from './GetProcPlanningData.json';
@@ -258,8 +259,21 @@ const usePP = () => {
                                 ]
                             }}
                         />
-                        <div style={{ textAlign: 'right' }}>
-                            <VFButton onClick={navigateToSimulateScreen} themeUi="" disabled={false} width={250}>Simulate improvement in Full Kits</VFButton>
+                        <div style={{ textAlign: 'right', flexDirection: 'row' }}>
+                            <VFImageButtonOutline
+                                onClick={() => { console.log('') }}
+                                themeUi="" disabled={false}
+                                width={150}
+                                image={"/assets/img/VectorFLOW/reset.svg"}
+                                style={{ marginRight: 20, borderColor: '#BC3D81', color: '#BC3D81', fontWeight: 'bold', }}>Reset Data
+                            </VFImageButtonOutline>
+
+                            <VFButton
+                                onClick={navigateToSimulateScreen}
+                                themeUi=""
+                                disabled={false}
+                                width={250}>Simulate improvement in Full Kits
+                            </VFButton>
                         </div>
 
                     </div>

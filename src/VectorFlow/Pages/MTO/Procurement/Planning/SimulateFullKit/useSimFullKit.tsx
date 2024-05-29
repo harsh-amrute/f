@@ -85,10 +85,14 @@ const useSimFullKit = () => {
     ];
 
     const initilizeData = (data: any) => {
-        const WithZeroEas = data.filter((item: any) => item.children.every((child: any) => child.eas === 0));
-        const WithoutZeroEas = data.filter((item: any) => item.children.every((child: any) => child.eas !== 0));
+        const calculateData = data.map((item: any) => ({
+            ...item,
+            avl: item.oq === item.fka ? 100 : 50
+        }));
+        const WithZeroEas = calculateData.filter((item: any) => item.children.every((child: any) => child.eas === 0));
+        const WithoutZeroEas = calculateData.filter((item: any) => item.children.every((child: any) => child.eas !== 0));
 
-        const BothEasData = data.filter((item: any) => {
+        const BothEasData = calculateData.filter((item: any) => {
             return item.children.some((child: any) => child.eas === 0) && item.children.some((child: any) => child.eas !== 0);
         });
 
@@ -163,7 +167,7 @@ const useSimFullKit = () => {
         {
             "colorCellRenderer": ColorCellRenderer,
             "avlCellRenderer": AvlCellRenderer,
-            "availabilityToolTip":AvailabilityToolTip
+            "availabilityToolTip": AvailabilityToolTip
         }), []);
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
     const renderView = () => {
