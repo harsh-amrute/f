@@ -1018,10 +1018,16 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
           headerName:'New ' +f.displayName,
           field:'New'+f.key,
           colId:'New'+f.key,
+          valueFormatter:(params:any)=>{
+            if(areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`])){
+              return '';
+            }
+            return params.value;
+          },
           cellStyle:(params:any)=>{
             return{
               "color":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?'#BC3D81':'black',
-              "font-weight":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?'500':'300',
+              "font-weight":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?'700':'300',
               "text-align":"center",
               "border-left":"solid 1px #B9B9B9",
             }
@@ -1031,6 +1037,12 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
           headerName:'Old ' +f.displayName,
           field:'Old' +f.key,
           colId:'Old'+f.key,
+          valueFormatter:(params:any)=>{
+            if(areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`])){
+              return '';
+            }
+            return params.value;
+          },
           cellStyle:{
             "text-align":"center",
             "border-right":"solid 1px #B9B9B9"

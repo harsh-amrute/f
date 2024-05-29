@@ -231,7 +231,7 @@ export const BPRSubmitRemarkInput = styled.input`
 `
 
 export const BPRRemarkToolTipTextArea = styled.textarea`
-    min-width:240px;
+     min-width:240px;
     max-width:240px;
     min-height:100px;
     max-height:100px;
@@ -254,7 +254,6 @@ export const  BPRRemarkToolTipButton = styled.button`
 `
 
 export const BPRRemarksToolTipWrapper = styled.div`
-
     position:fixed;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #77777729;

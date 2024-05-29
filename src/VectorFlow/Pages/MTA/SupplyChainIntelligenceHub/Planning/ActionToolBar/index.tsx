@@ -327,15 +327,28 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                             width={76.83} 
                             onClick={handleGoButton} 
                         />:null}
-                            {(currCategory === 'GuidedInsight' && view!=='grid') ? null:
-                            
-                            <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
+                            {/* {(currCategory === 'GuidedInsight' && view!=='grid') ? null: */} 
+                            {/* <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters> */}
+                            {/* } */}
+                            {/* {tabsList.length > 0 && renderFloatingTab()} */}
 
-                            }
-                            {tabsList.length > 0 && renderFloatingTab()}
+
+                            {(tabsList.length > 0 && renderFloatingTab())}
+
+                            {currCategory === 'GuidedInsight' && view === 'grid' ? (
+                                <div style={{ marginRight: '60px', maxWidth:'400px' }}>
+                                    <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
+                                </div>
+                            ) : currCategory === 'GuidedInsight' && view !== 'grid' ? (
+                                null
+                            ) : (
+                                <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
+                            )}
+                            
                         </SCTaskFilterContainer>
                         <SCCustomActionsContainer>
 
+                      
                         <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
                             {isFilterOpen && renderFilter()}
                          
