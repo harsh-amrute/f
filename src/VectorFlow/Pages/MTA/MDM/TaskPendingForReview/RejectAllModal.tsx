@@ -21,14 +21,14 @@ const RejectAllModal=(props:RejectAllModalProps)=>{
 
     return(
         <VFModalCard headerText={'Reject All'} closeModal={onClose} openModal={true} headerIcon={"/assets/img/VectorFLOW/NMS/Rejectall.svg"} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-            <RadioContainer>
-                <RadioButtonGroup> 
+            <RadioContainer style={{display:'flex', alignItems:'center',flexDirection: 'column', marginTop:'10px'}}>
+                <RadioButtonGroup style={{marginBottom:'7px'}}> 
                     <input type="radio" value="option1" onChange={()=>setSelectionType('All')} name="Approve" id="ApproveAll"/>
-                    <label htmlFor="ApproveAll">Reject across all pages</label>
+                    <label htmlFor="ApproveAll" style={{fontSize:'15px', fontWeight:'300px'}}>Reject across all pages</label>
                 </RadioButtonGroup>  
-                <RadioButtonGroup> 
+                <RadioButtonGroup style={{marginLeft:'27px', marginBottom:'20px'}}> 
                     <input type="radio" value="option2" onChange={()=>setSelectionType('Current')} name="Approve" id="ApproveCurrent"/>
-                    <label htmlFor="ApproveCurrent">Reject all only current page</label>
+                    <label htmlFor="ApproveCurrent" style={{fontSize:'15px', fontWeight:'300px'}}>Reject all only current page</label>
                 </RadioButtonGroup> 
             </RadioContainer>
             <SubmitButtonWrapper>
