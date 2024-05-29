@@ -34,7 +34,7 @@ const MasterDetail = (params:any)=>{
                 </VFButtonOutline>
             </MasterDetailHeaderWrapper>
             <VFTable
-                height={400}
+                height={300}
                 disableZoomScaling
                 columnDefs={[
                     {

@@ -2,11 +2,12 @@
 
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import ActionToolBar from "../Planning/ActionToolBar"
-import BPRRemarkHistoryToolTip from "../BPR/BPRRemarkHistoryToolTip"
 import BPRSubmiRemarkToolTip from "../BPR/BPRSubmitRemarkToolTip"
 
 import useOpenExpeditingRequests from "./useOpenExpeditingRequests"
 import { GridStateContext } from "../../../../../context/GridStateContext"
+import RemarkModal from "./RemarkModal"
+
 // import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 
 
@@ -22,7 +23,6 @@ const OpenExpeditingRequests = ()=>{
         isSubmitRemarkToolTipOpen,
         isRemarkHistoryToolTipOpen,
         submitRemarkToolTipPosition,
-        remarkHistoryToolipPosition,
         ref,
         updateRemark,
         onSubmitRemark,
@@ -124,13 +124,11 @@ const OpenExpeditingRequests = ()=>{
             />
         )}
 
-        {isRemarkHistoryToolTipOpen && (
-            <BPRRemarkHistoryToolTip
-                remarkHistory={remarkHistory}
+            <RemarkModal
+                isOpen={isRemarkHistoryToolTipOpen}
+                data={remarkHistory}
                 onClose={onCloseRemarkHistory}
-                style={remarkHistoryToolipPosition}
             />
-        )}
         </GridStateContext.Provider>
     )
 }

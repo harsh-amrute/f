@@ -283,7 +283,7 @@ const usePlanning = ()=>{
                 if(planningCategoryObj.custom) tempPlanningCount.reviewOrderFulfillmentCustomCount = planningCategoryObj.custom; 
             }
         });
-
+        
         setPlanningCounts(tempPlanningCount);
     }
 
@@ -492,12 +492,10 @@ const usePlanning = ()=>{
                         const {locationwise,transporterwise} = count.data.data[0]
                         const tempTab =tab?tab:currentTab
                         if(tempTab==="locationWise"){
-                            console.log(locationwise)
                             setPlanningCounts({...planningCounts,childMonitorCount:locationwise})
                             setTotalRows(locationwise)
                         }
                         else {
-                            console.log(transporterwise)
                             setPlanningCounts({...planningCounts,childMonitorCount:transporterwise})
                             setTotalRows(transporterwise)
                         }
@@ -628,6 +626,7 @@ const usePlanning = ()=>{
             await fetchPlanningDataCount(filter)
             return 
         }
+        // await fetchPlanningDataCount(filter)
         setCurrentFilter(filter)
         setCurrentPage(1)
         fetchAndUpdateGridData(currentPage,false,filter)

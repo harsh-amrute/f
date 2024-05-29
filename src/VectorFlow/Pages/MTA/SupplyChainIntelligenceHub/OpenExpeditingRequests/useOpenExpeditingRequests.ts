@@ -272,7 +272,13 @@ const useOpenExpeditingRequests = () => {
           headerName: "ETA",
           colId: 'eta',
           field: 'eta',
-          cellRenderer:'etaCellRenderer',
+          // cellRenderer:'etaCellRenderer',
+          editable:true,
+          cellStyle:{
+            border:'solid 1px black',
+            transform:'scale(0.8)',
+            "background-color":'white'
+          },
           floatingFilter:false
       },
       {

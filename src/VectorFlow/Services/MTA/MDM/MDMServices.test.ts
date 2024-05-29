@@ -360,7 +360,7 @@ describe('Testing the MDMService',  () => {
 
       mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
       const response = await MDMService.validateMaster({},1)
-      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_API_HOST + `api/validate-master/1`,{},{
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_API_HOST + `api/validate-master/basic-validation/1`,{},{
         responseType:'stream'
     })
       expect(response.status).toBe(200);
