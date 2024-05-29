@@ -2186,8 +2186,6 @@ export const mapPPFieldsToColDefs = (fields: PPField[]): ColDef[] => {
   const PPColumns: ColDef[] = [
   ]
 
-
-
   result = fields.map((f: PPField) => {
     if (f.jf === 'ic') {
       return {
@@ -2206,7 +2204,7 @@ export const mapPPFieldsToColDefs = (fields: PPField[]): ColDef[] => {
         headerName: f.hdr,
         hide: !f.vs,
         cellRenderer: "coloPriority",
-        tooltipField: "1",//it will change
+        tooltipField: "",
         tooltipComponent: "availabilityToolTip",
         initialWidth: 160,
         autoHeaderHeight: true,

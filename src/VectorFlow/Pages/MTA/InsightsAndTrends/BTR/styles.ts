@@ -69,6 +69,7 @@ interface ColorValues {
     B: number;
     R: number;
     Y: number;
+    G: number;
 }
 export const ColorPriorityCellRenderer = styled.div<ColorValues>`
     position: relative;
@@ -86,8 +87,12 @@ export const ColorPriorityCellRenderer = styled.div<ColorValues>`
             linear-gradient(
                 to right,
                 #000000 ${props.B}%,
-                #E53F3F ${props.B}% ${props.B + props.Y}%,
-                #EBBF2C ${props.B + props.Y}% 100%
+                #E53F3F ${props.B}% ${props.B + props.R}%,
+                #EBBF2C ${props.B + props.R}% 100%
+
+                //#EBBF2C ${props.B + props.R}% ${props.B + props.R + props.Y}%,   //yellow
+              //  #0b3817 ${props.B + props.R + props.Y}% 100%  //green
+               
             )
         `};
     }

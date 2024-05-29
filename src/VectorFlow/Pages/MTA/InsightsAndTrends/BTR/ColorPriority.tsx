@@ -5,6 +5,7 @@ interface ColorValues {
     B: number;
     R: number;
     Y: number;
+    G: number;
 }
 
 const ColorPriority = (props: ICellRendererParams) => {
@@ -16,6 +17,7 @@ const ColorPriority = (props: ICellRendererParams) => {
                 B={colorValues.B}
                 R={colorValues.R}
                 Y={colorValues.Y}
+                G={colorValues.G}
             />
         </BTRAvailabiltyCellRendererWrapper>
     );

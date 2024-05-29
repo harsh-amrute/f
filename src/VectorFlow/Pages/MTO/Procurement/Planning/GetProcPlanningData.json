@@ -4,9 +4,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 50,
-                    "R": 20,
-                    "Y": 30
+                    "B": 33.33,
+                    "R": 33.33,
+                    "Y": 33.33
                 }
             ],
             "rm": "AREB5092381",
@@ -32,6 +32,18 @@
                     "bpp": 78,
                     "pend": 12,
                     "lid": "Lid1"
+                },
+                {
+                    "on": "BMN1231",
+                    "oq": 66,
+                    "cn": "Pareek Amit",
+                    "cc": 546788,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Black",
+                    "bpp": 78,
+                    "pend": 10,
+                    "lid": "Lid2"
                 },
                 {
                     "on": "BMN1212",
@@ -63,9 +75,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 30,
-                    "R": 40,
-                    "Y": 30
+                    "B": 20,
+                    "R": 60,
+                    "Y": 20
                 }
             ],
             "rm": "AREB5092383",
@@ -81,7 +93,19 @@
             "tsfs": 0,
             "children": [
                 {
-                    "on": "BMN1231",
+                    "on": "BMN1232",
+                    "oq": 66,
+                    "cn": "Pareek Amit",
+                    "cc": 546788,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Black",
+                    "bpp": 34,
+                    "pend": 8,
+                    "lid": "Lid1"
+                },
+                {
+                    "on": "BMN1234",
                     "oq": 66,
                     "cn": "Pareek Amit",
                     "cc": 546788,
@@ -89,7 +113,31 @@
                     "ord": "23-jul-13",
                     "clr": "Red",
                     "bpp": 34,
-                    "pend": 12,
+                    "pend": 17,
+                    "lid": "Lid1"
+                },
+                {
+                    "on": "BMN1230",
+                    "oq": 66,
+                    "cn": "Pareek Amit",
+                    "cc": 546788,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Red",
+                    "bpp": 34,
+                    "pend": 10,
+                    "lid": "Lid1"
+                },
+                {
+                    "on": "BMN1233",
+                    "oq": 66,
+                    "cn": "Pareek Amit",
+                    "cc": 546788,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Yellow",
+                    "bpp": 34,
+                    "pend": 9,
                     "lid": "Lid1"
                 }
             ]
