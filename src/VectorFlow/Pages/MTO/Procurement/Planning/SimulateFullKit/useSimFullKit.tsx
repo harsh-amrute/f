@@ -1,17 +1,76 @@
 import { useState, useMemo } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { useUserData } from "../../../../../../context"
-import simulativeData from '../SimulateFullKit/simulativeFullKit.json'
-import AvailabilityCellRenderer from "../../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer";
-//import colorPriority from ".././colorPriority";
-import AvailabilityToolTip from "../../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
+import GetSimulateFullKitHeader from './GetSimulateFullKitHeader.json';
+import GetSimulateFullKitData from './GetSimulateFullKitData.json';
+import GetSimulateHeaderChildren from './GetSimulateChildrenHeader.json';
+import AvlCellRenderer from "../SimulateFullKit/Simulate/AvlCellRenderer";
+import AvailabilityToolTip from "../../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
-import { ColorCellRenderer } from '../../../Common/ColorCellRenderer';
+import { useLocation } from 'react-router-dom';
+import ColorCellRenderer from "./Simulate/ColorCellRenderer";
+import ChildrenColor from "../../../../MTA/InsightsAndTrends/BTR/ChildrenColor";
+import { mapIncrementOrderFieldsToColDefs, mapSimulateHedaerChildrenFieldsToColDefs } from '../../../../../../helpers/utils';
 
 const useSimFullKit = () => {
+    const { HeaderData } = GetSimulateFullKitHeader;
+    const { HeaderChildren } = GetSimulateHeaderChildren
+    const { data } = GetSimulateFullKitData;
     const { isSideBarOpen } = useUserData()
     const [currentPage, setCurrentPage] = useState<any>(1);
+    const location = useLocation();
+    const rowsData = location.state?.ShortageDatas;
+
+    if (rowsData) {
+        rowsData.forEach((item: any) => {
+            if (Array.isArray(item.children)) {
+                item.children.sort((a: any, b: any) => a.bpp - b.bpp);
+                let remainingEas = 0;
+                item.children.forEach((child: any, index: number) => {
+                    const penDValue = child.pend;
+                    const easValue = item.eas;
+                    if (index === 0) {
+                        remainingEas = easValue;
+                    }
+                    if (remainingEas > 0) {
+                        if (penDValue <= remainingEas) {
+                            child.easa = penDValue;
+                            remainingEas -= penDValue;
+                        } else {
+                            child.easa = remainingEas;
+                            remainingEas = 0;
+                        }
+                    } else {
+                        child.easa = 0;
+                    }
+                });
+            }
+        });
+    }
+    const Save = () => {
+        const newData: object[] = [];
+        if (rowsData) {
+            rowsData.forEach((item: any) => {
+                if (Array.isArray(item.children)) {
+                    item.children.forEach((child: any) => {
+                        const newEntry = {
+                            on: child.on,
+                            lid: child.lid,
+                            item: item.rm,
+                            easa: child.easa,
+                            eas: item.eas,
+                            rm: item.rm
+                        };
+                        newData.push(newEntry);
+                    });
+                }
+            });
+        }
+        console.log("JSON", JSON.stringify(newData, null, 2));
+        return newData;
+    };
+
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: 'iof',
@@ -24,78 +83,23 @@ const useSimFullKit = () => {
             value: 'cf'
         }
     ];
-    const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
-    const [rowData, setRowData] = useState(simulativeData);
-    const gridOptions = {
-        simFullKitCol: [
-            {
-                headerName: "", field: "icon", initialWidth: 25, autoHeaderHeight: true, wrapHeaderText: true,
-                cellRenderer: "agGroupCellRenderer",
-            },
-            {
-                headerName: "Color Priority", field: "cp", initialWidth: 150, autoHeaderHeight: true, wrapHeaderText: true,
-                //  cellRenderer: ColorCellRenderer,
-                tooltipComponent: AvailabilityToolTip
-            },
-            {
-                headerName: "Order Line Item", field: "oli", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true,
-            },
-            {
-                headerName: "Order No", field: "ordNo", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true,
-            },
-            {
-                headerName: "FG Code", field: "fgCode", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 180, filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "FG Desc", field: "fgDesc",
-                autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Order Qty", field: "ordQty", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Batch Size", field: "bs", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Kits Before SM", field: "ksm", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Full Kits Avail", field: "Availability", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true, cellRenderer: AvailabilityCellRenderer, tooltipComponent: AvailabilityToolTip
-            },
-            {
-                headerName: "Cust Name", field: "cn", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Cist Code", field: "cc", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Order Receipt Date", field: "ord", autoHeaderHeight: true, wrapHeaderText: true, initialWidth: 150,
-                filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Order Due Date", field: "odd", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true
-            },
-            {
-                headerName: "Order Release Date", field: "orlsd", autoHeaderHeight: true, wrapHeaderText: true,
-                initialWidth: 150, filter: 'agMultiColumnFilter', floatingFilter: true
-            }
-        ],
 
+    const initilizeData = (data: any) => {
+        const WithZeroEas = data.filter((item: any) => item.children.every((child: any) => child.eas === 0));
+        const WithoutZeroEas = data.filter((item: any) => item.children.every((child: any) => child.eas !== 0));
+
+        const BothEasData = data.filter((item: any) => {
+            return item.children.some((child: any) => child.eas === 0) && item.children.some((child: any) => child.eas !== 0);
+        });
+
+        return { WithZeroEas, WithoutZeroEas, BothEasData };
     }
-
-    const [columnDef] = useState(gridOptions.simFullKitCol);
-
+    const SimulateColumns = mapIncrementOrderFieldsToColDefs(HeaderData);
+    const SimulateChildrenColumns = mapSimulateHedaerChildrenFieldsToColDefs(HeaderChildren);
+    const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
+    const { WithZeroEas, WithoutZeroEas, BothEasData } = initilizeData(data);
+    const [incOrderFullkitData, setIncOrderFullKitData] = useState([...WithoutZeroEas, ...BothEasData]);
+    const [cumulativeFullKitData, setCumulativeFullKitData] = useState([...WithZeroEas, ...BothEasData]);
 
     const icons = useMemo(() => {
         return {
@@ -109,34 +113,33 @@ const useSimFullKit = () => {
             minWidth: 250,
         };
     }, []);
-
+    const customChildrenCellRenderers = useMemo(() => (
+        {
+            "coloPriorityOfBall": ChildrenColor
+        }), []);
     const detailCellRendererParams = useMemo(() => {
         return {
-            // level 2 grid options
             detailGridOptions: {
-                columnDefs: [
-                    {
-                        field: "rmcode", headerName: "RM Code",
-                        // cellRendererSelector: (params: any) => {
-                        //     const moodDetails = {
-                        //         component: colorPriority,
-                        //         params: { values: ["BMN1231", "BSW1231"] },
-                        //     };
-
-                        //     if (params.data) {
-                        //         if (params.data.type === "child") return moodDetails;
-                        //     }
-                        //     return undefined;
-                        // },
-                    },
-                    { field: "rmdesc", headerName: "RM Descp" },
-                    { field: "rmreqty", headerName: "RM Reqdty" },
-                    { field: "rmavai", headerName: "RM Available" },
-                    { field: "rmall", headerName: "RM Allocated" },
-                ],
+                columnDefs: SimulateChildrenColumns,
                 defaultColDef: {
+                    cellStyle: {
+                        'flex': 1,
+                        'text-align': 'center',
+                        'height': '50px',
+                        "font-style": "normal",
+                        "font-variant": "normal",
+                        "font-weight": "bold",
+                        "font-size": "20px",
+                        "font-family": "Roboto",
+                        'text-overflow': 'ellipsis',
+                        'white-space': 'nowrap',
+                        'resizable': 'true',
+                        'background': 'white',
+                        "display": "block",
+                    },
                     flex: 0,
                 },
+                components: customChildrenCellRenderers,
                 masterDetail: true,
                 rowSelection: "multiple",
                 suppressRowClickSelection: true,
@@ -144,6 +147,10 @@ const useSimFullKit = () => {
                 pagination: true,
                 paginationAutoPageSize: true,
                 alwaysShowVerticalScroll: true,
+                getRowHeight: () => 40,
+                detailCellRenderer: () => {
+                    <h1 style={{ padding: '20px' }}>My Custom Detail</h1>
+                }
             },
             getDetailRowData: (params: any) => {
                 if (undefined != params.data.children) {
@@ -152,9 +159,13 @@ const useSimFullKit = () => {
             },
         };
     }, []);
+    const customCellRenderers = useMemo(() => (
+        {
+            "colorCellRenderer": ColorCellRenderer,
+            "avlCellRenderer": AvlCellRenderer,
+            "availabilityToolTip":AvailabilityToolTip
+        }), []);
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
-
-
     const renderView = () => {
         switch (currentTab.id) {
             case "iof":
@@ -162,17 +173,37 @@ const useSimFullKit = () => {
                     <div>
                         <VFTable
                             {...agGridProps}
-                            columnDefs={columnDef}
-                            rowData={rowData}
+                            columnDefs={SimulateColumns}
+                            rowData={incOrderFullkitData}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
+                            height={750}
+                            statusBar={{
+                                statusPanels: [
+                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                                ]
+                            }}
                         />
                     </div>
                 );
             case "cf":
                 return (
                     <div>
+                        <VFTable
+                            {...agGridProps}
+                            columnDefs={SimulateColumns}
+                            rowData={cumulativeFullKitData}
+                            tooltipHideDelay={100000}
+                            tooltipShowDelay={0}
+                            tooltipMouseTrack={true}
+                            height={750}
+                            statusBar={{
+                                statusPanels: [
+                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                                ]
+                            }}
+                        />
                     </div>
                 );
             default:
@@ -189,11 +220,12 @@ const useSimFullKit = () => {
                     background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
                 };
             },
-            pagination: false,
+            pagination: true,
             rowSelection: 'multiple',
             suppressRowClickSelection: true,
             enableBrowserTooltips: true,
             enableRangeSelection: true,
+            components: customCellRenderers,
             icons: icons,
             defaultColDef: {
                 cellStyle: {
@@ -220,13 +252,12 @@ const useSimFullKit = () => {
 
     return {
         isSideBarOpen,
-        columnDef,
         agGridProps,
-        RRRRowData: simulativeData,
         currentPage,
         toggleCurrentTab,
         renderView,
-        currentTab
+        currentTab,
+        Save
     }
 }
 

@@ -10,7 +10,6 @@ import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
-import { IAccount } from "../interface";
 import GetProcPlanningData from './GetProcPlanningData.json';
 import GetProcPlanningDataColumn from './GetProcPlanningDataColumn.json';
 import GetProcHeaderChildren from './GetProcHeaderChildren.json';
@@ -68,7 +67,7 @@ const usePP = () => {
     const { HeaderChildren } = GetProcHeaderChildren;
     const { HeaderData } = GetProcPlanningDataColumn;
     const { data } = GetProcPlanningData;
-    const gridRef = useRef<AgGridReact<IAccount>>(null);
+    const gridRef = useRef<AgGridReact>(null);
     const { isSideBarOpen } = useUserData()
     const [currentPage, setCurrentPage] = useState<any>(1);
     const navigate = useNavigate();
@@ -89,6 +88,9 @@ const usePP = () => {
         const calculateData = data.map((item: any) => ({
             ...item,
             gap: item.req - item.soh - item.siqc - item.sit,
+            tsfs: item.soh,
+            children: item.children ? item.children.filter((child: any, index: number, self: any[]) =>
+                self.findIndex(t => t.on === child.on) === index) : []
         }));
         const ShortageData = calculateData.filter((item: any) => item.gap > 0);
         const CompleteAvailableData = calculateData.filter((item: any) => item.gap === 0);
@@ -108,14 +110,13 @@ const usePP = () => {
         });
         return { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData };
     };
-
     const { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData } = initializeData(data, HeaderData);
     const ShortageColumns = mapPPFieldsToColDefs(ShortageHeaderData);
     const CompleteAvailableColumns = mapPPFieldsToColDefs(CompleteHeaderData);
-
     const PPChildrenColumns = mapPPChildrenFieldsToColDefs(HeaderChildren);
     const [ShortageDatas, SetShortageData] = useState(ShortageData);
     const [CompleteAvailableDatas, setCompleteAvailableData] = useState(CompleteAvailableData);
+
     const icons = useMemo(() => {
         return {
             groupExpanded: `<img src="${'/assets/img/VectorFLOW/NMS/minus_circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
@@ -136,8 +137,22 @@ const usePP = () => {
             detailGridOptions: {
                 columnDefs: PPChildrenColumns,
                 defaultColDef: {
-                    flex: -0,
+                    cellStyle: {
+                        'text-align': 'center',
+                        'height': '50px',
+                        "font-style": "normal",
+                        "font-variant": "normal",
+                        "font-weight": "300",
+                        "font-size": "20px",
+                        "font-family": "Roboto",
+                        'text-overflow': 'ellipsis',
+                        'white-space': 'nowrap',
+                        'resizable': 'true',
+                        'background': 'white',
+                    },
+                    flex: 0,
                 },
+                headerClass: 'child-header',
                 components: customChildrenCellRenderers,
                 masterDetail: true,
                 rowSelection: "multiple",
@@ -150,7 +165,7 @@ const usePP = () => {
                 //     statusPanels: [
                 //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                 //     ]
-                // }
+                // },
             },
             getDetailRowData: (params: any) => {
                 if (undefined != params.data.children) {
@@ -161,7 +176,8 @@ const usePP = () => {
     }, []);
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
     const navigateToSimulateScreen = () => {
-        navigate("/planning/simulativeFullKit");
+        navigate("/planning/simulativeFullKit", { state: { ShortageDatas } });
+
     }
     const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
         return {
@@ -191,7 +207,6 @@ const usePP = () => {
             },
         ];
     }, []);
-
     const customCellRenderers = useMemo(() => (
         {
             "availabilityToolTip": AvailabilityToolTip,
@@ -202,6 +217,7 @@ const usePP = () => {
             toolPanels: ['columns'],
         };
     }, []);
+
     const renderView = () => {
         switch (currentTab.id) {
             case "ca":
@@ -262,12 +278,17 @@ const usePP = () => {
                     background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
                 };
             },
+            overlayNoRowsTemplate: `
+            <div style="height: 100%; display: flex; align-items: center; justify-content: center; background: ${Math.random() < 0.5 ? "#EBEBEB" : "#F7F7F7"};">
+                No Rows To Show
+            </div>`,
             components: customCellRenderers,
             rowSelection: 'multiple',
             suppressRowClickSelection: true,
             enableBrowserTooltips: true,
             enableRangeSelection: true,
             icons: icons,
+            pagination: true,
             defaultColDef: {
                 cellStyle: {
                     'text-align': 'center',
@@ -282,6 +303,7 @@ const usePP = () => {
                     'resizable': 'true',
                 },
             },
+
         },
         masterDetail: true,
         detailCellRendererParams: detailCellRendererParams,
@@ -315,14 +337,21 @@ const usePP = () => {
             gridRef.current?.api.refreshCells({ force: true });
         }
     };
+
+    const GetCount = {
+        "short": ShortageDatas.length,
+        "complete": CompleteAvailableDatas.length,
+        "total": ShortageDatas.length + CompleteAvailableDatas.length
+    };
+
     return {
         isSideBarOpen,
         agGridProps,
         currentPage,
         toggleCurrentTab,
         renderView,
-        currentTab,
         excelDownload,
+        GetCount
     }
 }
 

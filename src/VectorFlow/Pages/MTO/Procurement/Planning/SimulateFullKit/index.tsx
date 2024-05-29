@@ -4,9 +4,8 @@ import useSimFullKit from '../SimulateFullKit/useSimFullKit';
 import '../styles';
 import VFFloatingTab from "../../../../../../components/VectorFLOW/commons/VFFloatingTab";
 
-
 const SimulateFullKit = () => {
-    const { renderView, currentTab, toggleCurrentTab } = useSimFullKit();
+    const { renderView, currentTab, toggleCurrentTab, Save } = useSimFullKit();
     return (
         <>
             <ActionToolBar
@@ -47,6 +46,7 @@ const SimulateFullKit = () => {
                     {renderView()}
                 </div>
             </ProcurementLayout>
+            {/* <text onClick={Save} style={{ fontSize: 34 }}>save</text> */}
         </>
     )
 }

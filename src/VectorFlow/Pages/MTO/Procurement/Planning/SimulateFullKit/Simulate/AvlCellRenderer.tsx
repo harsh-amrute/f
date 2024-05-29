@@ -1,12 +1,13 @@
 
 import { ICellRendererParams } from "ag-grid-enterprise"
 
-import { BTRAvailabiltyCellRenderer, BTRAvailabiltyCellRendererWrapper } from './styles'
+import { BTRAvailabiltyCellRenderer, BTRAvailabiltyCellRendererWrapper } from '../../../../../MTA/InsightsAndTrends/BTR/styles';
 
 const AvailabilityCellRenderer = (props: ICellRendererParams) => {
     return (
         <BTRAvailabiltyCellRendererWrapper data-testid="availability-cell-renderer">
-            <BTRAvailabiltyCellRenderer value={ props.data.Availability} />
+            <div style={{ marginRight: 12 }}>{props.data.fka}</div>
+            <BTRAvailabiltyCellRenderer value={props.data.fka} />
         </BTRAvailabiltyCellRendererWrapper>
     )
 }

@@ -359,7 +359,7 @@ const ActionToolBar = ({ view, currentTab, tabsList, onFloatingTabChange, onGoBa
 
 
 
-                        {
+                        {/* {
                             (currCategory === 'CustomScreens' || currCategory === 'BufferTrend' || currCategory === "BPR" || currCategory === "RRR" || currCategory === "BOR" || currCategory === "BTR" || currCategory === "ResearchInsight" || currCategory === "DBMNorm" || (currCategory === "GuidedInsight" && currentTab !== "chronicunavailability") || currCategory === "OpenExpeditingRequests") ? null : (
                                 !disableChartAndGridViewToggle &&
                                 <SCViewBackground>
@@ -382,7 +382,7 @@ const ActionToolBar = ({ view, currentTab, tabsList, onFloatingTabChange, onGoBa
                                     </SCViewContainer>
                                 </SCViewBackground>
                             )
-                        }
+                        } */}
                     </SCCustomActionsContainer>
                 </SCTaskBarContainer>
             }
