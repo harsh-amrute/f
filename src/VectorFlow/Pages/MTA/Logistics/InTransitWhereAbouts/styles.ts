@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { BPRViewTableToolTip } from "../../SupplyChainIntelligenceHub/BPR/styles"
 
 export const CurrentLocationCellRendererWrapper = styled.input`
     border: 0.5px solid #C6C6C6;
@@ -94,6 +95,7 @@ export const RemarkModalTable = styled.div`
     flex-direction:column;
     // padding:0px 10px;
     padding-left:5px;
+    margin-bottom:10px;
 
 `
 
@@ -135,6 +137,7 @@ export const RemarkModalTableCell = styled.div`
     font-family:Roboto;
     font-size:10px;
     font-weight:500;
+    position:relative;
 `
 
 export const RemarkModalUserIcon = styled.div`
@@ -148,6 +151,7 @@ export const RemarkModalUserIcon = styled.div`
     display:flex;
     align-items:center;
     justify-content:center;
+    cursor:default;
 `
 
 export const RemarkModalRemarkCelLRenderer = styled.div`
@@ -188,3 +192,28 @@ export const ETACellRendererCellValue = styled.input`
     width:100%;
     padding:4px;
     `
+
+export const UserToolTip = styled(BPRViewTableToolTip)`
+    position:absolute;
+    max-width:none;
+    left:60px;
+    top:7px;
+    padding-left:10px;
+    padding-right:10px;
+    border-radius:6px;
+    &::after {
+        content: '';
+        position: absolute;
+        left: -6.5px;
+        transform: translate(-50%, -50%);
+        border-width: 6px;
+        border-style: solid;
+        border-color: transparent #4E4E4E transparent transparent; /* Updated to black */
+    }
+`
+
+export const UserToolTipContent = styled.p`
+    font-family:Roboto;
+    font-size:13px;
+    line-height:20px;
+`

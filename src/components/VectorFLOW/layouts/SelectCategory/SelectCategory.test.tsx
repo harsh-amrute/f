@@ -75,7 +75,6 @@ describe ("SelectCategory Component", () => {
     it("handles clicks", async () => {
       render (contextWrapper(<SelectCategory{...dummyprops}></SelectCategory>,store));
       
-
       const fromBtn = screen.getAllByText('From Parent');
       fromBtn.forEach((b)=>{
         act(async()=>{
@@ -103,7 +102,6 @@ describe ("SelectCategory Component", () => {
       })
       const tChild = screen.getAllByText('To Child');
       fireEvent.click(tChild[0])
-      screen.logTestingPlaygroundURL()
       
 
       const reviewBtn = screen.getAllByText('Review');
@@ -118,9 +116,34 @@ describe ("SelectCategory Component", () => {
 
         
       })
+      const btn = screen.getByText('Edit Filter');
+      act(async()=>{
+        fireEvent.click(btn);
+        await waitFor(()=>{
+          const applyFilterBtn = screen.getByText('Apply Filter')
+          fireEvent.click(applyFilterBtn)
+        })
+      })
+      // expect(btn).toBeInTheDocument();
   })
 
 
-    
+//   it("handles filter", async () => {
+//     render (contextWrapper(<SelectCategory{...dummyprops}></SelectCategory>,store));
+//     screen.debug()
+//     const btn = screen.getByText('Edit Filter');
+//     fireEvent.click(btn);
+//     expect(btn).toBeInTheDocument();
+
+//     // const count=screen.getAllByText('100')[0];
+//     // expect(count).toBeInTheDocument();
+//     // act(()=>{
+        
+//     //     const button=screen.getAllByText('Edit Filter')[0]
+//     //     expect(button).toBeInTheDocument();
+//     //     fireEvent.click(button);
+//     // })
+
+// })
 
 })

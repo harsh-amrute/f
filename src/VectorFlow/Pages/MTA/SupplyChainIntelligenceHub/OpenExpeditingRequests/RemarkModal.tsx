@@ -1,8 +1,8 @@
 import { useUserData } from "../../../../../context"
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
-import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTable, RemarkModalTableCell, RemarkModalTableHeader, RemarkModalTableHeaderContainer, RemarkModalTableRow, RemarkModalTableRowContainer, RemarkText } from "./styles"
-import UserIcon from "./UserIcon"
+import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTable, RemarkModalTableCell, RemarkModalTableHeader, RemarkModalTableHeaderContainer, RemarkModalTableRow, RemarkModalTableRowContainer, RemarkText } from "../../Logistics/InTransitWhereAbouts/styles"
+import UserIcon from "../../Logistics/InTransitWhereAbouts/UserIcon"
 
 interface RemarkModalProps{
     isOpen:boolean
@@ -35,9 +35,6 @@ const RemarkModal = (props:RemarkModalProps)=>{
                         <RemarkModalTableHeader>
                             ETA
                         </RemarkModalTableHeader>
-                        <RemarkModalTableHeader>
-                            Current Location
-                        </RemarkModalTableHeader>
                     </RemarkModalTableHeaderContainer>
                     <RemarkModalTableRowContainer>
                         {(!data || data.length===0)?(
@@ -50,18 +47,15 @@ const RemarkModal = (props:RemarkModalProps)=>{
                                     <RemarkModalTableCell>
                                         <RemarkModalRemarkCelLRenderer>
                                             <RemarkText>
-                                               {d.Remarks}
+                                               {d.r}
                                             </RemarkText>
                                             <RemarkDate>
-                                               {d.RemarksDate}
+                                               {d.rd}
                                             </RemarkDate>
                                         </RemarkModalRemarkCelLRenderer>
                                     </RemarkModalTableCell>
                                     <RemarkModalTableCell>
                                        {d.ETA}
-                                    </RemarkModalTableCell>
-                                    <RemarkModalTableCell>
-                                       {d.CurrentLocation}
                                     </RemarkModalTableCell>
                                 </RemarkModalTableRow>
                                 )
