@@ -25,7 +25,8 @@ export const TextFilterWrapper=styled.div`
 `
 export const VFMasterGroupCard=styled.div`
     width: 440px;
-    aspect-ratio:0.5;
+    height:586px;
+    // aspect-ratio:0.5;
     display:flex;
     flex-direction:column;
     align-items:center;

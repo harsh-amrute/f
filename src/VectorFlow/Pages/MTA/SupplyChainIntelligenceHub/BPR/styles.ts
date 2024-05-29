@@ -91,7 +91,7 @@ export const BPRViewTableHeaderContainer = styled.div`
     position:sticky;
     top:0;
     background-color: white;
-    // z-index:100;
+    z-index:1;
    
 `
 
@@ -137,6 +137,7 @@ position:relative;
     flex-direction:column;
     // max-height:250px;
     // margin-top:20px;
+    
 `
 
 export const BPRViewTableRow = styled.div`
