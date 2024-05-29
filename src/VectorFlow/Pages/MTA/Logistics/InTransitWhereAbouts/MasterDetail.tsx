@@ -63,7 +63,9 @@ const MasterDetail = (params:any)=>{
                 defaultColDef={{
                     cellStyle:{
                         'text-align':'center'
-                    }
+                    },
+                    headerClass:'intransit_header',
+                    flex:1
                 }}
                 components={{
                     colorCellRenderer:ColorCellRenderer

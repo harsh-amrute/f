@@ -72,7 +72,7 @@ const useBPRFilter=()=>{
     
 
 
-    const onDelete = (parentId:any, filterId:any, value:any,) => {
+    const onDelete = (parentId:any, filterId:any, value:any) => {
         const updatedMultiFilter = { ...multiFilter };
     
         const currGroupKey = Object.keys(updatedMultiFilter).find(key => updatedMultiFilter[key as keyof BPRFilterState].id === parentId);
@@ -83,6 +83,7 @@ const useBPRFilter=()=>{
         }
     
         setMultiFilter(updatedMultiFilter);
+        return updatedMultiFilter
     };
         
            

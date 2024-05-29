@@ -48,7 +48,7 @@ const Planning = () => {
         onApplyFilter,
         currentFilter,
         setCurrentFilter,
-        onDelete,
+        onDeleteFilter,
         isDataLoading
     } = usePlanning();
 
@@ -137,7 +137,8 @@ const Planning = () => {
                     onOrderFulfillmentReviewClick={()=>handlePlanningQuadrantClick('OrderFulfillment')}
                     multiFilter={currentFilter}
                     setMultiFilter={setCurrentFilter}
-                    onDelete={onDelete}
+                    onDelete={onDeleteFilter}
+                    onApplyFilter={onApplyFilter}
                 />
             }
             {
@@ -160,7 +161,7 @@ const Planning = () => {
                         onApplyFilter={onApplyFilter}
                         multiFilter={currentFilter}
                         setMultiFilter={setCurrentFilter}
-                        onDelete={onDelete}
+                        onDelete={onDeleteFilter}
                         />
                 </div>  
                     

@@ -24,7 +24,8 @@ const dummyprops = {
     currCategory:'',
     multiFilter:{},
     setMultiFilter:()=>{return},
-    onDelete:()=>{return}
+    onDelete:()=>{return},
+    onApplyFilter:()=>{return}
 }
 
 const queryClient = setupReactQuery();

@@ -91,7 +91,7 @@ export const BPRViewTableHeaderContainer = styled.div`
     position:sticky;
     top:0;
     background-color: white;
-    z-index:100;
+    z-index:1;
    
 `
 
@@ -101,7 +101,6 @@ export const BPRViewTableHeader = styled.div`
    overflow:hidden;
     min-width:120px;
     height:45px;
-    
     padding:10px;
     padding-top:15px;
     font-style:normal;
@@ -118,11 +117,11 @@ export const BPRViewTableHeader = styled.div`
     &::after{
         content:'';
         position:absolute;
-        right:0;
+        right:1px;
         top:4px;
         bottom:4px;
         background-color:#898585;
-        width:1px;
+        width:0.5px;
     }
     &:last-child::after {
         display: none;
@@ -138,6 +137,7 @@ position:relative;
     flex-direction:column;
     // max-height:250px;
     // margin-top:20px;
+    
 `
 
 export const BPRViewTableRow = styled.div`

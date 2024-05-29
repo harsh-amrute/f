@@ -169,6 +169,7 @@ const useInTransitWhereAbouts = ()=>{
         tooltipInteraction: true,
         // rowSelection:'single',
         gridOptions: {
+            animateRows:true,
             rowHeight: 50,
             getRowStyle: (params: any) => {
                 if (params.node.rowIndex % 2 === 0) {
@@ -182,6 +183,7 @@ const useInTransitWhereAbouts = ()=>{
         // suppressRowClickSelection: true,
         components: customCellRenderers,
         defaultColDef: {
+          
             floatingFilter: true,
             filter: "agMultiColumnFilter",
             cellDataType: false,
