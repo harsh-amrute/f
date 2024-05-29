@@ -1,5 +1,5 @@
-export interface PPField {
-    jf: string 
+export interface ColumnHeaderConfig {
+    jf: string
     cp: number
     hdr: string
     vs: boolean
@@ -7,7 +7,7 @@ export interface PPField {
     val: string
 }
 
-export interface PPDataPayload {
+export interface ColumnHeaderConfigDataPayload {
     filters: any[]
     paginationParameter: {
         pageNumber: number,

@@ -9,7 +9,7 @@ const SimulateFullKit = () => {
     return (
         <>
             <ActionToolBar
-                view={'grid'}
+                view={'custom'}
                 setCurrentTab={() => { return }}
                 currCategory={'PP'}
                 currentTab={''}

@@ -18,7 +18,7 @@ import { RRRField } from '../VectorFlow/types/RRR'
 // import _ from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
 // clear cached token and redirect to sso login
-import { PPField } from '../VectorFlow/types/PP';
+import { ColumnHeaderConfig } from '../VectorFlow/types/PP';
 
 
 const keyboardCharacters = [
@@ -2177,7 +2177,7 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
 }
 ///////////MTO PROC PLANNING///////////////
 
-export const mapPPFieldsToColDefs = (fields: PPField[]): ColDef[] => {
+export const mapPPFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
 
   if (!fields || fields.length < 1) {
     return [];
@@ -2186,7 +2186,7 @@ export const mapPPFieldsToColDefs = (fields: PPField[]): ColDef[] => {
   const PPColumns: ColDef[] = [
   ]
 
-  result = fields.map((f: PPField) => {
+  result = fields.map((f: ColumnHeaderConfig) => {
     if (f.jf === 'ic') {
       return {
         colId: f.jf,
@@ -2249,14 +2249,14 @@ export const mapPPFieldsToColDefs = (fields: PPField[]): ColDef[] => {
 
   return [...result, ...PPColumns];
 };
-export const mapPPChildrenFieldsToColDefs = (fields: PPField[]): ColDef[] => {
+export const mapPPChildrenFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
 
   if (!fields || fields.length < 1) {
     return [];
   }
   let result: ColDef[] = [];
   const PPChildrenColumns: ColDef[] = []
-  result = fields.map((f: PPField) => {
+  result = fields.map((f: ColumnHeaderConfig) => {
     if (f.jf === 'clr') {
       return {
         colId: f.jf,
@@ -2285,7 +2285,7 @@ export const mapPPChildrenFieldsToColDefs = (fields: PPField[]): ColDef[] => {
   return [...result, ...PPChildrenColumns];
 };
 
-export const mapIncrementOrderFieldsToColDefs = (fields: PPField[]): ColDef[] => {
+export const mapIncrementOrderFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
 
   if (!fields || fields.length < 1) {
     return [];
@@ -2293,7 +2293,7 @@ export const mapIncrementOrderFieldsToColDefs = (fields: PPField[]): ColDef[] =>
   let result: ColDef[] = [];
   const PPColumns: ColDef[] = [
   ]
-  result = fields.map((f: PPField) => {
+  result = fields.map((f: ColumnHeaderConfig) => {
     if (f.jf === 'ic') {
       return {
         colId: f.jf,
@@ -2350,7 +2350,7 @@ export const mapIncrementOrderFieldsToColDefs = (fields: PPField[]): ColDef[] =>
   return [...result, ...PPColumns];
 };
 
-export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: PPField[]): ColDef[] => {
+export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
 
   if (!fields || fields.length < 1) {
     return [];
@@ -2358,7 +2358,7 @@ export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: PPField[]): Col
   let result: ColDef[] = [];
   const SimChildrenColumns: ColDef[] = [
   ]
-  result = fields.map((f: PPField) => {
+  result = fields.map((f: ColumnHeaderConfig) => {
     if (f.jf === 'clr') {
       return {
         colId: f.jf,
