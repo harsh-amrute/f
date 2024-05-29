@@ -240,7 +240,7 @@ const ResearchInsights = ()=>{
                                             value:'Eco'
                                         }
                                     ]}
-                                    handleClick={(e:any)=>setCalenderType(e.label)}
+                                    handleClick={(e:any)=>setCalenderType(e.value)}
                                     
                                 />
                             </CapsuleWrapper>
