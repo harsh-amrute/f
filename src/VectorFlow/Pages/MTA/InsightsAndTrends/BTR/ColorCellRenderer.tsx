@@ -39,7 +39,7 @@ const colorMapper =(color:number)=> {
 
     const cellColor = colorMapper(params.value)
 
-    if(color===null || color===undefined){
+    if(color===null || color===undefined || isNaN(color)){
         return(
             <>
             
