@@ -2219,7 +2219,7 @@ export const mapPPFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => 
           return tooltipText;
         },
         tooltipComponent: "availabilityToolTip",
-        initialWidth: 160,
+        initialWidth: 200, //160
         autoHeaderHeight: true,
         wrapHeaderText: true,
       }
@@ -2234,7 +2234,7 @@ export const mapPPFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => 
         editable: true,
         autoHeaderHeight: true,
         wrapHeaderText: true,
-        initialWidth: 160,
+        initialWidth: 200, //160
         filter: 'agMultiColumnFilter',
         floatingFilter: true,
         cellStyle: {
@@ -2245,6 +2245,18 @@ export const mapPPFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => 
         },
       }
     }
+
+    if (f.jf === "rmd") {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        initialWidth: 300, //160
+        filter: 'agMultiColumnFilter',
+        floatingFilter: true,
+      }
+    }
     return {
       colId: f.jf,
       [f.jf]: f.val,
@@ -2253,10 +2265,9 @@ export const mapPPFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => 
       hide: !f.vs,
       autoHeaderHeight: true,
       wrapHeaderText: true,
-      initialWidth: 160,
+      initialWidth: 200, //160
       filter: 'agMultiColumnFilter',
       floatingFilter: true,
-      // aggFunc: "sum"
     }
   })
 
@@ -2324,7 +2335,7 @@ export const mapIncrementOrderFieldsToColDefs = (fields: ColumnHeaderConfig[]): 
         headerName: f.hdr,
         hide: !f.vs,
         cellRenderer: "colorCellRenderer",
-        initialWidth: 160,
+        initialWidth: 200,//160
         autoHeaderHeight: true,
         wrapHeaderText: true,
       }
@@ -2337,10 +2348,38 @@ export const mapIncrementOrderFieldsToColDefs = (fields: ColumnHeaderConfig[]): 
         hide: !f.vs,
         cellRenderer: "avlCellRenderer",
         tooltipComponent: 'availabilityToolTip',
-        tooltipField: f.jf,
-        initialWidth: 160,
+        tooltipValueGetter: (params: any) => {
+          const oq = params.data.oq;
+          const fka = params.data.fka;
+          return `${fka}/${oq} kits can be manufactured`;
+        },
+        initialWidth: 200,//160
         autoHeaderHeight: true,
         wrapHeaderText: true,
+        filter: 'agMultiColumnFilter',
+        floatingFilter: true,
+      }
+    }
+    if (f.jf === 'item') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        tooltipField: f.jf,
+        initialWidth: 200,//160
+        filter: 'agMultiColumnFilter',
+        floatingFilter: true,
+      }
+    }
+    if (f.jf === 'id') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        tooltipField: f.jf,
+        initialWidth: 300,//160
         filter: 'agMultiColumnFilter',
         floatingFilter: true,
       }
@@ -2353,7 +2392,7 @@ export const mapIncrementOrderFieldsToColDefs = (fields: ColumnHeaderConfig[]): 
       hide: !f.vs,
       autoHeaderHeight: true,
       wrapHeaderText: true,
-      initialWidth: 160,
+      initialWidth: 200,//160
       filter: 'agMultiColumnFilter',
       floatingFilter: true,
       // aggFunc: "sum"
@@ -2383,13 +2422,31 @@ export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: ColumnHeaderCon
         headerClass: "simchild-header",
       }
     }
+    if (f.jf === 'rm') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        headerClass: "simchild-header",
+      }
+    }
+    if (f.jf === 'rmd') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        initialWidth: 300,
+        headerClass: "simchild-header",
+      }
+    }
     return {
       colId: f.jf,
       [f.jf]: f.val,
       field: f.jf,
       headerName: f.hdr,
       hide: !f.vs,
-      initialWidth: 180,
       headerClass: "simchild-header",
     }
   })

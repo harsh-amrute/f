@@ -2,7 +2,7 @@
     /* --ag-foreground-color: #EBEBEB; */
     /* --ag-background-color: rgb(255, 255, 255); */
     --ag-header-foreground-color: rgb(255, 255, 255);
-    --ag-header-background-color: rgba(255, 255, 255) !important;
+    --ag-header-background-color: rgb(255, 255, 255) !important;
     --ag-header-height: 43px;
     --ag-checkbox-checked-color: #BC3D81;
     --ag-selected-row-background-color: rgb(188, 61, 129, 0.2);
@@ -14,6 +14,11 @@
 
 }
 
+.child-grid .ag-header-container {
+    /* Your styles for child grid header cells */
+    background-color: #ffffff;
+    /* Change this to your desired background color */
+}
 
 .child-header .ag-header-cell-label {
     background-color: rgb(255, 255, 255) !important;

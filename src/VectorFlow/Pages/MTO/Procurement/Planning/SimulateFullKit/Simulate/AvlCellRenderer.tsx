@@ -6,8 +6,8 @@ import { BTRAvailabiltyCellRenderer, BTRAvailabiltyCellRendererWrapper } from '.
 const AvailabilityCellRenderer = (props: ICellRendererParams) => {
     return (
         <BTRAvailabiltyCellRendererWrapper data-testid="availability-cell-renderer">
-            <div style={{ marginRight: 12 }}>{props.data.oq}</div>
-            <BTRAvailabiltyCellRenderer value={props.data.avl} />
+            <div style={{ marginRight: 12 }}>{props.data.fka}</div>
+            <BTRAvailabiltyCellRenderer value={props.data.fkapr} />
         </BTRAvailabiltyCellRendererWrapper>
     )
 }

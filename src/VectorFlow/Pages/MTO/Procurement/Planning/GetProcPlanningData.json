@@ -15,8 +15,8 @@
             "req": 100,
             "uom": "Kg",
             "soh": 40,
-            "siqc": 20,
-            "sit": 10,
+            "siqc": 10,
+            "sit": 16,
             "ppo": 30,
             "eas": 0,
             "tsfs": 0,
@@ -31,7 +31,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1232",
@@ -43,7 +44,8 @@
                     "clr": "Red",
                     "bpp": 78,
                     "pend": 10,
-                    "lid": "Lid2"
+                    "lid": "Lid2",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -55,7 +57,8 @@
                     "clr": "Yellow",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -63,10 +66,10 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 20,
-                    "R": 55,
-                    "Y": 20,
-                    "G": 5
+                    "B": 25,
+                    "R": 25,
+                    "Y": 25,
+                    "G": 25
                 }
             ],
             "rm": "AREB5092383",
@@ -91,7 +94,8 @@
                     "clr": "Black",
                     "bpp": 34,
                     "pend": 8,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1234",
@@ -103,7 +107,8 @@
                     "clr": "Red",
                     "bpp": 34,
                     "pend": 17,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1230",
@@ -115,7 +120,8 @@
                     "clr": "Yellow",
                     "bpp": 34,
                     "pend": 10,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1233",
@@ -127,7 +133,8 @@
                     "clr": "Green",
                     "bpp": 34,
                     "pend": 9,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -135,9 +142,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 10,
-                    "R": 30,
-                    "Y": 60
+                    "B": 33.33,
+                    "R": 33.33,
+                    "Y": 33.33
                 }
             ],
             "rm": "AREB5092385",
@@ -162,7 +169,8 @@
                     "clr": "Black",
                     "bpp": 26,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1232",
@@ -174,7 +182,8 @@
                     "clr": "Red",
                     "bpp": 26,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1233",
@@ -186,7 +195,8 @@
                     "clr": "Yellow",
                     "bpp": 26,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -194,8 +204,7 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 25,
-                    "R": 25,
+                    "B": 50,
                     "Y": 25,
                     "G": 25
                 }
@@ -222,7 +231,8 @@
                     "clr": "Black",
                     "bpp": 26,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1239",
@@ -231,10 +241,11 @@
                     "cc": 546588,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Red",
+                    "clr": "Black",
                     "bpp": 26,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -246,7 +257,8 @@
                     "clr": "Yellow",
                     "bpp": 56,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -258,7 +270,8 @@
                     "clr": "Green",
                     "bpp": 80,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -267,11 +280,11 @@
             "cp": [
                 {
                     "B": 50,
-                    "R": 20,
-                    "Y": 30
+                    "R": 25,
+                    "Y": 25
                 }
             ],
-            "rm": "AREB50944381",
+            "rm": "AREB5094438",
             "rmd": "SB2-NOTCH-KOTH-ABC-11",
             "nooi": 100,
             "req": 100,
@@ -293,7 +306,8 @@
                     "clr": "Black",
                     "bpp": 26,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -305,7 +319,8 @@
                     "clr": "Black",
                     "bpp": 56,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -317,7 +332,8 @@
                     "clr": "Red",
                     "bpp": 80,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1255",
@@ -329,7 +345,8 @@
                     "clr": "Yellow",
                     "bpp": 80,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -343,7 +360,7 @@
                     "G": 25
                 }
             ],
-            "rm": "AsEB5092381",
+            "rm": "AEB50923810",
             "rmd": "SB3-NOTCH-KOTH-ABC-11",
             "nooi": 100,
             "req": 100,
@@ -365,7 +382,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -377,7 +395,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -389,7 +408,8 @@
                     "clr": "Yellow",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1257",
@@ -401,7 +421,8 @@
                     "clr": "Green",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -435,7 +456,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -447,7 +469,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -481,7 +504,8 @@
                     "clr": "Red",
                     "bpp": 38,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMA1256",
@@ -493,7 +517,8 @@
                     "clr": "Yellow",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -501,9 +526,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 10,
-                    "R": 50,
-                    "Y": 40
+                    "B": 33.33,
+                    "R": 33.33,
+                    "G": 33.33
                 }
             ],
             "rm": "ARSB5092581",
@@ -528,7 +553,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -540,7 +566,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -549,10 +576,11 @@
                     "cc": 5466676,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Yellow",
+                    "clr": "Green",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -560,9 +588,8 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 60,
-                    "R": 20,
-                    "Y": 20
+                    "B": 33.33,
+                    "R": 66.67
                 }
             ],
             "rm": "AREB5092381",
@@ -587,7 +614,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -599,7 +627,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -608,10 +637,11 @@
                     "cc": 5466676,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Yellow",
+                    "clr": "Red",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -619,9 +649,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 10,
-                    "R": 80,
-                    "Y": 10
+                    "B": 33.33,
+                    "R": 33.33,
+                    "Y": 33.33
                 }
             ],
             "rm": "ARNB5092381",
@@ -646,7 +676,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -658,7 +689,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -670,7 +702,8 @@
                     "clr": "Yellow",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -678,9 +711,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 80,
-                    "R": 10,
-                    "Y": 10
+                    "B": 33.33,
+                    "R": 33.33,
+                    "Y": 33.33
                 }
             ],
             "rm": "AREB5092381",
@@ -705,7 +738,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -717,7 +751,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -729,7 +764,8 @@
                     "clr": "Yellow",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -737,9 +773,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 5,
-                    "R": 70,
-                    "G": 25
+                    "B": 33.33,
+                    "R": 33.33,
+                    "G": 33.33
                 }
             ],
             "rm": "AREB5092381",
@@ -764,7 +800,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -776,7 +813,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -788,7 +826,8 @@
                     "clr": "Green",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -796,9 +835,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "G": 70,
-                    "R": 5,
-                    "Y": 25
+                    "G": 33.33,
+                    "R": 33.33,
+                    "Y": 33.33
                 }
             ],
             "rm": "AREB5092381",
@@ -823,7 +862,8 @@
                     "clr": "Green",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -835,7 +875,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -847,7 +888,8 @@
                     "clr": "Yellow",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -855,9 +897,8 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 90,
-                    "R": 5,
-                    "Y": 5
+                    "B": 33.33,
+                    "Y": 66.67
                 }
             ],
             "rm": "AREB5092381",
@@ -882,7 +923,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -891,10 +933,11 @@
                     "cc": 5466721,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Red",
+                    "clr": "Yellow",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -906,7 +949,8 @@
                     "clr": "Yellow",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -914,9 +958,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 20,
-                    "R": 40,
-                    "Y": 40
+                    "B": 33.33,
+                    "R": 33.33,
+                    "G": 33.33
                 }
             ],
             "rm": "ARSB6092581",
@@ -941,7 +985,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -953,7 +998,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -962,10 +1008,11 @@
                     "cc": 5466676,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Yellow",
+                    "clr": "Green",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -973,9 +1020,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 40,
-                    "R": 10,
-                    "Y": 50
+                    "B": 33.33,
+                    "R": 33.33,
+                    "Y": 33.33
                 }
             ],
             "rm": "ARSB5092581",
@@ -1000,7 +1047,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -1012,7 +1060,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -1024,7 +1073,8 @@
                     "clr": "Yellow",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -1032,9 +1082,10 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 20,
-                    "R": 60,
-                    "Y": 20
+                    "B": 25,
+                    "R": 25,
+                    "Y": 25,
+                    "G": 25
                 }
             ],
             "rm": "ARSB5092581",
@@ -1059,7 +1110,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -1071,7 +1123,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -1083,7 +1136,21 @@
                     "clr": "Yellow",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
+                },
+                {
+                    "on": "BMN1257",
+                    "oq": 43,
+                    "cn": "Shiv Mishra",
+                    "cc": 5466676,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Green",
+                    "bpp": 65,
+                    "pend": 12,
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -1091,9 +1158,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 40,
-                    "R": 10,
-                    "Y": 50
+                    "B": 33.33,
+                    "R": 33.33,
+                    "Y": 33.33
                 }
             ],
             "rm": "ARSB5092581",
@@ -1118,7 +1185,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -1130,7 +1198,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -1142,7 +1211,8 @@
                     "clr": "Yellow",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -1150,9 +1220,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 10,
-                    "R": 20,
-                    "Y": 70
+                    "B": 33.33,
+                    "R": 33.33,
+                    "Y": 33.33
                 }
             ],
             "rm": "ARSB5092581",
@@ -1177,7 +1247,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -1189,7 +1260,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -1201,7 +1273,8 @@
                     "clr": "Yellow",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -1209,9 +1282,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 10,
-                    "R": 50,
-                    "Y": 40
+                    "B": 33.33,
+                    "R": 33.33,
+                    "Y": 33.33
                 }
             ],
             "rm": "ARSB5092581",
@@ -1236,7 +1309,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -1248,7 +1322,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -1260,7 +1335,8 @@
                     "clr": "Yellow",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -1268,9 +1344,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 50,
-                    "R": 10,
-                    "Y": 40
+                    "B": 25,
+                    "R": 25,
+                    "Y": 50
                 }
             ],
             "rm": "ARSB5092581",
@@ -1295,7 +1371,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -1307,7 +1384,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -1319,7 +1397,21 @@
                     "clr": "Yellow",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
+                },
+                {
+                    "on": "BMN1257",
+                    "oq": 43,
+                    "cn": "Shiv Mishra",
+                    "cc": 5466676,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Yellow",
+                    "bpp": 65,
+                    "pend": 12,
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -1327,9 +1419,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 40,
-                    "R": 50,
-                    "Y": 10
+                    "B": 33.33,
+                    "R": 33.33,
+                    "Y": 33.33
                 }
             ],
             "rm": "ARSB5092581",
@@ -1354,7 +1446,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -1366,7 +1459,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -1378,7 +1472,8 @@
                     "clr": "Yellow",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         },
@@ -1386,9 +1481,8 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 40,
-                    "R": 30,
-                    "Y": 30
+                    "B": 33.33,
+                    "R": 66.67
                 }
             ],
             "rm": "ARNB5092581",
@@ -1413,7 +1507,8 @@
                     "clr": "Black",
                     "bpp": 78,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1212",
@@ -1425,7 +1520,8 @@
                     "clr": "Red",
                     "bpp": 87,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 },
                 {
                     "on": "BMN1256",
@@ -1434,10 +1530,11 @@
                     "cc": 5466676,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Yellow",
+                    "clr": "Red",
                     "bpp": 65,
                     "pend": 12,
-                    "lid": "Lid1"
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
                 }
             ]
         }

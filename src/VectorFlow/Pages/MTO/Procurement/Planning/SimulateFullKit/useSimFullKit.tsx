@@ -35,14 +35,14 @@ const useSimFullKit = () => {
                     }
                     if (remainingEas > 0) {
                         if (penDValue <= remainingEas) {
-                            child.easa = penDValue;
+                            child.remq = penDValue;
                             remainingEas -= penDValue;
                         } else {
-                            child.easa = remainingEas;
+                            child.remq = remainingEas;
                             remainingEas = 0;
                         }
                     } else {
-                        child.easa = 0;
+                        child.remq = 0;
                     }
                 });
             }
@@ -58,17 +58,20 @@ const useSimFullKit = () => {
                             on: child.on,
                             lid: child.lid,
                             item: item.rm,
-                            easa: child.easa,
-                            eas: item.eas,
-                            rm: item.rm
+                            oq: child.oq,
+                            aq: child.aq,
+                            easa: item.eas,
+                            remq: child.remq
                         };
                         newData.push(newEntry);
                     });
                 }
             });
         }
-        console.log("JSON", JSON.stringify(newData, null, 2));
-        return newData;
+        const wrappedData = { data: newData };
+        //console.log("JSON", JSON.stringify(wrappedData, null, 2));
+        return wrappedData;
+
     };
 
     const tabs: Array<VFFloatingTabItemProps> = [
@@ -87,7 +90,7 @@ const useSimFullKit = () => {
     const initilizeData = (data: any) => {
         const calculateData = data.map((item: any) => ({
             ...item,
-            avl: item.oq === item.fka ? 100 : 50
+            fkapr: ((item.fka / item.oq) * 100).toFixed(2)
         }));
         const WithZeroEas = calculateData.filter((item: any) => item.children.every((child: any) => child.eas === 0));
         const WithoutZeroEas = calculateData.filter((item: any) => item.children.every((child: any) => child.eas !== 0));
@@ -124,6 +127,7 @@ const useSimFullKit = () => {
     const detailCellRendererParams = useMemo(() => {
         return {
             detailGridOptions: {
+                className: 'child-grid',
                 columnDefs: SimulateChildrenColumns,
                 defaultColDef: {
                     cellStyle: {

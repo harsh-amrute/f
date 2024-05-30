@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback } from "react"
+import { useState, useMemo, useRef, useCallback, useEffect } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { AgGridReact } from "@ag-grid-community/react";
 import { useUserData } from "../../../../../context"
@@ -136,6 +136,7 @@ const usePP = () => {
     const detailCellRendererParams = useMemo(() => {
         return {
             detailGridOptions: {
+                className: 'child-grid',
                 columnDefs: PPChildrenColumns,
                 defaultColDef: {
                     cellStyle: {
@@ -161,12 +162,7 @@ const usePP = () => {
                 enableRangeSelection: true,
                 pagination: true,
                 paginationAutoPageSize: true,
-                alwaysShowVerticalScroll: true,
-                // statusBar: {
-                //     statusPanels: [
-                //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                //     ]
-                // },
+                alwaysShowVerticalScroll: true
             },
             getDetailRowData: (params: any) => {
                 if (undefined != params.data.children) {
