@@ -9,7 +9,7 @@ export const SCDynamicContainer = styled.div`
     height:150vh;
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
         .size.desktop}) {
-        height:85vh
+        height:81vh
     }
   
     @media (min-width: ${gridSystem.size.desktop}) {

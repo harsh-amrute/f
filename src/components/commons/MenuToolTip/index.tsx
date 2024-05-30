@@ -14,9 +14,9 @@ import {useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 
-const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any) => {
+const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading,setIsHide,setWidthResponsive }: any) => {
   const { t } = useTranslation();
-  const { user } = useUserData();
+  const { user,toggleSideBar } = useUserData();
   const themeUi = user?.user?.theme_ui;
   const location = useLocation();
   const navigate = useNavigate();
@@ -44,7 +44,17 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,setIsLoading }: any
     }
     else{
       // navigate(url, { replace: true })
-      navigateWithPrompt(()=>navigate(url, { replace: true }),url,mdm,resetState);
+      navigateWithPrompt(()=>{
+        navigate(url, { replace: true });
+        if (isHide) {
+          setWidthResponsive({
+            widthLeft: "0%",
+            widthRight: "95%",
+          });
+        }
+        setIsHide(false);
+        toggleSideBar(false)
+      },url,mdm,resetState);
     }
   }
 

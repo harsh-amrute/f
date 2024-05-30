@@ -208,12 +208,12 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
         <SCDynamicContainer>
             <Allotment>
                 <Allotment.Pane preferredSize={1000}>
-                    <SCChartContainer height={430}>
+                    <SCChartContainer height={425}>
                         <SCChartHeaderContainer>
                             <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Transporters: Max LRs With On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader></div>
                             <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                 <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
-                                {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}
+                                {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(1)}/>}
                             </div>
                         </SCChartHeaderContainer>
                         <SCHorizontalDivider/>
@@ -292,7 +292,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                 disableZoomScaling={true}
                             />
                         </div>
-                        <div id="TransporterWiseG1" style={{height:'350px'}}></div>
+                        <div id="TransporterWiseG1" style={{height:'345px'}}></div>
                     </SCChartContainer>
                     {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                         <VFInfoTip text={graph1}/>

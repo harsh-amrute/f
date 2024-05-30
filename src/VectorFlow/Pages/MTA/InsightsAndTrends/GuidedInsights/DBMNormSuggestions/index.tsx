@@ -746,6 +746,8 @@ const DBMNormSuggestions = () => {
                             alt=""
                             data-testid="minimizechart1"
                             onClick={() => handleChartClose(1)}
+                            width={15} 
+                            height={15}
                           />
                         )}
                       </div>
@@ -833,7 +835,7 @@ const DBMNormSuggestions = () => {
                       </div>
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                         <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
-                        {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}
+                        {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}
                       </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
@@ -930,6 +932,8 @@ const DBMNormSuggestions = () => {
                             alt=""
                             data-testid="minimizechart3"
                             onClick={() => handleChartClose(3)}
+                            width={15} 
+                            height={15}
                           />
                         )}
                       </div>
@@ -1022,6 +1026,8 @@ const DBMNormSuggestions = () => {
                             alt=""
                             data-testid="minimizechart4"
                             onClick={() => handleChartClose(4)}
+                            width={15} 
+                            height={15}
                           />
                         )}
                       </div>

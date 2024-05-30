@@ -142,6 +142,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                  }}
                 disableZoomScaling={true}
                 rowHeight={30}
+                height={430}
             />
         </SCDynamicContainer>
         </>

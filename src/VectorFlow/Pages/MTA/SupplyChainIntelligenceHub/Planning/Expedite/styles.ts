@@ -20,7 +20,7 @@ export const SCDynamicContainer = styled.div`
     // aspect-ratio:1;
     width:100%;
     margin-top:10px;
-    height:90vh;
+    height:83vh;
 `
 
 export const SCHorizontalAllignmentWrapper = styled.div`

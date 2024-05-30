@@ -131,7 +131,23 @@ const NavbarItem = ({
             <SCItemChild
               key={item.url}
               onClick={() => {
-                navigateWithPrompt(()=>navigate(item.url, { replace: true }),item.url,mdm,resetState);
+                navigateWithPrompt(()=>{
+                  navigate(item.url, { replace: true });
+                  if (isHide) {
+                    setWidthResponsive({
+                      widthLeft: "0%",
+                      widthRight: "95%",
+                    });
+                  } else {
+                    setWidthResponsive({
+                      widthLeft: "20%",
+                      widthRight: "75%",
+                    });
+                  }
+                  setIsHide(!isHide);
+                  toggleSideBar(!isSideBarOpen)
+
+                },item.url,mdm,resetState);
               }}
               active={item.url === location.pathname}
               status={status}

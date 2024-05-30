@@ -525,7 +525,7 @@ const ChronicUnavailabilityCharts = () => {
                                 <SCChartHeader>Top 10 Locations: Max SKUs in Continuous Pipeline Black or Red Ageing greater than RLT</SCChartHeader>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
-                                    {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt=""  data-testid="minimizechart1"onClick={()=>handleChartClose(1)}/>}
+                                    {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt=""  data-testid="minimizechart1"onClick={()=>handleChartClose(1)}/>}
                                 </div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
@@ -612,7 +612,7 @@ const ChronicUnavailabilityCharts = () => {
                                     <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}>
                                         <VFInfoToolTip infoList={graph2}/></div>
-                                        {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}
+                                        {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" data-testid="minimizechart2" onClick={()=>handleChartClose(2)}/>}
                                     </div>
                                      
                  

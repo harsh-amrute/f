@@ -15,8 +15,8 @@ export const Wrapper = styled.div`
 `
 
 export const Icon = styled.img`
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15x;
     cursor:pointer;
 `
 export const TextWrapper = styled.ul`
