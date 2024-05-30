@@ -39,8 +39,9 @@ const VFPagination  = (props:VFPaginationProps)=>{
     }
 
     const handleOnClick = (newPage:number)=>{
-        if(newPage >totalPages)return handleChangePage(totalPages)
-        if(newPage<=1)return handleChangePage(1)
+        if(newPage===currentPage)return 
+        if(newPage >totalPages)return 
+        if(newPage<1)return 
         return handleChangePage(newPage)
     }
 
@@ -60,12 +61,14 @@ const VFPagination  = (props:VFPaginationProps)=>{
             </StatusBarLabel>
             <StatusBarLabel style={{marginLeft:'10px'}}>
                 <PaginationArrowIcon 
+                    disabled={currentPage===1}
                     src="/assets/img/VectorFLOW/NMS/pagination-last-arrow.svg" 
                     style={{transform:'rotate(180deg)'}} 
-                    onClick={()=>handleOnClick(0)}
+                    onClick={()=>handleOnClick(1)}
                     alt="pagination-last-prev-arrow"
                 />
                 <PaginationArrowIcon 
+                    disabled={currentPage===1}
                     src="/assets/img/VectorFLOW/NMS/pagination-arrow.svg" 
                     style={{transform:'rotate(180deg)'}} 
                     onClick={()=>handleOnClick(currentPage - 1)}
@@ -85,11 +88,13 @@ const VFPagination  = (props:VFPaginationProps)=>{
                 </StatusBarLabelBold>  
                 
                 <PaginationArrowIcon 
+                    disabled={currentPage===totalPages}
                     src="/assets/img/VectorFLOW/NMS/pagination-arrow.svg" 
                     onClick={()=>handleOnClick(currentPage + 1)}
                     alt="pagination-next-arrow"    
                 />
                 <PaginationArrowIcon 
+                    disabled={currentPage===totalPages}
                     src="/assets/img/VectorFLOW/NMS/pagination-last-arrow.svg" 
                     onClick={()=>handleOnClick(totalPages)}
                     alt="pagination-last-next-arrow"  

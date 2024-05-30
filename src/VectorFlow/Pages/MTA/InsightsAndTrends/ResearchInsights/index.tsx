@@ -5,7 +5,7 @@ import VFRangeSlider from "../../../../../components/VectorFLOW/commons/VFRangeS
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 
 
-import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrapper,ResearchInsightsTableTaskBar, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick, ExpandChartIcon } from "./styles"
+import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrapper,ResearchInsightsTableTaskBar, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick, ExpandChartIcon, RadioGroup } from "./styles"
 
 import CustomCalenderCaption from './CustomCalenderCaption'
 import CustomCalenderDay from './CustomCalenderDay'
@@ -204,9 +204,9 @@ const ResearchInsights = ()=>{
                         </HistoricalAvailabiltyContentSection>
                     </HistoricalAvailabiltyContent>
                 </AvailabilityTrendSection>
-                <AvailabilityTrendSection>
-                    <HorizonHeader>
-                        Select Horizon
+                <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',zoom:0.7,alignItems:'center',padding:0}}>
+                    <HorizonHeader style={{margin:'0px 0px 0px 30px'}}>
+                        Horizon
                     </HorizonHeader>
                     <VFRangeSlider
                         showTriangle={false}
@@ -298,10 +298,10 @@ const ResearchInsights = ()=>{
                             </CalenderSummaryCell>
                         </CalenderSummaryWrapper>
                     </AvailabilityTrendSection>
-                    <AvailabilityTrendSection>
+                    <AvailabilityTrendSection style={{borderBottom:'none'}}>
                         <CalenderSummaryWrapper>
                             <CalenderSummaryCell>
-                                <CalenderSummaryCellText>Contd. Black Ageing</CalenderSummaryCellText>
+                                <CalenderSummaryCellText style={{height:27}}>Contd. Black Ageing</CalenderSummaryCellText>
                                 <CalenderSummaryCellContentWrapper>
                                     <CalenderSummaryCellContent>
                                         0
@@ -309,7 +309,7 @@ const ResearchInsights = ()=>{
                                 </CalenderSummaryCellContentWrapper>
                             </CalenderSummaryCell>
                             <CalenderSummaryCell>
-                                <CalenderSummaryCellText>Contd. Black + Red Ageing</CalenderSummaryCellText>
+                                <CalenderSummaryCellText style={{height:27}}>Contd. Black + Red Ageing</CalenderSummaryCellText>
                                 <CalenderSummaryCellContentWrapper>
                                     <CalenderSummaryCellContent>
                                         30
@@ -317,7 +317,7 @@ const ResearchInsights = ()=>{
                                 </CalenderSummaryCellContentWrapper>
                             </CalenderSummaryCell>
                             <CalenderSummaryCell>
-                                <CalenderSummaryCellText>Contd. White Ageing</CalenderSummaryCellText>
+                                <CalenderSummaryCellText style={{height:27}}>Contd. White Ageing</CalenderSummaryCellText>
                                 <CalenderSummaryCellContentWrapper>
                                     <CalenderSummaryCellContent>
                                         0
@@ -330,7 +330,7 @@ const ResearchInsights = ()=>{
                 )}
                 {graphState==='graph' && (
                     <React.Fragment>
-                        <AvailabilityTrendSection>
+                        <AvailabilityTrendSection style={{paddingBottom:'0'}}>
                     <ChartHeader>
                         <ChartHeaderText>
                             Current Location
@@ -473,14 +473,17 @@ const ResearchInsights = ()=>{
                     </AvailabilityTrendSection>
                     <AvailabilityTrendSection style={{border:'none'}}>
                     <ChartHeader>
-                        <ChartHeaderRadioGroup style={{gap:'2px'}}>
-                            <input type="radio" value="parent" name="location" id="parent" defaultChecked onChange={()=>updateGraphState(2,'type',{label:"Parent",value:'Parent'})} style={{margin:0}}/>
-                            <label htmlFor="parent">Parent</label>
-                        </ChartHeaderRadioGroup>
-                        <ChartHeaderRadioGroup style={{marginLeft:'10px',gap:'2px'}}>
-                            <input type="radio" value="child" name="location" id="child" onChange={()=>updateGraphState(2,'type',{label:"Child",value:'Child'})} style={{margin:0}}/>
-                            <label htmlFor="child">Child</label>
-                        </ChartHeaderRadioGroup>
+                        <RadioGroup>
+                            <ChartHeaderRadioGroup style={{gap:'2px'}}>
+                                <input type="radio" value="parent" name="location" id="parent" defaultChecked onChange={()=>updateGraphState(2,'type',{label:"Parent",value:'Parent'})} style={{margin:0}}/>
+                                <label htmlFor="parent" style={{fontSize:10}}>Parent</label>
+                            </ChartHeaderRadioGroup>
+                            <ChartHeaderRadioGroup style={{marginLeft:'10px',gap:'2px'}}>
+                                <input type="radio" value="child" name="location" id="child" onChange={()=>updateGraphState(2,'type',{label:"Child",value:'Child'})} style={{margin:0}}/>
+                                <label htmlFor="child"  style={{fontSize:10}}>Child</label>
+                            </ChartHeaderRadioGroup>
+                        </RadioGroup>
+
                         <CapsuleWrapper>
                             <VFCapsule
                                 activeBtn={graphs[1].pen}

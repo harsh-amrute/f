@@ -2040,26 +2040,26 @@ export const mapBTRRowData =(rows:Array<any>):Array<any>=>{
 }
 
 
-export const mapBTRRowDataToColDefs = (row:any,onShowChart?:()=>void):Array<ColDef>=>{
-  const graphCellRenderer:ColDef={
-    field:'graph',
-    colId:'graph',
-    headerName:'',
-    cellRenderer:'graphCellRenderer',
-    cellRendererParams:{
-      onShowChart:onShowChart
-    },
-    cellStyle:{
-      'zoom':'0.7'
-    },
-    minWidth:60,
-    // cellStyle:{
-    //   'max-width':100,
-    //   'margin-left':20,
-    //   'margin-right':40
-    // },
-    flex: 1
-  }
+export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):Array<ColDef>=>{
+  // const graphCellRenderer:ColDef={
+  //   field:'graph',
+  //   colId:'graph',
+  //   headerName:'',
+  //   cellRenderer:'graphCellRenderer',
+  //   cellRendererParams:{
+  //     onShowChart:onShowChart
+  //   },
+  //   cellStyle:{
+  //     'zoom':'0.7'
+  //   },
+  //   minWidth:60,
+  //   // cellStyle:{
+  //   //   'max-width':100,
+  //   //   'margin-left':20,
+  //   //   'margin-right':40
+  //   // },
+  //   flex: 1
+  // }
 
   let result =Object.keys(row).map((key:string):ColDef=>{
    
@@ -2129,7 +2129,8 @@ export const mapBTRRowDataToColDefs = (row:any,onShowChart?:()=>void):Array<ColD
       ...BTRDefaultColDefs
     }
   })
-  if(onShowChart)result = [graphCellRenderer,...result]
+  // if(onShowChart)result = [graphCellRenderer,...result]
+  if(excludeColumns)result = result.filter((r)=>r.colId && !excludeColumns.includes(r.colId))
   return result
 
 }
@@ -2180,9 +2181,21 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
   {
        headerName:'Sleep',
        lockPosition:true,
-       cellRenderer:'sleepCellRenderer'
+       cellRenderer:'sleepCellRenderer',
+       floatingFilter:false,
+       minWidth:140,
+       maxWidth:140
      }
    ]
+
+   const SuggestionCategory:ColDef  ={
+    headerName:'',
+    lockPosition:true,
+    cellRenderer:'suggestionCategoryCellRenderer',
+    floatingFilter:false,
+    minWidth:30,
+    maxWidth:30
+  }
 
   
 
@@ -2219,7 +2232,7 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
   const insertPosition = 4;
   result.splice(insertPosition, 0, ...additionalColumns);
 
-   return [DBMTickColumn,...DBMGraphColumn,...DBMSleepColumn,...result]
+   return [DBMTickColumn,...DBMGraphColumn,{...SuggestionCategory},...DBMSleepColumn,...result]
   
 }
 

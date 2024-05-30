@@ -319,6 +319,7 @@ const useBTR = ()=>{
 
     const ecoColDefs = useMemo(():Array<ColDef>=>{
         if(ecoRowData.length===0)return []
+        if(verticalView)return mapBTRRowDataToColDefs(ecoRowData[0],['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm"])
         return mapBTRRowDataToColDefs(ecoRowData[0])
     },[ecoRowData])
 

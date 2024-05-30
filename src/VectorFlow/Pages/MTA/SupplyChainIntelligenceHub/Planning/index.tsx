@@ -52,7 +52,6 @@ const Planning = () => {
         isDataLoading
     } = usePlanning();
 
-    console.log(planningCounts)
 
 
     const renderView = () => {

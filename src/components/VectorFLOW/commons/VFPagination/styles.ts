@@ -61,7 +61,8 @@ export const PaginationContainer = styled.div`
     line-height:19px;
     letter-spacing: 0px;
     color: black;
-    border:1px solid #babfc7;
+    // border:1px solid #babfc7;
+    box-shadow:0px 6px 12px #95959529;
     border-top:none;
     background-color:white;
 `
@@ -93,9 +94,10 @@ flex-direction:row;
 align-items:center;
 `
 
-export const PaginationArrowIcon = styled.img`
+export const PaginationArrowIcon = styled.img<{disabled:boolean}>`
     margin-left:5px;
     cursor:pointer;
     height:10px;
     width:10px;
+    opacity:${(props)=>props.disabled?0.3:1};
 `

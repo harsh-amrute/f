@@ -4,8 +4,6 @@ import { Allotment } from "allotment";
 import { useGetExcessInventorySku, useGetExcessInventoryValue } from "../../../../../Services/MTA/InsightsAndTrends";
 import VFLoader from '../../../../../../components/VectorFLOW/commons/VFLoader';
 import VFRangeSlider from '../../../../../../components/VectorFLOW/commons/VFRangeSlider';
-import { useUserData } from "../../../../../../context";
-import VFButtonOutline from '../../../../../../components/VectorFLOW/commons/VFButtonOutline';
 import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip';
 
 
@@ -15,10 +13,6 @@ const ExcessInventoryTrend = () => {
 
     const ExcessInventorySku = ExcessInventorySkuData?.data?.data;
     const ExcessInventoryValue = ExcessInventoryValueData?.data?.data;
-
-
-    const { user } = useUserData();
-  const themeUi = user?.user?.theme_ui;
 
     const options1 = {
         // title: {
@@ -37,7 +31,7 @@ const ExcessInventoryTrend = () => {
                 stroke: "#A5A5A5",
                 marker: {
                     fill: "#BC3D81",
-                    size: 12,
+                    size: 8,
                     stroke: "white",
                     strokeWidth: 2,
                 },
@@ -52,6 +46,10 @@ const ExcessInventoryTrend = () => {
                     fontSize:10,
                     fontFamily:'Roboto'
                 },
+                label:{
+                    fontSize:8,
+                    fontFamily:'Roboto'
+                  }
             } as const,
             {
                 type: "number",
@@ -83,7 +81,7 @@ const ExcessInventoryTrend = () => {
                 stroke: "#A5A5A5",
                 marker: {
                     fill: "#BC3D81",
-                    size: 12,
+                    size: 8,
                     stroke: "white",
                     strokeWidth: 2,
                 },
@@ -98,6 +96,10 @@ const ExcessInventoryTrend = () => {
                     fontSize:10,
                     fontFamily:'Roboto'
                 },
+                label:{
+                    fontSize:8,
+                    fontFamily:'Roboto'
+                  }
             } as const,
             {
                 type: "number",
@@ -152,13 +154,20 @@ if(isLoaderGraph1||isLoaderGraph2){
                     style={{margin:'0px'}}
                     
                     />
-                    <VFButtonOutline
+                    {/* <VFButtonOutline
                     style={{height:'35px', fontSize:'13px', fontWeight:500}}
                     themeUi={themeUi}
                     onClick={() =>console.log('')}
                     width={100}>
                     Submit
-                    </VFButtonOutline>
+                    </VFButtonOutline> */}
+                   <img 
+                    style={{cursor:'pointer'}}
+                    src="/assets/img/Group 627.svg" 
+                    height={40} 
+                    width={50} 
+                    onClick={() => console.log('')}
+                    />
                    
                 </div>
                 <SCChartContainer >
@@ -220,13 +229,20 @@ if(isLoaderGraph1||isLoaderGraph2){
                 style={{margin:'0px'}}
 
                 />
-                 <VFButtonOutline
+                 {/* <VFButtonOutline
                     style={{height:'35px', fontSize:'13px', fontWeight:500}}
                     themeUi={themeUi}
                     onClick={() =>console.log('')}
                     width={100}>
                     Submit
-                </VFButtonOutline>
+                </VFButtonOutline> */}
+                 <img 
+                    style={{cursor:'pointer'}}
+                    src="/assets/img/Group 627.svg" 
+                    height={40} 
+                    width={50} 
+                    onClick={() => console.log('')}
+                    />
             </div>
 
             <SCChartContainer>

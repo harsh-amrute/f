@@ -27,9 +27,9 @@ const SubmitConflictModal=(props:SubmitConflictModalProps)=>{
 
     return (
         <VFModalCard headerText="Submit Data" openModal={true} headerIcon={"/assets/img/VectorFLOW/NMS/approveall.svg"} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-            <SubmitDataTextContainer>
-                {recordCount>0 && <>{recordCount} {recordCount>1?"Records":"Record"} submitted successfully!<br/><br/></>}
-                {modificationCount>0 && <>{modificationCount} out of {totalCount} records are under modification already</>}
+            <SubmitDataTextContainer style={{paddingBottom:'30px'}}>
+                {recordCount>0 && <><b>{recordCount}</b> {recordCount>1?"Records":"Record"} submitted successfully!<br/><br/></>}
+                {modificationCount>0 && <><b>{modificationCount}</b> out of <b>{totalCount}</b> records are under modification already</>}
             </SubmitDataTextContainer>
             <SubmitDataButtonWrapper>
                 {
@@ -48,7 +48,7 @@ const SubmitConflictModal=(props:SubmitConflictModalProps)=>{
                         </VFButton>
                     </>
                         :
-                        <VFButton themeUi={user.user.theme_ui}  onClick={onFailure} width={173} onHoverChild={
+                        <VFButton themeUi={user.user.theme_ui}  onClick={onFailure} width={130} style={{padding:'0px', height:'40px'}} onHoverChild={
                             <>
                                 Yes
                             </>
