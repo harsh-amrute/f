@@ -1,5 +1,5 @@
 import { Allotment } from "allotment"
-import {useContext,useEffect,useState} from "react"
+import {useContext,useEffect} from "react"
 import "allotment/dist/style.css";
 import { GridViewLayout } from "./styles";
 import { AgGridReactProps } from "ag-grid-react";
@@ -10,10 +10,9 @@ import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagi
 import { type VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { GridStateContext } from "../../../../../../context/GridStateContext";
 import { useGetState } from "../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
-import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
+
 import { notifyError } from "../../../../../../helpers/notify";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../../../redux/store/store";
+
 
 // import VFPagination from "~/components/VectorFLOW/commons/VFPagination";
 

@@ -5,9 +5,6 @@ import {
 } from "../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../context/GridStateContext";
 import { notifyError, notifyLoader, notifySuccess } from "../helpers/notify";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/store/store";
-import { UPDATE_GRID_STATE } from "../redux/actions/MTA";
 
 import {toast} from 'react-toastify'
 
@@ -21,10 +18,8 @@ interface exportToExcelParameters {
 
 const useSaveAllState = () => {
   const { ref,tempDownloadData,setTempDownloadData,setExportExcelRowData } = useContext(GridStateContext);
-  const { currentGridState } = useSelector((state: RootState) => state.mta);
-  
 
-  const dispatch = useDispatch();
+
 
   const { mutateAsync: saveState } = useSaveState();
   const { mutateAsync: resetState } = useResetState();
