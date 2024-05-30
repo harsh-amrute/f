@@ -70,13 +70,13 @@ const ChronicUnavailabilityCharts = () => {
         {
         field:'blackCount',
         colId:'blackCount',
-        headerName:'Black count Of Skus'
+        headerName:'Black'
         
         },
         {
         field:'redCount',
         colId:'redCount',
-        headerName:'Red count Of Skus'
+        headerName:'Red'
         },
          {
             field:'LogisticsLocation',
@@ -199,12 +199,12 @@ const ChronicUnavailabilityCharts = () => {
           {
             field:'blackCount',
             colId:'blackCount',
-            headerName:'Black Count of locations'
+            headerName:'Black'
           },
            {
             field:'redCount',
             colId:'redCount',
-            headerName:'Red Count of Locations'
+            headerName:'Red'
         },
          {
             field:'SKUDescription',
@@ -400,13 +400,15 @@ const ChronicUnavailabilityCharts = () => {
       const chartThemeOverrides1 = useMemo<any>(() => { 
         return {
             palette:{
-                fills:['#0c7528','#570dbf']
+                fills:['#0c7528','#570dbf'],
+                
             },
             column:{
                 series:{
                     highlightStyle:{
                         item:{
-                            fill:'rgb(255,255,255,0.2)'
+                            fill:'rgb(255,255,255,0.2)',
+                            
                         }
                     }
                 }
@@ -423,7 +425,11 @@ const ChronicUnavailabilityCharts = () => {
                             position:'bottom',
                             fontSize:10,
                             fontFamily:'Roboto'
-                        }
+                        },
+                        label:{
+                            fontSize:8,
+                            fontFamily:'Roboto'
+                          }
                     },
                     number:{
                         title:{
@@ -468,7 +474,11 @@ const ChronicUnavailabilityCharts = () => {
                             position:'bottom',
                             fontSize:10,
                             fontFamily:'Roboto'
-                        }
+                        },
+                        label:{
+                            fontSize:8,
+                            fontFamily:'Roboto'
+                          }
                     },
                     number:{
                         title:{
@@ -589,7 +599,7 @@ const ChronicUnavailabilityCharts = () => {
                                     disableZoomScaling={true}
                                 />
                             </div>
-                            <div id="LocationWiseG1" style={{height:'380px'}}></div>
+                            <div id="LocationWiseG1" style={{height:'370px'}}></div>
                         </SCChartContainer>
                         {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>
@@ -678,7 +688,7 @@ const ChronicUnavailabilityCharts = () => {
                                         disableZoomScaling={true}
                                     />
                                 </div>
-                                <div id="SKUWiseG2" style={{height:'380px'}}></div>
+                                <div id="SKUWiseG2" style={{height:'370px'}}></div>
                             {/* <div id="SKUWiseGraph2"></div> */}
                         </SCChartContainer>
                         {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
