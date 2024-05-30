@@ -991,6 +991,7 @@ const useViewModify = (pageType:string) => {
           notifyError('Please Clear Errors Before Submitting');
           return;
         }
+        
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
      

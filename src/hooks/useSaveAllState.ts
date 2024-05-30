@@ -92,14 +92,14 @@ const useSaveAllState = () => {
     notifyLoader("Reseting Data");
     try {
       await resetState(name);
-      let tempCurrentGridState = [...currentGridState];
-      tempCurrentGridState = tempCurrentGridState.map((t) => {
+      let tempCurrentGridState = ref.current?.columnApi.getColumnState()
+      tempCurrentGridState = tempCurrentGridState.map((t:any) => {
         return {
           ...t,
           hide: false,
         };
       });
-      dispatch(UPDATE_GRID_STATE(tempCurrentGridState));
+      ref.current.columnApi.applyColumnState({state:tempCurrentGridState})
       notifySuccess("State has been resetted");
     } catch (err: any) {
       notifyError(err);

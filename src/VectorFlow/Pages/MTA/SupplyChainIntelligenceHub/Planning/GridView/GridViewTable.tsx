@@ -1,5 +1,5 @@
 import { Allotment } from "allotment"
-import {useContext} from "react"
+import {useContext,useEffect,useState} from "react"
 import "allotment/dist/style.css";
 import { GridViewLayout } from "./styles";
 import { AgGridReactProps } from "ag-grid-react";
@@ -9,11 +9,11 @@ import BPRViewTable from '../../BPR/BPRViewTable'
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { type VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { GridStateContext } from "../../../../../../context/GridStateContext";
-// import { useGetState } from "../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
-// import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
-// import { notifyError } from "../../../../../../helpers/notify";
-// import { useSelector } from "react-redux";
-// import { RootState } from "../../../../../../redux/store/store";
+import { useGetState } from "../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
+import { notifyError } from "../../../../../../helpers/notify";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../../redux/store/store";
 
 // import VFPagination from "~/components/VectorFLOW/commons/VFPagination";
 
@@ -36,23 +36,20 @@ interface GridViewTableProps {
     tableHeader?:string
 }
 
-const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,gridHeight,tablePrefixSrc,tableHeader}:GridViewTableProps) => {
+const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,gridHeight,tablePrefixSrc,tableHeader,currentCategory,currentTab}:GridViewTableProps) => {
     const {ref} = useContext(GridStateContext)
-    // const {mutateAsync:getState,isLoading} = useGetState()
-    // const [columnState,setColumnState] = useState<any>()
-    // const {currentGridState} = useSelector((state:RootState)=>state.mta)
-    // useEffect(()=>{
-    //     const getTableState = async()=>{
-    //       try{
-    //         const data =  await getState(`${currentCategory}${currentTab}`)
-    //         setColumnState(JSON.parse(data.data.data))
-    //       }catch(err:any){
-    //         notifyError(err)
-    //         setColumnState(agGridColDefs)
-    //       }
-    //     }
-    //     getTableState()
-    // },[currentGridState])
+    const {mutateAsync:getState} = useGetState()
+    useEffect(()=>{
+        const getTableState = async()=>{
+          try{
+            const data =  await getState(`${currentCategory}${currentTab}`)
+            ref.current.columnApi.applyColumnState({state:JSON.parse(data.data.data)})
+          }catch(err:any){
+            notifyError(err)
+          }
+        }
+        getTableState()
+    },[ref])
 
 
     // if(isLoading){
@@ -137,7 +134,9 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             rowData={agGridRowData}
                             height={650}
                             // onGridReady={(params)=>{
+                            //     console.log(columnState)
                             //     if(columnState){
+                                    
                             //         params.columnApi.applyColumnState({state:columnState})
                             //     }
                             // }}

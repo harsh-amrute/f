@@ -26,7 +26,7 @@ export const ResearchInsightsTableTaskBar = styled.div`
 
 export const AvailabilityTrendWrapper = styled.div`
     // height:calc(640px * 0.75);
-    height:709px;
+    height:600px;
     // overflow-y:auto;
     // &::-webkit-scrollbar{
     //    display:none;      
@@ -115,7 +115,7 @@ export const ChartHeader = styled.div`
 `
 
 export const ChartHeaderText = styled.p`
-    font-size:12px;
+    font-size:10px;
     font-weight:400;
     display:flex;
     align-items:center;
@@ -139,6 +139,8 @@ export const CapsuleWrapper = styled.div`
     // width:100%;
     // max-width:80px;
     // margin-left:auto;
+    zoom:0.7;
+    width:180px;
 
 `
 
@@ -281,4 +283,8 @@ export const ExpandedChartCapsuleWrapper = styled.div`
     margin-left:auto;
     // margin-right:5px;
     zoom:0.8;
+`
+
+export const RadioGroup = styled.span`
+    display:flex;
 `
