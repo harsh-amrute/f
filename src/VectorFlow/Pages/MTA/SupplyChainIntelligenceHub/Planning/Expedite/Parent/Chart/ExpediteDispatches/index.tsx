@@ -483,6 +483,8 @@ const colDefs3: ColDef[] = [
                           src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
                           alt=""
                           onClick={() => handleChartClose(1)}
+                          width={15}
+                          height={15}
                         />
                       )}
                     </div>
@@ -582,6 +584,8 @@ const colDefs3: ColDef[] = [
                           src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
                           alt=""
                           onClick={() => handleChartClose(2)}
+                          width={15}
+                          height={15}
                         />
                       )}
                     </div>
@@ -677,7 +681,7 @@ const colDefs3: ColDef[] = [
           </Allotment.Pane>
           <Allotment.Pane>
             <SCHorizontalAllignmentWrapper>
-            <SCChartContainer >
+            <SCChartContainer height={435}>
               <SCChartHeaderContainer>
                 <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
                   <SCChartHeader style={{marginRight:10}}>
@@ -691,6 +695,8 @@ const colDefs3: ColDef[] = [
                       src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
                       alt=""
                       onClick={() => handleChartClose(3)}
+                      width={15}
+                      height={15}
                     />
                   )}
                 </div>
@@ -731,7 +737,7 @@ const colDefs3: ColDef[] = [
                         />
                       </div>
               </VFModalCard>
-              <div id="ExpediteDispatchesG3" style={{height:600 * 0.75}}>
+              <div id="ExpediteDispatchesG3" style={{height:510 * 0.75}}>
                 <AgChartsReact options={options} />
               </div>
             </SCChartContainer>

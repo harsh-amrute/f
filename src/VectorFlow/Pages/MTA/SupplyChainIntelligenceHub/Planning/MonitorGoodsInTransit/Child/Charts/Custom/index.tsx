@@ -106,7 +106,7 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
     
     return(
         <>
-        <SCDynamicContainer>
+        <SCDynamicContainer className="ag-theme-planning-custom">
             <VFTable
                 ref={ref}
                 columnDefs={colDefs}

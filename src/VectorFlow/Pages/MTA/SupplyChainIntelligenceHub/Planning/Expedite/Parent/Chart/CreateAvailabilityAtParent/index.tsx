@@ -275,14 +275,14 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane>
-                        <SCChartContainer height={410}>
+                        <SCChartContainer height={425}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                                     <SCChartHeader>Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock for Receiving Locations</SCChartHeader>
                                 </div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
-                                    {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}
+                                    {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(1)}/>}
                                 </div>
                                 
                             </SCChartHeaderContainer>
@@ -363,14 +363,14 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                         </div> */}
                     </Allotment.Pane>
                     <Allotment.Pane>
-                        <SCChartContainer height={410}>
+                        <SCChartContainer height={425}>
                                 <SCChartHeaderContainer>
                                     <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                                         <SCChartHeader>Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location</SCChartHeader>   
                                     </div>
                                     <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                         <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
-                                        {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(2)}/>}
+                                        {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(2)}/>}
                                     </div>
                                 </SCChartHeaderContainer>
                                 <SCHorizontalDivider/>

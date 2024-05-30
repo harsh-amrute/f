@@ -214,12 +214,12 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane preferredSize={'80%'}>
-                        <SCChartContainer height={430}>
+                        <SCChartContainer height={425}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
-                                    {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" alt="" onClick={()=>handleChartClose(1)}/>}
+                                    {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(1)}/>}
                                 </div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
@@ -293,7 +293,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                     />
                                     </div>
 
-                            {<div id="LocationWiseG1" style={{height:'350px'}}></div>}
+                            {<div id="LocationWiseG1" style={{height:'345px'}}></div>}
                         </SCChartContainer>
                         {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>

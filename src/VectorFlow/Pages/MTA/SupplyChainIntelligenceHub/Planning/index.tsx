@@ -124,24 +124,26 @@ const Planning = () => {
             }
             {
                 isSelectCategoryOpen && 
-                <SelectCategory
-                    childMonitorCount={planningCounts.childMonitorCount}
-                    parentMonitorCount={planningCounts.parentMonitorCount}
-                    childExpediteCount={planningCounts.childExpediteCount}
-                    parentExpediteCount={planningCounts.parentExpediteCount}
-                    reviewOrderFulfillmentCount={planningCounts.reviewOrderFulfillmentCount}
-                    reviewExcessInventoryCount={planningCounts.reviewExcessInventoryCount}
-                    onMonitorChildClick={()=>handlePlanningQuadrantClick('GITToChild')}
-                    onMonitorParentClick={()=>handlePlanningQuadrantClick('GITFromParent')}
-                    onExpediteChildClick={()=>handlePlanningQuadrantClick('ExpediteToChild')}
-                    onExpediteParentClick={()=>handlePlanningQuadrantClick('ExpediteFromParent')}
-                    onExcessInventoryReviewClick={()=>handlePlanningQuadrantClick('ExcessInventory')}
-                    onOrderFulfillmentReviewClick={()=>handlePlanningQuadrantClick('OrderFulfillment')}
-                    multiFilter={currentFilter}
-                    setMultiFilter={setCurrentFilter}
-                    onDelete={onDeleteFilter}
-                    onApplyFilter={onApplyFilter}
-                />
+                <div style={{zoom:0.8}}>
+                    <SelectCategory
+                        childMonitorCount={planningCounts.childMonitorCount}
+                        parentMonitorCount={planningCounts.parentMonitorCount}
+                        childExpediteCount={planningCounts.childExpediteCount}
+                        parentExpediteCount={planningCounts.parentExpediteCount}
+                        reviewOrderFulfillmentCount={planningCounts.reviewOrderFulfillmentCount}
+                        reviewExcessInventoryCount={planningCounts.reviewExcessInventoryCount}
+                        onMonitorChildClick={()=>handlePlanningQuadrantClick('GITToChild')}
+                        onMonitorParentClick={()=>handlePlanningQuadrantClick('GITFromParent')}
+                        onExpediteChildClick={()=>handlePlanningQuadrantClick('ExpediteToChild')}
+                        onExpediteParentClick={()=>handlePlanningQuadrantClick('ExpediteFromParent')}
+                        onExcessInventoryReviewClick={()=>handlePlanningQuadrantClick('ExcessInventory')}
+                        onOrderFulfillmentReviewClick={()=>handlePlanningQuadrantClick('OrderFulfillment')}
+                        multiFilter={currentFilter}
+                        setMultiFilter={setCurrentFilter}
+                        onDelete={onDeleteFilter}
+                        onApplyFilter={onApplyFilter}
+                    />
+                </div>
             }
             {
                 !isSelectCategoryOpen &&
