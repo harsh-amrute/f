@@ -183,7 +183,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                         <div style={{fontSize:'14px', fontWeight:500, textAlign:'center'}}>
                             Excess Inventory Trend (Count Of SKU)-Last 90 Days
                         </div>
-                        <div style={{marginLeft:10}}>
+                        <div style={{marginLeft:10,marginBottom:'-5px'}}>
                             <VFInfoToolTip infoList={graph1} />
                         </div>
 
@@ -258,7 +258,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                     <div style={{fontSize:'14px', fontWeight:500, textAlign:'center'}}>
                         Excess Inventory Trend (In Value)-Last 90 Days              
                     </div>
-                    <div style={{marginLeft:10}}>
+                    <div style={{marginLeft:10,marginBottom:'-5px'}}>
                         <VFInfoToolTip infoList={graph2} />
                  </div>
 

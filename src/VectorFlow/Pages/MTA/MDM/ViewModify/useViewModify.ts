@@ -1170,6 +1170,10 @@ const useViewModify = (pageType:string) => {
         dispatch(ADD_FILTER())
         setDownloadData(false);
         setTempDownloadData(false);
+        dispatch(FILL_MASTERS([]));
+        setFilterButtonStatus([]);
+        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+        
 
         if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
 

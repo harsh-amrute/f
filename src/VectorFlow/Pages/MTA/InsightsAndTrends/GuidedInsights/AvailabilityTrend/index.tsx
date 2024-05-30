@@ -154,7 +154,7 @@ const AvailabilityTrend = () => {
         <div style={{fontSize:'14px', fontWeight:500, textAlign:'center'}}>
           Availabilty Trend
         </div>
-        <div style={{marginLeft:10}}>
+        <div style={{marginLeft:10,marginBottom:'-5px'}}>
           <VFInfoToolTip infoList={graph1} />
         </div>
       </div>
