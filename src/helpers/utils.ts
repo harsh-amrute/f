@@ -2180,9 +2180,21 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
   {
        headerName:'Sleep',
        lockPosition:true,
-       cellRenderer:'sleepCellRenderer'
+       cellRenderer:'sleepCellRenderer',
+       floatingFilter:false,
+       minWidth:140,
+       maxWidth:140
      }
    ]
+
+   const SuggestionCategory:ColDef  ={
+    headerName:'',
+    lockPosition:true,
+    cellRenderer:'suggestionCategoryCellRenderer',
+    floatingFilter:false,
+    minWidth:30,
+    maxWidth:30
+  }
 
   
 
@@ -2219,7 +2231,7 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
   const insertPosition = 4;
   result.splice(insertPosition, 0, ...additionalColumns);
 
-   return [DBMTickColumn,...DBMGraphColumn,...DBMSleepColumn,...result]
+   return [DBMTickColumn,...DBMGraphColumn,{...SuggestionCategory},...DBMSleepColumn,...result]
   
 }
 

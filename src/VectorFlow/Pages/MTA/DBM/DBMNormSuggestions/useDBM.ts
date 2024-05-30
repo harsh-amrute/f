@@ -15,6 +15,7 @@ import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyCh
 import useBPRFilter from '../../../../../hooks/useBPRFilter'
 import { notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
+import SuggestionCategoryCellRenderer from "./SuggestionCategoryCellRendere"
 
 
 const useDBM =()=>{
@@ -51,6 +52,7 @@ const useDBM =()=>{
         tickCellRenderer:DBMTickCellRenderer,
         grapCellRenderer:BPRGraphCellRenderer,
         sleepCellRenderer:DBMSleepCellRenderer,
+        suggestionCategoryCellRenderer:SuggestionCategoryCellRenderer
       }), []);
 
     const onOpenDailyDataGraph = async (params:any) => {

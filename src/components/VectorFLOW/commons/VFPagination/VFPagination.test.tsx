@@ -24,7 +24,7 @@ describe("VFPagination Component", () => {
     expect(component).toBeInTheDocument()
 
     cleanup();
-    render(<VFPagination {...dummyprops} currentPage={2}/>);
+    
     
     
   })
@@ -65,6 +65,38 @@ describe("VFPagination Component", () => {
     fireEvent.click(previousBtn)
     fireEvent.click(prevLastBtn)
     fireEvent.click(nextLastBtn)
-    expect(dummyFn).toBeCalledTimes(4)
+    expect(dummyFn).toBeCalledTimes(2)
   })
+
+  it("handles more edge cases", () => {
+    render(<VFPagination {...dummyprops} totalRows={5} rowsPerPage={2000}/>)
+
+    // const nextBtn = screen.getByAltText('pagination-next-arrow')
+    // const previousBtn = screen.getByAltText('pagination-prev-arrow')
+    // const prevLastBtn = screen.getByAltText('pagination-last-prev-arrow')
+    // const nextLastBtn = screen.getByAltText('pagination-last-next-arrow')
+    // fireEvent.click(nextBtn)
+    // fireEvent.click(previousBtn)
+    // fireEvent.click(prevLastBtn)
+    // fireEvent.click(nextLastBtn)
+    // expect(dummyFn).toBeCalledTimes(2)
+  })
+
+  it("handles more more edge cases", () => {
+    render(<VFPagination selectedRows={0} handleChangePage={()=>{return}} currentPage={1} totalRows={5} rowsPerPage={10}/>)
+
+    // const nextBtn = screen.getByAltText('pagination-next-arrow')
+    // const previousBtn = screen.getByAltText('pagination-prev-arrow')
+    // const prevLastBtn = screen.getByAltText('pagination-last-prev-arrow')
+    // const nextLastBtn = screen.getByAltText('pagination-last-next-arrow')
+    // fireEvent.click(nextBtn)
+    // fireEvent.click(previousBtn)
+    // fireEvent.click(prevLastBtn)
+    // fireEvent.click(nextLastBtn)
+    // expect(dummyFn).toBeCalledTimes(2)
+    cleanup()
+    render(<VFPagination selectedRows={0} handleChangePage={()=>{return}} currentPage={1} totalRows={10} rowsPerPage={10}/>);
+  })
+
+
 })

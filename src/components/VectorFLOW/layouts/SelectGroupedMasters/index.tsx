@@ -52,7 +52,7 @@ const Card=(props:CardProps)=>{
     }
 
     return(
-        <VFMasterGroupCardContent data-testid='vf-master-group-card' theme={user.user.theme_ui} style={{backgroundColor: doesMasterExist()|| isHovered ? globalStyles.chooseThemeColor[user.user.theme_ui]?.color5 : 'white'}}
+        <VFMasterGroupCardContent data-testid='vf-master-group-card' theme={user.user.theme_ui} style={{backgroundColor: doesMasterExist()|| isHovered ? '#FCE7F2': 'white'}}
             id={master.name} 
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -74,7 +74,7 @@ const Card=(props:CardProps)=>{
             </VFMasterGroupCardImage>
             <VFMasterGroupCardText style={{color:doesMasterExist() || isHovered ? 'white': 'black'}}>
                 <div key={master.name}>
-                <p>{getMasterName()}</p>
+                <p style={{color:'black'}}>{getMasterName()}</p>
                 </div>
             </VFMasterGroupCardText>
         </VFMasterGroupCardContent>

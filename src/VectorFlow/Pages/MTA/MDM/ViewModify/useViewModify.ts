@@ -962,10 +962,17 @@ const useViewModify = (pageType:string) => {
           
 
       const onSubmit = async(isOverWrite?:boolean) => {
-        if(isSubmitDisabled) return;
         
-        if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit");
+        if(activeMaster.rowData.length === 0) {
+          notifyError("No Data to Submit") ;
+          return 
+        }
+
+        
+
         setIsSubmitDisabled(true)
+
+        if(isSubmitDisabled) return;
 
         if(activeMaster.progress === 'editOnline'){
           //remove Editable Coldefs
@@ -984,6 +991,7 @@ const useViewModify = (pageType:string) => {
           notifyError('Please Clear Errors Before Submitting');
           return;
         }
+        
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
      
