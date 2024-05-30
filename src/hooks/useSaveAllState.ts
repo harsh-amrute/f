@@ -5,9 +5,6 @@ import {
 } from "../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../context/GridStateContext";
 import { notifyError, notifyLoader, notifySuccess } from "../helpers/notify";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/store/store";
-import { UPDATE_GRID_STATE } from "../redux/actions/MTA";
 
 import {toast} from 'react-toastify'
 
@@ -21,10 +18,8 @@ interface exportToExcelParameters {
 
 const useSaveAllState = () => {
   const { ref,tempDownloadData,setTempDownloadData,setExportExcelRowData } = useContext(GridStateContext);
-  const { currentGridState } = useSelector((state: RootState) => state.mta);
-  
 
-  const dispatch = useDispatch();
+
 
   const { mutateAsync: saveState } = useSaveState();
   const { mutateAsync: resetState } = useResetState();
@@ -92,14 +87,14 @@ const useSaveAllState = () => {
     notifyLoader("Reseting Data");
     try {
       await resetState(name);
-      let tempCurrentGridState = [...currentGridState];
-      tempCurrentGridState = tempCurrentGridState.map((t) => {
+      let tempCurrentGridState = ref.current?.columnApi.getColumnState()
+      tempCurrentGridState = tempCurrentGridState.map((t:any) => {
         return {
           ...t,
           hide: false,
         };
       });
-      dispatch(UPDATE_GRID_STATE(tempCurrentGridState));
+      ref.current.columnApi.applyColumnState({state:tempCurrentGridState})
       notifySuccess("State has been resetted");
     } catch (err: any) {
       notifyError(err);

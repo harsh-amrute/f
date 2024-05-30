@@ -52,3 +52,7 @@ color: #000000;
 
 
 
+export const SuggestionCategoryIcon = styled.img`
+    height:18px;
+    width:18px;
+`

@@ -276,8 +276,25 @@ const useDelete=()=>{
       }
 
       const onSubmit = async(ref:any,isOverWrite?:boolean) => {
+
+        console.log(isSubmitDisabled)
+
+        
+        
+        if(activeMaster.rowData.length === 0){
+          notifyError("No Data to Submit")
+          return
+        }
+
+        if(ref.current.api.getSelectedRows().length===0 && activeMaster.progress==='deleteOnline'){
+          return notifyError("Select rows to delete")
+        }
+
+        
+
         if(isSubmitDisabled) return;
-        if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
+        console.log(activeMaster.rowData.length === 0,'end')
+
         setIsSubmitDisabled(true)
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
@@ -287,7 +304,7 @@ const useDelete=()=>{
  
         if(activeMaster.progress === 'deleteOnline'){
           const selectedRows = ref.current.api.getSelectedRows()
-          if(selectedRows.length===0) return notifyError("Select rows to delete")
+          // if(selectedRows.length===0) return notifyError("Select rows to delete")
           dispatch(UPDATE_ROW_DATA(selectedRows))
             const {isDisaster,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(selectedRows,isOverWrite);
             if(isDisaster)return
@@ -343,6 +360,7 @@ const useDelete=()=>{
             
          }
          dispatch(REMOVE_COLDEFS(['checkbox']));
+         
          setIsSubmitDisabled(false)
        
       }

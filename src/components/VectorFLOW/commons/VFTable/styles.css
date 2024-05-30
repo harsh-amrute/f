@@ -61,6 +61,12 @@
     width: 100% !important;
 }
 
+/* .ag-header-row:nth-child(3){
+    background-color: #F7F7F7;
+    color:black;
+    width: 100% !important;
+} */
+
 .ag-header-cell-label{
     justify-content: center;
 }
@@ -78,6 +84,11 @@
 
 .ag-header-group-cell-with-group{
     justify-content: center;
+}
+
+.ag-header-group-cell{
+    background-color: black;
+    color:white;
 }
 
 .ag-status-name-value span{
