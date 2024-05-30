@@ -24,7 +24,7 @@ export  const ToggleViewBtnWrapper = styled.div`
 export const BTRTableWrapper = styled.div`
     display:flex;
     flex-direction:column;
-    height:90vh;
+    height:400px;
     width:100%;
     margin-top:20px;
     margin-bottom:20px;

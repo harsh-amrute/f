@@ -79,7 +79,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                         <CustomVFTable
                         ref={ref1}
                         rowHeight={25}
-                        height={400}
+                        height={300}
                             disableZoomScaling
                         gridOptions={{
                             ...techTable.gridOptions
@@ -114,7 +114,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                     <CustomVFTable 
                         ref={ref2}
                         rowHeight={25}
-                         height={400}
+                         height={300}
                         disableZoomScaling
                         gridOptions={{
                             ...ecoTable.gridOptions
