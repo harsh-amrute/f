@@ -34,13 +34,13 @@
                     "lid": "Lid1"
                 },
                 {
-                    "on": "BMN1231",
+                    "on": "BMN1232",
                     "oq": 66,
                     "cn": "Pareek Amit",
                     "cc": 546788,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Black",
+                    "clr": "Red",
                     "bpp": 78,
                     "pend": 10,
                     "lid": "Lid2"
@@ -52,20 +52,8 @@
                     "cc": 5466721,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Red",
-                    "bpp": 87,
-                    "pend": 12,
-                    "lid": "Lid1"
-                },
-                {
-                    "on": "BMN1256",
-                    "oq": 43,
-                    "cn": "Shiv Mishra",
-                    "cc": 5466676,
-                    "odd": "23-jul-13",
-                    "ord": "23-jul-13",
                     "clr": "Yellow",
-                    "bpp": 65,
+                    "bpp": 87,
                     "pend": 12,
                     "lid": "Lid1"
                 }
@@ -76,8 +64,9 @@
             "cp": [
                 {
                     "B": 20,
-                    "R": 60,
-                    "Y": 20
+                    "R": 55,
+                    "Y": 20,
+                    "G": 5
                 }
             ],
             "rm": "AREB5092383",
@@ -123,7 +112,7 @@
                     "cc": 546788,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Red",
+                    "clr": "Yellow",
                     "bpp": 34,
                     "pend": 10,
                     "lid": "Lid1"
@@ -135,7 +124,7 @@
                     "cc": 546788,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Yellow",
+                    "clr": "Green",
                     "bpp": 34,
                     "pend": 9,
                     "lid": "Lid1"
@@ -174,6 +163,30 @@
                     "bpp": 26,
                     "pend": 12,
                     "lid": "Lid1"
+                },
+                {
+                    "on": "BMN1232",
+                    "oq": 66,
+                    "cn": "Pareek Amit",
+                    "cc": 546788,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Red",
+                    "bpp": 26,
+                    "pend": 12,
+                    "lid": "Lid1"
+                },
+                {
+                    "on": "BMN1233",
+                    "oq": 66,
+                    "cn": "Pareek Amit",
+                    "cc": 546788,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Yellow",
+                    "bpp": 26,
+                    "pend": 12,
+                    "lid": "Lid1"
                 }
             ]
         },
@@ -181,9 +194,10 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 50,
-                    "R": 20,
-                    "Y": 30
+                    "B": 25,
+                    "R": 25,
+                    "Y": 25,
+                    "G": 25
                 }
             ],
             "rm": "AREB5092381",
@@ -201,7 +215,7 @@
                 {
                     "on": "BMN1231",
                     "oq": 66,
-                    "cn": "Pareek Amit",
+                    "cn": "Tarun Amit",
                     "cc": 546788,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
@@ -211,7 +225,7 @@
                     "lid": "Lid1"
                 },
                 {
-                    "on": "BMN1231",
+                    "on": "BMN1239",
                     "oq": 66,
                     "cn": "Tarang Amit",
                     "cc": 546588,
@@ -229,7 +243,7 @@
                     "cc": 5466721,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Red",
+                    "clr": "Yellow",
                     "bpp": 56,
                     "pend": 12,
                     "lid": "Lid1"
@@ -241,7 +255,7 @@
                     "cc": 5466676,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Yellow",
+                    "clr": "Green",
                     "bpp": 80,
                     "pend": 12,
                     "lid": "Lid1"
@@ -288,13 +302,25 @@
                     "cc": 5466721,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Red",
+                    "clr": "Black",
                     "bpp": 56,
                     "pend": 12,
                     "lid": "Lid1"
                 },
                 {
                     "on": "BMN1256",
+                    "oq": 43,
+                    "cn": "Shiv Mishra",
+                    "cc": 5466676,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Red",
+                    "bpp": 80,
+                    "pend": 12,
+                    "lid": "Lid1"
+                },
+                {
+                    "on": "BMN1255",
                     "oq": 43,
                     "cn": "Shiv Mishra",
                     "cc": 5466676,
@@ -311,9 +337,10 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 50,
-                    "R": 20,
-                    "Y": 30
+                    "B": 25,
+                    "R": 25,
+                    "Y": 25,
+                    "G": 25
                 }
             ],
             "rm": "AsEB5092381",
@@ -363,6 +390,18 @@
                     "bpp": 65,
                     "pend": 12,
                     "lid": "Lid1"
+                },
+                {
+                    "on": "BMN1257",
+                    "oq": 33,
+                    "cn": "Shiv Mishra",
+                    "cc": 5466676,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Green",
+                    "bpp": 65,
+                    "pend": 12,
+                    "lid": "Lid1"
                 }
             ]
         },
@@ -370,9 +409,8 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 30,
-                    "R": 20,
-                    "Y": 50
+                    "B": 50,
+                    "R": 50
                 }
             ],
             "rm": "AREB5092381",
@@ -410,18 +448,6 @@
                     "bpp": 87,
                     "pend": 12,
                     "lid": "Lid1"
-                },
-                {
-                    "on": "BQN1256",
-                    "oq": 23,
-                    "cn": "Shiv Mishra",
-                    "cc": 5466676,
-                    "odd": "23-jul-13",
-                    "ord": "23-jul-13",
-                    "clr": "Yellow",
-                    "bpp": 65,
-                    "pend": 12,
-                    "lid": "Lid1"
                 }
             ]
         },
@@ -429,9 +455,8 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 70,
-                    "R": 20,
-                    "Y": 10
+                    "R": 50,
+                    "Y": 50
                 }
             ],
             "rm": "AREB5092381",
@@ -453,20 +478,8 @@
                     "cc": 546788,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Black",
-                    "bpp": 38,
-                    "pend": 12,
-                    "lid": "Lid1"
-                },
-                {
-                    "on": "BMN1212",
-                    "oq": 2,
-                    "cn": "Soumya Shah",
-                    "cc": 5466721,
-                    "odd": "23-jul-13",
-                    "ord": "23-jul-13",
                     "clr": "Red",
-                    "bpp": 87,
+                    "bpp": 38,
                     "pend": 12,
                     "lid": "Lid1"
                 },
@@ -665,9 +678,9 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 90,
+                    "B": 80,
                     "R": 10,
-                    "Y": 0
+                    "Y": 10
                 }
             ],
             "rm": "AREB5092381",
@@ -725,8 +738,8 @@
             "cp": [
                 {
                     "B": 5,
-                    "R": 50,
-                    "Y": 15
+                    "R": 70,
+                    "G": 25
                 }
             ],
             "rm": "AREB5092381",
@@ -772,7 +785,7 @@
                     "cc": 5466676,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Yellow",
+                    "clr": "Green",
                     "bpp": 65,
                     "pend": 12,
                     "lid": "Lid1"
@@ -783,7 +796,7 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 70,
+                    "G": 70,
                     "R": 5,
                     "Y": 25
                 }
@@ -807,7 +820,7 @@
                     "cc": 546788,
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
-                    "clr": "Black",
+                    "clr": "Green",
                     "bpp": 78,
                     "pend": 12,
                     "lid": "Lid1"

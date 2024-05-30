@@ -2204,7 +2204,20 @@ export const mapPPFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => 
         headerName: f.hdr,
         hide: !f.vs,
         cellRenderer: "coloPriority",
-        tooltipField: "",
+        tooltipValueGetter: (params: any) => {
+          const cpData = params.data.cp[0];
+          const keysToPrint = ["B", "R", "Y", "G"];
+          let tooltipText = '';
+          keysToPrint.forEach((key, index) => {
+            if (Object.prototype.hasOwnProperty.call(cpData, key)) {
+              if (tooltipText !== '') {
+                tooltipText += ' | ';
+              }
+              tooltipText += `${key}: ${cpData[key]}`;
+            }
+          });
+          return tooltipText;
+        },
         tooltipComponent: "availabilityToolTip",
         initialWidth: 160,
         autoHeaderHeight: true,
