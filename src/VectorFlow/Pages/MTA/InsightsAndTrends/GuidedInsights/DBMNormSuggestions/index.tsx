@@ -67,12 +67,12 @@ const DBMNormSuggestions = () => {
     },
     {
       field: "NormInc",
-      headerName: "NormInc",
+      headerName: "Norm Inc",
       colId: "NormInc",
     },
     {
       field: "NormDec",
-      headerName: "NormDec",
+      headerName: "Norm Dec",
       colId: "NormDec",
     },
     {
@@ -207,12 +207,12 @@ const DBMNormSuggestions = () => {
     },
     {
       field: "NormInc",
-      headerName: "NormInc",
+      headerName: "Norm Inc",
       colId: "NormInc",
     },
     {
       field: "NormDec",
-      headerName: "NormDec",
+      headerName: "Norm Dec",
       colId: "NormDec",
     },
     {
@@ -344,12 +344,12 @@ const DBMNormSuggestions = () => {
     },
     {
       field: "NormInc",
-      headerName: "NormInc",
+      headerName: "Norm Inc",
       colId: "NormInc",
     },
     {
       field: "NormDec",
-      headerName: "NormDec",
+      headerName: "Norm Dec",
       colId: "NormDec",
     },
   ];
@@ -484,34 +484,63 @@ const DBMNormSuggestions = () => {
       },
       common: {
         legend: {
-          position: "bottom",
+          position: "right",
+          item:{
+            label:{
+              fontSize:9,
+              fontFamily:'Roboto'
+            },
+            marker:{
+              size:10
+            }
+          }
+          
+          
         },
-        axes: {
+        
+       
+        axes:
+         {
           category: {
+            position: "bottom",
             title: {
               enabled: true,
               text: "Location Name",
-              position: "bottom",
-              fontSize:10,
+              fontSize:8,
               fontFamily:'Roboto'
-            },
+            },   
             label:{
+              formatter:(params:any)=>{
+                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                return params.value;
+              },
               fontSize:8,
               fontFamily:'Roboto'
             }
-          },
-          series: {
+          }, 
+          number: {
+            
             title: {
               enabled: true,
-              text: "NORM SUggestions",
-              position: "bottom",
-              fontSize:10,
+              text: "No of Suggestions",
+              position: "left",
+              fontSize:8,
+              fontFamily:'Roboto',
+            },
+            label:{
+              formatter:(params:any)=>{
+                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                return params.value;
+              },
+              fontSize:8,
               fontFamily:'Roboto'
             },
           },
         },
       },
+    
     };
+  
   }, []);
   const chartThemeOverrides2 = useMemo<any>(() => {
     return {
@@ -521,7 +550,16 @@ const DBMNormSuggestions = () => {
       },
       common: {
         legend: {
-          position: "bottom",
+          position: "right",
+          item:{
+            label:{
+              fontSize:9,
+              fontFamily:'Roboto'
+            },
+            marker:{
+              size:10
+            }
+          }
         },
         axes: {
           category: {
@@ -529,15 +567,19 @@ const DBMNormSuggestions = () => {
               enabled: true,
               text: "SKU Code",
               position: "bottom",
-              fontSize:10,
+              fontSize:8,
               fontFamily:'Roboto'
             },
             label:{
+              formatter:(params:any)=>{
+                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                return params.value;
+              },
               fontSize:8,
               fontFamily:'Roboto'
             }
           },
-          series: {
+          number: {
             title: {
               enabled: true,
               text: "Count of Locations",
@@ -558,7 +600,16 @@ const DBMNormSuggestions = () => {
       },
       common: {
         legend: {
-          position: "bottom",
+          position: "right",
+          item:{
+            label:{
+              fontSize:9,
+              fontFamily:'Roboto'
+            },
+            marker:{
+              size:10
+            }
+          }
         },
         axes: {
           category: {
@@ -566,15 +617,19 @@ const DBMNormSuggestions = () => {
               enabled: true,
               text: "SKU Code",
               position: "bottom",
-              fontSize:10,
+              fontSize:8,
               fontFamily:'Roboto'
             },
             label:{
+              formatter:(params:any)=>{
+                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                return params.value;
+              },
               fontSize:8,
               fontFamily:'Roboto'
             }
           },
-          series: {
+          number: {
             title: {
               enabled: true,
               text: "No of suggestions",
@@ -595,7 +650,16 @@ const DBMNormSuggestions = () => {
       },
       common: {
         legend: {
-          position: "bottom",
+          position: "right",
+          item:{
+            label:{
+              fontSize:9,
+              fontFamily:'Roboto'
+            },
+            marker:{
+              size:10
+            }
+          }
         },
         axes: {
           category: {
@@ -603,11 +667,19 @@ const DBMNormSuggestions = () => {
               enabled: true,
               text: "Ageing",
               position: "bottom",
-              fontSize:10,
+              fontSize:8,
               fontFamily:'Roboto'
             },
+            label:{
+              formatter:(params:any)=>{
+                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                return params.value;
+              },
+              fontSize:8,
+              fontFamily:'Roboto'
+            }
           },
-          series: {
+          number: {
             title: {
               enabled: true,
               text: "No of suggestions",
@@ -655,7 +727,7 @@ const DBMNormSuggestions = () => {
     <>
       <SCDynamicContainer>
         <Allotment vertical>
-          <Allotment.Pane preferredSize={250}>
+          <Allotment.Pane preferredSize={210}>
             <SCHorizontalAllignmentWrapper>
               <Allotment>
                 <Allotment.Pane preferredSize={"50%"}>

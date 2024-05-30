@@ -1,19 +1,17 @@
 
-import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import {CapsuleWrapper,ChartWrapper} from "./styles";
 import {SCChartHeaderContainer, SCChartContainer, SCHorizontalDivider
         ,SCChartSliderContainer,SCChartMainContainer} from '../styles';
-import VFInfoTip from "../../../../../../components/VectorFLOW/commons/VFInfoTip";
 import { BufferTrendsGraphState } from '../../../../../types/BPR'
 import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule";
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
-import { useUserData } from "../../../../../../context";
 
-import VFButtonOutline from "../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 
 import { AgChartsReact } from "ag-charts-react";
 import { AgChartOptions} from "ag-charts-community";
+import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+
 
 
 interface TechnicalWiseProps{
@@ -31,7 +29,6 @@ interface TechnicalWiseProps{
 
 const TechnicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,handleSubmitClick,horizonDays}:TechnicalWiseProps) => {
 
-    const {user}= useUserData()
 
 
     const numericData = data.map((item:any) => ({
@@ -167,8 +164,6 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,ha
     
     return(
         <>
-            <Allotment>
-                <Allotment.Pane preferredSize={1000}>
                     <SCChartContainer height={375}>
 
                         <SCChartMainContainer>
@@ -192,9 +187,16 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,ha
                                         labelValueFormatter={(value:number)=>value>1?`${value} Days`:`${value} Day`}
                                     />
                                 <div style={{zoom:0.8}}>
-                                <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
+                                {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
                                         Submit
-                                    </VFButtonOutline>
+                                    </VFButtonOutline> */}
+                                    <img 
+                                        style={{cursor:'pointer'}}
+                                        src="/assets/img/Group 627.svg" 
+                                        height={50} 
+                                        width={60} 
+                                        onClick={() => handleSubmitClick()}
+                                    /> 
                                 </div>
                                     
                                 
@@ -223,17 +225,22 @@ const TechnicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,ha
                         
                         <SCHorizontalDivider/>
                         <ChartWrapper>
-                            <div style={{ height:'77%' , width:'100%'}}>
+                            <div style={{ height:'300px' , width:'100%'}}>
+                                <div className="title" style={{backgroundColor:'white', height:'40px',display:'flex',justifyContent:'center', alignItems:'center'}}>
+                                    <div style={{fontSize:'14px', fontWeight:500, textAlign:'center'}}>
+                                        Buffer Trend Graph
+                                    </div>
+                                <div style={{marginLeft:10}}>
+                                    <VFInfoToolTip infoList={graph1} />
+                                </div>
+                             </div>
                                 <AgChartsReact options={{...options,data:numericData}}/>
                             </div> 
                         </ChartWrapper>                      
                     </SCChartContainer>
                     {!isLoading && (<div style={{marginLeft:'10px',marginRight:'10px'}}>
-                        <VFInfoTip text={graph1}/>
+                        {/* <VFInfoTip text={graph1}/> */}
                     </div>)}
-                </Allotment.Pane>
-                
-            </Allotment>
         </>
     )
     

@@ -297,7 +297,7 @@ font-style:normal;
 font-variant:normal;
 font-weight:300;
 font-size:14px;
-line-height:22px;
+line-height:12px;
 font-family:Roboto;
 color: #000000;
 opacity: 1;
