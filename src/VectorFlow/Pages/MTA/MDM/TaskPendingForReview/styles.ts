@@ -64,6 +64,7 @@ export const RadioButtonGroup = styled.div`
     display:flex;
     gap:8px;
     margin-top:20px;
+    align-items:center;
 `
 export const SubmitButtonWrapper = styled.div`
     display: flex;

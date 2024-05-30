@@ -12,6 +12,7 @@ export const VFFloatingTabWrapper = styled.div`
     display:inline-flex;
     align-items:center;
     padding-right:10px;
+    min-width:270px
 `
 
 export const VFFloatingTabButton = styled.button<{isActive:boolean}>`

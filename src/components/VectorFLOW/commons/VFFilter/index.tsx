@@ -89,19 +89,39 @@ const CustomSelect = (props:CustomSelectProps)=>{
     return (
         <Select
             styles={{
+                option: (baseStyles, { isSelected }) => ({
+                    ...baseStyles,
+                    backgroundColor: isSelected ? "#BC3D80" : "white",
+                   
+                   
+                    "&:hover": {
+                        backgroundColor: '#bc3d814d',
+                        color:"black",
+                    }
+                }),
                 container:(styles)=>({
                     ...styles,
                     width:'100%'
                 }),
-                control:(styles)=>({
+                control:(styles, { isFocused })=>({
                     ...styles,
+                    // borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
+
                     height:'37px',
                     width:'100%',
                     background:' #FFFFFF ',
                     fontSize:'13px',
                     border:'none',
                     borderRadius:'6px',
-                    paddingLeft:'8px'
+                    paddingLeft:'8px',
+                    borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
+                    // border: "none",
+                    // borderBottom: error ? "3px solid #D03E3E;" : menuIsOpen || isFocused ? '3px solid #820F4C' : '3px solid #A1A1A1',
+                    boxShadow: 'none',
+                    "&:hover":{
+                        borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
+
+                    }
                 })
             }}
             placeholder={placeholder}

@@ -50,11 +50,11 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
     return(
         <VFModalCard 
             openModal={isOpen} 
-            headerIcon="/assets/img/VectorFLOW/NMS/close-dark.svg" 
+            headerIcon="" 
             headerBgColor="white" 
             headerText="Technical Trend | Horizon - 7 Days" 
             headerTextColor="black" 
-            closeIcon='/assets/img/VectorFLOW/BPR/collapse-graph.svg'
+            closeIcon='/assets/img/VectorFLOW/NMS/close-dark.svg'
             closeModal={handleClose}
             
         >
