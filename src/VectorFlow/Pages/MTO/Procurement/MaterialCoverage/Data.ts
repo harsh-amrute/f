@@ -482,149 +482,503 @@ export const bucketOrderData = [
 
 export const OrderDetailsData = [
     {
-        "cp": "11",
-        "oli": "12",
-        "on": "ARE220023",
-        "oq": "bottle 1",
-        "bs": 66,
-        "fka": 100,
+        "cp": "Black",
+        "oli": 100,
+        "on": "ORD-001",
+        "oq": 120,
+        "bs": 40,
+        "fka": 80,
         "cn": "kg",
         "cc": 75,
-        "fgc": 12,
-        "fgd": 10,
-        "Availability":66,
-        "ord": 1,
-        "odd": 56,
-        "ordRD": 1,
+        "fgc": 'ABC123Z',
+        "fgd": 'SB2-NOTCH-KOTCH',
+        "ord": '23-Jul-13',
+        "odd": '23-Jul-13',
+        "ordRD": '23-Jul-13',
         "children": [
             {
+                "clr":"Yellow",
                 "rmc": "BMN1231",
-                "rmd": 66,
-                "rmrq": "Prameet Jha",
-                "rma": 5466618,
-                "rmall": "22-Jul-13",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq": 33,
+                "rma": 13,
+                "rmall": 13,
             },
             {
+                "clr":"Yellow",
                 "rmc": "BMN1231",
-                "rmd": 66,
-                "rmrq": "Prameet Jha",
-                "rma": 5466618,
-                "rmall": "22-Jul-13",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
             },
             {
+                "clr":"Yellow",
                 "rmc": "BMN1231",
-                "rmd": 66,
-                "rmrq": "Prameet Jha",
-                "rma": 5466618,
-                "rmall": "22-Jul-13",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
             },
             {
+                "clr":"Yellow",
                 "rmc": "BMN1231",
-                "rmd": 66,
-                "rmrq": "Prameet Jha",
-                "rma": 5466618,
-                "rmall": "22-Jul-13",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
             },
         ]
     },
     {
-        "cp": "11",
-        "oli": "12",
-        "on": "ARE220023",
-        "oq": "bottle 1",
-        "bs": 66,
-        "fka": 100,
+        "cp": "Black",
+        "oli": 100,
+        "on": "ORD-002",
+        "oq": 100,
+        "bs": 50,
+        "fka": 50,
         "cn": "kg",
         "cc": 75,
-        "fgc": 12,
-        "fgd": 10,
-        "ord": 1,
-        "odd": 56,
-        "ordRD": 1,
+        "fgc": 'ABC124Z',
+        "fgd": 'SB6-NOTCH-KOTCH',
+        "ord": '23-Jul-13',
+        "odd": '23-Jul-13',
+        "ordRD": '23-Jul-13',
         "children": [
             {
+                "clr":"Yellow",
                 "rmc": "BMN1231",
-                "rmd": 66,
-                "rmrq": "Prameet Jha",
-                "rma": 5466618,
-                "rmall": "22-Jul-13",
+                "rmd": 'SB6-NOTCH-KOTCH',
+                "rmrq": 33,
+                "rma": 13,
+                "rmall": 13,
             },
             {
+                "clr":"Yellow",
                 "rmc": "BMN1231",
-                "rmd": 66,
-                "rmrq": "Prameet Jha",
-                "rma": 5466618,
-                "rmall": "22-Jul-13",
+                "rmd": 'SB6-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
             },
             {
+                "clr":"Yellow",
                 "rmc": "BMN1231",
-                "rmd": 66,
-                "rmrq": "Prameet Jha",
-                "rma": 5466618,
-                "rmall": "22-Jul-13",
+                "rmd": 'SB6-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
             },
             {
+                "clr":"Yellow",
                 "rmc": "BMN1231",
-                "rmd": 66,
-                "rmrq": "Prameet Jha",
-                "rma": 5466618,
-                "rmall": "22-Jul-13",
+                "rmd": 'SB6-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
             },
         ]
     },
     {
-        "cp": "11",
-        "oli": "12",
-        "on": "ARE220023",
-        "oq": "bottle 1",
-        "bs": 66,
+        "cp": "Black",
+        "oli": 100,
+        "on": "ORD-003",
+        "oq": 150,
+        "bs": 25,
         "fka": 100,
         "cn": "kg",
         "cc": 75,
-        "fgc": 12,
-        "fgd": 10,
-        "ord": 1,
-        "odd": 56,
-        "ordRD": 1,
+        "fgc": 'ABC125Z',
+        "fgd": 'SB9-NOTCH-KOTCH',
+        "ord": '23-Jul-13',
+        "odd": '23-Jul-13',
+        "ordRD": '23-Jul-13',
         "children": [
             {
+                "clr":"Yellow",
                 "rmc": "BMN1231",
-                "rmd": 66,
-                "rmrq": "Prameet Jha",
-                "rma": 5466618,
-                "rmall": "22-Jul-13",
+                "rmd": 'SB9-NOTCH-KOTCH',
+                "rmrq": 33,
+                "rma": 13,
+                "rmall": 13,
             },
             {
+                "clr":"Yellow",
                 "rmc": "BMN1231",
-                "rmd": 66,
-                "rmrq": "Prameet Jha",
-                "rma": 5466618,
-                "rmall": "22-Jul-13",
+                "rmd": 'SB9-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
             },
             {
+                "clr":"Yellow",
                 "rmc": "BMN1231",
-                "rmd": 66,
-                "rmrq": "Prameet Jha",
-                "rma": 5466618,
-                "rmall": "22-Jul-13",
+                "rmd": 'SB9-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
             },
             {
+                "clr":"Yellow",
                 "rmc": "BMN1231",
-                "rmd": 66,
-                "rmrq": "Prameet Jha",
-                "rma": 5466618,
-                "rmall": "22-Jul-13",
+                "rmd": 'SB9-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
             },
         ]
     },
-  
+    {
+        "cp": "Black",
+        "oli": 100,
+        "on": "ORD-004",
+        "oq": 200,
+        "bs": 20,
+        "fka": 160,
+        "cn": "kg",
+        "cc": 75,
+        "fgc": 'ABC126Z',
+        "fgd": 'SB6-NOTCH-KOTCH',
+        "ord": '23-Jul-13',
+        "odd": '23-Jul-13',
+        "ordRD": '23-Jul-13',
+        "children": [
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB6-NOTCH-KOTCH',
+                "rmrq": 33,
+                "rma": 13,
+                "rmall": 13,
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB6-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB6-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB6-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+        ]
+    },
+    {
+        "cp": "Black",
+        "oli": 100,
+        "on": "ORD-005",
+        "oq": 80,
+        "bs": 10,
+        "fka": 70,
+        "cn": "kg",
+        "cc": 75,
+        "fgc": 'ABC127Z',
+        "fgd": 'SB4-NOTCH-KOTCH',
+        "ord": '23-Jul-13',
+        "odd": '23-Jul-13',
+        "ordRD": '23-Jul-13',
+        "children": [
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB4-NOTCH-KOTCH',
+                "rmrq": 33,
+                "rma": 13,
+                "rmall": 13,
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB4-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB4-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB4-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+        ]
+    },
+    {
+        "cp": "Black",
+        "oli": 100,
+        "on": "ORD-006",
+        "oq": 120,
+        "bs": 20,
+        "fka": 80,
+        "cn": "kg",
+        "cc": 75,
+        "fgc": 'ABC128Z',
+        "fgd": 'SB2-NOTCH-KOTCH',
+        "ord": '23-Jul-13',
+        "odd": '23-Jul-13',
+        "ordRD": '23-Jul-13',
+        "children": [
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq": 33,
+                "rma": 13,
+                "rmall": 13,
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+        ]
+    },
+    {
+        "cp": "Black",
+        "oli": 100,
+        "on": "ORD-007",
+        "oq": 360,
+        "bs": 12,
+        "fka": 120,
+        "cn": "kg",
+        "cc": 75,
+        "fgc": 'ABC128Z',
+        "fgd": 'SB2-NOTCH-KOTCH',
+        "ord": '23-Jul-13',
+        "odd": '23-Jul-13',
+        "ordRD": '23-Jul-13',
+        "children": [
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq": 33,
+                "rma": 13,
+                "rmall": 13,
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+        ]
+    },
+    {
+        "cp": "Red",
+        "oli": 100,
+        "on": "ORD-008",
+        "oq": 180,
+        "bs": 60,
+        "fka": 120,
+        "cn": "kg",
+        "cc": 75,
+        "fgc": 'ABC129Z',
+        "fgd": 'SB2-NOTCH-KOTCH',
+        "ord": '23-Jul-13',
+        "odd": '23-Jul-13',
+        "ordRD": '23-Jul-13',
+        "children": [
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq": 33,
+                "rma": 13,
+                "rmall": 13,
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+        ]
+    },
+    {
+        "cp": "Red",
+        "oli": 100,
+        "on": "ORD-009",
+        "oq": 240,
+        "bs": 20,
+        "fka": 120,
+        "cn": "kg",
+        "cc": 75,
+        "fgc": 'ABC130Z',
+        "fgd": 'SB2-NOTCH-KOTCH',
+        "ord": '23-Jul-13',
+        "odd": '23-Jul-13',
+        "ordRD": '23-Jul-13',
+        "children": [
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq": 33,
+                "rma": 13,
+                "rmall": 13,
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+        ]
+    },
+    {
+        "cp": "Yellow",
+        "oli": 100,
+        "on": "ORD-010",
+        "oq": 160,
+        "bs": 40,
+        "fka": 80,
+        "cn": "kg",
+        "cc": 75,
+        "fgc": 'ABC131Z',
+        "fgd": 'SB2-NOTCH-KOTCH',
+        "ord": '23-Jul-13',
+        "odd": '23-Jul-13',
+        "ordRD": '23-Jul-13',
+        "children": [
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq": 33,
+                "rma": 13,
+                "rmall": 13,
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+            {
+                "clr":"Yellow",
+                "rmc": "BMN1231",
+                "rmd": 'SB2-NOTCH-KOTCH',
+                "rmrq":35,
+                "rma": 54,
+                "rmall": 13
+            },
+        ]
+    },
+
 ]
 
 export const OrderDetailsChildrenHeader = [
     {
         "HeaderChildren": [
             {
-                "rn": "ProcPlanningReportChildren",
+                "rn": "MaterialReportChildren",
                 "jf": "rmc",
                 "cp": 1,
                 "hdr": "RM Code",
@@ -633,7 +987,7 @@ export const OrderDetailsChildrenHeader = [
                 "val": "*Error*"
             },
             {
-                "rn": "ProcPlanningReportChildren",
+                "rn": "MaterialReportChildren",
                 "jf": "rmd",
                 "cp": 2,
                 "hdr": "RM Descp",
@@ -642,7 +996,7 @@ export const OrderDetailsChildrenHeader = [
                 "val": "*Error*"
             },
             {
-                "rn": "ProcPlanningReportChildren",
+                "rn": "MaterialReportChildren",
                 "jf": "rmrq",
                 "cp": 3,
                 "hdr": "RM ReqdQty",
@@ -651,7 +1005,7 @@ export const OrderDetailsChildrenHeader = [
                 "val": "*Error*"
             },
             {
-                "rn": "ProcPlanningReportChildren",
+                "rn": "MaterialReportChildren",
                 "jf": "rma",
                 "cp": 4,
                 "hdr": "RM Available",
@@ -660,7 +1014,7 @@ export const OrderDetailsChildrenHeader = [
                 "val": "*Error*"
             },
             {
-                "rn": "ProcPlanningReportChildren",
+                "rn": "MaterialReportChildren",
                 "jf": "rmall",
                 "cp": 5,
                 "hdr": "RM Allocated",
@@ -672,146 +1026,137 @@ export const OrderDetailsChildrenHeader = [
     }
 ]
 
-export const OrderDetailsHeaderData = 
-    {
-        "HeaderData": [
-            {
-                "rn": "materialCovReport",
-                "jf": "ic",
-                "cp": 1,
-                "hdr": "",
-                "vs": true,
-                "ca": "left",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "cp",
-                "cp": 2,
-                "hdr": "Color Priority",
-                "vs": true,
-                "ca": "left",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "oli",
-                "cp": 3,
-                "hdr": "Order Line Item",
-                "vs": true,
-                "ca": "left",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "on",
-                "cp": 4,
-                "hdr": "Order No",
-                "vs": true,
-                "ca": "left",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "oq",
-                "cp": 5,
-                "hdr": "Order Qty",
-                "vs": true,
-                "ca": "left",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "bs",
-                "cp": 6,
-                "hdr": "Batch Size",
-                "vs": true,
-                "ca": "right",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "fka",
-                "cp": 7,
-                "hdr": "Full Kit Avail",
-                "vs": true,
-                "ca": "right",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "avl",
-                "cp": 8,
-                "hdr": "",
-                "vs": true,
-                "ca": "right",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "cn",
-                "cp": 9,
-                "hdr": "Cust Name",
-                "vs": true,
-                "ca": "right",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "cc",
-                "cp": 10,
-                "hdr": "Cust Code",
-                "vs": true,
-                "ca": "right",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "fgc",
-                "cp": 11,
-                "hdr": "FG Code",
-                "vs": true,
-                "ca": "right",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "fgd",
-                "cp": 12,
-                "hdr": "FG Descp",
-                "vs": true,
-                "ca": "right",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "ord",
-                "cp": 13,
-                "hdr": "Order Receipt Date",
-                "vs": true,
-                "ca": "right",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "odd",
-                "cp": 14,
-                "hdr": "Order Due Date",
-                "vs": true,
-                "ca": "right",
-                "val": "*Error*"
-            },
-            {
-                "rn": "materialCovReport",
-                "jf": "ordRD",
-                "cp": 14,
-                "hdr": "Order Release Date",
-                "vs": true,
-                "ca": "right",
-                "val": "*Error*"
-            }
-        ]
-    }
+export const OrderDetailsHeaderData =
+{
+    "HeaderData": [
+        {
+            "rn": "materialCovReport",
+            "jf": "ic",
+            "cp": 1,
+            "hdr": "",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialCovReport",
+            "jf": "cp",
+            "cp": 2,
+            "hdr": "Color Priority",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialCovReport",
+            "jf": "oli",
+            "cp": 3,
+            "hdr": "Order Line Item",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialCovReport",
+            "jf": "on",
+            "cp": 4,
+            "hdr": "Order No",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialCovReport",
+            "jf": "oq",
+            "cp": 5,
+            "hdr": "Order Qty",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialCovReport",
+            "jf": "bs",
+            "cp": 6,
+            "hdr": "Batch Size",
+            "vs": true,
+            "ca": "right",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialCovReport",
+            "jf": "fka",
+            "cp": 7,
+            "hdr": "Full Kit Avail",
+            "vs": true,
+            "ca": "right",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialCovReport",
+            "jf": "cn",
+            "cp": 8,
+            "hdr": "Cust Name",
+            "vs": true,
+            "ca": "right",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialCovReport",
+            "jf": "cc",
+            "cp": 9,
+            "hdr": "Cust Code",
+            "vs": true,
+            "ca": "right",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialCovReport",
+            "jf": "fgc",
+            "cp": 10,
+            "hdr": "FG Code",
+            "vs": true,
+            "ca": "right",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialCovReport",
+            "jf": "fgd",
+            "cp": 11,
+            "hdr": "FG Descp",
+            "vs": true,
+            "ca": "right",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialCovReport",
+            "jf": "ord",
+            "cp": 12,
+            "hdr": "Order Receipt Date",
+            "vs": true,
+            "ca": "right",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialCovReport",
+            "jf": "odd",
+            "cp": 13,
+            "hdr": "Order Due Date",
+            "vs": true,
+            "ca": "right",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialCovReport",
+            "jf": "ordRD",
+            "cp": 14,
+            "hdr": "Order Release Date",
+            "vs": true,
+            "ca": "right",
+            "val": "*Error*"
+        }
+    ]
+}
 
 
 
@@ -1179,3 +1524,63 @@ export const monthWiseCoverage = [
         ]
     }
 ]
+
+export const HeaderChildren =
+    [
+        {
+            "rn": "MaterialReportChildren",
+            "jf": "clr",
+            "cp": 1,
+            "hdr": "",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "MaterialReportChildren",
+            "jf": "rmc",
+            "cp": 2,
+            "hdr": "RM code",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "MaterialReportChildren",
+            "jf": "rmd",
+            "cp": 3,
+            "hdr": "RM Descpo",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "MaterialReportChildren",
+            "jf": "rmrq",
+            "cp": 4,
+            "hdr": "RM RegdQty",
+            "vs": true,
+            "ca": "right",
+            "val": "*Error*"
+        },
+        {
+            "rn": "MaterialReportChildren",
+            "jf": "rma",
+            "cp": 5,
+            "hdr": "RM Availabl",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "MaterialReportChildren",
+            "jf": "rmall",
+            "cp": 6,
+            "hdr": "RM Allocatte",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        }
+    ]
+
+

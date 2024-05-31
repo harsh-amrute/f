@@ -104,12 +104,13 @@ const FutureCov = () => {
                 <Box>
                     <MTOMaterialSO
                         kit={"No Kit"}
-                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null}}
+                        colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
                         height={"96px"}
                         text={"8-15 day"}
                         orderCount={BRYNkOrdCunt}
                         cutCount={BRYNkCustCunt}
                         orderValue={BRYNkOrdVal}
+                        percent={20/100}
                     />
                 </Box>
                 <Box>
@@ -121,6 +122,7 @@ const FutureCov = () => {
                         orderCount={secBlockCustCnt}
                         cutCount={secBlockOrdCnt}
                         orderValue={secOrderVal}
+                        percent={50/100}
                     />
                 </Box>
                 <Box>
@@ -132,6 +134,7 @@ const FutureCov = () => {
                         orderCount={thrdBlockCustCnt}
                         cutCount={thrdBlockOrdCnt}
                         orderValue={thrdOrderVal}
+                        percent={30/100}
                     />
                 </Box>
             </MainContainer>
@@ -148,6 +151,7 @@ const FutureCov = () => {
                         orderCount={frthBlockCustCnt}
                         cutCount={frthBlockOrdCnt}
                         orderValue={frthOrderVal}
+                        percent={32/100}
                     />
 
                 </Box>
@@ -161,8 +165,9 @@ const FutureCov = () => {
                         orderCount={fifthBlockCustCnt}
                         cutCount={fifthBlockOrdCnt}
                         orderValue={fifthOrderVal}
+                        percent={28/100}
                     />
-                   
+
                 </Box>
 
                 <Box>
@@ -174,8 +179,9 @@ const FutureCov = () => {
                         orderCount={sxthBlockCustCnt}
                         cutCount={sxthBlockOrdCnt}
                         orderValue={sxthdOrderVal}
+                        percent={40/100}
                     />
-                   
+
                 </Box>
             </MainContainer>
 
@@ -189,8 +195,9 @@ const FutureCov = () => {
                         orderCount={svthBlockCustCnt}
                         cutCount={svthBlockOrdCnt}
                         orderValue={svthdOrderVal}
+                        percent={25/100}
                     />
-                    
+
                 </Box>
                 <Box>
                     <MTOMaterialSO
@@ -201,8 +208,9 @@ const FutureCov = () => {
                         orderCount={egthBlockCustCnt}
                         cutCount={egthBlockOrdCnt}
                         orderValue={egthdOrderVal}
+                        percent={45/100}
                     />
-                
+
                 </Box>
                 <Box>
                     <MTOMaterialSO
@@ -213,8 +221,9 @@ const FutureCov = () => {
                         orderCount={nthBlockCustCnt}
                         cutCount={nthBlockOrdCnt}
                         orderValue={nthhdOrderVal}
+                        percent={30/100}
                     />
-                    
+
                 </Box>
 
             </MainContainer>

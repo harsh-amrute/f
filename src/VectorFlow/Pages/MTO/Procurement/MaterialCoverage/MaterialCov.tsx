@@ -22,9 +22,13 @@ const MaterialCov = () => {
     setToggleComponent(value);
   }
 
+
+
   return (
     <div style={{ width: "85%" }}>
-      <ActionToolBar />
+      <ActionToolBar
+        comp={'MaterialCov'}
+      />
       {!toggleComponent ?
         <>
           <BTRLayoutTabsWrapper>

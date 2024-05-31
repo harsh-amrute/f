@@ -229,28 +229,10 @@ const NavbarItem = ({
 
         {
           //my code goes here
-          isHide && pathname === "/procurement/material-coverage-open-sales" && menuItem.id === 19 && (
-            <AnalyticalScreen
-              colDefs={[
-                {
-                  headerName: '',
-                  colId: 'color'
-                },
-                {
-                  headerName: 'No Of Orders'
-                },
-                {
-                  headerName: 'No Of Customers'
-                },
-                {
-                  headerName: 'Total Order Value'
-                },
-              ]}
-            />
-            // <BPRDailyAnalytics
+          // isHide && pathname === "/procurement/material-coverage-open-sales" && menuItem.id === 19 && (
+          //   <AnalyticalScreen />
 
-            // />
-          )
+          // )
         }
 
         {isHide && pathname === "/ist-forced-closure" && menuItem.id === 6 && (

@@ -24,7 +24,12 @@ import {
     VFReleaseDateWrap,
 } from './styles'
 
-const MTOActionToolBar = () => {
+interface MTOActionToolBarProps {
+    comp: string
+}
+
+
+const MTOActionToolBar = ({ comp }: MTOActionToolBarProps) => {
     return (
         <SCTaskBarContainer>
             <SCTaskFilterContainer
@@ -34,60 +39,69 @@ const MTOActionToolBar = () => {
                     justifyContent: 'unset'
                 }}
             >
-                {/**Go back button starts */}
-                <SCGoBackContainer>
-                    <img
-                        src="/assets/img/VectorFLOW/BPR/goback.svg"
-                        alt=""
-                    />
-                    <SCGoBackText><b>Go Back</b></SCGoBackText>
-                </SCGoBackContainer>
-                {/**Go back button end */}
 
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginRight: '3px',
-                    fontSize: '18px',
-                    fontWeight: 'bold',
-                    width: '70%'
-                }}>
-                    <p>Release Date Till</p>
+                <>
+                    {comp !== 'MaterialCov' ?
+                        <SCGoBackContainer>
+                            <img
+                                src="/assets/img/VectorFLOW/BPR/goback.svg"
+                                alt=""
+                            />
+                            <SCGoBackText><b>Go Back</b></SCGoBackText>
+                        </SCGoBackContainer>
+                        : null
+                    }
 
-                    <div style={{
-                        top: '133px',
-                        left: '638px',
-                        width: '204px',
-                        height: '43px',
-                        /* UI Properties */
-                        background: '#FFFFFF 0% 0% no-repeat padding-box',
-                        border: '0.5px solid #ACACAC',
-                        borderRadius: '4px',
-                        opacity: 1,
-                    }}>
-                        <input type="date"
-                            style={{
-                                top: '141px',
-                                left: '651px',
-                                width: '100%',
-                                height: '100%',
-                                textAlign: 'left',
-                                font: '24px',
-                                letterSpacing: '0px',
-                                color: '#000',
-                                opacity: 1,
-                                fontSize:'18px',
-                                padding:'4px',
-                                fontWeight:'bold',
-                                fontFamily:'Roboto',
+                    {comp !== 'MaterialCov' ?
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginRight: '3px',
+                            fontSize: '18px',
+                            fontWeight: 'bold',
+                            width: '70%'
+                        }}>
+                            <p>Release Date Till</p>
+
+                            <div style={{
+                                top: '133px',
+                                left: '638px',
+                                width: '204px',
+                                height: '43px',
+
+                                background: '#FFFFFF 0% 0% no-repeat padding-box',
                                 border: '0.5px solid #ACACAC',
-                            }}
-                        />
-                    </div>
-                </div>
+                                borderRadius: '4px',
+                                opacity: 1,
+                            }}>
+                                <input type="date"
+                                    style={{
+                                        top: '141px',
+                                        left: '651px',
+                                        width: '100%',
+                                        height: '100%',
+                                        textAlign: 'left',
+                                        font: '24px',
+                                        letterSpacing: '0px',
+                                        color: '#000',
+                                        opacity: 1,
+                                        fontSize: '18px',
+                                        padding: '4px',
+                                        fontWeight: 'bold',
+                                        fontFamily: 'Roboto',
+                                        border: '0.5px solid #ACACAC',
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        :
+                        null
+                    }
 
-                <SCVerticalDivider />
+                    <SCVerticalDivider />
+                </>
+
 
                 {/**Selected Filter start */}
                 <VFSelectedFiltersWrapper>

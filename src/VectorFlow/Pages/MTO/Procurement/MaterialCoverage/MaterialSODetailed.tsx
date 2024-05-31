@@ -10,21 +10,18 @@ const MaterialSODetailed = () => {
     } = useMaterialSO();
     return (
         <>
-            <div>
-                <ProcurementLayout>
-                    <VFTable
-                        {...agGridProps}
-                        columnDefs={columnDef}
-                        rowData={RRRRowData}
-                        tooltipHideDelay={100000}
-                        tooltipShowDelay={0}
-                        tooltipMouseTrack={true}
-                    />
-                </ProcurementLayout>
-            </div>
-
-
-
+        
+            <ProcurementLayout>
+                <VFTable
+                    {...agGridProps}
+                    columnDefs={columnDef}
+                    rowData={RRRRowData}
+                    tooltipHideDelay={100000}
+                    tooltipShowDelay={0}
+                    tooltipMouseTrack={true}
+                    height={750}
+                />
+            </ProcurementLayout>
         </>
     )
 }

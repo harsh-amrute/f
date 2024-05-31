@@ -24,11 +24,21 @@ export const mapOrderDetails = (c1: string, c2: string, c3: string, kit: string,
 
         }
         obj = {
-            totalCunt: totalOrdCount,
+            totalCunt: orderValue,
             cusCunt: custCount,
-            ordCunt: orderValue
+            ordCunt: totalOrdCount
         }
     })
 
     return obj;
+}
+
+export const calculatePercentage = (c1: string, c2: string, c3: string, c4: string) => {
+    let totalOrdCount = 0;
+    openSOSummary.map((data) => {
+        if (data.color == c1 || data.color == c2 || data.color == c3 || data.color == c4) {
+            totalOrdCount += Number(data.ordCount)
+        }
+    })
+    return totalOrdCount;
 }

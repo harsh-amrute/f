@@ -4,11 +4,11 @@ import {
     Box,
     Main,
 } from './styles';
-import { mapOrderDetails } from './CommonFunc';
+import { calculatePercentage, mapOrderDetails } from './CommonFunc';
 import { ColorsMTO } from '../../Common/Colors';
 import MTOMaterialSO from '../../../../../components/VectorFLOW/commons/MTO/MaterialSOBox/MTOMaterialSO';
 import { useDispatch } from 'react-redux';
-import {SAVE_ANALYTICS_DATA} from '../../../../../redux/actions/MTO/index'
+import { SAVE_ANALYTICS_DATA } from '../../../../../redux/actions/MTO/index'
 
 interface CurrentCovProps {
     handleToggleComponent: any
@@ -20,7 +20,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
     const dispatch = useDispatch();
 
     const [isSubPageOpen, setToggleSubPage] = useState<boolean>(false)
-
+    const [totalOrderCount, setTotalOrdeerCount] = useState<number>(0);
 
     const [BRYNkOrdCunt, setBRYNkOrdCunt] = useState<number>(0);
     const [BRYNkCustCunt, setBRYNkCustCunt] = useState<number>(0);
@@ -58,14 +58,13 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
     const [nthBlockOrdCnt, setnthBlockOrdCnt] = useState<number>(0);
     const [nthhdOrderVal, setnthhdOrderVal] = useState<number>(0);
 
-    const [blackOrderCnt, setBlackOrderCnt] = useState<number>(0);
-    const [redOrderCnt, setRedOrderCnt] = useState<number>(0);
-    const [yellowOrderCnt, setYellowOrderCnt] = useState<number>(0);
-    const [greenOrderCnt, setGreenOrderCnt] = useState<number>(0);
-    const [blueOrderCnt, setBlueOrderCnt] = useState<number>(0);
+
 
     const loadInitialData = () => {
         const firstBlock: any = mapOrderDetails("Black", "Red", "Yellow", "NK", 0);
+        const totalOrdCunt: any = calculatePercentage("Black", "Red", "Yellow", "Green");
+        setTotalOrdeerCount(totalOrdCunt);
+
         setBRYNkCustCunt(firstBlock.cusCunt);
         setBRYNkOrdCunt(firstBlock.ordCunt);
         setBRYNkOrderVal(firstBlock.totalCunt);
@@ -123,11 +122,26 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
         const greenCount = mapOrderDetails("Green", "", "", "", 4)
         const blueCount = mapOrderDetails("Blue", "", "", "", 4)
         const TotalCountObj = {
-            "Black": blackCount,
-            "Red": redCount,
-            "Yellow": yellowCount,
-            "Green": greenCount,
-            "Blue": blueCount
+            "Black": {
+                "color": ColorsMTO.Black,
+                "order": blackCount,
+            },
+            "Red": {
+                "color": ColorsMTO.Red,
+                "order": redCount,
+            },
+            "Yellow": {
+                "color": ColorsMTO.Yellow,
+                "order": yellowCount,
+            },
+            "Green": {
+                "color": ColorsMTO.Green,
+                "order": greenCount,
+            },
+            "Blue": {
+                "color": ColorsMTO.Blue,
+                "order": blueCount,
+            }
         }
         dispatch(SAVE_ANALYTICS_DATA(TotalCountObj))
     }
@@ -136,6 +150,9 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
         setToggleSubPage(true);
         handleToggleComponent(isSubPageOpen);
     }
+
+
+
     return (
         <Main>
             {/**1st row */}
@@ -149,9 +166,10 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={BRYNkOrdCunt}
                         cutCount={BRYNkCustCunt}
                         orderValue={BRYNkOrdVal}
+                        percent={BRYNkOrdCunt/totalOrderCount}
                     />
                 </Box>
-                <Box>
+                <Box onClick={handleToggle}>
                     <MTOMaterialSO
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Black, c2: ColorsMTO.Red, c3: ColorsMTO.Yellow }}
@@ -160,9 +178,10 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={secBlockCustCnt}
                         cutCount={secBlockOrdCnt}
                         orderValue={secOrderVal}
+                        percent={secBlockCustCnt/totalOrderCount}
                     />
                 </Box>
-                <Box>
+                <Box onClick={handleToggle}>
                     <MTOMaterialSO
                         kit={"Full  Kit"}
                         colors={{ c1: ColorsMTO.Black, c2: ColorsMTO.Red, c3: ColorsMTO.Yellow }}
@@ -171,6 +190,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={thrdBlockCustCnt}
                         cutCount={thrdBlockOrdCnt}
                         orderValue={thrdOrderVal}
+                        percent={thrdBlockCustCnt/totalOrderCount}
                     />
                 </Box>
             </MainContainer>
@@ -179,7 +199,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
 
             <MainContainer>
                 {/** 1st Box */}
-                <Box>
+                <Box onClick={handleToggle}>
                     <MTOMaterialSO
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Green, c2: null, c3: null }}
@@ -188,11 +208,12 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={frthBlockCustCnt}
                         cutCount={frthBlockOrdCnt}
                         orderValue={frthOrderVal}
+                        percent={frthBlockCustCnt/totalOrderCount}
                     />
 
                 </Box>
 
-                <Box>
+                <Box onClick={handleToggle}>
                     <MTOMaterialSO
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Green, c2: null, c3: null }}
@@ -201,11 +222,12 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={fifthBlockCustCnt}
                         cutCount={fifthBlockOrdCnt}
                         orderValue={fifthOrderVal}
+                        percent={fifthBlockCustCnt/totalOrderCount}
                     />
 
                 </Box>
 
-                <Box>
+                <Box onClick={handleToggle}>
                     <MTOMaterialSO
                         kit={"Full Kit"}
                         colors={{ c1: ColorsMTO.Green, c2: null, c3: null }}
@@ -214,6 +236,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={sxthBlockCustCnt}
                         cutCount={sxthBlockOrdCnt}
                         orderValue={sxthdOrderVal}
+                        percent={sxthBlockCustCnt/totalOrderCount}
                     />
 
                 </Box>
@@ -229,7 +252,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
             </div>
 
             <MainContainer>
-                <Box>
+                <Box onClick={handleToggle}>
                     <MTOMaterialSO
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
@@ -238,10 +261,11 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={svthBlockCustCnt}
                         cutCount={svthBlockOrdCnt}
                         orderValue={svthdOrderVal}
+                        percent={30/100}
                     />
 
                 </Box>
-                <Box>
+                <Box onClick={handleToggle}>
                     <MTOMaterialSO
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
@@ -250,10 +274,11 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={egthBlockCustCnt}
                         cutCount={egthBlockOrdCnt}
                         orderValue={egthdOrderVal}
+                        percent={30/100}
                     />
 
                 </Box>
-                <Box>
+                <Box onClick={handleToggle}>
                     <MTOMaterialSO
                         kit={"Full Kit"}
                         colors={{ c1: ColorsMTO.Blue, c2: null, c3: null }}
@@ -262,6 +287,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={nthBlockCustCnt}
                         cutCount={nthBlockOrdCnt}
                         orderValue={nthhdOrderVal}
+                        percent={40/100}
                     />
 
                 </Box>
