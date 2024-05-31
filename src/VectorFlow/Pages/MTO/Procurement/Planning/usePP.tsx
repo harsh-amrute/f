@@ -13,9 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
 import GetProcPlanningData from './GetProcPlanningData.json';
 import GetProcPlanningDataColumn from './GetProcPlanningDataColumn.json';
-import GetProcHeaderChildren from './GetProcHeaderChildren.json';
-import { mapPPFieldsToColDefs, mapPPChildrenFieldsToColDefs } from '../../../../../helpers/utils';
-
+import { mapPPFieldsToColDefs } from '../../../../../helpers/utils';
+import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -65,7 +64,6 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 };
 
 const usePP = () => {
-    const { HeaderChildren } = GetProcHeaderChildren;
     const { HeaderData } = GetProcPlanningDataColumn;
     const { data } = GetProcPlanningData;
     const gridRef = useRef<AgGridReact>(null);
@@ -114,7 +112,6 @@ const usePP = () => {
     const { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData } = initializeData(data, HeaderData);
     const ShortageColumns = mapPPFieldsToColDefs(ShortageHeaderData);
     const CompleteAvailableColumns = mapPPFieldsToColDefs(CompleteHeaderData);
-    const PPChildrenColumns = mapPPChildrenFieldsToColDefs(HeaderChildren);
     const [ShortageDatas, SetShortageData] = useState(ShortageData);
     const [CompleteAvailableDatas, setCompleteAvailableData] = useState(CompleteAvailableData);
 
@@ -128,49 +125,7 @@ const usePP = () => {
         return {
             minWidth: 250,
         };
-    }, []);
-    const customChildrenCellRenderers = useMemo(() => (
-        {
-            "coloPriorityOfBall": ChildrenColor
-        }), []);
-    const detailCellRendererParams = useMemo(() => {
-        return {
-            detailGridOptions: {
-                className: 'child-grid',
-                columnDefs: PPChildrenColumns,
-                defaultColDef: {
-                    cellStyle: {
-                        'text-align': 'center',
-                        'height': '50px',
-                        "font-style": "normal",
-                        "font-variant": "normal",
-                        "font-weight": "300",
-                        "font-size": "20px",
-                        "font-family": "Roboto",
-                        'text-overflow': 'ellipsis',
-                        'white-space': 'nowrap',
-                        'resizable': 'true',
-                        'background': 'white',
-                    },
-                    flex: 0,
-                },
-                headerClass: 'child-header',
-                components: customChildrenCellRenderers,
-                masterDetail: true,
-                rowSelection: "multiple",
-                suppressRowClickSelection: true,
-                enableRangeSelection: true,
-                pagination: true,
-                paginationAutoPageSize: true,
-                alwaysShowVerticalScroll: true
-            },
-            getDetailRowData: (params: any) => {
-                if (undefined != params.data.children) {
-                    params.successCallback(params.data.children);
-                }
-            }
-        };
-    }, []);
+    }, []); 2
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
     const navigateToSimulateScreen = () => {
         navigate("/planning/simulativeFullKit", { state: { ShortageDatas } });
@@ -316,7 +271,7 @@ const usePP = () => {
 
         },
         masterDetail: true,
-        detailCellRendererParams: detailCellRendererParams,
+        detailCellRenderer: ChildrenProcPlanningCellRenderer,
         autoGroupColumnDef: autoGroupColumnDef,
         paginationAutoPageSize: true,
         enterNavigatesVertically: true,

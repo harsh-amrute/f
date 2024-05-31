@@ -10,8 +10,8 @@ import { VFFloatingTabItemProps } from "../../../../../../components/VectorFLOW/
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
 import { useLocation } from 'react-router-dom';
 import ColorCellRenderer from "./Simulate/ColorCellRenderer";
-import ChildrenColor from "../../../../MTA/InsightsAndTrends/BTR/ChildrenColor";
 import { mapIncrementOrderFieldsToColDefs, mapSimulateHedaerChildrenFieldsToColDefs } from '../../../../../../helpers/utils';
+import DetailCellRenderer from "./DetailCellRenderer";
 
 const useSimFullKit = () => {
     const { HeaderData } = GetSimulateFullKitHeader;
@@ -120,53 +120,7 @@ const useSimFullKit = () => {
             minWidth: 250,
         };
     }, []);
-    const customChildrenCellRenderers = useMemo(() => (
-        {
-            "coloPriorityOfBall": ChildrenColor
-        }), []);
-    const detailCellRendererParams = useMemo(() => {
-        return {
-            detailGridOptions: {
-                className: 'child-grid',
-                columnDefs: SimulateChildrenColumns,
-                defaultColDef: {
-                    cellStyle: {
-                        'flex': 1,
-                        'text-align': 'center',
-                        'height': '50px',
-                        "font-style": "normal",
-                        "font-variant": "normal",
-                        "font-weight": "bold",
-                        "font-size": "20px",
-                        "font-family": "Roboto",
-                        'text-overflow': 'ellipsis',
-                        'white-space': 'nowrap',
-                        'resizable': 'true',
-                        'background': 'white',
-                        "display": "block",
-                    },
-                    flex: 0,
-                },
-                components: customChildrenCellRenderers,
-                masterDetail: true,
-                rowSelection: "multiple",
-                suppressRowClickSelection: true,
-                enableRangeSelection: true,
-                pagination: true,
-                paginationAutoPageSize: true,
-                alwaysShowVerticalScroll: true,
-                getRowHeight: () => 40,
-                detailCellRenderer: () => {
-                    <h1 style={{ padding: '20px' }}>My Custom Detail</h1>
-                }
-            },
-            getDetailRowData: (params: any) => {
-                if (undefined != params.data.children) {
-                    params.successCallback(params.data.children);
-                }
-            },
-        };
-    }, []);
+
     const customCellRenderers = useMemo(() => (
         {
             "colorCellRenderer": ColorCellRenderer,
@@ -251,7 +205,8 @@ const useSimFullKit = () => {
             },
         },
         masterDetail: true,
-        detailCellRendererParams: detailCellRendererParams,
+        // detailCellRendererParams: detailCellRendererParams,
+        detailCellRenderer: DetailCellRenderer,
         autoGroupColumnDef: autoGroupColumnDef,
         paginationAutoPageSize: true,
         enterNavigatesVertically: true,

@@ -582,6 +582,24 @@
                     "rmall": 33,
                     "clr": "Green",
                     "eas": 56
+                },
+                {
+                    "rm": "AREB509239239",
+                    "rmd": "SB2-NOTCH-KOTCH-ABC-16",
+                    "rmqty": 33,
+                    "rma": 33,
+                    "rmall": 33,
+                    "clr": "Green",
+                    "eas": 56
+                },
+                {
+                    "rm": "AREB509239231",
+                    "rmd": "SB2-NOTCH-KOTCH-ABC-16",
+                    "rmqty": 33,
+                    "rma": 33,
+                    "rmall": 33,
+                    "clr": "Green",
+                    "eas": 56
                 }
             ]
         },
