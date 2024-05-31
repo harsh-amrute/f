@@ -2294,6 +2294,18 @@ export const mapPPChildrenFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColD
         wrapHeaderText: true,
       }
     }
+    if (f.jf === 'ord') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        headerClass: "child-header",
+        // autoHeaderHeight: true,
+        // wrapHeaderText: true,
+        initialWidth: 300,
+      }
+    }
     return {
       colId: f.jf,
       [f.jf]: f.val,
