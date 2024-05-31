@@ -162,11 +162,13 @@ if(isLoaderGraph1||isLoaderGraph2){
                     Submit
                     </VFButtonOutline> */}
                    <img 
-                    style={{cursor:'pointer'}}
+
+                    style={{cursor:'pointer', marginLeft:'-15px'}}
                     src="/assets/img/Group 627.svg" 
                     height={40} 
-                    width={50} 
+                    width={50}
                     onClick={() => console.log('')}
+                    
                     />
                    
                 </div>
@@ -237,7 +239,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                     Submit
                 </VFButtonOutline> */}
                  <img 
-                    style={{cursor:'pointer'}}
+                    style={{cursor:'pointer', marginLeft:'-15px'}}
                     src="/assets/img/Group 627.svg" 
                     height={40} 
                     width={50} 
