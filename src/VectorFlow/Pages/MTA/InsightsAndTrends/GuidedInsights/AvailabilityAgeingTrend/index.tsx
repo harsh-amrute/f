@@ -151,8 +151,9 @@ const AvailabilityAgeingTrend = () => {
               textAlign: "center",
               width: 30,
               height: 28,
-              border: "1px solid #707070",
+              border: "1px solid #838383",
               boxShadow: " 0px 6px 12px #8D8D8D29",
+              borderRadius:'6px'
             }}
           >
             {numbers.map((number) => (
