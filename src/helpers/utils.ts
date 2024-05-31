@@ -2252,7 +2252,21 @@ export const mapPPFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => 
         field: f.jf,
         headerName: f.hdr,
         hide: !f.vs,
+        tooltipField: f.jf,
         initialWidth: 300, //160
+        filter: 'agMultiColumnFilter',
+        floatingFilter: true,
+      }
+    }
+
+    if (f.jf === "rm") {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        tooltipField: f.jf,
+        initialWidth: 200, //160
         filter: 'agMultiColumnFilter',
         floatingFilter: true,
       }

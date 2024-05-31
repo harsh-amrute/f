@@ -77,12 +77,12 @@ const useSimFullKit = () => {
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: 'iof',
-            label: 'Incremental Order In Fullkit',
+            label: 'Incremental Order In Full Kit',
             value: 'iof'
         },
         {
             id: 'cf',
-            label: 'Cumulative FullKit',
+            label: 'Cumulative Full Kit',
             value: 'cf'
         }
     ];
