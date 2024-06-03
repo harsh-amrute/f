@@ -117,14 +117,14 @@
 
 import {  useMemo } from "react"
 import { AgGridReactProps } from "ag-grid-react"
-import AvlCellRenderer from '../Planning/SimulateFullKit/Simulate/AvlCellRenderer';
+import AvlCellRenderer from '../../Common/AvlCellRenderer';
 import AvailabilityToolTip from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import DetailCellRenderer from "../../Procurement/MaterialCoverage/MaterialCellRendere";
 import { useUserData } from "../../../../../context"
 import { OrderDetailsData } from '../MaterialCoverage/Data';
 import { OrderDetailsHeaderData } from '../MaterialCoverage/Data'
 import { mapMaterialCoverageFieldsToColDefs } from '../../../../../helpers/utils'
-import ColorCellRenderer from "../Planning/SimulateFullKit/Simulate/ColorCellRenderer";
+import ColorCellRenderer from "../../Common/ColorCellRenderer";
 const useMaterialSO = () => {
     const { isSideBarOpen } = useUserData()
     const {HeaderData} = OrderDetailsHeaderData;

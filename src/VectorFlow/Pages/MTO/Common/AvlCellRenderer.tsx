@@ -1,7 +1,7 @@
 
 import { ICellRendererParams } from "ag-grid-enterprise"
 
-import { BTRAvailabiltyCellRenderer, BTRAvailabiltyCellRendererWrapper } from '../../../../../MTA/InsightsAndTrends/BTR/styles';
+import { BTRAvailabiltyCellRenderer, BTRAvailabiltyCellRendererWrapper } from '../../MTA/InsightsAndTrends/BTR/styles';
 
 const AvailabilityCellRenderer = (props: ICellRendererParams) => {
     return (

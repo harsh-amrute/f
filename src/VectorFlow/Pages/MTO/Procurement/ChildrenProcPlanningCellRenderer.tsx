@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import VFTable from '../../../../components/VectorFLOW/commons/VFTable';
 import { mapProcPlanningChildrenFieldsToColDefs } from '../../../../helpers/utils';
 import GetProcHeaderChildren from './Planning/GetProcHeaderChildren.json';
-import ChildrenColor from "../../MTA/InsightsAndTrends/BTR/ChildrenColor";
+import ChildrenColor from "../Common/ChildrenColor/ChildrenColor";
 
 const ChildrenProcPlanningCellRenderer = (params: any) => {
     const { HeaderChildren } = GetProcHeaderChildren;

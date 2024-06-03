@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import ChildrenColor from "../../../MTA/InsightsAndTrends/BTR/ChildrenColor";
+import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
 import {HeaderChildren} from './Data';
 import {mapSimulateHedaerChildrenFieldsToColDefs} from '../../../../../helpers/utils';
 const MaterialCellRenderer = (params: any) => {

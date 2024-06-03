@@ -1,66 +1,55 @@
-import { RRRColorCellRendererWrapper } from "../../MTA/SupplyChainIntelligenceHub/RationedRequirementReport/styles";
+import { BPRColorCellRendererWrapper } from '../../MTA/SupplyChainIntelligenceHub/BPR/styles';
 
 const colorMapper = (color: string) => {
+    if (color === "White") {
+        return {
+            "bg": "white",
+            "text": "Black"
+        }
+    }
+    if (color === "Green") {
+        return {
+            "bg": "#418D18",
+            "text": "wWhite"
+        }
+    }
+    if (color === "Yellow") {
+        return {
+            "bg": "#EBBF2B",
+            "text": "White"
+        }
+    }
+    if (color === "Red") {
+        return {
+            "bg": "#F04D4D",
+            "text": "White"
+        }
+    }
 
-    switch (color) {
-        case "White":
-            return {
-                "bg": "white",
-                "text": "black"
-            }
-        case "Yellow":
-            return {
-                "bg": "#EBBF2B",
-                "text": "white"
-            }
-        case "Green":
-            return {
-                "bg": "#418D18",
-                "text": "white"
-            }
-        case "Red":
-            return {
-                "bg": "#F04D4D",
-                "text": "white"
-            }
-        case "Black":
-            return {
-                "bg": "#000000",
-                "text": "white"
-            }
-        default:
-            return {
-                "bg": "white",
-                "text": "black"
-            }
+    return {
+        "bg": "#000000",
+        "text": "White"
     }
 }
 
-export const ColorCellRenderer = (params: any) => {
-    const techColor = params.data.value
+const ColorCellRenderer = (params: any) => {
+    const color = params.data.cp
+    const cellColor = colorMapper(color)
 
-    const cellColor = colorMapper(techColor)
 
-
-    if (!techColor || techColor.lenght < 1) {
+    if (!color) {
         return (
-            <RRRColorCellRendererWrapper style={{ backgroundColor: cellColor.bg, color: cellColor.text }}>
+            <BPRColorCellRendererWrapper style={{ backgroundColor: cellColor.bg, color: cellColor.text, maxWidth: 90 }} data-testid='color-cell'>
                 NULL
-            </RRRColorCellRendererWrapper>
+            </BPRColorCellRendererWrapper>
         )
     }
 
     return (
-        <RRRColorCellRendererWrapper style={{ backgroundColor: cellColor.bg, color: cellColor.text }}>
-            {params.data.value}
-        </RRRColorCellRendererWrapper>
+        <BPRColorCellRendererWrapper style={{ backgroundColor: cellColor.bg, color: cellColor.text, maxWidth: 90 }} data-testid='color-cell'>
+            {color}
+        </BPRColorCellRendererWrapper>
     )
 }
 
-
-
-
-
-
-
-
+export default ColorCellRenderer

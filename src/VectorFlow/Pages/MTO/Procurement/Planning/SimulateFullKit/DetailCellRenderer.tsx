@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
 import { mapSimulateHedaerChildrenFieldsToColDefs } from '../../../../../../helpers/utils';
 import GetSimulateHeaderChildren from './GetSimulateChildrenHeader.json';
-import ChildrenColor from "../../../../MTA/InsightsAndTrends/BTR/ChildrenColor";
+import ChildrenColor from "../../../Common/ChildrenColor/ChildrenColor";
 
 const DetailCellRenderer = (params: any) => {
     const { HeaderChildren } = GetSimulateHeaderChildren;
