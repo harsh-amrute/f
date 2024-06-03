@@ -23,7 +23,8 @@ import {
     BPRDailyAnalyticsTableNoChangeWrapper,
     BPRDailyAnalyticStatusBarSection,
     BPRDailyAnalyticsTableCellHeader,
-    BPRDailyAnalyticsTableCellText
+    BPRDailyAnalyticsTableCellText,
+    BPRDailyAnalyticsTableCellIcon
 } from './styles'
 import { notifyError } from '../../../../helpers/notify'
 
@@ -75,8 +76,8 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
             const pipelineToday = today[`Pipeline${color}`];
             const pipelineYesterday = yesterday[`Pipeline${color}`];
         
-            percentIncrease[`OnHand${color}`] = (onHandYesterday !== undefined && onHandYesterday !== 0) ? parseFloat((((onHandToday - onHandYesterday) / onHandYesterday) * 100).toFixed(2)) : null;
-            percentIncrease[`Pipeline${color}`] = (pipelineYesterday !== undefined && pipelineYesterday !== 0) ? parseFloat((((pipelineToday - pipelineYesterday) / pipelineYesterday) * 100).toFixed(2)) : null;
+            percentIncrease[`OnHand${color}`] = (onHandYesterday-onHandToday!==0)?(onHandYesterday !== undefined && onHandYesterday !== 0) ? parseFloat((((onHandToday - onHandYesterday) / onHandYesterday) * 100).toFixed(2)) : null:0
+            percentIncrease[`Pipeline${color}`] = (pipelineYesterday-pipelineToday!==0)?(pipelineYesterday !== undefined && pipelineYesterday !== 0) ? parseFloat((((pipelineToday - pipelineYesterday) / pipelineYesterday) * 100).toFixed(2)) : null:0
           }
           const result = []
           for (const color of colors) {
@@ -133,7 +134,39 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
         else payloadString = routerToAnalyticsStringMap[pathname]
         try{
             const data = await getAnalyticsData(payloadString)
-        setRowData(calculatePercentIncrease(data.data.data))
+            setRowData(calculatePercentIncrease(data.data.data))
+            // setRowData(calculatePercentIncrease([
+            //     {
+            //       "ReportDate": "2024-05-29",
+            //       "OnHandBlack": 10,
+            //       "OnHandRed": 1297,
+            //       "OnHandYellow": 597,
+            //       "OnHandGreen": 546,
+            //       "OnHandWhite": 138,
+            //       "OnHandBlue": 21,
+            //       "PipelineBlack": 2077,
+            //       "PipelineRed": 1284,
+            //       "PipelineYellow": 672,
+            //       "PipelineGreen": 629,
+            //       "PipelineWhite": 159,
+            //       "PipelineBlue": 35
+            //     },
+            //     {
+            //       "ReportDate": "2024-05-30",
+            //       "OnHandBlack": 0,
+            //       "OnHandRed": 1337,
+            //       "OnHandYellow": 587,
+            //       "OnHandGreen": 537,
+            //       "OnHandWhite": 40,
+            //       "OnHandBlue": 25,
+            //       "PipelineBlack": 2189,
+            //       "PipelineRed": 1323,
+            //       "PipelineYellow": 646,
+            //       "PipelineGreen": 619,
+            //       "PipelineWhite": 44,
+            //       "PipelineBlue": 35
+            //     }
+            //   ]))
         }catch(err:any){
             setRowData([])
         }
@@ -146,7 +179,8 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
 
     const getCellText = (text:any,colKey:string)=>{
         if(colKey==='techChange' || colKey==='ecoChange'){
-            if(!text)return "N/A"
+            if(text===0)return '0%'
+            if(!text)return <BPRDailyAnalyticsTableCellIcon src='/assets/img/VectorFLOW/BPR/infinity.svg'/>
             text = String(text)
             if(text.startsWith('-')){
                 return `${text.slice(1)}%`
@@ -191,7 +225,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
         )
     }
     
-    if(!rowData  || rowData.length===0){
+    if(!rowData || !Array.isArray(rowData) || rowData.length===0){
         return(
             <BPRDailyAnalyticsWrapper>
                 <BPRDailyAnalyticsContainer style={{aspectRatio:'0.9',width:'90%'}}>
