@@ -66,10 +66,12 @@
             "ot": "MTO",
             "cp": [
                 {
-                    "B": 25,
-                    "R": 25,
-                    "Y": 25,
-                    "G": 25
+                    "B": 16.66,
+                    "R": 16.66,
+                    "Y": 16.66,
+                    "G": 16.66,
+                    "W": 16.66,
+                    "Bl": 16.66
                 }
             ],
             "rm": "AREB5092383",
@@ -131,6 +133,32 @@
                     "odd": "23-jul-13",
                     "ord": "23-jul-13",
                     "clr": "Green",
+                    "bpp": 34,
+                    "pend": 9,
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
+                },
+                {
+                    "on": "BMN1278",
+                    "oq": 66,
+                    "cn": "Pareek Amit",
+                    "cc": 546788,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "White",
+                    "bpp": 34,
+                    "pend": 9,
+                    "lid": "Lid1",
+                    "aq": "allocation Qty"
+                },
+                {
+                    "on": "BMN1268",
+                    "oq": 66,
+                    "cn": "Pareek Amit",
+                    "cc": 546788,
+                    "odd": "23-jul-13",
+                    "ord": "23-jul-13",
+                    "clr": "Blue",
                     "bpp": 34,
                     "pend": 9,
                     "lid": "Lid1",
