@@ -18,7 +18,7 @@ import { RRRField } from '../VectorFlow/types/RRR'
 // import _ from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
 // clear cached token and redirect to sso login
-import { ColumnHeaderConfig } from '../VectorFlow/types/PP';
+import { ColumnHeaderConfig } from '../VectorFlow/types/ColumnHeaderConfig';
 
 
 const keyboardCharacters = [
