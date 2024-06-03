@@ -15,6 +15,7 @@ import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 import BPRDailyAnalytics from "../../../components/VectorFLOW/layouts/BPRDailyAnalytics";
 import AnalyticalScreen from "../../../VectorFlow/Pages/MTO/Procurement/MaterialCoverage/AnalyticalScreen";
+import ProcPlanningAnalytics from "../../../components/VectorFLOW/layouts/ProcPlanningAnalytics";
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -241,6 +242,10 @@ const NavbarItem = ({
 
         {isHide && pathname === "/store-status" && menuItem.id === 6 && (
           <ParticularStoreStatus themeUi={themeUi} />
+        )}
+
+        {isHide && pathname === "/procrmenPlanning/planning" && menuItem.id === 19 && (
+          <ProcPlanningAnalytics themeUi={themeUi} />
         )}
 
         {isHide &&

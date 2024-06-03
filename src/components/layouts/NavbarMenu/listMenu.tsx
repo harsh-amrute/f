@@ -476,7 +476,7 @@ export const listMenuParent: any = [
   {
     id: 19,
     name: "Procurement",
-    img: "/assets/img/nav/miscellaneousReports",
+    img: "/assets/img/nav/procurement",
     url: "",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
@@ -492,7 +492,7 @@ export const listMenuParent: any = [
         name: "Procurement Planning",
         img: "/assets/img/nav/arrow_down.svg",
         imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: "/api/download-reports/bpr",
+        url: "/procrmenPlanning/planning",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {

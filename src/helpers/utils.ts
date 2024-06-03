@@ -14,11 +14,12 @@ import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForR
 import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField } from '../VectorFlow/types/BPR';
-import { RRRField } from '../VectorFlow/types/RRR';
+import { RRRField } from '../VectorFlow/types/RRR'
 // import _ from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
 // clear cached token and redirect to sso login
-import { ODFields } from '../VectorFlow/types/SOD';
+import { ColumnHeaderConfig } from '../VectorFlow/types/PP';
+
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -1935,12 +1936,7 @@ export const mapBORFieldsToColDefs = (fields: UiConfigField[], onOpenDailyDataGr
       // tooltipComponent:'remarksToolTipComponent'
     }
   ]
-
-
-
   result = fields.map((f: UiConfigField) => {
-
-
     if (f.Col_Code === 'DispatchPen') {
       return {
         colId: f.Col_Code,
@@ -2041,11 +2037,6 @@ export const mapBTRRowDataToColDefs = (row: any, onShowChart?: () => void): Arra
       'zoom': '0.7'
     },
     minWidth: 60,
-    // cellStyle:{
-    //   'max-width':100,
-    //   'margin-left':20,
-    //   'margin-right':40
-    // },
     flex: 1
   }
 
@@ -2130,7 +2121,6 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
   }
 
   fields.sort((a: DBMField, b: DBMField) => a.Col_Position - b.Col_Position);
-  // console.log(fields);
 
   let result: ColDef[] = []
 
@@ -2185,16 +2175,18 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
   return [DBMTickColumn, ...DBMGraphColumn, ...DBMSleepColumn, ...result]
 
 }
+///////////MTO PROC PLANNING///////////////
 
+export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
 
-export const mapOrderFieldsToColDefs = (fields: ODFields[]): ColDef[] => {
   if (!fields || fields.length < 1) {
     return [];
   }
   let result: ColDef[] = [];
   const PPColumns: ColDef[] = [
   ]
-  result = fields.map((f: ODFields) => {
+
+  result = fields.map((f: ColumnHeaderConfig) => {
     if (f.jf === 'ic') {
       return {
         colId: f.jf,
@@ -2202,24 +2194,164 @@ export const mapOrderFieldsToColDefs = (fields: ODFields[]): ColDef[] => {
         headerName: f.hdr,
         hide: !f.vs,
         cellRenderer: 'agGroupCellRenderer',
-        initialWidth: 25,
+        initialWidth: 20,
       }
     }
-    if (f.jf === 'fka') {
+    if (f.jf === 'cp') {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
         hide: !f.vs,
-        cellRenderer: "avlCellRenderer",
+        cellRenderer: "coloPriority",
         tooltipValueGetter: (params: any) => {
-          const oq = params.data.oq;
-          const fka = params.data.fka;
-          return `${fka}/${oq} kits can be manufactured`;
+          const cpData = params.data.cp[0];
+          const keysToPrint = ["B", "R", "Y", "G"];
+          let tooltipText = '';
+          keysToPrint.forEach((key, index) => {
+            if (Object.prototype.hasOwnProperty.call(cpData, key)) {
+              if (tooltipText !== '') {
+                tooltipText += ' | ';
+              }
+              tooltipText += `${key}: ${cpData[key]}`;
+            }
+          });
+          return tooltipText;
         },
-        initialWidth: 160,
+        tooltipComponent: "availabilityToolTip",
+        initialWidth: 200, //160
         autoHeaderHeight: true,
         wrapHeaderText: true,
+      }
+    }
+    if (f.jf === 'eas') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        cellRenderer: "inputbox",
+        editable: true,
+        autoHeaderHeight: true,
+        wrapHeaderText: true,
+        initialWidth: 200, //160
+        filter: 'agMultiColumnFilter',
+        floatingFilter: true,
+        cellStyle: {
+          backgroundColor: 'white',
+          border: '1px solid #b9bdba',
+          color: 'black',
+          padding: '1px',
+        },
+      }
+    }
+
+    if (f.jf === "rmd") {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        tooltipField: f.jf,
+        initialWidth: 300, //160
+        filter: 'agMultiColumnFilter',
+        floatingFilter: true,
+      }
+    }
+
+    if (f.jf === "rm") {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        tooltipField: f.jf,
+        initialWidth: 200, //160
+        filter: 'agMultiColumnFilter',
+        floatingFilter: true,
+      }
+    }
+    return {
+      colId: f.jf,
+      [f.jf]: f.val,
+      field: f.jf,
+      headerName: f.hdr,
+      hide: !f.vs,
+      autoHeaderHeight: true,
+      wrapHeaderText: true,
+      initialWidth: 200, //160
+      filter: 'agMultiColumnFilter',
+      floatingFilter: true,
+    }
+  })
+
+  return [...result, ...PPColumns];
+};
+export const mapProcPlanningChildrenFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
+
+  if (!fields || fields.length < 1) {
+    return [];
+  }
+  let result: ColDef[] = [];
+  const PPChildrenColumns: ColDef[] = []
+  result = fields.map((f: ColumnHeaderConfig) => {
+    if (f.jf === 'clr') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        cellRenderer: 'coloPriorityOfBall',
+        initialWidth: 20,
+        headerClass: "child-header",
+        autoHeaderHeight: true,
+        wrapHeaderText: true,
+      }
+    }
+    if (f.jf === 'ord') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        headerClass: "child-header",
+        // autoHeaderHeight: true,
+        // wrapHeaderText: true,
+        initialWidth: 300,
+      }
+    }
+    return {
+      colId: f.jf,
+      [f.jf]: f.val,
+      field: f.jf,
+      headerName: f.hdr,
+      hide: !f.vs,
+      headerClass: "child-header",
+      autoHeaderHeight: true,
+      wrapHeaderText: true,
+    }
+  })
+
+  return [...result, ...PPChildrenColumns];
+};
+
+export const mapSimulateProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
+
+  if (!fields || fields.length < 1) {
+    return [];
+  }
+  let result: ColDef[] = [];
+  const PPColumns: ColDef[] = [
+  ]
+  result = fields.map((f: ColumnHeaderConfig) => {
+    if (f.jf === 'ic') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        cellRenderer: 'agGroupCellRenderer',
+        initialWidth: 20,
       }
     }
     if (f.jf === 'cp') {
@@ -2229,9 +2361,53 @@ export const mapOrderFieldsToColDefs = (fields: ODFields[]): ColDef[] => {
         headerName: f.hdr,
         hide: !f.vs,
         cellRenderer: "colorCellRenderer",
-        initialWidth: 160,
+        initialWidth: 200,//160
         autoHeaderHeight: true,
         wrapHeaderText: true,
+      }
+    }
+    if (f.jf === 'fka') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        cellRenderer: "avlCellRenderer",
+        tooltipComponent: 'availabilityToolTip',
+        tooltipValueGetter: (params: any) => {
+          const oq = params.data.oq;
+          const fka = params.data.fka;
+          return `${fka}/${oq} kits can be manufactured`;
+        },
+        initialWidth: 200,//160
+        autoHeaderHeight: true,
+        wrapHeaderText: true,
+        filter: 'agMultiColumnFilter',
+        floatingFilter: true,
+      }
+    }
+    if (f.jf === 'item') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        tooltipField: f.jf,
+        initialWidth: 200,//160
+        filter: 'agMultiColumnFilter',
+        floatingFilter: true,
+      }
+    }
+    if (f.jf === 'id') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        tooltipField: f.jf,
+        initialWidth: 300,//160
+        filter: 'agMultiColumnFilter',
+        floatingFilter: true,
       }
     }
     return {
@@ -2242,27 +2418,25 @@ export const mapOrderFieldsToColDefs = (fields: ODFields[]): ColDef[] => {
       hide: !f.vs,
       autoHeaderHeight: true,
       wrapHeaderText: true,
-      initialWidth: 160,
+      initialWidth: 200,//160
       filter: 'agMultiColumnFilter',
       floatingFilter: true,
+      // aggFunc: "sum"
     }
   })
 
   return [...result, ...PPColumns];
+};
 
+export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
 
-
-
-}
-
-export const mapChildrenHeaderFieldsToColDefs = (fields: ODFields[]): ColDef[] => {
   if (!fields || fields.length < 1) {
     return [];
   }
   let result: ColDef[] = [];
-  const PPColumns: ColDef[] = [
+  const SimChildrenColumns: ColDef[] = [
   ]
-  result = fields.map((f: ODFields) => {
+  result = fields.map((f: ColumnHeaderConfig) => {
     if (f.jf === 'clr') {
       return {
         colId: f.jf,
@@ -2272,19 +2446,25 @@ export const mapChildrenHeaderFieldsToColDefs = (fields: ODFields[]): ColDef[] =
         cellRenderer: 'coloPriorityOfBall',
         initialWidth: 20,
         headerClass: "simchild-header",
-        autoHeaderHeight: true,
-        wrapHeaderText: true,
       }
     }
-    if (f.jf === 'ic') {
+    if (f.jf === 'rm') {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
         hide: !f.vs,
-        cellRenderer: 'agGroupCellRenderer',
         headerClass: "simchild-header",
-        initialWidth: 25,
+      }
+    }
+    if (f.jf === 'rmd') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        initialWidth: 300,
+        headerClass: "simchild-header",
       }
     }
     return {
@@ -2293,16 +2473,10 @@ export const mapChildrenHeaderFieldsToColDefs = (fields: ODFields[]): ColDef[] =
       field: f.jf,
       headerName: f.hdr,
       hide: !f.vs,
-      autoHeaderHeight: true,
-      wrapHeaderText: true,
       headerClass: "simchild-header",
-      initialWidth: 160,
     }
   })
 
-  return [...result, ...PPColumns];
+  return [...result, ...SimChildrenColumns];
+};
 
-
-
-
-}
