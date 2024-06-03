@@ -119,7 +119,6 @@ import {  useMemo } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import AvlCellRenderer from './AvlCellRenderer'
 import AvailabilityToolTip from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import ColorCellRenderer from "./ColorCellRenderer";
 //import ChildrenColor from "../../../../MTA/InsightsAndTrends/BTR/ChildrenColor";
 import DetailCellRenderer from "./MaterialCellRendere";

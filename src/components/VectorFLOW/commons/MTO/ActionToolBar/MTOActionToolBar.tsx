@@ -3,8 +3,6 @@ import {
     SCTaskBarContainer,
     SCGoBackContainer,
     SCGoBackText,
-    SCViewContainer,
-    SCViewBackground,
     SCVerticalDivider,
     SCViewImage,
     SCCustomActionsContainer,
@@ -21,7 +19,6 @@ import {
     VFSelectedFiltersWrapper,
     VFFilterScrollBar,
     /**search filter styles end*/
-    VFReleaseDateWrap,
 } from './styles'
 
 interface MTOActionToolBarProps {
@@ -173,17 +170,3 @@ const MTOActionToolBar = ({ comp }: MTOActionToolBarProps) => {
 }
 
 export default MTOActionToolBar
-
-{/* <SCViewBackground>
-                    <SCViewContainer>
-                        <SCViewImage src={"/assets/img/VectorFLOW/BPR/chart-view-grey.svg"} alt="" />
-                        <p style={{ color: '#b0acac' }}>Chart View</p>
-                    </SCViewContainer>
-                    <div><SCVerticalDivider /></div>
-
-                    <SCViewContainer>
-                        <SCViewImage
-                            src={"/assets/img/VectorFLOW/BPR/grid-view-pink.svg"} alt="" />
-                        <p style={{ color: '#bc3d81' }}>Grid View</p>
-                    </SCViewContainer>
-                </SCViewBackground> */}
