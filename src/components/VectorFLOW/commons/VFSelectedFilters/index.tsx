@@ -1,9 +1,11 @@
+import { CSSProperties } from 'react'
 import { BPRFilter, BPRFilterGroup, BPRFilterState } from '../../../.././VectorFlow/types/BPR'
 import {VFSelectedFiltersChip, VFSelectedFiltersFilterCloseIcon, VFSelectedFiltersFilterContent, VFSelectedFiltersFilterLabel, VFSelectedFiltersFilterValue, VFSelectedFiltersPlaceHolder,VFSelectedFiltersWrapper,VFFilterScrollBar} from './styles'
 
 interface VFSelectedFiltersProps{
     filters:BPRFilterState
     onRemoveFilter:(parentId:string,filterId:string,value:string)=>void,
+    style?:CSSProperties
    
 }
 
@@ -13,13 +15,14 @@ const VFSelectedFilters = (props:VFSelectedFiltersProps)=>{
     const {
         filters,
         onRemoveFilter,
+        style
     } = props
     const areFiltersValid = (groupedFilters:Array<BPRFilter>):boolean=>{
         return groupedFilters.some((f:BPRFilter)=>f.attributeName!="" && f.value!="" && f.operator!="")
     }
  
     return (
-        <VFSelectedFiltersWrapper>
+        <VFSelectedFiltersWrapper style={style}>
             <VFSelectedFiltersPlaceHolder>
                 Selected Filters
             </VFSelectedFiltersPlaceHolder>
