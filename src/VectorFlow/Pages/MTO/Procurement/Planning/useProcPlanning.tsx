@@ -3,7 +3,6 @@ import { AgGridReactProps } from "ag-grid-react"
 import { AgGridReact } from "@ag-grid-community/react";
 import { useUserData } from "../../../../../context"
 import ColoPriority from "../../../MTA/InsightsAndTrends/BTR/ColorPriority";
-import ChildrenColor from "../../../MTA/InsightsAndTrends/BTR/ChildrenColor";
 import AvailabilityToolTip from "../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
@@ -13,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
 import GetProcPlanningData from './GetProcPlanningData.json';
 import GetProcPlanningDataColumn from './GetProcPlanningDataColumn.json';
-import { mapPPFieldsToColDefs } from '../../../../../helpers/utils';
+import { mapProcPlanningFieldsToColDefs } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
@@ -110,8 +109,8 @@ const usePP = () => {
         return { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData };
     };
     const { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData } = initializeData(data, HeaderData);
-    const ShortageColumns = mapPPFieldsToColDefs(ShortageHeaderData);
-    const CompleteAvailableColumns = mapPPFieldsToColDefs(CompleteHeaderData);
+    const ShortageColumns = mapProcPlanningFieldsToColDefs(ShortageHeaderData);
+    const CompleteAvailableColumns = mapProcPlanningFieldsToColDefs(CompleteHeaderData);
     const [ShortageDatas, SetShortageData] = useState(ShortageData);
     const [CompleteAvailableDatas, setCompleteAvailableData] = useState(CompleteAvailableData);
 

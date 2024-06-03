@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { TableParticulars } from "../../../../../src/components/index";
 import { useTranslation } from "react-i18next";
-import usePP from "../../../../VectorFlow/Pages/MTO/Procurement/Planning/usePP";
+import useProcPlanning from "../../../../VectorFlow/Pages/MTO/Procurement/Planning/useProcPlanning";
 const ProcPlanningAnalytics = ({ themeUi }: any) => {
-    const { GetCount } = usePP();
+    const { GetCount } = useProcPlanning();
     const { t } = useTranslation();
     const [pcs, setPcs] = useState(false);
     const listTitle = [

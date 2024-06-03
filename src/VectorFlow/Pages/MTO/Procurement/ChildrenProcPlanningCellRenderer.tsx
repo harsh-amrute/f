@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 import VFTable from '../../../../components/VectorFLOW/commons/VFTable';
-import { mapPPChildrenFieldsToColDefs } from '../../../../helpers/utils';
+import { mapProcPlanningChildrenFieldsToColDefs } from '../../../../helpers/utils';
 import GetProcHeaderChildren from './Planning/GetProcHeaderChildren.json';
 import ChildrenColor from "../../MTA/InsightsAndTrends/BTR/ChildrenColor";
 
 const ChildrenProcPlanningCellRenderer = (params: any) => {
     const { HeaderChildren } = GetProcHeaderChildren;
-    const ProcPlanningChildrenColumns = mapPPChildrenFieldsToColDefs(HeaderChildren);
+    const ProcPlanningChildrenColumns = mapProcPlanningChildrenFieldsToColDefs(HeaderChildren);
 
     const customChildrenCellRenderers = useMemo(() => ({
         "coloPriorityOfBall": ChildrenColor

@@ -3,19 +3,17 @@ import { AgGridReactProps } from "ag-grid-react"
 import { useUserData } from "../../../../../../context"
 import GetSimulateFullKitHeader from './GetSimulateFullKitHeader.json';
 import GetSimulateFullKitData from './GetSimulateFullKitData.json';
-import GetSimulateHeaderChildren from './GetSimulateChildrenHeader.json';
 import AvlCellRenderer from "../SimulateFullKit/Simulate/AvlCellRenderer";
 import AvailabilityToolTip from "../../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
 import { useLocation } from 'react-router-dom';
 import ColorCellRenderer from "./Simulate/ColorCellRenderer";
-import { mapIncrementOrderFieldsToColDefs, mapSimulateHedaerChildrenFieldsToColDefs } from '../../../../../../helpers/utils';
+import { mapSimulateProcPlanningFieldsToColDefs } from '../../../../../../helpers/utils';
 import DetailCellRenderer from "./DetailCellRenderer";
 
 const useSimFullKit = () => {
     const { HeaderData } = GetSimulateFullKitHeader;
-    const { HeaderChildren } = GetSimulateHeaderChildren
     const { data } = GetSimulateFullKitData;
     const { isSideBarOpen } = useUserData()
     const [currentPage, setCurrentPage] = useState<any>(1);
@@ -101,8 +99,7 @@ const useSimFullKit = () => {
 
         return { WithZeroEas, WithoutZeroEas, BothEasData };
     }
-    const SimulateColumns = mapIncrementOrderFieldsToColDefs(HeaderData);
-    const SimulateChildrenColumns = mapSimulateHedaerChildrenFieldsToColDefs(HeaderChildren);
+    const SimulateColumns = mapSimulateProcPlanningFieldsToColDefs(HeaderData);
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
     const { WithZeroEas, WithoutZeroEas, BothEasData } = initilizeData(data);
     const [incOrderFullkitData, setIncOrderFullKitData] = useState([...WithoutZeroEas, ...BothEasData]);

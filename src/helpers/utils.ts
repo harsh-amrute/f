@@ -2177,7 +2177,7 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
 }
 ///////////MTO PROC PLANNING///////////////
 
-export const mapPPFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
+export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
 
   if (!fields || fields.length < 1) {
     return [];
@@ -2287,7 +2287,7 @@ export const mapPPFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => 
 
   return [...result, ...PPColumns];
 };
-export const mapPPChildrenFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
+export const mapProcPlanningChildrenFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
 
   if (!fields || fields.length < 1) {
     return [];
@@ -2335,7 +2335,7 @@ export const mapPPChildrenFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColD
   return [...result, ...PPChildrenColumns];
 };
 
-export const mapIncrementOrderFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
+export const mapSimulateProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
 
   if (!fields || fields.length < 1) {
     return [];

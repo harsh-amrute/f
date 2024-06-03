@@ -1,11 +1,11 @@
 import { ProcurementLayout } from './styles';
 import ActionToolBar from "../../../MTA/SupplyChainIntelligenceHub/Planning/ActionToolBar";
-import usePP from './usePP';
+import useProcPlanning from './useProcPlanning';
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 
 
 const ProcurementPlanning = () => {
-    const { renderView, toggleCurrentTab, excelDownload } = usePP();
+    const { renderView, toggleCurrentTab, excelDownload } = useProcPlanning();
     return (
         <>
             <ActionToolBar

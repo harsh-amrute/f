@@ -476,7 +476,7 @@ export const listMenuParent: any = [
   {
     id: 19,
     name: "Procurement",
-    img: "/assets/img/nav/miscellaneousReports",
+    img: "/assets/img/nav/procurement",
     url: "",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
