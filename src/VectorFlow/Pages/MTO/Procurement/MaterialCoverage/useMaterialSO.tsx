@@ -117,20 +117,18 @@
 
 import {  useMemo } from "react"
 import { AgGridReactProps } from "ag-grid-react"
-import AvlCellRenderer from './AvlCellRenderer'
+import AvlCellRenderer from '../Planning/SimulateFullKit/Simulate/AvlCellRenderer';
 import AvailabilityToolTip from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
-import ColorCellRenderer from "./ColorCellRenderer";
-//import ChildrenColor from "../../../../MTA/InsightsAndTrends/BTR/ChildrenColor";
-import DetailCellRenderer from "./MaterialCellRendere";
+import DetailCellRenderer from "../../Procurement/MaterialCoverage/MaterialCellRendere";
 import { useUserData } from "../../../../../context"
 import { OrderDetailsData } from '../MaterialCoverage/Data';
 import { OrderDetailsHeaderData } from '../MaterialCoverage/Data'
-import { mapOrderFieldsToColDefs } from '../../../../../helpers/utils'
- 
+import { mapMaterialCoverageFieldsToColDefs } from '../../../../../helpers/utils'
+import ColorCellRenderer from "../Planning/SimulateFullKit/Simulate/ColorCellRenderer";
 const useMaterialSO = () => {
     const { isSideBarOpen } = useUserData()
     const {HeaderData} = OrderDetailsHeaderData;
-    const columnDef = mapOrderFieldsToColDefs(HeaderData);
+    const columnDef = mapMaterialCoverageFieldsToColDefs(HeaderData);
    
     const LoadData = (data:any) => {
        const calculate=data.map((item:any) => ({
@@ -153,7 +151,11 @@ const useMaterialSO = () => {
         };
     }, []);
   
- 
+    const sideBar = useMemo(() => {
+        return {
+            toolPanels: ['columns'],
+        };
+    }, []);
     const customCellRenderers = useMemo(() => (
         {
             "colorCellRenderer": ColorCellRenderer,
@@ -193,6 +195,7 @@ const useMaterialSO = () => {
                 },
             },
         },
+        sideBar: sideBar,
         masterDetail: true,
         detailCellRenderer: DetailCellRenderer,
         autoGroupColumnDef: autoGroupColumnDef,

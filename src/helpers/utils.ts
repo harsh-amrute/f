@@ -2480,3 +2480,73 @@ export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: ColumnHeaderCon
   return [...result, ...SimChildrenColumns];
 };
 
+export const mapMaterialCoverageFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
+
+  if (!fields || fields.length < 1) {
+    return [];
+  }
+  let result: ColDef[] = [];
+  const PPColumns: ColDef[] = [
+  ]
+
+  result = fields.map((f: ColumnHeaderConfig) => {
+    if (f.jf === 'ic') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        cellRenderer: 'agGroupCellRenderer',
+        initialWidth: 20,
+      }
+    }
+    if (f.jf === 'cp') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        cellRenderer: "colorCellRenderer",
+        initialWidth: 200,//160
+        autoHeaderHeight: true,
+        wrapHeaderText: true,
+      }
+    }
+    if (f.jf === 'fka') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        cellRenderer: "avlCellRenderer",
+        tooltipComponent: 'availabilityToolTip',
+        tooltipValueGetter: (params: any) => {
+          const oq = params.data.oq;
+          const fka = params.data.fka;
+          return `${fka}/${oq} kits can be manufactured`;
+        },
+        initialWidth: 200,//160
+        autoHeaderHeight: true,
+        wrapHeaderText: true,
+        filter: 'agMultiColumnFilter',
+        floatingFilter: true,
+      }
+    }
+    return {
+      colId: f.jf,
+      [f.jf]: f.val,
+      field: f.jf,
+      headerName: f.hdr,
+      hide: !f.vs,
+      autoHeaderHeight: true,
+      wrapHeaderText: true,
+      initialWidth: 200, //160
+      filter: 'agMultiColumnFilter',
+      floatingFilter: true,
+    }
+  })
+
+  return [...result, ...PPColumns];
+};
+
+

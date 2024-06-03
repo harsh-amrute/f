@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import ChildrenColor from "./ChildrenColor";
+import ChildrenColor from "../../../MTA/InsightsAndTrends/BTR/ChildrenColor";
 import {HeaderChildren} from './Data';
-import {mapChildrenHeaderFieldsToColDefs} from '../../../../../helpers/utils';
+import {mapSimulateHedaerChildrenFieldsToColDefs} from '../../../../../helpers/utils';
 const MaterialCellRenderer = (params: any) => {
   //  const {HeaderChildren} = HeaderChildren
-    const columnDef = mapChildrenHeaderFieldsToColDefs(HeaderChildren)
+    const columnDef = mapSimulateHedaerChildrenFieldsToColDefs(HeaderChildren)
  
     const customChildrenCellRenderers = useMemo(() => ({
         "coloPriorityOfBall": ChildrenColor
