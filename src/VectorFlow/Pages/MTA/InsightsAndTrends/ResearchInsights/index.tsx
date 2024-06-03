@@ -16,14 +16,12 @@ import 'react-day-picker/dist/style.css';
 import './styles.css'
 import { AgChartsReact } from 'ag-charts-react'
 import React from 'react'
-import { useUserData } from '../../../../../context'
 import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar'
 import ExpandedGraph from './ReseachInsightsExpandedGraph'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 import { GridStateContext } from '../../../../../context/GridStateContext'
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal"
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
-import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
 
 
 const ResearchInsights = ()=>{
@@ -77,11 +75,6 @@ const ResearchInsights = ()=>{
         currentFilter,
         setCurrentFilter
     } = useResearchInsights()
-
-    const {user} = useUserData()
-
-    const themeUi = user.user.theme_ui
-
     
     return(
         <GridStateContext.Provider value={{
@@ -110,6 +103,7 @@ const ResearchInsights = ()=>{
             multiFilter={currentFilter}
             setMultiFilter={setCurrentFilter}
             onDelete={onDelete}
+            onUpdateInsight={handleOnUpdateGraph}
         />
         </div>
         
@@ -153,13 +147,14 @@ const ResearchInsights = ()=>{
                     handleChangePage={handlePageChange}
                 />
                 <ResearchInsightsTableTaskBar>
-                    <VFButton
+                    {/* <VFButton
                         themeUi={themeUi}
                         onClick={handleOnUpdateGraph}
                         // disabled={graphState==='default'}
                     >
                         Update Graph
-                    </VFButton>
+                    </VFButton> */}
+
                 </ResearchInsightsTableTaskBar>
             </ResearchInsightsTableWrapper>
             {

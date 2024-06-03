@@ -50,12 +50,13 @@ interface ActionToolBarProps {
     onExportToExcelCallBack:any
     multiFilter:any
     setMultiFilter:any
-    onDelete:any
+    onDelete:any,
+    onUpdateInsight?:()=>void
 }
 
 
 
-const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter,multiFilter,setMultiFilter,onDelete}:ActionToolBarProps) => {
+const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter,multiFilter,setMultiFilter,onDelete,onUpdateInsight}:ActionToolBarProps) => {
     const { user } = useUserData();
     const {ref} = useContext(GridStateContext)
     // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
@@ -339,12 +340,20 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 <div style={{ marginRight: '60px', maxWidth:'400px' }}>
                                     <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
                                 </div>
-                            ) : currCategory === 'GuidedInsight' && view !== 'grid' ? (
+                            ) : (currCategory === 'GuidedInsight' && view !== 'grid') || currCategory==='ResearchInsight' ? (
                                 null
                             ) : (
                                 <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
                             )}
                             
+                            {currCategory==='ResearchInsight'? 
+                            <>
+                                <VFButtonOutline themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={()=>onUpdateInsight?onUpdateInsight(): {}}>Update Insight</VFButtonOutline> 
+                                <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete} style={{maxWidth:'700px'}}></VFSelectedFilters>
+                                </>
+                            : null }   
+                                
+                                
                         </SCTaskFilterContainer>
                         <SCCustomActionsContainer>
 
@@ -435,3 +444,4 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
 }
 
 export default ActionToolBar;
+
