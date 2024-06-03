@@ -319,7 +319,7 @@ const useResearchInsights = ()=>{
             return convertCustomObjToObjects(colorFrequencyArray.reverse())
     }
 
-    const handleOnUpdateGraph = async()=>{
+     const handleOnUpdateGraph = async()=>{
         const selectedRows =  ref.current?.api.getSelectedRows()
         if(selectedRows && selectedRows.length===0)return setGraphState('default')
         const loaderId = notifyLoader('Loading graph data')
