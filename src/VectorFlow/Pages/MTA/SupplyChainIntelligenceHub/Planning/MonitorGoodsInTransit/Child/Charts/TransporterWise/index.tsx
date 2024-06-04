@@ -3,12 +3,11 @@ import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../../../../types/MDM";
-import { ChartRef } from "ag-grid-enterprise";
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider, SCDynamicContainer} from '../../../styles';
-import VFInfoTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoTip";
 
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
-
+import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
+import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 interface MonitorGITChildTransporterWiseProps{
     data:any
 }
@@ -21,9 +20,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
 
     const [hideChart1,toggleChart1] = useState<boolean>(false);
     // const [hideChart2,toggleChart2] = useState<boolean>(false);
-    const [grid1DisplayStatus,setGrid1DisplayStatus] = useState<string>('none');
     // const [grid2DisplayStatus,setGrid2DisplayStatus] = useState<string>('none');
-    let chartRef1:ChartRef |undefined;
     // let chartRef2:ChartRef | undefined; 
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
@@ -87,7 +84,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
        
         if(graphNo === 1){
             if(withOutContainer) {
-                chartRef1 = refGraph1.current?.api.createRangeChart({
+                refGraph1.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
                     columns: ['name','superdelay','delay'],
@@ -98,7 +95,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
             }
             else{
                 const container1 = document.getElementById('TransporterWiseG1') as HTMLElement
-                chartRef1 = refGraph1.current?.api.createRangeChart({
+                refGraph1.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
                     columns: ['name','superdelay','delay'],
@@ -139,9 +136,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
 
     const handleChartClose = (graphNo:number) => {
     if(graphNo === 1){
-        chartRef1?.destroyChart()
         toggleChart1(true);
-        setGrid1DisplayStatus('block')
     }
     // if(graphNo === 2){
     //     chartRef2?.destroyChart()
@@ -161,7 +156,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
               common: {
                 
                   legend:{
-                    position:'top'
+                    position:'bottom'
                   },
                   axes:{
                     category:{
@@ -169,6 +164,8 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                             enabled:true,
                             text:'Transporter Name',
                             position:'bottom',
+                            fontSize:10,
+                            fontFamily:'Roboto'
 
                         }
                     },
@@ -176,7 +173,9 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                         title:{
                             enabled:true,
                             text:"Count of LRs",
-                            position:"left"
+                            position:"left",
+                            fontSize:10,
+                            fontFamily:'Roboto'
                         }
                       }
                   },
@@ -209,23 +208,33 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
         <SCDynamicContainer>
             <Allotment>
                 <Allotment.Pane preferredSize={1000}>
-                    <SCChartContainer height={350}>
+                    <SCChartContainer height={425}>
                         <SCChartHeaderContainer>
-                            <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader>Top 10 Transporters: Max LRs With On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader></div>
-                            <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>{!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/minimize.svg" alt="" onClick={()=>handleChartClose(1)}/>}</div>
+                            <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Transporters: Max LRs With On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader></div>
+                            <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                                <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
+                                {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(1)}/>}
+                            </div>
                         </SCChartHeaderContainer>
                         <SCHorizontalDivider/>
-                        <div style={{height:'280px',display:grid1DisplayStatus}}>
-                                {
-                                    hideChart1 &&
-                                    (
-                                        <VFTable
+                        <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                                <div className="ag-theme-planning" style={{width:'1000px'}}>
+                                <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
                                             rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
                                             enableCharts={true}
-                                            enableRangeSelection={true}
-                                            onGridReady={()=>generateChart(1,true)}
+                                            enableRangeSelection={true} 
+                                            rowSelection="multiple"
+                                            statusBar = {{
+                                                statusPanels: [
+                                                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                                  { statusPanel: 'agAggregationComponent', align:'left' },
+                                                ],
+                                              }}                                            onGridReady={()=>generateChart(1,true)}
                                             getChartToolbarItems={getChartToolbarItems}
                                             chartToolPanelsDef={
                                                 {
@@ -242,47 +251,52 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                                 floatingFilter:true,
                                                 filter: "agMultiColumnFilter",
                                               }}
+                                            height={480}
                                         />
-                                    )
+                                        
+                                </div>
+                                
+                        </VFModalCard>
+                        <div style={{display:'none'}}>
+                            <VFTable
+                                ref={refGraph1}
+                                columnDefs={colDefs1}
+                                rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
+                                enableCharts={true}
+                                enableRangeSelection={true} 
+                                rowSelection="multiple"
+                                statusBar = {{
+                                    statusPanels: [
+                                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                      { statusPanel: 'agAggregationComponent', align:'left' },
+                                    ],
+                                  }}                                onGridReady={()=>generateChart(1)}
+                                getChartToolbarItems={getChartToolbarItems}
+                                chartToolPanelsDef={
+                                    {
+                                        panels:[]
+                                    }
                                 }
-                                {
-                                    !hideChart1 &&
-                                    (
-                                        <div style={{display:'none'}}>
-                                        <VFTable
-                                            ref={refGraph1}
-                                            columnDefs={colDefs1}
-                                            rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
-                                            enableCharts={true}
-                                            enableRangeSelection={true}
-                                            onGridReady={()=>generateChart(1)}
-                                            getChartToolbarItems={getChartToolbarItems}
-                                            chartToolPanelsDef={
-                                                {
-                                                    panels:[]
-                                                }
-                                            }
-                                            chartThemeOverrides={chartThemeOverridesG1}
-                                            chartThemes={['myCustomTheme']}
-                                            customChartThemes={{
-                                                'myCustomTheme':myCustomTheme
-                                            }}
-                                            defaultColDef={{
-                                                floatingFilter:true,
-                                                filter: "agMultiColumnFilter",
-                                              }}
-                                            disableZoomScaling={true}
-                                        />
-                                        </div>
-                                    )
-                                }
-                               
-                            </div>
-                            {!hideChart1 && <div id="TransporterWiseG1" style={{height:'270px'}}></div>}
+                                chartThemeOverrides={chartThemeOverridesG1}
+                                chartThemes={['myCustomTheme']}
+                                customChartThemes={{
+                                    'myCustomTheme':myCustomTheme
+                                }}
+                                defaultColDef={{
+                                    floatingFilter:true,
+                                    filter: "agMultiColumnFilter",
+                                }}
+                                disableZoomScaling={true}
+                            />
+                        </div>
+                        <div id="TransporterWiseG1" style={{height:'345px'}}></div>
                     </SCChartContainer>
-                    <div style={{marginLeft:'10px',marginRight:'10px'}}>
+                    {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                         <VFInfoTip text={graph1}/>
-                    </div>
+                    </div> */}
                 </Allotment.Pane>
                 {/* <Allotment.Pane>
                     <SCChartContainer height={547}>

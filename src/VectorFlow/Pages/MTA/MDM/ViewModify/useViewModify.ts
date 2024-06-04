@@ -75,7 +75,7 @@ const useViewModify = (pageType:string) => {
 
     const {mutateAsync:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
 
-    const [TASK_ID,setTaskId] = useState<string>();
+    const [TASK_ID,setTaskId] = useState<string>('');
 
     // const [isDataAvailableLocally,setIsDataAvailableLocally] = useState(false);
    
@@ -876,7 +876,7 @@ const useViewModify = (pageType:string) => {
           for(let i=0; i < rowData.length; i+=chunkSize){
           
               if(i+chunkSize < rowData.length){
-                payload.data = activeMaster.rowData.slice(i,i+chunkSize);
+                payload.data = rowData.slice(i,i+chunkSize);
                 toast.update(toastId,{render:`Submitting Data ${i+chunkSize}/${rowData.length}`})
                 submitProgress+=chunkSize;
               }
@@ -898,7 +898,7 @@ const useViewModify = (pageType:string) => {
                 taskId = TASK_ID;
               }
 
-              setTaskId(data.data.taskId  );
+              setTaskId(data.data.taskId);
               
               if(data.data.conflictErrorCount){
                 conflictCount += parseInt(data.data.conflictErrorCount,10);
@@ -962,10 +962,17 @@ const useViewModify = (pageType:string) => {
           
 
       const onSubmit = async(isOverWrite?:boolean) => {
-        if(isSubmitDisabled) return;
         
-        if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit");
+        if(activeMaster.rowData.length === 0) {
+          notifyError("No Data to Submit") ;
+          return 
+        }
+
+        
+
         setIsSubmitDisabled(true)
+
+        if(isSubmitDisabled) return;
 
         if(activeMaster.progress === 'editOnline'){
           //remove Editable Coldefs
@@ -984,6 +991,7 @@ const useViewModify = (pageType:string) => {
           notifyError('Please Clear Errors Before Submitting');
           return;
         }
+        
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
      
@@ -1162,6 +1170,10 @@ const useViewModify = (pageType:string) => {
         dispatch(ADD_FILTER())
         setDownloadData(false);
         setTempDownloadData(false);
+        dispatch(FILL_MASTERS([]));
+        setFilterButtonStatus([]);
+        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+        
 
         if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
 
@@ -1227,7 +1239,24 @@ const useViewModify = (pageType:string) => {
       }
 
       const onSaveToDraft = async () => {
-        let newData = activeMaster.rowData
+        let newData:any = []
+        const errorOrWarning = activeMaster.rowData.find((row:any)=>(Object.keys(row).includes('error'))||(Object.keys(row).includes('warning')));
+        if(errorOrWarning){
+          newData = activeMaster.rowData.map((row:any)=>{
+            const temp = {...row};
+            if(!temp['error']){
+              temp['error'] = '';
+            }
+            if(!temp['warning']){
+              temp['warning'] = '';
+            }
+            return temp;
+          });
+        }
+        else{
+          newData = activeMaster.rowData;
+        }
+       
         const selectedData = ref.current?.api.getSelectedRows();
 
         if(activeMaster.id==10 || activeMaster.id==6){
@@ -1429,7 +1458,8 @@ const useViewModify = (pageType:string) => {
         dispatch(UPDATE_ROW_DATA(errorRowData))
         dispatch(SET_RECORD_COUNT(errorRowData.length))
       }
-      dispatch(UPDATE_PROGRESS_STATE('submitted'))
+      dispatch(UPDATE_PROGRESS_STATE('submitted'));
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       
       setIsConflictModalOpen(false)
     }

@@ -32,7 +32,11 @@ const BuyerOrderReport = ()=>{
         onExportToExcelCallBack,
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
-        dailyData      
+        dailyData,
+        currFilter,
+        setCurrFilter,
+        onDelete, 
+        onApplyFilter 
     } = useBOR()
 
 
@@ -49,18 +53,24 @@ const BuyerOrderReport = ()=>{
 
     }}
      >
+      <div style={{zoom:'1'}}>
         <ActionToolBar 
             view={'grid'} 
             setCurrentTab={''} 
             currCategory={'BOR'} 
             currentTab={''} 
             tabsList={[]} 
+            onApplyFilter={(e)=>onApplyFilter(e)}
             onFloatingTabChange={()=>console.log('')} 
             onGoBack={()=>console.log('')} 
             onViewChange={()=>console.log('')}
             genericRecordCount={recordCount}
             onExportToExcelCallBack={onExportToExcelCallBack}
+            multiFilter={currFilter}
+            setMultiFilter={setCurrFilter}
+            onDelete={onDelete}
         />
+       </div> 
         <BORLayout>
             {/* <BORTaskBar style={{width:'74%'}}>
                 <VFButtonOutline
@@ -96,7 +106,18 @@ const BuyerOrderReport = ()=>{
                 onGridReady={(params)=>{
                     if(columnState)params.columnApi.applyColumnState({state:columnState})
                 }}
-                height={800}
+                enableRangeSelection={true} // Added property
+                rowSelection="multiple"
+                statusBar = {{
+                    statusPanels: [
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                      { statusPanel: 'agAggregationComponent', align:'left' },
+                    ],
+                  }}
+                height={900}
              />
               <VFPagination 
                 selectedRows={0} 

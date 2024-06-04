@@ -19,14 +19,15 @@ const BPRSubmiRemarkToolTip = (props:BPRSubmitRemarkToolTipProps)=>{
         remark,
         setRemark,
         onClose,
-        onSuccess
+        onSuccess,
+        isDate
     } = props
 
     return(
         <Portal wrapperId="tooltip">
             <BPRRemarksToolTipWrapper style={{...style}}>
                 <BPRRemarksToolTipContent  className="custom-scrollbar">
-                    <BPRRemarkToolTipTextArea placeholder="Type your remark here" onChange={setRemark} value={remark}/>
+                    {isDate?<input style={{width:'147px', marginBottom:'5px'}} type={'date'}  onChange={setRemark} value={remark} autoFocus/>:<BPRRemarkToolTipTextArea placeholder="Type your remark here" onChange={setRemark} value={remark} autoFocus/>}
                     <BPRRemarkToolTipButtonGroup>
                         <BPRRemarkToolTipButton style={{marginRight:10,backgroundColor:'rgb(188, 61, 129)',color:'white'}} onClick={onSuccess} >
                             Submit

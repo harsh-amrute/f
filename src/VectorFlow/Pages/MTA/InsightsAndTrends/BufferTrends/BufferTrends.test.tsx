@@ -89,13 +89,13 @@ describe ("Buffer trends",()=>{
     it("should render the buffer trends components",async ()=>{
         await act (async ()=>  render(contextWrapper(<BufferTrends/>,store)))
     
-        const button=screen.getByText("On-Hand inv. Availability Trend")
+        const button=screen.getByText("On-Hand Inv. Availability Trend")
         expect(button).toBeInTheDocument();
     })
 
     it("should render the buffer trends components",async ()=>{
         await act (async ()=>  render(contextWrapper(<BufferTrends/>,store)))
-        const button=screen.getByText("On-Hand inv. Availability Trend")
+        const button=screen.getByText("On-Hand Inv. Availability Trend")
         expect(button).toBeInTheDocument();
     })
 

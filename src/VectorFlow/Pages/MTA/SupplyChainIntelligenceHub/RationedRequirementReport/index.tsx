@@ -19,8 +19,7 @@ const RRR = () => {
   RRRColumns,
   agGridProps,
   RRRRowData, 
-  isLoading
-  ,handleChangePage,
+  isLoading,
   RRRDataCount,
   currentPage,
   tempRef,
@@ -31,7 +30,12 @@ const RRR = () => {
   setExportExcelRowData,
   exportExcelColumns,
   setExportExcelColumns,
-  onExportToExcelCallBack
+  onExportToExcelCallBack,
+  getRRRRowData,
+  onApplyFilter,
+  currFilter,
+  setCurrFilter,
+  onDelete
 } = useRRR();
  const ref = useRef()
 
@@ -69,11 +73,15 @@ const RRR = () => {
     currCategory={'RRR'} 
     currentTab={''} 
     tabsList={[]} 
+    onApplyFilter={(e)=>onApplyFilter(e)}
     onFloatingTabChange={()=>console.log('')} 
     onGoBack={()=>console.log('')} 
     onViewChange={()=>console.log('')}
     genericRecordCount={RRRDataCount}
     onExportToExcelCallBack={onExportToExcelCallBack}
+    multiFilter={currFilter}
+    setMultiFilter={setCurrFilter}
+    onDelete={onDelete}
   />
     <RRRLayout>
         {/* <RRRTaskBar style={{width:isSideBarOpen? '77%':'97%'}}>
@@ -100,7 +108,7 @@ const RRR = () => {
           <VFLoader/>
         ):
         (
-          <div style={{height:'100vf'}}>
+          <div style={{height:'100vh'}}>
 
           <VFTable
                   ref={ref}
@@ -112,14 +120,25 @@ const RRR = () => {
                       params.columnApi.applyColumnState({state:columnState})
                     }
                   }}
-                  height={800}
+                  enableRangeSelection={true} // Added property
+                rowSelection="multiple"
+                statusBar = {{
+                    statusPanels: [
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                      { statusPanel: 'agAggregationComponent', align:'left' },
+                    ],
+                  }}
+                  height={750}
               />  
               <VFPagination 
                 selectedRows={0} 
                 totalRows={RRRDataCount} 
                 currentPage={currentPage} 
                 rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200')}
-                handleChangePage={(e)=>handleChangePage(e)} 
+                handleChangePage={(e)=>getRRRRowData(e)} 
               />  
         </div>
         )}

@@ -22,6 +22,7 @@ export const SCGridNav = styled.div<{ isHide: boolean; pathname: string }>`
       .size.laptopL}) {
     top: 95px;
   }
+
 `;
 
 export const SCNavLogoArea = styled.div`
@@ -39,6 +40,7 @@ export const SCGridNavLogo = styled.img<{ isHide: boolean }>`
     height: 9rem;
     padding-top: 16px;
   }
+
 `;
 
 export const SCNavIconHeader = styled.div`
@@ -47,6 +49,7 @@ export const SCNavIconHeader = styled.div`
   align-items: center;
   gap: 12px;
   width: 100%;
+
 `;
 
 export const SCNavIconNotifications = styled.img`
@@ -78,6 +81,7 @@ export const SCNavIconProfileImg = styled.img`
       .size.laptopL}) {
     height: 40px;
   }
+  
 `;
 
 export const SCNavbar = styled.div`
@@ -96,11 +100,13 @@ export const SCProfile = styled.div<{ isHide: boolean }>`
       .size.laptopL}) {
     padding-bottom: 8px;
   }
+
 `;
 
 export const SCAvatar = styled.div`
   display: flex;
   align-items: center;
+
 `;
 
 export const SCAvatarImg = styled.img<{ isParentMenu: boolean }>`
@@ -131,6 +137,7 @@ export const SCIconMenu = styled.img<{ themeUi: string; isHide: boolean }>`
   }
 
   transform: ${(props) => (props.isHide ? "rotate(180deg)" : "rotate(0)")};
+
 `;
 
 export const SCAvatarName = styled.div`
@@ -179,6 +186,7 @@ export const SCAvatarName = styled.div`
       .size.laptopL}) {
     font-size: 1.6rem;
   }
+
 `;
 export const SCInterStore = styled.div<{ themeUi: string }>`
   color: ${(props) => globalStyles.chooseThemeColor[props.themeUi]?.colorText};
@@ -187,6 +195,7 @@ export const SCInterStore = styled.div<{ themeUi: string }>`
     position: absolute;
     width: 200px;
   }
+font-size:1.4rem;
 `;
 
 export const SCInterStoreArrowDown = styled.img<{ toggle: boolean }>`
@@ -206,8 +215,9 @@ export const SCNavMenu = styled.div`
   align-items: center;
   gap: 6rem;
   padding-top: 20px;
-  font-size: 2rem;
-  font-weight: 500;
+
+  font-size: 1.5rem;
+  font-weight: 300;
   color: #333333;
   padding-left: 10px;
   position: relative;
@@ -268,6 +278,7 @@ export const SCNavName = styled.span`
   font-weight: 500;
   color: ${globalStyles.black};
   padding-left: 10px;
+
 `;
 
 export const SCNavChild = styled.span<{ themeUi: string; active: boolean }>`
@@ -283,8 +294,9 @@ export const SCNavChild = styled.span<{ themeUi: string; active: boolean }>`
   @media (min-width: ${gridSystem.size.laptopL}) and (max-width: ${gridSystem
       .size.desktop}) {
     padding-left: 8px;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
+
 `;
 
 export const SCNavBox = styled.div`

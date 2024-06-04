@@ -889,7 +889,6 @@ export const mapDraftDataToTableRowData = (rowData:any[])=>{
 }
 
 export const getExistingColumns = (rowData:any)=>{
-  console.log(rowData)
   return Object.keys(rowData)
 }
 
@@ -1019,9 +1018,16 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
           headerName:'New ' +f.displayName,
           field:'New'+f.key,
           colId:'New'+f.key,
+          valueFormatter:(params:any)=>{
+            if(areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`])){
+              return '';
+            }
+            return params.value;
+          },
           cellStyle:(params:any)=>{
             return{
               "color":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?'#BC3D81':'black',
+              "font-weight":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?'700':'300',
               "text-align":"center",
               "border-left":"solid 1px #B9B9B9",
             }
@@ -1031,6 +1037,12 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
           headerName:'Old ' +f.displayName,
           field:'Old' +f.key,
           colId:'Old'+f.key,
+          valueFormatter:(params:any)=>{
+            if(areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`])){
+              return '';
+            }
+            return params.value;
+          },
           cellStyle:{
             "text-align":"center",
             "border-right":"solid 1px #B9B9B9"
@@ -1180,6 +1192,7 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
   return dirtyRowData.map(entry => {
 
     if(taskType==='modify' || masterId===13){
+      console.log(entry.RN,entry.new, JSON.parse(entry.new))
       const oldData = JSON.parse(entry.old);
       const newData = JSON.parse(entry.new);
       
@@ -2027,26 +2040,26 @@ export const mapBTRRowData =(rows:Array<any>):Array<any>=>{
 }
 
 
-export const mapBTRRowDataToColDefs = (row:any,onShowChart?:()=>void):Array<ColDef>=>{
-  const graphCellRenderer:ColDef={
-    field:'graph',
-    colId:'graph',
-    headerName:'',
-    cellRenderer:'graphCellRenderer',
-    cellRendererParams:{
-      onShowChart:onShowChart
-    },
-    cellStyle:{
-      'zoom':'0.7'
-    },
-    minWidth:60,
-    // cellStyle:{
-    //   'max-width':100,
-    //   'margin-left':20,
-    //   'margin-right':40
-    // },
-    flex: 1
-  }
+export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):Array<ColDef>=>{
+  // const graphCellRenderer:ColDef={
+  //   field:'graph',
+  //   colId:'graph',
+  //   headerName:'',
+  //   cellRenderer:'graphCellRenderer',
+  //   cellRendererParams:{
+  //     onShowChart:onShowChart
+  //   },
+  //   cellStyle:{
+  //     'zoom':'0.7'
+  //   },
+  //   minWidth:60,
+  //   // cellStyle:{
+  //   //   'max-width':100,
+  //   //   'margin-left':20,
+  //   //   'margin-right':40
+  //   // },
+  //   flex: 1
+  // }
 
   let result =Object.keys(row).map((key:string):ColDef=>{
    
@@ -2116,7 +2129,8 @@ export const mapBTRRowDataToColDefs = (row:any,onShowChart?:()=>void):Array<ColD
       ...BTRDefaultColDefs
     }
   })
-  if(onShowChart)result = [graphCellRenderer,...result]
+  // if(onShowChart)result = [graphCellRenderer,...result]
+  if(excludeColumns)result = result.filter((r)=>r.colId && !excludeColumns.includes(r.colId))
   return result
 
 }
@@ -2167,9 +2181,21 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
   {
        headerName:'Sleep',
        lockPosition:true,
-       cellRenderer:'sleepCellRenderer'
+       cellRenderer:'sleepCellRenderer',
+       floatingFilter:false,
+       minWidth:140,
+       maxWidth:140
      }
    ]
+
+   const SuggestionCategory:ColDef  ={
+    headerName:'',
+    lockPosition:true,
+    cellRenderer:'suggestionCategoryCellRenderer',
+    floatingFilter:false,
+    minWidth:30,
+    maxWidth:30
+  }
 
   
 
@@ -2181,6 +2207,76 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
       hide:!f.Visible
     }
   })
-   return [DBMTickColumn,...DBMGraphColumn,...DBMSleepColumn,...result]
+
+  const additionalColumns: ColDef[] = [
+    {
+      colId: 'OldNormValue',
+      field: 'OldNormValue',
+      headerName: 'Old Norm',
+      hide: false
+    },
+    {
+      colId: 'NewNormValue',
+      field: 'NewNormValue',
+      headerName: 'New Norm',
+      hide: false
+    },
+    {
+      colId: 'Comment',
+      field: 'Comment',
+      headerName: 'Reason',
+      hide: false
+    }
+  ]
+ 
+  const insertPosition = 4;
+  result.splice(insertPosition, 0, ...additionalColumns);
+
+   return [DBMTickColumn,...DBMGraphColumn,{...SuggestionCategory},...DBMSleepColumn,...result]
   
+}
+
+export const mapInTransitWhereAboutsRowData = (rowData:Array<any>):Array<any>=>{
+  if(!rowData || !Array.isArray(rowData))return []
+  // PhysicalInventoryColor
+  return rowData.map((r:any)=>{
+    if(!r.skuDetails || r.skuDetails.length<1)return r
+    let legalCount = 0
+    const colorArrayMap:any = {
+      "Black":0,
+      "Red":0,
+      "Yellow":0,
+      "Green":0,
+      "White":0
+    }
+    r.skuDetails.forEach((sd:any)=>{
+      if(sd.PhysicalInventoryColor){
+        colorArrayMap[sd.PhysicalInventoryColor] = colorArrayMap[sd.PhysicalInventoryColor] + 1
+        legalCount+=1
+      }
+      
+    })
+    return {
+      ...r,
+      on_hand_penetration:colorArrayMap,
+      count:legalCount
+    }
+  })
+
+}
+
+export const mapSubmitRemarkData = (row:any):any=>{
+  return{
+    data:[
+      {
+        OrderNo:row.OrderNo,
+        SKUCode:row.SKUCode,
+        WhCode:row.WhCode,
+        ParentWHCode:row.SenderLocation,
+        Remarks:row.remark,
+        CurrentLocation:row.CurrentLoc,
+        ETA:row.ETA.replace(/-/g, '/')
+      }
+    ]
+  }
 }

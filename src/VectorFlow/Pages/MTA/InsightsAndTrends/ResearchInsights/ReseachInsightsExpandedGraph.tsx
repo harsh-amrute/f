@@ -51,21 +51,48 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
         <VFModalCard 
             openModal={isOpen} 
             headerIcon="" 
-            headerBgColor="black" 
+            headerBgColor="white" 
             headerText="Technical Trend | Horizon - 7 Days" 
-            headerTextColor="white" 
-            closeIcon='/assets/img/VectorFLOW/BPR/collapse-graph.svg'
+            headerTextColor="black" 
+            closeIcon='/assets/img/VectorFLOW/NMS/close-dark.svg'
             closeModal={handleClose}
+            
         >
             <ExpandedChartFilterWrapper>
                 <ExpandedChartSelectWrapper>
                     <ExpandedChartSelectLabel>Search By Location</ExpandedChartSelectLabel>
                     <Select
                         styles={{
+                            
                             container:((baseStyles:any)=>({
                                 ...baseStyles,
-                                width:250
-                            }))
+                                width:250,
+                                // border:'1px solid red',
+
+                                
+                            })),
+                            option: (baseStyles, { isSelected }) => ({
+                                ...baseStyles,
+                                backgroundColor: isSelected ? "#BC3D80" : "white",
+                               
+                               
+                                "&:hover": {
+                                    backgroundColor: '#bc3d814d',
+                                    color:"black",
+                                }
+                            }),
+                            control: (baseStyles, {isFocused }) => (
+                                {
+                                    ...baseStyles, 
+                                    borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
+                                    // border: "none",
+                                    // borderBottom: error ? "3px solid #D03E3E;" : menuIsOpen || isFocused ? '3px solid #820F4C' : '3px solid #A1A1A1',
+                                    boxShadow: 'none',
+                                    "&:hover":{
+                                        borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
+
+                                    }
+                                }),
                         }}
                         options={options.whcodes}
                         onChange={(e)=>onChange(e,'Whcode')}
@@ -79,7 +106,30 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             container:((baseStyles:any)=>({
                                 ...baseStyles,
                                 width:250
-                            }))
+                            })),
+                            option: (baseStyles, { isSelected }) => ({
+                                ...baseStyles,
+                                backgroundColor: isSelected ? "#BC3D80" : "white",
+                               
+                               
+                                "&:hover": {
+                                    backgroundColor: '#bc3d814d',
+                                    color:"black",
+                                }
+                            }),
+                            control: (baseStyles, {  isFocused }) => (
+                                {
+                                    ...baseStyles, 
+                                    borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
+                                    // border: "none",
+                                    // borderBottom: error ? "3px solid #D03E3E;" : menuIsOpen || isFocused ? '3px solid #820F4C' : '3px solid #A1A1A1',
+                                    boxShadow: 'none',
+                                    "&:hover":{
+                                        borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
+
+                                    }
+                                    
+                                }),
                         }}
                         options={options.skus}
                         onChange={(e)=>onChange(e,'SKUCode')}
@@ -90,11 +140,11 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                         activeBtn={activeCapsuleIndex}
                         capsules={[
                             {
-                                label:'Tech',
+                                label:'On-Hand Inventory',
                                 value:'Tech'
                             },
                             {
-                                label:'Eco',
+                                label:'Pipeline Inventory',
                                 value:'Eco'
                             }
                         ]}
@@ -139,11 +189,11 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             yKey: "Yellow",
                             yName: "Yellow",
                             marker:{
-                                fill:'yellow',
+                                fill:'#FFBF00',
                                 size:2,
-                                stroke:"yellow"
+                                stroke:"#FFBF00"
                             },
-                            stroke:'yellow'
+                            stroke:'#FFBF00'
                         },
                         {
                             type: "line",

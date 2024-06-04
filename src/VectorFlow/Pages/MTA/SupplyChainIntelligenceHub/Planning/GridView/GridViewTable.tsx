@@ -1,5 +1,5 @@
 import { Allotment } from "allotment"
-import {useContext,useEffect,useState} from "react"
+import {useContext,useEffect} from "react"
 import "allotment/dist/style.css";
 import { GridViewLayout } from "./styles";
 import { AgGridReactProps } from "ag-grid-react";
@@ -10,10 +10,9 @@ import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagi
 import { type VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { GridStateContext } from "../../../../../../context/GridStateContext";
 import { useGetState } from "../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
-import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
+
 import { notifyError } from "../../../../../../helpers/notify";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../../../redux/store/store";
+
 
 // import VFPagination from "~/components/VectorFLOW/commons/VFPagination";
 
@@ -33,51 +32,113 @@ interface GridViewTableProps {
     currentCategory:string,
     gridHeight?:number,
     tablePrefixSrc?:string,
+    tableHeader?:string
 }
 
-const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,currentTab,currentCategory,gridHeight,tablePrefixSrc}:GridViewTableProps) => {
-    
+const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,gridHeight,tablePrefixSrc,tableHeader,currentCategory,currentTab}:GridViewTableProps) => {
     const {ref} = useContext(GridStateContext)
-    const {mutateAsync:getState,isLoading} = useGetState()
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+    const {mutateAsync:getState} = useGetState()
     useEffect(()=>{
         const getTableState = async()=>{
           try{
             const data =  await getState(`${currentCategory}${currentTab}`)
-            setColumnState(JSON.parse(data.data.data))
+            ref.current.columnApi.applyColumnState({state:JSON.parse(data.data.data)})
           }catch(err:any){
             notifyError(err)
-            setColumnState(agGridColDefs)
           }
         }
         getTableState()
-    },[currentGridState])
+    },[ref])
 
 
-    if(isLoading){
-        return <VFLoader/>
+    // if(isLoading){
+    //     return <VFLoader/>
+    // }
+
+    const renderSubGrid = ()=>{
+        if(showStockGrid){
+            return(
+                <Allotment>
+                    <Allotment.Pane className="sub-grid-allotment">
+                        <BPRViewTable
+                            tableHeader={tableHeader ||'In Transit/WIP'}
+                            tablePrefixSrc={tablePrefixSrc ? tablePrefixSrc : "/assets/img/VectorFLOW/BPR/in-transit.svg"}
+                            rowData={customGridRowData}
+                            colDefs={customGridColDef}
+                        />
+                    </Allotment.Pane>
+                    <Allotment.Pane className="sub-grid-allotment">
+                        {showStockGrid && (
+                            <BPRViewTable
+                                onRequestExpediting={onRequestExpediting}
+                                tableHeader="Stocks (Detail Of Parent)"
+                                tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg"
+                                rowData={stockGridData?stockGridData:[]}
+                                colDefs={[
+                                    {
+                                        headerName:"Stock at Parent",
+                                        colId:'sap',
+                                        field:'sap'
+                                    },
+                                    {
+                                        headerName:"ETA from parent ",
+                                        colId:'eta',
+                                        field:'eta'
+                                    },
+                                    // {
+                                    //     headerName:"Eco Color",
+                                    //     colId:'ec',
+                                    //     field:'ec'
+                                    // },
+                                    {
+                                        headerName:"Remarks",
+                                        colId:'remark',
+                                        field:'remark'
+                                    },
+                                    {
+                                        headerName:"Request Expediting",
+                                        colId:'request',
+                                        field:'request',
+                                        onCellClicked:onRequestExpediting
+                                    },
+                                ]}
+                            />
+                        )}
+                    </Allotment.Pane>
+                </Allotment>
+            )
+        }
+        return(
+            <BPRViewTable
+                tableHeader={tableHeader ||'In Transit/WIP'}
+                tablePrefixSrc={tablePrefixSrc ? tablePrefixSrc : "/assets/img/VectorFLOW/BPR/in-transit.svg"}
+                rowData={customGridRowData}
+                colDefs={customGridColDef}
+            />
+        )
     }
-    console.log(gridHeight)
+
     return(
         <GridViewLayout>
-            <div style={{height:'95vh'}}>
-                <Allotment defaultSizes={[200,50]} vertical>
+            <div style={{height:'95vh',zoom:0.75}}>
+                <Allotment defaultSizes={[350,150]} vertical>
                 {
                     (isSubGridOpen || showStockGrid ) && (
-                        <Allotment.Pane >
+                        <Allotment.Pane className="planning-grid-allotment">
                     
                         <VFTable
                             ref={ref}
                             {...agGridProps}
                             columnDefs={agGridColDefs}
                             rowData={agGridRowData}
-                            height={380}
-                            onGridReady={(params)=>{
-                                if(columnState){
-                                    params.columnApi.applyColumnState({state:columnState})
-                                }
-                            }}
+                            height={650}
+                            // onGridReady={(params)=>{
+                            //     console.log(columnState)
+                            //     if(columnState){
+                                    
+                            //         params.columnApi.applyColumnState({state:columnState})
+                            //     }
+                            // }}
                         />
                         {paginationProps && <VFPagination {...paginationProps}/>}
     
@@ -95,11 +156,11 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             columnDefs={agGridColDefs}
                             rowData={agGridRowData}
                             height={gridHeight ? gridHeight : 380}
-                            onGridReady={(params)=>{
-                                if(columnState){
-                                    params.columnApi.applyColumnState({state:columnState})
-                                }
-                            }}
+                            // onGridReady={(params)=>{
+                            //     if(columnState){
+                            //         params.columnApi.applyColumnState({state:columnState})
+                            //     }
+                            // }}
                         />
                         {paginationProps && <VFPagination {...paginationProps}/>}
     
@@ -107,51 +168,9 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                     ) 
                 }
                 {isSubGridOpen && (
-                    <Allotment.Pane  >
-                
-                    <BPRViewTable
-                        tablePrefixSrc={tablePrefixSrc ? tablePrefixSrc : "/assets/img/VectorFLOW/BPR/in-transit.svg"}
-                        rowData={customGridRowData}
-                        colDefs={customGridColDef}
-                    />
-                    {showStockGrid && (
-                        <BPRViewTable
-                        onRequestExpediting={onRequestExpediting}
-                        tableHeader="Details of parent"
-                        tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg"
-                        rowData={stockGridData?stockGridData:[]}
-                        colDefs={[
-                            {
-                                headerName:"Stock at Parent",
-                                colId:'sap',
-                                field:'sap'
-                            },
-                            {
-                                headerName:"ETA from parent ",
-                                colId:'eta',
-                                field:'eta'
-                            },
-                            {
-                                headerName:"Eco Color",
-                                colId:'ec',
-                                field:'ec'
-                            },
-                            {
-                                headerName:"Remarks",
-                                colId:'remark',
-                                field:'remark'
-                            },
-                            {
-                                headerName:"Request Expediting",
-                                colId:'request',
-                                field:'request',
-                                onCellClicked:onRequestExpediting
-                            },
-                        ]}
-                    />
-                    )}
-                
-                </Allotment.Pane>
+                    <Allotment.Pane minSize={180} maxSize={260}>
+                        {renderSubGrid()}
+                    </Allotment.Pane>
                 )}
                 </Allotment>
             </div>

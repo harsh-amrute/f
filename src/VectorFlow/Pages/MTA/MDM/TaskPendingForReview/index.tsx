@@ -50,6 +50,17 @@ const TaskPendingForReview = ()=>{
                       }
                       return { background: "#F7F7F7" };
                     },
+                    enableRangeSelection:true,
+                    rowSelection:'multiple',
+                  }}
+                  statusBar={{
+                    statusPanels:[
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
+                    ]
                   }}
                 rowData={mapRowDataWithSrNo(viewTableRowData)}
                 pagination={true}
@@ -66,16 +77,17 @@ const TaskPendingForReview = ()=>{
                 columnDefs={detailTableColDefs}
                 gridOptions={{
                     getRowStyle: (params: any) => {
+                        
                     if (params.node.rowIndex % 2 === 0) {
                         return { background: "#EBEBEB" };
                     }
+                    
                     return { background: "#F7F7F7" };
                     },
-                }}
-                rowData={detailTableRowData}
-                rowSelection='multiple' 
-                suppressRowClickSelection
-                statusBar={{
+                    enableRangeSelection:true,
+                    rowSelection:'multiple',
+                  }}
+                  statusBar={{
                     statusPanels:[
                       { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
                       { statusPanel: 'agTotalRowCountComponent', align: 'left' },
@@ -84,6 +96,8 @@ const TaskPendingForReview = ()=>{
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ]
                   }}
+                rowData={detailTableRowData}
+                suppressRowClickSelection 
                 onSelectionChanged={()=>{
                     if(ref && ref.current){
                         setSelectedRows(ref.current.api.getSelectedRows().length)

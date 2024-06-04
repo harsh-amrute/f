@@ -27,9 +27,9 @@ describe('Testing the BTRService',  () => {
     });
 
     it('should make a get request to the /GetBTRDataCount', async () => {
-      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
    
-      const response = await BTRService.getBTRDataCount();
+      const response = await BTRService.getBTRDataCount({data:'test',status:200});
       // expect(mockedAxios.post).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/getBTRData',{},{
       //   headers: { 'Content-Type': 'application/json' }
       // })

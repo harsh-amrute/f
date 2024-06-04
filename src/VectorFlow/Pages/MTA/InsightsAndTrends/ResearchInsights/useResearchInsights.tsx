@@ -18,16 +18,34 @@ import { useSelector,useDispatch } from 'react-redux'
 import { RootState } from '../../../../../redux/store/store'
 import { type DailyDataGraph } from "../../../../types/MTA";
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
+import useBPRFilter from '../../../../../hooks/useBPRFilter'
 
 const useResearchInsights = ()=>{
     
     const {data,isLoading:isBPRUILoading} = useGetBPRUIConfiguration()
     const dispatch = useDispatch();
 
+    const ref = useRef<GridRef>();
+    const tempRef = useRef()
+
+    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+    const [columnState,setColumnState] = useState<any>()
+    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+
+    const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
+
+    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+
+    const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
+
+    const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
+
+    const {mutateAsync:getDailyData} = useGetDailyData();
+
     const {mutateAsync:getUpdatedGraphData,isLoading:isUpdatedGraphDataLoading} = useGetUpdatedGraphData()
 
     const [ResearchInsightsData,setResearchInsightsRowData] = useState<Array<any>>([])
-    const {mutateAsync:getBPRData,isLoading:isBPRDataLoading} = useGetBPRData()
+    const {mutateAsync:getBPRData} = useGetBPRData()
 
     const {mutateAsync:getBPRDataCount,isLoading:isBPRDataCountLoading} = useGetBPRDataCount()
 
@@ -64,20 +82,7 @@ const useResearchInsights = ()=>{
     const [selectedRowsDates,setSelectedRowsDates] = useState<Array<any>>([])
 
 
-    const ref = useRef<GridRef>();
-    const tempRef = useRef()
-
-    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
-
-    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
-
-    const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
-
-    const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
-
-    const {mutateAsync:getDailyData} = useGetDailyData();
+    
 
     const sideBar = {
         toolPanels: [
@@ -114,35 +119,16 @@ const useResearchInsights = ()=>{
     useEffect(()=>{
         async function getBPRRowData(){
             resetState()
-            if(!recordCount){
-                const countData = await getBPRDataCount({
-                    id: 1,
-                    name: "",
-                    fields: [],
-                    filters:{},
-                    paginationParameter:{
-                        pageNumber:currGridPage,
-                        recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
-                    }
-                })
-    
-                setRecordCount(countData.data.recordCount)
-            }
-
-            const rowData =await  getBPRData({
-                id: 1,
-                name: "",
-                fields: [],
-                filters:{},
-                paginationParameter:{
-                    pageNumber:currGridPage,
-                    recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
-                }
-            })
-            setResearchInsightsRowData(rowData.data.data)
+            await getRecordCount(currentFilter)
+            await getRowData(currentFilter,1)
         }
-        getBPRRowData()
-    },[currGridPage])
+        try{
+            
+            getBPRRowData()
+        }catch(err:any){
+            notifyError(err)
+        }
+    },[])
 
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -193,9 +179,63 @@ const useResearchInsights = ()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'ResearchInsights'});
         }
       };
+
+    const getRecordCount =async(filter:any)=>{
+        const countData = await getBPRDataCount({
+            id: 1,
+            name: "",
+            fields: [],
+            filters:filter,
+            paginationParameter:{
+                pageNumber:1,
+                recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+            }
+        })
+
+        setRecordCount(countData.data.recordCount)
+    }
+
+    const getRowData = async(filter:any,pageNo:number)=>{
+        notifyLoader("Loading Grid Data")
+        const rowData =await  getBPRData({
+            id: 1,
+            name: "",
+            fields: [],
+            filters:filter,
+            paginationParameter:{
+                pageNumber:pageNo,
+                recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+            }
+        })
+        toast.dismiss()
+        setResearchInsightsRowData(rowData.data.data)
+    }
+
+    const onApplyFilter = async(filter:any)=>{
+        resetState()
+        setCurrentFilter(filter)
+        setCurrGridPage(1)
+        try{
+            await getRecordCount(filter)
+            await getRowData(filter,1)
+        }catch(err:any){
+            notifyError(err)
+        }
+        
+    }
+
+    const handlePageChange = async(pageNo:number)=>{
+        resetState()
+        setCurrGridPage(pageNo)
+        try{
+            await getRowData(currentFilter,pageNo)
+        }catch(err:any){
+            notifyError(err)
+        }
+    }
     
     const getColor = (date:any)=>{
         const doesExist = calenderData.find((d)=>isSameDay(d.date,date))
@@ -279,7 +319,7 @@ const useResearchInsights = ()=>{
             return convertCustomObjToObjects(colorFrequencyArray.reverse())
     }
 
-    const handleOnUpdateGraph = async()=>{
+     const handleOnUpdateGraph = async()=>{
         const selectedRows =  ref.current?.api.getSelectedRows()
         if(selectedRows && selectedRows.length===0)return setGraphState('default')
         const loaderId = notifyLoader('Loading graph data')
@@ -425,7 +465,6 @@ const useResearchInsights = ()=>{
         }
     },[selectedRowsDates,graphs])
 
-    console.log(columnState)
 
     const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
@@ -457,7 +496,7 @@ const useResearchInsights = ()=>{
             id:1,
             name:'',
             fields:[],
-            filters:[],
+            filters:currentFilter,
             paginationParameter:{
                 pageNumber:pageNumber,
                 recordsPerPage:5000
@@ -467,7 +506,6 @@ const useResearchInsights = ()=>{
         return data.data.data
     }
 
-    const handleOnPageChange = (pageNumber:number)=>setCurrGridPage(pageNumber)
 
     const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
 
@@ -476,7 +514,7 @@ const useResearchInsights = ()=>{
         agGridProps,
         ResearchInsightsData,
         ResearchInsightsColumns,
-        isLoading:isBPRDataLoading || isBPRUILoading ||isBPRDataCountLoading,
+        isLoading:isBPRUILoading ||isBPRDataCountLoading,
         isUpdatedGraphDataLoading,
         horizon,
         graphState,
@@ -501,7 +539,6 @@ const useResearchInsights = ()=>{
         handleOnUpdateGraph,
         setSelectedRowsDates,
         currGridPage,
-        handleOnPageChange,
         rowsPerPage,
         recordCount,
         isSavedDataLoading,
@@ -517,7 +554,12 @@ const useResearchInsights = ()=>{
         onExportToExcelCallBack,
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
-        dailyData
+        dailyData,
+        onApplyFilter,
+        handlePageChange,
+        onDelete,
+        currentFilter,
+        setCurrentFilter
     }
 }
 

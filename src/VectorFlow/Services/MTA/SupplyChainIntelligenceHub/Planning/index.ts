@@ -39,4 +39,10 @@ export const useSubmitOpenExpediteRequest = ()=>{
 })
 }
 
+export const useGetPlanningDataGridCount =()=>{
+  return useMutation(async(body:any)=>{
+    return await PlanningService.getPlanningDataGridCount(body)
+  })
+}
+
 

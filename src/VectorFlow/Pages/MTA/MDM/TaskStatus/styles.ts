@@ -15,13 +15,15 @@ export const VFTaskStatusContentWrapper = styled.div`
 
 export const VFTaskStatusStepperWrapper = styled.div<{gridFraction:string}>`
     margin-top:20px;
-    height:60px;
+    padding-left:120px;
+    height:150px;
     width:100%;
     display:grid;
     grid-template-columns:${(props)=>props.gridFraction};
     place-items:center;
     grid-gap:60px;
-
+    background-color:#F0F0F0;
+    border-radius:8px;
 `
 
 export const VFTastStatusDownloadWrapper = styled.div`
@@ -52,3 +54,32 @@ export const VFTaskStatusNoData = styled.div`
     display:flex;
     align-items:center;
 `
+
+export const StepperPrefixWrapper = styled.div`
+    display:flex;
+    margin-left:-30px;
+`
+
+export const StepperPrefixIcon = styled.img`
+    height:20px;
+    width:20px;
+`
+
+export const StepperPrefixLabel = styled.p`
+    font-family:Roboto;
+    font-weight:500;
+    font-size:18px;
+    letter-spacing: 0px;
+    color: #1C1A1A;
+    margin-left:10px;
+`
+
+export const StepperPrefixSubLabel = styled.p`
+    font-family:Roboto;
+    font-weight:400;
+    font-size:18px;
+    letter-spacing: 0px;
+    color: #897E7E;
+    margin-left:10px;
+`
+

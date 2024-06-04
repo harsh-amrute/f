@@ -14,7 +14,7 @@ import { AgeingCellRenderer } from '../../../../../../../components/VectorFLOW/c
 const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
     const [activeRow,setActiveRow] = useState<any>();
-    const [isSubGridOpen,toggleSubGrid] = useState<any>(false);
+    const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
     const dispatch = useDispatch()
 
     const {currentGridState} = useSelector((state:RootState)=>state.mta)
@@ -57,6 +57,17 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
                 setActiveRow(params.data.transit)
                 toggleSubGrid(true)
             }
+        },
+        enableRangeSelection: true,
+        rowSelection: "multiple",
+        statusBar: {
+          statusPanels: [
+            { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+            { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+            { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+            { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+            { statusPanel: 'agAggregationComponent', align: 'left' },
+          ],
         },
         gridOptions:{
             rowHeight:50,
@@ -152,46 +163,51 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
             colId:'lc',
             field:'lc'
         },
-        {
-            headerName:"Creation Date",
-            colId:'cd',
-            field:'cd'
-        },
-        {
-            headerName:"SLT",
-            colId:'slt',
-            field:'slt'
-        },
-        {
-            headerName:"TLT",
-            colId:'tlt',
-            field:'tlt'
-        },
+        // {
+        //     headerName:"Creation Date",
+        //     colId:'cd',
+        //     field:'cd'
+        // },
+        // {
+        //     headerName:"SLT",
+        //     colId:'slt',
+        //     field:'slt'
+        // },
+        // {
+        //     headerName:"TLT",
+        //     colId:'tlt',
+        //     field:'tlt'
+        // },
         {
             headerName:"Ageing",
             colId:'ag',
             field:'ag'
         },
-        {
-            headerName:"ETA",
-            colId:'eta',
-            field:'eta'
-        },
-        {
-            headerName:"Current Location",
-            colId:'cl',
-            field:'cl'
-        },
+        // {
+        //     headerName:"ETA",
+        //     colId:'eta',
+        //     field:'eta'
+        // },
+        // {
+        //     headerName:"Current Location",
+        //     colId:'cl',
+        //     field:'cl'
+        // },
         {
             headerName:"Quantity",
             colId:'qty',
             field:'qty'
         },
         {
-            headerName:"Remarks",
-            colId:'remarks',
-            field:'remarks'
+            headerName:"Whereabouts",
+            colId:'whereabouts',
+            field:'whereabouts'
         }
+        // {
+        //     headerName:"Remarks",
+        //     colId:'remarks',
+        //     field:'remarks'
+        // }
     ]
 
 

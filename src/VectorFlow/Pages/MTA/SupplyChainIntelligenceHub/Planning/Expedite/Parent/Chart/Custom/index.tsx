@@ -40,7 +40,8 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
                 colId:column['colCode'],
                 headerName:column['header'],
                 enablePivot:true,
-                enableValue:true
+                enableValue:true,
+                enableRowGroup:true,
             }
         })
         return [...colDefs];
@@ -119,8 +120,17 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
                 rowData={rowData}
                 sideBar={true}
                 enableCharts={true}
-                enableRangeSelection={true}
-                defaultColDef={{
+                enableRangeSelection={true} 
+                rowSelection="multiple"
+                statusBar = {{
+                    statusPanels: [
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                      { statusPanel: 'agAggregationComponent', align:'left' },
+                    ],
+                  }}                defaultColDef={{
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}
@@ -129,6 +139,7 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
                      params.columnApi.applyColumnState({state:columnState})
                     }
                  }}
+                height={430}
             />
         </SCDynamicContainer>
         </>

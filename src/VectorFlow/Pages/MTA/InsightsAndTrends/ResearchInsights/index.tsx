@@ -5,7 +5,7 @@ import VFRangeSlider from "../../../../../components/VectorFLOW/commons/VFRangeS
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 
 
-import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrapper,ResearchInsightsTableTaskBar, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick, ExpandChartIcon } from "./styles"
+import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrapper,ResearchInsightsTableTaskBar, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick, ExpandChartIcon, RadioGroup } from "./styles"
 
 import CustomCalenderCaption from './CustomCalenderCaption'
 import CustomCalenderDay from './CustomCalenderDay'
@@ -16,8 +16,6 @@ import 'react-day-picker/dist/style.css';
 import './styles.css'
 import { AgChartsReact } from 'ag-charts-react'
 import React from 'react'
-import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline'
-import { useUserData } from '../../../../../context'
 import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar'
 import ExpandedGraph from './ReseachInsightsExpandedGraph'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
@@ -59,7 +57,6 @@ const ResearchInsights = ()=>{
         currGridPage,
         isSavedDataLoading,
         columnState,
-        handleOnPageChange,
         tempRef,
         tempDownloadData,
         setTempDownloadData,
@@ -71,13 +68,13 @@ const ResearchInsights = ()=>{
         onExportToExcelCallBack,
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
-        dailyData
+        dailyData,
+        handlePageChange,
+        onApplyFilter,
+        onDelete,
+        currentFilter,
+        setCurrentFilter
     } = useResearchInsights()
-
-    const {user} = useUserData()
-
-    const themeUi = user.user.theme_ui
-
     
     return(
         <GridStateContext.Provider value={{
@@ -90,17 +87,25 @@ const ResearchInsights = ()=>{
             setExportExcelRowData:setExportExcelRowData
 
         }}>
+            <div style={{zoom:0.8}}>
        <ActionToolBar 
             view={'grid'} 
             setCurrentTab={''} 
             currCategory={'ResearchInsight'} 
-            currentTab={''} tabsList={[]} 
+            currentTab={''} 
+            tabsList={[]} 
             onFloatingTabChange={()=>console.log('')} 
             onGoBack={()=>console.log('')} 
             onViewChange={()=>console.log('')}
             genericRecordCount={recordCount || 0}
             onExportToExcelCallBack={onExportToExcelCallBack}
+            onApplyFilter={onApplyFilter}
+            multiFilter={currentFilter}
+            setMultiFilter={setCurrentFilter}
+            onDelete={onDelete}
+            onUpdateInsight={handleOnUpdateGraph}
         />
+        </div>
         
         {(isLoading || isSavedDataLoading)?(
             <VFLoader/>
@@ -114,7 +119,7 @@ const ResearchInsights = ()=>{
             }
             <ResearchInsightsTableWrapper style={{zoom:0.8, marginTop:'-15px'}}>
                 <VFTable
-                    height={800}
+                    height={945}
                     {...agGridProps}
                     ref={ref}
                     columnDefs={ResearchInsightsColumns}
@@ -122,22 +127,34 @@ const ResearchInsights = ()=>{
                     onGridReady={(params)=>{
                         if(columnState)params.columnApi.applyColumnState({state:columnState})
                     }}
+                    enableRangeSelection={true} // Added property
+                    rowSelection="multiple"
+                    statusBar = {{
+                        statusPanels: [
+                          { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                          { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                          { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                          { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                          { statusPanel: 'agAggregationComponent', align:'left' },
+                        ],
+                      }}
                 />
                 <VFPagination
                     selectedRows={0}
                     totalRows={recordCount || 0}
                     currentPage={currGridPage}
                     rowsPerPage={rowsPerPage}
-                    handleChangePage={handleOnPageChange}
+                    handleChangePage={handlePageChange}
                 />
                 <ResearchInsightsTableTaskBar>
-                    <VFButtonOutline
+                    {/* <VFButton
                         themeUi={themeUi}
                         onClick={handleOnUpdateGraph}
                         // disabled={graphState==='default'}
                     >
                         Update Graph
-                    </VFButtonOutline>
+                    </VFButton> */}
+
                 </ResearchInsightsTableTaskBar>
             </ResearchInsightsTableWrapper>
             {
@@ -182,9 +199,9 @@ const ResearchInsights = ()=>{
                         </HistoricalAvailabiltyContentSection>
                     </HistoricalAvailabiltyContent>
                 </AvailabilityTrendSection>
-                <AvailabilityTrendSection>
-                    <HorizonHeader>
-                        Select Horizon
+                <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',zoom:0.7,alignItems:'center',padding:0}}>
+                    <HorizonHeader style={{margin:'0px 0px 0px 30px'}}>
+                        Horizon
                     </HorizonHeader>
                     <VFRangeSlider
                         showTriangle={false}
@@ -210,15 +227,15 @@ const ResearchInsights = ()=>{
                                     activeBtn={{label:calenderType,value:calenderType}}
                                     capsules={[
                                         {
-                                            label:"Tech",
+                                            label:"On-Hand Inventory",
                                             value:'Tech'
                                         },
                                         {
-                                            label:"Eco",
+                                            label:"Pipeline Inventory",
                                             value:'Eco'
                                         }
                                     ]}
-                                    handleClick={(e:any)=>setCalenderType(e.label)}
+                                    handleClick={(e:any)=>setCalenderType(e.value)}
                                     
                                 />
                             </CapsuleWrapper>
@@ -276,10 +293,10 @@ const ResearchInsights = ()=>{
                             </CalenderSummaryCell>
                         </CalenderSummaryWrapper>
                     </AvailabilityTrendSection>
-                    <AvailabilityTrendSection>
+                    <AvailabilityTrendSection style={{borderBottom:'none'}}>
                         <CalenderSummaryWrapper>
                             <CalenderSummaryCell>
-                                <CalenderSummaryCellText>Contd. Black Ageing</CalenderSummaryCellText>
+                                <CalenderSummaryCellText style={{height:27}}>Contd. Black Ageing</CalenderSummaryCellText>
                                 <CalenderSummaryCellContentWrapper>
                                     <CalenderSummaryCellContent>
                                         0
@@ -287,7 +304,7 @@ const ResearchInsights = ()=>{
                                 </CalenderSummaryCellContentWrapper>
                             </CalenderSummaryCell>
                             <CalenderSummaryCell>
-                                <CalenderSummaryCellText>Contd. Black + Red Ageing</CalenderSummaryCellText>
+                                <CalenderSummaryCellText style={{height:27}}>Contd. Black + Red Ageing</CalenderSummaryCellText>
                                 <CalenderSummaryCellContentWrapper>
                                     <CalenderSummaryCellContent>
                                         30
@@ -295,7 +312,7 @@ const ResearchInsights = ()=>{
                                 </CalenderSummaryCellContentWrapper>
                             </CalenderSummaryCell>
                             <CalenderSummaryCell>
-                                <CalenderSummaryCellText>Contd. White Ageing</CalenderSummaryCellText>
+                                <CalenderSummaryCellText style={{height:27}}>Contd. White Ageing</CalenderSummaryCellText>
                                 <CalenderSummaryCellContentWrapper>
                                     <CalenderSummaryCellContent>
                                         0
@@ -308,7 +325,7 @@ const ResearchInsights = ()=>{
                 )}
                 {graphState==='graph' && (
                     <React.Fragment>
-                        <AvailabilityTrendSection>
+                        <AvailabilityTrendSection style={{paddingBottom:'0'}}>
                     <ChartHeader>
                         <ChartHeaderText>
                             Current Location
@@ -318,11 +335,11 @@ const ResearchInsights = ()=>{
                                 activeBtn={graphs[0].pen}
                                 capsules={[
                                     {
-                                        label:"Tech",
+                                        label:"On-Hand Inv.",
                                         value:'Tech'
                                     },
                                     {
-                                        label:"Eco",
+                                        label:"Pipeline Inv.",
                                         value:'Eco'
                                     }
                                 ]}
@@ -387,11 +404,11 @@ const ResearchInsights = ()=>{
                                 yKey: "Yellow",
                                 yName: "Yellow",
                                 marker:{
-                                    fill:'yellow',
+                                    fill:'#FFBF00',
                                     size:2,
-                                    stroke:'yellow'
+                                    stroke:'#FFBF00'
                                 },
-                                stroke:'yellow'
+                                stroke:'#FFBF00'
                             },
                             {
                                 type: "line",
@@ -451,24 +468,27 @@ const ResearchInsights = ()=>{
                     </AvailabilityTrendSection>
                     <AvailabilityTrendSection style={{border:'none'}}>
                     <ChartHeader>
-                        <ChartHeaderRadioGroup>
-                            <input type="radio" value="parent" name="location" id="parent" defaultChecked onChange={()=>updateGraphState(2,'type',{label:"Parent",value:'Parent'})}/>
-                            <label htmlFor="parent">Parent</label>
-                        </ChartHeaderRadioGroup>
-                        <ChartHeaderRadioGroup style={{marginLeft:'10px'}}>
-                            <input type="radio" value="child" name="location" id="child" onChange={()=>updateGraphState(2,'type',{label:"Child",value:'Child'})}/>
-                            <label htmlFor="child">Child</label>
-                        </ChartHeaderRadioGroup>
+                        <RadioGroup>
+                            <ChartHeaderRadioGroup style={{gap:'2px'}}>
+                                <input type="radio" value="parent" name="location" id="parent" defaultChecked onChange={()=>updateGraphState(2,'type',{label:"Parent",value:'Parent'})} style={{margin:0}}/>
+                                <label htmlFor="parent" style={{fontSize:10}}>Parent</label>
+                            </ChartHeaderRadioGroup>
+                            <ChartHeaderRadioGroup style={{marginLeft:'10px',gap:'2px'}}>
+                                <input type="radio" value="child" name="location" id="child" onChange={()=>updateGraphState(2,'type',{label:"Child",value:'Child'})} style={{margin:0}}/>
+                                <label htmlFor="child"  style={{fontSize:10}}>Child</label>
+                            </ChartHeaderRadioGroup>
+                        </RadioGroup>
+
                         <CapsuleWrapper>
                             <VFCapsule
                                 activeBtn={graphs[1].pen}
                                 capsules={[
                                     {
-                                        label:"Tech",
+                                        label:"On-Hand Inv.",
                                         value:'Tech'
                                     },
                                     {
-                                        label:"Eco",
+                                        label:"Pipeline Inv.",
                                         value:'Eco'
                                     }
                                 ]}
@@ -533,11 +553,11 @@ const ResearchInsights = ()=>{
                                     yKey: "Yellow",
                                     yName: "Yellow",
                                     marker:{
-                                        fill:'yellow',
+                                        fill:'#FFBF00',
                                         size:2,
-                                        stroke:"yellow"
+                                        stroke:"#FFBF00"
                                     },
-                                    stroke:'yellow'
+                                    stroke:'#FFBF00'
                                 },
                                 {
                                     type: "line",

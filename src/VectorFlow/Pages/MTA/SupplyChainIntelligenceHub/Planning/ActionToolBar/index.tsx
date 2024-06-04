@@ -1,7 +1,6 @@
 import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton';
 import VFFloatingTab from '../../../../../../components/VectorFLOW/commons/VFFloatingTab';
 import VFSelectedFilters from '../../../../../../components/VectorFLOW/commons/VFSelectedFilters';
-import useBPRFilter from '../../../../../../hooks/useBPRFilter';
 import {useState,useMemo,useContext} from 'react';
 import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { useLocation, Link} from "react-router-dom";
@@ -49,18 +48,24 @@ interface ActionToolBarProps {
     planningCount?:PlanningCounts
     genericRecordCount:number
     onExportToExcelCallBack:any
+    multiFilter:any
+    setMultiFilter:any
+    onDelete:any,
+    onUpdateInsight?:()=>void
 }
 
 
 
-const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter}:ActionToolBarProps) => {
+const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter,multiFilter,setMultiFilter,onDelete,onUpdateInsight}:ActionToolBarProps) => {
     const { user } = useUserData();
     const {ref} = useContext(GridStateContext)
-    const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
+    // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
     const {onSaveState,onResetAllState,onExportToExcel} = useSaveAllState()
     const {currentCategory} = useSelector((state:RootState)=>state.mta.planning)
     const { pathname } = useLocation();
     const dispatch = useDispatch()
+
+
     const themeUi = user?.user?.theme_ui;
  const [isFilterOpen,toggleFilter] = useState<boolean>(false)
 
@@ -86,12 +91,14 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
             default:
                 return genericRecordCount
         }
-    },[currCategory])
+    },[currCategory,currentTab,genericRecordCount])
+
+
 
 
     const handleExportToExcel = ()=>{
         if(pathname==='/supply-chain-intelligence-hub/open-expediting-requests'){
-            return ref.current.api.exportDataAsExcel()
+            return ref.current.api.exportDataAsExcel({fileName:"OpenExpeditingRequests"})
         }
 
         onExportToExcel({pagination:{recordCount:currentPageRecordCount || 0,chunkSize:5000},callBack:onExportToExcelCallBack})
@@ -158,6 +165,11 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                 return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />
             }
             break;
+        case 'InTransitWhereabouts':
+            if(pathname==='/logistics/intransit-whereabouts'){
+                return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />
+            }
+            break;
             case 'chronicunavailability':
                 return <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} productFilterActive={true} supplyChainNodeFilterActive={true} locationFilterActive={true}  supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m)=>['1','3','4'].includes(m.id))} />
         default:
@@ -195,7 +207,9 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                         style={{
                             maxWidth: currCategory==="GuidedInsight" ? '100%' : '50%', 
                             width: currCategory === "GuidedInsight" ? '100%' : 'unset',
-                            justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
+                            justifyContent: currCategory === "GuidedInsight" ? 'flex-start' : 'unset',
+                            marginLeft:'10px'
+                        }}
                             >
 
                           
@@ -205,31 +219,38 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
 
                         <SCCustomActionsContainer>
                            
-                                {currentTab==="chronicunavailability" && 
-                                <>
-                                    <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
-                                    {isFilterOpen && renderFilter()}
-                                </>
-                                }
+                        {/* {!(currentTab === "chronicunavailability" || currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" || currentTab==="dbmnormsuggestions") &&
+                             <>
+                                <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
+                                {isFilterOpen && renderFilter()}
+                                <SCVerticalDivider/>
+
+                             </>
+                        } */}
                                 {currentTab==="dbmnormsuggestions" && 
                                 <>
                                     <Link to="/dbm/dbm-norm-suggestions" style={{textDecoration:'none'}}>
-                                        <VFButtonOutline onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false} style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px'}}>
-                                            <img src="/assets/img/VectorFLOW/BPR/NormAction.svg" ></img>
+                                        <VFButtonOutline onClick={()=>toggleFilter(true)} themeUi={themeUi} width={140} disabled={false} style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:'5px', paddingLeft:'12px', paddingRight:'13px'}}>
+                                            <img src="/assets/img/VectorFLOW/BPR/NormAction.svg"></img>
                                             Norm Action
                                         </VFButtonOutline>
-                                    </Link>       
+                                    </Link>  
+                                    <SCVerticalDivider/>
+     
                                 </>
                                 }
                                 
                                 {currentTab==='custom' && (
-                                    <SCViewContainerWithBg onClick={()=>ref.current.api.exportDataAsExcel()} >
+                                    <>
+\                                    <SCViewContainerWithBg onClick={()=>ref.current.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`})} >
                                         <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" />
                                         <p>Excel Export</p>
                                     </SCViewContainerWithBg>
+                                    <SCVerticalDivider/>
+                                    </>
                                 )}
                              {
-                                (currentTab==='availabilitytrend' ||  currentTab==="availabilityageingtrend" || currentTab==="dbmnormsuggestions" || currentTab==="chronicunavailability" || currentTab==='custom') &&
+                                ( currentTab==='availabilitytrend' ||  currentTab==="availabilityageingtrend" || currentTab==="dbmnormsuggestions" || currentTab==="chronicunavailability" || currentTab==='custom' ) &&
 
                                 (
                                     <>
@@ -252,6 +273,8 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                             {
                                 
                                 !disableChartAndGridViewToggle &&
+                                <>
+                                 {/* <SCVerticalDivider/> */}
                                 <SCViewBackground>
                                     <SCViewContainer>
                                         <SCViewImage src={"/assets/img/VectorFLOW/BPR/chart-view-pink.svg"} alt="" />
@@ -270,6 +293,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                         <p style={{color:'#b0acac'}}>Grid View</p>
                                     </SCViewContainer>
                                 </SCViewBackground>
+                                </>
                                 
                             }
                             
@@ -284,7 +308,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                          style={{
                                 maxWidth: currCategory==="GuidedInsight" ? '100%' : '50%', 
                                 width: currCategory === "GuidedInsight" ? '100%' : 'unset',
-                                justifyContent: currCategory === "GuidedInsight" ? 'center' : 'unset'}}
+                                justifyContent: currCategory === "GuidedInsight" ? 'flex-start' : 'unset'}}
                                 >
                                     
                         {currCategory==="GITFromParent" || currCategory==="GITToChild" || currCategory==="ExpediteFromParent" || currCategory==="ExpediteToChild" || currCategory==="ExcessInventory" || currCategory==="OrderFulfillment" ?
@@ -298,20 +322,42 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                         {currCategory === 'DBMNorm' ? <DBMApplyNormChange onCheck={showAllTick}/>:null}
                         {currCategory === 'DBMNorm' ? 
                         <img 
+                            style={{cursor:'pointer'}}
                             src="/assets/img/Group 627.svg" 
                             height={50.02} 
                             width={76.83} 
                             onClick={handleGoButton} 
                         />:null}
-                            {currCategory === 'GuidedInsight' ? null:
-                            
-                            <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
+                            {/* {(currCategory === 'GuidedInsight' && view!=='grid') ? null: */} 
+                            {/* <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters> */}
+                            {/* } */}
+                            {/* {tabsList.length > 0 && renderFloatingTab()} */}
 
-                            }
-                            {tabsList.length > 0 && renderFloatingTab()}
+
+                            {(tabsList.length > 0 && renderFloatingTab())}
+
+                            {currCategory === 'GuidedInsight' && view === 'grid' ? (
+                                <div style={{ marginRight: '60px', maxWidth:'400px' }}>
+                                    <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
+                                </div>
+                            ) : (currCategory === 'GuidedInsight' && view !== 'grid') || currCategory==='ResearchInsight' ? (
+                                null
+                            ) : (
+                                <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
+                            )}
+                            
+                            {currCategory==='ResearchInsight'? 
+                            <>
+                                <VFButtonOutline themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={()=>onUpdateInsight?onUpdateInsight(): {}}>Update Insight</VFButtonOutline> 
+                                <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete} style={{maxWidth:'700px'}}></VFSelectedFilters>
+                                </>
+                            : null }   
+                                
+                                
                         </SCTaskFilterContainer>
                         <SCCustomActionsContainer>
 
+                      
                         <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
                             {isFilterOpen && renderFilter()}
                          
@@ -359,8 +405,9 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
 
                               
                             {
-                                (currCategory==='CustomScreens' || currCategory==='BufferTrend' || currCategory==="BPR" || currCategory==="RRR" || currCategory==="BOR" || currCategory==="BTR" || currCategory==="ResearchInsight" || currCategory==="DBMNorm" || (currCategory==="GuidedInsight" && currentTab!=="chronicunavailability") || currCategory==="OpenExpeditingRequests" ) ? null : (
+                                (currCategory==='CustomScreens' || currCategory==='BufferTrend' || currCategory==="BPR" || currCategory==="RRR" || currCategory==="BOR" || currCategory==="BTR" || currCategory==="ResearchInsight" || currCategory==="DBMNorm" || (currCategory==="GuidedInsight" && currentTab!=="chronicunavailability") || currCategory==="OpenExpeditingRequests" ) || currCategory==="InTransitWhereabouts" ? null : (
                                 !disableChartAndGridViewToggle &&
+                                <>
                                 <SCViewBackground>
                                     <SCViewContainer onClick={() =>{
                                         onViewChange('chart')
@@ -380,7 +427,9 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                         <p style={{color:'#bc3d81'}}>Grid View</p>
                                     </SCViewContainer>
                                 </SCViewBackground>
+                                </>
                                 )
+                            
                             }           
                         </SCCustomActionsContainer>
                     </SCTaskBarContainer>
@@ -395,3 +444,4 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
 }
 
 export default ActionToolBar;
+

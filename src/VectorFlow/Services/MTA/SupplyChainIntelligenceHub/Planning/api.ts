@@ -33,4 +33,10 @@ export namespace PlanningService {
             })
     }
 
+    export const getPlanningDataGridCount = async (body:any) => {
+        return axios.post(process.env.REACT_APP_VF_API_HOST + `/GetPlanningDataGridCount`,body,{
+            headers: { 'Content-Type': 'application/json' }
+        })
+    }
+
 }

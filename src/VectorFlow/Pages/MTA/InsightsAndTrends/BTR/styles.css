@@ -12,17 +12,19 @@
     --ag-grid-size:6px ;
     --ag-font-size: 14px;
     /* --ag-font-family: monospace; */
+    --ag-header-cell-hover-background-color: rgb(143, 146, 146);
+
     
   }
   
-  .ag-row:hover{
+  .ag-theme-material .ag-row:hover{
       background-color: rgb(188, 61, 129,0.3) !important;
   }
   
-  .ag-root-wrapper{
+  .ag-theme-material .ag-root-wrapper{
       border-radius: 8px 8px 0 0;
   }
- .ag-header-container{
+  .ag-theme-material .ag-header-container{
     background-color: black;
   }
   
@@ -37,32 +39,33 @@
     letter-spacing: 0px;
     color: #FFFFFF;
     }
-  .ag-header-icon{
+    .ag-theme-material .ag-header-icon{
       opacity:1 !important;
       color:white;
   }
   
-  .active-row {
+  .ag-theme-material .active-row {
       z-index: 111 !important; /* Adjust z-index to suit your needs */
       position: relative; /* z-index only works on positioned elements (position:absolute, position:relative, or position:fixed) */
       /* Any other styles */
     }
   
-  .ag-row{
+    .ag-theme-material .ag-row{
       overflow: visible;
   }
   
-  .ag-header-row:nth-child(2){
+  .ag-theme-material .ag-theme-material .ag-header-row:nth-child(2){
       background-color: #F7F7F7;
       color:black;
       width: 100% !important;
   }
   
-  .ag-header-cell-label{
+  
+  .ag-theme-material .ag-header-cell-label{
       justify-content: center;
   }
   
-  .selected-record-count{
+  .ag-theme-material .selected-record-count{
       font-family: 'Roboto';
       font-style: normal;
       font-weight: 400;
@@ -73,15 +76,15 @@
   
   }
   
-  .ag-header-group-cell-with-group{
+  .ag-theme-material .ag-header-group-cell-with-group{
       justify-content: center;
   }
   
-  .ag-status-name-value span{
+  .ag-theme-material .ag-status-name-value span{
       color:black;
   }
   
-  .ag-body-horizontal-scroll{
+  /* .ag-body-horizontal-scroll{
       height: unset !important;
       max-height: unset !important;
       min-height: 29px !important;
@@ -107,12 +110,12 @@
       min-width:unset !important;
       max-width: unset !important;
       width: unset !important;
-  }
-  .ag-panel-title-bar-button{
+  } */
+  .ag-theme-material .ag-panel-title-bar-button{
       color:white !important;
   }
 
-  .btr_cell_style{
+  .ag-theme-material .btr_cell_style{
     font-size: 10px;
     }
 /*     

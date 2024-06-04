@@ -15,7 +15,8 @@ export const SCSeasonalityContainer = styled.div`
 
 export const SCChartContainer = styled.div`
     margin-right:33px;
-    width:71%;
+    //width:81%;
+    width:76%;
 `
 
 export const SCSeasonalityStatusDetails = styled.div`

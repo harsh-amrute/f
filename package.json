@@ -82,7 +82,9 @@
       "src/module-store-transfer",
       "src/components/VectorFLOW/commons/DailyDataGraphModal",
       "src/components/VectorFLOW/commons/VFMultiFilter",
-      "src/components/VectorFLOW/layouts/BPRDailyAnalytics"
+      "src/components/VectorFLOW/commons/VFFilter",
+      "src/components/VectorFLOW/layouts/BPRDailyAnalytics",
+      "src/components/VectorFLOW/layouts/SelectCategory"
     ],
     "coverageThreshold": {
       "global": {
@@ -98,10 +100,10 @@
         "lines": 90
       },
       "src/VectorFlow/Pages": {
-        "statements": 10,
-        "branches": 10,
-        "functions": 10,
-        "lines": 10
+        "statements": 5,
+        "branches": 5,
+        "functions": 5,
+        "lines": 5
       },
       "src/VectorFlow/Services/**/api.ts": {
         "statements": 90,

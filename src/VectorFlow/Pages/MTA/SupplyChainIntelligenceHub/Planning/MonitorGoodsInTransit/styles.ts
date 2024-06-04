@@ -28,7 +28,7 @@ export const SCChartContainer = styled.div<{height?:number}>`
     margin-bottom:20px;
     margin-left:5px;
     // height:547px;
-    height:${props => props.height ? props.height +'px' : 'auto'}
+    height:${props => props.height ? props.height +'px' : 'auto'};
 `
 
 export const SCChartLayout = styled.div`
@@ -45,10 +45,11 @@ export const SCChartHeaderContainer = styled.div`
     display:flex;
     justify-content:space-between;
     align-items:center;
+    
 `
 export const SCChartHeader = styled.p`
     font-weight:500;
-    font-size:16px;
+    font-size:14px;
     line-height:21px;
     font-family:Roboto;
     letter-spacing: 0px;

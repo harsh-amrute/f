@@ -18,7 +18,7 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCa
 
     const [activeRow,setActiveRow] = useState<any>();
     const [currentRowData,setCurrentRowData] = useState<any>();
-    const [isSubGridOpen,toggleSubGrid] = useState<any>(false);
+    const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
 
     const {mutateAsync:submitRemark} = useSubmitOpenExpediteRequest()
     const submitOpenExpediteRemark = async(remark:string)=>{
@@ -82,6 +82,17 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCa
                 setCurrentRowData(params.data)
                 toggleSubGrid(true)
             }
+        },
+        enableRangeSelection: true,
+        rowSelection: "multiple",
+        statusBar: {
+          statusPanels: [
+            { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+            { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+            { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+            { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+            { statusPanel: 'agAggregationComponent', align: 'left' },
+          ],
         },
         gridOptions:{
             rowHeight:50,
@@ -164,45 +175,50 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCa
             colId:'lc',
             field:'lc'
         },
-        {
-            headerName:"Creation Date",
-            colId:'cd',
-            field:'cd'
-        },
-        {
-            headerName:"SLT",
-            colId:'slt',
-            field:'slt'
-        },
-        {
-            headerName:"TLT",
-            colId:'tlt',
-            field:'tlt'
-        },
+        // {
+        //     headerName:"Creation Date",
+        //     colId:'cd',
+        //     field:'cd'
+        // },
+        // {
+        //     headerName:"SLT",
+        //     colId:'slt',
+        //     field:'slt'
+        // },
+        // {
+        //     headerName:"TLT",
+        //     colId:'tlt',
+        //     field:'tlt'
+        // },
         {
             headerName:"Ageing",
             colId:'ag',
             field:'ag'
         },
-        {
-            headerName:"ETA",
-            colId:'eta',
-            field:'eta'
-        },
-        {
-            headerName:"Current Location",
-            colId:'cl',
-            field:'cl'
-        },
+        // {
+        //     headerName:"ETA",
+        //     colId:'eta',
+        //     field:'eta'
+        // },
+        // {
+        //     headerName:"Current Location",
+        //     colId:'cl',
+        //     field:'cl'
+        // },
         {
             headerName:"Quantity",
             colId:'qty',
             field:'qty'
         },
+        // {
+        //     headerName:"Remarks",
+        //     colId:'remarks',
+        //     field:'remarks'
+        // }
         {
-            headerName:"Remarks",
-            colId:'remarks',
-            field:'remarks'
+            headerName:"Whereabouts",
+            colId:"whereabouts",
+            field:'whereabouts'
         }
     ]
 
@@ -217,7 +233,7 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCa
                 customGridRowData={activeRow} 
                 customGridColDef={customGridColDef} 
                 showStockGrid 
-                stockGridData={[{...currentRowData,request:'d'}]} 
+                stockGridData={currentRowData?[{...currentRowData}]:[]} 
                 isSubGridOpen={isSubGridOpen} 
                 onRequestExpediting={()=>toggleExpeditingModal(true)}
                 paginationProps={paginationProps}

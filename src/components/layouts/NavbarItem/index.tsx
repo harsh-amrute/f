@@ -25,7 +25,7 @@ const NavbarItem = ({
   const { user,isSideBarOpen,toggleSideBar } = useUserData();
   const permission: any = user?.roles?.permission;
   const {currentView,currentCategory} = useSelector((state:RootState)=>state.mta.planning)
-  const analyticsPaths:Array<string> = ["/supply-chain-intelligence-hub/bpr","/supply-chain-intelligence-hub/rrr","/supply-chain-intelligence-hub/bor","/dbm/dbm-norm-suggestions","/insights-and-trends/research-insights"]
+  const analyticsPaths:Array<string> = ["/supply-chain-intelligence-hub/bpr","/supply-chain-intelligence-hub/rrr","/supply-chain-intelligence-hub/bor","/dbm/dbm-norm-suggestions","/insights-and-trends/research-insights","/insights-and-trends/buffer-trend-report","/insights-and-trends/buffer-trends"]
   const themeUi = user?.user?.theme_ui;
   const navigate = useNavigate();
   const location = useLocation();
@@ -109,6 +109,9 @@ const NavbarItem = ({
       if(currentView!=='chart' && currentCategory!==""){
         return  true
       }
+      if( currentCategory===""){
+        return  true
+      }
     }
     if(analyticsPaths.includes(pathname)){
       return true
@@ -128,7 +131,23 @@ const NavbarItem = ({
             <SCItemChild
               key={item.url}
               onClick={() => {
-                navigateWithPrompt(()=>navigate(item.url, { replace: true }),item.url,mdm,resetState);
+                navigateWithPrompt(()=>{
+                  navigate(item.url, { replace: true });
+                  if (isHide) {
+                    setWidthResponsive({
+                      widthLeft: "0%",
+                      widthRight: "95%",
+                    });
+                  } else {
+                    setWidthResponsive({
+                      widthLeft: "20%",
+                      widthRight: "75%",
+                    });
+                  }
+                  setIsHide(!isHide);
+                  toggleSideBar(!isSideBarOpen)
+
+                },item.url,mdm,resetState);
               }}
               active={item.url === location.pathname}
               status={status}
@@ -217,10 +236,10 @@ const NavbarItem = ({
                 colId:'color'
               },
               {
-                headerName:'Tech.'
+                headerName:'On-Hand.'
               },
               {
-                headerName:'Eco.'
+                headerName:'Pipeline.'
               },
             ]}
           />

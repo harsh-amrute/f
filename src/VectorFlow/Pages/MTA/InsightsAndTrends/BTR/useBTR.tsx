@@ -24,6 +24,9 @@ import CustomVFTable from "./CustomVFTable"
 import { notifyError, notifyLoader } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 
+import useBPRFilter from "../../../../../hooks/useBPRFilter";
+
+
 const useBTR = ()=>{
 
     
@@ -50,18 +53,20 @@ const useBTR = ()=>{
 
     const [currentPage,setCurrentPage] = useState<number>(1);
 
+    const [isLockMode,toggleLockMode] = useState<boolean>(false)
 
+    const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
 
     const rowsPerPage = parseInt(process.env.REACT_APP_PLANNING_ROWS_PER_PAGE || '50');
 
     const {mutateAsync:getBTRData,isLoading} = useGetBTRData()
 
-    const {data:countData} = useGetBTRDataCount()
+    const {data:countData,mutateAsync:getBTRDataCount,isLoading:isBTRCountLoading} = useGetBTRDataCount()
 
-    const ecoTotalRows = useMemo(()=>{return countData?.data.data.EcoCount},[countData])
+    const ecoTotalRows = useMemo(()=>{return countData?.data.data.EcoCount},[isBTRCountLoading])
 
-    const techTotalRows = useMemo(()=>{return countData?.data.data.TechCount},[countData])
+    const techTotalRows = useMemo(()=>{return countData?.data.data.TechCount},[isBTRCountLoading])
 
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
 
@@ -75,7 +80,7 @@ const useBTR = ()=>{
         rowsPerPage:rowsPerPage,
         currentPage:currentPage,
         handleChangePage:(currPage:number) => {
-            getData(currPage);
+            getData(currFilter,currPage);
             setCurrentPage(currPage)
         }
         
@@ -87,7 +92,7 @@ const useBTR = ()=>{
         rowsPerPage:rowsPerPage,
         currentPage:currentPage,
         handleChangePage:(currPage:number) => {
-            getData(currPage);
+            getData(currFilter,currPage);
             setCurrentPage(currPage)
         }
         
@@ -122,7 +127,7 @@ const useBTR = ()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:currentTab.value==='on-hand'?"OnHandInv":"PipelineInv"});
         }
       };
 
@@ -132,13 +137,22 @@ const useBTR = ()=>{
     const [ecoRowData,setEcoRowData]  = useState<Array<any>>([])
     // const [defaultColDefs,setDefaultColDefs] = useState<Array<ColDef>>([])
 
-    const getData = async(pageNumber?:number)=>{
+
+
+    const getData = async(filter:any,pageNumber:number)=>{
+        const payload = {
+            id: 0,
+            name: '',
+            fields: [],
+            filters:filter,
+            paginationParameter:{
+                pageNumber: pageNumber,
+                recordsPerPage: 100
+            },
+        }
         const loaderId = notifyLoader("Loading data")
         try{
-            const data = await getBTRData({
-                pageNumber: pageNumber || 1,
-                recordsPerPage: 100
-            })
+            const data = await getBTRData(payload)
             
             setEcoRowData(mapBTRRowData(data.data.data.eco))
             setTechRowData(mapBTRRowData(data.data.data.tech))
@@ -151,9 +165,35 @@ const useBTR = ()=>{
     }
 
     useEffect(()=>{
-        
-        getData()
+        const payload = {
+            id: 0,
+            name: '',
+            fields: [],
+            filters:currFilter,
+            paginationParameter:{
+                pageNumber: 1,
+                recordsPerPage: 100
+            },
+        }
+        getBTRDataCount(payload)
+        getData(currFilter,1)
     },[])
+
+    const onApplyFilter = async(filter:any)=>{
+        setCurrFilter(filter)
+        const payload = {
+            id: 0,
+            name: '',
+            fields: [],
+            filters:filter,
+            paginationParameter:{
+                pageNumber: 1,
+                recordsPerPage: 100
+            },
+        }
+        getBTRDataCount(payload)
+        getData(filter,1)
+    }
 
     const toggleVerticalView = (isVertical:boolean)=>setVerticalView(isVertical)
 
@@ -178,6 +218,8 @@ const useBTR = ()=>{
                             header:"Pipeline Inventory Trend Report",
                             ...gridProps
                         }}
+                        isLocked={isLockMode}
+                        toggleLockMode={toggleLockMode}
                     />
                 )
                 return (
@@ -195,6 +237,8 @@ const useBTR = ()=>{
                             header:"Pipeline Inventory Trend Report",
                             paginationProps:ecoPaginationProps,
                             ...gridProps}}
+                            isLocked={isLockMode}
+                            toggleLockMode={toggleLockMode}
                     />
                 )
             case "2":
@@ -204,7 +248,7 @@ const useBTR = ()=>{
                             On-Hand Inventory View Trend Report
                         </BTRTableHeader>
                         <CustomVFTable 
-                            height={400}   
+                            height={350}   
                             tooltipHideDelay={100000}  
                             tooltipShowDelay={0} 
                             tooltipMouseTrack={true} 
@@ -228,7 +272,7 @@ const useBTR = ()=>{
                             Pipeline Inventory Trend Report
                         </BTRTableHeader>
                         <CustomVFTable 
-                            height={400}  
+                            height={350}  
                             tooltipHideDelay={100000}  
                             tooltipShowDelay={0} 
                             tooltipMouseTrack={true} 
@@ -251,10 +295,17 @@ const useBTR = ()=>{
     }
 
     const onExportToExcelCallBack = async(pageNumber:number,page:string)=>{
-        const data = await getBTRData({
-            pageNumber: pageNumber ,
-            recordsPerPage: 5000
-        })
+        const payload = {
+            id: 0,
+            name: '',
+            fields: [],
+            filters:currFilter,
+            paginationParameter:{
+                pageNumber: pageNumber,
+                recordsPerPage: 5000
+            },
+        }
+        const data = await getBTRData(payload)
         if(page=='on-hand')return data.data.data.tech
         return data.data.data.eco
 
@@ -268,6 +319,7 @@ const useBTR = ()=>{
 
     const ecoColDefs = useMemo(():Array<ColDef>=>{
         if(ecoRowData.length===0)return []
+        if(verticalView)return mapBTRRowDataToColDefs(ecoRowData[0],['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm"])
         return mapBTRRowDataToColDefs(ecoRowData[0])
     },[ecoRowData])
 
@@ -285,12 +337,18 @@ const useBTR = ()=>{
         renderView,
         onExportToExcelCallBack,
         tempDownloadData,
+        isLockMode,
+        toggleLockMode,
         setTempDownloadData,
         tempAgGridProps,
         exportExcelRowData,
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
+        currFilter,
+        setCurrFilter,
+        onDelete,
+        onApplyFilter
     }
 }
 

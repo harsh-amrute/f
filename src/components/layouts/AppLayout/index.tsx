@@ -20,8 +20,8 @@ const AppLayout = () => {
   const { t } = useTranslation();
 
   //URL arrays for excluding layout padding
-  const urlDisableZoomScaling = ['/supply-chain-intelligence-hub/planning','/insights-and-trends/research-insights','/insights-and-trends/buffer-trends','/insights-and-trends/buffer-trend-report',"/insights-and-trends/guided-insights"];
-  const urlExcludePadding = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr','/insights-and-trends/guided-insights',"/insights-and-trends/buffer-trend-report"];
+  const urlDisableZoomScaling = ['/logistics/intransit-whereabouts','/supply-chain-intelligence-hub/planning','/insights-and-trends/research-insights','/insights-and-trends/buffer-trends','/insights-and-trends/buffer-trend-report',"/insights-and-trends/guided-insights"];
+  const urlExcludePadding = ['/logistics/intransit-whereabouts','/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr','/insights-and-trends/guided-insights',"/insights-and-trends/buffer-trend-report"];
   // const urlExclusdeHeader = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr','/master-data-management/task-status','/master-data-management/saved-drafts'];
   const urlExclusdeHeader = ['/master-data-management/task-pending', '/master-data-management/task-status', '/master-data-management/saved-drafts'];
 
@@ -73,7 +73,7 @@ const AppLayout = () => {
         </GridSystem.SCFullScreen>
         <GridSystem.SCRow>
           <GridSystem.SCCol1 colorTheme={colorTheme}>
-            <NavbarMenu setMenuItem={setMenuItem} isHide={isHide} />
+            <NavbarMenu setMenuItem={setMenuItem} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive} />
           </GridSystem.SCCol1>
           <GridSystem.SCCol2 width={widthResponsive} colorTheme={colorTheme}>
             <NavbarItem
