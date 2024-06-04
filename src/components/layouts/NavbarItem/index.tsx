@@ -230,10 +230,10 @@ const NavbarItem = ({
 
         {
           //my code goes here
-          // isHide && pathname === "/procurement/material-coverage-open-sales" && menuItem.id === 19 && (
-          //   <AnalyticalScreen />
+          isHide && pathname === "/procurement/material-coverage-open-sales" && menuItem.id === 19 && (
+            <AnalyticalScreen />
 
-          // )
+          )
         }
 
         {isHide && pathname === "/ist-forced-closure" && menuItem.id === 6 && (

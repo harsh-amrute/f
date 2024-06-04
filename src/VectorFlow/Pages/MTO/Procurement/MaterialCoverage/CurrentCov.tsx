@@ -17,6 +17,7 @@ interface CurrentCovProps {
 
 
 const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
+    console.log('oa')
     const dispatch = useDispatch();
 
     const [isSubPageOpen, setToggleSubPage] = useState<boolean>(false)
@@ -116,33 +117,23 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
     }, [])
 
     const setAnalyticalData = () => {
+        console.log('here')
         const blackCount = mapOrderDetails("Black", "", "", "", 4)
         const redCount = mapOrderDetails("Red", "", "", "", 4)
         const yellowCount = mapOrderDetails("Yellow", "", "", "", 4)
         const greenCount = mapOrderDetails("Green", "", "", "", 4)
         const blueCount = mapOrderDetails("Blue", "", "", "", 4)
+       
         const TotalCountObj = {
-            "Black": {
-                "color": ColorsMTO.Black,
-                "order": blackCount,
-            },
-            "Red": {
-                "color": ColorsMTO.Red,
-                "order": redCount,
-            },
-            "Yellow": {
-                "color": ColorsMTO.Yellow,
-                "order": yellowCount,
-            },
-            "Green": {
-                "color": ColorsMTO.Green,
-                "order": greenCount,
-            },
-            "Blue": {
-                "color": ColorsMTO.Blue,
-                "order": blueCount,
-            }
+            "Order":[
+                {...blackCount,color:ColorsMTO.Black},
+                {...redCount,color:ColorsMTO.Red},
+                {...yellowCount,color:ColorsMTO.Yellow},
+                {...greenCount,color:ColorsMTO.Green},
+                {...blueCount,color:ColorsMTO.Blue}
+            ]
         }
+        console.log('><>',TotalCountObj)
         dispatch(SAVE_ANALYTICS_DATA(TotalCountObj))
     }
 
@@ -166,7 +157,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={BRYNkOrdCunt}
                         cutCount={BRYNkCustCunt}
                         orderValue={BRYNkOrdVal}
-                        percent={BRYNkOrdCunt/totalOrderCount}
+                        percent={BRYNkOrdCunt / totalOrderCount}
                     />
                 </Box>
                 <Box onClick={handleToggle}>
@@ -178,7 +169,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={secBlockCustCnt}
                         cutCount={secBlockOrdCnt}
                         orderValue={secOrderVal}
-                        percent={secBlockCustCnt/totalOrderCount}
+                        percent={secBlockCustCnt / totalOrderCount}
                     />
                 </Box>
                 <Box onClick={handleToggle}>
@@ -190,7 +181,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={thrdBlockCustCnt}
                         cutCount={thrdBlockOrdCnt}
                         orderValue={thrdOrderVal}
-                        percent={thrdBlockCustCnt/totalOrderCount}
+                        percent={thrdBlockCustCnt / totalOrderCount}
                     />
                 </Box>
             </MainContainer>
@@ -208,7 +199,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={frthBlockCustCnt}
                         cutCount={frthBlockOrdCnt}
                         orderValue={frthOrderVal}
-                        percent={frthBlockCustCnt/totalOrderCount}
+                        percent={frthBlockCustCnt / totalOrderCount}
                     />
 
                 </Box>
@@ -222,7 +213,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={fifthBlockCustCnt}
                         cutCount={fifthBlockOrdCnt}
                         orderValue={fifthOrderVal}
-                        percent={fifthBlockCustCnt/totalOrderCount}
+                        percent={fifthBlockCustCnt / totalOrderCount}
                     />
 
                 </Box>
@@ -236,7 +227,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={sxthBlockCustCnt}
                         cutCount={sxthBlockOrdCnt}
                         orderValue={sxthdOrderVal}
-                        percent={sxthBlockCustCnt/totalOrderCount}
+                        percent={sxthBlockCustCnt / totalOrderCount}
                     />
 
                 </Box>
@@ -261,7 +252,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={svthBlockCustCnt}
                         cutCount={svthBlockOrdCnt}
                         orderValue={svthdOrderVal}
-                        percent={30/100}
+                        percent={30 / 100}
                     />
 
                 </Box>
@@ -274,7 +265,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={egthBlockCustCnt}
                         cutCount={egthBlockOrdCnt}
                         orderValue={egthdOrderVal}
-                        percent={30/100}
+                        percent={30 / 100}
                     />
 
                 </Box>
@@ -287,7 +278,7 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
                         orderCount={nthBlockCustCnt}
                         cutCount={nthBlockOrdCnt}
                         orderValue={nthhdOrderVal}
-                        percent={40/100}
+                        percent={40 / 100}
                     />
 
                 </Box>
