@@ -8,11 +8,8 @@ import {
     BPRDailyAnalyticsTableHeaderContainer,
     BPRDailyAnalyticsTableRow,
     BPRDailyAnalyticsTableRowContainer,
-    BPRDailyAnalyticStatusBar,
     BPRDailyAnalyticsWrapper,
-    BPRDailyAnalyticStatusBarSection,
     BPRDailyAnalyticsTableCellHeader,
-    BPRDailyAnalyticsTableCellText
 } from './styles';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../../redux/store/store';
