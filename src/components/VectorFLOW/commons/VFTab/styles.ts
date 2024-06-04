@@ -108,7 +108,7 @@ export const SCTabButton = styled.div<{
       background: ${(props) =>
         props.status === "active"
           ? 'linear-gradient(74deg, rgb(130, 15, 76) 0%, rgb(188, 61, 129) 100%) 0% 0% no-repeat padding-box padding-box transparent' : props.status==='completed' 
-          ? "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box"
+          ? "#898989 0% 0% no-repeat padding-box;"
         :'white'};
         no-repeat padding-box;
     box-shadow: 0px 5px 25px #9d9d9d29;
