@@ -1458,7 +1458,8 @@ const useViewModify = (pageType:string) => {
         dispatch(UPDATE_ROW_DATA(errorRowData))
         dispatch(SET_RECORD_COUNT(errorRowData.length))
       }
-      dispatch(UPDATE_PROGRESS_STATE('submitted'))
+      dispatch(UPDATE_PROGRESS_STATE('submitted'));
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       
       setIsConflictModalOpen(false)
     }
