@@ -217,3 +217,52 @@ export const UserToolTipContent = styled.p`
     font-size:13px;
     line-height:20px;
 `
+
+export const BPRParticularAnalyticsWrapper = styled.div`
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    padding:10px 10px;
+`
+
+export const BPRParticularAnalyticsTableWrapper = styled.div`
+    background-color:#383737;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    border-radius:4px;
+`
+
+export const BPRParticularAnalyticsTableHeaderWrapper = styled.div`
+    display:flex;
+    margin:7px 10px;
+    border-bottom:1.5px dashed white;
+`
+export const BPRParticularAnalyticsTableHeader = styled.span`
+    width:100%;
+    font-family:Roboto;
+    font-weight:500;
+    color:white;
+    text-align:center;
+    padding-bottom:5px;
+`
+
+export const BPRParticularAnalyticsTableRowWrapper = styled.div`
+    display:flex;
+    flex-direction:column;
+    padding:5px 10px;
+`
+
+export const BPRParticularAnalyticsTableRow = styled.div`
+    width:100%;
+    display:flex;
+`
+
+export const BPRParticularAnalyticsTableCell = styled.span`
+    width:100%;
+    font-family:Roboto;
+    font-weight:500;
+    color:white;
+    text-align:center;
+    padding-bottom:5px;
+`

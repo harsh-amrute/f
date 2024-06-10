@@ -347,12 +347,12 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
                             )}
                             
-                            {currCategory==='ResearchInsight' && !hideUpdateInsightsBtn? 
+                            {currCategory==='ResearchInsight' && !hideUpdateInsightsBtn && 
                             <>
                                 <VFButtonOutline themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={()=>onUpdateInsight?onUpdateInsight(): {}}>Update Insight</VFButtonOutline> 
                                 <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete} style={{maxWidth:'700px'}}></VFSelectedFilters>
                                 </>
-                            : <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete} style={{maxWidth:'700px'}}></VFSelectedFilters> }   
+                             }   
                                 
                                 
                         </SCTaskFilterContainer>
