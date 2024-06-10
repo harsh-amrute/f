@@ -4,17 +4,17 @@ import { BPRColorCellRendererWrapper } from '../../MTA/SupplyChainIntelligenceHu
 const colorMapper = (color: string) => {
     switch (color) {
         case 'White':
-            return { bg: 'white', text: 'black' };
+            return { bg: '#ffffff', text: '#000000' };
         case 'Green':
-            return { bg: '#418D18', text: 'white' };
+            return { bg: '#418D18', text: '#ffffff' };
         case 'Yellow':
-            return { bg: '#EBBF2B', text: 'white' };
+            return { bg: '#EBBF2B', text: '#ffffff' };
         case 'Red':
-            return { bg: '#F04D4D', text: 'white' };
+            return { bg: '#F04D4D', text: '#ffffff' };
         case 'Black':
-            return { bg: '#000000', text: 'white' };
+            return { bg: '#000000', text: '#ffffff' };
         default:
-            return { bg: '#000000', text: 'white' };
+            return { bg: '#000000', text: '#ffffff' };
     }
 };
 
