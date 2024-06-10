@@ -903,7 +903,7 @@ export const getExistingColumnFields = (columns:string[],fields:Field[]):Field[]
 }
 
 export const areValuesEqual = (a:any,b:any):boolean=>{
-  if(typeof parseInt(a) ==='number' && typeof parseInt(b)==='number'){
+  if(!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))){
     return parseFloat(a).toFixed(0) ===parseFloat(b).toFixed(0)
   }
   return a===b
