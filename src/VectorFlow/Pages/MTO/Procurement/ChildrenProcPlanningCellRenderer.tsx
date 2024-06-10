@@ -15,6 +15,7 @@ const ChildrenProcPlanningCellRenderer = (params: any) => {
     return (
         <div style={{ backgroundColor: 'white' }}>
             <VFTable
+                data-testid='VFTable'
                 className='child-grid'
                 columnDefs={ProcPlanningChildrenColumns}
                 defaultColDef={{
@@ -33,7 +34,7 @@ const ChildrenProcPlanningCellRenderer = (params: any) => {
                     },
                     flex: 0,
                 }}
-                rowData={params.data.children}
+                rowData={params.data && params.data.children ? params.data.children : []}
                 height={300}
                 pagination={true}
                 components={customChildrenCellRenderers}

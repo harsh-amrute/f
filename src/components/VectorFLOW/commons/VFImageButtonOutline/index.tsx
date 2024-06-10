@@ -56,8 +56,6 @@ const VFImageButtonOutline = (props: VFImageButtonOutlineProps) => {
             customWidth={width}
             hoverState={hoverState}
             style={style}
-            // onMouseOver={props.isHoverDisabled ? undefined : () => setHoverState(true)}
-            //onMouseOut={props.isHoverDisabled ? undefined : () => setHoverState(false)} 
             data-testid="vf-button-outline">
             {getChildren()}
         </SCButtonOutline>

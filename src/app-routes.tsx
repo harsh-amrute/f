@@ -80,8 +80,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/insights-and-trends/buffer-trend-report',
     '/dbm/dbm-norm-suggestions',
     '/procurement/material-coverage-open-sales',
-    '/procrmenPlanning/planning',
-    '/planning/simulativeFullKit'
+    '/procurement-planning/planning',
+    '/planning/simulative-fullkit'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -439,7 +439,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/procrmenPlanning/planning',
+      path: '/procurement-planning/planning',
       element: <AppLayout />,
       children: [
         {
@@ -450,7 +450,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/planning/simulativeFullKit',
+      path: '/planning/simulative-fullkit',
       element: <AppLayout />,
       children: [
         {

@@ -14,6 +14,7 @@ import GetProcPlanningData from './GetProcPlanningData.json';
 import GetProcPlanningDataColumn from './GetProcPlanningDataColumn.json';
 import { mapProcPlanningFieldsToColDefs } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
+import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -127,7 +128,7 @@ const useProcPlanning = () => {
     }, []); 2
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
     const navigateToSimulateScreen = () => {
-        navigate("/planning/simulativeFullKit", { state: { ShortageDatas } });
+        navigate("/planning/simulative-fullkit", { state: { ShortageDatas } });
 
     }
     const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
@@ -189,6 +190,13 @@ const useProcPlanning = () => {
                                 ]
                             }}
                         />
+                        {/* <VFPagination
+                            selectedRows={0}
+                            totalRows={100}
+                            currentPage={1}
+                            rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')}
+                            handleChangePage={(e) => { console.log('') }}
+                        /> */}
                     </div>
                 );
             case "short":
@@ -209,9 +217,16 @@ const useProcPlanning = () => {
                                 ]
                             }}
                         />
+                        {/* <VFPagination
+                            selectedRows={0}
+                            totalRows={100}
+                            currentPage={1}
+                            rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')}
+                            handleChangePage={(e) => { console.log('') }}
+                        /> */}
                         <div style={{ textAlign: 'right', flexDirection: 'row' }}>
                             <VFImageButtonOutline
-                                onClick={() => { console.log('') }}
+                                onClick={navigateToSimulateScreen}
                                 themeUi="" disabled={false}
                                 width={150}
                                 image={"/assets/img/VectorFLOW/reset.svg"}

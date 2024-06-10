@@ -492,7 +492,7 @@ export const listMenuParent: any = [
         name: "Procurement Planning",
         img: "/assets/img/nav/arrow_down.svg",
         imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: "/procrmenPlanning/planning",
+        url: "/procurement-planning/planning",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {
