@@ -9,7 +9,7 @@ export interface RRRField {
 }
 
 export interface RRRDataPayload{
-    filters:any[]
+    filters:any
     paginationParameter:{
         pageNumber:number,
         recordsPerPage:number

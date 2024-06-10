@@ -9,10 +9,9 @@ import VFLoader from "../../../../../../../../../components/VectorFLOW/commons/V
 import { SCDynamicContainer } from "../../../styles";
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../../../../../helpers/notify";
 import { toast } from 'react-toastify';
-import { useGetState } from "../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+
 import { GridStateContext } from "../../../../../../../../../context/GridStateContext";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../../../../../../redux/store/store";
+
 
 
 
@@ -22,12 +21,9 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
 
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
     const chunkSize = 10000;
 
-    const {mutateAsync:getState} = useGetState()
     const {mutateAsync:getPlanningDataCustom,isLoading} = useGetPlanningDataCustom();
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
@@ -39,23 +35,24 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                 colId:column['colCode'],
                 headerName:column['header'],
                 enablePivot:true,
-                enableValue:true
+                enableValue:true,
+                enableRowGroup:true,
             }
         })
         return [...colDefs];
     }
 
-    useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState("GITToChildcustom")
-            setColumnState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setColumnState(colDefs)
-          }
-        }
-        getTableState()
-    },[currentGridState])
+    // useEffect(()=>{
+    //     const getTableState = async()=>{
+    //       try{
+    //         const data =  await getState("GITToChildcustom")
+    //         setColumnState(JSON.parse(data.data.data))
+    //       }catch(err:any){
+    //         setColumnState(colDefs)
+    //       }
+    //     }
+    //     getTableState()
+    // },[currentGridState])
 
     useEffect(()=>{
         const fetchCustomPlanningData = async ()=> {
@@ -109,23 +106,34 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
     
     return(
         <>
-        <SCDynamicContainer>
+        <SCDynamicContainer className="ag-theme-planning-custom">
             <VFTable
                 ref={ref}
                 columnDefs={colDefs}
                 rowData={rowData}
                 sideBar={true}
                 enableCharts={true}
-                enableRangeSelection={true}
-                defaultColDef={{
+                enableRangeSelection={true} 
+                rowSelection="multiple"
+                statusBar = {{
+                    statusPanels: [
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                      { statusPanel: 'agAggregationComponent', align:'left' },
+                    ],
+                  }}                defaultColDef={{
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}
-                onGridReady={(params)=>{
-                    if(columnState){
-                     params.columnApi.applyColumnState({state:columnState})
-                    }
-                 }}
+                disableZoomScaling={true}
+                // onGridReady={(params)=>{
+                //     if(columnState){
+                //      params.columnApi.applyColumnState({state:columnState})
+                //     }
+                //  }}
+                rowHeight={30}
             />
         </SCDynamicContainer>
         </>

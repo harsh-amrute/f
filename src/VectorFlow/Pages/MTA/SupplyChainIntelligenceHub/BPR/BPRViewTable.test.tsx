@@ -1,6 +1,26 @@
-import React from 'react';
+import {ReactNode} from 'react'
 import { render, screen } from '@testing-library/react';
 import BPRViewTable from './BPRViewTable';
+
+import { UserDataContext } from '../../../../../context';
+
+const contextWrapper = (children: ReactNode) => {
+  return (
+
+          <UserDataContext.Provider
+            value={{
+              user: { user: { theme_ui: "NOIRFUSION" } },
+              changeColorTheme: (color:any) => {
+                return color;
+              },
+              isSideBarOpen:true,toggleSideBar:jest.fn
+            }}
+          >
+            {children}
+          </UserDataContext.Provider>
+
+  );
+};
 
 describe('BPRViewTable Component', () => {
   const colDefs = [
@@ -15,7 +35,7 @@ describe('BPRViewTable Component', () => {
   ];
 
   it('renders table header and row data correctly', () => {
-    render(<BPRViewTable colDefs={colDefs} rowData={rowData} tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg"/>);
+    render(contextWrapper(<BPRViewTable colDefs={colDefs} rowData={rowData} tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg" tableHeader=''/>));
 
 
   });
@@ -26,7 +46,7 @@ describe('BPRViewTable Component', () => {
       { id: 2, name: 'Jane Smith' }, // Missing remarks data
     ];
 
-    render(<BPRViewTable colDefs={colDefs} rowData={rowDataWithNull} tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg" />);
+    render(contextWrapper(<BPRViewTable colDefs={colDefs} rowData={rowDataWithNull} tablePrefixSrc="/assets/img/VectorFLOW/BPR/stock.svg"  tableHeader=''/>));
 
     const remarksRow2 = screen.getByText('NULL');
 

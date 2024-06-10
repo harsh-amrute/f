@@ -32,3 +32,21 @@ opacity: 1;
 .react-calendar__navigation__label__labelText{
     font-weight: 600 !important;
 }
+
+.sub-grid-allotment{
+    padding:10px;
+}
+
+.planning-grid-allotment{
+    padding-bottom: 40px;
+}
+
+.intransit_header{
+    background-color: white;
+    color: black;
+}
+
+.intransit_header:hover{
+    background-color: white  !important;
+    color: black  !important;
+}

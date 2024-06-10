@@ -295,9 +295,9 @@ export const SeasonalityQuickFilterText = styled.p`
 export const SubmitDataTextContainer = styled.div`
 font-style:normal;
 font-variant:normal;
-font-weight:400;
-font-size:19px;
-line-height:22px;
+font-weight:300;
+font-size:14px;
+line-height:12px;
 font-family:Roboto;
 color: #000000;
 opacity: 1;
@@ -305,7 +305,6 @@ dispay:flex;
 text-align:center;
 justify-content:center;
 margin-top:26px;  //42
-margin-bottom:32px; //44
 `
 
 export const SubmitDataButtonWrapper = styled.div`

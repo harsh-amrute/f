@@ -1,20 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="52.231" height="197.999" viewBox="0 0 52.231 197.999">
-  <defs>
-    <linearGradient id="linear-gradient" x1="0.796" y1="0.527" x2="-0.32" y2="0.515" gradientUnits="objectBoundingBox">
-      <stop offset="0" stop-color="#6c4e0a"/>
-      <stop offset="1" stop-color="#d1af61"/>
-    </linearGradient>
-  </defs>
-  <g id="Group_2122" data-name="Group 2122" transform="translate(0 65.999)">
-    <path id="Union_7" data-name="Union 7" d="M6,132a6,6,0,0,1-6-6V-60a6,6,0,0,1,6-6H38.737V23.663a9.484,9.484,0,0,1,3.717-.755,10.1,10.1,0,0,1,0,20.182,9.485,9.485,0,0,1-3.717-.755V132Z" transform="translate(0 0.001)" fill="url(#linear-gradient)"/>
-    <text id="Order_Details" data-name="Order Details" transform="translate(25.022 105.663) rotate(-90)" fill="#fff" font-size="15" font-family="Roboto-Black, Roboto" font-weight="800"><tspan x="0" y="0">ORDER DETAILS</tspan></text>
-    <g id="transaction" transform="translate(7.771 -13.507) rotate(-90)">
-      <path id="Path_11169" data-name="Path 11169" d="M5.5,4.75A.25.25,0,0,0,5.25,5V21a.25.25,0,0,0,.25.25h13a.25.25,0,0,0,.25-.25V5a.25.25,0,0,0-.25-.25ZM3.75,5A1.75,1.75,0,0,1,5.5,3.25h13A1.75,1.75,0,0,1,20.25,5V21a1.75,1.75,0,0,1-1.75,1.75H5.5A1.75,1.75,0,0,1,3.75,21Z" fill="#fff" fill-rule="evenodd"/>
-      <path id="Path_11170" data-name="Path 11170" d="M9,1.25A.75.75,0,0,1,9.75,2V5a.75.75,0,0,1-1.5,0V2A.75.75,0,0,1,9,1.25Z" fill="#fff" fill-rule="evenodd"/>
-      <path id="Path_11171" data-name="Path 11171" d="M15,1.25a.75.75,0,0,1,.75.75V5a.75.75,0,0,1-1.5,0V2A.75.75,0,0,1,15,1.25Z" fill="#fff" fill-rule="evenodd"/>
-      <path id="Path_11172" data-name="Path 11172" d="M7.25,9.5A.75.75,0,0,1,8,8.75h8a.75.75,0,0,1,0,1.5H8A.75.75,0,0,1,7.25,9.5Z" fill="#fff" fill-rule="evenodd"/>
-      <path id="Path_11173" data-name="Path 11173" d="M7.25,13.5A.75.75,0,0,1,8,12.75h6a.75.75,0,0,1,0,1.5H8A.75.75,0,0,1,7.25,13.5Z" fill="#fff" fill-rule="evenodd"/>
-      <path id="Path_11174" data-name="Path 11174" d="M7.25,17.5A.75.75,0,0,1,8,16.75h4a.75.75,0,0,1,0,1.5H8A.75.75,0,0,1,7.25,17.5Z" fill="#fff" fill-rule="evenodd"/>
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16.5" height="21.5" viewBox="0 0 16.5 21.5">
+  <g id="transaction" transform="translate(-3.75 -1.25)">
+    <path id="Path_11169" data-name="Path 11169" d="M5.5,4.75A.25.25,0,0,0,5.25,5V21a.25.25,0,0,0,.25.25h13a.25.25,0,0,0,.25-.25V5a.25.25,0,0,0-.25-.25ZM3.75,5A1.75,1.75,0,0,1,5.5,3.25h13A1.75,1.75,0,0,1,20.25,5V21a1.75,1.75,0,0,1-1.75,1.75H5.5A1.75,1.75,0,0,1,3.75,21Z" fill="#fff" fill-rule="evenodd"/>
+    <path id="Path_11170" data-name="Path 11170" d="M9,1.25A.75.75,0,0,1,9.75,2V5a.75.75,0,0,1-1.5,0V2A.75.75,0,0,1,9,1.25Z" fill="#fff" fill-rule="evenodd"/>
+    <path id="Path_11171" data-name="Path 11171" d="M15,1.25a.75.75,0,0,1,.75.75V5a.75.75,0,0,1-1.5,0V2A.75.75,0,0,1,15,1.25Z" fill="#fff" fill-rule="evenodd"/>
+    <path id="Path_11172" data-name="Path 11172" d="M7.25,9.5A.75.75,0,0,1,8,8.75h8a.75.75,0,0,1,0,1.5H8A.75.75,0,0,1,7.25,9.5Z" fill="#fff" fill-rule="evenodd"/>
+    <path id="Path_11173" data-name="Path 11173" d="M7.25,13.5A.75.75,0,0,1,8,12.75h6a.75.75,0,0,1,0,1.5H8A.75.75,0,0,1,7.25,13.5Z" fill="#fff" fill-rule="evenodd"/>
+    <path id="Path_11174" data-name="Path 11174" d="M7.25,17.5A.75.75,0,0,1,8,16.75h4a.75.75,0,0,1,0,1.5H8A.75.75,0,0,1,7.25,17.5Z" fill="#fff" fill-rule="evenodd"/>
   </g>
 </svg>

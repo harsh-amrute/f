@@ -37,10 +37,11 @@ export const VFStepLabel = styled.div`
     font-style:normal;
     font-variant:normal;
     font-weight:400;
-    width:100px;
+    // width:100px;
     font-family:Roboto;
     letter-spacing: 0px;
     color: #313131;
+    white-space:nowrap;
 `
 export const VFStepDescription = styled.div`
 
@@ -59,4 +60,14 @@ export const VFStepProgress = styled.div<{status:string}>`
     margin-right:10px;
     height: 0px;
     outline: 2px ${(props)=>props.status=='async'?'dashed':'solid'} ${(props)=>getProgressColor(props.status)};
+`
+
+export const VFStepPrefixWrapper = styled.div`
+    margin-bottom:10px;
+`
+
+export const VFStepperContentWrapper = styled.div`
+    display:flex;
+    flex-direction:column;
+    align-items:center;
 `

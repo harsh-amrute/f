@@ -28,6 +28,7 @@ export interface BPRSubmitRemarkToolTipProps{
     setRemark:(params:any)=>void
     onSuccess:()=>void
     onClose:()=>void
+    isDate?:boolean
 }
 
 export interface BPRRemarkHistoryToolTipProps{

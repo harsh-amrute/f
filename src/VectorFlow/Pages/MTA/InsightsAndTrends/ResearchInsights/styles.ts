@@ -26,17 +26,17 @@ export const ResearchInsightsTableTaskBar = styled.div`
 
 export const AvailabilityTrendWrapper = styled.div`
     // height:calc(640px * 0.75);
-    height:515px;
-    overflow-y:auto;
-    &::-webkit-scrollbar{
-       display:none;      
-    }
+    height:600px;
+    // overflow-y:auto;
+    // &::-webkit-scrollbar{
+    //    display:none;      
+    // }
     width:100%;
     min-width:300px;
     background-color:white;
     border-radius:12px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-
+    position:relative;
 `
 export const AvailabilityTrendHeader = styled.div`
     background-color:black;
@@ -47,6 +47,9 @@ export const AvailabilityTrendHeader = styled.div`
     font-size:14px;
     font-weight:500;
     font-family:Roboto;
+    border-radius:12px 12px 0px 0px;
+    position:sticky;
+    top:0;
 `
 
 export const AvailabilityTrendSection = styled.div`
@@ -58,7 +61,7 @@ export const AvailabilityTrendSection = styled.div`
 
 export const HistoricalAvailabiltyHeader = styled.p`
     font-weight:500;
-    font-size:14px;
+    font-size:10px;
     margin-bottom:5px;
 `
 
@@ -80,16 +83,16 @@ export const HistoricalAvailabiltyContentSection = styled.span`
 
 export const HistoricalAvailabiltyContentSectionHeader = styled.p`
     display:inline;
-    font-weight:500;
-    font-size:9px;
+    font-weight:400;
+    font-size:7px;
     line-height:10px;
     color:#383737;
 `
 
 export const HistoricalAvailabiltyContentSectionData = styled.p`
     display:inline;
-    font-weight:500;
-    font-size:9px;
+    font-weight:700;
+    font-size:11px;
     color:black;
 `
 
@@ -104,13 +107,15 @@ export const HorizonHeader = styled.p`
 export const ChartHeader = styled.div`
     width:100%;
     display:flex;
-    align-items:center:
+    // align-items:center:
+    gap:12px;
+    justify-content:space-between;
 
     
 `
 
 export const ChartHeaderText = styled.p`
-    font-size:12px;
+    font-size:10px;
     font-weight:400;
     display:flex;
     align-items:center;
@@ -131,9 +136,11 @@ export const ChartHeaderRadioGroup = styled.div`
 
 
 export const CapsuleWrapper = styled.div`
-    width:100%;
-    max-width:80px;
-    margin-left:auto;
+    // width:100%;
+    // max-width:80px;
+    // margin-left:auto;
+    zoom:0.7;
+    width:180px;
 
 `
 
@@ -272,7 +279,12 @@ export const ExpandedChartSelectLabel = styled.p`
 `
 
 export const ExpandedChartCapsuleWrapper = styled.div`
-    width:100px;
+    // width:100px;
     margin-left:auto;
+    // margin-right:5px;
     zoom:0.8;
+`
+
+export const RadioGroup = styled.span`
+    display:flex;
 `

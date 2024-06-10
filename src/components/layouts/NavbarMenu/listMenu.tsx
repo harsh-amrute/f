@@ -33,7 +33,7 @@ export const listMenuParent: any = [
     name: "navbar.listMenuParent.masterDataManagement.title",
     img: "/assets/img/nav/master_data",
     url: "/master-data-management/control-panel",
-    status: true,
+    status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
     child: [
       {
@@ -274,6 +274,7 @@ export const listMenuParent: any = [
             url: "/supply-chain-intelligence-hub/open-expediting-requests",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
+
           // {
           //   name: "Vendor Dispatch Report",
           //   img: "/assets/img/nav/arrow_down.svg",
@@ -296,20 +297,23 @@ export const listMenuParent: any = [
           }
         ]
       },
-      // {
-      //   name: "Logistics",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   url: "/logistics",
-      //   role: ["IST Admin", "IST Requestor"],
-      //   child:[
-      //     {
-      //       name: "InTransit Whereabouts",
-      //       img: "/assets/img/nav/arrow_down.svg",
-      //       url: "/logistics/intransit-whereabouts",
-      //       role: ["IST Admin", "IST Requestor"],
-      //     }
-      //   ]
-      // },
+      {
+        name: "Logistics",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/logistics",
+        role: ["IST Admin", "IST Requestor"],
+
+        child: [
+          {
+            name: "InTransit Whereabouts",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/logistics/intransit-whereabouts",
+            // role: ["IST Admin", "IST Requestor"],
+            role: ["Admin", "VectorConsultant", "BPRManager"],
+
+          }
+        ]
+      },
       {
         name: "Insights & Trends",
         img: "/assets/img/nav/arrow_down.svg",

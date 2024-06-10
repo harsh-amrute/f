@@ -8,18 +8,18 @@ import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
 
 
-import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
+// import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../helpers/notify";
 import ColorCellRenderer from "./ColorCellRenderer";
 import ETACellRenderer from "./ETACellRenderer";
 import ShowRemarkCellRenderer from "./ShowRemarkCellRenderer";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 
-import { RootState } from "../../../../../redux/store/store";
+// import { RootState } from "../../../../../redux/store/store";
 import { useAddRemarkForExpedite, useGetOpenExpediteRequestData, useGetRemarkDetailsForExpedite } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests";
 import SubmitRemarkCellRenderer from "./SubmitRemarkCellRenderer";
-
+import useBPRFilter from "../../../../../hooks/useBPRFilter";
 
 
 const useOpenExpeditingRequests = () => {
@@ -27,14 +27,17 @@ const useOpenExpeditingRequests = () => {
     const ref = useRef()
     const tempRef = useRef()
 
-    const {data,isLoading} = useGetOpenExpediteRequestData()
+    const {mutateAsync:getData} = useGetOpenExpediteRequestData()
     const {mutateAsync:addRemark} = useAddRemarkForExpedite()
     const {mutateAsync:getRemark} = useGetRemarkDetailsForExpedite()
 
     const [submitRemarkToolTipPosition,setSubmitRemarkToolipPosition] = useState<CSSProperties>({})
     const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
+    const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
 
     const [remark,setRemark] = useState<string>('')
+    const [rowData,setRowData] = useState<Array<any>>([])
+    const [colDefs,setColDefs] = useState<Array<any>>([])
     const [activeRow,setActiveRow] = useState<any>({
       sc:'',
       wc:''
@@ -66,9 +69,9 @@ const useOpenExpeditingRequests = () => {
         remarksCellRenderer: ShowRemarkCellRenderer
     }), []);
 
-    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+    // const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+    // const [columnState,setColumnState] = useState<any>()
+    // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
     const sideBar = {
         toolPanels: [
@@ -88,18 +91,33 @@ const useOpenExpeditingRequests = () => {
         defaultToolPanel:'',
       }
 
-
-    useEffect(()=>{
-        const getTableState = async()=>{
+      useEffect(()=>{
+        const getRowData = async()=>{
           try{
-            const data =  await getState("OpenExpeditingRequests")
-            setColumnState(JSON.parse(data.data.data))
+            notifyLoader("Loading Grid Data")
+            const data = await getData(currentFilter)
+            setRowData(data.data.data.data)
+            setColDefs(mapFieldsToColDefs(data.data.data.config))
+            toast.dismiss()
+            notifySuccess("Data Loaded Successfully")
           }catch(err:any){
-            setColumnState(colDefs)
+            notifyError(err)
           }
         }
-        getTableState()
-    },[currentGridState])
+        getRowData()
+      },[])
+
+    // useEffect(()=>{
+    //     const getTableState = async()=>{
+    //       try{
+    //         const data =  await getState("OpenExpeditingRequests")
+    //         setColumnState(JSON.parse(data.data.data))
+    //       }catch(err:any){
+    //         setColumnState(colDefs)
+    //       }
+    //     }
+    //     getTableState()
+    // },[currentGridState])
 
     const agGridProps: AgGridReactProps = {
 
@@ -182,8 +200,8 @@ const useOpenExpeditingRequests = () => {
             if(remark.length===0) throw new Error("Remark cannot be empty")
             const toastId = notifyLoader("Submitting Remark")
             await addRemark({
-                sc:activeRow.sc,
-                wc:activeRow.wc,
+                SKUCode:activeRow.sc,
+                WHCode:activeRow.wc,
                 remark:remark
             })
             toast.dismiss(toastId)
@@ -208,11 +226,21 @@ const useOpenExpeditingRequests = () => {
 
     const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
 
+    const onApplyFilter = async(filter:any)=>{
+      setCurrentFilter(filter)
+      notifyLoader("Loading Grid Data")
+      try{
+        const data = await getData(filter)
+        setRowData(data.data.data.data)
+        toast.dismiss()
+      }catch(err:any){
+        notifyError(err)
+      }
+      
+    }
 
-    const rowData = data?.data.data.data
-
-    const colDefs = useMemo(()=>{
-      const config = data?.data.data.config
+    const mapFieldsToColDefs  = (fields:Array<any>)=>{
+      const config = fields
       let result:Array<ColDef> = []
       if(config){
         result =  config.map((col:any)=>{
@@ -244,7 +272,13 @@ const useOpenExpeditingRequests = () => {
           headerName: "ETA",
           colId: 'eta',
           field: 'eta',
-          cellRenderer:'etaCellRenderer',
+          // cellRenderer:'etaCellRenderer',
+          editable:true,
+          cellStyle:{
+            border:'solid 1px black',
+            transform:'scale(0.8)',
+            "background-color":'white'
+          },
           floatingFilter:false
       },
       {
@@ -260,14 +294,14 @@ const useOpenExpeditingRequests = () => {
       }]
       }
       return result
-    },[data])
+    }
+
 
     return {
         agGridProps,
         rowData,
         colDefs,
         remark,
-        isLoading,
         remarkHistory,
         isSubmitRemarkToolTipOpen,
         isRemarkHistoryToolTipOpen,
@@ -277,8 +311,8 @@ const useOpenExpeditingRequests = () => {
         onSubmitRemark,
         onCloseSubmitRemark,
         onCloseRemarkHistory,
-        ref,columnState,
-        isSavedDataLoading,
+        ref,
+        // isSavedDataLoading,
         tempRef,
         tempDownloadData,
         setTempDownloadData,
@@ -287,6 +321,10 @@ const useOpenExpeditingRequests = () => {
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
+        currentFilter,
+        setCurrentFilter,
+        onDelete,
+        onApplyFilter
     }
 }
 

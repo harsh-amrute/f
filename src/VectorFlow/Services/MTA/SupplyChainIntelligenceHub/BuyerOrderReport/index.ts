@@ -16,12 +16,15 @@ export const useGetBORUIConfiguration = () => {
     });
   }
   export const useBORData=()=>{
-    return useMutation(async (body:{filters:Array<{attributeName:string,op:string,value:string}>,paginationParameter:{pageNumber:number,recordsPerPage:number}}) => {
+    return useMutation(async (body:any) => {
       return await SupplyChainIntelligenceHubService.getBORData(body);
     });
   }
+
+ 
+  
   export const useBORDataCount = () => {
-    return useMutation(async (body:{filters:Array<{attributeName:string,op:string,value:string}>,paginationParameter:{pageNumber:number,recordsPerPage:number}}) => {
+    return useMutation(async (body:any) => {
       return await SupplyChainIntelligenceHubService.getBORDataCount(body);
     });
   }

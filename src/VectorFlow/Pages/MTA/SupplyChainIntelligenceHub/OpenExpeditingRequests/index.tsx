@@ -2,12 +2,13 @@
 
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import ActionToolBar from "../Planning/ActionToolBar"
-import BPRRemarkHistoryToolTip from "../BPR/BPRRemarkHistoryToolTip"
 import BPRSubmiRemarkToolTip from "../BPR/BPRSubmitRemarkToolTip"
 
 import useOpenExpeditingRequests from "./useOpenExpeditingRequests"
 import { GridStateContext } from "../../../../../context/GridStateContext"
-import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
+import RemarkModal from "./RemarkModal"
+
+// import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 
 
 
@@ -18,15 +19,11 @@ const OpenExpeditingRequests = ()=>{
         agGridProps,
         rowData,
         remark,
-        isLoading,
         remarkHistory,
         isSubmitRemarkToolTipOpen,
         isRemarkHistoryToolTipOpen,
         submitRemarkToolTipPosition,
-        remarkHistoryToolipPosition,
-        isSavedDataLoading,
         ref,
-        columnState,
         updateRemark,
         onSubmitRemark,
         onCloseSubmitRemark,
@@ -37,7 +34,11 @@ const OpenExpeditingRequests = ()=>{
         exportExcelRowData,
         setExportExcelRowData,
         exportExcelColumns,
-        setExportExcelColumns
+        setExportExcelColumns,
+        currentFilter,
+        setCurrentFilter,
+        onDelete,
+        onApplyFilter
     } = useOpenExpeditingRequests()
 
     return(
@@ -64,8 +65,12 @@ const OpenExpeditingRequests = ()=>{
                 onViewChange={()=>console.log('')}
                 genericRecordCount={12}
                 onExportToExcelCallBack={()=>{return }}
+                multiFilter={currentFilter}
+                setMultiFilter={setCurrentFilter}
+                onDelete={onDelete}
+                onApplyFilter={onApplyFilter}
               />
-          {(isLoading|| isSavedDataLoading)?
+          {/* {(isLoading)?
           (
             <VFLoader/>
           )
@@ -76,15 +81,39 @@ const OpenExpeditingRequests = ()=>{
             rowData={rowData}
             {...agGridProps}
             ref={ref}
-            onGridReady={(params)=>{
-              if(columnState){
-                params.columnApi.applyColumnState({state:columnState})
-              }
-            }}
+            // onGridReady={(params)=>{
+            //   if(columnState){
+            //     params.columnApi.applyColumnState({state:columnState})
+            //   }
+            // }}
             height={800}
         />
           )
-        }
+        } */}
+        <VFTable
+            columnDefs={colDefs}
+            rowData={rowData}
+            enableRangeSelection={true} 
+                                        rowSelection="multiple"
+                                        statusBar = {{
+                                            statusPanels: [
+                                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                              { statusPanel: 'agAggregationComponent', align:'left' },
+                                            ],
+                                          }} 
+            {...agGridProps}
+            ref={ref}
+            // onGridReady={(params)=>{
+            //   if(columnState){
+            //     params.columnApi.applyColumnState({state:columnState})
+            //   }
+            // }}
+            height={800}
+        />
+        
         {isSubmitRemarkToolTipOpen && (
             <BPRSubmiRemarkToolTip
                 remark={remark}
@@ -95,13 +124,11 @@ const OpenExpeditingRequests = ()=>{
             />
         )}
 
-        {isRemarkHistoryToolTipOpen && (
-            <BPRRemarkHistoryToolTip
-                remarkHistory={remarkHistory}
+            <RemarkModal
+                isOpen={isRemarkHistoryToolTipOpen}
+                data={remarkHistory}
                 onClose={onCloseRemarkHistory}
-                style={remarkHistoryToolipPosition}
             />
-        )}
         </GridStateContext.Provider>
     )
 }

@@ -103,8 +103,14 @@ export const SCTabButton = styled.div<{
     border-bottom: none;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
-    background: ${(props) => (props.status === 'active' ? globalStyles.chooseThemeColor[props.themeUi]?.color5 : props.status==='completed' ? '#CECBCD' : '#FCFCFC')} 0% 0%
-      no-repeat padding-box;
+    // background: ${(props) => (props.status === 'active' ? globalStyles.chooseThemeColor[props.themeUi]?.color5 : props.status==='completed' ? 'yellow' : 'blue')} 
+
+      background: ${(props) =>
+        props.status === "active"
+          ? 'linear-gradient(74deg, rgb(130, 15, 76) 0%, rgb(188, 61, 129) 100%) 0% 0% no-repeat padding-box padding-box transparent' : props.status==='completed' 
+          ? "#898989 0% 0% no-repeat padding-box;"
+        :'white'};
+        no-repeat padding-box;
     box-shadow: 0px 5px 25px #9d9d9d29;
     transform: scale(1.2, 1.3) perspective(0.5em) rotateX(2.5deg);
     transform-origin: bottom left;

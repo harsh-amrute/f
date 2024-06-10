@@ -1,14 +1,15 @@
-import { useEffect, useState,useMemo } from "react"
+import { useEffect, useState,useMemo,useRef } from "react"
 import { toast } from "react-toastify";
 import { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/VFPagination";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
-import { useGetPlanningDataCount,useGetPlanningDataGraph, useGetPlanningDataGrid } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
+import { useGetPlanningDataCount,useGetPlanningDataGraph, useGetPlanningDataGrid, useGetPlanningDataGridCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 import { PlanningCategory, PlanningCounts, DailyDataGraph } from "../../../../types/MTA"
 import {useSelector,useDispatch} from 'react-redux';
 import { type RootState } from "../../../../../redux/store/store";
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA, UPDATE_PLANNING_DATA} from '../../../../../redux/actions/MTA';
 import { AgGridReactProps } from 'ag-grid-react';
+import useBPRFilter from "../../../../../hooks/useBPRFilter";
 
 const usePlanning = ()=>{
 
@@ -29,16 +30,23 @@ const usePlanning = ()=>{
 
     const dispatch = useDispatch(); 
 
+    const ref:any = useRef()
+    const tempRef:any = useRef()
+
+    const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
    
     const [planningCounts,setPlanningCounts] = useState<PlanningCounts>(initialPlanningCounts)
 
     const [isSelectCategoryOpen,setIsSelectCategoryOpen] = useState(true);
+
 
     const {mutateAsync:getPlanningDataCount} = useGetPlanningDataCount();
 
     const {mutateAsync:getPlanningDataGraph} = useGetPlanningDataGraph();
 
     const {mutateAsync:getPlanningDataGrid} = useGetPlanningDataGrid();
+
+    const {mutateAsync:getPlanningDataGridCount} = useGetPlanningDataGridCount()
 
     const [isOverlayVisible,setIsOverlayVisible] = useState(false);
 
@@ -62,6 +70,11 @@ const usePlanning = ()=>{
 
     const [totalRows,setTotalRows] = useState<number>(0);
 
+    // const [currentGridState,setCurrentGridState] = useState<any>()
+
+    const [isDataLoading,setIsDataLoading] = useState(false);
+
+
     const rowsPerPage = parseInt(process.env.REACT_APP_PLANNING_ROWS_PER_PAGE || '50');
 
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
@@ -69,7 +82,6 @@ const usePlanning = ()=>{
     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
 
     const {mutateAsync:getDailyData} = useGetDailyData();
-   
 
     const paginationProps:VFPaginationProps = {
         selectedRows:0,
@@ -77,7 +89,7 @@ const usePlanning = ()=>{
         rowsPerPage:rowsPerPage,
         currentPage:currentPage,
         handleChangePage:(currPage:number) => {
-            fetchAndUpdateGridData(currPage);
+            fetchAndUpdateGridData(currPage,true,currentFilter);
             setCurrentPage(currPage)
         }
         
@@ -86,7 +98,7 @@ const usePlanning = ()=>{
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
             
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`});
         }
       };
   
@@ -245,9 +257,9 @@ const usePlanning = ()=>{
         }
     }
 
-    const fetchPlanningDataCount = async () => {
+    const fetchPlanningDataCount = async (filter?:any) => {
         setIsOverlayVisible(true);
-        const result = await getPlanningDataCount({filters:[]});
+        const result = await getPlanningDataCount({...filter} || {});
         setIsOverlayVisible(false);
         const data = result.data.data;
         const tempPlanningCount = {...initialPlanningCounts};
@@ -271,7 +283,7 @@ const usePlanning = ()=>{
                 if(planningCategoryObj.custom) tempPlanningCount.reviewOrderFulfillmentCustomCount = planningCategoryObj.custom; 
             }
         });
-
+        
         setPlanningCounts(tempPlanningCount);
     }
 
@@ -279,7 +291,7 @@ const usePlanning = ()=>{
         const data =  await getPlanningDataGrid({
             category:currentPageData.category,
             type:currentPageData.type,
-            filters:[],
+            filters:currentFilter,
             paginationParameter:{
                 pageNumber:pageNumber,
                 recordsPerPage:5000
@@ -302,18 +314,21 @@ const usePlanning = ()=>{
                     const body = {
                         category:'git',
                         type:'parent',
-                        filters:[],
+                        filters:currentFilter,
                         paginationParameter:{
                             pageNumber:1,
                             recordsPerPage:rowsPerPage
                         }
                     }
+                    const count = await getPlanningDataGridCount(body)
+                    setTotalRows(count.data.data[0].locationwise)
+                    setPlanningCounts({...planningCounts,parentMonitorCount:count.data.data[0].locationwise})
+
                     const result = await getPlanningDataGrid(body);
                     setCurrentView('grid');
                     setCurrentCategory(category);
                     setCurrentGridData(result.data.data);
                     setIsSelectCategoryOpen(false);
-                    setTotalRows(planningCounts.parentMonitorCount)
                     toast.dismiss(toastId);
                     notifySuccess("Grid Data Fetched Successfully");
                     break;
@@ -418,25 +433,45 @@ const usePlanning = ()=>{
 
     }
 
+    // const getAndApplyGridState = async()=>{
+    //     try{
+    //         const result  = await getGridState(`${currentCategory}${currentTab}`)
+    //         const tempState = JSON.parse(result.data.data)
+    //         // setCurrentGridState(tempState)
+            
+    //     }catch(error:any){
+    //         console.log(error)
+    //         notifyError(error)
+    //     }
+    // }
+
    
 
-    const fetchAndUpdateGridData = async (currentPage:number) => {
+    const fetchAndUpdateGridData = async (currentPage:number,fromPagination:boolean,filter?:any,tab?:string) => {
+      
         try {
+            setIsDataLoading(true);
+            // await getAndApplyGridState()
             switch(currentCategory){
                 case 'GITFromParent':{
                     const toastId = notifyLoader('Loading Grid Data');
                     const body = {
                         category:'git',
                         type:'parent',
-                        filters:[],
+                        filters:filter || currentFilter,
                         paginationParameter:{
                             pageNumber:currentPage,
                             recordsPerPage:rowsPerPage
                         }
                     }
+                    if(!fromPagination){
+                        const count = await getPlanningDataGridCount(body)
+                        setTotalRows(count.data.data[0].locationwise)
+                        setPlanningCounts({...planningCounts,parentMonitorCount:count.data.data[0].locationwise})
+                    }
                     const result = await getPlanningDataGrid(body);
                     setCurrentGridData(result.data.data);
-                    setTotalRows(planningCounts.parentMonitorCount)
+                    if(fromPagination)setTotalRows(planningCounts.parentMonitorCount)
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
                     break;
@@ -446,15 +481,28 @@ const usePlanning = ()=>{
                     const body = {
                         category:'git',
                         type:'child',
-                        filters:[],
+                        filters:filter || currentFilter,
                         paginationParameter:{
                             pageNumber:currentPage,
                             recordsPerPage:rowsPerPage
                         }
                     }
+                    if(!fromPagination){
+                        const count = await getPlanningDataGridCount(body)
+                        const {locationwise,transporterwise} = count.data.data[0]
+                        const tempTab =tab?tab:currentTab
+                        if(tempTab==="locationWise"){
+                            setPlanningCounts({...planningCounts,childMonitorCount:locationwise})
+                            setTotalRows(locationwise)
+                        }
+                        else {
+                            setPlanningCounts({...planningCounts,childMonitorCount:transporterwise})
+                            setTotalRows(transporterwise)
+                        }
+                    }
                     const result = await getPlanningDataGrid(body);
                     setCurrentGridData(result.data.data);
-                    setTotalRows(planningCounts.childMonitorCount)
+                    if(fromPagination)setTotalRows(planningCounts.childMonitorCount)
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
                     break;
@@ -464,15 +512,21 @@ const usePlanning = ()=>{
                     const body = {
                         category:'expedite',
                         type:'parent',
-                        filters:[],
+                        filters:filter,
                         paginationParameter:{
                             pageNumber:currentPage,
                             recordsPerPage:rowsPerPage
                         }
                     }
+                    if(!fromPagination){
+                        const count = await getPlanningDataGridCount(body)
+                        setTotalRows(count.data.data)
+                        setPlanningCounts({...planningCounts,parentExpediteCount:count.data.data})
+                        // setPlanningCounts({...planningCounts,parentMonitorCount:count.data.data})
+                    }
                     const result = await getPlanningDataGrid(body);
                     setCurrentGridData(result.data.data);
-                    setTotalRows(planningCounts.parentExpediteCount)
+                    if(fromPagination)setTotalRows(planningCounts.parentExpediteCount)
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
                     break;
@@ -482,15 +536,23 @@ const usePlanning = ()=>{
                     const body = {
                         category:'expedite',
                         type:'child',
-                        filters:[],
+                        filters:filter,
                         paginationParameter:{
                             pageNumber:currentPage,
                             recordsPerPage:rowsPerPage
                         }
                     }
+                    if(!fromPagination){
+                        body.paginationParameter.pageNumber  = 1
+                        const count = await getPlanningDataGridCount(body)
+                        setTotalRows(count.data.data)
+                        setCurrentPage(1)
+                        setPlanningCounts({...planningCounts,childExpediteCount:count.data.data})
+                        // setPlanningCounts({...planningCounts,parentMonitorCount:count.data.data})
+                    }
                     const result = await getPlanningDataGrid(body);
                     setCurrentGridData(result.data.data);
-                    setTotalRows(planningCounts.childExpediteCount)
+                    if(fromPagination)setTotalRows(planningCounts.childExpediteCount)
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
                     break;
@@ -500,14 +562,23 @@ const usePlanning = ()=>{
                     const body = {
                         category:'excessInventory',
                         type:'review',
-                        filters:[],
+                        filters:filter,
                         paginationParameter:{
                             pageNumber:currentPage,
                             recordsPerPage:rowsPerPage
                         }
                     }
+                    if(!fromPagination){
+                        body.paginationParameter.pageNumber  = 1
+                        const count = await getPlanningDataGridCount(body)
+                        console.log(count)
+                        setTotalRows(count.data.data)
+                        setCurrentPage(1)
+                        setPlanningCounts({...planningCounts,reviewExcessInventoryCount:count.data.data})
+                        // setPlanningCounts({...planningCounts,parentMonitorCount:count.data.data})
+                    }
                     const result = await getPlanningDataGrid(body);
-                    setTotalRows(planningCounts.reviewExcessInventoryCount)
+                    if(fromPagination)setTotalRows(planningCounts.reviewExcessInventoryCount)
                     setCurrentGridData(result.data.data);
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
@@ -518,33 +589,63 @@ const usePlanning = ()=>{
                     const body = {
                         category:'orderFulfillment',
                         type:'review',
-                        filters:[],
+                        filters:filter,
                         paginationParameter:{
                             pageNumber:currentPage,
                             recordsPerPage:rowsPerPage
                         }
                     }
+                    if(!fromPagination){
+                        body.paginationParameter.pageNumber  = 1
+                        const count = await getPlanningDataGridCount(body)
+                        console.log(count)
+                        setTotalRows(count.data.data)
+                        setCurrentPage(1)
+                        setPlanningCounts({...planningCounts,reviewOrderFulfillmentCount:count.data.data})
+                        // setPlanningCounts({...planningCounts,parentMonitorCount:count.data.data})
+                    }
                     const result = await getPlanningDataGrid(body);
-                    setTotalRows(planningCounts.reviewOrderFulfillmentCount)
+                    if(fromPagination)setTotalRows(planningCounts.reviewOrderFulfillmentCount)
                     setCurrentGridData(result.data.data);
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
                     break;
                 }
             }
+            setIsDataLoading(false);
             
         } catch (error) {
             toast.dismiss();
             notifyError('Something Went Wrong')
+            setIsDataLoading(false);
         }
     }
+
+    const onApplyFilter = async(filter:any)=>{
+        if(isSelectCategoryOpen){
+            await fetchPlanningDataCount(filter)
+            return 
+        }
+        // await fetchPlanningDataCount(filter)
+        setCurrentFilter(filter)
+        setCurrentPage(1)
+        fetchAndUpdateGridData(currentPage,false,filter)
+    }
+
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+        const updatedFilter = onDelete(parentId,filterId,value)
+        await onApplyFilter(updatedFilter)
+    }
+
 
     const onFloatingTabChange = (tab:any) => {
         setCurrentTab(tab.value);
         if(currentCategory==='GITToChild' && currentView==='grid'){
-            fetchAndUpdateGridData(1)
+            setCurrentPage(1)
+            fetchAndUpdateGridData(1,false,currentFilter,tab.value)
         }
     }
+
 
     const onGoBack = () => {
         setIsSelectCategoryOpen(true);
@@ -559,8 +660,8 @@ const usePlanning = ()=>{
         const activeTab = getFloatingTabsList(view)[0];
         if(activeTab){
              setCurrentTab(getFloatingTabsList(view)[0].value);
-        } 
-        await fetchAndUpdateGridData(currentPage);
+        }
+        if(view==='grid') await fetchAndUpdateGridData(currentPage,false,currentFilter);
         setCurrentView(view);
         
     }
@@ -626,6 +727,7 @@ const usePlanning = ()=>{
                 }
         }
     },[currentCategory])
+
  
     return {
         planningCounts,
@@ -654,7 +756,15 @@ const usePlanning = ()=>{
         tempAgGridProps,
         exportExcelRowData,
         setExportExcelRowData,
-        onExportToExcelCallBack
+        onExportToExcelCallBack,
+        ref,
+        tempRef,
+        currentFilter,
+        setCurrentFilter,
+        onDelete,
+        onApplyFilter,
+        onDeleteFilter,
+        isDataLoading
     }
 
 

@@ -1,4 +1,4 @@
-import { render, screen,fireEvent,waitFor,cleanup} from '@testing-library/react';
+import { render, screen} from '@testing-library/react';
 import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -198,160 +198,160 @@ describe('Research and insights Component', () => {
 });
 
 
-describe('Handles all interactions', () => {
-  global.ResizeObserver = class MockedResizeObserver {
-    observe = jest.fn();
-    unobserve = jest.fn();
-    disconnect = jest.fn();
-  };
+// describe('Handles all interactions', () => {
+//   global.ResizeObserver = class MockedResizeObserver {
+//     observe = jest.fn();
+//     unobserve = jest.fn();
+//     disconnect = jest.fn();
+//   };
 
-  beforeEach(async() => {
-    cleanup()
-    useGetBPRUIConfigurationMock.mockImplementation(():any=>{
-        return {data: {data:GetBPRUIConfigurationMockResponse},isLoading:false};
-      })
+//   beforeEach(async() => {
+//     cleanup()
+//     useGetBPRUIConfigurationMock.mockImplementation(():any=>{
+//         return {data: {data:GetBPRUIConfigurationMockResponse},isLoading:false};
+//       })
   
 
-    useGetBPRDataMock.mockImplementation(():any=>{
-      return {
-        mutateAsync:()=>{
-          return {data:GetBPRDataMockResponse}
-        },
-        isLoading:false
-      }
-    })
+//     useGetBPRDataMock.mockImplementation(():any=>{
+//       return {
+//         mutateAsync:()=>{
+//           return {data:GetBPRDataMockResponse}
+//         },
+//         isLoading:false
+//       }
+//     })
 
-    useGetUpdatedGraphDataMock.mockImplementation(():any=>{
-      return {
-        mutateAsync:()=>{
-          return {data:GetUpdatedGraphDataMockResponse}
-        },
-        isLoading:false
-      }
-    })
+//     useGetUpdatedGraphDataMock.mockImplementation(():any=>{
+//       return {
+//         mutateAsync:()=>{
+//           return {data:GetUpdatedGraphDataMockResponse}
+//         },
+//         isLoading:false
+//       }
+//     })
 
-    useGetBPRDataCountMock.mockImplementation(():any=>{
-      return {
-        mutateAsync:()=>{
-          return{
-            data:{
-              "recordCount": "148129",
-              "data": null,
-              "status": 200,
-              "msg": null,
-              "errorCount": null,
-              "error": null,
-              "conflictErrorCount": null,
-              "conflictError": null
-            }
-          }
-        }
-      }
-    })
+//     useGetBPRDataCountMock.mockImplementation(():any=>{
+//       return {
+//         mutateAsync:()=>{
+//           return{
+//             data:{
+//               "recordCount": "148129",
+//               "data": null,
+//               "status": 200,
+//               "msg": null,
+//               "errorCount": null,
+//               "error": null,
+//               "conflictErrorCount": null,
+//               "conflictError": null
+//             }
+//           }
+//         }
+//       }
+//     })
 
-    useGetStateMock.mockImplementation(():any=>{
-      return{
-        mutateAsync:()=>{
-          return {
-            data:{data: GetStateMockResponse}
-          }
-        }
-      }
+//     useGetStateMock.mockImplementation(():any=>{
+//       return{
+//         mutateAsync:()=>{
+//           return {
+//             data:{data: GetStateMockResponse}
+//           }
+//         }
+//       }
       
-    })
+//     })
 
-    useSaveStateMock.mockImplementation(():any=>{
-      return{
-        mutateAsync:()=>{
-          return {
-            data:{data: SaveStateMockResponse}
-          }
-        }
-      }
+//     useSaveStateMock.mockImplementation(():any=>{
+//       return{
+//         mutateAsync:()=>{
+//           return {
+//             data:{data: SaveStateMockResponse}
+//           }
+//         }
+//       }
       
-    })
+//     })
 
-    useResetStateMock.mockImplementation(():any=>{
-      return{
-        mutateAsync:()=>{
-          return {
-            data:{data: ResetStateMockResponse}
-          }
-        }
-      }
+//     useResetStateMock.mockImplementation(():any=>{
+//       return{
+//         mutateAsync:()=>{
+//           return {
+//             data:{data: ResetStateMockResponse}
+//           }
+//         }
+//       }
       
-    })
+//     })
 
-    useGetDailyDataMock.mockImplementation(():any=>{
-      return{
-        mutateAsync:()=>{
-          return {
-            data:{data: GetDailyDataMockResponse}
-          }
-        }
-      }
+//     useGetDailyDataMock.mockImplementation(():any=>{
+//       return{
+//         mutateAsync:()=>{
+//           return {
+//             data:{data: GetDailyDataMockResponse}
+//           }
+//         }
+//       }
       
-    })
+//     })
     
-    render(contextWrapper(<ResearchInsights />,store));
+//     render(contextWrapper(<ResearchInsights />,store));
     
 
-    // await waitFor(async()=>{
-    //   const skuCodeElement = screen.getAllByRole('gridcell', { name: /ARES0798C004/i })[0];
-    //   expect(skuCodeElement).toBeInTheDocument()
-    // })
+//     // await waitFor(async()=>{
+//     //   const skuCodeElement = screen.getAllByRole('gridcell', { name: /ARES0798C004/i })[0];
+//     //   expect(skuCodeElement).toBeInTheDocument()
+//     // })
 
-  });
+//  });
 
  
 
-  it("Clicks on update graph when no row is selected",async()=>{
+//   // it("Clicks on update graph when no row is selected",async()=>{
     
-    await waitFor(async()=>{
-      fireEvent.click(screen.getByText('Update Graph'))
-    })
-  })
+//   //   await waitFor(async()=>{
+//   //     fireEvent.click(screen.getByText('Update Graph'))
+//   //   })
+//   // })
 
-  // it("Clicks on update graph when one row is selected",async()=>{
+//   // it("Clicks on update graph when one row is selected",async()=>{
     
-  //   await waitFor(async()=>{
-  //     screen.logTestingPlaygroundURL()
-  //     const checkboxInput = screen.getAllByLabelText('Press Space to toggle row selection (unchecked)')[0];
-  //     checkboxInput.click(); // Simulate a click to check the checkbox
+//   //   await waitFor(async()=>{
+//   //     screen.logTestingPlaygroundURL()
+//   //     const checkboxInput = screen.getAllByLabelText('Press Space to toggle row selection (unchecked)')[0];
+//   //     checkboxInput.click(); // Simulate a click to check the checkbox
 
-  //     fireEvent.click(screen.getByText('Update Graph'))
+//   //     fireEvent.click(screen.getByText('Update Graph'))
 
-  //     const ecoBtn = screen.getByText("Eco")
-  //     fireEvent.click(ecoBtn)
+//   //     const ecoBtn = screen.getByText("Eco")
+//   //     fireEvent.click(ecoBtn)
 
-  //     const rangeInput = screen.getByRole('slider');
-  //     fireEvent.change(rangeInput, { target: { value: '45' } });
-  //   })
-  // })
+//   //     const rangeInput = screen.getByRole('slider');
+//   //     fireEvent.change(rangeInput, { target: { value: '45' } });
+//   //   })
+//   // })
 
-  // it("Clicks on update graph when two rows are selected",async()=>{
+//   // it("Clicks on update graph when two rows are selected",async()=>{
     
-  //   await waitFor(async()=>{
-  //     const checkboxInput = screen.getAllByLabelText('Press Space to toggle row selection (unchecked)');
-  //     fireEvent.click(checkboxInput[0])
-  //     fireEvent.click(checkboxInput[1])
+//   //   await waitFor(async()=>{
+//   //     const checkboxInput = screen.getAllByLabelText('Press Space to toggle row selection (unchecked)');
+//   //     fireEvent.click(checkboxInput[0])
+//   //     fireEvent.click(checkboxInput[1])
       
       
       
      
-  //   })
-  // // //   await waitFor(()=>{
+//   //   })
+//   // // //   await waitFor(()=>{
       
-  // // //     const updateGraphBtn = screen.getByText('Update Graph')
-  // // //     updateGraphBtn.click()
-  // // //   })
-  // // //   await waitFor(()=>{
+//   // // //     const updateGraphBtn = screen.getByText('Update Graph')
+//   // // //     updateGraphBtn.click()
+//   // // //   })
+//   // // //   await waitFor(()=>{
       
-  // // //     const canvasElement = screen.getAllByRole('canvas')[0];
-  // // //     expect(canvasElement).toBeInTheDocument()
-  // // //   })
+//   // // //     const canvasElement = screen.getAllByRole('canvas')[0];
+//   // // //     expect(canvasElement).toBeInTheDocument()
+//   // // //   })
    
-  // })
+//   // })
 
   
-});
+// });

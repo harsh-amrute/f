@@ -1,4 +1,4 @@
-import { VFStepperWrapper, VFStepWrapper,VFStepLabel,VFStepProgress, VFStepLabelWrapper, VFStepDescription } from "./styles"
+import { VFStepperWrapper, VFStepWrapper,VFStepLabel,VFStepProgress, VFStepLabelWrapper, VFStepDescription, VFStepPrefixWrapper, VFStepperContentWrapper } from "./styles"
 
 
 interface VFStepperProps{
@@ -12,6 +12,7 @@ export interface StepItem{
     label:string,
     status:'completed' | 'pending' | 'rejected' 
     description:string
+    prefix?:any
 
 }
 
@@ -22,6 +23,7 @@ interface VFStepProps{
     isLast:boolean
     description:string
     dashWidth?:string
+    prefix?:any
 }
 
 interface VFStepIconProps{
@@ -40,7 +42,7 @@ const VFStepper =  (props:VFStepperProps)=>{
     return (
         <VFStepperWrapper style={{width:width,zoom:zoom}} data-testid='stepper'>
             {items.map((i,index)=>{
-                return <Step dashWidth={dashWidth} label={i.label} status={i.status} key={index} index={index} isLast={index==items.length-1} description={i.description}/>
+                return <Step dashWidth={dashWidth} label={i.label} status={i.status} key={index} index={index} isLast={index==items.length-1} description={i.description} prefix={i.prefix}/>
             })}
         </VFStepperWrapper>
     )
@@ -53,18 +55,25 @@ const Step = (props:VFStepProps)=>{
         status,
         isLast,
         description,
-        dashWidth
+        dashWidth,
+        prefix
     } = props
-
 
     return(
         <VFStepWrapper isLast={isLast}>        
-            <VFStepLabelWrapper>             
+            <VFStepLabelWrapper>        
+                  {prefix && (
+                    <VFStepPrefixWrapper>
+                        {prefix}
+                    </VFStepPrefixWrapper>
+                  )}
                 <VFStepIcon status={status}/>
-                <VFStepLabel>{label}</VFStepLabel>
-                <VFStepDescription>{description}</VFStepDescription>
+                <VFStepperContentWrapper>
+                    <VFStepLabel>{label}</VFStepLabel>
+                    <VFStepDescription>{description}</VFStepDescription>
+                </VFStepperContentWrapper>
             </VFStepLabelWrapper>
-            {!isLast && <VFStepProgress status={status} style={{width:dashWidth}}/>}
+            {!isLast && <VFStepProgress status={status} style={{width:dashWidth,marginTop:prefix?"40px":"12px"}}/>}
         </VFStepWrapper>
     )
 }   
