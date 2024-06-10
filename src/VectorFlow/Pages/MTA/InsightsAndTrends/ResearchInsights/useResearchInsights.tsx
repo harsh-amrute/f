@@ -40,6 +40,7 @@ const useResearchInsights = ()=>{
 
     const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
 
+
     const {mutateAsync:getDailyData} = useGetDailyData();
 
     const {mutateAsync:getUpdatedGraphData,isLoading:isUpdatedGraphDataLoading} = useGetUpdatedGraphData()

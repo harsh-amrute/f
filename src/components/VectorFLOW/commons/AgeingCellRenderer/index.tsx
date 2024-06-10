@@ -19,7 +19,7 @@ export const AgeingCellRenderer = (params:any)=>{
         setWarningIcon('/assets/img/VectorFLOW/BPR/ageing-warning-hover.svg')
         const {top,left} = e.currentTarget.getBoundingClientRect()
         setoolTipPosition({
-            top:(top * 0.75 * 0.75) -32,
+            top:(top * 0.75 * 0.75) -35,
             left:(left* 0.75* 0.75 ) -27
         })
         setIsOpen(true)
