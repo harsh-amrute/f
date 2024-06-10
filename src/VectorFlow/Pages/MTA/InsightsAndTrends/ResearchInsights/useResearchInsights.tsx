@@ -317,7 +317,7 @@ const useResearchInsights = ()=>{
                 })
                 colorFrequencyArray.push(colorFrequency)
             }
-            return convertCustomObjToObjects(colorFrequencyArray.reverse())
+            return convertCustomObjToObjects(colorFrequencyArray)
     }
 
      const handleOnUpdateGraph = async()=>{
