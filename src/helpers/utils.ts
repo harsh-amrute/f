@@ -2207,7 +2207,52 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
   return [DBMTickColumn, ...DBMGraphColumn, ...DBMSleepColumn, ...result]
 
 }
+export const mapInTransitWhereAboutsRowData = (rowData: Array<any>): Array<any> => {
+  if (!rowData || !Array.isArray(rowData)) return []
+  // PhysicalInventoryColor
+  return rowData.map((r: any) => {
+    if (!r.skuDetails || r.skuDetails.length < 1) return r
+    let legalCount = 0
+    const colorArrayMap: any = {
+      "Black": 0,
+      "Red": 0,
+      "Yellow": 0,
+      "Green": 0,
+      "White": 0
+    }
+    r.skuDetails.forEach((sd: any) => {
+      if (sd.PhysicalInventoryColor) {
+        colorArrayMap[sd.PhysicalInventoryColor] = colorArrayMap[sd.PhysicalInventoryColor] + 1
+        legalCount += 1
+      }
+
+    })
+    return {
+      ...r,
+      on_hand_penetration: colorArrayMap,
+      count: legalCount
+    }
+  })
+
+}
+
+export const mapSubmitRemarkData = (row: any): any => {
+  return {
+    data: [
+      {
+        OrderNo: row.OrderNo,
+        SKUCode: row.SKUCode,
+        WhCode: row.WhCode,
+        ParentWHCode: row.SenderLocation,
+        Remarks: row.remark,
+        CurrentLocation: row.CurrentLoc,
+        ETA: row.ETA.replace(/-/g, '/')
+      }
+    ]
+  }
+}
 ///////////MTO PROC PLANNING///////////////
+
 
 export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
 

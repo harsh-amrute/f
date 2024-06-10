@@ -1,5 +1,5 @@
 import { ProcurementLayout } from '../styles';
-import ActionToolBar from "../../../../MTA/SupplyChainIntelligenceHub/Planning/ActionToolBar";
+import ActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import useSimFullKit from '../SimulateFullKit/useSimFullKit';
 import '../styles';
 import VFFloatingTab from "../../../../../../components/VectorFLOW/commons/VFFloatingTab";
@@ -9,18 +9,7 @@ const SimulateFullKit = () => {
     return (
         <>
             <ActionToolBar
-                view={'custom'}
-                setCurrentTab={() => { return }}
-                currCategory={'PP'}
-                currentTab={''}
-                tabsList={[]}
-                onFloatingTabChange={() => console.log('')}
-                onGoBack={() => console.log('')}
-                onViewChange={() => console.log('')}
-                showAllTick={''}
-                handleGoButton={''}
-                genericRecordCount={0}
-                onExportToExcelCallBack={() => console.log('')}
+                comp={'Procurement Planning'}
             />
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 
