@@ -56,7 +56,7 @@ export const AvailabilityTrendSection = styled.div`
     margin-bottom:10px;
     padding:5px 10px 15px 10px;
     width:100%;
-    border-bottom:dashed 2px #B2B2B2;
+    // border-bottom:dashed 2px #B2B2B2;
 `
 
 export const HistoricalAvailabiltyHeader = styled.p`

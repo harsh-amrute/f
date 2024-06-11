@@ -94,7 +94,7 @@ const ResearchInsights = ()=>{
             setExportExcelRowData:setExportExcelRowData
 
         }}>
-            <div style={{zoom:0.8}}>
+            <div style={{zoom:0.8, paddingLeft:'20px'}}>
        <ActionToolBar 
             view={'grid'} 
             setCurrentTab={''} 
@@ -176,7 +176,7 @@ const ResearchInsights = ()=>{
                 <AvailabilityTrendHeader>
                     Availability Trend
                 </AvailabilityTrendHeader>
-                <AvailabilityTrendSection>
+                <AvailabilityTrendSection style={{borderBottom:'dashed 2px #B2B2B2'}}>
                     <HistoricalAvailabiltyHeader>
                         Historical Availability
                     </HistoricalAvailabiltyHeader>
@@ -208,7 +208,7 @@ const ResearchInsights = ()=>{
                     </HistoricalAvailabiltyContent>
                 </AvailabilityTrendSection>
                 {(graphState==='default')?(
-                    <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',zoom:0.7,alignItems:'center',padding:0,height:'100%'}}>
+                    <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',zoom:0.7,alignItems:'center',padding:0,height:'100%',borderBottom:'dashed 3px #B2B2B2'}}>
                         <DefaultViewRendererWrapper>
                             <Player src={'/assets/img/VectorFLOW/BPR/swipe pointer.json'} loop autoplay style={{transform:'rotate(-90deg)',height:70,width:70}}/>
                             <DefaultViewRendererHeader>
@@ -221,7 +221,7 @@ const ResearchInsights = ()=>{
                         </DefaultViewRendererWrapper>
                     </AvailabilityTrendSection>
                 ):(
-                    <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',marginTop:'-5px',zoom:0.7,alignItems:'center',padding:0}}>
+                    <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',marginTop:'-5px',zoom:0.7,alignItems:'center',padding:0,borderBottom:'dashed 3px #B2B2B2'}}>
                     <HorizonHeader style={{margin:'0px 0px 0px 30px'}}>
                         Horizon
                     </HorizonHeader>
