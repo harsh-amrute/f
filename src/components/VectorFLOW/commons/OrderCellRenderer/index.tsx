@@ -1,7 +1,7 @@
 
-import { OrderCellRendererWrapper, OrderColorCellRendererWrapper } from "./styles";
+import { OrderCellRendererWrapper } from "./styles";
 
-export const OrderCellRenderer = (params: any) => {
+export const OrderCellRenderer = () => {
     return (
         <OrderCellRendererWrapper>
             <img

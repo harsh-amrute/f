@@ -1,7 +1,4 @@
 import styled from 'styled-components';
-import { ColorsMTO } from "../../../../../VectorFlow/Pages/MTO/Common/Colors";
-
-
 
 export const PercentBorderContainer = styled.div`
     height: 100%;
@@ -81,9 +78,9 @@ export const ColorOnLeft = styled.div<{ color: string, height: string }>`
     position:absolute;
     right:100%;
     border-radius: 8px 0 0 8px;
-    background-color: ${props => props.color ? props.color : null};
+    background-color: ${props => props.color };
     width:20px;
-    height:${props => props.height ? props.height : null};
+    height:${props => props.height };
 
     &:nth-of-type(1){
         top:0px;

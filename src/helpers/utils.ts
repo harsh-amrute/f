@@ -2208,7 +2208,7 @@ export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): Co
           const cpData = params.data.cp[0];
           const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
           let tooltipText = '';
-          keysToPrint.forEach((key, index) => {
+          keysToPrint.forEach((key) => {
             if (Object.prototype.hasOwnProperty.call(cpData, key)) {
               if (tooltipText !== '') {
                 tooltipText += ' | ';

@@ -22,8 +22,6 @@ const MaterialCov = () => {
     setToggleComponent(value);
   }
 
-
-
   return (
     <div style={{ width: "85%" }}>
       <ActionToolBar
@@ -66,7 +64,7 @@ const MaterialCov = () => {
             {/**code goes here */}
             {
               currTab === 'FutureCoverage' ?
-                <FutureCov />
+                <FutureCov handleToggleComponent={handleToggleComponent} />
                 :
                 <CurrentCov handleToggleComponent={handleToggleComponent} />
             }

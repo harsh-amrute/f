@@ -22,7 +22,7 @@ const AnalyticalScreen = () => {
 
    
 
-    const [rowData, setRowData] = useState([
+    const [rowData] = useState([
         {
             headerName: '',
         },

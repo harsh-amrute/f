@@ -15,11 +15,8 @@ interface CurrentCovProps {
 
 }
 
-
 const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
-    console.log('oa')
     const dispatch = useDispatch();
-
     const [isSubPageOpen, setToggleSubPage] = useState<boolean>(false)
     const [totalOrderCount, setTotalOrdeerCount] = useState<number>(0);
 
@@ -117,23 +114,21 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
     }, [])
 
     const setAnalyticalData = () => {
-        console.log('here')
         const blackCount = mapOrderDetails("Black", "", "", "", 4)
         const redCount = mapOrderDetails("Red", "", "", "", 4)
         const yellowCount = mapOrderDetails("Yellow", "", "", "", 4)
         const greenCount = mapOrderDetails("Green", "", "", "", 4)
         const blueCount = mapOrderDetails("Blue", "", "", "", 4)
-       
+
         const TotalCountObj = {
-            "Order":[
-                {...blackCount,color:ColorsMTO.Black},
-                {...redCount,color:ColorsMTO.Red},
-                {...yellowCount,color:ColorsMTO.Yellow},
-                {...greenCount,color:ColorsMTO.Green},
-                {...blueCount,color:ColorsMTO.Blue}
+            "Order": [
+                { ...blackCount, color: ColorsMTO.Black },
+                { ...redCount, color: ColorsMTO.Red },
+                { ...yellowCount, color: ColorsMTO.Yellow },
+                { ...greenCount, color: ColorsMTO.Green },
+                { ...blueCount, color: ColorsMTO.Blue }
             ]
         }
-        console.log('><>',TotalCountObj)
         dispatch(SAVE_ANALYTICS_DATA(TotalCountObj))
     }
 
@@ -143,12 +138,13 @@ const CurrentCov = ({ handleToggleComponent }: CurrentCovProps) => {
     }
 
 
-
     return (
         <Main>
             {/**1st row */}
             <MainContainer>
-                <Box onClick={handleToggle}>
+                <Box
+                    data-testid="btn_navigate"
+                    onClick={handleToggle}>
                     <MTOMaterialSO
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Black, c2: ColorsMTO.Red, c3: ColorsMTO.Yellow }}
