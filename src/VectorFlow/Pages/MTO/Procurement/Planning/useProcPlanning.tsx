@@ -7,7 +7,7 @@ import AvailabilityToolTip from "../../../MTA/InsightsAndTrends/BTR/Availability
 import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
-import VFImageButtonOutline from "../../../../../components/VectorFLOW/commons/VFImageButtonOutline";
+import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
 import GetProcPlanningData from './GetProcPlanningData.json';
@@ -211,14 +211,24 @@ const useProcPlanning = () => {
                             }}
                         />
                         <div style={{ textAlign: 'right', flexDirection: 'row' }}>
-                            <VFImageButtonOutline
-                                onClick={navigateToSimulateScreen}
-                                themeUi="" disabled={false}
-                                width={150}
-                                image={"/assets/img/VectorFLOW/reset.svg"}
-                                style={{ marginRight: 20, borderColor: '#BC3D81', color: '#BC3D81', fontWeight: 'bold', }}>Reset Data
-                            </VFImageButtonOutline>
 
+                            <VFButtonOutline
+                                onClick={navigateToSimulateScreen}
+                                themeUi=""
+                                disabled={false}
+                                width={150}
+                                style={{
+                                    marginRight: 20,
+                                    borderColor: '#BC3D81',
+                                    color: '#BC3D81',
+                                    fontWeight: 'bold',
+                                }}
+                            >
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <img src="/assets/img/VectorFLOW/reset.svg" alt="Reset Icon" style={{ marginRight: 8 }} />
+                                    Reset Data
+                                </div>
+                            </VFButtonOutline>
                             <VFButton
                                 onClick={navigateToSimulateScreen}
                                 themeUi=""
