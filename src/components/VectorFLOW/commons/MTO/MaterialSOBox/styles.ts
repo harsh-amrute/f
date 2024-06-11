@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-import { ColorsMTO } from "../../../../../VectorFlow/Pages/MTO/Common/Colors";
-
 
 
 export const PercentBorderContainer = styled.div`

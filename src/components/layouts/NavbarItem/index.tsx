@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 import BPRDailyAnalytics from "../../../components/VectorFLOW/layouts/BPRDailyAnalytics";
-import AnalyticalScreen from "../../../VectorFlow/Pages/MTO/Procurement/MaterialCoverage/AnalyticalScreen";
 import ProcPlanningAnalytics from "../../../components/VectorFLOW/layouts/ProcPlanningAnalytics";
 
 const NavbarItem = ({
@@ -231,13 +230,6 @@ const NavbarItem = ({
           />
         )}
 
-        {
-          //my code goes here
-          // isHide && pathname === "/procurement/material-coverage-open-sales" && menuItem.id === 19 && (
-          //   <AnalyticalScreen />
-
-          // )
-        }
 
         {isHide && pathname === "/ist-forced-closure" && menuItem.id === 6 && (
           <ParticularForced themeUi={themeUi} />

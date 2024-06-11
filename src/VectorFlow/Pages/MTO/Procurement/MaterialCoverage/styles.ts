@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ColorsMTO } from '../../Common/Colors';
+
 
 export const Main = styled.div`
     display:flex;

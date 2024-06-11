@@ -1,8 +1,6 @@
-import React from 'react';
+
 import { render, screen, waitFor } from '@testing-library/react';
 import ChildrenProcPlanningCellRenderer from '../ChildrenProcPlanningCellRenderer';
-import GetProcHeaderChildren from './GetProcHeaderChildren.json';
-import { mapProcPlanningChildrenFieldsToColDefs } from '../../../../../helpers/utils';
 //import { waitFor } from '@testing-library/dom';
 import '@testing-library/jest-dom/extend-expect';
 

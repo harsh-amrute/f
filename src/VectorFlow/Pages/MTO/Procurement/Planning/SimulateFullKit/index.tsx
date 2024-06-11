@@ -1,11 +1,10 @@
 import { ProcurementLayout } from '../styles';
 import ActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import useSimFullKit from '../SimulateFullKit/useSimFullKit';
-import '../styles';
 import VFFloatingTab from "../../../../../../components/VectorFLOW/commons/VFFloatingTab";
 
 const SimulateFullKit = () => {
-    const { renderView, currentTab, toggleCurrentTab, Save } = useSimFullKit();
+    const { renderView, toggleCurrentTab } = useSimFullKit();
     return (
         <>
             <ActionToolBar

@@ -3,8 +3,7 @@ import { render, fireEvent } from '@testing-library/react';
 import useSimFullKit from './useSimFullKit';
 import { useUserData } from '../../../../../../context';
 import { useLocation } from 'react-router-dom';
-import GetSimulateFullKitHeader from './GetSimulateFullKitHeader.json';
-import GetSimulateFullKitData from './GetSimulateFullKitData.json';
+
 
 // Mock dependencies
 jest.mock('../../../../../../context');

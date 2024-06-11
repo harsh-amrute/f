@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
 import { mapSimulateHedaerChildrenFieldsToColDefs } from '../../../../../../helpers/utils';
 import GetSimulateHeaderChildren from './GetSimulateChildrenHeader.json';

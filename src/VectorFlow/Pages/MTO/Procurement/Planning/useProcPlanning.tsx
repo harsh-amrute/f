@@ -14,7 +14,7 @@ import GetProcPlanningData from './GetProcPlanningData.json';
 import GetProcPlanningDataColumn from './GetProcPlanningDataColumn.json';
 import { mapProcPlanningFieldsToColDefs } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
-import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
+
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -68,7 +68,7 @@ const useProcPlanning = () => {
     const { data } = GetProcPlanningData;
     const gridRef = useRef<AgGridReact>(null);
     const { isSideBarOpen } = useUserData()
-    const [currentPage, setCurrentPage] = useState<any>(1);
+    const [currentPage] = useState<any>(1);
     const navigate = useNavigate();
     const tabs: Array<VFFloatingTabItemProps> = [
         {
@@ -113,7 +113,7 @@ const useProcPlanning = () => {
     const ShortageColumns = mapProcPlanningFieldsToColDefs(ShortageHeaderData);
     const CompleteAvailableColumns = mapProcPlanningFieldsToColDefs(CompleteHeaderData);
     const [ShortageDatas, SetShortageData] = useState(ShortageData);
-    const [CompleteAvailableDatas, setCompleteAvailableData] = useState(CompleteAvailableData);
+    const [CompleteAvailableDatas] = useState(CompleteAvailableData);
 
     const icons = useMemo(() => {
         return {
@@ -125,7 +125,7 @@ const useProcPlanning = () => {
         return {
             minWidth: 250,
         };
-    }, []); 2
+    }, []);
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
     const navigateToSimulateScreen = () => {
         navigate("/planning/simulative-fullkit", { state: { ShortageDatas } });
@@ -139,7 +139,7 @@ const useProcPlanning = () => {
         };
     }, []);
     const excelDownload = useCallback(() => {
-        gridRef.current!.api.exportDataAsExcel();
+        gridRef.current?.api.exportDataAsExcel();
     }, []);
     const excelStyles = useMemo<ExcelStyle[]>(() => {
         return [
@@ -190,13 +190,6 @@ const useProcPlanning = () => {
                                 ]
                             }}
                         />
-                        {/* <VFPagination
-                            selectedRows={0}
-                            totalRows={100}
-                            currentPage={1}
-                            rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')}
-                            handleChangePage={(e) => { console.log('') }}
-                        /> */}
                     </div>
                 );
             case "short":
@@ -217,13 +210,6 @@ const useProcPlanning = () => {
                                 ]
                             }}
                         />
-                        {/* <VFPagination
-                            selectedRows={0}
-                            totalRows={100}
-                            currentPage={1}
-                            rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')}
-                            handleChangePage={(e) => { console.log('') }}
-                        /> */}
                         <div style={{ textAlign: 'right', flexDirection: 'row' }}>
                             <VFImageButtonOutline
                                 onClick={navigateToSimulateScreen}

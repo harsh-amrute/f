@@ -11,14 +11,12 @@ import {
     BPRDailyAnalyticStatusBar,
     BPRDailyAnalyticsWrapper,
     BPRDailyAnalyticStatusBarSection,
-    BPRDailyAnalyticsTableCellHeader,
     BPRDailyAnalyticsTableCellText
 } from './styles';
 import { useSelector } from 'react-redux';
 import { ColDef } from "ag-grid-community";
 import { RootState } from '../../../../../redux/store/store';
-import { AgGridReact } from "ag-grid-react"; // React Grid Logic
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+
 
 interface IRow {
     "": string
@@ -33,14 +31,14 @@ interface BPRDailyAnalyticsProps {
 const AnalyticalScreen = (props: BPRDailyAnalyticsProps) => {
     //AnalyticsData
     const options = useSelector((state: RootState) => state.mto.AnalyticsData);
-    console.log('anaytical=',options)
+    console.log('anaytical=', options)
     // const [rowData, setRowData] = useState<IRow[]>([
 
     // ]);
     const {
         colDefs
     } = props;
-    const [rowData, setRowData] = useState<IRow[]>([
+    const [rowData] = useState<IRow[]>([
         { "": "Black", No_of_Order: 234, No_of_Cust: 938, Total_Ord_val: 64 },
         { "": "Red", No_of_Order: 123, No_of_Cust: 950, Total_Ord_val: 43 },
         { "": "Red", No_of_Order: 231, No_of_Cust: 462, Total_Ord_val: 44 },
@@ -48,16 +46,16 @@ const AnalyticalScreen = (props: BPRDailyAnalyticsProps) => {
         { "": "Red", No_of_Order: 107, No_of_Cust: 189, Total_Ord_val: 84 },
     ])
 
-    const [colDef, setColDefs] = useState<ColDef<IRow>[]>([
-        { field: "" },
-        { field: "No_of_Order" },
-        { field: "No_of_Cust" },
-        { field: "Total_Ord_val" },
-    ]);
+    // const [colDef, setColDefs] = useState<ColDef<IRow>[]>([
+    //     { field: "" },
+    //     { field: "No_of_Order" },
+    //     { field: "No_of_Cust" },
+    //     { field: "Total_Ord_val" },
+    // ]);
 
-    const defaultColDef: ColDef = {
-        flex: 1,
-    };
+    // const defaultColDef: ColDef = {
+    //     flex: 1,
+    // };
 
     return (
         <BPRDailyAnalyticsWrapper>
@@ -101,12 +99,12 @@ const AnalyticalScreen = (props: BPRDailyAnalyticsProps) => {
                                             return (
                                                 <React.Fragment>
                                                     <BPRDailyAnalyticsTableCell>
-                                                        
+
                                                         <BPRDailyAnalyticsTableCellText>
                                                             {/* {getCellText(row.techChange, 'techChange')} */}
                                                         </BPRDailyAnalyticsTableCellText>
                                                     </BPRDailyAnalyticsTableCell>
-                                                   
+
                                                 </React.Fragment>
                                             )
                                         }
@@ -114,11 +112,11 @@ const AnalyticalScreen = (props: BPRDailyAnalyticsProps) => {
                                             return (
                                                 <React.Fragment>
                                                     <BPRDailyAnalyticsTableCell>
-                                                       
+
                                                         <BPRDailyAnalyticsTableCellText>
                                                             {/*getCellText(row.ecoChange, 'ecoChange')*/}</BPRDailyAnalyticsTableCellText>
                                                     </BPRDailyAnalyticsTableCell>
-                                                    
+
                                                 </React.Fragment>
                                             )
                                         }

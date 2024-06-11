@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import VFTable from '../../../../components/VectorFLOW/commons/VFTable';
 import { mapProcPlanningChildrenFieldsToColDefs } from '../../../../helpers/utils';
 import GetProcHeaderChildren from './Planning/GetProcHeaderChildren.json';

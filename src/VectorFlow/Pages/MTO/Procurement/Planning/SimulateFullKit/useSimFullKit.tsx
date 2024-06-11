@@ -16,7 +16,7 @@ const useSimFullKit = () => {
     const { HeaderData } = GetSimulateFullKitHeader;
     const { data } = GetSimulateFullKitData;
     const { isSideBarOpen } = useUserData()
-    const [currentPage, setCurrentPage] = useState<any>(1);
+    const [currentPage] = useState<any>(1);
     const location = useLocation();
     const rowsData = location.state?.ShortageDatas;
 
@@ -102,8 +102,8 @@ const useSimFullKit = () => {
     const SimulateColumns = mapSimulateProcPlanningFieldsToColDefs(HeaderData);
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
     const { WithZeroEas, WithoutZeroEas, BothEasData } = initilizeData(data);
-    const [incOrderFullkitData, setIncOrderFullKitData] = useState([...WithoutZeroEas, ...BothEasData]);
-    const [cumulativeFullKitData, setCumulativeFullKitData] = useState([...WithZeroEas, ...BothEasData]);
+    const [incOrderFullkitData] = useState([...WithoutZeroEas, ...BothEasData]);
+    const [cumulativeFullKitData] = useState([...WithZeroEas, ...BothEasData]);
 
     const icons = useMemo(() => {
         return {
@@ -202,7 +202,6 @@ const useSimFullKit = () => {
             },
         },
         masterDetail: true,
-        // detailCellRendererParams: detailCellRendererParams,
         detailCellRenderer: DetailCellRenderer,
         autoGroupColumnDef: autoGroupColumnDef,
         paginationAutoPageSize: true,

@@ -5,7 +5,7 @@ import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloati
 
 
 const ProcurementPlanning = () => {
-    const { renderView, toggleCurrentTab, excelDownload } = useProcPlanning();
+    const { renderView, toggleCurrentTab } = useProcPlanning();
     return (
         <>
             <ActionToolBar
