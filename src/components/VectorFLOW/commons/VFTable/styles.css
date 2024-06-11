@@ -1,77 +1,94 @@
+
 .ag-theme-alpine {
-  /* --ag-foreground-color: #EBEBEB; */
-  --ag-range-selection-border-color:#BC3D81;
-  /* --ag-background-color: rgb(255, 255, 255); */
-  --ag-header-foreground-color: rgb(255, 255, 255);
-  --ag-header-background-color: rgb(0, 0, 0);
-  --ag-header-height:43px;
-  --ag-checkbox-checked-color:#BC3D81;
-  --ag-selected-row-background-color:rgb(188, 61, 129,0.2);
-  /* --ag-odd-row-background-color: rgb(0, 0, 0, 0.03); */
-  /* --ag-header-column-resize-handle-color: rgb(126, 46, 132); */
-  /* --ag-border-radius:32px; */
-  --ag-font-size: 17px;
-  /* --ag-font-family: monospace; */
-  
+    /* --ag-foreground-color: #EBEBEB; */
+    /* --ag-background-color: rgb(255, 255, 255); */
+    --ag-header-foreground-color: rgb(255, 255, 255);
+    --ag-header-background-color: rgb(255, 255, 255) !important;
+    --ag-header-height: 43px;
+    --ag-checkbox-checked-color: #BC3D81;
+    --ag-selected-row-background-color: rgb(188, 61, 129, 0.2);
+    /* --ag-odd-row-background-color: rgb(0, 0, 0, 0.03); */
+    /* --ag-header-column-resize-handle-color: rgb(126, 46, 132); */
+    /* --ag-border-radius:32px; */
+    --ag-font-size: 17px;
+    /* --ag-font-family: monospace; */
 }
-
-.ag-theme-alpine .ag-full-width-row:hover{
-    background-color: white !important;
+ 
+.child-grid .ag-header-container {
+    /* Your styles for child grid header cells */
+    background-color: #ffffff;
+    /* Change this to your desired background color */
 }
-
-.ag-row:hover{
-    background-color: rgb(188, 61, 129,0.3) !important;
+ 
+.child-header .ag-header-cell-label {
+    background-color: rgb(255, 255, 255) !important;
+    color: black !important;
 }
-
-.ag-root-wrapper{
+ 
+.child-header {
+    background-color: rgb(255, 255, 255) !important;
+    /* --ag-header-foreground-color: rgb(255, 255, 255); */
+}
+ 
+.simchild-header {
+    background-color: rgb(255, 255, 255) !important;
+    /* --ag-header-foreground-color: rgb(255, 255, 255); */
+}
+ 
+.simchild-header .ag-header-cell-label {
+    background-color: rgb(255, 255, 255) !important;
+    color: rgb(157, 155, 155) !important;
+    font-weight: normal;
+}
+ 
+.ag-row:hover {
+    background-color: rgb(188, 61, 129, 0.3) !important;
+}
+ 
+.ag-root-wrapper {
     border-radius: 8px 8px 0 0;
 }
-
-.ag-header{
+ 
+.ag-header {
     border-radius: 8px 0px 0 0;
-    font-style:normal;
+    font-style: normal;
     font-variant: normal;
-    font-weight: 400 ;
-    font-size: 20px !important ;
+    font-weight: 400;
+    font-size: 20px !important;
     line-height: 24px;
     font-family: Roboto;
     letter-spacing: 0px;
     color: #FFFFFF;
 }
-.ag-header-icon{
-    opacity:1 !important;
-    color:white;
+ 
+.ag-header-icon {
+    opacity: 1 !important;
+    color: white;
 }
-
+ 
 .active-row {
-    z-index: 111 !important; /* Adjust z-index to suit your needs */
-    position: relative; /* z-index only works on positioned elements (position:absolute, position:relative, or position:fixed) */
+    z-index: 111 !important;
+    /* Adjust z-index to suit your needs */
+    position: relative;
+    /* z-index only works on positioned elements (position:absolute, position:relative, or position:fixed) */
     /* Any other styles */
-  }
-
-.ag-row{
+}
+ 
+.ag-row {
     overflow: visible;
 }
-
-
-
-.ag-header-row:nth-child(2){
+ 
+.ag-header-row:nth-child(2) {
     background-color: #F7F7F7;
-    color:black;
+    color: black;
     width: 100% !important;
 }
-
-/* .ag-header-row:nth-child(3){
-    background-color: #F7F7F7;
-    color:black;
-    width: 100% !important;
-} */
-
-.ag-header-cell-label{
+ 
+.ag-header-cell-label {
     justify-content: center;
 }
-
-.selected-record-count{
+ 
+.selected-record-count {
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 400;
@@ -79,21 +96,15 @@
     line-height: 19px;
     color: #6E6969;
     padding-top: 24px;
-
+ 
 }
-
-.ag-header-group-cell-with-group{
+ 
+.ag-header-group-cell-with-group {
     justify-content: center;
+    --ag-header-foreground-color: rgb(255, 255, 255);
+    --ag-header-background-color: rgb(255, 255, 255);
 }
 
-.ag-header-group-cell{
-    background-color: black;
-    color:white;
-}
-
-.ag-status-name-value span{
-    color:black;
-}
 
 .ag-theme-alpine .ag-body-horizontal-scroll{
     height: unset !important;

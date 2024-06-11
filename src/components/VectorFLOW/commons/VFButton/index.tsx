@@ -14,8 +14,8 @@ interface VFButtonProps{
 
 }
 
-const VFButton = (props:VFButtonProps)=>{
-    
+const VFButton = (props: VFButtonProps) => {
+
     const {
         onClick,
         themeUi,

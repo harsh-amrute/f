@@ -1,14 +1,14 @@
-import {useRef,useState,useEffect} from 'react'
+import { useRef, useState, useEffect } from 'react'
 
-import {RRRLayout} from './styles'
+import { RRRLayout } from './styles'
 import useRRR from './useRRR';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from '../../../../../context/GridStateContext';
-import {useSelector}  from 'react-redux';
-import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
+import { useSelector } from 'react-redux';
+import { useGetState } from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 import { RootState } from '../../../../../redux/store/store';
 
 
@@ -54,6 +54,7 @@ const RRR = () => {
         getTableState()
     },[currentGridState])
  
+
   return (
   <GridStateContext.Provider
   value={{
@@ -150,8 +151,8 @@ const RRR = () => {
             {...tempAgGridProps}
           />
         </div>
-    </RRRLayout>
-  </GridStateContext.Provider>
+      </RRRLayout>
+    </GridStateContext.Provider>
   )
 }
 

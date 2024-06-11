@@ -1,6 +1,6 @@
 import {useRef,useState} from 'react'
 
-import {  AgGridReactProps } from "ag-grid-react"
+import { AgGridReactProps } from "ag-grid-react"
 import { Allotment } from "allotment"
 
 import CustomVFTable from "./CustomVFTable"
@@ -8,9 +8,9 @@ import { BTRTableWrapper,BTRTableHeader, LockBtnWrapper, LockBtn } from "./style
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 
-interface SpliViewTableProps extends AgGridReactProps{
-    header:string
-    paginationProps:any
+interface SpliViewTableProps extends AgGridReactProps {
+    header: string
+    paginationProps: any
 }
 
 export interface SplitViewProps{
@@ -20,9 +20,8 @@ export interface SplitViewProps{
     toggleLockMode:(value:boolean)=>void
 }
 
-const VerticalSplitView = (props:SplitViewProps)=>{
-
-    const{
+const VerticalSplitView = (props: SplitViewProps) => {
+    const {
         techTable,
         ecoTable,
         isLocked,
@@ -74,8 +73,8 @@ const VerticalSplitView = (props:SplitViewProps)=>{
         <BTRTableWrapper>
             <Allotment vertical={false} onChange={handleChange}>
                 <Allotment.Pane >
-                <BTRTableHeader>{techTable.header}</BTRTableHeader>
-                    <div style={{marginTop:-10}}>
+                    <BTRTableHeader>{techTable.header}</BTRTableHeader>
+                    <div style={{ marginTop: -10 }}>
                         <CustomVFTable
                         ref={ref1}
                         rowHeight={25}
@@ -91,11 +90,11 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                         tooltipHideDelay={100000}
                         onBodyScroll={(params)=>onBodyScroll(params,1)}
                         />
-                       <div style={{zoom:0.7}}>
-                        <VFPagination
+                        <div style={{ zoom: 0.7 }}>
+                            <VFPagination
                                 {...techTable.paginationProps}
                             />
-                       </div>
+                        </div>
                     </div>
                     {/* <VFTableWrapper>
                         <AgGridReact
@@ -130,7 +129,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                         <VFPagination
                                 {...ecoTable.paginationProps}
                             />
-                       </div>
+                        </div>
                     </div>
                     {/* <VFTableWrapper>
                         <AgGridReact

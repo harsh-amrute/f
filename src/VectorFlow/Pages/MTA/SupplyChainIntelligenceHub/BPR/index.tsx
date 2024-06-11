@@ -1,4 +1,3 @@
-
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import { BPRLayout } from "./styles"
 import BPRViewTable from "./BPRViewTable"
@@ -6,7 +5,7 @@ import { Allotment } from "allotment"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import useBPR from "./useBPR"
 import BPRSubmiRemarkToolTip from "./BPRSubmitRemarkToolTip"
-
+ 
 import "allotment/dist/style.css";
 import BPRRemarkHistoryToolTip from "./BPRRemarkHistoryToolTip"
 import ActionToolBar from "../Planning/ActionToolBar"
@@ -14,13 +13,13 @@ import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/Da
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 import { GridStateContext } from "../../../../../context/GridStateContext"
-
-
-
+ 
+ 
+ 
 const BPR = ()=>{
-
-
-
+ 
+ 
+ 
   const {
         // isSideBarOpen,
         isSubGridOpen,
@@ -63,15 +62,15 @@ const BPR = ()=>{
         setCurrFilter,
         onApplyFilter
     } = useBPR();
-
-    
+ 
+   
     // if(isLoading || isSavedDataLoading){
     //   return (
     //     <VFLoader/>
     //   )
     // }
-
-
+ 
+ 
     return(
         <GridStateContext.Provider
             value={{
@@ -82,19 +81,19 @@ const BPR = ()=>{
                 setTempDownloadData:setTempDownloadData,
                 exportExcelRowData:exportExcelRowData,
                 setExportExcelRowData:setExportExcelRowData
-    
+   
             }}
         >
-        <ActionToolBar 
-            view={'grid'} 
-            setCurrentTab={''} 
-            currCategory={'BPR'} 
-            currentTab={''} 
-            tabsList={[]} 
-            onFloatingTabChange={()=>console.log('')} 
+        <ActionToolBar
+            view={'grid'}
+            setCurrentTab={''}
+            currCategory={'BPR'}
+            currentTab={''}
+            tabsList={[]}
+            onFloatingTabChange={()=>console.log('')}
             onApplyFilter={(e)=>onApplyFilter(e)}
-            onGoBack={()=>console.log('')} 
-            onViewChange={()=>console.log('')} 
+            onGoBack={()=>console.log('')}
+            onViewChange={()=>console.log('')}
             genericRecordCount={recordCount}
             onExportToExcelCallBack={onExportToExcelCallBack}
             multiFilter={currFilter}
@@ -107,7 +106,7 @@ const BPR = ()=>{
         {
             showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
         }
-        
+       
         {(isLoading || isSavedDataLoading )?(
             <VFLoader/>
         )
@@ -119,7 +118,7 @@ const BPR = ()=>{
                     themeUi="NOIRFUSION"
                     onClick={()=>console.log('')}
                 >
-                    Excel Export 
+                    Excel Export
                 </VFButtonOutline>
                 <VFButton
                     themeUi="NOIRFUSION"
@@ -141,7 +140,7 @@ const BPR = ()=>{
                     params.columnApi.applyColumnState({state:columnState})
                    }
                 }}
-                enableRangeSelection={true} 
+                enableRangeSelection={true}
                 rowSelection="multiple"
                 statusBar = {{
                     statusPanels: [
@@ -215,8 +214,8 @@ const BPR = ()=>{
                         // }
                     ]
                 }
-
-                    
+ 
+                   
                 />
                
             )}
@@ -232,7 +231,7 @@ const BPR = ()=>{
                     onClose={onCloseSubmitRemark}
                 />
             )}
-
+ 
             {isRemarkHistoryToolTipOpen && (
                 <BPRRemarkHistoryToolTip
                     remarkHistory={remarkHistory}
@@ -254,5 +253,6 @@ const BPR = ()=>{
         </GridStateContext.Provider>
     )
             }
-
+ 
 export default BPR
+ 
