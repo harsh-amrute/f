@@ -40,6 +40,7 @@ const useResearchInsights = ()=>{
 
     const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
 
+
     const {mutateAsync:getDailyData} = useGetDailyData();
 
     const {mutateAsync:getUpdatedGraphData,isLoading:isUpdatedGraphDataLoading} = useGetUpdatedGraphData()
@@ -316,7 +317,7 @@ const useResearchInsights = ()=>{
                 })
                 colorFrequencyArray.push(colorFrequency)
             }
-            return convertCustomObjToObjects(colorFrequencyArray.reverse())
+            return convertCustomObjToObjects(colorFrequencyArray)
     }
 
      const handleOnUpdateGraph = async()=>{

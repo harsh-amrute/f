@@ -14,6 +14,8 @@ import {useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 import BPRDailyAnalytics from "../../../components/VectorFLOW/layouts/BPRDailyAnalytics";
+import InTransitAnalytics from "../../../VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts/InTransitAnalytics";
+import OpenExpediteAnalytics from "../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/OpenExpediteAnalytics";
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -243,6 +245,14 @@ const NavbarItem = ({
               },
             ]}
           />
+        )}
+
+        {isHide  && pathname==='/logistics/intransit-whereabouts' && menuItem.id === 9 && (
+          <InTransitAnalytics/>
+        )}
+
+        {isHide  && pathname==='/supply-chain-intelligence-hub/open-expediting-requests' && menuItem.id === 9 && (
+          <OpenExpediteAnalytics/>
         )}
 
         {isHide && pathname === "/ist-forced-closure" && menuItem.id === 6 && (

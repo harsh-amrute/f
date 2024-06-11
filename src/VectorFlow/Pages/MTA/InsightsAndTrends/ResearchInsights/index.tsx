@@ -1,11 +1,12 @@
 import {DayPicker} from 'react-day-picker'
+import { Player } from '@lottiefiles/react-lottie-player'
 
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule"
 import VFRangeSlider from "../../../../../components/VectorFLOW/commons/VFRangeSlider"
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 
 
-import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrapper,ResearchInsightsTableTaskBar, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick, ExpandChartIcon, RadioGroup } from "./styles"
+import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrapper,ResearchInsightsTableTaskBar, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick, ExpandChartIcon, RadioGroup, DefaultViewRendererWrapper, DefaultViewRendererHeader, DefaultViewRendererText } from "./styles"
 
 import CustomCalenderCaption from './CustomCalenderCaption'
 import CustomCalenderDay from './CustomCalenderDay'
@@ -22,6 +23,8 @@ import VFPagination from '../../../../../components/VectorFLOW/commons/VFPaginat
 import { GridStateContext } from '../../../../../context/GridStateContext'
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal"
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
+import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
+import { useUserData } from '../../../../../context'
 
 
 const ResearchInsights = ()=>{
@@ -75,6 +78,10 @@ const ResearchInsights = ()=>{
         currentFilter,
         setCurrentFilter
     } = useResearchInsights()
+
+    const {user} = useUserData()
+    const themeUi = user.user.theme_ui
+
     
     return(
         <GridStateContext.Provider value={{
@@ -104,6 +111,7 @@ const ResearchInsights = ()=>{
             setMultiFilter={setCurrentFilter}
             onDelete={onDelete}
             onUpdateInsight={handleOnUpdateGraph}
+            hideUpdateInsightsBtn={graphState==='default'}
         />
         </div>
         
@@ -168,8 +176,7 @@ const ResearchInsights = ()=>{
                 <AvailabilityTrendHeader>
                     Availability Trend
                 </AvailabilityTrendHeader>
-                <AvailabilityTrendSection style={{borderBottom:'dashed 2px #B2B2B2'
-}}>
+                <AvailabilityTrendSection style={{borderBottom:'dashed 2px #B2B2B2'}}>
                     <HistoricalAvailabiltyHeader>
                         Historical Availability
                     </HistoricalAvailabiltyHeader>
@@ -200,7 +207,21 @@ const ResearchInsights = ()=>{
                         </HistoricalAvailabiltyContentSection>
                     </HistoricalAvailabiltyContent>
                 </AvailabilityTrendSection>
-                <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',zoom:0.7,alignItems:'center',padding:0,borderBottom:'dashed 3px #B2B2B2'}}>
+                {(graphState==='default')?(
+                    <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',zoom:0.7,alignItems:'center',padding:0,height:'100%',borderBottom:'dashed 3px #B2B2B2'}}>
+                        <DefaultViewRendererWrapper>
+                            <Player src={'/assets/img/VectorFLOW/BPR/swipe pointer.json'} loop autoplay style={{transform:'rotate(-90deg)',height:70,width:70}}/>
+                            <DefaultViewRendererHeader>
+                                No Data To Show
+                            </DefaultViewRendererHeader>
+                            <DefaultViewRendererText>
+                                Please select data from the grid on left to view more insights
+                            </DefaultViewRendererText>
+                            <VFButton themeUi={themeUi} onClick={handleOnUpdateGraph}>Load Insights</VFButton>
+                        </DefaultViewRendererWrapper>
+                    </AvailabilityTrendSection>
+                ):(
+                    <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',marginTop:'-5px',zoom:0.7,alignItems:'center',padding:0,borderBottom:'dashed 3px #B2B2B2'}}>
                     <HorizonHeader style={{margin:'0px 0px 0px 30px'}}>
                         Horizon
                     </HorizonHeader>
@@ -213,9 +234,11 @@ const ResearchInsights = ()=>{
                         width={250}
                         defaultValue={horizon}
                         handleChange={(e)=>setHorizon(e)}
+                        style={{marginTop:0}}
                         labelValueFormatter={(value:number)=>value>1?`${value} Days`:`${value} Day`}
                     />
                 </AvailabilityTrendSection>
+                )}
                 {graphState==='calender' && (
                     <React.Fragment>
                         <AvailabilityTrendSection>
