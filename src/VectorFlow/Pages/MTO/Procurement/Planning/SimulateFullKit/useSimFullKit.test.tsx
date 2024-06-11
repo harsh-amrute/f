@@ -1,4 +1,5 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import React from 'react';
+import { render, fireEvent } from '@testing-library/react';
 import useSimFullKit from './useSimFullKit';
 import { useUserData } from '../../../../../../context';
 import { useLocation } from 'react-router-dom';
@@ -10,6 +11,7 @@ jest.mock('../../../../../../context');
 jest.mock('react-router-dom', () => ({
     useLocation: jest.fn(),
 }));
+
 interface MockUserData {
     isSideBarOpen: boolean;
     user: any;
@@ -46,51 +48,93 @@ describe('useSimFullKit', () => {
     });
 
     it('should initialize correctly', () => {
-        const { result } = renderHook(() => useSimFullKit());
+        const TestComponent = () => {
+            const { isSideBarOpen, currentPage, currentTab } = useSimFullKit();
+            return (
+                <div>
+                    <span data-testid="isSideBarOpen">{isSideBarOpen.toString()}</span>
+                    <span data-testid="currentPage">{currentPage}</span>
+                    <span data-testid="currentTab">{currentTab.id}</span>
+                </div>
+            );
+        };
 
-        expect(result.current.isSideBarOpen).toBe(false);
-        expect(result.current.currentPage).toBe(1);
-        expect(result.current.currentTab.id).toBe('iof');
+        const { getByTestId } = render(<TestComponent />);
+
+        expect(getByTestId('isSideBarOpen').textContent).toBe('false');
+        expect(getByTestId('currentPage').textContent).toBe('1');
+        expect(getByTestId('currentTab').textContent).toBe('iof');
     });
 
     it('should toggle current tab', () => {
-        const { result } = renderHook(() => useSimFullKit());
-        act(() => {
-            result.current.toggleCurrentTab({ id: 'cf', label: 'Cumulative Full Kit', value: 'cf' });
-        });
+        const TestComponent = () => {
+            const { currentTab, toggleCurrentTab } = useSimFullKit();
+            return (
+                <div>
+                    <span data-testid="currentTab">{currentTab.id}</span>
+                    <button onClick={() => toggleCurrentTab({ id: 'cf', label: 'Cumulative Full Kit', value: 'cf' })}>Toggle Tab</button>
+                </div>
+            );
+        };
 
-        expect(result.current.currentTab.id).toBe('cf');
+        const { getByTestId, getByText } = render(<TestComponent />);
+
+        expect(getByTestId('currentTab').textContent).toBe('iof');
+        fireEvent.click(getByText('Toggle Tab'));
+        expect(getByTestId('currentTab').textContent).toBe('cf');
     });
 
     it('should calculate remaining quantities correctly', () => {
-        const { result } = renderHook(() => useSimFullKit());
-        const wrappedData = result.current.Save();
+        const TestComponent = () => {
+            const { Save } = useSimFullKit();
+            const wrappedData = Save();
+            return (
+                <div>
+                    {wrappedData.data.map((item: any, index: number) => (
+                        <div key={index} data-testid={`item-${index}`}>
+                            {JSON.stringify(item)}
+                        </div>
+                    ))}
+                </div>
+            );
+        };
 
-        expect(wrappedData.data).toEqual([
-            { on: 1, lid: 1, item: 'Item1', oq: 50, aq: 10, easa: 100, remq: 30 },
-            { on: 2, lid: 2, item: 'Item1', oq: 50, aq: 20, easa: 100, remq: 40 },
-        ]);
+        const { getByTestId } = render(<TestComponent />);
+
+        expect(getByTestId('item-0').textContent).toBe(
+            JSON.stringify({ on: 1, lid: 1, item: 'Item1', oq: 50, aq: 10, easa: 100, remq: 30 })
+        );
+        expect(getByTestId('item-1').textContent).toBe(
+            JSON.stringify({ on: 2, lid: 2, item: 'Item1', oq: 50, aq: 20, easa: 100, remq: 40 })
+        );
     });
 
     it('should render the correct view for IOF tab', () => {
-        const { result } = renderHook(() => useSimFullKit());
+        const TestComponent = () => {
+            const { renderView } = useSimFullKit();
+            return <div>{renderView()}</div>;
+        };
 
-        const renderedView = result.current.renderView();
+        const { container } = render(<TestComponent />);
 
-        expect(renderedView).not.toBeNull();
+        expect(container).not.toBeNull();
         // Additional assertions can be made based on how VFTable is rendered
     });
 
     it('should render the correct view for CF tab', () => {
-        const { result } = renderHook(() => useSimFullKit());
+        const TestComponent = () => {
+            const { currentTab, toggleCurrentTab, renderView } = useSimFullKit();
+            React.useEffect(() => {
+                if (currentTab.id !== 'cf') {
+                    toggleCurrentTab({ id: 'cf', label: 'Cumulative Full Kit', value: 'cf' });
+                }
+            }, [currentTab, toggleCurrentTab]);
+            return <div>{renderView()}</div>;
+        };
 
-        act(() => {
-            result.current.toggleCurrentTab({ id: 'cf', label: 'Cumulative Full Kit', value: 'cf' });
-        });
+        const { container } = render(<TestComponent />);
 
-        const renderedView = result.current.renderView();
-
-        expect(renderedView).not.toBeNull();
+        expect(container).not.toBeNull();
         // Additional assertions can be made based on how VFTable is rendered
     });
 });

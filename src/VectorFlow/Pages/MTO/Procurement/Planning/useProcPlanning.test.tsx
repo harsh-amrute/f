@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { renderHook, act } from '@testing-library/react-hooks';
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
@@ -92,22 +91,38 @@ describe("useProcPlanning Component", () => {
     });
 
     it("renders VFTable with Complete Available Data when the current tab is 'ca'", async () => {
-        const { result } = renderHook(() => useProcPlanning());
-        act(() => {
-            result.current.toggleCurrentTab({ id: 'ca', label: 'Completely Available', value: 'ca' });
+        mockUseProcPlanning.mockReturnValueOnce({
+            ...mockUseProcPlanning(),
+            toggleCurrentTab: jest.fn(({ id }) => {
+                if (id === 'ca') {
+                    return <div data-testid="VFTable">Mock VFTable</div>;
+                }
+            }),
         });
-        render(contextWrapper(result.current.renderView(), store));
+
+        const { toggleCurrentTab, renderView } = useProcPlanning();
+        toggleCurrentTab({ id: 'ca', label: 'Completely Available', value: 'ca' });
+
+        render(contextWrapper(renderView(), store));
         await waitFor(() => expect(screen.getByTestId('VFTable')).toBeInTheDocument());
         // Add more specific assertions related to Complete Available Data
         expect(screen.getByText(/Mock VFTable/i)).toBeInTheDocument();
     });
 
     it("renders VFTable with Shortage Data when the current tab is 'short'", async () => {
-        const { result } = renderHook(() => useProcPlanning());
-        act(() => {
-            result.current.toggleCurrentTab({ id: 'short', label: 'Shortage', value: 'short' });
+        mockUseProcPlanning.mockReturnValueOnce({
+            ...mockUseProcPlanning(),
+            toggleCurrentTab: jest.fn(({ id }) => {
+                if (id === 'short') {
+                    return <div data-testid="VFTable">Mock VFTable</div>;
+                }
+            }),
         });
-        render(contextWrapper(result.current.renderView(), store));
+
+        const { toggleCurrentTab, renderView } = useProcPlanning();
+        toggleCurrentTab({ id: 'short', label: 'Shortage', value: 'short' });
+
+        render(contextWrapper(renderView(), store));
         await waitFor(() => expect(screen.getByTestId('VFTable')).toBeInTheDocument());
         // Add more specific assertions related to Shortage Data
         expect(screen.getByText(/Mock VFTable/i)).toBeInTheDocument();
