@@ -1,9 +1,8 @@
-
 import { render, screen } from '@testing-library/react';
 import ColorCellRenderer from './ColorCellRenderer';
 
 describe('Test ColorCellRenderer Component', () => {
-    it('renders cell with correct text and color', () => {
+    it('renders cell with correct text and color for Green', () => {
         const cellData = {
             data: {
                 cp: 'Green',
@@ -12,11 +11,12 @@ describe('Test ColorCellRenderer Component', () => {
 
         render(<ColorCellRenderer {...cellData} />);
 
-        const cellElement = screen.getByText('Green')
+        const cellElement = screen.getByText('Green');
         expect(cellElement).toHaveTextContent('Green');
-        expect(cellElement).toHaveStyle({ backgroundColor: '#418D18', color: 'white' });
+        expect(cellElement).toHaveStyle({ backgroundColor: 'rgb(65, 141, 24)', color: 'rgb(255, 255, 255)' });
     });
-    it('renders cell with correct text and color', () => {
+
+    it('renders cell with correct text and color for Red', () => {
         const cellData = {
             data: {
                 cp: 'Red',
@@ -25,11 +25,12 @@ describe('Test ColorCellRenderer Component', () => {
 
         render(<ColorCellRenderer {...cellData} />);
 
-        const cellElement = screen.getByText('Red')
+        const cellElement = screen.getByText('Red');
         expect(cellElement).toHaveTextContent('Red');
-        expect(cellElement).toHaveStyle({ backgroundColor: '#F04D4D', color: 'white' });
+        expect(cellElement).toHaveStyle({ backgroundColor: 'rgb(240, 77, 77)', color: 'rgb(255, 255, 255)' });
     });
-    it('renders cell with correct text and color', () => {
+
+    it('renders cell with correct text and color for Black', () => {
         const cellData = {
             data: {
                 cp: 'Black',
@@ -38,11 +39,12 @@ describe('Test ColorCellRenderer Component', () => {
 
         render(<ColorCellRenderer {...cellData} />);
 
-        const cellElement = screen.getByText('Black')
+        const cellElement = screen.getByText('Black');
         expect(cellElement).toHaveTextContent('Black');
-        expect(cellElement).toHaveStyle({ backgroundColor: '#000000', color: 'white' });
+        expect(cellElement).toHaveStyle({ backgroundColor: 'rgb(0, 0, 0)', color: 'rgb(255, 255, 255)' });
     });
-    it('renders cell with correct text and color', () => {
+
+    it('renders cell with correct text and color for Yellow', () => {
         const cellData = {
             data: {
                 cp: 'Yellow',
@@ -51,9 +53,8 @@ describe('Test ColorCellRenderer Component', () => {
 
         render(<ColorCellRenderer {...cellData} />);
 
-        const cellElement = screen.getByText('Yellow')
+        const cellElement = screen.getByText('Yellow');
         expect(cellElement).toHaveTextContent('Yellow');
-        expect(cellElement).toHaveStyle({ backgroundColor: '#EBBF2B', color: 'white' });
+        expect(cellElement).toHaveStyle({ backgroundColor: 'rgb(235, 191, 43)', color: 'rgb(255, 255, 255)' });
     });
-
 });
