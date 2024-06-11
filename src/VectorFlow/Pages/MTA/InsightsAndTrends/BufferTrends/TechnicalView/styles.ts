@@ -10,8 +10,8 @@ export const ChartWrapper = styled.div`
     position:relative;
     width:100%;
     padding-top:10px;
-    display:flex;
+    // display:flex;
     justify-content:center;
     align-items:center;
-    height:90%
+    // height:90%
 `

@@ -122,6 +122,17 @@ describe('Filter Component', () => {
     fireEvent.change(textInput,{target: {value: 'a'}})
   })
 
+  // it('selects an option in the React Select component', async () => {
+  //   const { getAllByRole } = render(contextWrapper(<VFFilter {...props} />));
+    
+  //   await waitFor(() => {
+  //       const reactSelect = getAllByRole('combobox')[0]; // Assuming the React Select component is the first one in the component
+  //       expect(reactSelect).toBeInTheDocument();
+        
+        
+  //   })
+  //   })
+
 });
 
 

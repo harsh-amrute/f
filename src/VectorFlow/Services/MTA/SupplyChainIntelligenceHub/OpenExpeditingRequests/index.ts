@@ -1,4 +1,4 @@
-import { useQuery,useMutation } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 
 import { OpenExpeditingRequestsService } from './api'
 
@@ -9,8 +9,8 @@ export const QUERY_KEYS = {
 
 
 export const useGetOpenExpediteRequestData = () => {
-    return useQuery(QUERY_KEYS.GetOpenExpediteRequestData,async () => {
-      return await OpenExpeditingRequestsService.getOpenExpediteRequestData();
+    return useMutation(async (body:any) => {
+      return await OpenExpeditingRequestsService.getOpenExpediteRequestData(body);
     });
   }
 

@@ -1,12 +1,17 @@
 import { SCButton } from "./styles"
-import React from 'react';
+import React,{CSSProperties, ReactNode} from 'react';
 
-interface VFButtonProps {
-    onClick: () => void,
-    themeUi: string,
-    disabled?: boolean,
-    width?: number,
-    children: React.ReactNode
+interface VFButtonProps{
+    onClick:() => void,
+    themeUi:string,
+    disabled?:boolean,
+    width?:number,
+    children:React.ReactNode
+    style?:CSSProperties
+    onHoverChild?:ReactNode
+
+
+
 }
 
 const VFButton = (props: VFButtonProps) => {
@@ -16,18 +21,23 @@ const VFButton = (props: VFButtonProps) => {
         themeUi,
         disabled,
         width,
+        style,
         children,
+
     } = props
-
-
-    return (
-        <SCButton
-            onClick={onClick}
-            themeUi={themeUi}
-            isDisabled={disabled}
-            customWidth={width}
-            data-testid="vf-button">
-            {children}
+    
+    const getChildren = ()=>{
+        // if(onHoverChild){
+        //     if(hoverState){
+        //         return onHoverChild
+        //     }
+        // }
+        return children
+    }
+    
+    return(
+        <SCButton onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width} style={style} data-testid="vf-button">
+            {getChildren()}
         </SCButton>
     )
 }

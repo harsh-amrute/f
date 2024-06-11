@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import * as globalStyles from "../../../../../styles/global";
 
 export const BPRLayout = styled.div`
    margin-top:25px;
@@ -24,26 +25,49 @@ export const BPRTaskBar  = styled.div`
 export const BPRViewTableWrapper = styled.div`
     width:100%;
     display:flex;
-    margin-top:20px;
+    flex-direction:column;
+    margin-top:10px;
 `
 
-export const BPRViewTablePrefix = styled.img`
-    width: 52px;
-    height: 150px;
-    transform:translateX(11px);
+export const BPRViewTablePrefixWrapper = styled.div`
+    // width:100%;
+    display:flex;
+    zoom:0.8;
+`
+
+export const BPRViewTablePrefix = styled.div`
+   min-width:270px;
+//    margin-left:7px;
+`
+
+export const BPRViewTablePrefixText = styled.div`
+    // font: normal normal normal 16px/21px Roboto Medium;
+    font-size:16px;
+    font-weight:400;
+    font-family:Roboto;
+    color: #FFFFFF;
+`
+
+export const BPRViewTablePrefixIcon = styled.img`
+    // height:33px;
+    // width:33px;
+    margin-left:10px;
 `
 
 export const BPRViewTableGrid = styled.div`
     display:flex;
     flex-direction:column;
     width:100%;
+    min-height:150px;
+    max-height:205px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #9B9B9B29;
     border-radius:8px;
     overflow-y:scroll;
-    scrollbar-gutter: stable both-edges;
+    // scrollbar-gutter: stable both-edges;
     &::-webkit-scrollbar{
-        width: 7px;       
+        width: 4px;      
+        height:4px; 
     }
     
     &::-webkit-scrollbar-track{
@@ -67,59 +91,75 @@ export const BPRViewTableHeaderContainer = styled.div`
     position:sticky;
     top:0;
     background-color: white;
-    z-index:100;
+    z-index:1;
+   
 `
 
 export const BPRViewTableHeader = styled.div`
     position:relative;
     width:100%;
+   overflow:hidden;
+    min-width:120px;
     height:45px;
     padding:10px;
+    padding-top:15px;
     font-style:normal;
     font-variant:normal;
-    font-weight:500;
+    font-weight:400;
     font-size:13px;
-    line-height:21px;
+    line-height:13px;
     font-family:Roboto;
     letter-spacing: 0px;
     color: #000000;
+    // border-bottom: 1px solid #919191B3;
+    box-shadow: 0px 6px 12px #9B9B9B29;
     text-align:center;
     &::after{
         content:'';
         position:absolute;
-        right:0;
+        right:1px;
         top:4px;
         bottom:4px;
         background-color:#898585;
-        width:1px;
+        width:0.5px;
     }
     &:last-child::after {
         display: none;
     }
+    white-space:nowrap;
+    text-overflow:ellipsis;
 `
 
 export const BPRViewTableRowContainer = styled.div`
+position:relative;
     width:100%;
     display:flex;
     flex-direction:column;
-    max-height:250px;
-    margin-top:20px;
+    // max-height:250px;
+    // margin-top:20px;
+    
 `
 
 export const BPRViewTableRow = styled.div`
     width:100%;
+    height:40px;
     display:flex;
+    &:nth-child(even) {
+        background-color: #8D8D8D29; /* You can use a specific shade of yellow if needed */
+    }
 
 `
 
 export const BPRViewTableRowCell = styled.span`
     width:100%;
+   overflow:hidden;
+    min-width:120px;
     height:50px;
     padding:6px;
     text-align:center;
     font-style:normal;
     font-variant:normal;
-    font-weight:medium;
+    font-weight:500;
     font-size:14px;
     line-height:24px;
     font-family:Roboto;
@@ -136,7 +176,7 @@ export const ReadMoreToolTip = styled.div`
 `
 
 export const BPRColorCellRendererWrapper = styled.div`
-    display:block;
+    display:flex;
     justify-content:center;
     align-items:center;
     width: 100%;
@@ -191,7 +231,7 @@ export const BPRSubmitRemarkInput = styled.input`
 `
 
 export const BPRRemarkToolTipTextArea = styled.textarea`
-    min-width:240px;
+     min-width:240px;
     max-width:240px;
     min-height:100px;
     max-height:100px;
@@ -214,7 +254,6 @@ export const  BPRRemarkToolTipButton = styled.button`
 `
 
 export const BPRRemarksToolTipWrapper = styled.div`
-
     position:fixed;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #77777729;
@@ -335,6 +374,16 @@ export const BPRViewTableToolTip = styled.div`
     max-width:200px;
     padding:5px;
     z-index:10000;
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0%;
+        left: 50%;
+        transform: translate(-50%, 100%);
+        border-width: 6px;
+        border-style: solid;
+        border-color: #4E4E4E transparent transparent transparent; /* Updated to black */
+    }
 `
 
 export const BPRGraphCellRendererWrapper = styled.img`
@@ -362,6 +411,8 @@ export const BPRViewTableRequestCellRendererWrapper = styled.div`
     align-items:center;
     justify-content:center;
     height:30px;
+    min-width:120px;
+    // z-index:1;
 `
 
 export const BPRViewTableRequestCellRendererImg = styled.img`
@@ -391,7 +442,9 @@ export const RequestExpeditingModalInput = styled.textarea`
     min-height:150px;
     max-width:600px;
     min-width:600px;
-    font: normal normal 300 18px/26px Roboto;
+    font-weight:300;
+    font-size:18px;
+    font-family:Roboto;
     letter-spacing: 0px;
     color: #7E7E7E;
     background: #FFFFFF 0% 0% no-repeat padding-box;
@@ -411,3 +464,151 @@ export const RequestExpeditingModalButtonGroup = styled.div`
     padding:10px;
     border-top:2px dashed #A0A0A0;
 `
+
+export const BPRViewTableNoDataContainer = styled.div`
+    position:absolute;
+    left:0;
+    right:0;
+    top:45px;
+    bottom:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+`
+
+export const BPRViewTableNoDataHeader = styled.p`
+    font-weight:500;
+    font-size:16px;
+    font-family:Roboto;
+`
+
+export const BPRViewTableNoDataText = styled.p`
+    font-weight:300;
+    font-size:16px;
+    font-family:Roboto;
+`
+
+export const AgeingCell = styled.div`
+    height:100%;
+    width:100%;
+    display:flex;
+    justify-content:center;
+`
+
+export const AgeingText = styled.div`
+    font-weight:500;
+    font-size:14px;
+    font-family:Roboto;
+`
+
+export const AgeingIcon = styled.img`
+    margin-left:10px;
+    height:15px;
+    width:15px;
+    margin-top:4px;
+`
+
+export const AgeingToolTipWrapper = styled.div`
+    display:flex;
+    flex-direction:column;
+    width:200px;
+    padding:0px 5px;
+`
+
+export const AgeingToolTipSection = styled.div`
+    display:flex;
+    width:100%;
+    justify-content:space-between;
+`
+
+export const AgeingToolTipText = styled.div`
+    font-weight:500;
+    font-size:12px;
+    font-family:Roboto;
+    color: #FFFFFF;
+`
+
+export const WhereAboutsCell = styled.div`
+    display:flex;
+    flex-direction:column;
+    padding:0px 10px;
+`
+
+export const WhereAboutsCellSection = styled.div`
+    display:flex;
+    
+`
+
+export const WhereAboutsCellSectionHeader = styled.div`
+    font-weight:300;
+    font-size:12px;
+    font-family:Roboto;
+    line-height:15px;
+`
+export const WhereAboutsCellSectionValue = styled.div`
+    font-weight:500;
+    font-size:12px;
+    font-family:Roboto;
+    margin:0px 5px;
+    line-height:15px;
+`
+
+export const WhereAboutsMoreInfo = styled.div`
+    font-weight:400;
+    font-size:14px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #BC3D81;
+    margin-left:5px;
+    text-decoration: underline;
+    cursor:default;
+    line-height:15px;
+    
+`
+
+export const BPRViewTableHeaderTab = styled.div<{
+    status: string
+    zIndex: number
+    marLeft: true | false
+    themeUi: string
+  }>`
+    color: ${(props) => (props.status==='active' ? '#FFFFFF' : '')};
+    opacity: 1;
+    min-height: 60px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    position: relative;
+    z-index: ${(props) => props.zIndex};
+    margin-left: ${(props) => (props.marLeft ? '-1.5em' : '0')};
+    padding-left: ${(props) => (props.marLeft ? '1.5em' : '0')};
+  
+    cursor: pointer;
+    
+    // pointer-events:${(props)=>props.status === 'completed' ? 'none' : 'all'};
+  
+    ::before {
+      border: 0.5px solid #cccccc;
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: -1;
+      border-bottom: none;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      background: ${(props) =>
+        props.themeUi === "REGALBLAZE"
+          ? globalStyles.chooseThemeColor[props.themeUi]?.color5
+          : "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box"};
+        no-repeat padding-box;
+      box-shadow: 0px 5px 25px #9d9d9d29;
+      transform: scale(1.2, 1.3) perspective(0.5em) rotateX(2.5deg);
+      transform-origin: bottom left;
+    }
+  `

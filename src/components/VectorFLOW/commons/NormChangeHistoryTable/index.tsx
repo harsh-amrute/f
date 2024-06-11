@@ -3,10 +3,10 @@ import { ColDef } from 'ag-grid-enterprise';
 import { AgGridReact } from "ag-grid-react";
 import { useUserData } from "../../../../context";
 import {ButtonWrapper, AgGridWrapper, AgContainer} from './styles'
-import VFButtonOutline from "../VFButtonOutline";
 import './styles.css'
 import { useDispatch } from 'react-redux';
 import { TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
+import VFButton from "../VFButton";
 interface NormChangeHistoryTableProps {
     data:any
     onGoBack?:()=>void
@@ -40,7 +40,7 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
 
     return(
         <>
-        <VFModalCard openModal={true} closeModal={()=>dispatch(TOGGLE_NORM_CHANGE_HISTORY_TABLE(false))} headerText={'Norm Change History'} headerIcon={''} closeIcon={'/assets/img/VectorFLOW/NMS/close-white.svg'} paddingLeftAndRight={0} headerBgColor={'black'}  headerTextColor={'white'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
+        <VFModalCard openModal={true}  headerText={'Norm Change History'} headerIcon={'/assets/img/VectorFLOW/BPR/historynorm.svg'} closeIcon={''} paddingLeftAndRight={0}  headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
             <AgContainer>
                 <AgGridWrapper>
                     <div className="ag-theme-alpine "  style={{ height: '200px', width:'700px',textAlign:'center' }}>  
@@ -52,7 +52,7 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
                  </AgGridWrapper> 
             </AgContainer>
             <ButtonWrapper>
-                <VFButtonOutline themeUi={themeUi} onClick={()=>dispatch(TOGGLE_NORM_CHANGE_HISTORY_TABLE(false))} width={125}>Go Back!</VFButtonOutline>
+                <VFButton themeUi={themeUi} onClick={()=>dispatch(TOGGLE_NORM_CHANGE_HISTORY_TABLE(false))} width={160} style={{display:'flex', alignItems:'center', height:'40px', textAlign:'center',justifyContent: 'center'}}>Go Back!</VFButton>
             </ButtonWrapper>
         </VFModalCard>
         </>

@@ -20,7 +20,7 @@ export const SCDynamicContainer = styled.div`
     // aspect-ratio:1;
     width:100%;
     margin-top:10px;
-    height:90vh;
+    height:83vh;
 `
 
 export const SCHorizontalAllignmentWrapper = styled.div`
@@ -60,7 +60,7 @@ export const SCChartHeaderContainer = styled.div`
 `
 export const SCChartHeader = styled.p`
     font-weight:500;
-    font-size:16px;
+    font-size:14px;
     line-height:21px;
     font-family:Roboto;
     letter-spacing: 0px;

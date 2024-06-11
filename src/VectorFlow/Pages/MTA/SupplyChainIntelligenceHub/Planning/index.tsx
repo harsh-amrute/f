@@ -1,4 +1,4 @@
-import {useRef,useMemo} from 'react'
+import {useMemo} from 'react'
 
 import SelectCategory from "../../../../../components/VectorFLOW/layouts/SelectCategory";
 
@@ -11,6 +11,7 @@ import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/Da
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
 import { GridStateContext } from "../../../../../context/GridStateContext";
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 
 const Planning = () => {
 
@@ -41,8 +42,16 @@ const Planning = () => {
         setTempDownloadData,
         exportExcelRowData,
         setExportExcelRowData,
-        onExportToExcelCallBack
+        onExportToExcelCallBack,
+        ref,
+        tempRef,
+        onApplyFilter,
+        currentFilter,
+        setCurrentFilter,
+        onDeleteFilter,
+        isDataLoading
     } = usePlanning();
+
 
 
     const renderView = () => {
@@ -58,13 +67,18 @@ const Planning = () => {
         
     }
 
-    const ref = useRef()
-    const tempRef = useRef()
+    
 
     const currentColDefs = useMemo(()=>{
-        if(currentGridData&& currentGridData.uiConfig){
+        if(currentGridData){
+            let currUiConfig = []
+            if(currentCategory==="GITToChild"){
+                if(currentTab==="locationWise")currUiConfig=currentGridData['locationWise'].uiConfig
+                else currUiConfig=currentGridData['transporterWise'].uiConfig
+            }
+            else currUiConfig = currentGridData.uiConfig
             let colDefs = [];
-        colDefs = currentGridData.uiConfig.map((column:{header:string,colCode:string})=>{
+        colDefs = currUiConfig.map((column:{header:string,colCode:string})=>{
             if(['plp','pip'].includes(column.colCode)){
                 return {
                     field:column['colCode'],
@@ -83,6 +97,11 @@ const Planning = () => {
         }
         return []
     },[currentGridData])
+
+    if(isDataLoading){
+        return <VFLoader/>
+    }
+
 
     return(
         <GridStateContext.Provider value={{
@@ -104,25 +123,32 @@ const Planning = () => {
             }
             {
                 isSelectCategoryOpen && 
-                <SelectCategory
-                    childMonitorCount={planningCounts.childMonitorCount}
-                    parentMonitorCount={planningCounts.parentMonitorCount}
-                    childExpediteCount={planningCounts.childExpediteCount}
-                    parentExpediteCount={planningCounts.parentExpediteCount}
-                    reviewOrderFulfillmentCount={planningCounts.reviewOrderFulfillmentCount}
-                    reviewExcessInventoryCount={planningCounts.reviewExcessInventoryCount}
-                    onMonitorChildClick={()=>handlePlanningQuadrantClick('GITToChild')}
-                    onMonitorParentClick={()=>handlePlanningQuadrantClick('GITFromParent')}
-                    onExpediteChildClick={()=>handlePlanningQuadrantClick('ExpediteToChild')}
-                    onExpediteParentClick={()=>handlePlanningQuadrantClick('ExpediteFromParent')}
-                    onExcessInventoryReviewClick={()=>handlePlanningQuadrantClick('ExcessInventory')}
-                    onOrderFulfillmentReviewClick={()=>handlePlanningQuadrantClick('OrderFulfillment')}
-                />
+                <div style={{zoom:0.8}}>
+                    <SelectCategory
+                        childMonitorCount={planningCounts.childMonitorCount}
+                        parentMonitorCount={planningCounts.parentMonitorCount}
+                        childExpediteCount={planningCounts.childExpediteCount}
+                        parentExpediteCount={planningCounts.parentExpediteCount}
+                        reviewOrderFulfillmentCount={planningCounts.reviewOrderFulfillmentCount}
+                        reviewExcessInventoryCount={planningCounts.reviewExcessInventoryCount}
+                        onMonitorChildClick={()=>handlePlanningQuadrantClick('GITToChild')}
+                        onMonitorParentClick={()=>handlePlanningQuadrantClick('GITFromParent')}
+                        onExpediteChildClick={()=>handlePlanningQuadrantClick('ExpediteToChild')}
+                        onExpediteParentClick={()=>handlePlanningQuadrantClick('ExpediteFromParent')}
+                        onExcessInventoryReviewClick={()=>handlePlanningQuadrantClick('ExcessInventory')}
+                        onOrderFulfillmentReviewClick={()=>handlePlanningQuadrantClick('OrderFulfillment')}
+                        multiFilter={currentFilter}
+                        setMultiFilter={setCurrentFilter}
+                        onDelete={onDeleteFilter}
+                        onApplyFilter={onApplyFilter}
+                    />
+                </div>
             }
             {
                 !isSelectCategoryOpen &&
                 <>
-                    <ActionToolBar 
+                <div style={{zoom:0.8}}>        
+                          <ActionToolBar 
                         genericRecordCount={0}
                         onExportToExcelCallBack={onExportToExcelCallBack}
                         planningCount={planningCounts}
@@ -135,7 +161,12 @@ const Planning = () => {
                         setCurrentTab={setCurrentTab}
                         tabsList={getFloatingTabsList(currentView)}
                         disableChartAndGridViewToggle={['GITFromParent',].includes(currentCategory)}
+                        onApplyFilter={onApplyFilter}
+                        multiFilter={currentFilter}
+                        setMultiFilter={setCurrentFilter}
+                        onDelete={onDeleteFilter}
                         />
+                </div>  
                     
                     {renderView()}
                 </>

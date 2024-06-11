@@ -128,3 +128,8 @@ export const BPRDailyAnalyticsTableCellText = styled.p`
     letter-spacing: 0px;
     color: #313131;
 `
+
+export const BPRDailyAnalyticsTableCellIcon = styled.img`
+    height:20px;
+    width:20px;
+`

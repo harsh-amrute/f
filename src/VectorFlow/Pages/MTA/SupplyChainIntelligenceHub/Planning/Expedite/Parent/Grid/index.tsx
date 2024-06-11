@@ -16,9 +16,9 @@ const ExpediteParentGrid = ({ data, paginationProps, onOpenDailyDataGraph, curre
 
     const [isExpeditingModalOpen, toggleExpeditingModal] = useState<boolean>(false)
 
-    const [activeRow, setActiveRow] = useState<any>();
-    const [currentRowData, setCurrentRowData] = useState<any>();
-    const [isSubGridOpen, toggleSubGrid] = useState<any>(false);
+    const [activeRow,setActiveRow] = useState<any>();
+    const [currentRowData,setCurrentRowData] = useState<any>();
+    const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
 
     const { mutateAsync: submitRemark } = useSubmitOpenExpediteRequest()
     const submitOpenExpediteRemark = async (remark: string) => {
@@ -83,8 +83,19 @@ const ExpediteParentGrid = ({ data, paginationProps, onOpenDailyDataGraph, curre
                 toggleSubGrid(true)
             }
         },
-        gridOptions: {
-            rowHeight: 50,
+        enableRangeSelection: true,
+        rowSelection: "multiple",
+        statusBar: {
+          statusPanels: [
+            { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+            { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+            { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+            { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+            { statusPanel: 'agAggregationComponent', align: 'left' },
+          ],
+        },
+        gridOptions:{
+            rowHeight:50,
             getRowStyle: (params: any) => {
                 if (params.node.rowIndex % 2 === 0) {
                     return { background: "#EBEBEB" };
@@ -164,45 +175,50 @@ const ExpediteParentGrid = ({ data, paginationProps, onOpenDailyDataGraph, curre
             colId: 'lc',
             field: 'lc'
         },
-        {
-            headerName: "Creation Date",
-            colId: 'cd',
-            field: 'cd'
-        },
-        {
-            headerName: "SLT",
-            colId: 'slt',
-            field: 'slt'
-        },
-        {
-            headerName: "TLT",
-            colId: 'tlt',
-            field: 'tlt'
-        },
+        // {
+        //     headerName:"Creation Date",
+        //     colId:'cd',
+        //     field:'cd'
+        // },
+        // {
+        //     headerName:"SLT",
+        //     colId:'slt',
+        //     field:'slt'
+        // },
+        // {
+        //     headerName:"TLT",
+        //     colId:'tlt',
+        //     field:'tlt'
+        // },
         {
             headerName: "Ageing",
             colId: 'ag',
             field: 'ag'
         },
-        {
-            headerName: "ETA",
-            colId: 'eta',
-            field: 'eta'
-        },
-        {
-            headerName: "Current Location",
-            colId: 'cl',
-            field: 'cl'
-        },
+        // {
+        //     headerName:"ETA",
+        //     colId:'eta',
+        //     field:'eta'
+        // },
+        // {
+        //     headerName:"Current Location",
+        //     colId:'cl',
+        //     field:'cl'
+        // },
         {
             headerName: "Quantity",
             colId: 'qty',
             field: 'qty'
         },
+        // {
+        //     headerName:"Remarks",
+        //     colId:'remarks',
+        //     field:'remarks'
+        // }
         {
-            headerName: "Remarks",
-            colId: 'remarks',
-            field: 'remarks'
+            headerName:"Whereabouts",
+            colId:"whereabouts",
+            field:'whereabouts'
         }
     ]
 
@@ -211,15 +227,15 @@ const ExpediteParentGrid = ({ data, paginationProps, onOpenDailyDataGraph, curre
             <GridViewTable
                 currentCategory={currentCategory}
                 currentTab={currentTab}
-                agGridProps={agGridProps}
-                agGridColDefs={colDefs}
-                agGridRowData={data['data']}
-                customGridRowData={activeRow}
-                customGridColDef={customGridColDef}
-                showStockGrid
-                stockGridData={[{ ...currentRowData, request: 'd' }]}
-                isSubGridOpen={isSubGridOpen}
-                onRequestExpediting={() => toggleExpeditingModal(true)}
+                agGridProps={agGridProps} 
+                agGridColDefs={colDefs} 
+                agGridRowData={data['data']} 
+                customGridRowData={activeRow} 
+                customGridColDef={customGridColDef} 
+                showStockGrid 
+                stockGridData={currentRowData?[{...currentRowData}]:[]} 
+                isSubGridOpen={isSubGridOpen} 
+                onRequestExpediting={()=>toggleExpeditingModal(true)}
                 paginationProps={paginationProps}
                 gridHeight={600}
             />

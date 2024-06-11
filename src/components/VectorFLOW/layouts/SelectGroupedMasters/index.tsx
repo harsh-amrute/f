@@ -52,7 +52,7 @@ const Card=(props:CardProps)=>{
     }
 
     return(
-        <VFMasterGroupCardContent data-testid='vf-master-group-card' theme={user.user.theme_ui} style={{backgroundColor: doesMasterExist()|| isHovered ? globalStyles.chooseThemeColor[user.user.theme_ui]?.color5 : 'white'}}
+        <VFMasterGroupCardContent data-testid='vf-master-group-card' theme={user.user.theme_ui} style={{backgroundColor: doesMasterExist()|| isHovered ? '#FCE7F2': 'white'}}
             id={master.name} 
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -74,12 +74,13 @@ const Card=(props:CardProps)=>{
             </VFMasterGroupCardImage>
             <VFMasterGroupCardText style={{color:doesMasterExist() || isHovered ? 'white': 'black'}}>
                 <div key={master.name}>
-                <p>{getMasterName()}</p>
+                <p style={{color:'black'}}>{getMasterName()}</p>
                 </div>
             </VFMasterGroupCardText>
         </VFMasterGroupCardContent>
     )
 }
+
 const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{   
     const{
         onSubmit,
@@ -99,33 +100,48 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
              <p>What kind of records do you want to {text}?</p>
             </TextContainer>
         </TextFilterWrapper>
+
         <VFMasterGroupCardContainer> 
         {
         masterGroupMapper.map(masterGroup=>{
          if(masterGroup.masters.length<1)return 
             return(
+       
             <VFMasterGroupCard> 
+
                 <VFMasterGroupCardHeader>
                     <VFMasterGroupCardHeaderText> 
                         <p>{masterGroup.name}</p>
                     </VFMasterGroupCardHeaderText>
                        
                 </VFMasterGroupCardHeader>
+                <div className="custom-scrollbar" style={{ overflow:'auto', width:'100%', paddingLeft:'10px', paddingRight:'10px'}}>
+
                 {allMasters.map((currentMaster)=>{
                             if(masterGroup.masters.includes(currentMaster.id.toString())){
                             return(
                             <Card master={currentMaster} handleOnClickMaster={handleOnClickMaster} selectedMasters={selectedMasters}/>
                         )}})} 
-            </VFMasterGroupCard>
+                                    </div>
+
+            </VFMasterGroupCard>                             
+
+
                     )
+
             })
         }
+
+           
+
         </VFMasterGroupCardContainer> 
+
             <VFButtonWrapper>
                 <VFButtonOutline onClick={onCancel} themeUi={user.user.theme_ui} style={{marginRight:'25px'}}>Cancel</VFButtonOutline>
                 <VFButton onClick={onSubmit} themeUi={user.user.theme_ui} disabled={selectedMasters.length===0}>Submit</VFButton>
             </VFButtonWrapper> 
     </ContentWrapper>
+
     )
 }
 

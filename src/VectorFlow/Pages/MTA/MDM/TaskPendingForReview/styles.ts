@@ -7,6 +7,9 @@ export const TaskPendingWrapper = styled.div`
     margin-bottom:100px;
     padding-left:50px;
     padding-top:20px;
+    ::ng-deep .ag-cell:focus{
+        outline: none;
+      }
 `
 
 export const ActionRendererWrapper = styled.div`
@@ -61,6 +64,7 @@ export const RadioButtonGroup = styled.div`
     display:flex;
     gap:8px;
     margin-top:20px;
+    align-items:center;
 `
 export const SubmitButtonWrapper = styled.div`
     display: flex;

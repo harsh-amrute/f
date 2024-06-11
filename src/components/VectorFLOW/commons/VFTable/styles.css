@@ -104,39 +104,38 @@
     --ag-header-foreground-color: rgb(255, 255, 255);
     --ag-header-background-color: rgb(255, 255, 255);
 }
- 
-.ag-status-name-value span {
-    color: black;
-}
- 
-.ag-body-horizontal-scroll {
+
+
+.ag-theme-alpine .ag-body-horizontal-scroll{
     height: unset !important;
     max-height: unset !important;
     min-height: 29px !important;
 }
- 
-.ag-body-horizontal-scroll-viewport {
-    height: unset !important;
+
+.ag-theme-alpine .ag-body-horizontal-scroll-viewport{
+    height:unset !important;
     max-height: unset !important;
     min-height: unset !important;
 }
- 
-.ag-horizontal-right-spacer {
-    display: none !important;
+
+.ag-theme-alpine .ag-horizontal-right-spacer{
+    display:none !important;
 }
- 
-.ag-body-vertical-scroll-viewport {
+
+.ag-theme-alpine .ag-body-vertical-scroll-viewport{
     min-width: unset !important;
     width: 29px !important;
     max-width: unset !important;
 }
- 
-.ag-body-vertical-scroll {
-    min-width: unset !important;
+
+.ag-theme-alpine .ag-body-vertical-scroll{
+    min-width:unset !important;
     max-width: unset !important;
     width: unset !important;
 }
- 
-.ag-panel-title-bar-button {
-    color: white !important;
+.ag-panel-title-bar-button{
+    color:white !important;
 }
+
+
+  

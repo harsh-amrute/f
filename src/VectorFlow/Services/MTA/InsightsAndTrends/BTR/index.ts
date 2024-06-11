@@ -1,4 +1,4 @@
-import {useMutation,useQuery } from '@tanstack/react-query'
+import {useMutation } from '@tanstack/react-query'
 
 
 import { BTRService } from './api'
@@ -9,8 +9,8 @@ export const QUERY_KEYS = {
 }
 
 export const useGetBTRDataCount = () => {
-  return useQuery(QUERY_KEYS.useGetBTRDataCount,async () => {
-    return await BTRService.getBTRDataCount()
+  return useMutation(async (body:any) => {
+    return await BTRService.getBTRDataCount(body)
   });
 }
 

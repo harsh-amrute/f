@@ -24,6 +24,7 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       <AgGridReact
         ref={ref}
         {...props}
+        suppressDragLeaveHidesColumns={true}
       />
     </VFTableWrapper>
   );

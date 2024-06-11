@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import * as globalStyles from "../../../../styles/global";
 
 function getColor(props:any) {
+  console.debug(props.color)
   if(props.isDisabled){
     return '#9A9A9A'
   }
@@ -33,8 +34,9 @@ function getBorderAndTextColor(props:any) {
 
 
 export const SCButtonOutline = styled.button<{themeUi: string, isDisabled:boolean | undefined, hoverState:boolean, customWidth:number | undefined, color:string | undefined}>`
-  color: ${props => props.hoverState ? 'white' : getBorderAndTextColor(props)};
-  background:${(props)=>props.hoverState ? getColor(props) : '#fefefe'} ;
+  color: ${props => getBorderAndTextColor(props)};
+  background:#fefefe ;
+  // background:${(props)=>getColor(props)} ;
   // padding: 15px 7px;
   border-radius: 6px;
   font-size:16px;
@@ -43,7 +45,8 @@ export const SCButtonOutline = styled.button<{themeUi: string, isDisabled:boolea
   font-weight:300;
   width:${(props)=>props.customWidth ? props.customWidth : 130}px;
   height:50px;
-  box-shadow: 0px 6px 25px #00000029;
+  // box-shadow: 0px 6px 25px #00000029;
+  box-shadow: -5px 5px 10px #71717129;
   border: 1px solid ${props => getBorderAndTextColor(props)};
   pointer-events:${(props)=>props.isDisabled ? 'none' : 'all'};
   // &:hover{

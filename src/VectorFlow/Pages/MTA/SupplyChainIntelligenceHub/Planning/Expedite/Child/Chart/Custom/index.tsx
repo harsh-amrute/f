@@ -43,7 +43,8 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                 enableValue:true,
                 // rowGroup:true,
                 // enableRowGroup:true,
-                suppressDragLeaveHidesColumns:true
+                // suppressDragLeaveHidesColumns:true,
+                enableRowGroup:true,
 
             }
         })
@@ -113,15 +114,24 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
     
     return(
         <>
-        <SCDynamicContainer>
+        <SCDynamicContainer className="ag-theme-planning-custom">
             <VFTable
                 ref={ref}
                 columnDefs={colDefs}
                 rowData={rowData}
                 sideBar={true}
                 enableCharts={true}
-                enableRangeSelection={true}
-                defaultColDef={{
+                enableRangeSelection={true} 
+                rowSelection="multiple"
+                statusBar = {{
+                    statusPanels: [
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                      { statusPanel: 'agAggregationComponent', align:'left' },
+                    ],
+                  }}                defaultColDef={{
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}
@@ -130,6 +140,9 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                      params.columnApi.applyColumnState({state:columnState})
                     }
                  }}
+                disableZoomScaling={true}
+                rowHeight={30}
+                height={430}
             />
         </SCDynamicContainer>
         </>

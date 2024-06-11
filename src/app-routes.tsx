@@ -33,6 +33,7 @@ import BufferTrendReport from './VectorFlow/Pages/MTA/InsightsAndTrends/BTR'
 import DBM from './VectorFlow/Pages/MTA/DBM/DBMNormSuggestions'
 import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests'
 import MaterialCov from './VectorFlow/Pages/MTO/Procurement/MaterialCoverage/MaterialCov'
+import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -78,8 +79,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/insights-and-trends/buffer-trend-report',
     '/dbm/dbm-norm-suggestions',
     '/procurement/material-coverage-open-sales',
-    '/procrmenPlanning/planning',
-    '/planning/simulativeFullKit'
+    '/logistics/intransit-whereabouts'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -322,6 +322,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<OpenExpeditingRequests />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/logistics/intransit-whereabouts',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<InTransitWhereAbouts/>)
         },
         ...getStoreTransferModuleRoutes()
       ]

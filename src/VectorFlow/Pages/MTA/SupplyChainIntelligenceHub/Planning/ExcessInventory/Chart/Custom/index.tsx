@@ -42,8 +42,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                     headerName:column['header'],
                     enablePivot:true,
                     enableValue:true,
-                    rowGroup:true,
-                    enableRowGroup:true,
+                    // enableRowGroup:true,
                     
                 } 
             }
@@ -54,8 +53,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                     headerName:column['header'],
                     enablePivot:true,
                     enableValue:true,
-                    rowGroup:true,
-                    enableRowGroup:true,
+                    // enableRowGroup:true,
                     
                 } 
             }
@@ -65,6 +63,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                 headerName:column['header'],
                 enablePivot:true,
                 enableValue:true,
+                enableRowGroup:true,
             }
         })
         return [...colDefs];
@@ -132,15 +131,24 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
     
     return(
         <>
-        <SCDynamicContainer>
+        <SCDynamicContainer className="ag-theme-planning-custom">
             <VFTable
                 ref={ref}
                 columnDefs={colDefs}
                 rowData={rowData}
                 sideBar={true}
                 enableCharts={true}
-                enableRangeSelection={true}
-                defaultColDef={{
+                enableRangeSelection={true} 
+                rowSelection="multiple"
+                statusBar = {{
+                    statusPanels: [
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                      { statusPanel: 'agAggregationComponent', align:'left' },
+                    ],
+                  }}                defaultColDef={{
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}
@@ -149,6 +157,10 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                      params.columnApi.applyColumnState({state:columnState})
                     }
                  }}
+                suppressDragLeaveHidesColumns={true}
+                disableZoomScaling={true}
+                rowHeight={30}
+                height={430}
             />
         </SCDynamicContainer>
         </>

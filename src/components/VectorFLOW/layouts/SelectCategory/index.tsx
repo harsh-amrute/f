@@ -1,7 +1,6 @@
 import { CategoryWrapper, DateContainer, DateWrapper, CardContainer, CardWrapper, TextWrapper, IconWrapper, CountWrapper, CountText, ButtonWrapper, Separator, ButtonComponent, PlanningTaskBar, ButtonFilterWrapper  } from "./style";
 import { format } from "date-fns";
 import VFSelectedFilters from '../../../../components/VectorFLOW/commons/VFSelectedFilters';
-import useBPRFilter from "../../../../hooks/useBPRFilter";
 import {useState} from 'react'
 import VFButton from "../../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../../context"
@@ -22,10 +21,14 @@ interface CountProp{
     onExcessInventoryReviewClick:()=>void;
     onOrderFulfillmentReviewClick:()=>void;
     currCategory?:any;
-
+    multiFilter:any
+    setMultiFilter:any
+    onDelete:any
+    onApplyFilter:any
 }
 
 const SelectCategory=(props:CountProp)=>{
+    
     const{
         childMonitorCount,
         parentMonitorCount,
@@ -39,8 +42,13 @@ const SelectCategory=(props:CountProp)=>{
         onExpediteChildClick,
         onExcessInventoryReviewClick,
         onOrderFulfillmentReviewClick,
-        currCategory
+        currCategory,
+        multiFilter,
+        setMultiFilter,
+        onDelete,
+        onApplyFilter
     } = props;
+
 
     const date= new Date();
     const formattedDate=format(date, 'do MMMM yyyy');
@@ -48,10 +56,15 @@ const SelectCategory=(props:CountProp)=>{
     const [isFilterOpen,toggleFilter] = useState<boolean>(false)
 
     const {user} = useUserData()
-    const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
+    // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
     const themeUi = user.user.theme_ui
 
     console.debug(currCategory)
+
+    const handleApplyFilter = (state:any)=>{
+        onApplyFilter(state)
+        toggleFilter(false)
+    }
 
     return(
     <>
@@ -65,7 +78,7 @@ const SelectCategory=(props:CountProp)=>{
         <VFButton onClick={()=>toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>Edit Filter</VFButton>
             {
                 isFilterOpen && (
-                <VFMultiFilter onApplyFilter={()=>toggleFilter(false)} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true} productFilterActive={true} supplyChainNodeFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m:any)=>['1','3','4'].includes(m.id))}></VFMultiFilter>
+                <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={()=>toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true} productFilterActive={true} supplyChainNodeFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m:any)=>['1','3','4'].includes(m.id))}></VFMultiFilter>
                
                 )
             }

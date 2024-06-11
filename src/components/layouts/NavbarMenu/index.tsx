@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useUserData } from "../../../context";
 import { useNavigate } from "react-router";
 
-const NavbarMenu = ({ setMenuItem, isHide }: any) => {
+const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) => {
   const [listMenu, setListMenu] = useState(listMenuParent);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const queryClient = useQueryClient();
@@ -84,10 +84,10 @@ const NavbarMenu = ({ setMenuItem, isHide }: any) => {
 
                   />
                   {!item.status && activeTooltip === item.id && (
-                    <MenuToolTip item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} />
+                    <MenuToolTip item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive}/>
                   )}
                   {item.status && !isHide && activeTooltip === item.id && (
-                    <MenuToolTip item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} />
+                    <MenuToolTip item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive} />
                   )}
                 </NavStyle.SCNavMenu>
               </NavStyle.SCMenuItem>

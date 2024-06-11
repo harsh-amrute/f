@@ -1,7 +1,6 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { useGetDBMUIConfiguration,useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm} from "../../../../Services/MTA/DBM"
-import { useUserData } from "../../../../../context"
 import { mapDBMFieldsToColDefs } from "../../../../../helpers/utils"
 //import { useRef } from "react"
 import {DBMSleepCellRenderer} from "./Sleep"
@@ -13,19 +12,32 @@ import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions
 import { type RootState } from "../../../../../redux/store/store";
 import { DailyDataGraph } from "../../../../types/MTA"
 import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import useBPRFilter from '../../../../../hooks/useBPRFilter'
+import { notifyLoader, notifySuccess } from "../../../../../helpers/notify"
+import { toast } from "react-toastify"
+import SuggestionCategoryCellRenderer from "./SuggestionCategoryCellRendere"
+
 
 const useDBM =()=>{
     //const [DBMApplySelectedNormData,setDBMApplySelectedNormData] = useState<any[]>([])
     const gridRef = useRef<GridRef>();
-    const {isSideBarOpen} = useUserData()
+    const tempRef:any = useRef()
     const [DBMRowData,setDBMRowData] = useState<any[]>([])
     const [DBMDataCount, setDBMDataCount]=useState<any>();
     // const [recordCount,setRecordCount] = useState<number>(0)
+
+    const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
     const [currentPage,setCurrentPage] = useState<any>(1);
 
+    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+
+    const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
+
+    const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
+
     const {data,isLoading:isDBMConfigLoading} = useGetDBMUIConfiguration()
-    const {mutateAsync:getDBMData,isLoading:isDBMDataLoading} =useGetDBMData();
-    const {mutateAsync:getDBMApplySelectedNorm,isLoading:isDBMApplySelectedNorm} =useGetDBMApplySelectedNorm();
+    const {mutateAsync:getDBMData} =useGetDBMData();
+    const {mutateAsync:getDBMApplySelectedNorm} =useGetDBMApplySelectedNorm();
     const {mutateAsync:getDBMDataCount}=useGetDBMDataCount();
 
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
@@ -40,6 +52,7 @@ const useDBM =()=>{
         tickCellRenderer:DBMTickCellRenderer,
         grapCellRenderer:BPRGraphCellRenderer,
         sleepCellRenderer:DBMSleepCellRenderer,
+        suggestionCategoryCellRenderer:SuggestionCategoryCellRenderer
       }), []);
 
     const onOpenDailyDataGraph = async (params:any) => {
@@ -83,10 +96,11 @@ const useDBM =()=>{
 
     const handleChangePage = async (pageNo:any) => {
         setCurrentPage(pageNo);
-        getDBMRowData(pageNo);
+        getDBMRowData(currentFilter,pageNo);
      }
 
      const handleGoButton =  async(pageNo:any)=>{
+        notifyLoader("Submitting Norms")
         console.debug(pageNo)
         // const handleGoButton =  ()=>{
         const selectedRows = gridRef.current?.api.getSelectedRows();
@@ -105,18 +119,26 @@ const useDBM =()=>{
                     recordsPerPage:50
                 }
             })
+        toast.dismiss()
+        notifySuccess("Submitte Successfully")
         //console.log(rowData)
    }
 
 
     useEffect(()=>{       
-        getDataCount();
-        getDBMRowData(currentPage);
+        getDataCount(currentFilter);
+        getDBMRowData(currentFilter,currentPage);
     },[])
 
-    const getDataCount=async () => {
+    const tempAgGridProps:AgGridReactProps = {
+        onRowDataUpdated:(event)=>{
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+        }
+      };
+
+    const getDataCount=async (filter:any) => {
         const rowDataCount =await getDBMDataCount({
-            filters:[],
+            filters:filter,
             paginationParameter:{
                 pageNumber:1,
                 recordsPerPage:50
@@ -125,17 +147,39 @@ const useDBM =()=>{
         setDBMDataCount(rowDataCount?.data?.recordCount)
     }
 
-    const getDBMRowData= async(pageNo:any)=>{
+    const getDBMRowData= async(filter:any,pageNo:any)=>{
+        notifyLoader("Loading Grid Data")
         const rowData =await getDBMData({
-            filters:[],
+            filters:filter,
+            paginationParameter:{
+                pageNumber:pageNo,
+                recordsPerPage:50
+            }
+        })
+        toast.dismiss()
+        notifySuccess("Data Loaded Successfully")
+        // console.log(rowData.data.data)
+        setDBMRowData(rowData?.data?.data)
+    }
+
+    const handleApplyFilter = async(filter:any)=>{
+        setCurrentFilter(filter)
+        await getDataCount(filter)
+        await getDBMRowData(filter,1)
+    }
+
+    const onExportToExcelCallBack= async(pageNo:any)=>{
+        const rowData =await getDBMData({
+            filters:currentFilter,
             paginationParameter:{
                 pageNumber:pageNo,
                 recordsPerPage:50
             }
         })
         // console.log(rowData.data.data)
-        setDBMRowData(rowData?.data?.data)
+        return rowData.data.data
     }
+
 
     const agGridProps:AgGridReactProps = {
         tooltipShowDelay:0,
@@ -177,10 +221,9 @@ const useDBM =()=>{
     
 
     return {
-        isSideBarOpen,
         DBMColumns,
         agGridProps,
-        isLoading : isDBMDataLoading || isDBMConfigLoading || isDBMApplySelectedNorm,
+        isLoading :  isDBMConfigLoading,
         DBMRowData,
         handleChangePage,
         gridRef,
@@ -190,7 +233,20 @@ const useDBM =()=>{
         handleGoButton,
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
-        dailyData
+        dailyData,
+        tempRef,
+        tempDownloadData,
+        setTempDownloadData,
+        tempAgGridProps,
+        exportExcelRowData,
+        setExportExcelRowData,
+        exportExcelColumns,
+        setExportExcelColumns,
+        handleApplyFilter,
+        currentFilter,
+        setCurrentFilter,
+        onDelete,
+        onExportToExcelCallBack,
     }
 }
 

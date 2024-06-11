@@ -93,8 +93,8 @@ export const defaultColDefs: ColDef = {
     flex: 1,
 }
 
-export const BTRDefaultColDefs: ColDef = {
-    minWidth: 100,
+export const BTRDefaultColDefs:ColDef = {
+    minWidth:80,
     cellStyle: {
         "text-align": "center",
         'text-overflow': 'ellipsis',
