@@ -285,8 +285,6 @@ const useDelete=()=>{
 
       const onSubmit = async(ref:any,isOverWrite?:boolean) => {
 
-        console.log(isSubmitDisabled)
-
         
         
         if(activeMaster.rowData.length === 0){
@@ -301,7 +299,6 @@ const useDelete=()=>{
         
 
         if(isSubmitDisabled) return;
-        console.log(activeMaster.rowData.length === 0,'end')
 
         setIsSubmitDisabled(true)
  
@@ -337,7 +334,6 @@ const useDelete=()=>{
               dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
               notifySuccess(`Deletions Submitted Successfully`);
               dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSubmitted'));
-              dispatch(UPDATE_PROGRESS_STATE('submitted'))
             
    
           }

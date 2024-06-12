@@ -1091,7 +1091,7 @@ const useViewModify = (pageType:string) => {
             setConflictCount(tempCon.length)
             setSubmittedDataCount(activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
             setIsConflictModalOpen(true)
-            dispatch(UPDATE_PROGRESS_STATE('conflicts'))
+            dispatch(UPDATE_PROGRESS_STATE('editOnlineConflicts'))
           }
  
         }
@@ -1494,13 +1494,15 @@ const useViewModify = (pageType:string) => {
     }
 
     const onIgnoreSubmitErrors = ()=>{
+      console.log(activeMaster.progress)
       const errorRowData = createErrorRowData(errorData,activeMaster.id)
       if(errorRowData.length>0){
         addInvalidDataColDefs('error')
         dispatch(UPDATE_ROW_DATA(errorRowData))
         dispatch(SET_RECORD_COUNT(errorRowData.length))
       }
-      dispatch(UPDATE_PROGRESS_STATE('submitted'));
+      if(activeMaster.progress==='editOnlineConflicts')dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
+      else dispatch(UPDATE_PROGRESS_STATE('submitted'));
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       
       setIsConflictModalOpen(false)
