@@ -19,7 +19,10 @@ import {
   useModifyMasterData,
   useDeleteDraft,
   useDeleteTask,
-  useValidateMaster
+  useValidateMaster,
+  useGetMasterDataRetail,
+  useModifyMasterDataRetail,
+  useGetRetailCount
 } from "../../../../Services/MTA/MDM";
 import _ from "lodash";
 import { createStore, store } from "../../../../../redux/store/store";
@@ -48,12 +51,21 @@ jest.mock("../../../../Services/MTA/MDM");
 const useGetMasterUIConfigurationMock = useGetMasterUIConfiguration as jest.MockedFunction<
     typeof useGetMasterUIConfiguration
   >;
+
 const useGetMasterDataMock = useGetMasterData as jest.MockedFunction<
   typeof useGetMasterData
 >;
 
+const useGetMasterDataRetailMock = useGetMasterDataRetail as jest.MockedFunction<
+  typeof useGetMasterDataRetail
+>;
+
 const useGetCountMock = useGetCount as jest.MockedFunction<
   typeof useGetCount
+>;
+
+const useGetRetailCountMock = useGetRetailCount as jest.MockedFunction<
+  typeof useGetRetailCount
 >;
 
 const useCreateDraftMock = useCreateDraft as jest.MockedFunction<
@@ -70,6 +82,10 @@ typeof useGetSeasonalityDetails
 
 const useModifyMasterDataMock = useModifyMasterData as jest.MockedFunction<
 typeof useModifyMasterData
+>;
+
+const useModifyMasterDataRetailMock = useModifyMasterDataRetail as jest.MockedFunction<
+typeof useModifyMasterDataRetail
 >;
 
 const useDeleteDraftMock = useDeleteDraft as jest.MockedFunction<
@@ -93,6 +109,12 @@ const useMasterDataResult: any = {
   },
 };
 
+const useGetMasterDataRetailResult: any = {
+  mutateAsync: () => {
+    return { data: mockMasterData };
+  },
+};
+
 const useGetMasterUIConfigurationMockResult:any ={
   mutateAsync:()=>{
     return {
@@ -102,6 +124,12 @@ const useGetMasterUIConfigurationMockResult:any ={
 }
 
 const useGetCountResult: any = {
+  mutateAsync: () => {
+    return { data: mockMasterData };
+  },
+};
+
+const useGetRetailCountResult: any = {
   mutateAsync: () => {
     return { data: mockMasterData };
   },
@@ -126,6 +154,12 @@ const useGetSeasonalityDetailsMockData:any = {
 }
 
 const useModifyMasterDataMockData:any = {
+  mutateAsync:() => {
+    return {data:modifyMasterMockData}
+  }
+}
+
+const useModifyMasterDataRetailMockData:any = {
   mutateAsync:() => {
     return {data:modifyMasterMockData}
   }
@@ -245,9 +279,19 @@ describe("Renders View Modify Component", () => {
     useGetMasterDataMock.mockImplementation(() => {
       return useMasterDataResult;
     });
+
+    useGetMasterDataRetailMock.mockImplementation(() => {
+      return useGetMasterDataRetailResult;
+    });
+
     useGetCountMock.mockImplementation(() => {
       return useGetCountResult;
     });
+
+    useGetRetailCountMock.mockImplementation(() => {
+      return useGetRetailCountResult;
+    });
+
     useCreateDraftMock.mockImplementation(()=>{
       return useCreateDraftMockData
     })
@@ -262,6 +306,10 @@ describe("Renders View Modify Component", () => {
 
     useModifyMasterDataMock.mockImplementation(() => {
       return useModifyMasterDataMockData;
+    })
+
+    useModifyMasterDataRetailMock.mockImplementation(() => {
+      return useModifyMasterDataRetailMockData;
     })
 
     useDeleteDraftMock.mockImplementation(() => {
@@ -327,8 +375,16 @@ describe("Handles all Interaction in ViewModify Component", () => {
       return useMasterDataResult;
     });
 
+    useGetMasterDataRetailMock.mockImplementation(() => {
+      return useGetMasterDataRetailResult;
+    });
+
     useGetCountMock.mockImplementation(() => {
       return useGetCountResult;
+    });
+
+    useGetRetailCountMock.mockImplementation(() => {
+      return useGetRetailCountResult;
     });
 
     useCreateDraftMock.mockImplementation(()=>{
@@ -345,6 +401,10 @@ describe("Handles all Interaction in ViewModify Component", () => {
 
     useModifyMasterDataMock.mockImplementation(() => {
       return useModifyMasterDataMockData;
+    })
+
+    useModifyMasterDataRetailMock.mockImplementation(() => {
+      return useModifyMasterDataRetailMockData;
     })
 
     useDeleteDraftMock.mockImplementation(() => {
@@ -543,8 +603,16 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       return useMasterDataResult;
     });
 
+    useGetMasterDataRetailMock.mockImplementation(() => {
+      return useGetMasterDataRetailResult;
+    });
+
     useGetCountMock.mockImplementation(() => {
       return useGetCountResult;
+    });
+
+    useGetRetailCountMock.mockImplementation(() => {
+      return useGetRetailCountResult;
     });
 
     useCreateDraftMock.mockImplementation(()=>{
@@ -561,6 +629,10 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     useModifyMasterDataMock.mockImplementation(() => {
       return useModifyMasterDataMockData;
+    })
+
+    useModifyMasterDataRetailMock.mockImplementation(() => {
+      return useModifyMasterDataRetailMockData;
     })
 
     useDeleteDraftMock.mockImplementation(() => {
