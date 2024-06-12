@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback } from "react"
+import { useState, useMemo, useRef, useCallback, useEffect } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { AgGridReact } from "@ag-grid-community/react";
 import { useUserData } from "../../../../../context"
@@ -14,7 +14,7 @@ import GetProcPlanningData from './GetProcPlanningData.json';
 import GetProcPlanningDataColumn from './GetProcPlanningDataColumn.json';
 import { mapProcPlanningFieldsToColDefs } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
-
+import { userGetProcPlanningData } from "../../../../Services/MTO/ProcPlanning/index";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -70,6 +70,9 @@ const useProcPlanning = () => {
     const { isSideBarOpen } = useUserData()
     const [currentPage] = useState<any>(1);
     const navigate = useNavigate();
+    const [datas, setData] = useState([]);
+    const [ShortageDatas, SetShortageData] = useState<any[]>([]);
+    const [CompleteAvailableDatas, setCompleteAvailableData] = useState<any[]>([]);
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: 'ca',
@@ -83,37 +86,58 @@ const useProcPlanning = () => {
         }
     ];
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
-    const initializeData = (data: any, headerData: any) => {
-        const calculateData = data.map((item: any) => ({
-            ...item,
-            gap: item.req - item.soh - item.siqc - item.sit,
-            tsfs: item.soh,
-            children: item.children ? item.children.filter((child: any, index: number, self: any[]) =>
-                self.findIndex(t => t.on === child.on) === index) : []
-        }));
-        const ShortageData = calculateData.filter((item: any) => item.gap > 0);
-        const CompleteAvailableData = calculateData.filter((item: any) => item.gap === 0);
 
-        const CompleteHeaderData = headerData.map((header: any) => {
-            if (header.jf === 'eas') {
-                return { ...header, vs: false };
-            }
-            return header;
-        });
+    const { mutateAsync: getProcPlanningData, isLoading: isBPRUILoading, isError } = userGetProcPlanningData()
 
-        const ShortageHeaderData = headerData.map((header: any) => {
-            if (header.jf === 'eas') {
-                return { ...header, vs: true };
-            }
-            return header;
-        });
-        return { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData };
-    };
-    const { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData } = initializeData(data, HeaderData);
-    const ShortageColumns = mapProcPlanningFieldsToColDefs(ShortageHeaderData);
-    const CompleteAvailableColumns = mapProcPlanningFieldsToColDefs(CompleteHeaderData);
-    const [ShortageDatas, SetShortageData] = useState(ShortageData);
-    const [CompleteAvailableDatas] = useState(CompleteAvailableData);
+    const fetchData = useCallback(async (date: string) => {
+        const response = await getProcPlanningData(date);
+        setData(response?.data?.data?.results || []);
+    }, [getProcPlanningData]);
+
+    useEffect(() => {
+        if (datas.length && HeaderData.length) {
+            const initializeData = (data: any, headerData: any) => {
+                const calculateData = data.map((item: any) => ({
+                    ...item,
+                    gap: item.req - item.soh - item.siqc - item.sit,
+                    tsfs: item.soh,
+                    children: item.children ? item.children.filter((child: any, index: number, self: any[]) =>
+                        self.findIndex(t => t.on === child.on) === index) : []
+                }));
+                const ShortageData = calculateData.filter((item: any) => item.gap > 0);
+                const CompleteAvailableData = calculateData.filter((item: any) => item.gap === 0);
+
+                const CompleteHeaderData = headerData.map((header: any) => {
+                    if (header.jf === 'eas') {
+                        return { ...header, vs: false };
+                    }
+                    return header;
+                });
+
+                const ShortageHeaderData = headerData.map((header: any) => {
+                    if (header.jf === 'eas') {
+                        return { ...header, vs: true };
+                    }
+                    return header;
+                });
+
+                SetShortageData(ShortageData);
+                setCompleteAvailableData(CompleteAvailableData);
+                return { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData };
+            };
+            initializeData(datas, HeaderData);
+        }
+    }, [datas, HeaderData]);
+
+    const ShortageColumns = useMemo(() => mapProcPlanningFieldsToColDefs(HeaderData.map((header: any) => ({
+        ...header,
+        vs: header.jf === 'eas' ? true : header.vs
+    }))), [HeaderData]);
+
+    const CompleteAvailableColumns = useMemo(() => mapProcPlanningFieldsToColDefs(HeaderData.map((header: any) => ({
+        ...header,
+        vs: header.jf === 'eas' ? false : header.vs
+    }))), [HeaderData]);
 
     const icons = useMemo(() => {
         return {
@@ -126,11 +150,12 @@ const useProcPlanning = () => {
             minWidth: 250,
         };
     }, []);
-    const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
-    const navigateToSimulateScreen = () => {
-        navigate("/planning/simulative-fullkit", { state: { ShortageDatas } });
 
-    }
+    const toggleCurrentTab = useCallback((tab: VFFloatingTabItemProps) => setCurrentTab(tab), []);
+    const navigateToSimulateScreen = useCallback(() => {
+        navigate("/planning/simulative-fullkit", { state: { ShortageDatas } });
+    }, [navigate, ShortageDatas]);
+
     const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
         return {
             getCustomContentBelowRow: (params) => getRows(params) as ExcelRow[],
@@ -253,10 +278,6 @@ const useProcPlanning = () => {
                     background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
                 };
             },
-            overlayNoRowsTemplate: `
-            <div style="height: 100%; display: flex; align-items: center; justify-content: center; background: ${Math.random() < 0.5 ? "#EBEBEB" : "#F7F7F7"};">
-                No Rows To Show
-            </div>`,
             components: customCellRenderers,
             rowSelection: 'multiple',
             suppressRowClickSelection: true,
@@ -326,7 +347,8 @@ const useProcPlanning = () => {
         toggleCurrentTab,
         renderView,
         excelDownload,
-        GetCount
+        GetCount,
+        fetchData
     }
 }
 

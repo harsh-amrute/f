@@ -22,11 +22,12 @@ import {
 } from './styles'
 
 interface MTOActionToolBarProps {
-    comp: string
+    comp: string,
+    onDateChange: (date: string) => void;
 }
 
 
-const MTOActionToolBar = ({ comp }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ comp, onDateChange }: MTOActionToolBarProps) => {
     return (
         <SCTaskBarContainer>
             <SCTaskFilterContainer
@@ -89,6 +90,7 @@ const MTOActionToolBar = ({ comp }: MTOActionToolBarProps) => {
                                         fontFamily: 'Roboto',
                                         border: '0.5px solid #ACACAC',
                                     }}
+                                    onChange={(e) => onDateChange(e.target.value)}
                                 />
                             </div>
                         </div>
