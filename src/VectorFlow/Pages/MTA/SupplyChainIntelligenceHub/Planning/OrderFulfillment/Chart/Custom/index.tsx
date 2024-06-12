@@ -11,8 +11,7 @@ import { SCDynamicContainer } from "../../styles";
 import { toast } from 'react-toastify';
 import { useGetState } from "../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../../../../../../../../context/GridStateContext";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../../../../../redux/store/store";
+import { GridState } from "../../../../../../../../VectorFlow/types/BPR";
 
 
 
@@ -22,9 +21,7 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
     const {ref} = useContext(GridStateContext)
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
-
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+    const [gridState,setGridState] = useState<GridState>()
 
     const chunkSize = 10000;
 
@@ -48,17 +45,22 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
     }
 
 
+
     useEffect(()=>{
         const getTableState = async()=>{
           try{
             const data =  await getState("OrderFulfillmentcustom")
-            setColumnState(JSON.parse(data.data.data))
+            setGridState(JSON.parse(data.data.data))
           }catch(err:any){
-            setColumnState(colDefs)
+            setGridState({
+                charts:[],
+                columns:colDefs,
+                pivot:false
+            })
           }
         }
         getTableState()
-    },[currentGridState])
+    },[])
 
     useEffect(()=>{
         const fetchCustomPlanningData = async ()=> {
@@ -134,8 +136,14 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
                 }}
                 disableZoomScaling={true}
                 onGridReady={(params)=>{
-                    if(columnState){
-                     params.columnApi.applyColumnState({state:columnState})
+                    if(gridState){
+                        params.columnApi.applyColumnState({state:gridState.columns})
+                        params.api.setPivotMode(gridState.pivot)
+                        if(gridState.charts && Array.isArray(gridState.charts) && gridState.charts.length>0){
+                            gridState.charts.forEach((c:any)=>{
+                                params.api.restoreChart(c)
+                            }) 
+                        }              
                     }
                  }}
                 rowHeight={30}

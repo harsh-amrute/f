@@ -243,7 +243,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 
                                 {currentTab==='custom' && (
                                     <>
-\                                    <SCViewContainerWithBg onClick={()=>ref.current.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`})} >
+                                    <SCViewContainerWithBg onClick={()=>ref.current.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`})} >
                                         <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" />
                                         <p>Excel Export</p>
                                     </SCViewContainerWithBg>

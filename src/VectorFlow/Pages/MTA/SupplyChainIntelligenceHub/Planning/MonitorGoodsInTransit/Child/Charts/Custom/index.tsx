@@ -10,8 +10,10 @@ import { SCDynamicContainer } from "../../../styles";
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../../../../../helpers/notify";
 import { toast } from 'react-toastify';
 
-import { GridStateContext } from "../../../../../../../../../context/GridStateContext";
+import { useGetState } from "../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 
+import { GridStateContext } from "../../../../../../../../../context/GridStateContext";
+import { GridState } from "../../../../../../../../../VectorFlow/types/BPR";
 
 
 
@@ -21,10 +23,13 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
 
+    const [gridState,setGridState] = useState<GridState>()
+
 
     const chunkSize = 10000;
 
     const {mutateAsync:getPlanningDataCustom,isLoading} = useGetPlanningDataCustom();
+    const {mutateAsync:getState} = useGetState()
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
         let colDefs = [];
@@ -42,17 +47,22 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
         return [...colDefs];
     }
 
-    // useEffect(()=>{
-    //     const getTableState = async()=>{
-    //       try{
-    //         const data =  await getState("GITToChildcustom")
-    //         setColumnState(JSON.parse(data.data.data))
-    //       }catch(err:any){
-    //         setColumnState(colDefs)
-    //       }
-    //     }
-    //     getTableState()
-    // },[currentGridState])
+    useEffect(()=>{
+        const getTableState = async()=>{
+          try{
+            const data =  await getState("GITToChildcustom")
+            setGridState(JSON.parse(data.data.data))
+          }catch(err:any){
+            setGridState({
+                charts:[],
+                columns:colDefs,
+                pivot:false
+            })
+          }
+        }
+        getTableState()
+    },[])
+
 
     useEffect(()=>{
         const fetchCustomPlanningData = async ()=> {
@@ -128,11 +138,18 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                 filter: "agMultiColumnFilter",
                 }}
                 disableZoomScaling={true}
-                // onGridReady={(params)=>{
-                //     if(columnState){
-                //      params.columnApi.applyColumnState({state:columnState})
-                //     }
-                //  }}
+                onGridReady={(params)=>{
+                    if(gridState){
+                        params.columnApi.applyColumnState({state:gridState.columns})
+                        params.api.setPivotMode(gridState.pivot)
+    
+                        if(gridState.charts && Array.isArray(gridState.charts) && gridState.charts.length>0){
+                            gridState.charts.forEach((c:any)=>{
+                                params.api.restoreChart(c)
+                            }) 
+                        }              
+                    }
+                 }}
                 rowHeight={30}
             />
         </SCDynamicContainer>
