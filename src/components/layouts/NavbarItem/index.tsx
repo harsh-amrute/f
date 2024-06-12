@@ -15,6 +15,8 @@ import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 import BPRDailyAnalytics from "../../../components/VectorFLOW/layouts/BPRDailyAnalytics";
 import ProcPlanningAnalytics from "../../../components/VectorFLOW/layouts/ProcPlanningAnalytics";
+import AnalyticalScreen from "../../../VectorFlow/Pages/MTO/Procurement/MaterialCoverage/AnalyticalScreen";
+
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -133,7 +135,23 @@ const NavbarItem = ({
           <SCItemChild
             key={item.url}
             onClick={() => {
-              navigateWithPrompt(() => navigate(item.url, { replace: true }), item.url, mdm, resetState);
+              navigateWithPrompt(() => {
+                navigate(item.url, { replace: true });
+                if (isHide) {
+                  setWidthResponsive({
+                    widthLeft: "0%",
+                    widthRight: "95%",
+                  });
+                } else {
+                  setWidthResponsive({
+                    widthLeft: "20%",
+                    widthRight: "75%",
+                  });
+                }
+                setIsHide(!isHide);
+                toggleSideBar(!isSideBarOpen)
+
+              }, item.url, mdm, resetState);
             }}
             active={item.url === location.pathname}
             status={status}
@@ -230,6 +248,13 @@ const NavbarItem = ({
           />
         )}
 
+        {
+          //my code goes here
+          isHide && pathname === "/procurement/material-coverage-open-sales" && menuItem.id === 19 && (
+            <AnalyticalScreen />
+
+          )
+        }
 
         {isHide && pathname === "/ist-forced-closure" && menuItem.id === 6 && (
           <ParticularForced themeUi={themeUi} />

@@ -8,54 +8,39 @@ import {
     BPRDailyAnalyticsTableHeaderContainer,
     BPRDailyAnalyticsTableRow,
     BPRDailyAnalyticsTableRowContainer,
-    BPRDailyAnalyticStatusBar,
     BPRDailyAnalyticsWrapper,
-    BPRDailyAnalyticStatusBarSection,
-    BPRDailyAnalyticsTableCellText
+    BPRDailyAnalyticsTableCellHeader,
 } from './styles';
 import { useSelector } from 'react-redux';
-import { ColDef } from "ag-grid-community";
 import { RootState } from '../../../../../redux/store/store';
 
 
-interface IRow {
-    "": string
-    No_of_Order: number;
-    No_of_Cust: number;
-    Total_Ord_val: number;
-}
-interface BPRDailyAnalyticsProps {
-    colDefs: ColDef[]
-}
-
-const AnalyticalScreen = (props: BPRDailyAnalyticsProps) => {
+const AnalyticalScreen = () => {
     //AnalyticsData
     const options = useSelector((state: RootState) => state.mto.AnalyticsData);
-    console.log('anaytical=', options)
-    // const [rowData, setRowData] = useState<IRow[]>([
+    console.log(options)
 
-    // ]);
-    const {
-        colDefs
-    } = props;
-    const [rowData] = useState<IRow[]>([
-        { "": "Black", No_of_Order: 234, No_of_Cust: 938, Total_Ord_val: 64 },
-        { "": "Red", No_of_Order: 123, No_of_Cust: 950, Total_Ord_val: 43 },
-        { "": "Red", No_of_Order: 231, No_of_Cust: 462, Total_Ord_val: 44 },
-        { "": "Red", No_of_Order: 102, No_of_Cust: 331, Total_Ord_val: 90 },
-        { "": "Red", No_of_Order: 107, No_of_Cust: 189, Total_Ord_val: 84 },
+
+
+    const [rowData] = useState([
+        {
+            headerName: '',
+        },
+        {
+            headerName: 'No Of Orders'
+        },
+        {
+            headerName: 'No Of Customers'
+        },
+        {
+            headerName: 'Total Order Value'
+        },
     ])
 
-    // const [colDef, setColDefs] = useState<ColDef<IRow>[]>([
-    //     { field: "" },
-    //     { field: "No_of_Order" },
-    //     { field: "No_of_Cust" },
-    //     { field: "Total_Ord_val" },
-    // ]);
+    if (!options.Order) {
+        return null
+    }
 
-    // const defaultColDef: ColDef = {
-    //     flex: 1,
-    // };
 
     return (
         <BPRDailyAnalyticsWrapper>
@@ -63,129 +48,111 @@ const AnalyticalScreen = (props: BPRDailyAnalyticsProps) => {
                 <BPRDailyAnalyticsHeader>
                     Analytics
                 </BPRDailyAnalyticsHeader>
+
                 <BPRDailyAnalyticsTableContainer>
-                    <BPRDailyAnalyticsTableHeaderContainer>
-                        {
-                            colDefs.map((colDef: ColDef) => {
-                                if (colDef.colId === 'color') {
-                                    return (
-                                        <BPRDailyAnalyticsTableHeader style={{ width: 25 }} />
-                                    )
-                                }
-                                return (
-                                    <BPRDailyAnalyticsTableHeader>
-                                        {colDef.headerName}
-                                    </BPRDailyAnalyticsTableHeader>
-                                )
-                            })
+                    <BPRDailyAnalyticsTableHeaderContainer style={{ borderTop: '1px white solid', borderBottom: '1px dashed white' }}>
+                        {rowData.map((data) => {
+                            return (
+                                <BPRDailyAnalyticsTableHeader>
+                                    {data.headerName}
+                                </BPRDailyAnalyticsTableHeader>
+                            )
+                        })
                         }
                     </BPRDailyAnalyticsTableHeaderContainer>
                     <BPRDailyAnalyticsTableRowContainer>
-                        {rowData.map((row: any) => {
+
+                        {options.Order.map((o: any) => {
                             return (
-                                <BPRDailyAnalyticsTableRow>
-                                    {Object.keys(row).map((key: string) => {
-                                        if (key === 'color') {
-                                            return (
-                                                <BPRDailyAnalyticsTableCell
-                                                    style={{
-                                                        backgroundColor: row[key],
-                                                        width: 60, boxShadow: "0px 3px 12px #AFAFAF"
-                                                    }}
-                                                />
-                                            )
-                                        }
-                                        if (key == "No Of \nOders") {
-                                            return (
-                                                <React.Fragment>
-                                                    <BPRDailyAnalyticsTableCell>
+                                <BPRDailyAnalyticsTableRow style={{
+                                    height: 30,
+                                    boxShadow: 'none',
+                                    backgroundColor: 'transparent',
+                                    borderBottom: '1px white solid',
+                                    borderRadius: 0
+                                }}>
+                                    {
+                                        o.color === '#355FD3'
+                                            ?
+                                            <BPRDailyAnalyticsTableCell>
+                                                <div style={{ height: 20, width: 20, background: 'linear-gradient(148deg, rgba(252,252,252,1) 0%, rgba(56,118,255,1) 71%, rgba(56,118,255,1) 100%)' }}>
 
-                                                        <BPRDailyAnalyticsTableCellText>
-                                                            {/* {getCellText(row.techChange, 'techChange')} */}
-                                                        </BPRDailyAnalyticsTableCellText>
-                                                    </BPRDailyAnalyticsTableCell>
+                                                </div>
 
-                                                </React.Fragment>
-                                            )
-                                        }
-                                        if (key === 'No Of Customers') {
-                                            return (
-                                                <React.Fragment>
-                                                    <BPRDailyAnalyticsTableCell>
+                                            </BPRDailyAnalyticsTableCell>
+                                            :
+                                            <BPRDailyAnalyticsTableCell>
+                                                <div style={{ height: 20, width: 20, backgroundColor: o.color }}>
 
-                                                        <BPRDailyAnalyticsTableCellText>
-                                                            {/*getCellText(row.ecoChange, 'ecoChange')*/}</BPRDailyAnalyticsTableCellText>
-                                                    </BPRDailyAnalyticsTableCell>
+                                                </div>
 
-                                                </React.Fragment>
-                                            )
-                                        }
-                                        if (key === 'Total Order Value') {
-                                            return (
-                                                <React.Fragment>
-                                                    <BPRDailyAnalyticsTableCell>
+                                            </BPRDailyAnalyticsTableCell>
+                                    }
+                                    <BPRDailyAnalyticsTableCell>
+                                        <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
+                                            {o.ordCunt}
+                                        </BPRDailyAnalyticsTableCellHeader>
 
-                                                        <BPRDailyAnalyticsTableCellText>
-                                                            {/*getCellText(row.ecoChange, 'ecoChange')*/}</BPRDailyAnalyticsTableCellText>
-                                                    </BPRDailyAnalyticsTableCell>
+                                    </BPRDailyAnalyticsTableCell>
+                                    <BPRDailyAnalyticsTableCell>
+                                        <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
+                                            {o.cusCunt}
+                                        </BPRDailyAnalyticsTableCellHeader>
 
-                                                </React.Fragment>
-                                            )
-                                        }
-                                    })}
+                                    </BPRDailyAnalyticsTableCell>
+                                    <BPRDailyAnalyticsTableCell>
+                                        <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }} >
+                                            {o.totalCunt}
+                                        </BPRDailyAnalyticsTableCellHeader>
+
+                                    </BPRDailyAnalyticsTableCell>
                                 </BPRDailyAnalyticsTableRow>
                             )
                         })}
+                        <BPRDailyAnalyticsTableRow style={{
+                            height: 30,
+                            boxShadow: 'none',
+                            backgroundColor: 'black',
+
+                            borderRadius: 0
+                        }}>
+
+                            <BPRDailyAnalyticsTableCell>
+                                <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
+                                    Total
+                                </BPRDailyAnalyticsTableCellHeader>
+
+                            </BPRDailyAnalyticsTableCell>
+                            <BPRDailyAnalyticsTableCell>
+                                <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
+                                    {1688}
+                                </BPRDailyAnalyticsTableCellHeader>
+
+                            </BPRDailyAnalyticsTableCell>
+                            <BPRDailyAnalyticsTableCell>
+                                <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
+                                    {1678}
+                                </BPRDailyAnalyticsTableCellHeader>
+
+                            </BPRDailyAnalyticsTableCell>
+                            <BPRDailyAnalyticsTableCell>
+                                <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }} >
+                                    {150.1}
+                                </BPRDailyAnalyticsTableCellHeader>
+
+                            </BPRDailyAnalyticsTableCell>
+                        </BPRDailyAnalyticsTableRow>
+
                     </BPRDailyAnalyticsTableRowContainer>
                 </BPRDailyAnalyticsTableContainer>
 
-                <BPRDailyAnalyticStatusBar>
-                    <BPRDailyAnalyticStatusBarSection>
-                        Total
-                    </BPRDailyAnalyticStatusBarSection>
-                    <BPRDailyAnalyticStatusBarSection>
-                        {/*summation*/}
-                    </BPRDailyAnalyticStatusBarSection>
-                </BPRDailyAnalyticStatusBar>
+
             </BPRDailyAnalyticsContainer>
-        </BPRDailyAnalyticsWrapper>
+        </BPRDailyAnalyticsWrapper >
+
     )
 
-    // return (
-    //     <BPRDailyAnalyticsWrapper>
-    //         <BPRDailyAnalyticsContainer>
-    //             <BPRDailyAnalyticsHeader>
-    //                 Analytics
-    //             </BPRDailyAnalyticsHeader>
 
-    //             <BPRDailyAnalyticsTableContainer>
-    //                 {
-    //                     colDefs.map((colDef: ColDef) => {
-    //                         return (
-    //                             <BPRDailyAnalyticsTableHeader>
-    //                                 {colDef.field}
-    //                             </BPRDailyAnalyticsTableHeader>
-    //                         )
-    //                     })
-    //                 }
-    //                 {/* <AgGridReact
-    //                     rowData={rowData}
-    //                     columnDefs={colDefs}
-    //                     defaultColDef={defaultColDef}
-    //                 /> */}
-    //                 {/* <VFTable
-    //                     columnDefs={colDefs}
-    //                     rowData={rowData}
-    //                     // tooltipHideDelay={100000}
-    //                     // tooltipShowDelay={0}
-    //                     // tooltipMouseTrack={true}
-    //                 /> */}
-
-    //             </BPRDailyAnalyticsTableContainer>
-
-    //         </BPRDailyAnalyticsContainer>
-    //     </BPRDailyAnalyticsWrapper>
-    // )
 }
 
 export default AnalyticalScreen

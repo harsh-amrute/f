@@ -1,5 +1,3 @@
-
-
 import { useMemo } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import AvlCellRenderer from '../../Common/AvlCellRenderer';

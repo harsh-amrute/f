@@ -2184,14 +2184,14 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
     }
   ]
 
-  // const SuggestionCategory: ColDef = {
-  //   headerName: '',
-  //   lockPosition: true,
-  //   cellRenderer: 'suggestionCategoryCellRenderer',
-  //   floatingFilter: false,
-  //   minWidth: 30,
-  //   maxWidth: 30
-  // }
+  const SuggestionCategory: ColDef = {
+    headerName: '',
+    lockPosition: true,
+    cellRenderer: 'suggestionCategoryCellRenderer',
+    floatingFilter: false,
+    minWidth: 30,
+    maxWidth: 30
+  }
 
 
 
@@ -2204,9 +2204,35 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
       hide: !f.Visible
     }
   })
-  return [DBMTickColumn, ...DBMGraphColumn, ...DBMSleepColumn, ...result]
+
+  const additionalColumns: ColDef[] = [
+    {
+      colId: 'OldNormValue',
+      field: 'OldNormValue',
+      headerName: 'Old Norm',
+      hide: false
+    },
+    {
+      colId: 'NewNormValue',
+      field: 'NewNormValue',
+      headerName: 'New Norm',
+      hide: false
+    },
+    {
+      colId: 'Comment',
+      field: 'Comment',
+      headerName: 'Reason',
+      hide: false
+    }
+  ]
+
+  const insertPosition = 4;
+  result.splice(insertPosition, 0, ...additionalColumns);
+
+  return [DBMTickColumn, ...DBMGraphColumn, { ...SuggestionCategory }, ...DBMSleepColumn, ...result]
 
 }
+
 export const mapInTransitWhereAboutsRowData = (rowData: Array<any>): Array<any> => {
   if (!rowData || !Array.isArray(rowData)) return []
   // PhysicalInventoryColor
@@ -2250,9 +2276,8 @@ export const mapSubmitRemarkData = (row: any): any => {
       }
     ]
   }
-}
-///////////MTO PROC PLANNING///////////////
 
+}
 
 export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
 
@@ -2625,5 +2650,3 @@ export const mapMaterialCoverageFieldsToColDefs = (fields: ColumnHeaderConfig[])
 
   return [...result, ...PPColumns];
 };
-
-

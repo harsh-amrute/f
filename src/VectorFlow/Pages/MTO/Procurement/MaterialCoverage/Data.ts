@@ -7,7 +7,6 @@ export const openSOSummary = [
         custCount: 29,
         ordValue: 2,
         bucket: 0,
-        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
     },
@@ -18,7 +17,6 @@ export const openSOSummary = [
         custCount: 29, //import order at bom
         ordValue: 2, //import order at bom
         bucket: 0,
-        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
 
@@ -30,7 +28,6 @@ export const openSOSummary = [
         custCount: 29,
         ordValue: 2,
         bucket: 0,
-        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
     },
@@ -41,7 +38,6 @@ export const openSOSummary = [
         custCount: 29,
         ordValue: 2,
         bucket: 0,
-        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
     },
@@ -52,7 +48,6 @@ export const openSOSummary = [
         custCount: 29,
         ordValue: 2,
         bucket: 0,
-        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
     },
@@ -63,7 +58,6 @@ export const openSOSummary = [
         custCount: 29,
         ordValue: 2,
         bucket: 0,
-        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
     }, {
@@ -73,7 +67,6 @@ export const openSOSummary = [
         custCount: 29,
         ordValue: 2,
         bucket: 0,
-        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
     },
@@ -84,7 +77,6 @@ export const openSOSummary = [
         custCount: 29,
         ordValue: 2,
         bucket: 0,
-        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
     },
@@ -95,7 +87,6 @@ export const openSOSummary = [
         custCount: 29,
         ordValue: 2,
         bucket: 0,
-        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
     },
@@ -106,7 +97,6 @@ export const openSOSummary = [
         custCount: 29,
         ordValue: 2,
         bucket: 0,
-        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
     },
@@ -117,7 +107,6 @@ export const openSOSummary = [
         custCount: 29,
         ordValue: 2,
         bucket: 0,
-        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
     },
@@ -128,7 +117,6 @@ export const openSOSummary = [
         custCount: 29,
         ordValue: 2,
         bucket: 0,
-        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
     },
@@ -139,7 +127,6 @@ export const openSOSummary = [
         custCount: 29,
         ordValue: 2,
         bucket: 1,
-        //percent:80% {order count of specific bloack /total order count of the first 6 blocks *100}
         //S:0,
         //E:0,
     },

@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-
 export const Main = styled.div`
     display:flex;
     padding:10px;
@@ -196,7 +195,7 @@ export const ProcurementLayout = styled.div`
 
 /***Analytical screen css */
 export const BPRDailyAnalyticsWrapper = styled.div`
-    padding:10px;
+    padding:0px;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -206,7 +205,7 @@ export const BPRDailyAnalyticsWrapper = styled.div`
 export const BPRDailyAnalyticsContainer = styled.div`
     display:flex;
     flex-direction:column;
-    width:90%;
+    width:95%;
     background: #383737 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #00000034;
     padding:4px 8px;
@@ -227,6 +226,7 @@ export const BPRDailyAnalyticsTableHeaderContainer = styled.div`
     display:flex;
     flex-direction:row;
     color:white;
+    width:100%
 `
 
 export const BPRDailyAnalyticsTableHeader = styled.div`
@@ -337,12 +337,14 @@ const determineColor = (value: any) => {
     if (value === "Green") return 'Green';
 };
 export const ChildrenColorCellRenderer = styled.div<{ value: string }>`
-display: flex;
-align-items: center;
-justify-content: center;
-width: 15px;
-height: 15px;
-border-radius: 50%;
-margin-top: 14px;
-background-color: ${(props) => determineColor(props.value)};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        margin-top: 14px;
+        background-color: ${(props) => determineColor(props.value)};
 `;
+
+

@@ -336,7 +336,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<InTransitWhereAbouts/>)
+          element: lazyLoad(<InTransitWhereAbouts />)
         },
         ...getStoreTransferModuleRoutes()
       ]
