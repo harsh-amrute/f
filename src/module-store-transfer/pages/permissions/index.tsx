@@ -35,39 +35,36 @@ const Permissions = ({ roles }: any) => {
   const listDataPrdPermission = [
     {
       title: t("profile.tabContent.permissions.L1"),
-      name: t("profile.tabContent.permissions.productPermission.brand"),
+      name: process.env.REACT_APP_PRODUCT_PERMISSION_L1,
       data: listBrand,
     },
     {
       title: t("profile.tabContent.permissions.L2"),
-      name: t("profile.tabContent.permissions.productPermission.subBrand"),
+      name: process.env.REACT_APP_PRODUCT_PERMISSION_L2,
       data: listSubBrand,
     },
     {
       title: t("profile.tabContent.permissions.L3"),
-      name: t("profile.tabContent.permissions.productPermission.category"),
+      name: process.env.REACT_APP_PRODUCT_PERMISSION_L3,
       data: listCategories,
     },
   ];
 
+
   const listDataLcPermission = [
     {
       title: t("profile.tabContent.permissions.L1"),
-      name: t(
-        "profile.tabContent.permissions.locationPermission.locationRegion"
-      ),
+      name: process.env.REACT_APP_LOCATION_PERMISSION_L1,
       data: listLCRegion,
     },
     {
       title: t("profile.tabContent.permissions.L2"),
-      name: t("profile.tabContent.permissions.locationPermission.locationType"),
+      name: process.env.REACT_APP_LOCATION_PERMISSION_L2,
       data: listLCType,
     },
     {
       title: t("profile.tabContent.permissions.L3"),
-      name: t(
-        "profile.tabContent.permissions.locationPermission.locationCluster"
-      ),
+      name:process.env.REACT_APP_LOCATION_PERMISSION_L3,
       data: listLCCluster,
     },
   ];
