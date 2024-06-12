@@ -8,11 +8,10 @@ import { useGetPlanningDataCustom } from "../../../../../../../Services/MTA/Supp
 import VFLoader from "../../../../../../../../components/VectorFLOW/commons/VFLoader";
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../../../../helpers/notify";
 import { SCDynamicContainer } from "../../styles";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../../../../../redux/store/store";
 import { toast } from 'react-toastify';
 import { useGetState } from "../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../../../../../../../../context/GridStateContext";
+import { GridState } from "../../../../../../../../VectorFlow/types/BPR";
 
 
 
@@ -23,8 +22,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
     const [colDefs,setColDefs] = useState<any>();
     const {ref} = useContext(GridStateContext)
 
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+    const [gridState,setGridState] = useState<GridState>()
 
     const chunkSize = 10000;
 
@@ -72,13 +70,17 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
         const getTableState = async()=>{
           try{
             const data =  await getState("ExcessInventorycustom")
-            setColumnState(JSON.parse(data.data.data))
+            setGridState(JSON.parse(data.data.data))
           }catch(err:any){
-            setColumnState(colDefs)
+            setGridState({
+                charts:[],
+                columns:colDefs,
+                pivot:false
+            })
           }
         }
         getTableState()
-    },[currentGridState])
+    },[])
     
     useEffect(()=>{
         const fetchCustomPlanningData = async ()=> {
@@ -153,8 +155,14 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                 filter: "agMultiColumnFilter",
                 }}
                 onGridReady={(params)=>{
-                    if(columnState){
-                     params.columnApi.applyColumnState({state:columnState})
+                    if(gridState){
+                        params.columnApi.applyColumnState({state:gridState.columns})
+                        params.api.setPivotMode(gridState.pivot)
+                        if(gridState.charts && Array.isArray(gridState.charts) && gridState.charts.length>0){
+                            gridState.charts.forEach((c:any)=>{
+                                params.api.restoreChart(c)
+                            }) 
+                        }              
                     }
                  }}
                 suppressDragLeaveHidesColumns={true}
