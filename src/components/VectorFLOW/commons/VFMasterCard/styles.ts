@@ -58,7 +58,7 @@ export const VFMasterCardListContainer = styled.div`
 `
 
 export const VFMasterCardListItem = styled.div<{isSelected:boolean}>`
-background-color:${props=> props.isSelected ? '#F4F4F4;' : ''};
+background-color:${props=> props.isSelected ? '#bc3d814d' : ''};
 display:flex;
 align-items:center;
 height: 33px;

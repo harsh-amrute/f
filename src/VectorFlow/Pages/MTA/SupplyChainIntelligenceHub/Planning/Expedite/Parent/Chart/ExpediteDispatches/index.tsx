@@ -172,6 +172,7 @@ const sortData = (data:any,key:string) => {
 
 
 const colDefs3: ColDef[] = [
+  
   {
     field: "color",
     headerName: "Color",
@@ -230,12 +231,12 @@ const colDefs3: ColDef[] = [
         type: "pie",
         title: {
           text: "PRE",
-          fontSize: 12,
-          fontWeight: "bold",
+          fontSize:10,
+          fontFamily:'Roboto',
+          fontWeight:500,
           color:'black'
-
-
         },
+        
         fills: ["#000000","#ED1C24","#FFCB05", "#418D18", "#BCBCBC","#355FD3"],
         angleKey: "pre",
         sectorLabelKey: "pre",
@@ -246,13 +247,15 @@ const colDefs3: ColDef[] = [
           fontSize:8,
           formatter: ({ value }) => `${value}%`,
         },
+        
       },
       {
         type: "donut",
         title: {
           text: "POST",
-          fontSize: 12,
-          fontWeight: "bold",
+          fontSize:10,
+          fontFamily:'Roboto',
+          fontWeight:500,
           color:'black'
 
         },
@@ -267,7 +270,7 @@ const colDefs3: ColDef[] = [
           formatter: ({ value }) => `${value}%`,
         },
       },
-    ],
+    ]
   };
   
   const generateChart = (graphNo: number, withOutContainer?: boolean) => {

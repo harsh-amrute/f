@@ -12,7 +12,9 @@
   /* --ag-border-radius:32px; */
   --ag-font-size: 17px;
   /* --ag-font-family: monospace; */
-  
+  --ag-range-selection-background-color:  #bc3d814d;
+  --ag-alpine-active-color:#BC3D81;
+  --ag-input-focus-border-color:#BC3D81;
 }
 
 .ag-theme-alpine .ag-full-width-row:hover{
