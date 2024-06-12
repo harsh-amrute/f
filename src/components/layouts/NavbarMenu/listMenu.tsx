@@ -34,7 +34,7 @@ export const listMenuParent: any = [
     img: "/assets/img/nav/master_data",
     url: "/master-data-management/control-panel",
     status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
     child: [
       {
         name: "navbar.listMenuParent.masterDataManagement.controlPanel",
@@ -274,7 +274,7 @@ export const listMenuParent: any = [
             url: "/supply-chain-intelligence-hub/open-expediting-requests",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
-         
+
           // {
           //   name: "Vendor Dispatch Report",
           //   img: "/assets/img/nav/arrow_down.svg",
@@ -302,14 +302,14 @@ export const listMenuParent: any = [
         img: "/assets/img/nav/arrow_down.svg",
         url: "/logistics",
         role: ["IST Admin", "IST Requestor"],
-        
-        child:[
+
+        child: [
           {
             name: "InTransit Whereabouts",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/logistics/intransit-whereabouts",
             // role: ["IST Admin", "IST Requestor"],
-            role: ["Admin","VectorConsultant","BPRManager"],
+            role: ["Admin", "VectorConsultant", "BPRManager"],
 
           }
         ]
@@ -496,7 +496,7 @@ export const listMenuParent: any = [
         name: "Procurement Planning",
         img: "/assets/img/nav/arrow_down.svg",
         imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: "/procrmenPlanning/planning",
+        url: "/procurement-planning/planning",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {

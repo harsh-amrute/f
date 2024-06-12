@@ -56,7 +56,7 @@ export const AvailabilityTrendSection = styled.div`
     margin-bottom:10px;
     padding:5px 10px 15px 10px;
     width:100%;
-    border-bottom:dashed 2px #B2B2B2;
+    // border-bottom:dashed 2px #B2B2B2;
 `
 
 export const HistoricalAvailabiltyHeader = styled.p`
@@ -203,7 +203,7 @@ export const ChartWrapper = styled.div`
     align-items:center;
 `
 
-export const CalenderSummaryWrapper  = styled.div`
+export const CalenderSummaryWrapper = styled.div`
     display:flex;
     flex-direction:row;
     width:100%;
@@ -287,4 +287,36 @@ export const ExpandedChartCapsuleWrapper = styled.div`
 
 export const RadioGroup = styled.span`
     display:flex;
+`
+
+export const DefaultViewRendererWrapper = styled.div`
+    height:100%;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding-top:140px;
+`
+
+export const DefaultViewRendererHeader = styled.p`
+    font-weight:500;
+    font-size:20px;
+    line-height:30px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #000000;
+    text-align:center;
+`
+
+export const DefaultViewRendererText = styled.p`
+    font-weight:300;
+    font-size:20px;
+    line-height:25px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #000000;
+    text-align:center;
+    padding:0px 60px;
+    margin-top:10px;
+    margin-bottom:10px;
 `

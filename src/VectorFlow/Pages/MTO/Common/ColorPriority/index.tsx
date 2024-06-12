@@ -14,7 +14,7 @@ const ColorPriority = (props: ICellRendererParams) => {
     const colorValues: ColorValues = props.data.cp[0];
 
     return (
-        <ColorPriorityCellRendererWrapper data-testid="availability-cell-renderer">
+        <ColorPriorityCellRendererWrapper data-testid="cp-cell-renderer">
             <ColorPriorityCellRenderer
                 B={colorValues.B}
                 R={colorValues.R}

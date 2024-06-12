@@ -114,9 +114,7 @@ const MTOActionToolBar = ({ comp }: MTOActionToolBarProps) => {
 
                             <VFSelectedFiltersFilterContent style={{ borderRight: 'solid 2px black' }}>
                                 <VFSelectedFiltersFilterValue>
-                                    <p>{ }</p>
                                     <p style={{ margin: '0px 5px 0px 5px' }}>:</p>
-                                    <p>{ }</p>
                                 </VFSelectedFiltersFilterValue>
                                 <VFSelectedFiltersFilterCloseIcon
                                     src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} />

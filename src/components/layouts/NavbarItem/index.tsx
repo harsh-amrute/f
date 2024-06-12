@@ -14,8 +14,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 import BPRDailyAnalytics from "../../../components/VectorFLOW/layouts/BPRDailyAnalytics";
+import ProcPlanningAnalytics from "../../../components/VectorFLOW/layouts/ProcPlanningAnalytics";
 import AnalyticalScreen from "../../../VectorFlow/Pages/MTO/Procurement/MaterialCoverage/AnalyticalScreen";
-//import ProcPlanningAnalytics from "../../../components/VectorFLOW/layouts/ProcPlanningAnalytics";
+
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -26,8 +27,8 @@ const NavbarItem = ({
   const { t } = useTranslation();
   const { user, isSideBarOpen, toggleSideBar } = useUserData();
   const permission: any = user?.roles?.permission;
-  const {currentView,currentCategory} = useSelector((state:RootState)=>state.mta.planning)
-  const analyticsPaths:Array<string> = ["/supply-chain-intelligence-hub/bpr","/supply-chain-intelligence-hub/rrr","/supply-chain-intelligence-hub/bor","/dbm/dbm-norm-suggestions","/insights-and-trends/research-insights","/insights-and-trends/buffer-trend-report","/insights-and-trends/buffer-trends"]
+  const { currentView, currentCategory } = useSelector((state: RootState) => state.mta.planning)
+  const analyticsPaths: Array<string> = ["/supply-chain-intelligence-hub/bpr", "/supply-chain-intelligence-hub/rrr", "/supply-chain-intelligence-hub/bor", "/dbm/dbm-norm-suggestions", "/insights-and-trends/research-insights", "/insights-and-trends/buffer-trend-report", "/insights-and-trends/buffer-trends"]
   const themeUi = user?.user?.theme_ui;
   const navigate = useNavigate();
   const location = useLocation();
@@ -111,8 +112,8 @@ const NavbarItem = ({
       if (currentView !== 'chart' && currentCategory !== "") {
         return true
       }
-      if( currentCategory===""){
-        return  true
+      if (currentCategory === "") {
+        return true
       }
     }
     if (analyticsPaths.includes(pathname)) {
@@ -129,37 +130,37 @@ const NavbarItem = ({
         return item.role.includes(value)
       });
 
-        if (checkRole) {
-          return (
-            <SCItemChild
-              key={item.url}
-              onClick={() => {
-                navigateWithPrompt(()=>{
-                  navigate(item.url, { replace: true });
-                  if (isHide) {
-                    setWidthResponsive({
-                      widthLeft: "0%",
-                      widthRight: "95%",
-                    });
-                  } else {
-                    setWidthResponsive({
-                      widthLeft: "20%",
-                      widthRight: "75%",
-                    });
-                  }
-                  setIsHide(!isHide);
-                  toggleSideBar(!isSideBarOpen)
+      if (checkRole) {
+        return (
+          <SCItemChild
+            key={item.url}
+            onClick={() => {
+              navigateWithPrompt(() => {
+                navigate(item.url, { replace: true });
+                if (isHide) {
+                  setWidthResponsive({
+                    widthLeft: "0%",
+                    widthRight: "95%",
+                  });
+                } else {
+                  setWidthResponsive({
+                    widthLeft: "20%",
+                    widthRight: "75%",
+                  });
+                }
+                setIsHide(!isHide);
+                toggleSideBar(!isSideBarOpen)
 
-                },item.url,mdm,resetState);
-              }}
-              active={item.url === location.pathname}
-              status={status}
+              }, item.url, mdm, resetState);
+            }}
+            active={item.url === location.pathname}
+            status={status}
+            themeUi={themeUi}
+          >
+            <NavStyle.SCNavChild
               themeUi={themeUi}
+              active={item.url === location.pathname}
             >
-              <NavStyle.SCNavChild
-                themeUi={themeUi}
-                active={item.url === location.pathname}
-              >
               {" "}
               {t(item.name)}
             </NavStyle.SCNavChild>
@@ -238,10 +239,10 @@ const NavbarItem = ({
                 colId: 'color'
               },
               {
-                headerName:'On-Hand.'
+                headerName: 'On-Hand.'
               },
               {
-                headerName:'Pipeline.'
+                headerName: 'Pipeline.'
               },
             ]}
           />
@@ -263,9 +264,9 @@ const NavbarItem = ({
           <ParticularStoreStatus themeUi={themeUi} />
         )}
 
-        {/* {isHide && pathname === "/procrmenPlanning/planning" && menuItem.id === 19 && (
+        {isHide && pathname === "/procrmenPlanning/planning" && menuItem.id === 19 && (
           <ProcPlanningAnalytics themeUi={themeUi} />
-        )} */}
+        )}
 
         {isHide &&
           pathname === "/availability-comparison" &&

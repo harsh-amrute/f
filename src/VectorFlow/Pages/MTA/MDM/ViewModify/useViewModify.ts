@@ -75,7 +75,7 @@ const useViewModify = (pageType: string) => {
 
   const { mutateAsync: masterUIConfiguration, isLoading } = useGetMasterUIConfiguration();
 
-    const [TASK_ID,setTaskId] = useState<string>('');
+  const [TASK_ID, setTaskId] = useState<string>('');
 
   // const [isDataAvailableLocally,setIsDataAvailableLocally] = useState(false);
 

@@ -78,9 +78,9 @@ export const ColorOnLeft = styled.div<{ color: string, height: string }>`
     position:absolute;
     right:100%;
     border-radius: 8px 0 0 8px;
-    background-color: ${props => props.color };
+    background-color: ${props => props.color};
     width:20px;
-    height:${props => props.height };
+    height:${props => props.height};
 
     &:nth-of-type(1){
         top:0px;

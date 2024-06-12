@@ -1,23 +1,23 @@
-import {  useMemo } from "react"
+import { useMemo } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import AvlCellRenderer from '../../Common/AvlCellRenderer';
 import AvailabilityToolTip from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import DetailCellRenderer from "../../Procurement/MaterialCoverage/MaterialCellRendere";
 import { useUserData } from "../../../../../context"
-import { OrderDetailsData,OrderDetailsHeaderData } from '../MaterialCoverage/Data';
+import { OrderDetailsData, OrderDetailsHeaderData } from '../MaterialCoverage/Data';
 import { mapMaterialCoverageFieldsToColDefs } from '../../../../../helpers/utils'
 import ColorCellRenderer from "../../Common/ColorCellRenderer";
 const useMaterialSO = () => {
     const { isSideBarOpen } = useUserData()
-    const {HeaderData} = OrderDetailsHeaderData;
+    const { HeaderData } = OrderDetailsHeaderData;
     const columnDef = mapMaterialCoverageFieldsToColDefs(HeaderData);
-   
-    const LoadData = (data:any) => {
-       const calculate=data.map((item:any) => ({
-           ...item,
-           fkapr: ((item.fka/item.oq)*100).toFixed(2)
-       }))
-       return calculate;
+
+    const LoadData = (data: any) => {
+        const calculate = data.map((item: any) => ({
+            ...item,
+            fkapr: ((item.fka / item.oq) * 100).toFixed(2)
+        }))
+        return calculate;
     }
     const output = LoadData(OrderDetailsData);
     const icons = useMemo(() => {
@@ -26,13 +26,13 @@ const useMaterialSO = () => {
             groupContracted: `<img src="${'/assets/img/VectorFLOW/NMS/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
         };
     }, []);
-   
+
     const autoGroupColumnDef = useMemo(() => {
         return {
             minWidth: 250,
         };
     }, []);
-  
+
     const sideBar = useMemo(() => {
         return {
             toolPanels: ['columns'],
@@ -44,7 +44,7 @@ const useMaterialSO = () => {
             "avlCellRenderer": AvlCellRenderer,
             "availabilityToolTip": AvailabilityToolTip
         }), []);
- 
+
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
         tooltipTrigger: "focus",
@@ -85,7 +85,7 @@ const useMaterialSO = () => {
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,
     };
- 
+
     return {
         isSideBarOpen,
         agGridProps,
@@ -93,5 +93,5 @@ const useMaterialSO = () => {
         RRRRowData: output,
     }
 }
- 
+
 export default useMaterialSO;

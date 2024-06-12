@@ -1,22 +1,23 @@
 import { useMemo } from 'react';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
-import {HeaderChildren} from './Data';
-import {mapSimulateHedaerChildrenFieldsToColDefs} from '../../../../../helpers/utils';
-const MaterialCellRenderer = (params: any) => {
-  //  const {HeaderChildren} = HeaderChildren
-    const columnDef = mapSimulateHedaerChildrenFieldsToColDefs(HeaderChildren)
- 
+import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
+import { mapSimulateHedaerChildrenFieldsToColDefs } from '../../../../../../helpers/utils';
+import GetSimulateHeaderChildren from './GetSimulateChildrenHeader.json';
+import ChildrenColor from "../../../Common/ChildrenColor/ChildrenColor";
+
+const DetailCellRenderer = (params: any) => {
+    const { HeaderChildren } = GetSimulateHeaderChildren;
+    const SimulateChildrenColumns = mapSimulateHedaerChildrenFieldsToColDefs(HeaderChildren);
+
     const customChildrenCellRenderers = useMemo(() => ({
         "coloPriorityOfBall": ChildrenColor
     }), []);
- 
+
     return (
         <div style={{ backgroundColor: 'white' }}>
             <h3 style={{ marginLeft: 20, fontSize: 17 }}>Raw Material Details</h3>
             <VFTable
                 className='child-grid'
-                columnDefs={columnDef}
+                columnDefs={SimulateChildrenColumns}
                 defaultColDef={{
                     cellStyle: {
                         'flex': 1,
@@ -54,5 +55,5 @@ const MaterialCellRenderer = (params: any) => {
         </div>
     );
 };
- 
-export default MaterialCellRenderer;
+
+export default DetailCellRenderer;

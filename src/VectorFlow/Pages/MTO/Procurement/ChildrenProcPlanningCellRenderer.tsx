@@ -1,41 +1,40 @@
 import { useMemo } from 'react';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
-import {HeaderChildren} from './Data';
-import {mapSimulateHedaerChildrenFieldsToColDefs} from '../../../../../helpers/utils';
-const MaterialCellRenderer = (params: any) => {
-  //  const {HeaderChildren} = HeaderChildren
-    const columnDef = mapSimulateHedaerChildrenFieldsToColDefs(HeaderChildren)
- 
+import VFTable from '../../../../components/VectorFLOW/commons/VFTable';
+import { mapProcPlanningChildrenFieldsToColDefs } from '../../../../helpers/utils';
+import GetProcHeaderChildren from './Planning/GetProcHeaderChildren.json';
+import ChildrenColor from "../Common/ChildrenColor/ChildrenColor";
+
+const ChildrenProcPlanningCellRenderer = (params: any) => {
+    const { HeaderChildren } = GetProcHeaderChildren;
+    const ProcPlanningChildrenColumns = mapProcPlanningChildrenFieldsToColDefs(HeaderChildren);
+
     const customChildrenCellRenderers = useMemo(() => ({
         "coloPriorityOfBall": ChildrenColor
     }), []);
- 
+
     return (
         <div style={{ backgroundColor: 'white' }}>
-            <h3 style={{ marginLeft: 20, fontSize: 17 }}>Raw Material Details</h3>
             <VFTable
+                data-testid='VFTable'
                 className='child-grid'
-                columnDefs={columnDef}
+                columnDefs={ProcPlanningChildrenColumns}
                 defaultColDef={{
                     cellStyle: {
-                        'flex': 1,
                         'text-align': 'center',
                         'height': '50px',
                         "font-style": "normal",
                         "font-variant": "normal",
-                        "font-weight": "bold",
+                        "font-weight": "300",
                         "font-size": "20px",
                         "font-family": "Roboto",
                         'text-overflow': 'ellipsis',
                         'white-space': 'nowrap',
                         'resizable': 'true',
                         'background': 'white',
-                        "display": "block",
                     },
                     flex: 0,
                 }}
-                rowData={params.data.children}
+                rowData={params.data && params.data.children ? params.data.children : []}
                 height={300}
                 pagination={true}
                 components={customChildrenCellRenderers}
@@ -54,5 +53,5 @@ const MaterialCellRenderer = (params: any) => {
         </div>
     );
 };
- 
-export default MaterialCellRenderer;
+
+export default ChildrenProcPlanningCellRenderer;

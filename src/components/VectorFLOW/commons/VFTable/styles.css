@@ -1,9 +1,8 @@
-
 .ag-theme-alpine {
     /* --ag-foreground-color: #EBEBEB; */
     /* --ag-background-color: rgb(255, 255, 255); */
     --ag-header-foreground-color: rgb(255, 255, 255);
-    --ag-header-background-color: rgb(255, 255, 255) !important;
+    --ag-header-background-color: rgb(10, 9, 9) !important;
     --ag-header-height: 43px;
     --ag-checkbox-checked-color: #BC3D81;
     --ag-selected-row-background-color: rgb(188, 61, 129, 0.2);
@@ -13,42 +12,46 @@
     --ag-font-size: 17px;
     /* --ag-font-family: monospace; */
 }
- 
+
+.child-grid .ag-header-viewport {
+    background-color: #ffffff;
+}
+
 .child-grid .ag-header-container {
     /* Your styles for child grid header cells */
     background-color: #ffffff;
     /* Change this to your desired background color */
 }
- 
+
 .child-header .ag-header-cell-label {
     background-color: rgb(255, 255, 255) !important;
     color: black !important;
 }
- 
+
 .child-header {
     background-color: rgb(255, 255, 255) !important;
     /* --ag-header-foreground-color: rgb(255, 255, 255); */
 }
- 
+
 .simchild-header {
     background-color: rgb(255, 255, 255) !important;
     /* --ag-header-foreground-color: rgb(255, 255, 255); */
 }
- 
+
 .simchild-header .ag-header-cell-label {
     background-color: rgb(255, 255, 255) !important;
     color: rgb(157, 155, 155) !important;
     font-weight: normal;
 }
- 
+
 .ag-row:hover {
     background-color: rgb(188, 61, 129, 0.3) !important;
 }
- 
+
 .ag-root-wrapper {
     border-radius: 8px 8px 0 0;
 }
- 
+
 .ag-header {
     border-radius: 8px 0px 0 0;
     font-style: normal;
@@ -60,12 +63,12 @@
     letter-spacing: 0px;
     color: #FFFFFF;
 }
- 
+
 .ag-header-icon {
     opacity: 1 !important;
     color: white;
 }
- 
+
 .active-row {
     z-index: 111 !important;
     /* Adjust z-index to suit your needs */
@@ -73,21 +76,21 @@
     /* z-index only works on positioned elements (position:absolute, position:relative, or position:fixed) */
     /* Any other styles */
 }
- 
+
 .ag-row {
     overflow: visible;
 }
- 
+
 .ag-header-row:nth-child(2) {
     background-color: #F7F7F7;
     color: black;
     width: 100% !important;
 }
- 
+
 .ag-header-cell-label {
     justify-content: center;
 }
- 
+
 .selected-record-count {
     font-family: 'Roboto';
     font-style: normal;
@@ -96,46 +99,48 @@
     line-height: 19px;
     color: #6E6969;
     padding-top: 24px;
- 
+
 }
- 
+
 .ag-header-group-cell-with-group {
     justify-content: center;
     --ag-header-foreground-color: rgb(255, 255, 255);
     --ag-header-background-color: rgb(255, 255, 255);
 }
 
+.ag-status-name-value span {
+    color: black;
+}
 
-.ag-theme-alpine .ag-body-horizontal-scroll{
+
+.ag-theme-alpine .ag-body-horizontal-scroll {
     height: unset !important;
     max-height: unset !important;
     min-height: 29px !important;
 }
 
-.ag-theme-alpine .ag-body-horizontal-scroll-viewport{
-    height:unset !important;
+.ag-theme-alpine .ag-body-horizontal-scroll-viewport {
+    height: unset !important;
     max-height: unset !important;
     min-height: unset !important;
 }
 
-.ag-theme-alpine .ag-horizontal-right-spacer{
-    display:none !important;
+.ag-theme-alpine .ag-horizontal-right-spacer {
+    display: none !important;
 }
 
-.ag-theme-alpine .ag-body-vertical-scroll-viewport{
+.ag-theme-alpine .ag-body-vertical-scroll-viewport {
     min-width: unset !important;
     width: 29px !important;
     max-width: unset !important;
 }
 
-.ag-theme-alpine .ag-body-vertical-scroll{
-    min-width:unset !important;
+.ag-theme-alpine .ag-body-vertical-scroll {
+    min-width: unset !important;
     max-width: unset !important;
     width: unset !important;
 }
-.ag-panel-title-bar-button{
-    color:white !important;
+
+.ag-panel-title-bar-button {
+    color: white !important;
 }
-
-
-  

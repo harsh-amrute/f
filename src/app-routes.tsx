@@ -33,6 +33,8 @@ import BufferTrendReport from './VectorFlow/Pages/MTA/InsightsAndTrends/BTR'
 import DBM from './VectorFlow/Pages/MTA/DBM/DBMNormSuggestions'
 import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests'
 import MaterialCov from './VectorFlow/Pages/MTO/Procurement/MaterialCoverage/MaterialCov'
+import ProcurementPlanning from './VectorFlow/Pages/MTO/Procurement/Planning';
+import SimulateFullKit from './VectorFlow/Pages/MTO/Procurement/Planning/SimulateFullKit';
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
 
 // to show loading state for desired page only instead of the entire screen
@@ -79,6 +81,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/insights-and-trends/buffer-trend-report',
     '/dbm/dbm-norm-suggestions',
     '/procurement/material-coverage-open-sales',
+    '/procurement-planning/planning',
+    '/planning/simulative-fullkit',
     '/logistics/intransit-whereabouts'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
@@ -332,7 +336,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<InTransitWhereAbouts/>)
+          element: lazyLoad(<InTransitWhereAbouts />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -447,7 +451,28 @@ export const initRoutes = (): RouteObject[] => {
         ...getStoreTransferModuleRoutes()
       ]
     },
-   
+    {
+      path: '/procurement-planning/planning',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ProcurementPlanning />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/planning/simulative-fullkit',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<SimulateFullKit />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    }
 
 
   ]

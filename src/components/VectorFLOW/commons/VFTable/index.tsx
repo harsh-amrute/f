@@ -14,7 +14,6 @@ interface VFTableProps extends AgGridReactProps {
 
 const VFTable = forwardRef((props: VFTableProps, ref: any) => {
 
-
   return (
     <VFTableWrapper
       className="ag-theme-alpine"
