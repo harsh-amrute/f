@@ -149,7 +149,7 @@ const AvailabilityAgeingTrend = () => {
             style={{
               marginLeft: "4px",
               textAlign: "center",
-              width: 30,
+              width: 40,
               height: 28,
               border: "1px solid #838383",
               boxShadow: " 0px 6px 12px #8D8D8D29",
