@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useDeleteDraft, useDeleteTask, useValidateMaster } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData,useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount,useGetMasterDataRetail } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -87,7 +87,11 @@ const useViewModify = (pageType:string) => {
 
     const {mutateAsync:getMasterData} = useGetMasterData();
 
+    const {mutateAsync:getMasterDataRetail} = useGetMasterDataRetail();
+    
     const {mutateAsync:getCount} = useGetCount();
+
+    const {mutateAsync:getRetailCount} = useGetRetailCount();
 
     const {mutateAsync:createDraft} = useCreateDraft()
 
@@ -96,6 +100,8 @@ const useViewModify = (pageType:string) => {
     const {mutateAsync:deleteDraft} = useDeleteDraft()
 
     const {mutateAsync:modifyMaster} = useModifyMasterData();
+
+    const {mutateAsync:modifyMasterRetail} = useModifyMasterDataRetail();
 
     const {mutateAsync:deleteTask} = useDeleteTask();
 
@@ -307,19 +313,26 @@ const useViewModify = (pageType:string) => {
         dispatch(REMOVE_COLDEFS(['error','warning']));
         const newRow = { ...data };
         newRow[field] = newValue;
+        
         const newRowData = activeMaster.rowData.map((row:any)=>{
           if(JSON.stringify(row) === JSON.stringify(data)){
-            const {error,warning} = checkError(newRow,activeMaster,pageType)
-            if(error){
-              newRow.error = error
+            let err,warn;
+            if(activeMaster.id < 14){
+              const {error,warning} = checkError(newRow,activeMaster,pageType);
+              err = error;
+              warn = warning;
+            }
+            
+            if(err){
+              newRow.error = err
               addInvalidDataColDefs('error');
             
             }
             else{
               newRow.error = ''
             }
-            if(warning){
-              newRow.warning = warning
+            if(warn){
+              newRow.warning = warn
               addInvalidDataColDefs('warning');
             
             }
@@ -331,6 +344,7 @@ const useViewModify = (pageType:string) => {
           }
           return row;
         })
+        console.log(newRowData)
         setEnableEditOnlineReset(true)
         dispatch(UPDATE_ROW_DATA([...newRowData]))
       },
@@ -406,10 +420,20 @@ const useViewModify = (pageType:string) => {
       }
       let resultData;
       if(count){
-        resultData =  await getCount(payload);
+        if(activeMaster.id > 14){
+          resultData =  await getRetailCount(payload);
+        }
+        else{
+          resultData =  await getCount(payload);
+        }
       }
       else{
-        resultData = await getMasterData(payload); 
+        if(activeMaster.id > 14){
+          resultData = await getMasterDataRetail(payload); 
+        }
+        else{
+          resultData = await getMasterData(payload); 
+        }
       }
 
       return resultData;
@@ -432,10 +456,20 @@ const useViewModify = (pageType:string) => {
       }
       let resultData;
       if(count){
-        resultData =  await getCount(payload);
+        if(activeMaster.id > 14){
+          resultData =  await getRetailCount(payload);
+        }
+        else{
+          resultData =  await getCount(payload);
+        }
       }
       else{
-        resultData = await getMasterData(payload); 
+        if(activeMaster.id > 14){
+          resultData = await getMasterDataRetail(payload); 
+        }
+        else{
+          resultData = await getMasterData(payload); 
+        }
       }
 
       return resultData;
@@ -884,8 +918,16 @@ const useViewModify = (pageType:string) => {
                 payload.data = rowData.slice(i)
                 toast.update(toastId,{render:`Submitting Data ${rowData.length}/${rowData.length}`})
               }
-      
-              const data:any = await modifyMaster(payload);
+              
+              let data:any;
+              
+              if(activeMaster.id > 14){
+                data = await modifyMasterRetail(payload);
+              }
+              else{
+                data = await modifyMaster(payload);
+              }
+
 
               if(taskId === '' && i!==0) throw new Error("Something Went Wrong");
 
