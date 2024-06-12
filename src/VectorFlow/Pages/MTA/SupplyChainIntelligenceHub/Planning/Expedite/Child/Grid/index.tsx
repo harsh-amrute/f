@@ -18,7 +18,6 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
     const [currentRowData,setCurrentRowData] = useState<any>();
     const [activeRow,setActiveRow] = useState<any>();
     const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
-    console.log(currentRowData)
     const {mutateAsync:submitRemark} = useSubmitOpenExpediteRequest()
     const submitOpenExpediteRemark = async(remark:string)=>{
         if(remark.length===0){
@@ -27,13 +26,17 @@ const ExpediteChildGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCat
         }
         notifyLoader('Submiting request')
         try{
+            const tempEta = currentRowData.eta.replaceAll("-","/").substring(0,10)
             await submitRemark({
                 data:[
                     {
-                        "sc": currentRowData.sc,
                         "wc":"GE04",
+                        "eta":tempEta,
+                        "Request":remark,
                         "pwc":"",
-                        "Request":remark
+                        "sc": currentRowData.sc                    
+                       
+                       
                       }
                 ]
             })
