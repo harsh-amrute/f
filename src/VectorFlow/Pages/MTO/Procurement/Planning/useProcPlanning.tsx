@@ -10,7 +10,6 @@ import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
-import GetProcPlanningData from './GetProcPlanningData.json';
 import GetProcPlanningDataColumn from './GetProcPlanningDataColumn.json';
 import { mapProcPlanningFieldsToColDefs } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
@@ -65,7 +64,6 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 
 const useProcPlanning = () => {
     const { HeaderData } = GetProcPlanningDataColumn;
-    const { data } = GetProcPlanningData;
     const gridRef = useRef<AgGridReact>(null);
     const { isSideBarOpen } = useUserData()
     const [currentPage] = useState<any>(1);
@@ -87,11 +85,15 @@ const useProcPlanning = () => {
     ];
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
 
-    const { mutateAsync: getProcPlanningData, isLoading: isBPRUILoading, isError } = userGetProcPlanningData()
-
+    const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
+    //isLoading: isProcPlanningUILoading, isError
     const fetchData = useCallback(async (date: string) => {
-        const response = await getProcPlanningData(date);
-        setData(response?.data?.data?.results || []);
+        try {
+            const response = await getProcPlanningData(date);
+            setData(response?.data?.data?.results || []);
+        } catch (error) {
+            console.log("error ")
+        }
     }, [getProcPlanningData]);
 
     useEffect(() => {

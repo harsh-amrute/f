@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import axios from 'axios'
-import { ColumnHeaderConfigDataPayload } from '../../../../VectorFlow/types/ColumnHeaderConfig';
-
 
 export namespace ProcPlanningService {
 
@@ -10,8 +8,16 @@ export namespace ProcPlanningService {
             headers: { 'Content-Type': 'application/json' }
         });
     }
-
-
+    export const GetProcDataAfterSimulation = async (date: string) => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getProdDataAfterSimulation/?releaseDate=${date}`, {
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+    export const UpdateBatchWiseCompAllSimulation = async (body: any) => {
+        return await axios.patch(process.env.REACT_APP_VF_API_HOST_MTO + `/updateBatchwiseCompAllocAtSimulation/`, JSON.stringify(body), {
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
 }
 
 

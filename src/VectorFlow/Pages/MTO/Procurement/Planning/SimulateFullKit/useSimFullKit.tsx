@@ -1,8 +1,7 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useCallback, useEffect } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { useUserData } from "../../../../../../context"
 import GetSimulateFullKitHeader from './GetSimulateFullKitHeader.json';
-import GetSimulateFullKitData from './GetSimulateFullKitData.json';
 import AvlCellRenderer from "../../../Common/AvlCellRenderer";
 import AvailabilityToolTip from "../../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../../components/VectorFLOW/commons/VFFloatingTab"
@@ -11,14 +10,17 @@ import { useLocation } from 'react-router-dom';
 import ColorCellRenderer from "../../../Common/ColorCellRenderer";
 import { mapSimulateProcPlanningFieldsToColDefs } from '../../../../../../helpers/utils';
 import DetailCellRenderer from "./DetailCellRenderer";
-
+import { userGetProcAfterSimulationPlanningData, UpdateBatchWiseCompAllSimulation } from "../../../../../Services/MTO/ProcPlanning/index";
 const useSimFullKit = () => {
     const { HeaderData } = GetSimulateFullKitHeader;
-    const { data } = GetSimulateFullKitData;
     const { isSideBarOpen } = useUserData()
     const [currentPage] = useState<any>(1);
     const location = useLocation();
     const rowsData = location.state?.ShortageDatas;
+    const [data, setData] = useState([]);
+    const [incOrderFullkitData, setIncOrderFullKitData] = useState<any[]>([]);
+    const [cumulativeFullKitData, setCumulativeFullKitDara] = useState<any[]>([]);
+
 
     if (rowsData) {
         rowsData.forEach((item: any) => {
@@ -46,31 +48,91 @@ const useSimFullKit = () => {
             }
         });
     }
+    // const Save = () => {
+    //     const newData: object[] = [];
+    //     if (rowsData) {
+    //         rowsData.forEach((item: any) => {
+    //             if (Array.isArray(item.children)) {
+    //                 item.children.forEach((child: any) => {
+    //                     const newEntry = {
+    //                         on: child.on,
+    //                         lid: child.lid,
+    //                         item: item.rm,
+    //                         oq: child.oq,
+    //                         aq: child.aq,
+    //                         easa: item.eas,
+    //                         remq: child.remq
+    //                     };
+    //                     newData.push(newEntry);
+    //                 });
+    //             }
+    //         });
+    //     }
     const Save = () => {
-        const newData: object[] = [];
+        const newData: { sno: string; on: string; lid: string; item: string; easa: number }[] = [];
         if (rowsData) {
             rowsData.forEach((item: any) => {
                 if (Array.isArray(item.children)) {
                     item.children.forEach((child: any) => {
                         const newEntry = {
+                            sno: child.sno,
                             on: child.on,
                             lid: child.lid,
                             item: item.rm,
-                            oq: child.oq,
-                            aq: child.aq,
                             easa: item.eas,
-                            remq: child.remq
+                            // remq: child.remq
                         };
                         newData.push(newEntry);
                     });
                 }
             });
         }
-        const wrappedData = { data: newData };
-        // console.log("JSON", JSON.stringify(wrappedData, null, 2));
-        return wrappedData;
-
+        return newData;
     };
+
+
+    const { mutateAsync: userGetProcAfterSimulationData } = userGetProcAfterSimulationPlanningData();
+    const { mutateAsync: updateBatchWiseCompAllSimulation } = UpdateBatchWiseCompAllSimulation();
+    //isLoading: isProcPlanningUILoading, isError
+
+    const fetchData = useCallback(async (date: string) => {
+        try {
+            const wrappedData = Save();
+            await updateBatchWiseCompAllSimulation(wrappedData);
+            const response = await userGetProcAfterSimulationData(date);
+            setData(response?.data?.data?.results);
+        } catch (error) {
+            console.log("error ", error);
+        }
+    }, [rowsData, userGetProcAfterSimulationData]);
+
+    useEffect(() => {
+        const date = "2025-12-12";
+        if (rowsData) {
+            fetchData(date);
+        }
+    }, [rowsData, fetchData]);
+
+    useEffect(() => {
+        if (data.length && HeaderData.length) {
+            const initilizeData = (data: any) => {
+                const calculateData = data.map((item: any) => ({
+                    ...item,
+                    fkapr: ((item.fka / item.oq) * 100).toFixed(2)
+                }));
+                const WithZeroEas = calculateData.filter((item: any) => item.children.every((child: any) => child.eas === 0));
+                const WithoutZeroEas = calculateData.filter((item: any) => item.children.every((child: any) => child.eas !== 0));
+
+                const BothEasData = calculateData.filter((item: any) => {
+                    return item.children.some((child: any) => child.eas === 0) && item.children.some((child: any) => child.eas !== 0);
+                });
+                setIncOrderFullKitData([...WithoutZeroEas, ...BothEasData]);
+                setCumulativeFullKitDara([...WithZeroEas, ...BothEasData]);
+                return { WithZeroEas, WithoutZeroEas, BothEasData };
+            };
+            initilizeData(data);
+        }
+    }, [data]);
 
     const tabs: Array<VFFloatingTabItemProps> = [
         {
@@ -84,26 +146,8 @@ const useSimFullKit = () => {
             value: 'cf'
         }
     ];
-
-    const initilizeData = (data: any) => {
-        const calculateData = data.map((item: any) => ({
-            ...item,
-            fkapr: ((item.fka / item.oq) * 100).toFixed(2)
-        }));
-        const WithZeroEas = calculateData.filter((item: any) => item.children.every((child: any) => child.eas === 0));
-        const WithoutZeroEas = calculateData.filter((item: any) => item.children.every((child: any) => child.eas !== 0));
-
-        const BothEasData = calculateData.filter((item: any) => {
-            return item.children.some((child: any) => child.eas === 0) && item.children.some((child: any) => child.eas !== 0);
-        });
-
-        return { WithZeroEas, WithoutZeroEas, BothEasData };
-    }
     const SimulateColumns = mapSimulateProcPlanningFieldsToColDefs(HeaderData);
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
-    const { WithZeroEas, WithoutZeroEas, BothEasData } = initilizeData(data);
-    const [incOrderFullkitData] = useState([...WithoutZeroEas, ...BothEasData]);
-    const [cumulativeFullKitData] = useState([...WithZeroEas, ...BothEasData]);
 
     const icons = useMemo(() => {
         return {
@@ -216,7 +260,7 @@ const useSimFullKit = () => {
         toggleCurrentTab,
         renderView,
         currentTab,
-        Save
+        // Save
     }
 }
 

@@ -17,7 +17,7 @@ const ProcurementPlanning = () => {
                 onDateChange={handleDateChange}
             />
             <text onClick={() => {
-                fetchData(date) //'2024-12-12'
+                fetchData(date)
             }} style={{ fontSize: 34 }}>Submit</text>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 
