@@ -12,7 +12,9 @@ jest.mock('react-i18next', () => ({
 jest.mock('../../../../VectorFlow/Pages/MTO/Procurement/Planning/useProcPlanning', () => ({
     __esModule: true,
     default: () => ({
-        GetCount: {
+        fetchData: jest.fn(), // Add a mock function for fetchData
+        date: "2024-06-13", // Mock a date for testing
+        counts: {
             short: 0,
             complete: 0,
             total: 0,
@@ -22,34 +24,10 @@ jest.mock('../../../../VectorFlow/Pages/MTO/Procurement/Planning/useProcPlanning
 
 describe('ProcPlanningAnalytics Component', () => {
     it('renders with correct data', () => {
-        // Mock globalStyles
-        // const mockGlobalStyles = {
-        //     chooseThemeColor: {
-        //         NOIRFUSION: {
-        //             backGroundParticular: '#ffffff',
-        //         },
-
-        //     },
-        // };
-
         render(
             <ProcPlanningAnalytics
                 themeUi="NOIRFUSION"
             />
         );
-
-        //Check for the list title
-        // expect(screen.getByText('ProcPlanning.Analytics')).toBeInTheDocument();
-
-        // // Check for the list data
-        // expect(screen.getByText('ProcPlanning.cntshort')).toBeInTheDocument();
-        // expect(screen.getAllByText('0')[0]).toBeInTheDocument();
-
-        // expect(screen.getByText('ProcPlanning.cntfa')).toBeInTheDocument();
-        // expect(screen.getAllByText('0')[0]).toBeInTheDocument();
-
-        // // Check for the total data
-        // expect(screen.getByText('ProcPlanning.total')).toBeInTheDocument();
-        // expect(screen.getAllByText('0')[0]).toBeInTheDocument();
     });
 });
