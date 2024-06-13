@@ -23,7 +23,7 @@ const MaterialCov = () => {
   }
 
   return (
-    <div style={{ width: "85%" }}>
+    <div style={{ width: "100%" }}>
       <ActionToolBar
         comp={'MaterialCov'}
       />

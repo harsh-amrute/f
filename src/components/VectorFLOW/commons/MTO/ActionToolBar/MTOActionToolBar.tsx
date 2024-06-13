@@ -91,7 +91,20 @@ const MTOActionToolBar = ({ comp }: MTOActionToolBarProps) => {
                                     }}
                                 />
                             </div>
+
+                            <div 
+                            //style={{borderWidth:1,borderColor:'#'}}
+                            >
+                                <button 
+                                style={{
+                                    borderRadius:'8px',
+                                    border:'solid 1px #BC3D81',
+                                    width:'112px',
+                                    height:'43px',
+                                }}>Submit</button>
+                            </div>
                         </div>
+                       
                         :
                         null
                     }

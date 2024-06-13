@@ -484,7 +484,7 @@ export const OrderDetailsData = [
         "ordRD": '23-Jul-13',
         "children": [
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
                 "rmrq": 33,
@@ -492,26 +492,26 @@ export const OrderDetailsData = [
                 "rmall": 13,
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
@@ -533,7 +533,7 @@ export const OrderDetailsData = [
         "ordRD": '23-Jul-13',
         "children": [
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB6-NOTCH-KOTCH',
                 "rmrq": 33,
@@ -541,26 +541,26 @@ export const OrderDetailsData = [
                 "rmall": 13,
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB6-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB6-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB6-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
@@ -582,7 +582,7 @@ export const OrderDetailsData = [
         "ordRD": '23-Jul-13',
         "children": [
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB9-NOTCH-KOTCH',
                 "rmrq": 33,
@@ -590,26 +590,26 @@ export const OrderDetailsData = [
                 "rmall": 13,
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB9-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB9-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB9-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
@@ -631,7 +631,7 @@ export const OrderDetailsData = [
         "ordRD": '23-Jul-13',
         "children": [
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB6-NOTCH-KOTCH',
                 "rmrq": 33,
@@ -639,26 +639,26 @@ export const OrderDetailsData = [
                 "rmall": 13,
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB6-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB6-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB6-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
@@ -680,7 +680,7 @@ export const OrderDetailsData = [
         "ordRD": '23-Jul-13',
         "children": [
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB4-NOTCH-KOTCH',
                 "rmrq": 33,
@@ -688,26 +688,26 @@ export const OrderDetailsData = [
                 "rmall": 13,
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB4-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB4-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB4-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
@@ -729,7 +729,7 @@ export const OrderDetailsData = [
         "ordRD": '23-Jul-13',
         "children": [
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
                 "rmrq": 33,
@@ -737,26 +737,26 @@ export const OrderDetailsData = [
                 "rmall": 13,
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
@@ -778,7 +778,7 @@ export const OrderDetailsData = [
         "ordRD": '23-Jul-13',
         "children": [
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
                 "rmrq": 33,
@@ -786,26 +786,26 @@ export const OrderDetailsData = [
                 "rmall": 13,
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
@@ -827,7 +827,7 @@ export const OrderDetailsData = [
         "ordRD": '23-Jul-13',
         "children": [
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
                 "rmrq": 33,
@@ -835,26 +835,26 @@ export const OrderDetailsData = [
                 "rmall": 13,
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
@@ -876,7 +876,7 @@ export const OrderDetailsData = [
         "ordRD": '23-Jul-13',
         "children": [
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
                 "rmrq": 33,
@@ -884,26 +884,26 @@ export const OrderDetailsData = [
                 "rmall": 13,
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
@@ -925,7 +925,7 @@ export const OrderDetailsData = [
         "ordRD": '23-Jul-13',
         "children": [
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
                 "rmrq": 33,
@@ -933,26 +933,26 @@ export const OrderDetailsData = [
                 "rmall": 13,
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
             {
-                "clr":"Yellow",
+                "clr": "Yellow",
                 "rmc": "BMN1231",
                 "rmd": 'SB2-NOTCH-KOTCH',
-                "rmrq":35,
+                "rmrq": 35,
                 "rma": 54,
                 "rmall": 13
             },
@@ -1146,6 +1146,165 @@ export const OrderDetailsHeaderData =
 }
 
 
+export const MaterRequirementData = [
+    {
+        "cp": [
+            {
+                "B": 33.33,
+                "R": 33.33,
+                "Y": 33.33
+            }
+        ],
+        "rmc": "AREB5092381",
+        "rmd": "SB2-NOTCH-KOTH-ABC-11",
+        "nooi": 66,
+        "rmr": 12,
+        "msrm": 12
+    },
+    {
+        "cp": [
+            {
+                "B": 12,
+                "R": 38,
+                "Y": 50
+            }
+        ],
+        "rmc": "AREB5092382",
+        "rmd": "SB2-NOTCH-KOTH-ABC-12",
+        "nooi": 70,
+        "rmr": 10,
+        "msrm": 22
+    },
+    {
+        "cp": [
+            {
+                "B": 22,
+                "R": 48,
+                "Y": 30
+            }
+        ],
+        "rmc": "AREB5092383",
+        "rmd": "SB2-NOTCH-KOTH-ABC-13",
+        "nooi": 45,
+        "rmr": 12,
+        "msrm": 10
+    },
+    {
+        "cp": [
+            {
+                "B": 30,
+                "R": 50,
+                "Y": 20
+            }
+        ],
+        "rmc": "AREB5092384",
+        "rmd": "SB2-NOTCH-KOTH-ABC-14",
+        "nooi": 50,
+        "rmr": 20,
+        "msrm": 10
+    },
+    {
+        "cp": [
+            {
+                "B": 20,
+                "R": 40,
+                "Y": 40
+            }
+        ],
+        "rmc": "AREB5092385",
+        "rmd": "SB2-NOTCH-KOTH-ABC-15",
+        "nooi": 66,
+        "rmr": 12,
+        "msrm": 12
+    },
+    {
+        "cp": [
+            {
+                "B": 25,
+                "R": 35,
+                "Y": 40
+            }
+        ],
+        "rmc": "AREB5092386",
+        "rmd": "SB2-NOTCH-KOTH-ABC-16",
+        "nooi": 66,
+        "rmr": 12,
+        "msrm": 12
+    },
+    {
+        "cp": [
+            {
+                "B": 30,
+                "R": 40,
+                "Y": 30
+            }
+        ],
+        "rmc": "AREB5092387",
+        "rmd": "SB2-NOTCH-KOTH-ABC-17",
+        "nooi": 66,
+        "rmr": 12,
+        "msrm": 12
+    }
+]
+
+export const HeaderMaterialRequirement={
+    "HeaderData": [
+        {
+            "rn": "materialRequirement",
+            "jf": "cp",
+            "cp": 1,
+            "hdr": "Color Priority ",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialRequirement",
+            "jf": "rmc",
+            "cp": 2,
+            "hdr": "RM Code",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialRequirement",
+            "jf": "rmd",
+            "cp": 3,
+            "hdr": "RM Description",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialRequirement",
+            "jf": "nooi",
+            "cp": 4,
+            "hdr": "No Of Order Impacted",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialRequirement",
+            "jf": "rmr",
+            "cp": 5,
+            "hdr": "RM Required",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
+        {
+            "rn": "materialRequirement",
+            "jf": "msrm",
+            "cp": 6,
+            "hdr": "Min Set RM",
+            "vs": true,
+            "ca": "right",
+            "val": "*Error*"
+        },
+    ]
+}
 
 // {
 //     c: ["c1","c2"],
