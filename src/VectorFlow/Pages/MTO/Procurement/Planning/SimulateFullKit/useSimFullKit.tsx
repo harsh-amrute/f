@@ -88,14 +88,16 @@ const useSimFullKit = () => {
     }, [rowsData, userGetProcAfterSimulationData]);
 
     useEffect(() => {
-        const selectedDate = date;
-        if (rowsData) {
-            fetchData(selectedDate);
+        if ('' !== date) {
+            const selectedDate = date;
+            if (rowsData) {
+                fetchData(selectedDate);
+            }
         }
     }, [rowsData, fetchData]);
 
     useEffect(() => {
-        if (data.length && HeaderData.length) {
+        if (data.length !== undefined && HeaderData.length !== undefined) {
             const initilizeData = (data: any) => {
                 const calculateData = data.map((item: any) => ({
                     ...item,

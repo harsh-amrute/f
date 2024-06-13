@@ -71,6 +71,13 @@ const useProcPlanning = (date: string) => {
     const [datas, setData] = useState([]);
     const [ShortageDatas, SetShortageData] = useState<any[]>([]);
     const [CompleteAvailableDatas, setCompleteAvailableData] = useState<any[]>([]);
+    const [counts, setCounts] = useState({
+        short: 0,
+        complete: 0,
+        total: 0,
+    });
+
+
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: 'ca',
@@ -123,7 +130,17 @@ const useProcPlanning = (date: string) => {
 
                 SetShortageData(ShortageData);
                 setCompleteAvailableData(CompleteAvailableData);
+                const count = {
+                    short: ShortageData.length,
+                    complete: CompleteAvailableData.length,
+                    total: ShortageData.length + CompleteAvailableData.length,
+                };
+                setCounts(count);
+                localStorage.setItem("shortCount", JSON.stringify(count.short));
+                localStorage.setItem("completeCount", JSON.stringify(count.complete));
+                localStorage.setItem("totalCount", JSON.stringify(count.total));
                 return { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData };
+
             };
             initializeData(datas, HeaderData);
         }
@@ -334,12 +351,6 @@ const useProcPlanning = (date: string) => {
         }
     };
 
-    const GetCount = useMemo(() => ({
-        "short": ShortageDatas.length,
-        "complete": CompleteAvailableDatas.length,
-        "total": ShortageDatas.length + CompleteAvailableDatas.length,
-    }), [ShortageDatas, CompleteAvailableDatas]);
-
     return {
         isSideBarOpen,
         agGridProps,
@@ -347,8 +358,9 @@ const useProcPlanning = (date: string) => {
         toggleCurrentTab,
         renderView,
         excelDownload,
-        GetCount,
-        fetchData
+        counts,
+        fetchData,
+        date,
     }
 }
 
