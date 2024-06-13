@@ -13,7 +13,6 @@ import { notifyError, notifyLoader, notifySuccess } from '../../../../../../../.
 import { toast } from 'react-toastify';
 
 const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
-
     const [isExpeditingModalOpen,toggleExpeditingModal] =  useState<boolean>(false)
 
     const [activeRow,setActiveRow] = useState<any>();
@@ -24,16 +23,16 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCa
     const submitOpenExpediteRemark = async(remark:string)=>{
         notifyLoader('Submiting request')
         try{
-            await submitRemark({
-                data:[
+            const tempEta:string = currentRowData.eta.substring(0,10).replaceAll('-','/')
+            await submitRemark(
                     {
-                        "sc": currentRowData.sc,
-                        "wc":"GE04",
-                        "pwc":"",
-                        "Request":remark
+                        "skuCode": currentRowData.sc,
+                        "whCode":currentRowData.wc,
+                        "parentWhCode":currentRowData.pl,
+                        "request":remark,
+                        "eta":tempEta
                       }
-                ]
-            })
+                )
         toast.dismiss()
         notifySuccess('Request submitted sucessfully')
         }catch(err:any){
