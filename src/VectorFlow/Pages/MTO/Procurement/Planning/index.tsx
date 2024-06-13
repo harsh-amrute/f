@@ -5,8 +5,8 @@ import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloati
 import { useState } from 'react';
 
 const ProcurementPlanning = () => {
-    const { renderView, toggleCurrentTab, fetchData } = useProcPlanning();
     const [date, selectedDate] = useState<string>('');
+    const { renderView, toggleCurrentTab, fetchData } = useProcPlanning(date);
     const handleDateChange = (date: string) => {
         selectedDate(date);
     };
@@ -15,10 +15,8 @@ const ProcurementPlanning = () => {
             <ActionToolBar
                 comp={'Procurement Planning'}
                 onDateChange={handleDateChange}
+                submitDate={() => { fetchData(date) }}
             />
-            <text onClick={() => {
-                fetchData(date)
-            }} style={{ fontSize: 34 }}>Submit</text>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 
                 <VFFloatingTab

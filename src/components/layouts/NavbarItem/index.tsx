@@ -264,7 +264,7 @@ const NavbarItem = ({
           <ParticularStoreStatus themeUi={themeUi} />
         )}
 
-        {isHide && pathname === "/procrmenPlanning/planning" && menuItem.id === 19 && (
+        {isHide && pathname === "/procurement-planning/planning" && menuItem.id === 19 && (
           <ProcPlanningAnalytics themeUi={themeUi} />
         )}
 

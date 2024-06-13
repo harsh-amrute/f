@@ -62,7 +62,7 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
     };
 };
 
-const useProcPlanning = () => {
+const useProcPlanning = (date: string) => {
     const { HeaderData } = GetProcPlanningDataColumn;
     const gridRef = useRef<AgGridReact>(null);
     const { isSideBarOpen } = useUserData()
@@ -84,9 +84,7 @@ const useProcPlanning = () => {
         }
     ];
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
-
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
-    //isLoading: isProcPlanningUILoading, isError
     const fetchData = useCallback(async (date: string) => {
         try {
             const response = await getProcPlanningData(date);
@@ -155,8 +153,8 @@ const useProcPlanning = () => {
 
     const toggleCurrentTab = useCallback((tab: VFFloatingTabItemProps) => setCurrentTab(tab), []);
     const navigateToSimulateScreen = useCallback(() => {
-        navigate("/planning/simulative-fullkit", { state: { ShortageDatas } });
-    }, [navigate, ShortageDatas]);
+        navigate("/planning/simulative-fullkit", { state: { ShortageDatas, date } });
+    }, [navigate, ShortageDatas, date]);
 
     const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
         return {
@@ -336,11 +334,11 @@ const useProcPlanning = () => {
         }
     };
 
-    const GetCount = {
+    const GetCount = useMemo(() => ({
         "short": ShortageDatas.length,
         "complete": CompleteAvailableDatas.length,
-        "total": ShortageDatas.length + CompleteAvailableDatas.length
-    };
+        "total": ShortageDatas.length + CompleteAvailableDatas.length,
+    }), [ShortageDatas, CompleteAvailableDatas]);
 
     return {
         isSideBarOpen,

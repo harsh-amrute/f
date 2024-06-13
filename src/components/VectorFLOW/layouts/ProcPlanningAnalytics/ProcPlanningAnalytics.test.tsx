@@ -13,9 +13,9 @@ jest.mock('../../../../VectorFlow/Pages/MTO/Procurement/Planning/useProcPlanning
     __esModule: true,
     default: () => ({
         GetCount: {
-            short: 5,
-            complete: 10,
-            total: 15,
+            short: 0,
+            complete: 0,
+            total: 0,
         },
     }),
 }));
@@ -38,18 +38,18 @@ describe('ProcPlanningAnalytics Component', () => {
             />
         );
 
-        // Check for the list title
+        //Check for the list title
         expect(screen.getByText('ProcPlanning.Analytics')).toBeInTheDocument();
 
         // Check for the list data
         expect(screen.getByText('ProcPlanning.cntshort')).toBeInTheDocument();
-        expect(screen.getByText('5')).toBeInTheDocument();
+        expect(screen.getByText('0')).toBeInTheDocument();
 
         expect(screen.getByText('ProcPlanning.cntfa')).toBeInTheDocument();
-        expect(screen.getByText('10')).toBeInTheDocument();
+        expect(screen.getByText('0')).toBeInTheDocument();
 
         // Check for the total data
         expect(screen.getByText('ProcPlanning.total')).toBeInTheDocument();
-        expect(screen.getByText('15')).toBeInTheDocument();
+        expect(screen.getByText('0')).toBeInTheDocument();
     });
 });

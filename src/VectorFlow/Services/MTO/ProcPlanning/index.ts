@@ -19,22 +19,6 @@ export const userGetProcAfterSimulationPlanningData = () => {
     });
 }
 
-// export const UpdateBatchWiseCompAllSimulation = () => {
-//     return useMutation(QUERY_KEYS.UpdateBatchWiseCompAllSimulation, async (data: [{ sno: number, on: string, lid: string, item: string, easa: number }]) => {
-//         return await ProcPlanningService.UpdateBatchWiseCompAllSimulation(data);
-//     })
-// }
-// type SimulationData = { sno: number, on: string, lid: string, item: string, easa: number };
-
-// export const UpdateBatchWiseCompAllSimulation = () => {
-//     return useMutation<any, Error, SimulationData[]>(
-//         QUERY_KEYS.UpdateBatchWiseCompAllSimulation,
-//         async (data: SimulationData[]) => {
-//             return await ProcPlanningService.UpdateBatchWiseCompAllSimulation(data);
-//         }
-//     );
-// }
-
 export const UpdateBatchWiseCompAllSimulation = () => {
     return useMutation(async (body: any) => {
         return await ProcPlanningService.UpdateBatchWiseCompAllSimulation(body)

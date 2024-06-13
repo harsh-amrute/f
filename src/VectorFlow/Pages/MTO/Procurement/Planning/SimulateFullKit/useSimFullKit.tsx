@@ -11,17 +11,18 @@ import ColorCellRenderer from "../../../Common/ColorCellRenderer";
 import { mapSimulateProcPlanningFieldsToColDefs } from '../../../../../../helpers/utils';
 import DetailCellRenderer from "./DetailCellRenderer";
 import { userGetProcAfterSimulationPlanningData, UpdateBatchWiseCompAllSimulation } from "../../../../../Services/MTO/ProcPlanning/index";
+
+
 const useSimFullKit = () => {
     const { HeaderData } = GetSimulateFullKitHeader;
     const { isSideBarOpen } = useUserData()
     const [currentPage] = useState<any>(1);
     const location = useLocation();
     const rowsData = location.state?.ShortageDatas;
+    const date = location.state?.date;
     const [data, setData] = useState([]);
     const [incOrderFullkitData, setIncOrderFullKitData] = useState<any[]>([]);
     const [cumulativeFullKitData, setCumulativeFullKitDara] = useState<any[]>([]);
-
-
     if (rowsData) {
         rowsData.forEach((item: any) => {
             if (Array.isArray(item.children)) {
@@ -48,26 +49,6 @@ const useSimFullKit = () => {
             }
         });
     }
-    // const Save = () => {
-    //     const newData: object[] = [];
-    //     if (rowsData) {
-    //         rowsData.forEach((item: any) => {
-    //             if (Array.isArray(item.children)) {
-    //                 item.children.forEach((child: any) => {
-    //                     const newEntry = {
-    //                         on: child.on,
-    //                         lid: child.lid,
-    //                         item: item.rm,
-    //                         oq: child.oq,
-    //                         aq: child.aq,
-    //                         easa: item.eas,
-    //                         remq: child.remq
-    //                     };
-    //                     newData.push(newEntry);
-    //                 });
-    //             }
-    //         });
-    //     }
     const Save = () => {
         const newData: { sno: string; on: string; lid: string; item: string; easa: number }[] = [];
         if (rowsData) {
@@ -107,9 +88,9 @@ const useSimFullKit = () => {
     }, [rowsData, userGetProcAfterSimulationData]);
 
     useEffect(() => {
-        const date = "2025-12-12";
+        const selectedDate = date;
         if (rowsData) {
-            fetchData(date);
+            fetchData(selectedDate);
         }
     }, [rowsData, fetchData]);
 
@@ -260,7 +241,6 @@ const useSimFullKit = () => {
         toggleCurrentTab,
         renderView,
         currentTab,
-        // Save
     }
 }
 
