@@ -222,7 +222,7 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
             customGridColDef={customGridColDef} 
             isSubGridOpen={isSubGridOpen}
             paginationProps={paginationProps}
-            gridHeight={600}
+            gridHeight={"95%"}
         />
     )
 }

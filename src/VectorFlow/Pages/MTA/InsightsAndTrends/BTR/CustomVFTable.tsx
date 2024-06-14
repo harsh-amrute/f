@@ -9,7 +9,7 @@ import './styles.css'
 
 
 interface VFTableProps extends AgGridReactProps {
-  height?:number,
+  height?:string,
   disableZoomScaling?:boolean
 }
 

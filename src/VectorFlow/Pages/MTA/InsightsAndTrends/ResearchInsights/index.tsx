@@ -127,7 +127,7 @@ const ResearchInsights = ()=>{
             }
             <ResearchInsightsTableWrapper style={{zoom:0.8, marginTop:'-15px'}}>
                 <VFTable
-                    height={945}
+                    height={"100%"}
                     {...agGridProps}
                     ref={ref}
                     columnDefs={ResearchInsightsColumns}

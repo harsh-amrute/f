@@ -131,7 +131,7 @@ const RRR = () => {
                       { statusPanel: 'agAggregationComponent', align:'left' },
                     ],
                   }}
-                  height={750}
+                  height={"90%"}
               />  
               <VFPagination 
                 selectedRows={0} 

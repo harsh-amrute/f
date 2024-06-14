@@ -45,6 +45,7 @@ export const ColorGroupColorCellToolTip = styled.div<{triangleColor:string}>`
 
 export const MasterDetailWrapper = styled.div`
     display:flex;
+    height:100%;
     flex-direction:column;
     padding:10px 0px;
 `
