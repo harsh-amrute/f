@@ -240,6 +240,7 @@ const AddRecord = () => {
             onDeleteOnlineReset={()=>console.log('')}
             onSubmitConflictData={()=>console.log('')}
             onDeleteOnlineSubmit={()=>console.log('')}
+            masterId={activeMaster.id}
           />
         }
         </React.Fragment>
