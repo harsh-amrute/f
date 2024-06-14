@@ -182,6 +182,7 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
             paginationProps={paginationProps}
             tablePrefixSrc={'/assets/img/VectorFLOW/BPR/order-fullfilment-table-prefix.svg'}
             tableHeader="Order Details"
+            gridHeight={"95%"}
         />
     )
 }

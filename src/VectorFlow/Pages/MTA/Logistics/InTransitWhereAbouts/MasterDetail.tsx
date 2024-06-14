@@ -3,7 +3,7 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import { MasterDetailHeader, MasterDetailHeaderWrapper, MasterDetailWrapper } from "./styles";
 import ColorCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/ColorCellRenderer";
-
+import './styles.css'
 
 const MasterDetail = (params:any)=>{
     // {
@@ -23,6 +23,7 @@ const MasterDetail = (params:any)=>{
     //       };
     // },[])
     return(
+
         <MasterDetailWrapper>
             <MasterDetailHeaderWrapper>
                 <MasterDetailHeader>SKU Details</MasterDetailHeader>
@@ -33,14 +34,17 @@ const MasterDetail = (params:any)=>{
                     Contact Details
                 </VFButtonOutline>
             </MasterDetailHeaderWrapper>
+
+            <div  className="ag-theme-intranist"> 
             <VFTable
-                height={300}
+                height={"100%"}
                 disableZoomScaling
                 columnDefs={[
                     {
                        field:'SKUCode',
                        colId:'SKUCode',
-                       headerName:'SKU Code' 
+                       headerName:'SKU Code',
+                        
                     },
                     {
                         field:'SKUDescription',
@@ -61,11 +65,16 @@ const MasterDetail = (params:any)=>{
                      
                 ]}
                 defaultColDef={{
+                    
+                    
                     cellStyle:{
-                        'text-align':'center'
+                        'text-align':'center',
+                        'fontSize':'14px',
                     },
                     headerClass:'intransit_header',
-                    flex:1
+                   
+                    flex:1,
+                    
                 }}
                 components={{
                     colorCellRenderer:ColorCellRenderer
@@ -73,7 +82,9 @@ const MasterDetail = (params:any)=>{
                 pagination
                 paginationPageSize={10}
                 rowData={params.data.skuDetails}
+                
             />
+         </div>
         </MasterDetailWrapper>
     )
 }

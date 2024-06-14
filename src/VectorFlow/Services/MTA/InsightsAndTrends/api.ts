@@ -43,13 +43,14 @@ export const getAvaialabilityTrend = async (body:{horison:number}) => {
       headers: { 'Content-Type': 'application/json' }
     })
   }
-  export const getExcessInventorySku = async () => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/ExcessInventorySku`,{
+ 
+  export const getExcessInventorySku = async (body:{horison:number}) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/ExcessInventorySku`,body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }
-  export const getExcessInventoryValue = async () => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/ExcessInventoryValue`,{
+  export const getExcessInventoryValue = async (body:{horison:number}) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/ExcessInventoryValue`,body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }

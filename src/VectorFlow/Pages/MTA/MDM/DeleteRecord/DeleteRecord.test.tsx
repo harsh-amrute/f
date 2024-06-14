@@ -6,7 +6,7 @@ import { setupReactQuery } from "../../../../../config/react-query-config";
 import { QueryClientProvider } from "@tanstack/react-query"
 import { BrowserRouter as Router } from "react-router-dom"
 import { Provider } from "react-redux"
-import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useDeleteMasterData,useDeleteDraft, useModifyMasterData, useDeleteTask, useValidateMaster } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useDeleteMasterData,useDeleteDraft, useModifyMasterData, useDeleteTask, useValidateMaster, useGetMasterDataRetail, useGetRetailCount,useDeleteMasterDataRetail, useModifyMasterDataRetail } from "../../../../../VectorFlow/Services/MTA/MDM";
 import { getMasterUIConfigurationMockData ,createDraftMockData,MasterData, MasterDataWithSubmittedMaster,getSeasonalityDetailsMockData, mockMasterData,deleteDraftMockData,modifyMasterMockData, deleteTaskMockData,validateMasterMockData} from "../../../../../mock-data/MDM";
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
 import {mapMasterToColumnDefs} from '../../../../../helpers/utils'
@@ -30,8 +30,16 @@ const useGetMasterDataMock = useGetMasterData as jest.MockedFunction<
   typeof useGetMasterData
 >;
 
+const useGetMasterDataRetailMock = useGetMasterDataRetail as jest.MockedFunction<
+  typeof useGetMasterDataRetail
+>;
+
 const useGetCountMock = useGetCount as jest.MockedFunction<
   typeof useGetCount
+>;
+
+const useGetRetailCountMock = useGetRetailCount as jest.MockedFunction<
+  typeof useGetRetailCount
 >;
 
 const useCreateDraftMock = useCreateDraft as jest.MockedFunction<
@@ -50,8 +58,16 @@ const useDeleteMasterDataMock = useDeleteMasterData as jest.MockedFunction<
 typeof useDeleteMasterData
 >;
 
+const useDeleteMasterDataRetailMock = useDeleteMasterDataRetail as jest.MockedFunction<
+typeof useDeleteMasterDataRetail
+>;
+
 const useModifyMasterDataMock = useModifyMasterData as jest.MockedFunction<
 typeof useModifyMasterData
+>;
+
+const useModifyMasterDataRetailMock = useModifyMasterDataRetail as jest.MockedFunction<
+typeof useModifyMasterDataRetail
 >;
 
 const useDeleteDraftMock = useDeleteDraft as jest.MockedFunction<
@@ -74,8 +90,19 @@ const useMasterDataResult: any = {
   },
 };
 
+const useGetMasterDataRetailResult: any = {
+  mutateAsync: () => {
+    return { data: mockMasterData };
+  },
+};
 
 const useGetCountResult: any = {
+  mutateAsync: () => {
+    return { data: mockMasterData };
+  },
+};
+
+const useGetRetailCountResult: any = {
   mutateAsync: () => {
     return { data: mockMasterData };
   },
@@ -105,13 +132,25 @@ const useRemoveMasterDataMockData:any = {
     }
   }
 
+  const useRemoveMasterDataRetailMockData:any = {
+    mutateAsync:()=>{
+      return {data:createDraftMockData}
+    }
+  }
+
   const useModifyMasterDataMockData:any = {
     mutateAsync:() => {
       return {data:modifyMasterMockData}
     }
   }
 
+  
 
+  const useModifyMasterDataRetailMockData:any = {
+    mutateAsync:() => {
+      return {data:modifyMasterMockData}
+    }
+  }
 
   const useDeleteDraftMockData:any = {
     mutateAsync:() => {
@@ -182,8 +221,16 @@ describe("DeleteRecord Component", () => {
       return useMasterDataResult;
     });
 
+    useGetMasterDataRetailMock.mockImplementation(() => {
+      return useGetMasterDataRetailResult;
+    });
+
     useGetCountMock.mockImplementation(() => {
       return useGetCountResult;
+    });
+
+    useGetRetailCountMock.mockImplementation(() => {
+      return useGetRetailCountResult;
     });
 
     useCreateDraftMock.mockImplementation(()=>{
@@ -201,6 +248,10 @@ describe("DeleteRecord Component", () => {
     useDeleteMasterDataMock.mockImplementation(()=>{
         return useRemoveMasterDataMockData;
       })
+    
+    useDeleteMasterDataRetailMock.mockImplementation(()=>{
+      return useRemoveMasterDataRetailMockData;
+    })
 
     useDeleteDraftMock.mockImplementation(() => {
       return useDeleteDraftMockData;
@@ -209,6 +260,11 @@ describe("DeleteRecord Component", () => {
     useModifyMasterDataMock.mockImplementation(() => {
       return useModifyMasterDataMockData;
     })
+
+    useModifyMasterDataRetailMock.mockImplementation(() => {
+      return useModifyMasterDataRetailMockData;
+    })
+
 
     useDeleteTaskMock.mockImplementation(() => {
       return useDeleteTaskMockData;
@@ -298,8 +354,16 @@ describe("Handles all custom redux interactions",()=>{
       return useMasterDataResult;
     });
 
+    useGetMasterDataRetailMock.mockImplementation(() => {
+      return useGetMasterDataRetailResult;
+    });
+
     useGetCountMock.mockImplementation(() => {
       return useGetCountResult;
+    });
+
+    useGetRetailCountMock.mockImplementation(() => {
+      return useGetRetailCountResult;
     });
 
     useCreateDraftMock.mockImplementation(()=>{
@@ -318,8 +382,16 @@ describe("Handles all custom redux interactions",()=>{
         return useRemoveMasterDataMockData;
       })
 
+    useDeleteMasterDataRetailMock.mockImplementation(()=>{
+      return useRemoveMasterDataRetailMockData;
+    })
+
     useModifyMasterDataMock.mockImplementation(() => {
       return useModifyMasterDataMockData;
+    })
+
+    useModifyMasterDataRetailMock.mockImplementation(() => {
+      return useModifyMasterDataRetailMockData;
     })
 
     useDeleteDraftMock.mockImplementation(() => {

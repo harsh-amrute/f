@@ -36,7 +36,7 @@ const MaterialCellRenderer = (params: any) => {
                     flex: 0,
                 }}
                 rowData={params.data.children}
-                height={300}
+                height={'300px'}
                 pagination={true}
                 components={customChildrenCellRenderers}
                 masterDetail={true}

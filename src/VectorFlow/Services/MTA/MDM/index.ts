@@ -33,9 +33,21 @@ export const useGetCount = () => {
   })
 }
 
+export const useGetRetailCount = () => {
+  return useMutation(async (body:GetMasterDataPayload) => {
+    return await MDMService.getRetailCount(body)
+  })
+}
+
 export const useGetMasterData = () => {
   return useMutation(async (body:GetMasterDataPayload) => {
     return await MDMService.getMasterData(body)
+  })
+}
+
+export const useGetMasterDataRetail = () => {
+  return useMutation(async (body:GetMasterDataPayload) => {
+    return await MDMService.getMasterDataRetail(body)
   })
 }
 
@@ -130,15 +142,33 @@ export const useModifyMasterData = ()=>{
   })
 }
 
+export const useModifyMasterDataRetail = ()=>{
+  return useMutation(async(body:any)=>{
+    return await MDMService.modifyMasterDataRetail(body)
+  })
+}
+
 export const useAddMasterData = ()=>{
   return useMutation(async(body:any)=>{
     return await MDMService.addMasterData(body)
   })
 }
 
+export const useAddMasterDataRetail = ()=>{
+  return useMutation(async(body:any)=>{
+    return await MDMService.addMasterDataRetail(body)
+  })
+}
+
 export const useDeleteMasterData = ()=>{
   return useMutation(async(body:any)=>{
     return await MDMService.deleteMasterData(body)
+  })
+}
+
+export const useDeleteMasterDataRetail = ()=>{
+  return useMutation(async(body:any)=>{
+    return await MDMService.deleteMasterDataRetail(body)
   })
 }
 

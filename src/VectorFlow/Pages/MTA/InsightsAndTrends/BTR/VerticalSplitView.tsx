@@ -74,23 +74,23 @@ const VerticalSplitView = (props: SplitViewProps) => {
             <Allotment vertical={false} onChange={handleChange}>
                 <Allotment.Pane >
                     <BTRTableHeader>{techTable.header}</BTRTableHeader>
-                    <div style={{ marginTop: -10 }}>
+                    <div style={{marginTop:-10,height:'85%'}}>
                         <CustomVFTable
-                        ref={ref1}
-                        rowHeight={25}
-                        height={300}
-                            disableZoomScaling
-                        gridOptions={{
-                            ...techTable.gridOptions
-                        }}
-                        columnDefs={techTable.columnDefs}
-                        rowData={techTable.rowData}
-                        tooltipMouseTrack={true}
-                        tooltipShowDelay={0}
-                        tooltipHideDelay={100000}
-                        onBodyScroll={(params)=>onBodyScroll(params,1)}
+                            ref={ref1}
+                            rowHeight={25}
+                            height={"95%"}
+                                disableZoomScaling
+                            gridOptions={{
+                                ...techTable.gridOptions
+                            }}
+                            columnDefs={techTable.columnDefs}
+                            rowData={techTable.rowData}
+                            tooltipMouseTrack={true}
+                            tooltipShowDelay={0}
+                            tooltipHideDelay={100000}
+                            onBodyScroll={(params)=>onBodyScroll(params,1)}
                         />
-                        <div style={{ zoom: 0.7 }}>
+                        <div style={{zoom:0.7}}>
                             <VFPagination
                                 {...techTable.paginationProps}
                             />
@@ -109,11 +109,11 @@ const VerticalSplitView = (props: SplitViewProps) => {
                 </Allotment.Pane>
                 <Allotment.Pane>
                     <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
-                    <div style={{marginTop:-10}}>
+                    <div style={{marginTop:-10,height:'85%'}}>
                     <CustomVFTable 
                         ref={ref2}
                         rowHeight={25}
-                         height={300}
+                        height={"95%"}
                         disableZoomScaling
                         gridOptions={{
                             ...ecoTable.gridOptions

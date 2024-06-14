@@ -904,9 +904,9 @@ export const getExistingColumnFields = (columns: string[], fields: Field[]): Fie
   return updatedFields
 }
 
-export const areValuesEqual = (a: any, b: any): boolean => {
-  if (typeof parseInt(a) === 'number' && typeof parseInt(b) === 'number') {
-    return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
+export const areValuesEqual = (a:any,b:any):boolean=>{
+  if(!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))){
+    return parseFloat(a).toFixed(0) ===parseFloat(b).toFixed(0)
   }
   return a === b
 }

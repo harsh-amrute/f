@@ -41,7 +41,7 @@ const sampleData = {
 };
 
 const selectedFields = ['SKU Name']
-const selectedColor = 'rgb(244, 244, 244)'; 
+const selectedColor = 'rgba(188, 61, 129, 0.302)'; 
 
 describe('MRCard Component', () => {
   it('renders card header with the correct name', () => {

@@ -5,21 +5,44 @@ import { useGetExcessInventorySku, useGetExcessInventoryValue } from "../../../.
 import VFLoader from '../../../../../../components/VectorFLOW/commons/VFLoader';
 import VFRangeSlider from '../../../../../../components/VectorFLOW/commons/VFRangeSlider';
 import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip';
+import { useEffect, useState } from 'react';
 
 
 const ExcessInventoryTrend = () => {
-    const { data: ExcessInventorySkuData, isLoading: isLoaderGraph1 } = useGetExcessInventorySku();
-    const { data: ExcessInventoryValueData, isLoading: isLoaderGraph2 } = useGetExcessInventoryValue();
 
-    const ExcessInventorySku = ExcessInventorySkuData?.data?.data;
-    const ExcessInventoryValue = ExcessInventoryValueData?.data?.data;
+     const [horizon1, setHorizon1] = useState<number>(9);
+     const [horizon2, setHorizon2] = useState<number>(9);
 
+     const [ExcessInventorySku, SetExcessInventorySku] = useState();
+     const [ExcessInventoryValue, SetExcessInventoryValue] = useState();
+
+     const { mutateAsync: GetExcessInventorySku, isLoading: isLoaderGraph1 } =useGetExcessInventorySku();
+     const { mutateAsync: GetExcessInventoryValue, isLoading: isLoaderGraph2 } =useGetExcessInventoryValue();
+
+useEffect(() => {
+    OnHorizon1Change(horizon1);
+    OnHorizon2Change(horizon2);
+  }, []);
+
+   const OnHorizon1Change = async (hvalue: any) => {
+    setHorizon1(hvalue);
+    const param = { horison: horizon1 };
+    const ExcessInventorySkuData = await GetExcessInventorySku(param);
+   // const ExcessInventoryValueData =  await GetExcessInventoryValue(param);
+    SetExcessInventorySku(ExcessInventorySkuData?.data?.data);
+   // SetExcessInventoryValue(ExcessInventoryValueData?.data?.data);
+  };
+
+  const OnHorizon2Change = async (hvalue: any) => {
+    setHorizon2(hvalue);
+    const param = { horison: horizon2 };
+    //const ExcessInventorySkuData = await GetExcessInventorySku(param);
+    const ExcessInventoryValueData =  await GetExcessInventoryValue(param);
+    //SetExcessInventorySku(ExcessInventorySkuData?.data?.data);
+   SetExcessInventoryValue(ExcessInventoryValueData?.data?.data);
+  };
+   
     const options1 = {
-        // title: {
-        //     text: 'Excess Inventory Trend (Count Of SKU)-Last 90 Days',
-        //     fontWeight:500,
-        //     fontSize:14
-        // },
         data: ExcessInventorySku,
         series: [
             {
@@ -64,12 +87,6 @@ const ExcessInventoryTrend = () => {
     };
 
     const options2 = {
-        // title: {
-        //     text: 'Excess Inventory Trend (In Value)-Last 90 Days',
-        //     fontWeight:500,
-        //     fontSize:14
-            
-        // },
         data: ExcessInventoryValue,
         series: [
             {
@@ -145,8 +162,8 @@ if(isLoaderGraph1||isLoaderGraph2){
                     milestones={[-1, 0, 30, 60, 90]}
                     strictMode={false}
                     width={250}
-                    defaultValue={0}
-                    handleChange={()=>console.log('')}
+                    defaultValue={9}
+                    handleChange={(e) => setHorizon1(e)}
                     labelValueFormatter={(value: number) =>
                         value > 1 ? `${value} Days` : `${value} Day`
                 
@@ -167,7 +184,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                     src="/assets/img/Group 627.svg" 
                     height={40} 
                     width={50}
-                    onClick={() => console.log('')}
+                    onClick={() => OnHorizon1Change(horizon1)}
                     
                     />
                    
@@ -222,8 +239,8 @@ if(isLoaderGraph1||isLoaderGraph2){
                 milestones={[-1, 0, 30, 60, 90]}
                 strictMode={false}
                 width={250}
-                defaultValue={0}
-                handleChange={()=>console.log('')}
+                defaultValue={9}
+                handleChange={(e) => setHorizon2(e)}
                 labelValueFormatter={(value: number) =>
                     value > 1 ? `${value} Days` : `${value} Day`
             
@@ -243,7 +260,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                     src="/assets/img/Group 627.svg" 
                     height={40} 
                     width={50} 
-                    onClick={() => console.log('')}
+                    onClick={() => OnHorizon2Change(horizon2)}
                     />
             </div>
 

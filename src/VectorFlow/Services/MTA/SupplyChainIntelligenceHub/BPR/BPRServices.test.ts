@@ -247,4 +247,42 @@ describe('Testing the MDMService',  () => {
     
       });
 
+      it('should make a Get request to /GetInTransitWhereAboutAnalytics', async () => {
+        mockedAxios.get.mockResolvedValueOnce({
+          "recordCount": null,
+          "data": "",
+          "status": 200,
+          "msg": null,
+          "errorCount": null,
+          "error": null,
+          "conflictErrorCount": null,
+          "conflictError": null
+      });
+        const response = await BPRService.getInTransitWhereAboutAnalytics();
+        expect(mockedAxios.get).toHaveBeenCalledWith('http://10.8.1.10:8082/GetInTransitWhereAboutAnalytics',{
+          headers: { 'Content-Type': 'application/json' }
+        })
+        expect(response.status).toBe(200);
+    
+      });
+
+      it('should make a Get request to /OpenExpediteAnalytics', async () => {
+        mockedAxios.get.mockResolvedValueOnce({
+          "recordCount": null,
+          "data": "",
+          "status": 200,
+          "msg": null,
+          "errorCount": null,
+          "error": null,
+          "conflictErrorCount": null,
+          "conflictError": null
+      });
+        const response = await BPRService.getOpenExpediteAnalytics();
+        expect(mockedAxios.get).toHaveBeenCalledWith('http://10.8.1.10:8082/OpenExpediteAnalytics',{
+          headers: { 'Content-Type': 'application/json' }
+        })
+        expect(response.status).toBe(200);
+    
+      });
+
   });

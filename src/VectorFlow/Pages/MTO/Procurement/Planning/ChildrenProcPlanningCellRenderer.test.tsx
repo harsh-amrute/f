@@ -48,7 +48,7 @@ describe('ChildrenProcPlanningCellRenderer', () => {
         await waitFor(() => {
             const VFTable = screen.getByTestId('VFTable');
             expect(VFTable).toHaveClass('child-grid');
-            expect(VFTable).toHaveAttribute('height', '300');
+            expect(VFTable).toHaveAttribute('height', '300px');
             expect(VFTable).toHaveAttribute('defaultColDef');
 
 

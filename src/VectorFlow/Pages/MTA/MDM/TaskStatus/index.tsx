@@ -112,7 +112,7 @@ const TaskStatus = ()=>{
     }
 
     return(
-        <div style={{paddingTop:'20px'}}>
+        <div style={{paddingTop:'20px',height:'95%'}}>
             <VFTable
                 masterDetail
                 detailCellRenderer={TaskStatusMasterDetail}
@@ -202,7 +202,7 @@ const TaskStatus = ()=>{
                 pagination
                 // paginationPageSize={10}            
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKSTATUS_PAGE || '200')}  
-                height={900}          
+                height={"100%"}          
 
             />
             <div style={{display:'none'}}>                
