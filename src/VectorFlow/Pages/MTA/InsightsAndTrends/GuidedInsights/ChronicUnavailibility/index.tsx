@@ -517,10 +517,10 @@ const ChronicUnavailabilityCharts = () => {
     } 
     return(
         <>
-            <SCDynamicContainer>
+            <SCDynamicContainer style={{marginTop:'10px'}}>
                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={450}>
+                        <SCChartContainer height={"98%"}>
                             <SCChartHeaderContainer>
                                 <SCChartHeader>Top 10 Locations: Max SKUs in Continuous Pipeline Black or Red Ageing greater than RLT</SCChartHeader>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -564,7 +564,7 @@ const ChronicUnavailabilityCharts = () => {
                                             floatingFilter:true,
                                             filter: "agMultiColumnFilter",
                                         }}
-                                        height={480}
+                                        height={'480px'}
                                     />
                                 </div>
                             </VFModalCard>
@@ -599,14 +599,14 @@ const ChronicUnavailabilityCharts = () => {
                                     disableZoomScaling={true}
                                 />
                             </div>
-                            <div id="LocationWiseG1" style={{height:'370px'}}></div>
+                            <div id="LocationWiseG1" style={{height:'88%'}}></div>
                         </SCChartContainer>
                         {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>
                         </div> */}
                     </Allotment.Pane>
                     <Allotment.Pane>
-                        <SCChartContainer height={450}>
+                        <SCChartContainer height={"98%"}>
                                 <SCChartHeaderContainer>
                                     <SCChartHeader>Top 10 Skus: Max Number Of Locations Where The SKU has Pipeline Black/Red Ageing Greater Than Rlt</SCChartHeader>
                                     <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -652,7 +652,7 @@ const ChronicUnavailabilityCharts = () => {
                                                 floatingFilter:true,
                                                 filter: "agMultiColumnFilter",
                                             }}
-                                            height={480}
+                                            height={'480px'}
                                         />
                                 </div>
                                 </VFModalCard>
@@ -688,7 +688,7 @@ const ChronicUnavailabilityCharts = () => {
                                         disableZoomScaling={true}
                                     />
                                 </div>
-                                <div id="SKUWiseG2" style={{height:'370px'}}></div>
+                                <div id="SKUWiseG2" style={{height:'88%'}}></div>
                             {/* <div id="SKUWiseGraph2"></div> */}
                         </SCChartContainer>
                         {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>

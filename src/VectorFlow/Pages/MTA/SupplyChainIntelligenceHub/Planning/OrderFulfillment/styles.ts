@@ -9,7 +9,7 @@ export const SCDynamicContainer = styled.div`
     height:150vh;
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
         .size.desktop}) {
-        height:81vh
+        height:70vh
     }
   
     @media (min-width: ${gridSystem.size.desktop}) {
@@ -17,16 +17,18 @@ export const SCDynamicContainer = styled.div`
     }
 `
 
-export const SCChartContainer = styled.div<{height?:number}>`
+export const SCChartContainer = styled.div<{height?:string}>`
     padding:5px;
     border-radius:12px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;    margin-right:5px;
+    // box-shadow: -5px 5px 25px #86868633;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    margin-right:5px;
     // margin-top:60px;
-    margin-bottom:20px;
+    margin-bottom:10px;
     margin-left:5px;
     // height:547px;
-    height:${props => props.height ? props.height +'px' : 'auto'}
+    height:${props => props.height ? props.height : 'auto'}
 `
 
 export const SCChartLayout = styled.div`

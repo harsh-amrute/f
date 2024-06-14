@@ -60,13 +60,13 @@ export const useGetDBMNormSuggestionAgeing = ()=>{
   })
 }
 export const useGetExcessInventorySku = ()=>{
-  return useQuery(QUERY_KEYS.useGetExcessInventorySku,async()=>{
-    return await InsightsAndTrendsService.getExcessInventorySku()
+  return useMutation(async(body:{horison:number})=>{
+    return await InsightsAndTrendsService.getExcessInventorySku(body)
   })
 }
 export const useGetExcessInventoryValue = ()=>{
-  return useQuery(QUERY_KEYS.useGetExcessInventoryValue,async()=>{
-    return await InsightsAndTrendsService.getExcessInventoryValue()
+  return useMutation(async(body:{horison:number})=>{
+    return await InsightsAndTrendsService.getExcessInventoryValue(body)
   })
 
 }

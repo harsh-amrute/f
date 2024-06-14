@@ -123,21 +123,21 @@ const RRR = () => {
                 }}
                 enableRangeSelection={true} // Added property
                 rowSelection="multiple"
-                statusBar={{
-                  statusPanels: [
-                    { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                    { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                    { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                    { statusPanel: 'agAggregationComponent', align: 'left' },
-                  ],
-                }}
-                height={750}
-              />
-              <VFPagination
-                selectedRows={0}
-                totalRows={RRRDataCount}
-                currentPage={currentPage}
+                statusBar = {{
+                    statusPanels: [
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                      { statusPanel: 'agAggregationComponent', align:'left' },
+                    ],
+                  }}
+                  height={"90%"}
+              />  
+              <VFPagination 
+                selectedRows={0} 
+                totalRows={RRRDataCount} 
+                currentPage={currentPage} 
                 rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200')}
                 handleChangePage={(e) => getRRRRowData(e)}
               />

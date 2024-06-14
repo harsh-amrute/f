@@ -1,6 +1,6 @@
 import styled from "styled-components";
 // import * as globalStyles from "../../../../../../styles/global";
-
+import * as gridSystem from "../../../../../../styles/gridSystem";
 
 // export const SCDynamicContainer = styled.div`
 //     display:block;
@@ -20,16 +20,20 @@ export const SCDynamicContainer = styled.div`
     // aspect-ratio:1;
     width:100%;
     margin-top:10px;
-    height:83vh;
+    height:85%;
+    @media (min-width: ${gridSystem.size.desktop}) {
+        height:87%
+    }
+    
 `
 
 export const SCHorizontalAllignmentWrapper = styled.div`
     width:100%;
-    padding:25px;
-    padding-top:0px;
+    padding:0px 20px 15px;
+    height:100%;
 `
 
-export const SCChartContainer = styled.div<{height?:number}>`
+export const SCChartContainer = styled.div<{height?:string}>`
     padding:5px;
     border-radius:12px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
@@ -40,7 +44,7 @@ export const SCChartContainer = styled.div<{height?:number}>`
     margin-bottom:10px;
     margin-left:5px;
     // height:547px;
-    height:${props => props.height ? props.height +'px' : 'auto'}
+    height:${props => props.height ? props.height : 'auto'}
 `
 
 export const SCChartLayout = styled.div`

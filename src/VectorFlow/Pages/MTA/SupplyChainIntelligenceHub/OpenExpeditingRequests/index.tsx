@@ -111,7 +111,7 @@ const OpenExpeditingRequests = ()=>{
             //     params.columnApi.applyColumnState({state:columnState})
             //   }
             // }}
-            height={800}
+            height={"85%"}
         />
         
         {isSubmitRemarkToolTipOpen && (

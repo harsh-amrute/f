@@ -126,6 +126,7 @@ const AddRecord = () => {
                 newTabHandler={addNewMaster}
                 >
                   <VFTable
+                    height={"95%"}
                     ref={ref}
                     columnDefs={activeMaster.colDefs}
                     rowData={activeMaster.rowData}

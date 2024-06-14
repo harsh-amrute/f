@@ -5,7 +5,7 @@ import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
 import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,SET_RECORD_COUNT,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA, SYNC_ACTIVE_MASTER_TO_MASTER, REMOVE_COLDEFS,ADD_COLDEFS } from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { ColDef } from 'ag-grid-enterprise';
-import { useDeleteMasterData ,useDeleteTask,useDeleteDraft} from '../../../../..//VectorFlow/Services/MTA/MDM';
+import { useDeleteMasterData ,useDeleteTask,useDeleteDraft,useDeleteMasterDataRetail} from '../../../../..//VectorFlow/Services/MTA/MDM';
 import {createErrorRowData } from '../../../../../helpers/utils';
 
 import _ from 'lodash';
@@ -22,6 +22,8 @@ const useDelete=()=>{
     const navigate = useNavigate();
 
     const {mutateAsync:deleteMasterData} = useDeleteMasterData()
+
+    const {mutateAsync:deleteMasterDataRetail} = useDeleteMasterDataRetail()
 
     const {mutateAsync:deleteTask} = useDeleteTask();
 
@@ -208,8 +210,14 @@ const useDelete=()=>{
                 payload.data = rowData.slice(i)
                 toast.update(toastId,{render:`Submitting Data ${rowData.length}/${rowData.length}`})
               }
-              const data:any = await deleteMasterData(payload);
-
+              let data:any;
+              if(activeMaster.id > 14) {
+                data = await deleteMasterDataRetail(payload);
+              }
+              else{
+                data = await deleteMasterData(payload);
+              }
+              
               if(taskId === '' && i!==0) throw new Error("Something Went Wrong");
 
               if(TASK_ID === ''){
@@ -277,8 +285,6 @@ const useDelete=()=>{
 
       const onSubmit = async(ref:any,isOverWrite?:boolean) => {
 
-        console.log(isSubmitDisabled)
-
         
         
         if(activeMaster.rowData.length === 0){
@@ -293,7 +299,6 @@ const useDelete=()=>{
         
 
         if(isSubmitDisabled) return;
-        console.log(activeMaster.rowData.length === 0,'end')
 
         setIsSubmitDisabled(true)
  
@@ -329,7 +334,6 @@ const useDelete=()=>{
               dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
               notifySuccess(`Deletions Submitted Successfully`);
               dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSubmitted'));
-              dispatch(UPDATE_PROGRESS_STATE('submitted'))
             
    
           }

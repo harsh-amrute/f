@@ -33,31 +33,31 @@ import { RootState } from '../../../../../../redux/store/store';
 
 
 interface ActionToolBarProps {
-    view: string,
-    currentTab: string,
-    setCurrentTab: any,
-    currCategory?: any,
-    tabsList: Array<{ id: string, label: string, value: string }>,
-    onFloatingTabChange: (tab: any) => void,
-    onGoBack: () => void
-    onViewChange: (view: string) => void,
-    disableChartAndGridViewToggle?: boolean,
-    showAllTick?: any,
-    handleGoButton?: any
-    onApplyFilter?: (params: any) => void,
-    planningCount?: PlanningCounts
-    genericRecordCount: number
-    onExportToExcelCallBack: any
-    multiFilter: any
-    setMultiFilter: any
-    onDelete: any,
-    onUpdateInsight?: () => void
-    hideUpdateInsightsBtn?: boolean
+    view:string,
+    currentTab:string,
+    setCurrentTab:any,
+    currCategory?:any,
+    tabsList:Array<{id:string,label:string,value:string}>,
+    onFloatingTabChange:(tab:any)=>void,
+    onGoBack:()=>void
+    onViewChange:(view:string)=>void,
+    disableChartAndGridViewToggle?:boolean,
+    showAllTick?:any,
+    handleGoButton?:any
+    onApplyFilter?:(params:any)=>void,
+    planningCount?:PlanningCounts
+    genericRecordCount:number
+    onExportToExcelCallBack:any
+    multiFilter:any
+    setMultiFilter:any
+    onDelete:any,
+    onUpdateInsight?:()=>void
+    hideUpdateInsightsBtn?:boolean
 }
 
 
 
-const ActionToolBar = ({ view, currentTab, tabsList, onFloatingTabChange, onGoBack, onViewChange, currCategory, disableChartAndGridViewToggle, planningCount, showAllTick, handleGoButton, genericRecordCount, onExportToExcelCallBack, onApplyFilter, multiFilter, setMultiFilter, onDelete, onUpdateInsight, hideUpdateInsightsBtn }: ActionToolBarProps) => {
+const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter,multiFilter,setMultiFilter,onDelete,onUpdateInsight,hideUpdateInsightsBtn}:ActionToolBarProps) => {
     const { user } = useUserData();
     const { ref } = useContext(GridStateContext)
     // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
@@ -255,9 +255,22 @@ const ActionToolBar = ({ view, currentTab, tabsList, onFloatingTabChange, onGoBa
 
                             (
                                 <>
-                                    <SCViewContainerWithBg onClick={() => onSaveState(`${currCategory}${currentTab}`)}>
-                                        <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
-                                        <p>Save</p>
+                                    <Link to="/dbm/dbm-norm-suggestions" style={{textDecoration:'none'}}>
+                                        <VFButtonOutline onClick={()=>toggleFilter(true)} themeUi={themeUi} width={140} disabled={false} style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:'5px', paddingLeft:'12px', paddingRight:'13px'}}>
+                                            <img src="/assets/img/VectorFLOW/BPR/NormAction.svg"></img>
+                                            Norm Action
+                                        </VFButtonOutline>
+                                    </Link>  
+                                    <SCVerticalDivider/>
+     
+                                </>
+                                }
+                                
+                                {currentTab==='custom' && (
+                                    <>
+                                    <SCViewContainerWithBg onClick={()=>ref.current.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`})} >
+                                        <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" />
+                                        <p>Excel Export</p>
                                     </SCViewContainerWithBg>
                                     <SCViewContainerWithBg onClick={() => onResetAllState(`${currCategory}${currentTab}`)}>
                                         <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt="" />
@@ -341,19 +354,18 @@ const ActionToolBar = ({ view, currentTab, tabsList, onFloatingTabChange, onGoBa
                         {currCategory === 'GuidedInsight' && view === 'grid' ? (
                             <div style={{ marginRight: '60px', maxWidth: '400px' }}>
                                 <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
-                            </div>
-                        ) : (currCategory === 'GuidedInsight' && view !== 'grid') || currCategory === 'ResearchInsight' ? (
-                            null
-                        ) : (
-                            <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
-                        )}
-
-                        {currCategory === 'ResearchInsight' && !hideUpdateInsightsBtn &&
+                            )}
+                            
+                            {currCategory==='ResearchInsight' && !hideUpdateInsightsBtn && 
                             <>
-                                <VFButtonOutline themeUi={themeUi} width={169} style={{ fontSize: '20px', fontWeight: '500' }} onClick={() => onUpdateInsight ? onUpdateInsight() : {}}>Update Insight</VFButtonOutline>
-                                <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete} style={{ maxWidth: '700px' }}></VFSelectedFilters>
-                            </>
-                        }
+                                <VFButtonOutline themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={()=>onUpdateInsight?onUpdateInsight(): {}}>Update Insight</VFButtonOutline> 
+                                <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete} style={{maxWidth:'700px'}}></VFSelectedFilters>
+                                </>
+                             }   
+                                
+                                
+                        </SCTaskFilterContainer>
+                        <SCCustomActionsContainer>
 
 
                     </SCTaskFilterContainer>

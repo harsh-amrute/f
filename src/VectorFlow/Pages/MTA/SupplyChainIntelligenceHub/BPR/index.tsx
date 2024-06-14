@@ -127,93 +127,94 @@ const BPR = () => {
                     Edit Filter
                 </VFButton>
             </BPRTaskBar> */}
-                        <div style={{ height: '100vh', marginLeft: '45px' }}>
-                            <Allotment vertical defaultSizes={[300, 150]}>
-                                <Allotment.Pane className="planning-grid-allotment">
-                                    <VFTable
-                                        ref={ref}
-                                        {...agGridProps}
-                                        columnDefs={BPRColumns}
-                                        rowData={BPRRowData}
-                                        onGridReady={(params) => {
-                                            if (columnState) {
-                                                params.columnApi.applyColumnState({ state: columnState })
-                                            }
-                                        }}
-                                        enableRangeSelection={true}
-                                        rowSelection="multiple"
-                                        statusBar={{
-                                            statusPanels: [
-                                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                                                { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                                { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                                                { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                                                { statusPanel: 'agAggregationComponent', align: 'left' },
-                                            ],
-                                        }}
-                                    />
-                                    <VFPagination
-                                        selectedRows={0}
-                                        totalRows={recordCount}
-                                        currentPage={currGridPage}
-                                        rowsPerPage={rowsPerPage}
-                                        handleChangePage={handleOnPageChange}
-                                    />
-                                </Allotment.Pane>
-                                <Allotment.Pane maxSize={200} minSize={180}>
-                                    {isSubGridOpen && (
-                                        <BPRViewTable
-                                            tableHeader="In Transit/WIP"
-                                            tablePrefixSrc="/assets/img/VectorFLOW/BPR/in-transit.svg"
-                                            rowData={activeRow}
-                                            colDefs={[
-                                                {
-                                                    headerName: "LR Code",
-                                                    colId: 'lc',
-                                                    field: 'lc'
-                                                },
-                                                // {
-                                                //     headerName:"Creation Date",
-                                                //     colId:'cd',
-                                                //     field:'cd'
-                                                // },
-                                                {
-                                                    headerName: "Ageing",
-                                                    colId: 'ag',
-                                                    field: 'ag'
-                                                },
-                                                // {
-                                                //     headerName:"ETA",
-                                                //     colId:'eta',
-                                                //     field:'eta'
-                                                // },
-                                                // {
-                                                //     headerName:"Current Location",
-                                                //     colId:'cl',
-                                                //     field:'cl'
-                                                // },
-                                                {
-                                                    headerName: "Quantity",
-                                                    colId: 'qty',
-                                                    field: 'qty'
-                                                },
-                                                {
-                                                    headerName: "Whereabouts",
-                                                    colId: 'whereabouts',
-                                                    field: 'whereabouts'
-                                                }
-                                                // {
-                                                //     headerName:"Execution Eco Color",
-                                                //     colId:'exeecocolor',
-                                                //     field:'exeecocolor'
-                                                // },
-                                                // {
-                                                //     headerName:"Remarks",
-                                                //     colId:'remarks',
-                                                //     field:'remarks'
-                                                // }
-                                            ]
-                                            }
+            <div style={{height:'100vh',marginLeft:'45px'}}>
+            <Allotment vertical defaultSizes={[300,150]}>
+              <Allotment.Pane className="planning-grid-allotment">
+              <VFTable
+                ref={ref}
+                height={"95%"}
+                {...agGridProps}
+                columnDefs={BPRColumns}
+                rowData={BPRRowData}
+                onGridReady={(params)=>{
+                   if(columnState){
+                    params.columnApi.applyColumnState({state:columnState})
+                   }
+                }}
+                enableRangeSelection={true} 
+                rowSelection="multiple"
+                statusBar = {{
+                    statusPanels: [
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                      { statusPanel: 'agAggregationComponent', align:'left' },
+                    ],
+                  }}
+            />
+                <VFPagination
+                    selectedRows={0}
+                    totalRows={recordCount}
+                    currentPage={currGridPage}
+                    rowsPerPage={rowsPerPage}
+                    handleChangePage={handleOnPageChange}
+                />
+              </Allotment.Pane>
+              <Allotment.Pane maxSize={200} minSize={180}>
+              {isSubGridOpen && (
+                <BPRViewTable
+                tableHeader="In Transit/WIP"
+                    tablePrefixSrc="/assets/img/VectorFLOW/BPR/in-transit.svg"
+                    rowData={activeRow}
+                    colDefs={[
+                        {
+                            headerName:"LR Code",
+                            colId:'lc',
+                            field:'lc'
+                        },
+                        // {
+                        //     headerName:"Creation Date",
+                        //     colId:'cd',
+                        //     field:'cd'
+                        // },
+                        {
+                            headerName:"Ageing",
+                            colId:'ag',
+                            field:'ag'
+                        },
+                        // {
+                        //     headerName:"ETA",
+                        //     colId:'eta',
+                        //     field:'eta'
+                        // },
+                        // {
+                        //     headerName:"Current Location",
+                        //     colId:'cl',
+                        //     field:'cl'
+                        // },
+                        {
+                            headerName:"Quantity",
+                            colId:'qty',
+                            field:'qty'
+                        },
+                        {
+                            headerName:"Whereabouts",
+                            colId:'whereabouts',
+                            field:'whereabouts'
+                        }
+                        // {
+                        //     headerName:"Execution Eco Color",
+                        //     colId:'exeecocolor',
+                        //     field:'exeecocolor'
+                        // },
+                        // {
+                        //     headerName:"Remarks",
+                        //     colId:'remarks',
+                        //     field:'remarks'
+                        // }
+                    ]
+                }
 
 
                                         />

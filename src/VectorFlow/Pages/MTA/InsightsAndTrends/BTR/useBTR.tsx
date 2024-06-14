@@ -249,7 +249,7 @@ const useBTR = ()=>{
                             On-Hand Inventory View Trend Report
                         </BTRTableHeader>
                         <CustomVFTable 
-                            height={350}   
+                            height={"100%"}   
                             tooltipHideDelay={100000}  
                             tooltipShowDelay={0} 
                             tooltipMouseTrack={true} 
@@ -273,7 +273,7 @@ const useBTR = ()=>{
                             Pipeline Inventory Trend Report
                         </BTRTableHeader>
                         <CustomVFTable 
-                            height={350}  
+                            height={"100%"}  
                             tooltipHideDelay={100000}  
                             tooltipShowDelay={0} 
                             tooltipMouseTrack={true} 

@@ -47,11 +47,22 @@ export const selectStyles =(backgroundColor:string,borderRadius:number, boxShado
   clearIndicator: () => ({
     display: 'none'
   }),
-  option: (provided: any) => ({
+  option: (provided: any, {isFocused, isSelected}: any) =>  { 
+    console.log(isFocused)
+    console.log(isSelected)
+    return (
+    {
     ...provided,
     cursor: 'pointer',
-
-  }),
+        backgroundColor: isSelected ? "#BC3D81": "white",
+        // cursor: 'pointer',
+        "&:hover": {
+          backgroundColor: '#bc3d814d',
+          color:"black",
+      },
+      // backgroundColor: isSelected ? "pink" : "blue",
+      color:isFocused?'black':'black',
+  })},
   menuList: (provided: any) => ({
     ...provided,
     cursor: 'pointer',

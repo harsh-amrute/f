@@ -16,7 +16,6 @@ import {
   SCChartContainer,
   SCHorizontalDivider,
   SCDynamicContainer,
-  SCHorizontalAllignmentWrapper,
 } from "../style";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFModalCard from "../../../../../../components/VectorFLOW/commons/VFModalCard";
@@ -727,11 +726,11 @@ const DBMNormSuggestions = () => {
     <>
       <SCDynamicContainer>
         <Allotment vertical>
-          <Allotment.Pane preferredSize={210}>
-            <SCHorizontalAllignmentWrapper>
+          <Allotment.Pane preferredSize={"50%"}>
+            {/* <SCHorizontalAllignmentWrapper> */}
               <Allotment>
                 <Allotment.Pane preferredSize={"50%"}>
-                  <SCChartContainer height={220} >
+                  <SCChartContainer height={'98%'} >
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -785,7 +784,7 @@ const DBMNormSuggestions = () => {
                               myCustomTheme: myCustomTheme,
                             }}
                             disableZoomScaling={true}
-                            height={480}
+                            height={'480px'}
                           />
                         </div>
                     </VFModalCard>
@@ -818,15 +817,15 @@ const DBMNormSuggestions = () => {
                         disableZoomScaling={true}
                       />
                     </div>
-                    <div id="g1" style={{ height: "160px" }}></div>
+                    <div id="g1" style={{ height: "75%" }}></div>
                     <div id="SKUWiseGraph1"></div>
                   </SCChartContainer>
                   {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8 }}>
                     <VFInfoTip text={graph1} />
                   </div> */}
                 </Allotment.Pane>
-                <Allotment.Pane>
-                  <SCChartContainer height={220}>
+                <Allotment.Pane preferredSize={"50%"}>
+                  <SCChartContainer height={'98%'}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -870,7 +869,7 @@ const DBMNormSuggestions = () => {
                             customChartThemes={{
                               myCustomTheme: myCustomTheme,
                             }}
-                            height={480}
+                            height={'470px'}
                           />
                         </div>
                     </VFModalCard>
@@ -903,7 +902,7 @@ const DBMNormSuggestions = () => {
                         disableZoomScaling={true}
                       />
                     </div>  
-                    <div id="g2" style={{ height: "160px" }}></div>
+                    <div id="g2" style={{ height: "75%" }}></div>
                     <div id="SKUWiseGraph2"></div>
                   </SCChartContainer>
                   {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8}}>
@@ -911,13 +910,13 @@ const DBMNormSuggestions = () => {
                   </div> */}
                 </Allotment.Pane>
               </Allotment>
-            </SCHorizontalAllignmentWrapper>
+            {/* </SCHorizontalAllignmentWrapper> */}
           </Allotment.Pane>
-          <Allotment.Pane>
-            <SCHorizontalAllignmentWrapper>
+          <Allotment.Pane preferredSize={"50%"}>
+            {/* <SCHorizontalAllignmentWrapper> */}
               <Allotment>
-                <Allotment.Pane>
-                  <SCChartContainer height={220}>
+                <Allotment.Pane preferredSize={"50%"}>
+                  <SCChartContainer height={'98%'}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -970,7 +969,7 @@ const DBMNormSuggestions = () => {
                             customChartThemes={{
                               myCustomTheme: myCustomTheme,
                             }}
-                            height={480}
+                            height={'480px'}
                           />
                         </div>
                     </VFModalCard>
@@ -1003,15 +1002,15 @@ const DBMNormSuggestions = () => {
                         disableZoomScaling={true}
                       />
                     </div>
-                    <div id="g3" style={{ height: "160px" }}></div>
+                    <div id="g3" style={{ height: "75%" }}></div>
                     <div id="graph3"></div>
                   </SCChartContainer>
                   {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8 }}>
                     <VFInfoTip text={graph3} />
                   </div> */}
                 </Allotment.Pane>
-                <Allotment.Pane>
-                  <SCChartContainer height={220}>
+                <Allotment.Pane preferredSize={"50%"}>
+                  <SCChartContainer height={'98%'}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -1064,7 +1063,7 @@ const DBMNormSuggestions = () => {
                           customChartThemes={{
                             myCustomTheme: myCustomTheme,
                           }}
-                          height={480}
+                          height={'480px'}
                         />
                       </div>
                     </VFModalCard>
@@ -1097,7 +1096,7 @@ const DBMNormSuggestions = () => {
                         disableZoomScaling={true}
                       />
                     </div>
-                    <div id="g4" style={{ height: "160px" }}></div>
+                    <div id="g4" style={{ height: "75%" }}></div>
                     <div id="graph4"></div>
                   </SCChartContainer>
                   {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:0.8 }}>
@@ -1105,7 +1104,7 @@ const DBMNormSuggestions = () => {
                   </div> */}
                 </Allotment.Pane>
               </Allotment>
-            </SCHorizontalAllignmentWrapper>
+            {/* </SCHorizontalAllignmentWrapper> */}
           </Allotment.Pane>
         </Allotment>
       </SCDynamicContainer>

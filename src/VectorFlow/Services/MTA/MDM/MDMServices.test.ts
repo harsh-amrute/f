@@ -50,6 +50,28 @@ describe('Testing the MDMService',  () => {
   
     });
 
+    it('should make a post request to the /get-master-data (Retail)', async () => {
+
+      const mockBody = {
+        id:1,
+        name:"SKU",
+        filters:[{attributeName:"SKU",op:'=',value:""}],
+        fields:[{key:"SKU"}],
+        paginationParameter:{
+          pageNumber:1,
+          recordsPerPage:10
+        }
+      }
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getMasterDataRetail(mockBody);
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_API_HOST + `/api/validate-master/get-master-data/`,mockBody,{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+  
+    });
+
     it('should make a post request to the /GetCount', async () => {
 
       const mockBody = {
@@ -62,6 +84,24 @@ describe('Testing the MDMService',  () => {
       mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
       const response = await MDMService.getCount(mockBody);
       expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/GetCount',mockBody,{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+  
+    });
+
+    it('should make a post request to the /GetCount (Retail)', async () => {
+
+      const mockBody = {
+        id:1,
+        name:"SKU",
+        filters:[{attributeName:"SKU",op:'=',value:""}],
+        fields:[{key:"SKU"}],
+      }
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getRetailCount(mockBody);
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_API_HOST + `/api/validate-master/get-count/`,mockBody,{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
@@ -302,6 +342,52 @@ describe('Testing the MDMService',  () => {
       expect(response.status).toBe(500);
     });
 
+    it('should make post request to /RemoveMasterData (Retail)', async () => {
+
+      mockedAxios.post.mockResolvedValueOnce({
+        "taskId": "",
+        "status": 500,
+        "msg": null,
+        "errordata": null,
+        "errorCount": null,
+        "error": null
+    });
+      const response = await MDMService.deleteMasterDataRetail({
+        "id": 1,
+        "action": "remove",
+        "data": [
+            {
+                "sc": "AFADSH0554001",
+                "ec": null,
+                "c1": "AFADSH0554",
+                "c3": "8910000000000",
+                "c4": "PCS",
+                "c5": "2699",
+                "c6": "Arrow"
+            },
+        ]
+    })
+    //   expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/RemoveMasterData`,JSON.stringify({
+    //     "id": 1,
+    //     "action": "remove",
+    //     "data": [
+    //         {
+    //             "sc": "AFADSH0554001",
+    //             "ec": null,
+    //             "c1": "AFADSH0554",
+    //             "c3": "8910000000000",
+    //             "c4": "PCS",
+    //             "c5": "2699",
+    //             "c6": "Arrow"
+    //         },
+    //     ]
+    // }),{
+    //   headers: { 'Content-Type': 'application/json' }
+    // })
+    expect(mockedAxios.post).toBeCalled()
+      expect(response.status).toBe(500);
+    });
+
 
     it('should make post request to /ModifyMasterData', async () => {
 
@@ -311,6 +397,22 @@ describe('Testing the MDMService',  () => {
         sn:"Polo T-Shirt"
       }]})
       expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/ModifyMasterData`,{id:1,data:[{
+        sc:"QAEF1000",
+        sn:"Polo T-Shirt"
+      }]},{
+      headers: { 'Content-Type': 'application/json' }
+    })
+      expect(response.status).toBe(200);
+    });
+
+    it('should make post request to /ModifyMasterData (Retail)', async () => {
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.modifyMasterDataRetail({id:1,data:[{
+        sc:"QAEF1000",
+        sn:"Polo T-Shirt"
+      }]})
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_API_HOST + `/api/validate-master/modify-master-data/`,{id:1,data:[{
         sc:"QAEF1000",
         sn:"Polo T-Shirt"
       }]},{
@@ -348,6 +450,22 @@ describe('Testing the MDMService',  () => {
         sn:"Polo T-Shirt"
       }]})
       expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/AddMasterData`,{id:1,data:[{
+        sc:"QAEF1000",
+        sn:"Polo T-Shirt"
+      }]},{
+      headers: { 'Content-Type': 'application/json' }
+    })
+      expect(response.status).toBe(200);
+    });
+
+    it('should make post request to /AddMasterData (Retail)', async () => {
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.addMasterDataRetail({id:1,data:[{
+        sc:"QAEF1000",
+        sn:"Polo T-Shirt"
+      }]})
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_API_HOST + `/api/validate-master/add-valid-master/`,{id:1,data:[{
         sc:"QAEF1000",
         sn:"Polo T-Shirt"
       }]},{

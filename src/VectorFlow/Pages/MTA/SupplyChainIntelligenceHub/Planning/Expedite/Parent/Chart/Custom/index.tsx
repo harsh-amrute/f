@@ -139,7 +139,7 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
                      params.columnApi.applyColumnState({state:columnState})
                     }
                  }}
-                height={430}
+                height={'100%'}
             />
         </SCDynamicContainer>
         </>

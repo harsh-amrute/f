@@ -10,12 +10,13 @@ export const SCDynamicContainer = styled.div`
     margin:0px 20px 0px 20px;
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
         .size.desktop}) {
-        height:87vh
+        height:75vh;
     }
   
     @media (min-width: ${gridSystem.size.desktop}) {
       height:100vh
     }
+    height:90%;
 `
 export const SCHorizontalAllignmentWrapper = styled.div`
     width:100%;
@@ -23,18 +24,18 @@ export const SCHorizontalAllignmentWrapper = styled.div`
     height:200vh;
 `
 
-export const SCChartContainer = styled.div<{height?:number}>`
-    // padding:0px 5px 5px 5px;
-    // border-radius:12px;
-    // background: #FFFFFF 0% 0% no-repeat padding-box;
+export const SCChartContainer = styled.div<{height?:string}>`
+    padding:5px;
+    border-radius:12px;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
     // box-shadow: -5px 5px 25px #86868633;
-    // box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     margin-right:5px;
-    margin-top:10px;
-    margin-bottom:12px;
+    // margin-top:60px;
+    margin-bottom:10px;
     margin-left:5px;
     // height:547px;
-    height:${props => props.height ? props.height +'px' : 'auto'}
+    height:${props => props.height ? props.height : 'auto'}
 `
 
 export const SCChartLayout = styled.div`

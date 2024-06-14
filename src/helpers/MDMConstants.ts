@@ -213,16 +213,16 @@ export const seasonalityQuickFilterData: SeasonalityQuickFilterType[] = [
 ]
 export const masterGroupMapper: masterGroupMapperType[] = [
     {
-        name: "SKU",
-        masters: ['1']
+      name:"SKU",
+      masters:['1','27','17','18','25']
     },
     {
-        name: "Location",
-        masters: ['2',]
+      name:"Location",
+      masters:['2','15','19','20','21','23','26','22']
     },
     {
-        name: "SKU Location",
-        masters: ['11', '7', '13', '5', '4', '3']
+      name:"SKU Location",
+      masters:['11','7','13','5','4','3','16','24']
     },
     {
         name: "Plant/CCR",
@@ -240,29 +240,67 @@ export const ImageMapper: any = {
     '13': '/assets/img/VectorFLOW/NMS/AddRecords/invest-1.svg',
     '3': '/assets/img/VectorFLOW/NMS/AddRecords/sku-location.svg'
 
+  export const ImageMapper:any={
+    '1':'/assets/img/VectorFLOW/NMS/AddRecords/sku-1.svg', 
+    '5':'/assets/img/VectorFLOW/NMS/AddRecords/MOQ-1.svg',
+    '4':'/assets/img/VectorFLOW/NMS/AddRecords/sob-1.svg',
+    '2':'/assets/img/VectorFLOW/NMS/AddRecords/location-1.svg',
+    '11':'/assets/img/VectorFLOW/NMS/AddRecords/seasonality.svg',
+    '7':'/assets/img/VectorFLOW/NMS/AddRecords/phase-in-phase-out.svg',
+    '13':'/assets/img/VectorFLOW/NMS/AddRecords/invest-1.svg',
+    '3':'/assets/img/VectorFLOW/NMS/AddRecords/sku-location.svg',
+    '27':'/assets/img/VectorFLOW/NMS/AddRecords/sku-1.svg',
+    '15':'/assets/img/VectorFLOW/NMS/AddRecords/contact.svg',
+    '26':'/assets/img/VectorFLOW/NMS/AddRecords/seasonality.svg',
+    '20':'/assets/img/VectorFLOW/NMS/AddRecords/location-capacity.svg',
+    '22':'/assets/img/VectorFLOW/NMS/AddRecords/location-priority.svg',
+    '23':'/assets/img/VectorFLOW/NMS/AddRecords/location-priority.svg',
+    '19':'/assets/img/VectorFLOW/NMS/AddRecords/location-1.svg',
+    '21':'/assets/img/VectorFLOW/NMS/AddRecords/location-1.svg',
+    '24':'/assets/img/VectorFLOW/NMS/AddRecords/pivot.svg',
+    '25':'/assets/img/VectorFLOW/NMS/AddRecords/sku-1.svg', 
+    '16':'/assets/img/VectorFLOW/NMS/AddRecords/deployment.svg',
+    '18':'/assets/img/VectorFLOW/NMS/AddRecords/IST.svg',
+    '17':'/assets/img/VectorFLOW/NMS/AddRecords/discount-period.svg'
+  
 }
 
-export const ImageMapperHover: any = {
-    '1': '/assets/img/VectorFLOW/NMS/AddRecords/sku-1-hover.svg',
-    '5': '/assets/img/VectorFLOW/NMS/AddRecords/MOQ-1-Hover.svg',
-    '4': '/assets/img/VectorFLOW/NMS/AddRecords/sob-1-hover.svg',
-    '2': '/assets/img/VectorFLOW/NMS/AddRecords/location-1-hover.svg',
-    '11': '/assets/img/VectorFLOW/NMS/AddRecords/seasonality-hover.svg',
-    '7': '/assets/img/VectorFLOW/NMS/AddRecords/phase-in-phase-out-hover.svg',
-    '13': '/assets/img/VectorFLOW/NMS/AddRecords/invest-1-hover.svg',
-    '3': '/assets/img/VectorFLOW/NMS/AddRecords/sku-location-hov.svg'
-
+export const ImageMapperHover:any={
+    '1':'/assets/img/VectorFLOW/NMS/AddRecords/sku-1-hover.svg', 
+    '5':'/assets/img/VectorFLOW/NMS/AddRecords/MOQ-1-Hover.svg',  
+    '4':'/assets/img/VectorFLOW/NMS/AddRecords/sob-1-hover.svg',  
+    '2':'/assets/img/VectorFLOW/NMS/AddRecords/location-1-hover.svg' ,
+    '11':'/assets/img/VectorFLOW/NMS/AddRecords/seasonality-hover.svg',
+    '7':'/assets/img/VectorFLOW/NMS/AddRecords/phase-in-phase-out-hover.svg',
+    '13':'/assets/img/VectorFLOW/NMS/AddRecords/invest-1-hover.svg',
+    '3':'/assets/img/VectorFLOW/NMS/AddRecords/sku-location-hov.svg',
+    '27':'/assets/img/VectorFLOW/NMS/AddRecords/sku-1-hover.svg',
+    '15':'/assets/img/VectorFLOW/NMS/AddRecords/contact-hover.svg',
+    '26':'/assets/img/VectorFLOW/NMS/AddRecords/seasonality-hover.svg',
+    '20':'/assets/img/VectorFLOW/NMS/AddRecords/location-capacity-hover.svg',
+    '22':'/assets/img/VectorFLOW/NMS/AddRecords/location-priority-hover.svg',
+    '23':'/assets/img/VectorFLOW/NMS/AddRecords/location-priority-hover.svg',
+    '19':'/assets/img/VectorFLOW/NMS/AddRecords/location-1-hover.svg',
+    '21':'/assets/img/VectorFLOW/NMS/AddRecords/location-1-hover.svg',
+    '24':'/assets/img/VectorFLOW/NMS/AddRecords/pivot-hover.svg',
+    '25':'/assets/img/VectorFLOW/NMS/AddRecords/sku-1-hover.svg',
+    '16':'/assets/img/VectorFLOW/NMS/AddRecords/deployment-hover.svg',
+    '18':'/assets/img/VectorFLOW/NMS/AddRecords/IST-hover.svg',
+    '17':'/assets/img/VectorFLOW/NMS/AddRecords/discount-period-hover.svg' 
 }
 
-export const TaskPendingAvoidColumnsMapper: any = {
-    "1": ["sc"],
-    "2": ['wc'],
-    "3": ['sc', 'wc'],
-    "4": ['sc'],
-    "5": ['sc'],
-    "7": ['sc', 'wc'],
-    "8": ['sc', 'wc', 'pi'],
-    "13": ['sc', 'wc']
+export const TaskPendingAvoidColumnsMapper:any ={
+    "1":["sc"],
+    "2":['wc'],
+    "3":['sc','wc'],
+    "4":['sc','spc','wc'],
+    "5":['sc'],
+    "7":['sc','wc'],
+    "8":['sc','wc','pi'],
+    "9":['sc','wc'],
+    "11":['sc','wc'],
+    "12":['sc','wc'],
+    "13":['sc','wc']
 }
 
 export const customKeys = [
