@@ -23,10 +23,13 @@ import {
 
 interface MTOActionToolBarProps {
     comp: string
+    setIsGridView?: (value: boolean) => void
+    isGridView?: boolean
 }
 
 
-const MTOActionToolBar = ({ comp }: MTOActionToolBarProps) => {
+
+const MTOActionToolBar = ({ comp, setIsGridView, isGridView }: MTOActionToolBarProps) => {
     return (
         <SCTaskBarContainer>
             <SCTaskFilterContainer
@@ -157,7 +160,11 @@ const MTOActionToolBar = ({ comp }: MTOActionToolBarProps) => {
 
                         </SCViewContainerWithBg>
                         {/* <SCVerticalDivider /> */}
+
+                        {(setIsGridView) ? <SCButton onClick={() => { setIsGridView(!isGridView) }} /> : <SCButton />}
+
                     </>
+
 
                 </>
 

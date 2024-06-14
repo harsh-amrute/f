@@ -20,10 +20,10 @@ const AppLayout = () => {
   const { t } = useTranslation();
 
   //URL arrays for excluding layout padding
-  const urlDisableZoomScaling = ['/logistics/intransit-whereabouts', '/supply-chain-intelligence-hub/planning', '/insights-and-trends/research-insights', '/insights-and-trends/buffer-trends', '/insights-and-trends/buffer-trend-report', "/insights-and-trends/guided-insights", "/procurement/insights-and-trends/rmpm"];
-  const urlExcludePadding = ['/logistics/intransit-whereabouts', '/master-data-management/control-panel/view-modify', '/master-data-management/task-pending', '/master-data-management/control-panel/add', '/master-data-management/control-panel/delete', '/supply-chain-intelligence-hub/bpr', '/insights-and-trends/guided-insights', "/insights-and-trends/buffer-trend-report", "/procurement/insights-and-trends/rmpm"];
+  const urlDisableZoomScaling = ['/logistics/intransit-whereabouts', '/supply-chain-intelligence-hub/planning', '/insights-and-trends/research-insights', '/insights-and-trends/buffer-trends', '/insights-and-trends/buffer-trend-report', "/insights-and-trends/guided-insights"];
+  const urlExcludePadding = ['/logistics/intransit-whereabouts', '/master-data-management/control-panel/view-modify', '/master-data-management/task-pending', '/master-data-management/control-panel/add', '/master-data-management/control-panel/delete', '/supply-chain-intelligence-hub/bpr', '/insights-and-trends/guided-insights', "/insights-and-trends/buffer-trend-report"];
   // const urlExclusdeHeader = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr','/master-data-management/task-status','/master-data-management/saved-drafts'];
-  const urlExclusdeHeader = ['/master-data-management/task-pending', '/master-data-management/task-status', '/master-data-management/saved-drafts', '/procurement/insights-and-trends/rmpm'];
+  const urlExclusdeHeader = ['/master-data-management/task-pending', '/master-data-management/task-status', '/master-data-management/saved-drafts'];
 
   const location = useLocation();
 

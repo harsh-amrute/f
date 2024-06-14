@@ -1,15 +1,24 @@
 import React, { Fragment, useState } from "react";
+
+
 import "allotment/dist/style.css";
+import { CapsuleWrapper } from "./styles";
+import {
+    SCChartHeaderContainer, SCChartContainer, SCHorizontalDivider,
+    SCChartSliderContainer, SCChartMainContainer
+} from '../styles';
+import VFCapsule from "../../../../../../../components/VectorFLOW/commons/VFCapsule";
+import { BufferTrendsGraphState } from '../../../../../../types/BPR'
+import VFRangeSlider from "../../../../../../../components/VectorFLOW/commons/VFRangeSlider";
+
+import { AgChartsReact } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
-import ActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import GridView from "./GridView";
-import GraphView from "./GraphView";
-
-const RMPM = () => {
-
-    const [isGridView, setIsGridView] = useState(false)
+import VFInfoToolTip from "../.././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+import ActionToolBar from "../../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 
 
+
+const GraphView = () => {
     const options: AgChartOptions = ({
         title: {
             text: "Apple's Revenue by Product Category",
@@ -179,27 +188,34 @@ const RMPM = () => {
 
     });
 
-
-
     return (
 
 
         <>
-            <ActionToolBar
-                comp={"rmpm"}
-                setIsGridView={setIsGridView}
-                isGridView={isGridView}
-            />
+            <SCChartContainer height={700}>
 
+                <SCHorizontalDivider />
+                {/* <ChartWrapper> */}
+                <div style={{ height: '90%', width: '100%' }}>
+                    <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <div style={{ fontSize: '14px', fontWeight: 500, textAlign: 'center' }}>
+                            Buffer Trend Graph
+                        </div>
+                        <div style={{ marginLeft: 10, marginBottom: '-5px' }}>
+                            {/* <VFInfoToolTip infoList={graph1} /> */}
+                        </div>
+                    </div>
+                    <AgChartsReact options={options} />
 
-            {
-                (isGridView) ? <GridView /> : <GraphView />
+                </div>
+                {/* </ChartWrapper> */}
 
-            }
+            </SCChartContainer>
+
 
         </>
 
     )
 };
 
-export default RMPM;
+export default GraphView;
