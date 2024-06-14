@@ -27,7 +27,7 @@ import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
 import { useUserData } from '../../../../../context'
 
 
-const ResearchInsights = () => {
+const ResearchInsights = ()=>{
 
     const {
         ref,
@@ -85,13 +85,13 @@ const ResearchInsights = () => {
     
     return(
         <GridStateContext.Provider value={{
-            ref: ref,
-            exportExcelColumns: exportExcelColumns,
-            setExportExcelColumns: setExportExcelColumns,
-            tempDownloadData: tempDownloadData,
-            setTempDownloadData: setTempDownloadData,
-            exportExcelRowData: exportExcelRowData,
-            setExportExcelRowData: setExportExcelRowData
+            ref:ref,
+            exportExcelColumns:exportExcelColumns,
+            setExportExcelColumns:setExportExcelColumns,
+            tempDownloadData:tempDownloadData,
+            setTempDownloadData:setTempDownloadData,
+            exportExcelRowData:exportExcelRowData,
+            setExportExcelRowData:setExportExcelRowData
 
         }}>
             <div style={{zoom:0.8, paddingLeft:'20px'}}>
@@ -147,49 +147,15 @@ const ResearchInsights = () => {
                         ],
                       }}
                 />
-            </div>
-
-            {(isLoading || isSavedDataLoading) ? (
-                <VFLoader />
-            ) : (
-                <ResearchInsightsLayout>
-                    {
-                        showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
-                    }
-                    {
-                        showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
-                    }
-                    <ResearchInsightsTableWrapper style={{ zoom: 0.8, marginTop: '-15px' }}>
-                        <VFTable
-                            height={945}
-                            {...agGridProps}
-                            ref={ref}
-                            columnDefs={ResearchInsightsColumns}
-                            rowData={ResearchInsightsData}
-                            onGridReady={(params) => {
-                                if (columnState) params.columnApi.applyColumnState({ state: columnState })
-                            }}
-                            enableRangeSelection={true} // Added property
-                            rowSelection="multiple"
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                    { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                                    { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                                    { statusPanel: 'agAggregationComponent', align: 'left' },
-                                ],
-                            }}
-                        />
-                        <VFPagination
-                            selectedRows={0}
-                            totalRows={recordCount || 0}
-                            currentPage={currGridPage}
-                            rowsPerPage={rowsPerPage}
-                            handleChangePage={handlePageChange}
-                        />
-                        <ResearchInsightsTableTaskBar>
-                            {/* <VFButton
+                <VFPagination
+                    selectedRows={0}
+                    totalRows={recordCount || 0}
+                    currentPage={currGridPage}
+                    rowsPerPage={rowsPerPage}
+                    handleChangePage={handlePageChange}
+                />
+                <ResearchInsightsTableTaskBar>
+                    {/* <VFButton
                         themeUi={themeUi}
                         onClick={handleOnUpdateGraph}
                         // disabled={graphState==='default'}

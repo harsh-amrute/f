@@ -1,3 +1,4 @@
+
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import { BPRLayout } from "./styles"
 import BPRViewTable from "./BPRViewTable"
@@ -16,14 +17,14 @@ import { GridStateContext } from "../../../../../context/GridStateContext"
 
 
 
-const BPR = () => {
+const BPR = ()=>{
 
 
 
-    const {
+  const {
         // isSideBarOpen,
         isSubGridOpen,
-        isLoading,
+        isLoading ,
         activeRow,
         BPRColumns,
         BPRRowData,
@@ -63,7 +64,7 @@ const BPR = () => {
         onApplyFilter
     } = useBPR();
 
-
+    
     // if(isLoading || isSavedDataLoading){
     //   return (
     //     <VFLoader/>
@@ -71,54 +72,54 @@ const BPR = () => {
     // }
 
 
-    return (
+    return(
         <GridStateContext.Provider
             value={{
-                ref: ref,
-                exportExcelColumns: exportExcelColumns,
-                setExportExcelColumns: setExportExcelColumns,
-                tempDownloadData: tempDownloadData,
-                setTempDownloadData: setTempDownloadData,
-                exportExcelRowData: exportExcelRowData,
-                setExportExcelRowData: setExportExcelRowData
-
+                ref:ref,
+                exportExcelColumns:exportExcelColumns,
+                setExportExcelColumns:setExportExcelColumns,
+                tempDownloadData:tempDownloadData,
+                setTempDownloadData:setTempDownloadData,
+                exportExcelRowData:exportExcelRowData,
+                setExportExcelRowData:setExportExcelRowData
+    
             }}
         >
-            <ActionToolBar
-                view={'grid'}
-                setCurrentTab={''}
-                currCategory={'BPR'}
-                currentTab={''}
-                tabsList={[]}
-                onFloatingTabChange={() => console.log('')}
-                onApplyFilter={(e) => onApplyFilter(e)}
-                onGoBack={() => console.log('')}
-                onViewChange={() => console.log('')}
-                genericRecordCount={recordCount}
-                onExportToExcelCallBack={onExportToExcelCallBack}
-                multiFilter={currFilter}
-                onDelete={onDelete}
-                setMultiFilter={setCurrFilter}
-            />
-            {
-                showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
-            }
-            {
-                showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
-            }
-
-            {(isLoading || isSavedDataLoading) ? (
-                <VFLoader />
-            )
-                :
-                (
-                    <BPRLayout>
-                        {/* <BPRTaskBar style={{width:isSideBarOpen?'77%':'97%'}}>
+        <ActionToolBar 
+            view={'grid'} 
+            setCurrentTab={''} 
+            currCategory={'BPR'} 
+            currentTab={''} 
+            tabsList={[]} 
+            onFloatingTabChange={()=>console.log('')} 
+            onApplyFilter={(e)=>onApplyFilter(e)}
+            onGoBack={()=>console.log('')} 
+            onViewChange={()=>console.log('')} 
+            genericRecordCount={recordCount}
+            onExportToExcelCallBack={onExportToExcelCallBack}
+            multiFilter={currFilter}
+            onDelete={onDelete}
+            setMultiFilter={setCurrFilter}
+        />
+        {
+            showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
+        }
+        {
+            showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
+        }
+        
+        {(isLoading || isSavedDataLoading )?(
+            <VFLoader/>
+        )
+        :
+        (
+            <BPRLayout>
+            {/* <BPRTaskBar style={{width:isSideBarOpen?'77%':'97%'}}>
                 <VFButtonOutline
                     themeUi="NOIRFUSION"
                     onClick={()=>console.log('')}
                 >
-                    Excel Export
+                    Excel Export 
                 </VFButtonOutline>
                 <VFButton
                     themeUi="NOIRFUSION"
@@ -216,43 +217,43 @@ const BPR = () => {
                     ]
                 }
 
+                    
+                />
+               
+            )}
+              </Allotment.Pane>
+            </Allotment>
+            </div>
+            {isSubmitRemarkToolTipOpen && (
+                <BPRSubmiRemarkToolTip
+                    remark={remark}
+                    setRemark={updateRemark}
+                    style={submitRemarkToolTipPosition}
+                    onSuccess={onSubmitRemark}
+                    onClose={onCloseSubmitRemark}
+                />
+            )}
 
-                                        />
-
-                                    )}
-                                </Allotment.Pane>
-                            </Allotment>
-                        </div>
-                        {isSubmitRemarkToolTipOpen && (
-                            <BPRSubmiRemarkToolTip
-                                remark={remark}
-                                setRemark={updateRemark}
-                                style={submitRemarkToolTipPosition}
-                                onSuccess={onSubmitRemark}
-                                onClose={onCloseSubmitRemark}
-                            />
-                        )}
-
-                        {isRemarkHistoryToolTipOpen && (
-                            <BPRRemarkHistoryToolTip
-                                remarkHistory={remarkHistory}
-                                onClose={onCloseRemarkHistory}
-                                style={remarkHistoryToolipPosition}
-                            />
-                        )}
-                        <div style={{ display: 'none' }}>
-                            <VFTable
-                                ref={tempRef}
-                                columnDefs={BPRColumns}
-                                rowData={exportExcelRowData}
-                                {...tempAgGridProps}
-                            />
-                        </div>
-                    </BPRLayout>
-                )
-            }
+            {isRemarkHistoryToolTipOpen && (
+                <BPRRemarkHistoryToolTip
+                    remarkHistory={remarkHistory}
+                    onClose={onCloseRemarkHistory}
+                    style={remarkHistoryToolipPosition}
+                />
+            )}
+            <div style={{display:'none'}}>                
+                  <VFTable
+                    ref={tempRef}
+                    columnDefs={BPRColumns}
+                    rowData={exportExcelRowData}
+                    {...tempAgGridProps}
+                  />
+                </div>
+        </BPRLayout>
+        )
+    }
         </GridStateContext.Provider>
     )
-}
+            }
 
 export default BPR
