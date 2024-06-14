@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import ProcPlanningAnalytics from './index';
 
 // Mock the useTranslation hook
@@ -12,12 +12,10 @@ jest.mock('react-i18next', () => ({
 jest.mock('../../../../VectorFlow/Pages/MTO/Procurement/Planning/useProcPlanning', () => ({
     __esModule: true,
     default: () => ({
-        fetchData: jest.fn(), // Add a mock function for fetchData
-        date: "2024-06-13", // Mock a date for testing
-        counts: {
-            short: 0,
-            complete: 0,
-            total: 0,
+        GetCount: {
+            short: 5,
+            complete: 10,
+            total: 15,
         },
     }),
 }));
@@ -29,5 +27,7 @@ describe('ProcPlanningAnalytics Component', () => {
                 themeUi="NOIRFUSION"
             />
         );
+
+        // Check for the list title
     });
 });

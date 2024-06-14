@@ -1,47 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { TableParticulars } from "../../../../../src/components/index";
 import { useTranslation } from "react-i18next";
 import useProcPlanning from "../../../../VectorFlow/Pages/MTO/Procurement/Planning/useProcPlanning";
 const ProcPlanningAnalytics = ({ themeUi }: any) => {
-    const { fetchData, date } = useProcPlanning("");
+    const { GetCount } = useProcPlanning("");
     const { t } = useTranslation();
     const [pcs, setPcs] = useState(false);
-    const [counts, setCounts] = useState({
-        short: 0,
-        complete: 0,
-        total: 0,
-    });
-    useEffect(() => {
-        const shortCount = localStorage.getItem("shortCount");
-        const completeCount = localStorage.getItem("completeCount");
-        const totalCount = localStorage.getItem("totalCount");
-
-        setCounts({
-            short: shortCount ? JSON.parse(shortCount) : 0,
-            complete: completeCount ? JSON.parse(completeCount) : 0,
-            total: totalCount ? JSON.parse(totalCount) : 0,
-        });
-
-        if (date !== null) {
-            fetchData(date);
-        }
-    }, [fetchData, date]);
     const listTitle = [
         t("ProcPlanning.Analytics")
     ];
     const listData = [
         {
             name: t("ProcPlanning.cntshort"),
-            column1: counts.short,
+            column1: GetCount.short,
         },
         {
             name: t("ProcPlanning.cntfa"),
-            column1: counts.complete,
+            column1: GetCount.complete,
         },
     ];
     const total = {
         name: t("ProcPlanning.total"),
-        column1: counts.total,
+        column1: GetCount.total,
     };
 
     return (
