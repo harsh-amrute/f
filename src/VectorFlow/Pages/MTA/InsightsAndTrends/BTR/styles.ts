@@ -4,6 +4,7 @@ import styled from "styled-components";
 export const BTRLayoutWrapper = styled.div`
     display:flex;
     flex-direction:column;
+    height:90%;
 `
 
 export const BTRLayoutTabsWrapper = styled.div`
@@ -28,11 +29,13 @@ export const BTRTableWrapper = styled.div`
     width:100%;
     margin-top:20px;
     margin-bottom:20px;
+    height:100%;
 `
 
 export const BTRAllomentSection = styled.div`
     display:flex;
     flex-direction:column;
+    height:100%;
     max-height:100%;
 `
 

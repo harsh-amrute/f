@@ -133,6 +133,7 @@ const BPR = ()=>{
               <Allotment.Pane className="planning-grid-allotment">
               <VFTable
                 ref={ref}
+                height={"95%"}
                 {...agGridProps}
                 columnDefs={BPRColumns}
                 rowData={BPRRowData}

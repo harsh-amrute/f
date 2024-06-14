@@ -168,7 +168,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                 suppressDragLeaveHidesColumns={true}
                 disableZoomScaling={true}
                 rowHeight={30}
-                height={430}
+                height={'100%'}
             />
         </SCDynamicContainer>
         </>

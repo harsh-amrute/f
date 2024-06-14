@@ -290,7 +290,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={425}>
+                        <SCChartContainer height={"95%"}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: Number of Locations</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -333,7 +333,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                             floatingFilter:true,
                                             filter: "agMultiColumnFilter",
                                             }}
-                                        height={480}
+                                        height={'480px'}
                                     />
                                 </div>
                             </VFModalCard>
@@ -369,14 +369,14 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                     
                                 />
                             </div>
-                            <div id="ExcessInventoryProductG1" style={{height:'300px'}}></div>
+                            <div id="ExcessInventoryProductG1" style={{height:'80%'}}></div>
                         </SCChartContainer>
                         {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>
                         </div> */}
                     </Allotment.Pane>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={425}>
+                        <SCChartContainer height={'95%'}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -419,7 +419,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                             floatingFilter:true,
                                             filter: "agMultiColumnFilter",
                                             }}
-                                        height={480}
+                                        height={'480px'}
                                     />
                                 </div>
                             </VFModalCard>
@@ -454,7 +454,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                 disableZoomScaling={true}
                             />
                             </div>
-                            <div id="ExcessInventoryProductG2" style={{height:'300px'}}></div>
+                            <div id="ExcessInventoryProductG2" style={{height:'80%'}}></div>
                         </SCChartContainer>
                         {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph2}/>

@@ -106,7 +106,7 @@ const AvailabilityTrend = () => {
   ]
 
   return (
-    <div style={{marginTop:'25px',marginLeft:'20px'}}>
+    <div style={{marginTop:'25px',marginLeft:'20px',height:'70%'}}>
       <div style={{display: "flex", alignItems:'center',justifyContent:'flex-start',gap:'40px',marginBottom:'20px'}}>
         <label
           style={{
@@ -158,7 +158,7 @@ const AvailabilityTrend = () => {
           <VFInfoToolTip infoList={graph1} />
         </div>
       </div>
-      <div style={{height:'300px'}}>
+      <div style={{height:'85%'}}>
         <AgChartsReact options={options} />
       </div>
     </div>

@@ -117,7 +117,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
     
     return(
         <>
-        <SCDynamicContainer className="ag-theme-planning-custom">
+        <SCDynamicContainer className="ag-theme-planning-custom" style={{height:'100%'}}>
             <VFTable
                 ref={ref}
                 columnDefs={colDefs}
@@ -152,7 +152,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                  }}
                 disableZoomScaling={true}
                 rowHeight={30}
-                height={430}
+                height={"80%"}
             />
         </SCDynamicContainer>
         </>

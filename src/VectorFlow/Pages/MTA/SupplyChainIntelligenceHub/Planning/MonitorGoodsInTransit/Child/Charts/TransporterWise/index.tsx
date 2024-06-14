@@ -207,8 +207,8 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
         <>
         <SCDynamicContainer>
             <Allotment>
-                <Allotment.Pane preferredSize={1000}>
-                    <SCChartContainer height={425}>
+                <Allotment.Pane preferredSize={'80%'}>
+                    <SCChartContainer height={"95%"}>
                         <SCChartHeaderContainer>
                             <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Transporters: Max LRs With On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader></div>
                             <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -251,7 +251,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                                 floatingFilter:true,
                                                 filter: "agMultiColumnFilter",
                                               }}
-                                            height={480}
+                                            height={'480px'}
                                         />
                                         
                                 </div>
@@ -292,7 +292,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                 disableZoomScaling={true}
                             />
                         </div>
-                        <div id="TransporterWiseG1" style={{height:'345px'}}></div>
+                        <div id="TransporterWiseG1" style={{height:'80%'}}></div>
                     </SCChartContainer>
                     {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                         <VFInfoTip text={graph1}/>
