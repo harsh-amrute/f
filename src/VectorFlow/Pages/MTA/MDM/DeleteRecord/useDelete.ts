@@ -1,7 +1,7 @@
 import { useSelector,useDispatch } from 'react-redux'
 import { useEffect,useState } from 'react';
 import { RootState } from '../../../../../redux/store/store';
-import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
+import { MDMMasterState,Field } from '../../../../../VectorFlow/types/MDM';
 import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,SET_RECORD_COUNT,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA, SYNC_ACTIVE_MASTER_TO_MASTER, REMOVE_COLDEFS,ADD_COLDEFS } from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { ColDef } from 'ag-grid-enterprise';
@@ -170,7 +170,9 @@ const useDelete=()=>{
 
     const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean) => { 
 
-        rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users'));
+        const columnsToOmit = activeMaster.fields.filter((field:Field)=>!field.isDownload).map((field:Field)=>field.key) 
+
+        rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
 
        // Convert To String
        rowData = rowData.map((row:any)=>{
