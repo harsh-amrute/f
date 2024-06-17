@@ -344,7 +344,6 @@ const useViewModify = (pageType:string) => {
           }
           return row;
         })
-        console.log(newRowData)
         setEnableEditOnlineReset(true)
         dispatch(UPDATE_ROW_DATA([...newRowData]))
       },
@@ -871,10 +870,12 @@ const useViewModify = (pageType:string) => {
 
       }
 
-      const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean,actionStatus="") => { 
+      const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean,actionStatus="") => {
+        const columnsToOmit = activeMaster.fields.filter((field:Field)=>!field.isDownload).map((field:Field)=>field.key) 
 
         //CleanUp Row Data
-        rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users'));
+        rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
+        console.log(rowData);
         // Convert To String
         rowData = rowData.map((row:any)=>{
           const tempRow:any = {};
@@ -1126,7 +1127,6 @@ const useViewModify = (pageType:string) => {
             }
           }
           else{
-            console.log('asdfads')
             // console.time('That took ')
             // console.log('Calculating...')
             const tempCon = createConflictRowData(localConflictData,activeMaster.id)
