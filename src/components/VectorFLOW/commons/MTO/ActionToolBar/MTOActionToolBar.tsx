@@ -18,17 +18,22 @@ import {
     VFSelectedFiltersPlaceHolder,
     VFSelectedFiltersWrapper,
     VFFilterScrollBar,
+    SCViewContainerWithBgToggle,
+    SCHorizontalDivison,
+    SCViewContainer,
     /**search filter styles end*/
 } from './styles'
 
 interface MTOActionToolBarProps {
     comp: string,
-    onDateChange: (date: string) => void;
-    submitDate: () => void;
+    onDateChange?: (date: string) => void;
+    submitDate?: () => void;
+    isGridView?: boolean;
+    setIsGridView?: (isGridView: boolean) => void;
 }
 
 
-const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ comp, onDateChange, submitDate, isGridView, setIsGridView }: MTOActionToolBarProps) => {
     return (
         <SCTaskBarContainer>
             <SCTaskFilterContainer
@@ -40,7 +45,7 @@ const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarPr
             >
 
                 <>
-                    {comp !== 'MaterialCov' ?
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) ?
                         <SCGoBackContainer>
                             <img
                                 src="/assets/img/VectorFLOW/BPR/goback.svg"
@@ -51,7 +56,7 @@ const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarPr
                         : null
                     }
 
-                    {comp !== 'MaterialCov' ?
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) ?
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -91,7 +96,7 @@ const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarPr
                                         fontFamily: 'Roboto',
                                         border: '0.5px solid #ACACAC',
                                     }}
-                                    onChange={(e) => onDateChange(e.target.value)}
+                                    onChange={(e) => onDateChange ? (e.target.value) : null}
                                 />
                             </div>
                             <div>
@@ -102,7 +107,9 @@ const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarPr
                                         width: '112px',
                                         height: '43px',
                                     }}
-                                    onClick={() => submitDate()}>Submit</button>
+
+                                // onClick={() => submitDate?(): null}
+                                >Submit</button>
                             </div>
                         </div>
                         :
@@ -170,7 +177,29 @@ const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarPr
 
                         </SCViewContainerWithBg>
                         {/* <SCVerticalDivider /> */}
+
+
                     </>
+
+                    {/* Toggle button for chartview/ grid view */}
+                    {(comp === 'rmpm') ?
+                        <>
+                            <SCViewContainerWithBgToggle onClick={() => { setIsGridView && (setIsGridView(!isGridView)); console.log(isGridView) }}>
+                                <SCViewContainer>
+                                    <SCViewImage src={`/assets/img/VectorFLOW/BPR/${(isGridView) ? 'chart-view-grey' : 'chart-view-pink'}.svg`} />
+                                    <p>Chart View</p>
+
+                                </SCViewContainer>
+                                <SCHorizontalDivison />
+                                <SCViewContainer>
+                                    <SCViewImage src={`/assets/img/VectorFLOW/BPR/${(!isGridView) ? 'grid-view-grey' : 'grid-view-pink'}.svg`} />
+                                    <p>Grid View</p>
+
+                                </SCViewContainer>
+
+                            </SCViewContainerWithBgToggle>
+                        </> : <></>
+                    }
 
                 </>
 

@@ -36,6 +36,7 @@ import MaterialCov from './VectorFlow/Pages/MTO/Procurement/MaterialCoverage/Mat
 import ProcurementPlanning from './VectorFlow/Pages/MTO/Procurement/Planning';
 import SimulateFullKit from './VectorFlow/Pages/MTO/Procurement/Planning/SimulateFullKit';
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
+import { RMPM } from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPM'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -83,7 +84,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/procurement/material-coverage-open-sales',
     '/procurement-planning/planning',
     '/planning/simulative-fullkit',
-    '/logistics/intransit-whereabouts'
+    '/logistics/intransit-whereabouts',
+    '/procurement/insights-and-trends/rmpm'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -469,6 +471,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<SimulateFullKit />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement/insights-and-trends/rmpm',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMPM />)
         },
         ...getStoreTransferModuleRoutes()
       ]
