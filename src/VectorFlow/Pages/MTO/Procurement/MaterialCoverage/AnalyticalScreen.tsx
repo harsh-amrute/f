@@ -18,9 +18,6 @@ import { RootState } from '../../../../../redux/store/store';
 const AnalyticalScreen = () => {
     //AnalyticsData
     const options = useSelector((state: RootState) => state.mto.AnalyticsData);
-    console.log(options)
-
-
 
     const [rowData] = useState([
         {

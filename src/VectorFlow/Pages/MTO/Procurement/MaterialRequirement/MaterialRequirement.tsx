@@ -1,40 +1,41 @@
-import React,{useState} from 'react';
-import ActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
-import {
-    BTRLayoutTabsWrapper,
-} from '../MaterialCoverage/styles';
-import VFFloatingTab from '../../../../../components/VectorFLOW/commons/VFFloatingTab';
+import { MaterialRequiremetLayout } from './styles';
+import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
+import useMaterialReq from './useMaterialRequirements';
+import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 
 const MaterialRequirement = () => {
-
-    const [currTab, setCurrTab] = useState<string>();
-
+    const { renderView, toggleCurrentTab } = useMaterialReq();
     return (
-        <div>
+        <>
             <ActionToolBar
-                comp={'MaterialRequirement'}
+             comp={"Fristan"}
             />
-            <BTRLayoutTabsWrapper>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
+
                 <VFFloatingTab
-                    handleClick={(e) => setCurrTab(e.value)}
+                    handleClick={(tab) => toggleCurrentTab(tab)}
                     tabs={[
                         {
-                            id: "1",
-                            value: 'SelectedDayView',
-                            label: "Selected Day View"
+                            id: 'sdv',
+                            label: 'Selected Day View',
+                            value: 'sdv'
                         },
                         {
-                            id: "2",
-                            value: 'CumulativeView',
-                            label: "Cumulative View"
+                            id: 'cv',
+                            label: 'Cummuulative View',
+                            value: 'cv'
                         }
                     ]}
-                    defaultTab={0}
                 />
-            </BTRLayoutTabsWrapper>
 
-        </div>
+            </div>
+            <MaterialRequiremetLayout>
+                {renderView()}
+            </MaterialRequiremetLayout>
+        </>
     )
 }
 
 export default MaterialRequirement
+
+

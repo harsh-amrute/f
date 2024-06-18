@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
-import {HeaderChildren} from './Data';
-import {mapSimulateHedaerChildrenFieldsToColDefs} from '../../../../../helpers/utils';
+import { HeaderChildren } from './Data';
+import { mapSimulateHedaerChildrenFieldsToColDefs } from '../../../../../helpers/utils';
 const MaterialCellRenderer = (params: any) => {
-  //  const {HeaderChildren} = HeaderChildren
+    //  const {HeaderChildren} = HeaderChildren
     const columnDef = mapSimulateHedaerChildrenFieldsToColDefs(HeaderChildren)
- 
+
     const customChildrenCellRenderers = useMemo(() => ({
         "coloPriorityOfBall": ChildrenColor
     }), []);
- 
+
     return (
         <div style={{ backgroundColor: 'white' }}>
             <h3 style={{ marginLeft: 20, fontSize: 17 }}>Raw Material Details</h3>
@@ -54,5 +54,5 @@ const MaterialCellRenderer = (params: any) => {
         </div>
     );
 };
- 
+
 export default MaterialCellRenderer;

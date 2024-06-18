@@ -2650,3 +2650,63 @@ export const mapMaterialCoverageFieldsToColDefs = (fields: ColumnHeaderConfig[])
 
   return [...result, ...PPColumns];
 };
+export const mapMaterialFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
+
+  if (!fields || fields.length < 1) {
+    return [];
+  }
+  let result: ColDef[] = [];
+  const PPColumns: ColDef[] = [
+  ]
+
+  result = fields.map((f: ColumnHeaderConfig) => {
+   
+    if (f.jf === 'cp') {
+      return {
+        colId: f.jf,
+        field: f.jf,
+        headerName: f.hdr,
+        hide: !f.vs,
+        cellRenderer: "coloPriority",
+        tooltipValueGetter: (params: any) => {
+          const cpData = params.data.cp[0];
+          const keysToPrint = ["B", "R", "Y", "G"];
+          let tooltipText = '';
+          keysToPrint.forEach((key) => {
+            if (Object.prototype.hasOwnProperty.call(cpData, key)) {
+              if (tooltipText !== '') {
+                tooltipText += ' | ';
+              }
+              tooltipText += `${key}: ${cpData[key]}`;
+            }
+          });
+          return tooltipText;
+        },
+        tooltipComponent: "availabilityToolTip",
+        initialWidth: 400, //160
+        autoHeaderHeight: true,
+        wrapHeaderText: true,
+      }
+    }
+    
+    return {
+      colId: f.jf,
+      [f.jf]: f.val,
+      field: f.jf,
+      headerName: f.hdr,
+      hide: !f.vs,
+      autoHeaderHeight: true,
+      wrapHeaderText: true,
+      initialWidth: 400, //160
+      filter: 'agMultiColumnFilter',
+      floatingFilter: true,
+    }
+  })
+
+  return [...result, ...PPColumns];
+};
+
+// export const mapMaterialRequirementDataToColsDef = (fields: ColumnHeaderConfig[]): ColDef[] => {
+
+
+// }

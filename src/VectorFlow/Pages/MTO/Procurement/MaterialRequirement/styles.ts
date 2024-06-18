@@ -1,0 +1,6 @@
+import styled from "styled-components";
+
+export const MaterialRequiremetLayout = styled.div`
+    height: '1200px',
+    width: '1200px'
+`
