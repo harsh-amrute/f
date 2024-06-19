@@ -16,7 +16,7 @@ interface FutureCovProps {
 
 const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) => {
     const [SOData, setSOData] = useState<string[]>([]);
-    const { data, isLoading, refetch } = useGetSOSummaydetails();
+    const { data, /*isLoading, refetch*/ } = useGetSOSummaydetails();
     const [totalOrderCount, setTotalOrdeerCount] = useState<number>(0);
 
     const [isSubPageOpen, setToggleSubPage] = useState<boolean>(false)

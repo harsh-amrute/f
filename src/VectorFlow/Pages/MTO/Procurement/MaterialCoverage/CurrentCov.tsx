@@ -18,7 +18,7 @@ interface CurrentCovProps {
 
 const CurrentCov = ({ handleToggleComponent, setDetailDataObj }: CurrentCovProps) => {
     const [SOData, setSOData] = useState<string[]>([]);
-    const { data, isLoading, refetch } = useGetSOSummaydetails();
+    const { data, /*isLoading, refetch*/ } = useGetSOSummaydetails();
 
 
     const dispatch = useDispatch();
