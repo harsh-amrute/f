@@ -1,21 +1,56 @@
 export const GuidedInsights:any={
-     AvailabilityTrendData:[{
-        "week":"week1",
-        "percentage":77.39
-    },
-    {
-        "week":"week2",
-        "percentage":72.39
-    },
-    {
-        "week":"week3",
-        "percentage":70.39
-    },
-    {
-        "week":"week4",
-        "percentage":74.39
-    }
-],
+     AvailabilityTrendData:[
+        {
+            "locationtype": "Depot",
+            "week": "2024-05-26",
+            "percentage": 86
+        },
+        {
+            "locationtype": "CWH",
+            "week": "2024-05-26",
+            "percentage": 72
+        },
+        {
+            "locationtype": "Depot",
+            "week": "2024-05-27",
+            "percentage": 86
+        },
+        {
+            "locationtype": "CWH",
+            "week": "2024-05-27",
+            "percentage": 72
+        },
+        {
+            "locationtype": "CWH",
+            "week": "2024-05-28",
+            "percentage": 73
+        },
+        {
+            "locationtype": "Depot",
+            "week": "2024-05-28",
+            "percentage": 86
+        },
+        {
+            "locationtype": "CWH",
+            "week": "2024-05-29",
+            "percentage": 72
+        },
+        {
+            "locationtype": "Depot",
+            "week": "2024-05-29",
+            "percentage": 86
+        },
+        {
+            "locationtype": "Depot",
+            "week": "2024-05-30",
+            "percentage": 86
+        },
+        {
+            "locationtype": "CWH",
+            "week": "2024-05-30",
+            "percentage": 71
+        }
+    ],
 AvailabilityAgeingTrendData:[
     {
     "date":"05-09-2023",
