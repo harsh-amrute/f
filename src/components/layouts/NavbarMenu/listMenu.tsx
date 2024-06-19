@@ -500,18 +500,11 @@ export const listMenuParent: any = [
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin", "VectorConsultant"],
       },
       {
-        name: "Performance moniter",
-        img: "/assets/img/nav/arrow_down.svg",
-        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: "/api/download-reports/fr",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin", "VectorConsultant"],
-      },
-      {
         name: "Material Requirement",
         img: "/assets/img/nav/arrow_down.svg",
         imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: "/api/download-reports/fr",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin", "VectorConsultant"],
+        url: "/procurement/material-requirement",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
     ],
   }

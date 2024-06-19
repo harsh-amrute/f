@@ -42,7 +42,8 @@ const contextWrapper = (children: ReactNode,store:any) => {
 describe('CurrentCov component', () => {
   test("Div present on the screen", () => {
     const handleToggleComponentMock = jest.fn();
-    render(contextWrapper(<CurrentCov handleToggleComponent={handleToggleComponentMock} />,mockedStore))
+    const setDetailDataObj=jest.fn()
+    render(contextWrapper(<CurrentCov setDetailDataObj={setDetailDataObj}handleToggleComponent={handleToggleComponentMock} />,mockedStore))
     const navigate = screen.getByTestId("btn_navigate")
     expect(navigate).toBeInTheDocument();
     fireEvent.click(navigate);

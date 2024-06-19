@@ -4,7 +4,7 @@ import { MDMStore } from '../../VectorFlow/types/MDM';
 import mdmReducer from '../reducers/MDM';
 import mtaReducer from '../reducers/MTA';
 
-import mtoReducer from '../reducers/MTO';
+import mtoReducer from '../reducers/MTO/index';
 import { MTOStore } from '../../VectorFlow/types/MTO';
 
 
