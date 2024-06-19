@@ -1,5 +1,5 @@
 import React,{ReactNode} from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { setupReactQuery } from '../../../../../config/react-query-config';
 // Install this package if not already installed
 import { QueryClientProvider } from '@tanstack/react-query';
