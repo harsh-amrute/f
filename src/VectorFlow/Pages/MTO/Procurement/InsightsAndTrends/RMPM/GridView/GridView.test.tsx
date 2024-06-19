@@ -1,5 +1,3 @@
-// GridView.test.tsx
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import GridView from './GridView';
@@ -26,10 +24,6 @@ describe('GridView Component', () => {
     beforeEach(() => {
         render(<GridView />);
     });
-
-    // test('renders without crashing', () => {
-    //     expect(screen.getByText('AgGridReact Mock')).toBeInTheDocument();
-    // });
 
     test('renders the correct number of columns', () => {
         const headerCells = screen.getAllByRole('columnheader');
@@ -66,33 +60,8 @@ describe('GridView Component', () => {
 
         // Mock cell editing
         fireEvent.doubleClick(stockInHandCell);
-        // fireEvent.change(stockInHandCell.querySelector('input'), { target: { value: '20' } });
-        // fireEvent.keyDown(stockInHandCell.querySelector('input'), { key: 'Enter', code: 'Enter' });
-
         expect(stockInHandCell).toHaveTextContent('10');
     });
-
-    // test('shows tooltip on cell hover', async () => {
-    //     const firstRowCells = screen.getAllByRole('row')[1].querySelectorAll('[role="gridcell"]');
-    //     const stockInHandCell = firstRowCells[1];
-
-    //     fireEvent.mouseOver(stockInHandCell);
-
-    //     const tooltip = await screen.findByRole('tooltip');
-    //     expect(tooltip).toBeInTheDocument();
-    // });
-
-    // test('displays pagination controls', () => {
-    //     const paginationControls = screen.getByRole('navigation');
-    //     expect(paginationControls).toBeInTheDocument();
-    // });
-
-    // test('handles row selection', () => {
-    //     const firstRow = screen.getAllByRole('row')[1];
-
-    //     fireEvent.click(firstRow);
-    //     expect(firstRow).toHaveClass('ag-row-selected');
-    // });
 
     test('renders the correct styles for alternate rows', () => {
         const rows = screen.getAllByRole('row');

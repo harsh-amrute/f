@@ -1,14 +1,6 @@
-import React from 'react'
-import { useState, useMemo, useRef, useCallback } from "react"
+import { useState, useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
-import { AgGridReact } from "@ag-grid-community/react";
-import { useUserData } from "../../../../../../../context"
-import ColoPriority from "../../../../Common/ColorPriority/index";
-import AvailabilityToolTip from "../../../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
-import { VFFloatingTabItemProps } from "../../../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable';
-import VFButton from '../../../../../../../components/VectorFLOW/commons/VFButton';
-import VFButtonOutline from "../../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import columnData from '../ColumnData';
 import { Order } from '../../../../../../types/MTO';
 import { ColumnData } from '../../../../../../types/MTO';
@@ -79,9 +71,6 @@ const GridView = () => {
                 if (column.field) {
                     mappedItem[column.field] = item[column.field as keyof Order];
                 }
-                // if (column.field && column.field === "bpp") {
-                //     mappedItem[column.field]
-                // }
             });
             return mappedItem;
         });

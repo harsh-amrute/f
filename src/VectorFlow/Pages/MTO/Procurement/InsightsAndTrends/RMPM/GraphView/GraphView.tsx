@@ -1,24 +1,12 @@
 import React, { Fragment, useState } from "react";
-
-
 import "allotment/dist/style.css";
-import { CapsuleWrapper, ChartWrapper, colorForDiv } from "./styles";
 import {
-    SCChartHeaderContainer, SCChartContainer, SCHorizontalDivider,
-    SCChartSliderContainer, SCChartMainContainer
+    SCChartContainer, SCHorizontalDivider
 } from '../styles';
-import VFCapsule from "../../../../../../../components/VectorFLOW/commons/VFCapsule";
-import { BufferTrendsGraphState } from '../../../../../../types/BPR'
-import VFRangeSlider from "../../../../../../../components/VectorFLOW/commons/VFRangeSlider";
-
 import { AgChartsReact } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
-import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import ActionToolBar from "../../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import procData from "../ProcurementData";
 import { Order } from "../../../../../../types/MTO";
-import { ReactComponent } from "ag-grid-react/lib/shared/reactComponent";
-
 
 const GraphView = () => {
 
@@ -64,15 +52,10 @@ const GraphView = () => {
                 weekRanges[weekIndex].rmSh += order.rmSh;
             }
         });
-
         return weekRanges;
     }
 
-
     const updatedData = groupByWeek(rawData);
-
-
-
 
     const options: AgChartOptions = ({
 
@@ -209,7 +192,6 @@ const GraphView = () => {
                         ${datum[xKey]}
                     </div>
                     <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
-                    
                     <div>
                         <div style="display: flex;">
                             <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F4BD8E">
