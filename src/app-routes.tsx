@@ -36,7 +36,7 @@ import MaterialCov from './VectorFlow/Pages/MTO/Procurement/MaterialCoverage/Mat
 import ProcurementPlanning from './VectorFlow/Pages/MTO/Procurement/Planning';
 import SimulateFullKit from './VectorFlow/Pages/MTO/Procurement/Planning/SimulateFullKit';
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
-import { RMPM } from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPM'
+import RMPM from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPM'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {

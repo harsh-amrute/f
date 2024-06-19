@@ -10,8 +10,8 @@ import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import VFButton from '../../../../../../../components/VectorFLOW/commons/VFButton';
 import VFButtonOutline from "../../../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import columnData from '../ColumnData';
-import { Order } from '../../../../../../../VectorFlow/types/MTO';
-import { ColumnData } from '../../../../../../../VectorFlow/types/MTO';
+import { Order } from '../../../../../../types/MTO';
+import { ColumnData } from '../../../../../../types/MTO';
 import procData from '../ProcurementData';
 
 const GridView = () => {

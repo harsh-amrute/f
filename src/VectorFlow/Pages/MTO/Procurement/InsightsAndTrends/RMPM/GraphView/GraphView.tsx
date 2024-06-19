@@ -16,7 +16,8 @@ import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import ActionToolBar from "../../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import procData from "../ProcurementData";
-import { Order } from "../../../../../../../VectorFlow/types/MTO";
+import { Order } from "../../../../../../types/MTO";
+import { ReactComponent } from "ag-grid-react/lib/shared/reactComponent";
 
 
 const GraphView = () => {
@@ -239,7 +240,7 @@ const GraphView = () => {
 
 
         <>
-            <SCChartContainer height={"700px"}>
+            <SCChartContainer height={"600px"}>
 
                 <SCHorizontalDivider />
                 <div style={{ height: '90%', width: '100%' }}>
@@ -248,6 +249,7 @@ const GraphView = () => {
                             RM / PM Orderwise Coverage {`(${date})`}
                         </div>
                     </div>
+                    <SCHorizontalDivider />
                     <AgChartsReact options={options} />
 
                 </div>
