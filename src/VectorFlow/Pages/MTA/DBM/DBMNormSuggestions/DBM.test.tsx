@@ -1,4 +1,4 @@
-import { fireEvent, render, screen,act } from '@testing-library/react';
+import {  render, } from '@testing-library/react';
 import { useGetDBMApplySelectedNorm,useGetDBMData,useGetDBMDataCount,useGetDBMUIConfiguration,useGetDBMUpdateSleepTbl } from "../../../../Services/MTA/DBM"
 import { mockDBMApplySelectedNorm,mockDBMCountData,mockDBMData,mockDBMUIConfigData,mockDBMUpdateSleepTbl} from "../../../../../mock-data/DBM";
 import DBM from './';
