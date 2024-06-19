@@ -23,7 +23,7 @@ const MaterialSODetailed = ({ parameterData }: MaterialSODetailedProps) => {
                     tooltipHideDelay={100000}
                     tooltipShowDelay={0}
                     tooltipMouseTrack={true}
-                    height={1000}
+                    height={'1000px'}
                 />
             </ProcurementLayout>
         </>

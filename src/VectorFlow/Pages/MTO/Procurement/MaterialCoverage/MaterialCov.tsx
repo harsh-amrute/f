@@ -31,6 +31,8 @@ const MaterialCov = () => {
     <div style={{ width: "100%" }}>
       <ActionToolBar
         comp={'MaterialCov'}
+        onDateChange={() => { console.log('') }}
+        submitDate={() => { console.log('') }}
       />
       {!toggleComponent ?
         <>

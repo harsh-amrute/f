@@ -10,13 +10,22 @@ jest.mock("ag-charts-react", () => ({
 const useGetExcessInventorySkuMock = useGetExcessInventorySku as jest.MockedFunction<
     typeof useGetExcessInventorySku
 >;
-const useGetExcessInventorySkuData: any = { data: {data: GuidedInsights.ExcessInventorySkuData }};
+const useGetExcessInventorySkuData: any = {
+     mutateAsync: () => {
+    return {data: {data: GuidedInsights.ExcessInventorySkuData }};
+  }
+    
+};
 
 
 const useGetExcessInventoryValueMock = useGetExcessInventoryValue as jest.MockedFunction<
     typeof useGetExcessInventoryValue
 >;
-const useGetExcessInventoryValueData: any =  { data:{data: GuidedInsights.ExcessInventoryValueData }};
+const useGetExcessInventoryValueData: any =  { 
+    mutateAsync: () => {
+    return {data:{data: GuidedInsights.ExcessInventoryValueData }}
+}
+};
 describe("Excess  Inventory ", () => {
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();

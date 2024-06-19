@@ -16,12 +16,27 @@ export namespace MDMService {
     })
   }
 
+  export const getRetailCount = async (body:GetMasterDataPayload) => {
+   
+    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/get-count/`,body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
   export const getMasterData = async (body:GetMasterDataPayload) => {
    
     return await axios.post(process.env.REACT_APP_VF_API_HOST + `/GetMasterData`,body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }
+
+  export const getMasterDataRetail = async (body:GetMasterDataPayload) => {
+   
+    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/get-master-data/`,body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
   export const getAllDrafts = async () => {
     return await axios.get(process.env.REACT_APP_VF_API_HOST + `/allDrafts`,{
       headers: { 'Content-Type': 'application/json' }
@@ -101,14 +116,32 @@ export namespace MDMService {
     })
   }
 
+  export const modifyMasterDataRetail = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/modify-master-data/`,body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
   export const addMasterData = async(body:any)=>{
     return await axios.post(process.env.REACT_APP_VF_API_HOST + '/AddMasterData',body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }
 
+  export const addMasterDataRetail = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/add-valid-master/`,body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
   export const deleteMasterData = async(body:any)=>{
     return await axios.post(process.env.REACT_APP_VF_API_HOST + '/RemoveMasterData',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const deleteMasterDataRetail = async(body:any)=>{
+    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/remove-master-data/`,body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }

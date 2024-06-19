@@ -1,16 +1,20 @@
 .ag-theme-alpine {
-    /* --ag-foreground-color: #EBEBEB; */
-    /* --ag-background-color: rgb(255, 255, 255); */
-    --ag-header-foreground-color: rgb(255, 255, 255);
-    --ag-header-background-color: rgb(10, 9, 9) !important;
-    --ag-header-height: 43px;
-    --ag-checkbox-checked-color: #BC3D81;
-    --ag-selected-row-background-color: rgb(188, 61, 129, 0.2);
-    /* --ag-odd-row-background-color: rgb(0, 0, 0, 0.03); */
-    /* --ag-header-column-resize-handle-color: rgb(126, 46, 132); */
-    /* --ag-border-radius:32px; */
-    --ag-font-size: 17px;
-    /* --ag-font-family: monospace; */
+  /* --ag-foreground-color: #EBEBEB; */
+  --ag-range-selection-border-color:#BC3D81;
+  /* --ag-background-color: rgb(255, 255, 255); */
+  --ag-header-foreground-color: rgb(255, 255, 255);
+  --ag-header-background-color: rgb(0, 0, 0);
+  --ag-header-height:43px;
+  --ag-checkbox-checked-color:#BC3D81;
+  --ag-selected-row-background-color:rgb(188, 61, 129,0.2);
+  /* --ag-odd-row-background-color: rgb(0, 0, 0, 0.03); */
+  /* --ag-header-column-resize-handle-color: rgb(126, 46, 132); */
+  /* --ag-border-radius:32px; */
+  --ag-font-size: 17px;
+  /* --ag-font-family: monospace; */
+  --ag-range-selection-background-color:  #bc3d814d;
+  --ag-alpine-active-color:#BC3D81;
+  --ag-input-focus-border-color:#BC3D81;
 }
 
 .child-grid .ag-header-viewport {

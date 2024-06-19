@@ -116,6 +116,19 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         description:''
                     },
                 ]
+            case 'editOnlineConflicts':
+                return [
+                    {
+                        label:'Edit Online',
+                        status:'completed',
+                        description:''
+                    },
+                    {
+                        label:'Submitted',
+                        status:'pending',
+                        description:''
+                    },
+                ]
             case "submitted":
                 return [
                     {
@@ -504,6 +517,25 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 </TaskBarContainer>
             )
         case "conflicts":
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{width:width}}>
+                    <VFTaskBarButtonGroup>
+                        <BackButton/>
+                        <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={false} width={139}>
+                        Delete Selected
+                        </VFButtonOutline>
+                        <VFButton onClick={onSubmitConflictData} themeUi={themeUi} disabled={disableSubmit} width={139}>
+                            Submit All
+                        </VFButton>
+                    </VFTaskBarButtonGroup>
+                    <div>
+                        <VFStepper
+                            items={getStepperState()}
+                        />
+                    </div>
+                </TaskBarContainer>
+            )
+         case "editOnlineConflicts":
             return(
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                     <VFTaskBarButtonGroup>

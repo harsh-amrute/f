@@ -117,7 +117,7 @@ const BuyerOrderReport = ()=>{
                       { statusPanel: 'agAggregationComponent', align:'left' },
                     ],
                   }}
-                height={900}
+                height={"90%"}
              />
               <VFPagination 
                 selectedRows={0} 

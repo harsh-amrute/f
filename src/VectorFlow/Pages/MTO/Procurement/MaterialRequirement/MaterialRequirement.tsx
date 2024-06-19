@@ -9,6 +9,8 @@ const MaterialRequirement = () => {
         <>
             <ActionToolBar
              comp={"Fristan"}
+             onDateChange={() => { console.log('') }}
+             submitDate={() => { console.log('') }}
             />
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 

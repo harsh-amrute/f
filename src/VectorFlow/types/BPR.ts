@@ -158,3 +158,10 @@ export interface DailyDataChart{
     rrc:number | null,
     grc:number | null
 }
+
+
+export interface GridState {
+    pivot:boolean
+    charts:Array<any>
+    columns:Array<any>
+}

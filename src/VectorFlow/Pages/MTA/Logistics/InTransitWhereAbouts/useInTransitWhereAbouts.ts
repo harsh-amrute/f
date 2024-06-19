@@ -153,7 +153,7 @@ const useInTransitWhereAbouts = ()=>{
         onContactDetails:onOpenContactModal
       },
       onCellEditingStopped:(params)=>console.log(params.newValue),
-      detailRowAutoHeight:true,
+      // detailRowAutoHeight:true,
       // detailCellRendererParams:{
       //   detailGridOptions: {
       //     columnDefs: [{ field: 'detailData' }],

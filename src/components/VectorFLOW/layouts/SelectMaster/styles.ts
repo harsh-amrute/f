@@ -33,7 +33,7 @@ export const SCCardContainer = styled.div`
     &::-webkit-scrollbar-thumb{
         width: 7px;
     /* UI Properties */
-    background: #CBCBCB 0% 0% no-repeat padding-box;
+    background: #D1D1D1 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 9px #41414129;
     border-radius: 30px;
     opacity: 1;

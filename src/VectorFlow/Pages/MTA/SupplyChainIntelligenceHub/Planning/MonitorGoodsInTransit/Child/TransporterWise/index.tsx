@@ -116,7 +116,7 @@ const MonitorGITChildTransporterWise = ({data}:MonitorGITChildTransporterWisePro
         <>
             <Allotment>
                 <Allotment.Pane preferredSize={1000}>
-                    <SCChartContainer height={547}>
+                    <SCChartContainer height={"547px"}>
                         <SCChartHeaderContainer>
                             <SCChartHeader>Top 10 Transporters: Max LRs With On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader>
                         </SCChartHeaderContainer>
@@ -149,7 +149,7 @@ const MonitorGITChildTransporterWise = ({data}:MonitorGITChildTransporterWisePro
                     </div>
                 </Allotment.Pane>
                 <Allotment.Pane>
-                    <SCChartContainer height={547}>
+                    <SCChartContainer height={'547px'}>
                             <SCChartHeaderContainer>
                                 <SCChartHeader>Statistical Overview of Delay Days in Transport at Receiving Locations</SCChartHeader>
                             </SCChartHeaderContainer>

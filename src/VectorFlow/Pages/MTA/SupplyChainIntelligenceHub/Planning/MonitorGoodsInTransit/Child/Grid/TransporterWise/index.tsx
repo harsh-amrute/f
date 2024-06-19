@@ -191,7 +191,7 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,currentCategor
             customGridColDef={customGridColDef} 
             isSubGridOpen={isSubGridOpen}
             paginationProps={paginationProps}
-            gridHeight={600}
+            gridHeight={"95%"}
         />
     )
 }

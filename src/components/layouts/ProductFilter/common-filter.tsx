@@ -2,14 +2,13 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import ProductFilter from './index'
 import { MainService } from '../../../module-main/services/api'
 import { handleDataProductFilter } from '../../../helpers/utils'
-import { useTranslation } from 'react-i18next'
 
 interface ProductProps {
   endpoint: string
 }
 
 export default forwardRef(({ ...props }: ProductProps, ref) => {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const [productFilterLoading, setProductFilterLoading] =
     useState<boolean>(false)
   const [listBrand, setListBrand] = useState<any>([])
@@ -57,7 +56,7 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
   const productFilter = [
     {
       icon: '/assets/img/ist/target.svg',
-      placeholder: t('filter.product.placeholder.brand'),
+      placeholder: process.env.REACT_APP_PRODUCT_PERMISSION_L1,
       options: listBrand,
       value: brand,
       onChange: setBrand,
@@ -65,7 +64,7 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
     },
     {
       icon: '/assets/img/ist/target.svg',
-      placeholder: t('filter.product.placeholder.subBrand'),
+      placeholder: process.env.REACT_APP_PRODUCT_PERMISSION_L2,
       options: listSubBrand,
       value: subBrand,
       onChange: setSubBrand,
@@ -73,28 +72,28 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
     },
     {
       icon: '/assets/img/ist/option.svg',
-      placeholder: t('filter.product.placeholder.category'),
+      placeholder: process.env.REACT_APP_PRODUCT_PERMISSION_L3,
       options: listCategory,
       value: category,
       onChange: setCategory
     },
     {
       icon: '/assets/img/ist/option.svg',
-      placeholder: t('filter.product.placeholder.style'),
+      placeholder: process.env.REACT_APP_PRODUCT_FILTER_4,
       options: listStyle,
       value: style,
       onChange: setStyle
     },
     {
       icon: '/assets/img/ist/margin.svg',
-      placeholder: t('filter.product.placeholder.fit'),
+      placeholder: process.env.REACT_APP_PRODUCT_FILTER_5,
       options: listFit,
       value: fit,
       onChange: setFit
     },
     {
       icon: '/assets/img/ist/target.svg',
-      placeholder: t('filter.product.placeholder.launchPeriod'),
+      placeholder: process.env.REACT_APP_PRODUCT_FILTER_6,
       options: listLaunchPeriod,
       value: launchPeriod,
       onChange: setLaunchPeriod,

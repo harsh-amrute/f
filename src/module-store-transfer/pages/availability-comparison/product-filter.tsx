@@ -1,10 +1,9 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { ProductFilter } from '../../../components'
-import { useTranslation } from 'react-i18next'
 import { AvailabilityComparisonService } from '../../../module-store-transfer/services/AvailabilityComparison/api'
 
 export default forwardRef((props, ref) => {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const [productFilterLoading, setProductFilterLoading] =
     useState<boolean>(false)
   const [listBrand, setListBrand] = useState<any>([])
@@ -43,7 +42,7 @@ export default forwardRef((props, ref) => {
   const productFilter = [
     {
       icon: '/assets/img/ist/target.svg',
-      placeholder: t('filter.product.placeholder.brand'),
+      placeholder: process.env.REACT_APP_PRODUCT_PERMISSION_L1,
       options: listBrand,
       value: brand,
       onChange: setBrand,
@@ -51,7 +50,7 @@ export default forwardRef((props, ref) => {
     },
     {
       icon: '/assets/img/ist/target.svg',
-      placeholder: t('filter.product.placeholder.subBrand'),
+      placeholder: process.env.REACT_APP_PRODUCT_PERMISSION_L2,
       options: listSubBrand,
       value: subBrand,
       onChange: setSubBrand,
@@ -59,7 +58,7 @@ export default forwardRef((props, ref) => {
     },
     {
       icon: '/assets/img/ist/option.svg',
-      placeholder: t('filter.product.placeholder.category'),
+      placeholder: process.env.REACT_APP_PRODUCT_PERMISSION_L3,
       options: listCategory,
       value: category,
       onChange: setCategory

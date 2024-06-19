@@ -172,7 +172,7 @@ const useMaterialReq = () => {
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={750}
+                            height={'750px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [
@@ -192,7 +192,7 @@ const useMaterialReq = () => {
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={750}
+                            height={'750px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [

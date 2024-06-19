@@ -101,22 +101,23 @@ describe('Testing the GuidedInsightsService',  () => {
       expect(response.status).toBe(200);
   
     });
-    it('should make a get request to the /ExcessInventorySku', async () => {
-      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
    
-      const response = await InsightsAndTrendsService.getExcessInventorySku();
-      expect(mockedAxios.get).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/ExcessInventorySku',{
+    it('should make a post request to the /ExcessInventorySku', async () => {
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+   
+      const response = await InsightsAndTrendsService.getExcessInventorySku({horison:9});
+      expect(mockedAxios.post).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/ExcessInventorySku',{horison:9},{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
   
     });
 
-    it('should make a get request to the /ExcessInventoryValue', async () => {
-      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+    it('should make a post request to the /ExcessInventoryValue', async () => {
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
    
-      const response = await InsightsAndTrendsService.getExcessInventoryValue();
-      expect(mockedAxios.get).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/ExcessInventoryValue',{
+      const response = await InsightsAndTrendsService.getExcessInventoryValue({horison:9});
+      expect(mockedAxios.post).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/ExcessInventoryValue',{horison:9},{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);

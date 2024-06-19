@@ -110,7 +110,7 @@ const InTransitWhereAbouts = ()=>{
                     rowData={[...rowData]}
                     {...agGridProps}
                     ref={ref}
-                    height={530}
+                    height={"75%"}
                     
                 />
                 <div style={{marginBottom:'40px'}}>

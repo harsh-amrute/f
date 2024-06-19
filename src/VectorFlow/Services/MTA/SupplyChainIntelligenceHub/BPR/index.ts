@@ -8,9 +8,9 @@ export const QUERY_KEYS = {
   useGetBPRUIConfiguration: ['BPRService.useGetBPRUIConfiguration'],
   userGetBPRData:['BPRService.userGetBPRData'],
   useGetAllSKUs:['BPRService.useGetAllSKUs'],
-  useGetAllLocations:['BPRService.useGetAllLocations']
-
-
+  useGetAllLocations:['BPRService.useGetAllLocations'],
+  useGetInTransitWhereAboutAnalytics:['BPRService.useGetInTransitWhereAboutAnalytics'],
+  useGetOpenExpediteAnalytics:['BPRService.useGetOpenExpediteAnalytics']
 }
 
 
@@ -87,4 +87,16 @@ export const useGetAnalyticsData = () => {
   return useMutation(async (payload:string) => {
     return await BPRService.getAnalyticsData(payload);
   });
+}
+
+export const useGetInTransitWhereAboutAnalytics = ()=>{
+  return useQuery(QUERY_KEYS.useGetInTransitWhereAboutAnalytics,async()=>{
+    return await BPRService.getInTransitWhereAboutAnalytics()
+  })
+}
+
+export const useGetOpenExpediteAnalytics = ()=>{
+  return useQuery(QUERY_KEYS.useGetOpenExpediteAnalytics,async()=>{
+    return await BPRService.getOpenExpediteAnalytics()
+  })
 }

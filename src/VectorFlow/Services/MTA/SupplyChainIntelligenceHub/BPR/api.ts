@@ -79,6 +79,18 @@ export namespace BPRService {
       headers:{ 'Content-Type': 'application/json' }
     }); 
   }
+
+  export const getInTransitWhereAboutAnalytics = async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + '/GetInTransitWhereAboutAnalytics',{
+      headers:{ 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getOpenExpediteAnalytics = async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + '/OpenExpediteAnalytics',{
+      headers:{ 'Content-Type': 'application/json' }
+    })
+  }
 }
 
 

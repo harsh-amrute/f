@@ -1,6 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import LocationFilter from './index'
-import { useTranslation } from 'react-i18next'
 import { ISTService } from '../../../services/ist/api'
 
 interface ProductProps {
@@ -10,7 +9,7 @@ interface ProductProps {
 }
 
 export default forwardRef(({ ...props }: ProductProps, ref) => {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const [locationFilterLoading, setLocationFilterLoading] =
     useState<boolean>(false)
   const [listMapIstLocGrp, setListMapIstLocGrp] =
@@ -112,49 +111,49 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
 
   const locationFilter = [
     {
-      placeholder: t('filter.location.placeholder.general.locGroup'),
+      placeholder: process.env.REACT_APP_LOCATION_PERMISSION_L1,
       options: listMapIstLocGrp,
       value: istLocGrp,
       onChange: setIstLocGrp
     },
     {
-      placeholder: t('filter.location.placeholder.general.dlRegion'),
+      placeholder:process.env.REACT_APP_LOCATION_PERMISSION_L2,
       options: listMapDonorLocationRegion,
       value: donorLocationRegion,
       onChange: setDonorLocationRegion
     },
     {
-      placeholder: t('filter.location.placeholder.general.dl'),
+      placeholder: process.env.REACT_APP_LOCATION_PERMISSION_L3,
       options: listMapdonorLocationName,
       value: donorLocationName,
       onChange: setDonorLocationName
     },
     {
-      placeholder: t('filter.location.placeholder.general.dlChannel'),
+      placeholder: process.env.REACT_APP_LOCATION_FILTER_4,
       options: listMapDonorLocationSubType,
       value: donorLocationSubType,
       onChange: setDonorLocationSubType
     },
     {
-      placeholder: t('filter.location.placeholder.general.transferPref'),
+      placeholder: process.env.REACT_APP_LOCATION_FILTER_5,
       options: listMapTransferPref,
       value: transferPref,
       onChange: setTransferPref
     },
     {
-      placeholder: t('filter.location.placeholder.general.rlRegion'),
+      placeholder: process.env.REACT_APP_LOCATION_FILTER_6,
       options: listMapDonorReceiverLocationRegion,
       value: receiverLocationRegion,
       onChange: setReceiverLocationRegion
     },
     {
-      placeholder: t('filter.location.placeholder.general.rl'),
+      placeholder: process.env.REACT_APP_LOCATION_FILTER_7,
       options: listMapDonorReceiverLocationName,
       value: receiverLocationName,
       onChange: setReceiverLocationName
     },
     {
-      placeholder: t('filter.location.placeholder.general.rlChannel'),
+      placeholder: process.env.REACT_APP_LOCATION_FILTER_8,
       options: listMapDonorReceiverLocationSubType,
       value: receiverLocationSubType,
       onChange: setReceiverLocationSubType

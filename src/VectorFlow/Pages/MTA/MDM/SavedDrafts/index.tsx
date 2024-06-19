@@ -31,7 +31,7 @@ const SavedDrafts = ()=>{
   }
 
   return(
-    <div style={{paddingTop:'20px'}}>
+    <div style={{paddingTop:'20px',height:'95%'}}>
       <VFTable
           columnDefs={mapDraftToColumnDefs([
             {
@@ -115,7 +115,7 @@ const SavedDrafts = ()=>{
               { statusPanel: 'agAggregationComponent', align: 'left' },
             ]
           }}
-          height={900 }
+          height={"100%"}
           
         />
 

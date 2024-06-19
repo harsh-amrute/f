@@ -75,7 +75,7 @@ const DBM = () => {
         onDelete={onDelete}
       />
       <DBMLayout>
-        <div style={{height:'100vh'}}>
+        <div style={{height:'90vh'}}>
             {
                 showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHCode'} />
             }
@@ -88,7 +88,7 @@ const DBM = () => {
                   columnDefs={DBMColumns}
                   rowData={DBMRowData}
                   ref={gridRef}
-                  height={800}
+                  height={"98%"}
                   enableRangeSelection={true} 
                 rowSelection="multiple"
                 statusBar = {{
