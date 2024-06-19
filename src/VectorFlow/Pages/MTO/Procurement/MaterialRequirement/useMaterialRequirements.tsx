@@ -66,8 +66,8 @@ const useMaterialReq = () => {
     const { data } = MaterRequirementData;
     const gridRef = useRef<AgGridReact>(null);
     const { isSideBarOpen } = useUserData()
-    const [currentPage, setCurrentPage] = useState<any>(1);
-    const navigate = useNavigate();
+    const [currentPage, /*setCurrentPage*/] = useState<any>(1);
+    //const navigate = useNavigate();
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: 'sdv',
@@ -111,7 +111,7 @@ const useMaterialReq = () => {
     const ShortageColumns = mapMaterialFieldsToColDefs(HeaderData);
     const CompleteAvailableColumns = mapMaterialFieldsToColDefs(HeaderData);
     const [ShortageDatas, SetShortageData] = useState(data);
-    const [CompleteAvailableDatas, setCompleteAvailableData] = useState(data);
+    const [CompleteAvailableDatas, /*setCompleteAvailableData*/] = useState(data);
 
    
     const autoGroupColumnDef = useMemo(() => {
