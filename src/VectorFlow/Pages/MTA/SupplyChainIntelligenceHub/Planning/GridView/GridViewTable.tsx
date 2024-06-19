@@ -30,7 +30,7 @@ interface GridViewTableProps {
     paginationProps?:VFPaginationProps
     currentTab:string
     currentCategory:string,
-    gridHeight?:number,
+    gridHeight?:string,
     tablePrefixSrc?:string,
     tableHeader?:string
 }
@@ -120,7 +120,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
 
     return(
         <GridViewLayout>
-            <div style={{height:'95vh',zoom:0.75}}>
+            <div style={{height:'100vh',zoom:0.75}}>
                 <Allotment defaultSizes={[350,150]} vertical>
                 {
                     (isSubGridOpen || showStockGrid ) && (
@@ -131,7 +131,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             {...agGridProps}
                             columnDefs={agGridColDefs}
                             rowData={agGridRowData}
-                            height={650}
+                            height={gridHeight ? gridHeight : '380px'}
                             // onGridReady={(params)=>{
                             //     console.log(columnState)
                             //     if(columnState){
@@ -155,7 +155,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             {...agGridProps}
                             columnDefs={agGridColDefs}
                             rowData={agGridRowData}
-                            height={gridHeight ? gridHeight : 380}
+                            height={gridHeight ? gridHeight : '380px'}
                             // onGridReady={(params)=>{
                             //     if(columnState){
                             //         params.columnApi.applyColumnState({state:columnState})

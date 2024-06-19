@@ -230,6 +230,7 @@ import _ from "lodash";
                     ]:
                     [],
                   }}
+                  height={activeMaster.rowData.length > 0 ? activeMaster.progress==='view' ? "65%" : "95%" : "75%"}
                 />
                 {
             (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen))

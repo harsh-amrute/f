@@ -9,6 +9,8 @@ const SimulateFullKit = () => {
         <>
             <ActionToolBar
                 comp={'Procurement Planning'}
+                onDateChange={() => { console.log('') }}
+                submitDate={() => { console.log('') }}
             />
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 

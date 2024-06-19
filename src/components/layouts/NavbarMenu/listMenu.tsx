@@ -483,35 +483,51 @@ export const listMenuParent: any = [
     img: "/assets/img/nav/procurement",
     url: "",
     status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
     child: [
       {
         name: "Material Coverage For Open Sales",
         img: "/assets/img/nav/arrow_down.svg",
         imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
         url: "/procurement/material-coverage-open-sales",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
       },
       {
         name: "Procurement Planning",
         img: "/assets/img/nav/arrow_down.svg",
         imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
         url: "/procurement-planning/planning",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
       },
       {
         name: "Performance moniter",
         img: "/assets/img/nav/arrow_down.svg",
         imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
         url: "/api/download-reports/fr",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
       },
       {
         name: "Material Requirement",
         img: "/assets/img/nav/arrow_down.svg",
         imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
         url: "/api/download-reports/fr",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+      },
+      {
+        name: "Insight and Trends",
+        img: "/assets/img/nav/arrow_down.svg",
+        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+        url: "/procurement/insights-and-trends",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+        child: [
+          {
+            name: "RM/PM Orderwise Coverage",
+            img: "/assets/img/nav/arrow_down.svg",
+            imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+            url: "/procurement/insights-and-trends/rmpm",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"]
+          }
+        ]
       },
     ],
   }

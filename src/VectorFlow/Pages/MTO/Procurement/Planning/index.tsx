@@ -2,14 +2,20 @@ import { ProcurementLayout } from './styles';
 import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import useProcPlanning from './useProcPlanning';
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
-
+import { useState } from 'react';
 
 const ProcurementPlanning = () => {
-    const { renderView, toggleCurrentTab } = useProcPlanning();
+    const [date, selectedDate] = useState<string>('');
+    const { renderView, toggleCurrentTab, fetchData } = useProcPlanning(date);
+    const handleDateChange = (date: string) => {
+        selectedDate(date);
+    };
     return (
         <>
             <ActionToolBar
                 comp={'Procurement Planning'}
+                onDateChange={handleDateChange}
+                submitDate={() => { fetchData(date) }}
             />
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 

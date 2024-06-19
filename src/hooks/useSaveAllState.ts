@@ -7,6 +7,7 @@ import { GridStateContext } from "../context/GridStateContext";
 import { notifyError, notifyLoader, notifySuccess } from "../helpers/notify";
 
 import {toast} from 'react-toastify'
+import { GridState } from "../VectorFlow/types/BPR";
 
 interface exportToExcelParameters {
   pagination:{
@@ -70,13 +71,24 @@ const useSaveAllState = () => {
 
   const onSaveState = async (name: string) => {
     try {
+      
       const columnState = ref.current.columnApi.getColumnState();
+      console.log(columnState)
+      const chartsState =  ref.current.api.getChartModels()
+      const isPivot = ref.current.columnApi.isPivotMode()
+      const gridState:GridState = {
+        pivot:isPivot,
+        charts:chartsState,
+        columns:columnState
+      }
       await saveState({
         reportname: name,
-        state: JSON.stringify(columnState),
+        state: JSON.stringify(gridState),
       });
       notifySuccess("State has been saved");
       ref.columnApi.applyColumnState({ state: columnState });
+      ref.api.restoreChart(chartsState)
+      ref.api.setPivotMode(isPivot)
     } catch (err: any) {
         console.log(err)
       notifyError(err);
@@ -86,6 +98,7 @@ const useSaveAllState = () => {
   const onResetAllState = async (name: string) => {
     notifyLoader("Reseting Data");
     try {
+      
       await resetState(name);
       let tempCurrentGridState = ref.current?.columnApi.getColumnState()
       tempCurrentGridState = tempCurrentGridState.map((t:any) => {
@@ -95,6 +108,13 @@ const useSaveAllState = () => {
         };
       });
       ref.current.columnApi.applyColumnState({state:tempCurrentGridState})
+      ref.current.columnApi.resetColumnState()
+      ref.current.api.setPivotMode(false)
+      const charts  = ref.current.api.getChartModels()
+      charts.forEach((c:any)=>{
+        const tempRef = ref.current.api.getChartRef(c.chartId)
+        tempRef.destroyChart()
+      })
       notifySuccess("State has been resetted");
     } catch (err: any) {
       notifyError(err);

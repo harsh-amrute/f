@@ -193,6 +193,7 @@ const DeleteRecord = () => {
                 }
                   <VFTable
                     ref={ref}
+                    height={activeMaster.rowData.length > 0 ? activeMaster.progress==='deleteView' ? "65%" : "95%" : "75%"}
                     columnDefs={activeMaster.colDefs}
                     rowData={activeMaster.rowData}
                     {...agGridProps}

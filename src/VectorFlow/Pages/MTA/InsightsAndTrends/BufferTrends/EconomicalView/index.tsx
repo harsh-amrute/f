@@ -164,7 +164,7 @@ const EconomicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizond
 
     return (
         <>
-            <SCChartContainer height={400}>
+            <SCChartContainer height={"75%"}>
                 <SCChartMainContainer>
                     <SCChartSliderContainer>
                         <label style={{
@@ -225,7 +225,7 @@ const EconomicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizond
 
                 <SCHorizontalDivider />
                 {/* <ChartWrapper> */}
-                <div style={{ height: '270px', width: '100%' }}>
+                <div style={{ height: '70%', width: '100%' }}>
                     <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <div style={{ fontSize: '14px', fontWeight: 500, textAlign: 'center' }}>
                             Buffer Trend Graph

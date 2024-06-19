@@ -35,7 +35,7 @@ const ChildrenProcPlanningCellRenderer = (params: any) => {
                     flex: 0,
                 }}
                 rowData={params.data && params.data.children ? params.data.children : []}
-                height={300}
+                height={'300px'}
                 pagination={true}
                 components={customChildrenCellRenderers}
                 masterDetail={true}

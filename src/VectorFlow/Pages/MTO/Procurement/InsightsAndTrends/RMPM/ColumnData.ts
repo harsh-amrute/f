@@ -1,0 +1,194 @@
+import { ColumnData } from "../../../../../../VectorFlow/types/MTO"
+
+const columnData: ColumnData[] = [
+    {
+        colId: "bpp",
+        field: "bpp",
+        headerName: "BPP",
+        hide: false,
+        cellRenderer: "coloPriority",
+        tooltipComponent: "availabilityToolTip",
+        initialWidth: 100,
+        autoHeaderHeight: true,
+        wrapHeaderText: true,
+        cellStyle: {
+            backgroundColor: "black",
+            color: "white",
+            border: "8px solid white"
+
+        }
+
+    },
+    {
+        "colId": "pnm",
+        "field": "pnm",
+        "headerName": "Plant",
+        "hide": false,
+        "cellRenderer": "coloPriority",
+        "tooltipComponent": "availabilityToolTip",
+        "initialWidth": 200,
+        "autoHeaderHeight": true,
+        "wrapHeaderText": true
+    },
+    {
+        "colId": "oid",
+        "field": "oid",
+        "headerName": "Order ID",
+        "hide": false,
+        "tooltipField": "rm",
+        "initialWidth": 200,
+        "filter": "agMultiColumnFilter",
+        "floatingFilter": true
+    },
+    {
+        "colId": "ot",
+        "field": "ot",
+        "headerName": "Order Type",
+        "hide": false,
+        "tooltipField": "ot",
+        "initialWidth": 300,
+        "filter": "agMultiColumnFilter",
+        "floatingFilter": true
+    },
+    {
+        "colId": "lid",
+        "nooi": "*Error*",
+        "field": "lid",
+        "headerName": "Line Item ID",
+        "hide": false,
+        "autoHeaderHeight": true,
+        "wrapHeaderText": true,
+        "initialWidth": 200,
+        "filter": "agMultiColumnFilter",
+        "floatingFilter": true
+    },
+    {
+        "colId": "ic",
+        "req": "*Error*",
+        "field": "ic",
+        "headerName": "Item Code",
+        "hide": false,
+        "autoHeaderHeight": true,
+        "wrapHeaderText": true,
+        "initialWidth": 200,
+        "filter": "agMultiColumnFilter",
+        "floatingFilter": true
+    },
+    {
+        "colId": "id",
+        "uom": "*Error*",
+        "field": "id",
+        "headerName": "Item Description",
+        "hide": false,
+        "autoHeaderHeight": true,
+        "wrapHeaderText": true,
+        "initialWidth": 200,
+        "filter": "agMultiColumnFilter",
+        "floatingFilter": true
+    },
+    {
+        "colId": "dd",
+        "soh": "*Error*",
+        "field": "dd",
+        "headerName": "Due Date",
+        "hide": false,
+        "autoHeaderHeight": true,
+        "wrapHeaderText": true,
+        "initialWidth": 200,
+        "filter": "agMultiColumnFilter",
+        "floatingFilter": true
+    },
+    {
+        "colId": "rd",
+        "siqc": "*Error*",
+        "field": "rd",
+        "headerName": "Release Date",
+        "hide": false,
+        "autoHeaderHeight": true,
+        "wrapHeaderText": true,
+        "initialWidth": 200,
+        "filter": "agMultiColumnFilter",
+        "floatingFilter": true
+    },
+    {
+        "colId": "oq",
+        "sit": "*Error*",
+        "field": "oq",
+        "headerName": "Order Quantity",
+        "hide": false,
+        "autoHeaderHeight": true,
+        "wrapHeaderText": true,
+        "initialWidth": 200,
+        "filter": "agMultiColumnFilter",
+        "floatingFilter": true
+    },
+    {
+        "colId": "bs",
+        "gap": "*Error*",
+        "field": "bs",
+        "headerName": "Batch Size",
+        "hide": false,
+        "autoHeaderHeight": true,
+        "wrapHeaderText": true,
+        "initialWidth": 200,
+        "filter": "agMultiColumnFilter",
+        "floatingFilter": true
+    },
+    {
+        "colId": "fk",
+        "ppo": "*Error*",
+        "field": "fk",
+        "headerName": "Full Kit Available",
+        "hide": false,
+        "autoHeaderHeight": true,
+        "wrapHeaderText": true,
+        "initialWidth": 200,
+        "filter": "agMultiColumnFilter",
+        "floatingFilter": true
+    },
+    {
+        "colId": "rmpm",
+        "field": "rmpm",
+        "headerName": "RM / PM Coverage",
+        "hide": true,
+        "cellRenderer": "inputbox",
+        "editable": true,
+        "autoHeaderHeight": true,
+        "wrapHeaderText": true,
+        "initialWidth": 200,
+        "filter": "agMultiColumnFilter",
+        "floatingFilter": true,
+        "cellStyle": {
+            "backgroundColor": "white",
+            "border": "1px solid #b9bdba",
+            "color": "black",
+            "padding": "1px"
+        }
+    },
+    {
+        "colId": "cc",
+        "tsfs": "*Error*",
+        "field": "cc",
+        "headerName": "Customer Code",
+        "hide": false,
+        "autoHeaderHeight": true,
+        "wrapHeaderText": true,
+        "initialWidth": 200,
+        "filter": "agMultiColumnFilter",
+        "floatingFilter": true
+    },
+    {
+        "colId": "cn",
+        "tsfs": "*Error*",
+        "field": "cn",
+        "headerName": "Customer Name",
+        "hide": false,
+        "autoHeaderHeight": true,
+        "wrapHeaderText": true,
+        "initialWidth": 200,
+        "filter": "agMultiColumnFilter",
+        "floatingFilter": true
+    }
+]
+
+export default columnData

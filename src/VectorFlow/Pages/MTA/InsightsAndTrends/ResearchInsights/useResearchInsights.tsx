@@ -40,7 +40,8 @@ const useResearchInsights = () => {
 
     const [exportExcelRowData, setExportExcelRowData] = useState<Array<any>>([])
 
-    const { mutateAsync: getDailyData } = useGetDailyData();
+
+    const {mutateAsync:getDailyData} = useGetDailyData();
 
     const { mutateAsync: getUpdatedGraphData, isLoading: isUpdatedGraphDataLoading } = useGetUpdatedGraphData()
 
@@ -297,26 +298,26 @@ const useResearchInsights = () => {
 
         return result;
     }
-
-    const getColorData = (array: Array<any>) => {
-        const colorFrequencyArray: any = [];
-        for (let day = 1; day <= horizon; day++) {
-            const colorFrequency: any = {
-                Red: 0,
-                Blue: 0,
-                Green: 0,
-                Yellow: 0,
-                Black: 0,
-                White: 0
-            };
-            array.forEach((obj: any) => {
-                const color = obj[`D${day}`];
-                if (color) colorFrequency[color]++
-                else colorFrequency[color] = 0
-            })
-            colorFrequencyArray.push(colorFrequency)
-        }
-        return convertCustomObjToObjects(colorFrequencyArray.reverse())
+    
+    const getColorData = (array:Array<any>)=>{
+        const colorFrequencyArray:any = [];
+            for (let day = 1; day <= horizon; day++) {
+                const colorFrequency:any = {
+                    Red: 0,
+                    Blue: 0,
+                    Green: 0,
+                    Yellow: 0,
+                    Black: 0,
+                    White: 0
+                };
+                array.forEach((obj:any)=>{
+                    const color = obj[`D${day}`];
+                    if(color)colorFrequency[color]++
+                    else colorFrequency[color] = 0
+                })
+                colorFrequencyArray.push(colorFrequency)
+            }
+            return convertCustomObjToObjects(colorFrequencyArray)
     }
 
     const handleOnUpdateGraph = async () => {

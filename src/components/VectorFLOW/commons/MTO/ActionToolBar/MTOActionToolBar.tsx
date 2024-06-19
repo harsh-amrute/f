@@ -18,18 +18,22 @@ import {
     VFSelectedFiltersPlaceHolder,
     VFSelectedFiltersWrapper,
     VFFilterScrollBar,
+    SCViewContainerWithBgToggle,
+    SCHorizontalDivison,
+    SCViewContainer,
     /**search filter styles end*/
 } from './styles'
 
 interface MTOActionToolBarProps {
-    comp: string
-    setIsGridView?: (value: boolean) => void
-    isGridView?: boolean
+    comp: string,
+    onDateChange?: (date: string) => void;
+    submitDate?: () => void;
+    isGridView?: boolean;
+    setIsGridView?: (isGridView: boolean) => void;
 }
 
 
-
-const MTOActionToolBar = ({ comp, setIsGridView, isGridView }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ comp, onDateChange, submitDate, isGridView, setIsGridView }: MTOActionToolBarProps) => {
     return (
         <SCTaskBarContainer>
             <SCTaskFilterContainer
@@ -41,7 +45,7 @@ const MTOActionToolBar = ({ comp, setIsGridView, isGridView }: MTOActionToolBarP
             >
 
                 <>
-                    {comp !== 'MaterialCov' ?
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) ?
                         <SCGoBackContainer>
                             <img
                                 src="/assets/img/VectorFLOW/BPR/goback.svg"
@@ -52,7 +56,7 @@ const MTOActionToolBar = ({ comp, setIsGridView, isGridView }: MTOActionToolBarP
                         : null
                     }
 
-                    {comp !== 'MaterialCov' ?
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) ?
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -92,7 +96,20 @@ const MTOActionToolBar = ({ comp, setIsGridView, isGridView }: MTOActionToolBarP
                                         fontFamily: 'Roboto',
                                         border: '0.5px solid #ACACAC',
                                     }}
+                                    onChange={(e) => onDateChange ? (e.target.value) : null}
                                 />
+                            </div>
+                            <div>
+                                <button
+                                    style={{
+                                        borderRadius: '8px',
+                                        border: 'solid 1px #BC3D81',
+                                        width: '112px',
+                                        height: '43px',
+                                    }}
+
+                                // onClick={() => submitDate?(): null}
+                                >Submit</button>
                             </div>
                         </div>
                         :
@@ -161,16 +178,34 @@ const MTOActionToolBar = ({ comp, setIsGridView, isGridView }: MTOActionToolBarP
                         </SCViewContainerWithBg>
                         {/* <SCVerticalDivider /> */}
 
-                        {(setIsGridView) ? <SCButton onClick={() => { setIsGridView(!isGridView) }} /> : <SCButton />}
 
                     </>
 
+                    {/* Toggle button for chartview/ grid view */}
+                    {(comp === 'rmpm') ?
+                        <>
+                            <SCViewContainerWithBgToggle onClick={() => { setIsGridView && (setIsGridView(!isGridView)); console.log(isGridView) }}>
+                                <SCViewContainer>
+                                    <SCViewImage src={`/assets/img/VectorFLOW/BPR/${(isGridView) ? 'chart-view-grey' : 'chart-view-pink'}.svg`} />
+                                    <p>Chart View</p>
+
+                                </SCViewContainer>
+                                <SCHorizontalDivison />
+                                <SCViewContainer>
+                                    <SCViewImage src={`/assets/img/VectorFLOW/BPR/${(!isGridView) ? 'grid-view-grey' : 'grid-view-pink'}.svg`} />
+                                    <p>Grid View</p>
+
+                                </SCViewContainer>
+
+                            </SCViewContainerWithBgToggle>
+                        </> : <></>
+                    }
 
                 </>
 
 
-            </SCCustomActionsContainer>
-        </SCTaskBarContainer>
+            </SCCustomActionsContainer >
+        </SCTaskBarContainer >
     )
 }
 

@@ -7,6 +7,7 @@ import * as GridSystem from '../../../../styles/gridSystem'
 export const SCTabArea = styled.div`
   display: flow-root;
   position: relative;
+  height:100%;
 `
 
 
@@ -135,6 +136,7 @@ export const SCTabTitle = styled.p<{status:string}>`
 
 export const SCTabBody = styled.div`
   display: block;
+  height:100%;
   background: #ffffff 0% 0% no-repeat padding-box;
   border: 0.5px solid #cccccc;
   border-radius: 0px 15px 15px 15px;

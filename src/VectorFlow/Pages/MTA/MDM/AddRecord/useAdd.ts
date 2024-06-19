@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { notifyError,notifyLoader,notifySuccess } from '../../../../../helpers/notify';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
-import { useAddMasterData,useDeleteTask,useDeleteDraft } from '../../../../../VectorFlow/Services/MTA/MDM';
+import { useAddMasterData,useDeleteTask,useDeleteDraft,useAddMasterDataRetail } from '../../../../../VectorFlow/Services/MTA/MDM';
 import { createErrorRowData} from '../../../../../helpers/utils'
 import { ColDef } from 'ag-grid-enterprise';
 
@@ -25,7 +25,9 @@ const useAdd=()=>{
     const isSelectMasterOpen = useSelector((state:RootState)=>state.mdm.isSelectMasterOpen)
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
 
-    const {mutateAsync:addMaster} = useAddMasterData()
+    const {mutateAsync:addMaster} = useAddMasterData();
+
+    const {mutateAsync:addMasterRetail} = useAddMasterDataRetail()
 
     const {mutateAsync:deleteTask} = useDeleteTask();
 
@@ -191,7 +193,13 @@ const useAdd=()=>{
                 payload.data = rowData.slice(i)
                 toast.update(toastId,{render:`Submitting Data ${rowData.length}/${rowData.length}`})
               }
-              const data:any = await addMaster(payload);
+              let data:any;
+              if(activeMaster.id > 14) {
+                data = await addMasterRetail(payload);
+              }
+              else{
+                data = await addMaster(payload);
+              }
 
               if(taskId === '' && i!==0) throw new Error("Something Went Wrong");
 

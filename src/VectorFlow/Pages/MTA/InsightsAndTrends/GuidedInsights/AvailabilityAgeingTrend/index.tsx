@@ -118,7 +118,7 @@ const AvailabilityAgeingTrend = () => {
   }
 
   return (
-    <div style={{ margin: "25px 20px 0px 20px" }}>
+    <div style={{ margin: "25px 20px 0px 20px" , height:'75%'}}>
       <div
         style={{
           display: "flex",
@@ -149,7 +149,7 @@ const AvailabilityAgeingTrend = () => {
             style={{
               marginLeft: "4px",
               textAlign: "center",
-              width: 30,
+              width: 40,
               height: 28,
               border: "1px solid #838383",
               boxShadow: " 0px 6px 12px #8D8D8D29",
@@ -209,7 +209,7 @@ const AvailabilityAgeingTrend = () => {
             onClick={() => OnHorizonChange(horizon, minAgeing)}
             /> 
       </div>
-      <div style={{ marginLeft: "10px", marginRight: "10px", height: "340px" }}>
+      <div style={{ marginLeft: "10px", marginRight: "10px", height: "88%"}}>
         <div
           className="Title"
           style={{
@@ -230,7 +230,7 @@ const AvailabilityAgeingTrend = () => {
             <VFInfoToolTip infoList={graph1} />
           </div>
         </div>
-        <div style={{height:'300px'}}><AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
+        <div style={{height:'85%'}}><AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
       </div>
     </div>
   );

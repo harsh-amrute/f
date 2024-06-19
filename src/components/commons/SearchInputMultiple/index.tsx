@@ -58,7 +58,6 @@ const SearchInputMultiple = ({
       options={options}
       value={value}
       styles={selectStyles(backgroundColor, borderRadius ? borderRadius : 6, myBoxShadow)}
-
       placeholder={placeholder}
       onChange={(e) => {
         handleSelect(e);
@@ -71,8 +70,10 @@ const SearchInputMultiple = ({
           primary25: "#F2F2F2",
           primary: chooseThemeColor[themeUi].color5,
         },
+        
       })}
     />
+  
   );
 };
 
