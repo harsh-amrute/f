@@ -36,6 +36,7 @@ import MaterialCov from './VectorFlow/Pages/MTO/Procurement/MaterialCoverage/Mat
 import ProcurementPlanning from './VectorFlow/Pages/MTO/Procurement/Planning';
 import SimulateFullKit from './VectorFlow/Pages/MTO/Procurement/Planning/SimulateFullKit';
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
+import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
 import RMPM from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPM'
 
 // to show loading state for desired page only instead of the entire screen
@@ -85,6 +86,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/procurement-planning/planning',
     '/planning/simulative-fullkit',
     '/logistics/intransit-whereabouts',
+    '/procurement/material-requirement',
     '/procurement/insights-and-trends/rmpm'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
@@ -485,7 +487,18 @@ export const initRoutes = (): RouteObject[] => {
         },
         ...getStoreTransferModuleRoutes()
       ]
-    }
+    },
+    {
+      path: '/procurement/material-requirement',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MaterialRequirement />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
 
 
   ]

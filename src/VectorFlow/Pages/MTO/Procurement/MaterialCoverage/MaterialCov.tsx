@@ -12,18 +12,23 @@ import CurrentCov from './CurrentCov';
 import { ColorsMTO } from '../../Common/Colors';
 import { MaterialCoverageString } from '../../Common/String';
 import MaterialSODetailed from './MaterialSODetailed';
+import { DetailsObj } from './CommonFunc';
 
 const MaterialCov = () => {
-
+  const [detailDataObj, setDetailDataObj] = useState<DetailsObj>();
   const [currTab, setCurrTab] = useState<string>();
   const [toggleComponent, setToggleComponent] = useState<boolean>(false);
-
+  
   const handleToggleComponent = (value: boolean) => {
     setToggleComponent(value);
   }
 
+  const handleParameterData=(data:any)=>{
+    setDetailDataObj(data)
+  }
+
   return (
-    <div style={{ width: "85%" }}>
+    <div style={{ width: "100%" }}>
       <ActionToolBar
         comp={'MaterialCov'}
         onDateChange={() => { console.log('') }}
@@ -66,9 +71,9 @@ const MaterialCov = () => {
             {/**code goes here */}
             {
               currTab === 'FutureCoverage' ?
-                <FutureCov handleToggleComponent={handleToggleComponent} />
+                <FutureCov handleToggleComponent={handleToggleComponent} setDetailDataObj={handleParameterData} />
                 :
-                <CurrentCov handleToggleComponent={handleToggleComponent} />
+                <CurrentCov handleToggleComponent={handleToggleComponent} setDetailDataObj={handleParameterData} />
             }
           </div>
 
@@ -78,14 +83,14 @@ const MaterialCov = () => {
             <div style={{
               width: "10%",
               border: `1px solid ${ColorsMTO.Black}`,
-              color: ColorsMTO.White,
+              color: ColorsMTO.White.code,
               margin: 'auto'
             }}>
             </div>
           </TextYAxis>
         </>
         :
-        <MaterialSODetailed />
+        <MaterialSODetailed parameterData={detailDataObj}/>
       }
     </div>
 
