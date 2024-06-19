@@ -10,9 +10,11 @@ import { Order } from "../../../../../../types/MTO";
 
 const GraphView = () => {
 
-    const [date, setDate] = useState("19 April 2024 - 18 July 2024")
+    // const [date, setDate] = useState("19 April 2024 - 18 July 2024")
+    const [date] = useState("19 April 2024 - 18 July 2024")
 
-    const [rawData, setRawData] = useState(procData);
+    // const [rawData, setRawData] = useState(procData);
+    const [rawData] = useState(procData);
 
 
     const calculateDaysDifference = (releaseDateStr: string) => {
@@ -73,7 +75,7 @@ const GraphView = () => {
                 strokeWidth: 6,
                 fill: "#F4BD8E",
                 tooltip: {
-                    renderer: function ({ datum, xKey, yKey }) {
+                    renderer: function ({ datum, xKey }) {
                         console.log("datum", datum)
                         return `
                     <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
@@ -110,7 +112,7 @@ const GraphView = () => {
                 strokeOpacity: 0,
                 strokeWidth: 6,
                 tooltip: {
-                    renderer: function ({ datum, xKey, yKey }) {
+                    renderer: function ({ datum, xKey }) {
                         console.log("datum", datum)
                         return `
                     <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
@@ -147,7 +149,7 @@ const GraphView = () => {
                 strokeOpacity: 0,
                 strokeWidth: 6,
                 tooltip: {
-                    renderer: function ({ datum, xKey, yKey }) {
+                    renderer: function ({ datum, xKey }) {
                         console.log("datum", datum)
                         return `
                     <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
@@ -185,7 +187,7 @@ const GraphView = () => {
                 strokeOpacity: 0,
                 strokeWidth: 6,
                 tooltip: {
-                    renderer: function ({ datum, xKey, yKey }) {
+                    renderer: function ({ datum, xKey }) {
                         console.log("datum", datum)
                         return `
                     <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">

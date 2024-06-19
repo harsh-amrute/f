@@ -56,12 +56,11 @@ const GridView = () => {
             if (!field || rowIndex == null) {
                 return;
             }
-
-
         }
     };
 
-    const [ShortageColumns, setShortageColumns] = useState(columnData);
+    // const [ShortageColumns, setShortageColumns] = useState(columnData);
+    const [ShortageColumns] = useState(columnData);
     const gridRef = useRef();
 
     const mapDataToColumns = (data: Order[], columns: ColumnData[]) => {
@@ -77,7 +76,8 @@ const GridView = () => {
     };
 
     const convertedData = mapDataToColumns(procData, columnData);
-    const [ShortageDatas, setShortageData] = useState(convertedData);
+    // const [ShortageDatas, setShortageData] = useState(convertedData);
+    const [ShortageDatas] = useState(convertedData);
 
 
     return (
