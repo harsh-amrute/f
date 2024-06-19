@@ -33,7 +33,7 @@ interface MTOActionToolBarProps {
 }
 
 
-const MTOActionToolBar = ({ comp, onDateChange, submitDate, isGridView, setIsGridView }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView }: MTOActionToolBarProps) => {
     return (
         <SCTaskBarContainer>
             <SCTaskFilterContainer

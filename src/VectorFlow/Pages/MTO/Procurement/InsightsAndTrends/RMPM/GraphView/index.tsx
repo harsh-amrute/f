@@ -192,7 +192,7 @@ const GraphView = () => {
 
 
         <>
-            <SCChartContainer height={700}>
+            <SCChartContainer height={"700px"}>
 
                 <SCHorizontalDivider />
                 {/* <ChartWrapper> */}
