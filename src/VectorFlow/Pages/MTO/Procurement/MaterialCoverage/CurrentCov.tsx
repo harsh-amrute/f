@@ -102,7 +102,7 @@ const CurrentCov = ({ handleToggleComponent, setDetailDataObj }: CurrentCovProps
         setfifthBlockOrdCnt(fifthBlock.ordCunt);
         setfifthdOrderVal(fifthBlock.totalCunt);
 
-        const sxthBlock: any = mapOrderDetails(SOData,ColorsMTO.Green.label, "", "", "FK", 0);
+        const sxthBlock: any = mapOrderDetails(SOData, ColorsMTO.Green.label, "", "", "FK", 0);
         setsxthBlockCustCnt(sxthBlock.cusCunt);
         setsxthBlockOrdCnt(sxthBlock.ordCunt);
         setsxthdOrderVal(sxthBlock.totalCunt);
@@ -121,7 +121,7 @@ const CurrentCov = ({ handleToggleComponent, setDetailDataObj }: CurrentCovProps
         setegthSrtDt(egthBlock.stdt)
         setegthEndDt(egthBlock.endt)
 
-        const nthBlock: any = mapOrderDetails(SOData,ColorsMTO.Blue.label, "", "", "FK", 1);
+        const nthBlock: any = mapOrderDetails(SOData, ColorsMTO.Blue.label, "", "", "FK", 1);
         setnthBlockCustCnt(nthBlock.cusCunt);
         setnthBlockOrdCnt(nthBlock.ordCunt);
         setnthhdOrderVal(nthBlock.totalCunt);
@@ -131,23 +131,30 @@ const CurrentCov = ({ handleToggleComponent, setDetailDataObj }: CurrentCovProps
 
     useEffect(() => {
         setSOData(data?.data?.data)
-        setAnalyticalData();
+
     }, [data])
 
     useEffect(() => {
         loadInitialData();
+        setAnalyticalData();
     }, [SOData])
 
     const setAnalyticalData = () => {
-        const blackCount = mapOrderDetails(SOData,ColorsMTO.Black.label, "", "", "", 4)
-        const redCount = mapOrderDetails(SOData, ColorsMTO.Red.label, "", "", "", 4)
-        const yellowCount = mapOrderDetails(SOData, ColorsMTO.Yellow.label, "", "", "", 4)
-        const greenCount = mapOrderDetails(SOData, ColorsMTO.Green.label, "", "", "", 4)
-        const blueCount = mapOrderDetails(SOData, ColorsMTO.Blue.label, "", "", "", 4)
+        // const totalOrdCnt
+        // let totalCustCnt;
+        // let totalOrderVal;
 
+        const blackCount:any = mapOrderDetails(SOData, ColorsMTO.Black.label, "", "", "", 4)
+        const redCount:any = mapOrderDetails(SOData, ColorsMTO.Red.label, "", "", "", 4)
+        const yellowCount:any = mapOrderDetails(SOData, ColorsMTO.Yellow.label, "", "", "", 4)
+        const greenCount:any = mapOrderDetails(SOData, ColorsMTO.Green.label, "", "", "", 4)
+        const blueCount:any = mapOrderDetails(SOData, ColorsMTO.Blue.label, "", "", "", 4)
+
+        // totalOrdCnt = blackCount.ordCunt + redCount.ordCunt + yellowCount.ordCunt + greenCount.ordCunt + blueCount.ordCunt;
+        // console.log('<>',totalCustCnt)
         const TotalCountObj = {
             "Order": [
-                { ...blackCount, color: ColorsMTO.Black.code },
+                { ...blackCount, color: ColorsMTO.Black.code, },
                 { ...redCount, color: ColorsMTO.Red.code },
                 { ...yellowCount, color: ColorsMTO.Yellow.code },
                 { ...greenCount, color: ColorsMTO.Green.code },

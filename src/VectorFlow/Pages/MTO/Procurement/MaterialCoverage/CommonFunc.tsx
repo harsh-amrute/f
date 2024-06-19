@@ -7,7 +7,7 @@ export const mapOrderDetails = (data: string[], c1: string, c2: string, c3: stri
     let startdate = 0;
     let endDate = 0;
     data?.map((data: any) => {
-        if (kit !== "" && buc !== 4) {
+        if (kit !== "" && buc ===0 ) {
             if ((data.col == c1 || data.col == c2 || data.col == c3) && data.kit == kit && data.bkt == buc) {
                 orderValue += Number(data.ordcnt)
                 custCount += Number(data.custcnt)
