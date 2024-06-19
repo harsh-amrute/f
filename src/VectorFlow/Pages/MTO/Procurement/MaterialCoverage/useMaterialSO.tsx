@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import AvlCellRenderer from '../../Common/AvlCellRenderer';
 import AvailabilityToolTip from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
-import DetailCellRenderer from "../../Procurement/MaterialCoverage/MaterialCellRendere";
+import DetailCellRenderer from "./MaterialCellRenderer";
 import {  OrderDetailsHeaderData } from '../MaterialCoverage/Data';
 import { mapMaterialCoverageFieldsToColDefs } from '../../../../../helpers/utils'
 import ColorCellRenderer from "../../Common/ColorCellRenderer";

@@ -26,7 +26,7 @@ interface MaterialSOProps {
 }
 
 const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderValue,percent }: MaterialSOProps) => {
-    isNaN(percent)? percent=0: percent
+
     return (
         <>
             <ColorOnLeft color={colors.c1} height={height}>
@@ -72,7 +72,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
 
             <PercentBorderContainer>
                 <Percentborder>
-                    <Percent>{Math.floor(percent*100)}%</Percent>
+                    <Percent>{Math.floor(isNaN(percent) ? 0 : percent*100)}%</Percent>
                 </Percentborder>
             </PercentBorderContainer>
 
