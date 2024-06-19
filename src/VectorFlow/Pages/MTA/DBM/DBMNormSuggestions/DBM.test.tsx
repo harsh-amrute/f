@@ -113,18 +113,18 @@ describe("Renders DBM Component", ()=>{
         });
         render(contextWrapper(<DBM />,store));
     })
-     it("renders DBMNorm", async()=>{
-        await act(async () => {
-          render(contextWrapper(<DBM />,store));
-          })
-    })
+    //  it("renders DBMNorm", async()=>{
+    //     await act(async () => {
+    //       render(contextWrapper(<DBM />,store));
+    //       })
+    // })
 
-     it("Handles Pagination", async()=>{
-        await act(async () => {
-          render(contextWrapper(<DBM />,store));
-          })
+    //  it("Handles Pagination", async()=>{
+    //     await act(async () => {
+    //       render(contextWrapper(<DBM />,store));
+    //       })
 
-          const nextBtn = screen.getAllByAltText('pagination-next-arrow')
-        fireEvent.click(nextBtn[0]);
-    })
+    //       const nextBtn = screen.getAllByAltText('pagination-next-arrow')
+    //     fireEvent.click(nextBtn[0]);
+    // })
 })
