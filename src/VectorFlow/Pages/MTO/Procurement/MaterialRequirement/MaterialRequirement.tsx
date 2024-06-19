@@ -8,9 +8,9 @@ const MaterialRequirement = () => {
     return (
         <>
             <ActionToolBar
-             comp={"Fristan"}
-             onDateChange={() => { console.log('') }}
-             submitDate={() => { console.log('') }}
+                comp={"Fristan"}
+                onDateChange={() => { console.log('') }}
+                submitDate={() => { console.log('') }}
             />
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 
@@ -38,6 +38,6 @@ const MaterialRequirement = () => {
     )
 }
 
-export default MaterialRequirement
+export default MaterialRequirement;
 
 
