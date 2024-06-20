@@ -36,6 +36,7 @@ import MaterialCov from './VectorFlow/Pages/MTO/Procurement/MaterialCoverage/Mat
 import ProcurementPlanning from './VectorFlow/Pages/MTO/Procurement/Planning';
 import SimulateFullKit from './VectorFlow/Pages/MTO/Procurement/Planning/SimulateFullKit';
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
+import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/DayWiseCoverage'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -82,6 +83,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/dbm/dbm-norm-suggestions',
     '/procurement/material-coverage-open-sales',
     '/procurement-planning/planning',
+    "/procurement/insights-and-trends/day-wise-coverage",
     '/planning/simulative-fullkit',
     '/logistics/intransit-whereabouts'
   ]
@@ -472,8 +474,17 @@ export const initRoutes = (): RouteObject[] => {
         },
         ...getStoreTransferModuleRoutes()
       ]
-    }
-
-
+    },
+    {
+      path: '/procurement/insights-and-trends/day-wise-coverage',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DayWiseCoverage />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
   ]
 }
