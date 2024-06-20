@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import "allotment/dist/style.css";
 import {
     SCChartContainer, SCHorizontalDivider

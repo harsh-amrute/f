@@ -50,7 +50,7 @@ const GridView = () => {
 
         onCellEditingStopped(event: any) {
             const field = event.colDef.field;
-            const newValue = event.newValue;
+            // const newValue = event.newValue;
             const rowIndex = event.rowIndex;
 
             if (!field || rowIndex == null) {
