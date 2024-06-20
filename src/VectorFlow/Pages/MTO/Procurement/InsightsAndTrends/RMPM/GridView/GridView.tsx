@@ -3,7 +3,7 @@ import { AgGridReactProps } from "ag-grid-react"
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable';
 import columnData from '../ColumnData';
 import { Order } from '../../../../../../types/MTO';
-import { ColumnData } from '../../../../../../types/MTO';
+import { ColumnDataType } from '../../../../../../types/MTO';
 import procData from '../ProcurementData';
 
 const GridView = () => {
@@ -63,7 +63,7 @@ const GridView = () => {
     const [ShortageColumns] = useState(columnData);
     const gridRef = useRef();
 
-    const mapDataToColumns = (data: Order[], columns: ColumnData[]) => {
+    const mapDataToColumns = (data: Order[], columns: ColumnDataType[]) => {
         return data.map(item => {
             const mappedItem: any = {};
             columns.forEach(column => {

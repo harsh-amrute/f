@@ -1,6 +1,6 @@
-import { ColumnData } from "../../../../../../VectorFlow/types/MTO"
+import { ColumnDataType } from "../../../../../../VectorFlow/types/MTO"
 
-const columnData: ColumnData[] = [
+const columnData: ColumnDataType[] = [
     {
         colId: "bpp",
         field: "bpp",

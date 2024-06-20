@@ -3,7 +3,7 @@ export interface MTOStore {
 }
 
 
-export interface ColumnData {
+export interface ColumnDataType {
     colId?: string;
     field?: string;
     headerName?: string;
