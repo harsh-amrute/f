@@ -33,7 +33,7 @@ interface MTOActionToolBarProps {
 }
 
 
-const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submitDate }: MTOActionToolBarProps) => {
     return (
         <SCTaskBarContainer>
             <SCTaskFilterContainer
@@ -56,7 +56,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView }: MTO
                         : null
                     }
 
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) ?
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) &&
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -96,7 +96,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView }: MTO
                                         fontFamily: 'Roboto',
                                         border: '0.5px solid #ACACAC',
                                     }}
-                                    onChange={(e) => onDateChange ? (e.target.value) : null}
+                                    onChange={(e) => { if (onDateChange) (e.target.value) }}
                                 />
                             </div>
                             <div>
@@ -108,13 +108,11 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView }: MTO
                                         height: '43px',
                                     }}
 
-                                // onClick={() => submitDate?(): null}
+                                    onClick={() => { if (submitDate) submitDate() }}
                                 >Submit</button>
                             </div>
                         </div>
-                       
-                        :
-                        null
+
                     }
 
                     <SCVerticalDivider />
@@ -183,7 +181,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView }: MTO
                     </>
 
                     {/* Toggle button for chartview/ grid view */}
-                    {(comp === 'rmpm') ?
+                    {(comp === 'rmpm') &&
                         <>
                             <SCViewContainerWithBgToggle onClick={() => { setIsGridView && (setIsGridView(!isGridView)); console.log(isGridView) }}>
                                 <SCViewContainer>
@@ -199,7 +197,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView }: MTO
                                 </SCViewContainer>
 
                             </SCViewContainerWithBgToggle>
-                        </> : <></>
+                        </>
                     }
 
                 </>

@@ -7,6 +7,8 @@ import { AgChartsReact } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
 import procData from "../ProcurementData";
 import { Order } from "../../../../../../types/MTO";
+import { InsightsAndTrendsString } from "../../../../Common/String";
+import { ProcurementSeriesDataFill, ProcurementSeriesDataYKey, ProcurementSeriesDataYName } from "../../../../../MTO/Common/Enum";
 
 const GraphView = () => {
 
@@ -16,6 +18,30 @@ const GraphView = () => {
     // const [rawData, setRawData] = useState(procData);
     const [rawData] = useState(procData);
 
+    function TooltipRenderer({ datum, xKey }: any) {
+        return `
+    <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
+        ${datum[xKey]}
+    </div>
+    <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
+    
+    <div>
+        <div style="display: flex;">
+            <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F4BD8E">
+            </div>
+            <div style="display:flex ; width: 100%; justify-content: space-between">
+                <div>${InsightsAndTrendsString.ordersWithFullkitOHS}
+                </div>
+                <div> ${datum['sih']}
+                </div>
+            </div>
+        </div>
+        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitOPO}</div><div>${datum["sit"]}</div></div></div>
+        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitSIT}</div><div>${datum["opo"]}</div></div></div>
+        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithRMPM}</div><div> ${datum["rmSh"]}</div></div></div>
+    </div>
+    </div>`
+    }
 
     const calculateDaysDifference = (releaseDateStr: string) => {
         const releaseDate = new Date(releaseDateStr);
@@ -25,27 +51,54 @@ const GraphView = () => {
         return diffInDays;
     };
 
-    function groupByWeek(data: Order[]) {
-        const weekRanges = [
-            { days_range: "0-7 days", sih: 0, sit: 0, opo: 0, rmSh: 0 },
-            { days_range: "8-14 days", sih: 0, sit: 0, opo: 0, rmSh: 0 },
-            { days_range: "15-21 days", sih: 0, sit: 0, opo: 0, rmSh: 0 },
-            { days_range: "22-28 days", sih: 0, sit: 0, opo: 0, rmSh: 0 },
-            { days_range: "29-35 days", sih: 0, sit: 0, opo: 0, rmSh: 0 },
-            { days_range: "36-42 days", sih: 0, sit: 0, opo: 0, rmSh: 0 },
-            { days_range: "43-49 days", sih: 0, sit: 0, opo: 0, rmSh: 0 },
-            { days_range: "50-56 days", sih: 0, sit: 0, opo: 0, rmSh: 0 },
-            { days_range: "57-63 days", sih: 0, sit: 0, opo: 0, rmSh: 0 },
-            { days_range: "64-70 days", sih: 0, sit: 0, opo: 0, rmSh: 0 },
-            { days_range: "71-77 days", sih: 0, sit: 0, opo: 0, rmSh: 0 },
-            { days_range: "78-84 days", sih: 0, sit: 0, opo: 0, rmSh: 0 },
-            { days_range: "85-90 days", sih: 0, sit: 0, opo: 0, rmSh: 0 }
-        ];
+    function createSeriesData(val: number) {
+        const seriesData: any = [];
+        for (let i = 0; i < val; i++) {
+            seriesData.push(
+                {
+                    "type": "bar",
+                    "xKey": "days_range",
+                    "yKey": ProcurementSeriesDataYKey[i],
+                    "yName": ProcurementSeriesDataYName[i],
+                    "stacked": true,
+                    "strokeOpacity": 0,
+                    "strokeWidth": 6,
+                    "fill": ProcurementSeriesDataFill[i],
+                    "tooltip": { renderer: TooltipRenderer }
+                }
+            )
+        }
+
+        return seriesData;
+    }
+
+    function groupByWeek(data: Order[], daysOfGap: number, totalDataDays: number) {
+        type WeekRange = {
+            days_range: string;
+            sih: number;
+            sit: number;
+            opo: number;
+            rmSh: number;
+        };
+        const weekRanges: WeekRange[] = [];
+        let startDay = 1;
+
+        while (startDay < totalDataDays) {
+            const endDay = startDay + daysOfGap - 1;
+            weekRanges.push({
+                days_range: `${(startDay === 1) ? 0 : startDay}-${(endDay > 90) ? 90 : endDay} days`,
+                sih: 0,
+                sit: 0,
+                opo: 0,
+                rmSh: 0,
+            });
+            startDay += daysOfGap;
+        }
 
         data.forEach(order => {
             const releaseDate = new Date(order.rd);
             const daysDifference = calculateDaysDifference(releaseDate.toString());
-            const weekIndex = Math.floor(daysDifference / 7);
+            const weekIndex = Math.floor(daysDifference / daysOfGap);
 
             if (weekIndex >= 0 && weekIndex < weekRanges.length) {
                 weekRanges[weekIndex].sih += order.sih;
@@ -54,168 +107,21 @@ const GraphView = () => {
                 weekRanges[weekIndex].rmSh += order.rmSh;
             }
         });
+
         return weekRanges;
     }
 
-    const updatedData = groupByWeek(rawData);
+    const numberOfSeriesData = 4;
+
+    const updatedData = groupByWeek(rawData, 7, 90);
+    const seriesData = createSeriesData(numberOfSeriesData);
 
     const options: AgChartOptions = ({
 
 
         data: updatedData,
 
-        series: [
-            {
-                type: "bar",
-                xKey: "days_range",
-                yKey: "sih",
-                yName: "Orders with fullkit (On hand Stock)",
-                stacked: true,
-                strokeOpacity: 0,
-                strokeWidth: 6,
-                fill: "#F4BD8E",
-                tooltip: {
-                    renderer: function ({ datum, xKey }) {
-                        console.log("datum", datum)
-                        return `
-                    <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-                        ${datum[xKey]}
-                    </div>
-                    <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
-                    
-                    <div>
-                        <div style="display: flex;">
-                            <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F4BD8E">
-                            </div>
-                            <div style="display:flex ; width: 100%; justify-content: space-between">
-                                <div>Orders with fullkit (On hand Stock)
-                                </div>
-                                <div> ${datum.sih}
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Orders With Full Kit (incl. In Transit Inventory + In QC)</div><div>${datum.sit}</div></div></div>
-                        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Orders With Full Kit (incl. In Open Orders )</div><div>${datum.opo}</div></div></div>
-                        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Orders With RM /PM Shortage</div><div> ${datum.rmSh}</div></div></div>
-                    </div>
-                    </div>`;
-                    },
-                },
-            },
-            {
-                type: "bar",
-                xKey: "days_range",
-                yKey: "sit",
-                yName: "Orders With Full Kit (incl. In Transit Inventory + In QC )",
-                stacked: true,
-                fill: '#F09241',
-                strokeOpacity: 0,
-                strokeWidth: 6,
-                tooltip: {
-                    renderer: function ({ datum, xKey }) {
-                        console.log("datum", datum)
-                        return `
-                    <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-                        ${datum[xKey]}
-                    </div>
-                    <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
-                    
-                    <div>
-                        <div style="display: flex;">
-                            <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F4BD8E">
-                            </div>
-                            <div style="display:flex ; width: 100%; justify-content: space-between">
-                                <div>Orders with fullkit (On hand Stock)
-                                </div>
-                                <div> ${datum.sih}
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Orders With Full Kit (incl. In Transit Inventory + In QC)</div><div>${datum.sit}</div></div></div>
-                        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Orders With Full Kit (incl. In Open Orders )</div><div>${datum.opo}</div></div></div>
-                        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Orders With RM /PM Shortage</div><div> ${datum.rmSh}</div></div></div>
-                    </div>
-                    </div>`;
-                    },
-                },
-            },
-            {
-                type: "bar",
-                xKey: "days_range",
-                yKey: "opo",
-                yName: "Orders With Full Kit (incl. In Open Orders )",
-                fill: "#AD5000",
-                stacked: true,
-                strokeOpacity: 0,
-                strokeWidth: 6,
-                tooltip: {
-                    renderer: function ({ datum, xKey }) {
-                        console.log("datum", datum)
-                        return `
-                    <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-                        ${datum[xKey]}
-                    </div>
-                    <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
-                    
-                    <div>
-                        <div style="display: flex;">
-                            <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F4BD8E">
-                            </div>
-                            <div style="display:flex ; width: 100%; justify-content: space-between">
-                                <div>Orders with fullkit (On hand Stock)
-                                </div>
-                                <div> ${datum.sih}
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Orders With Full Kit (incl. In Transit Inventory + In QC)</div><div>${datum.sit}</div></div></div>
-                        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Orders With Full Kit (incl. In Open Orders )</div><div>${datum.opo}</div></div></div>
-                        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Orders With RM /PM Shortage</div><div> ${datum.rmSh}</div></div></div>
-                    </div>
-                    </div>`;
-                    },
-
-                },
-            },
-            {
-                type: "bar",
-                xKey: "days_range",
-                yKey: "rmSh",
-                yName: "Orders With RM /PM Shortage",
-                stacked: true,
-                fill: "#6A3001",
-                strokeOpacity: 0,
-                strokeWidth: 6,
-                tooltip: {
-                    renderer: function ({ datum, xKey }) {
-                        console.log("datum", datum)
-                        return `
-                    <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-                        ${datum[xKey]}
-                    </div>
-                    <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
-                    <div>
-                        <div style="display: flex;">
-                            <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F4BD8E">
-                            </div>
-                            <div style="display:flex ; width: 100%; justify-content: space-between">
-                                <div>Orders with fullkit (On hand Stock)
-                                </div>
-                                <div> ${datum.sih}
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Orders With Full Kit (incl. In Transit Inventory + In QC)</div><div>${datum.sit}</div></div></div>
-                        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Orders With Full Kit (incl. In Open Orders )</div><div>${datum.opo}</div></div></div>
-                        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Orders With RM /PM Shortage</div><div> ${datum.rmSh}</div></div></div>
-                    </div>
-                    </div>`;
-                    },
-
-                },
-            },
-
-        ],
+        series: seriesData
 
 
     });
@@ -230,7 +136,7 @@ const GraphView = () => {
                 <div style={{ height: '90%', width: '100%' }}>
                     <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <div style={{ fontSize: '14px', fontWeight: 500, textAlign: 'center' }}>
-                            RM / PM Orderwise Coverage {`(${date})`}
+                            {`${InsightsAndTrendsString.rmpmOrderwiseCoverage}  (${date})`}
                         </div>
                     </div>
                     <SCHorizontalDivider />
