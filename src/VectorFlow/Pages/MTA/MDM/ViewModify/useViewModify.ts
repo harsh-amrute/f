@@ -487,6 +487,9 @@ const useViewModify = (pageType:string) => {
       if(activeMaster.id===0){
         dispatch(UPDATE_ACTIVE_MASTER(0));
       }
+      else{
+        dispatch(UPDATE_ACTIVE_MASTER(masters[0]))
+      }
       dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
     }
 
@@ -1207,8 +1210,9 @@ const useViewModify = (pageType:string) => {
        {
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
-        dispatch(UPDATE_COLDEFS( mapMasterToColumnDefs(activeMaster.fields,activeMaster.id)))
-        dispatch(REMOVE_ALL_FILTERS())
+        dispatch(UPDATE_COLDEFS([]));
+        dispatch(REMOVE_ALL_FILTERS());
+        // dispatch(UPDATE_ACTIVE_MASTER([]))
        
         dispatch(ADD_FILTER())
         setDownloadData(false);
