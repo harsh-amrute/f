@@ -26,7 +26,6 @@ export const SCRow = styled.div`
   margin-left: calc(var(--pd) * -1);
   margin-right: calc(var(--pd) * -1);
   display: flex;
-  flex-wrap: wrap;
   min-height: 90vh;
 `;
 

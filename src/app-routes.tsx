@@ -31,6 +31,7 @@ import GuidedInsights from './VectorFlow/Pages/MTA/InsightsAndTrends/GuidedInsig
 import BufferTrends from './VectorFlow/Pages/MTA/InsightsAndTrends/BufferTrends'
 import BufferTrendReport from './VectorFlow/Pages/MTA/InsightsAndTrends/BTR'
 import DBM from './VectorFlow/Pages/MTA/DBM/DBMNormSuggestions'
+import EnquiryResponse from './VectorFlow/Pages/MTA/EnquiryResponse'
 import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests'
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
 
@@ -49,7 +50,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/login',
     '/forgot-password',
     '/change-password',
-    '/profile'
+    '/profile',
+    '/production-planning-scheduling/enquiry-response'
   ]
   const urlAllPage = [
     ...authenPage,
@@ -77,7 +79,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/insights-and-trends/research-insights',
     '/insights-and-trends/buffer-trend-report',
     '/dbm/dbm-norm-suggestions',
-    '/logistics/intransit-whereabouts'
+    '/logistics/intransit-whereabouts',
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -430,6 +432,17 @@ export const initRoutes = (): RouteObject[] => {
        {
          index: true,
          element: lazyLoad(<DBM/>)
+       },
+       ...getStoreTransferModuleRoutes()
+     ]
+    },
+    {
+     path: '/production-planning-scheduling/enquiry-response',
+     element: <AppLayout />,
+     children: [
+       {
+         index: true,
+         element: lazyLoad(<EnquiryResponse/>)
        },
        ...getStoreTransferModuleRoutes()
      ]

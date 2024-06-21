@@ -1,0 +1,132 @@
+.table-resizebar-wrapper {
+  position: relative;
+}
+
+.table-container {
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  #resizable-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Ensures consistent column width */
+    margin-bottom: 20px;
+  }
+
+  #resizable-table th{
+    background-color: black;
+    color: white;
+    padding: 8px;
+    text-align: left;
+    white-space: nowrap; /* Prevents text wrapping */
+    overflow: hidden; /* Ensures content doesn't overflow */
+    text-overflow: ellipsis;
+  }
+  
+  #resizable-table td {
+    padding: 8px;
+    text-align: left;
+    white-space: nowrap; /* Prevents text wrapping */
+    overflow: hidden; /* Ensures content doesn't overflow */
+    text-overflow: ellipsis; /* Adds ellipsis for overflowed text */
+  }
+
+    #resizable-table tbody tr:nth-child(even) {
+      background-color: #ffffff; /* White background for odd rows */
+    }
+    
+    #resizable-table tbody tr:nth-child(odd) {
+      background-color: #f2f2f2; /* Gray background for even rows */
+    }
+  
+  .resize-bar {
+    position: absolute;
+    width: 100%;
+    height: 10px; /* Height of the resize bar */
+    border-radius: 4px;
+    background-color: #8080804d;
+    cursor: ns-resize; /* Cursor style for resizing */
+    bottom: 0px; /* Adjust distance from the bottom of the table */
+    left: 0px;
+  }
+
+  .cell-with-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 20px;
+  }
+
+  .bar-container {
+    width: 100px;
+  }
+
+  .cell-bar {
+    background-image: linear-gradient(to right, #8D2E61, #BB3F81, #DB6BA7);
+    height: 20px;
+    border-radius: 2px;
+  }
+
+  .cell-bar-value {
+    margin-right: 20px;
+  }
+
+  .filter-input {
+    width: 90%;
+  }
+
+  .filter-input:focus {
+    border-radius: 2px;
+    outline: none; 
+    border-color: #BB3F81; 
+   }
+  
+  @media only screen and (min-width: 360px) and (max-width: 540px) {
+    body {
+      font-size: 12px; 
+    }
+
+    .table-container { 
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+    }
+    .cell-with-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-right: 10px;
+    }
+
+    .bar-container {
+       width: 30px;
+    }
+
+    .cell-bar-value {
+        margin-right: 0px;
+      }
+
+    #resizable-table th{
+        background-color: black;
+        color: white;
+        padding: 4px;
+        text-align: left;
+        white-space: nowrap; /* Prevents text wrapping */
+        overflow: hidden; /* Ensures content doesn't overflow */
+        text-overflow: ellipsis;
+        font-size: 10px;
+      }
+      
+      #resizable-table td {
+        padding: 4px;
+        text-align: left;
+        font-size: 10px;
+        white-space: nowrap; /* Prevents text wrapping */
+        overflow: hidden; /* Ensures content doesn't overflow */
+        text-overflow: ellipsis; /* Adds ellipsis for overflowed text */
+      }
+  
+    
+  }
+  
