@@ -906,7 +906,8 @@ const useViewModify = (pageType:string) => {
             action:actionStatus,
             TaskId:'',
             IsOverWrite:isOverWrite===true?true:false,
-            data:[]
+            data:[],
+            uiconfig:activeMaster.fields
           }
 
           toastId = notifyLoader(`Submitting Data ${submitProgress}/${activeMaster.rowData.length}`);

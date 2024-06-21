@@ -196,7 +196,8 @@ const useDelete=()=>{
             action:"",
             TaskId:'',
             IsOverWrite:isOverWrite===true?true:false,
-            data:[]
+            data:[],
+            uiconfig:activeMaster.fields
           }
 
           toastId = notifyLoader(`Submitting Data ${submitProgress}/${activeMaster.rowData.length}`);
