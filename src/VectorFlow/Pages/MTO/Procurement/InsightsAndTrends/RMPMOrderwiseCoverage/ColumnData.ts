@@ -1,4 +1,4 @@
-import { ColumnDataType } from "../../../../../../VectorFlow/types/MTO"
+import { ColumnDataType } from "../../../../../types/MTO"
 
 const columnData: ColumnDataType[] = [
     {

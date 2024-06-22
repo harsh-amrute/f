@@ -8,7 +8,7 @@ import { AgChartOptions } from "ag-charts-community";
 import procData from "../ProcurementData";
 import { Order } from "../../../../../../types/MTO";
 import { InsightsAndTrendsString } from "../../../../Common/String";
-import { ProcurementSeriesDataFill, ProcurementSeriesDataYKey, ProcurementSeriesDataYName } from "../../../../../MTO/Common/Enum";
+import { ProcurementSeriesDataFill, ProcurementSeriesDataYKey, ProcurementSeriesDataYName } from "../../../../Common/Enum";
 
 const GraphView = () => {
 

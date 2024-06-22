@@ -50,18 +50,18 @@ const EconomicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizond
                 type: "category",
                 position: 'bottom',
                 label: {
-                    // fontSize:8,
-                    // fontWeight:'bold',
-                    // color:'black'
+                    fontSize: 8,
+                    fontWeight: 'bold',
+                    color: 'black'
                 }
             },
             {
                 type: "number",
                 position: 'left',
                 label: {
-                    //   fontSize:8,
-                    //   fontWeight:'bold',
-                    //   color:'black'
+                    fontSize: 8,
+                    fontWeight: 'bold',
+                    color: 'black'
                 }
             }
         ],
