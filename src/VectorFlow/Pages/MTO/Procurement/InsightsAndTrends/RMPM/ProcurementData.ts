@@ -25,10 +25,10 @@ const procData =
             "ccrnm": "CCR Name 4",
             "ccrgrid": "CCRGR04",
             "ccrgrnm": "CCR Group 4",
-            "sih": 210,
+            "soh": 210,
             "sit": 55,
-            "opo": 35,
-            "rmSh": 12,
+            "po": 35,
+            "or": 0,
             "oa": [
                 {
                     "attribute1": "Value7",
@@ -73,10 +73,10 @@ const procData =
             "ccrnm": "CCR Name 5",
             "ccrgrid": "CCRGR05",
             "ccrgrnm": "CCR Group 5",
-            "sih": 220,
+            "soh": 220,
             "sit": 60,
-            "opo": 40,
-            "rmSh": 14,
+            "po": 40,
+            "or": 0,
             "oa": [
                 {
                     "attribute1": "Value9",
@@ -121,10 +121,10 @@ const procData =
             "ccrnm": "CCR Name 6",
             "ccrgrid": "CCRGR06",
             "ccrgrnm": "CCR Group 6",
-            "sih": 230,
+            "soh": 230,
             "sit": 65,
-            "opo": 45,
-            "rmSh": 16,
+            "po": 0,
+            "or": 0,
             "oa": [
                 {
                     "attribute1": "Value11",
@@ -169,10 +169,10 @@ const procData =
             "ccrnm": "CCR Name 7",
             "ccrgrid": "CCRGR07",
             "ccrgrnm": "CCR Group 7",
-            "sih": 240,
-            "sit": 70,
-            "opo": 50,
-            "rmSh": 18,
+            "soh": 240,
+            "sit": 0,
+            "po": 0,
+            "or": 0,
             "oa": [
                 {
                     "attribute1": "Value13",
@@ -217,10 +217,10 @@ const procData =
             "ccrnm": "CCR Name 8",
             "ccrgrid": "CCRGR08",
             "ccrgrnm": "CCR Group 8",
-            "sih": 250,
+            "soh": 250,
             "sit": 75,
-            "opo": 55,
-            "rmSh": 20,
+            "po": 55,
+            "or": 20,
             "oa": [
                 {
                     "attribute1": "Value15",
@@ -265,10 +265,10 @@ const procData =
             "ccrnm": "CCR Name 9",
             "ccrgrid": "CCRGR09",
             "ccrgrnm": "CCR Group 9",
-            "sih": 260,
+            "soh": 260,
             "sit": 80,
-            "opo": 60,
-            "rmSh": 22,
+            "po": 60,
+            "or": 22,
             "oa": [
                 {
                     "attribute1": "Value17",
@@ -314,10 +314,10 @@ const procData =
             "ccrnm": "CCR Name 15",
             "ccrgrid": "CCRGR15",
             "ccrgrnm": "CCR Group 15",
-            "sih": 320,
+            "soh": 320,
             "sit": 110,
-            "opo": 90,
-            "rmSh": 34,
+            "po": 90,
+            "or": 34,
             "oa": [
                 {
                     "attribute1": "Value27",
@@ -362,10 +362,10 @@ const procData =
             "ccrnm": "CCR Name 16",
             "ccrgrid": "CCRGR16",
             "ccrgrnm": "CCR Group 16",
-            "sih": 330,
+            "soh": 330,
             "sit": 115,
-            "opo": 95,
-            "rmSh": 36,
+            "po": 95,
+            "or": 36,
             "oa": [
                 {
                     "attribute1": "Value29",
@@ -410,10 +410,10 @@ const procData =
             "ccrnm": "CCR Name 17",
             "ccrgrid": "CCRGR17",
             "ccrgrnm": "CCR Group 17",
-            "sih": 340,
+            "soh": 340,
             "sit": 120,
-            "opo": 100,
-            "rmSh": 38,
+            "po": 100,
+            "or": 38,
             "oa": [
                 {
                     "attribute1": "Value31",
@@ -458,10 +458,10 @@ const procData =
             "ccrnm": "CCR Name 18",
             "ccrgrid": "CCRGR18",
             "ccrgrnm": "CCR Group 18",
-            "sih": 350,
+            "soh": 350,
             "sit": 125,
-            "opo": 105,
-            "rmSh": 40,
+            "po": 105,
+            "or": 40,
             "oa": [
                 {
                     "attribute1": "Value33",
@@ -506,10 +506,10 @@ const procData =
             "ccrnm": "CCR Name 19",
             "ccrgrid": "CCRGR19",
             "ccrgrnm": "CCR Group 19",
-            "sih": 360,
+            "soh": 360,
             "sit": 130,
-            "opo": 110,
-            "rmSh": 42,
+            "po": 110,
+            "or": 42,
             "oa": [
                 {
                     "attribute1": "Value35",
@@ -555,10 +555,10 @@ const procData =
             "ccrnm": "CCR Name 20",
             "ccrgrid": "CCRGR20",
             "ccrgrnm": "CCR Group 20",
-            "sih": 370,
+            "soh": 370,
             "sit": 135,
-            "opo": 115,
-            "rmSh": 44,
+            "po": 115,
+            "or": 44,
             "oa": [
                 {
                     "attribute1": "Value37",
@@ -603,10 +603,10 @@ const procData =
             "ccrnm": "CCR Name 21",
             "ccrgrid": "CCRGR21",
             "ccrgrnm": "CCR Group 21",
-            "sih": 380,
+            "soh": 380,
             "sit": 140,
-            "opo": 120,
-            "rmSh": 46,
+            "po": 120,
+            "or": 46,
             "oa": [
                 {
                     "attribute1": "Value39",
@@ -651,10 +651,10 @@ const procData =
             "ccrnm": "CCR Name 22",
             "ccrgrid": "CCRGR22",
             "ccrgrnm": "CCR Group 22",
-            "sih": 390,
+            "soh": 390,
             "sit": 145,
-            "opo": 125,
-            "rmSh": 48,
+            "po": 125,
+            "or": 48,
             "oa": [
                 {
                     "attribute1": "Value41",
@@ -699,10 +699,10 @@ const procData =
             "ccrnm": "CCR Name 23",
             "ccrgrid": "CCRGR23",
             "ccrgrnm": "CCR Group 23",
-            "sih": 400,
+            "soh": 400,
             "sit": 150,
-            "opo": 130,
-            "rmSh": 50,
+            "po": 130,
+            "or": 50,
             "oa": [
                 {
                     "attribute1": "Value43",
@@ -747,10 +747,10 @@ const procData =
             "ccrnm": "CCR Name 24",
             "ccrgrid": "CCRGR24",
             "ccrgrnm": "CCR Group 24",
-            "sih": 410,
+            "soh": 410,
             "sit": 155,
-            "opo": 135,
-            "rmSh": 52,
+            "po": 135,
+            "or": 52,
             "oa": [
                 {
                     "attribute1": "Value45",
@@ -795,10 +795,10 @@ const procData =
             "ccrnm": "CCR Name 25",
             "ccrgrid": "CCRGR25",
             "ccrgrnm": "CCR Group 25",
-            "sih": 420,
+            "soh": 420,
             "sit": 160,
-            "opo": 140,
-            "rmSh": 54,
+            "po": 140,
+            "or": 54,
             "oa": [
                 {
                     "attribute1": "Value47",
@@ -843,10 +843,10 @@ const procData =
             "ccrnm": "CCR Name 26",
             "ccrgrid": "CCRGR26",
             "ccrgrnm": "CCR Group 26",
-            "sih": 430,
+            "soh": 430,
             "sit": 165,
-            "opo": 145,
-            "rmSh": 56,
+            "po": 145,
+            "or": 56,
             "oa": [
                 {
                     "attribute1": "Value49",
@@ -891,10 +891,10 @@ const procData =
             "ccrnm": "CCR Name 27",
             "ccrgrid": "CCRGR27",
             "ccrgrnm": "CCR Group 27",
-            "sih": 440,
+            "soh": 440,
             "sit": 170,
-            "opo": 150,
-            "rmSh": 58,
+            "po": 150,
+            "or": 58,
             "oa": [
                 {
                     "attribute1": "Value51",
@@ -939,10 +939,10 @@ const procData =
             "ccrnm": "CCR Name 28",
             "ccrgrid": "CCRGR28",
             "ccrgrnm": "CCR Group 28",
-            "sih": 450,
+            "soh": 450,
             "sit": 175,
-            "opo": 155,
-            "rmSh": 60,
+            "po": 155,
+            "or": 60,
             "oa": [
                 {
                     "attribute1": "Value53",
@@ -987,10 +987,10 @@ const procData =
             "ccrnm": "CCR Name 29",
             "ccrgrid": "CCRGR29",
             "ccrgrnm": "CCR Group 29",
-            "sih": 460,
+            "soh": 460,
             "sit": 180,
-            "opo": 160,
-            "rmSh": 62,
+            "po": 160,
+            "or": 62,
             "oa": [
                 {
                     "attribute1": "Value55",

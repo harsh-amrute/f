@@ -4,6 +4,7 @@ import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import columnData from '../ColumnData';
 import { Order, ColumnDataType } from '../../../../../../types/MTO';
 import procData from '../ProcurementData';
+import { InsightsAndTrendsString } from "../../../../Common/String";
 
 const GridView = () => {
 
@@ -67,7 +68,23 @@ const GridView = () => {
             const mappedItem: any = {};
             columns.forEach(column => {
                 if (column.field) {
-                    mappedItem[column.field] = item[column.field as keyof Order];
+                    if (column.field === "rmpm") {
+                        if (item['or'] > 0) {
+                            mappedItem[column.field] = InsightsAndTrendsString.ordersWithRMPM;
+                        }
+                        else if (item['po'] > 0) {
+                            mappedItem[column.field] = InsightsAndTrendsString.ordersWithFullkitOPO;
+                        }
+                        else if (item['sit'] > 0) {
+                            mappedItem[column.field] = InsightsAndTrendsString.ordersWithFullkitSIT;
+                        }
+                        else {
+                            mappedItem[column.field] = InsightsAndTrendsString.ordersWithFullkitOHS;
+                        }
+                    }
+                    else {
+                        mappedItem[column.field] = item[column.field as keyof Order];
+                    }
                 }
             });
             return mappedItem;

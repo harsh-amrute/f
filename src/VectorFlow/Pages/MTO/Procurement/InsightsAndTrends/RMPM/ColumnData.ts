@@ -5,7 +5,7 @@ const columnData: ColumnDataType[] = [
         colId: "bpp",
         field: "bpp",
         headerName: "BPP",
-        hide: true,
+        hide: false,
         cellRenderer: "coloPriority",
         tooltipComponent: "availabilityToolTip",
         initialWidth: 100,
@@ -150,20 +150,12 @@ const columnData: ColumnDataType[] = [
         "colId": "rmpm",
         "field": "rmpm",
         "headerName": "RM / PM Coverage",
-        "hide": true,
-        "cellRenderer": "inputbox",
-        "editable": true,
+        "hide": false,
         "autoHeaderHeight": true,
         "wrapHeaderText": true,
-        "initialWidth": 200,
+        "initialWidth": 400,
         "filter": "agMultiColumnFilter",
         "floatingFilter": true,
-        "cellStyle": {
-            "backgroundColor": "white",
-            "border": "1px solid #b9bdba",
-            "color": "black",
-            "padding": "1px"
-        }
     },
     {
         "colId": "cc",

@@ -5,10 +5,10 @@ export enum EnumKitStatus {
 }
 
 export enum ProcurementSeriesDataYKey {
-    sih = 0,
+    soh = 0,
     sit = 1,
-    opo = 2,
-    rmSh = 3
+    po = 2,
+    or = 3
 }
 export enum ProcurementSeriesDataYName {
     "Orders With Full Kit (On hand Stock)" = 0,

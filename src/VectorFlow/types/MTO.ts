@@ -76,10 +76,10 @@ export interface Order {
     ccrnm: string; // CCR Name
     ccrgrid: string; // CCR Group ID
     ccrgrnm: string; // CCR Group Name
-    sih: number; // Stock On Hand
+    soh: number; // Stock On Hand
     sit: number; // Stock In Transit (including Stock in QC)
-    opo: number; // Open Purchase Orders
-    rmSh: number; // Raw Material/PM Shortage
+    po: number; // Open Purchase Orders
+    or: number; // Raw Material/PM Shortage
     oa: OrderAttribute[]; // Order Attributes
     la: LineAttribute[]; // Line Attributes
     ca: CustomerAttribute[]; // Customer Attributes

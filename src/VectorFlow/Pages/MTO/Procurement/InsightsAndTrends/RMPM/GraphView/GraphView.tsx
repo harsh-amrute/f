@@ -32,13 +32,13 @@ const GraphView = () => {
             <div style="display:flex ; width: 100%; justify-content: space-between">
                 <div>${InsightsAndTrendsString.ordersWithFullkitOHS}
                 </div>
-                <div> ${datum['sih']}
+                <div> ${datum['soh']}
                 </div>
             </div>
         </div>
         <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitOPO}</div><div>${datum["sit"]}</div></div></div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitSIT}</div><div>${datum["opo"]}</div></div></div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithRMPM}</div><div> ${datum["rmSh"]}</div></div></div>
+        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitSIT}</div><div>${datum["po"]}</div></div></div>
+        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithRMPM}</div><div> ${datum["or"]}</div></div></div>
     </div>`
     }
 
@@ -76,10 +76,10 @@ const GraphView = () => {
     function groupByWeek(data: Order[], daysOfGap: number, totalDataDays: number) {
         type WeekRange = {
             days_range: string;
-            sih: number;
+            soh: number;
             sit: number;
-            opo: number;
-            rmSh: number;
+            po: number;
+            or: number;
         };
         const weekRanges: WeekRange[] = [];
         let startDay = 1;
@@ -88,10 +88,10 @@ const GraphView = () => {
             const endDay = startDay + daysOfGap - 1;
             weekRanges.push({
                 days_range: `${(startDay === 1) ? 0 : startDay}-${(endDay > 90) ? 90 : endDay} days`,
-                sih: 0,
+                soh: 0,
                 sit: 0,
-                opo: 0,
-                rmSh: 0,
+                po: 0,
+                or: 0,
             });
             startDay += daysOfGap;
         }
@@ -102,10 +102,10 @@ const GraphView = () => {
             const weekIndex = Math.floor(daysDifference / daysOfGap);
 
             if (weekIndex >= 0 && weekIndex < weekRanges.length) {
-                weekRanges[weekIndex].sih += order.sih;
+                weekRanges[weekIndex].soh += order.soh;
                 weekRanges[weekIndex].sit += order.sit;
-                weekRanges[weekIndex].opo += order.opo;
-                weekRanges[weekIndex].rmSh += order.rmSh;
+                weekRanges[weekIndex].po += order.po;
+                weekRanges[weekIndex].or += order.or;
             }
         });
 
