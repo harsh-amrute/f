@@ -76,14 +76,15 @@ export const Calender = styled.table`
 export const Day = styled.td<{ color?: string }>`
   padding: 16px;
   border: none;
-  margin: 0.5rem;
-  width: 40px;
-  height: 40px;
+  margin: 1rem;
+  width: 30px;
+  height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: ${(props) => props?.color};
   color: ${(props) => (props?.color ? "white" : "black")};
+  border-radius: 50%;
 `;
 
 Day.defaultProps = {};
@@ -91,3 +92,5 @@ export const Month = styled.tr`
   border-bottom: 2px dashed lightgrey;
   display: flex;
 `;
+
+export const Icon = styled.img``;

@@ -8,9 +8,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/02/02": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/02/03": {
       oc: 52,
@@ -104,9 +104,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/02/18": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/02/19": {
       oc: 52,

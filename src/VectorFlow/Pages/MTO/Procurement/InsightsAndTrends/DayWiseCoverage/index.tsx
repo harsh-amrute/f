@@ -1,22 +1,27 @@
 import React, { useEffect, useState } from 'react'
 import DatePicker from '../../../../../../components/VectorFLOW/commons/MTO/DatePicker'
-import DayWiseCoverageCalender from '../DayWiseCoverageCalender';
-import { DayWiseCoverageSumamry } from './data';
+import DayWiseCoverageCalender from './DayWiseCoverageCalender';
+import { DayWiseCoverageSumamry } from './calender_json';
 import DayWiseCoverageHeader from './DayWiseCoverageHeader'
 import { Calender } from './style';
+import DayWiseCoverageTable from './DayWiseCoverageTable';
 
 
 const DayWiseCoverage = () => {
     const [startDate, setStartDate] = useState("2024-02");
-    const [endDate, setEndDate] = useState("2024-06");
+    const [endDate, setEndDate] = useState("2024-04");
     const setDateRange = (start: string, end: string) => {
         setStartDate(start);
         setEndDate(end)
     }
 
+    const getColor = (id: string) => {
+        return DayWiseCoverageSumamry.data[id].oc === DayWiseCoverageSumamry.data[id].fk ? "#33800B" : "#F02424"
+    }
+
     const getToolTipContent = (id: string) => {
         return (
-            <table style={{ padding: "4px", display: "table", width: '200px' }}>
+            <table style={{ padding: "4px", display: "table", width: '250px' }}>
                 <thead>
                     <tr>
                         <td colSpan={2} style={{ borderBottom: "1px dashed white", paddingRight: "4rem" }}>Details</td>
@@ -60,13 +65,29 @@ const DayWiseCoverage = () => {
             </table>
         )
     }
+
     return (
-        <>
+        <div>
             <DayWiseCoverageHeader startDate={startDate} endDate={endDate} setDateRange={setDateRange} />
-            <DayWiseCoverageCalender start={startDate} end={endDate} getToolTipContent={getToolTipContent} />
-        </>
+            <DayWiseCoverageCalender start={startDate} end={endDate} getToolTipContent={getToolTipContent} getColor={getColor} />
+            <DayWiseCoverageTable />
+        </div>
 
     )
 }
+
+
+// {
+// 	"data":[
+// 		{
+// 			"cc":"ColorPriority",
+// 			"cp":"",
+// 			"hd":"Color Priority",
+// 			"v":1,
+// 			"cla":"left",
+// 			"scc":"cp"
+// 		}
+// 	]
+// }
 
 export default DayWiseCoverage

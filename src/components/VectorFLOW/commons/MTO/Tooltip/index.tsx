@@ -16,9 +16,18 @@ const Tooltip = ({ children, content }: any) => {
             if (tooltipRef.current) {
                 const tooltipRect = tooltipRef.current.getBoundingClientRect();
                 const { top, left, width } = e.target.getBoundingClientRect();
+                let tooltipLeft = left + (width / 2) - (tooltipRect.width / 2);
+
+                // Adjust if tooltip goes outside the viewport
+                const viewportWidth = window.innerWidth * 1 / 0.75 - 20;
+                if (tooltipLeft < 0) {
+                    tooltipLeft = 0 + 20;
+                } else if (tooltipLeft + tooltipRect.width >= viewportWidth) {
+                    tooltipLeft = viewportWidth - tooltipRect.width - 20;
+                }
                 setoolTipPosition({
-                    top: (top) - tooltipRect.height - 10,
-                    left: left + (width / 2) - (tooltipRect.width / 2)
+                    top: top - tooltipRect.height - 15,
+                    left: tooltipLeft
                 })
             }
         }, 0)

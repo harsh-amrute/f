@@ -1,19 +1,21 @@
 import _ from 'lodash'
 import React from 'react'
-import { CalenderContainer, CalenderContent, CalenderMonth, CalenderMonths, CalenderTitle, Day, Month, Calender } from './DayWiseCoverage/style'
+import { CalenderContainer, CalenderContent, CalenderMonth, CalenderMonths, CalenderTitle, Day, Month, Calender } from './style'
 import { eachMonthOfInterval, format, getDaysInMonth } from 'date-fns'
-import Tooltip from '../../../../../components/VectorFLOW/commons/MTO/Tooltip'
+import Tooltip from '../../../../../../components/VectorFLOW/commons/MTO/Tooltip'
 
 interface IDayWiseCoverageCalenderProps {
     start: string,
     end: string,
-    getToolTipContent: (id: string) => JSX.Element
+    getToolTipContent: (id: string) => JSX.Element,
+    getColor: (id: string) => string
 }
 
 const DayWiseCoverageCalender = ({
     start,
     end,
-    getToolTipContent
+    getToolTipContent,
+    getColor
 }: IDayWiseCoverageCalenderProps) => {
 
     const getMonths = (start: string, end: string) => {
@@ -39,9 +41,10 @@ const DayWiseCoverageCalender = ({
                                 return (
                                     <Month key={index}>
                                         {_.range(0, getDaysInMonth(month)).map((day: number, index) => {
+                                            const formattedDate = format(`${month.getFullYear()}/${month.getMonth() + 1}/${day + 1}`, "yyyy/MM/dd")
                                             return (
-                                                <Day key={index}>
-                                                    <Tooltip content={getToolTipContent(`${format(`${month.getFullYear()}/${month.getMonth() + 1}/${day + 1}`, "yyyy/MM/dd")}`)}>
+                                                <Day key={index} color={getColor(formattedDate)}>
+                                                    <Tooltip content={getToolTipContent(formattedDate)}>
                                                         {day + 1}
                                                     </Tooltip>
                                                 </Day>
