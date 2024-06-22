@@ -7,8 +7,8 @@ import './styles.css'
 
 
 interface VFTableProps extends AgGridReactProps {
-  height?:string,
-  disableZoomScaling?:boolean
+  height?: string,
+  disableZoomScaling?: boolean
 }
 
 
@@ -21,9 +21,11 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       height={props.height}
       disableZoomScaling={props.disableZoomScaling}>
       <AgGridReact
+
         ref={ref}
         {...props}
         suppressDragLeaveHidesColumns={true}
+
       />
     </VFTableWrapper>
   );

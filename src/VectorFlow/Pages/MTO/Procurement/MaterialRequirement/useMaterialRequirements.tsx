@@ -113,14 +113,14 @@ const useMaterialReq = () => {
     const [ShortageDatas, SetShortageData] = useState(data);
     const [CompleteAvailableDatas, /*setCompleteAvailableData*/] = useState(data);
 
-   
+
     const autoGroupColumnDef = useMemo(() => {
         return {
             minWidth: 250,
         };
     }, []); 2
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
-   
+
     const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
         return {
             getCustomContentBelowRow: (params) => getRows(params) as ExcelRow[],
@@ -200,7 +200,7 @@ const useMaterialReq = () => {
                                 ]
                             }}
                         />
-                      
+
 
                     </div>
                 );
