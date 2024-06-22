@@ -13,7 +13,7 @@ import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams,
 import GetProcPlanningDataColumn from './GetProcPlanningDataColumn.json';
 import { mapProcPlanningFieldsToColDefs } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
-import { userGetProcPlanningData } from "../../../../Services/MTO/ProcPlanning/index";
+import { userGetProcPlanningData } from "../../../../Services/MTO/Procurement/ProcPlanning/index";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [

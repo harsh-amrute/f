@@ -105,7 +105,7 @@ const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarPr
                                     onClick={() => submitDate()}>Submit</button>
                             </div>
                         </div>
-                       
+
                         :
                         null
                     }
@@ -115,29 +115,33 @@ const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarPr
 
 
                 {/**Selected Filter start */}
-                <VFSelectedFiltersWrapper>
-                    <VFSelectedFiltersPlaceHolder>
-                        Selected Filters
-                    </VFSelectedFiltersPlaceHolder>
-                    <VFFilterScrollBar>
-                        <VFSelectedFiltersChip>
-                            <VFSelectedFiltersFilterLabel>
-                                <b></b>
+                {comp !== 'MaterialCov' ?
+                    <VFSelectedFiltersWrapper>
+                        <VFSelectedFiltersPlaceHolder>
+                            Selected Filters
+                        </VFSelectedFiltersPlaceHolder>
+                        <VFFilterScrollBar>
+                            <VFSelectedFiltersChip>
+                                <VFSelectedFiltersFilterLabel>
+                                    <b></b>
 
-                            </VFSelectedFiltersFilterLabel>
+                                </VFSelectedFiltersFilterLabel>
 
-                            <VFSelectedFiltersFilterContent style={{ borderRight: 'solid 2px black' }}>
-                                <VFSelectedFiltersFilterValue>
-                                    <p style={{ margin: '0px 5px 0px 5px' }}>:</p>
-                                </VFSelectedFiltersFilterValue>
-                                <VFSelectedFiltersFilterCloseIcon
-                                    src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} />
-                            </VFSelectedFiltersFilterContent>
+                                <VFSelectedFiltersFilterContent style={{ borderRight: 'solid 2px black' }}>
+                                    <VFSelectedFiltersFilterValue>
+                                        <p style={{ margin: '0px 5px 0px 5px' }}>:</p>
+                                    </VFSelectedFiltersFilterValue>
+                                    <VFSelectedFiltersFilterCloseIcon
+                                        src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} />
+                                </VFSelectedFiltersFilterContent>
 
-                        </VFSelectedFiltersChip>
+                            </VFSelectedFiltersChip>
 
-                    </VFFilterScrollBar>
-                </VFSelectedFiltersWrapper>
+                        </VFFilterScrollBar>
+                    </VFSelectedFiltersWrapper>
+                    :
+                    null
+                }
                 {/**Selected Filter ends*/}
 
             </SCTaskFilterContainer>

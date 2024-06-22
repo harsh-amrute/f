@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, /*useCallback*/ } from "react"
+import { useState, useMemo, useRef, useEffect /*useCallback*/ } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { AgGridReact } from "@ag-grid-community/react";
 import { useUserData } from "../../../../../context"
@@ -13,6 +13,9 @@ import { MaterRequirementData, HeaderMaterialRequirement } from '../MaterialCove
 // import GetProcPlanningDataColumn from '../Planning/GetProcPlanningDataColumn.json';
 import { mapMaterialFieldsToColDefs } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
+import { useGetMaterialRequirementDetails } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
+
+
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -111,16 +114,33 @@ const useMaterialReq = () => {
     const ShortageColumns = mapMaterialFieldsToColDefs(HeaderData);
     const CompleteAvailableColumns = mapMaterialFieldsToColDefs(HeaderData);
     const [ShortageDatas, SetShortageData] = useState(data);
-    const [CompleteAvailableDatas, /*setCompleteAvailableData*/] = useState(data);
+    const [CompleteAvailableDatas, setCompleteAvailableData] = useState<any[]>([]);
+    const { mutateAsync: getMaterialRequirementData } = useGetMaterialRequirementDetails()
 
-   
+    useEffect(() => {
+        getInitialData()
+    }, [])
+
+    const getInitialData = async () => {
+        const someData = await getMaterialRequirementData('2024-12-12');
+        //setCompleteAvailableData(someData.data?.data?.results)
+        const output = someData.data?.data?.results.filter((item: any) => {
+            // if (item.rd === '2024-12-12') {
+                return item
+            // }
+        })
+
+      setCompleteAvailableData(output)
+    }
+
+    //const { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData } = initializeData(data, HeaderData);
     const autoGroupColumnDef = useMemo(() => {
         return {
             minWidth: 250,
         };
     }, []); 2
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
-   
+
     const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
         return {
             getCustomContentBelowRow: (params) => getRows(params) as ExcelRow[],
@@ -200,7 +220,7 @@ const useMaterialReq = () => {
                                 ]
                             }}
                         />
-                      
+
 
                     </div>
                 );
@@ -273,11 +293,11 @@ const useMaterialReq = () => {
         }
     };
 
-    const GetCount = {
-        "short": ShortageDatas.length,
-        "complete": CompleteAvailableDatas.length,
-        "total": ShortageDatas.length + CompleteAvailableDatas.length
-    };
+    // const GetCount = {
+    //     "short": ShortageDatas.length,
+    //     "complete": CompleteAvailableDatas.length,
+    //     "total": ShortageDatas.length + CompleteAvailableDatas.length
+    // };
 
     return {
         isSideBarOpen,
@@ -286,7 +306,7 @@ const useMaterialReq = () => {
         toggleCurrentTab,
         renderView,
         //excelDownload,
-        GetCount
+        //GetCount
     }
 }
 
