@@ -15,6 +15,7 @@ export interface ColumnDataType {
     wrapHeaderText?: boolean;
     tooltipField?: string;
     filter?: string;
+    rowDrag?: boolean;
     floatingFilter?: boolean;
     nooi?: string;
     req?: string;
@@ -52,7 +53,6 @@ export interface CustomerAttribute {
 
 export interface Order {
     oid: string; // Order ID
-    ot: string; // Order Type
     lid: string; // Line ID
     ic: string; // Item Code
     id: string; // Item Description

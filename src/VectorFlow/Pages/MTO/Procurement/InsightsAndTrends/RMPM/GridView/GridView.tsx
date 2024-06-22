@@ -84,6 +84,7 @@ const GridView = () => {
             <VFTable
 
                 {...agGridProps}
+                sideBar="columns"
                 columnDefs={ShortageColumns}
                 rowData={ShortageDatas}
                 tooltipHideDelay={100000}

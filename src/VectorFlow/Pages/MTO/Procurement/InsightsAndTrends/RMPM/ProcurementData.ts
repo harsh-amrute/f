@@ -2,7 +2,6 @@ const procData =
     [
         {
             "oid": "ORD004",
-            "ot": "Standard",
             "lid": "LID004",
             "ic": "IC004",
             "id": "Item Description 4",
@@ -51,7 +50,6 @@ const procData =
         },
         {
             "oid": "ORD005",
-            "ot": "Express",
             "lid": "LID005",
             "ic": "IC005",
             "id": "Item Description 5",
@@ -100,7 +98,6 @@ const procData =
         },
         {
             "oid": "ORD006",
-            "ot": "Priority",
             "lid": "LID006",
             "ic": "IC006",
             "id": "Item Description 6",
@@ -149,7 +146,6 @@ const procData =
         },
         {
             "oid": "ORD007",
-            "ot": "Standard",
             "lid": "LID007",
             "ic": "IC007",
             "id": "Item Description 7",
@@ -198,7 +194,6 @@ const procData =
         },
         {
             "oid": "ORD008",
-            "ot": "Express",
             "lid": "LID008",
             "ic": "IC008",
             "id": "Item Description 8",
@@ -247,7 +242,6 @@ const procData =
         },
         {
             "oid": "ORD009",
-            "ot": "Priority",
             "lid": "LID009",
             "ic": "IC009",
             "id": "Item Description 9",
@@ -297,7 +291,6 @@ const procData =
 
         {
             "oid": "ORD015",
-            "ot": "Priority",
             "lid": "LID015",
             "ic": "IC015",
             "id": "Item Description 15",
@@ -346,7 +339,6 @@ const procData =
         },
         {
             "oid": "ORD016",
-            "ot": "Standard",
             "lid": "LID016",
             "ic": "IC016",
             "id": "Item Description 16",
@@ -395,7 +387,6 @@ const procData =
         },
         {
             "oid": "ORD017",
-            "ot": "Express",
             "lid": "LID017",
             "ic": "IC017",
             "id": "Item Description 17",
@@ -444,7 +435,6 @@ const procData =
         },
         {
             "oid": "ORD018",
-            "ot": "Priority",
             "lid": "LID018",
             "ic": "IC018",
             "id": "Item Description 18",
@@ -493,7 +483,6 @@ const procData =
         },
         {
             "oid": "ORD019",
-            "ot": "Standard",
             "lid": "LID019",
             "ic": "IC019",
             "id": "Item Description 19",
@@ -543,7 +532,6 @@ const procData =
         ,
         {
             "oid": "ORD020",
-            "ot": "Express",
             "lid": "LID020",
             "ic": "IC020",
             "id": "Item Description 20",
@@ -592,7 +580,6 @@ const procData =
         },
         {
             "oid": "ORD021",
-            "ot": "Priority",
             "lid": "LID021",
             "ic": "IC021",
             "id": "Item Description 21",
@@ -641,7 +628,6 @@ const procData =
         },
         {
             "oid": "ORD022",
-            "ot": "Standard",
             "lid": "LID022",
             "ic": "IC022",
             "id": "Item Description 22",
@@ -690,7 +676,6 @@ const procData =
         },
         {
             "oid": "ORD023",
-            "ot": "Express",
             "lid": "LID023",
             "ic": "IC023",
             "id": "Item Description 23",
@@ -739,7 +724,6 @@ const procData =
         },
         {
             "oid": "ORD024",
-            "ot": "Priority",
             "lid": "LID024",
             "ic": "IC024",
             "id": "Item Description 24",
@@ -788,7 +772,6 @@ const procData =
         },
         {
             "oid": "ORD025",
-            "ot": "Standard",
             "lid": "LID025",
             "ic": "IC025",
             "id": "Item Description 25",
@@ -837,7 +820,6 @@ const procData =
         },
         {
             "oid": "ORD026",
-            "ot": "Express",
             "lid": "LID026",
             "ic": "IC026",
             "id": "Item Description 26",
@@ -886,7 +868,6 @@ const procData =
         },
         {
             "oid": "ORD027",
-            "ot": "Priority",
             "lid": "LID027",
             "ic": "IC027",
             "id": "Item Description 27",
@@ -935,7 +916,6 @@ const procData =
         },
         {
             "oid": "ORD028",
-            "ot": "Standard",
             "lid": "LID028",
             "ic": "IC028",
             "id": "Item Description 28",
@@ -984,7 +964,6 @@ const procData =
         },
         {
             "oid": "ORD029",
-            "ot": "Express",
             "lid": "LID029",
             "ic": "IC029",
             "id": "Item Description 29",

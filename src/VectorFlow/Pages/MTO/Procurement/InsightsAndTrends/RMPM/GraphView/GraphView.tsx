@@ -39,7 +39,6 @@ const GraphView = () => {
         <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitOPO}</div><div>${datum["sit"]}</div></div></div>
         <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitSIT}</div><div>${datum["opo"]}</div></div></div>
         <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithRMPM}</div><div> ${datum["rmSh"]}</div></div></div>
-    </div>
     </div>`
     }
 
@@ -62,9 +61,11 @@ const GraphView = () => {
                     "yName": ProcurementSeriesDataYName[i],
                     "stacked": true,
                     "strokeOpacity": 0,
-                    "strokeWidth": 6,
+                    "strokeWidth": 2,
                     "fill": ProcurementSeriesDataFill[i],
-                    "tooltip": { renderer: TooltipRenderer }
+                    "tooltip": {
+                        renderer: TooltipRenderer
+                    }
                 }
             )
         }

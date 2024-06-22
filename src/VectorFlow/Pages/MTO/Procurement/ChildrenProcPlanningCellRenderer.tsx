@@ -37,18 +37,18 @@ const ChildrenProcPlanningCellRenderer = (params: any) => {
                 rowData={params.data && params.data.children ? params.data.children : []}
                 height={'300px'}
                 pagination={true}
-                components={customChildrenCellRenderers}
-                masterDetail={true}
-                rowSelection="multiple"
-                suppressRowClickSelection={true}
-                enableRangeSelection={true}
-                paginationAutoPageSize={true}
-                alwaysShowVerticalScroll={true}
-                statusBar={{
-                    statusPanels: [
-                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                    ]
-                }}
+            // components={customChildrenCellRenderers}
+            // masterDetail={true}
+            // rowSelection="multiple"
+            // suppressRowClickSelection={true}
+            // enableRangeSelection={true}
+            // paginationAutoPageSize={true}
+            // alwaysShowVerticalScroll={true}
+            // statusBar={{
+            //     statusPanels: [
+            //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+            //     ]
+            // }}
             />
         </div>
     );
