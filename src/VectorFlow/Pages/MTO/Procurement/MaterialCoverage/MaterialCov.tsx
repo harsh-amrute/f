@@ -28,7 +28,7 @@ const MaterialCov = () => {
   }
 
   return (
-    <div style={{ width: "100%", height: '80vh' }}>
+    <div style={{ width: "100%", height: '50vh' }}>
       <ActionToolBar
         comp={'MaterialCov'}
         onDateChange={() => { console.log('') }}
