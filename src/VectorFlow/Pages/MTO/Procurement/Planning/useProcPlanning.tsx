@@ -199,7 +199,6 @@ const useProcPlanning = (date: string) => {
     }, []);
 
     const renderView = () => {
-        console.log("comumnDefs", CompleteAvailableColumns)
         switch (currentTab.id) {
             case "ca":
                 return (
