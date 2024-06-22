@@ -2,40 +2,6 @@ export interface MTOStore {
     AnalyticsData: any
 }
 
-
-export interface ColumnDataType {
-    colId?: string;
-    field?: string;
-    headerName?: string;
-    hide?: boolean;
-    cellRenderer?: string;
-    tooltipComponent?: string;
-    initialWidth?: number;
-    autoHeaderHeight?: boolean;
-    wrapHeaderText?: boolean;
-    tooltipField?: string;
-    filter?: string;
-    rowDrag?: boolean;
-    floatingFilter?: boolean;
-    nooi?: string;
-    req?: string;
-    uom?: string;
-    soh?: string;
-    siqc?: string;
-    sit?: string;
-    gap?: string;
-    ppo?: string;
-    tsfs?: string;
-    editable?: boolean;
-    cellStyle?: {
-        backgroundColor?: string;
-        border?: string;
-        color?: string;
-        padding?: string;
-    };
-}
-
-
 export interface OrderAttribute {
     attribute1: string;
     attribute2: string;
