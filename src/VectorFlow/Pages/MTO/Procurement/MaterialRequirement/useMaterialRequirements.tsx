@@ -69,7 +69,6 @@ const useMaterialReq = () => {
     const { HeaderData } = HeaderMaterialRequirement;
     const gridRef = useRef<AgGridReact>(null);
     const { isSideBarOpen } = useUserData()
-    //const navigate = useNavigate();
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: 'sdv',
@@ -90,18 +89,16 @@ const useMaterialReq = () => {
     const { mutateAsync: getMaterialRequirementData } = useGetMaterialRequirementDetails();
     const { mutateAsync: getMaterialRequirementDataDayWise } = useGetMaterialRequirementDetailsDatewise();
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [currentCumPage, setcurrentCumPage] = useState<number>(1);
     const [dayWiseRecordCount, setDayWiseRecordCount] = useState<number>(0);
     const [cumulativeRecordCount, setcumulativeRecordCount] = useState<number>(0);
 
     useEffect(() => {
         getInitialData()
-    }, [])
+    }, [currentTab])
 
     const getInitialData = async (currPage?: number) => {
-        //console.log('jk',currentTab.id)
-        //currentTab.id === 'sdv' ? getSelectedDateWise(currPage) : getCumulativeDateWise(currPage);
-         getSelectedDateWise(currPage);
-         getCumulativeDateWise(currPage)
+        currentTab.id === 'sdv' ? getSelectedDateWise(currPage) : getCumulativeDateWise(currPage);
     }
 
     const getSelectedDateWise = async (currPage?: number) => {
@@ -114,7 +111,6 @@ const useMaterialReq = () => {
     const getCumulativeDateWise = async (currPage?: number) => {
         const cumulativeData = await getMaterialRequirementData({ releaseDate: '2024-06-21', currPage: currPage ? currPage : 1 });
         const cumulativeOutput = cumulativeData.data?.data?.results
-       
         setcumulativeRecordCount(cumulativeData.data?.data?.count)
         SetCumulativeData(cumulativeOutput)
     }
@@ -171,8 +167,13 @@ const useMaterialReq = () => {
         };
     }, []);
 
-    const handlePageChange = async (currPage: number) => {
+    const handlePageChangeDayWise = async (currPage: number) => {
         setCurrentPage(currPage)
+        await getInitialData(currPage)
+    }
+
+    const handlePageChangeCumulative = async (currPage: number) => {
+        setcurrentCumPage(currPage)
         await getInitialData(currPage)
     }
 
@@ -202,7 +203,7 @@ const useMaterialReq = () => {
                             rowsPerPage={5}
                             totalRows={dayWiseRecordCount}
                             currentPage={currentPage}
-                            handleChangePage={handlePageChange}
+                            handleChangePage={handlePageChangeDayWise}
                         />
                     </div>
                 );
@@ -228,8 +229,8 @@ const useMaterialReq = () => {
                             selectedRows={0}
                             rowsPerPage={5}
                             totalRows={cumulativeRecordCount}
-                            currentPage={currentPage}
-                            handleChangePage={handlePageChange}
+                            currentPage={currentCumPage}
+                            handleChangePage={handlePageChangeCumulative}
                         />
 
                     </div>

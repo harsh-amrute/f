@@ -517,7 +517,7 @@ export const listMenuParent: any = [
             name: "RM/PM Orderwise Coverage",
             img: "/assets/img/nav/arrow_down.svg",
             imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-            url: "/procurement/insights-and-trends/rmpm",
+            url: "/procurement/insights-and-trends/rmpm-orderwise-coverage",
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"]
           }
         ]
