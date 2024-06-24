@@ -540,7 +540,7 @@ const useViewModify = (pageType:string) => {
           return notifyError("There Should be atleast one selected Master")
         }
         dispatch(REMOVE_MASTER(currMaster.id));
-       
+        setDownloadData(false);
         if(currMaster.id === activeMaster.id){
           const mastersLength = masters.length
           for (let index = 0; index < mastersLength; index++) {
