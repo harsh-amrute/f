@@ -3,7 +3,12 @@ import { MaterialRequirementService } from './api'
 
 export const useGetMaterialRequirementDetails = () => {
     return useMutation(async (data: any) => {
-        //console.log("return ===",MaterialCoverageServices.getOpenSODetailsData)
         return MaterialRequirementService.getMaterialRequirementData(data)
+    })
+}
+
+export const useGetMaterialRequirementDetailsDatewise = () => {
+    return useMutation(async (data: any) => {
+        return MaterialRequirementService.getMaterialRequirementDataDayWise(data)
     })
 }

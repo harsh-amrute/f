@@ -8,12 +8,13 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 //import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
-import { MaterRequirementData, HeaderMaterialRequirement } from '../MaterialCoverage/Data'
+import { MaterRequirementData, HeaderMaterialRequirement, dayWiseCoverage } from '../MaterialCoverage/Data'
 // import GetProcPlanningData from '../Planning/GetProcPlanningData.json';
 // import GetProcPlanningDataColumn from '../Planning/GetProcPlanningDataColumn.json';
 import { mapMaterialFieldsToColDefs } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
-import { useGetMaterialRequirementDetails } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
+import { useGetMaterialRequirementDetails, useGetMaterialRequirementDetailsDatewise } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
+import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 
 
 
@@ -66,10 +67,8 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 
 const useMaterialReq = () => {
     const { HeaderData } = HeaderMaterialRequirement;
-    const { data } = MaterRequirementData;
     const gridRef = useRef<AgGridReact>(null);
     const { isSideBarOpen } = useUserData()
-    const [currentPage, /*setCurrentPage*/] = useState<any>(1);
     //const navigate = useNavigate();
     const tabs: Array<VFFloatingTabItemProps> = [
         {
@@ -84,61 +83,49 @@ const useMaterialReq = () => {
         }
     ];
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
-    // const initializeData = (data: any, headerData: any) => {
-    //     const calculateData = data.map((item: any) => ({
-    //         ...item,
-    //       //  gap: item.req - item.soh - item.siqc - item.sit,
-    //       //  tsfs: item.soh,
-    //         // children: item.children ? item.children.filter((child: any, index: number, self: any[]) =>
-    //         //     self.findIndex(t => t.on === child.on) === index) : []
-    //     }));
-    //     const ShortageData = calculateData.filter((item: any) => item.gap > 0);
-    //     const CompleteAvailableData = calculateData.filter((item: any) => item.gap === 0);
-
-    //     const CompleteHeaderData = headerData.map((header: any) => {
-    //         if (header.jf === 'eas') {
-    //             return { ...header, vs: false };
-    //         }
-    //         return header;
-    //     });
-
-    //     const ShortageHeaderData = headerData.map((header: any) => {
-    //         if (header.jf === 'eas') {
-    //             return { ...header, vs: true };
-    //         }
-    //         return header;
-    //     });
-    //     return { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData };
-    // };
-    // const { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData } = initializeData(data, HeaderData);
     const ShortageColumns = mapMaterialFieldsToColDefs(HeaderData);
     const CompleteAvailableColumns = mapMaterialFieldsToColDefs(HeaderData);
-    const [ShortageDatas, SetShortageData] = useState(data);
-    const [CompleteAvailableDatas, setCompleteAvailableData] = useState<any[]>([]);
-    const { mutateAsync: getMaterialRequirementData } = useGetMaterialRequirementDetails()
+    const [CumulativeData, SetCumulativeData] = useState<any[]>([]);
+    const [DayWiseData, setDayWiseData] = useState<any[]>([]);
+    const { mutateAsync: getMaterialRequirementData } = useGetMaterialRequirementDetails();
+    const { mutateAsync: getMaterialRequirementDataDayWise } = useGetMaterialRequirementDetailsDatewise();
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [dayWiseRecordCount, setDayWiseRecordCount] = useState<number>(0);
+    const [cumulativeRecordCount, setcumulativeRecordCount] = useState<number>(0);
 
     useEffect(() => {
         getInitialData()
     }, [])
 
-    const getInitialData = async () => {
-        const someData = await getMaterialRequirementData('2024-12-12');
-        //setCompleteAvailableData(someData.data?.data?.results)
-        const output = someData.data?.data?.results.filter((item: any) => {
-            // if (item.rd === '2024-12-12') {
-                return item
-            // }
-        })
-
-      setCompleteAvailableData(output)
+    const getInitialData = async (currPage?: number) => {
+        //console.log('jk',currentTab.id)
+        //currentTab.id === 'sdv' ? getSelectedDateWise(currPage) : getCumulativeDateWise(currPage);
+         getSelectedDateWise(currPage);
+         getCumulativeDateWise(currPage)
     }
 
-    //const { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData } = initializeData(data, HeaderData);
+    const getSelectedDateWise = async (currPage?: number) => {
+        const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: '2024-06-21', currPage: currPage ? currPage : 1 });
+        const dayWiseOutput = datWiseData.data?.data?.results
+        setDayWiseRecordCount(datWiseData.data?.data?.count)
+        setDayWiseData(dayWiseOutput)
+    }
+
+    const getCumulativeDateWise = async (currPage?: number) => {
+        const cumulativeData = await getMaterialRequirementData({ releaseDate: '2024-06-21', currPage: currPage ? currPage : 1 });
+        const cumulativeOutput = cumulativeData.data?.data?.results
+       
+        setcumulativeRecordCount(cumulativeData.data?.data?.count)
+        SetCumulativeData(cumulativeOutput)
+    }
+
+
     const autoGroupColumnDef = useMemo(() => {
         return {
             minWidth: 250,
         };
-    }, []); 2
+    }, []);
+
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
 
     const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
@@ -148,9 +135,13 @@ const useMaterialReq = () => {
             fileName: "ag-grid.xlsx",
         };
     }, []);
+
     // const excelDownload = useCallback(() => {
     //     gridRef.current!.api.exportDataAsExcel();
     // }, []);
+
+
+
     const excelStyles = useMemo<ExcelStyle[]>(() => {
         return [
             {
@@ -180,6 +171,11 @@ const useMaterialReq = () => {
         };
     }, []);
 
+    const handlePageChange = async (currPage: number) => {
+        setCurrentPage(currPage)
+        await getInitialData(currPage)
+    }
+
     const renderView = () => {
         switch (currentTab.id) {
             case "sdv":
@@ -188,17 +184,25 @@ const useMaterialReq = () => {
                         <VFTable
                             {...agGridProps}
                             columnDefs={CompleteAvailableColumns}
-                            rowData={CompleteAvailableDatas}
+                            rowData={DayWiseData}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
                             height={'750px'}
                             ref={gridRef}
+                            pagination={false}
                             statusBar={{
                                 statusPanels: [
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                 ]
                             }}
+                        />
+                        <VFPagination
+                            selectedRows={0}
+                            rowsPerPage={5}
+                            totalRows={dayWiseRecordCount}
+                            currentPage={currentPage}
+                            handleChangePage={handlePageChange}
                         />
                     </div>
                 );
@@ -208,7 +212,7 @@ const useMaterialReq = () => {
                         <VFTable
                             {...agGridProps}
                             columnDefs={ShortageColumns}
-                            rowData={ShortageDatas}
+                            rowData={CumulativeData}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
@@ -220,7 +224,13 @@ const useMaterialReq = () => {
                                 ]
                             }}
                         />
-
+                        <VFPagination
+                            selectedRows={0}
+                            rowsPerPage={5}
+                            totalRows={cumulativeRecordCount}
+                            currentPage={currentPage}
+                            handleChangePage={handlePageChange}
+                        />
 
                     </div>
                 );
@@ -279,7 +289,7 @@ const useMaterialReq = () => {
                 return;
             }
 
-            SetShortageData((prevData: any) => {
+            SetCumulativeData((prevData: any) => {
                 const newData = [...prevData];
                 const updatedRow = {
                     ...newData[rowIndex],
@@ -292,12 +302,6 @@ const useMaterialReq = () => {
             gridRef.current?.api.refreshCells({ force: true });
         }
     };
-
-    // const GetCount = {
-    //     "short": ShortageDatas.length,
-    //     "complete": CompleteAvailableDatas.length,
-    //     "total": ShortageDatas.length + CompleteAvailableDatas.length
-    // };
 
     return {
         isSideBarOpen,

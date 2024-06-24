@@ -24,7 +24,7 @@ const MaterialRequirement = () => {
                         },
                         {
                             id: 'cv',
-                            label: 'Cummuulative View',
+                            label: 'Cummulative View',
                             value: 'cv'
                         }
                     ]}
