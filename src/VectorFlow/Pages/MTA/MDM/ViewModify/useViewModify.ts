@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData,useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount,useGetMasterDataRetail } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData,useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount,useGetMasterDataRetail, useGetUploadProgress } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -15,7 +15,7 @@ import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../.
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
-
+import { v4 as uuidv4 } from 'uuid';
 
 const useViewModify = (pageType:string) => {
 
@@ -77,6 +77,10 @@ const useViewModify = (pageType:string) => {
 
     const [TASK_ID,setTaskId] = useState<string>('');
 
+    const [uploadProgress,setUploadProgress] = useState('');
+
+    const [totalProgress,setTotalProgress] = useState('');
+
     // const [isDataAvailableLocally,setIsDataAvailableLocally] = useState(false);
    
     // const allMasters:Master[] = masterUIConfiguration?.data.data || [];
@@ -106,6 +110,8 @@ const useViewModify = (pageType:string) => {
     const {mutateAsync:deleteTask} = useDeleteTask();
 
     const {mutateAsync:validateMaster} = useValidateMaster();
+
+    const {mutateAsync:getUploadProgress} = useGetUploadProgress();
 
     const validStopStatuses = [1,2,3,4,5,6,21];
 
@@ -725,8 +731,18 @@ const useViewModify = (pageType:string) => {
           formData.append("file", file);
           formData.append("ui_config",JSON.stringify(activeMaster.fields))
           formData.append("screen_type",JSON.stringify({screenType:pageType}))
+          const processId = uuidv4();
+          
+          formData.append("process_id",JSON.stringify({processId:processId}));
+
+          const intervalID = setInterval(async ()=>{
+            const progress = await getUploadProgress(processId);
+            setUploadProgress(progress.data.progress);
+            setTotalProgress(progress.data.totalRows)
+          },1000)
 
           const response = await validateMaster({formData,masterId:activeMaster.id});
+          clearInterval(intervalID);
           let result = JSON.parse(response.data)
           const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
           result = [...errorAndWarningData,... result.filter((data:any)=>data.error.length === 0 && data.warning.length === 0 )]
@@ -1590,7 +1606,9 @@ const useViewModify = (pageType:string) => {
         validResumeStatuses,
         validStopStatuses,
         onPIPOStatusUpdate,
-        enableEditOnlineReset
+        enableEditOnlineReset,
+        uploadProgress,
+        totalProgress
     }
 }
 

@@ -22,7 +22,8 @@ import {
   useValidateMaster,
   useGetMasterDataRetail,
   useModifyMasterDataRetail,
-  useGetRetailCount
+  useGetRetailCount,
+  useGetUploadProgress
 } from "../../../../Services/MTA/MDM";
 import _ from "lodash";
 import { createStore, store } from "../../../../../redux/store/store";
@@ -32,7 +33,7 @@ import { ReactNode } from "react";
 import { RESET_STATE } from "../../../../../redux/actions/MDM";
 // import { toast } from 'react-toastify'
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
-import { createDraftMockData, deleteDraftMockData, getSeasonalityDetailsMockData, MasterData, mockMasterData,modifyMasterMockData, deleteTaskMockData, validateMasterMockData } from "../../../../../mock-data/MDM";
+import { createDraftMockData, deleteDraftMockData, getSeasonalityDetailsMockData, MasterData, mockMasterData,modifyMasterMockData, deleteTaskMockData, validateMasterMockData, getUploadProgressMockData } from "../../../../../mock-data/MDM";
 import { mapMasterToColumnDefs } from "../../../../../helpers/utils";
 
 
@@ -100,6 +101,9 @@ const useValidateMasterMock = useValidateMaster as jest.MockedFunction<
 typeof useValidateMaster
 >;
 
+const useGetUploadProgressMock = useGetUploadProgress as jest.MockedFunction<
+typeof useGetUploadProgress
+>;
 
 window.URL.createObjectURL = jest.fn();
 
@@ -180,6 +184,12 @@ const useDeleteTaskMockData:any = {
 const useValidateMasterMockData:any = {
   mutateAsync:() => {
     return {data:validateMasterMockData}
+  }
+}
+
+const useGetUploadProgressMockData:any = {
+  mutateAsync:() => {
+    return {data:getUploadProgressMockData}
   }
 }
 
@@ -323,6 +333,10 @@ describe("Renders View Modify Component", () => {
     useValidateMasterMock.mockImplementation(() => {
       return useValidateMasterMockData;
     })
+
+    useGetUploadProgressMock.mockImplementation(() => {
+      return useGetUploadProgressMockData;
+    })
   });
 
   it("renders the view modify component when loading", async () => {
@@ -417,6 +431,10 @@ describe("Handles all Interaction in ViewModify Component", () => {
 
     useValidateMasterMock.mockImplementation(() => {
       return useValidateMasterMockData;
+    })
+
+    useGetUploadProgressMock.mockImplementation(() => {
+      return useGetUploadProgressMockData;
     })
 
     store.dispatch(RESET_STATE());
@@ -647,6 +665,9 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       return useValidateMasterMockData;
     })
 
+    useGetUploadProgressMock.mockImplementation(() => {
+      return useGetUploadProgressMockData;
+    })
     
 
   });

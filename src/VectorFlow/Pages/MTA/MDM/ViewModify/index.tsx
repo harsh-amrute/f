@@ -97,7 +97,9 @@ import _ from "lodash";
         validStopStatuses,
         onPIPOStatusUpdate,
         enableEditOnlineReset,
-        submittedDataCount
+        submittedDataCount,
+        uploadProgress,
+        totalProgress
 
     } = useViewModify('modify');
 
@@ -314,7 +316,7 @@ import _ from "lodash";
         {
           isOverlayVisible && (
             <VFOverlay>
-             <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Validating Data. Please Wait this might take some time....</h1>
+             <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Validating Data. Please Wait this might take some time.... {((uploadProgress==='' || parseInt(uploadProgress)===0)) ? '' : 'Progress: ' + uploadProgress + ' / ' + totalProgress}</h1>
             </VFOverlay>
           )
         }
