@@ -8,7 +8,7 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 //import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
-import { MaterRequirementData, HeaderMaterialRequirement, dayWiseCoverage } from '../MaterialCoverage/Data'
+import { HeaderMaterialRequirement } from '../MaterialCoverage/Data'
 // import GetProcPlanningData from '../Planning/GetProcPlanningData.json';
 // import GetProcPlanningDataColumn from '../Planning/GetProcPlanningDataColumn.json';
 import { mapMaterialFieldsToColDefs } from '../../../../../helpers/utils';
