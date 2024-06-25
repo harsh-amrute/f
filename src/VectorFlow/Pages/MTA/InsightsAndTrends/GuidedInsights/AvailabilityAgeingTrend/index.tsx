@@ -6,7 +6,7 @@ import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
-const AvailabilityAgeingTrend = () => {
+const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
   const [horizon, setHorizon] = useState<number>(9);
   const [minAgeing, setAgeing] = useState<number>(1);
   const { mutateAsync: GetAvailabilityAgeing, isLoading } =
@@ -203,7 +203,7 @@ const AvailabilityAgeingTrend = () => {
         </VFButtonOutline> */}
          <img 
             style={{cursor:'pointer'}}
-            src="/assets/img/Group 627.svg" 
+            src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
             height={40} 
             width={50} 
             onClick={() => OnHorizonChange(horizon, minAgeing)}

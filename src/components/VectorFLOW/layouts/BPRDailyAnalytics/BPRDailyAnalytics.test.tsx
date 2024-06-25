@@ -8,6 +8,8 @@ import { useGetAnalyticsData } from "../../../../VectorFlow/Services/MTA/SupplyC
 import { GetDailyAnalyticsMockResponse } from "../../../../mock-data/BPR";
 import {store} from "./../../../../redux/store/store";
 
+import {UserDataContext} from '../../../../context'
+
 
 jest.mock('../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR')
 
@@ -35,12 +37,22 @@ const dummyProps = {
 
 const queryClient = setupReactQuery();
 
-const contextWrapper = (children: any,store:any) => {
+const contextWrapper = (children: any,store:any,theme:string) => {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
         <Provider store={store}>
-          {children}
+        <UserDataContext.Provider
+            value={{
+              user: { user: { theme_ui: theme } },
+              changeColorTheme: (color) => {
+                return color;
+              },
+              isSideBarOpen:true,toggleSideBar:jest.fn
+            }}
+          >
+            {children}
+          </UserDataContext.Provider>
         </Provider>
       </Router>
     </QueryClientProvider>
@@ -59,13 +71,13 @@ describe("BPRDailyAnalytics",()=>{
     useGetAnalyticsDataMock.mockImplementation(():any => {
       return {data: {data:GetDailyAnalyticsMockResponse},isLoading:true};
     });
-      render(contextWrapper(<BPRDailyAnalytics {...dummyProps}/>,store))
+      render(contextWrapper(<BPRDailyAnalytics {...dummyProps}/>,store,"NOIRFUSION"))
   })
  
     it("Renders the components with all types of data",()=>{
       useGetAnalyticsDataMock.mockImplementation(():any => {
         return {data: {data:GetDailyAnalyticsMockResponse},isLoading:false};
       });
-        render(contextWrapper(<BPRDailyAnalytics {...dummyProps}/>,store))
+        render(contextWrapper(<BPRDailyAnalytics {...dummyProps}/>,store,"REGALBLAZE"))
     })
 })

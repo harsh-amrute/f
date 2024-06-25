@@ -24,6 +24,7 @@ import {suspensionMessages} from '../../../../helpers/BPRConstants';
 import { useDispatch } from 'react-redux';
 import { TOGGLE_GRAPH_MODAL, TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
 import {subDays} from 'date-fns';
+import { useUserData } from "../../../../context";
 interface DailyDataGraphModalProps{
   rowData:any,
   chartData:any[]
@@ -47,6 +48,10 @@ interface NormData{
 
 
 const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,monitoringData,skuKey,whKey}:DailyDataGraphModalProps) => {
+
+  const {user} = useUserData()
+
+  const themeUi = user.user.theme_ui
 
     const fillNotAvailableDates = (data:any)=>{
       const lastNinetyDates = getDatesBetween(subDays(new Date(),89),new Date());
@@ -504,8 +509,8 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                     <SCDataRow>
                         <SCText fontSize={16} fontWeight={300}>Norm Change History :</SCText>
                         <div style={{display:'flex',gap:'5px'}} onClick={() => dispatch(TOGGLE_NORM_CHANGE_HISTORY_TABLE(true))}>
-                            <img src="/assets/img/VectorFLOW/BPR/eye-filled-purple.svg"/>
-                            <SCText fontSize={16} fontWeight={700} style={{color:'#BC3D81'}}>Click To View</SCText>
+                            <img src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/eye-filled-regal.svg":"/assets/img/VectorFLOW/BPR/eye-filled-purple.svg"}/>
+                            <SCText fontSize={16} fontWeight={700} style={{color:themeUi==="REGALBLAZE"?"#FCA311": "#BC3D80"}}>Click To View</SCText>
                         </div>
                     </SCDataRow>
                     <SCHorizontalDivider/>
@@ -516,11 +521,11 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                             
                           option: (baseStyles, { isSelected }) => ({
                               ...baseStyles,
-                              backgroundColor: isSelected ? "#BC3D80" : "white",
+                              backgroundColor: isSelected ?themeUi==="REGALBLAZE"?"#FCA311": "#BC3D80" : "white",
                              
                              
                               "&:hover": {
-                                  backgroundColor: '#bc3d814d',
+                                  backgroundColor:themeUi==="REGALBLAZE"?"rgb(252, 163, 17,0.3) ": '#bc3d814d',
                                   color:"black",
                               }
                           }),

@@ -231,8 +231,8 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 {currentTab==="dbmnormsuggestions" && 
                                 <>
                                     <Link to="/dbm/dbm-norm-suggestions" style={{textDecoration:'none'}}>
-                                        <VFButtonOutline onClick={()=>toggleFilter(true)} themeUi={themeUi} width={140} disabled={false} style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:'5px', paddingLeft:'12px', paddingRight:'13px'}}>
-                                            <img src="/assets/img/VectorFLOW/BPR/NormAction.svg"></img>
+                                        <VFButtonOutline onClick={()=>toggleFilter(true)} themeUi={themeUi} width={140} disabled={false} color={themeUi==="REGALBLAZE"?"#FCA311":"#bc3d81"} style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:'5px', paddingLeft:'12px', paddingRight:'13px'}}>
+                                            <img src={themeUi==='REGALBLAZE'?"/assets/img/VectorFLOW/BPR/NormAction-regal.svg":"/assets/img/VectorFLOW/BPR/NormAction.svg"}></img>
                                             Norm Action
                                         </VFButtonOutline>
                                     </Link>  
@@ -244,7 +244,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 {currentTab==='custom' && (
                                     <>
                                     <SCViewContainerWithBg onClick={()=>ref.current.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`})} >
-                                        <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" />
+                                        <SCViewImage src={themeUi==='REGALBLAZE'?"/assets/img/VectorFLOW/BPR/excel-regal.svg":"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" />
                                         <p>Excel Export</p>
                                     </SCViewContainerWithBg>
                                     <SCVerticalDivider/>
@@ -256,11 +256,11 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 (
                                     <>
                                         <SCViewContainerWithBg onClick={()=>onSaveState(`${currCategory}${currentTab}`)}>
-                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt=""  />
+                                            <SCViewImage src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/diskette-regal.svg":"/assets/img/VectorFLOW/BPR/diskette.svg"} alt=""  />
                                             <p>Save</p>
                                         </SCViewContainerWithBg>
                                         <SCViewContainerWithBg onClick={()=>onResetAllState(`${currCategory}${currentTab}`)}>
-                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt=""  />
+                                            <SCViewImage src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/refresh-regal.svg":"/assets/img/VectorFLOW/BPR/refresh.svg"} alt=""  />
                                             <p>Reset</p>
                                         </SCViewContainerWithBg>
                                         {!disableChartAndGridViewToggle && <SCVerticalDivider/> } 
@@ -278,8 +278,8 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                  {/* <SCVerticalDivider/> */}
                                 <SCViewBackground>
                                     <SCViewContainer>
-                                        <SCViewImage src={"/assets/img/VectorFLOW/BPR/chart-view-pink.svg"} alt="" />
-                                        <p style={{color:'#bc3d81'}}>Chart View</p>
+                                        <SCViewImage src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/chart-view-regal.svg":"/assets/img/VectorFLOW/BPR/chart-view-pink.svg"} alt="" />
+                                        <p style={{color:themeUi==="REGALBLAZE"?"#FCA311":'#bc3d81'}}>Chart View</p>
                                     </SCViewContainer>
                                     <div><SCVerticalDivider/></div>
                                     <SCViewContainer onClick={() =>{
@@ -324,7 +324,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                         {currCategory === 'DBMNorm' ? 
                         <img 
                             style={{cursor:'pointer'}}
-                            src="/assets/img/Group 627.svg" 
+                            src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg" :"/assets/img/Group 627.svg" }
                             height={50.02} 
                             width={76.83} 
                             onClick={handleGoButton} 
@@ -371,7 +371,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 <SCVerticalDivider/>
                                     <SCViewContainerWithBg onClick={handleExportToExcel} >
                                             <>
-                                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" />
+                                            <SCViewImage src={themeUi==='REGALBLAZE'?"/assets/img/VectorFLOW/BPR/excel-regal.svg":"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" />
                                              <p>Excel Export</p>
                                             </>
                                     {/* <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
@@ -384,11 +384,11 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 
                                 <SCVerticalDivider/>  
                                 <SCViewContainerWithBg  onClick={()=>onSaveState(`${currCategory}${currentTab}`)}>
-                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
+                                    <SCViewImage src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/diskette-regal.svg":"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
                                     <p>Save</p>
                                 </SCViewContainerWithBg>
                                 <SCViewContainerWithBg onClick={()=>onResetAllState(`${currCategory}${currentTab}`)}>
-                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt=""  />
+                                    <SCViewImage src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/refresh-regal.svg":"/assets/img/VectorFLOW/BPR/refresh.svg"} alt=""  />
                                     <p>Reset</p>
                                 
                                     </SCViewContainerWithBg>
@@ -424,8 +424,8 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                     <div><SCVerticalDivider/></div>
                                  
                                     <SCViewContainer>
-                                        <SCViewImage src={"/assets/img/VectorFLOW/BPR/grid-view-pink.svg"} alt="" onClick={onGoBack} />
-                                        <p style={{color:'#bc3d81'}}>Grid View</p>
+                                        <SCViewImage src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/grid-view-regal.svg":"/assets/img/VectorFLOW/BPR/grid-view-pink.svg"} alt="" onClick={onGoBack} />
+                                        <p style={{color:themeUi==="REGALBLAZE"?"#FCA311":'#bc3d81'}}>Grid View</p>
                                     </SCViewContainer>
                                 </SCViewBackground>
                                 </>

@@ -7,7 +7,7 @@ import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip';
 
 
-const AvailabilityTrend = () => {
+const AvailabilityTrend = ({themeUi}:{themeUi:string}) => {
   const [AvailabilityTrend, setAvailabilityData] = useState();
   const { mutateAsync: GetAvailabilityTrend, isLoading } =
     useGetAvailabilityTrend();
@@ -24,6 +24,8 @@ const AvailabilityTrend = () => {
     const AvailabilityTrendData = AvailabilityTrend?.data?.data;
     setAvailabilityData(AvailabilityTrendData);
   };
+
+  const markerFill = themeUi==="REGALBLAZE"?"#FCA311":"#BC3D81"
  
 
   const options:AgChartOptions = {
@@ -41,7 +43,7 @@ const AvailabilityTrend = () => {
         strokeWidth: 3,
         stroke: "#4E4E4E",
         marker: {
-          fill: "#BC3D81",
+          fill: markerFill,
           size: 8,
           stroke: "white",
           strokeWidth: 3,
@@ -143,7 +145,7 @@ const AvailabilityTrend = () => {
         > */}
           <img 
             style={{cursor:'pointer'}}
-            src="/assets/img/Group 627.svg" 
+            src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
             height={40} 
             width={50} 
             onClick={() => OnHorizonChange(horizon)}

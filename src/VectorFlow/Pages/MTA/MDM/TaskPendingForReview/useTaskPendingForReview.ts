@@ -10,10 +10,16 @@ import type { RootState } from '../../../../../redux/store/store';
 import { toast } from 'react-toastify';
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../helpers/notify";
 import { SET_RECORD_COUNT } from "../../../../../redux/actions/MDM";
+import { useUserData } from "../../../../../context"
 
 const useTaskPendingForReview = ()=>{
     const ref = useRef<GridRef>()
     const dispatch = useDispatch();
+
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
+
     const [taskActionype,setTaskActionType] = useState<number>()
     const [isViewTableOpen,setIsViewTableOpen] = useState(true)
     const [viewTableColDefs,setViewTableColDefs] = useState<ColDef[] | ColGroupDef[]>()
@@ -114,10 +120,10 @@ const useTaskPendingForReview = ()=>{
             const masters:Master[] = uiConfigurationResponse.data.data
             const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
             if(currentMasterFields){
-                console.log(currentTaskMaster.data[0].new)
+                // console.log(currentTaskMaster.data[0].new)
                 const existingColumns = getExistingColumns(taskData.Actiontype==2 || currentTaskMasterId===13?JSON.parse(currentTaskMaster.data[0].new):currentTaskMaster.data[0])
                 const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
-                setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
+                setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
                 setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
                 // dispatch(SET_RECORD_COUNT(currentTaskMaster.data.length));
             }

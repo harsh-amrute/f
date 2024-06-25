@@ -241,6 +241,10 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
 
 
     const BackButton =()=> {
+
+        const {user} = useUserData()
+        const themeUi = user.user.theme_ui
+
         return(
             <VFButtonOutline onClick={onBack} themeUi={themeUi} width={50} onHoverChild={
                 <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
@@ -248,7 +252,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 </div>
                 }>
                 <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-                    <img src={"/assets/img/VectorFLOW/NMS/back-btn.svg"} data-testid="back-btn"/>
+                    <img src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/back-btn-regal.svg":"/assets/img/VectorFLOW/NMS/back-btn.svg"} data-testid="back-btn"/>
                 </div>
             </VFButtonOutline>
         )
@@ -273,7 +277,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                             </div>
                         }>
                             <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-                                <img src={editOnline?"/assets/img/VectorFLOW/NMS/edit-online.svg":"/assets/img/VectorFLOW/NMS/edit-online-disabled.svg"} style={{marginRight:'11px'}}/>
+                                <img src={editOnline?themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/edit-online-regal.svg":"/assets/img/VectorFLOW/NMS/edit-online.svg":"/assets/img/VectorFLOW/NMS/edit-online-disabled.svg"} style={{marginRight:'11px'}}/>
                                 <p>Edit Online</p>
                             </div>
                         </VFButtonOutline>
