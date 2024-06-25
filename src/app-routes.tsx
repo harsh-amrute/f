@@ -106,7 +106,7 @@ const lazyLoad = (children: React.ReactNode) => {
 export const initRoutes = (): RouteObject[] => {
   const routes: RouteObject[] = []
 
-  routes.push({ path: '/login', element: lazyLoad(<Login />) })
+  routes.push({ path: '/login', element: lazyLoad(<EnquiryResponse />) })
   routes.push({
     path: '/forgot-password',
     element: lazyLoad(<ForgotPassword />)
