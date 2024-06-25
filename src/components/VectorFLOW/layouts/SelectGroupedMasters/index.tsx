@@ -52,7 +52,7 @@ const Card=(props:CardProps)=>{
     }
 
     return(
-        <VFMasterGroupCardContent data-testid='vf-master-group-card' theme={user.user.theme_ui} style={{backgroundColor: doesMasterExist()|| isHovered ? '#FCE7F2': 'white'}}
+        <VFMasterGroupCardContent data-testid='vf-master-group-card' theme={user.user.theme_ui} style={{backgroundColor: doesMasterExist()|| isHovered ? user.user.theme_ui==="REGALBLAZE"?"rgb(252, 163, 17,0.3)":'#FCE7F2': 'white'}}
             id={master.name} 
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}

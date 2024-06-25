@@ -57,7 +57,7 @@ const SearchInputMultiple = ({
       isDisabled={disabled}
       options={options}
       value={value}
-      styles={selectStyles(backgroundColor, borderRadius ? borderRadius : 6, myBoxShadow)}
+      styles={selectStyles(backgroundColor, borderRadius ? borderRadius : 6, myBoxShadow,themeUi)}
       placeholder={placeholder}
       onChange={(e) => {
         handleSelect(e);

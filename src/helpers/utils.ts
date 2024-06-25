@@ -787,7 +787,7 @@ export const mapDraftToColumnDefs = (fields:Field[],customParams?:ColDef)=>{
   return result
 }
 
-export const mapTaskStatusToColDefs = (taskStatus:ColDef[])=>{
+export const mapTaskStatusToColDefs = (taskStatus:ColDef[],color:string)=>{
   let result:ColDef[] = []
   result = taskStatus.map((t:ColDef)=>{
     return{
@@ -800,7 +800,7 @@ export const mapTaskStatusToColDefs = (taskStatus:ColDef[])=>{
         'white-space':'nowrap',
         'padding-top':'7px',
         'font-weight':t.colId==='TaskStatus'?'500':'auto',
-        'color':t.colId==='TaskStatus'?'rgb(188, 61, 129)':'black',
+        'color':t.colId==='TaskStatus'?color:'black',
         'cursor':t.colId==='TaskStatus'?'pointer':'default'
       },
       onCellClicked:(params:CellClickedEvent)=>{
@@ -909,8 +909,9 @@ export const areValuesEqual = (a:any,b:any):boolean=>{
   return a===b
 }
 
-export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,tasktype?:string, showApproveAllModal?:any,showRejectAllModal?:any,actionStatus?:string):ColGroupDef[] | ColDef[]=>{
+export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,themeUi:string,tasktype?:string, showApproveAllModal?:any,showRejectAllModal?:any,actionStatus?:string):ColGroupDef[] | ColDef[]=>{
 
+  const textColor =themeUi==="REGALBLAZE"? "#FCA311": "#BC3D81"
 
   const sortedFields = existingColumnsFields.sort((a:Field,b:Field)=>{
     return parseInt(a.col_Position) - parseInt(b.col_Position)
@@ -943,7 +944,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
               colId:'New'+f.key,
               cellStyle:(params:any)=>{
                 return{
-                  "color":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?'#BC3D81':'black',
+                  "color":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?textColor:'black',
                   "text-align":"center",
                   "border-left":"solid 1px #B9B9B9",
                 }
@@ -1026,7 +1027,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
           },
           cellStyle:(params:any)=>{
             return{
-              "color":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?'#BC3D81':'black',
+              "color":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?textColor:'black',
               "font-weight":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?'700':'300',
               "text-align":"center",
               "border-left":"solid 1px #B9B9B9",

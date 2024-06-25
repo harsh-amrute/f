@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import * as globalStyles from '../../../../../styles/global'
 
 export const ResearchInsightsLayout = styled.div`
     // margin-top:10px
@@ -121,11 +121,11 @@ export const ChartHeaderText = styled.p`
     align-items:center;
 `
 
-export const ChartHeaderRadioGroup = styled.div`
+export const ChartHeaderRadioGroup = styled.div<{theme:string}>`
     display:flex;
     align-items:center;
     justify-content:center;
-    accent-color:#BC3D81;
+    accent-color:${(props)=>globalStyles.chooseThemeColor[props.theme].color5};
     font-style:normal;
     font-variant:normal;
     font-weight:300;

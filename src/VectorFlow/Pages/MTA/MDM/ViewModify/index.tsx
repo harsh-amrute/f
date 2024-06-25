@@ -189,7 +189,7 @@ import _ from "lodash";
                               <SCFilterAddButtonWrapper>
                                 <SCFilterAddButton
                                   onClick={handleOnAddFilter}
-                                  src="/assets/img/VectorFLOw/NMS/add-filter.svg"
+                                  src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOw/NMS/add-filter-regal.svg":"/assets/img/VectorFLOw/NMS/add-filter.svg"}
                                   key={f.id}
                                   data-testid="add-filter"
                                 />

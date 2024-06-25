@@ -3,6 +3,7 @@ import Select from 'react-select'
 import {type Option, type Filter} from '../../../../VectorFlow/types/MDM';
 import { useDispatch } from 'react-redux';
 import { SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_FILTER } from "../../../../redux/actions/MDM";
+import { useUserData } from "../../../../context";
 
 
 export interface VFFilterProps{
@@ -94,16 +95,20 @@ const CustomSelect = (props:CustomSelectProps)=>{
         isDisabled
     } = props
 
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
+
     return (
         <Select
             styles={{
                 option: (baseStyles, { isSelected }) => ({
                     ...baseStyles,
-                    backgroundColor: isSelected ? "#BC3D80" : "white",
+                    backgroundColor: isSelected ? themeUi==="REGALBLAZE"?"#FCA311":"#BC3D80" : "white",
                    
                    
                     "&:hover": {
-                        backgroundColor: '#bc3d814d',
+                        backgroundColor:themeUi==="REGALBLAZE"?"rgb(252, 163, 17,0.3)": '#bc3d814d',
                         color:"black",
                     }
                 }),

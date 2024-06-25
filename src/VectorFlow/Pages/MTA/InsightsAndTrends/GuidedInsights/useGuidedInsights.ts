@@ -3,9 +3,15 @@
  import { toast } from "react-toastify";
  import { useGetChronicUnavailabilityGridView} from "../../../../Services/MTA/InsightsAndTrends";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
+import { useUserData } from "../../../../../context";
  
 
 const useGuidedInsights = ()=>{
+
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
+
 const [currentTab,setCurrentTab] = useState<string>('availabilitytrend');
 const [currentCategory,setCurrentCategory] = useState<string>('');
 const [currentView,setCurrentView] = useState<string>('chart');
@@ -111,7 +117,8 @@ const [chroniceRowData,setChronicRowData] = useState<Array<any>>([])
         currentFilter,
         setCurrentFilter,
         onDelete,
-        onApplyFilter
+        onApplyFilter,
+        themeUi
     }
 }
 export default useGuidedInsights;

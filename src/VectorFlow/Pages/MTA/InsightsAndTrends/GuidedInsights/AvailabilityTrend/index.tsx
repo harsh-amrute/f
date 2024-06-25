@@ -6,7 +6,7 @@ import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip';
 
 
-const AvailabilityTrend = () => {
+const AvailabilityTrend = ({themeUi}:{themeUi:string}) => {
 
   const { mutateAsync: GetAvailabilityTrend, isLoading } =
   useGetAvailabilityTrend();
@@ -141,7 +141,7 @@ const AvailabilityTrend = () => {
         > */}
           <img 
             style={{cursor:'pointer'}}
-            src="/assets/img/Group 627.svg" 
+            src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
             height={40} 
             width={50} 
             onClick={() => OnHorizonChange(horizon)}

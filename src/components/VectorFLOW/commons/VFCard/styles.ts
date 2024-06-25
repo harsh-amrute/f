@@ -29,7 +29,7 @@ export const ButtonCardContainer = styled(Card)`
     }
 `;
 
-export const CardText = styled.p`
+export const CardText = styled.p<{themeUi:string}>`
     cursor:pointer;
     margin-right:65px;
     height: 68px;
@@ -45,7 +45,7 @@ export const CardText = styled.p`
     letter-spacing: 0.34px;
     color: #6C696A;
     &:hover{
-        color:#BC3D81;
+        color:${(props)=>props.themeUi==="REGALBLAZE"?"#FCA311":"#BC3D81"};
         transform:scale(1.1);
     }
     transition:0.3s ease-in-out;
@@ -56,7 +56,7 @@ export const CardText = styled.p`
 `
 
 
-export const CardButton = styled.button`
+export const CardButton = styled.button<{themeUi:string}>`
     width: 100%;
     height: 50px;
     border-radius:6px;
@@ -69,7 +69,7 @@ export const CardButton = styled.button`
     background-color:transparent;
     &:hover{
         color:#FFFFFF;
-        background: transparent linear-gradient(180deg, #BC3D81 0%, #820F4C 100%) 0% 0% no-repeat padding-box;
+        background:${(props)=>props.themeUi==="REGALBLAZE"?"transparent linear-gradient(261deg, #FCA311 0%, #CB830E 100%) 0% 0% no-repeat padding-box":"transparent linear-gradient(180deg, #BC3D81 0%, #820F4C 100%) 0% 0% no-repeat padding-box"} ;
         border:none;
     }
     transition: 0.3s ease-in-out;

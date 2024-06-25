@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import * as globalstyles from '../../../../styles/global'
 
 export const BPRDailyAnalyticsWrapper = styled.div`
     padding:10px;
@@ -8,20 +9,21 @@ export const BPRDailyAnalyticsWrapper = styled.div`
     
 `
 
-export const BPRDailyAnalyticsContainer = styled.div`
+export const BPRDailyAnalyticsContainer = styled.div<{theme:string}>`
     display:flex;
     flex-direction:column;
     width:90%;
-    background: #383737 0% 0% no-repeat padding-box;
+    background: ${(props)=>props.theme==='NOIRFUSION'?globalstyles.chooseThemeColor[props.theme].color3:globalstyles.chooseThemeColor[props.theme].color1} 0% 0% no-repeat padding-box;
+    color:${(props)=>props.theme==='PUREELEGANCE'?'black':"white"}; 
     box-shadow: 0px 6px 12px #00000034;
     padding:4px 8px;
     border-radius:4px;
 `
 
-export const BPRDailyAnalyticsHeader = styled.div`
-   color:white; 
+export const BPRDailyAnalyticsHeader = styled.div<{theme:string}>`
+   color:inherit; 
    margin-bottom:6px;
-   border-bottom:1px white solid;
+   border-bottom:1px ${(props)=>props.theme==='PUREELEGANCE'?'black':"white"} solid;
 `
 
 export const BPRDailyAnalyticsTableContainer = styled.div`
@@ -31,7 +33,7 @@ export const BPRDailyAnalyticsTableContainer = styled.div`
 export const BPRDailyAnalyticsTableHeaderContainer = styled.div`
     display:flex;
     flex-direction:row;
-    color:white;
+    color:inherit;
 `
 
 export const BPRDailyAnalyticsTableHeader = styled.div`
@@ -105,7 +107,7 @@ export const BPRDailyAnalyticStatusBarSection = styled.div`
     font-size:12px;  
     line-height:21px;
     letter-spacing: 0px;
-    color: #FFFFFF;
+    color: inherit;
     text-align:center;
 `
 

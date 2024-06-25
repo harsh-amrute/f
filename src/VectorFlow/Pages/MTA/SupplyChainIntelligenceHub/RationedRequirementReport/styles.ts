@@ -61,3 +61,7 @@ export const RRRTagsCellRendererWrapper = styled.div`
 `
 
 
+export const RRRAnalyticsWrapper = styled.div`
+    width:100%;
+    height:100px;
+`

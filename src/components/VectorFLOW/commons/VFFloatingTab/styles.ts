@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-
+import * as globalStyles from '../../../../styles/global'
 
 
 export const VFFloatingTabWrapper = styled.div`
@@ -30,10 +30,10 @@ export const VFFloatingTabButton = styled.button<{isActive:boolean}>`
     transition:color 0.3s ease;
     z-index:10;
 `
-export const VFFloatingTabButtonActiveShadow = styled.button`
+export const VFFloatingTabButtonActiveShadow = styled.button<{theme:string}>`
     position:absolute;
     height: 36px;
-    background-color:rgb(188, 61, 129) ;
+    background:${(props)=>props.theme==='REGALBLAZE'?`transparent linear-gradient(261deg, #FCA311 0%, #CB830E 100%) 0% 0% no-repeat padding-box`:`transparent linear-gradient(261deg, ${globalStyles.chooseThemeColor[props.theme].color4} 0%, ${globalStyles.chooseThemeColor[props.theme].color4} 100%) 0% 0% no-repeat padding-box`};
     color:white;
     border-radius: 30px;
     box-shadow: -3px 3px 12px #8B8B8B41;
