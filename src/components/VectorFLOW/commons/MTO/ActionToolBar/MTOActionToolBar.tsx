@@ -55,12 +55,13 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
 
                 <>
                     {((comp !== 'MaterialCov') && (comp !== 'rmpm')) ?
-                        <SCGoBackContainer>
+                        
+                        <SCGoBackContainer onClick={()=>{if(handleGoBack) handleGoBack()}}>
                             <img
                                 src="/assets/img/VectorFLOW/BPR/goback.svg"
                                 alt=""
                             />
-                            <SCGoBackText onClick={() => { if (handleGoBack) handleGoBack() }}><b>Go Back</b></SCGoBackText>
+                            <SCGoBackText ><b>Go Back</b></SCGoBackText>
                         </SCGoBackContainer>
                         : null
                     }
