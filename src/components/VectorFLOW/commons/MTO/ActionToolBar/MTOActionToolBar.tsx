@@ -10,19 +10,20 @@ import {
     SCTaskFilterContainer,
     SCButton,
     /**search filter styles starts */
-    VFSelectedFiltersChip,
-    VFSelectedFiltersFilterCloseIcon,
-    VFSelectedFiltersFilterContent,
-    VFSelectedFiltersFilterLabel,
-    VFSelectedFiltersFilterValue,
-    VFSelectedFiltersPlaceHolder,
-    VFSelectedFiltersWrapper,
-    VFFilterScrollBar,
+    // VFSelectedFiltersChip,
+    // VFSelectedFiltersFilterCloseIcon,
+    // VFSelectedFiltersFilterContent,
+    // VFSelectedFiltersFilterLabel,
+    // VFSelectedFiltersFilterValue,
+    // VFSelectedFiltersPlaceHolder,
+    // VFSelectedFiltersWrapper,
+    // VFFilterScrollBar,
     SCViewContainerWithBgToggle,
     SCHorizontalDivison,
     SCViewContainer,
     /**search filter styles end*/
-} from './styles'
+} from './styles';
+import moment from 'moment';
 
 interface MTOActionToolBarProps {
     comp: string,
@@ -30,10 +31,18 @@ interface MTOActionToolBarProps {
     submitDate?: () => void;
     isGridView?: boolean;
     setIsGridView?: (isGridView: boolean) => void;
+    date?: string
+    handleGoBack?: () => void;
 }
 
 
-const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submitDate }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submitDate, date, handleGoBack }: MTOActionToolBarProps) => {
+
+    const format2 = "YYYY-MM-DD"
+    const d = new Date();
+    //.setDate(d.getDate() - 1)
+    const datetime = moment(d).format(format2);
+
     return (
         <SCTaskBarContainer>
             <SCTaskFilterContainer
@@ -51,7 +60,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                                 src="/assets/img/VectorFLOW/BPR/goback.svg"
                                 alt=""
                             />
-                            <SCGoBackText><b>Go Back</b></SCGoBackText>
+                            <SCGoBackText onClick={() => { if (handleGoBack) handleGoBack() }}><b>Go Back</b></SCGoBackText>
                         </SCGoBackContainer>
                         : null
                     }
@@ -96,7 +105,9 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                                         fontFamily: 'Roboto',
                                         border: '0.5px solid #ACACAC',
                                     }}
-                                    onChange={(e) => { if (onDateChange) (e.target.value) }}
+                                    value={date}
+                                    min={datetime}
+                                    onChange={(e) => { if (onDateChange) onDateChange(e.target.value) }}
                                 />
                             </div>
                             <div>
@@ -120,8 +131,8 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
 
 
                 {/**Selected Filter start */}
-                {comp !== 'MaterialCov' ?
-                    <VFSelectedFiltersWrapper>
+
+                {/* <VFSelectedFiltersWrapper>
                         <VFSelectedFiltersPlaceHolder>
                             Selected Filters
                         </VFSelectedFiltersPlaceHolder>
@@ -143,10 +154,9 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                             </VFSelectedFiltersChip>
 
                         </VFFilterScrollBar>
-                    </VFSelectedFiltersWrapper>
-                    :
-                    null
-                }
+                    </VFSelectedFiltersWrapper> */}
+
+
                 {/**Selected Filter ends*/}
 
             </SCTaskFilterContainer>

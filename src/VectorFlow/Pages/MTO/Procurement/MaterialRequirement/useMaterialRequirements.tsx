@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect /*useCallback*/ } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { AgGridReact } from "@ag-grid-community/react";
-import { useUserData } from "../../../../../context"
+// import { useUserData } from "../../../../../context"
 import ColorPriority from '../../Common/ColorPriority/index';
 import AvailabilityToolTip from "../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
@@ -66,9 +66,10 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 };
 
 const useMaterialReq = () => {
+
     const { HeaderData } = HeaderMaterialRequirement;
     const gridRef = useRef<AgGridReact>(null);
-    const { isSideBarOpen } = useUserData()
+    // const { isSideBarOpen } = useUserData()
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: 'sdv',
@@ -92,24 +93,36 @@ const useMaterialReq = () => {
     const [currentCumPage, setcurrentCumPage] = useState<number>(1);
     const [dayWiseRecordCount, setDayWiseRecordCount] = useState<number>(0);
     const [cumulativeRecordCount, setcumulativeRecordCount] = useState<number>(0);
+    const [date, setDate] = useState("");
 
     useEffect(() => {
         getInitialData()
     }, [currentTab])
+
+    
+    const onDateChangeReq = (date: string) => {
+        setDate(date);
+    }
+
+    const onDateSubmitReq = () => {
+        getInitialData()
+    }
 
     const getInitialData = async (currPage?: number) => {
         currentTab.id === 'sdv' ? getSelectedDateWise(currPage) : getCumulativeDateWise(currPage);
     }
 
     const getSelectedDateWise = async (currPage?: number) => {
-        const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: '2024-06-21', currPage: currPage ? currPage : 1 });
+        console.log('getSelectedDateWise',currentPage)
+        const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: date, currPage: currPage ? currPage : currentPage });
         const dayWiseOutput = datWiseData.data?.data?.results
         setDayWiseRecordCount(datWiseData.data?.data?.count)
         setDayWiseData(dayWiseOutput)
     }
 
     const getCumulativeDateWise = async (currPage?: number) => {
-        const cumulativeData = await getMaterialRequirementData({ releaseDate: '2024-06-21', currPage: currPage ? currPage : 1 });
+        console.log('getCumulativeDateWise',currentCumPage)
+        const cumulativeData = await getMaterialRequirementData({ releaseDate: date, currPage: currPage ? currPage : currentCumPage });
         const cumulativeOutput = cumulativeData.data?.data?.results
         setcumulativeRecordCount(cumulativeData.data?.data?.count)
         SetCumulativeData(cumulativeOutput)
@@ -305,11 +318,14 @@ const useMaterialReq = () => {
     };
 
     return {
-        isSideBarOpen,
-        agGridProps,
-        currentPage,
+        // isSideBarOpen,
+        // agGridProps,
+        // currentPage,
         toggleCurrentTab,
         renderView,
+        onDateChangeReq,
+        onDateSubmitReq,
+        date
         //excelDownload,
         //GetCount
     }
