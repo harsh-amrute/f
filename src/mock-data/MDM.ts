@@ -1637,4 +1637,13 @@ export const validateMasterMockData = {
   msg: null
 }
 
+export const getUploadProgressMockData:any = {
+  recordCount: null,
+  data: {
+    progress:'1000',
+    total_rows:'1000'
+  },
+  status: 200,
+  msg: "Data fetched successfully"
+}
 

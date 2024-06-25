@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData,useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount,useGetMasterDataRetail } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData,useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount,useGetMasterDataRetail, useGetUploadProgress } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -15,7 +15,7 @@ import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../.
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
-
+import { v4 as uuidv4 } from 'uuid';
 
 const useViewModify = (pageType:string) => {
 
@@ -77,6 +77,10 @@ const useViewModify = (pageType:string) => {
 
     const [TASK_ID,setTaskId] = useState<string>('');
 
+    const [uploadProgress,setUploadProgress] = useState('');
+
+    const [totalProgress,setTotalProgress] = useState('');
+
     // const [isDataAvailableLocally,setIsDataAvailableLocally] = useState(false);
    
     // const allMasters:Master[] = masterUIConfiguration?.data.data || [];
@@ -106,6 +110,8 @@ const useViewModify = (pageType:string) => {
     const {mutateAsync:deleteTask} = useDeleteTask();
 
     const {mutateAsync:validateMaster} = useValidateMaster();
+
+    const {mutateAsync:getUploadProgress} = useGetUploadProgress();
 
     const validStopStatuses = [1,2,3,4,5,6,21];
 
@@ -344,7 +350,6 @@ const useViewModify = (pageType:string) => {
           }
           return row;
         })
-        console.log(newRowData)
         setEnableEditOnlineReset(true)
         dispatch(UPDATE_ROW_DATA([...newRowData]))
       },
@@ -488,6 +493,9 @@ const useViewModify = (pageType:string) => {
       if(activeMaster.id===0){
         dispatch(UPDATE_ACTIVE_MASTER(0));
       }
+      else{
+        dispatch(UPDATE_ACTIVE_MASTER(masters[0]))
+      }
       dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
     }
 
@@ -532,7 +540,7 @@ const useViewModify = (pageType:string) => {
           return notifyError("There Should be atleast one selected Master")
         }
         dispatch(REMOVE_MASTER(currMaster.id));
-       
+        setDownloadData(false);
         if(currMaster.id === activeMaster.id){
           const mastersLength = masters.length
           for (let index = 0; index < mastersLength; index++) {
@@ -723,8 +731,18 @@ const useViewModify = (pageType:string) => {
           formData.append("file", file);
           formData.append("ui_config",JSON.stringify(activeMaster.fields))
           formData.append("screen_type",JSON.stringify({screenType:pageType}))
+          const processId = uuidv4();
+          
+          formData.append("process_id",JSON.stringify({processId:processId}));
+
+          const intervalID = setInterval(async ()=>{
+            const progress = await getUploadProgress(processId);
+            setUploadProgress(progress.data.progress);
+            setTotalProgress(progress.data.totalRows)
+          },1000)
 
           const response = await validateMaster({formData,masterId:activeMaster.id});
+          clearInterval(intervalID);
           let result = JSON.parse(response.data)
           const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
           result = [...errorAndWarningData,... result.filter((data:any)=>data.error.length === 0 && data.warning.length === 0 )]
@@ -871,10 +889,12 @@ const useViewModify = (pageType:string) => {
 
       }
 
-      const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean,actionStatus="") => { 
+      const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean,actionStatus="") => {
+        const columnsToOmit = activeMaster.fields.filter((field:Field)=>!field.isDownload).map((field:Field)=>field.key) 
 
         //CleanUp Row Data
-        rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users'));
+        rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
+        console.log(rowData);
         // Convert To String
         rowData = rowData.map((row:any)=>{
           const tempRow:any = {};
@@ -902,7 +922,8 @@ const useViewModify = (pageType:string) => {
             action:actionStatus,
             TaskId:'',
             IsOverWrite:isOverWrite===true?true:false,
-            data:[]
+            data:[],
+            uiconfig:activeMaster.fields
           }
 
           toastId = notifyLoader(`Submitting Data ${submitProgress}/${activeMaster.rowData.length}`);
@@ -1126,7 +1147,6 @@ const useViewModify = (pageType:string) => {
             }
           }
           else{
-            console.log('asdfads')
             // console.time('That took ')
             // console.log('Calculating...')
             const tempCon = createConflictRowData(localConflictData,activeMaster.id)
@@ -1207,8 +1227,9 @@ const useViewModify = (pageType:string) => {
        {
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
-        dispatch(UPDATE_COLDEFS( mapMasterToColumnDefs(activeMaster.fields,activeMaster.id)))
-        dispatch(REMOVE_ALL_FILTERS())
+        dispatch(UPDATE_COLDEFS([]));
+        dispatch(REMOVE_ALL_FILTERS());
+        // dispatch(UPDATE_ACTIVE_MASTER([]))
        
         dispatch(ADD_FILTER())
         setDownloadData(false);
@@ -1585,7 +1606,9 @@ const useViewModify = (pageType:string) => {
         validResumeStatuses,
         validStopStatuses,
         onPIPOStatusUpdate,
-        enableEditOnlineReset
+        enableEditOnlineReset,
+        uploadProgress,
+        totalProgress
     }
 }
 

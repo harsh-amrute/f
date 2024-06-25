@@ -163,5 +163,11 @@ export namespace MDMService {
     })
   }
 
+  export const getUploadProgress = async(processId:any)=>{
+    return await axios.get(process.env.REACT_APP_API_HOST + 'api/validate-master/get-upload-progress/' + processId,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
 }
 

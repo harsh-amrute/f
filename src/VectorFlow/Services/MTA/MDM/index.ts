@@ -17,7 +17,8 @@ export const QUERY_KEYS = {
   useGetTaskStatusData:['MDMService.useGetTaskStatusData'],
   useModifyMasterData:['MDMService.useModifyMasterData'],
   useDeleteTask:['MDMService.useDeleteTask'],
-  useApproveTask:['MDMService.useApproveTask']
+  useApproveTask:['MDMService.useApproveTask'],
+  useGetUploadProgress:['MDMService.useGetUploadProgress']
 }
 
 
@@ -182,6 +183,12 @@ export const useValidateMaster = () => {
   return useMutation(async(body:any)=>{
     const {formData,masterId} = body;
     return await MDMService.validateMaster(formData,masterId)
+  })
+}
+
+export const useGetUploadProgress = () => {
+  return useMutation(QUERY_KEYS.useGetUploadProgress,async(processId:any)=>{
+    return await MDMService.getUploadProgress(processId)
   })
 }
 

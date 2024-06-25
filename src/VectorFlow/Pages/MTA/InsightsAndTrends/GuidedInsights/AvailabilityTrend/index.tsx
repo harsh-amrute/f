@@ -3,101 +3,97 @@ import { useGetAvailabilityTrend } from "../../../../../Services/MTA/InsightsAnd
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 import { useState, useEffect } from "react";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
-import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip';
 
 
 const AvailabilityTrend = ({themeUi}:{themeUi:string}) => {
-  const [AvailabilityTrend, setAvailabilityData] = useState();
+
   const { mutateAsync: GetAvailabilityTrend, isLoading } =
-    useGetAvailabilityTrend();
-  //const rowData=AvailabilityTrend?.data?.data;
+  useGetAvailabilityTrend();
+
   const [horizon, setHorizon] = useState<number>(9);
+  const [options, setOptions] = useState({});
 
   useEffect(() => {
     OnHorizonChange(horizon);
   }, []);
+  
   const OnHorizonChange = async (hvalue: any) => {
     setHorizon(hvalue);
     const param = { horison: horizon };
     const AvailabilityTrend = await GetAvailabilityTrend(param);
     const AvailabilityTrendData = AvailabilityTrend?.data?.data;
-    setAvailabilityData(AvailabilityTrendData);
-  };
-
-  const markerFill = themeUi==="REGALBLAZE"?"#FCA311":"#BC3D81"
- 
-
-  const options:AgChartOptions = {
-    
-    // title: {
-    //   // text: "Availabilty Trend",
-    //   // fontWeight: "500",
-    //   // fontSize:14,
-    // },
-    data: AvailabilityTrend,
-    series: [
-      {
-        xKey: "week",
-        yKey: "percentage",
+   const greyShades = [
+      // '#191919', 
+       '#333333', 
+       //'#4c4c4c',
+       // '#595959', 
+        '#666666', //'#737373', 
+        '#808080',// '#8c8c8c','#999999',
+       '#a6a6a6', //'#b2b2b2', '#bfbfbf', 
+       '#cccccc', '#d8d8d8'
+       
+    ];
+    const locationTypes = Array.from(new Set(AvailabilityTrendData.map((d:any) => d.locationtype)));
+     const series = locationTypes.map((locationType, index) => {
+    const seriesData = AvailabilityTrendData.filter((d:any) => d.locationtype === locationType)
+                            .map((d:any) => ({ week: d.week, percentage: d.percentage }));
+                            return {
+        type: 'line',
+        xKey: 'week',
+        yKey: 'percentage',
+        yName: locationType,
+        data: seriesData,
+        stroke: greyShades[index % greyShades.length],
         strokeWidth: 3,
-        stroke: "#4E4E4E",
+        //stroke: "#4E4E4E",
         marker: {
-          fill: markerFill,
-          size: 8,
+          fill: greyShades[index % greyShades.length],
+          size: 12,
           stroke: "white",
           strokeWidth: 3,
           
-        },
-        title: "Distributor"
-      },
-    ],
-    // axes: [
-    //   {
-    //     type: "category",
-    //     position: "bottom",
-    //   } as const,
-    //   {
-    //     type: "number",
-    //     position: "left",
-    //     label: {
-    //       format: "#{.0f} %",
-    //     },
-    //   } as const,
+        }
+      };
+    });
+
+    setOptions(
+      {
+      autoSize: true,
       
-    // ],
-    axes: [
-      {
-        type: "category",
-        position: "bottom",
-        title: {
-              text: 'Date',
-              fontSize:10,
-              fontFamily:'Roboto'
-          },
-          label:{
-            fontSize:8,
-            fontFamily:'Roboto'
-          }
-      } as const,
-      {
-          type: "number",
-          position: "left",
-          label: {
-                  format: "#{.0f} %",
-                },
+      data: AvailabilityTrendData,
+      series: series,
+      axes: [
+        {
+          type: 'category',
+          position: 'bottom',
           title: {
-              text: 'Availability %',
-              fontSize:10,
-              fontFamily:'Roboto'
+            text: 'Date',
+           
           },
-      } as const
-  ],
-    legend: {
-      position: "bottom",
-    },
-  
+          label: {
+            formatter: (params:any) => new Date(params.value).toISOString().split('T')[0],
+          },
+        },
+        {
+          type: 'number',
+          position: 'left',
+          title: {
+            text: 'Availability%',
+          },
+          label: {
+          format: "#{.0f} %",
+          
+        },
+        },
+      ],
+      legend: {
+        position: 'bottom',
+
+      },
+    });
   };
+  
   if (isLoading) {
     return <VFLoader />;
   }
