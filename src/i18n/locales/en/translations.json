@@ -77,10 +77,10 @@
         "forceNormChange": "Force Norm Change",
         "PhaseIn_PhaseOut": "Phase-In & Phase Out",
         "Seasonality": "Seasonality",
-        "controlPanel":"Control Panel",
-        "savedDrafts":"Saved Drafts",
-        "taskPendingForReview":"Task Pending for Review",
-        "taskStatus":"Task Status"
+        "controlPanel": "Control Panel",
+        "savedDrafts": "Saved Drafts",
+        "taskPendingForReview": "Task Pending for Review",
+        "taskStatus": "Task Status"
       },
       "dynamicGridControl_AssortmentPlanning": {
         "title": "Dynamic Grid Control & Assortment Planning",
@@ -123,11 +123,11 @@
       },
       "miscellaneousReports": {
         "title": "Miscellaneous Reports",
-        "bufferPenetrationReport":"Buffer Penetration Report",
-        "fashionRationedRequirement":"Fashion RationedRequirement",
-        "rosn":"ROSN",
-        "store_classification":"Store Classification",
-        "ist":"IST",
+        "bufferPenetrationReport": "Buffer Penetration Report",
+        "fashionRationedRequirement": "Fashion RationedRequirement",
+        "rosn": "ROSN",
+        "store_classification": "Store Classification",
+        "ist": "IST",
         "dailyDataUnavailibilityReport": "Daily Data Unavailibility Report",
         "invalidDataReport": "Invalid Data Report",
         "uiUploadLogs_AddNewSKULoc": "UI Upload Logs - Add New SKU-Loc",
@@ -554,8 +554,8 @@
         },
         "roles": {
           "interStoreTransfers": "Inter Store Transfers",
-          "vectorFlow":"VectorFlow",
-          "distribution":"Distribution",
+          "vectorFlow": "VectorFlow",
+          "distribution": "Distribution",
           "ISTAdmin": "IST Admin",
           "ISTRequestor": "IST Requestor",
           "ISTGovernor": "IST Governor",
@@ -623,5 +623,11 @@
     "red": "Red",
     "green": "Green",
     "white": "White"
+  },
+  "ProcPlanning": {
+    "Analytics": "Analytics",
+    "cntshort": "Count Of RM in Shortage",
+    "cntfa": "Count Of RM in Fully Available",
+    "total": "Total"
   }
 }

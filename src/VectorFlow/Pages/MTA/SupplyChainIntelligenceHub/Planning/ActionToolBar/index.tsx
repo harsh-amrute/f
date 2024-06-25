@@ -445,4 +445,3 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
 }
 
 export default ActionToolBar;
-

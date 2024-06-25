@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
-import {useLocation} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {
   Header,
   NavbarTop,
@@ -20,17 +20,17 @@ const AppLayout = () => {
   const { t } = useTranslation();
 
   //URL arrays for excluding layout padding
-  const urlDisableZoomScaling = ['/logistics/intransit-whereabouts','/supply-chain-intelligence-hub/planning','/insights-and-trends/research-insights','/insights-and-trends/buffer-trends','/insights-and-trends/buffer-trend-report',"/insights-and-trends/guided-insights"];
-  const urlExcludePadding = ['/logistics/intransit-whereabouts','/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr','/insights-and-trends/guided-insights',"/insights-and-trends/buffer-trend-report",'/insights-and-trends/research-insights'];
+  const urlDisableZoomScaling = ['/logistics/intransit-whereabouts', '/supply-chain-intelligence-hub/planning', '/insights-and-trends/research-insights', '/insights-and-trends/buffer-trends', '/insights-and-trends/buffer-trend-report', "/insights-and-trends/guided-insights"];
+  const urlExcludePadding = ['/logistics/intransit-whereabouts', '/master-data-management/control-panel/view-modify', '/master-data-management/task-pending', '/master-data-management/control-panel/add', '/master-data-management/control-panel/delete', '/supply-chain-intelligence-hub/bpr', '/insights-and-trends/guided-insights', "/insights-and-trends/buffer-trend-report", '/insights-and-trends/research-insights', "/procurement/insights-and-trends/rmpm"];
   // const urlExclusdeHeader = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr','/master-data-management/task-status','/master-data-management/saved-drafts'];
   const urlExclusdeHeader = ['/master-data-management/task-pending', '/master-data-management/task-status', '/master-data-management/saved-drafts', '/production-planning-scheduling/enquiry-response'];
 
   const location = useLocation();
-  
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  
+
 
   const [currentViewCount, setCurrentViewCount] = useState(0);
   const [currentDataCount, setCurrentDataCount] = useState(0);
@@ -49,7 +49,7 @@ const AppLayout = () => {
   const [menuItem, setMenuItem] = useState<any>();
   const [colorTheme, setColorTheme] = useState<string>("NOIRFUSION");
   const [isHide, setIsHide] = useState<boolean>(false);
-  
+
   return (
     <AuthenticationTemplate
       loadingComponent={<>Loading...</>}
@@ -98,7 +98,7 @@ const AppLayout = () => {
                 setCurrentDataCount,
               }}
             >
-              <Header urlExcludeHeader={urlExclusdeHeader}/>
+              <Header urlExcludeHeader={urlExclusdeHeader} />
               <Outlet />
             </ISTStatusContext.Provider>
           </GridSystem.SCCol8>

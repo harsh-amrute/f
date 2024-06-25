@@ -1,6 +1,6 @@
 import {useRef,useState} from 'react'
 
-import {  AgGridReactProps } from "ag-grid-react"
+import { AgGridReactProps } from "ag-grid-react"
 import { Allotment } from "allotment"
 
 import CustomVFTable from "./CustomVFTable"
@@ -8,9 +8,9 @@ import { BTRTableWrapper,BTRTableHeader, LockBtnWrapper, LockBtn } from "./style
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 
-interface SpliViewTableProps extends AgGridReactProps{
-    header:string
-    paginationProps:any
+interface SpliViewTableProps extends AgGridReactProps {
+    header: string
+    paginationProps: any
 }
 
 export interface SplitViewProps{
@@ -20,9 +20,8 @@ export interface SplitViewProps{
     toggleLockMode:(value:boolean)=>void
 }
 
-const VerticalSplitView = (props:SplitViewProps)=>{
-
-    const{
+const VerticalSplitView = (props: SplitViewProps) => {
+    const {
         techTable,
         ecoTable,
         isLocked,
@@ -130,7 +129,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                         <VFPagination
                                 {...ecoTable.paginationProps}
                             />
-                       </div>
+                        </div>
                     </div>
                     {/* <VFTableWrapper>
                         <AgGridReact

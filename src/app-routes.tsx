@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from 'react'
-import {type RouteObject} from 'react-router-dom'
+import { type RouteObject } from 'react-router-dom'
 import { AppLayout } from './components'
 import { getStoreTransferModuleRoutes } from './module-store-transfer/app-routes-store-transfer'
 import Login from './module-main/pages/auth/login'
@@ -33,7 +33,12 @@ import BufferTrendReport from './VectorFlow/Pages/MTA/InsightsAndTrends/BTR'
 import DBM from './VectorFlow/Pages/MTA/DBM/DBMNormSuggestions'
 import EnquiryResponse from './VectorFlow/Pages/MTA/EnquiryResponse'
 import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests'
+import MaterialCov from './VectorFlow/Pages/MTO/Procurement/MaterialCoverage/MaterialCov'
+import ProcurementPlanning from './VectorFlow/Pages/MTO/Procurement/Planning';
+import SimulateFullKit from './VectorFlow/Pages/MTO/Procurement/Planning/SimulateFullKit';
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
+import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
+import RMPM from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -80,6 +85,12 @@ const lazyLoad = (children: React.ReactNode) => {
     '/insights-and-trends/buffer-trend-report',
     '/dbm/dbm-norm-suggestions',
     '/logistics/intransit-whereabouts',
+    '/procurement/material-coverage-open-sales',
+    '/procurement-planning/planning',
+    '/planning/simulative-fullkit',
+    '/logistics/intransit-whereabouts',
+    '/procurement/material-requirement',
+    '/procurement/insights-and-trends/rmpm'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -207,7 +218,7 @@ export const initRoutes = (): RouteObject[] => {
         },
         {
           index: true,
-          path:'view-modify',
+          path: 'view-modify',
           element: lazyLoad(<ViewModify />)
         },
         ...getStoreTransferModuleRoutes()
@@ -264,7 +275,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<AddRecord/>)
+          element: lazyLoad(<AddRecord />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -275,7 +286,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<DeleteRecord/>)
+          element: lazyLoad(<DeleteRecord />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -299,7 +310,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<Planning/>)
+          element: lazyLoad(<Planning />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -310,7 +321,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<BPR/>)
+          element: lazyLoad(<BPR />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -321,7 +332,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<OpenExpeditingRequests/>)
+          element: lazyLoad(<OpenExpeditingRequests />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -332,7 +343,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<InTransitWhereAbouts/>)
+          element: lazyLoad(<InTransitWhereAbouts />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -354,7 +365,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<BuyerOrderReport/>)
+          element: lazyLoad(<BuyerOrderReport />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -365,7 +376,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<ResearchInsights/>)
+          element: lazyLoad(<ResearchInsights />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -387,7 +398,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<GuidedInsights/>)
+          element: lazyLoad(<GuidedInsights />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -398,7 +409,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<BufferTrendReport/>)
+          element: lazyLoad(<BufferTrendReport />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -409,18 +420,18 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<RRR/>)
+          element: lazyLoad(<RRR />)
         },
         ...getStoreTransferModuleRoutes()
       ]
     },
     {
-      path:'/insights-and-trends/buffer-trends',
-      element:<AppLayout/>,
-      children:[
+      path: '/insights-and-trends/buffer-trends',
+      element: <AppLayout />,
+      children: [
         {
-          index:true,
-          element:lazyLoad(<BufferTrends/>)
+          index: true,
+          element: lazyLoad(<BufferTrends />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -446,7 +457,74 @@ export const initRoutes = (): RouteObject[] => {
        },
        ...getStoreTransferModuleRoutes()
      ]
-    }
-    
+    },
+    {
+      path: '/dbm/dbm-norm-suggestions',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DBM />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement/material-coverage-open-sales',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MaterialCov />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement-planning/planning',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ProcurementPlanning />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/planning/simulative-fullkit',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<SimulateFullKit />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement/insights-and-trends/rmpm',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMPM />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement/material-requirement',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MaterialRequirement />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+
+
   ]
 }

@@ -203,7 +203,7 @@ export const ChartWrapper = styled.div`
     align-items:center;
 `
 
-export const CalenderSummaryWrapper  = styled.div`
+export const CalenderSummaryWrapper = styled.div`
     display:flex;
     flex-direction:row;
     width:100%;

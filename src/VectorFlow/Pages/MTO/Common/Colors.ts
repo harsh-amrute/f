@@ -1,0 +1,25 @@
+export const ColorsMTO = {
+    Black: {
+        code: '#000',
+        label: 'Black'
+    },
+    Red: {
+        code: '#E53F40',
+        label: 'Red'
+    },
+    Yellow: {
+        code: '#EBBF2B',
+        label: 'Yellow'
+    },
+    Green: {
+        code: '#418D18',
+        label: 'Green'
+    },
+    White: {
+        code: '#FFFFFF',
+        label: 'White'
+    },
+    Blue: { code: '#355FD3', label: 'Blue' },
+    Pink: { code: '#BC3D81', label: 'Pink' },
+    LightGrey: { code: '#C0C0C0', label: 'LightGrey' }
+}

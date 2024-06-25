@@ -330,9 +330,6 @@ const useBPR =()=>{
 
     const BPRColumns =mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph)
 
-
-
-   
     return {
         isSubGridOpen,
         isLoading :  isBPRUILoading || isBPRDataCountLoading,
