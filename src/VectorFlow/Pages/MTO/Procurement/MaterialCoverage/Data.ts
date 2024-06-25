@@ -1101,7 +1101,7 @@ export const OrderDetailsHeaderData =
             "rn": "materialCovReport",
             "jf": "fgc",
             "cp": 10,
-            "hdr": "FG Code",
+            "hdr": "Item Code",
             "vs": true,
             "ca": "right",
             "val": "*Error*"
@@ -1110,7 +1110,7 @@ export const OrderDetailsHeaderData =
             "rn": "materialCovReport",
             "jf": "fgd",
             "cp": 11,
-            "hdr": "FG Descp",
+            "hdr": "Item Descp",
             "vs": true,
             "ca": "right",
             "val": "*Error*"
@@ -1700,7 +1700,7 @@ export const HeaderChildren =
             "rn": "MaterialReportChildren",
             "jf": "rmd",
             "cp": 3,
-            "hdr": "RM Descpo",
+            "hdr": "RM Descp",
             "vs": true,
             "ca": "left",
             "val": "*Error*"
@@ -1718,7 +1718,7 @@ export const HeaderChildren =
             "rn": "MaterialReportChildren",
             "jf": "rma",
             "cp": 5,
-            "hdr": "RM Availabl",
+            "hdr": "RM Available",
             "vs": true,
             "ca": "left",
             "val": "*Error*"
@@ -1727,7 +1727,7 @@ export const HeaderChildren =
             "rn": "MaterialReportChildren",
             "jf": "rmall",
             "cp": 6,
-            "hdr": "RM Allocatte",
+            "hdr": "RM Allocatted",
             "vs": true,
             "ca": "left",
             "val": "*Error*"

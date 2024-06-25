@@ -15,7 +15,7 @@ import { mapMaterialFieldsToColDefs } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { useGetMaterialRequirementDetails, useGetMaterialRequirementDetailsDatewise } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
-
+import moment from "moment";
 
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
@@ -66,7 +66,9 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 };
 
 const useMaterialReq = () => {
-
+    const format2 = "YYYY-MM-DD"
+    const d = new Date();
+    const datetime = moment(d).format(format2);
     const { HeaderData } = HeaderMaterialRequirement;
     const gridRef = useRef<AgGridReact>(null);
     // const { isSideBarOpen } = useUserData()
@@ -93,7 +95,7 @@ const useMaterialReq = () => {
     const [currentCumPage, setcurrentCumPage] = useState<number>(1);
     const [dayWiseRecordCount, setDayWiseRecordCount] = useState<number>(0);
     const [cumulativeRecordCount, setcumulativeRecordCount] = useState<number>(0);
-    const [date, setDate] = useState("");
+    const [date, setDate] = useState<string>(datetime);
 
     useEffect(() => {
         getInitialData()
