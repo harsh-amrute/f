@@ -1,5 +1,6 @@
 // VFRangeSlider.tsx
 import React, { useState } from 'react';
+import { useUserData } from '../../../../context';
 import { RangeSliderContainer, RangeSliderInput, ValueLabel, MilestonesContainer, MilestoneLabel, ToolTipTriangle } from './styles';
 
 interface VFRangeSliderProps {
@@ -20,6 +21,8 @@ const VFRangeSlider: React.FC<VFRangeSliderProps> = ({ milestones,min,max,strict
   const [value, setValue] = useState<number>(defaultValue);
   const [currMileStoneIndex,setCurrMileStoneIndex] = useState<number>(0)
 
+  const {user} = useUserData()
+  const themeUi = user.user.theme_ui
   const range  = max - min
   const multiplier = width -20
 
@@ -58,6 +61,7 @@ const VFRangeSlider: React.FC<VFRangeSliderProps> = ({ milestones,min,max,strict
     <RangeSliderContainer style={{width, ...style}}>
 
         <RangeSliderInput
+            theme={themeUi}
             type="range"
             data-testid="range-slider"
             min={min}

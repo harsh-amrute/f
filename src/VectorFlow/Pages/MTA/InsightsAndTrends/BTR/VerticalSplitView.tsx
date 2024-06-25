@@ -18,6 +18,7 @@ export interface SplitViewProps{
     ecoTable:SpliViewTableProps
     isLocked:boolean
     toggleLockMode:(value:boolean)=>void
+    themeUi:string
 }
 
 const VerticalSplitView = (props:SplitViewProps)=>{
@@ -26,7 +27,8 @@ const VerticalSplitView = (props:SplitViewProps)=>{
         techTable,
         ecoTable,
         isLocked,
-        toggleLockMode
+        toggleLockMode,
+        themeUi
     } = props
 
     const ref1 = useRef<GridRef>()
@@ -74,28 +76,28 @@ const VerticalSplitView = (props:SplitViewProps)=>{
         <BTRTableWrapper>
             <Allotment vertical={false} onChange={handleChange}>
                 <Allotment.Pane >
-                <BTRTableHeader>{techTable.header}</BTRTableHeader>
-                    <div style={{marginTop:-10}}>
+                    <BTRTableHeader>{techTable.header}</BTRTableHeader>
+                    <div style={{marginTop:-10,height:'85%'}}>
                         <CustomVFTable
-                        ref={ref1}
-                        rowHeight={25}
-                        height={300}
+                            ref={ref1}
+                            rowHeight={25}
+                            height={"95%"}
                             disableZoomScaling
-                        gridOptions={{
-                            ...techTable.gridOptions
-                        }}
-                        columnDefs={techTable.columnDefs}
-                        rowData={techTable.rowData}
-                        tooltipMouseTrack={true}
-                        tooltipShowDelay={0}
-                        tooltipHideDelay={100000}
-                        onBodyScroll={(params)=>onBodyScroll(params,1)}
+                            gridOptions={{
+                                ...techTable.gridOptions
+                            }}
+                            columnDefs={techTable.columnDefs}
+                            rowData={techTable.rowData}
+                            tooltipMouseTrack={true}
+                            tooltipShowDelay={0}
+                            tooltipHideDelay={100000}
+                            onBodyScroll={(params)=>onBodyScroll(params,1)}
                         />
-                       <div style={{zoom:0.7}}>
-                        <VFPagination
+                        <div style={{zoom:0.7}}>
+                            <VFPagination
                                 {...techTable.paginationProps}
                             />
-                       </div>
+                        </div>
                     </div>
                     {/* <VFTableWrapper>
                         <AgGridReact
@@ -110,11 +112,11 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                 </Allotment.Pane>
                 <Allotment.Pane>
                     <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
-                    <div style={{marginTop:-10}}>
+                    <div style={{marginTop:-10,height:'85%'}}>
                     <CustomVFTable 
                         ref={ref2}
                         rowHeight={25}
-                         height={300}
+                        height={"95%"}
                         disableZoomScaling
                         gridOptions={{
                             ...ecoTable.gridOptions
@@ -146,7 +148,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                 </Allotment.Pane>
             </Allotment>
             <LockBtnWrapper>
-                <LockBtn style={{left:lockBtnPosition -12}} src={isLocked?"/assets/img/VectorFLOW/BPR/lock.svg":"/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={()=>toggleLockMode(!isLocked)}/>
+                <LockBtn style={{left:lockBtnPosition -12}} src={isLocked?themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/lock-regal.svg":"/assets/img/VectorFLOW/BPR/lock.svg":themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/unlock-regal.svg":"/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={()=>toggleLockMode(!isLocked)}/>
             </LockBtnWrapper>
 
         </BTRTableWrapper>

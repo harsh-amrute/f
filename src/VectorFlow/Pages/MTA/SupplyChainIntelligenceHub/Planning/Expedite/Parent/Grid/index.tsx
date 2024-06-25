@@ -236,7 +236,7 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCa
                 isSubGridOpen={isSubGridOpen} 
                 onRequestExpediting={()=>toggleExpeditingModal(true)}
                 paginationProps={paginationProps}
-                gridHeight={600}
+                gridHeight={"95%"}
             />
             <RequestExpeditingModal isOpen={isExpeditingModalOpen} onClose={()=>toggleExpeditingModal((prev:boolean)=>!prev)} onSubmit={submitOpenExpediteRemark}/>
         </>

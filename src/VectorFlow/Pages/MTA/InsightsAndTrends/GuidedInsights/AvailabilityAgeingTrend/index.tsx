@@ -6,7 +6,7 @@ import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
-const AvailabilityAgeingTrend = () => {
+const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
   const [horizon, setHorizon] = useState<number>(9);
   const [minAgeing, setAgeing] = useState<number>(1);
   const { mutateAsync: GetAvailabilityAgeing, isLoading } =
@@ -118,7 +118,7 @@ const AvailabilityAgeingTrend = () => {
   }
 
   return (
-    <div style={{ margin: "25px 20px 0px 20px" }}>
+    <div style={{ margin: "25px 20px 0px 20px" , height:'75%'}}>
       <div
         style={{
           display: "flex",
@@ -203,13 +203,13 @@ const AvailabilityAgeingTrend = () => {
         </VFButtonOutline> */}
          <img 
             style={{cursor:'pointer'}}
-            src="/assets/img/Group 627.svg" 
+            src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
             height={40} 
             width={50} 
             onClick={() => OnHorizonChange(horizon, minAgeing)}
             /> 
       </div>
-      <div style={{ marginLeft: "10px", marginRight: "10px", height: "340px" }}>
+      <div style={{ marginLeft: "10px", marginRight: "10px", height: "88%"}}>
         <div
           className="Title"
           style={{
@@ -230,7 +230,7 @@ const AvailabilityAgeingTrend = () => {
             <VFInfoToolTip infoList={graph1} />
           </div>
         </div>
-        <div style={{height:'300px'}}><AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
+        <div style={{height:'85%'}}><AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
       </div>
     </div>
   );

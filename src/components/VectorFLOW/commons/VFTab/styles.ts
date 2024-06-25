@@ -7,6 +7,7 @@ import * as GridSystem from '../../../../styles/gridSystem'
 export const SCTabArea = styled.div`
   display: flow-root;
   position: relative;
+  height:100%;
 `
 
 
@@ -107,7 +108,7 @@ export const SCTabButton = styled.div<{
 
       background: ${(props) =>
         props.status === "active"
-          ? 'linear-gradient(74deg, rgb(130, 15, 76) 0%, rgb(188, 61, 129) 100%) 0% 0% no-repeat padding-box padding-box transparent' : props.status==='completed' 
+          ? props.themeUi==="REGALBLAZE"?"transparent linear-gradient(261deg, #FCA311 0%, #CB830E 100%) 0% 0% no-repeat padding-box":'linear-gradient(74deg, rgb(130, 15, 76) 0%, rgb(188, 61, 129) 100%) 0% 0% no-repeat padding-box padding-box transparent' : props.status==='completed' 
           ? "#898989 0% 0% no-repeat padding-box;"
         :'white'};
         no-repeat padding-box;
@@ -135,6 +136,7 @@ export const SCTabTitle = styled.p<{status:string}>`
 
 export const SCTabBody = styled.div`
   display: block;
+  height:100%;
   background: #ffffff 0% 0% no-repeat padding-box;
   border: 0.5px solid #cccccc;
   border-radius: 0px 15px 15px 15px;

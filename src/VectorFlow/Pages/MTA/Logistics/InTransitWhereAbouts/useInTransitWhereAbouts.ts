@@ -17,6 +17,7 @@ import { ColorGroupCellRenderer, CurrentLocationCellRenderer, ETACellRenderer } 
 import { mapInTransitWhereAboutsRowData, mapSubmitRemarkData } from "../../../../../helpers/utils";
 import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount,useGetRemarkDetailsForInTransit, useGetTransporterDetails, useSubmitRemarksForInTransit } from "../../../../../VectorFlow/Services/MTA/Logistics/InTransitWhereAbouts";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
+import { useUserData } from "../../../../../context";
 
 
 
@@ -25,6 +26,11 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter";
 const useInTransitWhereAbouts = ()=>{
     const ref = useRef()
     const tempRef = useRef()
+
+    const {user} = useUserData()
+
+
+    const themeUi = user.user.theme_ui
 
     const {mutateAsync:getDataCount,isLoading:isCountLoading} = useGetInTransitWhereAboutsDataCount()
 
@@ -144,8 +150,8 @@ const useInTransitWhereAbouts = ()=>{
 
     const agGridProps: AgGridReactProps = {
       icons:{
-        groupExpanded: '<img src="/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus.svg" style="width: 20px; height: 20px;">',
-        groupContracted:'<img src="/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus.svg" style="width: 20px; height: 20px;">'
+        groupExpanded: `<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus.svg"} style="width: 20px; height: 20px;">`,
+        groupContracted:`<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus.svg"} style="width: 20px; height: 20px;">`
       },
       masterDetail:true,
       detailCellRenderer:MasterDetail,
@@ -153,7 +159,7 @@ const useInTransitWhereAbouts = ()=>{
         onContactDetails:onOpenContactModal
       },
       onCellEditingStopped:(params)=>console.log(params.newValue),
-      detailRowAutoHeight:true,
+      // detailRowAutoHeight:true,
       // detailCellRendererParams:{
       //   detailGridOptions: {
       //     columnDefs: [{ field: 'detailData' }],

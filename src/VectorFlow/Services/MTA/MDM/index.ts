@@ -19,8 +19,8 @@ export const QUERY_KEYS = {
   useDeleteTask:['MDMService.useDeleteTask'],
   useApproveTask:['MDMService.useApproveTask'],
   usegetSkuLoc:['MDMService.useGetSkuLoc'],
-  usegetTaskMastersHistory:['MDMService.useGetTaskMastersHistory']
-  
+  usegetTaskMastersHistory:['MDMService.useGetTaskMastersHistory'],
+  useGetUploadProgress:['MDMService.useGetUploadProgress']
 }
 
 
@@ -199,3 +199,9 @@ export const useGetTaskMastersHistory = () => {
     return await MDMService.getTaskMastersHistory(body)
   })
 }
+export const useGetUploadProgress = () => {
+  return useMutation(QUERY_KEYS.useGetUploadProgress,async(processId:any)=>{
+    return await MDMService.getUploadProgress(processId)
+  })
+}
+

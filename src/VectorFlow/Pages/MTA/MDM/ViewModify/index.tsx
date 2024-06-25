@@ -97,7 +97,9 @@ import _ from "lodash";
         validStopStatuses,
         onPIPOStatusUpdate,
         enableEditOnlineReset,
-        submittedDataCount
+        submittedDataCount,
+        uploadProgress,
+        totalProgress
 
     } = useViewModify('modify');
 
@@ -173,6 +175,7 @@ import _ from "lodash";
                               fields={generateOptions([activeMaster])}
                               currFilter={f}
                               key={f.id}
+                              isDisabled={activeMaster.id > 14}
                             />
                           )
                         }
@@ -186,7 +189,7 @@ import _ from "lodash";
                               <SCFilterAddButtonWrapper>
                                 <SCFilterAddButton
                                   onClick={handleOnAddFilter}
-                                  src="/assets/img/VectorFLOw/NMS/add-filter.svg"
+                                  src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOw/NMS/add-filter-regal.svg":"/assets/img/VectorFLOw/NMS/add-filter.svg"}
                                   key={f.id}
                                   data-testid="add-filter"
                                 />
@@ -201,6 +204,7 @@ import _ from "lodash";
                       <VFButton
                       themeUi={themeUi}
                       onClick={()=>{handleApplyFilter()}}
+                      disabled={activeMaster.id > 14}
                       >
                         Apply Filter
                       </VFButton>
@@ -230,6 +234,7 @@ import _ from "lodash";
                     ]:
                     [],
                   }}
+                  height={activeMaster.rowData.length > 0 ? activeMaster.progress==='view' ? "65%" : "95%" : "75%"}
                 />
                 {
             (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen))
@@ -311,7 +316,7 @@ import _ from "lodash";
         {
           isOverlayVisible && (
             <VFOverlay>
-             <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Validating Data. Please Wait this might take some time....</h1>
+             <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Validating Data. Please Wait this might take some time.... {((uploadProgress==='' || parseInt(uploadProgress)===0)) ? '' : 'Progress: ' + uploadProgress + ' / ' + totalProgress}</h1>
             </VFOverlay>
           )
         }
@@ -364,6 +369,7 @@ import _ from "lodash";
             onDeleteOnlineReset={()=>console.log('')}
             onDeleteOnlineSubmit={()=>console.log('')}
             onDeleteOnline={()=>console.log('')}
+            masterId={activeMaster.id}
           />
         }
         

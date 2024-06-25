@@ -127,7 +127,7 @@ const ResearchInsights = ()=>{
             }
             <ResearchInsightsTableWrapper style={{zoom:0.8, marginTop:'-15px'}}>
                 <VFTable
-                    height={945}
+                    height={"100%"}
                     {...agGridProps}
                     ref={ref}
                     columnDefs={ResearchInsightsColumns}
@@ -210,7 +210,7 @@ const ResearchInsights = ()=>{
                 {(graphState==='default')?(
                     <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',zoom:0.7,alignItems:'center',padding:0,height:'100%',borderBottom:'dashed 3px #B2B2B2'}}>
                         <DefaultViewRendererWrapper>
-                            <Player src={'/assets/img/VectorFLOW/BPR/swipe pointer.json'} loop autoplay style={{transform:'rotate(-90deg)',height:70,width:70}}/>
+                            <Player src={themeUi==="REGALBLAZE"?'/assets/img/VectorFLOW/BPR/swipe pointer regal.json':'/assets/img/VectorFLOW/BPR/swipe pointer.json'} loop autoplay style={{transform:'rotate(-90deg)',height:70,width:70}}/>
                             <DefaultViewRendererHeader>
                                 No Data To Show
                             </DefaultViewRendererHeader>
@@ -493,11 +493,11 @@ const ResearchInsights = ()=>{
                     <AvailabilityTrendSection style={{border:'none'}}>
                     <ChartHeader>
                         <RadioGroup>
-                            <ChartHeaderRadioGroup style={{gap:'2px'}}>
+                            <ChartHeaderRadioGroup style={{gap:'2px'}} theme={themeUi}>
                                 <input type="radio" value="parent" name="location" id="parent" defaultChecked onChange={()=>updateGraphState(2,'type',{label:"Parent",value:'Parent'})} style={{margin:0}}/>
                                 <label htmlFor="parent" style={{fontSize:10}}>Parent</label>
                             </ChartHeaderRadioGroup>
-                            <ChartHeaderRadioGroup style={{marginLeft:'10px',gap:'2px'}}>
+                            <ChartHeaderRadioGroup style={{marginLeft:'10px',gap:'2px'}} theme={themeUi}>
                                 <input type="radio" value="child" name="location" id="child" onChange={()=>updateGraphState(2,'type',{label:"Child",value:'Child'})} style={{margin:0}}/>
                                 <label htmlFor="child"  style={{fontSize:10}}>Child</label>
                             </ChartHeaderRadioGroup>

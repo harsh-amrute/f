@@ -275,7 +275,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane>
-                        <SCChartContainer height={425}>
+                        <SCChartContainer height={"100%"}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                                     <SCChartHeader>Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock for Receiving Locations</SCChartHeader>
@@ -321,7 +321,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                                 floatingFilter:true,
                                                 filter: "agMultiColumnFilter",
                                             }}
-                                            height={480}
+                                            height={'480px'}
                                             />
                                     </div>
                             </VFModalCard>   
@@ -356,14 +356,14 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                     disableZoomScaling={true}
                                 />
                             </div>
-                            <div id="CreateAvailabilityAtParentG1" style={{height:'340px'}}></div>
+                            <div id="CreateAvailabilityAtParentG1" style={{height:'85%'}}></div>
                         </SCChartContainer>
                         {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>
                         </div> */}
                     </Allotment.Pane>
                     <Allotment.Pane>
-                        <SCChartContainer height={425}>
+                        <SCChartContainer height={"100%"}>
                                 <SCChartHeaderContainer>
                                     <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                                         <SCChartHeader>Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location</SCChartHeader>   
@@ -408,7 +408,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                                     floatingFilter:true,
                                                     filter: "agMultiColumnFilter",
                                                 }}
-                                                height={480}
+                                                height={'480px'}
                                             />
                                     </div>
                                 </VFModalCard>
@@ -443,7 +443,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                         disableZoomScaling={true}
                                     />
                                 </div>
-                                <div id="CreateAvailabilityAtParentG2" style={{height:'340px'}}></div>
+                                <div id="CreateAvailabilityAtParentG2" style={{height:'85%'}}></div>
                         </SCChartContainer>
                         {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph2}/>

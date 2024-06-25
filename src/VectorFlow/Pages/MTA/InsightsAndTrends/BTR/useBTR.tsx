@@ -25,6 +25,7 @@ import { notifyError, notifyLoader } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
+import { useUserData } from "../../../../../context"
 
 
 const useBTR = ()=>{
@@ -50,6 +51,10 @@ const useBTR = ()=>{
             label:"Pipeline Inv. View"
         }
     ]
+
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
 
     const [currentPage,setCurrentPage] = useState<number>(1);
 
@@ -204,6 +209,7 @@ const useBTR = ()=>{
             case "1":
                 if(verticalView)return(
                     <VerticalSplitView 
+                        themeUi={themeUi}
                         techTable={{
                             columnDefs:techColDefs,
                             rowData:techRowData,
@@ -224,6 +230,7 @@ const useBTR = ()=>{
                 )
                 return (
                     <HorizontalSplitView 
+                        themeUi={themeUi}
                         techTable={{
                             columnDefs:techColDefs,
                             rowData:techRowData,
@@ -248,7 +255,7 @@ const useBTR = ()=>{
                             On-Hand Inventory View Trend Report
                         </BTRTableHeader>
                         <CustomVFTable 
-                            height={350}   
+                            height={"100%"}   
                             tooltipHideDelay={100000}  
                             tooltipShowDelay={0} 
                             tooltipMouseTrack={true} 
@@ -272,7 +279,7 @@ const useBTR = ()=>{
                             Pipeline Inventory Trend Report
                         </BTRTableHeader>
                         <CustomVFTable 
-                            height={350}  
+                            height={"100%"}  
                             tooltipHideDelay={100000}  
                             tooltipShowDelay={0} 
                             tooltipMouseTrack={true} 
@@ -346,6 +353,7 @@ const useBTR = ()=>{
         exportExcelColumns,
         setExportExcelColumns,
         currFilter,
+        themeUi,
         setCurrFilter,
         onDelete,
         onApplyFilter

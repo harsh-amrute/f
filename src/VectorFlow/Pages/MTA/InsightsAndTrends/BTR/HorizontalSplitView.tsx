@@ -17,6 +17,7 @@ export interface SplitViewProps{
     ecoTable:SpliViewTableProps
     isLocked:boolean
     toggleLockMode:(value:boolean)=>void
+    themeUi:string
 }
 
 const VerticalSplitView = (props:SplitViewProps)=>{
@@ -25,7 +26,8 @@ const VerticalSplitView = (props:SplitViewProps)=>{
         techTable,
         ecoTable,
         isLocked,
-        toggleLockMode
+        toggleLockMode,
+        themeUi
     } = props
 
     const ref1 = useRef<GridRef>()
@@ -71,8 +73,8 @@ const VerticalSplitView = (props:SplitViewProps)=>{
    return (
         <HorizontalViewWrapper>
             <BTRTableWrapper style={{height:screenHeight - 100,margin:'0'}}>
-            <Allotment vertical={true} defaultSizes={[400,200]}  onChange={handleChange} >
-                <Allotment.Pane >
+            <Allotment vertical={true} onChange={handleChange}>
+                <Allotment.Pane preferredSize={'50%'}>
                     <BTRAllomentSection>
                         <BTRTableHeader>{techTable.header}</BTRTableHeader>
                         <CustomVFTable 
@@ -88,6 +90,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             tooltipShowDelay={0}
                             tooltipHideDelay={100000}
                             onBodyScroll={(params)=>onBodyScroll(params,1)}
+                            height={"100%"}
                         />
                         <div style={{zoom:0.7,marginBottom:'20px'}}>
                             <VFPagination
@@ -97,10 +100,11 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                     </BTRAllomentSection>
                 </Allotment.Pane>
                 
-                <Allotment.Pane>
+                <Allotment.Pane preferredSize={'50%'}>
                     <BTRAllomentSection>
                         <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
                         <CustomVFTable 
+                            height={"100%"}
                             ref={ref2}
                             rowHeight={25}
                             disableZoomScaling
@@ -125,7 +129,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
             
         </BTRTableWrapper>
         <LockBtnWrapper style={{height:screenHeight - 100}}>
-            <LockBtn style={{top:lockBtnPosition -12}} src={isLocked?"/assets/img/VectorFLOW/BPR/lock.svg":"/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={()=>toggleLockMode(!isLocked)}/>        
+            <LockBtn style={{top:lockBtnPosition -12}} src={isLocked?themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/lock-regal.svg":"/assets/img/VectorFLOW/BPR/lock.svg":themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/unlock-regal.svg":"/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={()=>toggleLockMode(!isLocked)}/>        
         </LockBtnWrapper>
         </HorizontalViewWrapper>
     )

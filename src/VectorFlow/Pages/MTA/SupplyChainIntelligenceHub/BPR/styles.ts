@@ -27,6 +27,7 @@ export const BPRViewTableWrapper = styled.div`
     display:flex;
     flex-direction:column;
     margin-top:10px;
+    height:100%;
 `
 
 export const BPRViewTablePrefixWrapper = styled.div`
@@ -59,7 +60,8 @@ export const BPRViewTableGrid = styled.div`
     flex-direction:column;
     width:100%;
     min-height:150px;
-    max-height:205px;
+    max-height:90%;
+    // max-height:205px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #9B9B9B29;
     border-radius:8px;
@@ -426,7 +428,6 @@ export const BPRViewTableRequestCellRendererText = styled.p`
     font-size:12px;
     font-weight:500;
     font-family:Roboto;
-    color:rgb(188, 61, 129);
     margin-left:5px;
 `
 
@@ -559,7 +560,6 @@ export const WhereAboutsMoreInfo = styled.div`
     font-size:14px;
     font-family:Roboto;
     letter-spacing: 0px;
-    color: #BC3D81;
     margin-left:5px;
     text-decoration: underline;
     cursor:default;

@@ -1,6 +1,6 @@
 import * as globalStyles from '../../../styles/global'
 
-export const selectStyles =(backgroundColor:string,borderRadius:number, boxShadow:string)=> {
+export const selectStyles =(backgroundColor:string,borderRadius:number, boxShadow:string,themeUi:string)=> {
   return{
   control: (provided: any, state: any) => ({
     ...provided,
@@ -54,10 +54,10 @@ export const selectStyles =(backgroundColor:string,borderRadius:number, boxShado
     {
     ...provided,
     cursor: 'pointer',
-        backgroundColor: isSelected ? "#BC3D81": "white",
+        backgroundColor: isSelected ? themeUi==="REGALBLAZE"?"#FCA311":"#BC3D81": "white",
         // cursor: 'pointer',
         "&:hover": {
-          backgroundColor: '#bc3d814d',
+          backgroundColor: themeUi==="REGALBLAZE"?"rgb(252, 163, 17,0.3)":'#bc3d814d',
           color:"black",
       },
       // backgroundColor: isSelected ? "pink" : "blue",

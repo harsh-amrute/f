@@ -23,13 +23,14 @@ interface EconomicalWiseProps{
     setHorizondays?:any
     handleSubmitClick:()=>void
     horizonDays:number
+    themeUi:string
 }
 
 
 
 
 const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
-            ,handleSubmitClick,horizonDays}:EconomicalWiseProps) => {
+            ,handleSubmitClick,horizonDays,themeUi}:EconomicalWiseProps) => {
 
 
     const numericData = data.map((item:any) => ({
@@ -162,7 +163,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
     
     return(
         <>
-            <SCChartContainer height={400}>
+            <SCChartContainer height={"75%"}>
                 <SCChartMainContainer>
                     <SCChartSliderContainer>                               
                     <label style={{fontStyle:"normal",
@@ -188,7 +189,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
                             </VFButtonOutline> */}
                              <img 
                                         style={{cursor:'pointer'}}
-                                        src="/assets/img/Group 627.svg" 
+                                        src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
                                         height={50} 
                                         width={60} 
                                         onClick={() => handleSubmitClick()}
@@ -221,7 +222,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
                 
                 <SCHorizontalDivider/>
                 {/* <ChartWrapper> */}
-                <div style={{ height:'270px' , width:'100%'}}>
+                <div style={{ height:'70%' , width:'100%'}}>
                     <div className="title" style={{backgroundColor:'white', height:'40px',display:'flex',justifyContent:'center', alignItems:'center'}}>
                         <div style={{fontSize:'14px', fontWeight:500, textAlign:'center'}}>
                             Buffer Trend Graph

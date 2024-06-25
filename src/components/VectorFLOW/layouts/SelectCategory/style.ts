@@ -36,8 +36,14 @@ font-size:18px;
 line-height:24px;
 font-family:Roboto;
 `
+export const CardLayout = styled.div`
+@media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
+    .size.desktop}) {
+    zoom:0.75;
+}
+`
 export const CardContainer=styled.div`
-height:310px;
+// height:310px;
 width:100%;
 display:flex;
 align-items:center;
@@ -46,7 +52,7 @@ gap:80px;
 margin-bottom:70px;
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
         .size.desktop}) {
-        zoom:0.75;
+        // zoom:0.75;
     }
 
     @media (min-width: ${gridSystem.size.desktop}) {
@@ -55,7 +61,7 @@ margin-bottom:70px;
 `
 export const CardWrapper=styled.div`
 width:425px;
-height:310px;
+// height:310px;
 background: #FFFFFF 0% 0% no-repeat padding-box;
 box-shadow: -5px 4px 20px #91919133;
 border-radius: 12px;
@@ -103,7 +109,7 @@ font-size:16px;
 line-height:21px;
 font-family:Roboto;
 text-align:center;
-color: #B93B7E;
+color: inherit;
 display:flex;
 justify-content:center;
 align-items: center;

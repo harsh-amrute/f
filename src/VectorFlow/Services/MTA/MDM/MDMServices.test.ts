@@ -474,7 +474,7 @@ describe('Testing the MDMService',  () => {
       expect(response.status).toBe(200);
     });
 
-    it('should make post request to /api/validate-master/', async () => {
+    it('should make post request to /api/validate-master/basic-validation/{masterId}', async () => {
 
       mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
       const response = await MDMService.validateMaster({},1)
@@ -483,28 +483,6 @@ describe('Testing the MDMService',  () => {
     })
       expect(response.status).toBe(200);
     });
-
-
-
-
-
-
-
-
-
-    // it('should make get request to /GetTaskStatusData', async () => {
-
-    //   mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
-    //   const response = await MDMService.getTaskStatusData()
-    //   expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetTaskStatusData`,{
-    //     headers: { 'Content-Type': 'application/json' }
-    //   })
-    //   expect(response.status).toBe(200);
-    // });
-
-
-
-
 
 
     it('should make post request to get Sku and Location', async () => {
@@ -523,5 +501,15 @@ describe('Testing the MDMService',  () => {
       expect(response.status).toBe(200);
     });
 
+
+    it('should make get request to /api/validate-master/', async () => {
+
+      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getUploadProgress(1)
+      expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_API_HOST + `api/validate-master/get-upload-progress/1`,{
+        headers: { 'Content-Type': 'application/json' }
+      })
+      expect(response.status).toBe(200);
+    });
 
   });

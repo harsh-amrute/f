@@ -89,13 +89,13 @@ width:60px;
 flex-grow: 1;
 text-align:center;
 `
-export const MultiSelectCheckBoxComponent = styled.div`
+export const MultiSelectCheckBoxComponent = styled.div<{theme:string}>`
 margin-bottom:16px;
 display:flex;
 justify-content:flex-start;
 align-items:center;
 gap:6px;
-accent-color:#82104C;
+accent-color:${(props)=>props.theme==="REGALBLAZE"?"#C7810E":"#82104C"};
 `
 
 export const TextFieldHeader=styled.div`

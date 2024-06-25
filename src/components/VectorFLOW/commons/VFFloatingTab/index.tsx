@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from 'react'
+import { useUserData } from '../../../../context'
 import {VFFloatingTabWrapper,VFFloatingTabButton,VFFloatingTabButtonActiveShadow} from './styles'
 
 export interface VFFloatingTabItemProps{
@@ -27,6 +28,10 @@ const VFFloatingTab = (props:VFFloatingTabProps)=>{
         defaultTab=0,
         handleClick,
     } = props
+
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
     
     const [activeIndex,setActiveIndex] = useState<number>(defaultTab)
 
@@ -66,7 +71,7 @@ const VFFloatingTab = (props:VFFloatingTabProps)=>{
                     </VFFloatingTabButton>
                 )
             })}
-            {activeShadowData && <VFFloatingTabButtonActiveShadow style={{left:activeShadowData.left,width:activeShadowData.width}}/>}
+            {activeShadowData && <VFFloatingTabButtonActiveShadow theme={themeUi} style={{left:activeShadowData.left,width:activeShadowData.width}}/>}
         </VFFloatingTabWrapper>
     )
 }

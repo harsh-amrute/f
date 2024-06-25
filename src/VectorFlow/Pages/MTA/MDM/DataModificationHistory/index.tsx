@@ -121,7 +121,7 @@ const theme_ui = user.user.theme_ui
             { statusPanel: 'agAggregationComponent', align:'left' },
             ],
           }} 
-        height={600}
+        height={'70%'}
       />    
     </>
   )

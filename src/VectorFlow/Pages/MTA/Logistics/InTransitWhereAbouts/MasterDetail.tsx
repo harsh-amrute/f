@@ -37,7 +37,7 @@ const MasterDetail = (params:any)=>{
 
             <div  className="ag-theme-intranist"> 
             <VFTable
-                height={300}
+                height={"100%"}
                 disableZoomScaling
                 columnDefs={[
                     {
@@ -84,8 +84,6 @@ const MasterDetail = (params:any)=>{
                 rowData={params.data.skuDetails}
                 
             />
-           
-           
          </div>
         </MasterDetailWrapper>
     )

@@ -214,7 +214,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane preferredSize={'80%'}>
-                        <SCChartContainer height={425}>
+                        <SCChartContainer height={"95%"}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -257,7 +257,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                             floatingFilter:true,
                                             filter: "agMultiColumnFilter",
                                         }}
-                                        height={480}
+                                        height={'480px'}
                                     />
                                 </div>
                             </VFModalCard>
@@ -293,7 +293,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                     />
                                     </div>
 
-                            {<div id="LocationWiseG1" style={{height:'345px'}}></div>}
+                            {<div id="LocationWiseG1" style={{height:'80%'}}></div>}
                         </SCChartContainer>
                         {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
                             <VFInfoTip text={graph1}/>

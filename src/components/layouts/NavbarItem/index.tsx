@@ -1,5 +1,5 @@
 import * as NavStyle from "./styles";
-import { useState,useEffect,useCallback } from "react";
+import { useState,useCallback } from "react";
 import { SCMenuLeft, SCMenuItem, SCItemChild } from "./styles";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useUserData } from "../../../context";
@@ -16,6 +16,7 @@ import { RESET_STATE } from "../../../redux/actions/MDM";
 import BPRDailyAnalytics from "../../../components/VectorFLOW/layouts/BPRDailyAnalytics";
 import InTransitAnalytics from "../../../VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts/InTransitAnalytics";
 import OpenExpediteAnalytics from "../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/OpenExpediteAnalytics";
+import RRRAnalytics from "../..'/../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/RationedRequirementReport/RRRAnalytics";
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -27,7 +28,7 @@ const NavbarItem = ({
   const { user,isSideBarOpen,toggleSideBar } = useUserData();
   const permission: any = user?.roles?.permission;
   const {currentView,currentCategory} = useSelector((state:RootState)=>state.mta.planning)
-  const analyticsPaths:Array<string> = ["/supply-chain-intelligence-hub/bpr","/supply-chain-intelligence-hub/rrr","/supply-chain-intelligence-hub/bor","/dbm/dbm-norm-suggestions","/insights-and-trends/research-insights","/insights-and-trends/buffer-trend-report","/insights-and-trends/buffer-trends"]
+  const analyticsPaths:Array<string> = ["/supply-chain-intelligence-hub/bpr","/supply-chain-intelligence-hub/bor","/dbm/dbm-norm-suggestions","/insights-and-trends/research-insights","/insights-and-trends/buffer-trend-report","/insights-and-trends/buffer-trends"]
   const themeUi = user?.user?.theme_ui;
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,22 +36,7 @@ const NavbarItem = ({
   
   const mdm = useSelector((state:RootState) => state.mdm);
   const dispatch = useDispatch();
-  useEffect(()=>{
-    // if(location.pathname==="/supply-chain-intelligence-hub/planning" && currentCategory===""){
-    //   dispatch(UPDATE_PLANNING_DATA({
-    //     currentView:'null',
-    //     currentTab:'',
-    //     currentCategory:''
-    //   }))
-    // }
-    // if(location.pathname!=="/supply-chain-intelligence-hub/planning"){
-    //   dispatch(UPDATE_PLANNING_DATA({
-    //     currentView:'null',
-    //     currentTab:'',
-    //     currentCategory:''
-    //   }))
-    // }
-  },[location.pathname])
+
 
   const resetState = () => {
     dispatch(RESET_STATE());
@@ -250,6 +236,10 @@ const NavbarItem = ({
         {isHide  && pathname==='/logistics/intransit-whereabouts' && menuItem.id === 9 && (
           <InTransitAnalytics/>
         )}
+
+        {isHide  && pathname==='/supply-chain-intelligence-hub/rrr' && menuItem.id === 9 && (
+          <RRRAnalytics/>
+        )}  
 
         {isHide  && pathname==='/supply-chain-intelligence-hub/open-expediting-requests' && menuItem.id === 9 && (
           <OpenExpediteAnalytics/>

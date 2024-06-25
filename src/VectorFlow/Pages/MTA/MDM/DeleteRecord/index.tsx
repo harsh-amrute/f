@@ -150,6 +150,7 @@ const DeleteRecord = () => {
                               fields={generateOptions([activeMaster])}
                               currFilter={f}
                               key={f.id}
+                              isDisabled={activeMaster.id > 14}
                             />
                           )
                         }
@@ -178,6 +179,7 @@ const DeleteRecord = () => {
                       <VFButton
                       themeUi={themeUi}
                       onClick={()=>{handleApplyFilter()}}
+                      disabled={activeMaster.id > 14}
                       >
                         Apply Filter
                       </VFButton>
@@ -193,6 +195,7 @@ const DeleteRecord = () => {
                 }
                   <VFTable
                     ref={ref}
+                    height={activeMaster.rowData.length > 0 ? activeMaster.progress==='deleteView' ? "65%" : "95%" : "75%"}
                     columnDefs={activeMaster.colDefs}
                     rowData={activeMaster.rowData}
                     {...agGridProps}
@@ -304,6 +307,7 @@ const DeleteRecord = () => {
             onDeleteOnline={onDeleteOnline}
             onDeleteOnlineReset={onDeleteOnlineReset}
             onDeleteOnlineSubmit={onDeleteOnlineSubmit}
+            masterId={activeMaster.id}
           />
         }
         </React.Fragment>

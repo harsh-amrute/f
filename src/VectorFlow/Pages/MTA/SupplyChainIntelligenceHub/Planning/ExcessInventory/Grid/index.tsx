@@ -133,7 +133,7 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
             customGridColDef={[]} 
             isSubGridOpen={false}
             paginationProps={paginationProps}
-            gridHeight={650}        
+            gridHeight={"90%"}        
         />
     )
 }

@@ -126,6 +126,7 @@ const AddRecord = () => {
                 newTabHandler={addNewMaster}
                 >
                   <VFTable
+                    height={"95%"}
                     ref={ref}
                     columnDefs={activeMaster.colDefs}
                     rowData={activeMaster.rowData}
@@ -239,6 +240,7 @@ const AddRecord = () => {
             onDeleteOnlineReset={()=>console.log('')}
             onSubmitConflictData={()=>console.log('')}
             onDeleteOnlineSubmit={()=>console.log('')}
+            masterId={activeMaster.id}
           />
         }
         </React.Fragment>

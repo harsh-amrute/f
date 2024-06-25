@@ -469,110 +469,110 @@ const colDefs3: ColDef[] = [
         <Allotment>
           <Allotment.Pane preferredSize={"60%"}>
             <Allotment vertical>
-              <Allotment.Pane maxSize={220}>
+              <Allotment.Pane preferredSize={"50%"}>
                 <SCHorizontalAllignmentWrapper>
-                <SCChartContainer height={200}>
-                  <SCChartHeaderContainer>
-                    <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
-                      <SCChartHeader style={{marginRight:10}}>
-                        Top 10 Parent Location: Max Pipeline Black/Red SKUs With
-                        Available Rationed Qty For Receiving Locations
-                      </SCChartHeader>
-                    </div>
-                    <div style={{display:'flex',alignItems:'center',marginRight:'18px',}}>
-                      <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
-                      {!hideChart1 && (
-                        <img
-                          src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
-                          alt=""
-                          onClick={() => handleChartClose(1)}
-                          width={15}
-                          height={15}
-                        />
-                      )}
-                    </div>
-                  </SCChartHeaderContainer>
-                  <SCHorizontalDivider />
-                  <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Parent Location: Max Pipeline Black/Red SKUs With
-                        Available Rationed Qty For Receiving Locations" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-                      <div className="ag-theme-planning" style={{width:'1000px'}}>
-                        <VFTable
-                          ref={refGraph1}
-                          columnDefs={colDefs1}
-                          rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
-                          enableCharts={true}
-                          onGridReady={() => generateChart(1, true)}
-                          enableRangeSelection={true} 
-                          rowSelection="multiple"
-                          statusBar = {{
-                              statusPanels: [
-                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                { statusPanel: 'agAggregationComponent', align:'left' },
-                              ],
-                            }}
-                          getChartToolbarItems={getChartToolbarItems}
-                          chartToolPanelsDef={{
-                            panels: [],
-                            
-                          }}
-                          
-                          chartThemeOverrides={chartThemeOverridesG1}
-                          chartThemes={["myCustomTheme"]}
-                          customChartThemes={{
-                            myCustomTheme: myCustomThemeG1,
-                          }}
-                          disableZoomScaling={true}
-                          defaultColDef={{
-                              floatingFilter:true,
-                              filter: "agMultiColumnFilter",
-                            }}
-                          height={480}
-                        />
+                  <SCChartContainer height={"100%"}>
+                    <SCChartHeaderContainer>
+                      <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
+                        <SCChartHeader style={{marginRight:10}}>
+                          Top 10 Parent Location: Max Pipeline Black/Red SKUs With
+                          Available Rationed Qty For Receiving Locations
+                        </SCChartHeader>
                       </div>
-                  </VFModalCard>
-                  <div style={{ display: "none" }}>
-                    <VFTable
-                      ref={refGraph1}
-                      columnDefs={colDefs1}
-                      rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
-                      enableCharts={true}
-                      enableRangeSelection={true} 
-                      rowSelection="multiple"
-                      statusBar = {{
-                          statusPanels: [
-                            { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                            { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                            { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                            { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                            { statusPanel: 'agAggregationComponent', align:'left' },
-                          ],
-                        }}            
-                      onGridReady={() => generateChart(1)}
-                      getChartToolbarItems={getChartToolbarItems}
-                      chartToolPanelsDef={{
-                        panels: [],
-                      }}
-                      chartThemeOverrides={chartThemeOverridesG1}
-                      chartThemes={["myCustomTheme"]}
-                      customChartThemes={{
-                        myCustomTheme: myCustomThemeG1,
-                      }}
-                      disableZoomScaling={true}
-                    />
-                  </div>
-                  <div id="ExpediteDispatchesG1" style={{ height: "150px" }}></div>
-                </SCChartContainer>
-                {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
-                  <VFInfoTip text={graph1} />
-                </div> */}
+                      <div style={{display:'flex',alignItems:'center',marginRight:'18px',}}>
+                        <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
+                        {!hideChart1 && (
+                          <img
+                            src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
+                            alt=""
+                            onClick={() => handleChartClose(1)}
+                            width={15}
+                            height={15}
+                          />
+                        )}
+                      </div>
+                    </SCChartHeaderContainer>
+                    <SCHorizontalDivider />
+                    <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Parent Location: Max Pipeline Black/Red SKUs With
+                          Available Rationed Qty For Receiving Locations" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                        <div className="ag-theme-planning" style={{width:'1000px'}}>
+                          <VFTable
+                            ref={refGraph1}
+                            columnDefs={colDefs1}
+                            rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
+                            enableCharts={true}
+                            onGridReady={() => generateChart(1, true)}
+                            enableRangeSelection={true} 
+                            rowSelection="multiple"
+                            statusBar = {{
+                                statusPanels: [
+                                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                  { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                  { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                  { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                  { statusPanel: 'agAggregationComponent', align:'left' },
+                                ],
+                              }}
+                            getChartToolbarItems={getChartToolbarItems}
+                            chartToolPanelsDef={{
+                              panels: [],
+                              
+                            }}
+                            
+                            chartThemeOverrides={chartThemeOverridesG1}
+                            chartThemes={["myCustomTheme"]}
+                            customChartThemes={{
+                              myCustomTheme: myCustomThemeG1,
+                            }}
+                            disableZoomScaling={true}
+                            defaultColDef={{
+                                floatingFilter:true,
+                                filter: "agMultiColumnFilter",
+                              }}
+                            height={'480px'}
+                          />
+                        </div>
+                    </VFModalCard>
+                    <div style={{ display: "none" }}>
+                      <VFTable
+                        ref={refGraph1}
+                        columnDefs={colDefs1}
+                        rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
+                        enableCharts={true}
+                        enableRangeSelection={true} 
+                        rowSelection="multiple"
+                        statusBar = {{
+                            statusPanels: [
+                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                              { statusPanel: 'agAggregationComponent', align:'left' },
+                            ],
+                          }}            
+                        onGridReady={() => generateChart(1)}
+                        getChartToolbarItems={getChartToolbarItems}
+                        chartToolPanelsDef={{
+                          panels: [],
+                        }}
+                        chartThemeOverrides={chartThemeOverridesG1}
+                        chartThemes={["myCustomTheme"]}
+                        customChartThemes={{
+                          myCustomTheme: myCustomThemeG1,
+                        }}
+                        disableZoomScaling={true}
+                      />
+                    </div>
+                    <div id="ExpediteDispatchesG1" style={{ height: "80%" }}></div>
+                  </SCChartContainer>
+                  {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
+                    <VFInfoTip text={graph1} />
+                  </div> */}
                 </SCHorizontalAllignmentWrapper>
               </Allotment.Pane>
-              <Allotment.Pane>
+              <Allotment.Pane preferredSize={"50%"}>
                 <SCHorizontalAllignmentWrapper>
-                <SCChartContainer className="ag-theme-planning" style={{marginTop:'10px'}}>
+                <SCChartContainer className="ag-theme-planning" style={{marginTop:'10px'}} height={"100%"}>
                   <SCChartHeaderContainer>
                     <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
                       <SCChartHeader style={{marginRight:10}}>
@@ -638,7 +638,7 @@ const colDefs3: ColDef[] = [
                               floatingFilter:true,
                               filter: "agMultiColumnFilter",
                             }}
-                          height={480}
+                          height={'480px'}
                         />
                       </div>
                   </VFModalCard>
@@ -673,7 +673,7 @@ const colDefs3: ColDef[] = [
                       disableZoomScaling={true}
                     />
                   </div>
-                  <div id="ExpediteDispatchesG2" style={{ height: "150px" }}></div>
+                  <div id="ExpediteDispatchesG2" style={{ height: "80%" }}></div>
                 </SCChartContainer>
                 {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
                   <VFInfoTip text={graph2} />
@@ -683,70 +683,70 @@ const colDefs3: ColDef[] = [
             </Allotment>
           </Allotment.Pane>
           <Allotment.Pane>
-            <SCHorizontalAllignmentWrapper>
-            <SCChartContainer height={435}>
-              <SCChartHeaderContainer>
-                <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
-                  <SCChartHeader style={{marginRight:10}}>
-                    Comparision of Availability: Pre Rationing vs Post Rationing
-                  </SCChartHeader>
-                </div>
-                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
-                  <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph3}/></div>
-                  {!hideChart3 && (
-                    <img
-                      src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
-                      alt=""
-                      onClick={() => handleChartClose(3)}
-                      width={15}
-                      height={15}
-                    />
-                  )}
-                </div>
-              </SCChartHeaderContainer>
-              <SCHorizontalDivider />
-              <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-                      <div className="ag-theme-planning" style={{width:'1000px'}}>
-                        <VFTable
-                          ref={refGraph3}
-                          columnDefs={colDefs3}
-                          rowData={convertToInt(data["prePostRationing"])}
-                          enableCharts={true}
-                          enableRangeSelection={true} 
-                          rowSelection="multiple"
-                          statusBar = {{
-                              statusPanels: [
-                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                { statusPanel: 'agAggregationComponent', align:'left' },
-                              ],
-                            }}                          // onGridReady={generateChart}
-                          getChartToolbarItems={getChartToolbarItems}
-                          chartToolPanelsDef={{
-                            panels: [],
-                          }}
-                          chartThemeOverrides={chartThemeOverridesG1}
-                          // chartThemes={['myCustomTheme']}
-                          // customChartThemes={{
-                          //     'myCustomTheme':myCustomTheme
-                          // }}
-                          defaultColDef={{
-                              floatingFilter:true,
-                              filter: "agMultiColumnFilter",
+            <SCHorizontalAllignmentWrapper style={{paddingBottom:'5px'}}>
+              <SCChartContainer height={"100%"}>
+                <SCChartHeaderContainer>
+                  <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
+                    <SCChartHeader style={{marginRight:10}}>
+                      Comparision of Availability: Pre Rationing vs Post Rationing
+                    </SCChartHeader>
+                  </div>
+                  <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                    <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph3}/></div>
+                    {!hideChart3 && (
+                      <img
+                        src="/assets/img/VectorFLOW/BPR/expand-graph.svg"
+                        alt=""
+                        onClick={() => handleChartClose(3)}
+                        width={15}
+                        height={15}
+                      />
+                    )}
+                  </div>
+                </SCChartHeaderContainer>
+                <SCHorizontalDivider />
+                <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                        <div className="ag-theme-planning" style={{width:'1000px'}}>
+                          <VFTable
+                            ref={refGraph3}
+                            columnDefs={colDefs3}
+                            rowData={convertToInt(data["prePostRationing"])}
+                            enableCharts={true}
+                            enableRangeSelection={true} 
+                            rowSelection="multiple"
+                            statusBar = {{
+                                statusPanels: [
+                                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                  { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                  { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                  { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                  { statusPanel: 'agAggregationComponent', align:'left' },
+                                ],
+                              }}                          // onGridReady={generateChart}
+                            getChartToolbarItems={getChartToolbarItems}
+                            chartToolPanelsDef={{
+                              panels: [],
                             }}
-                          height={480}
-                        />
-                      </div>
-              </VFModalCard>
-              <div id="ExpediteDispatchesG3" style={{height:510 * 0.75}}>
-                <AgChartsReact options={options} />
-              </div>
-            </SCChartContainer>
-            {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
-              <VFInfoTip text={graph3} />
-            </div> */}
+                            chartThemeOverrides={chartThemeOverridesG1}
+                            // chartThemes={['myCustomTheme']}
+                            // customChartThemes={{
+                            //     'myCustomTheme':myCustomTheme
+                            // }}
+                            defaultColDef={{
+                                floatingFilter:true,
+                                filter: "agMultiColumnFilter",
+                              }}
+                            height={'480px'}
+                          />
+                        </div>
+                </VFModalCard>
+                <div id="ExpediteDispatchesG3" style={{height:'80%'}}>
+                  <AgChartsReact options={options} />
+                </div>
+              </SCChartContainer>
+              {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
+                <VFInfoTip text={graph3} />
+              </div> */}
             </SCHorizontalAllignmentWrapper>
           </Allotment.Pane>
         </Allotment>
