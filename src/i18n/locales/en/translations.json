@@ -80,7 +80,8 @@
         "controlPanel":"Control Panel",
         "savedDrafts":"Saved Drafts",
         "taskPendingForReview":"Task Pending for Review",
-        "taskStatus":"Task Status"
+        "taskStatus":"Task Status",
+        "modificationHistory":"Data Modification History"
       },
       "dynamicGridControl_AssortmentPlanning": {
         "title": "Dynamic Grid Control & Assortment Planning",

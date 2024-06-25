@@ -1638,3 +1638,290 @@ export const validateMasterMockData = {
 }
 
 
+export const getSkuLocMockData =
+  {
+    "recordCount": null,
+    "data": [
+        {
+            "SKUCode": "WMSDXEE16KDWT"
+        },
+        {
+            "SKUCode": "WMSDXEE16KDWT"
+        },
+        {
+            "SKUCode": "WMSDXEE16KDWT"
+        }
+    ],
+    "status": 200,
+    "msg": null,
+    "errorCount": null,
+    "error": null,
+    "conflictErrorCount": null,
+    "conflictError": null
+}
+
+export const getTaskMasterHistoryMockData = {
+  "recordCount": "18",
+  "data": [
+    {
+      "id": "1",
+      "name": "SKU",
+      "fields": [
+        {
+          "displayName": "SKUCode",
+          "key": "sc",
+          "col_Position": "1",
+          "visible": true,
+          "isAdd": true,
+          "isEdit": false,
+          "isDownload": true,
+          "isApplicable": true
+        },
+        {
+          "displayName": "Description",
+          "key": "sd",
+          "col_Position": "2",
+          "visible": true,
+          "isAdd": true,
+          "isEdit": true,
+          "isDownload": true,
+          "isApplicable": true
+        },
+        {
+          "displayName": "ElephantOrderCapping",
+          "key": "ec",
+          "col_Position": "3",
+          "visible": true,
+          "isAdd": true,
+          "isEdit": true,
+          "isDownload": true,
+          "isApplicable": true
+        },
+        {
+          "displayName": "Weight",
+          "key": "wt",
+          "col_Position": "4",
+          "visible": true,
+          "isAdd": true,
+          "isEdit": true,
+          "isDownload": true,
+          "isApplicable": true
+        },
+        {
+          "displayName": "Volume",
+          "key": "vm",
+          "col_Position": "5",
+          "visible": true,
+          "isAdd": true,
+          "isEdit": true,
+          "isDownload": true,
+          "isApplicable": true
+        },
+        {
+          "displayName": "c1",
+          "key": "c1",
+          "col_Position": "6",
+          "visible": true,
+          "isAdd": true,
+          "isEdit": true,
+          "isDownload": true,
+          "isApplicable": true
+        },
+        {
+          "displayName": "c2",
+          "key": "c2",
+          "col_Position": "7",
+          "visible": true,
+          "isAdd": true,
+          "isEdit": true,
+          "isDownload": true,
+          "isApplicable": true
+        },
+        {
+          "displayName": "c3",
+          "key": "c3",
+          "col_Position": "8",
+          "visible": true,
+          "isAdd": true,
+          "isEdit": true,
+          "isDownload": true,
+          "isApplicable": true
+        },
+        {
+          "displayName": "c4",
+          "key": "c4",
+          "col_Position": "9",
+          "visible": true,
+          "isAdd": true,
+          "isEdit": true,
+          "isDownload": true,
+          "isApplicable": true
+        },
+        {
+          "displayName": "c5",
+          "key": "c5",
+          "col_Position": "10",
+          "visible": true,
+          "isAdd": true,
+          "isEdit": true,
+          "isDownload": true,
+          "isApplicable": true
+        },
+        {
+          "displayName": "c6",
+          "key": "c6",
+          "col_Position": "11",
+          "visible": false,
+          "isAdd": false,
+          "isEdit": false,
+          "isDownload": false,
+          "isApplicable": false
+        },
+        {
+          "displayName": "c7",
+          "key": "c7",
+          "col_Position": "12",
+          "visible": false,
+          "isAdd": false,
+          "isEdit": false,
+          "isDownload": false,
+          "isApplicable": false
+        },
+        {
+          "displayName": "c8",
+          "key": "c8",
+          "col_Position": "51",
+          "visible": false,
+          "isAdd": false,
+          "isEdit": false,
+          "isDownload": false,
+          "isApplicable": false
+        },
+        {
+          "displayName": "c9",
+          "key": "c9",
+          "col_Position": "52",
+          "visible": false,
+          "isAdd": false,
+          "isEdit": false,
+          "isDownload": false,
+          "isApplicable": false
+        },
+        {
+          "displayName": "c10",
+          "key": "c10",
+          "col_Position": "53",
+          "visible": false,
+          "isAdd": false,
+          "isEdit": false,
+          "isDownload": false,
+          "isApplicable": false
+        },
+        {
+          "displayName": "c11",
+          "key": "c11",
+          "col_Position": "54",
+          "visible": false,
+          "isAdd": false,
+          "isEdit": false,
+          "isDownload": false,
+          "isApplicable": false
+        },
+        {
+          "displayName": "c12",
+          "key": "c12",
+          "col_Position": "55",
+          "visible": false,
+          "isAdd": false,
+          "isEdit": false,
+          "isDownload": false,
+          "isApplicable": false
+        },
+        {
+          "displayName": "c13",
+          "key": "c13",
+          "col_Position": "57",
+          "visible": false,
+          "isAdd": false,
+          "isEdit": false,
+          "isDownload": false,
+          "isApplicable": false
+        },
+        {
+          "displayName": "c14",
+          "key": "c14",
+          "col_Position": "58",
+          "visible": false,
+          "isAdd": false,
+          "isEdit": false,
+          "isDownload": false,
+          "isApplicable": false
+        },
+        {
+          "displayName": "c15",
+          "key": "c15",
+          "col_Position": "59",
+          "visible": false,
+          "isAdd": false,
+          "isEdit": false,
+          "isDownload": false,
+          "isApplicable": false
+        },
+        {
+          "displayName": "SL1",
+          "key": "SL1",
+          "col_Position": "60",
+          "visible": true,
+          "isAdd": true,
+          "isEdit": true,
+          "isDownload": true,
+          "isApplicable": true
+        },
+        {
+          "displayName": "SL2",
+          "key": "SL2",
+          "col_Position": "61",
+          "visible": true,
+          "isAdd": true,
+          "isEdit": true,
+          "isDownload": true,
+          "isApplicable": true
+        },
+        {
+          "displayName": "SL3",
+          "key": "SL3",
+          "col_Position": "62",
+          "visible": true,
+          "isAdd": true,
+          "isEdit": true,
+          "isDownload": true,
+          "isApplicable": true
+        },
+        {
+          "displayName": "SL4",
+          "key": "SL4",
+          "col_Position": "63",
+          "visible": false,
+          "isAdd": false,
+          "isEdit": false,
+          "isDownload": false,
+          "isApplicable": false
+        },
+        {
+          "displayName": "SL5",
+          "key": "SL5",
+          "col_Position": "64",
+          "visible": false,
+          "isAdd": false,
+          "isEdit": false,
+          "isDownload": false,
+          "isApplicable": false
+        }
+      ]
+    }
+  ]
+};
+
+      
+
+

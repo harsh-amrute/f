@@ -484,4 +484,44 @@ describe('Testing the MDMService',  () => {
       expect(response.status).toBe(200);
     });
 
+
+
+
+
+
+
+
+
+    // it('should make get request to /GetTaskStatusData', async () => {
+
+    //   mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+    //   const response = await MDMService.getTaskStatusData()
+    //   expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetTaskStatusData`,{
+    //     headers: { 'Content-Type': 'application/json' }
+    //   })
+    //   expect(response.status).toBe(200);
+    // });
+
+
+
+
+
+
+    it('should make post request to get Sku and Location', async () => {
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getSkuLoc({})
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetSkuLoc`,{})
+      expect(response.status).toBe(200);
+    });
+
+    it('should make post request to get Data Modidifcation History', async () => {
+
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+      const response = await MDMService.getTaskMastersHistory({})
+      expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + `/GetTaskMastersHistory`,{})
+      expect(response.status).toBe(200);
+    });
+
+
   });

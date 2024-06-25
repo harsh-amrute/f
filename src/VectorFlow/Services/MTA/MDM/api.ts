@@ -163,5 +163,13 @@ export namespace MDMService {
     })
   }
 
+  export const getSkuLoc = async (body:any) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/GetSkuLoc`,body);
+  }
+
+  export const getTaskMastersHistory = async (body:any) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/GetTaskMastersHistory`,body);
+  }
+
 }
 
