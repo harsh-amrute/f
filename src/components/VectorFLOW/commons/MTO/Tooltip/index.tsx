@@ -9,11 +9,13 @@ const Tooltip = ({ children, content }: any) => {
     const tooltipRef = useRef<HTMLDivElement>(null);
 
     const onMouseIn = (e: any) => {
+
         e.stopPropagation();
         setShowTooltip(true)
         //add delay so that tooltip component is rendered
         setTimeout(() => {
             if (tooltipRef.current) {
+
                 const tooltipRect = tooltipRef.current.getBoundingClientRect();
                 const { top, left, width } = e.target.getBoundingClientRect();
                 let tooltipLeft = left + (width / 2) - (tooltipRect.width / 2);
@@ -46,7 +48,7 @@ const Tooltip = ({ children, content }: any) => {
             {showTooltip && (
                 //use portal here
                 <Portal wrapperId="tooltip">
-                    <TooltipContainer style={{ top: toolTipPosition?.top, left: toolTipPosition?.left }} ref={tooltipRef}>
+                    <TooltipContainer data-testid="tooltip" style={{ top: toolTipPosition?.top, left: toolTipPosition?.left }} ref={tooltipRef}>
                         {content}
                     </TooltipContainer>
                 </Portal>

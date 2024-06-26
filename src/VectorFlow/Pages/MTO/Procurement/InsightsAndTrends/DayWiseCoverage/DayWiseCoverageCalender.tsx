@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { CalenderContainer, CalenderContent, CalenderMonth, CalenderMonths, CalenderTitle, Day, Month, Calender } from './style'
 import { eachMonthOfInterval, format, getDaysInMonth } from 'date-fns'
 import Tooltip from '../../../../../../components/VectorFLOW/commons/MTO/Tooltip'
@@ -8,14 +8,16 @@ interface IDayWiseCoverageCalenderProps {
     start: string,
     end: string,
     getToolTipContent: (id: string) => JSX.Element,
-    getColor: (id: string) => string
+    getColor: (id: string) => string,
+    setSelectedDate: Dispatch<SetStateAction<string>>,
 }
 
 const DayWiseCoverageCalender = ({
     start,
     end,
     getToolTipContent,
-    getColor
+    getColor,
+    setSelectedDate
 }: IDayWiseCoverageCalenderProps) => {
 
     const getMonths = (start: string, end: string) => {
@@ -43,7 +45,7 @@ const DayWiseCoverageCalender = ({
                                         {_.range(0, getDaysInMonth(month)).map((day: number, index) => {
                                             const formattedDate = format(`${month.getFullYear()}/${month.getMonth() + 1}/${day + 1}`, "yyyy/MM/dd")
                                             return (
-                                                <Day key={index} color={getColor(formattedDate)}>
+                                                <Day key={index} color={getColor(formattedDate)} onClick={() => setSelectedDate(formattedDate)}>
                                                     <Tooltip content={getToolTipContent(formattedDate)}>
                                                         {day + 1}
                                                     </Tooltip>

@@ -1,17 +1,36 @@
+import { SizeColumnsToContentStrategy, SizeColumnsToFitGridStrategy, SizeColumnsToFitProvidedWidthStrategy } from 'ag-grid-charts-enterprise'
 import { GridOptions } from 'ag-grid-enterprise'
-import React from 'react'
+import React, { useMemo } from 'react'
+import ColorCellRenderer from '../../../Common/ColorCellRenderer'
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomGroupCellRenderer from './CustomGroupCellRenderer'
 import DayWiseCoverageDetailsCellRenderer from './DayWiseCoverageDetailsCellRenderer'
 import { tableData } from './table_data'
 
+interface IDayWiseCoverageProps {
+    selectedDate: string,
+}
 
-const DayWiseCoverageTable = () => {
+const DayWiseCoverageTable = ({
+    selectedDate,
+}: any) => {
 
     const options: GridOptions<any> = {
+        getRowStyle: (params: any) => {
+            return {
+                background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
+            };
+        },
         columnDefs: [
             { headerName: "Status", field: "status", rowGroup: true, hide: true, suppressMenu: true, },
-            { headerName: "Color Priority", field: "clr", suppressMenu: true, },
+            {
+                headerName: "Color Priority", field: "clr", suppressMenu: true, cellRenderer: (params: any) => {
+                    if (params.node.group) {
+                        return null
+                    }
+                    return ColorCellRenderer(params)
+                }
+            },
             { headerName: "Order Number", field: "on", suppressMenu: true },
             { headerName: "Order Receive Date", field: "ord", suppressMenu: true },
             { headerName: "Order Due Date", field: "odd", suppressMenu: true },
@@ -25,12 +44,17 @@ const DayWiseCoverageTable = () => {
             headerName: "Group",
             cellRenderer: CustomGroupCellRenderer,
             suppressMenu: true,
-        },
-        defaultColDef: {
-            resizable: true
+            // cellStyle: {
+            //     width: "250px"
+            // }
+            initialWidth: 220
         },
         masterDetail: true,
+        detailCellRendererParams: {
+            innerHeight: 400
+        },
         detailCellRenderer: DayWiseCoverageDetailsCellRenderer,
+        detailRowAutoHeight: true,
         sideBar: "columns",
     }
 
@@ -38,10 +62,15 @@ const DayWiseCoverageTable = () => {
         <VFTable
             animateRows={true}
             gridOptions={options}
-            height={"500px"}
+            height={"450px"}
             disableZoomScaling={true}
             columnDefs={options.columnDefs}
             rowData={tableData.data}
+            pagination={true}
+            onGridReady={(params: any) => {
+                console.log(params.api.sizeColumnsToFit)
+                params.columnApi.autoSizeAllColumns()
+            }}
         />
     )
 }

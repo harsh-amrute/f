@@ -29,9 +29,9 @@ const DayWiseCoverageHeader = ({
             </DayWiseCoverageStatus>
             <Divider />
             <Text>From</Text>
-            <DatePicker type="month" date={start} setDate={setStart} />
+            <DatePicker type="month" date={start} setDate={setStart} data-testid="start" />
             <Text>To</Text>
-            <DatePicker type="month" date={end} setDate={setEnd} />
+            <DatePicker type="month" date={end} setDate={setEnd} data-testid="end" />
             <VFButtonOutline themeUi={themeUi} onClick={() => { setDateRange(start, end) }} style={{ height: "unset" }}>
                 Submit
             </VFButtonOutline>

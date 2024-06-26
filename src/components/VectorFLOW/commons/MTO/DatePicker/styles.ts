@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-export const x = 0;
-
 export const DatePickerContainer = styled.div`
   width: 200px;
   height: 43px;

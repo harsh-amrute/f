@@ -8,7 +8,7 @@ interface IDateProps {
 }
 const DatePicker = ({ date, setDate, type }: IDateProps) => {
     return (
-        <DatePickerContainer>
+        <DatePickerContainer data-testid="calender">
             <DateInput
                 value={date}
                 type={type}

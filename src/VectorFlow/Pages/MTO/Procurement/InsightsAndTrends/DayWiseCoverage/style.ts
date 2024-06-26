@@ -73,7 +73,7 @@ export const Calender = styled.table`
   display: block;
   border-collapse: collapse;
 `;
-export const Day = styled.td<{ color?: string }>`
+export const Day = styled.td<{ color: string }>`
   padding: 16px;
   border: none;
   margin: 1rem;
@@ -82,8 +82,8 @@ export const Day = styled.td<{ color?: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${(props) => props?.color};
-  color: ${(props) => (props?.color ? "white" : "black")};
+  background-color: ${(props) => props.color};
+  color: white;
   border-radius: 50%;
 `;
 

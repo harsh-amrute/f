@@ -18,17 +18,14 @@ const CustomGroupCellRenderer = (props: CustomCellRendererProps) => {
     }, []);
 
     const onClick = useCallback(() => node.setExpanded(!node.expanded), [node]);
-    // console.log(props)
 
     return (
         node.group ?
-            <div>
-                <button style={{ fontSize: "16px" }} onClick={onClick}>
-                    {value}
-                </button>
-            </div>
+            <button data-testid='collapsable' style={{ fontSize: "18px", background: "transparent", fontWeight: "bold" }} onClick={onClick}>
+                {value}&nbsp;({props.node.allChildrenCount})&nbsp;&nbsp;<Icon src={expanded ? "/assets/img/mto/dayWiseCoverage/arrow_down.svg" : "/assets/img/mto/dayWiseCoverage/arrow_right.svg"} />
+            </button>
             :
-            <button style={{ width: "100%", background: "transparent", textAlign: "right" }} onClick={onClick}>
+            <button data-testid='collapsable' style={{ width: "100%", background: "transparent", textAlign: "right" }} onClick={onClick}>
                 <Icon src={expanded ? "/assets/img/mto/dayWiseCoverage/collapse.svg" : "/assets/img/mto/dayWiseCoverage/expand.svg"} />
             </button>
     )
