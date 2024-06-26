@@ -89,7 +89,7 @@ export const tableData = {
       ],
     },
     {
-      clr: "Blue", //Color Priority
+      clr: "Black", //Color Priority
       on: "BMN1231",
       ord: "23/07/2023",
       odd: "23/07/2023",
