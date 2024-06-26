@@ -1,19 +1,19 @@
-import { SizeColumnsToContentStrategy, SizeColumnsToFitGridStrategy, SizeColumnsToFitProvidedWidthStrategy } from 'ag-grid-charts-enterprise'
 import { GridOptions } from 'ag-grid-enterprise'
-import React, { useMemo } from 'react'
+import React from 'react'
 import ColorCellRenderer from '../../../Common/ColorCellRenderer'
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomGroupCellRenderer from './CustomGroupCellRenderer'
 import DayWiseCoverageDetailsCellRenderer from './DayWiseCoverageDetailsCellRenderer'
 import { tableData } from './table_data'
 
-interface IDayWiseCoverageProps {
-    selectedDate: string,
-}
+// interface IDayWiseCoverageProps {
+//     selectedDate?: string,
+// }
 
-const DayWiseCoverageTable = ({
-    selectedDate,
-}: any) => {
+// const DayWiseCoverageTable = ({
+//     selectedDate,
+// }: IDayWiseCoverageProps) => {
+const DayWiseCoverageTable = () => {
 
     const options: GridOptions<any> = {
         getRowStyle: (params: any) => {
@@ -44,9 +44,6 @@ const DayWiseCoverageTable = ({
             headerName: "Group",
             cellRenderer: CustomGroupCellRenderer,
             suppressMenu: true,
-            // cellStyle: {
-            //     width: "250px"
-            // }
             initialWidth: 220
         },
         masterDetail: true,
@@ -55,7 +52,10 @@ const DayWiseCoverageTable = ({
         },
         detailCellRenderer: DayWiseCoverageDetailsCellRenderer,
         detailRowAutoHeight: true,
-        sideBar: "columns",
+        sideBar: {
+            toolPanels: ['columns']
+        }
+
     }
 
     return (

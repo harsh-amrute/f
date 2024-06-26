@@ -502,8 +502,8 @@ export const listMenuParent: any = [
       {
         name: "Material Requirement",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "/api/download-reports/fr",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+        url: "/procurement/material-requirement",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {
         name: "Insight and Trends",

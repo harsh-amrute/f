@@ -27,7 +27,7 @@ const DayWiseCoverageCalender = ({
                 <CalenderTitle>Calender</CalenderTitle>
                 <CalenderContent>
                     <CalenderMonths>
-                        {monthRange.map((month: any, index: number) => {
+                        {monthRange.map((month: any) => {
                             return (
                                 <CalenderMonth>
                                     {format(month, "MMM")}

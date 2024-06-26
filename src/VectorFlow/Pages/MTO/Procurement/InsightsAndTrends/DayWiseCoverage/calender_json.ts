@@ -20,9 +20,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/02/04": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/02/05": {
       oc: 52,
@@ -50,9 +50,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/02/09": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/02/10": {
       oc: 52,
@@ -68,9 +68,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/02/12": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/02/13": {
       oc: 52,
@@ -80,9 +80,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/02/14": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/02/15": {
       oc: 52,
@@ -116,9 +116,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/02/20": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/02/21": {
       oc: 52,
@@ -134,9 +134,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/02/23": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/02/24": {
       oc: 52,
@@ -176,9 +176,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/03/01": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/03/02": {
       oc: 52,
@@ -194,9 +194,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/03/04": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/03/05": {
       oc: 52,
@@ -224,9 +224,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/03/09": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/03/10": {
       oc: 52,
@@ -272,9 +272,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/03/17": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/03/18": {
       oc: 52,
@@ -290,9 +290,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/03/20": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/03/21": {
       oc: 52,
@@ -308,9 +308,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/03/23": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/03/24": {
       oc: 52,
@@ -350,9 +350,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/03/30": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/03/31": {
       oc: 52,
@@ -368,9 +368,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/04/02": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/04/03": {
       oc: 52,
@@ -380,9 +380,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/04/04": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/04/05": {
       oc: 52,
@@ -404,9 +404,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/04/08": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/04/09": {
       oc: 52,
@@ -416,9 +416,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/04/10": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/04/11": {
       oc: 52,
@@ -440,9 +440,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/04/14": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/04/15": {
       oc: 52,
@@ -452,9 +452,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/04/16": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/04/17": {
       oc: 52,
@@ -476,9 +476,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/04/20": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/04/21": {
       oc: 52,
@@ -488,9 +488,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/04/22": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/04/23": {
       oc: 52,
@@ -500,9 +500,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/04/24": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/04/25": {
       oc: 52,
@@ -530,9 +530,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/04/29": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/04/30": {
       oc: 52,
@@ -542,9 +542,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/05/01": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/05/02": {
       oc: 52,
@@ -560,9 +560,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/05/04": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/05/05": {
       oc: 52,
@@ -572,57 +572,57 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/05/06": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/05/07": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/05/08": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/05/09": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/05/10": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/05/11": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/05/12": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/05/13": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/05/14": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/05/15": {
       oc: 52,
@@ -710,9 +710,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/05/29": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/05/30": {
       oc: 52,
@@ -734,9 +734,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/06/02": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/06/03": {
       oc: 52,
@@ -764,9 +764,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/06/07": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/06/08": {
       oc: 52,
@@ -776,21 +776,21 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/06/09": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/06/10": {
-      oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      oc: 5,
+      fk: 2,
+      pk: 1,
+      nk: 2,
     },
     "2024/06/11": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/06/12": {
       oc: 52,
@@ -800,9 +800,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/06/13": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/06/14": {
       oc: 52,
@@ -818,9 +818,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/06/16": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/06/17": {
       oc: 52,
@@ -836,9 +836,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/06/19": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/06/20": {
       oc: 52,
@@ -848,9 +848,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/06/21": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/06/22": {
       oc: 52,
@@ -878,9 +878,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/06/26": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
     "2024/06/27": {
       oc: 52,
@@ -902,9 +902,9 @@ export const DayWiseCoverageSumamry: any = {
     },
     "2024/06/30": {
       oc: 52,
-      fk: 0,
-      pk: 45,
-      nk: 7,
+      fk: 52,
+      pk: 0,
+      nk: 0,
     },
   },
 };

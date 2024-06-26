@@ -1,5 +1,5 @@
 import { CustomCellRendererProps } from '@ag-grid-community/react';
-import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import CustomGroupCellRenderer from './CustomGroupCellRenderer';
 
 describe('Custom Group Cell Renderer', () => {
@@ -8,12 +8,16 @@ describe('Custom Group Cell Renderer', () => {
             node: {
                 expanded: false,
                 addEventListener(eventType, listener) {
+                    console.log(eventType)
                     listener({ node: { expanded: true } })
                 },
                 removeEventListener(eventType, listener) {
+                    console.log(eventType)
                     listener({ node: { expanded: true } })
                 },
                 setExpanded(expanded, sourceEvent?, forceSync?) {
+                    console.log(sourceEvent)
+                    console.log(forceSync)
                     this.expanded = expanded
                 },
             },
@@ -29,12 +33,15 @@ describe('Custom Group Cell Renderer', () => {
             node: {
                 expanded: true,
                 addEventListener(eventType, listener) {
+                    console.log(eventType)
                     listener({ node: { expanded: false } })
                 },
                 removeEventListener(eventType, listener) {
+                    console.log(eventType)
                     listener({ node: { expanded: false } })
                 },
                 setExpanded(expanded, sourceEvent?, forceSync?) {
+                    console.log(sourceEvent, forceSync)
                     this.expanded = expanded
                 },
             },

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import DayWiseCoverageCalender from './DayWiseCoverageCalender';
 import { DayWiseCoverageSumamry } from './calender_json';
 import DayWiseCoverageHeader from './DayWiseCoverageHeader'
@@ -72,7 +72,10 @@ const DayWiseCoverage = () => {
         <div>
             <DayWiseCoverageHeader startDate={startDate} endDate={endDate} setDateRange={setDateRange} />
             <DayWiseCoverageCalender start={startDate} end={endDate} getToolTipContent={getToolTipContent} getColor={getColor} setSelectedDate={setSelectedDate} />
-            {selectedDate && <DayWiseCoverageTable selectedDate={selectedDate} />}
+            {selectedDate &&
+                <DayWiseCoverageTable
+                // selectedDate={selectedDate}
+                />}
 
         </div>
 

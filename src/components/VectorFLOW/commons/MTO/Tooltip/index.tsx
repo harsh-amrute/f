@@ -1,5 +1,4 @@
-import { Console } from 'console';
-import React, { useState, useRef, CSSProperties, useEffect } from 'react';
+import React, { useState, useRef, CSSProperties } from 'react';
 import Portal from '../../../../../components/VectorFLOW/layouts/Portal';
 import { TooltipContainer, TooltipTarget } from './styles';
 
