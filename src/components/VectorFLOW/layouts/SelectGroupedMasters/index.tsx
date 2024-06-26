@@ -3,9 +3,12 @@ import { ContentWrapper, TextContainer, TextFilterWrapper,VFMasterGroupCard,VFMa
 import { useUserData } from "../../../../context";
 import VFButton from "../../../VectorFLOW/commons/VFButton";
 import { useState,ReactNode} from "react";
-import { MDMMasterState } from "../../../../VectorFlow/types/MDM";
+import { MDMMasterState, Option } from "../../../../VectorFlow/types/MDM";
 import {ImageMapper,ImageMapperHover, masterGroupMapper} from "../../../../helpers/MDMConstants"
+import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
 import * as globalStyles from "../../../../styles/global";
+import { useDispatch } from "react-redux";
+import { FILL_SELECTED_OPTIONS } from "../../../../redux/actions/MDM";
 
 export interface SelectGroupedMastersProps {
     onSubmit:()=>void;
@@ -15,6 +18,10 @@ export interface SelectGroupedMastersProps {
     allMasters:MDMMasterState[]
     selectedMasters:MDMMasterState[]
     text:string
+    shouldShowMasterGroup:any
+    shouldShowMaster:any
+    options:Array<Option>
+    selectedOptions:Array<Option>
 }
 interface CardProps{
     master:MDMMasterState
@@ -88,10 +95,21 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
         handleOnClickMaster,
         allMasters,
         selectedMasters,
-        text
+        text,
+        shouldShowMasterGroup,
+        shouldShowMaster,
+        selectedOptions,
+        options
     } = props
 
     const {user} = useUserData();
+
+    const dispatch = useDispatch()
+
+    const handleClick = (data:any)=>{
+        dispatch(FILL_SELECTED_OPTIONS(data))
+    }
+    // console.log(selectedOptions)
    
  return(
     <ContentWrapper>
@@ -99,35 +117,48 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
             <TextContainer>
              <p>What kind of records do you want to {text}?</p>
             </TextContainer>
+            <VFMasterFieldSearch 
+                    value={selectedOptions} 
+                    setValue={handleClick} 
+                    options={options} 
+                    placeholder={'Select'} 
+                    handleListChild={()=>{return}} 
+                    maxToShow={3} 
+                    backgroundColor={'#FFFFFF'}
+                    disabled={false}
+                />
         </TextFilterWrapper>
 
         <VFMasterGroupCardContainer> 
         {
         masterGroupMapper.map(masterGroup=>{
-         if(masterGroup.masters.length<1)return 
+         if(masterGroup.masters.length<1 )return 
+            // console.log(masterGroup.name,shouldShowMaster(masterGroup))
+           if(shouldShowMasterGroup(masterGroup)){
             return(
        
-            <VFMasterGroupCard> 
-
-                <VFMasterGroupCardHeader>
-                    <VFMasterGroupCardHeaderText> 
-                        <p>{masterGroup.name}</p>
-                    </VFMasterGroupCardHeaderText>
-                       
-                </VFMasterGroupCardHeader>
-                <div className="custom-scrollbar" style={{ overflow:'auto', width:'100%', paddingLeft:'10px', paddingRight:'10px'}}>
-
-                {allMasters.map((currentMaster)=>{
-                            if(masterGroup.masters.includes(currentMaster.id.toString())){
-                            return(
-                            <Card master={currentMaster} handleOnClickMaster={handleOnClickMaster} selectedMasters={selectedMasters}/>
-                        )}})} 
-                                    </div>
-
-            </VFMasterGroupCard>                             
-
-
-                    )
+                <VFMasterGroupCard> 
+    
+                    <VFMasterGroupCardHeader>
+                        <VFMasterGroupCardHeaderText> 
+                            <p>{masterGroup.name}</p>
+                        </VFMasterGroupCardHeaderText>
+                           
+                    </VFMasterGroupCardHeader>
+                    <div className="custom-scrollbar" style={{ overflow:'auto', width:'100%', paddingLeft:'10px', paddingRight:'10px'}}>
+    
+                    {allMasters.map((currentMaster)=>{
+                                if(shouldShowMaster(currentMaster) && masterGroup.masters.includes(currentMaster.id.toString())){
+                                return(
+                                <Card master={currentMaster} handleOnClickMaster={handleOnClickMaster} selectedMasters={selectedMasters}/>
+                            )}})} 
+                                        </div>
+    
+                </VFMasterGroupCard>                             
+    
+    
+                        )
+           }
 
             })
         }

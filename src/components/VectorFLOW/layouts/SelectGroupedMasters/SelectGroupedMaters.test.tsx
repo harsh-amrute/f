@@ -11,6 +11,10 @@ import { setupReactQuery } from "../../../../config/react-query-config"
 const mockFunction = jest.fn()
 
 const dummyprops:SelectGroupedMastersProps = {
+    selectedOptions:[],
+    options:[],
+    shouldShowMaster:()=>true,
+    shouldShowMasterGroup:()=>true,
     onSubmit:mockFunction,
     onCancel:mockFunction,
     handleOnClickMaster:mockFunction,

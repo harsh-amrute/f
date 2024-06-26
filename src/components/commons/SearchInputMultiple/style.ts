@@ -48,8 +48,6 @@ export const selectStyles =(backgroundColor:string,borderRadius:number, boxShado
     display: 'none'
   }),
   option: (provided: any, {isFocused, isSelected}: any) =>  { 
-    console.log(isFocused)
-    console.log(isSelected)
     return (
     {
     ...provided,

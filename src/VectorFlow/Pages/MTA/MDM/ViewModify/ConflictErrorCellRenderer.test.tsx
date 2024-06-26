@@ -1,7 +1,28 @@
-import React from 'react';
+import React,{ReactNode} from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
 import '@testing-library/jest-dom';
+
+import { UserDataContext } from '../../../../../context';
+
+
+const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {
+  return (
+
+          <UserDataContext.Provider
+            value={{
+              user: { user: { theme_ui: theme } },
+              changeColorTheme: (color) => {
+                return color;
+              },
+              isSideBarOpen:true,toggleSideBar:jest.fn
+            }}
+          >
+            {children}
+          </UserDataContext.Provider>
+
+  );
+};
 
 describe('ConflictErrorCellRenderer', () => {
   // Mock data for the params prop
@@ -24,7 +45,7 @@ describe('ConflictErrorCellRenderer', () => {
   
   // Test 1: Component renders without crashing
   it('renders without crashing', () => {
-    render(<ConflictErrorCellRenderer {...mockParams} />);
+    render(contextWrapperWithCustomTheme(<ConflictErrorCellRenderer {...mockParams} />,'NOIRFUSION'));
     expect(screen.getByText('Test Value')).toBeInTheDocument();
   });
 
@@ -39,7 +60,7 @@ describe('ConflictErrorCellRenderer', () => {
             testColId:'Data1'
         }
     }
-    render(<ConflictErrorCellRenderer {...newMockParams} />);
+    render(contextWrapperWithCustomTheme(<ConflictErrorCellRenderer {...newMockParams} />,"REGALBLAZE"));
     // expect(screen.getByText('Test Value')).toHaveStyle('color: black');
 
     // const newMockParams = {
@@ -55,7 +76,7 @@ describe('ConflictErrorCellRenderer', () => {
 
   // Test 3: Tooltips are shown/hidden on mouse events
   it('shows and hides tooltip on mouse events', () => {
-    render(<ConflictErrorCellRenderer {...mockParams} />);
+    render(contextWrapperWithCustomTheme(<ConflictErrorCellRenderer {...mockParams} />,'NOIRFUSION'));
     fireEvent.mouseEnter(screen.getByText('Test Value'));
     // Assuming there is an element with the role tooltip
     fireEvent.mouseLeave(screen.getByText('Test Value'));
@@ -63,13 +84,13 @@ describe('ConflictErrorCellRenderer', () => {
   });
 
   it('renders overflown tooltips', () => {
-    render(<div style={{display:'flex',flexDirection:'column'}}>
-        {[1,2,3,4,5,67,8,9,0,534,311,31111,31111,111111,4111111,14124121,45215125,15125124,5632623626,21479867,4169679,519696,96796515,569769669,156996961,1967969696].map((n:number)=>{
-            return(
-                <ConflictErrorCellRenderer {...mockParams} key={n} />
-            )
-        })}
-    </div>);
+    render(contextWrapperWithCustomTheme(<div style={{display:'flex',flexDirection:'column'}}>
+    {[1,2,3,4,5,67,8,9,0,534,311,31111,31111,111111,4111111,14124121,45215125,15125124,5632623626,21479867,4169679,519696,96796515,569769669,156996961,1967969696].map((n:number)=>{
+        return(
+            <ConflictErrorCellRenderer {...mockParams} key={n} />
+        )
+    })}
+</div>,"REGALBLAZE"));
     fireEvent.mouseEnter(screen.getAllByText('Test Value')[25]);
     // Assuming there is an element with the role tooltip
     fireEvent.mouseLeave(screen.getAllByText('Test Value')[25]);

@@ -16,6 +16,8 @@ const useDelete=()=>{
     const allMasters = useSelector((state:RootState)=>state.mdm.allMasters); 
     const activeMaster = useSelector((state:RootState)=>state.mdm.activeMaster)
     const selectedMasters = useSelector((state:RootState)=>state.mdm.masters)
+    const options = useSelector((state:RootState)=>state.mdm.options)
+    const selectedOptions = useSelector((state:RootState)=>state.mdm.selectedOptions)
     const chunkSize = useSelector((state:RootState)=>state.mdm.chunkSize);
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
     const dispatch = useDispatch();
@@ -372,6 +374,37 @@ const useDelete=()=>{
        
       }
 
+      const showMasterGroup = (currMasterGroup:{name:string,masters:Array<any>})=>{
+        if(selectedOptions.length===0)return true
+        let shouldShow = false
+        currMasterGroup.masters.forEach((m:any)=>{
+          const currMaster = allMasters.find((tempMaster)=>tempMaster.id===m)
+          if(currMaster){
+            currMaster.fields.map((f)=>{
+              selectedOptions.forEach((so)=>{
+                if(so.value===f.key){
+                  shouldShow= true
+                }
+              })
+            })
+          }
+        })
+        return shouldShow
+      }
+
+      const showMaster = (currMaster:MDMMasterState)=>{
+        if(selectedOptions.length===0)return true
+        let shouldShow = false
+       
+        currMaster.fields.map((f)=>{
+          selectedOptions.forEach((so)=>{
+            if(so.value===f.key){
+              shouldShow= true
+            }
+          })
+        })
+        return shouldShow
+      }
 
 
     return {
@@ -379,6 +412,8 @@ const useDelete=()=>{
         selectedMasters,
         conflictCount,
         errorCount,
+        options,
+        selectedOptions,
         onCancel,
         onDeleteOnline,
         onDeleteData,
@@ -388,6 +423,8 @@ const useDelete=()=>{
         handleOnClickMaster,
         handleRadioButton,
         handleSubmitSelectMaster,
+        showMaster,
+        showMasterGroup
     }
 }
 
