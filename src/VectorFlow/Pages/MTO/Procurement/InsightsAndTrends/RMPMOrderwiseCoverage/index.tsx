@@ -3,7 +3,7 @@ import ActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/A
 import GridView from './GridView/GridView'
 import GraphView from './GraphView/GraphView'
 
-const RMPM = () => {
+const RMPMOrderwiseCoverage = () => {
 
     const [isGridView, setIsGridView] = useState(false);
     return (
@@ -13,4 +13,4 @@ const RMPM = () => {
         </>
     )
 }
-export default RMPM
+export default RMPMOrderwiseCoverage

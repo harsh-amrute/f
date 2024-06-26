@@ -18,6 +18,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import moment from "moment";
 
 
+
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
         {
@@ -115,7 +116,7 @@ const useMaterialReq = () => {
     }
 
     const getSelectedDateWise = async (currPage?: number) => {
-      
+
         const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: date, currPage: currPage ? currPage : currentPage });
         const dayWiseOutput = datWiseData.data?.data?.results;
         setDayWiseRecordCount(datWiseData.data?.data?.count)

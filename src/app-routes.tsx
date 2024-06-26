@@ -38,7 +38,7 @@ import SimulateFullKit from './VectorFlow/Pages/MTO/Procurement/Planning/Simulat
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
 import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/DayWiseCoverage'
 import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
-import RMPM from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
+import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -485,7 +485,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<RMPM />)
+          element: lazyLoad(<RMPMOrderwiseCoverage />)
         },
         ...getStoreTransferModuleRoutes()
       ]
