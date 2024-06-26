@@ -101,7 +101,7 @@ const useMaterialReq = () => {
         getInitialData()
     }, [currentTab])
 
-    
+
     const onDateChangeReq = (date: string) => {
         setDate(date);
     }
@@ -115,15 +115,14 @@ const useMaterialReq = () => {
     }
 
     const getSelectedDateWise = async (currPage?: number) => {
-        console.log('getSelectedDateWise',currentPage)
+      
         const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: date, currPage: currPage ? currPage : currentPage });
-        const dayWiseOutput = datWiseData.data?.data?.results
+        const dayWiseOutput = datWiseData.data?.data?.results;
         setDayWiseRecordCount(datWiseData.data?.data?.count)
         setDayWiseData(dayWiseOutput)
     }
 
     const getCumulativeDateWise = async (currPage?: number) => {
-        console.log('getCumulativeDateWise',currentCumPage)
         const cumulativeData = await getMaterialRequirementData({ releaseDate: date, currPage: currPage ? currPage : currentCumPage });
         const cumulativeOutput = cumulativeData.data?.data?.results
         setcumulativeRecordCount(cumulativeData.data?.data?.count)
@@ -150,8 +149,6 @@ const useMaterialReq = () => {
     // const excelDownload = useCallback(() => {
     //     gridRef.current!.api.exportDataAsExcel();
     // }, []);
-
-
 
     const excelStyles = useMemo<ExcelStyle[]>(() => {
         return [
@@ -198,13 +195,14 @@ const useMaterialReq = () => {
                 return (
                     <div>
                         <VFTable
+                            paginationPageSize={10}
                             {...agGridProps}
                             columnDefs={CompleteAvailableColumns}
                             rowData={DayWiseData}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'750px'}
+                            height={'700px'}
                             ref={gridRef}
                             pagination={false}
                             statusBar={{
@@ -215,7 +213,7 @@ const useMaterialReq = () => {
                         />
                         <VFPagination
                             selectedRows={0}
-                            rowsPerPage={5}
+                            rowsPerPage={10}
                             totalRows={dayWiseRecordCount}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeDayWise}
@@ -226,13 +224,14 @@ const useMaterialReq = () => {
                 return (
                     <div>
                         <VFTable
+                            paginationPageSize={10}
                             {...agGridProps}
                             columnDefs={ShortageColumns}
                             rowData={CumulativeData}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'750px'}
+                            height={'700px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [
@@ -242,7 +241,7 @@ const useMaterialReq = () => {
                         />
                         <VFPagination
                             selectedRows={0}
-                            rowsPerPage={5}
+                            rowsPerPage={10}
                             totalRows={cumulativeRecordCount}
                             currentPage={currentCumPage}
                             handleChangePage={handlePageChangeCumulative}

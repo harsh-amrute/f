@@ -54,7 +54,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
             >
 
                 <>
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) ?
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp!=='MaterialRequirement') ?
                         
                         <SCGoBackContainer onClick={()=>{if(handleGoBack) handleGoBack()}}>
                             <img
@@ -74,7 +74,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                             marginRight: '3px',
                             fontSize: '18px',
                             fontWeight: 'bold',
-                            width: '70%'
+                            width: '100%'
                         }}>
                             <p>Release Date Till</p>
 
