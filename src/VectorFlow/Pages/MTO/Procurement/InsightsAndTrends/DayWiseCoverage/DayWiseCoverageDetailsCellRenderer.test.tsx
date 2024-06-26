@@ -1,9 +1,9 @@
-import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import DayWiseCoverageDetailsCellRenderer from './DayWiseCoverageDetailsCellRenderer';
 
 describe('DayWise Coverage Details Cell Renderer', () => {
     it('renders without crashing', () => {
-        let data = {
+        const data = {
             data: {
                 children: []
             }
