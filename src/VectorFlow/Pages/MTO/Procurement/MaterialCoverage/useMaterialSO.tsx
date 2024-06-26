@@ -1,30 +1,60 @@
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import AvlCellRenderer from '../../Common/AvlCellRenderer';
 import AvailabilityToolTip from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
-import DetailCellRenderer from "../../Procurement/MaterialCoverage/MaterialCellRendere";
-import { useUserData } from "../../../../../context"
-import { OrderDetailsData, OrderDetailsHeaderData } from '../MaterialCoverage/Data';
+import DetailCellRenderer from "./MaterialCellRenderer";
+import {  OrderDetailsHeaderData } from '../MaterialCoverage/Data';
 import { mapMaterialCoverageFieldsToColDefs } from '../../../../../helpers/utils'
 import ColorCellRenderer from "../../Common/ColorCellRenderer";
-const useMaterialSO = () => {
-    const { isSideBarOpen } = useUserData()
+import { useGetOpenSODetailsData } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage";
+const useMaterialSO = (data: any) => {
+    const [orderDetailsData, setOrderDetailsData] = useState<any>();
+
     const { HeaderData } = OrderDetailsHeaderData;
     const columnDef = mapMaterialCoverageFieldsToColDefs(HeaderData);
 
-    const LoadData = (data: any) => {
-        const calculate = data.map((item: any) => ({
+    const { mutateAsync: getOpenSODetailsData } = useGetOpenSODetailsData()
+
+    useEffect(() => {
+        getInitialData()
+    }, [])
+
+    const getInitialData = async () => {
+        let queryString = '?Color='
+        const colorsArray = Object.keys(data).filter((k: string) => k.startsWith('c'))
+        colorsArray.forEach((s: string, index: number) => {
+            if (index === colorsArray.length - 1) {
+                queryString += `${data[s]}`
+            }
+            else {
+                queryString += `${data[s]},`
+            }
+        })
+        queryString += `&KitStatus=${data.kit}&S=${data.S}&E=${data.E}`
+
+        const someData = await getOpenSODetailsData(queryString);
+        const output = someData.data?.data?.results.map((item: any) => ({
             ...item,
             fkapr: ((item.fka / item.oq) * 100).toFixed(2)
-        }))
-        return calculate;
+        })
+        )
+        setOrderDetailsData(output)
     }
-    const output = LoadData(OrderDetailsData);
+
+    // const LoadData = (data: any) => {
+    //     //console.log('LoadData', data)
+    //     const calculate = data.map((item: any) => ({
+    //         ...item,
+    //         fkapr: ((item.fka / item.oq) * 100).toFixed(2)
+    //     }))
+    //     return calculate;
+    // }
+    // const output = LoadData(OrderDetailsData);
     const icons = useMemo(() => {
         return {
-            groupExpanded: `<img src="${'/assets/img/VectorFLOW/NMS/minus_circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
-            groupContracted: `<img src="${'/assets/img/VectorFLOW/NMS/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
-        };
+            groupExpanded: `<img src="${'/assets/img/mto/procPlanning/minus_circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
+            groupContracted: `<img src="${'/assets/img/mto/procPlanning/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
+     };
     }, []);
 
     const autoGroupColumnDef = useMemo(() => {
@@ -87,10 +117,9 @@ const useMaterialSO = () => {
     };
 
     return {
-        isSideBarOpen,
         agGridProps,
         columnDef,
-        RRRRowData: output,
+        RRRRowData: orderDetailsData,
     }
 }
 

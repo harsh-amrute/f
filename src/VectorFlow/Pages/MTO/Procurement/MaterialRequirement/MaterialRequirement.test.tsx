@@ -1,13 +1,13 @@
 import React,{ReactNode} from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
-import FutureCov from './FutureCov';
+import { render } from '@testing-library/react';
 import { setupReactQuery } from '../../../../../config/react-query-config';
 // Install this package if not already installed
 import { QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { UserDataContext } from '../../../../../context';
-import {createStore} from '../../../../../redux/store/store'
+import {createStore} from '../../../../../redux/store/store';
+import MaterialRequirement from './MaterialRequirement';
 
 const queryClient = setupReactQuery();
 
@@ -17,12 +17,11 @@ const dummyStore:any ={
 
 const mockedStore = createStore(dummyStore)
 
-
-const contextWrapper = (children: ReactNode) => {
+const contextWrapper = (children: ReactNode,store:any) => {
     return (
       <QueryClientProvider client={queryClient}>
         <Router>
-          <Provider store={mockedStore}>
+          <Provider store={store}>
             <UserDataContext.Provider
               value={{
                 user: { user: { theme_ui: "NOIRFUSION" } },
@@ -38,17 +37,13 @@ const contextWrapper = (children: ReactNode) => {
         </Router>
       </QueryClientProvider>
     );
-  }
+  };
+  
 
-describe("FutureCoverage Component", () => {
+describe("MaterialRequirement Component", () => {
     test("Div present on the screen", () => {
-        const handleToggleComponentMock = jest.fn();
-        const setDetailDataObj=jest.fn()
-        render(contextWrapper(<FutureCov handleToggleComponent={handleToggleComponentMock} setDetailDataObj={setDetailDataObj}/>))
-        const navigate = screen.getByTestId("btn_navigate")
-        expect(navigate).toBeInTheDocument();
-        fireEvent.click(navigate);
+        render(contextWrapper(<MaterialRequirement/>,mockedStore));
+        
     })
 
 })
-

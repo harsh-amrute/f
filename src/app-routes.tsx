@@ -37,6 +37,8 @@ import ProcurementPlanning from './VectorFlow/Pages/MTO/Procurement/Planning';
 import SimulateFullKit from './VectorFlow/Pages/MTO/Procurement/Planning/SimulateFullKit';
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
 import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/DayWiseCoverage'
+import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
+import RMPM from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -85,7 +87,9 @@ const lazyLoad = (children: React.ReactNode) => {
     '/procurement-planning/planning',
     "/procurement/insights-and-trends/day-wise-coverage",
     '/planning/simulative-fullkit',
-    '/logistics/intransit-whereabouts'
+    '/logistics/intransit-whereabouts',
+    '/procurement/material-requirement',
+    '/procurement/insights-and-trends/rmpm-orderwise-coverage'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -219,18 +223,6 @@ export const initRoutes = (): RouteObject[] => {
         ...getStoreTransferModuleRoutes()
       ]
     },
-    // {
-    //   path: '/master-data-management/control-panel',
-    //   element: <AppLayout />,
-    //   children: [
-    //     {
-    //       index: true,
-    //       path:'view-modify',
-    //       element: lazyLoad(<ViewModify />)
-    //     },
-    //     ...getStoreTransferModuleRoutes()
-    //   ]
-    // },
     {
       path: '/master-data-management/saved-drafts',
       element: <AppLayout />,
@@ -482,9 +474,34 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<DayWiseCoverage />)
+
         },
         ...getStoreTransferModuleRoutes()
       ]
     },
+    {
+      path: '/procurement/insights-and-trends/rmpm-orderwise-coverage',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMPM />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement/material-requirement',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MaterialRequirement />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+
+
   ]
 }

@@ -46,6 +46,12 @@ export const SCViewContainer = styled.div`
     overflow:hidden;
 
 `
+export const SCHorizontalDivison = styled.div`
+    height: 80%;
+    width: 2px;
+    background: ${ColorsMTO.LightGrey};
+    margin: 0 20px;
+`
 
 export const SCViewContainerWithBg = styled.div`
     display:flex;
@@ -57,6 +63,17 @@ export const SCViewContainerWithBg = styled.div`
     justify-content:center;
     align-items:center;
     width:82px;
+    height:58px; 
+    cursor:pointer;
+`
+export const SCViewContainerWithBgToggle = styled.div`
+    display:flex;
+    background: ${ColorsMTO.White} 0% 0% no-repeat padding-box;
+    box-shadow: -5px 4px 10px #8584843F;
+    border-radius:5px;
+    justify-content:center;
+    align-items:center;
+    width:164px;
     height:58px; 
     cursor:pointer;
 `
@@ -76,6 +93,7 @@ export const SCVerticalDivider = styled.div`
     margin-left:8px;
     align-items:center;
 `
+
 export const SCViewImage = styled.img`
     width:38px;
     height:20px;
@@ -98,19 +116,19 @@ export const SCTaskFilterContainer = styled.div`
 `
 
 export const SCButton = styled.button`
-  background:${ColorsMTO.White};
+  background:${ColorsMTO.White.code};
   border-radius: 6px;
   font-size:16px;
   font-family:'Roboto';
   letter-spacing:0px;
   font-weight:300;
-  color: ${ColorsMTO.Pink};
+  color: ${ColorsMTO.Pink.code};
   padding: 15px 7px;
   pointer-events:'all';
   width: 130px;
   height: 46px;
-  box-shadow: -5px 4px 10px  ${ColorsMTO.LightGrey};
-  border: 1px solid  ${ColorsMTO.Pink};
+  box-shadow: -5px 4px 10px  ${ColorsMTO.LightGrey.code};
+  border: 1px solid  ${ColorsMTO.Pink.code};
   opacity: 1;
 `;
 

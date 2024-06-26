@@ -10,25 +10,39 @@ import {
     SCTaskFilterContainer,
     SCButton,
     /**search filter styles starts */
-    VFSelectedFiltersChip,
-    VFSelectedFiltersFilterCloseIcon,
-    VFSelectedFiltersFilterContent,
-    VFSelectedFiltersFilterLabel,
-    VFSelectedFiltersFilterValue,
-    VFSelectedFiltersPlaceHolder,
-    VFSelectedFiltersWrapper,
-    VFFilterScrollBar,
+    // VFSelectedFiltersChip,
+    // VFSelectedFiltersFilterCloseIcon,
+    // VFSelectedFiltersFilterContent,
+    // VFSelectedFiltersFilterLabel,
+    // VFSelectedFiltersFilterValue,
+    // VFSelectedFiltersPlaceHolder,
+    // VFSelectedFiltersWrapper,
+    // VFFilterScrollBar,
+    SCViewContainerWithBgToggle,
+    SCHorizontalDivison,
+    SCViewContainer,
     /**search filter styles end*/
-} from './styles'
+} from './styles';
+import moment from 'moment';
 
 interface MTOActionToolBarProps {
     comp: string,
-    onDateChange: (date: string) => void;
-    submitDate: () => void;
+    onDateChange?: (date: string) => void;
+    submitDate?: () => void;
+    isGridView?: boolean;
+    setIsGridView?: (isGridView: boolean) => void;
+    date?: string
+    handleGoBack?: () => void;
 }
 
 
-const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submitDate, date, handleGoBack }: MTOActionToolBarProps) => {
+
+    const format2 = "YYYY-MM-DD"
+    const d = new Date();
+    //.setDate(d.getDate() - 1)
+    const datetime = moment(d).format(format2);
+
     return (
         <SCTaskBarContainer>
             <SCTaskFilterContainer
@@ -40,18 +54,19 @@ const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarPr
             >
 
                 <>
-                    {comp !== 'MaterialCov' ?
-                        <SCGoBackContainer>
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp!=='MaterialRequirement') ?
+                        
+                        <SCGoBackContainer onClick={()=>{if(handleGoBack) handleGoBack()}}>
                             <img
                                 src="/assets/img/VectorFLOW/BPR/goback.svg"
                                 alt=""
                             />
-                            <SCGoBackText><b>Go Back</b></SCGoBackText>
+                            <SCGoBackText ><b>Go Back</b></SCGoBackText>
                         </SCGoBackContainer>
                         : null
                     }
 
-                    {comp !== 'MaterialCov' ?
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) &&
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -59,7 +74,7 @@ const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarPr
                             marginRight: '3px',
                             fontSize: '18px',
                             fontWeight: 'bold',
-                            width: '70%'
+                            width: '100%'
                         }}>
                             <p>Release Date Till</p>
 
@@ -91,7 +106,9 @@ const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarPr
                                         fontFamily: 'Roboto',
                                         border: '0.5px solid #ACACAC',
                                     }}
-                                    onChange={(e) => onDateChange(e.target.value)}
+                                    value={date}
+                                    min={datetime}
+                                    onChange={(e) => { if (onDateChange) onDateChange(e.target.value) }}
                                 />
                             </div>
                             <div>
@@ -102,11 +119,12 @@ const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarPr
                                         width: '112px',
                                         height: '43px',
                                     }}
-                                    onClick={() => submitDate()}>Submit</button>
+
+                                    onClick={() => { if (submitDate) submitDate() }}
+                                >Submit</button>
                             </div>
                         </div>
-                        :
-                        null
+
                     }
 
                     <SCVerticalDivider />
@@ -114,29 +132,32 @@ const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarPr
 
 
                 {/**Selected Filter start */}
-                <VFSelectedFiltersWrapper>
-                    <VFSelectedFiltersPlaceHolder>
-                        Selected Filters
-                    </VFSelectedFiltersPlaceHolder>
-                    <VFFilterScrollBar>
-                        <VFSelectedFiltersChip>
-                            <VFSelectedFiltersFilterLabel>
-                                <b></b>
 
-                            </VFSelectedFiltersFilterLabel>
+                {/* <VFSelectedFiltersWrapper>
+                        <VFSelectedFiltersPlaceHolder>
+                            Selected Filters
+                        </VFSelectedFiltersPlaceHolder>
+                        <VFFilterScrollBar>
+                            <VFSelectedFiltersChip>
+                                <VFSelectedFiltersFilterLabel>
+                                    <b></b>
 
-                            <VFSelectedFiltersFilterContent style={{ borderRight: 'solid 2px black' }}>
-                                <VFSelectedFiltersFilterValue>
-                                    <p style={{ margin: '0px 5px 0px 5px' }}>:</p>
-                                </VFSelectedFiltersFilterValue>
-                                <VFSelectedFiltersFilterCloseIcon
-                                    src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} />
-                            </VFSelectedFiltersFilterContent>
+                                </VFSelectedFiltersFilterLabel>
 
-                        </VFSelectedFiltersChip>
+                                <VFSelectedFiltersFilterContent style={{ borderRight: 'solid 2px black' }}>
+                                    <VFSelectedFiltersFilterValue>
+                                        <p style={{ margin: '0px 5px 0px 5px' }}>:</p>
+                                    </VFSelectedFiltersFilterValue>
+                                    <VFSelectedFiltersFilterCloseIcon
+                                        src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} />
+                                </VFSelectedFiltersFilterContent>
 
-                    </VFFilterScrollBar>
-                </VFSelectedFiltersWrapper>
+                            </VFSelectedFiltersChip>
+
+                        </VFFilterScrollBar>
+                    </VFSelectedFiltersWrapper> */}
+
+
                 {/**Selected Filter ends*/}
 
             </SCTaskFilterContainer>
@@ -170,13 +191,35 @@ const MTOActionToolBar = ({ comp, onDateChange, submitDate }: MTOActionToolBarPr
 
                         </SCViewContainerWithBg>
                         {/* <SCVerticalDivider /> */}
+
+
                     </>
+
+                    {/* Toggle button for chartview/ grid view */}
+                    {(comp === 'rmpm') &&
+                        <>
+                            <SCViewContainerWithBgToggle onClick={() => { setIsGridView && (setIsGridView(!isGridView)); console.log(isGridView) }}>
+                                <SCViewContainer>
+                                    <SCViewImage src={`/assets/img/VectorFLOW/BPR/${(isGridView) ? 'chart-view-grey' : 'chart-view-pink'}.svg`} />
+                                    <p>Chart View</p>
+
+                                </SCViewContainer>
+                                <SCHorizontalDivison />
+                                <SCViewContainer>
+                                    <SCViewImage src={`/assets/img/VectorFLOW/BPR/${(!isGridView) ? 'grid-view-grey' : 'grid-view-pink'}.svg`} />
+                                    <p>Grid View</p>
+
+                                </SCViewContainer>
+
+                            </SCViewContainerWithBgToggle>
+                        </>
+                    }
 
                 </>
 
 
-            </SCCustomActionsContainer>
-        </SCTaskBarContainer>
+            </SCCustomActionsContainer >
+        </SCTaskBarContainer >
     )
 }
 

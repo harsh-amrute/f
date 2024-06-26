@@ -477,6 +477,7 @@ export const listMenuParent: any = [
       // },
     ],
   },
+
   {
     id: 19,
     name: "Procurement",
@@ -484,18 +485,17 @@ export const listMenuParent: any = [
     url: "",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+    avoidHeader: true,
     child: [
       {
         name: "Material Coverage For Open Sales",
         img: "/assets/img/nav/arrow_down.svg",
-        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
         url: "/procurement/material-coverage-open-sales",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
       },
       {
         name: "Procurement Planning",
         img: "/assets/img/nav/arrow_down.svg",
-        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
         url: "/procurement-planning/planning",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
       },
@@ -517,6 +517,12 @@ export const listMenuParent: any = [
         name: "Insights & Trends",
         img: "/assets/img/nav/arrow_down.svg",
         imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+        url: "/procurement/material-requirement",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      },
+      {
+        name: "Insight and Trends",
+        img: "/assets/img/nav/arrow_down.svg",
         url: "/procurement/insights-and-trends",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
         child: [
@@ -527,7 +533,14 @@ export const listMenuParent: any = [
             url: "/procurement/insights-and-trends/day-wise-coverage",
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
+          {
+            name: "RM/PM Orderwise Coverage",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/procurement/insights-and-trends/rmpm-orderwise-coverage",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"]
+          }
         ]
+
       },
     ],
   }
