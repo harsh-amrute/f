@@ -60,6 +60,12 @@ export const listMenuParent: any = [
         url: "/master-data-management/task-status",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
       },
+      {
+        name: "navbar.listMenuParent.masterDataManagement.modificationHistory",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/master-data-management/data-modification-history",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+      },
     ],
   },
   // {

@@ -33,6 +33,7 @@ import BufferTrendReport from './VectorFlow/Pages/MTA/InsightsAndTrends/BTR'
 import DBM from './VectorFlow/Pages/MTA/DBM/DBMNormSuggestions'
 import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests'
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
+import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -77,7 +78,9 @@ const lazyLoad = (children: React.ReactNode) => {
     '/insights-and-trends/research-insights',
     '/insights-and-trends/buffer-trend-report',
     '/dbm/dbm-norm-suggestions',
-    '/logistics/intransit-whereabouts'
+    '/logistics/intransit-whereabouts',
+    '/master-data-management/data-modification-history'
+
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -274,6 +277,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<DeleteRecord/>)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/data-modification-history',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DataModificationHistory/>)
         },
         ...getStoreTransferModuleRoutes()
       ]

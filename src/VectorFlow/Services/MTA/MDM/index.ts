@@ -18,6 +18,8 @@ export const QUERY_KEYS = {
   useModifyMasterData:['MDMService.useModifyMasterData'],
   useDeleteTask:['MDMService.useDeleteTask'],
   useApproveTask:['MDMService.useApproveTask'],
+  usegetSkuLoc:['MDMService.useGetSkuLoc'],
+  usegetTaskMastersHistory:['MDMService.useGetTaskMastersHistory'],
   useGetUploadProgress:['MDMService.useGetUploadProgress']
 }
 
@@ -186,6 +188,17 @@ export const useValidateMaster = () => {
   })
 }
 
+export const useGetSkuLoc = () => {
+  return useMutation(async (body:any) => {
+    return await MDMService.getSkuLoc(body)
+  })
+}
+
+export const useGetTaskMastersHistory = () => {
+  return useMutation(async (body:any) => {
+    return await MDMService.getTaskMastersHistory(body)
+  })
+}
 export const useGetUploadProgress = () => {
   return useMutation(QUERY_KEYS.useGetUploadProgress,async(processId:any)=>{
     return await MDMService.getUploadProgress(processId)
