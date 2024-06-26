@@ -13,7 +13,7 @@ import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams,
 import GetProcPlanningDataColumn from './GetProcPlanningDataColumn.json';
 import { mapProcPlanningFieldsToColDefs } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
-import { userGetProcPlanningData } from "../../../../Services/MTO/ProcPlanning/index";
+import { userGetProcPlanningData } from "../../../../Services/MTO/Procurement/ProcPlanning/index";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -145,8 +145,8 @@ const useProcPlanning = (date: string) => {
     const icons = useMemo(() => {
         return {
             groupExpanded: `<img src="${'/assets/img/mto/procPlanning/minus_circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
-            groupContracted: `<img src="${'/assets/img/VectorFLOW/NMS/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
-        };
+            groupContracted: `<img src="${'/assets/img/mto/procPlanning/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
+    };
     }, []);
     const autoGroupColumnDef = useMemo(() => {
         return {

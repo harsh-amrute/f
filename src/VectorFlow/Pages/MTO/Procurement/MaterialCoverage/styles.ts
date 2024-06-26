@@ -18,7 +18,7 @@ export const MainContainer = styled.div`
 
 export const Box = styled.div`
     width: 250px;
-    height: 200px;
+    height: 25vh;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow:0px 6px 12px #74747429;
     //box-shadow: -5px 4px 20px #91919133;

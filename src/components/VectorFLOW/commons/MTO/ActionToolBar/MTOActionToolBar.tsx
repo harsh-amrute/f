@@ -10,19 +10,20 @@ import {
     SCTaskFilterContainer,
     SCButton,
     /**search filter styles starts */
-    VFSelectedFiltersChip,
-    VFSelectedFiltersFilterCloseIcon,
-    VFSelectedFiltersFilterContent,
-    VFSelectedFiltersFilterLabel,
-    VFSelectedFiltersFilterValue,
-    VFSelectedFiltersPlaceHolder,
-    VFSelectedFiltersWrapper,
-    VFFilterScrollBar,
+    // VFSelectedFiltersChip,
+    // VFSelectedFiltersFilterCloseIcon,
+    // VFSelectedFiltersFilterContent,
+    // VFSelectedFiltersFilterLabel,
+    // VFSelectedFiltersFilterValue,
+    // VFSelectedFiltersPlaceHolder,
+    // VFSelectedFiltersWrapper,
+    // VFFilterScrollBar,
     SCViewContainerWithBgToggle,
     SCHorizontalDivison,
     SCViewContainer,
     /**search filter styles end*/
-} from './styles'
+} from './styles';
+import moment from 'moment';
 
 interface MTOActionToolBarProps {
     comp: string,
@@ -30,10 +31,18 @@ interface MTOActionToolBarProps {
     submitDate?: () => void;
     isGridView?: boolean;
     setIsGridView?: (isGridView: boolean) => void;
+    date?: string
+    handleGoBack?: () => void;
 }
 
 
-const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submitDate }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submitDate, date, handleGoBack }: MTOActionToolBarProps) => {
+
+    const format2 = "YYYY-MM-DD"
+    const d = new Date();
+    //.setDate(d.getDate() - 1)
+    const datetime = moment(d).format(format2);
+
     return (
         <SCTaskBarContainer>
             <SCTaskFilterContainer
@@ -45,13 +54,14 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
             >
 
                 <>
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) ?
-                        <SCGoBackContainer>
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp!=='MaterialRequirement') ?
+                        
+                        <SCGoBackContainer onClick={()=>{if(handleGoBack) handleGoBack()}}>
                             <img
                                 src="/assets/img/VectorFLOW/BPR/goback.svg"
                                 alt=""
                             />
-                            <SCGoBackText><b>Go Back</b></SCGoBackText>
+                            <SCGoBackText ><b>Go Back</b></SCGoBackText>
                         </SCGoBackContainer>
                         : null
                     }
@@ -64,7 +74,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                             marginRight: '3px',
                             fontSize: '18px',
                             fontWeight: 'bold',
-                            width: '70%'
+                            width: '100%'
                         }}>
                             <p>Release Date Till</p>
 
@@ -96,7 +106,9 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                                         fontFamily: 'Roboto',
                                         border: '0.5px solid #ACACAC',
                                     }}
-                                    onChange={(e) => { if (onDateChange) (e.target.value) }}
+                                    value={date}
+                                    min={datetime}
+                                    onChange={(e) => { if (onDateChange) onDateChange(e.target.value) }}
                                 />
                             </div>
                             <div>
@@ -120,29 +132,32 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
 
 
                 {/**Selected Filter start */}
-                <VFSelectedFiltersWrapper>
-                    <VFSelectedFiltersPlaceHolder>
-                        Selected Filters
-                    </VFSelectedFiltersPlaceHolder>
-                    <VFFilterScrollBar>
-                        <VFSelectedFiltersChip>
-                            <VFSelectedFiltersFilterLabel>
-                                <b></b>
 
-                            </VFSelectedFiltersFilterLabel>
+                {/* <VFSelectedFiltersWrapper>
+                        <VFSelectedFiltersPlaceHolder>
+                            Selected Filters
+                        </VFSelectedFiltersPlaceHolder>
+                        <VFFilterScrollBar>
+                            <VFSelectedFiltersChip>
+                                <VFSelectedFiltersFilterLabel>
+                                    <b></b>
 
-                            <VFSelectedFiltersFilterContent style={{ borderRight: 'solid 2px black' }}>
-                                <VFSelectedFiltersFilterValue>
-                                    <p style={{ margin: '0px 5px 0px 5px' }}>:</p>
-                                </VFSelectedFiltersFilterValue>
-                                <VFSelectedFiltersFilterCloseIcon
-                                    src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} />
-                            </VFSelectedFiltersFilterContent>
+                                </VFSelectedFiltersFilterLabel>
 
-                        </VFSelectedFiltersChip>
+                                <VFSelectedFiltersFilterContent style={{ borderRight: 'solid 2px black' }}>
+                                    <VFSelectedFiltersFilterValue>
+                                        <p style={{ margin: '0px 5px 0px 5px' }}>:</p>
+                                    </VFSelectedFiltersFilterValue>
+                                    <VFSelectedFiltersFilterCloseIcon
+                                        src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} />
+                                </VFSelectedFiltersFilterContent>
 
-                    </VFFilterScrollBar>
-                </VFSelectedFiltersWrapper>
+                            </VFSelectedFiltersChip>
+
+                        </VFFilterScrollBar>
+                    </VFSelectedFiltersWrapper> */}
+
+
                 {/**Selected Filter ends*/}
 
             </SCTaskFilterContainer>

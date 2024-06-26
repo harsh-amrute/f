@@ -87,7 +87,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/planning/simulative-fullkit',
     '/logistics/intransit-whereabouts',
     '/procurement/material-requirement',
-    '/procurement/insights-and-trends/rmpm'
+    '/procurement/insights-and-trends/rmpm-orderwise-coverage'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -221,18 +221,6 @@ export const initRoutes = (): RouteObject[] => {
         ...getStoreTransferModuleRoutes()
       ]
     },
-    // {
-    //   path: '/master-data-management/control-panel',
-    //   element: <AppLayout />,
-    //   children: [
-    //     {
-    //       index: true,
-    //       path:'view-modify',
-    //       element: lazyLoad(<ViewModify />)
-    //     },
-    //     ...getStoreTransferModuleRoutes()
-    //   ]
-    // },
     {
       path: '/master-data-management/saved-drafts',
       element: <AppLayout />,
@@ -478,7 +466,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/procurement/insights-and-trends/rmpm',
+      path: '/procurement/insights-and-trends/rmpm-orderwise-coverage',
       element: <AppLayout />,
       children: [
         {

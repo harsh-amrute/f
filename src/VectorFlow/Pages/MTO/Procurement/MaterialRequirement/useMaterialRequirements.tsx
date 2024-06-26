@@ -1,18 +1,22 @@
-import { useState, useMemo, useRef, /*useCallback*/ } from "react"
+import { useState, useMemo, useRef, useEffect /*useCallback*/ } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { AgGridReact } from "@ag-grid-community/react";
-import { useUserData } from "../../../../../context"
+// import { useUserData } from "../../../../../context"
 import ColorPriority from '../../Common/ColorPriority/index';
 import AvailabilityToolTip from "../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 //import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
-import { MaterRequirementData, HeaderMaterialRequirement } from '../MaterialCoverage/Data'
+import { HeaderMaterialRequirement } from '../MaterialCoverage/Data'
 // import GetProcPlanningData from '../Planning/GetProcPlanningData.json';
 // import GetProcPlanningDataColumn from '../Planning/GetProcPlanningDataColumn.json';
 import { mapMaterialFieldsToColDefs } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
+import { useGetMaterialRequirementDetails, useGetMaterialRequirementDetailsDatewise } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
+import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
+import moment from "moment";
+
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -62,12 +66,12 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 };
 
 const useMaterialReq = () => {
+    const format2 = "YYYY-MM-DD"
+    const d = new Date();
+    const datetime = moment(d).format(format2);
     const { HeaderData } = HeaderMaterialRequirement;
-    const { data } = MaterRequirementData;
     const gridRef = useRef<AgGridReact>(null);
-    const { isSideBarOpen } = useUserData()
-    const [currentPage, /*setCurrentPage*/] = useState<any>(1);
-    //const navigate = useNavigate();
+    // const { isSideBarOpen } = useUserData()
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: 'sdv',
@@ -81,44 +85,57 @@ const useMaterialReq = () => {
         }
     ];
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
-    // const initializeData = (data: any, headerData: any) => {
-    //     const calculateData = data.map((item: any) => ({
-    //         ...item,
-    //       //  gap: item.req - item.soh - item.siqc - item.sit,
-    //       //  tsfs: item.soh,
-    //         // children: item.children ? item.children.filter((child: any, index: number, self: any[]) =>
-    //         //     self.findIndex(t => t.on === child.on) === index) : []
-    //     }));
-    //     const ShortageData = calculateData.filter((item: any) => item.gap > 0);
-    //     const CompleteAvailableData = calculateData.filter((item: any) => item.gap === 0);
-
-    //     const CompleteHeaderData = headerData.map((header: any) => {
-    //         if (header.jf === 'eas') {
-    //             return { ...header, vs: false };
-    //         }
-    //         return header;
-    //     });
-
-    //     const ShortageHeaderData = headerData.map((header: any) => {
-    //         if (header.jf === 'eas') {
-    //             return { ...header, vs: true };
-    //         }
-    //         return header;
-    //     });
-    //     return { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData };
-    // };
-    // const { ShortageData, CompleteAvailableData, CompleteHeaderData, ShortageHeaderData } = initializeData(data, HeaderData);
     const ShortageColumns = mapMaterialFieldsToColDefs(HeaderData);
     const CompleteAvailableColumns = mapMaterialFieldsToColDefs(HeaderData);
-    const [ShortageDatas, SetShortageData] = useState(data);
-    const [CompleteAvailableDatas, /*setCompleteAvailableData*/] = useState(data);
+    const [CumulativeData, SetCumulativeData] = useState<any[]>([]);
+    const [DayWiseData, setDayWiseData] = useState<any[]>([]);
+    const { mutateAsync: getMaterialRequirementData } = useGetMaterialRequirementDetails();
+    const { mutateAsync: getMaterialRequirementDataDayWise } = useGetMaterialRequirementDetailsDatewise();
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [currentCumPage, setcurrentCumPage] = useState<number>(1);
+    const [dayWiseRecordCount, setDayWiseRecordCount] = useState<number>(0);
+    const [cumulativeRecordCount, setcumulativeRecordCount] = useState<number>(0);
+    const [date, setDate] = useState<string>(datetime);
+
+    useEffect(() => {
+        getInitialData()
+    }, [currentTab])
+
+
+    const onDateChangeReq = (date: string) => {
+        setDate(date);
+    }
+
+    const onDateSubmitReq = () => {
+        getInitialData()
+    }
+
+    const getInitialData = async (currPage?: number) => {
+        currentTab.id === 'sdv' ? getSelectedDateWise(currPage) : getCumulativeDateWise(currPage);
+    }
+
+    const getSelectedDateWise = async (currPage?: number) => {
+      
+        const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: date, currPage: currPage ? currPage : currentPage });
+        const dayWiseOutput = datWiseData.data?.data?.results;
+        setDayWiseRecordCount(datWiseData.data?.data?.count)
+        setDayWiseData(dayWiseOutput)
+    }
+
+    const getCumulativeDateWise = async (currPage?: number) => {
+        const cumulativeData = await getMaterialRequirementData({ releaseDate: date, currPage: currPage ? currPage : currentCumPage });
+        const cumulativeOutput = cumulativeData.data?.data?.results
+        setcumulativeRecordCount(cumulativeData.data?.data?.count)
+        SetCumulativeData(cumulativeOutput)
+    }
 
 
     const autoGroupColumnDef = useMemo(() => {
         return {
             minWidth: 250,
         };
-    }, []); 2
+    }, []);
+
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
 
     const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
@@ -128,9 +145,11 @@ const useMaterialReq = () => {
             fileName: "ag-grid.xlsx",
         };
     }, []);
+
     // const excelDownload = useCallback(() => {
     //     gridRef.current!.api.exportDataAsExcel();
     // }, []);
+
     const excelStyles = useMemo<ExcelStyle[]>(() => {
         return [
             {
@@ -160,25 +179,44 @@ const useMaterialReq = () => {
         };
     }, []);
 
+    const handlePageChangeDayWise = async (currPage: number) => {
+        setCurrentPage(currPage)
+        await getInitialData(currPage)
+    }
+
+    const handlePageChangeCumulative = async (currPage: number) => {
+        setcurrentCumPage(currPage)
+        await getInitialData(currPage)
+    }
+
     const renderView = () => {
         switch (currentTab.id) {
             case "sdv":
                 return (
                     <div>
                         <VFTable
+                            paginationPageSize={10}
                             {...agGridProps}
                             columnDefs={CompleteAvailableColumns}
-                            rowData={CompleteAvailableDatas}
+                            rowData={DayWiseData}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'750px'}
+                            height={'700px'}
                             ref={gridRef}
+                            pagination={false}
                             statusBar={{
                                 statusPanels: [
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                 ]
                             }}
+                        />
+                        <VFPagination
+                            selectedRows={0}
+                            rowsPerPage={10}
+                            totalRows={dayWiseRecordCount}
+                            currentPage={currentPage}
+                            handleChangePage={handlePageChangeDayWise}
                         />
                     </div>
                 );
@@ -186,13 +224,14 @@ const useMaterialReq = () => {
                 return (
                     <div>
                         <VFTable
+                            paginationPageSize={10}
                             {...agGridProps}
                             columnDefs={ShortageColumns}
-                            rowData={ShortageDatas}
+                            rowData={CumulativeData}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'750px'}
+                            height={'700px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [
@@ -200,7 +239,13 @@ const useMaterialReq = () => {
                                 ]
                             }}
                         />
-
+                        <VFPagination
+                            selectedRows={0}
+                            rowsPerPage={10}
+                            totalRows={cumulativeRecordCount}
+                            currentPage={currentCumPage}
+                            handleChangePage={handlePageChangeCumulative}
+                        />
 
                     </div>
                 );
@@ -259,7 +304,7 @@ const useMaterialReq = () => {
                 return;
             }
 
-            SetShortageData((prevData: any) => {
+            SetCumulativeData((prevData: any) => {
                 const newData = [...prevData];
                 const updatedRow = {
                     ...newData[rowIndex],
@@ -273,20 +318,17 @@ const useMaterialReq = () => {
         }
     };
 
-    const GetCount = {
-        "short": ShortageDatas.length,
-        "complete": CompleteAvailableDatas.length,
-        "total": ShortageDatas.length + CompleteAvailableDatas.length
-    };
-
     return {
-        isSideBarOpen,
-        agGridProps,
-        currentPage,
+        // isSideBarOpen,
+        // agGridProps,
+        // currentPage,
         toggleCurrentTab,
         renderView,
+        onDateChangeReq,
+        onDateSubmitReq,
+        date
         //excelDownload,
-        GetCount
+        //GetCount
     }
 }
 

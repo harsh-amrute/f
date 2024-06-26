@@ -40,7 +40,7 @@ export const calculatePercentage = (data: string[], c1: string, c2: string, c3: 
     let totalOrdCount = 0;
     data?.map((data: any) => {
         if (data.col == c1 || data.col == c2 || data.col == c3 || data.col == c4) {
-            totalOrdCount += Number(data.ordval)
+            totalOrdCount += Number(data.ordcnt)
         }
     })
     return totalOrdCount;

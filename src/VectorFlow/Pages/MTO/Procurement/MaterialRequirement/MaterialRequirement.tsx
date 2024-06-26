@@ -1,16 +1,20 @@
-import { MaterialRequiremetLayout } from './styles';
+import { MaterialRequiremetLayout, MaterialRequirementTest, MaterialRequirementDate, MaterialRequirementHeading } from './styles';
 import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import useMaterialReq from './useMaterialRequirements';
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
+import moment from 'moment';
+
 
 const MaterialRequirement = () => {
-    const { renderView, toggleCurrentTab } = useMaterialReq();
+    const { renderView, toggleCurrentTab, onDateChangeReq, onDateSubmitReq, date } = useMaterialReq();
     return (
         <>
             <ActionToolBar
-                comp={"Fristan"}
-                onDateChange={() => { console.log('') }}
-                submitDate={() => { console.log('') }}
+                comp={"MaterialRequirement"}
+                onDateChange={onDateChangeReq}
+                submitDate={() => onDateSubmitReq()}
+                date={date}
+
             />
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 
@@ -24,16 +28,28 @@ const MaterialRequirement = () => {
                         },
                         {
                             id: 'cv',
-                            label: 'Cummuulative View',
+                            label: 'Cummulative View',
                             value: 'cv'
                         }
                     ]}
                 />
 
             </div>
+
+            <MaterialRequirementHeading>
+                <MaterialRequirementTest>
+                    {`For all orders with release date till`}
+                </MaterialRequirementTest>
+                <MaterialRequirementDate>
+                    {moment(date).format('Do MMMM YYYY')}
+                </MaterialRequirementDate>
+            </MaterialRequirementHeading>
             <MaterialRequiremetLayout>
                 {renderView()}
             </MaterialRequiremetLayout>
+
+
+
         </>
     )
 }
