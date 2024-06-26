@@ -18,8 +18,11 @@ const useAdd=()=>{
     const selectedMasters = useSelector((state:RootState)=>state.mdm.masters)
     const activeMaster = useSelector((state:RootState)=>state.mdm.activeMaster)
     const chunkSize = useSelector((state:RootState)=>state.mdm.chunkSize)
+    const options = useSelector((state:RootState)=>state.mdm.options)
+    const selectedOptions = useSelector((state:RootState)=>state.mdm.selectedOptions)
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
 
 
     const isSelectMasterOpen = useSelector((state:RootState)=>state.mdm.isSelectMasterOpen)
@@ -282,7 +285,6 @@ const useAdd=()=>{
  
         
           const {isDisaster,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-          console.log(errorCount)
           let errorRowData = [];
 
           if(isDisaster)return
@@ -316,6 +318,37 @@ const useAdd=()=>{
           
       }
 
+      const showMasterGroup = (currMasterGroup:{name:string,masters:Array<any>})=>{
+        if(selectedOptions.length===0)return true
+        let shouldShow = false
+        currMasterGroup.masters.forEach((m:any)=>{
+          const currMaster = allMasters.find((tempMaster)=>tempMaster.id===m)
+          if(currMaster){
+            currMaster.fields.map((f)=>{
+              selectedOptions.forEach((so)=>{
+                if(so.value===f.key){
+                  shouldShow= true
+                }
+              })
+            })
+          }
+        })
+        return shouldShow
+      }
+
+      const showMaster = (currMaster:MDMMasterState)=>{
+        if(selectedOptions.length===0)return true
+        let shouldShow = false
+       
+        currMaster.fields.map((f)=>{
+          selectedOptions.forEach((so)=>{
+            if(so.value===f.key){
+              shouldShow= true
+            }
+          })
+        })
+        return shouldShow
+      }
 
     return {
         allMasters,
@@ -329,7 +362,11 @@ const useAdd=()=>{
         handleOnClickMaster,
         handleSubmitSelectMaster,
         handleRadioButton,
-        handleTabChange
+        handleTabChange,
+        showMasterGroup,
+        showMaster,
+        options,
+        selectedOptions
     }
 }
 

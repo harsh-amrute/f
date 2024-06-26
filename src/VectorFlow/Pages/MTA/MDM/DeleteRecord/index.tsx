@@ -93,6 +93,10 @@ const DeleteRecord = () => {
         handleOnClickMaster,
         handleSubmitSelectMaster,
         handleRadioButton,
+        options,
+        selectedOptions,
+        showMaster,
+        showMasterGroup
     } = useDelete();
 
     useEffect(()=>{
@@ -120,6 +124,11 @@ const DeleteRecord = () => {
               allMasters={allMasters}
               selectedMasters={selectedMasters}
               text="delete"
+              selectedOptions={selectedOptions}
+              options={options}
+              shouldShowMaster={showMaster}
+              shouldShowMasterGroup={showMasterGroup}
+
           />
       )
     }

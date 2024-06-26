@@ -75,8 +75,11 @@ const AddRecord = () => {
         handleOnClickMaster,
         handleRadioButton,
         handleTabChange,
-        onSubmit
-        
+        onSubmit,
+        showMasterGroup,
+        showMaster,
+        options,
+        selectedOptions
     } = useAdd()
     
     useEffect(()=>{
@@ -90,7 +93,6 @@ const AddRecord = () => {
       }
     },[isTableDataLoading])
 
-    console.log(process.env.REACT_APP_ADDRECORD_PAGE)
 
     if(isLoading){
         return <VFLoader/>
@@ -108,6 +110,10 @@ const AddRecord = () => {
               allMasters={allMasters}
               selectedMasters={selectedMasters}
               text="add"
+              shouldShowMasterGroup={showMasterGroup}
+              shouldShowMaster={showMaster}
+              options={options}
+              selectedOptions={selectedOptions}
           />
       )
     }

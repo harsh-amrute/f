@@ -5,12 +5,19 @@ import Portal from "../../../../../components/VectorFLOW/layouts/Portal"
 
 
 import {ConflictErrorToolTipSection, ConflictErrorToolTipWrapper,ConflictErrorText, ToolTipTriangle} from './styles' 
+import { useUserData } from "../../../../../context"
 
 
 
 const ConflictErrorCellRenderer = (params:any)=>{
 
     const {getScreenZoomValue,getGridZoom} = useViewPort()
+
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
+
+    const conflictTextColor = themeUi==="REGALBLAZE"?"rgb(164 104 6)":"rgb(130, 15, 76)"
 
     const currScreenZoom = getScreenZoomValue()
     const currGridZoom = getGridZoom()
@@ -37,7 +44,7 @@ const ConflictErrorCellRenderer = (params:any)=>{
             return false;
         });
         if (conflictFound) {
-            return "rgb(130, 15, 76)";
+            return conflictTextColor;
         }
         return 'black';
     }

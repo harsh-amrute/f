@@ -178,7 +178,7 @@ const useViewModify = (pageType:string) => {
           }
   
           const temp:MDMMasterState[]=[];
-          if(selectedOptions.length > 0) dispatch(FILL_MASTERS([...getSelectedMasters(temp)]));
+          if(selectedOptions.length > 0 && pageType==="modify") dispatch(FILL_MASTERS([...getSelectedMasters(temp)]));
         }
         // if(isToolPanelOpen) ref.current?.api.openToolPanel('columns');
 

@@ -137,7 +137,7 @@ const RRR = () => {
                 selectedRows={0} 
                 totalRows={RRRDataCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200')}
+                rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
                 handleChangePage={(e)=>getRRRRowData(e)} 
               />  
         </div>
