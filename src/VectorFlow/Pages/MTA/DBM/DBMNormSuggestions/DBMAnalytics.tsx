@@ -1,7 +1,6 @@
 import {useMemo} from 'react'
 import { useUserData } from "../../../../../context"
 import { RRRAnalyticsContainer, RRRAnalyticsHeader, RRRAnalyticsTableContainer, RRRAnalyticsTableHeaderWrapper, RRRAnalyticsWrapper,RRRAnalyticsTableHeader,  RRRAnalyticsTableRowContainer, RRRAnalyticsTableRow, RRRAnalyticsTableCell} from "../../SupplyChainIntelligenceHub/RationedRequirementReport/styles"
-import _ from 'lodash'
 import { useGetDBMAnalyticsData } from '../../../../../VectorFlow/Services/MTA/DBM'
 
 
