@@ -16,7 +16,9 @@ import { RESET_STATE } from "../../../redux/actions/MDM";
 import BPRDailyAnalytics from "../../../components/VectorFLOW/layouts/BPRDailyAnalytics";
 import InTransitAnalytics from "../../../VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts/InTransitAnalytics";
 import OpenExpediteAnalytics from "../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/OpenExpediteAnalytics";
-import RRRAnalytics from "../..'/../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/RationedRequirementReport/RRRAnalytics";
+import RRRAnalytics from "../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/RationedRequirementReport/RRRAnalytics";
+import BORAnalytics from "../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BuyerOrderReport/BORAnalytics";
+import DBMAnalytics from "../../../VectorFlow/Pages/MTA/DBM/DBMNormSuggestions/DBMAnalytics";
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -28,7 +30,7 @@ const NavbarItem = ({
   const { user,isSideBarOpen,toggleSideBar } = useUserData();
   const permission: any = user?.roles?.permission;
   const {currentView,currentCategory} = useSelector((state:RootState)=>state.mta.planning)
-  const analyticsPaths:Array<string> = ["/supply-chain-intelligence-hub/bpr","/supply-chain-intelligence-hub/bor","/dbm/dbm-norm-suggestions","/insights-and-trends/research-insights","/insights-and-trends/buffer-trend-report","/insights-and-trends/buffer-trends"]
+  const analyticsPaths:Array<string> = ["/supply-chain-intelligence-hub/bpr","/insights-and-trends/research-insights","/insights-and-trends/buffer-trend-report","/insights-and-trends/buffer-trends"]
   const themeUi = user?.user?.theme_ui;
   const navigate = useNavigate();
   const location = useLocation();
@@ -240,6 +242,14 @@ const NavbarItem = ({
         {isHide  && pathname==='/supply-chain-intelligence-hub/rrr' && menuItem.id === 9 && (
           <RRRAnalytics/>
         )}  
+
+        {isHide  && pathname==='/supply-chain-intelligence-hub/bor' && menuItem.id === 9 && (
+          <BORAnalytics/>
+        )} 
+        
+        {isHide  && pathname==="/dbm/dbm-norm-suggestions" && menuItem.id === 9 && (
+          <DBMAnalytics/>
+        )} 
 
         {isHide  && pathname==='/supply-chain-intelligence-hub/open-expediting-requests' && menuItem.id === 9 && (
           <OpenExpediteAnalytics/>

@@ -52,6 +52,16 @@ describe('Testing the BORService',  () => {
       }); 
 
 
+      it('should make a Post request to the /RRRAnalytics', async () => {
+        mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+        const response = await RRRServices.getRRRAnalyticsData();
+        expect(mockedAxios.get).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/RRRAnalytics',{
+          headers: { 'Content-Type': 'application/json' }
+        })
+        expect(response.status).toBe(200);
+    
+      }); 
+
       
 
   });

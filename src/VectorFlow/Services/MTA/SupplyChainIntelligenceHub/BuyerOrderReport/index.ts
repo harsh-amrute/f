@@ -6,7 +6,8 @@ import { SupplyChainIntelligenceHubService } from './api'
 export const QUERY_KEYS = {
   useGetBORUIConfiguration: ['MDMService.useGetBORUIConfiguration'],
   useBORData:['MDMService.useBORData'],
-  useBORDataCount:['MDMService.useBORDataCount']
+  useBORDataCount:['MDMService.useBORDataCount'],
+  useGetBORAnalyticsData:["BORService.useGetBORAnalyticsData"]
 }
 
 
@@ -26,5 +27,11 @@ export const useGetBORUIConfiguration = () => {
   export const useBORDataCount = () => {
     return useMutation(async (body:any) => {
       return await SupplyChainIntelligenceHubService.getBORDataCount(body);
+    });
+  }
+
+  export const useGetBORAnalyticsData = () => {
+    return useQuery(QUERY_KEYS.useGetBORAnalyticsData,async () => {
+      return await SupplyChainIntelligenceHubService.getBORAnalyticsData();
     });
   }

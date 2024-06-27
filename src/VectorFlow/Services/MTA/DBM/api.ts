@@ -36,4 +36,10 @@ export namespace DBMServices {
           headers:{ 'Content-Type': 'application/json' }
         });
       }
+
+      export const getDBMAnalyticsData = async () => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST+ `/DBMAnalytics`,{
+          headers:{ 'Content-Type': 'application/json' }
+        });
+      }
 }
