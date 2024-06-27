@@ -477,7 +477,7 @@ export const listMenuParent: any = [
       // },
     ],
   },
- 
+
   {
     id: 19,
     name: "Procurement",
@@ -511,6 +511,12 @@ export const listMenuParent: any = [
         url: "/procurement/insights-and-trends",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
         child: [
+          {
+            name: "Day Wise Coverage",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/procurement/insights-and-trends/day-wise-coverage",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
           {
             name: "RM/PM Orderwise Coverage",
             img: "/assets/img/nav/arrow_down.svg",

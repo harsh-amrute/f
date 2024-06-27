@@ -13,7 +13,7 @@ import { ProcurementSeriesDataFill, ProcurementSeriesDataYKey, ProcurementSeries
 const GraphView = () => {
 
     // const [date, setDate] = useState("19 April 2024 - 18 July 2024")
-    const [date] = useState("19 April 2024 - 18 July 2024")
+    const [date] = useState("27 June 2024 - 25 Sept 2024")
 
     // const [rawData, setRawData] = useState(procData);
     const [rawData] = useState(procData);
@@ -131,7 +131,7 @@ const GraphView = () => {
 
 
         <>
-            <SCChartContainer height={"600px"}>
+            <SCChartContainer height={"450px"} style={{ zoom: 1.3 }}>
 
                 <SCHorizontalDivider />
                 <div style={{ height: '90%', width: '100%' }}>

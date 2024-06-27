@@ -54,9 +54,9 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
             >
 
                 <>
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp!=='MaterialRequirement') ?
-                        
-                        <SCGoBackContainer onClick={()=>{if(handleGoBack) handleGoBack()}}>
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'MaterialRequirement') ?
+
+                        <SCGoBackContainer onClick={() => { if (handleGoBack) handleGoBack() }}>
                             <img
                                 src="/assets/img/VectorFLOW/BPR/goback.svg"
                                 alt=""
@@ -76,8 +76,11 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                             fontWeight: 'bold',
                             width: '100%'
                         }}>
-                            <p>Release Date Till</p>
 
+                            &nbsp;
+                            <p>Release Date Till</p>
+                            &nbsp;
+                            &nbsp;
                             <div style={{
                                 top: '133px',
                                 left: '638px',
@@ -111,6 +114,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                                     onChange={(e) => { if (onDateChange) onDateChange(e.target.value) }}
                                 />
                             </div>
+                            &nbsp;
                             <div>
                                 <button
                                     style={{
