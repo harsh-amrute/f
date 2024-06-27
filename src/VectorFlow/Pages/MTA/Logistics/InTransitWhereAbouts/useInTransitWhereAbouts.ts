@@ -200,7 +200,6 @@ const useInTransitWhereAbouts = ()=>{
               'text-overflow':'ellipsis',
               'white-space':'nowrap'
             },
-            editable:true,
             flex: 1,
         },
         enableRangeSelection:true ,

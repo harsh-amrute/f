@@ -20,4 +20,10 @@ export namespace RRRServices {
         headers:{ 'Content-Type': 'application/json' }
       });
     }
+
+    export const getRRRAnalyticsData = async () => {
+      return await axios.get(process.env.REACT_APP_VF_API_HOST+ `/RRRAnalytics`,{
+        headers:{ 'Content-Type': 'application/json' }
+      });
+    }
 }
