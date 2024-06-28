@@ -10,16 +10,18 @@ import { mapOrderDetails, calculatePercentage, DetailsObj } from './CommonFunc';
 import { useGetSOSummaydetails } from '../../../../Services/MTO/Procurement/MaterialCoverage/index';
 
 interface FutureCovProps {
+    data: any,
     handleToggleComponent: any,
     setDetailDataObj: (data: DetailsObj) => void
 }
 
-const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) => {
-    const [SOData, setSOData] = useState<string[]>([]);
-    const { data, /*isLoading, refetch*/ } = useGetSOSummaydetails();
-    const [totalOrderCount, setTotalOrdeerCount] = useState<number>(0);
+const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: FutureCovProps) => {
+    // const [SOData, setSOData] = useState<string[]>(SOData);
+    const [totalOrderCount2, setTotalOrdeerCount2] = useState<number>(0);
+    const [totalOrderCount3, setTotalOrdeerCount3] = useState<number>(0);
+    const [totalOrderCount4, setTotalOrdeerCount4] = useState<number>(0);
 
-    const [isSubPageOpen, setToggleSubPage] = useState<boolean>(false)
+    // const [isSubPageOpen, setToggleSubPage] = useState<boolean>(false)
 
 
     const [BRYNkOrdCunt, setBRYNkOrdCunt] = useState<number>(0);
@@ -77,11 +79,15 @@ const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) 
     const [nthEndDt, setnthEndDt] = useState<string>('');
 
     const loadInitialData = () => {
-        const totalOrdCunt: any = calculatePercentage(SOData, "Blue", "", "", "");
-        setTotalOrdeerCount(totalOrdCunt);
+        const totalOrdCOunt2: any = calculatePercentage(SOData, "Blue", "", "", "", 2);
+        setTotalOrdeerCount2(totalOrdCOunt2);
+        const totalOrdCOunt3: any = calculatePercentage(SOData, "Blue", "", "", "", 3);
+        setTotalOrdeerCount3(totalOrdCOunt3);
+        const totalOrdCOunt4: any = calculatePercentage(SOData, "Blue", "", "", "", 4);
+        setTotalOrdeerCount4(totalOrdCOunt4);
 
         const firstBlock: any = mapOrderDetails(SOData, "Blue", "", "", "NK", 2);
-        console.log(firstBlock)
+
         setBRYNkCustCunt(firstBlock.cusCunt);
         setBRYNkOrdCunt(firstBlock.ordCunt);
         setBRYNkOrderVal(firstBlock.totalCunt);
@@ -145,11 +151,11 @@ const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) 
         setnthEndDt(nthBlock.endt);
     }
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        setSOData(data?.data?.data)
+    //     setSOData(SOData?.data?.data)
 
-    }, [data])
+    // }, [SOData])
 
     useEffect(() => {
         loadInitialData();
@@ -157,8 +163,8 @@ const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) 
 
     const handleToggle = (c1: any, c2: any, c3: any, kit: string, S: string, E: string) => {
         setDetailDataObj({ c1, c2, c3, kit, S, E })
-        setToggleSubPage(true);
-        handleToggleComponent(isSubPageOpen);
+        // setToggleSubPage(true);
+        handleToggleComponent(true);
     }
 
     return (
@@ -177,7 +183,7 @@ const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) 
                         orderCount={BRYNkOrdCunt}
                         cutCount={BRYNkCustCunt}
                         orderValue={BRYNkOrdVal}
-                        percent={BRYNkOrdCunt / totalOrderCount}
+                        percent={BRYNkOrdCunt / totalOrderCount2}
                     />
                 </Box>
                 <Box
@@ -191,7 +197,7 @@ const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) 
                         orderCount={secBlockOrdCnt}
                         cutCount={secBlockCustCnt}
                         orderValue={secOrderVal}
-                        percent={secBlockOrdCnt / totalOrderCount}
+                        percent={secBlockOrdCnt / totalOrderCount2}
                     />
                 </Box>
                 <Box
@@ -205,7 +211,7 @@ const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) 
                         orderCount={thrdBlockOrdCnt}
                         cutCount={thrdBlockCustCnt}
                         orderValue={thrdOrderVal}
-                        percent={thrdBlockOrdCnt / totalOrderCount}
+                        percent={thrdBlockOrdCnt / totalOrderCount2}
                     />
                 </Box>
             </MainContainer>
@@ -224,7 +230,7 @@ const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) 
                         orderCount={frthBlockOrdCnt}
                         cutCount={frthBlockCustCnt}
                         orderValue={frthOrderVal}
-                        percent={frthBlockOrdCnt / totalOrderCount}
+                        percent={frthBlockOrdCnt / totalOrderCount3}
                     />
 
                 </Box>
@@ -240,7 +246,7 @@ const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) 
                         orderCount={fifthBlockOrdCnt}
                         cutCount={fifthBlockCustCnt}
                         orderValue={fifthOrderVal}
-                        percent={fifthBlockOrdCnt / totalOrderCount}
+                        percent={fifthBlockOrdCnt / totalOrderCount3}
                     />
 
                 </Box>
@@ -256,7 +262,7 @@ const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) 
                         orderCount={sxthBlockOrdCnt}
                         cutCount={sxthBlockCustCnt}
                         orderValue={sxthdOrderVal}
-                        percent={sxthBlockOrdCnt / totalOrderCount}
+                        percent={sxthBlockOrdCnt / totalOrderCount3}
                     />
 
                 </Box>
@@ -274,7 +280,7 @@ const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) 
                         orderCount={svthBlockOrdCnt}
                         cutCount={svthBlockCustCnt}
                         orderValue={svthdOrderVal}
-                        percent={svthBlockOrdCnt / totalOrderCount}
+                        percent={svthBlockOrdCnt / totalOrderCount4}
                     />
 
                 </Box>
@@ -289,7 +295,7 @@ const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) 
                         orderCount={egthBlockOrdCnt}
                         cutCount={egthBlockCustCnt}
                         orderValue={egthdOrderVal}
-                        percent={egthBlockOrdCnt / totalOrderCount}
+                        percent={egthBlockOrdCnt / totalOrderCount4}
                     />
 
                 </Box>
@@ -304,7 +310,7 @@ const FutureCov = ({ handleToggleComponent, setDetailDataObj }: FutureCovProps) 
                         orderCount={nthBlockOrdCnt}
                         cutCount={nthBlockCustCnt}
                         orderValue={nthhdOrderVal}
-                        percent={nthBlockOrdCnt / totalOrderCount}
+                        percent={nthBlockOrdCnt / totalOrderCount4}
                     />
 
                 </Box>

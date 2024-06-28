@@ -87,10 +87,39 @@ export const Day = styled.td<{ color: string }>`
   border-radius: 50%;
 `;
 
-Day.defaultProps = {};
 export const Month = styled.tr`
   border-bottom: 2px dashed lightgrey;
   display: flex;
 `;
 
 export const Icon = styled.img``;
+
+export const TableContainer = styled.div`
+  background: white; 
+  border-radius: 8px; 
+  height:450px; 
+  display:flex; 
+  justify-content:center; 
+  align-items:center;
+  width:100%;
+  margin: 3rem 0;
+  box-shadow: rgba(0, 0, 0, 0.1) 5px 2px 14px 3px;
+  & > .ag-theme-alpine{
+    width: 100%;
+    margin: unset;
+  }
+`
+
+export const AnimationWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 2rem;
+`
+
+export const HelperText = styled.div`
+  font-size: 22px;
+  width: 65%;
+  text-align: center;
+`

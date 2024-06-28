@@ -54,7 +54,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
             >
 
                 <>
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'MaterialRequirement') ?
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'MaterialRequirement') &&
 
                         <SCGoBackContainer onClick={() => { if (handleGoBack) handleGoBack() }}>
                             <img
@@ -63,10 +63,9 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                             />
                             <SCGoBackText ><b>Go Back</b></SCGoBackText>
                         </SCGoBackContainer>
-                        : null
                     }
 
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp != "MaterialCovDetailData") &&
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -93,6 +92,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                                 opacity: 1,
                             }}>
                                 <input type="date"
+                                    data-testid="datepicker"
                                     style={{
                                         top: '141px',
                                         left: '651px',

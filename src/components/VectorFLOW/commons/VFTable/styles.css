@@ -23,7 +23,7 @@
 
 .child-grid .ag-header-container {
   /* Your styles for child grid header cells */
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
   /* Change this to your desired background color */
 }
 
@@ -43,7 +43,7 @@
 }
 
 .simchild-header {
-  background-color: rgb(255, 255, 255) !important;
+  /* background-color: rgb(255, 255, 255) !important; */
   /* --ag-header-foreground-color: rgb(255, 255, 255); */
 }
 

@@ -12,17 +12,14 @@ import { SAVE_ANALYTICS_DATA } from '../../../../../redux/actions/MTO/index';
 import { useGetSOSummaydetails } from '../../../../Services/MTO/Procurement/MaterialCoverage/index';
 
 interface CurrentCovProps {
+    data: any,
     handleToggleComponent: any,
     setDetailDataObj: (data: DetailsObj) => void
 }
 
-const CurrentCov = ({ handleToggleComponent, setDetailDataObj }: CurrentCovProps) => {
-    const [SOData, setSOData] = useState<string[]>([]);
-    const { data, /*isLoading, refetch*/ } = useGetSOSummaydetails();
-
-
+const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: CurrentCovProps) => {
+   
     const dispatch = useDispatch();
-    const [isSubPageOpen, setToggleSubPage] = useState<boolean>(false)
     const [totalOrderCount, setTotalOrdeerCount] = useState<number>(0);
     const [totalBlueOrdCount, setTotalBlueOrdCunt] = useState<number>(0);
 
@@ -71,10 +68,10 @@ const CurrentCov = ({ handleToggleComponent, setDetailDataObj }: CurrentCovProps
 
     const loadInitialData = () => {
 
-        const totalOrdCunt: any = calculatePercentage(SOData, ColorsMTO.Black.label, ColorsMTO.Red.label, ColorsMTO.Yellow.label, ColorsMTO.Green.label);
+        const totalOrdCunt: any = calculatePercentage(SOData, ColorsMTO.Black.label, ColorsMTO.Red.label, ColorsMTO.Yellow.label, ColorsMTO.Green.label, 0);
         setTotalOrdeerCount(totalOrdCunt);
 
-        const totalBlueOrdCount: any = calculatePercentage(SOData, ColorsMTO.Blue.label, ColorsMTO.White.label, "", "");
+        const totalBlueOrdCount: any = calculatePercentage(SOData, ColorsMTO.Blue.label, ColorsMTO.White.label, "", "", 1);
         setTotalBlueOrdCunt(totalBlueOrdCount)
 
         const firstBlock: any = mapOrderDetails(SOData, ColorsMTO.Black.label, ColorsMTO.Red.label, ColorsMTO.Yellow.label, "NK", 0);
@@ -129,10 +126,9 @@ const CurrentCov = ({ handleToggleComponent, setDetailDataObj }: CurrentCovProps
         setnthEndDt(nthBlock.endt)
     }
 
-    useEffect(() => {
-        setSOData(data?.data?.data)
-
-    }, [data])
+    // useEffect(() => {
+    //     setSOData(data?.data?.data)
+    // }, [data])
 
     useEffect(() => {
         loadInitialData();
@@ -144,12 +140,11 @@ const CurrentCov = ({ handleToggleComponent, setDetailDataObj }: CurrentCovProps
         // let totalCustCnt;
         // let totalOrderVal;
 
-        const blackCount:any = mapOrderDetails(SOData, ColorsMTO.Black.label, "", "", "", 4)
-        const redCount:any = mapOrderDetails(SOData, ColorsMTO.Red.label, "", "", "", 4)
-        const yellowCount:any = mapOrderDetails(SOData, ColorsMTO.Yellow.label, "", "", "", 4)
-        const greenCount:any = mapOrderDetails(SOData, ColorsMTO.Green.label, "", "", "", 4)
-        const blueCount:any = mapOrderDetails(SOData, ColorsMTO.Blue.label, "", "", "", 4)
-
+        const blackCount:any = mapOrderDetails(SOData, ColorsMTO.Black.label, "", "", "", 0)
+        const redCount:any = mapOrderDetails(SOData, ColorsMTO.Red.label, "", "", "", 0)
+        const yellowCount:any = mapOrderDetails(SOData, ColorsMTO.Yellow.label, "", "", "", 0)
+        const greenCount:any = mapOrderDetails(SOData, ColorsMTO.Green.label, "", "", "", 0)
+        const blueCount:any = mapOrderDetails(SOData, ColorsMTO.Blue.label, "", "", "", 1); 
         // totalOrdCnt = blackCount.ordCunt + redCount.ordCunt + yellowCount.ordCunt + greenCount.ordCunt + blueCount.ordCunt;
         // console.log('<>',totalCustCnt)
         const TotalCountObj = {
@@ -167,10 +162,16 @@ const CurrentCov = ({ handleToggleComponent, setDetailDataObj }: CurrentCovProps
     const handleToggle = (c1: any, c2: any, c3: any, kit: string, S: string, E: string) => {
 
         setDetailDataObj({ c1, c2, c3, kit, S, E })
-        setToggleSubPage(true);
-        handleToggleComponent(isSubPageOpen);
+        // setToggleSubPage(true);
+        handleToggleComponent(true);
     }
 
+    function formatDate(start: any, end: any) {
+        // if (start !== 0 || end !== 0) {
+          return start + "-" + end + " Days";
+        // }
+      }      
+      
 
     return (
         <Main>
@@ -278,7 +279,7 @@ const CurrentCov = ({ handleToggleComponent, setDetailDataObj }: CurrentCovProps
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
                         height={"96px"}
-                        text={svthSrtDt + "-" + svthEndDt + " Days"}
+                        text={formatDate(svthSrtDt, svthEndDt)}
                         orderCount={svthBlockOrdCnt}
                         cutCount={svthBlockCustCnt}
                         orderValue={svthdOrderVal}
@@ -291,7 +292,7 @@ const CurrentCov = ({ handleToggleComponent, setDetailDataObj }: CurrentCovProps
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
                         height={"96px"}
-                        text={egthSrtDt + "-" + egthEndDt + " Days"}
+                        text={formatDate(egthSrtDt, egthEndDt)}
                         orderCount={egthBlockOrdCnt}
                         cutCount={egthBlockCustCnt}
                         orderValue={egthdOrderVal}
@@ -304,7 +305,7 @@ const CurrentCov = ({ handleToggleComponent, setDetailDataObj }: CurrentCovProps
                         kit={"Full Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
                         height={"96px"}
-                        text={nthSrtDt + "-" + nthEndDt + " Days"}
+                        text={formatDate(nthSrtDt, nthEndDt)}
                         orderCount={nthBlockOrdCnt}
                         cutCount={nthBlockCustCnt}
                         orderValue={nthhdOrderVal}

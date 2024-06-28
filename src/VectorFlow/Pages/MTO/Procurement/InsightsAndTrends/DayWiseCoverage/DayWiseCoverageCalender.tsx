@@ -9,6 +9,7 @@ interface IDayWiseCoverageCalenderProps {
     end: string,
     getToolTipContent: (id: string) => JSX.Element,
     getColor: (id: string) => string,
+    selectedDate: string,
     setSelectedDate: Dispatch<SetStateAction<string>>,
 }
 
@@ -17,6 +18,7 @@ const DayWiseCoverageCalender = ({
     end,
     getToolTipContent,
     getColor,
+    selectedDate,
     setSelectedDate
 }: IDayWiseCoverageCalenderProps) => {
 
@@ -45,7 +47,7 @@ const DayWiseCoverageCalender = ({
                                         {_.range(0, getDaysInMonth(month)).map((day: number, index) => {
                                             const formattedDate = format(`${month.getFullYear()}/${month.getMonth() + 1}/${day + 1}`, "yyyy/MM/dd")
                                             return (
-                                                <Day key={index} color={getColor(formattedDate)} onClick={() => setSelectedDate(formattedDate)}>
+                                                <Day style={{opacity: (selectedDate == "" || selectedDate === formattedDate) ? "1"  : "0.5"}} key={index} color={getColor(formattedDate)} onClick={() => setSelectedDate(formattedDate)}>
                                                     <Tooltip content={getToolTipContent(formattedDate)}>
                                                         {day + 1}
                                                     </Tooltip>
