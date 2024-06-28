@@ -192,6 +192,40 @@ export const isTrue = (value?: string | number) => {
 //   return [tagsColDef,...result,...BPRSpecificColumns]
 // }
 
+export const mapVDRFieldsToColDefs= (fields:RRRField[]):ColDef[] =>{
+
+  let result:ColDef[]=[];
+  result=fields?.map((f:RRRField)=>{
+    if(f.Col_Code==='DispatchPen'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorDispatchRender'
+      }
+    }
+    if(f.Col_Code==='WHDescription'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        rowGroup: false
+      }
+    }
+    return {
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible
+    }
+    
+  })
+
+  return result;
+  
+}
+
 export const mapRRRFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
 
   if(!fields || fields.length<1){

@@ -294,6 +294,13 @@ export const listMenuParent: any = [
             url: "/supply-chain-intelligence-hub/bor",
             role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
 
+          },
+          {
+            name: "Supplier Dispatch Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/sdr",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+
           }
         ]
       },
