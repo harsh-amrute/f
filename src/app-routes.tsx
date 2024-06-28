@@ -33,6 +33,8 @@ import BufferTrendReport from './VectorFlow/Pages/MTA/InsightsAndTrends/BTR'
 import DBM from './VectorFlow/Pages/MTA/DBM/DBMNormSuggestions'
 import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests'
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
+import SupplierDispatchReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport'
+
 import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
 
 // to show loading state for desired page only instead of the entire screen
@@ -79,6 +81,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/insights-and-trends/buffer-trend-report',
     '/dbm/dbm-norm-suggestions',
     '/logistics/intransit-whereabouts',
+    '/supply-chain-intelligence-hub/sdr',
     '/master-data-management/data-modification-history'
 
   ]
@@ -447,6 +450,17 @@ export const initRoutes = (): RouteObject[] => {
        },
        ...getStoreTransferModuleRoutes()
      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/sdr',
+      element:<AppLayout/>,
+      children:[
+        {
+        index:true,
+        element:lazyLoad(<SupplierDispatchReport/>)
+        } ,
+        ...getStoreTransferModuleRoutes()
+      ]
     }
     
   ]
