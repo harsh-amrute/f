@@ -129,6 +129,7 @@ const dummyprops:SelectGroupedMastersProps = {
               }
           ],
           "rowData": [],
+          isChecked:true,
           "progress": "default"
       }
     ],
@@ -611,6 +612,7 @@ const dummyprops:SelectGroupedMastersProps = {
               }
           ],
           "rowData": [],
+          isChecked:true,
           "progress": "default"
       },
       {
@@ -722,6 +724,7 @@ const dummyprops:SelectGroupedMastersProps = {
               }
           ],
           "rowData": [],
+          isChecked:true,
           "progress": "default"
       },
   ]
