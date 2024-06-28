@@ -17,6 +17,9 @@ import { RootState } from '../../../../../redux/store/store';
 
 const AnalyticalScreen = () => {
     //AnalyticsData
+    let totalOrderCount = 0;
+    let totalCustCount = 0;
+    let totalOrderVal = 0;
     const options = useSelector((state: RootState) => state.mto.AnalyticsData);
 
     const [rowData] = useState([
@@ -33,6 +36,12 @@ const AnalyticalScreen = () => {
             headerName: 'Total Order Value'
         },
     ])
+
+    options.Order.map((o: any) => {
+        totalOrderCount += o.ordCunt;
+        totalCustCount += o.cusCunt;
+        totalOrderVal += o.totalCunt;
+    })
 
     if (!options.Order) {
         return null
@@ -106,6 +115,9 @@ const AnalyticalScreen = () => {
                                 </BPRDailyAnalyticsTableRow>
                             )
                         })}
+
+
+
                         <BPRDailyAnalyticsTableRow style={{
                             height: 30,
                             boxShadow: 'none',
@@ -122,25 +134,26 @@ const AnalyticalScreen = () => {
                             </BPRDailyAnalyticsTableCell>
                             <BPRDailyAnalyticsTableCell>
                                 <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
-                                    {1688}
+                                    {totalOrderCount}
                                 </BPRDailyAnalyticsTableCellHeader>
 
                             </BPRDailyAnalyticsTableCell>
                             <BPRDailyAnalyticsTableCell>
                                 <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
-                                    {1678}
+                                    {totalCustCount}
                                 </BPRDailyAnalyticsTableCellHeader>
 
                             </BPRDailyAnalyticsTableCell>
                             <BPRDailyAnalyticsTableCell>
                                 <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }} >
-                                    {150.1}
+                                    {totalOrderVal}
                                 </BPRDailyAnalyticsTableCellHeader>
 
                             </BPRDailyAnalyticsTableCell>
                         </BPRDailyAnalyticsTableRow>
 
                     </BPRDailyAnalyticsTableRowContainer>
+
                 </BPRDailyAnalyticsTableContainer>
 
 

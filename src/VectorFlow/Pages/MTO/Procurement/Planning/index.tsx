@@ -3,9 +3,13 @@ import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/Acti
 import useProcPlanning from './useProcPlanning';
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import { useState } from 'react';
+import moment from 'moment';
 
 const ProcurementPlanning = () => {
-    const [date, selectedDate] = useState<string>('');
+    const format2 = "YYYY-MM-DD"
+    const d = new Date();
+    const datetime = moment(d).format(format2);
+    const [date, selectedDate] = useState<string>(datetime);
     const { renderView, toggleCurrentTab, fetchData } = useProcPlanning(date);
     const handleDateChange = (date: string) => {
         selectedDate(date);
@@ -16,6 +20,7 @@ const ProcurementPlanning = () => {
                 comp={'Procurement Planning'}
                 onDateChange={handleDateChange}
                 submitDate={() => { fetchData(date) }}
+                date={date}
             />
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 

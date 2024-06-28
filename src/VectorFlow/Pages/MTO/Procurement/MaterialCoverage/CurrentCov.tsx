@@ -272,7 +272,7 @@ const CurrentCov = ({ handleToggleComponent, setDetailDataObj }: CurrentCovProps
             }}>
             </div>
 
-            <MainContainer>
+            <MainContainer >
                 <Box onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "NK", svthSrtDt, svthEndDt)}>
                     <MTOMaterialSO
                         kit={"No Kit"}

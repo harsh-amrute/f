@@ -18,24 +18,25 @@ const MaterialCov = () => {
   const [detailDataObj, setDetailDataObj] = useState<DetailsObj>();
   const [currTab, setCurrTab] = useState<string>();
   const [toggleComponent, setToggleComponent] = useState<boolean>(false);
-  
+
   const handleToggleComponent = (value: boolean) => {
     setToggleComponent(value);
   }
 
-  const handleParameterData=(data:any)=>{
+  const handleParameterData = (data: any) => {
     setDetailDataObj(data)
   }
 
   return (
-    <div style={{ width: "100%" }}>
-      <ActionToolBar
-        comp={'MaterialCov'}
-        onDateChange={() => { console.log('') }}
-        submitDate={() => { console.log('') }}
-      />
+    <div style={{ width: "100%", height: '50vh' }}>
+
       {!toggleComponent ?
         <>
+          <ActionToolBar
+            comp={'MaterialCov'}
+            onDateChange={() => { console.log('') }}
+            submitDate={() => { console.log('') }}
+          />
           <BTRLayoutTabsWrapper>
             <VFFloatingTab
               handleClick={(e) => setCurrTab(e.value)}
@@ -90,7 +91,16 @@ const MaterialCov = () => {
           </TextYAxis>
         </>
         :
-        <MaterialSODetailed parameterData={detailDataObj}/>
+        <>
+          <ActionToolBar
+            comp={'MaterialCovDetailData'}
+            onDateChange={() => { console.log('') }}
+            submitDate={() => { console.log('') }}
+            handleGoBack={()=>handleToggleComponent(false)}
+          />
+          <MaterialSODetailed parameterData={detailDataObj} />
+        </>
+
       }
     </div>
 
