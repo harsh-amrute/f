@@ -27,7 +27,8 @@ export interface MDMMasterState{
     rowData:any[]
     filters:Filter[]
     progress:ViewModifyProgressState,
-    fields:Field[]
+    fields:Field[],
+    isChecked:boolean
 }
 export interface Master{
     id:number,

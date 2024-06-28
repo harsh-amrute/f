@@ -490,6 +490,11 @@ const useViewModify = (pageType:string) => {
       }
 
     const handleSelectMasterSubmit = () => {
+      masters.forEach((master:MDMMasterState)=>{
+        if(!master.isChecked){
+          dispatch(REMOVE_MASTER(master.id));
+        }
+      })
       if(activeMaster.id===0){
         dispatch(UPDATE_ACTIVE_MASTER(0));
       }

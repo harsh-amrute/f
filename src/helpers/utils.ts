@@ -797,7 +797,8 @@ export const mapMasterToMasterState = (masters:Master[],onShowChart?:any):MDMMas
     }],
     colDefs:mapMasterToColumnDefs(master.fields,master.id,onShowChart),
     rowData:[],
-    progress:'default'
+    progress:'default',
+    isChecked:true
   }))
 }
 
@@ -1374,6 +1375,7 @@ export const createMastersStateFromDraftData = (draftData:any[],fields:Master[])
       name:existingMaster.name,
       colDefs:master.GridState.length>0?JSON.parse(master.GridState):mapMasterToColumnDefs(existingMaster.fields,existingMaster.id),
       rowData:master.DataMaster || [],
+      isChecked:true,
       filters:[{
         id:generateRandomId(),
         masterId:existingMaster.id,

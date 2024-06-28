@@ -369,7 +369,7 @@ describe("Handles all Interaction in ViewModify Component", () => {
       masters:MasterData,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[],isChecked:true},
       isSelectMasterOpen:true,
       draftId:'',
       isUploadModalOpen:false,
@@ -510,9 +510,11 @@ describe("Handles all Interaction in ViewModify Component", () => {
   });
 
   it("Check if any InActive Tabs is Closed First Tab is set to Default", async () => {
+    screen.logTestingPlaygroundURL();
     const submit = screen.getByText("Submit");
     fireEvent.click(submit);
-
+    
+    
     const tabCloseBtn = screen.getAllByTestId("tab-close");
     const tabNo = _.random(1, tabCloseBtn.length - 1);
     fireEvent.click(tabCloseBtn[tabNo]);
@@ -601,7 +603,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
     masters:MasterData,
     options:[],
     selectedOptions:[],
-    activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
+    activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[],isChecked:true},
     isSelectMasterOpen:false,
     draftId:'',
     isUploadModalOpen:false,
@@ -699,7 +701,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       masters:MasterData,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data,isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
@@ -724,7 +726,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       masters:MasterData,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data,isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
@@ -752,7 +754,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       masters:MasterData,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'uploaded',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data},
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'uploaded',name:MasterData[0].name,colDefs:[],rowData:mockMasterData.data,isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
@@ -812,7 +814,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       masters:MasterData,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'uploaded',name:MasterData[0].name,colDefs:uploadedStateColDefs,rowData:mockMasterData.data},
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'uploaded',name:MasterData[0].name,colDefs:uploadedStateColDefs,rowData:mockMasterData.data, isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
@@ -842,7 +844,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       masters:MasterData,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data,isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
@@ -867,7 +869,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       masters:MasterData,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'view',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data,isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
@@ -892,7 +894,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       masters:MasterData,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data, isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
@@ -914,10 +916,10 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
 
     const updatedMockState:MDMStore = {
       allMasters:MasterData,
-      masters:[{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:'Seasonality',colDefs:mapMasterToColumnDefs(MasterData[0].fields,10),rowData:mockMasterData.data}],
+      masters:[{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:'Seasonality',colDefs:mapMasterToColumnDefs(MasterData[0].fields,10),rowData:mockMasterData.data, isChecked:true}],
       options:[],
       selectedOptions:[],
-      activeMaster:{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:'Seasonality',colDefs:mapMasterToColumnDefs(MasterData[0].fields,10),rowData:mockMasterData.data},
+      activeMaster:{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:'Seasonality',colDefs:mapMasterToColumnDefs(MasterData[0].fields,10),rowData:mockMasterData.data, isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
@@ -952,7 +954,7 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       masters:MasterData,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data},
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'editOnline',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:mockMasterData.data, isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
@@ -1025,10 +1027,10 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
     const testData = [{...mockMasterData.data[0],SKUCode:"QACE1234,|"},mockMasterData.data[1],mockMasterData.data[2]]
     const updatedMockState:MDMStore = {
       allMasters:MasterData,
-      masters:[{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:"Seasonality",colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:testData}],
+      masters:[{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:"Seasonality",colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:testData,isChecked:true}],
       options:[],
       selectedOptions:[],
-      activeMaster:{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:"Seasonality",colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:testData},
+      activeMaster:{id:10,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'seasonality',name:"Seasonality",colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:testData,isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,

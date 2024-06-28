@@ -83,7 +83,8 @@ export const MasterData:MDMMasterState[] = [
             isDownload:true,
             isEdit:true,
             col_Position:'1',
-            isApplicable:true
+            isApplicable:true,
+            
           },
           {
             displayName:'SKU Name',
@@ -93,7 +94,8 @@ export const MasterData:MDMMasterState[] = [
             isDownload:true,
             isEdit:true,
             col_Position:'1',
-            isApplicable:true
+            isApplicable:true,
+
           },
           {
             displayName: "Item Category Code",
@@ -103,7 +105,8 @@ export const MasterData:MDMMasterState[] = [
             isDownload:true,
             isEdit:true,
             col_Position:'1',
-            isApplicable:true
+            isApplicable:true,
+
           },
       ],
       colDefs:[],
@@ -117,7 +120,8 @@ export const MasterData:MDMMasterState[] = [
             text:''
           }
       ],
-      rowData:[]
+      rowData:[],
+      isChecked:true
     },
     { 
       id: 2,
@@ -131,7 +135,7 @@ export const MasterData:MDMMasterState[] = [
             isDownload:true,
             isEdit:true,
             col_Position:'1',
-            isApplicable:true
+            isApplicable:true,
           },
           {
             displayName:'Location Name',
@@ -141,7 +145,7 @@ export const MasterData:MDMMasterState[] = [
             isDownload:true,
             isEdit:true,
             col_Position:'1',
-            isApplicable:true
+            isApplicable:true,
           },
           {
             displayName: "c1",
@@ -151,7 +155,8 @@ export const MasterData:MDMMasterState[] = [
             isDownload:true,
             isEdit:true,
             col_Position:'1',
-            isApplicable:true
+            isApplicable:true,
+
           },
       ],
       colDefs:[],
@@ -165,7 +170,8 @@ export const MasterData:MDMMasterState[] = [
           text:''
         }
     ],
-      rowData:[]
+      rowData:[],
+      isChecked:true
     },
     { 
       id: 3,
@@ -212,7 +218,8 @@ export const MasterData:MDMMasterState[] = [
           text:''
         }
     ],
-      rowData:[] 
+      rowData:[] ,
+      isChecked:true
     },
     { 
       id: 11,
@@ -259,7 +266,9 @@ export const MasterData:MDMMasterState[] = [
           text:''
         }
     ],
-      rowData:[] 
+      rowData:[] ,
+      isChecked:true
+
     },
     { 
       id: 7,
@@ -306,7 +315,9 @@ export const MasterData:MDMMasterState[] = [
           text:''
         }
     ],
-      rowData:[] 
+      rowData:[] ,
+      isChecked:true
+
     },
   ];
 
@@ -357,7 +368,9 @@ export const MasterData:MDMMasterState[] = [
             text:''
           }
       ],
-      rowData:[]
+      rowData:[],
+      isChecked:true
+
     },
     { 
       id: 2,
@@ -405,7 +418,9 @@ export const MasterData:MDMMasterState[] = [
           text:''
         }
     ],
-      rowData:[]
+      rowData:[],
+      isChecked:true
+
     },
     { 
       id: 3,
@@ -451,7 +466,9 @@ export const MasterData:MDMMasterState[] = [
           text:''
         }
     ],
-      rowData:[] 
+      rowData:[] ,
+      isChecked:true
+
     },
     { 
       id: 11,
@@ -498,7 +515,9 @@ export const MasterData:MDMMasterState[] = [
           text:''
         }
     ],
-      rowData:[] 
+      rowData:[],
+      isChecked:true
+ 
     },
     { 
       id: 7,
@@ -545,7 +564,9 @@ export const MasterData:MDMMasterState[] = [
           text:''
         }
     ],
-      rowData:[] 
+      rowData:[] ,
+      isChecked:true
+
     },
   ]
 

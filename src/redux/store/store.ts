@@ -9,7 +9,7 @@ const mdmState:MDMStore = {
     masters:[],
     options:[],
     selectedOptions:[],
-    activeMaster:{id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[]},
+    activeMaster:{id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true},
     isSelectMasterOpen:true,
     draftId:'',
     isUploadModalOpen:false,
