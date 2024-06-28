@@ -725,8 +725,10 @@ const useViewModify = (pageType:string) => {
           // const toasId = notifyLoader("Reading File");
           setIsOverlayVisible(true)
   
-          await parseExcelData(file,activeMaster,pageType,selectedColumns);
-
+          if(activeMaster.id < 14){
+            await parseExcelData(file,activeMaster,pageType,selectedColumns);
+          }
+          
           const formData = new FormData();
           formData.append("file", file);
           formData.append("ui_config",JSON.stringify(activeMaster.fields))
@@ -890,11 +892,12 @@ const useViewModify = (pageType:string) => {
       }
 
       const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean,actionStatus="") => {
-        const columnsToOmit = activeMaster.fields.filter((field:Field)=>!field.isDownload).map((field:Field)=>field.key) 
+        const columnsToOmit = activeMaster.fields.filter((field:Field)=>!field.isDownload).map((field:Field)=>field.key)
+        if(([6,10].includes(parseInt(String(activeMaster.id),10)) === false)){
+          //CleanUp Row Data
+          rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
+        }
 
-        //CleanUp Row Data
-        rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
-        console.log(rowData);
         // Convert To String
         rowData = rowData.map((row:any)=>{
           const tempRow:any = {};
