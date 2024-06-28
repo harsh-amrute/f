@@ -9,7 +9,6 @@ import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloati
 import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
 import FutureCov from './FutureCov';
 import CurrentCov from './CurrentCov';
-import { ColorsMTO } from '../../Common/Colors';
 import { MaterialCoverageString } from '../../Common/String';
 import MaterialSODetailed from './MaterialSODetailed';
 import { DetailsObj } from './CommonFunc';

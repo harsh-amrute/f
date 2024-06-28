@@ -7,7 +7,6 @@ import {
 } from '../MaterialCoverage/styles';
 import MTOMaterialSO from '../../../../../components/VectorFLOW/commons/MTO/MaterialSOBox/MTOMaterialSO';
 import { mapOrderDetails, calculatePercentage, DetailsObj } from './CommonFunc';
-import { useGetSOSummaydetails } from '../../../../Services/MTO/Procurement/MaterialCoverage/index';
 
 interface FutureCovProps {
     data: any,

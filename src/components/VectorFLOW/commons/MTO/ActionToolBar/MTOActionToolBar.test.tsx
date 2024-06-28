@@ -68,7 +68,7 @@ describe('MTOActionToolBar Component', () => {
   });
 
   it('renders Go Back button when comp is not MaterialCov, rmpm, or MaterialRequirement but the function is not passed', () => {
-    const { getByText, queryByTestId } = render(
+    const { getByText } = render(
       <MTOActionToolBar comp="someOtherComp"/>
     );
     const goBackButton = getByText('Go Back');

@@ -9,7 +9,6 @@ import { ColorsMTO } from '../../Common/Colors';
 import MTOMaterialSO from '../../../../../components/VectorFLOW/commons/MTO/MaterialSOBox/MTOMaterialSO';
 import { useDispatch } from 'react-redux';
 import { SAVE_ANALYTICS_DATA } from '../../../../../redux/actions/MTO/index';
-import { useGetSOSummaydetails } from '../../../../Services/MTO/Procurement/MaterialCoverage/index';
 
 interface CurrentCovProps {
     data: any,
