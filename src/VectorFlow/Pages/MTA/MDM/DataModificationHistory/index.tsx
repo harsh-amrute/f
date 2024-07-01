@@ -34,12 +34,12 @@ const DataModificationHistory = ()=>{
 const styles={
     option:(baseStyles:any, { isSelected }:any) => ({
       ...baseStyles,
-      backgroundColor: isSelected ? "#BC3D80" : "white",
+      backgroundColor: isSelected ?theme_ui==="REGALBLAZE"?"#FCA311": "#BC3D80" : "white",
       fontSize:'12px',
       "&:hover": {
-        backgroundColor: '#bc3d814d',
-        // backgroundColor: isSelected ?theme_ui==="REGALBLAZE"?"#FCA311": "#BC3D80" : "white",
+        // backgroundColor: '#bc3d814d',
         color:"black",
+        backgroundColor:theme_ui==="REGALBLAZE"?"rgb(252, 163, 17,0.3) ": '#bc3d814d',
       }
       }),
     control:(baseStyles:any, { isFocused }:any) => ({ 
@@ -75,7 +75,9 @@ const theme_ui = user.user.theme_ui
         <SelectSearchWrapper>
           <SelectWrapper>
             <TextWrapper>
-              <img src="/assets/img/VectorFLOW/NMS/01.svg" ></img>
+            {/* <img src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/eye-filled-regal.svg":"/assets/img/VectorFLOW/BPR/eye-filled-purple.svg"}/> */}
+
+              < img src= {theme_ui==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/01-RegalBlaze.svg":"/assets/img/VectorFLOW/NMS/01.svg"}/>
               <p>Select Master</p>
             </TextWrapper>
             <DropDownWrapper>
@@ -89,7 +91,8 @@ const theme_ui = user.user.theme_ui
 
           <SelectWrapper>
             <TextWrapper>
-              <img src="/assets/img/VectorFLOW/NMS/02.svg" style={{marginLeft:'-20px'}}></img>
+
+              <img src= {theme_ui==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/02-RegalBlaze.svg":"/assets/img/VectorFLOW/NMS/02.svg"} style={{marginLeft:'-20px'}}></img>
               <p>Search Key</p>
             </TextWrapper>
             <DualDropDownWrapper>

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { Field } from "../../../../../VectorFlow/types/MDM";
 import { useGetMasterUIConfiguration, useGetSkuLoc, useGetTaskMastersHistory} from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useUserData } from "../../../../../context";
  
 const useDataModificationHistory = () => {
  
@@ -16,6 +17,11 @@ const useDataModificationHistory = () => {
     const {mutateAsync:getSKULocations} = useGetSkuLoc();
     const {mutateAsync:masterUIConfiguration} = useGetMasterUIConfiguration();
     const {mutateAsync:getTaskMastersHistory} = useGetTaskMastersHistory()
+
+    const {user} = useUserData()
+    const theme_ui=user.user.theme_ui
+
+
  
     useEffect(()=>{
         const getMasterUIConfigurationData = async()=>{
@@ -189,9 +195,11 @@ const useDataModificationHistory = () => {
         const isChanged = previousRowData && !areValuesEqual(currentRowData[field.key], previousRowData[field.key]);
    
         return {
-            color: isChanged ? '#BC3D80' : 'black',
-            backgroundColor: isChanged ? '#bc3d814d' : 'white',
+            // color: isChanged ? '#BC3D80' : 'black',
+            // backgroundColor: isChanged ? '#bc3d814d' : 'white',
             fontWeight: isChanged ? '500' : 'normal', 
+            color:isChanged?theme_ui==="REGALBLAZE"?"#FCA311": "#BC3D80" : "black",
+            backgroundColor:isChanged ? theme_ui==="REGALBLAZE"?"rgb(252, 163, 17,0.3) ": "#bc3d814d": 'white',
         };
     };
    

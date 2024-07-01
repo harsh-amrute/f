@@ -1,5 +1,4 @@
 
-
 import styled from 'styled-components'
 
 export const VFMasterCardContainer = styled.div`
@@ -77,7 +76,7 @@ border-bottom:solid 0.5px #ECECEC;
 `
 
 
-export const VFMasterCardCheckBox = styled.input`
+export const VFMasterCardCheckBox = styled.input<{themeUi: string}>`
 appearance:none;
 width:20px;
 height:20px;
@@ -85,7 +84,8 @@ border-radius:50%;
 outline:none;
 border:1px solid grey;  
     &:checked {
-        background-color: #bc3d81; 
+        // background-color: #bc3d81; 
+        background:${(props) => props.themeUi==="REGALBLAZE"?"#FCA311": "#BC3D80"  };
         border:none;
             &::after { 
                 content: '✓';
