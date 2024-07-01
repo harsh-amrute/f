@@ -6,7 +6,9 @@ interface VFMasterCardProps{
     selectedFields:string[],
     isSelected:boolean,
     onSelectCheckbox:any,
-    isCheckBoxDisabled:boolean
+    isCheckBoxDisabled:boolean,
+    themeUi:string,
+
 
 }
 
@@ -22,7 +24,9 @@ const VFMasterCard = (props:VFMasterCardProps)=>{
         selectedFields,
         isSelected,
         onSelectCheckbox,
-        isCheckBoxDisabled
+        isCheckBoxDisabled,
+        themeUi,
+
 
     } = props
 
@@ -32,7 +36,7 @@ const VFMasterCard = (props:VFMasterCardProps)=>{
             <VFMasterCardHeader>
                 {data.name}
                 {!isCheckBoxDisabled &&
-                    <VFMasterCardCheckBox type='checkbox' data-testid="check-box"
+                    <VFMasterCardCheckBox themeUi={themeUi} type='checkbox' data-testid="check-box"
                     checked={isSelected}
                     onChange={onSelectCheckbox}
                  />}

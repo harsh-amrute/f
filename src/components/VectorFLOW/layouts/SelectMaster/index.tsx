@@ -81,9 +81,9 @@ const SelectMaster = (
     }
 
     const setValue = (options:any) => {
-        if(options.length===0) {
-            setFilterButtonStatus([])
-        }
+        // if(options.length===0) {
+        //     setFilterButtonStatus([])
+        // }
         dispatch(FILL_SELECTED_OPTIONS(options))
     }
 
@@ -91,8 +91,11 @@ const SelectMaster = (
         dispatch(RESET_STATE());
         navigate('/master-data-management/control-panel');
     }
-   
+
+    const isAnyMasterChecked = masters.length > 0 && masters.every(master => !master.isChecked);
+
     return(
+
         <Container >
             <Container style={{flexDirection:'row',gap:'44px'}}>
                 <VFMasterFieldSearch 
@@ -127,14 +130,15 @@ const SelectMaster = (
             </Container>
             <SCCardContainer>
                 {(masters.length > 0 ? masters : data).map((item:MDMMasterState)=>{
-                    return <VFMasterCard isSelected={(item.isChecked) && (selectedOptions.length > 0)} onSelectCheckbox={()=>{if(toggledFromAddMaster())notifyError("You can add only new Masters!");else dispatch(UPDATE_MASTER_CHECKED_STATUS(item.id))}} data={item} key={item.id} selectedFields={selectedOptions.map((s:Option)=>s.label)} isCheckBoxDisabled={filterButtonStatus.length > 0 || masters.length===0}/>
+                    return <VFMasterCard themeUi={themeUi} isSelected={(item.isChecked) && (selectedOptions.length > 0)} onSelectCheckbox={()=>{if(toggledFromAddMaster())notifyError("You can add only new Masters!");else dispatch(UPDATE_MASTER_CHECKED_STATUS(item.id))}} data={item} key={item.id} selectedFields={selectedOptions.map((s:Option)=>s.label)} isCheckBoxDisabled={filterButtonStatus.length > 0 || masters.length===0}/>
                 })}
             </SCCardContainer>
             <SCButtonContainer>
+
                 <VFButtonOutline onClick={onCancel} themeUi={themeUi} width={141} disabled={false}>
                     Cancel
                 </VFButtonOutline>
-                <VFButton onClick={() =>{ handleSubmit() }} themeUi={themeUi} width={141} disabled={masters.length === 0}>
+                <VFButton onClick={() =>{ handleSubmit() }} themeUi={themeUi} width={141} disabled={masters.length === 0 || isAnyMasterChecked }>
                     Submit
                 </VFButton>
 
