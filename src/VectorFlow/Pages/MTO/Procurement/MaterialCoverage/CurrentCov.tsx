@@ -103,21 +103,21 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
         setsxthBlockOrdCnt(sxthBlock.ordCunt);
         setsxthdOrderVal(sxthBlock.totalCunt);
 
-        const svnthBlock: any = mapOrderDetails(SOData, ColorsMTO.Blue.label, "", "", "NK", 1);
+        const svnthBlock: any = mapOrderDetails(SOData, ColorsMTO.Blue.label, ColorsMTO.White.label, "", "NK", 1);
         setsvthBlockCustCnt(svnthBlock.cusCunt);
         setsvthBlockOrdCnt(svnthBlock.ordCunt);
         setsvthdOrderVal(svnthBlock.totalCunt);
         setSvthSrtDt(svnthBlock.stdt);
         setSvthEndDt(svnthBlock.endt)
 
-        const egthBlock: any = mapOrderDetails(SOData, ColorsMTO.Blue.label, "", "", "PK", 1);
+        const egthBlock: any = mapOrderDetails(SOData, ColorsMTO.Blue.label, ColorsMTO.White.label, "", "PK", 1);
         setegthBlockCustCnt(egthBlock.cusCunt);
         setegthBlockOrdCnt(egthBlock.ordCunt);
         setegthdOrderVal(egthBlock.totalCunt);
         setegthSrtDt(egthBlock.stdt)
         setegthEndDt(egthBlock.endt)
 
-        const nthBlock: any = mapOrderDetails(SOData, ColorsMTO.Blue.label, "", "", "FK", 1);
+        const nthBlock: any = mapOrderDetails(SOData, ColorsMTO.Blue.label, ColorsMTO.White.label, "", "FK", 1);
         setnthBlockCustCnt(nthBlock.cusCunt);
         setnthBlockOrdCnt(nthBlock.ordCunt);
         setnthhdOrderVal(nthBlock.totalCunt);
@@ -143,7 +143,8 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
         const redCount:any = mapOrderDetails(SOData, ColorsMTO.Red.label, "", "", "", 0)
         const yellowCount:any = mapOrderDetails(SOData, ColorsMTO.Yellow.label, "", "", "", 0)
         const greenCount:any = mapOrderDetails(SOData, ColorsMTO.Green.label, "", "", "", 0)
-        const blueCount:any = mapOrderDetails(SOData, ColorsMTO.Blue.label, "", "", "", 1); 
+        const blueCount:any = mapOrderDetails(SOData, ColorsMTO.Blue.label, ColorsMTO.White.label, "", "", 1); 
+
         // totalOrdCnt = blackCount.ordCunt + redCount.ordCunt + yellowCount.ordCunt + greenCount.ordCunt + blueCount.ordCunt;
         // console.log('<>',totalCustCnt)
         const TotalCountObj = {
@@ -273,7 +274,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
             </div>
 
             <MainContainer >
-                <Box onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "NK", svthSrtDt, svthEndDt)}>
+                <Box onClick={() => handleToggle(ColorsMTO.Blue.label, ColorsMTO.White.label, "", "NK", svthSrtDt, svthEndDt)}>
                     <MTOMaterialSO
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
@@ -286,7 +287,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                     />
 
                 </Box>
-                <Box onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "PK", egthSrtDt, egthEndDt)}>
+                <Box onClick={() => handleToggle(ColorsMTO.Blue.label, ColorsMTO.White.label, "", "PK", egthSrtDt, egthEndDt)}>
                     <MTOMaterialSO
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
@@ -299,7 +300,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                     />
 
                 </Box>
-                <Box onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "FK", nthSrtDt, nthEndDt)}>
+                <Box onClick={() => handleToggle(ColorsMTO.Blue.label, ColorsMTO.White.label, "", "FK", nthSrtDt, nthEndDt)}>
                     <MTOMaterialSO
                         kit={"Full Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}

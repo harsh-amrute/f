@@ -14,7 +14,7 @@ export const mapOrderDetails = (data: string[], c1: string, c2: string, c3: stri
                 totalOrdCount += Number(data.ordval)
             }
         }
-        else if(kit !== "" && (buc === 1 || buc === 2 || buc === 3 || buc === 4 )){
+        else if (kit !== "" && (buc === 1 || buc === 2 || buc === 3 || buc === 4)) {
             if (data.col == c1 && data.kit == kit && data.bkt == buc) {
                 orderValue += Number(data.ordcnt)
                 custCount += Number(data.custcnt)
@@ -23,8 +23,8 @@ export const mapOrderDetails = (data: string[], c1: string, c2: string, c3: stri
                 endDate = data.E
             }
         }
-        else{
-            if(data.col == c1){
+        else {
+            if ((data.col == c1 || data.col == c2)) {
                 orderValue += Number(data.ordcnt)
                 custCount += Number(data.custcnt)
                 totalOrdCount += Number(data.ordval)
