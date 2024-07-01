@@ -72,7 +72,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
 
             <PercentBorderContainer>
                 <Percentborder>
-                    <Percent>{Math.floor(isNaN(percent) ? 0 : percent * 100)}%</Percent>
+                    <Percent>{Math.round(isNaN(percent) ? 0 : percent * 100)}%</Percent>
                 </Percentborder>
             </PercentBorderContainer>
 
