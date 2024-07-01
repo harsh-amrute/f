@@ -22,10 +22,10 @@ interface MaterialSOProps {
     orderCount: number,
     cutCount: number,
     orderValue: number,
-    percent:number,
+    percent: number,
 }
 
-const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderValue,percent }: MaterialSOProps) => {
+const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderValue, percent }: MaterialSOProps) => {
 
     return (
         <>
@@ -72,7 +72,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
 
             <PercentBorderContainer>
                 <Percentborder>
-                    <Percent>{Math.floor(isNaN(percent) ? 0 : percent*100)}%</Percent>
+                    <Percent>{Math.round(isNaN(percent) ? 0 : percent * 100)}%</Percent>
                 </Percentborder>
             </PercentBorderContainer>
 
@@ -95,7 +95,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
                 </Btns>
                 <Separator color={'grey'} ></Separator>
                 <Btns
-                    title='No of Customer'>
+                    title='No of Customers'>
                     <ButtonImg
                         src='/assets/img/people.png'
                         height='20px' width='20px'

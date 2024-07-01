@@ -2592,15 +2592,15 @@ export const mapMaterialCoverageFieldsToColDefs = (fields: ColumnHeaderConfig[])
   ]
 
   result = fields.map((f: ColumnHeaderConfig) => {
-    if (f.jf === 'ic') {
+    if (f.jf === "ic") {
       return {
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
         hide: !f.vs,
-        cellRenderer: 'agGroupCellRenderer',
-        initialWidth: 20,
-      }
+        cellRenderer: "customGroupCellRenderer",
+        initialWidth: 80,
+      };
     }
     if (f.jf === 'cp') {
       return {

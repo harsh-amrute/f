@@ -22,9 +22,9 @@ const Tooltip = ({ children, content }: any) => {
                 // Adjust if tooltip goes outside the viewport
                 const viewportWidth = window.innerWidth * 1 / 0.75 - 20;
                 if (tooltipLeft < 0) {
-                    tooltipLeft = 0 + 20;
+                    tooltipLeft = 0 + 10;
                 } else if (tooltipLeft + tooltipRect.width >= viewportWidth) {
-                    tooltipLeft = viewportWidth - tooltipRect.width - 20;
+                    tooltipLeft = viewportWidth - tooltipRect.width;
                 }
                 setoolTipPosition({
                     top: top - tooltipRect.height - 15,
