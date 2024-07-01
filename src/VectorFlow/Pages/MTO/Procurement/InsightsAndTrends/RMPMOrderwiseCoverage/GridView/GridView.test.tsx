@@ -23,7 +23,7 @@ jest.mock('../ColumnData', () => [
 
 describe('GridView Component', () => {
     beforeEach(() => {
-        render(<GridView />);
+        render(<GridView agGridProps={[]} ShortageColumns={[]} ShortageDatas={[]} />);
     });
 
     test('renders the correct number of columns', () => {

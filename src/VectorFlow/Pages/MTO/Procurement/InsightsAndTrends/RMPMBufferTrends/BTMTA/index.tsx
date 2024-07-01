@@ -23,6 +23,112 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
     const [data, setData] = useState(dummyData)
     const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(data, horizonDays / 5, horizonDays, false));
 
+
+    function TooltipRenderer({ datum, xKey }: any) {
+
+        let countArr = [];
+        let perArr = [];
+
+        function convertToPercentageArray(absoluteValues: number[]) {
+            const total = absoluteValues.reduce((sum, value) => sum + value, 0);
+
+            // If the total is 0, to avoid division by zero, we can return an array of 0 percentages.
+            if (total === 0) {
+                return absoluteValues.map(() => 0);
+            }
+
+            const percentageValues = absoluteValues.map(value => (value / total) * 100);
+            console.log("percentValue", percentageValues)
+            return percentageValues;
+        }
+
+        if (actBtn.label === 'Absolute Value') {
+            countArr = [datum['b'], datum['r'], datum['y'], datum['g'], datum['w']]
+            perArr = convertToPercentageArray(countArr);
+        }
+        else {
+            perArr = [datum['b'], datum['r'], datum['y'], datum['g'], datum['w']];
+            let reqData = null;
+            countArr = [0, 0, 0, 0, 0];
+            data.forEach(element => {
+                if (element.dt === datum['dt']) {
+                    reqData = element;
+                    countArr = [reqData.b, reqData.r, reqData.y, reqData.g, reqData.w]
+                }
+            });
+
+        }
+
+        return `
+        <div  style=" color: white; padding-top: 10px; padding-bottom:4px;background-color: #6C696A; display: flex; justify-content: center; align-items: center">
+            ${datum[xKey]}
+        </div>
+        <div style="color: white; background-color: #6C696A; padding: 10px">
+            <table style="width: 100%; color: white; border-collapse: collapse;">
+            <thead style="border-bottom: 1px dashed white; border-top: 1px dashed white">
+                <tr>
+                    <th style="padding: 5px;  background-color: #6C696A; text-align: left; width: 120px"></th>
+                    <th style="font-size: 8px; padding: 5px;  background-color: #6C696A; text-align: right;">Percentage</th>
+                    <th style="font-size: 8px; padding: 5px;  background-color: #6C696A; text-align: right;">Count</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td style="padding: 5px; background-color: #6C696A;">
+                        <div style="display: flex; align-items: center;">
+                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: black"></div>
+                            Black
+                        </div>
+                    </td>
+                    <td style="padding: 5px; background-color: #6C696A;">${Math.round(perArr[0])}%</td>
+                    <td style="padding: 5px; background-color: #6C696A;">${countArr[0]}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 5px; background-color: #6C696A;">
+                        <div style="display: flex; align-items: center;">
+                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: red"></div>
+                            Red
+                        </div>
+                    </td>
+                    <td style="padding: 5px; background-color: #6C696A;">${Math.round(perArr[1])}%</td>
+                    <td style="padding: 5px; background-color: #6C696A;">${countArr[1]}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 5px; background-color: #6C696A;">
+                        <div style="display: flex; align-items: center;">
+                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: green"></div>
+                            Green
+                        </div>
+                    </td>
+                    <td style="padding: 5px; background-color: #6C696A;">${Math.round(perArr[2])}%</td>
+                    <td style="padding: 5px; background-color: #6C696A;">${countArr[2]}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 5px; background-color: #6C696A;">
+                        <div style="display: flex; align-items: center;">
+                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: yellow"></div>
+                            Yellow
+                        </div>
+                    </td>
+                    <td style="padding: 5px; background-color: #6C696A;">${Math.round(perArr[3])}%</td>
+                    <td style="padding: 5px; background-color: #6C696A;">${countArr[3]}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 5px; background-color: #6C696A;">
+                        <div style="display: flex; align-items: center;">
+                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: grey"></div>
+                            White
+                        </div>
+                    </td>
+                    <td style="padding: 5px; background-color: #6C696A;">${Math.round(perArr[4])}%</td>
+                    <td style="padding: 5px; background-color: #6C696A;">${countArr[4]}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>`;
+    }
+
     type BufferTrendData = {
         dt: string;
         b: number;
@@ -94,6 +200,9 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                     fontSize: 8,
                     fontWeight: 'bold',
                     color: 'black'
+                },
+                gridLine: {
+                    enabled: false
                 }
             },
             {
@@ -108,6 +217,9 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                     fontSize: 8,
                     fontWeight: 'bold',
                     color: 'black'
+                },
+                gridLine: {
+                    enabled: false
                 }
             }
         ],
@@ -122,6 +234,11 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 marker: {
                     fill: "Black",
                     stroke: "Black"
+                },
+                tooltip: {
+
+                    renderer: TooltipRenderer
+
                 }
             },
             {
@@ -135,6 +252,11 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 marker: {
                     fill: "Red",
                     stroke: "Red"
+                },
+                tooltip: {
+
+                    renderer: TooltipRenderer
+
                 }
             },
             {
@@ -148,6 +270,11 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 marker: {
                     fill: "#FFBF00",
                     stroke: "#FFBF00"
+                },
+                tooltip: {
+
+                    renderer: TooltipRenderer
+
                 }
             },
             {
@@ -162,6 +289,11 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                     fill: "Green",
                     stroke: "Green"
                 },
+                tooltip: {
+
+                    renderer: TooltipRenderer
+
+                }
 
             }
             ,
@@ -176,6 +308,11 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 marker: {
                     fill: "grey",
                     stroke: "grey",
+
+                },
+                tooltip: {
+
+                    renderer: TooltipRenderer
 
                 }
             }

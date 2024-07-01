@@ -7,94 +7,18 @@ import procData from '../ProcurementData';
 import { InsightsAndTrendsString } from "../../../../Common/String";
 import { ColDef } from "ag-grid-enterprise";
 
-const GridView = () => {
 
-    const agGridProps: AgGridReactProps = {
-        tooltipShowDelay: 0,
-        tooltipTrigger: "focus",
-        gridOptions: {
-            rowHeight: 50,
-            getRowStyle: (params: any) => {
-                return {
-                    background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
-                };
-            },
+interface GridProps {
+    agGridProps: any
+    ShortageColumns: any
+    ShortageDatas: any
+}
 
-            rowSelection: 'multiple',
-            suppressRowClickSelection: true,
-            enableBrowserTooltips: true,
-            enableRangeSelection: true,
+const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) => {
 
-            pagination: true,
-            defaultColDef: {
-                cellStyle: {
-                    'text-align': 'center',
-                    'height': '50px',
-                    "font-style": "normal",
-                    "font-variant": "normal",
-                    "font-weight": "300",
-                    "font-size": "20px",
-                    "font-family": "Roboto",
-                    'text-overflow': 'ellipsis',
-                    'white-space': 'nowrap',
-                    'resizable': 'true',
-                },
-            },
-
-        },
-        masterDetail: true,
-
-        paginationAutoPageSize: true,
-        enterNavigatesVertically: true,
-        enterNavigatesVerticallyAfterEdit: true,
-        groupDefaultExpanded: 0,
-
-        onCellEditingStopped(event: any) {
-            const field = event.colDef.field;
-            // const newValue = event.newValue;
-            const rowIndex = event.rowIndex;
-
-            if (!field || rowIndex == null) {
-                return;
-            }
-        }
-    };
-
-    // const [ShortageColumns, setShortageColumns] = useState(columnData);
-    const [ShortageColumns] = useState(columnData);
     const gridRef = useRef();
 
-    const mapDataToColumns = (data: Order[], columns: ColDef[]) => {
-        return data.map(item => {
-            const mappedItem: any = {};
-            columns.forEach(column => {
-                if (column.field) {
-                    if (column.field === "rmpm") {
-                        if (item['or'] > 0) {
-                            mappedItem[column.field] = InsightsAndTrendsString.ordersWithRMPM;
-                        }
-                        else if (item['po'] > 0) {
-                            mappedItem[column.field] = InsightsAndTrendsString.ordersWithFullkitOPO;
-                        }
-                        else if (item['sit'] > 0) {
-                            mappedItem[column.field] = InsightsAndTrendsString.ordersWithFullkitSIT;
-                        }
-                        else {
-                            mappedItem[column.field] = InsightsAndTrendsString.ordersWithFullkitOHS;
-                        }
-                    }
-                    else {
-                        mappedItem[column.field] = item[column.field as keyof Order];
-                    }
-                }
-            });
-            return mappedItem;
-        });
-    };
 
-    const convertedData = mapDataToColumns(procData, columnData);
-    // const [ShortageDatas, setShortageData] = useState(convertedData);
-    const [ShortageDatas] = useState(convertedData);
 
 
     return (
