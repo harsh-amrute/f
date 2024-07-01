@@ -13,7 +13,7 @@ const mdmState:MDMStore = {
     isSelectMasterOpen:true,
     draftId:'',
     isUploadModalOpen:false,
-    chunkSize:5000,
+    chunkSize:20000,
     recordCount:0,
     isDataAvailableLocally:false
 }
