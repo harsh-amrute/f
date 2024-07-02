@@ -52,7 +52,6 @@ const ResizableTable = (props: IResizeTableProps) => {
   }, []);
 
   const BarFillUI = (value: any) => {
-    console.log(value);
     const val = value?.value;
     return (
       <TableStyle.CellWithBar>
@@ -152,7 +151,7 @@ const ResizableTable = (props: IResizeTableProps) => {
       colId: "fol",
       minWidth: 120,
       flex: 1,
-      cellRenderer: (params: any) => {console.log(params, 'PARMAS'); return <BarFillUI value={params?.value} />},
+      cellRenderer: (params: any) => <BarFillUI value={params?.value} />,
       cellStyle: {
         width: "100%",
         fontSize: "18px",

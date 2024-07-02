@@ -78,6 +78,8 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
         
         return formattedDate;
     }
+
+    console.log(selectedFilters);
     
     return (
         <SCTaskBarContainer>
@@ -174,7 +176,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                         </DateValue>
                     </DateWrapper>}
                 {/**Selected Filter start */}
-                <VFSelectedFiltersWrapper>
+                {selectedFilters && selectedFilters?.length > 0 && <VFSelectedFiltersWrapper>
                     <VFSelectedFiltersPlaceHolder>
                         Selected Filters
                     </VFSelectedFiltersPlaceHolder>
@@ -200,7 +202,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                             </VFSelectedFiltersChip>
                         ))}
                     </VFFilterScrollBar>
-                </VFSelectedFiltersWrapper>
+                </VFSelectedFiltersWrapper>}
                 {/**Selected Filter ends*/}
 
             </SCTaskFilterContainer>

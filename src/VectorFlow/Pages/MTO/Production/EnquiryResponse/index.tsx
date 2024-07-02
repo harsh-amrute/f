@@ -81,7 +81,6 @@ const EnquiryResponse = () => {
         bufferData = current;
       }
     }
-    console.log(bufferData, 'BUFFER');
     if (bufferType === "procurement") {
       return bufferData?.it && bufferData?.it[productGroup]?.proc_size || "--";
     }
@@ -245,7 +244,6 @@ const EnquiryResponse = () => {
     for (let i = 0; i < tableData?.length; i++) {
       const current = tableData[i];
       if (current?.plnm?.includes(selectedOptions?.plantName)) {
-        console.log('planName', selectedOptions?.plantName, tableData[i]);
         data?.push(current);
       }
     }
@@ -394,7 +392,6 @@ const EnquiryResponse = () => {
   }
 
   useEffect(()=>{
-    // console.log(data?.data?.data?.data?.results);
     setTableData(data?.data?.data?.data?.results)
   },[data]);
 
