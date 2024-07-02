@@ -526,7 +526,7 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
                         </div>
                     </ChartWrapper>
 
-                    <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing" headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                    <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText="RM / PM Buffer Trend - MTO" headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div className="ag-theme-planning" style={{ width: '1000px' }}>
                             <VFTable
                                 ref={chartRef}

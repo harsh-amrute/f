@@ -15,11 +15,11 @@ function generateDummyData(startDate: string, numDays: number): BufferTrendData[
     for (let i = 0; i < numDays; i++) {
         const entry: BufferTrendData = {
             'dt': formatDate(date),
-            'b': getRandomValue(),
-            'r': getRandomValue(),
-            'g': getRandomValue(),
-            'y': getRandomValue(),
-            'w': getRandomValue(),
+            'b': getRandomValue('b'),
+            'r': getRandomValue('r'),
+            'g': getRandomValue('g'),
+            'y': getRandomValue('y'),
+            'w': getRandomValue('w'),
         };
         data.push(entry);
         date.setDate(date.getDate() + 1);
@@ -35,8 +35,32 @@ function formatDate(date: Date): string {
     return `${day}-${month}-${year}`;
 }
 
-function getRandomValue(): number {
-    return Math.floor(Math.random() * 20) + 1; // Random value between 1 and 20
+function getRandomValue(str: string): number {
+
+    if (str === 'b') {
+
+        return Math.floor(Math.random() * 4) + 1; // Random value between 1 and 20
+    }
+    if (str === 'r') {
+
+        return Math.floor(Math.random() * 8) + 1; // Random value between 1 and 20
+    }
+    if (str === 'y') {
+
+        return Math.floor(Math.random() * 12) + 1; // Random value between 1 and 20
+    }
+    if (str === 'g') {
+
+        return Math.floor(Math.random() * 16) + 1; // Random value between 1 and 20
+    }
+    if (str === 'w') {
+
+        return Math.floor(Math.random() * 20) + 1; // Random value between 1 and 20
+    }
+    else {
+        return Math.floor(Math.random() * 20) + 1; // Random value between 1 and 20
+
+    }
 }
 
 // Usage example
