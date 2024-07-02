@@ -439,7 +439,6 @@ const EnquiryResponse = () => {
       <FilterWrapper>
         <MTOActionToolBar
           comp={"EnquiryResponse"}
-          hasFilters={true}
           onAddFilter={handleModalToggle}
           selectedFilters={selectedFilters}
           removeFilters={removeFilters}

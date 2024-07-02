@@ -11,7 +11,7 @@ const Note = (props: INoteProps) => {
     const { type, message } = props;
     return ( 
         <>
-            <NoteWrapper>
+            <NoteWrapper data-testid='note'>
                 <LogoWrapper>
                     {type === 'danger' && 
                         <img

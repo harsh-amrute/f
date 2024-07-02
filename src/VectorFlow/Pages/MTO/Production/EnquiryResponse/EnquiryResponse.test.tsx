@@ -1,13 +1,25 @@
 import React, { ReactNode } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import EnquiryResponse from '.';
-// Install this package if not already installed
 import { QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { UserDataContext } from '../../../../../context';
 import {createStore} from '../../../../../redux/store/store'
 import { setupReactQuery } from '../../../../../config/react-query-config';
+import Note from './Note';
+import TabSwitch from './TabsSwitch';
+import FilterModal from './FilterModal';
+
+jest.mock('../../../../Services/MTO/Production/EnquiryResponse');
+jest.mock('../../../../../../src/components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar', () => (props: any) => (
+  <div data-testid="action-toolbar">
+    {props.selectedFilters.map((filter: any, index: any) => (
+      <div key={index}>{filter.label}</div>
+    ))}
+    <button onClick={props.onAddFilter}>+ Add Filter</button>
+  </div>
+));
 
 // Mock useGetEnquiryResData hook
 jest.mock('../../../../Services/MTO/Production/EnquiryResponse', () => ({
@@ -56,6 +68,64 @@ const contextWrapper = (children: ReactNode,store:any) => {
 };
 
 describe('EnquiryResponse', () => {
+  const handleTabChangeMock = jest.fn();
+  const handleClose = jest.fn();
+  const handleOkay = jest.fn();
+  const handleOptionSelect = jest.fn();
+  const handleNameChange = jest.fn();
+
+  const filters = [
+    { heading: 'Filter 1', options: ['Option 1', 'Option 2'] },
+    { heading: 'Filter 2', options: ['Option 3', 'Option 4'] },
+  ];
+
+  const selectedOptions = {
+    plantName: 'Test Plant',
+    productGroup: ['Option 1'],
+    department: [],
+    ccrGroup: [],
+    ccrName: [],
+  };
+
+  it('renders without crashing', () => {
+    render(<EnquiryResponse />);
+  });
+
+  it('displays table data', () => {
+    render(<EnquiryResponse />);
+    expect(screen.getByTestId('table-wrapper')).toBeInTheDocument();
+  });
+
+  it('applies filters correctly',async () => {
+    render(contextWrapper(<EnquiryResponse />, mockedStore));
+
+    // Open filter modal
+    fireEvent.click(screen.getByText('+ Add Filter'));
+    
+    // Assert that modal content is visible
+    await waitFor(() => {
+      expect(screen.getByText('Select Filter')).toBeInTheDocument();
+    });
+    
+    // Simulate clicking "Apply" to apply filters
+    fireEvent.click(screen.getByText('Apply Filter'));
+
+    // Assert that modal content is no longer in the document
+    await waitFor(() => {
+      expect(screen.getByTestId('table-wrapper')).toHaveTextContent('Plant Department CCR Group CCR Name FOL ( in Dyays ) No Rows To Show');
+    });
+
+    // render(<EnquiryResponse />);
+    // await waitFor(() => {
+    //   fireEvent.click(screen.getByText('+ Add Filter'));
+    // });
+    // // Apply Filters
+    // fireEvent.click(screen.getByText('Apply'));
+    // await waitFor(() => {
+    //   expect(screen.getByTestId('table-wrapper')).toHaveTextContent('Plant Department CCR Group CCR Name FOL ( in Dyays ) No Rows To Show');
+    // });
+  });
+
   it('renders EnquiryResponse component correctly', async () => {
     render(contextWrapper(<EnquiryResponse />, mockedStore));
 
@@ -77,7 +147,7 @@ describe('EnquiryResponse', () => {
     render(contextWrapper(<EnquiryResponse />, mockedStore));
 
     // Open filter modal
-    fireEvent.click(screen.getByText('Edit Filter'));
+    fireEvent.click(screen.getByText('+ Add Filter'));
     
     // Assert that modal content is visible
     await waitFor(() => {
@@ -92,5 +162,78 @@ describe('EnquiryResponse', () => {
       expect(screen.queryByText('Select Filter')).toBeNull();
     });
   });
+
+  it('displays note message', () => {
+    render(<Note type="danger" message={<p>test-message</p>} />);
+    expect(screen.getByText('test-message')).toBeInTheDocument();
+  });
+
+  it('shows blur cover when no product group selected', () => {
+    render(<EnquiryResponse />);
+    expect(screen.getByText('Please select filter for product group to view estimated due date')).toBeInTheDocument();
+  });
+
+  test('renders correctly with single tab', () => {
+    render(
+      <TabSwitch
+        heading="Single Tab"
+        tabs={['Only Tab']}
+        handleTabChange={handleTabChangeMock}
+        activeTab={0}
+        tabUI={<div>Tab UI Content</div>}
+      />
+    );
+
+    // Check if heading is rendered
+    expect(screen.getByText('Single Tab')).toBeInTheDocument();
+
+    // Check if the single tab is rendered and active
+    expect(screen.getByText('Only Tab')).toHaveClass('active-tab');
+  });
+
+  test('renders correctly with no tabs', () => {
+    render(
+      <TabSwitch
+        heading="No Tabs"
+        tabs={[]}
+        handleTabChange={handleTabChangeMock}
+        activeTab={0}
+        tabUI={<div>Tab UI Content</div>}
+      />
+    );
+
+    // Check if heading is rendered
+    expect(screen.getByText('No Tabs')).toBeInTheDocument();
+
+    // Check if no tabs are rendered
+    expect(screen.queryByText('Tab 1')).toBeNull();
+    expect(screen.queryByText('Tab 2')).toBeNull();
+    expect(screen.queryByText('Tab 3')).toBeNull();
+  });
+
+  it('To check if no data is available', async () => {
+    render(<EnquiryResponse />);
+
+    // Open Modal
+    fireEvent.click(screen.getByText('+ Add Filter'));
+    await waitFor(() => {
+      expect(screen.getByText('Select Filter')).toBeInTheDocument();
+    });
+    // Find the input field and add value
+    const input = screen.getByTestId('plntNmInput');
+    fireEvent.change(input, { target: { value: 'Plant 1' } });
+    // expect(handleNameChange).toHaveBeenCalledWith(expect.objectContaining({
+    //     value: 'Plant 1',
+    //     name: 'plantName',
+    // }));
+
+    // Apply the filter
+    fireEvent.click(screen.getByText('Apply Filter'));
+    await waitFor(() => {
+      expect(screen.queryByText('Select Filter')).toBeNull();
+      expect(screen.getByTestId('table-wrapper')).toHaveTextContent('No Rows To Show');
+    });
+  });
+
 
 });

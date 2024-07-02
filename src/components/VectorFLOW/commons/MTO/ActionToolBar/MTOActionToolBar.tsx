@@ -46,14 +46,13 @@ interface MTOActionToolBarProps {
     submitDate?: () => void;
     isGridView?: boolean;
     setIsGridView?: (isGridView: boolean) => void;
-    hasFilters?: boolean;
     onAddFilter?: () => void;
     selectedFilters?: filterType[];
     removeFilters?: (category: string, name: string) => void;
 }
 
 
-const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submitDate, hasFilters, onAddFilter, selectedFilters, removeFilters }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submitDate, onAddFilter, selectedFilters, removeFilters }: MTOActionToolBarProps) => {
     
     const { user } = useUserData()
     // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
@@ -209,7 +208,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
 
             <SCCustomActionsContainer>
                 {comp === 'EnquiryResponse' && onAddFilter ? 
-                    <VFButton onClick={() => onAddFilter()} themeUi={themeUi} disabled={false} width={110}>{hasFilters ? <p>Edit Filter</p> : <p>+ Add Filter</p>}</VFButton>
+                    <VFButton onClick={() => onAddFilter()} themeUi={themeUi} disabled={false} width={110}>{selectedFilters && selectedFilters?.length > 0 ? <p>Edit Filter</p> : <p>+ Add Filter</p>}</VFButton>
                     : 
                     <SCButton>
                         <p>+ Add Filter</p>
