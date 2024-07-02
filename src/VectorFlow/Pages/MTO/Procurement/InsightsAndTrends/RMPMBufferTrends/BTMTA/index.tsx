@@ -149,7 +149,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 }
             },
             {
-                title: { text: "Percentage of Total Procurement Orders", fontSize: 10, spacing: 3 },
+                title: { text: "Percentage of SKU Locations", fontSize: 10, spacing: 3 },
                 type: "number",
                 line: { enabled: true },
                 position: 'left',
@@ -265,11 +265,13 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
             position: 'bottom',
             item: {
                 label: {
-                    fontSize: 14,
+                    fontSize: 10,
+                    fontFamily: 'Roboto',
+                    fontWeight: 'normal'
 
                 },
                 marker: {
-                    size: 8,
+                    size: 14,
                     shape: 'square'
                 },
                 line: {
@@ -281,7 +283,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
     };
 
     const graph1 = [
-        'This graph shows the trend of procurement orders buffer penetration in Black, Red, Green, Yellow, and White.'
+        'This graph highlights the buffer trend of MTA Raw Materials (stock buffer).'
     ]
 
     const handleSubmitClick = () => {
@@ -372,7 +374,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
 
     const [gridLoading, setGridLoading] = useState(true);
     return (
-        <div style={{ height: "76vh", display: 'flex', justifyContent: 'left' }}>
+        <div style={{ height: "70vh", display: 'flex', justifyContent: 'left' }}>
 
             {
                 (isMTO) && (<div style={{ width: "14px", resize: "none", height: "100%", display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
@@ -385,7 +387,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
             <div style={{ width: "100%" }}>
 
 
-                <SCChartContainer style={{ height: "74vh", border: '1px solid #CCCCCC' }}>
+                <SCChartContainer style={{ height: "68vh", border: '1px solid #CCCCCC' }}>
                     <SCChartMainContainer style={{ zoom: 1 }}>
                         <SCChartSliderContainer style={{ zoom: 0.75, marginTop: '6px' }}>
                             <label style={{
@@ -458,7 +460,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                         <div style={{ height: '100%', width: '100%' }}>
                             <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
                                 <div style={{ fontSize: '10px', fontWeight: 500, textAlign: 'center', margin: '0 auto' }}>
-                                    RM / PM Buffer Trend - MTO ( 14 Feb 2023 - 02 Mar 2024 )
+                                    RM / PM Buffer Trend - MTA ( 14 Feb 2023 - 02 Mar 2024 )
                                 </div>
                                 <div style={{ marginLeft: '0 10px -5px', marginBottom: '-5px' }} onClick={() => {
 
@@ -472,7 +474,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                         </div>
                     </ChartWrapper>
 
-                    <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing" headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                    <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText="RM / PM Buffer Trend - MTA ( 14 Feb 2023 - 02 Mar 2024 )" headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div className="ag-theme-planning" style={{ width: '1000px' }}>
                             <VFTable
                                 ref={chartRef}

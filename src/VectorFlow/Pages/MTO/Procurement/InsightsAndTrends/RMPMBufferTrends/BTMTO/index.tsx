@@ -324,11 +324,13 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
             position: 'bottom',
             item: {
                 label: {
-                    fontSize: 14,
+                    fontSize: 10,
+                    fontFamily: 'Roboto',
+                    fontWeight: 'normal'
 
                 },
                 marker: {
-                    size: 8,
+                    size: 14,
                     shape: 'square'
                 },
                 line: {
@@ -433,13 +435,13 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
     const [gridLoading, setGridLoading] = useState(true);
 
     return (
-        <div style={{ height: "76vh", display: 'flex', justifyContent: 'left' }}>
+        <div style={{ height: "70vh", display: 'flex', justifyContent: 'left' }}>
 
 
             <div style={{ width: "100%" }}>
 
 
-                <SCChartContainer style={{ height: "74vh", border: '1px solid #CCCCCC' }}>
+                <SCChartContainer style={{ height: "68vh", border: '1px solid #CCCCCC' }}>
                     <SCChartMainContainer style={{ zoom: 1 }}>
                         <SCChartSliderContainer style={{ zoom: 0.75, marginTop: '6px' }}>
                             <label style={{
@@ -574,7 +576,7 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
             </div>
             {
                 (isMTO) && (<div style={{ width: "14px", resize: "none", height: "100%", display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                    <div style={{ width: '8px', background: '#E8E8E8', height: '70%', borderRadius: "4px 0 0 4px", display: "flex", alignItems: "center" }}>
+                    <div style={{ width: '8px', background: '#E8E8E8', height: '70%', borderRadius: "4px 0 0 4px", display: "flex", alignItems: "center", paddingRight: "1px" }}>
                         <img src='/assets/img/VectorFLOW/BPR/slider-icon-left.svg' />
                     </div>
                 </div>)
