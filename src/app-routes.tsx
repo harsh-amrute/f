@@ -31,7 +31,7 @@ import GuidedInsights from './VectorFlow/Pages/MTA/InsightsAndTrends/GuidedInsig
 import BufferTrends from './VectorFlow/Pages/MTA/InsightsAndTrends/BufferTrends'
 import BufferTrendReport from './VectorFlow/Pages/MTA/InsightsAndTrends/BTR'
 import DBM from './VectorFlow/Pages/MTA/DBM/DBMNormSuggestions'
-import EnquiryResponse from './VectorFlow/Pages/MTA/EnquiryResponse'
+import EnquiryResponse from './VectorFlow/Pages/MTO/Production/EnquiryResponse'
 import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests'
 import MaterialCov from './VectorFlow/Pages/MTO/Procurement/MaterialCoverage/MaterialCov'
 import ProcurementPlanning from './VectorFlow/Pages/MTO/Procurement/Planning';

@@ -1,14 +1,18 @@
 import React from 'react';
+import { useUserData } from "../../../../../context"
+import VFButton from '../../VFButton';
 import {
     SCTaskBarContainer,
     SCGoBackContainer,
     SCGoBackText,
     SCVerticalDivider,
+    SCVerticalDividerGray,
     SCViewImage,
     SCCustomActionsContainer,
     SCViewContainerWithBg,
     SCTaskFilterContainer,
     SCButton,
+    SCPrimaryButton,
     /**search filter styles starts */
     VFSelectedFiltersChip,
     VFSelectedFiltersFilterCloseIcon,
@@ -22,7 +26,19 @@ import {
     SCHorizontalDivison,
     SCViewContainer,
     /**search filter styles end*/
+    /**Date component style starts */
+    DateWrapper,
+    DateIcon,
+    DateTitle,
+    DateValue,
+    SCFilterVerticalDivider,
+    /**Date component style end */
 } from './styles'
+
+type filterType = {
+    label: string,
+    values: string[] 
+}
 
 interface MTOActionToolBarProps {
     comp: string,
@@ -30,10 +46,39 @@ interface MTOActionToolBarProps {
     submitDate?: () => void;
     isGridView?: boolean;
     setIsGridView?: (isGridView: boolean) => void;
+    hasFilters?: boolean;
+    onAddFilter?: () => void;
+    selectedFilters?: filterType[];
+    removeFilters?: (category: string, name: string) => void;
 }
 
 
-const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submitDate }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submitDate, hasFilters, onAddFilter, selectedFilters, removeFilters }: MTOActionToolBarProps) => {
+    
+    const { user } = useUserData()
+    // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
+    const themeUi = user.user.theme_ui;
+
+    const handleRemoveFilter = (category: string, name: string) => {
+        if(removeFilters){
+            removeFilters(category, name);
+        }
+    }
+
+    const getTodayDate = () => {
+        const today = new Date();
+    
+        // Extract year, month, and day
+        const year = today.getFullYear();
+        const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed
+        const day = today.getDate().toString().padStart(2, '0');
+        
+        // Construct the date string in the desired format
+        const formattedDate = `${year}-${month}-${day}`;
+        
+        return formattedDate;
+    }
+    
     return (
         <SCTaskBarContainer>
             <SCTaskFilterContainer
@@ -45,7 +90,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
             >
 
                 <>
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) ?
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm') && (comp !== 'EnquiryResponse')) ?
                         <SCGoBackContainer>
                             <img
                                 src="/assets/img/VectorFLOW/BPR/goback.svg"
@@ -56,7 +101,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                         : null
                     }
 
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')  && (comp !== 'EnquiryResponse')) &&
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -115,32 +160,45 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
 
                     }
 
-                    <SCVerticalDivider />
+                    {comp !== 'EnquiryResponse' && <SCVerticalDivider />}
                 </>
 
-
+                    {comp === 'EnquiryResponse' && 
+                    <DateWrapper>
+                        <DateIcon
+                            src='/assets/img/calender-icon.svg' alt='calender-icon'
+                        />
+                        <DateTitle>As on Date</DateTitle>
+                        <DateValue>
+                            {getTodayDate()}
+                        </DateValue>
+                    </DateWrapper>}
                 {/**Selected Filter start */}
                 <VFSelectedFiltersWrapper>
                     <VFSelectedFiltersPlaceHolder>
                         Selected Filters
                     </VFSelectedFiltersPlaceHolder>
                     <VFFilterScrollBar>
-                        <VFSelectedFiltersChip>
-                            <VFSelectedFiltersFilterLabel>
-                                <b></b>
-
-                            </VFSelectedFiltersFilterLabel>
-
-                            <VFSelectedFiltersFilterContent style={{ borderRight: 'solid 2px black' }}>
-                                <VFSelectedFiltersFilterValue>
-                                    <p style={{ margin: '0px 5px 0px 5px' }}>:</p>
-                                </VFSelectedFiltersFilterValue>
-                                <VFSelectedFiltersFilterCloseIcon
-                                    src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} />
-                            </VFSelectedFiltersFilterContent>
-
-                        </VFSelectedFiltersChip>
-
+                        {selectedFilters?.map((filter: filterType)=>(
+                            <VFSelectedFiltersChip>
+                                <VFSelectedFiltersFilterLabel>
+                                    {filter?.label}:
+                                </VFSelectedFiltersFilterLabel>
+                                {filter?.values?.map((value: string) => (
+                                    <>
+                                        <VFSelectedFiltersFilterContent>
+                                            <VFSelectedFiltersFilterValue>
+                                                <p style={{ margin: '0px 5px 0px 5px' }}> {value}</p>
+                                            </VFSelectedFiltersFilterValue>
+                                            <VFSelectedFiltersFilterCloseIcon
+                                                onClick={()=>handleRemoveFilter(filter?.label, value)}
+                                                src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} />
+                                        </VFSelectedFiltersFilterContent>
+                                        {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
+                                    </>
+                                ))}
+                            </VFSelectedFiltersChip>
+                        ))}
                     </VFFilterScrollBar>
                 </VFSelectedFiltersWrapper>
                 {/**Selected Filter ends*/}
@@ -148,11 +206,15 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
             </SCTaskFilterContainer>
 
             <SCCustomActionsContainer>
-                <SCButton>
-                    <p>+ Add Filter</p>
-                </SCButton>
+                {comp === 'EnquiryResponse' && onAddFilter ? 
+                    <VFButton onClick={() => onAddFilter()} themeUi={themeUi} disabled={false} width={110}>{hasFilters ? <p>Edit Filter</p> : <p>+ Add Filter</p>}</VFButton>
+                    : 
+                    <SCButton>
+                        <p>+ Add Filter</p>
+                    </SCButton>
+                }
                 <>
-                    <>
+                    {comp !== 'EnquiryResponse' && <>
                         <SCVerticalDivider />
                         <SCViewContainerWithBg >
                             <>
@@ -161,11 +223,11 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                                 <p>Excel Export</p>
                             </>
                         </SCViewContainerWithBg>
-                    </>
+                    </>}
 
                     <>
+                        <SCVerticalDividerGray />
 
-                        <SCVerticalDivider />
                         <SCViewContainerWithBg>
                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
                             <p>Save</p>

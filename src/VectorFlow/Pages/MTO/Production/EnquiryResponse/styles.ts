@@ -1,0 +1,151 @@
+import styled from "styled-components";
+import * as gridSystem from "../../../../../styles/gridSystem";
+
+export const EnquiryWrapper = styled.div`
+  @media only screen and (min-width: ${gridSystem.size
+      .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
+    margin-left: -40px;
+    margin-top: -40px;
+    padding: 20px;
+  }
+`;
+
+export const FilterWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  background-color: rgb(255, 255, 255);
+  box-shadow: rgba(196, 200, 208, 0.4) 0px 10px 20px;
+  border-radius: 10px;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+  margin-top: 20px;
+`;
+
+export const EditFilterBtn = styled.button`
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: rgba(139, 139, 139, 0.255) -3px 3px 12px;
+  background-image: linear-gradient(to right, #8d2e61, #bb3f81, #db6ba7);
+`;
+
+export const CardBtn = styled.div`
+  padding: 12px;
+  cursor: pointer;
+  box-shadow: rgba(139, 139, 139, 0.255) -3px 3px 12px;
+`;
+
+export const RmUICont = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  width: 50%;
+  min-width: 300px;
+  border-radius: 4px;
+  box-shadow: rgba(139, 139, 139, 0.255) -3px 3px 12px;
+
+  @media only screen and (min-width: ${gridSystem.size
+      .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    min-width: 300px;
+    border-radius: 4px;
+    box-shadow: rgba(139, 139, 139, 0.255) -3px 3px 12px;
+    background-color: #f2f2f2;
+  }
+`;
+
+export const HeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: white;
+  @media only screen and (min-width: ${gridSystem.size
+      .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 20px;
+    align-items: center;
+    background-color: white;
+  }
+`;
+
+export const RmHeading = styled.div`
+  color: #000000;
+  letter-spacing: 0px;
+  line-height: 19px;
+  font-weight: lighter;
+  font-family: "Roboto";
+  font-size: 16px;
+`;
+
+export const VerticalLine = styled.div`
+  height: 20px;
+  width: 1px;
+  background-color: #d4d4d4;
+`;
+
+export const ValueWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 40px;
+  background-color: #f2f2f2;
+  border-radius: 0px 0px 4px 4px;
+  @media only screen and (min-width: ${gridSystem.size
+      .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 40px;
+    border-radius: 0px 0px 4px 4px;
+  }
+`;
+
+export const HighlightedValue = styled.div`
+  color: #bb3f81;
+  font-weight: 500;
+`;
+
+export const EstimatedWrapper = styled.div`
+position: relative;
+`
+export const BlurCover = styled.div`
+top: -30px;
+left: -30px;
+position: absolute;
+background: #80808080;
+width: 100%;
+height: 130%;
+border-radius: 20px;
+`
+
+export const CardCover = styled.div`
+height: 100%;
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+`;
+export const DashedCard = styled.div`
+padding: 50px 40px;
+
+  border: 1px dashed #bb3f81;
+  border-radius: 10px;
+  background: white;
+  opacity: 1;
+  display: flex;
+justify-content: center;
+align-items: center;
+`;
+export const MessageText = styled.span`
+font-family: 'Roboto', sans-serif;
+font-weight: 300;
+font-size: 20px;
+color: #000000;
+letter-spacing: 0;
+line-height: 30px;
+`;

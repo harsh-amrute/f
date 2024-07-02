@@ -1,4 +1,6 @@
-.background-cover {
+import styled from "styled-components";
+
+export const BackgroundCover = styled.div`
     position: fixed;
     z-index: 99999;
     top: 0;
@@ -9,52 +11,52 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.modal-wrapper {
+`;
+ 
+export const ModalWrapper= styled.div`
     /* height: 50%; */
-    width: 45%;
+    width: 690px;
     position: absolute;
     background-color: #F4F4F4;
     border-radius: 8px;
-}
+`;
 
-.modal-header {
+ export const ModalHeader = styled.div` 
     border-radius: 8px 8px 0px 0px;
     height: 50px;
     background-color: black;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.heading {
+`;
+ 
+export const Heading = styled.div` 
     color: white;
     font-size: 1.5rem;
     letter-spacing: 0.15rem;
-}
+`;
 
-.modal-body {
+export const ModalBody = styled.div` 
  min-height: 100px;
-}
+`;
 
-.modal-footer {
+export const ModalFooter = styled.div` 
     border-top: 1px dashed #868585;
     display: flex;
     justify-content: end;
     gap: 20px;
     padding: 50px;
-}
+`;
 
-.close-icon {
+ export const CloseIcon = styled.div`
     color: white;
     padding: 20px;
     position: absolute;
     right: 10px;
     cursor: pointer;
-}
+`;
 
-.close-btn {
+ export const CloseBtn = styled.div` 
     border: 1px solid #868585;
     color: #868585;
     display: flex;
@@ -64,9 +66,9 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-}
+`;
 
-.apply-btn {
+export const ApplyBtn = styled.button` 
     color: white;
     border: none;
     font-size: 1rem;
@@ -74,50 +76,64 @@
     border-radius: 4px;
     cursor: pointer;
     background-image: linear-gradient(to right, #8D2E61, #BB3F81, #DB6BA7);
-}
+`;
 
-.filter-container {
+export const FilterContainer = styled.div`
     background-color: white;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    width: 60%;
+    width: 422px;
     margin: 50px auto;
     border-radius: 8px;
     font-size: 1.5rem;
-}
+    box-shadow: 0px 6px 12px #95959529;
+`;
 
-.filter-heading {
+export const FilterHeading = styled.div` 
     display: flex;
     justify-content: center;
     padding: 20px;
-}
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500; /* Medium */
+    font-size: 20px;
+    color: #313131;
+    letter-spacing: 0;
+    line-height: 24px;
+`;
 
-.search-bar {
+export const SearchBar = styled.div` 
     display: flex;
+    -webkit-box-align: center;
     align-items: center;
     padding: 10px 20px;
     border-radius: 40px;
-    background: #F2F2F2;
+    background: rgb(242, 242, 242);
     width: 80%;
-    margin: 20px auto;
-}
+    margin: 10px auto;
+    width: 403px;
+    height: 55px;
+    background: #F2F2F2 0% 0% no-repeat padding-box;
+    border-radius: 40px;
+    opacity: 1;
+    
+`;
 
-.filter-accordian {
+export const FilterAccordianWrapper = styled.div` 
     width: 100%;
-}
+`;
 
-.plant-input {
-    background: #F2F2F2;
-    border: none;
-    outline: none;
-    height: 50px;
-    width: 100%;
-    font-size: 2rem;
-}
+export const PlantInput = styled.input`
+background: #F2F2F2;
+border: none;
+outline: none;
+height: 50px;
+width: 100%;
+font-size: 2rem;
+`;
 
-.horizontal-line {
-    height: 2px;
-    width: 100%;
-    background-color: #F4F4F4;
-}
+export const HorizontalLine = styled.div`
+height: 2px;
+width: 100%;
+background-color: #F4F4F4;
+`;
