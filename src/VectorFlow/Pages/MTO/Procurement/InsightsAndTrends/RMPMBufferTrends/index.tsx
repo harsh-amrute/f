@@ -6,14 +6,13 @@ import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MT
 import BTMTA from "./BTMTA"
 import BTMTO from "./BTMTO"
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from "./styles"
-import BPRViewTable from "../../../../MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable"
+import "./style.css"
 
 
 const RMPMBufferTrends = () => {
 
 
     const [isMTO] = useState(true);
-    const [isSubGridOpen, setIsSubGridOpen] = useState(true);
     const { screenHeight } = useViewPort()
     return (
         <div style={{ zoom: 1.33, marginLeft: '30px' }}>
@@ -46,33 +45,5 @@ const RMPMBufferTrends = () => {
             </HorizontalViewWrapper>
         </div>
     )
-
-    // return (
-
-
-
-    //     <div style={{ zoom: 1.25, width: '90vw' }}>
-    //         <MTOActionToolBar comp="rmpm-btr" />
-    //         <BTRTableWrapper style={{ height: "96vh", margin: "26px" }}>
-    //             <Allotment vertical={false} separator={false} >
-    //                 <Allotment.Pane >
-    //                     <BTMTO />
-    //                 </Allotment.Pane>
-    //                 {/* <Allotment.Pane maxSize={5}>
-    //                     <Separator style={{ cursor: "e-resize" }} >
-    //                         <ViewSlider>
-    //                             <img src="/assets/img/VectorFLOW/BPR/slider-icon.svg" />
-    //                         </ViewSlider>
-    //                     </Separator>
-    //                 </Allotment.Pane> */}
-    //                 <Allotment.Pane>
-    //                     <BTMTA />
-    //                 </Allotment.Pane>
-    //             </Allotment>
-
-    //         </BTRTableWrapper>
-    //     </div>
-
-    // )
 }
 export default RMPMBufferTrends

@@ -1,11 +1,6 @@
-import { useState, useRef } from "react"
-import { AgGridReactProps } from "ag-grid-react"
+import { useRef } from "react"
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable';
-import columnData from '../ColumnData';
-import { Order } from '../../../../../../types/MTO';
-import procData from '../ProcurementData';
-import { InsightsAndTrendsString } from "../../../../Common/String";
-import { ColDef } from "ag-grid-enterprise";
+
 
 
 interface GridProps {

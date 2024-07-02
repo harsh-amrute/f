@@ -4,20 +4,16 @@ import React, { useState, useRef } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFCapsule from '../../../../../../../components/VectorFLOW/commons/VFCapsule'
 import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'
-import GraphView from '../../RMPMOrderwiseCoverage/GraphView/GraphView'
-import { CapsuleWrapper, ChartWrapper } from '../../RMPMOrderwiseCoverage/GraphView/styles'
-import { SCChartContainer, SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer, SCHorizontalDivider } from '../../styles'
+import { CapsuleWrapper } from '../../RMPMOrderwiseCoverage/GraphView/styles'
+import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
 import dummyData from './BufferTrendData'
-import VFModalCard from '../../../../../../../components/VectorFLOW/commons/VFModalCard'
-import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
-
-
-
+import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 
 
 const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [chartLoading, setChartLoading] = useState(false);
+    const [tableLoading, setTableLoading] = useState(false);
     const [horizonDays, setHorizondays] = useState(90);
 
     const [data, setData] = useState(dummyData)
@@ -33,7 +29,6 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 return absoluteValues.map(() => 0);
             }
             const percentageValues = absoluteValues.map(value => (value / total) * 100);
-            console.log("percentValue", percentageValues)
             return percentageValues;
         }
         if (actBtn.label === 'Absolute Value') {
@@ -52,6 +47,9 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
             });
         }
         return `
+        <div>
+
+        <div>
         <div  style=" color: white; padding-top: 10px; padding-bottom:4px;background-color: #6C696A; display: flex; justify-content: center; align-items: center">
             ${datum[xKey]}
         </div>
@@ -75,7 +73,10 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 <td style="padding: 5px; background-color: #6C696A;">${Math.round(perArr[4])}%</td>
                 <td style="padding: 5px; background-color: #6C696A;">${countArr[4]}</td></tr>
             </tbody> </table>
-        </div>`;
+        </div>
+        </div>
+        </div>
+        `;
     }
 
     type BufferTrendData = {
@@ -179,9 +180,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                     stroke: "Black"
                 },
                 tooltip: {
-
                     renderer: TooltipRenderer
-
                 }
             },
             {
@@ -197,9 +196,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                     stroke: "Red"
                 },
                 tooltip: {
-
                     renderer: TooltipRenderer
-
                 }
             },
             {
@@ -216,7 +213,8 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 },
                 tooltip: {
 
-                    renderer: TooltipRenderer
+                    renderer: TooltipRenderer,
+
 
                 }
             },
@@ -291,7 +289,6 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
     }
 
     const updateGraphState = async () => {
-        console.log("button clicked", actBtn)
         if (actBtn.label === 'Percentage') {
 
             setActBtn({
@@ -301,7 +298,6 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
             setNumericData(data);
             setNumericData(filterDataByDaysGap(numericData, horizonDays / 5, horizonDays, true));
             setNumericData(filterDataByDaysGap(data, horizonDays / 5, horizonDays, (actBtn.label !== 'Percentage')));
-            console.log("absolute data", numericData)
         }
         else {
             setActBtn({
@@ -310,15 +306,11 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
             })
             setNumericData(convertToPercentage(data))
             setNumericData(filterDataByDaysGap(numericData, horizonDays / 5, horizonDays, false));
-
             setNumericData(filterDataByDaysGap(data, horizonDays / 5, horizonDays, (actBtn.label !== 'Percentage')));
 
-            console.log("percentage data", numericData)
         }
 
     }
-
-    const chartRef = useRef<AgChartsReact>(null);
     const [hideChart1, toggleChart1] = useState(false);
 
     const colDef =
@@ -368,11 +360,80 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
 
             }
         ]
-    const [rowData, setRowData] = useState(
-        data
-    )
+    // const [rowData, setRowData] = useState(data)
+    const rowData = data;
 
-    const [gridLoading, setGridLoading] = useState(true);
+
+    const generateHeader = () => {
+        return (
+            <>
+                <SCChartMainContainer style={{ zoom: 1, width: '100%' }}>
+                    <SCChartSliderContainer style={{ zoom: 0.75, marginTop: '6px' }}>
+                        <label style={{
+                            fontStyle: "normal",
+                            fontVariant: "normal",
+                            fontWeight: 400,
+                            fontSize: 15,
+                            fontFamily: "Roboto",
+                            paddingLeft: '10px'
+                        }}
+                        > <b>Select Horizon: </b></label>
+                        <VFRangeSlider
+                            showTriangle={false}
+                            min={1}
+                            max={90}
+                            milestones={[0, 30, 60, 90]}
+                            strictMode={false}
+                            width={200}
+                            defaultValue={horizonDays}
+                            handleChange={(e) => setHorizondays(e)}
+                            labelValueFormatter={(value: number) => value > 1 ? `${value} Days` : `${value} Day`}
+                        />
+                        <div>
+                            <img
+
+                                style={{ cursor: 'pointer' }}
+                                src="/assets/img/Group 627.svg"
+                                height={40}
+                                width={50}
+                                onClick={() => handleSubmitClick()}
+                            />
+                        </div>
+
+
+                    </SCChartSliderContainer>
+                    <SCChartHeaderContainer>
+                        <CapsuleWrapper style={{ zoom: 0.8, padding: '4px' }}>
+                            <VFCapsule
+                                activeBtn={actBtn}
+                                capsules={[
+
+                                    {
+                                        label: "Percentage",
+                                        value: 'Percentage'
+                                    },
+                                    {
+                                        label: "Absolute Value",
+                                        value: 'Absolute Value'
+                                    }
+                                ]}
+                                handleClick={() => updateGraphState()}
+
+
+                            />
+                        </CapsuleWrapper>
+                        <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
+                            <VFInfoToolTip infoList={graph1} />
+                        </div>
+                        <div onClick={() => { toggleChart1(!hideChart1) }} style={{ marginLeft: 10, marginBottom: '-5px', marginRight: '10px' }}>
+                            <img src='/assets/img/VectorFLOW/BPR/minimize.svg' height={13} width={13} color={"#CCCCCC"} />
+                        </div>
+                    </SCChartHeaderContainer>
+                </SCChartMainContainer>
+            </>
+
+        )
+    }
     return (
         <div style={{ height: "70vh", display: 'flex', justifyContent: 'left' }}>
 
@@ -384,146 +445,22 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 </div>)
             }
 
-            <div style={{ width: "100%" }}>
-
-
-                <SCChartContainer style={{ height: "68vh", border: '1px solid #CCCCCC' }}>
-                    <SCChartMainContainer style={{ zoom: 1 }}>
-                        <SCChartSliderContainer style={{ zoom: 0.75, marginTop: '6px' }}>
-                            <label style={{
-                                fontStyle: "normal",
-                                fontVariant: "normal",
-                                fontWeight: 400,
-                                fontSize: 15,
-                                fontFamily: "Roboto",
-                                paddingLeft: '10px'
-                            }}
-                            > <b>Select Horizon: </b></label>
-                            <VFRangeSlider
-                                showTriangle={false}
-                                min={1}
-                                max={90}
-                                milestones={[0, 30, 60, 90]}
-                                strictMode={false}
-                                width={200}
-                                defaultValue={horizonDays}
-                                handleChange={(e) => setHorizondays(e)}
-                                labelValueFormatter={(value: number) => value > 1 ? `${value} Days` : `${value} Day`}
-                            />
-                            <div>
-                                {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
-                                        Submit
-                                    </VFButtonOutline> */}
-                                <img
-
-                                    style={{ cursor: 'pointer' }}
-                                    src="/assets/img/Group 627.svg"
-                                    height={40}
-                                    width={50}
-                                    onClick={() => handleSubmitClick()}
-                                />
-                            </div>
-
-
-                        </SCChartSliderContainer>
-                        <SCChartHeaderContainer>
-                            <CapsuleWrapper style={{ zoom: 0.8, padding: '4px' }}>
-                                <VFCapsule
-                                    activeBtn={actBtn}
-                                    capsules={[
-
-                                        {
-                                            label: "Percentage",
-                                            value: 'Percentage'
-                                        },
-                                        {
-                                            label: "Absolute Value",
-                                            value: 'Absolute Value'
-                                        }
-                                    ]}
-                                    handleClick={() => updateGraphState()}
-
-
-                                />
-                            </CapsuleWrapper>
-                            <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
-                                <VFInfoToolTip infoList={graph1} />
-                            </div>
-                            <div onClick={() => { toggleChart1(!hideChart1) }} style={{ marginLeft: 10, marginBottom: '-5px', marginRight: '10px' }}>
-                                <img src='/assets/img/VectorFLOW/BPR/minimize.svg' height={13} width={13} color={"#CCCCCC"} />
-                            </div>
-                        </SCChartHeaderContainer>
-                    </SCChartMainContainer>
-
-                    <SCHorizontalDivider />
-                    <ChartWrapper>
-                        <div style={{ height: '100%', width: '100%' }}>
-                            <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                                <div style={{ fontSize: '10px', fontWeight: 500, textAlign: 'center', margin: '0 auto' }}>
-                                    RM / PM Buffer Trend - MTA ( 14 Feb 2023 - 02 Mar 2024 )
-                                </div>
-                                <div style={{ marginLeft: '0 10px -5px', marginBottom: '-5px' }} onClick={() => {
-
-                                    (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart);
-
-                                }}>
-                                    <img src='/assets/img/VectorFLOW/BPR/download.svg' style={{ color: "#CCCCCC", paddingBottom: '5px' }} height={15} width={15} color={"#CCCCCC"} />
-                                </div>
-
-                            </div>
-                        </div>
-                    </ChartWrapper>
-
-                    <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText="RM / PM Buffer Trend - MTA ( 14 Feb 2023 - 02 Mar 2024 )" headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-                        <div className="ag-theme-planning" style={{ width: '1000px' }}>
-                            <VFTable
-                                ref={chartRef}
-                                columnDefs={colDef}
-                                // rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
-                                rowData={rowData}
-                                enableCharts={true}
-                                enableRangeSelection={true}
-                                rowSelection="multiple"
-                                statusBar={{
-                                    statusPanels: [
-                                        { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                        { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                                        { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                                        { statusPanel: 'agAggregationComponent', align: 'left' },
-                                    ],
-                                }} onGridReady={() => { setGridLoading(false) }}
-                                // getChartToolbarItems={getChartToolbarItems}
-                                chartToolPanelsDef={
-                                    {
-                                        panels: []
-                                    }
-                                }
-                                // chartThemeOverrides={chartThemeOverridesG1}
-                                // chartThemes={['myCustomTheme']}
-                                // customChartThemes={{
-                                //     'myCustomTheme':myCustomTheme
-                                // }}
-                                disableZoomScaling={true}
-                                defaultColDef={{
-                                    floatingFilter: true,
-                                    filter: "agMultiColumnFilter",
-                                }}
-                                height={'480px'}
-                            />
-                        </div>
-                    </VFModalCard>
-                    <div style={{ height: "50vh" }}>
-                        <AgChartsReact suppressDragLeaveHidesColumns={true} ref={chartRef} options={{ ...options, data: numericData }} />
-                    </div>
-                </SCChartContainer>
-                {!isLoading && (<div style={{ marginLeft: '10px', marginRight: '10px' }}>
-                </div>)}
-            </div>
-
-
+            <SplitGraphContainer
+                tableLoading={tableLoading}
+                chartLoading={chartLoading}
+                setTableLoading={setTableLoading}
+                setChartLoading={setChartLoading}
+                data={numericData}
+                rowData={rowData}
+                graphTitle={"RM / PM Buffer Trend- MTA (14 Feb 2023 - 02 Mar 2024"}
+                tableTitle={"RM / PM Buffer Trend- MTA (14 Feb 2023 - 02 Mar 2024"}
+                options={options}
+                colDef={colDef}
+                header={generateHeader}
+                hideChart={hideChart1}
+                toggleChart={toggleChart1}
+            />
         </div>
-
     )
 }
 
