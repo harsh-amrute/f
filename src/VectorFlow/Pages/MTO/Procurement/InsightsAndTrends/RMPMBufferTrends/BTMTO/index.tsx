@@ -1,6 +1,5 @@
 import { AgChartOptions } from 'ag-charts-community'
-import { AgChartsReact } from 'ag-charts-react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFCapsule from '../../../../../../../components/VectorFLOW/commons/VFCapsule'
 import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'
@@ -18,7 +17,7 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
 
     const [horizonDays, setHorizondays] = useState(90);
 
-    const [data, setData] = useState(dummyData)
+    const [data] = useState(dummyData)
     const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(data, horizonDays / 5, horizonDays, false));
 
     type BufferTrendData = {
@@ -430,7 +429,7 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
 
             }
         ]
-    const [rowData, setRowData] = useState(
+    const [rowData] = useState(
         numericData
     )
 

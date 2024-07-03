@@ -15,7 +15,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
     const [tableLoading, setTableLoading] = useState(false);
     const [horizonDays, setHorizondays] = useState(90);
 
-    const [data, setData] = useState(dummyData)
+    const [data] = useState(dummyData)
     const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(data, horizonDays / 5, horizonDays, false));
 
 

@@ -14,6 +14,8 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
     const chartRef = useRef<AgChartsReact>(null);
     const refGraph1 = useRef<GridRef>(null);
 
+    console.log(tableLoading, chartLoading)
+
     const myCustomTheme: any = {
         palette: {
             fills: ['black', 'red', 'green', 'yellow', 'grey'],
