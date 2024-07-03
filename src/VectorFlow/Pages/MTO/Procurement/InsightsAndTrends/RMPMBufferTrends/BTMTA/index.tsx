@@ -1,6 +1,5 @@
-import { AgCartesianSeriesOptions, AgChartOptions, AgCharts, AgTopologyChartOptions } from 'ag-charts-community'
-import { AgChartsReact } from 'ag-charts-react'
-import React, { useState, useRef } from 'react'
+import { AgChartOptions } from 'ag-charts-community'
+import { useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFCapsule from '../../../../../../../components/VectorFLOW/commons/VFCapsule'
 import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'

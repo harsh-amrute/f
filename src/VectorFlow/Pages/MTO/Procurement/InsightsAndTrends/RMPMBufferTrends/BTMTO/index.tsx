@@ -8,7 +8,7 @@ import { CapsuleWrapper } from '../../RMPMOrderwiseCoverage/GraphView/styles'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
 import dummyData from './BufferTrendData'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
-import { elements } from 'chart.js'
+
 
 
 
@@ -381,7 +381,6 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
 
     }
 
-    const chartRef = useRef<AgChartsReact>(null);
     const [hideChart1, toggleChart1] = useState(false);
 
     const colDef =
