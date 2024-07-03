@@ -536,7 +536,7 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
             {
                 (isMTO) && (<div style={{ width: "14px", resize: "none", height: "100%", display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
                     <div style={{ width: '8px', background: '#E8E8E8', height: '88%', borderRadius: "4px 0 0 4px", display: "flex", alignItems: "center", paddingRight: "1px" }}>
-                        <img src='/assets/img/VectorFLOW/BPR/slider-icon-left.svg' />
+                        <img src='/assets/img/mto/RMPMBufferTrend/slider-icon-left.svg' />
                     </div>
                 </div>)
             }

@@ -97,7 +97,7 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
                                 (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart);
 
                             }}>
-                                <img src='/assets/img/VectorFLOW/BPR/download.svg' style={{ color: "#CCCCCC", paddingBottom: '5px' }} height={15} width={15} color={"#CCCCCC"} />
+                                <img src='/assets/img/mto/RMPMBufferTrend/download.svg' style={{ color: "#CCCCCC", paddingBottom: '5px' }} height={15} width={15} color={"#CCCCCC"} />
                             </div>
 
                         </div>

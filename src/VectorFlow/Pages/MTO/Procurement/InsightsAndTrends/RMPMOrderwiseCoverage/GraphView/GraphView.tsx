@@ -291,7 +291,7 @@ const GraphView = () => {
                         <div style={{ paddingRight: '10px' }} onClick={() => {
 
                             (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart);
-                        }}> <img height={12} width={12} src="/assets/img/VectorFLOW/BPR/download.svg" /></div>
+                        }}> <img height={12} width={12} src="/assets/img/mto/RMPMBufferTrend/download.svg" /></div>
                     </div>
                     <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing" headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div className="ag-theme-planning" style={{ width: '1000px' }}>
