@@ -2706,7 +2706,61 @@ export const mapMaterialFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef
   return [...result, ...PPColumns];
 };
 
-// export const mapMaterialRequirementDataToColsDef = (fields: ColumnHeaderConfig[]): ColDef[] => {
+// Generate ColumnDefination from UIConfig
+// ===================================================================================================
+export function mergeObjects(target: any, ...sources: any) {
+  sources.forEach((source: any) => {
+    Object.keys(source).forEach(key => {
+      if (source[key] instanceof Object && key in target)
+        Object.assign(source[key], mergeObjects(target[key], source[key]));
+    });
+  });
+  return Object.assign(target || {}, ...sources);
+}
+
+export function getColumnDefinations(
+  fields: any,
+  customizationParams: any = {},
+  extraFields: any = []
+) {
+  const columnDefs = fields.map((data: any) => {
+    const columnDef = {
+      colId: data.cc,
+      headerName: data.hd,
+      field: data.scc,
+      hide: !data.v,
+      cellStyle: {
+        textAlign: data.cla
+      }
+    };
+    // Apply customization if needed
+    if (customizationParams[data.cc]) {
+      // Object.assign(columnDef, customizationParams[data.cc]);
+      mergeObjects(columnDef, customizationParams[data.cc])
+    }
+    return columnDef;
+  });
+  // Add extra columns
+  extraFields.forEach((field: any) => {
+    let position = field.position;
+    // If position is not specified or invalid, add the column at the end
+    if (
+      position === undefined ||
+      position < 0 ||
+      position > columnDefs.length
+    ) {
+      position = columnDefs.length;
+    }
+      columnDefs.splice(position, 0, field);
+  });
+
+  return columnDefs;
+}
+// ===================================================================================================
 
 
-// }
+
+
+
+
+
