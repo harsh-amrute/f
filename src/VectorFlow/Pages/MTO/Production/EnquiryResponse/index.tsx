@@ -24,6 +24,7 @@ import {
 // import { FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, PlantInput, SearchBar } from "./FilterModal/styles";
 // import FilterAccordian from "./FilterAccordian";
 import { useGetEnquiryResData } from "../../../../Services/MTO/Production/EnquiryResponse";
+import { useUserData } from "../../../../../context/index";
 
 const tabOptions = ["RM Not Available", "RM Available"];
 
@@ -48,6 +49,9 @@ const EnquiryResponse = () => {
     ccrGroup: {},
     ccrName: {},
   });
+  const { user } = useUserData()
+    // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
+  const themeUi = user.user.theme_ui;
 
   const handleTabChange = (tab: number) => {
     setActiveTab(tab);
@@ -440,6 +444,7 @@ const EnquiryResponse = () => {
           onAddFilter={handleModalToggle}
           selectedFilters={selectedFilters}
           removeFilters={removeFilters}
+          themeUi={themeUi}
         />
       </FilterWrapper>
       <ResizableTable header={prodPlanningMock?.header} data={filterData} />

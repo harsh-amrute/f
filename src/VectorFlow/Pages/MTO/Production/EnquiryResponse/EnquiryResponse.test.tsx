@@ -70,11 +70,11 @@ describe('EnquiryResponse', () => {
   const handleTabChangeMock = jest.fn();
 
   it('renders without crashing', () => {
-    render(<EnquiryResponse />);
+    render(contextWrapper(<EnquiryResponse />, mockedStore));
   });
 
   it('displays table data', () => {
-    render(<EnquiryResponse />);
+    render(contextWrapper(<EnquiryResponse />, mockedStore));
     expect(screen.getByTestId('table-wrapper')).toBeInTheDocument();
   });
 
@@ -141,19 +141,19 @@ describe('EnquiryResponse', () => {
   });
 
   it('shows blur cover when no product group selected', () => {
-    render(<EnquiryResponse />);
+    render(contextWrapper(<EnquiryResponse />, mockedStore));
     expect(screen.getByText('Please select filter for product group to view estimated due date')).toBeInTheDocument();
   });
 
   test('renders correctly with single tab', () => {
-    render(
+    render(contextWrapper(
       <TabSwitch
         heading="Single Tab"
         tabs={['Only Tab']}
         handleTabChange={handleTabChangeMock}
         activeTab={0}
         tabUI={<div>Tab UI Content</div>}
-      />
+      />, mockedStore)
     );
 
     // Check if heading is rendered
@@ -164,14 +164,14 @@ describe('EnquiryResponse', () => {
   });
 
   test('renders correctly with no tabs', () => {
-    render(
+    render(contextWrapper(
       <TabSwitch
         heading="No Tabs"
         tabs={[]}
         handleTabChange={handleTabChangeMock}
         activeTab={0}
         tabUI={<div>Tab UI Content</div>}
-      />
+      />,mockedStore)
     );
 
     // Check if heading is rendered
@@ -184,7 +184,7 @@ describe('EnquiryResponse', () => {
   });
 
   it('To check if no data is available', async () => {
-    render(<EnquiryResponse />);
+    render(contextWrapper(<EnquiryResponse />, mockedStore));
 
     // Open Modal
     fireEvent.click(screen.getByText('+ Add Filter'));

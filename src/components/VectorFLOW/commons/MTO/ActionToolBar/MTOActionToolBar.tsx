@@ -1,4 +1,3 @@
-import { useUserData } from "../../../../../context"
 import VFButton from '../../VFButton';
 import {
     SCTaskBarContainer,
@@ -50,14 +49,13 @@ interface MTOActionToolBarProps {
     removeFilters?: (category: string, name: string) => void;
     date?: string
     handleGoBack?: () => void;
+    themeUi?: string;
 }
 
 
-const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters,  submitDate, date, handleGoBack  }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters,  submitDate, date, handleGoBack, themeUi  }: MTOActionToolBarProps) => {
     
-    const { user } = useUserData()
-    // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
-    const themeUi = user.user.theme_ui;
+    
 
     const handleRemoveFilter = (category: string, name: string) => {
         if(removeFilters){
@@ -220,7 +218,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
 
             <SCCustomActionsContainer>
                 {comp === 'EnquiryResponse' && onAddFilter ? 
-                    <VFButton onClick={() => onAddFilter()} themeUi={themeUi} disabled={false} width={110}>{selectedFilters && selectedFilters?.length > 0 ? <p>Edit Filter</p> : <p>+ Add Filter</p>}</VFButton>
+                    <VFButton onClick={() => onAddFilter()} themeUi={themeUi || ''} disabled={false} width={110}>{selectedFilters && selectedFilters?.length > 0 ? <p>Edit Filter</p> : <p>+ Add Filter</p>}</VFButton>
                     : 
                     <SCButton>
                         <p>+ Add Filter</p>
