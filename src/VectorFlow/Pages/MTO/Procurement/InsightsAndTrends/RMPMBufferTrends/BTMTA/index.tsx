@@ -47,9 +47,9 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
             });
         }
         return `
-        <div>
+      
 
-        <div>
+        <div style="background:#6C696A" >
         <div  style=" color: white; padding-top: 10px; padding-bottom:4px;background-color: #6C696A; display: flex; justify-content: center; align-items: center">
             ${datum[xKey]}
         </div>
@@ -73,7 +73,6 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 <td style="padding: 5px; background-color: #6C696A;">${Math.round(perArr[4])}%</td>
                 <td style="padding: 5px; background-color: #6C696A;">${countArr[4]}</td></tr>
             </tbody> </table>
-        </div>
         </div>
         </div>
         `;
@@ -131,13 +130,9 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
         value: 'Absolute Value'
     })
 
-
-
-
     const options: AgChartOptions = {
         axes: [
             {
-
                 type: "category",
                 position: 'bottom',
                 label: {
@@ -212,10 +207,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                     stroke: "#FFBF00"
                 },
                 tooltip: {
-
                     renderer: TooltipRenderer,
-
-
                 }
             },
             {
@@ -231,9 +223,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                     stroke: "Green"
                 },
                 tooltip: {
-
                     renderer: TooltipRenderer
-
                 }
 
             }
@@ -361,7 +351,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
             }
         ]
     // const [rowData, setRowData] = useState(data)
-    const rowData = data;
+    const rowData = numericData;
 
 
     const generateHeader = () => {
@@ -439,7 +429,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
 
             {
                 (isMTO) && (<div style={{ width: "14px", resize: "none", height: "100%", display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
-                    <div style={{ width: '8px', background: '#E8E8E8', height: '70%', borderRadius: "0 4px 4px 0", display: "flex", alignItems: "center" }}>
+                    <div style={{ width: '8px', background: '#E8E8E8', height: '88%', borderRadius: "0 4px 4px 0", display: "flex", alignItems: "center" }}>
                         <img src='/assets/img/VectorFLOW/BPR/slider-icon-right.svg' />
                     </div>
                 </div>)
@@ -452,13 +442,14 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 setChartLoading={setChartLoading}
                 data={numericData}
                 rowData={rowData}
-                graphTitle={"RM / PM Buffer Trend- MTA (14 Feb 2023 - 02 Mar 2024"}
-                tableTitle={"RM / PM Buffer Trend- MTA (14 Feb 2023 - 02 Mar 2024"}
+                graphTitle={"RM / PM Buffer Trend- MTA (14 Feb 2023 - 02 Mar 2024)"}
+                tableTitle={"RM / PM Buffer Trend- MTA (14 Feb 2023 - 02 Mar 2024)"}
                 options={options}
                 colDef={colDef}
                 header={generateHeader}
                 hideChart={hideChart1}
                 toggleChart={toggleChart1}
+                TooltipRenderer={TooltipRenderer}
             />
         </div>
     )

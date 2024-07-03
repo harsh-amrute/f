@@ -12,15 +12,9 @@ import { ProcurementSeriesDataFill, ProcurementSeriesDataYKey, ProcurementSeries
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import VFModalCard from "../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFTable from "../../../../../../../components/VectorFLOW/commons/VFTable";
+import { GridRef } from "../../../../../../../VectorFlow/types/MDM";
 
-
-interface GridProps {
-    agGridProps: any
-    ShortageColumns: any
-    ShortageDatas: any
-}
-
-const GraphView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) => {
+const GraphView = () => {
 
     // const [date, setDate] = useState("19 April 2024 - 18 July 2024")
     const [date] = useState("01 July 2024 - 28 Sept 2024")
@@ -172,14 +166,104 @@ const GraphView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) =
                 }
             }
         }
-
-
-
     });
+
+    const refGraph1 = useRef<GridRef>(null);
 
     const chartRef = useRef<AgChartsReact>(null);
     const [hideChart1, toggleChart1] = useState(false);
     const [gridLoading, setGridLoading] = useState(false);
+    const ColdDefs = [
+        {
+            colId: 'days_range',
+            field: 'days_range',
+            headerName: 'Days Range',
+        },
+        {
+            colId: 'soh',
+            field: 'soh',
+            headerName: 'Stock On hand',
+        },
+        {
+            colId: 'sit',
+            field: 'sit',
+            headerName: 'Stock In (Transit + QC)',
+        },
+        {
+            colId: 'po',
+            field: 'po',
+            headerName: 'Open Orders',
+        },
+        {
+            colId: 'or',
+            field: 'or',
+            headerName: 'rmpm Shortage',
+        },
+
+    ]
+
+    const myCustomTheme: any = {
+        palette: {
+            fills: ['#F4BD8E', '#F09241', ' #AD5000', '#6A3001'],
+            strokes: ['#F4BD8E', '#F09241', ' #AD5000', '#6A3001'],
+        },
+    }
+
+    const generateChart = () => {
+        refGraph1.current?.api.createRangeChart({
+            chartType: 'stackedColumn',
+            cellRange: {
+                columns: ['days_range', 'soh', 'sit', 'po', 'or'],
+            },
+
+            chartThemeOverrides: {
+                column: {
+                    axes: {
+                        category: {
+                            gridStyle: [{ stroke: 'transparent' }],
+
+                            bottom: {
+                                label: {
+                                    fontSize: 8
+                                }
+                            }
+                        }
+                    },
+                    series: {
+                        highlightStyle: {
+                            item: {
+                                fill: 'white',
+                                fillOpacity: 0.2
+                            }
+                        },
+                        tooltip: {
+                            renderer: TooltipRenderer
+                        },
+                        strokeWidth: 1,
+                        strokeOpacity: 0,
+
+                    },
+                    legend: {
+
+                        item: {
+                            label: {
+                                fontSize: 10
+                            },
+
+                            marker: {
+                                shape: 'square'
+                            }
+                        }
+                    },
+                },
+                bar: {
+                    axes: { category: { gridStyle: [{ stroke: 'transparent' }, { stroke: 'transparent' }] } }
+                }
+            }
+        })
+    }
+
+
 
     return (
 
@@ -211,10 +295,10 @@ const GraphView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) =
                     <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing" headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div className="ag-theme-planning" style={{ width: '1000px' }}>
                             <VFTable
-                                ref={chartRef}
-                                columnDefs={ShortageColumns}
+                                ref={refGraph1}
+                                columnDefs={ColdDefs}
                                 // rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
-                                rowData={ShortageDatas}
+                                rowData={options.data}
                                 enableCharts={true}
                                 enableRangeSelection={true}
                                 rowSelection="multiple"
@@ -226,7 +310,7 @@ const GraphView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) =
                                         { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                                         { statusPanel: 'agAggregationComponent', align: 'left' },
                                     ],
-                                }} onGridReady={() => { setGridLoading(false) }}
+                                }} onGridReady={() => { setGridLoading(false); generateChart() }}
                                 // getChartToolbarItems={getChartToolbarItems}
                                 chartToolPanelsDef={
                                     {
@@ -234,10 +318,10 @@ const GraphView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) =
                                     }
                                 }
                                 // chartThemeOverrides={chartThemeOverridesG1}
-                                // chartThemes={['myCustomTheme']}
-                                // customChartThemes={{
-                                //     'myCustomTheme':myCustomTheme
-                                // }}
+                                chartThemes={['myCustomTheme']}
+                                customChartThemes={{
+                                    'myCustomTheme': myCustomTheme
+                                }}
                                 disableZoomScaling={true}
                                 defaultColDef={{
                                     floatingFilter: true,

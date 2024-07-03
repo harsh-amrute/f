@@ -97,7 +97,6 @@ const RMPMOrderwiseCoverage = () => {
     };
 
     const convertedData = mapDataToColumns(procData, columnData);
-    // const [ShortageDatas, setShortageData] = useState(convertedData);
     const [ShortageDatas] = useState(convertedData);
     return (
         <>
@@ -105,7 +104,7 @@ const RMPMOrderwiseCoverage = () => {
 
                 <ActionToolBar comp={"rmpm"} isGridView={isGridView} setIsGridView={setIsGridView} />
             </div>
-            {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={ShortageDatas} /> : <GraphView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={ShortageDatas} />}
+            {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={ShortageDatas} /> : <GraphView />}
         </>
     )
 }

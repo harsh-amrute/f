@@ -8,6 +8,7 @@ import { CapsuleWrapper } from '../../RMPMOrderwiseCoverage/GraphView/styles'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
 import dummyData from './BufferTrendData'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
+import { elements } from 'chart.js'
 
 
 
@@ -109,16 +110,19 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
             perArr = [datum['b'], datum['r'], datum['y'], datum['g'], datum['w']];
             let reqData = null;
             countArr = [0, 0, 0, 0, 0];
+
             data.forEach(element => {
                 if (element.dt === datum['dt']) {
                     reqData = element;
                     countArr = [reqData.b, reqData.r, reqData.y, reqData.g, reqData.w]
                 }
+
             });
 
         }
 
         return `
+        <div style="background:#6C696A" >
         <div  style=" color: white; padding-top: 10px; padding-bottom:4px;background-color: #6C696A; display: flex; justify-content: center; align-items: center">
             ${datum[xKey]}
         </div>
@@ -185,6 +189,7 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
                 </tr>
                 </tbody>
             </table>
+        </div>
         </div>`;
     }
 
@@ -427,7 +432,7 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
             }
         ]
     const [rowData, setRowData] = useState(
-        data
+        numericData
     )
 
     const [chartLoading, setChartLoading] = useState(true);
@@ -520,18 +525,19 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
                 setChartLoading={setChartLoading}
                 data={numericData}
                 rowData={rowData}
-                graphTitle={"RM / PM Buffer Trend- MTO (14 Feb 2023 - 02 Mar 2024"}
-                tableTitle={"RM / PM Buffer Trend- MTO (14 Feb 2023 - 02 Mar 2024"}
+                graphTitle={"RM / PM Buffer Trend- MTO (14 Feb 2023 - 02 Mar 2024)"}
+                tableTitle={"RM / PM Buffer Trend- MTO (14 Feb 2023 - 02 Mar 2024)"}
                 options={options}
                 colDef={colDef}
                 header={generateHeader}
                 hideChart={hideChart1}
                 toggleChart={toggleChart1}
+                TooltipRenderer={TooltipRenderer}
             />
 
             {
                 (isMTO) && (<div style={{ width: "14px", resize: "none", height: "100%", display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                    <div style={{ width: '8px', background: '#E8E8E8', height: '70%', borderRadius: "4px 0 0 4px", display: "flex", alignItems: "center", paddingRight: "1px" }}>
+                    <div style={{ width: '8px', background: '#E8E8E8', height: '88%', borderRadius: "4px 0 0 4px", display: "flex", alignItems: "center", paddingRight: "1px" }}>
                         <img src='/assets/img/VectorFLOW/BPR/slider-icon-left.svg' />
                     </div>
                 </div>)

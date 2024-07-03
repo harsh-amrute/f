@@ -15,18 +15,18 @@ jest.mock('../ProcurementData', () => [
 
 describe('GraphView Component', () => {
     test('renders without crashing', () => {
-        render(<GraphView agGridProps={[]} ShortageColumns={[]} ShortageDatas={[]} />);
+        render(<GraphView />);
         expect(screen.getByText('AgChartsReact Mock')).toBeInTheDocument();
     });
 
     test('displays the correct title', () => {
-        render(<GraphView agGridProps={[]} ShortageColumns={[]} ShortageDatas={[]} />);
+        render(<GraphView />);
         const title = screen.getByText(/RM \/ PM Orderwise Coverage/i);
         expect(title).toBeInTheDocument();
     });
 
     test('chart is rendered with the correct options', () => {
-        render(<GraphView agGridProps={[]} ShortageColumns={[]} ShortageDatas={[]} />);
+        render(<GraphView />);
         // Check if the AgChartsReact component mock is rendered
         expect(screen.getByText('AgChartsReact Mock')).toBeInTheDocument();
         // Ideally, here you would check if the AgChartsReact component is called with the correct props (options)

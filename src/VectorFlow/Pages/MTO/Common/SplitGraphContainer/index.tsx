@@ -4,21 +4,81 @@ import { useRef } from 'react'
 import { SCChartContainer, SCChartMainContainer, SCHorizontalDivider, ChartWrapper } from './styles'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
+import { GridRef } from '../../../../../VectorFlow/types/MDM'
 
 
 
 
 
-const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitle, tableTitle, tableLoading, chartLoading, setTableLoading, setChartLoading, hideChart, toggleChart }: any) => {
+const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitle, tableTitle, tableLoading, chartLoading, setTableLoading, setChartLoading, hideChart, toggleChart, TooltipRenderer }: any) => {
     const chartRef = useRef<AgChartsReact>(null);
+    const refGraph1 = useRef<GridRef>(null);
+
+    const myCustomTheme: any = {
+        palette: {
+            fills: ['black', 'red', 'green', 'yellow', 'grey'],
+            strokes: ['black', 'red', 'green', 'yellow', 'grey'],
+        },
+    }
 
 
+    const generateChart = (graphNo: number, withOutContainer?: boolean) => {
+
+        if (graphNo === 1) {
+            if (withOutContainer) {
+                refGraph1.current?.api.createRangeChart({
+                    chartType: 'line',
+                    cellRange: {
+                        columns: ['dt', 'b', 'r', 'y', 'g', 'w'],
+                    },
+
+                    chartThemeOverrides: {
+                        line: {
+                            series: {
+                                tooltip: {
+                                    renderer: TooltipRenderer
+                                },
+                                strokeWidth: 3
+
+                            },
+                            legend: {
+                                item: {
+                                    marker: {
+                                        shape: 'square'
+                                    }
+                                }
+                            }
+
+
+                        }
+                    }
+
+
+
+
+                })
+            }
+            else {
+                const container1 = document.getElementById('LocationWiseG1') as HTMLElement
+                refGraph1.current?.api.createRangeChart({
+                    chartType: 'stackedColumn',
+                    cellRange: {
+                        columns: ['name', 'superdelay', 'delay'],
+                        rowStartIndex: 0,
+                        rowEndIndex: 9
+                    },
+                    chartContainer: container1
+                })
+            }
+
+        }
+    }
 
     return (
         <div style={{ width: "100%" }}>
 
 
-            <SCChartContainer style={{ height: "68vh", border: '1px solid #CCCCCC' }}>
+            <SCChartContainer style={{ height: "68vh", border: '1px solid #CCCCCC', margin: '2px' }}>
                 <SCChartMainContainer style={{ zoom: 1 }}>
                     {header()}
                 </SCChartMainContainer>
@@ -45,7 +105,7 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
                 <VFModalCard openModal={hideChart} closeModal={() => toggleChart(false)} headerIcon='' headerText={tableTitle} headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                     <div className="ag-theme-planning" style={{ width: '1000px' }}>
                         <VFTable
-                            ref={chartRef}
+                            ref={refGraph1}
                             columnDefs={colDef}
                             rowData={rowData}
                             enableCharts={true}
@@ -59,7 +119,7 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
                                     { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                                     { statusPanel: 'agAggregationComponent', align: 'left' },
                                 ],
-                            }} onGridReady={() => { setTableLoading(false) }}
+                            }} onGridReady={() => { setTableLoading(false); generateChart(1, true) }}
                             chartToolPanelsDef={
                                 {
                                     panels: []
@@ -69,6 +129,10 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
                             defaultColDef={{
                                 floatingFilter: true,
                                 filter: "agMultiColumnFilter",
+                            }}
+                            chartThemes={['myCustomTheme']}
+                            customChartThemes={{
+                                'myCustomTheme': myCustomTheme
                             }}
                             height={'480px'}
                         />
