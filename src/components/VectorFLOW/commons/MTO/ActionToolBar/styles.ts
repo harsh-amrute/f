@@ -217,7 +217,7 @@ export const VFSelectedFiltersFilterContent = styled.div`
     align-items: center;
 `
 
-export const VFSelectedFiltersFilterValue = styled.p`
+export const VFSelectedFiltersFilterValue = styled.div`
 font-size:16px;
 line-height:21px;
 font-family:Roboto;

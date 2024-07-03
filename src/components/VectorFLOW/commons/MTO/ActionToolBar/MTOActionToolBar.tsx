@@ -191,12 +191,12 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                     </VFSelectedFiltersPlaceHolder>
                     <VFFilterScrollBar>
                         {selectedFilters?.map((filter: filterType)=>(
-                            <VFSelectedFiltersChip>
+                            <VFSelectedFiltersChip key={filter.label}>
                                 <VFSelectedFiltersFilterLabel>
                                     {filter?.label}:
                                 </VFSelectedFiltersFilterLabel>
                                 {filter?.values?.map((value: string) => (
-                                    <>
+                                    <div key={value}>
                                         <VFSelectedFiltersFilterContent>
                                             <VFSelectedFiltersFilterValue>
                                                 <p style={{ margin: '0px 5px 0px 5px' }}> {value}</p>
@@ -206,7 +206,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                                                 src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} />
                                         </VFSelectedFiltersFilterContent>
                                         {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
-                                    </>
+                                    </div>
                                 ))}
                             </VFSelectedFiltersChip>
                         ))}
