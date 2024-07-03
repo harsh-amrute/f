@@ -12,7 +12,7 @@ jest.mock('./styles', () => ({
 }));
 
 describe('TabSwitch', () => {
-  const tabs = ['Tab 1', 'Tab 2', 'Tab 3'];
+  const tabs = ['Tab 1', 'Tab 2', 'Tab 3', 'Tab 4'];
   const handleTabChangeMock = jest.fn();
 
   test('renders tabs correctly', () => {
