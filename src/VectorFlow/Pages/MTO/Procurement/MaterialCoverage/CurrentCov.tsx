@@ -4,7 +4,7 @@ import {
     Box,
     Main,
 } from './styles';
-import { calculatePercentage, mapOrderDetails, DetailsObj } from './CommonFunc';
+import { calculatePercentage, mapOrderDetails, DetailsObj, calculateColorOrderCount } from './CommonFunc';
 import { ColorsMTO } from '../../Common/Colors';
 import MTOMaterialSO from '../../../../../components/VectorFLOW/commons/MTO/MaterialSOBox/MTOMaterialSO';
 import { useDispatch } from 'react-redux';
@@ -16,11 +16,55 @@ interface CurrentCovProps {
     setDetailDataObj: (data: DetailsObj) => void
 }
 
+interface useRedStateProps {
+    Bnk: number,
+    Bnkp: number,
+    Bpk: number,
+    Bpkp: number,
+    Bfk: number,
+    Bfkp: number,
+    Rnk: number,
+    Rnkp: number,
+    Rpk: number,
+    Rpkp: number,
+    Rfk: number,
+    Rfkp: number,
+    Ynk: number,
+    Ynkp: number,
+    Ypk: number,
+    Ypkp: number,
+    Yfk: number,
+    Yfkp: number,
+    Gnk: number,
+    Gnkp: number,
+    Gpk: number,
+    Gpkp: number,
+    Gfk: number,
+    Gfkp: number,
+    Blnk: number,
+    Blnkp: number,
+    Wnk: number,
+    Wnkp: number,
+    Blpk: number,
+    Blpkp: number,
+    Wpk: number,
+    Wpkp: number,
+    Blfk: number,
+    Blfkp: number,
+    Wfk: number,
+    Wfkp: number
+}
+
+
+
+
 const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: CurrentCovProps) => {
-   
     const dispatch = useDispatch();
     const [totalOrderCount, setTotalOrdeerCount] = useState<number>(0);
     const [totalBlueOrdCount, setTotalBlueOrdCunt] = useState<number>(0);
+
+    const [colorOrderCount, setColorOrderCount] = useState<useRedStateProps>()
+
 
     const [BRYNkOrdCunt, setBRYNkOrdCunt] = useState<number>(0);
     const [BRYNkCustCunt, setBRYNkCustCunt] = useState<number>(0);
@@ -78,6 +122,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
         setBRYNkOrdCunt(firstBlock.ordCunt);
         setBRYNkOrderVal(firstBlock.totalCunt);
 
+
         const secondBlock: any = mapOrderDetails(SOData, ColorsMTO.Black.label, ColorsMTO.Red.label, ColorsMTO.Yellow.label, "PK", 0);
         setSecBlockCustCnt(secondBlock.cusCunt);
         setSecBlockOrdCnt(secondBlock.ordCunt);
@@ -123,11 +168,103 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
         setnthhdOrderVal(nthBlock.totalCunt);
         setnthSrtDt(nthBlock.stdt)
         setnthEndDt(nthBlock.endt)
-    }
 
-    // useEffect(() => {
-    //     setSOData(data?.data?.data)
-    // }, [data])
+
+        const blackNK = calculateColorOrderCount(SOData, ColorsMTO.Black.label, 'NK', 0)
+        const blackNKPercent = Math.round((blackNK / firstBlock.ordCunt) * 100)
+
+        const blackPK = calculateColorOrderCount(SOData, ColorsMTO.Black.label, 'PK', 0);
+        const blackPKPercent = Math.round((blackPK / secondBlock.ordCunt) * 100)
+
+        const blackFK = calculateColorOrderCount(SOData, ColorsMTO.Black.label, 'FK', 0);
+        const blackFKPercent = Math.round((blackPK / thirdBlock.ordCunt) * 100)
+
+        const RedNK = calculateColorOrderCount(SOData, ColorsMTO.Red.label, 'NK', 0);
+        const RedNKPercent = Math.round((RedNK / firstBlock.ordCunt) * 100)
+
+        const RedPK = calculateColorOrderCount(SOData, ColorsMTO.Red.label, 'PK', 0);
+        const RedPKPercent = Math.round((RedPK / secondBlock.ordCunt) * 100)
+
+        const RedFK = calculateColorOrderCount(SOData, ColorsMTO.Red.label, 'FK', 0);
+        const RedFKPercent = Math.round((RedFK / thirdBlock.ordCunt) * 100)
+
+        const YellowNK = calculateColorOrderCount(SOData, ColorsMTO.Yellow.label, 'NK', 0);
+        const YellowNKPercent = Math.round((YellowNK / firstBlock.ordCunt) * 100)
+
+        const YellowPK = calculateColorOrderCount(SOData, ColorsMTO.Yellow.label, 'PK', 0);
+        const YellowPkPercent = Math.round((YellowPK / secondBlock.ordCunt) * 100)
+
+        const YellowFK = calculateColorOrderCount(SOData, ColorsMTO.Yellow.label, 'FK', 0);
+        const YellowFkPercent = Math.round((YellowFK / thirdBlock.ordCunt) * 100)
+
+        const GreenNK = calculateColorOrderCount(SOData, ColorsMTO.Green.label, 'NK', 0);
+        const GreenNKPercent = Math.round((GreenNK / frthBlock.ordCunt) * 100)
+
+        const GreenPK = calculateColorOrderCount(SOData, ColorsMTO.Green.label, 'PK', 0);
+        const GreenPKPercent = Math.round((GreenPK / fifthBlock.ordCunt) * 100)
+
+        const GreenFK = calculateColorOrderCount(SOData, ColorsMTO.Green.label, 'FK', 0);
+        const GreenFKPercent = Math.round((GreenFK / sxthBlock.ordCunt) * 100)
+
+        const BlueNK = calculateColorOrderCount(SOData, ColorsMTO.Blue.label, 'NK', 1);
+        const BlueNKPercent = Math.round((BlueNK / svnthBlock.ordCunt) * 100)
+
+        const WhiteNK = calculateColorOrderCount(SOData, ColorsMTO.White.label, 'NK', 1);
+        const WhiteNKPercent = Math.round((WhiteNK / svnthBlock.ordCunt) * 100)
+
+        const BluePK = calculateColorOrderCount(SOData, ColorsMTO.Blue.label, 'PK', 1);
+        const BluePKPercent = Math.round((BluePK / egthBlock.ordCunt) * 100)
+
+        const WhitePK = calculateColorOrderCount(SOData, ColorsMTO.White.label, 'PK', 1);
+        const WhitePKPercent = Math.round((WhitePK / egthBlock.ordCunt) * 100)
+
+        const BlueFK = calculateColorOrderCount(SOData, ColorsMTO.Blue.label, 'FK', 1);
+        const BlueFKPercent = Math.round((BlueFK / nthBlock.ordCunt) * 100)
+
+        const WhiteFK = calculateColorOrderCount(SOData, ColorsMTO.White.label, 'FK', 1);
+        const WhiteFKPercent = Math.round((WhiteFK / nthBlock.ordCunt) * 100)
+
+
+        setColorOrderCount({
+            Bnk: blackNK,
+            Bnkp: blackNKPercent,
+            Bpk: blackPK,
+            Bpkp: blackPKPercent,
+            Bfk: blackFK,
+            Bfkp: blackFKPercent,
+            Rnk: RedNK,
+            Rnkp: RedNKPercent,
+            Rpk: RedPK,
+            Rpkp: RedPKPercent,
+            Rfk: RedFK,
+            Rfkp: RedFKPercent,
+            Ynk: YellowNK,
+            Ynkp: YellowNKPercent,
+            Ypk: YellowPK,
+            Ypkp: YellowPkPercent,
+            Yfk: YellowFK,
+            Yfkp: YellowFkPercent,
+            Gnk: GreenNK,
+            Gnkp: GreenNKPercent,
+            Gpk: GreenPK,
+            Gpkp: GreenPKPercent,
+            Gfk: GreenFK,
+            Gfkp: GreenFKPercent,
+            Blnk: BlueNK,
+            Blnkp: BlueNKPercent,
+            Wnk: WhiteNK,
+            Wnkp: WhiteNKPercent,
+            Blpk: BluePK,
+            Blpkp: BluePKPercent,
+            Wpk: WhitePK,
+            Wpkp: WhitePKPercent,
+            Blfk: BlueFK,
+            Blfkp: BlueFKPercent,
+            Wfk: WhiteFK,
+            Wfkp: WhiteFKPercent
+        })
+
+    }
 
     useEffect(() => {
         loadInitialData();
@@ -135,27 +272,26 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
     }, [SOData])
 
     const setAnalyticalData = () => {
-        // const totalOrdCnt
-        // let totalCustCnt;
-        // let totalOrderVal;
 
-        const blackCount:any = mapOrderDetails(SOData, ColorsMTO.Black.label, "", "", "", 0)
-        const redCount:any = mapOrderDetails(SOData, ColorsMTO.Red.label, "", "", "", 0)
-        const yellowCount:any = mapOrderDetails(SOData, ColorsMTO.Yellow.label, "", "", "", 0)
-        const greenCount:any = mapOrderDetails(SOData, ColorsMTO.Green.label, "", "", "", 0)
-        const blueCount:any = mapOrderDetails(SOData, ColorsMTO.Blue.label, ColorsMTO.White.label, "", "", 1); 
+        const blackCount: any = mapOrderDetails(SOData, ColorsMTO.Black.label, "", "", "", 0)
+        const redCount: any = mapOrderDetails(SOData, ColorsMTO.Red.label, "", "", "", 0)
+        const yellowCount: any = mapOrderDetails(SOData, ColorsMTO.Yellow.label, "", "", "", 0)
+        const greenCount: any = mapOrderDetails(SOData, ColorsMTO.Green.label, "", "", "", 0)
+        const blueCount: any = mapOrderDetails(SOData, ColorsMTO.Blue.label, ColorsMTO.White.label, "", "", 1);
 
-        // totalOrdCnt = blackCount.ordCunt + redCount.ordCunt + yellowCount.ordCunt + greenCount.ordCunt + blueCount.ordCunt;
-        // console.log('<>',totalCustCnt)
+
         const TotalCountObj = {
             "Order": [
-                { ...blackCount, color: ColorsMTO.Black.code, },
+                { ...blackCount, color: ColorsMTO.Black.code },
                 { ...redCount, color: ColorsMTO.Red.code },
                 { ...yellowCount, color: ColorsMTO.Yellow.code },
                 { ...greenCount, color: ColorsMTO.Green.code },
                 { ...blueCount, color: ColorsMTO.Blue.code }
             ]
         }
+
+
+
         dispatch(SAVE_ANALYTICS_DATA(TotalCountObj))
     }
 
@@ -168,10 +304,11 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
 
     function formatDate(start: any, end: any) {
         // if (start !== 0 || end !== 0) {
-          return start + "-" + end + " Days";
+        return start + "-" + end + " Days";
         // }
-      }      
-      
+    }
+
+
 
     return (
         <Main>
@@ -189,6 +326,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={BRYNkCustCunt}
                         orderValue={BRYNkOrdVal}
                         percent={BRYNkOrdCunt / totalOrderCount}
+                        ToolTipdata={{ 'c1': colorOrderCount?.Bnk, 'c2': colorOrderCount?.Rnk, 'c3': colorOrderCount?.Ynk, 'p3': colorOrderCount?.Ynkp, 'p1': colorOrderCount?.Bnkp, 'p2': colorOrderCount?.Rnkp }}
                     />
                 </Box>
                 <Box onClick={() => handleToggle(ColorsMTO.Black.label, ColorsMTO.Red.label, ColorsMTO.Yellow.label, "PK", "0", "0")}>
@@ -201,6 +339,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={secBlockCustCnt}
                         orderValue={secOrderVal}
                         percent={secBlockOrdCnt / totalOrderCount}
+                        ToolTipdata={{ 'c1': colorOrderCount?.Bpk, 'c2': colorOrderCount?.Rpk, 'c3': colorOrderCount?.Ypk, 'p1': colorOrderCount?.Bpkp, 'p2': colorOrderCount?.Rpkp,'p3': colorOrderCount?.Ypkp }}
                     />
                 </Box>
                 <Box onClick={() => handleToggle(ColorsMTO.Black.label, ColorsMTO.Red.label, ColorsMTO.Yellow.label, "FK", "0", "0")}>
@@ -213,6 +352,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={thrdBlockCustCnt}
                         orderValue={thrdOrderVal}
                         percent={thrdBlockOrdCnt / totalOrderCount}
+                        ToolTipdata={{ 'c1': colorOrderCount?.Bfk, 'c2': colorOrderCount?.Rfk, 'c3': colorOrderCount?.Yfk,  'p1': colorOrderCount?.Bfkp, 'p2': colorOrderCount?.Rfkp,'p3': colorOrderCount?.Yfkp, }}
                     />
                 </Box>
             </MainContainer>
@@ -231,6 +371,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={frthBlockCustCnt}
                         orderValue={frthOrderVal}
                         percent={frthBlockCustCnt / totalOrderCount}
+                        ToolTipdata={{ 'c1': colorOrderCount?.Gnk, 'p1': colorOrderCount?.Gnkp }}
                     />
 
                 </Box>
@@ -245,6 +386,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={fifthBlockCustCnt}
                         orderValue={fifthOrderVal}
                         percent={fifthBlockCustCnt / totalOrderCount}
+                        ToolTipdata={{ 'c1': colorOrderCount?.Gpk, 'p1': colorOrderCount?.Gpkp }}
                     />
 
                 </Box>
@@ -259,6 +401,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={sxthBlockCustCnt}
                         orderValue={sxthdOrderVal}
                         percent={sxthBlockCustCnt / totalOrderCount}
+                        ToolTipdata={{ 'c1': colorOrderCount?.Gfk, 'p1': colorOrderCount?.Gfkp }}
                     />
 
                 </Box>
@@ -284,6 +427,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={svthBlockCustCnt}
                         orderValue={svthdOrderVal}
                         percent={svthBlockOrdCnt / totalBlueOrdCount}
+                        ToolTipdata={{ 'c2': colorOrderCount?.Blnk, 'c3': colorOrderCount?.Wnk, 'p2': colorOrderCount?.Blnkp, 'p3': colorOrderCount?.Wnkp }}
                     />
 
                 </Box>
@@ -297,6 +441,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={egthBlockCustCnt}
                         orderValue={egthdOrderVal}
                         percent={egthBlockCustCnt / totalBlueOrdCount}
+                        ToolTipdata={{ 'c2': colorOrderCount?.Blpk, 'c3': colorOrderCount?.Wpk, 'p2': colorOrderCount?.Blpkp, 'p3': colorOrderCount?.Wpkp }}
                     />
 
                 </Box>
@@ -310,6 +455,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={nthBlockCustCnt}
                         orderValue={nthhdOrderVal}
                         percent={nthBlockOrdCnt / totalBlueOrdCount}
+                        ToolTipdata={{ 'c2': colorOrderCount?.Blfk, 'c3': colorOrderCount?.Wfk, 'p2': colorOrderCount?.Blfkp, 'p3': colorOrderCount?.Wfkp }}
                     />
 
                 </Box>

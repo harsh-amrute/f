@@ -114,6 +114,10 @@ export const ButtonImg = styled.img`
     justify-content:center;
     align-item:center;
     margin-right:3px;
+    transition:0.3s ease-in-out;
+    &:hover{
+        transform:scale(1.3);
+    }
 `
 export const Btncount = styled.div`
     justify-content:center;
@@ -141,4 +145,14 @@ export const underLine = styled.div`
 export const ProcurementLayout = styled.div`
     height: '100%';
     width: 1200px;
+`
+
+export const ColoronLeftWrapper = styled.div`
+    position:absolute;
+    right:100%;
+    border-radius: 8px 0 0 8px;
+    transition:0.3s ease-in-out;
+    &:hover{
+      border:2px solid transparent;
+    }
 `
