@@ -14,12 +14,13 @@ const colorMapper = (color: string) => {
         case 'Black':
             return { bg: '#000000', text: '#ffffff' };
         default:
-            return { bg: '#000000', text: '#ffffff' };
+            return { bg: '#ffffff', text: '#000000' };
     }
 };
 
 const ColorCellRenderer = (params: any) => {
-    const color = params.data?.cp;
+    // const color = params.data?.cp;
+    const color = params.value;
     const cellColor = colorMapper(color);
 
     return (

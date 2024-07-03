@@ -143,19 +143,19 @@ export const SCPrimaryButton = styled.button`
 `;
 
 export const SCButton = styled.button`
-  background:${ColorsMTO.White};
+  background:${ColorsMTO.White.code};
   border-radius: 6px;
   font-size:16px;
   font-family:'Roboto';
   letter-spacing:0px;
   font-weight:300;
-  color: ${ColorsMTO.Pink};
+  color: ${ColorsMTO.Pink.code};
   padding: 15px 7px;
   pointer-events:'all';
   width: 130px;
   height: 46px;
-  box-shadow: -5px 4px 10px  ${ColorsMTO.LightGrey};
-  border: 1px solid  ${ColorsMTO.Pink};
+  box-shadow: -5px 4px 10px  ${ColorsMTO.LightGrey.code};
+  border: 1px solid  ${ColorsMTO.Pink.code};
   opacity: 1;
 `;
 

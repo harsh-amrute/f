@@ -10,7 +10,7 @@ import { useLocation } from 'react-router-dom';
 import ColorCellRenderer from "../../../Common/ColorCellRenderer";
 import { mapSimulateProcPlanningFieldsToColDefs } from '../../../../../../helpers/utils';
 import DetailCellRenderer from "./DetailCellRenderer";
-import { userGetProcAfterSimulationPlanningData, UpdateBatchWiseCompAllSimulation } from "../../../../../Services/MTO/ProcPlanning/index";
+import { userGetProcAfterSimulationPlanningData, UpdateBatchWiseCompAllSimulation } from "../../../../../Services/MTO/Procurement/ProcPlanning/index";
 
 
 const useSimFullKit = () => {
@@ -135,8 +135,8 @@ const useSimFullKit = () => {
     const icons = useMemo(() => {
         return {
             groupExpanded: `<img src="${'/assets/img/mto/procPlanning/minus_circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
-            groupContracted: `<img src="${'/assets/img/VectorFLOW/NMS/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
-        };
+            groupContracted: `<img src="${'/assets/img/mto/procPlanning/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
+    };
     }, []);
 
     const autoGroupColumnDef = useMemo(() => {

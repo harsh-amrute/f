@@ -1,24 +1,19 @@
 import styled from 'styled-components';
 
 export const Main = styled.div`
-    display:flex;
-    padding:10px;
-    align-items:center;
-    justify-content: center;
-    width: 100%;
-    flex-wrap:wrap;
+    margin-top:15px;
 `
 
 export const MainContainer = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 60px;
   margin-left:20px;
   padding: 1rem;
 `
 
 export const Box = styled.div`
     width: 250px;
-    height: 200px;
+    min-height: 25vh;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow:0px 6px 12px #74747429;
     //box-shadow: -5px 4px 20px #91919133;
@@ -29,8 +24,7 @@ export const Box = styled.div`
     flex-direction:column;
     align-items:center;
     justify-content: space-between;
-    margin-right:30px;
-    margin-bottom:10px
+    margin-bottom:30px
 `
 
 export const PercentBorderContainer = styled.div`

@@ -1,0 +1,125 @@
+import styled from "styled-components";
+
+export const DayWiseCoverageHeaderContainer = styled.div`
+  display: flex;
+  gap: 1.5rem;
+`;
+
+export const DayWiseCoverageStatus = styled.div<{ color?: string }>`
+  &::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: ${(props) => props.color};
+    display: block;
+  }
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 16px;
+`;
+
+export const CalenderContainer = styled.div`
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.1) 5px 2px 14px 3px;
+  margin: 16px 0;
+`;
+
+export const CalenderTitle = styled.h1`
+  background: black;
+  color: white;
+  margin: 0;
+  padding: 8px 16px;
+`;
+
+export const CalenderContent = styled.div`
+  display: flex;
+`;
+export const CalenderMonths = styled.div`
+  border-right: 1px solid lightgrey;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 2rem; // for scrollbar width
+`;
+export const CalenderMonth = styled.div`
+  padding: 8px 18px;
+  margin: 0.5rem;
+  border: none;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  flex: 1;
+`;
+
+export const Divider = styled.div`
+  width: 0.5px;
+  background-color: grey;
+`;
+
+export const Text = styled.div`
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+`;
+
+export const Calender = styled.table`
+  font-size: 16px;
+  width: 100%;
+  overflow: auto;
+  display: block;
+  border-collapse: collapse;
+`;
+export const Day = styled.td<{ color: string }>`
+  padding: 16px;
+  border: none;
+  margin: 1rem;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.color};
+  color: white;
+  border-radius: 50%;
+`;
+
+export const Month = styled.tr`
+  border-bottom: 2px dashed lightgrey;
+  display: flex;
+`;
+
+export const Icon = styled.img``;
+
+export const TableContainer = styled.div`
+  background: white; 
+  border-radius: 8px; 
+  height:450px; 
+  display:flex; 
+  justify-content:center; 
+  align-items:center;
+  width:100%;
+  margin: 3rem 0;
+  box-shadow: rgba(0, 0, 0, 0.1) 5px 2px 14px 3px;
+  & > .ag-theme-alpine{
+    width: 100%;
+    margin: unset;
+  }
+`
+
+export const AnimationWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 2rem;
+`
+
+export const HelperText = styled.div`
+  font-size: 22px;
+  width: 65%;
+  text-align: center;
+`

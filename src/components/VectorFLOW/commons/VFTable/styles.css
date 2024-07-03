@@ -1,150 +1,157 @@
 .ag-theme-alpine {
   /* --ag-foreground-color: #EBEBEB; */
-  --ag-range-selection-border-color:#BC3D81;
+  --ag-range-selection-border-color: #bc3d81;
   /* --ag-background-color: rgb(255, 255, 255); */
   --ag-header-foreground-color: rgb(255, 255, 255);
   --ag-header-background-color: rgb(0, 0, 0);
-  --ag-header-height:43px;
-  --ag-checkbox-checked-color:#BC3D81;
-  --ag-selected-row-background-color:rgb(188, 61, 129,0.2);
+  --ag-header-height: 43px;
+  --ag-checkbox-checked-color: #bc3d81;
+  --ag-selected-row-background-color: rgb(188, 61, 129, 0.2);
   /* --ag-odd-row-background-color: rgb(0, 0, 0, 0.03); */
   /* --ag-header-column-resize-handle-color: rgb(126, 46, 132); */
   /* --ag-border-radius:32px; */
   --ag-font-size: 17px;
   /* --ag-font-family: monospace; */
-  --ag-range-selection-background-color:  #bc3d814d;
-  --ag-alpine-active-color:#BC3D81;
-  --ag-input-focus-border-color:#BC3D81;
+  --ag-range-selection-background-color: #bc3d814d;
+  --ag-alpine-active-color: #bc3d81;
+  --ag-input-focus-border-color: #bc3d81;
 }
 
 .child-grid .ag-header-viewport {
-    background-color: #ffffff;
+  background-color: #ffffff;
 }
 
 .child-grid .ag-header-container {
-    /* Your styles for child grid header cells */
-    background-color: #ffffff;
-    /* Change this to your desired background color */
+  /* Your styles for child grid header cells */
+  /* background-color: #ffffff; */
+  /* Change this to your desired background color */
+}
+
+.child-grid .ag-header-cell-text {
+  color: black;
+  font-size: 1.5rem;
 }
 
 .child-header .ag-header-cell-label {
-    background-color: rgb(255, 255, 255) !important;
-    color: black !important;
+  background-color: rgb(255, 255, 255) !important;
+  color: black !important;
 }
 
 .child-header {
-    background-color: rgb(255, 255, 255) !important;
-    /* --ag-header-foreground-color: rgb(255, 255, 255); */
+  background-color: rgb(255, 255, 255) !important;
+  /* --ag-header-foreground-color: rgb(255, 255, 255); */
 }
 
 .simchild-header {
-    background-color: rgb(255, 255, 255) !important;
-    /* --ag-header-foreground-color: rgb(255, 255, 255); */
+  /* background-color: rgb(255, 255, 255) !important; */
+  /* --ag-header-foreground-color: rgb(255, 255, 255); */
 }
 
 .simchild-header .ag-header-cell-label {
-    background-color: rgb(255, 255, 255) !important;
-    color: rgb(157, 155, 155) !important;
-    font-weight: normal;
+  background-color: rgb(255, 255, 255) !important;
+  color: rgb(157, 155, 155) !important;
+  font-weight: normal;
 }
 
 .ag-row:hover {
-    background-color: rgb(188, 61, 129, 0.3) !important;
+  background-color: rgb(188, 61, 129, 0.3) !important;
 }
 
 .ag-root-wrapper {
-    border-radius: 8px 8px 0 0;
+  border-radius: 8px 8px 0 0;
 }
 
 .ag-header {
-    border-radius: 8px 0px 0 0;
-    font-style: normal;
-    font-variant: normal;
-    font-weight: 400;
-    font-size: 20px !important;
-    line-height: 24px;
-    font-family: Roboto;
-    letter-spacing: 0px;
-    color: #FFFFFF;
+  border-radius: 8px 0px 0 0;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  font-size: 20px !important;
+  line-height: 24px;
+  font-family: Roboto;
+  letter-spacing: 0px;
+  color: #ffffff;
 }
 
 .ag-header-icon {
-    opacity: 1 !important;
-    color: white;
+  opacity: 1 !important;
+  color: white;
 }
 
 .active-row {
-    z-index: 111 !important;
-    /* Adjust z-index to suit your needs */
-    position: relative;
-    /* z-index only works on positioned elements (position:absolute, position:relative, or position:fixed) */
-    /* Any other styles */
+  z-index: 111 !important;
+  /* Adjust z-index to suit your needs */
+  position: relative;
+  /* z-index only works on positioned elements (position:absolute, position:relative, or position:fixed) */
+  /* Any other styles */
 }
 
 .ag-row {
-    overflow: visible;
+  overflow: visible;
 }
 
 .ag-header-row:nth-child(2) {
-    background-color: #F7F7F7;
-    color: black;
-    width: 100% !important;
+  background-color: #f7f7f7;
+  color: black;
+  width: 100% !important;
 }
 
 .ag-header-cell-label {
-    justify-content: center;
+  justify-content: center;
 }
 
 .selected-record-count {
-    font-family: 'Roboto';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
-    color: #6E6969;
-    padding-top: 24px;
-
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  color: #6e6969;
+  padding-top: 24px;
 }
 
 .ag-header-group-cell-with-group {
-    justify-content: center;
-    --ag-header-foreground-color: rgb(255, 255, 255);
-    --ag-header-background-color: rgb(255, 255, 255);
+  justify-content: center;
+  --ag-header-foreground-color: rgb(255, 255, 255);
+  --ag-header-background-color: rgb(255, 255, 255);
 }
 
 .ag-status-name-value span {
-    color: black;
+  color: black;
 }
 
-
 .ag-theme-alpine .ag-body-horizontal-scroll {
-    height: unset !important;
-    max-height: unset !important;
-    min-height: 29px !important;
+  height: unset !important;
+  max-height: unset !important;
+  min-height: 29px !important;
 }
 
 .ag-theme-alpine .ag-body-horizontal-scroll-viewport {
-    height: unset !important;
-    max-height: unset !important;
-    min-height: unset !important;
+  height: unset !important;
+  max-height: unset !important;
+  min-height: unset !important;
 }
 
 .ag-theme-alpine .ag-horizontal-right-spacer {
-    display: none !important;
+  display: none !important;
 }
 
 .ag-theme-alpine .ag-body-vertical-scroll-viewport {
-    min-width: unset !important;
-    width: 29px !important;
-    max-width: unset !important;
+  min-width: unset !important;
+  width: 29px !important;
+  max-width: unset !important;
 }
 
 .ag-theme-alpine .ag-body-vertical-scroll {
-    min-width: unset !important;
-    max-width: unset !important;
-    width: unset !important;
+  min-width: unset !important;
+  max-width: unset !important;
+  width: unset !important;
 }
 
 .ag-panel-title-bar-button {
-    color: white !important;
+  color: white !important;
+}
+
+.ag-theme-alpine:has(> .child-grid) {
+  margin: 20px 0;
 }

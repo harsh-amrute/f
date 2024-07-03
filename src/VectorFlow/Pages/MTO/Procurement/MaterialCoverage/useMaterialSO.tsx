@@ -3,10 +3,11 @@ import { AgGridReactProps } from "ag-grid-react"
 import AvlCellRenderer from '../../Common/AvlCellRenderer';
 import AvailabilityToolTip from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import DetailCellRenderer from "./MaterialCellRenderer";
-import {  OrderDetailsHeaderData } from '../MaterialCoverage/Data';
+import { OrderDetailsHeaderData } from '../MaterialCoverage/Data';
 import { mapMaterialCoverageFieldsToColDefs } from '../../../../../helpers/utils'
 import ColorCellRenderer from "../../Common/ColorCellRenderer";
 import { useGetOpenSODetailsData } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage";
+import CustomGroupCellRenderer from "../InsightsAndTrends/DayWiseCoverage/CustomGroupCellRenderer";
 const useMaterialSO = (data: any) => {
     const [orderDetailsData, setOrderDetailsData] = useState<any>();
 
@@ -50,12 +51,6 @@ const useMaterialSO = (data: any) => {
     //     return calculate;
     // }
     // const output = LoadData(OrderDetailsData);
-    const icons = useMemo(() => {
-        return {
-            groupExpanded: `<img src="${'/assets/img/VectorFLOW/NMS/minus_circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
-            groupContracted: `<img src="${'/assets/img/VectorFLOW/NMS/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
-        };
-    }, []);
 
     const autoGroupColumnDef = useMemo(() => {
         return {
@@ -72,7 +67,9 @@ const useMaterialSO = (data: any) => {
         {
             "colorCellRenderer": ColorCellRenderer,
             "avlCellRenderer": AvlCellRenderer,
-            "availabilityToolTip": AvailabilityToolTip
+            "availabilityToolTip": AvailabilityToolTip,
+            "customGroupCellRenderer": CustomGroupCellRenderer
+
         }), []);
 
     const agGridProps: AgGridReactProps = {
@@ -91,7 +88,6 @@ const useMaterialSO = (data: any) => {
             enableBrowserTooltips: true,
             enableRangeSelection: true,
             components: customCellRenderers,
-            icons: icons,
             defaultColDef: {
                 cellStyle: {
                     'text-align': 'center',
