@@ -4,13 +4,11 @@ import Note from "./Note";
 import ResizableTable from "./ResizableTable";
 import TabSwitch from "./TabsSwitch";
 import MTOActionToolBar from "../../../../../../src/components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { APIMock, prodPlanningMock } from "../../../../../mock-data/PROD";
+import { prodPlanningMock } from "../../../../../mock-data/PROD";
 import {
   BlurCover,
-  CardBtn,
   CardCover,
   DashedCard,
-  EditFilterBtn,
   EnquiryWrapper,
   EstimatedWrapper,
   FilterWrapper,

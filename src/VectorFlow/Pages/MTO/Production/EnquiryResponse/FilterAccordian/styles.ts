@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import * as gridSystem from "../../../../../../styles/gridSystem";
 
 export const AccordianWrapper = styled.div`
 display: flex;

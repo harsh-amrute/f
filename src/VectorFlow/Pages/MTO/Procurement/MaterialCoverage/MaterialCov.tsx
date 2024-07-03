@@ -6,7 +6,7 @@ import {
 
 } from '../MaterialCoverage/styles';
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
-import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
+import MTOActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
 import FutureCov from './FutureCov';
 import CurrentCov from './CurrentCov';
 import { MaterialCoverageString } from '../../Common/String';
@@ -56,7 +56,7 @@ const MaterialCov = () => {
     <div style={{ width: "100%" }}>
       {!toggleComponent ?
         <>
-          <ActionToolBar
+          <MTOActionToolBar
             comp={'MaterialCov'}
             onDateChange={() => { console.log('') }}
             submitDate={() => { console.log('') }}
@@ -109,7 +109,7 @@ const MaterialCov = () => {
         </>
         :
         <>
-          <ActionToolBar
+          <MTOActionToolBar
             comp={'MaterialCovDetailData'}
             onDateChange={() => { console.log('') }}
             submitDate={() => { console.log('') }}

@@ -1,10 +1,9 @@
 import { ColDef } from "ag-grid-enterprise";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useMemo, useRef } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import * as TableStyle from "./style";
-const ROW_HEIGHT = 40; // Adjust as per your row height
 
 interface IResizeTableProps {
   header: ColDef[];
@@ -12,10 +11,9 @@ interface IResizeTableProps {
 }
 
 const ResizableTable = (props: IResizeTableProps) => {
-  const { header, data } = props;
+  const { data } = props;
   const tempRef = useRef();
-  const [tableHeight, setTableHeight] = useState(300); // Initial table height
-  const [numRows, setNumRows] = useState(5); // Initial number of visible rows
+  const [tableHeight, setTableHeight] = useState(300);
 
   const handleMouseDown = (e: any) => {
     e.preventDefault();
@@ -35,21 +33,6 @@ const ResizableTable = (props: IResizeTableProps) => {
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
-
-  useEffect(() => {
-    const updateNumRows = () => {
-      const containerElement = document.querySelector(".table-container");
-      if (containerElement) {
-        const containerHeight = containerElement.clientHeight;
-        const newNumRows = Math.floor(containerHeight / ROW_HEIGHT);
-        setNumRows(newNumRows);
-      }
-    };
-
-    updateNumRows();
-    window.addEventListener("resize", updateNumRows);
-    return () => window.removeEventListener("resize", updateNumRows);
-  }, []);
 
   const BarFillUI = (value: any) => {
     const val = value?.value;

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import EnquiryResponse from '.';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -9,7 +9,6 @@ import {createStore} from '../../../../../redux/store/store'
 import { setupReactQuery } from '../../../../../config/react-query-config';
 import Note from './Note';
 import TabSwitch from './TabsSwitch';
-import FilterModal from './FilterModal';
 
 jest.mock('../../../../Services/MTO/Production/EnquiryResponse');
 jest.mock('../../../../../../src/components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar', () => (props: any) => (
@@ -69,23 +68,6 @@ const contextWrapper = (children: ReactNode,store:any) => {
 
 describe('EnquiryResponse', () => {
   const handleTabChangeMock = jest.fn();
-  const handleClose = jest.fn();
-  const handleOkay = jest.fn();
-  const handleOptionSelect = jest.fn();
-  const handleNameChange = jest.fn();
-
-  const filters = [
-    { heading: 'Filter 1', options: ['Option 1', 'Option 2'] },
-    { heading: 'Filter 2', options: ['Option 3', 'Option 4'] },
-  ];
-
-  const selectedOptions = {
-    plantName: 'Test Plant',
-    productGroup: ['Option 1'],
-    department: [],
-    ccrGroup: [],
-    ccrName: [],
-  };
 
   it('renders without crashing', () => {
     render(<EnquiryResponse />);
@@ -114,16 +96,6 @@ describe('EnquiryResponse', () => {
     await waitFor(() => {
       expect(screen.getByTestId('table-wrapper')).toHaveTextContent('Plant Department CCR Group CCR Name FOL ( in Dyays ) No Rows To Show');
     });
-
-    // render(<EnquiryResponse />);
-    // await waitFor(() => {
-    //   fireEvent.click(screen.getByText('+ Add Filter'));
-    // });
-    // // Apply Filters
-    // fireEvent.click(screen.getByText('Apply'));
-    // await waitFor(() => {
-    //   expect(screen.getByTestId('table-wrapper')).toHaveTextContent('Plant Department CCR Group CCR Name FOL ( in Dyays ) No Rows To Show');
-    // });
   });
 
   it('renders EnquiryResponse component correctly', async () => {
@@ -222,12 +194,7 @@ describe('EnquiryResponse', () => {
     // Find the input field and add value
     const input = screen.getByTestId('plntNmInput');
     fireEvent.change(input, { target: { value: 'Plant 1' } });
-    // expect(handleNameChange).toHaveBeenCalledWith(expect.objectContaining({
-    //     value: 'Plant 1',
-    //     name: 'plantName',
-    // }));
 
-    // Apply the filter
     fireEvent.click(screen.getByText('Apply Filter'));
     await waitFor(() => {
       expect(screen.queryByText('Select Filter')).toBeNull();

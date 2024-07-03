@@ -1,5 +1,5 @@
-import { Dispatch, useState } from 'react';
-import { AccordianHeader, AccordianHeading, AccordianWrapper, DownArrowIcon, Option, OptionsWrapper, UpArrowIcon } from './styles';
+import { Dispatch } from 'react';
+import { AccordianHeader, AccordianHeading, DownArrowIcon, Option, OptionsWrapper, UpArrowIcon } from './styles';
 import { useSpring, animated } from "react-spring";
 
 interface IFilterAccordianProps {

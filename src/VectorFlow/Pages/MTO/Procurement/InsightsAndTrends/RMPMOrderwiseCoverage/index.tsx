@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import ActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
+import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import GridView from './GridView/GridView'
 import GraphView from './GraphView/GraphView'
 
@@ -8,7 +8,7 @@ const RMPMOrderwiseCoverage = () => {
     const [isGridView, setIsGridView] = useState(false);
     return (
         <>
-            <ActionToolBar comp={"rmpm"} isGridView={isGridView} setIsGridView={setIsGridView} />
+            <MTOActionToolBar comp={"rmpm"} isGridView={isGridView} setIsGridView={setIsGridView} />
             {(isGridView) ? <GridView /> : <GraphView />}
         </>
     )

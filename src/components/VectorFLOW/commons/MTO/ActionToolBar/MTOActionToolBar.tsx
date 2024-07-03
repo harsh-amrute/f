@@ -1,4 +1,3 @@
-import React from 'react';
 import { useUserData } from "../../../../../context"
 import VFButton from '../../VFButton';
 import {
@@ -12,33 +11,28 @@ import {
     SCViewContainerWithBg,
     SCTaskFilterContainer,
     SCButton,
-    SCPrimaryButton,
-    /**search filter styles starts */
-    // VFSelectedFiltersChip,
-    // VFSelectedFiltersFilterCloseIcon,
-    // VFSelectedFiltersFilterContent,
-    // VFSelectedFiltersFilterLabel,
-    // VFSelectedFiltersFilterValue,
-    // VFSelectedFiltersPlaceHolder,
-    // VFSelectedFiltersWrapper,
-    // VFFilterScrollBar,
     SCViewContainerWithBgToggle,
     SCHorizontalDivison,
     SCViewContainer,
+    SCFilterVerticalDivider,
+    /**search filter styles starts */
+    VFSelectedFiltersChip,
+    VFSelectedFiltersFilterCloseIcon,
+    VFSelectedFiltersFilterContent,
+    VFSelectedFiltersFilterLabel,
+    VFSelectedFiltersFilterValue,
+    VFSelectedFiltersPlaceHolder,
+    VFSelectedFiltersWrapper,
+    VFFilterScrollBar,
     /**search filter styles end*/
-<<<<<<< HEAD
     /**Date component style starts */
     DateWrapper,
     DateIcon,
     DateTitle,
     DateValue,
-    SCFilterVerticalDivider,
     /**Date component style end */
-} from './styles'
-=======
 } from './styles';
 import moment from 'moment';
->>>>>>> 8d6ba7880c887e480c254464603ab3c7fc82b6fd
 
 type filterType = {
     label: string,
@@ -51,14 +45,15 @@ interface MTOActionToolBarProps {
     submitDate?: () => void;
     isGridView?: boolean;
     setIsGridView?: (isGridView: boolean) => void;
-<<<<<<< HEAD
     onAddFilter?: () => void;
     selectedFilters?: filterType[];
     removeFilters?: (category: string, name: string) => void;
+    date?: string
+    handleGoBack?: () => void;
 }
 
 
-const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submitDate, onAddFilter, selectedFilters, removeFilters }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters,  submitDate, date, handleGoBack  }: MTOActionToolBarProps) => {
     
     const { user } = useUserData()
     // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
@@ -84,22 +79,12 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
         return formattedDate;
     }
 
-    console.log(selectedFilters);
-    
-=======
-    date?: string
-    handleGoBack?: () => void;
-}
-
-
-const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submitDate, date, handleGoBack }: MTOActionToolBarProps) => {
 
     const format2 = "YYYY-MM-DD"
     const d = new Date();
     //.setDate(d.getDate() - 1)
     const datetime = moment(d).format(format2);
 
->>>>>>> 8d6ba7880c887e480c254464603ab3c7fc82b6fd
     return (
         <SCTaskBarContainer>
             <SCTaskFilterContainer
@@ -111,14 +96,9 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
             >
 
                 <>
-<<<<<<< HEAD
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm') && (comp !== 'EnquiryResponse')) ?
-                        <SCGoBackContainer>
-=======
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'MaterialRequirement') &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'EnquiryResponse') && (comp !== 'MaterialRequirement') &&
 
                         <SCGoBackContainer onClick={() => { if (handleGoBack) handleGoBack() }}>
->>>>>>> 8d6ba7880c887e480c254464603ab3c7fc82b6fd
                             <img
                                 src="/assets/img/VectorFLOW/BPR/goback.svg"
                                 alt=""
@@ -127,11 +107,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                         </SCGoBackContainer>
                     }
 
-<<<<<<< HEAD
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')  && (comp !== 'EnquiryResponse')) &&
-=======
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp != "MaterialCovDetailData") &&
->>>>>>> 8d6ba7880c887e480c254464603ab3c7fc82b6fd
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'EnquiryResponse') && (comp != "MaterialCovDetailData") &&
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -211,7 +187,6 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                         </DateValue>
                     </DateWrapper>}
                 {/**Selected Filter start */}
-<<<<<<< HEAD
                 {selectedFilters && selectedFilters?.length > 0 && <VFSelectedFiltersWrapper>
                     <VFSelectedFiltersPlaceHolder>
                         Selected Filters
@@ -239,34 +214,6 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                         ))}
                     </VFFilterScrollBar>
                 </VFSelectedFiltersWrapper>}
-=======
-
-                {/* <VFSelectedFiltersWrapper>
-                        <VFSelectedFiltersPlaceHolder>
-                            Selected Filters
-                        </VFSelectedFiltersPlaceHolder>
-                        <VFFilterScrollBar>
-                            <VFSelectedFiltersChip>
-                                <VFSelectedFiltersFilterLabel>
-                                    <b></b>
-
-                                </VFSelectedFiltersFilterLabel>
-
-                                <VFSelectedFiltersFilterContent style={{ borderRight: 'solid 2px black' }}>
-                                    <VFSelectedFiltersFilterValue>
-                                        <p style={{ margin: '0px 5px 0px 5px' }}>:</p>
-                                    </VFSelectedFiltersFilterValue>
-                                    <VFSelectedFiltersFilterCloseIcon
-                                        src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} />
-                                </VFSelectedFiltersFilterContent>
-
-                            </VFSelectedFiltersChip>
-
-                        </VFFilterScrollBar>
-                    </VFSelectedFiltersWrapper> */}
-
-
->>>>>>> 8d6ba7880c887e480c254464603ab3c7fc82b6fd
                 {/**Selected Filter ends*/}
 
             </SCTaskFilterContainer>
