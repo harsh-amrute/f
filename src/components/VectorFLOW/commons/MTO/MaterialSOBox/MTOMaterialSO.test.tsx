@@ -1,81 +1,112 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import MTOMaterialSO from './MTOMaterialSO';
+import MTOMaterialSO from './MTOMaterialSO'; // Adjust the import path based on your file structure
 
-describe('MTOMaterialSO component', () => {
-  it('should render with given props', () => {
-    // Arrange
-    const props = {
-      kit: 'No Kit',
-      colors: { c1: '#FF0000', c2: "#FF0000", c3: "#FF0000" },
-      height: '100px',
-      text: 'Sample Text',
-      orderCount: 10,
-      cutCount: 5,
-      orderValue: 100,
-      percent: 0.5,
+// Mock the Tooltip component since it's used within MTOMaterialSO
+jest.mock('../../../../../components/VectorFLOW/commons/MTO/Tooltip', () => {
+  return function MockedTooltip({ content }: { content: React.ReactNode }) {
+    return <div data-testid="mocked-tooltip">{content}</div>;
+  };
+});
+
+describe('MTOMaterialSO Component', () => {
+  test('renders with Red colors and Tooltips', () => {
+    const colors = {
+      c1: '#000',
+      c2: '#E53F40',
+      c3: '#EBBF2B'
     };
 
-    // Act
-    const { getByText, getByAltText } = render(<MTOMaterialSO {...props} />);
-
-    // Assert
-    expect(getByText(props.text)).toBeInTheDocument();
-    expect(getByAltText('Logo')).toBeInTheDocument(); // Assuming there's an image with the alt text 'Logo'
-    expect(getByText(props.kit)).toBeInTheDocument();
-    expect(getByText(props.orderCount.toString())).toBeInTheDocument();
-    expect(getByText(props.cutCount.toString())).toBeInTheDocument();
-    expect(getByText(props.orderValue.toString())).toBeInTheDocument();
-  });
-
-  it('should render without colors', () => {
-    // Arrange
-    const props = {
-      kit: 'Partial Kit',
-      colors: { c1: null, c2: null, c3: null },
-      height: '100px',
-      text: 'Sample Text',
-      orderCount: 10,
-      cutCount: 5,
-      orderValue: 100,
-      percent: 0.5,
+    const ToolTipdata = {
+      p1: 50,
+      c1: 'SomeValue1',
+      p2: 75,
+      c2: 'SomeValue2',
+      p3: 25,
+      c3: 'SomeValue3'
     };
 
-    // Act
-    const { getByText, getByAltText } = render(<MTOMaterialSO {...props} />);
+    const { getByText, getByAltText, getAllByTestId } = render(
+      <MTOMaterialSO
+        kit="No Kit"
+        colors={colors}
+        height="20px"
+        text="Sample Text"
+        orderCount={10}
+        cutCount={5}
+        orderValue={100}
+        percent={0.5}
+        ToolTipdata={ToolTipdata}
+      />
+    );
 
-    // Assert
-    expect(getByText(props.text)).toBeInTheDocument();
-    expect(getByAltText('Logo')).toBeInTheDocument(); // Assuming there's an image with the alt text 'Logo'
-    expect(getByText(props.kit)).toBeInTheDocument();
-    expect(getByText(props.orderCount.toString())).toBeInTheDocument();
-    expect(getByText(props.cutCount.toString())).toBeInTheDocument();
-    expect(getByText(props.orderValue.toString())).toBeInTheDocument();
+    // Assert that Tooltip with 'Red' content is rendered
+    expect(getAllByTestId('mocked-tooltip')[0]).toHaveTextContent('Black');
+    expect(getAllByTestId('mocked-tooltip')[0]).toHaveTextContent('Red');
+    expect(getByText('Black')).toBeInTheDocument();
+    expect(getByText('Red')).toBeInTheDocument();
+
+    // Assert that images are rendered based on kit prop
+    expect(getByAltText('Logo')).toBeInTheDocument();
   });
-  // You can write more test cases to check different scenarios and edge cases
 
-  it('should render with FullKit', () => {
-    // Arrange
-    const props = {
-      kit: 'Full Kit',
-      colors: { c1: null, c2: null, c3: null },
-      height: '100px',
-      text: 'Sample Text',
-      orderCount: 10,
-      cutCount: 5,
-      orderValue: 100,
-      percent: 0.5,
+  test('renders with Green color and Tooltip', () => {
+    const colors = {
+      c1: '#418D18'
     };
 
-    // Act
-    const { getByText, getByAltText } = render(<MTOMaterialSO {...props} />);
+    const ToolTipdata = {
+      p1: 60,
+      c1: 'SomeValue1'
+    };
 
-    // Assert
-    expect(getByText(props.text)).toBeInTheDocument();
-    expect(getByAltText('Logo')).toBeInTheDocument(); // Assuming there's an image with the alt text 'Logo'
-    expect(getByText(props.kit)).toBeInTheDocument();
-    expect(getByText(props.orderCount.toString())).toBeInTheDocument();
-    expect(getByText(props.cutCount.toString())).toBeInTheDocument();
-    expect(getByText(props.orderValue.toString())).toBeInTheDocument();
+    const { getByText, getAllByTestId } = render(
+      <MTOMaterialSO
+        kit="Partial Kit"
+        colors={colors}
+        height="20px"
+        text="Another Text"
+        orderCount={8}
+        cutCount={3}
+        orderValue={80}
+        percent={0.6}
+        ToolTipdata={ToolTipdata}
+      />
+    );
+
+    // Assert that Tooltip with 'Green' content is rendered
+    expect(getAllByTestId('mocked-tooltip')[0]).toHaveTextContent('Green');
+    expect(getByText('Green')).toBeInTheDocument();
   });
+
+  test('renders with Blue color and Tooltip', () => {
+    const colors = {
+      c1: '#003366'
+    };
+
+    const ToolTipdata = {
+      p1: 75,
+      c1: 'SomeValue1'
+    };
+
+    const { getByText, getAllByTestId } = render(
+      <MTOMaterialSO
+        kit="Full Kit"
+        colors={colors}
+        height="20px"
+        text="Different Text"
+        orderCount={15}
+        cutCount={7}
+        orderValue={150}
+        percent={0.75}
+        ToolTipdata={ToolTipdata}
+      />
+    );
+
+    // Assert that Tooltip with 'Blue' content is rendered
+    expect(getAllByTestId('mocked-tooltip')[0]).toHaveTextContent('Blue');
+    expect(getByText('Blue')).toBeInTheDocument();
+  });
+
+  // Add more test cases as needed for different scenarios and edge cases
 });
