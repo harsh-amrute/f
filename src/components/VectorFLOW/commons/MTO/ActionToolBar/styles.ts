@@ -213,7 +213,6 @@ width: 120px;
 export const VFSelectedFiltersFilterContent = styled.div`
     display:flex;
     flex-direction:row;
-    padding:0 10px;
     align-items: center;
 `
 
@@ -231,6 +230,7 @@ export const SCFilterVerticalDivider = styled.div`
     background-color: black;
     height:20px;
     align-items:center;
+    margin: 0px 8px;
 `
 
 export const VFSelectedFiltersFilterCloseIcon = styled.img`

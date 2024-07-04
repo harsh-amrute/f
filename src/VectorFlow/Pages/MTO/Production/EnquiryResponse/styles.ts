@@ -149,3 +149,31 @@ color: #000000;
 letter-spacing: 0;
 line-height: 30px;
 `;
+
+export const TabSwitchContainer = styled.div`
+display: flex;
+align-items: center;
+gap: 50px;
+margin-top: 40px;
+
+@media (min-width:  ${gridSystem.size.mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+}
+`;
+
+export const TabSwitchHeading = styled.div`
+font-family: 'Roboto';
+font-weight: 500;
+font-size: 20px;
+color: #000000; 
+letter-spacing: 0;
+line-height: 24px;
+`;
+
+export const TabsWrapper = styled.div`
+width: 18%;
+`;

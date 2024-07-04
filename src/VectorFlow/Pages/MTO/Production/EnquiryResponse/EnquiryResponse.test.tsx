@@ -8,7 +8,6 @@ import { UserDataContext } from '../../../../../context';
 import {createStore} from '../../../../../redux/store/store'
 import { setupReactQuery } from '../../../../../config/react-query-config';
 import Note from './Note';
-import TabSwitch from './TabsSwitch';
 
 jest.mock('../../../../Services/MTO/Production/EnquiryResponse');
 jest.mock('../../../../../../src/components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar', () => (props: any) => (
@@ -67,7 +66,12 @@ const contextWrapper = (children: ReactNode,store:any) => {
 };
 
 describe('EnquiryResponse', () => {
-  const handleTabChangeMock = jest.fn();
+  global.ResizeObserver = class MockedResizeObserver {
+    observe = jest.fn();
+    unobserve = jest.fn();
+    disconnect = jest.fn();
+  };
+  
 
   it('renders without crashing', () => {
     render(contextWrapper(<EnquiryResponse />, mockedStore));
@@ -145,42 +149,16 @@ describe('EnquiryResponse', () => {
     expect(screen.getByText('Please select filter for product group to view estimated due date')).toBeInTheDocument();
   });
 
-  test('renders correctly with single tab', () => {
-    render(contextWrapper(
-      <TabSwitch
-        heading="Single Tab"
-        tabs={['Only Tab']}
-        handleTabChange={handleTabChangeMock}
-        activeTab={0}
-        tabUI={<div>Tab UI Content</div>}
-      />, mockedStore)
-    );
-
-    // Check if heading is rendered
-    expect(screen.getByText('Single Tab')).toBeInTheDocument();
-
-    // Check if the single tab is rendered and active
-    expect(screen.getByText('Only Tab')).toHaveClass('active-tab');
-  });
-
-  test('renders correctly with no tabs', () => {
-    render(contextWrapper(
-      <TabSwitch
-        heading="No Tabs"
-        tabs={[]}
-        handleTabChange={handleTabChangeMock}
-        activeTab={0}
-        tabUI={<div>Tab UI Content</div>}
-      />,mockedStore)
-    );
-
-    // Check if heading is rendered
-    expect(screen.getByText('No Tabs')).toBeInTheDocument();
-
-    // Check if no tabs are rendered
-    expect(screen.queryByText('Tab 1')).toBeNull();
-    expect(screen.queryByText('Tab 2')).toBeNull();
-    expect(screen.queryByText('Tab 3')).toBeNull();
+  it('switches tabs correctly', () => {
+    render(contextWrapper(<EnquiryResponse />,mockedStore));
+    const rmNotAvailableTab = screen.getByText('RM Not Available');
+    const rmAvailableTab = screen.getByText('RM Available');
+    
+    fireEvent.click(rmAvailableTab);
+    expect(screen.getByText('Production Buffer')).toBeInTheDocument();
+    
+    fireEvent.click(rmNotAvailableTab);
+    expect(screen.getByText('Procurement Buffer')).toBeInTheDocument();
   });
 
   it('To check if no data is available', async () => {
@@ -201,6 +179,4 @@ describe('EnquiryResponse', () => {
       expect(screen.getByTestId('table-wrapper')).toHaveTextContent('No Rows To Show');
     });
   });
-
-
 });

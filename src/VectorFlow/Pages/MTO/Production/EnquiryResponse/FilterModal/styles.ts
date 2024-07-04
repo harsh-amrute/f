@@ -38,6 +38,10 @@ export const Heading = styled.div`
 
 export const ModalBody = styled.div` 
  min-height: 100px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ padding: 40px 100px 200px;
 `;
 
 export const ModalFooter = styled.div` 
@@ -84,7 +88,6 @@ export const FilterContainer = styled.div`
     flex-direction: column;
     align-items: flex-start;
     width: 422px;
-    margin: 50px auto;
     border-radius: 8px;
     font-size: 1.5rem;
     box-shadow: 0px 6px 12px #95959529;
@@ -136,4 +139,35 @@ export const HorizontalLine = styled.div`
 height: 2px;
 width: 100%;
 background-color: #F4F4F4;
+`;
+
+export const ButtonFilterWrapper = styled.div`
+border-top: 1px dashed #A0A0A0;
+opacity:1px;
+height:109px;
+width:100%;
+display:flex;
+justify-content:flex-end;
+flex-direction:row;
+align-items:center;
+background-color:#F4F4F4;
+`
+
+export const ButtonContainer = styled.div`
+margin-right:46px;
+gap:40px;
+display:flex;
+`
+export const OptionsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+`;
+ 
+export const Option = styled.div`
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    font-size: 1rem;
 `;

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import FilterModal from "./FilterModal";
 import Note from "./Note";
 import ResizableTable from "./ResizableTable";
-import TabSwitch from "./TabsSwitch";
 import MTOActionToolBar from "../../../../../../src/components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import { prodPlanningMock } from "../../../../../mock-data/PROD";
 import {
@@ -17,6 +16,9 @@ import {
   MessageText,
   RmHeading,
   RmUICont,
+  TabSwitchContainer,
+  TabSwitchHeading,
+  TabsWrapper,
   ValueWrapper,
   VerticalLine,
 } from "./styles";
@@ -25,8 +27,11 @@ import {
 // import FilterAccordian from "./FilterAccordian";
 import { useGetEnquiryResData } from "../../../../Services/MTO/Production/EnquiryResponse";
 import { useUserData } from "../../../../../context/index";
+import { notifyLoader } from "../../../../../helpers/notify";
+import { toast } from "react-toastify"
+import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule";
 
-const tabOptions = ["RM Not Available", "RM Available"];
+const tabOptions = [{label: "RM Not Available", value: "RM Not Available"}, {label: "RM Available", value: "RM Available"}];
 
 interface BufferData {
   ItemType1: { proc_size: number; prod_size: number };
@@ -38,10 +43,13 @@ interface BufferData {
 
 const EnquiryResponse = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
+  const [activeCapsule, setActiveCapsule] = useState<{label: string, value: string}>(tabOptions[0]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [tableData, setTableData] = useState<any>([]);
   const [filterData, setFilterData] = useState<any>([]);
-  const data = useGetEnquiryResData();
+  const [selectedFilters, setSelectedFilters] = useState<any>([]);
+  const [hasProductGroup, setHasProductGroup] = useState<any>(false);
+  const { data } = useGetEnquiryResData() || {};
   const [selectedOptions, setSelectedOptions] = useState<any>({
     plantName: "",
     productGroup: [],
@@ -49,16 +57,22 @@ const EnquiryResponse = () => {
     ccrGroup: {},
     ccrName: {},
   });
-  const { user } = useUserData()
-    // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
+  const { user } = useUserData();
+  // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
   const themeUi = user.user.theme_ui;
 
-  const handleTabChange = (tab: number) => {
-    setActiveTab(tab);
+  const handleTabChange = (tab: any) => {
+    console.log(tab, 'TAB');
+    if(tab?.label === 'RM Not Available'){
+      setActiveTab(0);
+    }else{
+      setActiveTab(1);
+    }
+    setActiveCapsule(tab);
   };
 
   const getMostloadedCCR = () => {
-    let mostLoadedCR =  filterData?.length > 0 ? filterData[0] : {};
+    let mostLoadedCR = filterData?.length > 0 ? filterData[0] : {};
     for (let i = 0; i < filterData?.length; i++) {
       const current = filterData[i];
       if (current?.fol > mostLoadedCR?.fol) {
@@ -70,7 +84,7 @@ const EnquiryResponse = () => {
 
   const getRMValues = (bufferType: string) => {
     let bufferData = filterData?.length > 0 ? filterData[0] : {};
-    const productGroup: keyof BufferData = selectedOptions?.productGroup[0];
+    const productGroup: keyof BufferData = selectedOptions?.productGroup && selectedOptions?.productGroup[0];
 
     if (!productGroup) {
       return "--";
@@ -84,9 +98,11 @@ const EnquiryResponse = () => {
       }
     }
     if (bufferType === "procurement") {
-      return bufferData?.it && bufferData?.it[productGroup]?.proc_size || "--";
+      return (
+        (bufferData?.it && bufferData?.it[productGroup]?.proc_size) || "--"
+      );
     }
-    return bufferData?.it && bufferData?.it[productGroup]?.prod_size || "--";
+    return (bufferData?.it && bufferData?.it[productGroup]?.prod_size) || "--";
   };
 
   function getWeekOfMonth(dateString: string): string {
@@ -94,29 +110,30 @@ const EnquiryResponse = () => {
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
-  
+
     // Parse the input date string
     const [dayStr, monthStr, yearStr] = dateString.split(' ');
     const day = parseInt(dayStr, 10);
-    const monthIndex = months.findIndex(m => m.toLowerCase() === monthStr.toLowerCase());
+    const monthIndex = months.findIndex(
+      (m) => m.toLowerCase() === monthStr.toLowerCase()
+    );
     const year = parseInt(yearStr, 10);
-  
+
     // Create a Date object
     const date = new Date(year, monthIndex, day);
-  
+
     // Get the day of the month and calculate the week number
     const dayOfMonth = date.getDate();
     const startOfMonth = new Date(year, monthIndex, 1);
     const startOfMonthDay = startOfMonth.getDay();
     const weekOfMonth = Math.ceil((dayOfMonth + startOfMonthDay) / 7);
-  
+
     // Format output
     const month = months[monthIndex];
     const weekString = `${month}-week ${weekOfMonth}`;
-  
+
     return weekString;
   }
-  
 
   const getFormattedDate = (date: any) => {
     const day = date.getDate();
@@ -127,8 +144,8 @@ const EnquiryResponse = () => {
   };
 
   const getEarliestDate = (activeTab: number) => {
-    let bufferData =  filterData?.length > 0 ? filterData[0] : {};
-    const productGroup: keyof BufferData = selectedOptions?.productGroup[0];
+    let bufferData = filterData?.length > 0 ? filterData[0] : {};
+    const productGroup: keyof BufferData = selectedOptions?.productGroup && selectedOptions?.productGroup[0];
 
     if (!productGroup) {
       return "--";
@@ -142,8 +159,8 @@ const EnquiryResponse = () => {
       }
     }
 
-    const prodBuffer = bufferData?.it[productGroup]?.prod_size;
-    const procBuffer = bufferData?.it[productGroup]?.proc_size;
+    const prodBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.prod_size;
+    const procBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.proc_size;
     const fol = bufferData?.fol;
 
     const today = new Date();
@@ -238,69 +255,122 @@ const EnquiryResponse = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const filterByPlName = () => {
-    if(selectedOptions?.plantName === ''){
+  const filterByPlName = (name:string) => {
+    if (name === '') {
       return tableData;
     }
     const data = [];
     for (let i = 0; i < tableData?.length; i++) {
       const current = tableData[i];
-      if (current?.plnm?.includes(selectedOptions?.plantName)) {
+      if (current?.plnm?.includes(name)) {
         data?.push(current);
       }
     }
     return data;
   };
 
-  const filterByProdGrpName = (data: any) => {
+  const filterByProdGrpName = (data: any, productGrp: any) => {
     const updatedData = [];
     for (let i = 0; i < data?.length; i++) {
       const current = data[i];
-      if (Object.keys(current?.it).includes(selectedOptions?.productGroup[0])) {
+      if (Object.keys(current?.it).includes(productGrp[0])) {
         updatedData?.push(current);
       }
     }
     return updatedData;
   };
 
-  const filterByDeptName = (data: any) => {
+  const filterByDeptName = (data: any, department: any) => {
     const updatedData = [];
     for (let i = 0; i < data?.length; i++) {
       const current = data[i];
-      if (selectedOptions?.department[current?.dpnm]) {
+      if (department[current?.dpnm]) {
         updatedData?.push(current);
       }
     }
     return updatedData;
   };
-  const filterByccrGroupName = (data: any) => {
+  const filterByccrGroupName = (data: any, ccrGrpName: any) => {
     const updatedData = [];
     for (let i = 0; i < data?.length; i++) {
       const current = data[i];
-      if (selectedOptions?.ccrGroup[current?.gnm]) {
+      if (ccrGrpName[current?.gnm]) {
         updatedData?.push(current);
       }
     }
     return updatedData;
   };
-  const filterByccrName = (data: any) => {
+  const filterByccrName = (data: any, ccrName: any) => {
     const updatedData = [];
     for (let i = 0; i < data?.length; i++) {
       const current = data[i];
-      if (selectedOptions?.ccrName[current?.cnm]) {
+      if (ccrName[current?.cnm]) {
         updatedData?.push(current);
       }
     }
     return updatedData;
   };
 
-  const applyFilter = () => {
+  const updatedSelectedFilters = (options: any) => {
+    const filters: { label: string; values: string[] }[] = [];
+
+    if (options?.plantName) {
+      filters.push({
+        label: "Plant",
+        values: [`${options?.plantName}`],
+      });
+    }
+    if (options?.productGroup?.length > 0) {
+      filters.push({
+        label: "Product Group",
+        values: [...options.productGroup],
+      });
+    }
+    if (Object.keys(options?.department)?.length > 0) {
+      filters.push({
+        label: "Department",
+        values: [...Object.keys(options?.department)],
+      });
+    }
+    if (Object.keys(options?.ccrGroup)?.length > 0) {
+      filters.push({
+        label: "CCR Group",
+        values: [...Object.keys(options?.ccrGroup)],
+      });
+    }
+    if (Object.keys(options?.ccrName)?.length > 0) {
+      filters.push({
+        label: "CCR Name",
+        values: [...Object.keys(options?.ccrName)],
+      });
+    }
+    
+    setSelectedFilters(filters);
+  }
+
+  const applyFilter = (options: any) => {
+
     let data = [];
-    data = filterByPlName();
-    data = selectedOptions?.productGroup?.length > 0 ? filterByProdGrpName(data) : data;
-    data = Object.keys(selectedOptions?.department)?.length > 0 ? filterByDeptName(data) : data;
-    data = Object.keys(selectedOptions?.ccrGroup)?.length > 0 ? filterByccrGroupName(data) : data;
-    data = Object.keys(selectedOptions?.ccrName)?.length > 0 ? filterByccrName(data) : data;
+    data = filterByPlName(options?.plantName);
+    data =
+      options?.productGroup?.length > 0
+        ? filterByProdGrpName(data,options?.productGroup )
+        : data;
+    data =
+      Object.keys(options?.department)?.length > 0
+        ? filterByDeptName(data, options?.department)
+        : data;
+    data =
+      Object.keys(options?.ccrGroup)?.length > 0
+        ? filterByccrGroupName(data, options?.ccrGroup)
+        : data;
+    data =
+      Object.keys(options?.ccrName)?.length > 0
+        ? filterByccrName(data, options?.ccrName)
+        : data;
+      
+    updatedSelectedFilters(options);
+    setHasProductGroup(options?.productGroup?.length > 0 );
     setFilterData(data);
     setIsModalOpen(false);
   };
@@ -351,90 +421,97 @@ const EnquiryResponse = () => {
 
   const filters = [
     {
+      key: 'prdGrp',
       heading: "Product Group",
       options: productGroupOptions,
     },
     {
+      key: 'dept',
       heading: "Department",
       options: departmentOptions,
     },
     {
+      key: 'ccrGrp',
       heading: "CCR Group",
       options: ccrGroupOptions,
     },
     {
+      key: 'ccrNm',
       heading: "CCR",
       options: ccrNameOptions,
     },
   ];
 
   const removeFilters = (category: string, name: string) => {
-    if(category === 'Plant'){
-      setSelectedOptions((prev: any) => ({...prev, plantName: ''}));
-    }
-    if(category === 'Product Group'){
-      setSelectedOptions((prev: any) => ({...prev, productGroup: []}));
-    }
-    if(category === 'Department'){
-      const updatedFilter = selectedOptions?.department;
-      delete updatedFilter[name];
-      setSelectedOptions((prev: any) => ({...prev, department: updatedFilter}));
-    }
-    if(category === 'CCR Group'){
-      const updatedFilter = selectedOptions?.ccrGroup;
-      delete updatedFilter[name];
-      setSelectedOptions((prev: any) => ({...prev, ccrGroup: updatedFilter}));
-    }
-    if(category === 'CCR Name'){
-      const updatedFilter = selectedOptions?.ccrName;
-      delete updatedFilter[name];
-      setSelectedOptions((prev: any) => ({...prev, ccrName: updatedFilter}));
-    }
-    applyFilter();
-  }
 
-  useEffect(()=>{
-    setTableData(data?.data?.data?.data?.results)
-  },[data]);
+    const updtedCCRName = selectedOptions?.ccrName;
+    const updtedDept = selectedOptions?.department;
+    const updtedCCRGrp = selectedOptions?.ccrGroup;
+    let updatedPlantName = selectedOptions?.plantName;
+    let updatedProductGrp = selectedOptions?.productGroup;
 
-  useEffect(()=>{
-    setFilterData(data?.data?.data?.data?.results);
-  },[tableData]);
+    if (category === "Plant") {
+      updatedPlantName = '';
+      setSelectedOptions((prev: any) => ({
+        ...prev,
+        plantName: '',
+      }));
+    }
+    if (category === "Product Group") {
+      updatedProductGrp = [];
+      setSelectedOptions((prev: any) => ({
+        ...prev,
+        productGroup: updatedProductGrp,
+      }));
+    }
+    if (category === "Department") {
+      delete updtedDept[name];
+      setSelectedOptions((prev: any) => ({
+        ...prev,
+        department: updtedDept,
+      }));
+    }
+    if (category === "CCR Group") {
+      delete updtedCCRGrp[name];
+      setSelectedOptions((prev: any) => ({
+        ...prev,
+        ccrGroup: updtedCCRGrp
+      }));
+    }
+    if (category === "CCR Name") {
+      delete updtedCCRName[name];
+      setSelectedOptions((prev: any) => ({
+        ...prev,
+        ccrName: updtedCCRName,
+      }));
+    }
+    updatedSelectedFilters({
+      plantName: updatedPlantName,
+      productGroup: updatedProductGrp,
+      department: updtedDept,
+      ccrGroup: updtedCCRGrp,
+      ccrName: updtedCCRName
+    });
+    applyFilter({
+      plantName: updatedPlantName,
+      productGroup: updatedProductGrp,
+      department: updtedDept,
+      ccrGroup: updtedCCRGrp,
+      ccrName: updtedCCRName
+    });
+  };
 
-  const hasProductGroup = selectedOptions?.productGroup[0];
+  useEffect(() => {
+    notifyLoader("Loading Grid Data")
+    if(data?.data?.data?.results){
+      toast.dismiss()
+      setTableData(data?.data?.data?.results);
+    }
+  }, [data]);
 
-  const selectedFilters: { label: string, values: string[] }[] = [];
-
-  if(selectedOptions?.plantName){
-    selectedFilters.push({
-      label: 'Plant',
-      values: [`${selectedOptions?.plantName}`]
-    })
-  }
-  if(selectedOptions?.productGroup?.length > 0){
-    selectedFilters.push({
-      label: 'Product Group',
-      values: [...selectedOptions.productGroup]
-    })
-  }
-  if(Object.keys(selectedOptions?.department)?.length > 0){
-    selectedFilters.push({
-      label: 'Department',
-      values: [...Object.keys(selectedOptions?.department)]
-    })
-  }
-  if(Object.keys(selectedOptions?.ccrGroup)?.length > 0){
-    selectedFilters.push({
-      label: 'CCR Group',
-      values: [...Object.keys(selectedOptions?.ccrGroup)]
-    })
-  }
-  if(Object.keys(selectedOptions?.ccrName)?.length > 0){
-    selectedFilters.push({
-      label: 'CCR Name',
-      values: [...Object.keys(selectedOptions?.ccrName)]
-    })
-  }
+  useEffect(() => {
+    setFilterData(data?.data?.data?.results);
+  }, [tableData]);
 
   return (
     <EnquiryWrapper>
@@ -449,20 +526,25 @@ const EnquiryResponse = () => {
       </FilterWrapper>
       <ResizableTable header={prodPlanningMock?.header} data={filterData} />
       <EstimatedWrapper>
-        <div  style={{ WebkitFilter: `blur(${hasProductGroup ? '0px' : '3px' })` }}>
-          <TabSwitch
-            heading="Estimated Due Date"
-            tabs={tabOptions}
-            handleTabChange={handleTabChange}
-            tabUI={getRMUI()}
-            activeTab={activeTab}
-          />
+        <div
+          style={{ WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})` }}
+        >
+          <TabSwitchContainer>
+            <TabSwitchHeading>Estimated Due Date</TabSwitchHeading>
+            <TabsWrapper>
+                <VFCapsule activeBtn={activeCapsule} capsules={tabOptions} handleClick={handleTabChange}/>
+            </TabsWrapper>
+          </TabSwitchContainer>
+          {getRMUI()}
           <Note type="danger" message={message} />
         </div>
-        <BlurCover style={{display: hasProductGroup ? 'none' : 'block'}}>
+        <BlurCover style={{ display: hasProductGroup ? "none" : "block" }}>
           <CardCover>
             <DashedCard>
-              <MessageText>Please select filter for product group to view estimated due date</MessageText>
+              <MessageText>
+                Please select filter for product group to view estimated due
+                date
+              </MessageText>
             </DashedCard>
           </CardCover>
         </BlurCover>
@@ -471,12 +553,11 @@ const EnquiryResponse = () => {
         filters={filters}
         isOpen={isModalOpen}
         handleClose={handleModalToggle}
-        handleOkay={() => {
-          applyFilter();
-        }}
+        handleOkay={()=>applyFilter(selectedOptions)}
         selectedOptions={selectedOptions}
         handleOptionSelect={handleFilterSelect}
         handleNameChange={handleNameChange}
+        themeUi={themeUi}
       />
     </EnquiryWrapper>
   );

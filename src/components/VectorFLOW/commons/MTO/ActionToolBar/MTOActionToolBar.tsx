@@ -55,8 +55,6 @@ interface MTOActionToolBarProps {
 
 const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters,  submitDate, date, handleGoBack, themeUi  }: MTOActionToolBarProps) => {
     
-    
-
     const handleRemoveFilter = (category: string, name: string) => {
         if(removeFilters){
             removeFilters(category, name);
@@ -203,9 +201,10 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                                             </VFSelectedFiltersFilterValue>
                                             <VFSelectedFiltersFilterCloseIcon
                                                 onClick={()=>handleRemoveFilter(filter?.label, value)}
-                                                src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} />
+                                                src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} 
+                                            />
+                                            {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
                                         </VFSelectedFiltersFilterContent>
-                                        {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
                                     </div>
                                 ))}
                             </VFSelectedFiltersChip>
