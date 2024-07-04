@@ -54,7 +54,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
             >
 
                 <>
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'MaterialRequirement') &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'MaterialRequirement') && (comp !== 'BTRMTO') &&
 
                         <SCGoBackContainer onClick={() => { if (handleGoBack) handleGoBack() }}>
                             <img
@@ -65,7 +65,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                         </SCGoBackContainer>
                     }
 
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp != "MaterialCovDetailData") &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm') && (comp !== 'BTRMTO') && (comp != "MaterialCovDetailData")) &&
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -137,7 +137,11 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
 
                 {/**Selected Filter start */}
 
-                {/* <VFSelectedFiltersWrapper>
+
+
+
+
+                {/* {/* <VFSelectedFiltersWrapper>
                         <VFSelectedFiltersPlaceHolder>
                             Selected Filters
                         </VFSelectedFiltersPlaceHolder>
@@ -161,8 +165,8 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                         </VFFilterScrollBar>
                     </VFSelectedFiltersWrapper> */}
 
-
                 {/**Selected Filter ends*/}
+
 
             </SCTaskFilterContainer>
 

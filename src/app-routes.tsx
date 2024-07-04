@@ -38,6 +38,7 @@ import SimulateFullKit from './VectorFlow/Pages/MTO/Procurement/Planning/Simulat
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
 import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/DayWiseCoverage'
 import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
+import RMPMBufferTrends from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMBufferTrends'
 import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
 
 // to show loading state for desired page only instead of the entire screen
@@ -89,6 +90,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/planning/simulative-fullkit',
     '/logistics/intransit-whereabouts',
     '/procurement/material-requirement',
+    '/procurement/insights-and-trends/rmpm',
+    '/procurement/insights-and-trends/rmpm-buffer-trends',
     '/procurement/insights-and-trends/rmpm-orderwise-coverage'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
@@ -501,7 +504,17 @@ export const initRoutes = (): RouteObject[] => {
         ...getStoreTransferModuleRoutes()
       ]
     },
-
+    {
+      path: '/procurement/insights-and-trends/rmpm-buffer-trends',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMPMBufferTrends />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    }
 
   ]
 }
