@@ -54,7 +54,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
             >
 
                 <>
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'MaterialRequirement') && (comp !== 'BTRMTO') &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'MaterialRequirement') && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') &&
 
                         <SCGoBackContainer onClick={() => { if (handleGoBack) handleGoBack() }}>
                             <img
@@ -65,7 +65,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                         </SCGoBackContainer>
                     }
 
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm') && (comp !== 'BTRMTO') && (comp != "MaterialCovDetailData")) &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm') && (comp !== 'BTRMTO') && (comp != "MaterialCovDetailData") && (comp !== 'orderReschedule')) &&
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
