@@ -41,7 +41,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
                                     {col == 'Red' ? 'Black' : 'Green'}
                                 </td>
                                 <td>
-                                    1{isNaN(ToolTipdata.p1) ? 0 : ToolTipdata.p1}%/{ToolTipdata?.c1}
+                                    {isNaN(ToolTipdata.p1) ? 0 : ToolTipdata.p1}%/{ToolTipdata?.c1}
                                 </td>
                             </tr>
                         </>
