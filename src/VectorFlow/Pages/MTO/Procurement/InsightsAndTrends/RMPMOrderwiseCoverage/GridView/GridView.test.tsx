@@ -1,7 +1,100 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import GridView from './GridView';
+import procData from '../ProcurementData';
+import columnData from '../ColumnData';
+import { InsightsAndTrendsString } from '../../../../../../../VectorFlow/Pages/MTO/Common/String';
+import { ColDef } from 'ag-grid-enterprise';
+import { Order } from '../../../../../../../VectorFlow/types/MTO';
+import { AgGridReactProps } from 'ag-grid-react';
+
+
+
+
+const agGridProps: AgGridReactProps = {
+    tooltipShowDelay: 0,
+    tooltipTrigger: "focus",
+    gridOptions: {
+        rowHeight: 50,
+        getRowStyle: (params: any) => {
+            return {
+                background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
+            };
+        },
+
+        rowSelection: 'multiple',
+        suppressRowClickSelection: true,
+        enableBrowserTooltips: true,
+        enableRangeSelection: true,
+
+        pagination: true,
+        defaultColDef: {
+            cellStyle: {
+                'text-align': 'center',
+                'height': '50px',
+                "font-style": "normal",
+                "font-variant": "normal",
+                "font-weight": "300",
+                "font-size": "20px",
+                "font-family": "Roboto",
+                'text-overflow': 'ellipsis',
+                'white-space': 'nowrap',
+                'resizable': 'true',
+            },
+        },
+
+    },
+    masterDetail: true,
+
+    paginationAutoPageSize: true,
+    enterNavigatesVertically: true,
+    enterNavigatesVerticallyAfterEdit: true,
+    groupDefaultExpanded: 0,
+
+    onCellEditingStopped(event: any) {
+        const field = event.colDef.field;
+        // const newValue = event.newValue;
+        const rowIndex = event.rowIndex;
+
+        if (!field || rowIndex == null) {
+            return;
+        }
+    }
+};
+
+// const [ShortageColumns, setShortageColumns] = useState(columnData);
+const ShortageColumns = columnData;
+
+const mapDataToColumns = (data: Order[], columns: ColDef[]) => {
+    return data.map(item => {
+        const mappedItem: any = {};
+        columns.forEach(column => {
+            if (column.field) {
+                if (column.field === "rmpm") {
+                    if (item['or'] > 0) {
+                        mappedItem[column.field] = InsightsAndTrendsString.ordersWithRMPM;
+                    }
+                    else if (item['po'] > 0) {
+                        mappedItem[column.field] = InsightsAndTrendsString.ordersWithFullkitOPO;
+                    }
+                    else if (item['sit'] > 0) {
+                        mappedItem[column.field] = InsightsAndTrendsString.ordersWithFullkitSIT;
+                    }
+                    else {
+                        mappedItem[column.field] = InsightsAndTrendsString.ordersWithFullkitOHS;
+                    }
+                }
+                else {
+                    mappedItem[column.field] = item[column.field as keyof Order];
+                }
+            }
+        });
+        return mappedItem;
+    });
+};
+
+const convertedData = mapDataToColumns(procData, columnData);
+const ShortageDatas = convertedData;
 
 jest.mock('@ag-grid-community/react', () => ({
     AgGridReact: () => <div>AgGridReact Mock</div>,
@@ -23,7 +116,7 @@ jest.mock('../ColumnData', () => [
 
 describe('GridView Component', () => {
     beforeEach(() => {
-        render(<GridView />);
+        render(<GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={ShortageDatas} />);
     });
 
     test('renders the correct number of columns', () => {

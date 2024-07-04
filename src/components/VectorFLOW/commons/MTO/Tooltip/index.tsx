@@ -2,9 +2,13 @@ import React, { useState, useRef, CSSProperties } from 'react';
 import Portal from '../../../../../components/VectorFLOW/layouts/Portal';
 import { TooltipContainer, TooltipTarget } from './styles';
 
-const Tooltip = ({ children, content }: any) => {
+interface IToolTipProps extends CSSProperties{
+    arrowLeft: string | number;
+}
+
+const Tooltip = ({ children, content, zoomFactorEnabled = true }: any) => {
     const [showTooltip, setShowTooltip] = useState(false);
-    const [toolTipPosition, setoolTipPosition] = useState<CSSProperties | null>();
+    const [toolTipPosition, setoolTipPosition] = useState<IToolTipProps | null>();
     const tooltipRef = useRef<HTMLDivElement>(null);
 
     const onMouseIn = (e: any) => {
@@ -18,24 +22,30 @@ const Tooltip = ({ children, content }: any) => {
                 const tooltipRect = tooltipRef.current.getBoundingClientRect();
                 const { top, left, width } = e.target.getBoundingClientRect();
                 let tooltipLeft = left + (width / 2) - (tooltipRect.width / 2);
+                let arrowLeft: any = "50%";
 
+               
                 // Adjust if tooltip goes outside the viewport
-                const viewportWidth = window.innerWidth * 1 / 0.75 - 20;
+                let viewportWidth = window.innerWidth
+                if(zoomFactorEnabled){
+                    viewportWidth = viewportWidth * 1 / 0.75 - 20;
+                }
+                
                 if (tooltipLeft < 0) {
+                    arrowLeft = ((left + width / 2) / tooltipRect.width) * 100 + "%"; // Adjust the arrow when tooltip is at the left edge
                     tooltipLeft = 0 + 10;
                 } else if (tooltipLeft + tooltipRect.width >= viewportWidth) {
+                    arrowLeft = ((left + width / 2 - (viewportWidth - tooltipRect.width)) / tooltipRect.width) * 100 + "%"; // Adjust the arrow when tooltip is at the right edge
                     tooltipLeft = viewportWidth - tooltipRect.width;
                 }
                 setoolTipPosition({
                     top: top - tooltipRect.height - 15,
-                    left: tooltipLeft
+                    left: tooltipLeft,
+                    arrowLeft: arrowLeft
                 })
             }
         }, 0)
-
-
     }
-
     const onMouseOut = () => setShowTooltip(false);
 
     return (
@@ -47,7 +57,7 @@ const Tooltip = ({ children, content }: any) => {
             {showTooltip && (
                 //use portal here
                 <Portal wrapperId="tooltip">
-                    <TooltipContainer data-testid="tooltip" style={{ top: toolTipPosition?.top, left: toolTipPosition?.left }} ref={tooltipRef}>
+                    <TooltipContainer $arrowLeft={toolTipPosition?.arrowLeft} data-testid="tooltip" style={{ top: toolTipPosition?.top, left: toolTipPosition?.left }} ref={tooltipRef}>
                         {content}
                     </TooltipContainer>
                 </Portal>

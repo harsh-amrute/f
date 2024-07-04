@@ -1,25 +1,10 @@
 import styled from "styled-components";
  
 export const TooltipTarget = styled.div`
-  // position: relative;
   cursor: pointer;
-  // &:hover&:after {
-  //   content: "";
-  //   width: 0;
-  //   height: 0;
-  //   display: block;
-  //   position: absolute;
-  //   bottom: 95%;
-  //   left: 50%;
-  //   transform: translateX(-50%);
-  //   border-left: 10px solid transparent;
-  //   border-right: 10px solid transparent;
-  //   border-top: 10px solid #313131;
-  //   border-bottom: 10px solid transparent;
-  // }
 `;
- 
-export const TooltipContainer = styled.div`
+
+export const TooltipContainer = styled.div<{$arrowLeft?: any}>`
   color: white;
   background: #313131;
   border-radius: 4px;
@@ -27,18 +12,18 @@ export const TooltipContainer = styled.div`
   position: fixed;
   max-width: 300px;
   font-size: 16px;
-  // &:after {
-  //   content: "";
-  //   width: 0;
-  //   height: 0;
-  //   display: block;
-  //   position: absolute;
-  //   top: 98%;
-  //   left: 50%;
-  //   transform: translateX(-50%);
-  //   border-left: 10px solid transparent;
-  //   border-right: 10px solid transparent;
-  //   border-top: 10px solid #313131;
-  //   border-bottom: 10px solid transparent;
-  // }
+  &:after {
+    content: "";
+    width: 0;
+    height: 0;
+    display: block;
+    position: absolute;
+    top: 99%;
+    left: ${(props) => props?.$arrowLeft};
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #313131;
+    border-bottom: 10px solid transparent;
+  }
 `;

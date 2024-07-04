@@ -1,19 +1,23 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "allotment/dist/style.css";
 import {
     SCChartContainer, SCHorizontalDivider
 } from '../styles';
 import { AgChartsReact } from "ag-charts-react";
-import { AgChartOptions } from "ag-charts-community";
+import { AgChartOptions, AgCharts } from "ag-charts-community";
 import procData from "../ProcurementData";
 import { Order } from "../../../../../../types/MTO";
 import { InsightsAndTrendsString } from "../../../../Common/String";
 import { ProcurementSeriesDataFill, ProcurementSeriesDataYKey, ProcurementSeriesDataYName } from "../../../../Common/Enum";
+import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+import VFModalCard from "../../../../../../../components/VectorFLOW/commons/VFModalCard";
+import VFTable from "../../../../../../../components/VectorFLOW/commons/VFTable";
+import { GridRef } from "../../../../../../../VectorFlow/types/MDM";
 
 const GraphView = () => {
 
     // const [date, setDate] = useState("19 April 2024 - 18 July 2024")
-    const [date] = useState("27 June 2024 - 25 Sept 2024")
+    const [date] = useState("01 July 2024 - 28 Sept 2024")
 
     // const [rawData, setRawData] = useState(procData);
     const [rawData] = useState(procData);
@@ -122,26 +126,213 @@ const GraphView = () => {
 
         data: updatedData,
 
-        series: seriesData
+        series: seriesData,
 
+        axes: [
+            {
+                type: "category",
+                position: 'bottom',
+                title: { text: "Timeline For Upcoming Order Releases", fontSize: 10, fontWeight: "bold" },
+                label: {
 
+                    fontSize: 8,
+                    fontWeight: 'bold',
+                    color: 'black'
+                },
+                gridLine: {
+                    enabled: false
+                }
+            },
+            {
+                title: { text: "Count of Orders", fontSize: 10, fontWeight: "bold", spacing: 3 },
+                type: "number",
+                line: { enabled: true },
+                position: 'left',
+                label: {
+                    fontSize: 8,
+                    fontWeight: 'bold',
+                    color: 'black'
+                },
+                gridLine: {
+                    enabled: false
+                }
+            }
+        ],
+
+        legend: {
+            item: {
+                label: {
+                    fontSize: 10
+                }
+            }
+        }
     });
+
+    const refGraph1 = useRef<GridRef>(null);
+
+    const chartRef = useRef<AgChartsReact>(null);
+    const [hideChart1, toggleChart1] = useState(false);
+    const [gridLoading, setGridLoading] = useState(false);
+    console.log(gridLoading);
+    const ColdDefs = [
+        {
+            colId: 'days_range',
+            field: 'days_range',
+            headerName: 'Days Range',
+        },
+        {
+            colId: 'soh',
+            field: 'soh',
+            headerName: 'Stock On hand',
+        },
+        {
+            colId: 'sit',
+            field: 'sit',
+            headerName: 'Stock In (Transit + QC)',
+        },
+        {
+            colId: 'po',
+            field: 'po',
+            headerName: 'Open Orders',
+        },
+        {
+            colId: 'or',
+            field: 'or',
+            headerName: 'rmpm Shortage',
+        },
+
+    ]
+
+    const myCustomTheme: any = {
+        palette: {
+            fills: ['#F4BD8E', '#F09241', ' #AD5000', '#6A3001'],
+            strokes: ['#F4BD8E', '#F09241', ' #AD5000', '#6A3001'],
+        },
+    }
+
+    const generateChart = () => {
+        refGraph1.current?.api.createRangeChart({
+            chartType: 'stackedColumn',
+            cellRange: {
+                columns: ['days_range', 'soh', 'sit', 'po', 'or'],
+            },
+
+            chartThemeOverrides: {
+                column: {
+                    axes: {
+                        category: {
+                            gridStyle: [{ stroke: 'transparent' }],
+
+                            bottom: {
+                                label: {
+                                    fontSize: 8
+                                }
+                            }
+                        }
+                    },
+                    series: {
+                        highlightStyle: {
+                            item: {
+                                fill: 'white',
+                                fillOpacity: 0.2
+                            }
+                        },
+                        tooltip: {
+                            renderer: TooltipRenderer
+                        },
+                        strokeWidth: 1,
+                        strokeOpacity: 0,
+
+                    },
+                    legend: {
+
+                        item: {
+                            label: {
+                                fontSize: 10
+                            },
+
+                            marker: {
+                                shape: 'square'
+                            }
+                        }
+                    },
+                },
+                bar: {
+                    axes: { category: { gridStyle: [{ stroke: 'transparent' }, { stroke: 'transparent' }] } }
+                }
+            }
+        })
+    }
+
+
 
     return (
 
 
         <>
-            <SCChartContainer height={"450px"} style={{ zoom: 1.3 }}>
-
-                <SCHorizontalDivider />
-                <div style={{ height: '90%', width: '100%' }}>
-                    <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <div style={{ fontSize: '14px', fontWeight: 500, textAlign: 'center' }}>
+            <SCChartContainer height={"450px"} style={{ zoom: 1.3, border: "1px solid #CCCCCC" }}>
+                <div style={{ height: '85%', width: '100%' }}>
+                    <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
+                        <div style={{ fontSize: '12px', margin: '0 auto', fontWeight: 500, textAlign: 'center' }}>
                             {`${InsightsAndTrendsString.rmpmOrderwiseCoverage}  (${date})`}
+                        </div>
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
+                                <VFInfoToolTip infoList={['The graph highlights the Full kit position of Raw material and Packing material of unreleased orders.']} />
+                            </div>
+                            <div onClick={() => { toggleChart1(!hideChart1) }} style={{ marginLeft: 10, marginBottom: '-5px', marginRight: '10px' }}>
+                                <img src='/assets/img/VectorFLOW/BPR/minimize.svg' height={13} width={13} color={"#CCCCCC"} />
+                            </div>
                         </div>
                     </div>
                     <SCHorizontalDivider />
-                    <AgChartsReact options={options} />
+                    <div style={{ display: 'flex', justifyContent: "right" }}>
+
+                        <div style={{ paddingRight: '10px' }} onClick={() => {
+
+                            (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart);
+                        }}> <img height={12} width={12} src="/assets/img/mto/RMPMBufferTrend/download.svg" /></div>
+                    </div>
+                    <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing" headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                        <div className="ag-theme-planning" style={{ width: '1000px' }}>
+                            <VFTable
+                                ref={refGraph1}
+                                columnDefs={ColdDefs}
+                                // rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
+                                rowData={options.data}
+                                enableCharts={true}
+                                enableRangeSelection={true}
+                                rowSelection="multiple"
+                                statusBar={{
+                                    statusPanels: [
+                                        { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                                        { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                                        { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                                        { statusPanel: 'agAggregationComponent', align: 'left' },
+                                    ],
+                                }} onGridReady={() => { setGridLoading(false); generateChart() }}
+                                // getChartToolbarItems={getChartToolbarItems}
+                                chartToolPanelsDef={
+                                    {
+                                        panels: []
+                                    }
+                                }
+                                // chartThemeOverrides={chartThemeOverridesG1}
+                                chartThemes={['myCustomTheme']}
+                                customChartThemes={{
+                                    'myCustomTheme': myCustomTheme
+                                }}
+                                disableZoomScaling={true}
+                                defaultColDef={{
+                                    floatingFilter: true,
+                                    filter: "agMultiColumnFilter",
+                                }}
+                                height={'480px'}
+                            />
+                        </div>
+                    </VFModalCard>
+                    <AgChartsReact ref={chartRef} options={options} />
 
                 </div>
 
