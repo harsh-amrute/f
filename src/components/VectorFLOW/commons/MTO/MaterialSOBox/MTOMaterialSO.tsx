@@ -15,6 +15,7 @@ import {
 } from '../MaterialSOBox/styles';
 import { MaterialCoverageString } from '../../../../../VectorFlow/Pages/MTO/Common/String';
 import Tooltip from '../../../../../components/VectorFLOW/commons/MTO/Tooltip';
+import { getToolTipContent } from '../../../../../VectorFlow/Pages/MTO/Procurement/MaterialCoverage/CommonFunc'
 
 interface MaterialSOProps {
     kit: string,
@@ -30,57 +31,11 @@ interface MaterialSOProps {
 
 const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderValue, percent, ToolTipdata }: MaterialSOProps) => {
 
-    const getToolTipContent = (col: string) => {
-        return (
-            <table style={{ padding: "0px 10px 0px 10px", display: "table", width: '100%' }}>
-                <tbody>
-                    {col == 'Red' || col == 'Green' ?
-                        <>
-                            <tr>
-                                <td>
-                                    {col == 'Red' ? 'Black' : 'Green'}
-                                </td>
-                                <td>
-                                    {isNaN(ToolTipdata.p1) ? 0 : ToolTipdata.p1}%/{ToolTipdata?.c1}
-                                </td>
-                            </tr>
-                        </>
-                        : null
-
-                    }
-                    {col == 'Red' || col == 'Blue' ?
-                        <>
-                            <tr>
-                                <td>
-                                    {col == 'Red' ? 'Red' : 'White'}
-                                </td>
-                                <td>
-                                    {isNaN(ToolTipdata.p2) ? 0 : ToolTipdata.p2}%/{ToolTipdata?.c2}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {col == 'Red' ? 'Yellow' : 'Blue'}
-                                </td>
-                                <td>
-                                    {isNaN(ToolTipdata.p3) ? 0 : ToolTipdata.p3}%/{ToolTipdata?.c3}
-                                </td>
-                            </tr>
-                        </>
-                        : null
-                    }
-
-                </tbody>
-
-            </table>
-        )
-    }
-
     return (
         <>
             {
                 colors.c1 == '#000' || colors.c2 == '#E53F40' || colors.c3 == '#EBBF2B' ?
-                    <Tooltip content={getToolTipContent('Red')}>
+                    <Tooltip content={getToolTipContent('Red', ToolTipdata)}>
                         <ColoronLeftWrapper>
                             <ColorOnLeft
                                 color={colors.c1} height={height}>
@@ -95,7 +50,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
                     </Tooltip>
                     :
                     colors.c1 == '#418D18' ?
-                        <Tooltip content={getToolTipContent('Green')}>
+                        <Tooltip content={getToolTipContent('Green', ToolTipdata)}>
                             <ColoronLeftWrapper>
                                 <ColorOnLeft
                                     color={colors.c1} height={height}>
@@ -104,7 +59,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
 
                         </Tooltip>
                         :
-                        <Tooltip content={getToolTipContent('Blue')}>
+                        <Tooltip content={getToolTipContent('Blue', ToolTipdata)}>
                             <ColorOnLeft
                                 color={colors.c1} height={height}>
                                 <TextOnColor style={{

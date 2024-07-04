@@ -72,3 +72,49 @@ export interface DetailsObj {
     S: string,
     E: string
 }
+
+export const getToolTipContent = (col: string, ToolTipdata: any) => {
+    return (
+        <table style={{ padding: "0px 10px 0px 10px", display: "table", width: '100%' }}>
+            <tbody>
+                {col == 'Red' || col == 'Green' ?
+                    <>
+                        <tr>
+                            <td>
+                                {col == 'Red' ? 'Black' : 'Green'}
+                            </td>
+                            <td>
+                                {isNaN(ToolTipdata.p1) ? 0 : ToolTipdata.p1}%/{ToolTipdata?.c1}
+                            </td>
+                        </tr>
+                    </>
+                    : null
+
+                }
+                {col == 'Red' || col == 'Blue' ?
+                    <>
+                        <tr>
+                            <td>
+                                {col == 'Red' ? 'Red' : 'White'}
+                            </td>
+                            <td>
+                                {isNaN(ToolTipdata.p2) ? 0 : ToolTipdata.p2}%/{ToolTipdata?.c2}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {col == 'Red' ? 'Yellow' : 'Blue'}
+                            </td>
+                            <td>
+                                {isNaN(ToolTipdata.p3) ? 0 : ToolTipdata.p3}%/{ToolTipdata?.c3}
+                            </td>
+                        </tr>
+                    </>
+                    : null
+                }
+
+            </tbody>
+
+        </table>
+    )
+}
