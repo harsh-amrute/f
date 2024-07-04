@@ -3,7 +3,7 @@ import FilterModal from "./FilterModal";
 import Note from "./Note";
 import ResizableTable from "./ResizableTable";
 import MTOActionToolBar from "../../../../../../src/components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { prodPlanningMock } from "../../../../../mock-data/PROD";
+import { prodPlanningMock } from "./PROD";
 import {
   BlurCover,
   CardCover,
@@ -31,7 +31,7 @@ import { notifyLoader } from "../../../../../helpers/notify";
 import { toast } from "react-toastify"
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule";
 
-const tabOptions = [{label: "RM Not Available", value: "RM Not Available"}, {label: "RM Available", value: "RM Available"}];
+const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { label: "RM Available", value: "RM Available" }];
 
 interface BufferData {
   ItemType1: { proc_size: number; prod_size: number };
@@ -43,7 +43,7 @@ interface BufferData {
 
 const EnquiryResponse = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
-  const [activeCapsule, setActiveCapsule] = useState<{label: string, value: string}>(tabOptions[0]);
+  const [activeCapsule, setActiveCapsule] = useState<{ label: string, value: string }>(tabOptions[0]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [tableData, setTableData] = useState<any>([]);
   const [filterData, setFilterData] = useState<any>([]);
@@ -63,9 +63,9 @@ const EnquiryResponse = () => {
 
   const handleTabChange = (tab: any) => {
     console.log(tab, 'TAB');
-    if(tab?.label === 'RM Not Available'){
+    if (tab?.label === 'RM Not Available') {
       setActiveTab(0);
-    }else{
+    } else {
       setActiveTab(1);
     }
     setActiveCapsule(tab);
@@ -107,7 +107,7 @@ const EnquiryResponse = () => {
 
   function getWeekOfMonth(dateString: string): string {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
 
@@ -200,7 +200,7 @@ const EnquiryResponse = () => {
     );
   };
 
-  const handleNameChange = ({name , value}: {name: string, value: string}) => {
+  const handleNameChange = ({ name, value }: { name: string, value: string }) => {
     setSelectedOptions((prev: any) => ({ ...prev, [name]: value }));
   };
 
@@ -227,7 +227,7 @@ const EnquiryResponse = () => {
       } else {
         delete dept[name];
       }
-      setSelectedOptions((prev: any) => ({ ...prev, department: {...dept} }));
+      setSelectedOptions((prev: any) => ({ ...prev, department: { ...dept } }));
     }
 
     if (category === "CCR Group") {
@@ -237,7 +237,7 @@ const EnquiryResponse = () => {
       } else {
         delete ccrGrp[name];
       }
-      setSelectedOptions((prev: any) => ({ ...prev, ccrGroup: {...ccrGrp} }));
+      setSelectedOptions((prev: any) => ({ ...prev, ccrGroup: { ...ccrGrp } }));
     }
 
     if (category === "CCR") {
@@ -247,7 +247,7 @@ const EnquiryResponse = () => {
       } else {
         delete ccrNm[name];
       }
-      setSelectedOptions((prev: any) => ({ ...prev, ccrName: {...ccrNm} }));
+      setSelectedOptions((prev: any) => ({ ...prev, ccrName: { ...ccrNm } }));
     }
   };
 
@@ -255,7 +255,7 @@ const EnquiryResponse = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const filterByPlName = (name:string) => {
+  const filterByPlName = (name: string) => {
     if (name === '') {
       return tableData;
     }
@@ -344,7 +344,7 @@ const EnquiryResponse = () => {
         values: [...Object.keys(options?.ccrName)],
       });
     }
-    
+
     setSelectedFilters(filters);
   }
 
@@ -354,7 +354,7 @@ const EnquiryResponse = () => {
     data = filterByPlName(options?.plantName);
     data =
       options?.productGroup?.length > 0
-        ? filterByProdGrpName(data,options?.productGroup )
+        ? filterByProdGrpName(data, options?.productGroup)
         : data;
     data =
       Object.keys(options?.department)?.length > 0
@@ -368,9 +368,9 @@ const EnquiryResponse = () => {
       Object.keys(options?.ccrName)?.length > 0
         ? filterByccrName(data, options?.ccrName)
         : data;
-      
+
     updatedSelectedFilters(options);
-    setHasProductGroup(options?.productGroup?.length > 0 );
+    setHasProductGroup(options?.productGroup?.length > 0);
     setFilterData(data);
     setIsModalOpen(false);
   };
@@ -503,7 +503,7 @@ const EnquiryResponse = () => {
 
   useEffect(() => {
     notifyLoader("Loading Grid Data")
-    if(data?.data?.data?.results){
+    if (data?.data?.data?.results) {
       toast.dismiss()
       setTableData(data?.data?.data?.results);
     }
@@ -532,7 +532,7 @@ const EnquiryResponse = () => {
           <TabSwitchContainer>
             <TabSwitchHeading>Estimated Due Date</TabSwitchHeading>
             <TabsWrapper>
-                <VFCapsule activeBtn={activeCapsule} capsules={tabOptions} handleClick={handleTabChange}/>
+              <VFCapsule activeBtn={activeCapsule} capsules={tabOptions} handleClick={handleTabChange} />
             </TabsWrapper>
           </TabSwitchContainer>
           {getRMUI()}
@@ -553,7 +553,7 @@ const EnquiryResponse = () => {
         filters={filters}
         isOpen={isModalOpen}
         handleClose={handleModalToggle}
-        handleOkay={()=>applyFilter(selectedOptions)}
+        handleOkay={() => applyFilter(selectedOptions)}
         selectedOptions={selectedOptions}
         handleOptionSelect={handleFilterSelect}
         handleNameChange={handleNameChange}
