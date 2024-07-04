@@ -213,6 +213,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                 </VFSelectedFiltersWrapper>}
                 {/**Selected Filter ends*/}
 
+
             </SCTaskFilterContainer>
 
             <SCCustomActionsContainer>

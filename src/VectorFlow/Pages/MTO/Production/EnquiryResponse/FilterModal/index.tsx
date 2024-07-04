@@ -3,7 +3,7 @@ import VFButtonOutline from '../../../../../../components/VectorFLOW/commons/VFB
 import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton';
 import VFModalCard from '../../../../../../components/VectorFLOW/commons/VFModalCard';
 
-import { ButtonContainer, ButtonFilterWrapper, FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, ModalBody,Option, OptionsWrapper, PlantInput, SearchBar } from './styles';
+import { AccordianContainer, ButtonContainer, ButtonFilterWrapper, FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, ModalBody,Option, OptionsWrapper, PlantInput, SearchBar } from './styles';
 import FilterCheckboxAccordian from '../../../../../../components/VectorFLOW/commons/MTO/FilterCheckboxAccordian';
 
 
@@ -93,22 +93,24 @@ const FilterModal = (props: IFilterModalProps) => {
                     <FilterAccordianWrapper>
                         {
                             filters?.map((filter: {key: string, heading: string, options: string[]})=>(
-                                <FilterCheckboxAccordian  filterType={filter?.heading} filterKey={filter?.key} isOpen={activeAccordian === filter?.key} setOpenStatus={setActiveAccordian}>
-                                    <OptionsWrapper>
-                                        {filter?.options?.map((option: string, idx: number)=>(
-                                            <Option>
-                                                <input 
-                                                    key={option}
-                                                    name={option} 
-                                                    checked={getChecked(filter?.heading, option)} 
-                                                    onChange={(e)=>{handleOptionChange(e, filter?.heading, idx)}} 
-                                                    type='checkbox'
-                                                />
-                                                <label>{option}</label>
-                                            </Option>
-                                        ))}
-                                    </OptionsWrapper>
-                                </FilterCheckboxAccordian>
+                                <AccordianContainer>
+                                    <FilterCheckboxAccordian  filterType={filter?.heading} filterKey={filter?.key} isOpen={activeAccordian === filter?.key} setOpenStatus={setActiveAccordian}>
+                                        <OptionsWrapper>
+                                            {filter?.options?.map((option: string, idx: number)=>(
+                                                <Option>
+                                                    <input 
+                                                        key={option}
+                                                        name={option} 
+                                                        checked={getChecked(filter?.heading, option)} 
+                                                        onChange={(e)=>{handleOptionChange(e, filter?.heading, idx)}} 
+                                                        type='checkbox'
+                                                    />
+                                                    <label>{option}</label>
+                                                </Option>
+                                            ))}
+                                        </OptionsWrapper>
+                                    </FilterCheckboxAccordian>
+                                </AccordianContainer>
                             ))
                         }
                     </FilterAccordianWrapper>

@@ -7,7 +7,7 @@ const FilterCheckboxAccordian = ({
   setOpenStatus,
   children,
 }: any) => {
-    
+
   const openAnimation = useSpring<any>({
     from: { opacity: "0", maxHeight: "25px" },
     to: { opacity: "1", maxHeight: isOpen ? "200px" : "25px" },

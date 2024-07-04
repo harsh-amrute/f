@@ -171,3 +171,8 @@ export const Option = styled.div`
     padding: 10px;
     font-size: 1rem;
 `;
+
+export const AccordianContainer = styled.div`
+    padding : 20px;
+    border-top: 3px solid rgb(244, 244, 244);
+`
