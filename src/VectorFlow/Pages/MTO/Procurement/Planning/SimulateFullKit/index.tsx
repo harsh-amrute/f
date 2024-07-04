@@ -1,5 +1,5 @@
 import { ProcurementLayout } from '../styles';
-import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
+import ActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import useSimFullKit from '../SimulateFullKit/useSimFullKit';
 import VFFloatingTab from "../../../../../../components/VectorFLOW/commons/VFFloatingTab";
 
@@ -7,7 +7,7 @@ const SimulateFullKit = () => {
     const { renderView, toggleCurrentTab } = useSimFullKit();
     return (
         <>
-            <MTOActionToolBar
+            <ActionToolBar
                 comp={'Procurement Planning'}
                 onDateChange={() => { console.log('') }}
                 submitDate={() => { console.log('') }}
