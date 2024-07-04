@@ -4,9 +4,13 @@ const FilterCheckboxAccordian = ({
   filterType,
   filterKey,
   isOpen,
-  setOpenStatus,
+  handleToggleAccordian,
   children,
 }: any) => {
+
+    const handleAccordian = (key: string)=>{
+        handleToggleAccordian(key)
+    }
 
   const openAnimation = useSpring<any>({
     from: { opacity: "0", maxHeight: "25px" },
@@ -35,7 +39,7 @@ const FilterCheckboxAccordian = ({
       <div
         className="accordian-header "
         onClick={() => {
-          setOpenStatus(filterKey);
+            handleAccordian(filterKey);
         }}
         style={{ display: "flex", gap: "1rem" }}
       >

@@ -60,6 +60,14 @@ const FilterModal = (props: IFilterModalProps) => {
         }
     }
 
+    const handleToggleAccordian = (key: string) => {
+        if(key === activeAccordian){
+            setActiveAccordian('');
+        }else{
+            setActiveAccordian(key);
+        }
+    }
+
 
     return ( 
         <VFModalCard 
@@ -94,7 +102,7 @@ const FilterModal = (props: IFilterModalProps) => {
                         {
                             filters?.map((filter: {key: string, heading: string, options: string[]})=>(
                                 <AccordianContainer>
-                                    <FilterCheckboxAccordian  filterType={filter?.heading} filterKey={filter?.key} isOpen={activeAccordian === filter?.key} setOpenStatus={setActiveAccordian}>
+                                    <FilterCheckboxAccordian  filterType={filter?.heading} filterKey={filter?.key} isOpen={activeAccordian === filter?.key} handleToggleAccordian={handleToggleAccordian}>
                                         <OptionsWrapper>
                                             {filter?.options?.map((option: string, idx: number)=>(
                                                 <Option>

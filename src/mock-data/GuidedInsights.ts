@@ -1,597 +1,562 @@
 export const GuidedInsights:any={
-     AvailabilityTrendData:[
-        {
-            "locationtype": "Depot",
-            "week": "2024-05-26",
-            "percentage": 86
-        },
-        {
-            "locationtype": "CWH",
-            "week": "2024-05-26",
-            "percentage": 72
-        },
-        {
-            "locationtype": "Depot",
-            "week": "2024-05-27",
-            "percentage": 86
-        },
-        {
-            "locationtype": "CWH",
-            "week": "2024-05-27",
-            "percentage": 72
-        },
-        {
-            "locationtype": "CWH",
-            "week": "2024-05-28",
-            "percentage": 73
-        },
-        {
-            "locationtype": "Depot",
-            "week": "2024-05-28",
-            "percentage": 86
-        },
-        {
-            "locationtype": "CWH",
-            "week": "2024-05-29",
-            "percentage": 72
-        },
-        {
-            "locationtype": "Depot",
-            "week": "2024-05-29",
-            "percentage": 86
-        },
-        {
-            "locationtype": "Depot",
-            "week": "2024-05-30",
-            "percentage": 86
-        },
-        {
-            "locationtype": "CWH",
-            "week": "2024-05-30",
-            "percentage": 71
-        }
-    ],
+    AvailabilityTrendData:[{
+       "week":"week1",
+       "percentage":77.39
+   },
+   {
+       "week":"week2",
+       "percentage":72.39
+   },
+   {
+       "week":"week3",
+       "percentage":70.39
+   },
+   {
+       "week":"week4",
+       "percentage":74.39
+   }
+],
 AvailabilityAgeingTrendData:[
+   {
+   "date":"05-09-2023",
+   "red":3,
+   "black":2,
+   "white":4
+   },
     {
-    "date":"05-09-2023",
-    "red":3,
-    "black":2,
-    "white":4
-    },
-     {
-    "date":"06-09-2023",
-    "red":4,
-    "black":3,
-    "white":5
-    },
-     {
-    "date":"07-09-2023",
-    "red":2,
-    "black":1,
-    "white":3
-    },
-     {
-    "date":"08-09-2023",
-    "red":6,
-    "black":7,
-    "white":5
-    },
-     {
-    "date":"09-09-2023",
-    "red":9,
-    "black":1,
-    "white":3
-    },
-     {
-    "date":"10-09-2023",
-    "red":3,
-    "black":2,
-    "white":4
-    },
-     {
-    "date":"11-09-2023",
-    "red":5,
-    "black":8,
-    "white":9
-    },
-     {
-    "date":"12-09-2023",
-    "red":3,
-    "black":1,
-    "white":3
-    }
+   "date":"06-09-2023",
+   "red":4,
+   "black":3,
+   "white":5
+   },
+    {
+   "date":"07-09-2023",
+   "red":2,
+   "black":1,
+   "white":3
+   },
+    {
+   "date":"08-09-2023",
+   "red":6,
+   "black":7,
+   "white":5
+   },
+    {
+   "date":"09-09-2023",
+   "red":9,
+   "black":1,
+   "white":3
+   },
+    {
+   "date":"10-09-2023",
+   "red":3,
+   "black":2,
+   "white":4
+   },
+    {
+   "date":"11-09-2023",
+   "red":5,
+   "black":8,
+   "white":9
+   },
+    {
+   "date":"12-09-2023",
+   "red":3,
+   "black":1,
+   "white":3
+   }
 
 
- ],
- ChronicUnavailabilityLocData:[
-    {
-    "location":"9020_KA",
-    "countSku":430
+],
+ChronicUnavailabilityLocData:[
+   {
+   "location":"9020_KA",
+   "countSku":430
 },{
-    "location":"9020_KB",
-    "countSku":440
+   "location":"9020_KB",
+   "countSku":440
 },{
-    "location":"9020_KC",
-    "countSku":435,
+   "location":"9020_KC",
+   "countSku":435,
 },{
-    "location":"9020_KD",
-    "countSku":450,
+   "location":"9020_KD",
+   "countSku":450,
 },{
-    "location":"9020_KE",
-    "countSku":430,
+   "location":"9020_KE",
+   "countSku":430,
 },{
-    "location":"9020_KF",
-    "countSku":432,
+   "location":"9020_KF",
+   "countSku":432,
 },{
-    "location":"9020_KG",
-    "countSku":420,
+   "location":"9020_KG",
+   "countSku":420,
 },{
-    "location":"9020_KH",
-    "countSku":438,
+   "location":"9020_KH",
+   "countSku":438,
 },{
-    "location":"9020_KI",
-    "countSku":410,
+   "location":"9020_KI",
+   "countSku":410,
 },{
-    "location":"9020_KJ",
-    "countSku":400
+   "location":"9020_KJ",
+   "countSku":400
 }
 
 ],
 ChronicUnavailabilitySkuData:[
-     {
-    "sku":"UTRAD1",
-    "countloc":430
+    {
+   "sku":"UTRAD1",
+   "countloc":430
 },{
-    "sku":"UTRAD2",
-    "countloc":440
+   "sku":"UTRAD2",
+   "countloc":440
 },{
-    "sku":"UTRAD3",
-    "countloc":435,
+   "sku":"UTRAD3",
+   "countloc":435,
 },{
-    "sku":"UTRAD4",
-    "countloc":450,
+   "sku":"UTRAD4",
+   "countloc":450,
 },{
-    "sku":"UTRAD5",
-    "countloc":430,
+   "sku":"UTRAD5",
+   "countloc":430,
 },{
-    "sku":"UTRAD6",
-    "countloc":432,
+   "sku":"UTRAD6",
+   "countloc":432,
 },{
-    "sku":"UTRAD7",
-    "countloc":420,
+   "sku":"UTRAD7",
+   "countloc":420,
 },{
-    "sku":"UTRAD8",
-    "countloc":438,
+   "sku":"UTRAD8",
+   "countloc":438,
 },{
-    "sku":"UTRAD9",
-    "countloc":410,
+   "sku":"UTRAD9",
+   "countloc":410,
 },{
-    "sku":"UTRAD10",
-    "countloc":400
+   "sku":"UTRAD10",
+   "countloc":400
 },
 {
-    "sku":"UTRAD11",
-    "countloc":400
+   "sku":"UTRAD11",
+   "countloc":400
 }
 ,{
-    "sku":"UTRAD12",
-    "countloc":400
+   "sku":"UTRAD12",
+   "countloc":400
 }
 ],
 DBMSuggestionsLoc:[
-    {
-    "location":"9020_KA",
-    "NormInc":50,
-    "NormDec":40
+   {
+   "location":"9020_KA",
+   "NormInc":50,
+   "NormDec":40
 },{
-    "location":"9020_KB",
-     "NormInc":30,
-    "NormDec":20
+   "location":"9020_KB",
+    "NormInc":30,
+   "NormDec":20
 },{
-    "location":"9020_KC",
+   "location":"9020_KC",
+   "NormInc":40,
+   "NormDec":30
+},{
+   "location":"9020_KD",
+    "NormInc":30,
+   "NormDec":10
+},{
+   "location":"9020_KE",
+    "NormInc":20,
+   "NormDec":40
+},{
+   "location":"9020_KF",
+    "NormInc":10,
+   "NormDec":60
+},{
+   "location":"9020_KG",
+    "NormInc":20,
+   "NormDec":60
+},{
+   "location":"9020_KH",
+   "NormInc":30,
+   "NormDec":30
+},{
+   "location":"9020_KI",
+   "NormInc":30,
+   "NormDec":10
+},{
+   "location":"9020_KJ",
     "NormInc":40,
-    "NormDec":30
-},{
-    "location":"9020_KD",
-     "NormInc":30,
-    "NormDec":10
-},{
-    "location":"9020_KE",
-     "NormInc":20,
-    "NormDec":40
-},{
-    "location":"9020_KF",
-     "NormInc":10,
-    "NormDec":60
-},{
-    "location":"9020_KG",
-     "NormInc":20,
-    "NormDec":60
-},{
-    "location":"9020_KH",
-    "NormInc":30,
-    "NormDec":30
-},{
-    "location":"9020_KI",
-    "NormInc":30,
-    "NormDec":10
-},{
-    "location":"9020_KJ",
-     "NormInc":40,
-    "NormDec":35
+   "NormDec":35
 }
 
 ],
 DBMSuggestionsPie:[
-    {
-    
-    "type":"NormInc",
-    "percentage":50,
- },
-  {
-    "type":"NormDec",
-    "percentage":10,
-    
- },
- {
-      "type":"Suspension",
-    "percentage":30,
+   {
    
- },
+   "type":"NormInc",
+   "percentage":50,
+},
  {
-    "type":"NoSuggestion",
-    "percentage":10,
+   "type":"NormDec",
+   "percentage":10,
    
- }
+},
+{
+     "type":"Suspension",
+   "percentage":30,
+  
+},
+{
+   "type":"NoSuggestion",
+   "percentage":10,
+  
+}
 ],
 DBMSuggestionsSKUs:[ 
-    {
-    "sku":"9020_KA",
-    "NormInc":50,
-    "NormDec":40
+   {
+   "sku":"9020_KA",
+   "NormInc":50,
+   "NormDec":40
 },{
-    "sku":"9020_KB",
-     "NormInc":30,
-    "NormDec":20
+   "sku":"9020_KB",
+    "NormInc":30,
+   "NormDec":20
 },{
-    "sku":"9020_KC",
+   "sku":"9020_KC",
+   "NormInc":40,
+   "NormDec":30
+},{
+   "sku":"9020_KD",
+    "NormInc":30,
+   "NormDec":10
+},{
+   "sku":"9020_KE",
+    "NormInc":20,
+   "NormDec":40
+},{
+   "sku":"9020_KF",
+    "NormInc":10,
+   "NormDec":60
+},{
+   "sku":"9020_KG",
+    "NormInc":20,
+   "NormDec":60
+},{
+   "sku":"9020_KH",
+   "NormInc":30,
+   "NormDec":30
+},{
+   "sku":"9020_KI",
+   "NormInc":30,
+   "NormDec":10
+},{
+   "sku":"9020_KJ",
     "NormInc":40,
-    "NormDec":30
-},{
-    "sku":"9020_KD",
-     "NormInc":30,
-    "NormDec":10
-},{
-    "sku":"9020_KE",
-     "NormInc":20,
-    "NormDec":40
-},{
-    "sku":"9020_KF",
-     "NormInc":10,
-    "NormDec":60
-},{
-    "sku":"9020_KG",
-     "NormInc":20,
-    "NormDec":60
-},{
-    "sku":"9020_KH",
-    "NormInc":30,
-    "NormDec":30
-},{
-    "sku":"9020_KI",
-    "NormInc":30,
-    "NormDec":10
-},{
-    "sku":"9020_KJ",
-     "NormInc":40,
-    "NormDec":35
+   "NormDec":35
 }
 
 
 ],
 DBMSuggestionAgeing:[
-    {"age":"0 to 1",
-   "NormInc":4,
-    "NormDec":5
+   {"age":"0 to 1",
+  "NormInc":4,
+   "NormDec":5
 },
- {"age":"1 to 3",
-   "NormInc":7,
-    "NormDec":3
+{"age":"1 to 3",
+  "NormInc":7,
+   "NormDec":3
 },
- {"age":"3 to 7",
-     "NormInc":10,
-    "NormDec":5
+{"age":"3 to 7",
+    "NormInc":10,
+   "NormDec":5
 },
- {"age":"7+",
-    "NormInc":8,
-    "NormDec":5
+{"age":"7+",
+   "NormInc":8,
+   "NormDec":5
 }
 ],
 ExcessInventorySkuData:[
-    {
-        "date":"11 Dec 2023",
-        "countSku":40
-    },
-    {
-        "date":"12 Dec 2023",
-        "countSku":42
-    },
-    {
-        "date":"13 Dec 2023",
-        "countSku":45
-    },
-    {
-        "date":"14 Dec 2023",
-        "countSku":30
-    },
-    {
-        "date":"15 Dec 2023",
-        "countSku":35
-    },
-    {
-        "date":"16 Dec 2023",
-        "countSku":20
-    },
-    {
-        "date":"17 Dec 2023",
-        "countSku":25
-    },
-    {
-        "date":"18 Dec 2023",
-        "countSku":30
-    }
+   {
+       "date":"11 Dec 2023",
+       "countSku":40
+   },
+   {
+       "date":"12 Dec 2023",
+       "countSku":42
+   },
+   {
+       "date":"13 Dec 2023",
+       "countSku":45
+   },
+   {
+       "date":"14 Dec 2023",
+       "countSku":30
+   },
+   {
+       "date":"15 Dec 2023",
+       "countSku":35
+   },
+   {
+       "date":"16 Dec 2023",
+       "countSku":20
+   },
+   {
+       "date":"17 Dec 2023",
+       "countSku":25
+   },
+   {
+       "date":"18 Dec 2023",
+       "countSku":30
+   }
 ]
 ,
 ExcessInventoryValueData:[
+  {
+       "date":"11 Dec 2023",
+       "value":4000
+   },
    {
-        "date":"11 Dec 2023",
-        "value":4000
-    },
-    {
-        "date":"12 Dec 2023",
-        "value":4200
-    },
-    {
-        "date":"13 Dec 2023",
-        "value":4500
-    },
-    {
-        "date":"14 Dec 2023",
-        "value":3099
-    },
-    {
-        "date":"15 Dec 2023",
-        "value":3500
-    },
-    {
-        "date":"16 Dec 2023",
-        "value":2000
-    },
-    {
-        "date":"17 Dec 2023",
-        "value":2500
-    },
-    {
-        "date":"18 Dec 2023",
-        "value":3000
-    },
-   
+       "date":"12 Dec 2023",
+       "value":4200
+   },
+   {
+       "date":"13 Dec 2023",
+       "value":4500
+   },
+   {
+       "date":"14 Dec 2023",
+       "value":3099
+   },
+   {
+       "date":"15 Dec 2023",
+       "value":3500
+   },
+   {
+       "date":"16 Dec 2023",
+       "value":2000
+   },
+   {
+       "date":"17 Dec 2023",
+       "value":2500
+   },
+   {
+       "date":"18 Dec 2023",
+       "value":3000
+   },
+  
 ],
 ChronicGridViewData:[{
-    "skucode":"sc1",
-    "location":"pune",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"
+   "skucode":"sc1",
+   "location":"pune",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"
 
 },
 {
- "skucode":"sc2",
-    "location":"pune",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"}
-    ,{
- "skucode":"sc3",
-    "location":"pune",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"},{
- "skucode":"sc4",
-    "location":"pune",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"},{
- "skucode":"sc5",
-    "location":"Mumbai",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"},{
- "skucode":"sc6",
-    "location":"Mumbai",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"},{
- "skucode":"sc7",
-    "location":"Mumbai",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"},{
- "skucode":"sc8",
-    "location":"Mumbai",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"},{
- "skucode":"sc9",
-    "location":"Delhi",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"},{
- "skucode":"sc10",
-    "location":"Delhi",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"},{
- "skucode":"sc11",
-    "location":"Delhi",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"},{
- "skucode":"sc12",
-    "location":"Delhi",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"},{
- "skucode":"sc13",
-    "location":"Delhi",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"},{
- "skucode":"sc14",
-    "location":"Thane",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"},{
- "skucode":"sc15",
-    "location":"Thane",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"},{
- "skucode":"sc16",
-    "location":"Thane",
-    "skudesc":"pune",
-    "parentloc":"Bhopal",
-    "RLT":"30",
-    "BlackRedAgeing":"05 days",
-    "Executive":"black",
-    "Techcolor":"black",
-    "ExecutiveEco":"Red",
-    "ecocolor":"red",
-    "RationedStockatparent":"7"}
+"skucode":"sc2",
+   "location":"pune",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"}
+   ,{
+"skucode":"sc3",
+   "location":"pune",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"},{
+"skucode":"sc4",
+   "location":"pune",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"},{
+"skucode":"sc5",
+   "location":"Mumbai",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"},{
+"skucode":"sc6",
+   "location":"Mumbai",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"},{
+"skucode":"sc7",
+   "location":"Mumbai",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"},{
+"skucode":"sc8",
+   "location":"Mumbai",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"},{
+"skucode":"sc9",
+   "location":"Delhi",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"},{
+"skucode":"sc10",
+   "location":"Delhi",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"},{
+"skucode":"sc11",
+   "location":"Delhi",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"},{
+"skucode":"sc12",
+   "location":"Delhi",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"},{
+"skucode":"sc13",
+   "location":"Delhi",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"},{
+"skucode":"sc14",
+   "location":"Thane",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"},{
+"skucode":"sc15",
+   "location":"Thane",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"},{
+"skucode":"sc16",
+   "location":"Thane",
+   "skudesc":"pune",
+   "parentloc":"Bhopal",
+   "RLT":"30",
+   "BlackRedAgeing":"05 days",
+   "Executive":"black",
+   "Techcolor":"black",
+   "ExecutiveEco":"Red",
+   "ecocolor":"red",
+   "RationedStockatparent":"7"}
 
 ]}
 
 export const ChronicUnavailabilityLocData=[
-    {
-    "location":"9020_KA",
-    "countSku":430
+   {
+   "location":"9020_KA",
+   "countSku":430
 },{
-    "location":"9020_KB",
-    "countSku":440
+   "location":"9020_KB",
+   "countSku":440
 },{
-    "location":"9020_KC",
-    "countSku":435,
+   "location":"9020_KC",
+   "countSku":435,
 },{
-    "location":"9020_KD",
-    "countSku":450,
+   "location":"9020_KD",
+   "countSku":450,
 },{
-    "location":"9020_KE",
-    "countSku":430,
+   "location":"9020_KE",
+   "countSku":430,
 },{
-    "location":"9020_KF",
-    "countSku":432,
+   "location":"9020_KF",
+   "countSku":432,
 },{
-    "location":"9020_KG",
-    "countSku":420,
+   "location":"9020_KG",
+   "countSku":420,
 },{
-    "location":"9020_KH",
-    "countSku":438,
+   "location":"9020_KH",
+   "countSku":438,
 },{
-    "location":"9020_KI",
-    "countSku":410,
+   "location":"9020_KI",
+   "countSku":410,
 },{
-    "location":"9020_KJ",
-    "countSku":400
+   "location":"9020_KJ",
+   "countSku":400
 }
 
 ]

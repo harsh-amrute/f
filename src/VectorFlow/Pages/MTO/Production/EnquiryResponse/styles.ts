@@ -11,15 +11,7 @@ export const EnquiryWrapper = styled.div`
 `;
 
 export const FilterWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  background-color: rgb(255, 255, 255);
-  box-shadow: rgba(196, 200, 208, 0.4) 0px 10px 20px;
-  border-radius: 10px;
-  align-items: center;
-  padding: 20px;
-  gap: 20px;
-  margin-top: 20px;
+  padding: 0px 20px 15px;
 `;
 
 export const EditFilterBtn = styled.button`

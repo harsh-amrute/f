@@ -344,6 +344,7 @@ const useViewModify = (pageType:string) => {
           }
           return row;
         })
+        console.log(newRowData)
         setEnableEditOnlineReset(true)
         dispatch(UPDATE_ROW_DATA([...newRowData]))
       },
@@ -486,9 +487,6 @@ const useViewModify = (pageType:string) => {
     const handleSelectMasterSubmit = () => {
       if(activeMaster.id===0){
         dispatch(UPDATE_ACTIVE_MASTER(0));
-      }
-      else{
-        dispatch(UPDATE_ACTIVE_MASTER(masters[0]))
       }
       dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
     }
@@ -873,12 +871,10 @@ const useViewModify = (pageType:string) => {
 
       }
 
-      const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean,actionStatus="") => {
-        const columnsToOmit = activeMaster.fields.filter((field:Field)=>!field.isDownload).map((field:Field)=>field.key) 
+      const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean,actionStatus="") => { 
 
         //CleanUp Row Data
-        rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
-        console.log(rowData);
+        rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users'));
         // Convert To String
         rowData = rowData.map((row:any)=>{
           const tempRow:any = {};
@@ -906,8 +902,7 @@ const useViewModify = (pageType:string) => {
             action:actionStatus,
             TaskId:'',
             IsOverWrite:isOverWrite===true?true:false,
-            data:[],
-            uiconfig:activeMaster.fields
+            data:[]
           }
 
           toastId = notifyLoader(`Submitting Data ${submitProgress}/${activeMaster.rowData.length}`);
@@ -1131,6 +1126,7 @@ const useViewModify = (pageType:string) => {
             }
           }
           else{
+            console.log('asdfads')
             // console.time('That took ')
             // console.log('Calculating...')
             const tempCon = createConflictRowData(localConflictData,activeMaster.id)
@@ -1211,9 +1207,8 @@ const useViewModify = (pageType:string) => {
        {
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
-        dispatch(UPDATE_COLDEFS([]));
-        dispatch(REMOVE_ALL_FILTERS());
-        // dispatch(UPDATE_ACTIVE_MASTER([]))
+        dispatch(UPDATE_COLDEFS( mapMasterToColumnDefs(activeMaster.fields,activeMaster.id)))
+        dispatch(REMOVE_ALL_FILTERS())
        
         dispatch(ADD_FILTER())
         setDownloadData(false);

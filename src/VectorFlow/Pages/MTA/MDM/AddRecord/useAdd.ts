@@ -177,8 +177,7 @@ const useAdd=()=>{
             action:"",
             TaskId:'',
             IsOverWrite:isOverWrite===true?true:false,
-            data:[],
-            uiconfig:activeMaster.fields
+            data:[]
           }
 
           toastId = notifyLoader(`Submitting Data ${submitProgress}/${activeMaster.rowData.length}`);

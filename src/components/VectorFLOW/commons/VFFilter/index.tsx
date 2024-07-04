@@ -4,14 +4,12 @@ import {type Option, type Filter} from '../../../../VectorFlow/types/MDM';
 import { useDispatch } from 'react-redux';
 import { SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_FILTER } from "../../../../redux/actions/MDM";
 
-
 export interface VFFilterProps{
     onDelete:()=>void
     fields:Option[]
     operators:Option[]
     currFilter:Filter
-    filters:Filter[],
-    isDisabled:boolean
+    filters:Filter[]
 }
 
 export interface CustomSelectProps{
@@ -19,8 +17,7 @@ export interface CustomSelectProps{
     placeholder:string
     onChange:(...params:any)=>void
     options:any[]
-    value:any,
-    isDisabled:boolean
+    value:any
 }
 
 export interface CustomInputProps{
@@ -37,7 +34,6 @@ const VFFilter = (props:VFFilterProps)=>{
         operators,
         onDelete,
         currFilter,
-        isDisabled
     } = props
 
 
@@ -55,7 +51,6 @@ const VFFilter = (props:VFFilterProps)=>{
                 onChange={(e:any)=>handleOnChange(e.value,'field')} 
                 options={fields}
                 value={fields.find((field)=>field.value === currFilter.field)}
-                isDisabled={isDisabled}
             />
             <VFFilterSeperator/>
             <CustomSelect 
@@ -64,13 +59,11 @@ const VFFilter = (props:VFFilterProps)=>{
                 onChange={(e:any)=>handleOnChange(e.value,'operator')} 
                 options={operators}
                 value={operators.find((field)=>field.value === currFilter.operator)}
-                isDisabled={isDisabled}
             />
             <VFFilterSeperator/>
             <CustomInput 
                 value={currFilter.text} 
                 onChange={(e:any)=>handleOnChange(e.target.value,'text')}
-                disabled={isDisabled}
             />
             <VFFilterSeperator/>
             <VFFilterDustbinIcon 
@@ -90,8 +83,7 @@ const CustomSelect = (props:CustomSelectProps)=>{
         placeholder,
         onChange,
         options,
-        value,
-        isDisabled
+        value
     } = props
 
     return (
@@ -139,7 +131,6 @@ const CustomSelect = (props:CustomSelectProps)=>{
             value={value}
             onChange={onChange}
             options={options}
-            isDisabled={isDisabled}
         />
     )
 }

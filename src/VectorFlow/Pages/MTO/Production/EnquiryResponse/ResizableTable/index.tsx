@@ -35,7 +35,7 @@ const ResizableTable = (props: IResizeTableProps) => {
   };
 
   const BarFillUI = (value: any) => {
-    const val = value?.value;
+    const val = value?.value || 0;
     return (
       <TableStyle.CellWithBar>
         <TableStyle.BarContainer>

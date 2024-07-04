@@ -3,97 +3,99 @@ import { useGetAvailabilityTrend } from "../../../../../Services/MTA/InsightsAnd
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 import { useState, useEffect } from "react";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
+import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip';
 
 
 const AvailabilityTrend = () => {
-
+  const [AvailabilityTrend, setAvailabilityData] = useState();
   const { mutateAsync: GetAvailabilityTrend, isLoading } =
-  useGetAvailabilityTrend();
-
+    useGetAvailabilityTrend();
+  //const rowData=AvailabilityTrend?.data?.data;
   const [horizon, setHorizon] = useState<number>(9);
-  const [options, setOptions] = useState({});
 
   useEffect(() => {
     OnHorizonChange(horizon);
   }, []);
-  
   const OnHorizonChange = async (hvalue: any) => {
     setHorizon(hvalue);
     const param = { horison: horizon };
     const AvailabilityTrend = await GetAvailabilityTrend(param);
     const AvailabilityTrendData = AvailabilityTrend?.data?.data;
-   const greyShades = [
-      // '#191919', 
-       '#333333', 
-       //'#4c4c4c',
-       // '#595959', 
-        '#666666', //'#737373', 
-        '#808080',// '#8c8c8c','#999999',
-       '#a6a6a6', //'#b2b2b2', '#bfbfbf', 
-       '#cccccc', '#d8d8d8'
-       
-    ];
-    const locationTypes = Array.from(new Set(AvailabilityTrendData.map((d:any) => d.locationtype)));
-     const series = locationTypes.map((locationType, index) => {
-    const seriesData = AvailabilityTrendData.filter((d:any) => d.locationtype === locationType)
-                            .map((d:any) => ({ week: d.week, percentage: d.percentage }));
-                            return {
-        type: 'line',
-        xKey: 'week',
-        yKey: 'percentage',
-        yName: locationType,
-        data: seriesData,
-        stroke: greyShades[index % greyShades.length],
+    setAvailabilityData(AvailabilityTrendData);
+  };
+ 
+
+  const options:AgChartOptions = {
+    
+    // title: {
+    //   // text: "Availabilty Trend",
+    //   // fontWeight: "500",
+    //   // fontSize:14,
+    // },
+    data: AvailabilityTrend,
+    series: [
+      {
+        xKey: "week",
+        yKey: "percentage",
         strokeWidth: 3,
-        //stroke: "#4E4E4E",
+        stroke: "#4E4E4E",
         marker: {
-          fill: greyShades[index % greyShades.length],
-          size: 12,
+          fill: "#BC3D81",
+          size: 8,
           stroke: "white",
           strokeWidth: 3,
           
-        }
-      };
-    });
-
-    setOptions(
-      {
-      autoSize: true,
-      
-      data: AvailabilityTrendData,
-      series: series,
-      axes: [
-        {
-          type: 'category',
-          position: 'bottom',
-          title: {
-            text: 'Date',
-           
-          },
-          label: {
-            formatter: (params:any) => new Date(params.value).toISOString().split('T')[0],
-          },
         },
-        {
-          type: 'number',
-          position: 'left',
-          title: {
-            text: 'Availability%',
-          },
-          label: {
-          format: "#{.0f} %",
-          
-        },
-        },
-      ],
-      legend: {
-        position: 'bottom',
-
+        title: "Distributor"
       },
-    });
-  };
+    ],
+    // axes: [
+    //   {
+    //     type: "category",
+    //     position: "bottom",
+    //   } as const,
+    //   {
+    //     type: "number",
+    //     position: "left",
+    //     label: {
+    //       format: "#{.0f} %",
+    //     },
+    //   } as const,
+      
+    // ],
+    axes: [
+      {
+        type: "category",
+        position: "bottom",
+        title: {
+              text: 'Date',
+              fontSize:10,
+              fontFamily:'Roboto'
+          },
+          label:{
+            fontSize:8,
+            fontFamily:'Roboto'
+          }
+      } as const,
+      {
+          type: "number",
+          position: "left",
+          label: {
+                  format: "#{.0f} %",
+                },
+          title: {
+              text: 'Availability %',
+              fontSize:10,
+              fontFamily:'Roboto'
+          },
+      } as const
+  ],
+    legend: {
+      position: "bottom",
+    },
   
+  };
   if (isLoading) {
     return <VFLoader />;
   }

@@ -150,7 +150,6 @@ const DeleteRecord = () => {
                               fields={generateOptions([activeMaster])}
                               currFilter={f}
                               key={f.id}
-                              isDisabled={activeMaster.id > 14}
                             />
                           )
                         }
@@ -179,7 +178,6 @@ const DeleteRecord = () => {
                       <VFButton
                       themeUi={themeUi}
                       onClick={()=>{handleApplyFilter()}}
-                      disabled={activeMaster.id > 14}
                       >
                         Apply Filter
                       </VFButton>
@@ -307,7 +305,6 @@ const DeleteRecord = () => {
             onDeleteOnline={onDeleteOnline}
             onDeleteOnlineReset={onDeleteOnlineReset}
             onDeleteOnlineSubmit={onDeleteOnlineSubmit}
-            masterId={activeMaster.id}
           />
         }
         </React.Fragment>

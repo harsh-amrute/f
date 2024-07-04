@@ -1,9 +1,5 @@
 .filter-accordian{
-    /* margin-left: 46px;
-    margin-right: 100px;
-    margin-bottom: 18px; */
     width:'100%';
-    padding: 0 1rem;
     box-sizing: border-box;
 }
 
@@ -29,7 +25,6 @@
     padding-left: 12px;
     overflow: overlay;
     max-height: 144px;
-    margin-top:10px;
     /* overflow:scroll;*/
 } 
 .accordian-body:not(.accordian-body .accordian-body)::-webkit-scrollbar {

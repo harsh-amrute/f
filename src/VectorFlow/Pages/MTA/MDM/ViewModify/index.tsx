@@ -173,7 +173,6 @@ import _ from "lodash";
                               fields={generateOptions([activeMaster])}
                               currFilter={f}
                               key={f.id}
-                              isDisabled={activeMaster.id > 14}
                             />
                           )
                         }
@@ -202,7 +201,6 @@ import _ from "lodash";
                       <VFButton
                       themeUi={themeUi}
                       onClick={()=>{handleApplyFilter()}}
-                      disabled={activeMaster.id > 14}
                       >
                         Apply Filter
                       </VFButton>
@@ -367,7 +365,6 @@ import _ from "lodash";
             onDeleteOnlineReset={()=>console.log('')}
             onDeleteOnlineSubmit={()=>console.log('')}
             onDeleteOnline={()=>console.log('')}
-            masterId={activeMaster.id}
           />
         }
         

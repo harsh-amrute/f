@@ -71,14 +71,13 @@ const currFilter = {
     id:'fbaksbfka',
     masterId:1
 }
-const isDisabled = false;
+
 const props = {
     operators,
     fields,
     onDelete,
     currFilter,
-    filters,
-    isDisabled
+    filters
 }
 
 describe('Filter Component', () => {

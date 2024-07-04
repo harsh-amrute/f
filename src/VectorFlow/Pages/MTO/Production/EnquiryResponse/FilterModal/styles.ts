@@ -169,7 +169,11 @@ export const Option = styled.div`
     display: flex;
     gap: 10px;
     padding: 10px;
-    font-size: 1rem;
+    font-family: 'Roboto';
+    font-weight: 300;
+    font-size: 16px;
+    letter-spacing: 0px;
+    color:#313131;
 `;
 
 export const AccordianContainer = styled.div`
