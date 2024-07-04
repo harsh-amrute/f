@@ -67,21 +67,18 @@ const OrderRescheduling = () => {
                 </div>
                 <div style={{ position: 'fixed', bottom: 0 }}>
 
-                    <div style={{ width: '100vw', height: '65px', padding: '30px 20px', background: 'red', display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
+                    <div style={{ width: '100vw', height: '65px', padding: '30px 80px', background: 'white', display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
                         <ApplyZoomOut>
                             {
                                 (currTab === 'Unschedule') ?
                                     <VFButton style={{ width: '150px' }} themeUi={user.user.them_ui} onClick={() => { console.log("Button clicked") }}>Unschedule</VFButton>
                                     :
                                     <VFButton style={{ width: '200px' }} themeUi={user.user.them_ui} onClick={() => { console.log("Button clicked") }}>Overwrite Due Date</VFButton>
-
                             }
                         </ApplyZoomOut>
-
                     </div>
                 </div>
             </div>
-
         </>
     )
 }
