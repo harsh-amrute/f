@@ -32,7 +32,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
 
     const getToolTipContent = (col: string) => {
         return (
-            <table style={{ padding: "8px", display: "table", width: '250px' }}>
+            <table style={{ padding: "0px 10px 0px 10px", display: "table", width: '100%' }}>
                 <tbody>
                     {col == 'Red' || col == 'Green' ?
                         <>
@@ -41,7 +41,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
                                     {col == 'Red' ? 'Black' : 'Green'}
                                 </td>
                                 <td>
-                                    {isNaN(ToolTipdata.p1) ? 0 : ToolTipdata.p1}%/{ToolTipdata?.c1}
+                                    1{isNaN(ToolTipdata.p1) ? 0 : ToolTipdata.p1}%/{ToolTipdata?.c1}
                                 </td>
                             </tr>
                         </>

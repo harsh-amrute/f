@@ -31,7 +31,6 @@ const MaterialCov = () => {
   }
   
   useEffect(()=>{
-     console.log('MATERIALFDF',data?.data?.data)
      setSOData(data?.data.data)
   },[data])
 

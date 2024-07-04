@@ -220,9 +220,10 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
 
         const BlueFK = calculateColorOrderCount(SOData, ColorsMTO.Blue.label, 'FK', 1);
         const BlueFKPercent = Math.round((BlueFK / nthBlock.ordCunt) * 100)
-
+        console.log('BlueFK=', BlueFK)
         const WhiteFK = calculateColorOrderCount(SOData, ColorsMTO.White.label, 'FK', 1);
         const WhiteFKPercent = Math.round((WhiteFK / nthBlock.ordCunt) * 100)
+        console.log('WhiteFK=', WhiteFK)
 
 
         setColorOrderCount({
@@ -339,7 +340,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={secBlockCustCnt}
                         orderValue={secOrderVal}
                         percent={secBlockOrdCnt / totalOrderCount}
-                        ToolTipdata={{ 'c1': colorOrderCount?.Bpk, 'c2': colorOrderCount?.Rpk, 'c3': colorOrderCount?.Ypk, 'p1': colorOrderCount?.Bpkp, 'p2': colorOrderCount?.Rpkp,'p3': colorOrderCount?.Ypkp }}
+                        ToolTipdata={{ 'c1': colorOrderCount?.Bpk, 'c2': colorOrderCount?.Rpk, 'c3': colorOrderCount?.Ypk, 'p1': colorOrderCount?.Bpkp, 'p2': colorOrderCount?.Rpkp, 'p3': colorOrderCount?.Ypkp }}
                     />
                 </Box>
                 <Box onClick={() => handleToggle(ColorsMTO.Black.label, ColorsMTO.Red.label, ColorsMTO.Yellow.label, "FK", "0", "0")}>
@@ -352,7 +353,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={thrdBlockCustCnt}
                         orderValue={thrdOrderVal}
                         percent={thrdBlockOrdCnt / totalOrderCount}
-                        ToolTipdata={{ 'c1': colorOrderCount?.Bfk, 'c2': colorOrderCount?.Rfk, 'c3': colorOrderCount?.Yfk,  'p1': colorOrderCount?.Bfkp, 'p2': colorOrderCount?.Rfkp,'p3': colorOrderCount?.Yfkp, }}
+                        ToolTipdata={{ 'c1': colorOrderCount?.Bfk, 'c2': colorOrderCount?.Rfk, 'c3': colorOrderCount?.Yfk, 'p1': colorOrderCount?.Bfkp, 'p2': colorOrderCount?.Rfkp, 'p3': colorOrderCount?.Yfkp, }}
                     />
                 </Box>
             </MainContainer>
@@ -427,7 +428,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={svthBlockCustCnt}
                         orderValue={svthdOrderVal}
                         percent={svthBlockOrdCnt / totalBlueOrdCount}
-                        ToolTipdata={{ 'c2': colorOrderCount?.Blnk, 'c3': colorOrderCount?.Wnk, 'p2': colorOrderCount?.Blnkp, 'p3': colorOrderCount?.Wnkp }}
+                        ToolTipdata={{ 'c3': colorOrderCount?.Blnk, 'c2': colorOrderCount?.Wnk, 'p3': colorOrderCount?.Blnkp, 'p2': colorOrderCount?.Wnkp }}
                     />
 
                 </Box>
@@ -441,7 +442,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={egthBlockCustCnt}
                         orderValue={egthdOrderVal}
                         percent={egthBlockCustCnt / totalBlueOrdCount}
-                        ToolTipdata={{ 'c2': colorOrderCount?.Blpk, 'c3': colorOrderCount?.Wpk, 'p2': colorOrderCount?.Blpkp, 'p3': colorOrderCount?.Wpkp }}
+                        ToolTipdata={{ 'c3': colorOrderCount?.Blpk, 'c2': colorOrderCount?.Wpk, 'p3': colorOrderCount?.Blpkp, 'p2': colorOrderCount?.Wpkp }}
                     />
 
                 </Box>
@@ -455,7 +456,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         cutCount={nthBlockCustCnt}
                         orderValue={nthhdOrderVal}
                         percent={nthBlockOrdCnt / totalBlueOrdCount}
-                        ToolTipdata={{ 'c2': colorOrderCount?.Blfk, 'c3': colorOrderCount?.Wfk, 'p2': colorOrderCount?.Blfkp, 'p3': colorOrderCount?.Wfkp }}
+                        ToolTipdata={{ 'c2': colorOrderCount?.Wfk, 'c3': colorOrderCount?.Blfk, 'p2': colorOrderCount?.Wfkp, 'p3': colorOrderCount?.Blfkp }}
                     />
 
                 </Box>
