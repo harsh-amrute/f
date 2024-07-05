@@ -241,7 +241,7 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                             Norm Action
                                         </VFButtonOutline>
                                     </Link>  
-                                    <SCVerticalDivider/>
+                                    {/* <SCVerticalDivider/> */}
      
                                 </>
                                 }
@@ -256,7 +256,9 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                     </>
                                 )}
                              {
-                                ( currentTab==='availabilitytrend' ||  currentTab==="availabilityageingtrend" || currentTab==="dbmnormsuggestions" || currentTab==="chronicunavailability" || currentTab==='custom' ) &&
+                                // ( currentTab==="availabilitytrend" || currentTab==="availabilityageingtrend" || currentTab==="dbmnormsuggestions"  || currentTab==='custom' ) &&
+                                ( currentTab==='custom' ) &&
+
 
                                 (
                                     <>
