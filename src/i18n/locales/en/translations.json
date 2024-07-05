@@ -134,6 +134,17 @@
         "uiUploadLogs_ModifySKULoc": "UI Upload Logs - Modify SKU-Loc",
         "uiUploadLogs_RemoveSKULoc": "UI Upload Logs - Remove SKU-Loc",
         "uiUploadLogs_SKUMaster": "UI Upload Logs - SKU Master"
+      },
+      "prodAndPlanningScheduling": {
+        "title": "Production Planning & Scheduling",
+        "enquiryResponse":"Enquiry Response",
+        "dueDateQuotation":"Due Date Quotation",
+        "orderRescheduling":"Order Rescheduling",
+        "fullKitAssignment":"Full Kit Assignment",
+        "dynamicReleaseManagement":"Dynamic Release Management",
+        "deptWiseBMReport": "Dept-Wise BM Report",
+        "overallBMReport": "Overall BM Report",
+        "insightAndTrends": "Insight and Trends"
       }
     },
     "particulars": {

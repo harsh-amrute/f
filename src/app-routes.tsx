@@ -31,6 +31,7 @@ import GuidedInsights from './VectorFlow/Pages/MTA/InsightsAndTrends/GuidedInsig
 import BufferTrends from './VectorFlow/Pages/MTA/InsightsAndTrends/BufferTrends'
 import BufferTrendReport from './VectorFlow/Pages/MTA/InsightsAndTrends/BTR'
 import DBM from './VectorFlow/Pages/MTA/DBM/DBMNormSuggestions'
+import EnquiryResponse from './VectorFlow/Pages/MTO/Production/EnquiryResponse'
 import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests'
 import MaterialCov from './VectorFlow/Pages/MTO/Procurement/MaterialCoverage/MaterialCov'
 import ProcurementPlanning from './VectorFlow/Pages/MTO/Procurement/Planning';
@@ -56,7 +57,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/login',
     '/forgot-password',
     '/change-password',
-    '/profile'
+    '/profile',
+    '/production-planning-scheduling/enquiry-response'
   ]
   const urlAllPage = [
     ...authenPage,
@@ -84,6 +86,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/insights-and-trends/research-insights',
     '/insights-and-trends/buffer-trend-report',
     '/dbm/dbm-norm-suggestions',
+    '/logistics/intransit-whereabouts',
     '/procurement/material-coverage-open-sales',
     '/procurement-planning/planning',
     "/procurement/insights-and-trends/day-wise-coverage",
@@ -425,6 +428,28 @@ export const initRoutes = (): RouteObject[] => {
         },
         ...getStoreTransferModuleRoutes()
       ]
+    },
+    {
+     path: '/dbm/dbm-norm-suggestions',
+     element: <AppLayout />,
+     children: [
+       {
+         index: true,
+         element: lazyLoad(<DBM/>)
+       },
+       ...getStoreTransferModuleRoutes()
+     ]
+    },
+    {
+     path: '/production-planning-scheduling/enquiry-response',
+     element: <AppLayout />,
+     children: [
+       {
+         index: true,
+         element: lazyLoad(<EnquiryResponse/>)
+       },
+       ...getStoreTransferModuleRoutes()
+     ]
     },
     {
       path: '/dbm/dbm-norm-suggestions',
