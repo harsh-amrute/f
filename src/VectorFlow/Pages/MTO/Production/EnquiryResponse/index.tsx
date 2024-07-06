@@ -388,9 +388,13 @@ const EnquiryResponse = () => {
   const departmentOptions: any = [];
   const ccrGroupOptions: any = [];
   const ccrNameOptions: any = [];
+  const plantOptions: any = []
 
   for (let i = 0; i < tableData?.length; i++) {
     const ccrObj = tableData[i];
+    if (ccrObj?.plnm) {
+      plantOptions.push({ value: ccrObj.plnm, label: ccrObj.plnm, name: ccrObj.plnm });
+    }
     if (ccrObj?.it) {
       const types = Object.keys(ccrObj?.it);
       for (let j = 0; j < types.length; j++) {
@@ -420,6 +424,11 @@ const EnquiryResponse = () => {
   }
 
   const filters = [
+    {
+      key: "plnm",
+      heading: "Plant",
+      options: plantOptions
+    },
     {
       key: 'prdGrp',
       heading: "Product Group",
@@ -527,7 +536,7 @@ const EnquiryResponse = () => {
       <ResizableTable header={prodPlanningMock?.header} data={filterData} />
       <EstimatedWrapper>
         <div
-          style={{ WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})` }}
+          style={{ WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})`, padding: "1rem" }}
         >
           <TabSwitchContainer>
             <TabSwitchHeading>Estimated Due Date</TabSwitchHeading>

@@ -3,7 +3,7 @@ import * as gridSystem from "../../../../../../styles/gridSystem";
 
 export const TableResizebarWrapper = styled.div`
   position: relative;
-  width: 95%;
+  width: 100%;
 `;
 
 export const TableContainer = styled.div`
@@ -32,6 +32,9 @@ export const ResizeBar = styled.div`
 export const TableWrapper = styled.div`
   width: 100%;
   text-align: center;
+  & .ag-theme-alpine {
+    margin: 20px 0;
+  }
 `;
 
 export const CellWithBar = styled.div`

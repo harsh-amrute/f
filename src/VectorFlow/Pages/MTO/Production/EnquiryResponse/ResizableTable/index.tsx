@@ -41,7 +41,7 @@ const ResizableTable = (props: IResizeTableProps) => {
         <TableStyle.BarContainer>
           <TableStyle.CellBar style={{ width: `${val < 10 ? val * 10 : val}%` }} />
         </TableStyle.BarContainer>
-        <TableStyle.CellBarValue>{val || 0}</TableStyle.CellBarValue> 
+        <TableStyle.CellBarValue>{val || 0}</TableStyle.CellBarValue>
       </TableStyle.CellWithBar>
     );
   };
