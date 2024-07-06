@@ -39,6 +39,7 @@ import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWher
 import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/DayWiseCoverage'
 import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
 import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
+import FullKitAssignment from './VectorFlow/Pages/MTO/Production/FullKitAssignement'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -89,7 +90,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/planning/simulative-fullkit',
     '/logistics/intransit-whereabouts',
     '/procurement/material-requirement',
-    '/procurement/insights-and-trends/rmpm-orderwise-coverage'
+    '/procurement/insights-and-trends/rmpm-orderwise-coverage', 
+    '/production-planning-scheduling/full-kit-assignment'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -502,6 +504,17 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
 
-
+    {
+      path: '/production-planning-scheduling/full-kit-assignment',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<FullKitAssignment/>)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    
   ]
 }

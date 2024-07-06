@@ -527,7 +527,64 @@ export const listMenuParent: any = [
 
       },
     ],
-  }
+  },
+  {
+    id: 10,
+    name: "navbar.listMenuParent.prodAndPlanningScheduling.title",
+    img: "/assets/img/nav/prod-plan-icon",
+    status: false,
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+    child: [
+      {
+        name: "navbar.listMenuParent.prodAndPlanningScheduling.enquiryResponse",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+      },
+      {
+        name: "navbar.listMenuParent.prodAndPlanningScheduling.dueDateQuotation",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+      },
+      {
+        name: "navbar.listMenuParent.prodAndPlanningScheduling.orderRescheduling",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      },
+      {
+        name: "navbar.listMenuParent.prodAndPlanningScheduling.fullKitAssignment",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/production-planning-scheduling/full-kit-assignment",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      },
+      {
+        name: "navbar.listMenuParent.prodAndPlanningScheduling.dynamicReleaseManagement",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      },
+      {
+        name: "navbar.listMenuParent.prodAndPlanningScheduling.deptWiseBMReport",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      },
+      {
+        name: "navbar.listMenuParent.prodAndPlanningScheduling.overallBMReport",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      },
+      {
+        name: "navbar.listMenuParent.prodAndPlanningScheduling.insightAndTrends",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      },
+    ],
+  },
 ];
 
 

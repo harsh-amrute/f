@@ -65,7 +65,7 @@ const GraphView = () => {
                     "fill": ProcurementSeriesDataFill[i],
                     "tooltip": {
                         renderer: TooltipRenderer
-                    }
+                    },
                 }
             )
         }
@@ -122,7 +122,7 @@ const GraphView = () => {
 
         data: updatedData,
 
-        series: seriesData
+        series: seriesData,
 
 
     });
