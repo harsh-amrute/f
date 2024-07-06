@@ -40,6 +40,7 @@ import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrend
 import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
 import RMPMBufferTrends from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMBufferTrends'
 import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
+import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -92,7 +93,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/procurement/material-requirement',
     '/procurement/insights-and-trends/rmpm',
     '/procurement/insights-and-trends/rmpm-buffer-trends',
-    '/procurement/insights-and-trends/rmpm-orderwise-coverage'
+    '/procurement/insights-and-trends/rmpm-orderwise-coverage',
+    '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -511,6 +513,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<RMPMBufferTrends />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMExpeditionSuppliers />)
         },
         ...getStoreTransferModuleRoutes()
       ]

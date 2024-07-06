@@ -29,6 +29,8 @@ const BreadCrumb = () => {
 
   if(location.pathname ==='/dbm/dbm-norm-suggestions')return <span>DBM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> DBM Norm Suggestion</span>
 
+  if(location.pathname==='/procurement/material-coverage-open-sales')return <span>Procurement<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} />Material Coverage For Open Sales Order</span>
+
 
   
 

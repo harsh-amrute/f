@@ -526,8 +526,13 @@ export const listMenuParent: any = [
           {
             name: "RM/PM Buffer Trend",
             img: "/assets/img/nav/arrow_down.svg",
-            imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
             url: "/procurement/insights-and-trends/rmpm-buffer-trends",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"]
+          },
+          {
+            name: "Expediting RM/Suppliers",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/procurement/insights-and-trends/rmpm-expediting-rm-suppliers",
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"]
           }
         ]
