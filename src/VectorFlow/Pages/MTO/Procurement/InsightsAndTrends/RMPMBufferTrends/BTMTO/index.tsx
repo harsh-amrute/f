@@ -1,4 +1,4 @@
-import { AgChartOptions } from 'ag-charts-community'
+import { AgChartOptions, time } from 'ag-charts-community'
 import { useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFCapsule from '../../../../../../../components/VectorFLOW/commons/VFCapsule'
@@ -18,7 +18,7 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
     const [horizonDays, setHorizondays] = useState(90);
 
     const [data] = useState(dummyData)
-    const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(data, horizonDays / 5, horizonDays, false));
+    const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(data, 0, horizonDays, false));
 
     type BufferTrendData = {
         dt: string;
@@ -202,11 +202,15 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
                 label: {
                     fontSize: 8,
                     fontWeight: 'bold',
-                    color: 'black'
+                    color: 'black',
+                    avoidCollisions: true,
+                    autoRotate: false
                 },
                 gridLine: {
                     enabled: false
-                }
+                },
+
+
             },
             {
                 title: { text: "Percentage of Total Procurement Orders", fontSize: 10, spacing: 3 },
@@ -348,7 +352,7 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
     ]
 
     const handleSubmitClick = () => {
-        setNumericData(filterDataByDaysGap(data, horizonDays / 5, horizonDays, (actBtn.label === 'Percentage')));
+        setNumericData(filterDataByDaysGap(data, 0, horizonDays, (actBtn.label === 'Percentage')));
         console.log("this is the converted numeric dat, ", numericData);
     }
 
@@ -361,8 +365,8 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
                 value: 'Absolute Value'
             })
             setNumericData(data);
-            setNumericData(filterDataByDaysGap(numericData, horizonDays / 5, horizonDays, true));
-            setNumericData(filterDataByDaysGap(data, horizonDays / 5, horizonDays, (actBtn.label !== 'Percentage')));
+            setNumericData(filterDataByDaysGap(numericData, 0, horizonDays, true));
+            setNumericData(filterDataByDaysGap(data, 0, horizonDays, (actBtn.label !== 'Percentage')));
             console.log("absolute data", numericData)
         }
         else {
@@ -371,9 +375,9 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
                 value: 'Percentage'
             })
             setNumericData(convertToPercentage(data))
-            setNumericData(filterDataByDaysGap(numericData, horizonDays / 5, horizonDays, false));
+            setNumericData(filterDataByDaysGap(numericData, 0, horizonDays, false));
 
-            setNumericData(filterDataByDaysGap(data, horizonDays / 5, horizonDays, (actBtn.label !== 'Percentage')));
+            setNumericData(filterDataByDaysGap(data, 0, horizonDays, (actBtn.label !== 'Percentage')));
 
             console.log("percentage data", numericData)
         }
