@@ -58,7 +58,7 @@ const useDBM =()=>{
     const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
             SKUCode:params.data['SKUCode'],
-            WHCode:params.data['WHCode']
+            WHCode:params.data['LocCode']
         }
         const result = await getDailyData(payload)
         const data = result.data.data[0];
@@ -73,6 +73,7 @@ const useDBM =()=>{
     
         dispatch(UPDATE_DAILY_DATA(dailyData));
         dispatch(TOGGLE_GRAPH_MODAL(true));
+
     }
     const DBMColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph)
 

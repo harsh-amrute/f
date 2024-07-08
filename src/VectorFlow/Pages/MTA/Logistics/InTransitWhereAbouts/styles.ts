@@ -1,11 +1,17 @@
 import styled from "styled-components"
 import { BPRViewTableToolTip } from "../../SupplyChainIntelligenceHub/BPR/styles"
 
-export const CurrentLocationCellRendererWrapper = styled.input`
+import * as globalStyles from '../../../../../styles/global'
+
+export const CurrentLocationCellRendererWrapper = styled.div`
     border: 0.5px solid #C6C6C6;
     border-radius: 2px;
-    height:30px;
+    height:90%;
+    margin-top:2px;
     width:90%;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 `
 
 export const ColorGroupCellRendererWrapper = styled.div`
@@ -182,16 +188,17 @@ export const ButtonWrapper = styled.div`
     zoom:0.8;
 `
 
-export const ETACellRendererCellValue = styled.input`
-    justify-content:center;
-    align-items:center;
+export const ETACellRendererCellValue = styled.div`
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #77777729;
     border: 0.4000000059604645px solid #707070;
     border-radius: 2px;
-    height:30px;
+    height:40px;
     width:100%;
-    padding:4px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    // padding:4px;
     `
 
 export const UserToolTip = styled(BPRViewTableToolTip)`
@@ -226,8 +233,9 @@ export const BPRParticularAnalyticsWrapper = styled.div`
     padding:10px 10px;
 `
 
-export const BPRParticularAnalyticsTableWrapper = styled.div`
-    background-color:#383737;
+export const BPRParticularAnalyticsTableWrapper = styled.div<{themeUi:string}>`
+    background: ${(props)=>props.themeUi==='NOIRFUSION'?globalStyles.chooseThemeColor[props.themeUi].color3:globalStyles.chooseThemeColor[props.themeUi].color1} 0% 0% no-repeat padding-box;
+    color:${(props)=>props.themeUi==='PUREELEGANCE'?'black':"white"}; 
     width:100%;
     display:flex;
     flex-direction:column;
@@ -243,7 +251,7 @@ export const BPRParticularAnalyticsTableHeader = styled.span`
     width:100%;
     font-family:Roboto;
     font-weight:500;
-    color:white;
+    
     text-align:center;
     padding-bottom:5px;
 `
@@ -263,7 +271,6 @@ export const BPRParticularAnalyticsTableCell = styled.span`
     width:100%;
     font-family:Roboto;
     font-weight:500;
-    color:white;
     text-align:center;
     padding-bottom:5px;
 `
