@@ -55,6 +55,7 @@ export const HeaderWrapper = styled.div`
   justify-content: space-between;
   padding: 10px 20px;
   background: white;
+  gap: 1rem;
   @media only screen and (min-width: ${gridSystem.size
       .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
     display: flex;
@@ -68,15 +69,11 @@ export const HeaderWrapper = styled.div`
 
 export const RmHeading = styled.div`
   color: #000000;
-  letter-spacing: 0px;
-  line-height: 19px;
-  font-weight: lighter;
   font-family: "Roboto";
-  font-size: 16px;
+  font-size: 12px;
 `;
 
 export const VerticalLine = styled.div`
-  height: 20px;
   width: 1px;
   background-color: #d4d4d4;
 `;
@@ -87,6 +84,7 @@ export const ValueWrapper = styled.div`
   padding: 10px 40px;
   background-color: #f2f2f2;
   border-radius: 0px 0px 4px 4px;
+  font-size: 12px;
   @media only screen and (min-width: ${gridSystem.size
       .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
     display: flex;
@@ -103,69 +101,71 @@ export const HighlightedValue = styled.div`
 `;
 
 export const EstimatedWrapper = styled.div`
-position: relative;
-`
+  position: relative;
+  margin: 1rem 0;
+`;
 export const BlurCover = styled.div`
-top: -30px;
-left: -30px;
-position: absolute;
-background: #80808080;
-width: 100%;
-height: 130%;
-border-radius: 20px;
-`
+  top: 0;
+  left: 0;
+  position: absolute;
+  background: #80808080;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+`;
 
 export const CardCover = styled.div`
-height: 100%;
-width: 100%;
-display: flex;
-justify-content: center;
-align-items: center;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 export const DashedCard = styled.div`
-padding: 50px 40px;
+  padding: 50px 40px;
 
   border: 1px dashed #bb3f81;
   border-radius: 10px;
   background: white;
   opacity: 1;
   display: flex;
-justify-content: center;
-align-items: center;
+  justify-content: center;
+  align-items: center;
 `;
 export const MessageText = styled.span`
-font-family: 'Roboto', sans-serif;
-font-weight: 300;
-font-size: 20px;
-color: #000000;
-letter-spacing: 0;
-line-height: 30px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  color: #000000;
+  letter-spacing: 0;
+  line-height: 30px;
 `;
 
 export const TabSwitchContainer = styled.div`
-display: flex;
-align-items: center;
-gap: 50px;
-margin-top: 40px;
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  margin-top: 20px;
 
-@media (min-width:  ${gridSystem.size.mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
+  @media (min-width: ${gridSystem.size.mobileS}) and (max-width: ${gridSystem
+      .size.mobileL}) {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
     width: 100%;
-}
+  }
 `;
 
 export const TabSwitchHeading = styled.div`
-font-family: 'Roboto';
-font-weight: 500;
-font-size: 20px;
-color: #000000; 
-letter-spacing: 0;
-line-height: 24px;
+  font-family: "Roboto";
+  font-weight: 500;
+  font-size: 20px;
+  color: #000000;
+  letter-spacing: 0;
+  line-height: 24px;
 `;
 
 export const TabsWrapper = styled.div`
-width: 18%;
+  width: 18%;
 `;

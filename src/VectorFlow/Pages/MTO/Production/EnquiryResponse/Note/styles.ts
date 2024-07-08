@@ -2,7 +2,7 @@ import styled from "styled-components";
 import * as gridSystem from "../../../../../../styles/gridSystem";
 
 export const NoteWrapper = styled.div`
-  margin-top: 40px;
+  margin-top: 20px;
   display: flex;
   align-items: center;
   gap: 20px;
