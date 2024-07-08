@@ -2303,17 +2303,18 @@ export const mapInTransitWhereAboutsRowData = (rowData:Array<any>):Array<any>=>{
 }
 
 export const mapSubmitRemarkData = (row:any):any=>{
+  console.log(row)
   return{
-    data:[
-      {
+
+      
         OrderNo:row.OrderNo,
         SKUCode:row.SKUCode,
         WhCode:row.WhCode,
         ParentWHCode:row.SenderLocation,
-        Remarks:row.remark,
+        Remarks:row.action || "",
         CurrentLocation:row.CurrentLoc,
         ETA:row.ETA.replace(/-/g, '/')
-      }
-    ]
+      
+    
   }
 }

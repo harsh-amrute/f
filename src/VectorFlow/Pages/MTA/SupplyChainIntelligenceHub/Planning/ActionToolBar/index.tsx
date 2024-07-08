@@ -53,11 +53,13 @@ interface ActionToolBarProps {
     onDelete:any,
     onUpdateInsight?:()=>void
     hideUpdateInsightsBtn?:boolean
+    onSubmitEditedRows?:()=>void
+    disableSubmitEditedRowsBtn?:boolean
 }
 
 
 
-const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter,multiFilter,setMultiFilter,onDelete,onUpdateInsight,hideUpdateInsightsBtn}:ActionToolBarProps) => {
+const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter,multiFilter,setMultiFilter,onDelete,onUpdateInsight,hideUpdateInsightsBtn,onSubmitEditedRows,disableSubmitEditedRowsBtn}:ActionToolBarProps) => {
     const { user } = useUserData();
     const {ref} = useContext(GridStateContext)
     // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
@@ -341,6 +343,9 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
 
 
                             {(tabsList.length > 0 && renderFloatingTab())}
+                            {onSubmitEditedRows && (
+                                 <VFButtonOutline disabled={disableSubmitEditedRowsBtn} themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={onSubmitEditedRows}>Save  Changes</VFButtonOutline> 
+                            )}
 
                             {currCategory === 'GuidedInsight' && view === 'grid' ? (
                                 <div style={{ marginRight: '60px', maxWidth:'400px' }}>
@@ -351,6 +356,8 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                             ) : (
                                 <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
                             )}
+
+                            
                             
                             {currCategory==='ResearchInsight' && !hideUpdateInsightsBtn && 
                             <>

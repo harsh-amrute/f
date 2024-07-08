@@ -48,7 +48,9 @@ const colorMapper =(color:string)=> {
 export const CurrentLocationCellRenderer = (params:any)=>{
     const isEven = (params.rowIndex%2)===1
     return(
-        <CurrentLocationCellRendererWrapper value={params.value} onClick={(e)=>params.onClick(e,params.data)} style={{backgroundColor:isEven?"#EFEFEF":'white'}}/>
+        <CurrentLocationCellRendererWrapper  style={{backgroundColor:isEven?"#EFEFEF":'white'}}>
+           {params.value}
+        </CurrentLocationCellRendererWrapper>
     )
 }
 
@@ -127,7 +129,7 @@ export const ColorGroupCellRenderer = (params:any)=>{
 export const ETACellRenderer = (params:any)=>{
     return(
         <ETACellRendererWrapper>
-            <ETACellRendererCellValue value={params.value} onClick={(e)=>params.onClick(e,params.data)}/>
+            <ETACellRendererCellValue>{params.value}</ETACellRendererCellValue>
         </ETACellRendererWrapper>
     )
 }

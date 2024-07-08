@@ -14,7 +14,6 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 
 
 
-
 const InTransitWhereAbouts = ()=>{
 
 
@@ -63,7 +62,10 @@ const InTransitWhereAbouts = ()=>{
         tempAgGridProps,
         onSubmitCurrentLocation,
         onSubmitETA,
-        handlePageChange
+        handlePageChange,
+        editedRows,
+        onSubmitEditedRows,
+        themeUi
     } = useInTransitWhereAbouts()
 
 
@@ -96,6 +98,8 @@ const InTransitWhereAbouts = ()=>{
                 setMultiFilter={setCurrFilter}
                 onDelete={onDelete}
                 onApplyFilter={onApplyFilter}
+                onSubmitEditedRows={onSubmitEditedRows}
+                disableSubmitEditedRowsBtn={editedRows.length===0}
               />
               </div>
           
@@ -133,6 +137,7 @@ const InTransitWhereAbouts = ()=>{
                 style={submitRemarkToolTipPosition}
                 onSuccess={onSubmitRemark}
                 onClose={onCloseSubmitRemark}
+                themeUi={themeUi}
                 
             />
         )}
@@ -144,7 +149,7 @@ const InTransitWhereAbouts = ()=>{
                 onSuccess={onSubmitETA}
                 onClose={onCloseSubmitETA}
                 isDate
-                
+                themeUi={themeUi}
             />
         )}
          {isSubmitCurrentLocationTipOpen && (
@@ -154,7 +159,7 @@ const InTransitWhereAbouts = ()=>{
                 style={submitCurrentLocationToolTipPosition}
                 onSuccess={onSubmitCurrentLocation}
                 onClose={onCloseSubmitCurentLocation}
-                
+                themeUi={themeUi}
             />
         )}
             <ContactDetailsModal isOpen={isContactModalOpen} onClose={onCloseContactModal} data={currentUserDetails}/>

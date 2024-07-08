@@ -18,6 +18,7 @@ import { mapInTransitWhereAboutsRowData, mapSubmitRemarkData } from "../../../..
 import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount,useGetRemarkDetailsForInTransit, useGetTransporterDetails, useSubmitRemarksForInTransit } from "../../../../../VectorFlow/Services/MTA/Logistics/InTransitWhereAbouts";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
+import { ColDef } from "ag-grid-enterprise";
 
 
 
@@ -51,6 +52,8 @@ const useInTransitWhereAbouts = ()=>{
     const [submitCurrentLocationToolTipPosition,setSubmitCurrentLocationToolipPosition] = useState<CSSProperties>({})
 
     const [rowData,setRowData] = useState<Array<any>>([])
+
+    const [editedRows,setEditedRows] = useState<Array<any>>([])
 
     const [recordCount,setRecordCount] = useState<number>(0)
 
@@ -89,7 +92,6 @@ const useInTransitWhereAbouts = ()=>{
 
 
 
-    console.debug(activeRow)
     const customCellRenderers = useMemo(() => ({
         // grapCellRenderer:BPRGraphCellRenderer,
         // colorTechCellRenderer:BPRTechColorCellRenderer,
@@ -149,6 +151,7 @@ const useInTransitWhereAbouts = ()=>{
     
 
     const agGridProps: AgGridReactProps = {
+      readOnlyEdit:false,
       icons:{
         groupExpanded: `<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus.svg"} style="width: 20px; height: 20px;">`,
         groupContracted:`<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus.svg"} style="width: 20px; height: 20px;">`
@@ -158,7 +161,6 @@ const useInTransitWhereAbouts = ()=>{
       detailCellRendererParams:{
         onContactDetails:onOpenContactModal
       },
-      onCellEditingStopped:(params)=>console.log(params.newValue),
       // detailRowAutoHeight:true,
       // detailCellRendererParams:{
       //   detailGridOptions: {
@@ -185,6 +187,7 @@ const useInTransitWhereAbouts = ()=>{
             },
             readOnlyEdit:true
         },
+        
         sideBar:sideBar,
         // suppressRowClickSelection: true,
         components: customCellRenderers,
@@ -214,7 +217,8 @@ const useInTransitWhereAbouts = ()=>{
               { statusPanel: 'agSelectedRowCountComponent', align:'left' },
               { statusPanel: 'agAggregationComponent', align:'left' },
             ],
-          }
+          },
+          onCellValueChanged:(params)=>onCellValueChanged(params.data,"OrderNo")
     }
 
     const tempAgGridProps:AgGridReactProps = {
@@ -224,7 +228,24 @@ const useInTransitWhereAbouts = ()=>{
       };
 
 
-
+      const onCellValueChanged = (newRow: any, primaryKey: string) => {
+        setEditedRows((prev) => {
+          let found = false; // Flag to track if the row has been updated
+          const updatedRows = prev.map((row) => {
+            if (row[primaryKey] === newRow[primaryKey]) {
+              found = true;
+              return { ...newRow }; // Return updated row
+            }
+            return row; // Return unchanged row
+          });
+      
+          if (!found) {
+            // If no existing row was found, add the new row
+            return [...updatedRows, {...newRow}];
+          }
+          return updatedRows;
+        });
+      };
     const getRecordCount = async(filter:any)=>{
       try{
         const payload = {
@@ -261,6 +282,7 @@ const useInTransitWhereAbouts = ()=>{
     }
 
     const handlePageChange = async(pageNo:number)=>{
+      setEditedRows([])
       const payload = {
         "id": 0,
         "name": "",
@@ -470,6 +492,7 @@ const useInTransitWhereAbouts = ()=>{
 
   
     const onApplyFilter = async(filter:any)=>{
+      setEditedRows([])
       setCurrFilter(filter)
       setCurrentPage(1)
       await(getRecordCount(filter))
@@ -493,9 +516,22 @@ const useInTransitWhereAbouts = ()=>{
       return data.data.data
     }
       
+    const onSubmitEditedRows = async()=>{
+      notifyLoader('Submitting data')
+      console.log(editedRows)
+     try{
+      const payload = editedRows.map((r)=>{
+        return mapSubmitRemarkData(r)
+      })
+      await submitRemark({data:payload})
+      toast.dismiss()
+     }catch(err){
+      notifyError("Something went wrong")
+     }
+    }
       
 
-    const colDefs = useMemo(()=>{
+    const colDefs = useMemo(():ColDef[]=>{
        return [
       {
         headerName: "Order No",
@@ -531,6 +567,7 @@ const useInTransitWhereAbouts = ()=>{
         cellRendererParams:{
           onClick:onOpenSubmitCurrentLocation
       },
+      editable:true
     },
     {
         headerName: "On-Hand Inventory penetration",
@@ -547,7 +584,8 @@ const useInTransitWhereAbouts = ()=>{
         cellRendererParams:{
             onClick:onOpenSubmitRemark
         },
-        floatingFilter:false
+        floatingFilter:false,
+        editable:true
     },
       {
         headerName: "ETA",
@@ -557,7 +595,8 @@ const useInTransitWhereAbouts = ()=>{
         cellRendererParams:{
           onClick:onOpenSubmitETA
         },
-        floatingFilter:false
+        floatingFilter:false,
+        editable:true
     },
       {
           headerName: "",
@@ -598,7 +637,8 @@ const useInTransitWhereAbouts = ()=>{
         exportExcelColumns,
         setExportExcelColumns,
         isContactModalOpen,
-        onOpenContactModal,        currentUserDetails,
+        onOpenContactModal,        
+        currentUserDetails,
         onCloseContactModal,
         onOpenSubmitETA,
         isSubmitETAToolTipOpen,
@@ -622,7 +662,10 @@ const useInTransitWhereAbouts = ()=>{
         onExportToExcelCallBack,
         onSubmitCurrentLocation,
         onSubmitETA,
-        handlePageChange
+        handlePageChange,
+        editedRows,
+        onSubmitEditedRows,
+        themeUi
     }
 }
 

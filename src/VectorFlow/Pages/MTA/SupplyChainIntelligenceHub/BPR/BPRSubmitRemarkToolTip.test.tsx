@@ -17,6 +17,7 @@ describe('BPRSubmiRemarkToolTip Component', () => {
         setRemark={setRemarkMock}
         onClose={onCloseMock}
         onSuccess={onSuccessMock}
+        themeUi={"NOIRFUSION"}
       />
     );
   });
