@@ -22,11 +22,12 @@ type ActBtn = {
 
 type BufferTrendData = {
     dt: string;
-    b: number;
-    r: number;
-    g: number;
-    y: number;
-    bl: number;
+    b?: number;
+    r?: number;
+    g?: number;
+    y?: number;
+    bl?: number;
+    w?: number;
 };
 
 const BMTrends = () => {
@@ -47,7 +48,8 @@ const BMTrends = () => {
         {label: 'Red', value: 'red', key: 'r'},
         {label: 'Yellow', value: 'yellow', key: 'y'},
         {label: 'Green', value: 'green', key: 'g'},
-        {label: 'Blue', value: 'bllue', key: 'bl'},
+        {label: 'White', value: 'gray', key: 'w'},
+        {label: 'Blue', value: 'blue', key: 'bl'},
      ];
 
     function filterDataByDaysGap(buffData: BufferTrendData[], numberOfDaysGap: number, horizonDays: number, isPer: boolean): BufferTrendData[] {
@@ -74,7 +76,25 @@ const BMTrends = () => {
 
     function convertToPercentage(data: BufferTrendData[]): BufferTrendData[] {
         return data.map(entry => {
-            const total = entry?.b + entry?.r + entry?.g + entry?.y + entry?.bl;
+            let total = 0;
+            if(entry?.b){
+                total += entry?.b;
+            }
+            if(entry?.r){
+                total += entry?.r;
+            }
+            if(entry?.g){
+                total += entry?.g;
+            }
+            if(entry?.y){
+                total += entry?.y;
+            }
+            if(entry?.w){
+                total += entry?.w;
+            }
+            if(entry?.bl){
+                total += entry?.bl;
+            }
 
             if (total === 0) {
                 return entry
@@ -87,6 +107,7 @@ const BMTrends = () => {
                 g: ((entry?.g / total) * 100),
                 y: ((entry?.y / total) * 100),
                 bl: ((entry?.bl / total) * 100),
+                w: ((entry?.w / total) * 100),
             };
         });
 
@@ -426,24 +447,29 @@ const BMTrends = () => {
 
         for (let i = 0; i < numDays; i++) {
             const day = formatDate(date);
-            let entry: BufferTrendData = {
+            let entry: any = {
                 'dt': day,
-                'b': 0,
-                'r': 0,
-                'g': 0,
-                'y': 0,
-                'bl': 0,
             };
             const newDate = day?.split('-')?.reverse()?.join('-');
             if(apiData[newDate]){
-                entry = {
-                    'dt': day,
-                    'b': apiData[newDate]?.B || 0,
-                    'r': apiData[newDate]?.R || 0,
-                    'g': apiData[newDate]?.G || 0,
-                    'y': apiData[newDate]?.Y || 0,
-                    'bl': apiData[newDate]?.Bl || 0,
-                };
+                if(apiData[newDate]?.B){
+                    entry = { ...entry, b: apiData[newDate]?.B || 0}
+                }
+                if(apiData[newDate]?.R){
+                    entry = { ...entry, r: apiData[newDate]?.R || 0}
+                }
+                if(apiData[newDate]?.G){
+                    entry = { ...entry, g: apiData[newDate]?.G || 0}
+                }
+                if(apiData[newDate]?.Y){
+                    entry = { ...entry, y: apiData[newDate]?.Y || 0}
+                }
+                if(apiData[newDate]?.W){
+                    entry = { ...entry, w: apiData[newDate]?.W || 0}
+                }
+                if(apiData[newDate]?.Bl){
+                    entry = { ...entry, bl: apiData[newDate]?.Bl || 0}
+                }
             }
             
             updatedData.push(entry);
