@@ -41,6 +41,7 @@ import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrend
 import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
 import RMPMBufferTrends from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMBufferTrends'
 import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
+import DptWiseBMReport from './VectorFlow/Pages/MTO/Production/DepartmentWiseBMReport/index';
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -58,7 +59,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
-    '/production-planning-scheduling/enquiry-response'
+
   ]
   const urlAllPage = [
     ...authenPage,
@@ -95,7 +96,9 @@ const lazyLoad = (children: React.ReactNode) => {
     '/procurement/material-requirement',
     '/procurement/insights-and-trends/rmpm',
     '/procurement/insights-and-trends/rmpm-buffer-trends',
-    '/procurement/insights-and-trends/rmpm-orderwise-coverage'
+    '/procurement/insights-and-trends/rmpm-orderwise-coverage',
+    '/production-planning-scheduling/enquiry-response',
+    '/production-planning-scheduling/deptwise-bm-report'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -430,26 +433,26 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-     path: '/dbm/dbm-norm-suggestions',
-     element: <AppLayout />,
-     children: [
-       {
-         index: true,
-         element: lazyLoad(<DBM/>)
-       },
-       ...getStoreTransferModuleRoutes()
-     ]
+      path: '/dbm/dbm-norm-suggestions',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DBM />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
     },
     {
-     path: '/production-planning-scheduling/enquiry-response',
-     element: <AppLayout />,
-     children: [
-       {
-         index: true,
-         element: lazyLoad(<EnquiryResponse/>)
-       },
-       ...getStoreTransferModuleRoutes()
-     ]
+      path: '/production-planning-scheduling/enquiry-response',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<EnquiryResponse />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
     },
     {
       path: '/dbm/dbm-norm-suggestions',
@@ -539,6 +542,18 @@ export const initRoutes = (): RouteObject[] => {
         },
         ...getStoreTransferModuleRoutes()
       ]
+    },
+    {
+      path: '/production-planning-scheduling/deptwise-bm-report',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DptWiseBMReport />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+
     }
 
   ]
