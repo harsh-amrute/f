@@ -18,8 +18,8 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
 
     const myCustomTheme: any = {
         palette: {
-            fills: ['black', 'red', 'green', 'yellow', 'blue'],
-            strokes: ['black', 'red', 'green', 'yellow', 'blue'],
+            fills: ['black', 'red', 'green', 'yellow', 'blue', 'gray'],
+            strokes: ['black', 'red', 'green', 'yellow', 'blue', 'gray'],
         },
     }
 
@@ -31,7 +31,7 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
                 refGraph1.current?.api.createRangeChart({
                     chartType: 'line',
                     cellRange: {
-                        columns: ['dt', 'b', 'r', 'y', 'g', 'bl'],
+                        columns: ['dt', 'b', 'r', 'y', 'g', 'bl', 'w'],
                     },
 
                     chartThemeOverrides: {

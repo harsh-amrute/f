@@ -5,7 +5,6 @@ import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInf
 import VFRangeSlider from '../../../../../../components/VectorFLOW/commons/VFRangeSlider'
 import SplitGraphContainer from '../../../Common/SplitGraphContainer'
 import { SCChartHeaderContainer, SCChartMainContainer, CapsuleWrapper, SCChartSliderContainer, BMTrendWrapper } from './styles'
-import dummyData from './BMTrendDummyData'
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { useGetBMTrendsData } from '../../../../../Services/MTO/Production/InsightsAndTrends/BMTrends'
 
@@ -48,8 +47,8 @@ const BMTrends = () => {
         {label: 'Red', value: 'red', key: 'r'},
         {label: 'Yellow', value: 'yellow', key: 'y'},
         {label: 'Green', value: 'green', key: 'g'},
-        {label: 'White', value: 'gray', key: 'w'},
         {label: 'Blue', value: 'blue', key: 'bl'},
+        {label: 'White', value: 'gray', key: 'w'},
      ];
 
     function filterDataByDaysGap(buffData: BufferTrendData[], numberOfDaysGap: number, horizonDays: number, isPer: boolean): BufferTrendData[] {
@@ -102,12 +101,12 @@ const BMTrends = () => {
 
             return {
                 dt: entry?.dt,
-                b: ((entry?.b / total) * 100),
-                r: ((entry?.r / total) * 100),
-                g: ((entry?.g / total) * 100),
-                y: ((entry?.y / total) * 100),
-                bl: ((entry?.bl / total) * 100),
-                w: ((entry?.w / total) * 100),
+                b: entry?.b ? ((entry?.b / total) * 100) : 0,
+                r: entry?.r ? ((entry?.r / total) * 100) : 0,
+                g: entry?.g ? ((entry?.g / total) * 100) : 0,
+                y: entry?.y ? ((entry?.y / total) * 100) : 0,
+                bl: entry?.bl ? ((entry?.bl / total) * 100) : 0,
+                w: entry?.w ? ((entry?.w / total) * 100) : 0,
             };
         });
 
@@ -132,22 +131,20 @@ const BMTrends = () => {
         }
 
         if (actBtn.label === 'Absolute Value') {
-            countArr = [datum['b'], datum['r'], datum['y'], datum['g'], datum['bl']]
+            countArr = [datum['b'], datum['r'], datum['y'], datum['g'], datum['bl'], datum['w']]
             perArr = convertToPercentageArray(countArr);
         }
         else {
-            perArr = [datum['b'], datum['r'], datum['y'], datum['g'], datum['bl']];
+            perArr = [datum['b'], datum['r'], datum['y'], datum['g'], datum['bl'], datum['w']];
             let reqData = null;
-            countArr = [0, 0, 0, 0, 0];
+            countArr = [0, 0, 0, 0, 0, 0];
 
             bmTrendData.forEach(element => {
                 if (element.dt === datum['dt']) {
                     reqData = element;
-                    countArr = [reqData?.b, reqData?.r, reqData?.y, reqData?.g, reqData?.bl]
+                    countArr = [reqData?.b, reqData?.r, reqData?.y, reqData?.g, reqData?.bl, reqData?.w]
                 }
-
             });
-
         }
 
         const getToolTipValues = ({ countArr, perArr, actBtn }: TooltipValuesProps) => {
@@ -202,8 +199,8 @@ const BMTrends = () => {
                 stroke:`${colors[i]?.value}`,
                 strokeWidth: 3,
                 marker: {
-                    fill: `${colors[i]?.label}`,
-                    stroke: `${colors[i]?.label}`
+                    fill: `${colors[i]?.value}`,
+                    stroke: `${colors[i]?.value}`
                 },
                 tooltip: {
 
@@ -350,6 +347,12 @@ const BMTrends = () => {
                 colId: 'bl',
                 headerName: 'Blue',
                 initialWidth: 200
+            },
+            {
+                field: 'w',
+                colId: 'w',
+                headerName: 'White',
+                initialWidth: 200
             }
         ]
 
@@ -449,6 +452,12 @@ const BMTrends = () => {
             const day = formatDate(date);
             let entry: any = {
                 'dt': day,
+                'b' : 0,
+                'r' : 0,
+                'g' : 0,
+                'y' : 0,
+                'bl' : 0,
+                'w' : 0,
             };
             const newDate = day?.split('-')?.reverse()?.join('-');
             if(apiData[newDate]){
