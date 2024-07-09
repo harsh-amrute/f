@@ -40,16 +40,16 @@ const BMTrends = () => {
     const { data } = useGetBMTrendsData() || {};
     const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(bmTrendData, 0, horizonDays, false));
     const [hideChart1, toggleChart1] = useState(false);
-    const [rowData, setRowData] = useState(numericData )
+    const [rowData, setRowData] = useState(numericData)
 
     const colors = [
-        {label: 'Black', value: 'black', key: 'b'},
-        {label: 'Red', value: 'red', key: 'r'},
-        {label: 'Yellow', value: 'yellow', key: 'y'},
-        {label: 'Green', value: 'green', key: 'g'},
-        {label: 'Blue', value: 'blue', key: 'bl'},
-        {label: 'White', value: 'gray', key: 'w'},
-     ];
+        { label: 'Black', value: 'black', key: 'b' },
+        { label: 'Red', value: 'red', key: 'r' },
+        { label: 'Yellow', value: 'yellow', key: 'y' },
+        { label: 'Green', value: 'green', key: 'g' },
+        { label: 'Blue', value: 'blue', key: 'bl' },
+        { label: 'White', value: 'gray', key: 'w' },
+    ];
 
     function filterDataByDaysGap(buffData: BufferTrendData[], numberOfDaysGap: number, horizonDays: number, isPer: boolean): BufferTrendData[] {
         const filteredData: (BufferTrendData[]) = [];
@@ -76,22 +76,22 @@ const BMTrends = () => {
     function convertToPercentage(data: BufferTrendData[]): BufferTrendData[] {
         return data.map(entry => {
             let total = 0;
-            if(entry?.b){
+            if (entry?.b) {
                 total += entry?.b;
             }
-            if(entry?.r){
+            if (entry?.r) {
                 total += entry?.r;
             }
-            if(entry?.g){
+            if (entry?.g) {
                 total += entry?.g;
             }
-            if(entry?.y){
+            if (entry?.y) {
                 total += entry?.y;
             }
-            if(entry?.w){
+            if (entry?.w) {
                 total += entry?.w;
             }
-            if(entry?.bl){
+            if (entry?.bl) {
                 total += entry?.bl;
             }
 
@@ -149,14 +149,14 @@ const BMTrends = () => {
 
         const getToolTipValues = ({ countArr, perArr, actBtn }: TooltipValuesProps) => {
             let values = '';
-            for(let i = 0; i < colors?.length; i++){
+            for (let i = 0; i < colors?.length; i++) {
                 values += `<tr key=${i}>
                 <tr><td style="padding: 5px; background-color: #6C696A;"><div style="display: flex; align-items: center;"><div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${colors[i]?.value}"></div>${colors[i]?.label}</div></td>
                     ${actBtn.label === 'Percentage' ? (
                         `<td style={{ padding: '5px', backgroundColor: '#6C696A' }}>
                             ${Math.round(perArr[i])}%
                         </td>`
-                    ):(
+                    ) : (
                         `<td style={{ padding: '5px', backgroundColor: '#6C696A' }}>
                             ${countArr[i]}
                         </td>`
@@ -180,7 +180,7 @@ const BMTrends = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    ${getToolTipValues({countArr, perArr, actBtn})}
+                    ${getToolTipValues({ countArr, perArr, actBtn })}
                 </tbody>
             </table>
         </div>
@@ -189,14 +189,14 @@ const BMTrends = () => {
 
     const getSeriesData = () => {
         const series: AgCartesianSeriesOptions[] = [];
-        for(let i = 0; i < colors?.length; i++){
+        for (let i = 0; i < colors?.length; i++) {
 
             series?.push({
                 type: "line",
                 xKey: "dt",
                 yKey: `${colors[i]?.key}`,
                 yName: `${colors[i]?.label}`,
-                stroke:`${colors[i]?.value}`,
+                stroke: `${colors[i]?.value}`,
                 strokeWidth: 3,
                 marker: {
                     fill: `${colors[i]?.value}`,
@@ -378,7 +378,7 @@ const BMTrends = () => {
                             showTriangle={false}
                             min={1}
                             max={90}
-                            milestones={[0,14, 30, 60, 90]}
+                            milestones={[0, 14, 30, 60, 90]}
                             strictMode={false}
                             width={200}
                             defaultValue={horizonDays}
@@ -402,7 +402,7 @@ const BMTrends = () => {
 
                     </SCChartSliderContainer>
                     <SCChartHeaderContainer>
-                        <CapsuleWrapper style={{ zoom: 0.8, padding: '4px' }}>
+                        <CapsuleWrapper style={{ zoom: 1, padding: '4px' }}>
                             <VFCapsule
                                 activeBtn={actBtn}
                                 capsules={[
@@ -452,59 +452,59 @@ const BMTrends = () => {
             const day = formatDate(date);
             let entry: any = {
                 'dt': day,
-                'b' : 0,
-                'r' : 0,
-                'g' : 0,
-                'y' : 0,
-                'bl' : 0,
-                'w' : 0,
+                'b': 0,
+                'r': 0,
+                'g': 0,
+                'y': 0,
+                'bl': 0,
+                'w': 0,
             };
             const newDate = day?.split('-')?.reverse()?.join('-');
-            if(apiData[newDate]){
-                if(apiData[newDate]?.B){
-                    entry = { ...entry, b: apiData[newDate]?.B || 0}
+            if (apiData[newDate]) {
+                if (apiData[newDate]?.B) {
+                    entry = { ...entry, b: apiData[newDate]?.B || 0 }
                 }
-                if(apiData[newDate]?.R){
-                    entry = { ...entry, r: apiData[newDate]?.R || 0}
+                if (apiData[newDate]?.R) {
+                    entry = { ...entry, r: apiData[newDate]?.R || 0 }
                 }
-                if(apiData[newDate]?.G){
-                    entry = { ...entry, g: apiData[newDate]?.G || 0}
+                if (apiData[newDate]?.G) {
+                    entry = { ...entry, g: apiData[newDate]?.G || 0 }
                 }
-                if(apiData[newDate]?.Y){
-                    entry = { ...entry, y: apiData[newDate]?.Y || 0}
+                if (apiData[newDate]?.Y) {
+                    entry = { ...entry, y: apiData[newDate]?.Y || 0 }
                 }
-                if(apiData[newDate]?.W){
-                    entry = { ...entry, w: apiData[newDate]?.W || 0}
+                if (apiData[newDate]?.W) {
+                    entry = { ...entry, w: apiData[newDate]?.W || 0 }
                 }
-                if(apiData[newDate]?.Bl){
-                    entry = { ...entry, bl: apiData[newDate]?.Bl || 0}
+                if (apiData[newDate]?.Bl) {
+                    entry = { ...entry, bl: apiData[newDate]?.Bl || 0 }
                 }
             }
-            
+
             updatedData.push(entry);
             date.setDate(date.getDate() - 1);
         }
-            // setData(apiData?.data?.data?.data);
+        // setData(apiData?.data?.data?.data);
         console.log(updatedData, 'UPDATED ')
         setBMTrendData(updatedData);
         setNumericData(filterDataByDaysGap(updatedData, 0, horizonDays, false));
     }
 
-    useEffect(()=>{
-        if(numericData){
+    useEffect(() => {
+        if (numericData) {
             setRowData(numericData);
         }
-    },[numericData]);
+    }, [numericData]);
 
-    useEffect(()=>{
-        if(data?.data?.data){
+    useEffect(() => {
+        if (data?.data?.data) {
             convertToGraphData(data?.data?.data);
         }
-    },[data])
-    
+    }, [data])
+
     return (
         <BMTrendWrapper>
-            <MTOActionToolBar comp={'BMTrends'}/>
+            <MTOActionToolBar comp={'BMTrends'} />
             <SplitGraphContainer
                 tableLoading={tableLoading}
                 chartLoading={chartLoading}
@@ -512,15 +512,15 @@ const BMTrends = () => {
                 setChartLoading={setChartLoading}
                 data={numericData}
                 rowData={rowData}
-                graphTitle={`Overall BM Trend (${numericData[0]?.dt} - ${numericData[numericData?.length-1]?.dt} )`}
-                tableTitle={`Overall BM Trend (${numericData[0]?.dt} - ${numericData[numericData?.length-1]?.dt} )`}
+                graphTitle={`Overall BM Trend (${numericData[0]?.dt} - ${numericData[numericData?.length - 1]?.dt} )`}
+                tableTitle={`Overall BM Trend (${numericData[0]?.dt} - ${numericData[numericData?.length - 1]?.dt} )`}
                 options={options}
                 colDef={colDef}
                 header={generateHeader}
                 hideChart={hideChart1}
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRenderer}
-                // chartHeight={50}
+                chartHeight={50}
             />
         </BMTrendWrapper>
     )
