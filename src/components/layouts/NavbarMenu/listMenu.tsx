@@ -590,6 +590,14 @@ export const listMenuParent: any = [
         img: "/assets/img/nav/arrow_down.svg",
         url: "",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        child: [
+          {
+            name: "BM Trends",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/production-planning-scheduling/insight-and-trends/bm-trends",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          }
+        ]
       },
     ],
   },
