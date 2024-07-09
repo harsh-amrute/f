@@ -1,26 +1,46 @@
 import { AgChartOptions } from 'ag-charts-community'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
-import { RMPMExpiditingData } from '../../RMPMExpediting/RMPMExpeditingData';
-import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
+
+import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';
+import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
 const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
-    const [horizonDays, setHorizondays] = useState(90);
 
-    const [numericData] = useState<any>(RMPMExpiditingData);
+    const { mutateAsync: getRMPMExpedition } = useGetRMExpeditingData()
+    const [horizonDays, setHorizondays] = useState(14);
+    const [numericData, setNumericData] = useState<any>();
+
+    let RMPMExpeditionOBj = {}
+    useEffect(() => {
+        getOnLoadData();
+    }, [])
+
+    const getOnLoadData = async () => {
+        RMPMExpeditionOBj = {
+            'horizon': '14',
+            'val': 'all'
+        }
+        const someData = await getRMPMExpedition(RMPMExpeditionOBj);
+        setNumericData(someData.data?.data?.rm)
+       
+    }
 
 
-    function TooltipRenderer({ datum, xKey }: any) {
+
+
+
+    function TooltipRenderer({ datum }: any) {
         return ` 
         <div style="background:#000; border-radius:3px; color:#fff ;padding:8px">
             <div style="width: 100%; display: flex; justify-content: center">
-                AE1234Ffre
+              ${datum.rn}
             </div>
             <hr style="border: 1px dashed"/>
-            <div>RM Desc : ${datum['dt']}</div>
-            <div>No. Of Orders : ${datum['b']}</div>
+            <div>RM Desc : ${datum.rd}</div>
+            <div>No. Of Orders : ${datum.rc}</div>
         </div>
         `;
     }
@@ -64,14 +84,12 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
         series: [
             {
                 type: "bar",
-                xKey: "rmNam",
-                yKey: "ordCnt",
+                xKey: "rn",
+                yKey: "rc",
                 fill: 'Grey',
                 yName: "No of Impacted Orders",
                 tooltip: {
-
                     renderer: TooltipRenderer
-
                 }
             }
 
@@ -101,9 +119,20 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
         'This graph highlights the raw materials in shortage, ranked by thier impact on the numbers of orders.'
     ]
 
+    const getRMHorizonBasedData = async () => {
+        //setNumericData(null)
+        RMPMExpeditionOBj = {
+            'horizon': horizonDays,
+            'val': 'rm'
+        }
+        const someData = await getRMPMExpedition(RMPMExpeditionOBj);
+        console.log('rm horizon =', someData.data?.data?.rm)
+        setNumericData(someData.data?.data?.rm)
+    }
+
     const handleSubmitClick = () => {
         //setNumericData();
-        console.log("this is the converted numeric dat, ", numericData);
+        getRMHorizonBasedData();
     }
 
     const handleSliderChange = (val: any) => {
@@ -116,30 +145,29 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
     const colDef =
         [
             {
-                field: 'rmNam',
-                colId: 'rmNam',
+                field: 'rn',
+                colId: 'rn',
                 headerName: 'RM Name',
                 initialWidth: 200
             },
             {
-                field: 'ordCnt',
-                colId: 'ordCnt',
+                field: 'rc',
+                colId: 'rc',
                 headerName: 'Order Count',
                 initialWidth: 200
 
             },
             {
-                field: 'rmDes',
-                colId: 'rmDes',
+                field: 'rd',
+                colId: 'rd',
                 headerName: 'RM Desc',
                 initialWidth: 200
 
             }
 
         ]
-    const [rowData] = useState(
-        numericData
-    )
+  
+
 
     const [chartLoading, setChartLoading] = useState(true);
     const [tableLoading, setTableLoading] = useState(true);
@@ -187,7 +215,8 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                         <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
                             <VFInfoToolTip infoList={graph1} />
                         </div>
-                        <div onClick={() => { toggleChart1(!hideChart1) }} style={{ marginLeft: 10, marginBottom: '-5px', marginRight: '10px' }}>
+                        <div
+                            onClick={() => { toggleChart1(!hideChart1) }} style={{ marginLeft: 10, marginBottom: '-5px', marginRight: '10px' }}>
                             <img src='/assets/img/VectorFLOW/BPR/minimize.svg' height={13} width={13} color={"#CCCCCC"} />
                         </div>
                     </SCChartHeaderContainer>
@@ -209,7 +238,7 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                 setTableLoading={setTableLoading}
                 setChartLoading={setChartLoading}
                 data={numericData}
-                rowData={rowData}
+                rowData={numericData}
                 graphTitle={`Top 10 Raw Materials Impacting Orders With Release Date In Selected Horizon (${moment(date).format('D MMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('D MMM YYYY')}) `}
                 tableTitle={`Top 10 Raw Materials Impacting Orders With Release Date In Selected Horizon (${moment(date).format('Do MMMM YYYY')} - ${moment(date).format('Do MMMM YYYY')})`}
                 options={options}

@@ -45,8 +45,6 @@ const SplitGraphContainer = ({
     const chartRef = useRef<AgChartsReact>(null);
     const refGraph1 = useRef<GridRef>(null);
 
-
-
     const myCustomTheme = () => {
         switch (graphType) {
             case 1:
@@ -107,7 +105,7 @@ const SplitGraphContainer = ({
                 refGraph1.current?.api.createRangeChart({
                     chartType: 'column',
                     cellRange: {
-                        columns: ['rmNam', 'ordCnt'],
+                        columns: ['rn', 'rc'],
                     },
 
                     chartThemeOverrides: {

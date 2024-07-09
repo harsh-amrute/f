@@ -1,19 +1,35 @@
 import { AgChartOptions } from 'ag-charts-community'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
 import { RMPMExpiditingDataMTO } from '../RMPMExpeditingData'
-import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
+import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';
+import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
 
 const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
+    let RMPMExpeditionOBj = {}
     const [chartLoading, setChartLoading] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
     const [horizonDays, setHorizondays] = useState(90);
 
+    const { mutateAsync: getRMPMExpedition } = useGetRMExpeditingData()
+    const [numericData, setNumericData] = useState<any>();
 
-    const [numericData] = useState<any>(RMPMExpiditingDataMTO);
+    useEffect(() => {
+        getOnLoadData();
+    }, [])
+
+    const getOnLoadData = async () => {
+        RMPMExpeditionOBj = {
+            'horizon': '14',
+            'val': 'all'
+        }
+        const someData = await getRMPMExpedition(RMPMExpeditionOBj);
+        setNumericData(someData.data?.data?.supplier)
+    }
+
 
 
     const TooltipRenderer = ({ datum, xKey }: any) => {
@@ -66,8 +82,8 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
         series: [
             {
                 type: 'bar',
-                xKey: "supNme",
-                yKey: "ordCnt",
+                xKey: "sn",
+                yKey: "rc",
                 fill: 'Grey',
                 yName: "No of Impacted Orders",
                 tooltip: {
@@ -112,14 +128,14 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
     const colDef =
         [
             {
-                field: 'supNme',
-                colId: 'supNme',
+                field: 'sn',
+                colId: 'sn',
                 headerName: 'Suplier Name',
                 initialWidth: 200
             },
             {
-                field: 'ordCnt',
-                colId: 'ordCnt',
+                field: 'rc',
+                colId: 'rc',
                 headerName: 'Impacted Order',
                 initialWidth: 200
 
@@ -148,7 +164,7 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                             showTriangle={false}
                             min={1}
                             max={90}
-                            milestones={[0,30, 60, 90]}
+                            milestones={[0, 30, 60, 90]}
                             strictMode={false}
                             width={200}
                             defaultValue={horizonDays}

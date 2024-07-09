@@ -6,16 +6,17 @@ import '../RMPMBufferTrends/style.css';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from "../RMPMBufferTrends/styles";
 import ExpeditingMTA from "./MTAGraph/ExpeditingMTA";
 import ExpeditingMTO from "./MTOGraph/ExpeditingMTO";
-import { useGetDate } from '../../../../../Services/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index'
-
+import { useGetDate } from '../../../../../Services/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index';
 
 
 const RMExpeditionSuppliers = () => {
     const [isMTO] = useState(true);
     const { data, /*isLoading, refetch*/ } = useGetDate();
-    
+  
+
     const { screenHeight } = useViewPort()
 
+    
     return (
         <div style={{ zoom: 1.33, marginLeft: '30px' }}>
             <MTOActionToolBar comp={"BTRMTO"} />
@@ -32,6 +33,7 @@ const RMExpeditionSuppliers = () => {
                                         <ExpeditingMTO
                                             isMTO={isMTO}
                                             date={data?.data?.data}
+                                            
                                         />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
@@ -42,12 +44,17 @@ const RMExpeditionSuppliers = () => {
                                         <ExpeditingMTA
                                             isMTO={isMTO}
                                             date={data?.data?.data}
+                                          
                                         />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
                             </Allotment>)
                             :
-                            <ExpeditingMTO isMTO={isMTO} date={data?.data?.data} />
+                            <ExpeditingMTO
+                                isMTO={isMTO}
+                                date={data?.data?.data}
+                                
+                            />
                     }
                 </BTRTableWrapper>
 

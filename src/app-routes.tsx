@@ -41,7 +41,7 @@ import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrend
 import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
 import RMPMBufferTrends from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMBufferTrends'
 import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
-import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting'
+import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
