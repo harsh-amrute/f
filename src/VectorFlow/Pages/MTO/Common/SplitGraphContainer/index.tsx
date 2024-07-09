@@ -35,8 +35,6 @@ const SplitGraphContainer = ({
     header,
     graphTitle,
     tableTitle,
-    tableLoading,
-    chartLoading,
     setTableLoading,
     setChartLoading,
     hideChart,

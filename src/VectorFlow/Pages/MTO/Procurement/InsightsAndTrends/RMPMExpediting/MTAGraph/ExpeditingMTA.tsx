@@ -5,6 +5,7 @@ import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VF
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
 import { RMPMExpiditingDataMTO } from '../RMPMExpeditingData'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
+import moment from 'moment'
 
 const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
     const [chartLoading, setChartLoading] = useState(false);
@@ -147,7 +148,7 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                             showTriangle={false}
                             min={1}
                             max={90}
-                            milestones={[0, 30, 60, 90]}
+                            milestones={[0,30, 60, 90]}
                             strictMode={false}
                             width={200}
                             defaultValue={horizonDays}
@@ -198,8 +199,8 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                 setChartLoading={setChartLoading}
                 data={numericData}
                 rowData={rowData}
-                graphTitle={"Top 10 Suppliers Impacting Orders With Release Date In Selected Horizon ( 19 Apr 2024 -3 May 2024)"}
-                tableTitle={"Top 10 Suppliers Impacting Orders With Release Date In Selected Horizon ( 19 Apr 2024 -3 May 2024)"}
+                graphTitle={`Top 10 Suppliers Impacting Orders With Release Date In Selected Horizon ( ${moment(date).format('D MMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('D MMM YYYY')})`}
+                tableTitle={`Top 10 Suppliers Impacting Orders With Release Date In Selected Horizon ( ${moment(date).format('D MMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('D MMM YYYY')})`}
                 options={options}
                 colDef={colDef}
                 header={generateHeader}
