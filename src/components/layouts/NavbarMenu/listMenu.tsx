@@ -541,19 +541,19 @@ export const listMenuParent: any = [
     img: "/assets/img/nav/prod-plan-icon",
     url: "/production-planning-scheduling/enquiry-response",
     status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
     child: [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.enquiryResponse",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/production-planning-scheduling/enquiry-response",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.dueDateQuotation",
         img: "/assets/img/nav/arrow_down.svg",
         url: "",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.orderRescheduling",
@@ -586,14 +586,23 @@ export const listMenuParent: any = [
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {
-        name: "navbar.listMenuParent.prodAndPlanningScheduling.insightAndTrends",
+        name: "navbar.listMenuParent.prodAndPlanningScheduling.insightAndTrends.title",
         img: "/assets/img/nav/arrow_down.svg",
         url: "",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        child: [
+          {
+            name: "navbar.listMenuParent.prodAndPlanningScheduling.insightAndTrends.folSummary",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/production-planning-scheduling/insights-and-trends/fol-summary",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+          }
+        ]
+
       },
     ],
   },
-  
+
 ];
 
 

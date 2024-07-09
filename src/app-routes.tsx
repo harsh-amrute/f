@@ -41,6 +41,7 @@ import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrend
 import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
 import RMPMBufferTrends from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMBufferTrends'
 import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
+import FOLSummary from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FOLSummary'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -95,7 +96,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/procurement/material-requirement',
     '/procurement/insights-and-trends/rmpm',
     '/procurement/insights-and-trends/rmpm-buffer-trends',
-    '/procurement/insights-and-trends/rmpm-orderwise-coverage'
+    '/procurement/insights-and-trends/rmpm-orderwise-coverage',
+    '/production-planning-scheduling/insights-and-trends/fol-summary'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -430,26 +432,26 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-     path: '/dbm/dbm-norm-suggestions',
-     element: <AppLayout />,
-     children: [
-       {
-         index: true,
-         element: lazyLoad(<DBM/>)
-       },
-       ...getStoreTransferModuleRoutes()
-     ]
+      path: '/dbm/dbm-norm-suggestions',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DBM />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
     },
     {
-     path: '/production-planning-scheduling/enquiry-response',
-     element: <AppLayout />,
-     children: [
-       {
-         index: true,
-         element: lazyLoad(<EnquiryResponse/>)
-       },
-       ...getStoreTransferModuleRoutes()
-     ]
+      path: '/production-planning-scheduling/enquiry-response',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<EnquiryResponse />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
     },
     {
       path: '/dbm/dbm-norm-suggestions',
@@ -536,6 +538,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<RMPMBufferTrends />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/insights-and-trends/fol-summary',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<FOLSummary />)
         },
         ...getStoreTransferModuleRoutes()
       ]
