@@ -18,7 +18,9 @@ const columnData: ColDef[] = [
         headerName: "Line Item",
         hide: false,
         tooltipComponent: "availabilityToolTip",
-        initialWidth: 200,
+        initialWidth: 150,
+        width: 150,
+        maxWidth: 150,
         autoHeaderHeight: true,
         wrapHeaderText: true
     },
@@ -29,7 +31,10 @@ const columnData: ColDef[] = [
         hide: false,
 
         tooltipField: "rm",
-        initialWidth: 200,
+        initialWidth: 180,
+        width: 180,
+        maxWidth: 180,
+
         filter: "agMultiColumnFilter",
         floatingFilter: true
     },

@@ -32,25 +32,17 @@ const OrderRescheduling = () => {
             cellDataType: false,
             resizable: false,
             minWidth: 140,
+            wrapHeaderText: true,
+            autoHeaderHeight: true,
             cellStyle: {
                 "text-align": "center",
                 'text-overflow': 'ellipsis',
-                'white-space': 'nowrap'
+
             },
             flex: 1,
         }
     }
 
-    const { mutateAsync: getOrderSchedulingData } = useGetOrderSchedulingData();
-    const GetData = async () => {
-        const APIData = await getOrderSchedulingData();
-        setRowData(APIData.data.data.results);
-        setTableLoading(false);
-    }
-    useEffect(() => {
-        GetData();
-
-    }, [])
 
     const [currTab, setCurrTab] = useState('Unschedule');
     const tabs = [{ label: 'Unschedule', value: 'Unschedule', id: 'Unschedule' },
@@ -123,6 +115,16 @@ const OrderRescheduling = () => {
 
     }
     ]
+    const { mutateAsync: getOrderSchedulingData } = useGetOrderSchedulingData();
+    const GetData = async () => {
+        const APIData = await getOrderSchedulingData();
+        setRowData(APIData.data.data.results);
+        setTableLoading(false);
+    }
+    useEffect(() => {
+        GetData();
+
+    }, [])
 
     return (
         <>
