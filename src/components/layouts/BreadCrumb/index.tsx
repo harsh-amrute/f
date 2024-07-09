@@ -28,7 +28,8 @@ const BreadCrumb = () => {
   if(location.pathname ==='/insights-and-trends/research-insights')return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> RI</span>
 
   if(location.pathname ==='/dbm/dbm-norm-suggestions')return <span>DBM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> DBM Norm Suggestion</span>
-  if(location.pathname ==='/production-planning-scheduling/enquiry-response')return <span style={{ fontSize: '8px', display: 'flex', alignItems: 'center' }}>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Enquiry Response</span>
+  if(location.pathname ==='/production-planning-scheduling/enquiry-response')return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Enquiry Response</span>
+  if(location.pathname ==='/production-planning-scheduling/insight-and-trends/bm-trends')return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Insight & Trends / BM Trends</span>
 
 
   

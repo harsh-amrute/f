@@ -10,7 +10,7 @@ import { GridRef } from '../../../../../VectorFlow/types/MDM'
 
 
 
-const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitle, tableTitle, tableLoading, chartLoading, setTableLoading, setChartLoading, hideChart, toggleChart, TooltipRenderer }: any) => {
+const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitle, tableTitle, tableLoading, chartLoading, setTableLoading, setChartLoading, hideChart, toggleChart, TooltipRenderer, chartHeight=58 }: any) => {
     const chartRef = useRef<AgChartsReact>(null);
     const refGraph1 = useRef<GridRef>(null);
 
@@ -18,8 +18,8 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
 
     const myCustomTheme: any = {
         palette: {
-            fills: ['black', 'red', 'green', 'yellow', 'grey'],
-            strokes: ['black', 'red', 'green', 'yellow', 'grey'],
+            fills: ['black', 'red', 'green', 'yellow', 'blue'],
+            strokes: ['black', 'red', 'green', 'yellow', 'blue'],
         },
     }
 
@@ -31,7 +31,7 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
                 refGraph1.current?.api.createRangeChart({
                     chartType: 'line',
                     cellRange: {
-                        columns: ['dt', 'b', 'r', 'y', 'g', 'w'],
+                        columns: ['dt', 'b', 'r', 'y', 'g', 'bl'],
                     },
 
                     chartThemeOverrides: {
@@ -80,7 +80,7 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
         <div style={{ width: "100%" }}>
 
 
-            <SCChartContainer style={{ height: "68vh", border: '1px solid #CCCCCC', margin: '2px' }}>
+            <SCChartContainer style={{ border: '1px solid #CCCCCC', margin: '2px' }}>
                 <SCChartMainContainer style={{ zoom: 1 }}>
                     {header()}
                 </SCChartMainContainer>
@@ -140,7 +140,7 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
                         />
                     </div>
                 </VFModalCard>
-                <div style={{ height: "50vh" }}>
+                <div style={{ height: `${chartHeight}vh` }}>
                     <AgChartsReact suppressDragLeaveHidesColumns={true} ref={chartRef} options={{ ...options, data: data }} onChartReady={() => { setChartLoading(false) }} />
                 </div>
             </SCChartContainer>
