@@ -42,6 +42,7 @@ import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequ
 import RMPMBufferTrends from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMBufferTrends'
 import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
 import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index'
+import BMTrends from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/BMTrends'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -59,7 +60,6 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
-    '/production-planning-scheduling/enquiry-response'
   ]
   const urlAllPage = [
     ...authenPage,
@@ -97,7 +97,9 @@ const lazyLoad = (children: React.ReactNode) => {
     '/procurement/insights-and-trends/rmpm',
     '/procurement/insights-and-trends/rmpm-buffer-trends',
     '/procurement/insights-and-trends/rmpm-orderwise-coverage',
-    '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers'
+    '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
+    '/production-planning-scheduling/enquiry-response',
+    '/production-planning-scheduling/insight-and-trends/bm-trends'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -449,6 +451,17 @@ export const initRoutes = (): RouteObject[] => {
        {
          index: true,
          element: lazyLoad(<EnquiryResponse/>)
+       },
+       ...getStoreTransferModuleRoutes()
+     ]
+    },
+    {
+     path: '/production-planning-scheduling/insight-and-trends/bm-trends',
+     element: <AppLayout />,
+     children: [
+       {
+         index: true,
+         element: lazyLoad(<BMTrends/>)
        },
        ...getStoreTransferModuleRoutes()
      ]
