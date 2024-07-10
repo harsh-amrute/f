@@ -23,7 +23,7 @@ const IconCard = (props:IconCardProps)=>{
 
 
     return(
-        <IconCardContainer imgSrc="assets/img/VectorFLOW/NMS/card-bg.svg">
+        <IconCardContainer imgSrc="/assets/img/VectorFLOW/NMS/card-bg.svg">
             <CardText themeUi={themeUi} onClick={onClick} data-testid={"icon-card"}>{text}</CardText>
             <CardIconWrapper >
                 <img data-testid='icon' src={iconOnMouseOut}/>

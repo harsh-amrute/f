@@ -312,7 +312,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={'95%'}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products: Categorization of Pending Quantity</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products: Categorization Of Pending Quantity</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
                                     {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(1)}/>}
