@@ -23,7 +23,7 @@ interface SplitGrpahContainerProps {
     TooltipRenderer: (param: any) => string,
     graphType: number,
     date?: string,
-    chartHeight?:number
+    chartHeight?: number
 }
 
 
@@ -42,7 +42,7 @@ const SplitGraphContainer = ({
     toggleChart,
     TooltipRenderer,
     graphType,
-    chartHeight
+    chartHeight,
 }: SplitGrpahContainerProps) => {
     const chartRef = useRef<AgChartsReact>(null);
     const refGraph1 = useRef<GridRef>(null);
@@ -108,6 +108,34 @@ const SplitGraphContainer = ({
                     chartType: 'column',
                     cellRange: {
                         columns: ['rn', 'rc'],
+                    },
+
+                    chartThemeOverrides: {
+                        line: {
+                            series: {
+                                tooltip: {
+                                    renderer: TooltipRenderer
+                                },
+                                strokeWidth: 3
+
+                            },
+                            legend: {
+                                item: {
+                                    marker: {
+                                        shape: 'square'
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                })
+                break;
+            case 3:
+                refGraph1.current?.api.createRangeChart({
+                    chartType: 'column',
+                    cellRange: {
+                        columns: ['sn', 'rc'],
                     },
 
                     chartThemeOverrides: {
@@ -210,7 +238,7 @@ const SplitGraphContainer = ({
                         />
                     </div>
                 </VFModalCard>
-                <div style={{ height: `${chartHeight?chartHeight:50}vh` }}>
+                <div style={{ height: `${chartHeight ? chartHeight : 50}vh` }}>
                     <AgChartsReact suppressDragLeaveHidesColumns={true} ref={chartRef} options={{ ...options, data: data }} onChartReady={() => { setChartLoading(false) }} />
                 </div>
             </SCChartContainer>

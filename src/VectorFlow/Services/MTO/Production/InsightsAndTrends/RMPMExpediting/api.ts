@@ -28,6 +28,7 @@ export namespace RMPMExpedtingServices {
             })
         }
         else {
+            console.log(process.env.REACT_APP_VF_API_HOST_MTO + `/getExpiditingRMData/?supplier_horizon=${data.horizon}`)
             return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getExpiditingRMData/?supplier_horizon=${data.horizon}`, {
                 headers: {
                     'Content-Type': 'application/json',

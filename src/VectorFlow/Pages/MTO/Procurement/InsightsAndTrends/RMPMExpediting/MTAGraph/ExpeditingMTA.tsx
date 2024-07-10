@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
-// import { RMPMExpiditingDataMTO } from '../RMPMExpeditingData'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';
 import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
@@ -32,15 +31,15 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
 
 
 
-    const TooltipRenderer = ({ datum, xKey }: any) => {
-        console.log(datum)
+    const TooltipRenderer = ({ datum }: any) => {
+
         return `
         <div style="background:#000; border-radius:3px; color:#fff ;padding:8px">
             <div style="width: 100%; display: flex; justify-content: center">
-                AE1234Ffre
+                ${datum.rn}
             </div>
             <hr style="border: 1px dashed"/>
-            <div>No. Of Orders : ${datum}</div>
+            <div>No. Of Orders : ${datum.rc}</div>
         </div>
         `;
     }
@@ -118,9 +117,23 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
     const graph1 = [
         'The graph highlights the suppliers based on their impact on timely release of orders'
     ]
+    const getRMHorizonBasedData = async () => {
+        //setNumericData(null)
+        RMPMExpeditionOBj = {
+            'horizon': horizonDays,
+            'val': 'supplier'
+        }
+        const someData = await getRMPMExpedition(RMPMExpeditionOBj);
+        setNumericData(someData.data?.data?.supplier)
+    }
 
     const handleSubmitClick = () => {
         //setNumericData();
+        getRMHorizonBasedData();
+    }
+
+    const handleSliderChange = (val: any) => {
+        setHorizondays(val)
     }
 
 
@@ -169,7 +182,7 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                             strictMode={false}
                             width={200}
                             defaultValue={horizonDays}
-                            handleChange={(e) => setHorizondays(e)}
+                            handleChange={(e) => handleSliderChange(e)}
                             labelValueFormatter={(value: number) => value > 1 ? `${value} Days` : `${value} Day`}
                         />
                         <div>
@@ -224,7 +237,7 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                 hideChart={hideChart1}
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRenderer}
-                graphType={2}
+                graphType={3}
             />
         </div>
     )
