@@ -472,7 +472,7 @@ const FOLSummary = () => {
       key: 'ccrNm',
       heading: "CCR",
       options: ccrNameOptions,
-    },
+    }
   ];
 
   const removeFilters = (category: string, name: string) => {
