@@ -383,6 +383,7 @@ const BMTrends = () => {
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRenderer}
                 chartHeight={50}
+                graphType={1}
             />
         </BMTrendWrapper>
     )

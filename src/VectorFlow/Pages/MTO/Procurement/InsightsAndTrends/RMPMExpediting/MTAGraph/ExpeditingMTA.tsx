@@ -5,14 +5,14 @@ import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VF
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
 import { RMPMExpiditingDataMTO } from '../RMPMExpeditingData'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';
-import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index';
+import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
 
 const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
     let RMPMExpeditionOBj = {}
     const [chartLoading, setChartLoading] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
-    const [horizonDays, setHorizondays] = useState(90);
+    const [horizonDays, setHorizondays] = useState(14);
 
     const { mutateAsync: getRMPMExpedition } = useGetRMExpeditingData()
     const [numericData, setNumericData] = useState<any>();
@@ -33,13 +33,14 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
 
 
     const TooltipRenderer = ({ datum, xKey }: any) => {
+        console.log(datum)
         return `
         <div style="background:#000; border-radius:3px; color:#fff ;padding:8px">
             <div style="width: 100%; display: flex; justify-content: center">
                 AE1234Ffre
             </div>
             <hr style="border: 1px dashed"/>
-            <div>No. Of Orders : ${datum['b']}</div>
+            <div>No. Of Orders : ${datum}</div>
         </div>
         `;
     }

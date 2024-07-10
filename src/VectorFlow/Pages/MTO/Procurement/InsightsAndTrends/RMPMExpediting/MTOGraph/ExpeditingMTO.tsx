@@ -5,7 +5,7 @@ import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VF
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
 
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';
-import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index';
+import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
 const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
 
@@ -25,11 +25,7 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
         }
         const someData = await getRMPMExpedition(RMPMExpeditionOBj);
         setNumericData(someData.data?.data?.rm)
-       
     }
-
-
-
 
 
     function TooltipRenderer({ datum }: any) {
@@ -166,7 +162,7 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
             }
 
         ]
-  
+
 
 
     const [chartLoading, setChartLoading] = useState(true);
@@ -240,7 +236,7 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                 data={numericData}
                 rowData={numericData}
                 graphTitle={`Top 10 Raw Materials Impacting Orders With Release Date In Selected Horizon (${moment(date).format('D MMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('D MMM YYYY')}) `}
-                tableTitle={`Top 10 Raw Materials Impacting Orders With Release Date In Selected Horizon (${moment(date).format('Do MMMM YYYY')} - ${moment(date).format('Do MMMM YYYY')})`}
+                tableTitle={`Top 10 Raw Materials Impacting Orders With Release Date In Selected Horizon (${moment(date).format('Do MMMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('Do MMMM YYYY')})`}
                 options={options}
                 colDef={colDef}
                 header={generateHeader}

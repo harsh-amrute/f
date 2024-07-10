@@ -6,7 +6,7 @@ import '../RMPMBufferTrends/style.css';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from "../RMPMBufferTrends/styles";
 import ExpeditingMTA from "./MTAGraph/ExpeditingMTA";
 import ExpeditingMTO from "./MTOGraph/ExpeditingMTO";
-import { useGetDate } from '../../../../../Services/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index';
+import { useGetDate } from '../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting/index';
 
 
 const RMExpeditionSuppliers = () => {
@@ -33,7 +33,6 @@ const RMExpeditionSuppliers = () => {
                                         <ExpeditingMTO
                                             isMTO={isMTO}
                                             date={data?.data?.data}
-                                            
                                         />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>

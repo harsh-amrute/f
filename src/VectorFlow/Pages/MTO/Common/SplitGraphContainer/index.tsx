@@ -23,7 +23,7 @@ interface SplitGrpahContainerProps {
     TooltipRenderer: (param: any) => string,
     graphType: number,
     date?: string,
-    chartHeight?:string
+    chartHeight?:number
 }
 
 
@@ -210,7 +210,7 @@ const SplitGraphContainer = ({
                         />
                     </div>
                 </VFModalCard>
-                <div style={{ height: `${chartHeight}vh` }}>
+                <div style={{ height: `${chartHeight?chartHeight:50}vh` }}>
                     <AgChartsReact suppressDragLeaveHidesColumns={true} ref={chartRef} options={{ ...options, data: data }} onChartReady={() => { setChartLoading(false) }} />
                 </div>
             </SCChartContainer>
