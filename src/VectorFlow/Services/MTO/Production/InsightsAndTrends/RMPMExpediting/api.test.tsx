@@ -18,14 +18,31 @@ describe('MaterialRequirement', () => {
     });
 
 
-    it('should fetch RM and supplier Data', async () => {
+    it('should fetch rm and supplier data', async () => {
 
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await RMPMExpedtingServices.getRMPMExpedition({});
+        const data = { val: 'all', horizon: 7 };
+        const response = await RMPMExpedtingServices.getRMPMExpedition(data);
         expect(response.status).toBe(200);
     });
 
-    it('should fetch current Run Daate', async () => {
+    it('should fetch rm data ', async () => {
+
+        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const data = { val: 'rm', horizon: 7 };
+        const response = await RMPMExpedtingServices.getRMPMExpedition(data);
+        expect(response.status).toBe(200);
+    });
+
+    it('should fetch supplier data ', async () => {
+
+        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const data = { val: 'supplier', horizon: 7 };
+        const response = await RMPMExpedtingServices.getRMPMExpedition(data);
+        expect(response.status).toBe(200);
+    });
+
+    it('should fetch Material Requirement Cumulative', async () => {
         mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
       const response = await RMPMExpedtingServices.getLastRunDate();
       expect(response.status).toBe(200);

@@ -122,7 +122,6 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
             'val': 'rm'
         }
         const someData = await getRMPMExpedition(RMPMExpeditionOBj);
-        console.log('rm horizon =', someData.data?.data?.rm)
         setNumericData(someData.data?.data?.rm)
     }
 
