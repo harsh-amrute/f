@@ -31,6 +31,8 @@ const BreadCrumb = () => {
   if(location.pathname ==='/production-planning-scheduling/enquiry-response')return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Enquiry Response</span>
   if(location.pathname ==='/production-planning-scheduling/insight-and-trends/bm-trends')return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Insight & Trends / BM Trends</span>
 
+  if(location.pathname==='/procurement/material-coverage-open-sales')return <span>Procurement<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} />Material Coverage For Open Sales Order</span>
+
 
   
 

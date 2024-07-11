@@ -449,6 +449,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 hideChart={hideChart1}
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRenderer}
+                graphType={1}
             />
         </div>
     )
