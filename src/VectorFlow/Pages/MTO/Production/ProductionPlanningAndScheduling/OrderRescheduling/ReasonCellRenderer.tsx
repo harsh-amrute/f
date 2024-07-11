@@ -6,7 +6,7 @@ const ReasonCellRenderer = (params: any) => {
         <ETACellRendererWrapper  >
 
             {/* <ETACellValue> */}
-            <input placeholder="Enter your reason here..." type={'text'} style={{ fontSize: '14px', height: '28px', width: '180px' }} />
+            <input onChange={(e) => { params.data.rs = e.target.value }} placeholder="Enter your reason here..." type={'text'} style={{ fontSize: '14px', height: '28px', width: '180px' }} />
             {/* </ETACellValue> */}
         </ETACellRendererWrapper>
     )

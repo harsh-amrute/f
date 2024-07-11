@@ -10,7 +10,6 @@ const columnData: ColDef[] = [
         tooltipComponent: "availabilityToolTip",
         initialWidth: 800,
         autoHeaderHeight: true,
-        // wrapHeaderText: true,
     },
     {
         colId: "lid",
@@ -29,12 +28,10 @@ const columnData: ColDef[] = [
         field: "PcSz",
         headerName: "Procurement Buffer",
         hide: false,
-
         tooltipField: "rm",
         initialWidth: 180,
         width: 180,
         maxWidth: 180,
-
         filter: "agMultiColumnFilter",
         floatingFilter: true
     },
@@ -43,7 +40,6 @@ const columnData: ColDef[] = [
         field: "PdSz",
         headerName: "Production Buffer",
         hide: false,
-
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,
@@ -55,7 +51,6 @@ const columnData: ColDef[] = [
         field: "rnm",
         headerName: "Route",
         hide: false,
-
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,

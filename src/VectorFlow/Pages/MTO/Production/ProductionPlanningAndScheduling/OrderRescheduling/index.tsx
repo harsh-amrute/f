@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import VFFloatingTab from '../../../../../../components/VectorFLOW/commons/VFFloatingTab'
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { ApplyZoomOut } from './styles'
@@ -10,12 +10,28 @@ import columnData from './ColumnData'
 import DueDateCellRenderer from './DueDateCellRenderer'
 import { useGetOrderSchedulingData } from '../../../../../../VectorFlow/Services/MTO/Production/OrderRescheduling'
 import { AgGridReactProps } from 'ag-grid-react'
+import { GridApi } from 'ag-grid-enterprise'
+import { GridRef } from '../../../../../../VectorFlow/types/MDM'
 
 
 const user = { user: { them_ui: 'pure' } }
 
 
 const OrderRescheduling = () => {
+
+    const refGraph1 = useRef<GridRef>(null);
+
+    const [selectedRowData, setSelectedRowData] = useState([{}]);
+
+
+    const getSelectedRowData = () => {
+        const selectedData = refGraph1.current?.api.getSelectedRows();
+        setSelectedRowData(selectedData!);
+    };
+
+
+
+
 
     const agGridProps: AgGridReactProps = {
 
@@ -40,7 +56,9 @@ const OrderRescheduling = () => {
 
             },
             flex: 1,
-        }
+        },
+        onSelectionChanged: getSelectedRowData
+
     }
 
 
@@ -52,7 +70,7 @@ const OrderRescheduling = () => {
     const [tableLoading, setTableLoading] = useState(true);
 
     let colDef = columnData;
-    const [rowData, setRowData] = useState([]);
+    const [rowData, setRowData] = useState([])
 
 
 
@@ -78,7 +96,7 @@ const OrderRescheduling = () => {
         headerCheckboxSelection: false,
         checkboxSelection: true,
         maxWidth: 50,
-        floatingFilter: false
+        floatingFilter: false,
     }, ...colDef,
     {
         colId: "dd",
@@ -121,61 +139,80 @@ const OrderRescheduling = () => {
         setRowData(APIData.data.data.results);
         setTableLoading(false);
     }
+
+    const PostData = (data: any) => {
+        console.log(data);
+    }
     useEffect(() => {
         GetData();
 
     }, [])
 
+
+    const unschedule = () => {
+        PostData(selectedRowData);
+    }
+
+    const overwriteDD = () => {
+        PostData(selectedRowData);
+    }
+
+
+
     return (
         <>
-            <MTOActionToolBar comp={'orderReschedule'} />
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                <div>
-                    <ApplyZoomOut >
-                        <VFFloatingTab
-                            handleClick={(e) => setCurrTab(e.value)}
-                            tabs={tabs}
-                            defaultTab={0}
-                        />
-                    </ApplyZoomOut>
-                </div>
-                <div style={{ width: '100%' }}>
-                    <VFTableWrapper height='85vh' >
-
-                        <VFTable
-                            disableZoomScaling
-                            columnDefs={colDef}
-                            rowData={rowData}
-                            enableRangeSelection={true}
-                            rowSelection="multiple"
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                    { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                                    { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                                    { statusPanel: 'agAggregationComponent', align: 'left' },
-                                ],
-                            }}
-                            onGridReady={() => { setTableLoading(false) }}
-
-                            {...agGridProps}
-
-                            height={"85%"}
-                        />
-                    </VFTableWrapper>
-                </div>
-                <div style={{ position: 'fixed', bottom: 0 }}>
-
-                    <div style={{ width: '100vw', height: '65px', padding: '30px 80px', background: 'white', display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
-                        <ApplyZoomOut>
-                            {
-                                (currTab === 'Unschedule') ?
-                                    <VFButton style={{ width: '150px' }} themeUi={user.user.them_ui} onClick={() => { console.log("Button clicked") }}>Unschedule</VFButton>
-                                    :
-                                    <VFButton style={{ width: '200px' }} themeUi={user.user.them_ui} onClick={() => { console.log("Button clicked") }}>Overwrite Due Date</VFButton>
-                            }
+            <div style={{ width: "100%", position: 'relative', height: '85vh' }}>
+                <MTOActionToolBar comp={'orderReschedule'} />
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                    <div>
+                        <ApplyZoomOut >
+                            <VFFloatingTab
+                                handleClick={(e) => setCurrTab(e.value)}
+                                tabs={tabs}
+                                defaultTab={0}
+                            />
                         </ApplyZoomOut>
+                    </div>
+                    <div style={{ width: '100%' }}>
+                        <VFTableWrapper height='85vh' >
+
+                            <VFTable
+                                disableZoomScaling
+                                columnDefs={colDef}
+                                rowData={rowData}
+                                ref={refGraph1}
+                                enableRangeSelection={true}
+                                rowSelection="multiple"
+                                statusBar={{
+                                    statusPanels: [
+                                        { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                                        { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                                        { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                                        { statusPanel: 'agAggregationComponent', align: 'left' },
+                                    ],
+                                }}
+                                onGridReady={() => { setTableLoading(false) }}
+
+                                {...agGridProps}
+
+                                height={"85%"}
+                            />
+                        </VFTableWrapper>
+                    </div>
+
+                    <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%' }}>
+
+                        <div style={{ width: '100%', height: '65px', padding: '30px 80px', background: 'white', display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
+                            <ApplyZoomOut>
+                                {
+                                    (currTab === 'Unschedule') ?
+                                        <VFButton style={{ width: '150px' }} themeUi={user.user.them_ui} onClick={unschedule}>Unschedule</VFButton>
+                                        :
+                                        <VFButton style={{ width: '200px' }} themeUi={user.user.them_ui} onClick={overwriteDD}>Overwrite Due Date</VFButton>
+                                }
+                            </ApplyZoomOut>
+                        </div>
                     </div>
                 </div>
             </div>
