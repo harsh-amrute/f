@@ -283,8 +283,9 @@ const FilterModal = (props: IFilterModalProps) => {
     const [activeAccordian, setActiveAccordian] = useState<string>('');
 
     const handleChange = (event: any) => {
-        const { name, value } = event.target
-        handleNameChange({ name, value });
+        const { name, value } = event
+
+        handleNameChange({ name: 'plantName', value: event.value });
     }
 
     const handleOptionChange = (e: any, heading: string, index: number) => {
@@ -317,6 +318,8 @@ const FilterModal = (props: IFilterModalProps) => {
         }
     }
 
+    const [folValue, setFolValue] = useState("");
+
     return (
         <VFModalCard
             zoom={'0.7'}
@@ -332,7 +335,7 @@ const FilterModal = (props: IFilterModalProps) => {
                 <FilterContainer>
                     <FilterHeading>Resource Filters</FilterHeading>
                     <HorizontalLine></HorizontalLine>
-                    <SearchBar>
+                    {/* <SearchBar>
                         <PlantInput
                             id={'plntNmInput'}
                             data-testid="plntNmInput"
@@ -345,13 +348,14 @@ const FilterModal = (props: IFilterModalProps) => {
                             src="/assets/img/search-icon.svg"
                             alt="search-icon"
                         />
-                    </SearchBar>
-                    {/* <VFMasterFieldSearch
-                        value={[selectedOptions?.plantName]}
+                    </SearchBar> */}
+                    <VFMasterFieldSearch
+                        value={selectedOptions?.plantName.name}
                         setValue={(e: any) => {
                             console.log(e);
                             handleChange(e[0])
                         }}
+
                         options={filters[0].options}
                         placeholder={''}
                         handleListChild={() => null}
@@ -360,7 +364,7 @@ const FilterModal = (props: IFilterModalProps) => {
                         borderRadius={40}
                         disabled={false}
                         boxShadow={'0'}
-                    /> */}
+                    />
                     <FilterAccordianWrapper>
                         {
                             filters?.map((filter: { key: string, heading: string, options: string[] }) => {
@@ -387,7 +391,7 @@ const FilterModal = (props: IFilterModalProps) => {
                             })
                         }
                         <FilterComponent style={{ borderTop: '0.5px solid #E1E2E8', padding: '15px' }} >
-                            <AvailabilityFilter placeholder={"FOL"} onChange={(e: any, key: string) => { }} header="Location Filter" filterId={'LF1'} filterState={filters}></AvailabilityFilter>
+                            <AvailabilityFilter placeholder={"FOL"} value={folValue} onChange={(e: any, key: string) => { setFolValue(e.target.value) }} header="Location Filter" filterId={'LF1'} filterState={filters}></AvailabilityFilter>
                         </FilterComponent>
                     </FilterAccordianWrapper>
 

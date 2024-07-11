@@ -388,10 +388,10 @@ const FOLSummary = () => {
       Object.keys(options?.ccrName)?.length > 0
         ? filterByccrName(data, options?.ccrName)
         : data;
-    data =
-      Object.keys(options?.folVal)?.length > 0
-        ? filterByFOL(options?.folFilterType, options?.folFilterVal)
-        : data;
+    // data =
+    //   Object.keys(options?.folVal)?.length > 0
+    //     ? filterByFOL(options?.folFilterType, options?.folFilterVal)
+    //     : data;
 
     updatedSelectedFilters(options);
     setHasProductGroup(options?.productGroup?.length > 0);
