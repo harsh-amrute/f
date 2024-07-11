@@ -522,7 +522,7 @@ const ChronicUnavailabilityCharts = () => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={"98%"}>
                             <SCChartHeaderContainer>
-                                <SCChartHeader>Top 10 Locations: Max SKUs in Continuous Pipeline Black or Red Ageing Greater Than RLT</SCChartHeader>
+                                <SCChartHeader>Top 10 Locations: Max SKUs In Continuous Pipeline Black Or Red Ageing Greater Than RLT</SCChartHeader>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
                                     {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt=""  data-testid="minimizechart1"onClick={()=>handleChartClose(1)}/>}
@@ -608,7 +608,7 @@ const ChronicUnavailabilityCharts = () => {
                     <Allotment.Pane>
                         <SCChartContainer height={"98%"}>
                                 <SCChartHeaderContainer>
-                                    <SCChartHeader>Top 10 SKUs: Max Number Of Locations Where The SKU has Pipeline Black/Red Ageing Greater Than RLT</SCChartHeader>
+                                    <SCChartHeader>Top 10 SKUs: Max Number Of Locations Where The SKU Has Pipeline Black/Red Ageing Greater Than RLT</SCChartHeader>
                                     <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}>
                                         <VFInfoToolTip infoList={graph2}/></div>

@@ -223,7 +223,7 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
           <div
             style={{ fontSize: "14px", fontWeight: 500, textAlign: "center" }}
           >
-            Trend of #SKU-Loations with Continuous Black/Red/White Status {">"}=
+            Trend Of #SKU-Locations With Continuous Black/Red/White Status {">"}=
             Selected Minimum Ageing{" "}
           </div>
           <div style={{ marginLeft: 10 ,marginBottom:'-5px'}}>

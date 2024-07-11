@@ -721,6 +721,7 @@ const useViewModify = (pageType:string) => {
     }
 
       const onUploadMaster = async () => {
+        let intervalID:any;
         try {
           if(!file){
             notifyError('Please select a file to upload.');
@@ -742,7 +743,7 @@ const useViewModify = (pageType:string) => {
           
           formData.append("process_id",JSON.stringify({processId:processId}));
 
-          const intervalID = setInterval(async ()=>{
+          intervalID = setInterval(async ()=>{
             const progress = await getUploadProgress(processId);
             setUploadProgress(progress.data.progress);
             setTotalProgress(progress.data.totalRows)
@@ -787,7 +788,8 @@ const useViewModify = (pageType:string) => {
          catch (error:any) {
           toast.dismiss();
           notifyError(error.message);
-          setIsOverlayVisible(false)
+          setIsOverlayVisible(false);
+          if(intervalID) clearInterval(intervalID);
         }
 
       }

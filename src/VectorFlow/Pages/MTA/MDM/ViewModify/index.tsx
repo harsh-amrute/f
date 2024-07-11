@@ -175,7 +175,7 @@ import _ from "lodash";
                               fields={generateOptions([activeMaster])}
                               currFilter={f}
                               key={f.id}
-                              isDisabled={activeMaster.id > 14}
+                              isDisabled={false}
                             />
                           )
                         }
@@ -204,7 +204,7 @@ import _ from "lodash";
                       <VFButton
                       themeUi={themeUi}
                       onClick={()=>{handleApplyFilter()}}
-                      disabled={activeMaster.id > 14}
+                      disabled={false}
                       >
                         Apply Filter
                       </VFButton>
