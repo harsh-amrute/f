@@ -42,6 +42,8 @@ import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequ
 import RMPMBufferTrends from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMBufferTrends'
 import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
 import DptWiseBMReport from './VectorFlow/Pages/MTO/Production/DepartmentWiseBMReport/index';
+import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index'
+import BMTrends from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/BMTrends'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -59,7 +61,6 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
-
   ]
   const urlAllPage = [
     ...authenPage,
@@ -97,7 +98,9 @@ const lazyLoad = (children: React.ReactNode) => {
     '/procurement/insights-and-trends/rmpm',
     '/procurement/insights-and-trends/rmpm-buffer-trends',
     '/procurement/insights-and-trends/rmpm-orderwise-coverage',
+    '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
     '/production-planning-scheduling/enquiry-response',
+    '/production-planning-scheduling/insight-and-trends/bm-trends',
     '/production-planning-scheduling/deptwise-bm-report'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
@@ -455,6 +458,17 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
+      path: '/production-planning-scheduling/insight-and-trends/bm-trends',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<BMTrends />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
       path: '/dbm/dbm-norm-suggestions',
       element: <AppLayout />,
       children: [
@@ -553,7 +567,17 @@ export const initRoutes = (): RouteObject[] => {
         },
         ...getStoreTransferModuleRoutes()
       ]
-
+    },
+    {
+      path: '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMExpeditionSuppliers />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
     }
 
   ]
