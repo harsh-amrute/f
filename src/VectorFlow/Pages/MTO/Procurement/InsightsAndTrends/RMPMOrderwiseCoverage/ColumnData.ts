@@ -23,7 +23,6 @@ const columnData: ColDef[] = [
         field: "pnm",
         headerName: "Plant",
         hide: false,
-        rowDrag: true,
         cellRenderer: "coloPriority",
         tooltipComponent: "availabilityToolTip",
         initialWidth: 200,
@@ -35,7 +34,7 @@ const columnData: ColDef[] = [
         field: "oid",
         headerName: "Order ID",
         hide: false,
-        rowDrag: true,
+
         tooltipField: "rm",
         initialWidth: 200,
         filter: "agMultiColumnFilter",
@@ -46,7 +45,7 @@ const columnData: ColDef[] = [
         field: "lid",
         headerName: "Line Item ID",
         hide: false,
-        rowDrag: true,
+
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,
@@ -58,7 +57,7 @@ const columnData: ColDef[] = [
         field: "ic",
         headerName: "Item Code",
         hide: false,
-        rowDrag: true,
+
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,
@@ -70,7 +69,7 @@ const columnData: ColDef[] = [
         field: "id",
         headerName: "Item Description",
         hide: false,
-        rowDrag: true,
+
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,
@@ -82,7 +81,7 @@ const columnData: ColDef[] = [
         field: "dd",
         headerName: "Due Date",
         hide: false,
-        rowDrag: true,
+
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,
@@ -94,7 +93,7 @@ const columnData: ColDef[] = [
         field: "rd",
         headerName: "Release Date",
         hide: false,
-        rowDrag: true,
+
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,
@@ -106,7 +105,7 @@ const columnData: ColDef[] = [
         field: "oq",
         headerName: "Order Quantity",
         hide: false,
-        rowDrag: true,
+
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,
@@ -118,7 +117,7 @@ const columnData: ColDef[] = [
         field: "bs",
         headerName: "Batch Size",
         hide: false,
-        rowDrag: true,
+
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,
@@ -130,7 +129,7 @@ const columnData: ColDef[] = [
         field: "fk",
         headerName: "Full Kit Available",
         hide: false,
-        rowDrag: true,
+
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,
@@ -153,7 +152,7 @@ const columnData: ColDef[] = [
         field: "cc",
         headerName: "Customer Code",
         hide: false,
-        rowDrag: true,
+
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,
@@ -165,7 +164,7 @@ const columnData: ColDef[] = [
         field: "cn",
         headerName: "Customer Name",
         hide: false,
-        rowDrag: true,
+
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,
