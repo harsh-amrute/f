@@ -1,22 +1,22 @@
 import styled from 'styled-components'
 
-export const SCToolTipWrapper = styled.div`
+export const SCToolTipWrapper = styled.div<{themeUi:string}>`
     position:fixed;
     padding:1px 5px;
-    border:1px solid #BC3D81;
+    border: 1px solid ${(props)=>props.themeUi=="REGALBLAZE"?"#FCA311":"#BC3D81"};
     background-color:rgba(255,255,255,1);
-    color:#820F4C;
+    color:${(props)=>props.themeUi=="REGALBLAZE"?"rgb(164 104 6)":"#820F4C"};
     border-radius:4px;
     width:170px;
     z-index:100000;
 `
 
-export const SCContainer = styled.div`
+export const SCContainer = styled.div<{themeUi:string}>`
     height:36px;
     border-radius: 5px;
     background: #bc3d811a 0% 0% no-repeat padding-box;
-    border: 1px solid #BC3D81;
-    color:#820F4C;
+    border: 1px solid ${(props)=>props.themeUi=="REGALBLAZE"?"#FCA311":"#BC3D81"};
+    color: ${(props)=>props.themeUi=="REGALBLAZE"?"rgb(164 104 6)":"#820F4C"};
     font-size:15px;
     line-height:18px;
     font-family:'Roboto'

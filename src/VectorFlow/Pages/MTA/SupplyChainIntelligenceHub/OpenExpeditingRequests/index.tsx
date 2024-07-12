@@ -38,7 +38,10 @@ const OpenExpeditingRequests = ()=>{
         currentFilter,
         setCurrentFilter,
         onDelete,
-        onApplyFilter
+        onApplyFilter,
+        editedRows,
+        onSubmitEditedRows,
+        themeUi
     } = useOpenExpeditingRequests()
 
     return(
@@ -69,6 +72,8 @@ const OpenExpeditingRequests = ()=>{
                 setMultiFilter={setCurrentFilter}
                 onDelete={onDelete}
                 onApplyFilter={onApplyFilter}
+                onSubmitEditedRows={onSubmitEditedRows}
+                disableSubmitEditedRowsBtn={editedRows.length===0}
               />
           {/* {(isLoading)?
           (
@@ -121,6 +126,7 @@ const OpenExpeditingRequests = ()=>{
                 style={submitRemarkToolTipPosition}
                 onSuccess={onSubmitRemark}
                 onClose={onCloseSubmitRemark}
+                themeUi={themeUi}
             />
         )}
 

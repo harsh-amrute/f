@@ -60,6 +60,12 @@ export const listMenuParent: any = [
         url: "/master-data-management/task-status",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
+      {
+        name: "navbar.listMenuParent.masterDataManagement.modificationHistory",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/master-data-management/data-modification-history",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+      },
     ],
   },
   // {
@@ -293,6 +299,13 @@ export const listMenuParent: any = [
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/bor",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
+
+          },
+          {
+            name: "Supplier Dispatch Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/sdr",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
 
           }
         ]

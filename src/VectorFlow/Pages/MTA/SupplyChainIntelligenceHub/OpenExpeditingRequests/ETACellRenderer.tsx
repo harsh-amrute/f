@@ -1,10 +1,16 @@
+import { format } from "date-fns"
 import { ETACellRendererWrapper,ETACellValue } from "./styles"
 
  const ETACellRenderer = (params:any)=>{
+    console.log(params.value)
+
+    const date = new Date(params.value)
+
+    const formattedDate = format(date,'P')
 
     return(
         <ETACellRendererWrapper>
-            <ETACellValue>{params.value}</ETACellValue>
+            <ETACellValue>{formattedDate}</ETACellValue>
         </ETACellRendererWrapper>
     )
 }

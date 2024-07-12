@@ -1,4 +1,3 @@
-
 import IconCard from "../../../../../components/VectorFLOW/commons/VFCard/IconCard"
 import { Container,PanelGrid, PanelGridWrapper } from "./styles"
 import { useNavigate } from "react-router";
@@ -8,11 +7,16 @@ import { useDispatch } from "react-redux";
 import { useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM";
 import { ADD_MASTER,TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 import { mapMasterToMasterState } from "../../../../../helpers/utils";
+import { useUserData } from "../../../../../context";
 
 
 
 const ControlPanel = ()=>{
     const navigate = useNavigate();
+
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
 
     const {mutateAsync:getUiConfig} = useGetMasterUIConfiguration()
 
@@ -33,17 +37,17 @@ const ControlPanel = ()=>{
         <Container>
             <PanelGridWrapper>
                 <PanelGrid>
-                    <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/edit.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/edit-hover.svg'} text={'View / Modify Records '} onClick={() => navigate('/master-data-management/control-panel/view-modify')} />
-                    <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/add.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/add-hover.svg'} text={'Add Records '} onClick={() => navigate('/master-data-management/control-panel/add')} />
-                    <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/delete.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/delete-hover.svg'} text={'Delete Records '} onClick={() => navigate('/master-data-management/control-panel/delete')} />
+                    <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/edit.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/edit-hover.svg'} text={'View / Modify Records '}  onClick={()=>navigate('/master-data-management/control-panel/view-modify')} themeUi={themeUi}/>
+                    <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/add.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/add-hover.svg'} text={'Add Records '} onClick={()=>navigate('/master-data-management/control-panel/add')} themeUi={themeUi}/>
+                    <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/delete.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/delete-hover.svg'} text={'Delete Records '} onClick={()=>navigate('/master-data-management/control-panel/delete')} themeUi={themeUi}/>
                 </PanelGrid>
             </PanelGridWrapper>
             <PanelGridWrapper>
                 <PanelGrid>
-                    <ButtonCard opacity={"1"} text="Forced Norm Changes" onClick={handleFNC}/>
+                    <ButtonCard opacity={"1"} text="Forced Norm Changes" onClick={handleFNC} themeUi={themeUi}/>
 
-                    <ButtonCard  text="Phase-In Phase-Out" onClick={()=>console.log("clciked")}/>
-                    <ButtonCard text="Seasonality" onClick={()=>console.log("clciked")}/> 
+                    <ButtonCard themeUi={themeUi} text="Phase-In Phase-Out" onClick={()=>console.log("clciked")}/>
+                    <ButtonCard themeUi={themeUi} text="Seasonality" onClick={()=>console.log("clciked")}/> 
                 </PanelGrid>
             </PanelGridWrapper>
         </Container>

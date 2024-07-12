@@ -77,10 +77,11 @@
         "forceNormChange": "Force Norm Change",
         "PhaseIn_PhaseOut": "Phase-In & Phase Out",
         "Seasonality": "Seasonality",
-        "controlPanel": "Control Panel",
-        "savedDrafts": "Saved Drafts",
-        "taskPendingForReview": "Task Pending for Review",
-        "taskStatus": "Task Status"
+        "controlPanel":"Control Panel",
+        "savedDrafts":"Saved Drafts",
+        "taskPendingForReview":"Task Pending for Review",
+        "taskStatus":"Task Status",
+        "modificationHistory":"Data Modification History"
       },
       "dynamicGridControl_AssortmentPlanning": {
         "title": "Dynamic Grid Control & Assortment Planning",
@@ -99,6 +100,7 @@
         "buyerOrderReport": "Buyer Order Report",
         "vendorDispatchReport": "Vendor Dispatch Report",
         "availabilityComparison": "Availability Comparison"
+      
       },
       "groupLifeCycleManagement": {
         "title": "Group Life Cycle Management",

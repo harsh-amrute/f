@@ -43,6 +43,9 @@ import RMPMBufferTrends from './VectorFlow/Pages/MTO/Procurement/InsightsAndTren
 import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
 import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index'
 import BMTrends from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/BMTrends'
+import SupplierDispatchReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport'
+
+import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -99,7 +102,10 @@ const lazyLoad = (children: React.ReactNode) => {
     '/procurement/insights-and-trends/rmpm-orderwise-coverage',
     '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
     '/production-planning-scheduling/enquiry-response',
-    '/production-planning-scheduling/insight-and-trends/bm-trends'
+    '/production-planning-scheduling/insight-and-trends/bm-trends',
+    '/supply-chain-intelligence-hub/sdr',
+    '/master-data-management/data-modification-history'
+
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -288,6 +294,17 @@ export const initRoutes = (): RouteObject[] => {
         ...getStoreTransferModuleRoutes()
       ]
     },
+    {
+      path: '/master-data-management/data-modification-history',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DataModificationHistory />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
 
 
     {
@@ -434,37 +451,37 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-     path: '/dbm/dbm-norm-suggestions',
-     element: <AppLayout />,
-     children: [
-       {
-         index: true,
-         element: lazyLoad(<DBM/>)
-       },
-       ...getStoreTransferModuleRoutes()
-     ]
+      path: '/dbm/dbm-norm-suggestions',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DBM />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
     },
     {
-     path: '/production-planning-scheduling/enquiry-response',
-     element: <AppLayout />,
-     children: [
-       {
-         index: true,
-         element: lazyLoad(<EnquiryResponse/>)
-       },
-       ...getStoreTransferModuleRoutes()
-     ]
+      path: '/production-planning-scheduling/enquiry-response',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<EnquiryResponse />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
     },
     {
-     path: '/production-planning-scheduling/insight-and-trends/bm-trends',
-     element: <AppLayout />,
-     children: [
-       {
-         index: true,
-         element: lazyLoad(<BMTrends/>)
-       },
-       ...getStoreTransferModuleRoutes()
-     ]
+      path: '/production-planning-scheduling/insight-and-trends/bm-trends',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<BMTrends />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
     },
     {
       path: '/dbm/dbm-norm-suggestions',
@@ -562,6 +579,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<RMExpeditionSuppliers />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/sdr',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<SupplierDispatchReport />)
         },
         ...getStoreTransferModuleRoutes()
       ]
