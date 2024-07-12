@@ -24,5 +24,14 @@ export enum ProcurementSeriesDataFill {
     "#6A3001" = 3
 }
 
-
-
+export enum STPLAndFullKitCategoryKeys {
+    bl2_bl2_all_Except = 0,
+    sg2_dom_normal = 1,
+    bl2_bl3 = 2,
+    xy_tab_exp = 3,
+    xy_tab_dom_nrml = 4,
+    bl4 = 5,
+    sg1_dom_nrml = 6,
+    sg1_exp_nrml = 7,
+    sg2_exp_nrml = 8,
+}
