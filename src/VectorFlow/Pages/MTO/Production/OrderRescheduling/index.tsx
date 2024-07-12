@@ -19,6 +19,7 @@ const user = { user: { them_ui: 'pure' } }
 const OrderRescheduling = () => {
 
     const { mutateAsync: putUpdateOrderDueDate } = usePutUpdateOrderDueDate()
+    const { mutateAsync: getOrderSchedulingData } = useGetOrderSchedulingData();
 
     const refGraph1 = useRef<GridRef>(null);
 
@@ -137,7 +138,6 @@ const OrderRescheduling = () => {
     },
 
     ]
-    const { mutateAsync: getOrderSchedulingData } = useGetOrderSchedulingData();
     const GetData = async () => {
         const APIData = await getOrderSchedulingData();
         setRowData(APIData.data.data.results);

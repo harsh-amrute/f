@@ -98,7 +98,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/procurement/insights-and-trends/rmpm',
     '/procurement/insights-and-trends/rmpm-buffer-trends',
     '/procurement/insights-and-trends/rmpm-orderwise-coverage',
-    '/production/production-planning-and-scheduling/order-rescheduling',
+    '/production-planning-and-scheduling/order-rescheduling',
     '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
     '/production-planning-scheduling/enquiry-response',
     '/production-planning-scheduling/insight-and-trends/bm-trends'
@@ -570,7 +570,7 @@ export const initRoutes = (): RouteObject[] => {
     }
     ,
     {
-      path: '/production/production-planning-and-scheduling/order-rescheduling',
+      path: '/production-planning-and-scheduling/order-rescheduling',
       element: <AppLayout />,
       children: [
         {

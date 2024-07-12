@@ -563,7 +563,7 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.orderRescheduling",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "/production/production-planning-and-scheduling/order-rescheduling",
+        url: "/production-planning-and-scheduling/order-rescheduling",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {

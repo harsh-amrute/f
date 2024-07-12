@@ -39,7 +39,7 @@ const contextWrapper = (children: ReactNode, store: any) => {
     );
 };
 
-jest.mock('../../../../../../VectorFlow/Services/MTO/Production/OrderRescheduling', () => ({
+jest.mock('../../../../../VectorFlow/Services/MTO/Production/OrderRescheduling', () => ({
     useGetOrderSchedulingData: jest.fn(),
     usePutUpdateOrderDueDate: jest.fn()
 }));
