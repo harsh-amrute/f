@@ -1,4 +1,4 @@
-import { ColDef } from 'ag-grid-enterprise';
+import { ColDef, ColGroupDef } from 'ag-grid-enterprise';
 import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import { AbsoluteValueSeasonalitySchema, AddPIPOSchema, AddPOSchema, AddTargetNormSchema, DeltaPercentageSeasonalitySchema, ForceNormChangeSchema, LocationSchema, MOQSchema, SeasonalityStatusSchema, SKULocationSchema, SKUSchema, SOBSchema, StopPIPOSchema } from '../validators/schemas/MTA/MDM/index';
 import {type Option, type MasterIdToSchema, SeasonalityQuickFilterType} from '../VectorFlow/types/MDM';
@@ -285,6 +285,7 @@ export const TaskPendingAvoidColumnsMapper:any ={
     "3":['sc','wc'],
     "4":['sc','spc','wc'],
     "5":['sc'],
+    "6":['sc','wc'],
     "7":['sc','wc'],
     "8":['sc','wc','pi'],
     "9":['sc','wc'],
@@ -315,4 +316,31 @@ export const mdmRoutes = [
     '/master-data-management/control-panel/view-modify',
     '/master-data-management/control-panel/add',
     '/master-data-management/control-panel/delete'
+]
+
+export const TaskPendingStopPIPOCustomColumns:Array<ColDef | ColGroupDef> = [
+    {
+        colId:"type",
+        headerName:"Type",
+        field:'type',
+        children:[
+            {
+              headerName:'Type',
+              field:'type',
+              colId:'type',
+              valueFormatter:()=>"Stop-PIPO"
+            }
+            
+          ],
+        
+    },
+    {
+        colId:"requestFor",
+        headerName:"Request For",
+        field:'requestFor',
+        cellStyle:{
+            color:"Red"
+        },
+        valueFormatter:()=>"Stop"
+    }
 ]

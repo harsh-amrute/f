@@ -55,7 +55,7 @@ const RemarkModal = (props:RemarkModalProps)=>{
                                         </RemarkModalRemarkCelLRenderer>
                                     </RemarkModalTableCell>
                                     <RemarkModalTableCell>
-                                       {d.ETA}
+                                       {d.eta}
                                     </RemarkModalTableCell>
                                 </RemarkModalTableRow>
                                 )

@@ -343,9 +343,9 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
 
 
                             {(tabsList.length > 0 && renderFloatingTab())}
-                            {onSubmitEditedRows && (
+                            {/* {onSubmitEditedRows && (
                                  <VFButtonOutline disabled={disableSubmitEditedRowsBtn} themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={onSubmitEditedRows}>Save  Changes</VFButtonOutline> 
-                            )}
+                            )} */}
 
                             {currCategory === 'GuidedInsight' && view === 'grid' ? (
                                 <div style={{ marginRight: '60px', maxWidth:'400px' }}>

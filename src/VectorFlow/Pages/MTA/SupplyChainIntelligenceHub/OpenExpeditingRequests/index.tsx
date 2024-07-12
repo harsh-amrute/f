@@ -10,7 +10,8 @@ import RemarkModal from "./RemarkModal"
 
 // import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 
-
+import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
+import { ButtonWrapper } from "./styles"
 
 
 const OpenExpeditingRequests = ()=>{
@@ -116,9 +117,12 @@ const OpenExpeditingRequests = ()=>{
             //     params.columnApi.applyColumnState({state:columnState})
             //   }
             // }}
-            height={"85%"}
+            height={"75%"}
         />
-        
+
+        <ButtonWrapper>
+          <VFButtonOutline disabled={editedRows.length===0} themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>
+        </ButtonWrapper>
         {isSubmitRemarkToolTipOpen && (
             <BPRSubmiRemarkToolTip
                 remark={remark}

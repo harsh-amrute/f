@@ -30,3 +30,11 @@ export const SubmitRemarkInputWrapper = styled.div`
     overflow:hidden;
     text-overflow:ellipsis;
 `
+
+export const ButtonWrapper = styled.div`
+    width:100%;
+    display:flex;
+    justify-content:flex-end;
+    padding-right:20px;
+    zoom:0.7;
+`
