@@ -112,6 +112,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
     const loadInitialData = () => {
 
         const totalOrdCunt: any = calculatePercentage(SOData, ColorsMTO.Black.label, ColorsMTO.Red.label, ColorsMTO.Yellow.label, ColorsMTO.Green.label, 0);
+        console.log('totalOrdCunt',totalOrdCunt)
         setTotalOrdeerCount(totalOrdCunt);
 
         const totalBlueOrdCount: any = calculatePercentage(SOData, ColorsMTO.Blue.label, ColorsMTO.White.label, "", "", 1);
@@ -137,6 +138,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
         setfrthBlockCustCnt(frthBlock.cusCunt);
         setfrthBlockOrdCnt(frthBlock.ordCunt);
         setfrthdOrderVal(frthBlock.totalCunt);
+        console.log('frthBlock=',frthBlock)
 
         const fifthBlock: any = mapOrderDetails(SOData, ColorsMTO.Green.label, "", "", "PK", 0);
         setfifthBlockCustCnt(fifthBlock.cusCunt);
@@ -372,7 +374,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         orderCount={frthBlockOrdCnt}
                         cutCount={frthBlockCustCnt}
                         orderValue={frthOrderVal}
-                        percent={frthBlockCustCnt / totalOrderCount}
+                        percent={frthBlockOrdCnt / totalOrderCount}
                         ToolTipdata={{ 'c1': colorOrderCount?.Gnk, 'p1': colorOrderCount?.Gnkp }}
                     />
 
@@ -387,7 +389,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         orderCount={fifthBlockOrdCnt}
                         cutCount={fifthBlockCustCnt}
                         orderValue={fifthOrderVal}
-                        percent={fifthBlockCustCnt / totalOrderCount}
+                        percent={fifthBlockOrdCnt / totalOrderCount}
                         ToolTipdata={{ 'c1': colorOrderCount?.Gpk, 'p1': colorOrderCount?.Gpkp }}
                     />
 
@@ -402,7 +404,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                         orderCount={sxthBlockOrdCnt}
                         cutCount={sxthBlockCustCnt}
                         orderValue={sxthdOrderVal}
-                        percent={sxthBlockCustCnt / totalOrderCount}
+                        percent={sxthBlockOrdCnt / totalOrderCount}
                         ToolTipdata={{ 'c1': colorOrderCount?.Gfk, 'p1': colorOrderCount?.Gfkp }}
                     />
 

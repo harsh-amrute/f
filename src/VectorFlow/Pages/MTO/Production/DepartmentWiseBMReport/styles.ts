@@ -11,7 +11,7 @@ export const BMDepWrapper = styled.div`
 }`
 
 export const BMDepHeaderWraper=styled.div`
-   color:'red';
+ 
 `
 export const BMDepSubHeaderWraper=styled.div`
     justify-content:space-between

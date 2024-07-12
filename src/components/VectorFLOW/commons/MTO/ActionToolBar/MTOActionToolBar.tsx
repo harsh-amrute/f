@@ -1,4 +1,5 @@
 import VFButton from '../../VFButton';
+import Checkbox from '../../../../../components/commons/Checkbox';
 import {
     SCTaskBarContainer,
     SCGoBackContainer,
@@ -30,12 +31,15 @@ import {
     DateTitle,
     DateValue,
     /**Date component style end */
+    CheckBoxDiv,
+    InputCheckBox,
+    InputCheckBoxTitle
 } from './styles';
 import moment from 'moment';
 
 type filterType = {
     label: string,
-    values: string[] 
+    values: string[]
 }
 
 interface MTOActionToolBarProps {
@@ -53,25 +57,25 @@ interface MTOActionToolBarProps {
 }
 
 
-const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters,  submitDate, date, handleGoBack, themeUi  }: MTOActionToolBarProps) => {
-    
+const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters, submitDate, date, handleGoBack, themeUi }: MTOActionToolBarProps) => {
+
     const handleRemoveFilter = (category: string, name: string) => {
-        if(removeFilters){
+        if (removeFilters) {
             removeFilters(category, name);
         }
     }
 
     const getTodayDate = () => {
         const today = new Date();
-    
+
         // Extract year, month, and day
         const year = today.getFullYear();
         const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed
         const day = today.getDate().toString().padStart(2, '0');
-        
+
         // Construct the date string in the desired format
         const formattedDate = `${year}-${month}-${day}`;
-        
+
         return formattedDate;
     }
 
@@ -92,7 +96,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
             >
 
                 <>
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp !== 'MaterialRequirement') && (comp!=='BTRMTO') &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp !== 'MaterialRequirement') && (comp !== 'BTRMTO') &&
 
                         <SCGoBackContainer onClick={() => { if (handleGoBack) handleGoBack() }}>
                             <img
@@ -103,7 +107,18 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                         </SCGoBackContainer>
                     }
 
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp != "MaterialCovDetailData") && (comp!=='BTRMTO') &&
+                    <CheckBoxDiv>
+                        <Checkbox
+                            name="select"
+                            value="1"
+                            defaultChecked={true}
+                            onChange={()=>console.log('hi')}
+                        />
+                        <InputCheckBoxTitle>Show order with available WIP Only</InputCheckBoxTitle>
+                    </CheckBoxDiv>
+
+
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp != "MaterialCovDetailData") && (comp !== 'BTRMTO') &&
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -172,7 +187,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                     {comp !== 'EnquiryResponse' && <SCVerticalDivider />}
                 </>
 
-                    {comp === 'EnquiryResponse' && 
+                {comp === 'EnquiryResponse' &&
                     <DateWrapper>
                         <DateIcon
                             src='/assets/img/calender-icon.svg' alt='calender-icon'
@@ -188,7 +203,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                         Selected Filters
                     </VFSelectedFiltersPlaceHolder>
                     <VFFilterScrollBar>
-                        {selectedFilters?.map((filter: filterType)=>(
+                        {selectedFilters?.map((filter: filterType) => (
                             <VFSelectedFiltersChip key={filter.label}>
                                 <VFSelectedFiltersFilterLabel>
                                     {filter?.label}:
@@ -200,8 +215,8 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                                                 <p style={{ margin: '0px 5px 0px 5px' }}> {value}</p>
                                             </VFSelectedFiltersFilterValue>
                                             <VFSelectedFiltersFilterCloseIcon
-                                                onClick={()=>handleRemoveFilter(filter?.label, value)}
-                                                src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} 
+                                                onClick={() => handleRemoveFilter(filter?.label, value)}
+                                                src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'}
                                             />
                                             {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
                                         </VFSelectedFiltersFilterContent>
@@ -217,9 +232,9 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
             </SCTaskFilterContainer>
 
             <SCCustomActionsContainer>
-                {comp === 'EnquiryResponse' && onAddFilter ? 
+                {comp === 'EnquiryResponse' && onAddFilter ?
                     <VFButton onClick={() => onAddFilter()} themeUi={themeUi || ''} disabled={false} width={110}>{selectedFilters && selectedFilters?.length > 0 ? <p>Edit Filter</p> : <p>+ Add Filter</p>}</VFButton>
-                    : 
+                    :
                     <SCButton>
                         <p>+ Add Filter</p>
                     </SCButton>

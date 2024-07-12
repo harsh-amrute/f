@@ -311,6 +311,19 @@ export const DateValue = styled.div`
     border-radius: 4px;
     min-width: 180px;
 `;
+export const CheckBoxDiv=styled.div`
+    width: max-content;
+    text-wrap: nowrap;
+`
+
+export const InputCheckBox= styled.input`
+
+`
+
+export const InputCheckBoxTitle= styled.div`
+  
+
+`
 
 /**constant date */
 
