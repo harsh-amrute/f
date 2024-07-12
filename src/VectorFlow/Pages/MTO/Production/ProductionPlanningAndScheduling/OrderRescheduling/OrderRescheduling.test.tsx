@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { setupReactQuery } from '../../../../../../config/react-query-config';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -7,15 +7,15 @@ import { Provider } from 'react-redux';
 import { UserDataContext } from '../../../../../../context';
 import { createStore } from '../../../../../../redux/store/store';
 import OrderRescheduling from '.';
-import { useGetOrderSchedulingData } from '../../../../../../VectorFlow/Services/MTO/Production/OrderRescheduling';
+import { useGetOrderSchedulingData, usePutUpdateOrderDueDate } from '../../../../../../VectorFlow/Services/MTO/Production/OrderRescheduling';
 
 const queryClient = setupReactQuery();
 
 const dummyStore: any = {
     AnalyticsData: {}
-}
+};
 
-const mockedStore = createStore(dummyStore)
+const mockedStore = createStore(dummyStore);
 
 const contextWrapper = (children: ReactNode, store: any) => {
     return (
@@ -40,7 +40,8 @@ const contextWrapper = (children: ReactNode, store: any) => {
 };
 
 jest.mock('../../../../../../VectorFlow/Services/MTO/Production/OrderRescheduling', () => ({
-    useGetOrderSchedulingData: jest.fn()
+    useGetOrderSchedulingData: jest.fn(),
+    usePutUpdateOrderDueDate: jest.fn()
 }));
 
 describe("OrderRescheduling Component", () => {
@@ -54,11 +55,12 @@ describe("OrderRescheduling Component", () => {
                 }
             })
         });
+
+        (usePutUpdateOrderDueDate as jest.Mock).mockReturnValue({
+            mutateAsync: jest.fn().mockResolvedValue({})
+        });
     });
 
-
-
-    // works
     test("Tabs are rendered correctly", () => {
         render(contextWrapper(<OrderRescheduling />, mockedStore));
         const unscheduleTab = screen.getAllByText(/Unschedule/i);
@@ -67,8 +69,6 @@ describe("OrderRescheduling Component", () => {
         expect(overwriteDueDateTab[0]).toBeInTheDocument();
     });
 
-
-
     test("Buttons are rendered based on current tab", () => {
         render(contextWrapper(<OrderRescheduling />, mockedStore));
         const unscheduleButton = screen.getAllByText(/Unschedule/i);
@@ -76,7 +76,7 @@ describe("OrderRescheduling Component", () => {
 
         // Simulate tab change to "Overwrite Due Date"
         const overwriteDueDateTab = screen.getAllByText(/Overwrite Due Date/i);
-        overwriteDueDateTab[0].click();
+        fireEvent.click(overwriteDueDateTab[0]);
         const overwriteDueDateButton = screen.getAllByText(/Overwrite Due Date/i);
         expect(overwriteDueDateButton[0]).toBeInTheDocument();
     });
@@ -85,4 +85,7 @@ describe("OrderRescheduling Component", () => {
         render(contextWrapper(<OrderRescheduling />, mockedStore));
         expect(useGetOrderSchedulingData().mutateAsync).toHaveBeenCalledTimes(1);
     });
+
+
+
 });
