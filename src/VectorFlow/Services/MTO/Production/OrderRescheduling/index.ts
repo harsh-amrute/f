@@ -10,3 +10,10 @@ export const useGetOrderSchedulingData = () => {
         return OrderReschedulingService.getOrderReschedulingData()
     })
 }
+
+
+export const usePutUpdateOrderDueDate = () => {
+    return useMutation(async (body: any) => {
+        return OrderReschedulingService.putUpdateOrderDueDate(body);
+    })
+}

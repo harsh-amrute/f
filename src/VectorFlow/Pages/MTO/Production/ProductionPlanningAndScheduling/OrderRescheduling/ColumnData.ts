@@ -1,6 +1,4 @@
 import { ColDef } from "ag-grid-enterprise"
-import DueDateCellRenderer from "./DueDateCellRenderer"
-import ReasonCellRenderer from "./ReasonCellRenderer"
 const columnData: ColDef[] = [
     {
         colId: "oid",

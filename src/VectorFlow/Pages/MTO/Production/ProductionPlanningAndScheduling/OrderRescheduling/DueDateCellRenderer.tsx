@@ -5,7 +5,6 @@ const DueDateCellRenderer = (params: any) => {
 
     const [currDate, setCurrDate] = useState(params.data.dd);
 
-    console.log("date params: ", params.data.dd)
     return (
         <>
             <input type="date"

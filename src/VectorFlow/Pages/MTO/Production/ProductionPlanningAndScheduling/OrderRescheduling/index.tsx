@@ -8,7 +8,7 @@ import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton'
 import ReasonCellRenderer from './ReasonCellRenderer'
 import columnData from './ColumnData'
 import DueDateCellRenderer from './DueDateCellRenderer'
-import { useGetOrderSchedulingData } from '../../../../../../VectorFlow/Services/MTO/Production/OrderRescheduling'
+import { usePutUpdateOrderDueDate, useGetOrderSchedulingData } from '../../../../../../VectorFlow/Services/MTO/Production/OrderRescheduling'
 import { AgGridReactProps } from 'ag-grid-react'
 import { GridApi } from 'ag-grid-enterprise'
 import { GridRef } from '../../../../../../VectorFlow/types/MDM'
@@ -18,6 +18,8 @@ const user = { user: { them_ui: 'pure' } }
 
 
 const OrderRescheduling = () => {
+
+    const { mutateAsync: putUpdateOrderDueDate } = usePutUpdateOrderDueDate()
 
     const refGraph1 = useRef<GridRef>(null);
 
@@ -131,7 +133,8 @@ const OrderRescheduling = () => {
 
         floatingFilter: true
 
-    }
+    },
+
     ]
     const { mutateAsync: getOrderSchedulingData } = useGetOrderSchedulingData();
     const GetData = async () => {
@@ -140,8 +143,73 @@ const OrderRescheduling = () => {
         setTableLoading(false);
     }
 
-    const PostData = (data: any) => {
-        console.log(data);
+    type InputItem = {
+        PdSz: number;
+        dd: string;
+        lid: string;
+        odk: string;
+        oid: string;
+        rnm: string;
+        rs: string;
+    };
+
+    type OutputItem = {
+        ok: string;
+        r: string;
+        dd?: string;
+    };
+
+    type Output = {
+        unm: string;
+        isUnSch: number;
+        ordData: OutputItem[];
+    };
+
+    function convertJsonForUnschedule(inputArray: any, username: string, isUnSch: number): Output {
+        const output: Output = {
+            unm: username,
+            isUnSch: isUnSch,
+            ordData: []
+        };
+
+        inputArray.forEach((item: any) => {
+            const ordDataItem: OutputItem = {
+                ok: item.odk || "",
+                r: item.rs || ""
+            };
+            output.ordData.push(ordDataItem);
+        });
+
+        return output;
+    }
+    function convertJsonForDueDate(inputArray: any, username: string, isUnSch: number): Output {
+        const output: Output = {
+            unm: username,
+            isUnSch: isUnSch,
+            ordData: []
+        };
+
+        inputArray.forEach((item: any) => {
+            const ordDataItem: OutputItem = {
+                ok: item.odk || "",
+                dd: item.dd || "",
+                r: item.rs || ""
+            };
+            output.ordData.push(ordDataItem);
+        });
+
+        return output;
+    }
+
+
+    const PostData = async (data: any) => {
+
+        try {
+            await putUpdateOrderDueDate(data);
+
+        } catch (error) {
+            console.log(error);
+        }
     }
     useEffect(() => {
         GetData();
@@ -150,11 +218,15 @@ const OrderRescheduling = () => {
 
 
     const unschedule = () => {
-        PostData(selectedRowData);
+
+        const finalData = convertJsonForUnschedule(selectedRowData, 'Admin', 1)
+
+        PostData(finalData);
     }
 
     const overwriteDD = () => {
-        PostData(selectedRowData);
+        const finalData = convertJsonForDueDate(selectedRowData, 'Admin', 0)
+        PostData(finalData);
     }
 
 
