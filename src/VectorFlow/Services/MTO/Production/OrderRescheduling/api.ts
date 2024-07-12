@@ -3,7 +3,7 @@ import axios from 'axios';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace OrderReschedulingService {
     export const getOrderReschedulingData = async () => {
-        console.log(process.env.REACT_APP_VF_API_HOST_MTO + `/GetOrderReschedulingData/`)
+
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetOrderReschedulingData/`, {
 
             headers: {
@@ -14,7 +14,6 @@ export namespace OrderReschedulingService {
     }
     export const putUpdateOrderDueDate = async (body: any) => {
         const url = `${process.env.REACT_APP_VF_API_HOST_MTO}/UpdateOrderDueDate/`;
-        console.log(url);
         return await axios.put(url, body, {
             headers: {
                 'Content-Type': 'application/json',
