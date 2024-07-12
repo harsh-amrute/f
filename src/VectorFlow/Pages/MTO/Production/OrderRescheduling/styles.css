@@ -1,7 +1,7 @@
 input[type="date"]::-webkit-calendar-picker-indicator {
     color: purple;
     opacity: 1;
-    background: url('../../../../../../../public/assets/img/mto/OrderRescheduling/edit-calendar.svg') no-repeat;
+    background: url('../../../../../../public/assets/img/mto/OrderRescheduling/edit-calendar.svg') no-repeat;
     width: 16px;
     height: 16px;
 }

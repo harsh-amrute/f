@@ -1,4 +1,4 @@
-import { ETACellRendererWrapper, ETACellValue } from "./styles"
+import { ETACellRendererWrapper } from "./styles"
 
 const ReasonCellRenderer = (params: any) => {
 

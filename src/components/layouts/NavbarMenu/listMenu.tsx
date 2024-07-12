@@ -535,14 +535,6 @@ export const listMenuParent: any = [
             url: "/procurement/insights-and-trends/rmpm-expediting-rm-suppliers",
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"]
           }
-          ,
-          {
-            name: "Order Rescheduling",
-            img: "/assets/img/nav/arrow_down.svg",
-            imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-            url: "/production/production-planning-and-scheduling/order-rescheduling",
-            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"]
-          }
         ]
 
       },
@@ -554,24 +546,24 @@ export const listMenuParent: any = [
     img: "/assets/img/nav/prod-plan-icon",
     url: "/production-planning-scheduling/enquiry-response",
     status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
     child: [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.enquiryResponse",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/production-planning-scheduling/enquiry-response",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.dueDateQuotation",
         img: "/assets/img/nav/arrow_down.svg",
         url: "",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.orderRescheduling",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "",
+        url: "/production/production-planning-and-scheduling/order-rescheduling",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {
@@ -614,7 +606,7 @@ export const listMenuParent: any = [
       },
     ],
   },
-  
+
 ];
 
 

@@ -41,7 +41,7 @@ import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrend
 import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
 import RMPMBufferTrends from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMBufferTrends'
 import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
-import OrderRescheduling from './VectorFlow/Pages/MTO/Production/ProductionPlanningAndScheduling/OrderRescheduling'
+import OrderRescheduling from './VectorFlow/Pages/MTO/Production/OrderRescheduling'
 import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index'
 import BMTrends from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/BMTrends'
 

@@ -1,13 +1,13 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { setupReactQuery } from '../../../../../../config/react-query-config';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { setupReactQuery } from '../../../../../config/react-query-config';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router } from 'react-router-dom';
 import React, { ReactNode } from 'react';
 import { Provider } from 'react-redux';
-import { UserDataContext } from '../../../../../../context';
-import { createStore } from '../../../../../../redux/store/store';
+import { UserDataContext } from '../../../../../context';
+import { createStore } from '../../../../../redux/store/store';
 import OrderRescheduling from '.';
-import { useGetOrderSchedulingData, usePutUpdateOrderDueDate } from '../../../../../../VectorFlow/Services/MTO/Production/OrderRescheduling';
+import { useGetOrderSchedulingData, usePutUpdateOrderDueDate } from '../../../../Services/MTO/Production/OrderRescheduling';
 
 const queryClient = setupReactQuery();
 

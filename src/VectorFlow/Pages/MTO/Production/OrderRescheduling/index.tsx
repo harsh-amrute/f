@@ -1,17 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
-import VFFloatingTab from '../../../../../../components/VectorFLOW/commons/VFFloatingTab'
-import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
+import VFFloatingTab from '../../../../../components/VectorFLOW/commons/VFFloatingTab'
+import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { ApplyZoomOut } from './styles'
-import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable'
-import { VFTableWrapper } from '../../../../../../components/VectorFLOW/commons/VFTable/styles'
-import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton'
+import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
+import { VFTableWrapper } from '../../../../../components/VectorFLOW/commons/VFTable/styles'
+import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
 import ReasonCellRenderer from './ReasonCellRenderer'
 import columnData from './ColumnData'
 import DueDateCellRenderer from './DueDateCellRenderer'
-import { usePutUpdateOrderDueDate, useGetOrderSchedulingData } from '../../../../../../VectorFlow/Services/MTO/Production/OrderRescheduling'
+import { usePutUpdateOrderDueDate, useGetOrderSchedulingData } from '../../../../Services/MTO/Production/OrderRescheduling'
 import { AgGridReactProps } from 'ag-grid-react'
-import { GridApi } from 'ag-grid-enterprise'
-import { GridRef } from '../../../../../../VectorFlow/types/MDM'
+import { GridRef } from '../../../../types/MDM'
 
 
 const user = { user: { them_ui: 'pure' } }
@@ -28,7 +27,9 @@ const OrderRescheduling = () => {
 
     const getSelectedRowData = () => {
         const selectedData = refGraph1.current?.api.getSelectedRows();
-        setSelectedRowData(selectedData!);
+        if (selectedData) {
+            setSelectedRowData(selectedData);
+        }
     };
 
 
@@ -69,7 +70,7 @@ const OrderRescheduling = () => {
     { label: 'Overwrite Due Date', value: 'Overwrite Due Date', id: 'Overwrite Due Date' }
     ]
 
-    const [tableLoading, setTableLoading] = useState(true);
+
 
     let colDef = columnData;
     const [rowData, setRowData] = useState([])
@@ -140,18 +141,10 @@ const OrderRescheduling = () => {
     const GetData = async () => {
         const APIData = await getOrderSchedulingData();
         setRowData(APIData.data.data.results);
-        setTableLoading(false);
+
     }
 
-    type InputItem = {
-        PdSz: number;
-        dd: string;
-        lid: string;
-        odk: string;
-        oid: string;
-        rnm: string;
-        rs: string;
-    };
+
 
     type OutputItem = {
         ok: string;
@@ -264,7 +257,7 @@ const OrderRescheduling = () => {
                                         { statusPanel: 'agAggregationComponent', align: 'left' },
                                     ],
                                 }}
-                                onGridReady={() => { setTableLoading(false) }}
+
 
                                 {...agGridProps}
 
