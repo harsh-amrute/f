@@ -17,7 +17,6 @@ const DetailCellRenderer = (params: any) => {
             <h3 style={{ marginLeft: 20, fontSize: 17 }}>Raw Material Details</h3>
             <VFTable
                 className='child-grid'
-                enableCharts={true}
                 columnDefs={SimulateChildrenColumns}
                 defaultColDef={{
                     cellStyle: {

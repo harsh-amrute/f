@@ -104,11 +104,7 @@ const RMPMOrderwiseCoverage = () => {
 
                 <ActionToolBar comp={"rmpm"} isGridView={isGridView} setIsGridView={setIsGridView} />
             </div>
-            {(isGridView) ? <GridView 
-                agGridProps={agGridProps} 
-                ShortageColumns={ShortageColumns} 
-                ShortageDatas={ShortageDatas} 
-            /> : <GraphView />}
+            {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={ShortageDatas} /> : <GraphView />}
         </>
     )
 }
