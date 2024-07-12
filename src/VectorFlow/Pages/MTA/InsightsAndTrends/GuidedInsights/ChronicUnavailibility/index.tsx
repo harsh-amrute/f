@@ -434,7 +434,7 @@ const ChronicUnavailabilityCharts = () => {
                     number:{
                         title:{
                             enabled:true,
-                            text:'count of SKUS',
+                            text:'Count of SKUs',
                             position:'left',
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -522,7 +522,7 @@ const ChronicUnavailabilityCharts = () => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={"98%"}>
                             <SCChartHeaderContainer>
-                                <SCChartHeader>Top 10 Locations: Max SKUs in Continuous Pipeline Black or Red Ageing greater than RLT</SCChartHeader>
+                                <SCChartHeader>Top 10 Locations: Max SKUs In Continuous Pipeline Black Or Red Ageing Greater Than RLT</SCChartHeader>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
                                     {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt=""  data-testid="minimizechart1"onClick={()=>handleChartClose(1)}/>}
@@ -608,7 +608,7 @@ const ChronicUnavailabilityCharts = () => {
                     <Allotment.Pane>
                         <SCChartContainer height={"98%"}>
                                 <SCChartHeaderContainer>
-                                    <SCChartHeader>Top 10 Skus: Max Number Of Locations Where The SKU has Pipeline Black/Red Ageing Greater Than Rlt</SCChartHeader>
+                                    <SCChartHeader>Top 10 SKUs: Max Number Of Locations Where The SKU Has Pipeline Black/Red Ageing Greater Than RLT</SCChartHeader>
                                     <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}>
                                         <VFInfoToolTip infoList={graph2}/></div>

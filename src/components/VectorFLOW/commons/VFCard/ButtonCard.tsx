@@ -21,7 +21,7 @@ const ButtonCard = (props:ButtonCardProps)=>{
     } = props
 
     return(
-        <ButtonCardContainer style={{opacity:opacity,visibility:opacity==='1'?'visible':'hidden'}} imgSrc="assets/img/VectorFLOW/NMS/card-bg.svg">
+        <ButtonCardContainer style={{opacity:opacity,visibility:opacity==='1'?'visible':'hidden'}} imgSrc="/assets/img/VectorFLOW/NMS/card-bg.svg">
             <CardButton themeUi={themeUi} onClick={onClick} data-testid={"button-card"}>{text}</CardButton>
         </ButtonCardContainer>
     )

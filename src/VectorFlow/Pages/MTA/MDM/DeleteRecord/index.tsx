@@ -159,7 +159,7 @@ const DeleteRecord = () => {
                               fields={generateOptions([activeMaster])}
                               currFilter={f}
                               key={f.id}
-                              isDisabled={activeMaster.id > 14}
+                              isDisabled={false}
                             />
                           )
                         }
@@ -188,7 +188,7 @@ const DeleteRecord = () => {
                       <VFButton
                       themeUi={themeUi}
                       onClick={()=>{handleApplyFilter()}}
-                      disabled={activeMaster.id > 14}
+                      disabled={false}
                       >
                         Apply Filter
                       </VFButton>

@@ -18,6 +18,7 @@ interface UploadModalProps{
    uploadButtonStatus:boolean
    radioButtons?:Array<{label:string,value:any}>
    handleRadioButton?:(params:number)=>void
+   downloadFileText?:string
 }
 
 
@@ -35,7 +36,8 @@ const UploadModal = (props:UploadModalProps)=>{
       setFile,
       radioButtons,
       uploadButtonStatus,
-      handleRadioButton
+      handleRadioButton,
+      downloadFileText
    }   = props 
 
    const {user} = useUserData()
@@ -73,7 +75,7 @@ const UploadModal = (props:UploadModalProps)=>{
                <UploadModalContent>
                   <TextContent>
                      <img src="/assets/img/manual/excel.png"  height={29} width={29} style={{marginBottom:'10px'}}/>
-                     <p>Download selected data </p>
+                     <p>{downloadFileText ? downloadFileText : 'Download selected data'} </p>
                   </TextContent>
                   {
                      radioButtons && radioButtons.length>0 && handleRadioButton ? (

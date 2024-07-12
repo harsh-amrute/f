@@ -155,7 +155,7 @@ const useAdd=()=>{
             dispatch(TOGGLE_UPLOAD_MODAL(true))
             return 
         }
-        else return notifyError(`Please Complete the ${selectedMasters[nextMasterIndex].name}`);  
+        else return notifyError(`Please complete the activity in ${selectedMasters[nextMasterIndex].name}`);  
   
         
         
