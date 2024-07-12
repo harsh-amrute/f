@@ -211,6 +211,8 @@ const useMaterialReq = () => {
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                 ]
                             }}
+                            disableZoomScaling={true}
+                            
                         />
                         <VFPagination
                             selectedRows={0}
@@ -239,6 +241,8 @@ const useMaterialReq = () => {
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                 ]
                             }}
+                            disableZoomScaling={true}
+                           
                         />
                         <VFPagination
                             selectedRows={0}
@@ -281,8 +285,9 @@ const useMaterialReq = () => {
                     "font-family": "Roboto",
                     'text-overflow': 'ellipsis',
                     'white-space': 'nowrap',
-                    'resizable': 'true',
+                    'resizable': 'true'
                 },
+                initialFlex: 1
             },
 
         },

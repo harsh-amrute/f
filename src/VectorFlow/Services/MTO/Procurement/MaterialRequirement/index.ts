@@ -1,9 +1,7 @@
 import { useMutation, /*useQuery*/ } from '@tanstack/react-query'
 import { MaterialRequirementService } from './api'
 
-export const QUERY_KEYS = {
-    useGetLatestRunDate: ['MDMService.useGetLatestRunDate']
-}
+
 
 export const useGetMaterialRequirementDetails = () => {
     return useMutation(async (data: any) => {

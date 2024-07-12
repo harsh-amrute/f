@@ -1,29 +1,42 @@
-import React from 'react';
+import VFButton from '../../VFButton';
 import {
     SCTaskBarContainer,
     SCGoBackContainer,
     SCGoBackText,
     SCVerticalDivider,
+    SCVerticalDividerGray,
     SCViewImage,
     SCCustomActionsContainer,
     SCViewContainerWithBg,
     SCTaskFilterContainer,
     SCButton,
-    /**search filter styles starts */
-    // VFSelectedFiltersChip,
-    // VFSelectedFiltersFilterCloseIcon,
-    // VFSelectedFiltersFilterContent,
-    // VFSelectedFiltersFilterLabel,
-    // VFSelectedFiltersFilterValue,
-    // VFSelectedFiltersPlaceHolder,
-    // VFSelectedFiltersWrapper,
-    // VFFilterScrollBar,
     SCViewContainerWithBgToggle,
     SCHorizontalDivison,
     SCViewContainer,
+    SCFilterVerticalDivider,
+    /**search filter styles starts */
+    VFSelectedFiltersChip,
+    VFSelectedFiltersFilterCloseIcon,
+    VFSelectedFiltersFilterContent,
+    VFSelectedFiltersFilterLabel,
+    VFSelectedFiltersFilterValue,
+    VFSelectedFiltersPlaceHolder,
+    VFSelectedFiltersWrapper,
+    VFFilterScrollBar,
     /**search filter styles end*/
+    /**Date component style starts */
+    DateWrapper,
+    DateIcon,
+    DateTitle,
+    DateValue,
+    /**Date component style end */
 } from './styles';
 import moment from 'moment';
+
+type filterType = {
+    label: string,
+    values: string[]
+}
 
 interface MTOActionToolBarProps {
     comp: string,
@@ -31,12 +44,37 @@ interface MTOActionToolBarProps {
     submitDate?: () => void;
     isGridView?: boolean;
     setIsGridView?: (isGridView: boolean) => void;
+    onAddFilter?: () => void;
+    selectedFilters?: filterType[];
+    removeFilters?: (category: string, name: string) => void;
     date?: string
     handleGoBack?: () => void;
+    themeUi?: string;
 }
 
 
-const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submitDate, date, handleGoBack }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters, submitDate, date, handleGoBack, themeUi }: MTOActionToolBarProps) => {
+
+    const handleRemoveFilter = (category: string, name: string) => {
+        if (removeFilters) {
+            removeFilters(category, name);
+        }
+    }
+
+    const getTodayDate = () => {
+        const today = new Date();
+
+        // Extract year, month, and day
+        const year = today.getFullYear();
+        const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed
+        const day = today.getDate().toString().padStart(2, '0');
+
+        // Construct the date string in the desired format
+        const formattedDate = `${year}-${month}-${day}`;
+
+        return formattedDate;
+    }
+
 
     const format2 = "YYYY-MM-DD"
     const d = new Date();
@@ -54,7 +92,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
             >
 
                 <>
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'MaterialRequirement') && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp !== 'MaterialRequirement') && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') &&
 
                         <SCGoBackContainer onClick={() => { if (handleGoBack) handleGoBack() }}>
                             <img
@@ -65,7 +103,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                         </SCGoBackContainer>
                     }
 
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm') && (comp !== 'BTRMTO') && (comp != "MaterialCovDetailData") && (comp !== 'orderReschedule')) &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp != "MaterialCovDetailData") && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') &&
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -131,51 +169,63 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
 
                     }
 
-                    <SCVerticalDivider />
+                    {comp !== 'EnquiryResponse' && <SCVerticalDivider />}
                 </>
 
-
+                {comp === 'EnquiryResponse' &&
+                    <DateWrapper>
+                        <DateIcon
+                            src='/assets/img/calender-icon.svg' alt='calender-icon'
+                        />
+                        <DateTitle>As on Date</DateTitle>
+                        <DateValue>
+                            {getTodayDate()}
+                        </DateValue>
+                    </DateWrapper>}
                 {/**Selected Filter start */}
-
-
-
-
-
-                {/* {/* <VFSelectedFiltersWrapper>
-                        <VFSelectedFiltersPlaceHolder>
-                            Selected Filters
-                        </VFSelectedFiltersPlaceHolder>
-                        <VFFilterScrollBar>
-                            <VFSelectedFiltersChip>
+                {selectedFilters && selectedFilters?.length > 0 && <VFSelectedFiltersWrapper>
+                    <VFSelectedFiltersPlaceHolder>
+                        Selected Filters
+                    </VFSelectedFiltersPlaceHolder>
+                    <VFFilterScrollBar>
+                        {selectedFilters?.map((filter: filterType) => (
+                            <VFSelectedFiltersChip key={filter.label}>
                                 <VFSelectedFiltersFilterLabel>
-                                    <b></b>
-
+                                    {filter?.label}:
                                 </VFSelectedFiltersFilterLabel>
-
-                                <VFSelectedFiltersFilterContent style={{ borderRight: 'solid 2px black' }}>
-                                    <VFSelectedFiltersFilterValue>
-                                        <p style={{ margin: '0px 5px 0px 5px' }}>:</p>
-                                    </VFSelectedFiltersFilterValue>
-                                    <VFSelectedFiltersFilterCloseIcon
-                                        src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'} />
-                                </VFSelectedFiltersFilterContent>
-
+                                {filter?.values?.map((value: string) => (
+                                    <div key={value}>
+                                        <VFSelectedFiltersFilterContent>
+                                            <VFSelectedFiltersFilterValue>
+                                                <p style={{ margin: '0px 5px 0px 5px' }}> {value}</p>
+                                            </VFSelectedFiltersFilterValue>
+                                            <VFSelectedFiltersFilterCloseIcon
+                                                onClick={() => handleRemoveFilter(filter?.label, value)}
+                                                src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'}
+                                            />
+                                            {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
+                                        </VFSelectedFiltersFilterContent>
+                                    </div>
+                                ))}
                             </VFSelectedFiltersChip>
-
-                        </VFFilterScrollBar>
-                    </VFSelectedFiltersWrapper> */}
-
+                        ))}
+                    </VFFilterScrollBar>
+                </VFSelectedFiltersWrapper>}
                 {/**Selected Filter ends*/}
 
 
             </SCTaskFilterContainer>
 
             <SCCustomActionsContainer>
-                <SCButton>
-                    <p>+ Add Filter</p>
-                </SCButton>
+                {comp === 'EnquiryResponse' && onAddFilter ?
+                    <VFButton onClick={() => onAddFilter()} themeUi={themeUi || ''} disabled={false} width={110}>{selectedFilters && selectedFilters?.length > 0 ? <p>Edit Filter</p> : <p>+ Add Filter</p>}</VFButton>
+                    :
+                    <SCButton>
+                        <p>+ Add Filter</p>
+                    </SCButton>
+                }
                 <>
-                    <>
+                    {comp !== 'EnquiryResponse' && comp !== 'BMTrends' && <>
                         <SCVerticalDivider />
                         <SCViewContainerWithBg >
                             <>
@@ -184,11 +234,11 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, submi
                                 <p>Excel Export</p>
                             </>
                         </SCViewContainerWithBg>
-                    </>
+                    </>}
 
                     <>
+                        <SCVerticalDividerGray />
 
-                        <SCVerticalDivider />
                         <SCViewContainerWithBg>
                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
                             <p>Save</p>

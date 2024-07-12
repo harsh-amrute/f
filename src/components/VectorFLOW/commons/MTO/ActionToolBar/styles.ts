@@ -4,12 +4,13 @@ import * as gridSystem from "../../../../../styles/gridSystem";
 
 export const SCTaskBarContainer = styled.div`
     //margin-top:5px;
-    margin-bottom:10px;
-    padding-left:10px;
+    // margin-bottom:10px;
+    // padding-left:10px;
     display:flex;
     align-items:center;
     //margin-bottom:20px;
     margin-left:20px;
+    width: 100%;
     justify-content:space-between; //changed
 
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
@@ -92,6 +93,15 @@ export const SCVerticalDivider = styled.div`
     margin-right:8px;
     margin-left:8px;
     align-items:center;
+`;
+
+export const SCVerticalDividerGray = styled.div`
+    width:0.5px;
+    background-color: #c7c7c7;
+    height:40px;
+    margin-right:8px;
+    margin-left:8px;
+    align-items:center;
 `
 
 export const SCViewImage = styled.img`
@@ -114,6 +124,23 @@ export const SCTaskFilterContainer = styled.div`
     max-width:40%;
     align-items:center;
 `
+
+export const SCPrimaryButton = styled.button`
+  border-radius: 6px;
+  font-size:16px;
+  font-family:'Roboto';
+  letter-spacing:0px;
+  font-weight:300;
+  color: #FFFFFF;
+  padding: 15px 7px;
+  pointer-events:'all';
+  width: 130px;
+  height: 46px;
+  box-shadow: -5px 4px 10px  ${ColorsMTO.LightGrey};
+  border: 1px solid  ${ColorsMTO.Pink};
+  opacity: 1;
+  background-image: linear-gradient(to right, rgb(141, 46, 97), rgb(187, 63, 129), rgb(219, 107, 167));
+`;
 
 export const SCButton = styled.button`
   background:${ColorsMTO.White.code};
@@ -180,16 +207,16 @@ font-family:Roboto;
 font-weight:300;
 letter-spacing: 0px;
 color: #313131;
+width: 120px;
 `
 
 export const VFSelectedFiltersFilterContent = styled.div`
     display:flex;
     flex-direction:row;
-    padding:0 10px;
-    border-right:solid 2px black;
+    align-items: center;
 `
 
-export const VFSelectedFiltersFilterValue = styled.p`
+export const VFSelectedFiltersFilterValue = styled.div`
 font-size:16px;
 line-height:21px;
 font-family:Roboto;
@@ -197,6 +224,13 @@ letter-spacing: 0px;
 display:flex;
 text-wrap:nowrap;
 
+`;
+export const SCFilterVerticalDivider = styled.div`
+    width:0.5px;
+    background-color: black;
+    height:20px;
+    align-items:center;
+    margin: 0px 8px;
 `
 
 export const VFSelectedFiltersFilterCloseIcon = styled.img`
@@ -254,3 +288,29 @@ export const VFInputDate = styled.input`
     border: 0.5px solid #ACACAC;
 `
 /**release date */
+/**constant date */
+
+export const DateWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: #000000; 
+    letter-spacing: 0;
+    line-height: 21px;
+`;
+export const DateIcon = styled.img``;
+export const DateTitle = styled.div`
+  width: 100px;
+`;
+export const DateValue = styled.div`
+    padding: 15px 40px;
+    background: rgb(242, 242, 242);
+    border-radius: 4px;
+    min-width: 180px;
+`;
+
+/**constant date */
+

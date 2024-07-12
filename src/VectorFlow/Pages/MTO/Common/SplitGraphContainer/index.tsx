@@ -1,37 +1,83 @@
-import { AgCharts } from 'ag-charts-community'
+import { AgChartOptions, AgCharts } from 'ag-charts-community'
 import { AgChartsReact } from 'ag-charts-react'
-import { useRef } from 'react'
+import { Dispatch, SetStateAction, useRef } from 'react'
 import { SCChartContainer, SCChartMainContainer, SCHorizontalDivider, ChartWrapper } from './styles'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
 
+interface SplitGrpahContainerProps {
+    colDef: any,
+    options: AgChartOptions,
+    data: any,
+    rowData: any,
+    header: () => JSX.Element,
+    graphTitle: string,
+    tableTitle: string,
+    tableLoading?: boolean,
+    chartLoading?: boolean,
+    setTableLoading: Dispatch<SetStateAction<boolean>>,
+    setChartLoading: Dispatch<SetStateAction<boolean>>,
+    hideChart: boolean,
+    toggleChart: Dispatch<SetStateAction<boolean>>,
+    TooltipRenderer: (param: any) => string,
+    graphType: number,
+    date?: string,
+    chartHeight?: number
+}
 
 
 
-
-const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitle, tableTitle, tableLoading, chartLoading, setTableLoading, setChartLoading, hideChart, toggleChart, TooltipRenderer }: any) => {
+const SplitGraphContainer = ({
+    colDef,
+    options,
+    data,
+    rowData,
+    header,
+    graphTitle,
+    tableTitle,
+    setTableLoading,
+    setChartLoading,
+    hideChart,
+    toggleChart,
+    TooltipRenderer,
+    graphType,
+    chartHeight,
+}: SplitGrpahContainerProps) => {
     const chartRef = useRef<AgChartsReact>(null);
     const refGraph1 = useRef<GridRef>(null);
 
-    console.log(tableLoading, chartLoading)
+    const myCustomTheme = () => {
+        switch (graphType) {
+            case 1:
+                return {
+                    palette: {
+                        fills: ['black', 'red', 'green', 'yellow', 'grey'],
+                        strokes: ['black', 'red', 'green', 'yellow', 'grey'],
+                    },
+                }
 
-    const myCustomTheme: any = {
-        palette: {
-            fills: ['black', 'red', 'green', 'yellow', 'grey'],
-            strokes: ['black', 'red', 'green', 'yellow', 'grey'],
-        },
+            default:
+                return {
+                    palette: {
+                        fills: ['black', 'red', 'green', 'yellow', 'grey'],
+                        strokes: ['black', 'red', 'green', 'yellow', 'grey'],
+                    },
+                }
+        }
+
+
     }
 
 
-    const generateChart = (graphNo: number, withOutContainer?: boolean) => {
+    const generateChart = (graphNo: number) => {
 
-        if (graphNo === 1) {
-            if (withOutContainer) {
+        switch (graphNo) {
+            case 1:
                 refGraph1.current?.api.createRangeChart({
                     chartType: 'line',
                     cellRange: {
-                        columns: ['dt', 'b', 'r', 'y', 'g', 'w'],
+                        columns: ['dt', 'b', 'r', 'y', 'g', 'bl', 'w'],
                     },
 
                     chartThemeOverrides: {
@@ -55,32 +101,76 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
                         }
                     }
 
-
-
-
                 })
-            }
-            else {
-                const container1 = document.getElementById('LocationWiseG1') as HTMLElement
+                break;
+            case 2:
                 refGraph1.current?.api.createRangeChart({
-                    chartType: 'stackedColumn',
+                    chartType: 'column',
                     cellRange: {
-                        columns: ['name', 'superdelay', 'delay'],
-                        rowStartIndex: 0,
-                        rowEndIndex: 9
+                        columns: ['rn', 'rc'],
                     },
-                    chartContainer: container1
-                })
-            }
 
+                    chartThemeOverrides: {
+                        line: {
+                            series: {
+                                tooltip: {
+                                    renderer: TooltipRenderer
+                                },
+                                strokeWidth: 3
+
+                            },
+                            legend: {
+                                item: {
+                                    marker: {
+                                        shape: 'square'
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                })
+                break;
+            case 3:
+                refGraph1.current?.api.createRangeChart({
+                    chartType: 'column',
+                    cellRange: {
+                        columns: ['sn', 'rc'],
+                    },
+
+                    chartThemeOverrides: {
+                        line: {
+                            series: {
+                                tooltip: {
+                                    renderer: TooltipRenderer
+                                },
+                                strokeWidth: 3
+
+                            },
+                            legend: {
+                                item: {
+                                    marker: {
+                                        shape: 'square'
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                })
+                break;
+            default:
+                <></>
         }
+
+
     }
 
     return (
         <div style={{ width: "100%" }}>
 
 
-            <SCChartContainer style={{ height: "68vh", border: '1px solid #CCCCCC', margin: '2px' }}>
+            <SCChartContainer style={{ border: '1px solid #CCCCCC', margin: '2px' }}>
                 <SCChartMainContainer style={{ zoom: 1 }}>
                     {header()}
                 </SCChartMainContainer>
@@ -104,7 +194,15 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
                     </div>
                 </ChartWrapper>
 
-                <VFModalCard openModal={hideChart} closeModal={() => toggleChart(false)} headerIcon='' headerText={tableTitle} headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                <VFModalCard
+                    openModal={hideChart}
+                    closeModal={() => toggleChart(false)}
+                    headerIcon=''
+                    headerText={tableTitle}
+                    headerBgColor=""
+                    headerTextColor="#00000"
+                    paddingLeftAndRight={27}
+                    closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                     <div className="ag-theme-planning" style={{ width: '1000px' }}>
                         <VFTable
                             ref={refGraph1}
@@ -121,7 +219,7 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
                                     { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                                     { statusPanel: 'agAggregationComponent', align: 'left' },
                                 ],
-                            }} onGridReady={() => { setTableLoading(false); generateChart(1, true) }}
+                            }} onGridReady={() => { setTableLoading(false); generateChart(graphType) }}
                             chartToolPanelsDef={
                                 {
                                     panels: []
@@ -134,13 +232,13 @@ const SplitGraphContainer = ({ colDef, options, data, rowData, header, graphTitl
                             }}
                             chartThemes={['myCustomTheme']}
                             customChartThemes={{
-                                'myCustomTheme': myCustomTheme
+                                'myCustomTheme': myCustomTheme()
                             }}
                             height={'480px'}
                         />
                     </div>
                 </VFModalCard>
-                <div style={{ height: "50vh" }}>
+                <div style={{ height: `${chartHeight ? chartHeight : 50}vh` }}>
                     <AgChartsReact suppressDragLeaveHidesColumns={true} ref={chartRef} options={{ ...options, data: data }} onChartReady={() => { setChartLoading(false) }} />
                 </div>
             </SCChartContainer>

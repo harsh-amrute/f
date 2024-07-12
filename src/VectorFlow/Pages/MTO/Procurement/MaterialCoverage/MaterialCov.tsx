@@ -3,7 +3,6 @@ import {
   TextXAxis,
   TextYAxis,
   BTRLayoutTabsWrapper,
-
 } from '../MaterialCoverage/styles';
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
@@ -20,7 +19,6 @@ const MaterialCov = () => {
   const [currTab, setCurrTab] = useState<string>("CurrentCoverage");
   const [toggleComponent, setToggleComponent] = useState<boolean>(false);
   const { data, /*isLoading, refetch*/ } = useGetSOSummaydetails();
-  console.log(data)
   const [soData, setSOData] = useState<any>([]);
 
 
@@ -33,8 +31,7 @@ const MaterialCov = () => {
   }
   
   useEffect(()=>{
-    console.log("fetched");
-    setSOData(data?.data.data)
+     setSOData(data?.data.data)
   },[data])
 
   const tabs = [

@@ -8,6 +8,12 @@ describe('MTOActionToolBar Component', () => {
   const mockOnDateChange = jest.fn();
   const mockSubmitDate = jest.fn();
   const mockSetIsGridView = jest.fn();
+  const mockOnAddFilter = jest.fn();
+
+  const selectedFilters = [
+    { label: 'Plant Name', values: ['Plant 1', 'Plant 2'] },
+    { label: 'Location', values: ['Location 1'] },
+  ];
 
   // Test case 1: Default render test
   it('renders without crashing', () => {
@@ -107,5 +113,33 @@ describe('MTOActionToolBar Component', () => {
     expect(mockSetIsGridView).toHaveBeenCalled();
   });
   
+  it('renders date component for EnquiryResponse', () => {
+    render(<MTOActionToolBar comp="EnquiryResponse" />);
+    expect(screen.getByText('As on Date')).toBeInTheDocument();
+    expect(screen.getByText(new Date().toISOString().split('T')[0])).toBeInTheDocument();
+  });
+
+   it('calls onAddFilter when Add/Edit Filter button is clicked', () => {
+    const { getByText } = render(
+      <MTOActionToolBar
+        comp="EnquiryResponse"
+        onAddFilter={mockOnAddFilter}
+        selectedFilters={selectedFilters}
+      />
+    );
+
+    // Check if the button text is 'Edit Filter' when there are selected filters
+    expect(getByText('Edit Filter')).toBeInTheDocument();
+    fireEvent.click(getByText('Edit Filter'));
+    expect(mockOnAddFilter).toHaveBeenCalled();
+
+    // Check if the button text is '+ Add Filter' when there are no selected filters
+    const { getByText: getByTextNoFilters } = render(
+      <MTOActionToolBar comp="EnquiryResponse" onAddFilter={mockOnAddFilter} />
+    );
+    expect(getByTextNoFilters('+ Add Filter')).toBeInTheDocument();
+    fireEvent.click(getByTextNoFilters('+ Add Filter'));
+    expect(mockOnAddFilter).toHaveBeenCalled();
+  });
 
 });
