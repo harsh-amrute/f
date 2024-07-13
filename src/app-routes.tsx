@@ -45,8 +45,8 @@ import OrderRescheduling from './VectorFlow/Pages/MTO/Production/OrderRescheduli
 import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index'
 import BMTrends from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/BMTrends'
 import SupplierDispatchReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport'
-
 import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
+import STPLAndFullKits from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/STPLAndFullKits'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -64,6 +64,9 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
+    '/production-planning-scheduling/enquiry-response',
+    '/production-planning-scheduling/insight-and-trends/bm-trends',
+    '/production-planning-scheduling/insight-and-trends/stpl-full-kits'
   ]
   const urlAllPage = [
     ...authenPage,
@@ -105,9 +108,9 @@ const lazyLoad = (children: React.ReactNode) => {
     '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
     '/production-planning-scheduling/enquiry-response',
     '/production-planning-scheduling/insight-and-trends/bm-trends',
+    '/production-planning-scheduling/insight-and-trends/stpl-full-kits',
     '/supply-chain-intelligence-hub/sdr',
     '/master-data-management/data-modification-history'
-
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -484,6 +487,17 @@ export const initRoutes = (): RouteObject[] => {
         },
         ...getStoreTransferModuleRoutes()
       ]
+    },
+    {
+     path: '/production-planning-scheduling/insight-and-trends/stpl-full-kits',
+     element: <AppLayout />,
+     children: [
+       {
+         index: true,
+         element: lazyLoad(<STPLAndFullKits/>)
+       },
+       ...getStoreTransferModuleRoutes()
+     ]
     },
     {
       path: '/dbm/dbm-norm-suggestions',
