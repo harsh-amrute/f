@@ -1,17 +1,49 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import STPLGraph from '.';
+import { setupReactQuery } from '../../../../../../../config/react-query-config';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { UserDataContext } from '../../../../../../../context';
+import { createStore } from '../../../../../../../redux/store/store';
 
 jest.mock('ag-charts-react', () => ({
     AgChartsReact: () => <div>AgChartsReact Mock</div>,
 }));
 
-// jest.mock('../ProcurementData', () => [
-//     { rd: '2024-06-05', sih: 10, sit: 5, opo: 15, rmSh: 20 },
-//     { rd: '2024-06-10', sih: 8, sit: 6, opo: 12, rmSh: 25 },
-//     { rd: '2024-06-20', sih: 20, sit: 15, opo: 10, rmSh: 5 },
-// ]);
+
+
+const queryClient = setupReactQuery();
+
+const dummyStore:any ={
+  AnalyticsData:{}
+}
+
+const mockedStore = createStore(dummyStore)
+
+const contextWrapper = (children: ReactNode,store:any) => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Provider store={store}>
+          <UserDataContext.Provider
+            value={{
+              user: { user: { theme_ui: "NOIRFUSION" } },
+              changeColorTheme: (color) => {
+                return color;
+              },
+              isSideBarOpen:true,toggleSideBar:jest.fn
+            }}
+          >
+            {children}
+          </UserDataContext.Provider>
+        </Provider>
+      </Router>
+    </QueryClientProvider>
+  );
+};
 
 describe('STPLGraph Component', () => {
     global.ResizeObserver = class MockedResizeObserver {
@@ -21,17 +53,17 @@ describe('STPLGraph Component', () => {
       };
       
     test('renders without crashing', () => {
-        render(<STPLGraph />);
+        render(contextWrapper(<STPLGraph />, mockedStore));
         expect(screen.getByText('AgChartsReact Mock')).toBeInTheDocument();
     });
 
     test('displays the correct title', () => {
-        render(<STPLGraph />);
+        render(contextWrapper(<STPLGraph />, mockedStore));
         const title = screen.queryByTestId('stpl-graph');
         expect(title).toBeInTheDocument();
     });
     test('render the STPL grid properly', () => {
-        render(<STPLGraph />);
+        render(contextWrapper(<STPLGraph />, mockedStore));
         const toggleBtn = screen.getByTestId('grid-toggle-btn');
 
         fireEvent.click(toggleBtn);
@@ -39,7 +71,7 @@ describe('STPLGraph Component', () => {
     });
 
     test('chart is rendered with the correct options', () => {
-        render(<STPLGraph />);
+        render(contextWrapper(<STPLGraph />, mockedStore));
         // Check if the AgChartsReact component mock is rendered
         expect(screen.getByText('AgChartsReact Mock')).toBeInTheDocument();
         // Ideally, here you would check if the AgChartsReact component is called with the correct props (options)
