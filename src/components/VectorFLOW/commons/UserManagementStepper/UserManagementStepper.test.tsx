@@ -1,0 +1,63 @@
+import {ReactNode} from 'react'
+
+import { render } from '@testing-library/react';
+import UserManagementStepper from '.'; 
+import { UserDataContext } from '../../../../context';
+
+
+const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {
+    return (
+  
+            <UserDataContext.Provider
+              value={{
+                user: { user: { theme_ui: theme } },
+                changeColorTheme: (color) => {
+                  return color;
+                },
+                isSideBarOpen:true,toggleSideBar:jest.fn
+              }}
+            >
+              {children}
+            </UserDataContext.Provider>
+  
+    );
+  };
+
+describe('Stepper Component', () => {
+  const StepItems = [
+    {
+        label:'Retail'
+    },
+    {
+        label:'Distribution'
+    },
+    {
+        label:'Production'
+    }
+  ]
+
+  it('Renders the Stepper component with theme = REGALBLAZE', () => {
+    render(contextWrapperWithCustomTheme(<UserManagementStepper activeStep={0} list={StepItems} themeUi="REGALBLAZE"/>,"REGALBLAZE"));
+    
+    // You may want to add more specific assertions here
+    
+  });
+
+  it('Renders the Stepper component with theme = NOIRFUSION', () => {
+    render(contextWrapperWithCustomTheme(<UserManagementStepper activeStep={0} list={StepItems} themeUi="NOIRFUSION"/>,"NOIRFUSION"));
+    
+    // You may want to add more specific assertions here
+    
+  });
+
+  it('Renders the Stepper component with activeStep = 1', () => {
+    render(contextWrapperWithCustomTheme(<UserManagementStepper activeStep={1} list={StepItems} themeUi="NOIRFUSION"/>,"NOIRFUSION"));
+    
+    // You may want to add more specific assertions here
+    
+  });
+
+
+
+  // Add more test cases for other functionalities as needed
+});

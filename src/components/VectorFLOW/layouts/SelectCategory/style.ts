@@ -109,7 +109,7 @@ font-size:16px;
 line-height:21px;
 font-family:Roboto;
 text-align:center;
-color: #B93B7E;
+color: inherit;
 display:flex;
 justify-content:center;
 align-items: center;

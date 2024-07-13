@@ -1,6 +1,42 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import ResizableTable from '.';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { Provider } from 'react-redux';
+import { UserDataContext } from '../../../../../../context';
+import { createStore } from '../../../../../../redux/store/store';
+import { setupReactQuery } from '../../../../../../config/react-query-config';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+
+const queryClient = setupReactQuery();
+const dummyStore: any = {
+  AnalyticsData: {}
+};
+
+const mockedStore = createStore(dummyStore);
+
+const contextWrapper = (children: ReactNode, store: any) => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Provider store={store}>
+          <UserDataContext.Provider
+            value={{
+              user: { user: { theme_ui: "NOIRFUSION" } },
+              changeColorTheme: (color) => {
+                return color;
+              },
+              isSideBarOpen: true, toggleSideBar: jest.fn
+            }}
+          >
+            {children}
+          </UserDataContext.Provider>
+        </Provider>
+      </Router>
+    </QueryClientProvider>
+  );
+};
 
 describe('ResizableTable', () => {
   test('should resize table on drag', () => {
@@ -16,7 +52,7 @@ describe('ResizableTable', () => {
       { plnm: 'Plant 2', dpnm: 'Department 2', gnm: 'Group 2', cnm: 'Name 2', fol: 3 },
     ];
 
-    render(<ResizableTable header={header} data={data} />);
+    render(contextWrapper(<ResizableTable header={header} data={data} />, mockedStore));
 
     const resizeBar = screen.getByTestId('resize-bar');
 

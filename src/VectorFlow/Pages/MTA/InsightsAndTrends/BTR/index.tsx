@@ -32,6 +32,7 @@ const BufferTrendReport = () => {
         setCurrFilter,
         onDelete,
         onApplyFilter,
+        themeUi
     } = useBTR()
 
 
@@ -96,14 +97,14 @@ const BufferTrendReport = () => {
                     {currentTab?.id === '1' && (
                         <ToggleViewBtnWrapper>
                             <SCViewBackground>
-                                <SCViewContainer onClick={() => toggleVerticalView(true)} style={{ opacity: verticalView ? 1 : 0.4 }}>
-                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/grid-view-pink.svg"} style={{ transform: 'rotate(90deg)' }} alt="" />
-                                    <p style={{ color: '#b0acac' }}>Vertical View</p>
+                                <SCViewContainer onClick={() => toggleVerticalView(true)}>
+                                    <SCViewImage src={verticalView?themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/grid-view-regal.svg":"/assets/img/VectorFLOW/BPR/grid-view-pink.svg":"/assets/img/VectorFLOW/BPR/grid-view-grey.svg"} style={{ transform: 'rotate(90deg)' }} alt="" />
+                                    <p style={{ color: verticalView?themeUi!=="REGALBLAZE"? '#bc3d81':'#FCA311':'gray' }}>Vertical View</p>
                                 </SCViewContainer>
                                 <div><SCVerticalDivider /></div>
-                                <SCViewContainer onClick={() => toggleVerticalView(false)} style={{ opacity: !verticalView ? 1 : 0.4 }}>
-                                    <SCViewImage src={"/assets/img/VectorFLOW/BPR/grid-view-pink.svg"} alt="" />
-                                    <p style={{ color: '#bc3d81' }}>Horizontal View</p>
+                                <SCViewContainer onClick={() => toggleVerticalView(false)} >
+                                    <SCViewImage src={!verticalView?themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/grid-view-regal.svg":"/assets/img/VectorFLOW/BPR/grid-view-pink.svg":"/assets/img/VectorFLOW/BPR/grid-view-grey.svg"} alt="" />
+                                    <p style={{ color: !verticalView?themeUi!=="REGALBLAZE"? '#bc3d81':'#FCA311':'gray' }}>Horizontal View</p>
                                 </SCViewContainer>
                             </SCViewBackground>
                         </ToggleViewBtnWrapper>

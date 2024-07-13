@@ -27,5 +27,11 @@ export namespace SupplyChainIntelligenceHubService {
     });
   }
 
+  export const getBORAnalyticsData = async () => {
+    return await axios.get(process.env.REACT_APP_VF_API_HOST +`/BORAnalytics`,{
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
 }
 

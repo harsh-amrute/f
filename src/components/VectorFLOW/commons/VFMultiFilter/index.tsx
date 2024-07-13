@@ -98,6 +98,10 @@ interface FilterMultiSelectCheckboxProps{
 
 const FilterMultiSelectCheckbox = ({filterOptions, header,onChange,filterState}:FilterMultiSelectCheckboxProps)=>{
     const colorMap:string[] = ['#9A0101', '#EBBF2B', '#418D18']
+
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
     // console.log(header)
     return(
         <>
@@ -105,7 +109,7 @@ const FilterMultiSelectCheckbox = ({filterOptions, header,onChange,filterState}:
                 const color = colorMap[index];
                 return(
                     <>
-                    <MultiSelectCheckBoxComponent key={option.id}>
+                    <MultiSelectCheckBoxComponent key={option.id} theme={themeUi}>
                         <input type="checkbox" name={option.label} style={{ width:'15px',height:'20px',marginRight:'14px;',borderRadius: '2px'}} onChange={(e:any)=>onChange(e,'value')} checked={filterState.find((filter)=>option.label===filter.value && header===filter.attributeName)}/>
                         {header==='Coverage' ? 
                             <div style={{height:'12px', width:'12px', backgroundColor:color}} ></div>

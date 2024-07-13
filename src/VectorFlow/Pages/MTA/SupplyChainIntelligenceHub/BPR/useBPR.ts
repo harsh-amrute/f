@@ -13,6 +13,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type DailyDataGraph } from "../../../../types/MTA";
 import useBPRFilter from "../../../../../hooks/useBPRFilter"
+import { useUserData } from "../../../../../context"
 
 
 const useBPR =()=>{
@@ -26,6 +27,9 @@ const useBPR =()=>{
 
     const gridZoom = getGridZoom()
     const screenZoom = getScreenZoomValue() 
+
+    const {user} = useUserData()
+    const themeUi = user.user.theme_ui
 
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
@@ -375,7 +379,8 @@ const useBPR =()=>{
         currFilter,
         onDelete,
         setCurrFilter,
-        onApplyFilter
+        onApplyFilter,
+        themeUi
     }
 }
 

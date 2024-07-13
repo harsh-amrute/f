@@ -75,8 +75,11 @@ const AddRecord = () => {
         handleOnClickMaster,
         handleRadioButton,
         handleTabChange,
-        onSubmit
-        
+        onSubmit,
+        showMasterGroup,
+        showMaster,
+        options,
+        selectedOptions
     } = useAdd()
     
     useEffect(()=>{
@@ -90,7 +93,6 @@ const AddRecord = () => {
       }
     },[isTableDataLoading])
 
-    console.log(process.env.REACT_APP_ADDRECORD_PAGE)
 
     if(isLoading){
         return <VFLoader/>
@@ -108,6 +110,10 @@ const AddRecord = () => {
               allMasters={allMasters}
               selectedMasters={selectedMasters}
               text="add"
+              shouldShowMasterGroup={showMasterGroup}
+              shouldShowMaster={showMaster}
+              options={options}
+              selectedOptions={selectedOptions}
           />
       )
     }
@@ -194,6 +200,7 @@ const AddRecord = () => {
             uploadButtonStatus={false}
             radioButtons={getUploadModalRadioButtons(activeMaster.id)}
             handleRadioButton={handleRadioButton}
+            downloadFileText={'Download Sample Template'}
             />
         }
         {/* {isConflictModalOpen && 
@@ -240,6 +247,7 @@ const AddRecord = () => {
             onDeleteOnlineReset={()=>console.log('')}
             onSubmitConflictData={()=>console.log('')}
             onDeleteOnlineSubmit={()=>console.log('')}
+            masterId={activeMaster.id}
           />
         }
         </React.Fragment>

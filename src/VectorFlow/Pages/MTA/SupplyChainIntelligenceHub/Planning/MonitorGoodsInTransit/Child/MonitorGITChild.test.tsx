@@ -71,11 +71,11 @@ describe("Monitor GIT Child",()=>{
   };
 
   it("Renders Location Wise View",() => {
-    render(<MonitorGITChildLocationWiseCharts data={MonitorGITChildLocationWiseMockData}/>)
+    render(contextWrapper(<MonitorGITChildLocationWiseCharts data={MonitorGITChildLocationWiseMockData}/>,store))
   })
 
   it("Renders Location Wise View",() => {
-    render(<MonitorGITChildLocationWiseCharts data={MonitorGITChildTransporterWiseMockData}/>)
+    render(contextWrapper(<MonitorGITChildLocationWiseCharts data={MonitorGITChildTransporterWiseMockData}/>,store))
   })
 
   it("Renders Custom View",() => {

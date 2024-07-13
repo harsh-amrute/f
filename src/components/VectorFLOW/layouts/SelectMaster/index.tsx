@@ -12,7 +12,7 @@ import { type MDMMasterState,type Option } from "../../../../VectorFlow/types/MD
 import { useDispatch, useSelector } from 'react-redux';
 import { notifyError } from "../../../../helpers/notify";
 import { RootState } from "../../../../redux/store/store";
-import { ADD_MASTER,FILL_SELECTED_OPTIONS,REMOVE_MASTER, RESET_STATE } from "../../../../redux/actions/MDM";
+import { ADD_MASTER,FILL_SELECTED_OPTIONS,REMOVE_MASTER, RESET_STATE,UPDATE_MASTER_CHECKED_STATUS } from "../../../../redux/actions/MDM";
 
 interface SelectMasterProps{
     data:MDMMasterState[],
@@ -34,8 +34,9 @@ const SelectMaster = (
         setFilterButtonStatus,
         themeUi,
         isLoading,
-        handleSubmit
+        handleSubmit,
     }:SelectMasterProps)=>{
+
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -80,6 +81,9 @@ const SelectMaster = (
     }
 
     const setValue = (options:any) => {
+        // if(options.length===0) {
+        //     setFilterButtonStatus([])
+        // }
         dispatch(FILL_SELECTED_OPTIONS(options))
     }
 
@@ -88,7 +92,10 @@ const SelectMaster = (
         navigate('/master-data-management/control-panel');
     }
 
+    const isAnyMasterChecked = masters.length > 0 && masters.every(master => !master.isChecked);
+
     return(
+
         <Container >
             <Container style={{flexDirection:'row',gap:'44px'}}>
                 <VFMasterFieldSearch 
@@ -123,14 +130,15 @@ const SelectMaster = (
             </Container>
             <SCCardContainer>
                 {(masters.length > 0 ? masters : data).map((item:MDMMasterState)=>{
-                    return <VFMasterCard data={item} key={item.id} selectedFields={selectedOptions.map((s:Option)=>s.label)}/>
+                    return <VFMasterCard themeUi={themeUi} isSelected={(item.isChecked) && (selectedOptions.length > 0)} onSelectCheckbox={()=>{if(toggledFromAddMaster())notifyError("You can add only new Masters!");else dispatch(UPDATE_MASTER_CHECKED_STATUS(item.id))}} data={item} key={item.id} selectedFields={selectedOptions.map((s:Option)=>s.label)} isCheckBoxDisabled={filterButtonStatus.length > 0 || masters.length===0}/>
                 })}
             </SCCardContainer>
             <SCButtonContainer>
+
                 <VFButtonOutline onClick={onCancel} themeUi={themeUi} width={141} disabled={false}>
                     Cancel
                 </VFButtonOutline>
-                <VFButton onClick={() =>{ handleSubmit() }} themeUi={themeUi} width={141} disabled={masters.length === 0}>
+                <VFButton onClick={() =>{ handleSubmit() }} themeUi={themeUi} width={141} disabled={masters.length === 0 || isAnyMasterChecked }>
                     Submit
                 </VFButton>
 

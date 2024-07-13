@@ -4,6 +4,7 @@ import Portal from '../../../../../components/VectorFLOW/layouts/Portal'
 import {BPRViewTableRowCell, WhereAboutsCell, WhereAboutsCellSection, WhereAboutsCellSectionHeader, WhereAboutsCellSectionValue,BPRViewTableToolTip, WhereAboutsMoreInfo } from "./styles"
 
 import useViewPort from "../../../../../hooks/useViewPort"
+import { useUserData } from '../../../../../context'
 
 const WhereAboutsCellRenderer = ({value}:{value:any})=>{
 
@@ -12,6 +13,10 @@ const WhereAboutsCellRenderer = ({value}:{value:any})=>{
     const [toolTipPosition,setoolTipPosition] = useState<CSSProperties>({
        
     })
+
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
 
     const {getScreenZoomValue} = useViewPort()
 
@@ -54,7 +59,7 @@ const WhereAboutsCellRenderer = ({value}:{value:any})=>{
                         {isOpen?"Hide Info":"More Info"}
                         </WhereAboutsMoreInfo>
                     )} */}
-                     <WhereAboutsMoreInfo onMouseEnter={onMouseIn} onMouseLeave={onMouseOut}>
+                     <WhereAboutsMoreInfo style={{color:themeUi==="REGALBLAZE"?"#FCA311":"#bc3d81"}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut}>
                         {isOpen?"Hide Info":"More Info"}
                         </WhereAboutsMoreInfo>
                 </WhereAboutsCellSection>
