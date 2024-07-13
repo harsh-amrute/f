@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { QueryClientProvider } from '@tanstack/react-query';
 import { setupReactQuery } from '../../../../../../config/react-query-config'
 import { BrowserRouter as Router } from 'react-router-dom';
+import { UserDataContext } from '../../../../../../context';
 
 const queryClient = setupReactQuery();
 
@@ -16,7 +17,17 @@ const contextWrapper = (children: ReactNode) => {
             <Router>
                 <Provider store={store}>
 
-                    {children}
+                    <UserDataContext.Provider
+                        value={{
+                            user: { user: { theme_ui: "NOIRFUSION" } },
+                            changeColorTheme: (color) => {
+                                return color;
+                            },
+                            isSideBarOpen: true, toggleSideBar: jest.fn
+                        }}
+                    >
+                        {children}
+                    </UserDataContext.Provider>
                 </Provider>
             </Router>
         </QueryClientProvider>

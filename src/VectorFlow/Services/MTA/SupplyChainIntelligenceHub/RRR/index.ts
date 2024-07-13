@@ -7,7 +7,8 @@ import {RRRDataPayload} from '../../../../types/RRR'
 export const QUERY_KEYS = {
   useGetRRRUIConfiguration: ['RRRServices.useGetRRRUIConfiguration'],
   useGetRRRData : ['RRRServices.getRRRData'],
-  useGetRRRDataCount: ['RRRServices.getRRRDataCount']
+  useGetRRRDataCount: ['RRRServices.getRRRDataCount'],
+  useGetRRRAnalyticsData:['RRRServices.useGetRRRAnalyticsData']
 }
 
 
@@ -26,6 +27,12 @@ export const useGetRRRData  = ()=>{
 export const useGetRRRDataCount  = ()=>{
   return useMutation(QUERY_KEYS.useGetRRRDataCount,async (body:RRRDataPayload)=>{
     return await RRRServices.getRRRDataCount(body);
+  })
+}
+
+export const useGetRRRAnalyticsData  = ()=>{
+  return useQuery(QUERY_KEYS.useGetRRRAnalyticsData,async ()=>{
+    return await RRRServices.getRRRAnalyticsData();
   })
 }
 

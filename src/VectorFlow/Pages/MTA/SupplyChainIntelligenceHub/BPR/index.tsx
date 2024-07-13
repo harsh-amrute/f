@@ -61,7 +61,8 @@ const BPR = ()=>{
         currFilter,
         onDelete,
         setCurrFilter,
-        onApplyFilter
+        onApplyFilter,
+        themeUi
     } = useBPR();
 
     
@@ -231,6 +232,7 @@ const BPR = ()=>{
                     style={submitRemarkToolTipPosition}
                     onSuccess={onSubmitRemark}
                     onClose={onCloseSubmitRemark}
+                    themeUi={themeUi}
                 />
             )}
 

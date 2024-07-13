@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { useUserData } from "../../../../../context"
 import { useGetInTransitWhereAboutAnalytics } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPRParticularAnalyticsWrapper,BPRParticularAnalyticsTableWrapper, BPRParticularAnalyticsTableHeaderWrapper, BPRParticularAnalyticsTableHeader, BPRParticularAnalyticsTableRowWrapper, BPRParticularAnalyticsTableRow, BPRParticularAnalyticsTableCell } from "./styles"
 
@@ -13,9 +14,14 @@ const InTransitAnalytics = ()=>{
         return {d:0,it:0}
     },[data])
 
+    const {user} = useUserData()
+    
+
+    const themeUi = user.user.theme_ui
+
     return(
         <BPRParticularAnalyticsWrapper>
-            <BPRParticularAnalyticsTableWrapper>
+            <BPRParticularAnalyticsTableWrapper themeUi={themeUi}>
                 <BPRParticularAnalyticsTableHeaderWrapper>
                     <BPRParticularAnalyticsTableHeader style={{textAlign:'left'}}>
                         Particulars

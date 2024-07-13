@@ -1,5 +1,27 @@
+import {ReactNode} from 'react'
 import { render } from '@testing-library/react';
-import VerticalSplitView, { SplitViewProps } from './VerticalSplitView';
+import HorizontalSplitView, { SplitViewProps } from './HorizontalSplitView';
+
+import { UserDataContext } from '../../../../../context';
+
+
+const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {
+  return (
+
+          <UserDataContext.Provider
+            value={{
+              user: { user: { theme_ui: theme } },
+              changeColorTheme: (color) => {
+                return color;
+              },
+              isSideBarOpen:true,toggleSideBar:jest.fn
+            }}
+          >
+            {children}
+          </UserDataContext.Provider>
+
+  );
+};
 
 // Mocked props
 const mockTechTableProps = {
@@ -38,7 +60,8 @@ const mockSplitViewProps: SplitViewProps = {
   techTable: mockTechTableProps,
   ecoTable: mockEcoTableProps,
   isLocked:true,
-  toggleLockMode:jest.fn()
+  toggleLockMode:jest.fn(),
+  themeUi:'REGALBLAZE'
   
 };
 
@@ -49,7 +72,7 @@ describe('VerticalSplitView', () => {
         disconnect = jest.fn();
       };
   it('renders with the correct headers', () => {
-    const { getByText } = render(<VerticalSplitView {...mockSplitViewProps} />);
+    const { getByText } = render(contextWrapperWithCustomTheme(<HorizontalSplitView {...mockSplitViewProps} />,"NOIRFUSION"));
     const techTableHeader = getByText('Tech Table');
     const ecoTableHeader = getByText('Eco Table');
 

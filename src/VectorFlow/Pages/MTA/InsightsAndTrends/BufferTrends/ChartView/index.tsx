@@ -2,6 +2,7 @@
 import TechnicalWise  from '../TechnicalView'
 import EconomicalWise from '../EconomicalView'
 import { BufferTrendsGraphState } from '../../../../../types/BPR'
+import { useUserData } from '../../../../../../context'
 
 interface ChartViewProps {
 
@@ -21,6 +22,9 @@ interface ChartViewProps {
 const ChartView = ({currentTab,currentGraphData,currentPageTab,onFloatingTabChangeOnPages,isLoading,graphs,
            updateGraphState,setHorizondays,handleSubmitClick,horizonDays}:ChartViewProps) => {
 
+  const {user} = useUserData()
+  const themeUi = user.user.theme_ui
+
  const renderGraphs = () =>{
 
   if(currentTab=="tech"){
@@ -35,6 +39,7 @@ const ChartView = ({currentTab,currentGraphData,currentPageTab,onFloatingTabChan
       setHorizondays={setHorizondays}
       handleSubmitClick={handleSubmitClick}
       horizonDays={horizonDays}
+      themeUi={themeUi}
     />)
   }
 
@@ -51,6 +56,7 @@ const ChartView = ({currentTab,currentGraphData,currentPageTab,onFloatingTabChan
         setHorizondays={setHorizondays}
         handleSubmitClick={handleSubmitClick}
         horizonDays={horizonDays}
+        themeUi={themeUi}
     />
     )
   }

@@ -6,7 +6,8 @@ export const QUERY_KEYS = {
   useGetDBMData : ['DBMServices.getDBMData'],
   useGetDBMDataCount: ['DBMServices.getDBMDataCount'],
   useGetDBMApplySelectedNorm: ['DBMServices.getDBMApplySelectedNorm'],
-  useGetDBMUpdateSleepTbl: ['DBMServices.getDBMUpdateSleepTbl']
+  useGetDBMUpdateSleepTbl: ['DBMServices.getDBMUpdateSleepTbl'],
+  useGetDBMAnalyticsData:['DBMService.useGetDBMAnalyticsData']
 }
 
 
@@ -39,5 +40,11 @@ export const useGetDBMUIConfiguration =  () => {
   export const useGetDBMUpdateSleepTbl  = ()=>{
     return useMutation(QUERY_KEYS.useGetDBMUpdateSleepTbl,async (body:{data:{SKUCode:string,WHCode:string}})=>{
       return await DBMServices.getDBMUpdateSleepTbl(body);
+    })
+  }
+
+  export const useGetDBMAnalyticsData  = ()=>{
+    return useQuery(QUERY_KEYS.useGetDBMAnalyticsData,async ()=>{
+      return await DBMServices.getDBMAnalyticsData();
     })
   }

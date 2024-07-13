@@ -11,6 +11,8 @@ const BreadCrumb = () => {
   if(location.pathname ==='/master-data-management/task-pending')return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Task Pending For Review</span>
   if(location.pathname ==='/master-data-management/control-panel/add')return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Add Records</span>
   if(location.pathname ==='/master-data-management/control-panel/delete')return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Delete Records</span>
+  if(location.pathname === '/master-data-management/data-modification-history')return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} />Data Modification History</span>
+
 
 
   if(location.pathname ==='/supply-chain-intelligence-hub/planning')return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Planning</span>
@@ -19,6 +21,7 @@ const BreadCrumb = () => {
   if(location.pathname ==='/supply-chain-intelligence-hub/bor')return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> BOR</span>
   if(location.pathname ==='/supply-chain-intelligence-hub/buffer-trend-report')return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> BTR</span>
   if(location.pathname ==='/supply-chain-intelligence-hub/open-expediting-requests')return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> OER</span>
+  if(location.pathname ==='/supply-chain-intelligence-hub/sdr')return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> SDR</span>
 
   
 

@@ -28,7 +28,7 @@ const root = ReactDOM.createRoot(
 )
 root.render(
   <React.StrictMode>
-    <ErrorBoundary fallback={<VFErrorFallBack/>}>
+    <ErrorBoundary fallback={<VFErrorFallBack/>} onError={(data)=>console.log(data)}>
       <QueryClientProvider client={queryClient}>
         <Router>
           <Provider store={store}>

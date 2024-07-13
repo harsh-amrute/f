@@ -93,6 +93,10 @@ const DeleteRecord = () => {
         handleOnClickMaster,
         handleSubmitSelectMaster,
         handleRadioButton,
+        options,
+        selectedOptions,
+        showMaster,
+        showMasterGroup
     } = useDelete();
 
     useEffect(()=>{
@@ -120,6 +124,11 @@ const DeleteRecord = () => {
               allMasters={allMasters}
               selectedMasters={selectedMasters}
               text="delete"
+              selectedOptions={selectedOptions}
+              options={options}
+              shouldShowMaster={showMaster}
+              shouldShowMasterGroup={showMasterGroup}
+
           />
       )
     }
@@ -150,6 +159,7 @@ const DeleteRecord = () => {
                               fields={generateOptions([activeMaster])}
                               currFilter={f}
                               key={f.id}
+                              isDisabled={false}
                             />
                           )
                         }
@@ -178,6 +188,7 @@ const DeleteRecord = () => {
                       <VFButton
                       themeUi={themeUi}
                       onClick={()=>{handleApplyFilter()}}
+                      disabled={false}
                       >
                         Apply Filter
                       </VFButton>
@@ -305,6 +316,7 @@ const DeleteRecord = () => {
             onDeleteOnline={onDeleteOnline}
             onDeleteOnlineReset={onDeleteOnlineReset}
             onDeleteOnlineSubmit={onDeleteOnlineSubmit}
+            masterId={activeMaster.id}
           />
         }
         </React.Fragment>
