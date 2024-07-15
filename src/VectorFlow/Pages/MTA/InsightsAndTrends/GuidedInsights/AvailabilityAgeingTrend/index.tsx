@@ -81,6 +81,11 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
     ],
     legend: {
       position: "bottom",
+      item:{
+        marker:{
+          shape:'square'
+        }
+      }
     },
     axes: [
       {

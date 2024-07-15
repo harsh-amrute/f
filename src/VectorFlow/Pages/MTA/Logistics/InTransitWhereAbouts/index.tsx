@@ -11,6 +11,8 @@ import ContactDetailsModal from "./ContactDetailsModal"
 import RemarkModal from "./RemarkModal"
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
+import { ButtonWrapper } from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/styles"
+import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
 
 
 
@@ -82,7 +84,7 @@ const InTransitWhereAbouts = ()=>{
 
       }}
         >
-            <div style={{zoom:'0.8'}}>
+            <div >
                 <ActionToolBar 
                 view={'grid'} 
                 setCurrentTab={''} 
@@ -114,10 +116,10 @@ const InTransitWhereAbouts = ()=>{
                     rowData={[...rowData]}
                     {...agGridProps}
                     ref={ref}
-                    height={"75%"}
+                    height={"70%"}
                     
                 />
-                <div style={{marginBottom:'40px'}}>
+                <div style={{marginBottom:'10px'}}>
                 <VFPagination
                     selectedRows={0}
                     totalRows={recordCount}
@@ -126,6 +128,9 @@ const InTransitWhereAbouts = ()=>{
                     handleChangePage={handlePageChange}
                 />
                 </div>
+                <ButtonWrapper>
+                    <VFButtonOutline disabled={editedRows.length===0} themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>
+                </ButtonWrapper>
             </>
         }
           

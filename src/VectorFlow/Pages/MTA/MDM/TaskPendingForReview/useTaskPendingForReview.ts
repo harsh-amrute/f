@@ -110,6 +110,7 @@ const useTaskPendingForReview = ()=>{
             toast.dismiss(toastId);
             
             const currentTaskMaster = taskDataStore[0]
+            console.log(currentTaskMaster)
             const currentTaskMasterId:number = currentTaskMaster.MasterId
             setCurrMasterId(currentTaskMasterId)
             
@@ -121,7 +122,12 @@ const useTaskPendingForReview = ()=>{
             const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
             if(currentMasterFields){
                 // console.log(currentTaskMaster.data[0].new)
-                const existingColumns = getExistingColumns(taskData.Actiontype==2 || currentTaskMasterId===13?JSON.parse(currentTaskMaster.data[0].new):currentTaskMaster.data[0])
+                const existingColumns = getExistingColumns(
+                    (taskData.Actiontype === 2 && currentTaskMasterId !== 6) || (currentTaskMasterId === 13)
+                    ? JSON.parse(currentTaskMaster.data[0].new)
+                    : currentTaskMaster.data[0]
+                );
+                               
                 const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
                 setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
                 setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))

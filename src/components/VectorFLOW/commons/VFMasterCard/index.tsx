@@ -31,6 +31,7 @@ const VFMasterCard = (props:VFMasterCardProps)=>{
     } = props
 
     console.log(data.name,isSelected)
+    console.debug(!isCheckBoxDisabled)
     return(
         <VFMasterCardContainer data-testid='master-card'>
             <VFMasterCardHeader>

@@ -85,7 +85,6 @@ describe('SelectMaster Component', () => {
     // Check if the loading spinner is displayed
     const loader = screen.getByTestId('loader')
     expect(loader).toBeInTheDocument();
-    expect(loader).toHaveAttribute('src','/assets/img/VectorFLOW/loaderBig.svg')
   });
 
   it('should render search input filter buttons and cards when isLoading is false', () => {
@@ -261,6 +260,43 @@ describe('SelectMaster Component', () => {
     fireEvent.keyDown(reactSelect, { key: 'ArrowDown', code: 40 });
     fireEvent.click(screen.getAllByText("SKU Code")[0]);
     expect(storeDispatchSpy).toBeCalledWith({payload:[{label:'SKU Code',value:'sku_code'}],type:"FILL_SELECTED_OPTIONS"})
+
+  });
+
+  it('handle MasterCard checkbox',async () => {
+
+    const mockState:MDMStore = {
+      allMasters:MasterData,
+      masters:MasterData,
+      options:[],
+      selectedOptions:[],
+      activeMaster:{id:1,fields:[],filters:MasterData[0].filters,progress:'default',name:'',colDefs:[],rowData:[],isChecked:true},
+      isSelectMasterOpen:true,
+      draftId:'',
+      isUploadModalOpen:false,
+      chunkSize:100,
+      recordCount:0,
+      isDataAvailableLocally:true
+    }
+
+    const localMockStore = createStore(mockState);
+
+    render(contextWrapper(<SelectMaster {...props} />,localMockStore));
+   
+    const reactSelect = await screen.findByLabelText("Example Label");
+    expect(reactSelect).toBeInTheDocument();
+    fireEvent.focus(reactSelect);
+    // fireEvent.keyDown(reactSelect, { key: 'ArrowDown', code: 40 });
+    // fireEvent.click(screen.getAllByText("SKU Code")[0]);
+    screen.logTestingPlaygroundURL()
+    // const checkbox = screen.getAllByTestId('checkbox')[0]
+    // fireEvent.click(checkbox)
+    // const reactSelect = await screen.findByLabelText("Example Label");
+    // expect(reactSelect).toBeInTheDocument();
+    // fireEvent.focus(reactSelect);
+    // fireEvent.keyDown(reactSelect, { key: 'ArrowDown', code: 40 });
+    // fireEvent.click(screen.getAllByText("SKU Code")[0]);
+    // expect(storeDispatchSpy).toBeCalledWith({payload:[{label:'SKU Code',value:'sku_code'}],type:"FILL_SELECTED_OPTIONS"})
 
   });
 

@@ -5,7 +5,7 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef,CellClickedEvent} from 'ag-grid-community';
-import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper,taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData, BTRDefaultColDefs } from './MDMConstants';
+import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper,taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData, BTRDefaultColDefs, TaskPendingStopPIPOCustomColumns } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,format, differenceInSeconds,parse} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
@@ -924,6 +924,7 @@ export const mapDraftDataToTableRowData = (rowData:any[])=>{
 }
 
 export const getExistingColumns = (rowData:any)=>{
+  console.log(rowData)
   return Object.keys(rowData)
 }
 
@@ -965,7 +966,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
       }
     }
 
-    if(tasktype==="add"){
+    if(tasktype==="add"  || masterId===6){
       if(masterId===13){
         return{
           headerName:f.displayName,
@@ -1149,6 +1150,44 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
     }
 ]
 
+if(masterId===6){
+  return[
+    TaskPendingStopPIPOCustomColumns[0],
+    ...colDefs,
+    {
+      colId:"norm",
+      headerName:"Norm",
+      field:'norm',
+      children:[
+          {
+              colId:"targetNorm",
+              headerName:"Target Norm",
+              field:'targetNorm',
+              cellStyle:{
+                  color:textColor,
+                  "border-left":"solid 1px #B9B9B9",
+                  'text-align':'center',
+                  fontWeight:500
+              }
+          },
+          {
+              colId:"originalNorm",
+              headerName:"Original Norm",
+              field:'originalNorm',
+              cellStyle:{
+                  "border-right":"solid 1px #B9B9B9",
+                  'text-align':'center',
+                  fontWeight:500
+              }
+          }
+      ]
+  },
+    TaskPendingStopPIPOCustomColumns[2],
+    ...taskPendingCustomColDefs
+  ]
+}
+
+
   return [
   //   {
   //   field:'checkbox',
@@ -1225,9 +1264,10 @@ export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields:Field
 
 
 export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string,masterId:number)=>{
+  console.log(dirtyRowData)
   return dirtyRowData.map(entry => {
 
-    if(taskType==='modify' || masterId===13){
+    if(((taskType==='modify' && masterId!==6) || masterId===13)){
       console.log(entry.RN,entry.new, JSON.parse(entry.new))
       const oldData = JSON.parse(entry.old);
       const newData = JSON.parse(entry.new);

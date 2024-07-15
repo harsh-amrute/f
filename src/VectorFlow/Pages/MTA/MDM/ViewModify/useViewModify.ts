@@ -16,6 +16,7 @@ import _ from 'lodash';
 import { toast } from 'react-toastify';
 import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
 import { v4 as uuidv4 } from 'uuid';
+import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 
 const useViewModify = (pageType:string) => {
 
@@ -154,6 +155,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const customCellRenderers = useMemo(() => ({
+      loadingOverlay:VFLoader,
       errorCell: ErrorCell,
       warningCell: WarningCell,
       seasonalityColorCellRenderer:SeasonalityColorCellRenderer,
@@ -266,7 +268,8 @@ const useViewModify = (pageType:string) => {
       paginationPageSize:rowsPerPage,
       // suppressPaginationPanel:true,
       onColumnVisible:onColumnChange,
-      overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
+      // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
+      loadingOverlayComponent:'loadingOverlay',
       onRowDataUpdated:(event:any)=>{
         const downloadableColumnKeys:string[] = [];
         activeMaster.fields.forEach((field:Field)=>{
