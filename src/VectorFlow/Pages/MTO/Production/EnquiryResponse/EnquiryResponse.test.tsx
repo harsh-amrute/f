@@ -98,7 +98,7 @@ describe('EnquiryResponse', () => {
 
     // Assert that modal content is no longer in the document
     await waitFor(() => {
-      expect(screen.getByTestId('table-wrapper')).toHaveTextContent('Plant Department CCR Group CCR Name FOL ( in Dyays ) No Rows To Show');
+      expect(screen.getByTestId('table-wrapper')).toHaveTextContent('Plant Department CCR Group CCR Name FOL ( in Days ) No Rows To Show');
     });
   });
 

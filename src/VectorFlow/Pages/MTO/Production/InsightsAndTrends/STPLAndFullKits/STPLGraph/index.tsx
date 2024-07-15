@@ -1,22 +1,16 @@
-import { useRef, useState } from "react";
-import { SCChartContainer, SCHorizontalDivider } from "../styles";
-import { AgChartsReact } from "ag-charts-react";
-import { AgChartOptions, AgCharts } from "ag-charts-community";
+import { useState } from "react";
+import { AgChartOptions } from "ag-charts-community";
 import {APIMock} from "../StplAndFullKitsData";
 import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import VFModalCard from "../../../../../../../components/VectorFLOW/commons/VFModalCard";
-import VFTable from "../../../../../../../components/VectorFLOW/commons/VFTable";
-import { GridRef } from "../../../../../../../VectorFlow/types/MDM";
+import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 
 const STPLGraph = () => {
   const [date] = useState("18 Apr 2024");
   const [rawData] = useState(APIMock.stpl);
-  const refGraph1 = useRef<GridRef>(null);
-  const chartRef = useRef<AgChartsReact>(null);
   const [hideChart1, toggleChart1] = useState(false);
-  const [gridLoading, setGridLoading] = useState(false);
-  console.log(gridLoading);
+  const [chartLoading, setChartLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false);
   
   function TooltipRenderer({ datum, xKey }: any) {
     return `
@@ -27,7 +21,7 @@ const STPLGraph = () => {
        
        <div>
            <div style="display: flex;">
-               <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F4BD8E">
+               <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000">
                </div>
                <div style="display:flex ; width: 100%; justify-content: space-between">
                    <div>Released WIP (In Days) Exceeding Limit
@@ -69,66 +63,6 @@ const STPLGraph = () => {
 
     return seriesData;
   }
-
-  const generateChart = () => {
-    refGraph1.current?.api.createRangeChart({
-      chartType: "stackedColumn",
-      cellRange: {
-        columns: ["ccr", "exceedDays", 'days', 'limit'],
-      },
-      seriesChartTypes: [
-        {colId: "exceedDays", chartType: "stackedColumn"},
-        {colId: "days", chartType: "stackedColumn"},
-        {colId: "limit", chartType: "line"}
-      ],
-      chartThemeOverrides: {
-        column: {
-          axes: {
-            category: {
-              gridStyle: [{ stroke: "transparent" }],
-
-              bottom: {
-                label: {
-                  fontSize: 8,
-                },
-              },
-            },
-          },
-          series: {
-            highlightStyle: {
-              item: {
-                fill: "white",
-                fillOpacity: 0.2,
-              },
-            },
-            tooltip: {
-              renderer: TooltipRenderer,
-            },
-            strokeWidth: 1,
-            strokeOpacity: 0,
-          },
-          legend: {
-            item: {
-              label: {
-                fontSize: 10,
-              },
-
-              marker: {
-                shape: "square",
-              },
-            },
-          },
-        },
-        bar: {
-          axes: {
-            category: {
-              gridStyle: [{ stroke: "transparent" }, { stroke: "transparent" }],
-            },
-          },
-        },
-      },
-    });
-  };
 
   const options: AgChartOptions = {
     data: rawData,
@@ -179,7 +113,7 @@ const STPLGraph = () => {
     },
   };
 
-  const ColdDefs = [
+  const colDefs = [
     {
       colId: "ccr",
       field: "ccr",
@@ -208,18 +142,9 @@ const STPLGraph = () => {
     },
   ];
 
-  const myCustomTheme: any = {
-    palette: {
-      fills: ["#AD5000", 'gray', '#459D55'],
-      strokes: ["#AD5000", 'gray', '#459D55'],
-    },
-  };
-
-  return (
-    <div style={{ height: "70vh", display: "flex", justifyContent: "left" }}>
-      <SCChartContainer style={{ width: "100%", border: "1px solid #CCCCCC" }}>
-        <div style={{ height: "85%", width: "100%" }}>
-          <div
+  const generateHeader = () => {
+    return (
+        <div
             className="title"
             style={{
               backgroundColor: "white",
@@ -227,24 +152,29 @@ const STPLGraph = () => {
               display: "flex",
               justifyContent: "right",
               alignItems: "center",
+              width: "100%",
             }}
           >
-            <div
-                data-testid="stpl-graph"
-                style={{
-                    fontSize: "12px",
-                    margin: "0 auto",
-                    fontWeight: 500,
-                    textAlign: "center",
-                }}
-            >
-              {`${ProductionInsightsAndTrendsString.stplWithLimits}  (${date})`}
+            <div 
+              data-testid="stpl-graph"
+              style={{
+                  fontSize: "16px",
+                  margin: "0 auto",
+                  
+                  textAlign: "center",
+              }}>
+            <span style={{fontWeight: 500,}}>
+              {`${ProductionInsightsAndTrendsString.stplWithLimits}  `}
+            </span>
+            <span style={{fontWeight: 300,}}>
+              {` (${date})`}
+            </span>
             </div>
             <div style={{ display: "flex" }}>
               <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
                 <VFInfoToolTip
                   infoList={[
-                    "The graph highlights the released WIP in days - STPL with limits",
+                    "The graph highlights CCR wise current released WIP (In Days) against their respective limits. ",
                   ]}
                 />
               </div>
@@ -268,93 +198,35 @@ const STPLGraph = () => {
               </div>
             </div>
           </div>
-          <SCHorizontalDivider />
-          <div style={{ display: "flex", justifyContent: "right" }}>
-            <div
-              style={{ paddingRight: "10px" }}
-              onClick={() => {
-                chartRef &&
-                  chartRef.current &&
-                  chartRef.current.chart &&
-                  AgCharts.download(chartRef.current.chart);
-              }}
-            >
-              <img
-                height={12}
-                width={12}
-                src="/assets/img/mto/RMPMBufferTrend/download.svg"
-              />
-            </div>
-          </div>
-          <VFModalCard
-            openModal={hideChart1}
-            closeModal={() => toggleChart1(false)}
-            headerIcon=""
-            headerText={ProductionInsightsAndTrendsString.stplWithLimits}
-            headerBgColor=""
-            headerTextColor="#00000"
-            paddingLeftAndRight={27}
-            closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
-          >
-            <div data-testid='stpl-grid' className="ag-theme-planning" style={{ width: "1000px" }}>
-              <VFTable
-                gridOptions={{
-                    defaultColDef: {
-                        flex: 1,
-                    }
-                }}
-                ref={refGraph1}
-                columnDefs={ColdDefs}
-                rowData={options.data}
-                enableCharts={true}
-                enableRangeSelection={true}
-                rowSelection="multiple"
-                statusBar={{
-                  statusPanels: [
-                    {
-                      statusPanel: "agTotalAndFilteredRowCountComponent",
-                      align: "left",
-                    },
-                    { statusPanel: "agTotalRowCountComponent", align: "left" },
-                    {
-                      statusPanel: "agFilteredRowCountComponent",
-                      align: "left",
-                    },
-                    {
-                      statusPanel: "agSelectedRowCountComponent",
-                      align: "left",
-                    },
-                    { statusPanel: "agAggregationComponent", align: "left" },
-                  ],
-                }}
-                onGridReady={() => {
-                  setGridLoading(false);
-                  generateChart();
-                }}
-                chartToolPanelsDef={{
-                  panels: [],
-                }}
-                chartThemes={["myCustomTheme"]}
-                customChartThemes={{
-                  myCustomTheme: myCustomTheme,
-                }}
-                disableZoomScaling={true}
-                defaultColDef={{
-                  floatingFilter: true,
-                  filter: "agMultiColumnFilter",
-                }}
-                height={"480px"}
-              />
-            </div>
-          </VFModalCard>
-          <AgChartsReact ref={chartRef} options={options} />
-        </div>
-      </SCChartContainer>
+    )
+  }
+
+  
+
+  return (
+    <div style={{ height: "70vh", display: "flex", justifyContent: "left" }}>
+        <SplitGraphContainer
+            tableLoading={tableLoading}
+            chartLoading={chartLoading}
+            setTableLoading={setTableLoading}
+            setChartLoading={setChartLoading}
+            data={rawData}
+            rowData={options.data}
+            graphTitle={''}
+            tableTitle={ProductionInsightsAndTrendsString.stplWithLimits}
+            options={options}
+            colDef={colDefs}
+            header={generateHeader}
+            hideChart={hideChart1}
+            toggleChart={toggleChart1}
+            TooltipRenderer={TooltipRenderer}
+            graphType={4}
+        />
       <div
         style={{
           width: "14px",
           resize: "none",
-          height: "100%",
+          height: "88%",
           display: "flex",
           justifyContent: "right",
           alignItems: "center",

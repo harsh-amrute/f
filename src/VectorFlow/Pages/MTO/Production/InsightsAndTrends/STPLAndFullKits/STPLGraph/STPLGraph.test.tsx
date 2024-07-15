@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { ReactNode } from 'react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import STPLGraph from '.';
 import { setupReactQuery } from '../../../../../../../config/react-query-config';
@@ -61,13 +61,6 @@ describe('STPLGraph Component', () => {
         render(contextWrapper(<STPLGraph />, mockedStore));
         const title = screen.queryByTestId('stpl-graph');
         expect(title).toBeInTheDocument();
-    });
-    test('render the STPL grid properly', () => {
-        render(contextWrapper(<STPLGraph />, mockedStore));
-        const toggleBtn = screen.getByTestId('grid-toggle-btn');
-
-        fireEvent.click(toggleBtn);
-        expect(screen.getByTestId('stpl-grid')).toBeInTheDocument();
     });
 
     test('chart is rendered with the correct options', () => {

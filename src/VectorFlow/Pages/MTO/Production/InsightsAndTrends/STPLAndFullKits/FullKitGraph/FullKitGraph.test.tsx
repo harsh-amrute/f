@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import FullKitGraph from '.';
 import { setupReactQuery } from '../../../../../../../config/react-query-config';
@@ -59,14 +59,6 @@ describe('FullKitGraph Component', () => {
         render(contextWrapper(<FullKitGraph />,mockedStore));
         const title = screen.queryByTestId('fullKit-graph');
         expect(title).toBeInTheDocument();
-    });
-
-    test('render the FullKit grid properly', () => {
-        render(contextWrapper(<FullKitGraph />,mockedStore));
-        const toggleBtn = screen.getByTestId('grid-toggle-btn');
-
-        fireEvent.click(toggleBtn);
-        expect(screen.getByTestId('fullKit-grid')).toBeInTheDocument();
     });
 
     test('chart is rendered with the correct options', () => {
