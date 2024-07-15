@@ -84,7 +84,7 @@ const InTransitWhereAbouts = ()=>{
 
       }}
         >
-            <div style={{zoom:'0.8'}}>
+            <div >
                 <ActionToolBar 
                 view={'grid'} 
                 setCurrentTab={''} 
@@ -116,7 +116,7 @@ const InTransitWhereAbouts = ()=>{
                     rowData={[...rowData]}
                     {...agGridProps}
                     ref={ref}
-                    height={"65%"}
+                    height={"70%"}
                     
                 />
                 <div style={{marginBottom:'10px'}}>

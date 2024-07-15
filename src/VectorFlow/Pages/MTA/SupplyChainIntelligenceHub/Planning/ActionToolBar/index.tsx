@@ -59,7 +59,7 @@ interface ActionToolBarProps {
 
 
 
-const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter,multiFilter,setMultiFilter,onDelete,onUpdateInsight,hideUpdateInsightsBtn,onSubmitEditedRows,disableSubmitEditedRowsBtn}:ActionToolBarProps) => {
+const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter,multiFilter,setMultiFilter,onDelete,onUpdateInsight,hideUpdateInsightsBtn}:ActionToolBarProps) => {
     const { user } = useUserData();
     const {ref} = useContext(GridStateContext)
     // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()

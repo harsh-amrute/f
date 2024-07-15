@@ -320,27 +320,71 @@ export const mdmRoutes = [
 
 export const TaskPendingStopPIPOCustomColumns:Array<ColDef | ColGroupDef> = [
     {
-        colId:"type",
-        headerName:"Type",
-        field:'type',
+        colId:"t",
+        headerName:"",
+        field:'t',
         children:[
             {
               headerName:'Type',
               field:'type',
               colId:'type',
-              valueFormatter:()=>"Stop-PIPO"
+              valueFormatter:()=>"Stop-PIPO",
+              cellStyle:{
+                'text-align':'center',
+                "border-right":"solid 1px #B9B9B9",
+              }
             }
             
           ],
         
     },
     {
-        colId:"requestFor",
-        headerName:"Request For",
-        field:'requestFor',
-        cellStyle:{
-            color:"Red"
-        },
-        valueFormatter:()=>"Stop"
-    }
+        colId:"norm",
+        headerName:"Norm",
+        field:'norm',
+        children:[
+            {
+                colId:"targetNorm",
+                headerName:"Target Norm",
+                field:'targetNorm',
+                cellStyle:{
+                    "border-left":"solid 1px #B9B9B9",
+                    'text-align':'center',
+                    fontWeight:500
+                }
+            },
+            {
+                colId:"originalNorm",
+                headerName:"Original Norm",
+                field:'originalNorm',
+                cellStyle:{
+                    "border-right":"solid 1px #B9B9B9",
+                    color:"Red",
+                    'text-align':'center',
+                    fontWeight:500
+                }
+            }
+        ]
+    },
+    {
+        colId:"r",
+        headerName:"",
+        field:'r',
+        children:[
+            {
+                colId:"requestFor",
+                headerName:"Request For",
+                field:'requestFor',
+                cellStyle:{
+                    color:"Red",
+                    fontWeight:500,
+                    'text-align':'center',
+                    "border-left":"solid 1px #B9B9B9",
+                    "border-right":"solid 1px #B9B9B9",
+                },
+                valueFormatter:()=>"Stop"
+            }
+        ]
+    },
+    
 ]

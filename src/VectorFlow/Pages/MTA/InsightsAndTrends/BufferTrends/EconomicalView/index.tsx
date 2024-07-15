@@ -145,11 +145,12 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
             position:'bottom',
             item:{
                 label:{
-                    fontSize:8,
+                    fontSize:12,
   
                 },
                 marker:{
-                    size:8
+                    size:12,
+                    shape:'square'
                 },
                 line:{
                     strokeWidth:1

@@ -1154,7 +1154,35 @@ if(masterId===6){
   return[
     TaskPendingStopPIPOCustomColumns[0],
     ...colDefs,
-    TaskPendingStopPIPOCustomColumns[1],
+    {
+      colId:"norm",
+      headerName:"Norm",
+      field:'norm',
+      children:[
+          {
+              colId:"targetNorm",
+              headerName:"Target Norm",
+              field:'targetNorm',
+              cellStyle:{
+                  color:textColor,
+                  "border-left":"solid 1px #B9B9B9",
+                  'text-align':'center',
+                  fontWeight:500
+              }
+          },
+          {
+              colId:"originalNorm",
+              headerName:"Original Norm",
+              field:'originalNorm',
+              cellStyle:{
+                  "border-right":"solid 1px #B9B9B9",
+                  'text-align':'center',
+                  fontWeight:500
+              }
+          }
+      ]
+  },
+    TaskPendingStopPIPOCustomColumns[2],
     ...taskPendingCustomColDefs
   ]
 }

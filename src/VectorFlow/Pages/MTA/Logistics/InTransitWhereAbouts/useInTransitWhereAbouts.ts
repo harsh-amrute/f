@@ -157,6 +157,7 @@ const useInTransitWhereAbouts = ()=>{
         groupContracted:`<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus.svg"} style="width: 20px; height: 20px;">`
       },
       masterDetail:true,
+      detailRowHeight:500,
       detailCellRenderer:MasterDetail,
       detailCellRendererParams:{
         onContactDetails:onOpenContactModal
@@ -279,6 +280,7 @@ const useInTransitWhereAbouts = ()=>{
       }
       const data = await getData(payload)
       setRowData(mapInTransitWhereAboutsRowData(data.data.data))
+      // setRowData(mapInTransitWhereAboutsRowData(GetInTransitWhereAboutsMockResponse.data))
     }
 
     const handlePageChange = async(pageNo:number)=>{

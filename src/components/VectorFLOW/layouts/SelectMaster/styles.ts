@@ -43,7 +43,7 @@ export const SCCardContainer = styled.div`
 export const SCLoaderContainer = styled.div`
     display:flex;
     justify-content:center;
-    margin-top:25%;
+    // margin-top:25%;
 `
 
 export const PanelGridWrapper = styled.div`

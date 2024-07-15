@@ -374,102 +374,103 @@ const ResearchInsights = ()=>{
                     </ChartHeader>
                     <ChartWrapper>
                         <ExpandChartIcon src='/assets/img/VectorFLOW/BPR/expand-graph.svg' onClick={()=>toggleGraphModal(true,1)}/>
-                        <AgChartsReact options={{
-                        height:200,
-                        width:300,
-                        data:selfGraphData,
-                        axes:[
-                            {
-                                
-                                type:"category",
-                                position:'bottom',
-                                label:{
-                                    fontSize:8
-                                }
-                            },
-                            {
-                                type:"number",
-                                position:'left',
-                                label:{
-                                    fontSize:8
-                                }
-                            }
-                        ],
-                        series: [
-                            {
-                                type: "line",
-                                xKey: "date",
-                                yKey: "Red",
-                                yName: "Red",
-                                
-                                marker:{
-                                    fill:'red',
-                                    size:2,
-                                    stroke:"red"
+                        <AgChartsReact 
+                        options={{
+                            height:200,
+                            width:300,
+                            data:selfGraphData,
+                            axes:[
+                                {
+                                    
+                                    type:"category",
+                                    position:'bottom',
+                                    label:{
+                                        fontSize:8
+                                    }
                                 },
-                                stroke:'red'
-                                
-                            },
-                            {
-                                type: "line",
-                                xKey: "date",
-                                yKey: "Green",
-                                yName: "Green",
-                                marker:{
-                                    fill:'green',
-                                    size:2,
+                                {
+                                    type:"number",
+                                    position:'left',
+                                    label:{
+                                        fontSize:8
+                                    }
+                                }
+                            ],
+                            series: [
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Red",
+                                    yName: "Red",
+                                    
+                                    marker:{
+                                        fill:'red',
+                                        size:2,
+                                        stroke:"red"
+                                    },
+                                    stroke:'red'
+                                    
+                                },
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Green",
+                                    yName: "Green",
+                                    marker:{
+                                        fill:'green',
+                                        size:2,
+                                        stroke:'green'
+                                    },
                                     stroke:'green'
                                 },
-                                stroke:'green'
-                            },
-                            {
-                                type: "line",
-                                xKey: "date",
-                                yKey: "Yellow",
-                                yName: "Yellow",
-                                marker:{
-                                    fill:'#FFBF00',
-                                    size:2,
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Yellow",
+                                    yName: "Yellow",
+                                    marker:{
+                                        fill:'#FFBF00',
+                                        size:2,
+                                        stroke:'#FFBF00'
+                                    },
                                     stroke:'#FFBF00'
                                 },
-                                stroke:'#FFBF00'
-                            },
-                            {
-                                type: "line",
-                                xKey: "date",
-                                yKey: "Black",
-                                yName: "Black",
-                                marker:{
-                                    fill:'black',
-                                    size:2,
-                                    stroke:"black"
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Black",
+                                    yName: "Black",
+                                    marker:{
+                                        fill:'black',
+                                        size:2,
+                                        stroke:"black"
+                                    },
+                                    stroke:'black'
                                 },
-                                stroke:'black'
-                            },
-                            {
-                                type: "line",
-                                xKey: "date",
-                                yKey: "Blue",
-                                yName: "Blue",
-                                marker:{
-                                    fill:'blue',
-                                    size:2,
-                                    stroke:"blue"
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Blue",
+                                    yName: "Blue",
+                                    marker:{
+                                        fill:'blue',
+                                        size:2,
+                                        stroke:"blue"
+                                    },
+                                    stroke:'blue'
                                 },
-                                stroke:'blue'
-                            },
-                            {
-                                type: "line",
-                                xKey: "date",
-                                yKey: "White",
-                                yName: "White",
-                                marker:{
-                                    fill:'gray',
-                                    size:2,
-                                    stroke:"gray"
-                                },
-                                stroke:'gray'
-                            }
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "White",
+                                    yName: "White",
+                                    marker:{
+                                        fill:'gray',
+                                        size:2,
+                                        stroke:"gray"
+                                    },
+                                    stroke:'gray'
+                                }
                             ],
                         legend:{
                             position:'top',
@@ -622,7 +623,20 @@ const ResearchInsights = ()=>{
                                 }
                                 ],
                                 legend:{
-                                    position:'top'
+                                    position:'top',
+                                    item:{
+                                        label:{
+                                            fontSize:8,
+        
+                                        },
+                                        marker:{
+                                            size:10
+                                        },
+                                        line:{
+                                            strokeWidth:1
+                                        }
+                                    }
+                                    
                                 }
                         }}/>
                     </ChartWrapper>
