@@ -6,6 +6,7 @@ import VFButton from "../../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../../context"
 import VFMultiFilter from "../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { MultiFilterSupplyChainCheckboxList } from '../../../../helpers/BPRConstants'
+import * as globalStyles from '../../../../styles/global'
 
 
 
@@ -63,6 +64,8 @@ const SelectCategory = (props: CountProp) => {
 
     console.debug(currCategory)
 
+    const currentTheme = globalStyles.chooseThemeColor[themeUi]
+
     const handleApplyFilter = (state: any) => {
         onApplyFilter(state)
         toggleFilter(false)
@@ -96,39 +99,39 @@ const SelectCategory = (props: CountProp) => {
             <CardLayout>
                 <CardContainer>
                     <CardWrapper >
-                        <IconWrapper><img src="/assets/img/VectorFLOW/BPR/monitor-goods.svg" alt="monitor goods in transit/WIP" height="52px" width="52px"></img></IconWrapper>
+                        <IconWrapper><img src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/monitor-goods-regal.svg":"/assets/img/VectorFLOW/BPR/monitor-goods.svg"} alt="monitor goods in transit/WIP" height="52px" width="52px"></img></IconWrapper>
                         <TextWrapper><b>Monitor Goods In Transit/WIP</b></TextWrapper>
-                        <CountWrapper>
+                        <CountWrapper  style={{ color: currentTheme.color4}}>
                             <CountText>{parentMonitorCount}</CountText>
-                            <Separator color={'#BC3D81'}></Separator>
+                            <Separator color={currentTheme.color4}></Separator>
                             <CountText>{childMonitorCount}</CountText>
                         </CountWrapper>
-                        <ButtonWrapper>
-                            <ButtonComponent>
-                                <button style={{ backgroundColor: '#BC3D81', color: 'white', font: "inherit" }} onClick={onMonitorParentClick}>From Parent</button>
+                        <ButtonWrapper style={{ backgroundColor: currentTheme.color4}} >
+                            <ButtonComponent >
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onMonitorParentClick}>From Parent</button>
                             </ButtonComponent>
                             <Separator color={'white'} ></Separator>
-                            <ButtonComponent>
-                                <button style={{ backgroundColor: '#BC3D81', color: 'white', font: "inherit" }} onClick={onMonitorChildClick}>To Child</button>
+                            <ButtonComponent >
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onMonitorChildClick}>To Child</button>
                             </ButtonComponent>
                         </ButtonWrapper>
                     </CardWrapper>
 
                     <CardWrapper>
-                        <IconWrapper><img src="/assets/img/VectorFLOW/BPR/expedite.svg" alt="expedite"></img></IconWrapper>
+                        <IconWrapper><img src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/expedite-regal.svg":"/assets/img/VectorFLOW/BPR/expedite.svg"} alt="expedite"></img></IconWrapper>
                         <TextWrapper><b>Expedite</b></TextWrapper>
-                        <CountWrapper>
+                        <CountWrapper style={{ color: currentTheme.color4}}>
                             <CountText>{parentExpediteCount}</CountText>
-                            <Separator color={'#BC3D81'}></Separator>
+                            <Separator color={currentTheme.color4}></Separator>
                             <CountText>{childExpediteCount}</CountText>
                         </CountWrapper>
-                        <ButtonWrapper>
+                        <ButtonWrapper style={{ backgroundColor: currentTheme.color4}} >
                             <ButtonComponent>
-                                <button style={{ backgroundColor: '#BC3D81', color: 'white', font: "inherit" }} onClick={onExpediteParentClick}>From Parent</button>
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onExpediteParentClick}>From Parent</button>
                             </ButtonComponent>
                             <Separator color={'white'} ></Separator>
                             <ButtonComponent>
-                                <button style={{ backgroundColor: '#BC3D81', color: 'white', font: "inherit" }} onClick={onExpediteChildClick}>To Child</button>
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onExpediteChildClick}>To Child</button>
                             </ButtonComponent>
                         </ButtonWrapper>
                     </CardWrapper>
@@ -136,31 +139,31 @@ const SelectCategory = (props: CountProp) => {
 
                 <CardContainer>
                     <CardWrapper>
-                        <IconWrapper><img src="/assets/img/VectorFLOW/BPR/excess-inventory.svg" alt="excess inventory" height="58px" width="55px"></img></IconWrapper>
+                        <IconWrapper><img src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/excess-inventory-regal.svg":"/assets/img/VectorFLOW/BPR/excess-inventory.svg"}alt="excess inventory" height="58px" width="55px"></img></IconWrapper>
                         <TextWrapper><b>Excess Inventory</b></TextWrapper>
-                        <CountWrapper>
+                        <CountWrapper style={{ color: currentTheme.color4}}>
                             <CountText>{reviewExcessInventoryCount}</CountText>
                             {/* <Separator color={'#BC3D81'}></Separator>
                    <CountText>{totalcount}</CountText>    */}
                         </CountWrapper>
-                        <ButtonWrapper>
+                        <ButtonWrapper style={{ backgroundColor: currentTheme.color4}} >
                             <ButtonComponent>
-                                <button style={{ backgroundColor: '#BC3D81', color: 'white', font: "inherit" }} onClick={onExcessInventoryReviewClick}>Review</button>
+                                <button style={{ backgroundColor:currentTheme.color4, color: 'white', font: "inherit" }} onClick={onExcessInventoryReviewClick}>Review</button>
                             </ButtonComponent>
                         </ButtonWrapper>
                     </CardWrapper>
 
                     <CardWrapper>
-                        <IconWrapper><img src="/assets/img/VectorFLOW/BPR/order-fulfillment.svg" alt="order fulfillment" height="52px" width="74px"></img></IconWrapper>
+                        <IconWrapper><img src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/order-fulfillment-regal.svg":"/assets/img/VectorFLOW/BPR/order-fulfillment.svg"} alt="order fulfillment" height="52px" width="74px"></img></IconWrapper>
                         <TextWrapper><b>Order Fulfillment</b></TextWrapper>
-                        <CountWrapper>
+                        <CountWrapper style={{ color: currentTheme.color4}}>
                             <CountText>{reviewOrderFulfillmentCount}</CountText>
                             {/* <Separator color={'#BC3D81'}></Separator>
                    <CountText>{totalcount}</CountText>    */}
                         </CountWrapper>
-                        <ButtonWrapper>
+                        <ButtonWrapper style={{ backgroundColor: currentTheme.color4}} >
                             <ButtonComponent>
-                                <button style={{ backgroundColor: '#BC3D81', color: 'white', font: "inherit" }} onClick={onOrderFulfillmentReviewClick}>Review</button>
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onOrderFulfillmentReviewClick}>Review</button>
                             </ButtonComponent>
                         </ButtonWrapper>
                     </CardWrapper>

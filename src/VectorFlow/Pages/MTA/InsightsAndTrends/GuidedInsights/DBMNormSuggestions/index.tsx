@@ -734,7 +734,7 @@ const DBMNormSuggestions = () => {
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
-                          Top 10 Locations: Max No. of DBM Suggestions
+                          Top 10 Locations: Max No. Of DBM Suggestions
                         </SCChartHeader>
                       </div>
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -920,7 +920,7 @@ const DBMNormSuggestions = () => {
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
-                          Top 10 Products: Max No. of DBM Suggestions{" "}
+                          Top 10 Products: Max No. Of DBM Suggestions{" "}
                         </SCChartHeader>
                       </div>
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -1014,7 +1014,7 @@ const DBMNormSuggestions = () => {
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
-                          Ageing categorization of DBM suggestions
+                          Ageing categorization Of DBM suggestions
                         </SCChartHeader>
                       </div>
                       <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>

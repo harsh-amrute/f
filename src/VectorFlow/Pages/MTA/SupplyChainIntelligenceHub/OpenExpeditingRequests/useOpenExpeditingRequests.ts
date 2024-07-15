@@ -20,12 +20,15 @@ import ShowRemarkCellRenderer from "./ShowRemarkCellRenderer";
 import { useAddRemarkForExpedite, useGetOpenExpediteRequestData, useGetRemarkDetailsForExpedite } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests";
 import SubmitRemarkCellRenderer from "./SubmitRemarkCellRenderer";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
-
+import { useUserData } from "../../../../../context";
 
 const useOpenExpeditingRequests = () => {
 
     const ref = useRef()
     const tempRef = useRef()
+
+    const {user} = useUserData()
+    const themeUi = user.user.theme_ui
 
     const {mutateAsync:getData} = useGetOpenExpediteRequestData()
     const {mutateAsync:addRemark} = useAddRemarkForExpedite()
@@ -35,6 +38,7 @@ const useOpenExpeditingRequests = () => {
     const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
     const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
 
+    const [editedRows,setEditedRows] = useState<Array<any>>([])
     const [remark,setRemark] = useState<string>('')
     const [rowData,setRowData] = useState<Array<any>>([])
     const [colDefs,setColDefs] = useState<Array<any>>([])
@@ -96,7 +100,7 @@ const useOpenExpeditingRequests = () => {
           try{
             notifyLoader("Loading Grid Data")
             const data = await getData(currentFilter)
-            setRowData(data.data.data.data)
+            setRowData(data.data.data.data.map((r:any,index:number)=>({...r,id:index,action:''})))
             setColDefs(mapFieldsToColDefs(data.data.data.config))
             toast.dismiss()
             notifySuccess("Data Loaded Successfully")
@@ -126,7 +130,7 @@ const useOpenExpeditingRequests = () => {
         tooltipTrigger: 'focus',
         tooltipInteraction: true,
         // rowSelection:'single',
-        readOnlyEdit: true,
+        readOnlyEdit: false,
         gridOptions: {
             rowHeight: 50,
             getRowStyle: (params: any) => {
@@ -152,8 +156,28 @@ const useOpenExpeditingRequests = () => {
               'white-space':'nowrap'
             },
             flex: 1,
-        }
+        },
+        onCellValueChanged:(params)=>onCellValueChanged(params.data)
     }
+
+    const onCellValueChanged = (newRow: any) => {
+      setEditedRows((prev) => {
+        let found = false; // Flag to track if the row has been updated
+        const updatedRows = prev.map((row) => {
+          if (row.id === newRow.id) {
+            found = true;
+            return { ...newRow }; // Return updated row
+          }
+          return row; // Return unchanged row
+        });
+    
+        if (!found) {
+          // If no existing row was found, add the new row
+          return [...updatedRows, {...newRow}];
+        }
+        return updatedRows;
+      });
+    };
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
@@ -202,7 +226,7 @@ const useOpenExpeditingRequests = () => {
             await addRemark({
                 SKUCode:activeRow.sc,
                 WHCode:activeRow.wc,
-                remark:remark
+                remark:remark,
             })
             toast.dismiss(toastId)
             
@@ -228,10 +252,11 @@ const useOpenExpeditingRequests = () => {
 
     const onApplyFilter = async(filter:any)=>{
       setCurrentFilter(filter)
+      setEditedRows([])
       notifyLoader("Loading Grid Data")
       try{
         const data = await getData(filter)
-        setRowData(data.data.data.data)
+        setRowData(data.data.data.datamap((r:any,index:number)=>({...r,id:index,action:''})))
         toast.dismiss()
       }catch(err:any){
         notifyError(err)
@@ -239,11 +264,33 @@ const useOpenExpeditingRequests = () => {
       
     }
 
-    const mapFieldsToColDefs  = (fields:Array<any>)=>{
+
+    const onSubmitEditedRows = async()=>{
+      notifyLoader('Submitting data')
+     try{
+      const payload = editedRows.map((r)=>{
+        return{
+          SKUCode:r.sc,
+          WHCode:r.wc,
+          Remark:r.action || "",
+          ETA:r.eta
+        
+      
+    }
+      })
+      await addRemark({data:payload})
+      toast.dismiss()
+     }catch(err){
+      console.log(err)
+      notifyError("Something went wrong")
+     }
+    }
+
+    const mapFieldsToColDefs  = (fields:Array<any>):Array<ColDef>=>{
       const config = fields
       let result:Array<ColDef> = []
       if(config){
-        result =  config.map((col:any)=>{
+        result =  config.map((col:any):ColDef=>{
           if(col.colCode==="pic"){
             return{
               headerName: col.header,
@@ -251,6 +298,19 @@ const useOpenExpeditingRequests = () => {
               field: col.colCode,
               cellRenderer:'colorCellRenderer'
             }
+          }
+          if(col.colCode==='eta'){
+            return {
+              headerName: col.header,
+              colId: col.colCode,
+              field: col.colCode,
+              // cellRenderer:'etaCellRenderer',
+              cellRenderer:'etaCellRenderer',
+              floatingFilter:false,
+              editable:true,
+              cellDataType:'date'
+              
+          }
           }
           return{
             headerName: col.header,
@@ -263,23 +323,8 @@ const useOpenExpeditingRequests = () => {
           colId: 'action',
           field: 'action',
           cellRenderer: 'submitRemarkCellRenderer',
-          cellRendererParams:{
-              onClick:onOpenSubmitRemark
-          },
-          floatingFilter:false
-      },
-      {
-          headerName: "ETA",
-          colId: 'eta',
-          field: 'eta',
-          // cellRenderer:'etaCellRenderer',
-          editable:true,
-          cellStyle:{
-            border:'solid 1px black',
-            transform:'scale(0.8)',
-            "background-color":'white'
-          },
-          floatingFilter:false
+          floatingFilter:false,
+          editable:true
       },
       {
           headerName: "",
@@ -312,6 +357,7 @@ const useOpenExpeditingRequests = () => {
         onCloseSubmitRemark,
         onCloseRemarkHistory,
         ref,
+        onOpenSubmitRemark,
         // isSavedDataLoading,
         tempRef,
         tempDownloadData,
@@ -324,7 +370,10 @@ const useOpenExpeditingRequests = () => {
         currentFilter,
         setCurrentFilter,
         onDelete,
-        onApplyFilter
+        onApplyFilter,
+        onSubmitEditedRows,
+        editedRows,
+        themeUi
     }
 }
 

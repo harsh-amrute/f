@@ -2,6 +2,7 @@
 import { BPRSubmitRemarkToolTipProps } from "../../../../../VectorFlow/types/BPR"
 import Portal from "../../../../../components/VectorFLOW/layouts/Portal"
 
+import * as globalStyles from '../../../../../styles/global'
 import {
     BPRRemarksToolTipWrapper, 
     BPRRemarksToolTipContent,
@@ -20,8 +21,11 @@ const BPRSubmiRemarkToolTip = (props:BPRSubmitRemarkToolTipProps)=>{
         setRemark,
         onClose,
         onSuccess,
-        isDate
+        isDate,
+        themeUi
     } = props
+
+    const currBgColor = globalStyles.chooseThemeColor[themeUi].color5
 
     return(
         <Portal wrapperId="tooltip">
@@ -29,10 +33,10 @@ const BPRSubmiRemarkToolTip = (props:BPRSubmitRemarkToolTipProps)=>{
                 <BPRRemarksToolTipContent  className="custom-scrollbar">
                     {isDate?<input style={{width:'147px', marginBottom:'5px'}} type={'date'}  onChange={setRemark} value={remark} autoFocus/>:<BPRRemarkToolTipTextArea placeholder="Type your remark here" onChange={setRemark} value={remark} autoFocus/>}
                     <BPRRemarkToolTipButtonGroup>
-                        <BPRRemarkToolTipButton style={{marginRight:10,backgroundColor:'rgb(188, 61, 129)',color:'white'}} onClick={onSuccess} >
+                        <BPRRemarkToolTipButton style={{marginRight:10,backgroundColor:currBgColor,color:'white'}} onClick={onSuccess} >
                             Submit
                         </BPRRemarkToolTipButton>
-                        <BPRRemarkToolTipButton style={{border:'1px solid rgb(130, 15, 76)'}} onClick={onClose} >
+                        <BPRRemarkToolTipButton style={{border:`1px solid ${currBgColor}`}} onClick={onClose} >
                             Cancel
                         </BPRRemarkToolTipButton>
                     </BPRRemarkToolTipButtonGroup>

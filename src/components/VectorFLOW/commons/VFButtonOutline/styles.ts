@@ -2,7 +2,6 @@ import styled from 'styled-components'
 import * as globalStyles from "../../../../styles/global";
 
 function getColor(props:any) {
-  console.debug(props.color)
   if(props.isDisabled){
     return '#9A9A9A'
   }

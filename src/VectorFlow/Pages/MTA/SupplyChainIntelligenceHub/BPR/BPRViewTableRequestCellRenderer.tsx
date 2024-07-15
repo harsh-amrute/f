@@ -1,3 +1,4 @@
+import { useUserData } from "../../../../../context"
 import { BPRViewTableRequestCellRendererImg, BPRViewTableRequestCellRendererText, BPRViewTableRequestCellRendererWrapper } from "./styles"
 
 interface BPRViewTableRequestCellRendererProps{
@@ -10,10 +11,14 @@ const BPRViewTableRequestCellRenderer = (props:BPRViewTableRequestCellRendererPr
         onClick
     } = props
 
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
+
     return (
         <BPRViewTableRequestCellRendererWrapper onClick={onClick}>
-            <BPRViewTableRequestCellRendererImg src="/assets/img/VectorFlow/BPR/add-circle.svg"/>
-            <BPRViewTableRequestCellRendererText >Request</BPRViewTableRequestCellRendererText>
+            <BPRViewTableRequestCellRendererImg src={themeUi==="REGALBLAZE"?"/assets/img/VectorFlow/BPR/add-circle-regal.svg":"/assets/img/VectorFlow/BPR/add-circle.svg"}/>
+            <BPRViewTableRequestCellRendererText style={{color:themeUi==="REGALBLAZE"?"#FCA311":"rgb(188, 61, 129)"}}>Request</BPRViewTableRequestCellRendererText>
         </BPRViewTableRequestCellRendererWrapper>
     )
 

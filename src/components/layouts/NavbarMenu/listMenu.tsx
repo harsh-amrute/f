@@ -60,6 +60,12 @@ export const listMenuParent: any = [
         url: "/master-data-management/task-status",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
+      {
+        name: "navbar.listMenuParent.masterDataManagement.modificationHistory",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/master-data-management/data-modification-history",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
+      },
     ],
   },
   // {
@@ -294,6 +300,13 @@ export const listMenuParent: any = [
             url: "/supply-chain-intelligence-hub/bor",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
 
+          },
+          {
+            name: "Supplier Dispatch Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/sdr",
+            role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
+
           }
         ]
       },
@@ -522,6 +535,18 @@ export const listMenuParent: any = [
             img: "/assets/img/nav/arrow_down.svg",
             url: "/procurement/insights-and-trends/rmpm-orderwise-coverage",
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"]
+          },
+          {
+            name: "RM/PM Buffer Trend",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/procurement/insights-and-trends/rmpm-buffer-trends",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"]
+          },
+          {
+            name: "Expediting RM/Suppliers",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/procurement/insights-and-trends/rmpm-expediting-rm-suppliers",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"]
           }
         ]
 
@@ -532,25 +557,26 @@ export const listMenuParent: any = [
     id: 10,
     name: "navbar.listMenuParent.prodAndPlanningScheduling.title",
     img: "/assets/img/nav/prod-plan-icon",
+    url: "/production-planning-scheduling/enquiry-response",
     status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
     child: [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.enquiryResponse",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+        url: "/production-planning-scheduling/enquiry-response",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.dueDateQuotation",
         img: "/assets/img/nav/arrow_down.svg",
         url: "",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.orderRescheduling",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "",
+        url: "/production-planning-and-scheduling/order-rescheduling",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {
@@ -582,9 +608,18 @@ export const listMenuParent: any = [
         img: "/assets/img/nav/arrow_down.svg",
         url: "",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        child: [
+          {
+            name: "BM Trends",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/production-planning-scheduling/insight-and-trends/bm-trends",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          }
+        ]
       },
     ],
   },
+
 ];
 
 

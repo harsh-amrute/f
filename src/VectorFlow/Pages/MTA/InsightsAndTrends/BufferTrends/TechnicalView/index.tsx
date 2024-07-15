@@ -26,11 +26,11 @@ interface TechnicalWiseProps {
     setHorizondays: any
     handleSubmitClick: () => void
     horizonDays: number
+    themeUi:string
 }
 
 
-const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizondays, handleSubmitClick, horizonDays }: TechnicalWiseProps) => {
-
+const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizondays, handleSubmitClick, horizonDays,themeUi }: TechnicalWiseProps) => {
 
 
     const numericData = data.map((item: any) => ({
@@ -195,7 +195,7 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                                     </VFButtonOutline> */}
                             <img
                                 style={{ cursor: 'pointer' }}
-                                src="/assets/img/Group 627.svg"
+                                src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
                                 height={50}
                                 width={60}
                                 onClick={() => handleSubmitClick()}

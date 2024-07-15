@@ -10,7 +10,13 @@ describe('VFErrorFallBack Componenet',()=>{
 
     it('Clicks on Go Home button',()=>{
         render(<VFErrorFallBack/>)
-        const btn = screen.getByText('Go Home')
+        const btn = screen.getByText('Go back to home')
+        fireEvent.click(btn)
+    })
+
+    it('Clicks on Refresh button',()=>{
+        render(<VFErrorFallBack/>)
+        const btn = screen.getByText('Refresh Now')
         fireEvent.click(btn)
     })
     // it('Clicks on Go Contact Support button',()=>{

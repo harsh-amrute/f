@@ -22,6 +22,8 @@ export const TextContainer=styled.div`
 `
 export const TextFilterWrapper=styled.div`
     padding:19px 25px 29px 25px ;
+    display:flex;
+    justify-content:space-between;
 `
 export const VFMasterGroupCard=styled.div`
     width: 440px;

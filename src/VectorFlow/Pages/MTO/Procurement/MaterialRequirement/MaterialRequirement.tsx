@@ -5,6 +5,7 @@ import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloati
 import moment from 'moment';
 
 
+
 const MaterialRequirement = () => {
     const { renderView, toggleCurrentTab, onDateChangeReq, onDateSubmitReq, date } = useMaterialReq();
     return (
@@ -28,7 +29,7 @@ const MaterialRequirement = () => {
                         },
                         {
                             id: 'cv',
-                            label: 'Cummulative View',
+                            label: 'Cumulative View',
                             value: 'cv'
                         }
                     ]}

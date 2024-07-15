@@ -1,8 +1,11 @@
 import { render } from "@testing-library/react";
-
+import { ReactNode } from "react";
 import { useGetAvailabilityAgeing} from "../../../../../Services/MTA/InsightsAndTrends";
 import { GuidedInsights } from "../../../../../../mock-data/GuidedInsights";
 import AvailabilityAgeingTrend from './';
+
+import {UserDataContext} from '../../../../../../context'
+
 jest.mock("../../../../../Services/MTA/InsightsAndTrends");
 jest.mock("ag-charts-react", () => ({
   AgChartsReact: jest.fn(() => null) 
@@ -11,6 +14,25 @@ const useGetAvailabilityAgeingMock = useGetAvailabilityAgeing as jest.MockedFunc
     typeof useGetAvailabilityAgeing
 >;
 //const useGetAvailabilityAgeingData: any = { data: {data: GuidedInsights.AvailabilityAgeingTrendData }};
+
+const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {
+  return (
+
+          <UserDataContext.Provider
+            value={{
+              user: { user: { theme_ui: theme } },
+              changeColorTheme: (color) => {
+                return color;
+              },
+              isSideBarOpen:true,toggleSideBar:jest.fn
+            }}
+          >
+            {children}
+          </UserDataContext.Provider>
+
+  );
+};
+
 
 const useGetAvailabilityAgeingData: any = {
   mutateAsync: () => {
@@ -33,7 +55,7 @@ global.ResizeObserver = class MockedResizeObserver {
 
      it("Availability Ageing", () => {
        
-        render(<AvailabilityAgeingTrend/>)
+        render(contextWrapperWithCustomTheme(<AvailabilityAgeingTrend themeUi="REGALBLAZE"/>,"REGALBLAZE"))
 
     })
 })

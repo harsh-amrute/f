@@ -13,7 +13,7 @@ const GuidedInsight = () => {
     const { onFloatingTabChange, onGoBack, onViewChange, currentView, currentTab, setCurrentTab, getFloatingTabsList,
         chroniceRowData, ref, currentFilter,
         setCurrentFilter,
-        onDelete, onApplyFilter } = useGuidedInsights();
+        onDelete, onApplyFilter,themeUi } = useGuidedInsights();
 
     const renderView = () => {
 
@@ -21,20 +21,20 @@ const GuidedInsight = () => {
             switch (currentTab) {
 
                 case 'availabilitytrend':
-                    return <AvailabilityTrend />
+                    return <AvailabilityTrend themeUi={themeUi}/>
                 case 'chronicunavailability':
                     return <ChronicUnavailability />
                 case 'availabilityageingtrend':
-                    return <AvailabilityAgeingTrend />
+                    return <AvailabilityAgeingTrend themeUi={themeUi}/>
                 case 'dbmnormsuggestions':
                     return <DBMNormSuggestions />
                 case 'excessinventorytrend':
-                    return <ExcessInventoryTrend />
+                    return <ExcessInventoryTrend themeUi={themeUi}/>
                 case 'customscreens':
                     return <CustomScreens />
 
                 default:
-                    return <AvailabilityTrend />
+                    return <AvailabilityTrend themeUi={themeUi} />
 
 
             }

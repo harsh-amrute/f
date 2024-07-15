@@ -27,6 +27,7 @@ import {
     BPRDailyAnalyticsTableCellIcon
 } from './styles'
 import { notifyError } from '../../../../helpers/notify'
+import { useUserData } from '../../../../context'
 
 interface BPRDailyAnalyticsProps{
     colDefs:ColDef[]
@@ -44,7 +45,9 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     const {mutateAsync:getAnalyticsData,isLoading} = useGetAnalyticsData()
 
 
+    const {user} = useUserData()
 
+    const themeUi = user.user.theme_ui
 
     
     const summation = useMemo(()=>{
@@ -213,8 +216,8 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     if(isLoading){
         return(
             <BPRDailyAnalyticsWrapper>
-                <BPRDailyAnalyticsContainer style={{aspectRatio:'0.9',width:'90%'}}>
-                    <BPRDailyAnalyticsHeader>
+                <BPRDailyAnalyticsContainer theme={themeUi} style={{aspectRatio:'0.9',width:'90%'}}>
+                    <BPRDailyAnalyticsHeader theme={themeUi}>
                         Analytics (SKU Locations)
                     </BPRDailyAnalyticsHeader>
                     <div style={{width:'100%',height:'100%',display:'grid',placeItems:'center'}}>
@@ -228,8 +231,8 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     if(!rowData || !Array.isArray(rowData) || rowData.length===0){
         return(
             <BPRDailyAnalyticsWrapper>
-                <BPRDailyAnalyticsContainer style={{aspectRatio:'0.9',width:'90%'}}>
-                    <BPRDailyAnalyticsHeader>
+                <BPRDailyAnalyticsContainer theme={themeUi} style={{aspectRatio:'0.9',width:'90%'}}>
+                    <BPRDailyAnalyticsHeader theme={themeUi}>
                         Analytics (SKU Locations)
                     </BPRDailyAnalyticsHeader>
                     <div style={{width:'100%',height:'100%',display:'grid',placeItems:'center'}}>
@@ -244,8 +247,8 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
 
     return(
         <BPRDailyAnalyticsWrapper>
-            <BPRDailyAnalyticsContainer>
-            <BPRDailyAnalyticsHeader>
+            <BPRDailyAnalyticsContainer theme={themeUi}>
+            <BPRDailyAnalyticsHeader theme={themeUi}>
                 Analytics (SKU Locations)
             </BPRDailyAnalyticsHeader>
             <BPRDailyAnalyticsTableContainer>

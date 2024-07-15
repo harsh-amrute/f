@@ -31,6 +31,7 @@ import GuidedInsights from './VectorFlow/Pages/MTA/InsightsAndTrends/GuidedInsig
 import BufferTrends from './VectorFlow/Pages/MTA/InsightsAndTrends/BufferTrends'
 import BufferTrendReport from './VectorFlow/Pages/MTA/InsightsAndTrends/BTR'
 import DBM from './VectorFlow/Pages/MTA/DBM/DBMNormSuggestions'
+import EnquiryResponse from './VectorFlow/Pages/MTO/Production/EnquiryResponse'
 import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests'
 import MaterialCov from './VectorFlow/Pages/MTO/Procurement/MaterialCoverage/MaterialCov'
 import ProcurementPlanning from './VectorFlow/Pages/MTO/Procurement/Planning';
@@ -38,8 +39,15 @@ import SimulateFullKit from './VectorFlow/Pages/MTO/Procurement/Planning/Simulat
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
 import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/DayWiseCoverage'
 import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
+import RMPMBufferTrends from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMBufferTrends'
 import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
 import FullKitAssignment from './VectorFlow/Pages/MTO/Production/FullKitAssignement'
+import OrderRescheduling from './VectorFlow/Pages/MTO/Production/OrderRescheduling'
+import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index'
+import BMTrends from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/BMTrends'
+import SupplierDispatchReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport'
+
+import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -56,7 +64,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/login',
     '/forgot-password',
     '/change-password',
-    '/profile'
+    '/profile',
   ]
   const urlAllPage = [
     ...authenPage,
@@ -84,14 +92,24 @@ const lazyLoad = (children: React.ReactNode) => {
     '/insights-and-trends/research-insights',
     '/insights-and-trends/buffer-trend-report',
     '/dbm/dbm-norm-suggestions',
+    '/logistics/intransit-whereabouts',
     '/procurement/material-coverage-open-sales',
     '/procurement-planning/planning',
     "/procurement/insights-and-trends/day-wise-coverage",
     '/planning/simulative-fullkit',
     '/logistics/intransit-whereabouts',
     '/procurement/material-requirement',
-    '/procurement/insights-and-trends/rmpm-orderwise-coverage', 
-    '/production-planning-scheduling/full-kit-assignment'
+    '/procurement/insights-and-trends/rmpm',
+    '/procurement/insights-and-trends/rmpm-buffer-trends',
+    '/procurement/insights-and-trends/rmpm-orderwise-coverage',
+    '/production-planning-and-scheduling/order-rescheduling',
+    '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
+    '/production-planning-scheduling/enquiry-response',
+    '/production-planning-scheduling/insight-and-trends/bm-trends',
+    '/production-planning-scheduling/full-kit-assignment',
+    '/supply-chain-intelligence-hub/sdr',
+    '/master-data-management/data-modification-history'
+
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -280,6 +298,17 @@ export const initRoutes = (): RouteObject[] => {
         ...getStoreTransferModuleRoutes()
       ]
     },
+    {
+      path: '/master-data-management/data-modification-history',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DataModificationHistory />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
 
 
     {
@@ -437,6 +466,39 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
+      path: '/production-planning-scheduling/enquiry-response',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<EnquiryResponse />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/insight-and-trends/bm-trends',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<BMTrends />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/dbm/dbm-norm-suggestions',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DBM />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
       path: '/procurement/material-coverage-open-sales',
       element: <AppLayout />,
       children: [
@@ -510,11 +572,56 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<FullKitAssignment/>)
+          element: lazyLoad(<FullKitAssignment />)
         },
         ...getStoreTransferModuleRoutes()
       ]
     },
-    
+    {
+      path: '/procurement/insights-and-trends/rmpm-buffer-trends',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMPMBufferTrends />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMExpeditionSuppliers />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/sdr',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<SupplierDispatchReport />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    }
+    ,
+    {
+      path: '/production-planning-and-scheduling/order-rescheduling',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OrderRescheduling />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    }
+
   ]
 }
