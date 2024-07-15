@@ -36,8 +36,8 @@ const STPLGraph = () => {
                    </div>
                </div>
            </div> 
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Released WIP (In Days)</div><div>${datum["days"]}</div></div></div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Limit</div><div>${datum["limit"]}</div></div></div>
+        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: gray"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Released WIP (In Days)</div><div>${datum["days"]}</div></div></div>
+        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: green"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Limit</div><div>${datum["limit"]}</div></div></div>
 
         </div>`;
   }
@@ -76,7 +76,11 @@ const STPLGraph = () => {
       cellRange: {
         columns: ["ccr", "exceedDays", 'days', 'limit'],
       },
-
+      seriesChartTypes: [
+        {colId: "exceedDays", chartType: "stackedColumn"},
+        {colId: "days", chartType: "stackedColumn"},
+        {colId: "limit", chartType: "line"}
+      ],
       chartThemeOverrides: {
         column: {
           axes: {
