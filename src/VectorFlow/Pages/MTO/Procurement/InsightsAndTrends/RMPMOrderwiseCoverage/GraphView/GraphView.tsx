@@ -14,13 +14,13 @@ import VFModalCard from "../../../../../../../components/VectorFLOW/commons/VFMo
 import VFTable from "../../../../../../../components/VectorFLOW/commons/VFTable";
 import { GridRef } from "../../../../../../../VectorFlow/types/MDM";
 
-const GraphView = () => {
+const GraphView = ({ shortageData }: any) => {
 
     // const [date, setDate] = useState("19 April 2024 - 18 July 2024")
     const [date] = useState("01 July 2024 - 28 Sept 2024")
 
     // const [rawData, setRawData] = useState(procData);
-    const [rawData] = useState(procData);
+    const [rawData] = useState(shortageData);
 
     function TooltipRenderer({ datum, xKey }: any) {
         return `

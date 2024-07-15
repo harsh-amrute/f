@@ -11,6 +11,11 @@ import DueDateCellRenderer from './DueDateCellRenderer'
 import { usePutUpdateOrderDueDate, useGetOrderSchedulingData } from '../../../../Services/MTO/Production/OrderRescheduling'
 import { AgGridReactProps } from 'ag-grid-react'
 import { GridRef } from '../../../../types/MDM'
+import VFOverlay from '../../../../../components/VectorFLOW/commons/VFOverlay'
+import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader'
+import { ATTR_TOAST, notifySuccess, notifyError } from '../../../../../helpers/notify'
+import { toast } from 'react-toastify'
+import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 
 
 const user = { user: { them_ui: 'pure' } }
@@ -135,12 +140,14 @@ const OrderRescheduling = () => {
 
         floatingFilter: true
 
-    },
-
-    ]
+    },]
     const GetData = async () => {
+
         const APIData = await getOrderSchedulingData();
+        console.log("API data", APIData.data.data.results);
+        console.log("==>", APIData);
         setRowData(APIData.data.data.results);
+
 
     }
 
@@ -198,9 +205,22 @@ const OrderRescheduling = () => {
     const PostData = async (data: any) => {
 
         try {
-            await putUpdateOrderDueDate(data);
+            const response = await putUpdateOrderDueDate(JSON.parse(JSON.stringify(data)));
+            if (refGraph1) {
+                refGraph1.current?.api.deselectAll();
 
+            }
+            if (response.status === 200) {
+                toast.dismiss()
+                notifySuccess("Order Data updated!")
+            }
+            else {
+                toast.dismiss()
+                notifyError("Failed to update data")
+            }
         } catch (error) {
+            toast.dismiss()
+            notifyError("Failed to update Data!")
             console.log(error);
         }
     }
@@ -215,18 +235,35 @@ const OrderRescheduling = () => {
         const finalData = convertJsonForUnschedule(selectedRowData, 'Admin', 1)
 
         PostData(finalData);
+        useEffect(() => {
+            GetData();
+        }, [])
     }
 
     const overwriteDD = () => {
         const finalData = convertJsonForDueDate(selectedRowData, 'Admin', 0)
         PostData(finalData);
+        setSelectedRowData([])
     }
 
+    // const handlePageChangeCumulative = () => {
+    //     const 
+    // }
+
+    const [isOverlayVisible, setIsOverlayVisible] = useState(true);
 
 
     return (
         <>
             <div style={{ width: "100%", position: 'relative', height: '85vh' }}>
+                {/* <VFLoader />
+                {
+                    isOverlayVisible && (
+                        <VFOverlay>
+                            <h1 style={{ backgroundColor: "white", padding: '15px', borderRadius: '8px' }}>Loading....</h1>
+                        </VFOverlay>
+                    )
+                } */}
                 <MTOActionToolBar comp={'orderReschedule'} />
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                     <div>
@@ -263,6 +300,13 @@ const OrderRescheduling = () => {
 
                                 height={"85%"}
                             />
+                            {/* <VFPagination
+                                selectedRows={0}
+                                rowsPerPage={10}
+                                totalRows={cumulativeRecordCount}
+                                currentPage={currentCumPage}
+                                handleChangePage={handlePageChangeCumulative}
+                            /> */}
                         </VFTableWrapper>
                     </div>
 
@@ -280,6 +324,7 @@ const OrderRescheduling = () => {
                         </div>
                     </div>
                 </div>
+
             </div>
         </>
     )

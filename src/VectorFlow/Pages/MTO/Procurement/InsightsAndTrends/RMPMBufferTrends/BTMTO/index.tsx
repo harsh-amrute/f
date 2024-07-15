@@ -5,7 +5,6 @@ import VFCapsule from '../../../../../../../components/VectorFLOW/commons/VFCaps
 import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'
 import { CapsuleWrapper } from '../../RMPMOrderwiseCoverage/GraphView/styles'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
-import dummyData from './BufferTrendData'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 
 
@@ -13,12 +12,21 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 
 
 
-const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
+const BTMTO = ({ isMTO, MTOData }: { isMTO: boolean, MTOData: any }) => {
 
     const [horizonDays, setHorizondays] = useState(90);
 
-    const [data] = useState(dummyData)
-    const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(data, 0, horizonDays, false));
+    type InputObject = {
+        [key: string]: {
+            Bl?: number;
+            Y?: number;
+            G?: number;
+            B?: number;
+            R?: number;
+            W?: number;
+        };
+    };
+
 
     type BufferTrendData = {
         dt: string;
@@ -28,6 +36,34 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
         y: number;
         w: number;
     };
+
+
+
+    function convertObject(input: InputObject): BufferTrendData[] {
+        const result: BufferTrendData[] = [];
+
+        for (const [date, values] of Object.entries(input)) {
+            const [year, month, day] = date.split('-').map(Number);
+            const formattedDate = `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year}`;
+
+            const outputItem: BufferTrendData = {
+                dt: formattedDate,
+                b: values.B || 0,
+                r: values.R || 0,
+                g: values.G || 0,
+                y: values.Y || 0,
+                w: values.W || 0,
+            };
+
+            result.push(outputItem);
+        }
+
+        return result;
+    }
+
+    const [data] = useState(convertObject(MTOData))
+    const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(data, 0, horizonDays, false));
+
 
     function filterDataByDaysGap(buffData: BufferTrendData[], numberOfDaysGap: number, horizonDays: number, isPer: boolean): BufferTrendData[] {
         const filteredData: (BufferTrendData[]) = [];
@@ -110,7 +146,7 @@ const BTMTO = ({ isMTO }: { isMTO: boolean }) => {
             let reqData = null;
             countArr = [0, 0, 0, 0, 0];
 
-            data.forEach(element => {
+            data.forEach((element: any) => {
                 if (element.dt === datum['dt']) {
                     reqData = element;
                     countArr = [reqData.b, reqData.r, reqData.y, reqData.g, reqData.w]

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import GridView from './GridView/GridView'
 import GraphView from './GraphView/GraphView'
@@ -7,11 +7,15 @@ import { Order } from '../../../../../../VectorFlow/types/MTO'
 import { ColDef } from 'ag-grid-enterprise'
 import columnData from './ColumnData'
 import { AgGridReactProps } from 'ag-grid-react'
-import procData from './ProcurementData'
+import { useGetOrderwiseCoverageData } from '../../../../../../VectorFlow/Services/MTO/Procurement/OrderwiseCoverage'
 
 const RMPMOrderwiseCoverage = () => {
 
     const [isGridView, setIsGridView] = useState(false);
+
+
+    const { mutateAsync: getOrderwiseCoverageData } = useGetOrderwiseCoverageData();
+
 
 
     const agGridProps: AgGridReactProps = {
@@ -68,8 +72,8 @@ const RMPMOrderwiseCoverage = () => {
     // const [ShortageColumns, setShortageColumns] = useState(columnData);
     const [ShortageColumns] = useState(columnData);
 
-    const mapDataToColumns = (data: Order[], columns: ColDef[]) => {
-        return data.map(item => {
+    const mapDataToColumns = (data: any, columns: ColDef[]) => {
+        return data.map((item: any) => {
             const mappedItem: any = {};
             columns.forEach(column => {
                 if (column.field) {
@@ -96,15 +100,29 @@ const RMPMOrderwiseCoverage = () => {
         });
     };
 
-    const convertedData = mapDataToColumns(procData, columnData);
-    const [ShortageDatas] = useState(convertedData);
+    const [convertedData, setConvertedData] = useState([{}]);
+
+    const [ShortageDatas, setShortageDatas] = useState(convertedData);
+
+    const GetData = async () => {
+        const APIData = await getOrderwiseCoverageData();
+        console.log("orderwise: ", APIData.data.data.results)
+        setConvertedData(mapDataToColumns(APIData.data.data.results, columnData));
+        setShortageDatas(convertedData);
+        console.log("convertedData:=:=:", convertedData);
+    }
+
+    useEffect(() => {
+        GetData();
+
+    }, [])
     return (
         <>
             <div style={{ zoom: 1.3 }}>
 
                 <ActionToolBar comp={"rmpm"} isGridView={isGridView} setIsGridView={setIsGridView} />
             </div>
-            {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={ShortageDatas} /> : <GraphView />}
+            {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={convertedData} /> : <GraphView shortageData={convertedData} />}
         </>
     )
 }

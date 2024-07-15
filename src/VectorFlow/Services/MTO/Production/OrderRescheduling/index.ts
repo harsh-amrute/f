@@ -14,6 +14,6 @@ export const useGetOrderSchedulingData = () => {
 
 export const usePutUpdateOrderDueDate = () => {
     return useMutation(async (body: any) => {
-        return OrderReschedulingService.putUpdateOrderDueDate(body);
+        return OrderReschedulingService.putUpdateOrderDueDate([body]);
     })
 }

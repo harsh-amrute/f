@@ -13,6 +13,7 @@ const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) =>
 
     const gridRef = useRef();
 
+    console.log("ShortageDatas: ", ShortageDatas)
 
 
 

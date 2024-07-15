@@ -1,12 +1,13 @@
 
 import { Allotment } from "allotment"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import useViewPort from "../../../../../../hooks/useViewPort"
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
 import BTMTA from "./BTMTA"
 import BTMTO from "./BTMTO"
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from "./styles"
 import "./style.css"
+import { useGetRMPMBufferTrendsData } from "../../../../../../VectorFlow/Services/MTO/Procurement/RMPMBufferTrends"
 
 
 const RMPMBufferTrends = () => {
@@ -14,6 +15,26 @@ const RMPMBufferTrends = () => {
 
     const [isMTO] = useState(true);
     const { screenHeight } = useViewPort()
+
+    const { mutateAsync: getRMPMBufferTrendsData } = useGetRMPMBufferTrendsData();
+
+    const [MTOData, setMTOData] = useState(null);
+    const [MTAData, setMTAData] = useState(null);
+    const GetData = async () => {
+        const APIData = await getRMPMBufferTrendsData();
+        setMTOData(APIData.data.data.MTO);
+        setMTAData(APIData.data.data.MTA);
+        console.log('MTOData::::', MTOData);
+        console.log("MTAData::::", MTAData);
+
+    }
+
+    useEffect(() => {
+        GetData();
+
+    }, [])
+
+
     return (
         <div style={{ zoom: 1.33, marginLeft: '30px' }}>
 
@@ -26,18 +47,18 @@ const RMPMBufferTrends = () => {
                             (<Allotment vertical={false} separator={false}   >
                                 <Allotment.Pane preferredSize={'50%'}>
                                     <BTRAllomentSection>
-                                        <BTMTO isMTO={isMTO} />
+                                        <BTMTO MTOData={MTOData} isMTO={isMTO} />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
 
                                 <Allotment.Pane preferredSize={'50%'}>
                                     <BTRAllomentSection>
-                                        <BTMTA isMTO={isMTO} />
+                                        <BTMTA MTAData={MTAData} isMTO={isMTO} />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
                             </Allotment>)
                             :
-                            <BTMTO isMTO={isMTO} />
+                            <BTMTO MTOData={MTOData} isMTO={isMTO} />
 
                     }
                 </BTRTableWrapper>

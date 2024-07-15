@@ -9,14 +9,59 @@ import dummyData from './BufferTrendData'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 
 
-const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
+const BTMTA = ({ isMTO, MTAData }: { isMTO: boolean, MTAData: any }) => {
 
     const [chartLoading, setChartLoading] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
     const [horizonDays, setHorizondays] = useState(90);
 
-    const [data] = useState(dummyData)
-    const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(data, horizonDays / 5, horizonDays, false));
+    type InputObject = {
+        [key: string]: {
+            Bl?: number;
+            Y?: number;
+            G?: number;
+            B?: number;
+            R?: number;
+        };
+    };
+
+    type OutputObject = {
+        dt: string;
+        b?: number;
+        r?: number;
+        g?: number;
+        y?: number;
+    };
+
+    function convertObject(input: InputObject): any[] {
+        const result: OutputObject[] = [];
+
+        for (const [date, values] of Object.entries(input)) {
+            const [year, month, day] = date.split('-').map(Number);
+            const formattedDate = `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year}`;
+
+            const outputItem: OutputObject = {
+                dt: formattedDate,
+                b: values.B || 0,
+                r: values.R || 0,
+                g: values.G || 0,
+                y: values.Y || 0
+            };
+
+            result.push(outputItem);
+        }
+
+        return result;
+    }
+
+    // const [data] = useState(MTAData ? convertObject(MTAData) : [])
+
+    const [data, setData] = useState(dummyData)
+
+    if (MTAData !== undefined) {
+        setData(convertObject(MTAData))
+    }
+    const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(data, 0, horizonDays, false));
 
 
     const TooltipRenderer = ({ datum, xKey }: any) => {
@@ -38,7 +83,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
             perArr = [datum['b'], datum['r'], datum['y'], datum['g'], datum['w']];
             let reqData = null;
             countArr = [0, 0, 0, 0, 0];
-            data.forEach(element => {
+            data.forEach((element: any) => {
                 if (element.dt === datum['dt']) {
                     reqData = element;
                     countArr = [reqData.b, reqData.r, reqData.y, reqData.g, reqData.w]
@@ -137,7 +182,10 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 label: {
                     fontSize: 8,
                     fontWeight: 'bold',
-                    color: 'black'
+                    color: 'black',
+                    avoidCollisions: true,
+                    autoRotate: false
+
                 },
                 gridLine: {
                     enabled: false
@@ -154,7 +202,8 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                     },
                     fontSize: 8,
                     fontWeight: 'bold',
-                    color: 'black'
+                    color: 'black',
+
                 },
                 gridLine: {
                     enabled: false
@@ -274,7 +323,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
     ]
 
     const handleSubmitClick = () => {
-        setNumericData(filterDataByDaysGap(data, horizonDays / 5, horizonDays, (actBtn.label === 'Percentage')));
+        setNumericData(filterDataByDaysGap(data, 0, horizonDays, (actBtn.label === 'Percentage')));
     }
 
     const updateGraphState = async () => {
@@ -285,8 +334,8 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 value: 'Absolute Value'
             })
             setNumericData(data);
-            setNumericData(filterDataByDaysGap(numericData, horizonDays / 5, horizonDays, true));
-            setNumericData(filterDataByDaysGap(data, horizonDays / 5, horizonDays, (actBtn.label !== 'Percentage')));
+            setNumericData(filterDataByDaysGap(numericData, 0, horizonDays, true));
+            setNumericData(filterDataByDaysGap(data, 0, horizonDays, (actBtn.label !== 'Percentage')));
         }
         else {
             setActBtn({
@@ -294,8 +343,8 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 value: 'Percentage'
             })
             setNumericData(convertToPercentage(data))
-            setNumericData(filterDataByDaysGap(numericData, horizonDays / 5, horizonDays, false));
-            setNumericData(filterDataByDaysGap(data, horizonDays / 5, horizonDays, (actBtn.label !== 'Percentage')));
+            setNumericData(filterDataByDaysGap(numericData, 0, horizonDays, false));
+            setNumericData(filterDataByDaysGap(data, 0, horizonDays, (actBtn.label !== 'Percentage')));
 
         }
 
