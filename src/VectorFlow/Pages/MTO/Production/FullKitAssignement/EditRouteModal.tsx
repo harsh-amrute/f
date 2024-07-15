@@ -79,14 +79,14 @@ const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
                         fill: params.datum.selected ? params.fill : "#A8A8A8"
                     }
                 },
-                label: {
-                    enabled: true,
-                    formatter: (params: any) => {
-                        return params.datum.groupName
-                    },
-                    placement: "outside",
-                    color: "black",
-                }
+                // label: {
+                //     enabled: true,
+                //     formatter: (params: any) => {
+                //         return params.datum.groupName
+                //     },
+                //     placement: "outside",
+                //     color: "black",
+                // }
             },
             {
                 type: 'scatter',
@@ -123,6 +123,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
         ],
         legend: {
             position: "top",
+
             item: {
                 showSeriesStroke: true,
                 marker: {

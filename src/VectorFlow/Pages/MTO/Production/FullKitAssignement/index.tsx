@@ -91,11 +91,11 @@ const FullKitAssignment = () => {
   const [data, setData] = useState([
     // { category: '      ', value: "", target: "", value2: "", groupName: "", selected: true },
     // { category: '     ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M5', value: 13, target: 43, value2: 20, groupName: "Underloaded\n", selected: true },
+    { category: 'M5', value: 13, target: 43, value2: 10, groupName: "Underloaded\n", selected: true },
     { category: '    ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M6', value: 10, target: 35, value2: 20, groupName: "Underloaded\n", selected: true },
+    { category: 'M6', value: 10, target: 35, value2: 5, groupName: "Underloaded\n", selected: true },
     { category: '      ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M7', value: 12, target: 38, value2: 20, groupName: "Underloaded\n", selected: true },
+    { category: 'M7', value: 12, target: 38, value2: 8, groupName: "Underloaded\n", selected: true },
     { category: '        ', value: "", target: "", value2: "", groupName: "", selected: true },
     { category: 'M8', value: 8, target: 12, value2: 20, groupName: "Underloaded\n", selected: true },
     { category: '          ', value: "", target: "", value2: "", groupName: "", selected: true },
@@ -141,15 +141,15 @@ const FullKitAssignment = () => {
             fill: params.datum.selected ? params.fill : "#A8A8A8"
           }
         },
-        label: {
-          enabled: true,
-          formatter: (params: any) => {
-            return params.datum.groupName
-          },
-          placement: "outside",
-          color: "black",
+        // label: {
+        //   enabled: true,
+        //   formatter: (params: any) => {
+        //     return params.datum.groupName
+        //   },
+        //   placement: "outside",
+        //   color: "black",
 
-        }
+        // }
       },
       {
         type: 'scatter',
