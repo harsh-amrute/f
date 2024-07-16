@@ -97,7 +97,7 @@ export const columnConfigData = {
         { 
             "cc": "days",
             "cp": 2,
-            "hd": "Days",
+            "hd": "Full Kits In Days",
             "v": true,
             "cla": "left",
             "scc": "days"
