@@ -18,14 +18,15 @@ const DataModificationHistory = ()=>{
     locOptions,
     handleChange,
     handleReset,
-    setSelectedOption,
+    // setSelectedOption,
     setSelectedSkuOption,
     setSelectedLocOption,
     selectedOption,
     selectedSkuOption,
     selectedLocOption,
     isSkuDisabled,
-    isLocDisabled
+    isLocDisabled,
+    onMasterChange
    
     
 } = useDataModificationHistory()
@@ -81,7 +82,7 @@ const theme_ui = user.user.theme_ui
               <p>Select Master</p>
             </TextWrapper>
             <DropDownWrapper>
-              <Select options={options} value={selectedOption} placeholder={"Select Master"} styles={styles} onChange={(newValue: any)=>{setSelectedOption(newValue)}}></Select>
+              <Select options={options} value={selectedOption} placeholder={"Select Master"} styles={styles} onChange={(newValue: any)=>{onMasterChange(newValue)}}></Select>
             </DropDownWrapper>
           </SelectWrapper>
 

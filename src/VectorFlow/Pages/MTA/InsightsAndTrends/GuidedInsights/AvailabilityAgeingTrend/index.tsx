@@ -142,7 +142,7 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
               fontStyle: "normal",
               fontVariant: "normal",
               fontWeight: 300,
-              fontSize: 15,
+              fontSize: 14,
               fontFamily: "Roboto",
             }}
           >
