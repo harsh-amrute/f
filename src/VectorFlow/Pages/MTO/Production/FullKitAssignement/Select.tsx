@@ -2,7 +2,7 @@ import React from 'react'
 import Select, { components, OptionProps } from 'react-select'
 import { Checkbox } from '../../../../../components';
 
-const CustomSelect = ({ theme, selected }: any) => {
+const CustomSelect = ({ selected }: any) => {
     const Option = (props: OptionProps<any>) => {
         return (
             <components.Option {...props}>
@@ -38,7 +38,7 @@ const CustomSelect = ({ theme, selected }: any) => {
                     minWidth: "150px",
                     right: 0,
                 }),
-                option: (base, { isSelected }) => ({
+                option: (base) => ({
                     ...base,
                     background: "white",
                     color: "black",

@@ -1,6 +1,6 @@
 import { AgChartOptions } from 'ag-charts-community'
 import { AgChartsReact } from 'ag-charts-react'
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect,} from 'react'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import { StepperWrapper, StepGroup, StepLabel, ContentWrapper, Text } from './FullKitAssignment.styled'
 import { Rectangle } from './RectangleMarker'
@@ -9,7 +9,7 @@ import CustomSelect from './Select'
 const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
 
     useEffect(() => {
-        let animationFrameId: any;
+        // let animationFrameId: any;
         const animate = () => {
             const stepGroups = document.querySelectorAll('.step-group');
             const svg: any = document.querySelector('.line');
@@ -43,9 +43,11 @@ const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
                 line.setAttribute('stroke', '#82104C');
                 svg.appendChild(line);
             }
-            animationFrameId = requestAnimationFrame(animate);
+            // animationFrameId = 
+            requestAnimationFrame(animate);
         };
-        animationFrameId = requestAnimationFrame(animate);
+        // animationFrameId = 
+        requestAnimationFrame(animate);
 
         // return cancelAnimationFrame(animationFrameId);
     }, []);

@@ -1,14 +1,14 @@
 import { AgChartsReact } from 'ag-charts-react';
 import { GridOptions } from 'ag-grid-enterprise';
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
-import { AgChartOptions, Marker } from 'ag-charts-community';
+import { AgChartOptions } from 'ag-charts-community';
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import { fullKitAssignmentData, fullKitAssignmentHeader } from './data';
 import AvailabilityCellRenderer from '../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
 import ColorCellRenderer from '../../Common/ColorCellRenderer';
-import { Button, StepGroup, StepLabel, StepperWrapper, Wrapper } from './FullKitAssignment.styled';
+import { Button, Wrapper } from './FullKitAssignment.styled';
 import { useUserData } from '../../../../../context';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import EditRouteModal from './EditRouteModal';
@@ -88,9 +88,7 @@ const FullKitAssignment = () => {
     },
   };
 
-  const [data, setData] = useState([
-    // { category: '      ', value: "", target: "", value2: "", groupName: "", selected: true },
-    // { category: '     ', value: "", target: "", value2: "", groupName: "", selected: true },
+  const [data] = useState([
     { category: 'M5', value: 13, target: 43, value2: 10, groupName: "Underloaded\n", selected: true },
     { category: '    ', value: "", target: "", value2: "", groupName: "", selected: true },
     { category: 'M6', value: 10, target: 35, value2: 5, groupName: "Underloaded\n", selected: true },
@@ -107,7 +105,6 @@ const FullKitAssignment = () => {
     { category: '  ', value: "", target: "", value2: "", groupName: "", selected: true },
     { category: 'M4', value: 15, target: 14, value2: 20, groupName: "Overloaded\n", selected: true },
     { category: '   ', value: "", target: "", value2: "", groupName: "", selected: true },
-    // { category: '    ', value: "", target: "", value2: "", groupName: "", selected: true },
     { category: 'M9', value: 15, target: 36, value2: 20, groupName: "Balanced\n", selected: true },
     { category: '            ', value: "", target: "", value2: "", groupName: "", selected: true },
     { category: 'M10', value: 13, target: 35, value2: 20, groupName: "Balanced\n", selected: true },
