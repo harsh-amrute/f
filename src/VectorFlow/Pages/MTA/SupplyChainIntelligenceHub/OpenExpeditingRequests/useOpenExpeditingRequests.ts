@@ -230,7 +230,7 @@ const useOpenExpeditingRequests = () => {
             })
             toast.dismiss(toastId)
             
-            notifySuccess('Remark has been submitted')
+            notifySuccess('Remark Has Been submitted')
             setRemark('')
             setActiveRow({
               sc:'',

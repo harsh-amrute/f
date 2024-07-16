@@ -34,7 +34,7 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCa
                       }
                 )
         toast.dismiss()
-        notifySuccess('Request submitted sucessfully')
+        notifySuccess('Request Submitted sucessfully')
         }catch(err:any){
             notifyError(err)
         }finally{

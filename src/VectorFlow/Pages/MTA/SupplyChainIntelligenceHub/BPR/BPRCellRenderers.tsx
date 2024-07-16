@@ -139,7 +139,7 @@ export const BPRRemarksCellRenderer = (params:any)=>{
         <BPRRemarksCellRendererWrapper >
             <BPRColorCellRendererIcon 
             alt="eye icon"
-             src="/assets/img/VectorFLOW/BPR/eye.svg"
+             src="/assets/img/VectorFLOW/BPR/history.svg"
              ref={(ref) => {
                 if (!ref) return;
         

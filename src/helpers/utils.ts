@@ -17,6 +17,7 @@ import { BPRField } from '../VectorFlow/types/BPR';
 import {RRRField} from '../VectorFlow/types/RRR'
 // import _ from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
+import { BTRCategoryNumberToTextMapper } from './BPRConstants';
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -2096,7 +2097,8 @@ export const BPRColorMapper =(color:string):{bg:string,text:string}=> {
 
 export const mapBTRRowData =(rows:Array<any>):Array<any>=>{
   return rows.map((r)=>{
-    const tempRow = {...r}
+    const NewCategoryString = r.Category? r.Category.replace(/\d/g, (match:string) => BTRCategoryNumberToTextMapper[match] || match) :  ""
+    const tempRow = {...r,Category:NewCategoryString}
     let tempAvailabilty = 0
     let nonBlackCount = 0
     for (let index = 1; index <= 90; index++) {

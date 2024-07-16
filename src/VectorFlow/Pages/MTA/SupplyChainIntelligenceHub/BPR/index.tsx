@@ -8,12 +8,12 @@ import useBPR from "./useBPR"
 import BPRSubmiRemarkToolTip from "./BPRSubmitRemarkToolTip"
 
 import "allotment/dist/style.css";
-import BPRRemarkHistoryToolTip from "./BPRRemarkHistoryToolTip"
 import ActionToolBar from "../Planning/ActionToolBar"
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal"
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 import { GridStateContext } from "../../../../../context/GridStateContext"
+import BPRRemarkHistoryModal from "./BPRRemarkHistoryModal"
 
 
 
@@ -33,7 +33,6 @@ const BPR = ()=>{
         isSubmitRemarkToolTipOpen,
         remark,
         isRemarkHistoryToolTipOpen,
-        remarkHistoryToolipPosition,
         remarkHistory,
         updateRemark,
         onCloseSubmitRemark,
@@ -236,13 +235,11 @@ const BPR = ()=>{
                 />
             )}
 
-            {isRemarkHistoryToolTipOpen && (
-                <BPRRemarkHistoryToolTip
-                    remarkHistory={remarkHistory}
-                    onClose={onCloseRemarkHistory}
-                    style={remarkHistoryToolipPosition}
-                />
-            )}
+            <BPRRemarkHistoryModal
+                data={remarkHistory}
+                isOpen={isRemarkHistoryToolTipOpen}
+                onClose={onCloseRemarkHistory}
+            />
             <div style={{display:'none'}}>                
                   <VFTable
                     ref={tempRef}

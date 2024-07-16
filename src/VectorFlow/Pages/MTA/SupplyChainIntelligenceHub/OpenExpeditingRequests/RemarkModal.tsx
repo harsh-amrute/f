@@ -1,5 +1,5 @@
 import { useUserData } from "../../../../../context"
-import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
+import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTable, RemarkModalTableCell, RemarkModalTableHeader, RemarkModalTableHeaderContainer, RemarkModalTableRow, RemarkModalTableRowContainer, RemarkText } from "../../Logistics/InTransitWhereAbouts/styles"
 import UserIcon from "../../Logistics/InTransitWhereAbouts/UserIcon"
@@ -64,12 +64,12 @@ const RemarkModal = (props:RemarkModalProps)=>{
                     </RemarkModalTableRowContainer>
                 </RemarkModalTable>
                 <ButtonWrapper>
-                    <VFButtonOutline
+                    <VFButton
                         onClick={onClose}
                         themeUi={theme_ui}
                     >
                         Go Back!
-                    </VFButtonOutline>
+                    </VFButton>
                 </ButtonWrapper>
             </RemarkModalContentWrapper>
         </VFModalCard>

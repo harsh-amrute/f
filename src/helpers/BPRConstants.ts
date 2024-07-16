@@ -1,49 +1,59 @@
 import {BTRCategoryMapperType} from '../VectorFlow/types/BTR'
 
+export const BTRCategoryNumberToTextMapper:any = {
+    "1":"SI",
+    "2":"CTB",
+    "3":"BR",
+    "4":"SD",
+    "5":"SE",
+    "6":"UN",
+    "7":"DN"
+}
+
 export const BTRCategoryMapper:BTRCategoryMapperType = {
-    "2":{
+    "CTB":{
         bgColor:"black",
         color:'white',
         cellLabel:"CTB",
         toolTipHeader:"Cont Tech Black",
         toolTipDescription:"*Total Tech black days > RLT"
     },
-    "5":{
+    "SE":{
         bgColor:"#8E8E8E",
         color:'white',
         cellLabel:"SE",
         toolTipHeader:"Stagnated Excess",
         toolTipDescription:"*Consecutive white for 2 RLTs & No consumption in last 2 RLTs"
     },
-    "4":{
+    "SD":{
         bgColor:" #F02424",
         color:'white',
         cellLabel:"SD",
         toolTipHeader:"Super Delay",
         toolTipDescription:"*>=2*SLt"
     },
-    "1":{
+    "SI":{
         bgColor:"#355FD3",
         color:'white',
         cellLabel:"SI",
         toolTipHeader:'Supply Chain Issue',
         toolTipDescription:'*Eco Black ageing > 1.5 RLTs'
     },
-    "3":{
+    "BR":{
         bgColor:"linear-gradient(90deg, rgba(41,41,41,1) 50%, rgba(240,36,36,1) 50%)",
         color:'white',
         cellLabel:"B+R",
         toolTipHeader:"Cont Tech Black+Red",
         toolTipDescription:"*Total Tech black + red days >=RLT"
     },
-    "6":{
+    "UN":{
         bgColor:"#D0A928",
         color:'white',
         cellLabel:"UN",
         toolTipHeader:'Upward Norm Revision',
         toolTipDescription:'*any open suggestions for norm increase'
     },
-    "7":{
+    "DN":{
         bgColor:"#E3812D",
         color:'white',
         cellLabel:"DN",

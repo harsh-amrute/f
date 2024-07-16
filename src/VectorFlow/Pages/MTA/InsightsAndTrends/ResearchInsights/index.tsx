@@ -82,7 +82,6 @@ const ResearchInsights = ()=>{
     const {user} = useUserData()
     const themeUi = user.user.theme_ui
 
-    
     return(
         <GridStateContext.Provider value={{
             ref:ref,
