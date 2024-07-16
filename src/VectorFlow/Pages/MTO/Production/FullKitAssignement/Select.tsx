@@ -2,7 +2,7 @@ import React from 'react'
 import Select, { components, OptionProps } from 'react-select'
 import { Checkbox } from '../../../../../components';
 
-const CustomSelect = ({ theme }: any) => {
+const CustomSelect = ({ theme, selected }: any) => {
     const Option = (props: OptionProps<any>) => {
         return (
             <components.Option {...props}>
@@ -17,6 +17,7 @@ const CustomSelect = ({ theme }: any) => {
         <Select
             isSearchable={false}
             components={{ Option, IndicatorSeparator: () => null }}
+            value={selected}
             styles={{
                 container: (base) => ({
                     ...base,

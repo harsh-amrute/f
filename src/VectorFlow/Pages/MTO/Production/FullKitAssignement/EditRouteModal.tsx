@@ -145,15 +145,15 @@ const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
                 <StepperWrapper>
                     <StepGroup>
                         <StepLabel>Dispensing</StepLabel>
-                        <CustomSelect />
+                        <CustomSelect selected={{ label: "M1", value: "M1" }} />
                     </StepGroup>
                     <StepGroup>
                         <StepLabel>Granulation</StepLabel>
-                        <CustomSelect />
+                        <CustomSelect selected={{ label: "M2", value: "M2" }} />
                     </StepGroup>
                     <StepGroup id="inactive">
                         <StepLabel>Shaft</StepLabel>
-                        <CustomSelect />
+                        <CustomSelect selected={{ label: "M3", value: "M3" }} />
                     </StepGroup>
                     <StepGroup id="inactive">
                         <StepLabel>Inactive</StepLabel>
