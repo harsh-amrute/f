@@ -43,6 +43,8 @@ export const SCCardContainer = styled.div`
 export const SCLoaderContainer = styled.div`
     display:flex;
     justify-content:center;
+    align-items:center;
+    height:100%;
     // margin-top:25%;
 `
 

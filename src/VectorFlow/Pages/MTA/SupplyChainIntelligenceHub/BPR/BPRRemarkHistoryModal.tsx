@@ -1,8 +1,8 @@
 import { useUserData } from "../../../../../context"
-import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
-import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTable, RemarkModalTableCell, RemarkModalTableHeader, RemarkModalTableHeaderContainer, RemarkModalTableRow, RemarkModalTableRowContainer, RemarkText } from "./styles"
-import UserIcon from "./UserIcon"
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
+import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
+import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTable, RemarkModalTableCell, RemarkModalTableHeader, RemarkModalTableHeaderContainer, RemarkModalTableRow, RemarkModalTableRowContainer, RemarkText } from "../../Logistics/InTransitWhereAbouts/styles"
+import UserIcon from "../../Logistics/InTransitWhereAbouts/UserIcon"
 
 interface RemarkModalProps{
     isOpen:boolean
@@ -10,7 +10,7 @@ interface RemarkModalProps{
     data:Array<any>
 }
 
-const RemarkModal = (props:RemarkModalProps)=>{
+const BPRRemarkHistoryModal = (props:RemarkModalProps)=>{
 
     const {
         isOpen,
@@ -22,7 +22,7 @@ const RemarkModal = (props:RemarkModalProps)=>{
     const theme_ui = user.user.theme_ui
 
     return(
-        <VFModalCard openModal={isOpen} headerIcon="/assets/img/VectorFLOW/BPR/remark.svg" headerText="Remarks" closeIcon="/assets/img/VectorFLOW/NMS/close-white.svg" closeModal={onClose}>
+        <VFModalCard openModal={isOpen} headerIcon="/assets/img/VectorFLOW/BPR/remark.svg" headerText="Remark History" closeIcon="/assets/img/VectorFLOW/NMS/close-white.svg" closeModal={onClose}>
             <RemarkModalContentWrapper>
                 <RemarkModalTable className="custom-scrollbar">
                     <RemarkModalTableHeaderContainer>
@@ -32,12 +32,6 @@ const RemarkModal = (props:RemarkModalProps)=>{
                         <RemarkModalTableHeader>
                             Remarks
                         </RemarkModalTableHeader>
-                        <RemarkModalTableHeader>
-                            ETA
-                        </RemarkModalTableHeader>
-                        <RemarkModalTableHeader>
-                            Current Location
-                        </RemarkModalTableHeader>
                     </RemarkModalTableHeaderContainer>
                     <RemarkModalTableRowContainer>
                         {(!data || data.length===0)?(
@@ -46,22 +40,16 @@ const RemarkModal = (props:RemarkModalProps)=>{
                             data.map((d:any,index:number)=>{
                                 return(
                                 <RemarkModalTableRow key={index} style={{borderTop:index===0?'none':'dashed 1px gray'}}>
-                                    <UserIcon data={d.UserName}/>
+                                    <UserIcon data={d.un}/>
                                     <RemarkModalTableCell>
                                         <RemarkModalRemarkCelLRenderer>
                                             <RemarkText>
-                                               {d.Remarks}
+                                               {d.r}
                                             </RemarkText>
                                             <RemarkDate>
-                                               {d.RemarksDate}
+                                               {d.rd}
                                             </RemarkDate>
                                         </RemarkModalRemarkCelLRenderer>
-                                    </RemarkModalTableCell>
-                                    <RemarkModalTableCell>
-                                       {d.ETA}
-                                    </RemarkModalTableCell>
-                                    <RemarkModalTableCell>
-                                       {d.CurrentLocation}
                                     </RemarkModalTableCell>
                                 </RemarkModalTableRow>
                                 )
@@ -82,4 +70,4 @@ const RemarkModal = (props:RemarkModalProps)=>{
     )
 }
 
-export default RemarkModal
+export default BPRRemarkHistoryModal

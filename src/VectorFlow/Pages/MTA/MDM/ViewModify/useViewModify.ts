@@ -921,7 +921,6 @@ const useViewModify = (pageType:string) => {
           })
           return tempRow;
         });
-      
         let taskId:any = '';
         let toastId:any = '';
         let conflictCount = 0;

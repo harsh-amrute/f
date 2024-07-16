@@ -1,6 +1,6 @@
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
-import { RadioButtonGroup, RadioContainer, SubmitButtonWrapper } from "./styles"
+import { ButtonSeperator, RadioButtonGroup, RadioContainer, SubmitButtonWrapper } from "./styles"
 import { useUserData } from "../../../../../context";
 
 interface RejectAllModalProps{
@@ -19,14 +19,17 @@ const RejectAllModal=(props:RejectAllModalProps)=>{
 
     const {user} = useUserData()
 
+    const themeUi = user.user.theme_ui
+
     return(
         <VFModalCard headerText={'Reject All'} closeModal={onClose} openModal={true} headerIcon={"/assets/img/VectorFLOW/NMS/Rejectall.svg"} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-            <RadioContainer style={{display:'flex', alignItems:'center',flexDirection: 'column', marginTop:'10px'}}>
-                <RadioButtonGroup style={{marginBottom:'7px'}}> 
+            <RadioContainer style={{display:'flex', alignItems:'center',flexDirection: 'row', marginTop:'10px'}}>
+                <RadioButtonGroup themeUi={themeUi}> 
                     <input type="radio" value="option1" onChange={()=>setSelectionType('All')} name="Approve" id="ApproveAll"/>
                     <label htmlFor="ApproveAll" style={{fontSize:'15px', fontWeight:'300px'}}>Reject across all pages</label>
-                </RadioButtonGroup>  
-                <RadioButtonGroup style={{marginLeft:'27px', marginBottom:'20px'}}> 
+                </RadioButtonGroup>
+                <ButtonSeperator/>
+                <RadioButtonGroup themeUi={themeUi} > 
                     <input type="radio" value="option2" onChange={()=>setSelectionType('Current')} name="Approve" id="ApproveCurrent"/>
                     <label htmlFor="ApproveCurrent" style={{fontSize:'15px', fontWeight:'300px'}}>Reject all only current page</label>
                 </RadioButtonGroup> 

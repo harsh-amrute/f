@@ -404,12 +404,12 @@ const useInTransitWhereAbouts = ()=>{
 
     const onSubmitRemark = async()=>{
         try{
-            if(remark.length===0) throw new Error("Remark cannot be empty")
+            if(remark.length===0) throw new Error("Remark Cannot Be Empty")
             const toastId = notifyLoader("Submitting Remark")
             await submitRemark(mapSubmitRemarkData({...activeRow,remark:remark}))
             toast.dismiss(toastId)
             
-            notifySuccess('Remark has been submitted')
+            notifySuccess('Remark Has Been Submitted')
             setRemark('')
             setActiveRow({})
             
@@ -421,12 +421,12 @@ const useInTransitWhereAbouts = ()=>{
 
     const onSubmitCurrentLocation = async()=>{
         try{
-            if(currentLocationValue.length===0) throw new Error("Location cannot be empty")
-            const toastId = notifyLoader("Submitting data")
+            if(currentLocationValue.length===0) throw new Error("Location Cannot Be Empty")
+            const toastId = notifyLoader("Submitting Data")
             await submitRemark(mapSubmitRemarkData({...activeRow,CurrentLoc:currentLocationValue}))
             toast.dismiss(toastId)
             
-            notifySuccess('Data has been submitted')
+            notifySuccess('Data Has Been Submitted')
             setRemark('')
             setActiveRow({})
             
@@ -438,12 +438,12 @@ const useInTransitWhereAbouts = ()=>{
 
     const onSubmitETA = async()=>{
       try{
-          if(etaValue.length===0) throw new Error("ETA cannot be empty")
-          const toastId = notifyLoader("Submitting data")
+          if(etaValue.length===0) throw new Error("ETA Cannot Be Empty")
+          const toastId = notifyLoader("Submitting Data")
           await submitRemark(mapSubmitRemarkData({...activeRow,ETA:etaValue}))
           toast.dismiss(toastId)
           
-          notifySuccess('Data has been submitted')
+          notifySuccess('Data Has Been Submitted')
           setRemark('')
           setActiveRow({})
           
@@ -473,10 +473,10 @@ const useInTransitWhereAbouts = ()=>{
         setCurrentUserDetails(contactData.data.data[0])
         toggleContactModal(true)
         
-        notifySuccess('Data loaded successfully')
+        notifySuccess('Data Loaded Successfully')
       }else{
         toast.dismiss()
-        notifyError("Contact details not found")
+        notifyError("Contact Details Not Found")
       }
      }catch(err:any){
       notifyError(err)

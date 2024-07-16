@@ -53,7 +53,7 @@ export const RadioContainer = styled.div`
     align-items: center; 
     // gap:20px;
 `
-export const RadioButtonGroup = styled.div`
+export const RadioButtonGroup = styled.div<{themeUi:string}>`
     font-style: normal;
     font-variant: normal;
     font-weight: 400;
@@ -61,7 +61,7 @@ export const RadioButtonGroup = styled.div`
     line-height: 21px; 
     font-family:Roboto;
     margin-bottom:20px;
-    accent-color:#BC3D81;
+    accent-color:${(props)=>globalStyles.chooseThemeColor[props.themeUi].color5};
     display:flex;
     gap:8px;
     margin-top:20px;
@@ -69,8 +69,11 @@ export const RadioButtonGroup = styled.div`
 `
 export const SubmitButtonWrapper = styled.div`
     display: flex;
-    justify-content: center;
-    margin-bottom:48px;
+    justify-content: flex-end;
+    margin-left:-73px;
+    margin-right:-73px;
+    border-top:dashed 1px gray;
+    padding:10px 20px 0px 10px;
 `
 export const DeleteFileModalText=styled.div`
 text-align: left;
@@ -136,4 +139,11 @@ export const TaskPendingActionHeaderButton = styled.button<{ themeUi: string}>`
   border: none;
   box-shadow: -5px 4px 10px #919191B3;
   zoom:0.9;
+`
+
+export const ButtonSeperator = styled.div`
+      width:1.5px;
+      height:30px;
+      background-color:#898989;
+      margin:0px 10px;
 `

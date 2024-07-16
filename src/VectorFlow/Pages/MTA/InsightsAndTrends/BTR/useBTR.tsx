@@ -143,7 +143,6 @@ const useBTR = ()=>{
     // const [defaultColDefs,setDefaultColDefs] = useState<Array<ColDef>>([])
 
 
-
     const getData = async(filter:any,pageNumber:number)=>{
         const payload = {
             id: 0,
@@ -326,9 +325,9 @@ const useBTR = ()=>{
 
     const ecoColDefs = useMemo(():Array<ColDef>=>{
         if(ecoRowData.length===0)return []
-        if(verticalView)return mapBTRRowDataToColDefs(ecoRowData[0],['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm"])
+        if(verticalView && currentTab.id==="1")return mapBTRRowDataToColDefs(ecoRowData[0],['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm"])
         return mapBTRRowDataToColDefs(ecoRowData[0])
-    },[ecoRowData])
+    },[ecoRowData,currentTab])
 
     return{
         ecoRef,
