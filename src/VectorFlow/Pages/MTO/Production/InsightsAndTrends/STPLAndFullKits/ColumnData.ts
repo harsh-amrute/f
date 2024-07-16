@@ -63,7 +63,7 @@ export const columnConfigData = {
         { 
             "cc": "exceedDays",
             "cp": 2,
-            "hd": "Exceed Days",
+            "hd": "Released WIP (In Days) Exceeding Limit",
             "v": true,
             "cla": "left",
             "scc": "exceedDays"
@@ -71,7 +71,7 @@ export const columnConfigData = {
         { 
             "cc": "days",
             "cp": 3,
-            "hd": "Days",
+            "hd": "Released WIP (In Days)",
             "v": true,
             "cla": "left",
             "scc": "days"
