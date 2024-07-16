@@ -10,9 +10,15 @@ const colorMapper = (color: string) => {
         case 'Yellow':
             return { bg: '#EBBF2B', text: '#ffffff' };
         case 'Red':
-            return { bg: '#F04D4D', text: '#ffffff' };
+            return { bg: '#F02424', text: '#ffffff' };
         case 'Black':
             return { bg: '#000000', text: '#ffffff' };
+        case "Overloaded":
+            return { bg: "#F02424", text: "#ffffff" }
+        case "Underloaded":
+            return { bg: "#CB830E", text: "#ffffff" }
+        case "Balanced":
+            return { bg: "#A8A8A8", text: "#ffffff" }
         default:
             return { bg: '#ffffff', text: '#000000' };
     }
@@ -25,7 +31,7 @@ const ColorCellRenderer = (params: any) => {
 
     return (
         <BPRColorCellRendererWrapper
-            style={{ backgroundColor: cellColor.bg, color: cellColor.text, maxWidth: 90 }}
+            style={{ backgroundColor: cellColor.bg, color: cellColor.text, maxWidth: 120 }}
             data-testid='color-cell'>
             {color}
         </BPRColorCellRendererWrapper>
