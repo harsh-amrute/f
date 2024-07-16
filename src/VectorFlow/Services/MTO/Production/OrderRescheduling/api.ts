@@ -12,6 +12,16 @@ export namespace OrderReschedulingService {
             }
         })
     }
+
+    export const getOrderReschedulingPageData = async (pageUrl: string) => {
+        console.log("this url is called", process.env.REACT_APP_VF_API_HOST_MTO + `/GetOrderReschedulingData/?page=${pageUrl}`)
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetOrderReschedulingData/?page=${pageUrl}`, {
+
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+    }
     export const putUpdateOrderDueDate = async (body: any) => {
         const url = `${process.env.REACT_APP_VF_API_HOST_MTO}/UpdateOrderDueDate/`;
         return await axios.put(url, body, {
