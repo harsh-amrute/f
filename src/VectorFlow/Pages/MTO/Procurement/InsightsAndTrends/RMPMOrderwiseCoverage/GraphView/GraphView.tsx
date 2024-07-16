@@ -69,7 +69,7 @@ const GraphView = () => {
                     "fill": ProcurementSeriesDataFill[i],
                     "tooltip": {
                         renderer: TooltipRenderer
-                    }
+                    },
                 }
             )
         }
