@@ -7,7 +7,6 @@ import RMMaterialCellRenderer from './RMMaterialCellRenderer';
 
 const BarFillUI = (value: any) => {
     const val = value?.value || 0;
-    console.log(val, 'VALUE');
     return (
       <div style={{display:'flex', justifyContent: 'center', alignItems: 'center', gap: '5px'}}>
         <div>{val || 0}</div>
