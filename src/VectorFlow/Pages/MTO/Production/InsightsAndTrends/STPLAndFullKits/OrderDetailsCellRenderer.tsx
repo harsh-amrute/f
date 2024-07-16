@@ -1,9 +1,13 @@
 import { GridOptions } from 'ag-grid-enterprise'
+import { useMemo } from 'react';
+import { getColumnDefinations } from '../../../../../../helpers/utils';
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable'
+import { orderDetailsConfigCol } from './ColumnData';
 import RMMaterialCellRenderer from './RMMaterialCellRenderer';
 
 const BarFillUI = (value: any) => {
     const val = value?.value || 0;
+    console.log(val, 'VALUE');
     return (
       <div style={{display:'flex', justifyContent: 'center', alignItems: 'center', gap: '5px'}}>
         <div>{val || 0}</div>
@@ -28,7 +32,8 @@ const BarFillUI = (value: any) => {
           alignItems: "center",
           textAlign: "center",
           justifyContent: "center",
-          borderRadius: "8px",
+          borderRadius: "10px",
+          padding: "0px 20px"
         }}
       >
         {headerName}
@@ -38,120 +43,32 @@ const BarFillUI = (value: any) => {
 
 
 const OrderDetailsCellRenderer = (params: any) => {
+
+    const colDefCustomizations = {
+        fk: {
+            cellRenderer: (params: any) => <BarFillUI value={params?.value} />,
+        },
+        order_details: {
+            headerComponent: () => <CustomHeader headerName="Order Details" />,
+        },
+        or_id: {
+            cellRenderer: "agGroupCellRenderer",
+        }
+      }
+
+    const colDefs = useMemo(() => {
+        return getColumnDefinations(orderDetailsConfigCol, colDefCustomizations, [])
+    }, []);
     
     const options: GridOptions<any> = {
-        columnDefs: [
-            {
-                colId: "order_details",
-                field: "order_details",
-                headerName: "Order Details",
-                hide: false,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 200,
-                width: 300,
-                headerComponent: () => <CustomHeader headerName="Order Details" />
-            },
-            {
-                colId: "or_id",
-                field: "or_id",
-                headerName: "Order Id",
-                hide: false,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 400,
-                cellRenderer: "agGroupCellRenderer"
-            },
-            {
-                colId: "or_type",
-                field: "or_type",
-                headerName: "Order Type",
-                hide: false,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 200,
-            },
-            {
-                colId: "line_item_id",
-                field: "line_item_id",
-                headerName: "Line Item Id",
-                hide: false,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 200,
-            },
-            {
-                colId: "fg_code",
-                field: "fg_code",
-                headerName: " FG Code",
-                hide: false,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 200,
-            },
-            {
-                colId: "fg_desc",
-                field: "fg_desc",
-                headerName: "FG Desc",
-                hide: false,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 300,
-            },
-            {
-                colId: "order_quality",
-                field: "order_quality",
-                headerName: "Order Quality",
-                hide: false,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 300,
-            },
-            {
-                colId: "quantity_manufacture",
-                field: "quantity_manufacture",
-                headerName: "Quantity Bal. to Mfg.",
-                hide: false,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 300,
-            },
-            {
-                colId: "r_wip",
-                field: "r_wip",
-                headerName: "Release WIP In Days",
-                hide: false,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 300,
-            },
-            {
-                colId: "fk",
-                field: "fk",
-                headerName: "Full Kit",
-                hide: false,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 300,
-                cellRenderer: (params: any) => <BarFillUI value={params?.value} />
-            },
-            {
-                colId: "un_fk",
-                field: "un_fk",
-                headerName: "Unreleased Full Kit In Days",
-                hide: false,
-                autoHeaderHeight: true,
-                wrapHeaderText: true,
-                initialWidth: 300,
-            },
-        ],
+        columnDefs: colDefs,
         masterDetail: true,
         defaultColDef: {
             suppressMenu: true,
             cellStyle: {
                 textAlign: "center"
             },
-            flex: 1
+            resizable: true
         },
         detailCellRendererParams: {
             innerHeight: 400,

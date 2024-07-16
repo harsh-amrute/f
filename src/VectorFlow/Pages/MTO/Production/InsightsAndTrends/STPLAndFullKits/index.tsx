@@ -1,8 +1,8 @@
 import { Allotment } from "allotment";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import {columnDataLevel1} from "./ColumnData";
+import {columnConfigLevel1} from "./ColumnData";
 import { GridOptions } from "ag-grid-enterprise";
 import STPLGraph from "./STPLGraph";
 import FullKitGraph from "./FullKitGraph";
@@ -14,6 +14,7 @@ import {
 import {APIMock} from "./StplAndFullKitsData";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import OrderDetailsCellRenderer from "./OrderDetailsCellRenderer";
+import { getColumnDefinations } from "../../../../../../helpers/utils";
 
 const STPLAndFullKits = () => {
   const [isGridView, setIsGridView] = useState(false);
@@ -34,6 +35,16 @@ const gridOptions: GridOptions = {
     }
   };
 
+  const colDefCustomizations = {
+    plnt: {
+      cellRenderer: "agGroupCellRenderer",
+    }
+  }
+
+  const colDefs = useMemo(() => {
+    return getColumnDefinations(columnConfigLevel1, colDefCustomizations, [])
+  }, []);
+
   return (
     <div style={{}}>
       <MTOActionToolBar
@@ -47,7 +58,7 @@ const gridOptions: GridOptions = {
                 <VFTable
                     {...gridOptions}
                     sideBar="columns"
-                    columnDefs={columnDataLevel1}
+                    columnDefs={colDefs}
                     rowData={APIMock?.grid}
                     tooltipHideDelay={100000}
                     tooltipShowDelay={0}

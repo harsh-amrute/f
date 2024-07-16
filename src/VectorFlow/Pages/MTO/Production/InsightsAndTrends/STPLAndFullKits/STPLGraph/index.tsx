@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AgChartOptions } from "ag-charts-community";
 import {APIMock} from "../StplAndFullKitsData";
 import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
+import { getColumnDefinations } from "../../../../../../../helpers/utils";
+import { columnConfigData } from "../ColumnData";
 
 const STPLGraph = () => {
   const [date] = useState("18 Apr 2024");
@@ -113,35 +115,10 @@ const STPLGraph = () => {
     },
   };
 
-  const colDefs = [
-    {
-      colId: "ccr",
-      field: "ccr",
-      headerName: "CCR",
-      initialWidth: 240,
-    },
-    {
-      colId: "exceedDays",
-      field: "exceedDays",
-      headerName: "Exceed Days",
-      initialWidth: 235,
-
-    },
-    {
-      colId: "days",
-      field: "days",
-      headerName: "Days",
-      initialWidth: 235,
-
-    },
-    {
-      colId: "limit",
-      field: "limit",
-      headerName: "Limit",
-      initialWidth: 235,
-    },
-  ];
-
+  const colDefs = useMemo(() => {
+    return getColumnDefinations(columnConfigData?.stplTableColumn, {}, [])
+  }, []);
+  
   const generateHeader = () => {
     return (
         <div
@@ -200,8 +177,6 @@ const STPLGraph = () => {
           </div>
     )
   }
-
-  
 
   return (
     <div style={{ height: "70vh", display: "flex", justifyContent: "left" }}>

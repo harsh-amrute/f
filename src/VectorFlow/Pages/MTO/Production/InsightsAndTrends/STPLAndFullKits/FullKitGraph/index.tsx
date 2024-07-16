@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import "allotment/dist/style.css";
 import { AgChartOptions } from "ag-charts-community";
 import {APIMock} from "../StplAndFullKitsData";
 import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
+import { columnConfigData } from "../ColumnData";
+import { getColumnDefinations } from "../../../../../../../helpers/utils";
 
 
 const FullKitGraph = () => {
@@ -89,20 +91,9 @@ const FullKitGraph = () => {
     },
   };
 
-  const colDefs = [
-    {
-      colId: "ccr",
-      field: "ccr",
-      headerName: "CCR",
-      initialWidth: 475,
-    },
-    {
-      colId: "days",
-      field: "days",
-      headerName: "Days",
-      initialWidth: 475,
-    },
-  ];
+  const colDefs = useMemo(() => {
+    return getColumnDefinations(columnConfigData?.fullkitTableColumn, {}, [])
+  }, []);
 
   const generateHeader = () => {
     return (

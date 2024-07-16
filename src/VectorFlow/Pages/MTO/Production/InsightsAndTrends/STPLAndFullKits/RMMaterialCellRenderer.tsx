@@ -1,5 +1,8 @@
 import { GridOptions } from 'ag-grid-enterprise'
+import { useMemo } from 'react';
+import { getColumnDefinations } from '../../../../../../helpers/utils';
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable'
+import { rmMaterialConfigCol } from './ColumnData';
 
   const CustomHeader = ({ headerName }: any) => {
     return (
@@ -14,7 +17,8 @@ import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable'
           alignItems: "center",
           textAlign: "center",
           justifyContent: "center",
-          borderRadius: "8px",
+          borderRadius: "10px",
+          padding: "0px 20px"
         }}
       >
         {headerName}
@@ -24,73 +28,25 @@ import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable'
 
 
 const RMMaterialCellRenderer = (params: any) => {
+
+    const colDefCustomizations = {
+        rm_material: {
+            headerComponent: () => <CustomHeader headerName="RM Material" />,
+        }
+    }
+
+    const colDefs = useMemo(() => {
+        return getColumnDefinations(rmMaterialConfigCol, colDefCustomizations, [])
+    }, []);
     
     const options: GridOptions<any> = {
-        columnDefs:  [
-                        {
-                            colId: "rm_material",
-                            field: "rm_material",
-                            headerName: "RM Material",
-                            hide: false,
-                            autoHeaderHeight: true,
-                            wrapHeaderText: true,
-                            // initialWidth: 200,
-                            headerComponent: () => <CustomHeader headerName="RM Material" />
-        
-                        },
-                        {
-                            colId: "rm_code",
-                            field: "rm_code",
-                            headerName: "RM Code",
-                            hide: false,
-                            autoHeaderHeight: true,
-                            wrapHeaderText: true,
-                            // initialWidth: 200,
-                            cellRenderer: "agGroupCellRenderer"
-                        },
-                        {
-                            colId: "rm_desc",
-                            field: "rm_desc",
-                            headerName: "RM Desc",
-                            hide: false,
-                            autoHeaderHeight: true,
-                            wrapHeaderText: true,
-                            // initialWidth: 200,
-                        },
-                        {
-                            colId: "rm_req",
-                            field: "rm_req",
-                            headerName: "Required RM",
-                            hide: false,
-                            autoHeaderHeight: true,
-                            wrapHeaderText: true,
-                            // initialWidth: 200,
-                        },
-                        {
-                            colId: "rm_avbl",
-                            field: "rm_avbl",
-                            headerName: "Available RM",
-                            hide: false,
-                            autoHeaderHeight: true,
-                            wrapHeaderText: true,
-                            // initialWidth: 200,
-                        },
-                        {
-                            colId: "gap",
-                            field: "gap",
-                            headerName: "Gap",
-                            hide: false,
-                            autoHeaderHeight: true,
-                            wrapHeaderText: true,
-                            // initialWidth: 300,
-                        }
-                    ],
+        columnDefs:  colDefs,
         defaultColDef: {
             suppressMenu: true,
             cellStyle: {
                 textAlign: "center"
             },
-            flex: 1
+            resizable: true
         },
     }
 

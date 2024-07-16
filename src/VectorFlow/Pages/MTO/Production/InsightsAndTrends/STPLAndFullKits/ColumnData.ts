@@ -1,73 +1,249 @@
-import { ColDef } from "ag-grid-enterprise"
 
-export const columnDataLevel1: ColDef[] = [
+export const columnConfigLevel1 = [
     {
-        colId: "plnt",
-        field: "plnt",
-        headerName: "Plant",
-        hide: false,
-        autoHeaderHeight: true,
-        wrapHeaderText: true,
-        initialWidth: 200,
-        filter: "agMultiColumnFilter",
-        floatingFilter: true,
-        cellRenderer: "agGroupCellRenderer"
+        "cc": "plnt",
+        "cp": 2,
+        "hd": "Plant",
+        "v": true,
+        "cla": "left",
+        "scc": "plnt"
     },
     {
-        colId: "dept",
-        field: "dept",
-        headerName: "Department",
-        hide: false,
-        autoHeaderHeight: true,
-        wrapHeaderText: true,
-        initialWidth: 200,
-        filter: "agMultiColumnFilter",
-        floatingFilter: true
+        "cc": "dept",
+        "cp": 2,
+        "hd": "Department",
+        "v": true,
+        "cla": "left",
+        "scc": "dept"
     },
     {
-        colId: "ccrGrp",
-        field: "ccrGrp",
-        headerName: "CCR Group",
-        hide: false,
-        autoHeaderHeight: true,
-        wrapHeaderText: true,
-        initialWidth: 200,
-        filter: "agMultiColumnFilter",
-        floatingFilter: true
+        "cc": "ccrGrp",
+        "cp": 3,
+        "hd": "CCR Group",
+        "v": true,
+        "cla": "left",
+        "scc": "ccrGrp"
     },
     {
-        colId: "ccr",
-        field: "ccr",
-        headerName: "CCR Name",
-        hide: false,
-        autoHeaderHeight: true,
-        wrapHeaderText: true,
-        initialWidth: 200,
-        filter: "agMultiColumnFilter",
-        floatingFilter: true
+        "cc": "ccr",
+        "cp": 4,
+        "hd": "CCR Name",
+        "v": true,
+        "cla": "left",
+        "scc": "ccr"
     },
     {
-        colId: "r_wip",
-        field: "r_wip",
-        headerName: "Released WIP In Days",
-        hide: false,
-        autoHeaderHeight: true,
-        wrapHeaderText: true,
-        initialWidth: 300,
-        filter: "agMultiColumnFilter",
-        floatingFilter: true
+        "cc": "r_wip",
+        "cp": 5,
+        "hd": "Released WIP In Days",
+        "v": true,
+        "cla": "left",
+        "scc": "r_wip"
     },
     {
-        colId: "un_fk",
-        field: "un_fk",
-        headerName: "Unreleased Full Kit In Days",
-        hide: false,
-        autoHeaderHeight: true,
-        wrapHeaderText: true,
-        initialWidth: 300,
-        filter: "agMultiColumnFilter",
-        floatingFilter: true
-    }
+        "cc": "un_fk",
+        "cp": 6,
+        "hd": "Unreleased Full Kit In Days",
+        "v": true,
+        "cla": "left",
+        "scc": "un_fk"
+    },
 ]
 
+export const columnConfigData = {
+    stplTableColumn : [
+        { 
+            "cc": "ccr",
+            "cp": 1,
+            "hd": "CCR",
+            "v": true,
+            "cla": "left",
+            "scc": "ccr"
+        },
+        { 
+            "cc": "exceedDays",
+            "cp": 2,
+            "hd": "Exceed Days",
+            "v": true,
+            "cla": "left",
+            "scc": "exceedDays"
+        },
+        { 
+            "cc": "days",
+            "cp": 3,
+            "hd": "Days",
+            "v": true,
+            "cla": "left",
+            "scc": "days"
+        },
+        { 
+            "cc": "limit",
+            "cp": 4,
+            "hd": "Limit",
+            "v": true,
+            "cla": "left",
+            "scc": "limit"
+        },
+    ],
+    fullkitTableColumn : [
+        { 
+            "cc": "ccr",
+            "cp": 1,
+            "hd": "CCR",
+            "v": true,
+            "cla": "left",
+            "scc": "ccr"
+        },
+        { 
+            "cc": "days",
+            "cp": 2,
+            "hd": "Days",
+            "v": true,
+            "cla": "left",
+            "scc": "days"
+        }
+    ],
+}
 
+export const orderDetailsConfigCol = [
+    {
+        "cc": "order_details",
+        "cp": 0,
+        "hd": "Order Details",
+        "v": true,
+        "cla": "left",
+        "scc": "order_details"
+    },
+    {
+        "cc": "or_id",
+        "cp": 1,
+        "hd": "Order ID",
+        "v": true,
+        "cla": "left",
+        "scc": "or_id"
+    },
+    {
+        "cc": "or_type",
+        "cp": 2,
+        "hd": "Order Type",
+        "v": true,
+        "cla": "left",
+        "scc": "or_type"
+    },
+    {
+        "cc": "line_item_id",
+        "cp": 3,
+        "hd": "Line Item Id",
+        "v": true,
+        "cla": "left",
+        "scc": "line_item_id"
+    },
+    {
+        "cc": "fg_code",
+        "cp": 4,
+        "hd": "FG Code",
+        "v": true,
+        "cla": "left",
+        "scc": "fg_code"
+    },
+    {
+        "cc": "fg_desc",
+        "cp": 5,
+        "hd": "FG Desc",
+        "v": true,
+        "cla": "left",
+        "scc": "fg_desc"
+    },
+    {
+        "cc": "order_quality",
+        "cp": 6,
+        "hd": "Order Quality",
+        "v": true,
+        "cla": "left",
+        "scc": "order_quality"
+    },
+    {
+        "cc": "quantity_manufacture",
+        "cp": 7,
+        "hd": "Quantity Bal. to Mfg.",
+        "v": true,
+        "cla": "left",
+        "scc": "quantity_manufacture"
+    },
+    {
+        "cc": "r_wip",
+        "cp": 8,
+        "hd": "Release WIP In Days",
+        "v": true,
+        "cla": "left",
+        "scc": "r_wip"
+    },
+    {
+        "cc": "fk",
+        "cp": 9,
+        "hd": "Full Kit",
+        "v": true,
+        "cla": "left",
+        "scc": "fk"
+    },
+    {
+        "cc": "un_fk",
+        "cp": 10,
+        "hd": "Unreleased Full Kit In Days",
+        "v": true,
+        "cla": "left",
+        "scc": "un_fk"
+    },
+    
+]
+
+export const rmMaterialConfigCol = [
+    {
+        "cc": "rm_material",
+        "cp": 1,
+        "hd": "RM Material",
+        "v": true,
+        "cla": "left",
+        "scc": "rm_material"
+    },
+    {
+        "cc": "rm_code",
+        "cp": 2,
+        "hd": "RM Code",
+        "v": true,
+        "cla": "left",
+        "scc": "rm_code"
+    },
+    {
+        "cc": "rm_desc",
+        "cp": 3,
+        "hd": "RM Desc",
+        "v": true,
+        "cla": "left",
+        "scc": "rm_desc"
+    },
+    {
+        "cc": "rm_req",
+        "cp": 4,
+        "hd": "Required RM",
+        "v": true,
+        "cla": "left",
+        "scc": "rm_req"
+    },
+    {
+        "cc": "rm_avbl",
+        "cp": 5,
+        "hd": "Available RM",
+        "v": true,
+        "cla": "left",
+        "scc": "rm_avbl"
+    },
+    {
+        "cc": "gap",
+        "cp": 6,
+        "hd": "Gap",
+        "v": true,
+        "cla": "left",
+        "scc": "gap"
+    },
+]
