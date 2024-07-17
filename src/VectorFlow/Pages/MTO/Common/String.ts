@@ -11,3 +11,8 @@ export const InsightsAndTrendsString = {
     ordersWithFullkitOPO: "Orders With Full Kit (incl. In Open Orders)",
     ordersWithRMPM: "Orders With RM /PM Shortage"
 }
+
+export const ProductionInsightsAndTrendsString = {
+    stplWithLimits: "Released WIP In Days - STPL With Limits",
+    fullKitInDays: "Full Kit In Days",
+}
