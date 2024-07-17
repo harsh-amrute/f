@@ -6,9 +6,10 @@ import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VF
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { columnConfigData } from "../ColumnData";
+import { format } from "date-fns";
 
 const STPLGraph = () => {
-  const [date] = useState("18 Apr 2024");
+  const [date] = useState(format(new Date(), 'd MMM yyyy'));
   const [rawData] = useState(APIMock.stpl);
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);

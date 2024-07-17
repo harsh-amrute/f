@@ -32,7 +32,8 @@ const gridOptions: GridOptions = {
     detailCellRenderer: OrderDetailsCellRenderer,
     detailCellRendererParams: {
         innerHeight: 400,
-    }
+    },
+    rowGroupPanelShow: 'always'
   };
 
   const colDefCustomizations = {
