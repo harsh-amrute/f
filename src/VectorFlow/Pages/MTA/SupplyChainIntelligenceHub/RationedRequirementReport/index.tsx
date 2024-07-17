@@ -67,22 +67,24 @@ const RRR = () => {
 }}
   >
   
-  <ActionToolBar 
-    view={'grid'} 
-    setCurrentTab={''} 
-    currCategory={'RRR'} 
-    currentTab={''} 
-    tabsList={[]} 
-    onApplyFilter={(e)=>onApplyFilter(e)}
-    onFloatingTabChange={()=>console.log('')} 
-    onGoBack={()=>console.log('')} 
-    onViewChange={()=>console.log('')}
-    genericRecordCount={RRRDataCount}
-    onExportToExcelCallBack={onExportToExcelCallBack}
-    multiFilter={currFilter}
-    setMultiFilter={setCurrFilter}
-    onDelete={onDelete}
-  />
+    <div style={{marginLeft:'10px'}}>
+      <ActionToolBar 
+        view={'grid'} 
+        setCurrentTab={''} 
+        currCategory={'RRR'} 
+        currentTab={''} 
+        tabsList={[]} 
+        onApplyFilter={(e)=>onApplyFilter(e)}
+        onFloatingTabChange={()=>console.log('')} 
+        onGoBack={()=>console.log('')} 
+        onViewChange={()=>console.log('')}
+        genericRecordCount={RRRDataCount}
+        onExportToExcelCallBack={onExportToExcelCallBack}
+        multiFilter={currFilter}
+        setMultiFilter={setCurrFilter}
+        onDelete={onDelete}
+      />
+    </div>
     <RRRLayout>
         {/* <RRRTaskBar style={{width:isSideBarOpen? '77%':'97%'}}>
             <VFButtonOutline

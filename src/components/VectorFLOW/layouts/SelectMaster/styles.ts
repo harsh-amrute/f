@@ -44,7 +44,7 @@ export const SCLoaderContainer = styled.div`
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100%;
+    height:85%;
     // margin-top:25%;
 `
 

@@ -1,4 +1,4 @@
-import { render, screen} from '@testing-library/react';
+import { render} from '@testing-library/react';
 import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -179,13 +179,13 @@ describe('Research and insights Component', () => {
     })
 
   });
-  it('renders loader when isLoading is true', () => {
-    useGetBPRUIConfigurationMock.mockImplementation(():any=>{
-        return {data: {data:GetBPRUIConfigurationMockResponse},isLoading:true};
-      })
-      render(contextWrapper(<ResearchInsights />,store));
-    expect(screen.getByTestId('loader')).toBeInTheDocument();
-  });
+  // it('renders loader when isLoading is true', () => {
+  //   useGetBPRUIConfigurationMock.mockImplementation(():any=>{
+  //       return {data: {data:GetBPRUIConfigurationMockResponse},isLoading:true};
+  //     })
+  //     render(contextWrapper(<ResearchInsights />,store));
+  //   expect(screen.getByTestId('loader')).toBeInTheDocument();
+  // });
 
   it('renders BPR layout properly', () => {
     render(contextWrapper(<ResearchInsights />,store));

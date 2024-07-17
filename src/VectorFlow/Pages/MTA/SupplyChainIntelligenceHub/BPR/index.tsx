@@ -85,6 +85,7 @@ const BPR = ()=>{
     
             }}
         >
+        <div style={{marginLeft:'10px'}}>
         <ActionToolBar 
             view={'grid'} 
             setCurrentTab={''} 
@@ -101,6 +102,7 @@ const BPR = ()=>{
             onDelete={onDelete}
             setMultiFilter={setCurrFilter}
         />
+        </div>
         {
             showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
         }
@@ -128,7 +130,7 @@ const BPR = ()=>{
                     Edit Filter
                 </VFButton>
             </BPRTaskBar> */}
-            <div style={{height:'100vh',marginLeft:'45px'}}>
+            <div style={{height:'100vh',marginLeft:'15px'}}>
             <Allotment vertical defaultSizes={[300,150]}>
               <Allotment.Pane className="planning-grid-allotment">
               <VFTable
@@ -164,7 +166,8 @@ const BPR = ()=>{
               </Allotment.Pane>
               <Allotment.Pane maxSize={200} minSize={180}>
               {isSubGridOpen && (
-                <BPRViewTable
+                <div style={{marginLeft:'15px'}}>
+                    <BPRViewTable
                 tableHeader="In Transit/WIP"
                     tablePrefixSrc="/assets/img/VectorFLOW/BPR/in-transit.svg"
                     rowData={activeRow}
@@ -219,6 +222,7 @@ const BPR = ()=>{
 
                     
                 />
+                </div>
                
             )}
               </Allotment.Pane>

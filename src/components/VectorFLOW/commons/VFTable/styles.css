@@ -78,9 +78,7 @@
   }
   
 
-.ag-theme-alpine .ag-full-width-row:hover{
-    background-color: white !important;
-}
+
 
 .ag-theme-noir-fusion .ag-row:hover{
     background-color: rgb(188, 61, 129,0.3) !important;
@@ -92,6 +90,10 @@
 
 .ag-theme-charcoal-chic .ag-row:hover{
     background-color: rgb(188, 61, 129,0.3) !important;
+}
+
+.ag-theme-alpine .ag-full-width-row:hover{
+    background-color: transparent !important;
 }
 
 .ag-theme-alpine .ag-root-wrapper{

@@ -84,7 +84,7 @@ const InTransitWhereAbouts = ()=>{
 
       }}
         >
-            <div >
+            <div style={{marginLeft:'10px'}}>
                 <ActionToolBar 
                 view={'grid'} 
                 setCurrentTab={''} 
@@ -110,13 +110,13 @@ const InTransitWhereAbouts = ()=>{
             ?
             <VFLoader/>
             :
-            <>
+            <div style={{height:'70%',marginLeft:'15px'}}>
                 <VFTable
                     columnDefs={colDefs}
                     rowData={[...rowData]}
                     {...agGridProps}
                     ref={ref}
-                    height={"70%"}
+                    height={"100%"}
                     
                 />
                 <div style={{marginBottom:'10px'}}>
@@ -131,7 +131,7 @@ const InTransitWhereAbouts = ()=>{
                 <ButtonWrapper>
                     <VFButtonOutline disabled={editedRows.length===0} themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>
                 </ButtonWrapper>
-            </>
+            </div>
         }
           
         

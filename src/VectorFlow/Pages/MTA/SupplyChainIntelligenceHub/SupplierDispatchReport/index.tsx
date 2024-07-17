@@ -124,6 +124,7 @@ const SupplierDispatchReport = () => {
         setExportExcelRowData: setExportExcelRowData,
       }}
     >
+      <div style={{marginLeft:'10px'}}>
       <ActionToolBar 
         view={'grid'} 
         setCurrentTab={''} 
@@ -140,6 +141,7 @@ const SupplierDispatchReport = () => {
         setMultiFilter={setCurrFilter}
         onDelete={onDelete}
       />
+      </div>
       <VDRLayout>
       {(isLoading )?(
           <VFLoader/>
