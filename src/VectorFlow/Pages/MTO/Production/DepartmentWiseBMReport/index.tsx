@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import {
     BMDepWrapper,
@@ -13,9 +13,20 @@ import {
     GridOptions,
     /*createGrid,*/
 } from "ag-grid-enterprise";
+import { deptwiseBMReportData, DeptWiseBMReport } from './DeptWiseBMReportData';
 import GridView from './GridView';
+import { Allotment } from 'allotment';
+import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
+import useViewPort from '../../../../../hooks/useViewPort';
+import OrderElapsedGrid from './OrderElapsedGrid';
+
+
 
 const DptWiseBMReport = () => {
+
+    //const [conColDef, setCoverColDef] = useState<any>();
+
+
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
         tooltipTrigger: "focus",
@@ -57,85 +68,7 @@ const DptWiseBMReport = () => {
         groupDefaultExpanded: 0,
     };
 
-    const columnDefs: (ColDef | ColGroupDef)[] = [
-        {
-            headerName: "Default Attributes",
-            suppressStickyLabel: true,
-            openByDefault: true,
-            children: [
-                { field: "BPP" /*, pinned: true*/, colId: "BPP" },
-                { field: "D_Ag",headerName:'', colId: "Dept Ageing", columnGroupShow: "open" },
-                { field: "Ord_Typ", colId: "Order Type", columnGroupShow: "open" },
-                { field: "Ord_ID", colId: "Order ID", columnGroupShow: "closed" },
-                { field: "L_Itm", colId: "Line Item", columnGroupShow: "closed" },
-                { field: "Itm_Code", colId: "Item Code", columnGroupShow: "closed" },
-                { field: "Itm_Desc", colId: "Item Description", columnGroupShow: "closed" },
-                { field: "Ord_Qty", colId: "Order Quantity", columnGroupShow: "closed" },
-                { field: "WIP_O_Hd", colId: "WIP On Hand", columnGroupShow: "closed" },
-                { field: "M_Bal", colId: "Mfg. Balance", columnGroupShow: "closed" },
-                { field: "CCR_Nme", colId: "CCR Name", columnGroupShow: "closed" },
-                { field: "Cust_Nme", colId: "Customer Name", columnGroupShow: "closed" },
-                { field: "CRDDate", colId: "CRDDate", columnGroupShow: "closed" },
-                { field: "DDt", colId: "Due Date", columnGroupShow: "closed" },
-                { field: "R_DDt", colId: "Release Date", columnGroupShow: "closed" }
-            ],
-        },
-        {
-            headerName: "Calculate Attribute",
-            suppressStickyLabel: true,
-            openByDefault: true,
-            children: [
-                { field: "Trail_Dpt", colId: "Trailing Department" },
-                { field: "Elap_days", colId: "Elapsed Days", columnGroupShow: 'closed' },
-                { field: "Attr", colId: "Attribute", columnGroupShow: 'closed' },
-            ],
-        },
-        {
-            headerName: "Order Attribute",
-            suppressStickyLabel: true,
-            openByDefault: true,
-            children: [
-                { field: "Pl_Nam", colId: "Plant Name" },
-                { field: "PO_No", colId: "Po No.", columnGroupShow: 'closed' },
-            ],
-        },
-        {
-            headerName: "Product Attribute",
-            suppressStickyLabel: true,
-            openByDefault: true,
-            children: [
-                { field: "Price", colId: "Price" },
-                { field: "Itm_Grp", colId: "Item Group" },
-                { field: "Att_1", colId: "Attribute 1", columnGroupShow: 'closed' },
-                { field: "Att_2", colId: "Attribute 2", columnGroupShow: 'closed' },
-                { field: "Att_3", colId: "Attribute 3", columnGroupShow: 'closed' },
-                { field: "Att_4", colId: "Attribute 4", columnGroupShow: 'closed' },
-            ],
-        },
-        {
-            headerName: "Customer Attribute",
-            suppressStickyLabel: true,
-            openByDefault: true,
-            children: [
-                { field: "Customer Code", colId: "Customer Code" },
-                { field: "Rgn", colId: "Region", columnGroupShow: 'closed' },
-                { field: "Country", colId: "Country", columnGroupShow: 'closed' },
-            ],
-        },
-        {
-            headerName: "",
-            suppressStickyLabel: true,
-            children: [
-                { field: "Remark Code", pinned: true, colId: "Customer Code" },
-                { field: "Latest Remark", pinned: true, colId: "Region" },
-                { field: "Remark History", pinned: true, colId: "Country" },
-            ],
-        }
-
-
-
-    ];
-
+    const { screenHeight } = useViewPort()
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>
@@ -147,11 +80,24 @@ const DptWiseBMReport = () => {
                     submitDate={() => { console.log('') }}
                 />
             </BMDepHeaderWraper>
-            <GridView />
 
+            <HorizontalViewWrapper style={{ marginTop: '20px' }}>
+                <BTRTableWrapper style={{ height: screenHeight - 145, margin: '0' }}>
+                    <Allotment vertical={true} separator={true}   >
+                        <Allotment.Pane preferredSize={'60%'}>
+                            <BTRAllomentSection>
+                                <GridView agGridProps={agGridProps} columDef={DeptWiseBMReport} convercolumnDef={deptwiseBMReportData} />
+                            </BTRAllomentSection>
+                        </Allotment.Pane>
 
-
-
+                        <Allotment.Pane preferredSize={'50%'}>
+                            <BTRAllomentSection>
+                                <OrderElapsedGrid isTrue={true} />
+                            </BTRAllomentSection>
+                        </Allotment.Pane>
+                    </Allotment>
+                </BTRTableWrapper>
+            </HorizontalViewWrapper>
         </BMDepWrapper>
     )
 }

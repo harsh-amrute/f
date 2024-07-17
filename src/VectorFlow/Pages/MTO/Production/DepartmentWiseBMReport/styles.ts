@@ -1,18 +1,205 @@
 import styled from "styled-components";
 import * as gridSystem from "../../../../../styles/gridSystem";
+import * as globalStyles from "../../../../../styles/global";
 
 export const BMDepWrapper = styled.div`
 @media only screen and (min-width: ${gridSystem.size
-        .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
+    .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
   margin-left: -40px;
   margin-top: -40px;
   padding: 20px;
   background-color:red;
 }`
 
-export const BMDepHeaderWraper=styled.div`
+export const BMDepHeaderWraper = styled.div`
  
 `
-export const BMDepSubHeaderWraper=styled.div`
+export const BMDepSubHeaderWraper = styled.div`
     justify-content:space-between
 `
+
+export const NoDataAvailableContainer = styled.div`
+      border: 2px dashed #ccc;
+      width: 100%;
+      height: 60%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #fff;
+      margin-top:20px;
+`
+
+export const NoDataToShowDiv = styled.div`
+      text-align: center;
+      color: #666;
+`
+
+export const NoDataText = styled.p`
+   color:#000000;
+   font-family:Roboto;
+   font-size:20px;
+   font-weight:500;
+`
+
+export const SelectText = styled.p`
+  color:#000000;
+  font-family:Roboto-light;
+  font-size:20px;
+  font-weight:200;
+`
+
+export const BPRViewTableWrapper = styled.div`
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    margin-top:10px;
+    height:100%;
+`
+
+export const BPRViewTablePrefixWrapper = styled.div`
+    width:100%;
+    display:flex;
+    zoom:0.8;
+`
+
+export const BPRViewTableHeaderTab = styled.div<{
+  status: string
+  zIndex: number
+  marLeft: true | false
+  themeUi: string
+}>`
+color: ${(props) => (props.status==='active' ? '#FFFFFF' : '')};
+opacity: 1;
+min-height: 60px;
+text-align: center;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.6rem;
+position: relative;
+z-index: ${(props) => props.zIndex};
+margin-left: ${(props) => (props.marLeft ? '-1.5em' : '0')};
+padding-left: ${(props) => (props.marLeft ? '1.5em' : '0')};
+padding:0px 20px;
+
+cursor: pointer;
+
+// pointer-events:${(props)=>props.status === 'completed' ? 'none' : 'all'};
+
+::before {
+  border: 0.5px solid #cccccc;
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  border-bottom: none;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  background: ${(props) =>props.status==="active"?props.themeUi === "REGALBLAZE"
+  ? globalStyles.chooseThemeColor[props.themeUi]?.color5
+  : "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box":'white'};
+  box-shadow: 0px 5px 25px #9d9d9d29;
+  transform: scale(1.2, 1.3) perspective(0.5em) rotateX(2.5deg);
+  transform-origin: bottom left;
+}
+`
+
+  // export const OrderElapasedGridWrapper=styled.div`
+  //     margin: 20px auto;
+  //     width: 80%;
+  //     background-color: #fff;
+  //     border: 1px solid #ccc;
+  //     border-radius: 5px;
+  //     padding: 20px;
+  // `
+
+  // export const TabWrapper=styled.div`
+  //   overflow: hidden;
+  //   border-bottom: 1px solid #ccc;
+  // `
+
+  // export const CardWrapper= styled.div`
+  //     border: 1px solid #ccc;
+  //     border-radius: 5px;
+  //     padding: 20px;
+  //     background-color: #fff;
+  // `
+
+  // export const TabContentWraper= styled.div`
+  //     display: none;
+  //     padding: 20px;
+  //     border-top: none;
+  // `
+
+  // export const TabLinkActive = styled.button`
+  //     background-color: inherit;
+  //     border: none;
+  //     outline: none;
+  //     cursor: pointer;
+  //     padding: 14px 16px;
+  //     transition: 0.3s;
+  //     font-size: 16px;
+  //     background-color: #f1f1f1;
+  //     color: #333;
+  //     border-bottom: 2px solid #d9534f;
+  // `
+
+  // export const TabLinkButton = styled.button`
+  //   background-color: inherit;
+  //   border: none;
+  //   outline: none;
+  //   cursor: pointer;
+  //   padding: 14px 16px;
+  //   transition: 0.3s;
+  //   font-size: 16px;
+  // `
+
+  // export const DashboardWrapper = styled.div`
+  //   width: 90%;
+  //   margin: 20px auto;
+  //   flex-direction: column;
+  //`
+
+
+  export const ExpansionWrapper = styled.div`
+    border:solid 1px #E3ACC9;
+    border-radius:4px;
+    width:100%;
+  `
+
+  export const ExpansionHeader = styled.div`
+    margin:0px 10px;
+    display:flex;
+    align-items:center;
+  `
+
+  export const ExpansionHeaderGroup = styled.div`
+  
+  `
+
+  export const IconWrapper = styled.img`
+    height:20px;
+    width:20px;
+  `
+
+export const ExpansionHeaderNormalText = styled.span`
+  font-family:Roboto;
+  font-size:12px;
+  font-weight:400;
+  line-height:40px;
+`
+
+export const ExpansionHeaderColoredText = styled.span`
+font-family:Roboto;
+  font-size:12px;
+  font-weight:500;
+  line-height:40px;
+  color:#BC3D81;
+`
+
+  export const ExpansionContent = styled.div`
+  
+  `
