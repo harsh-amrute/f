@@ -5,6 +5,7 @@ export const BTRLayoutWrapper = styled.div`
     display:flex;
     flex-direction:column;
     height:90%;
+    margin-left:5px;
 `
 
 export const BTRLayoutTabsWrapper = styled.div`

@@ -53,7 +53,7 @@ const BuyerOrderReport = ()=>{
 
     }}
      >
-      <div style={{zoom:'1'}}>
+      <div style={{marginLeft:'10px'}}>
         <ActionToolBar 
             view={'grid'} 
             setCurrentTab={''} 

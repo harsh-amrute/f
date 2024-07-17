@@ -9,7 +9,7 @@ export const SCChartContainer = styled.div<{height?:string}>`
     margin-right:5px;
     // margin-top:60px;
     margin-bottom:10px;
-    margin-left:5px;
+    margin-left:20px;
     // height:547px;
     height:${props => props.height ? props.height : 'auto'}
 `

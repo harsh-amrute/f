@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 
 export const VDRLayout=styled.div`
-    margin-top:25px
+    margin-top:25px;
+    margin-left:15px;
 `
 
 export const SDRColorCellRendererWrapper = styled.div`

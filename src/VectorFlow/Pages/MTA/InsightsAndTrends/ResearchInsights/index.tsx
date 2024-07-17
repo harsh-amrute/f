@@ -6,7 +6,7 @@ import VFRangeSlider from "../../../../../components/VectorFLOW/commons/VFRangeS
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 
 
-import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrapper,ResearchInsightsTableTaskBar, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick, ExpandChartIcon, RadioGroup, DefaultViewRendererWrapper, DefaultViewRendererHeader, DefaultViewRendererText } from "./styles"
+import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrapper, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick, ExpandChartIcon, RadioGroup, DefaultViewRendererWrapper, DefaultViewRendererHeader, DefaultViewRendererText } from "./styles"
 
 import CustomCalenderCaption from './CustomCalenderCaption'
 import CustomCalenderDay from './CustomCalenderDay'
@@ -114,9 +114,7 @@ const ResearchInsights = ()=>{
         />
         </div>
         
-        {(isLoading || isSavedDataLoading)?(
-            <VFLoader/>
-        ):(
+        
             <ResearchInsightsLayout>
             {
                 showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
@@ -125,44 +123,51 @@ const ResearchInsights = ()=>{
                 showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
             }
             <ResearchInsightsTableWrapper style={{zoom:0.8, marginTop:'-15px'}}>
-                <VFTable
-                    height={"100%"}
-                    {...agGridProps}
-                    ref={ref}
-                    columnDefs={ResearchInsightsColumns}
-                    rowData={ResearchInsightsData}
-                    onGridReady={(params)=>{
-                        if(columnState)params.columnApi.applyColumnState({state:columnState})
-                    }}
-                    enableRangeSelection={true} // Added property
-                    rowSelection="multiple"
-                    statusBar = {{
-                        statusPanels: [
-                          { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                          { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                          { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                          { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                          { statusPanel: 'agAggregationComponent', align:'left' },
-                        ],
-                      }}
-                />
-                <VFPagination
-                    selectedRows={0}
-                    totalRows={recordCount || 0}
-                    currentPage={currGridPage}
-                    rowsPerPage={rowsPerPage}
-                    handleChangePage={handlePageChange}
-                />
-                <ResearchInsightsTableTaskBar>
-                    {/* <VFButton
+                {(isLoading || isSavedDataLoading)?(
+                    <VFLoader/>
+                ):(
+                    <React.Fragment>
+                        <VFTable
+                            height={"100%"}
+                            {...agGridProps}
+                            ref={ref}
+                            columnDefs={ResearchInsightsColumns}
+                            rowData={ResearchInsightsData}
+                            onGridReady={(params)=>{
+                                if(columnState)params.columnApi.applyColumnState({state:columnState})
+                            }}
+                            enableRangeSelection={true} // Added property
+                            rowSelection="multiple"
+                            statusBar = {{
+                                statusPanels: [
+                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                { statusPanel: 'agAggregationComponent', align:'left' },
+                                ],
+                            }}
+                        />
+                        <VFPagination
+                            selectedRows={0}
+                            totalRows={recordCount || 0}
+                            currentPage={currGridPage}
+                            rowsPerPage={rowsPerPage}
+                            handleChangePage={handlePageChange}
+                        />
+                    </React.Fragment>
+                )}
+                
+                {/* <ResearchInsightsTableTaskBar>
+                    <VFButton
                         themeUi={themeUi}
                         onClick={handleOnUpdateGraph}
                         // disabled={graphState==='default'}
                     >
                         Update Graph
-                    </VFButton> */}
+                    </VFButton>
 
-                </ResearchInsightsTableTaskBar>
+                </ResearchInsightsTableTaskBar> */}
             </ResearchInsightsTableWrapper>
             {
                 isUpdatedGraphDataLoading
@@ -207,7 +212,7 @@ const ResearchInsights = ()=>{
                     </HistoricalAvailabiltyContent>
                 </AvailabilityTrendSection>
                 {(graphState==='default')?(
-                    <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',zoom:0.7,alignItems:'center',padding:0,height:'100%',borderBottom:'dashed 3px #B2B2B2'}}>
+                    <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',zoom:0.7,alignItems:'center',padding:0}}>
                         <DefaultViewRendererWrapper>
                             <Player src={themeUi==="REGALBLAZE"?'/assets/img/VectorFLOW/BPR/swipe pointer regal.json':'/assets/img/VectorFLOW/BPR/swipe pointer.json'} loop autoplay style={{transform:'rotate(-90deg)',height:70,width:70}}/>
                             <DefaultViewRendererHeader>
@@ -665,7 +670,7 @@ const ResearchInsights = ()=>{
                   />
                 </div>
         </ResearchInsightsLayout>
-        )}
+        
         </GridStateContext.Provider>
     )
 }
