@@ -439,9 +439,7 @@ const ChronicUnavailabilityCharts = () => {
                             fontSize:10,
                             fontFamily:'Roboto'
                         },
-                        label: {
-                            format: "#{.0f} %",
-                        },
+                       
                     },
                  },
              },
@@ -487,9 +485,6 @@ const ChronicUnavailabilityCharts = () => {
                             position:'left',
                             fontSize:10,
                             fontFamily:'Roboto'
-                        },
-                        label: {
-                            format: "#{.0f} %",
                         },
                     },
                   },
