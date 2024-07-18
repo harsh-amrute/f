@@ -620,6 +620,12 @@ export const listMenuParent: any = [
             img: "/assets/img/nav/arrow_down.svg",
             url: "/production-planning-scheduling/insight-and-trends/stpl-full-kits",
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
+          {
+            name: "Orders At Risk",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/production-planning-scheduling/insight-and-trends/order-at-risk",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           }
         ]
       },

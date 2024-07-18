@@ -7,10 +7,11 @@ import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VF
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 import { columnConfigData } from "../ColumnData";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
+import { format } from "date-fns";
 
 
 const FullKitGraph = () => {
-  const [date] = useState("18 Apr 2024");
+  const [date] = useState(format(new Date(), 'd MMM yyyy'));
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);

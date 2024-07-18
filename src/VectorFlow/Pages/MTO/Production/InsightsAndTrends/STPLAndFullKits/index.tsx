@@ -25,6 +25,7 @@ const STPLAndFullKits = () => {
 const gridOptions: GridOptions = {
     defaultColDef: {
       flex: 1,
+      enableRowGroup: true,
     },
     groupDefaultExpanded: 0,
     masterDetail: true,
@@ -32,7 +33,8 @@ const gridOptions: GridOptions = {
     detailCellRenderer: OrderDetailsCellRenderer,
     detailCellRendererParams: {
         innerHeight: 400,
-    }
+    },
+    rowGroupPanelShow: 'always'
   };
 
   const colDefCustomizations = {

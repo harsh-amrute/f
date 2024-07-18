@@ -73,6 +73,14 @@ const SplitGraphContainer = ({
                     },
                 }
 
+            case 6:
+                return {
+                    palette: {
+                        fills: ['black', 'red'],
+                        strokes: ['black', 'red'],
+                    },
+                }
+
             default:
                 return {
                     palette: {
@@ -288,8 +296,67 @@ const SplitGraphContainer = ({
                     },
                   });
                 break;
-                default:
-                <></>
+            case 6:
+              refGraph1.current?.api.createRangeChart({
+                chartType: "stackedBar",
+                cellRange: {
+                  columns: ["reason", "black", "red"],
+                },
+                chartThemeOverrides: {
+                  bar: {
+                    axes: {
+                      category: {
+                        position: 'left', // Position the category axis on the left
+                        gridStyle: [{ stroke: "transparent" }],
+                        label: {
+                          fontSize: 8,
+                          rotation: 0
+                        },
+                        left: {
+                          label: {
+                            fontSize: 8,
+                          },
+                        },
+                      },
+                      number: {
+                        position: 'bottom',
+                        gridStyle: [{ stroke: "transparent" }],
+                        label: {
+                          fontSize: 8,
+                        },
+                      },
+                    },
+                    series: {
+                      highlightStyle: {
+                        item: {
+                          fill: "white",
+                          fillOpacity: 0.2,
+                        },
+                      },
+                      tooltip: {
+                        renderer: TooltipRenderer,
+                      },
+                      strokeWidth: 1,
+                      strokeOpacity: 0,
+                    },
+                    legend: {
+                      item: {
+                        label: {
+                          fontSize: 10,
+                        },
+          
+                        marker: {
+                          shape: "square",
+                        },
+                      },
+                    },
+                  }
+                },
+              });
+            break;             
+            break;
+          default:
+          <></>
         }
 
 

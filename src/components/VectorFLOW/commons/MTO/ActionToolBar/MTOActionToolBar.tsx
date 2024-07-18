@@ -32,6 +32,7 @@ import {
     /**Date component style end */
 } from './styles';
 import moment from 'moment';
+import { format } from 'date-fns';
 
 type filterType = {
     label: string,
@@ -61,21 +62,6 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
         }
     }
 
-    const getTodayDate = () => {
-        const today = new Date();
-
-        // Extract year, month, and day
-        const year = today.getFullYear();
-        const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed
-        const day = today.getDate().toString().padStart(2, '0');
-
-        // Construct the date string in the desired format
-        const formattedDate = `${year}-${month}-${day}`;
-
-        return formattedDate;
-    }
-
-
     const format2 = "YYYY-MM-DD"
     const d = new Date();
     //.setDate(d.getDate() - 1)
@@ -92,7 +78,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
             >
 
                 <>
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'stplAndFullKit') && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp !== 'MaterialRequirement') && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') && (comp != "FullKitAssignment") &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'stplAndFullKit') && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp !== 'MaterialRequirement') && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') && (comp != "FullKitAssignment") && (comp != "orderAtRisk") &&
 
                         <SCGoBackContainer onClick={() => { if (handleGoBack) handleGoBack() }}>
                             <img
@@ -103,7 +89,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                         </SCGoBackContainer>
                     }
 
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'stplAndFullKit') && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp != "MaterialCovDetailData") && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') && (comp != "FullKitAssignment") &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'stplAndFullKit') && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp != "MaterialCovDetailData") && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') && (comp != "FullKitAssignment") && (comp != "orderAtRisk") &&
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -179,7 +165,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                         />
                         <DateTitle>As on Date</DateTitle>
                         <DateValue>
-                            {getTodayDate()}
+                            {format(new Date(), 'yyyy-MM-dd')}
                         </DateValue>
                     </DateWrapper>}
                 {/**Selected Filter start */}
@@ -254,7 +240,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                     </>
 
                     {/* Toggle button for chartview/ grid view */}
-                    {((comp === 'rmpm') || (comp === 'stplAndFullKit')) &&
+                    {((comp === 'rmpm') || (comp === 'stplAndFullKit') || (comp === "orderAtRisk")) &&
                         <>
                             <SCViewContainerWithBgToggle onClick={() => { setIsGridView && (setIsGridView(!isGridView)); console.log(isGridView) }}>
                                 <SCViewContainer>
