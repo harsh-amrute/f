@@ -175,6 +175,7 @@ const GraphView = ({ shortageData }: any) => {
     const chartRef = useRef<AgChartsReact>(null);
     const [hideChart1, toggleChart1] = useState(false);
     const [gridLoading, setGridLoading] = useState(false);
+    console.log(gridLoading);
     const ColdDefs = [
         {
             colId: 'days_range',
