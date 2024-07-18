@@ -10,7 +10,6 @@ const DueDateCellRenderer = (params: any) => {
 
     const checkIfSelected = () => {
         setSelectedRow(params.api.getSelectedRows())
-        console.log("selected Row hai ye", params.api.getSelectedRows())
         let isThere = false;
         for (let index = 0; index < selectedRow.length; index++) {
             const element = selectedRow[index];

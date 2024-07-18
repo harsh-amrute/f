@@ -2,7 +2,6 @@ import { ETACellRendererWrapper } from "./styles"
 import { useState } from "react"
 const ReasonCellRenderer = (params: any) => {
 
-    console.log("render ke params: ", params)
     const [val, setVal] = useState(params.node.data.rs ? params.node.data.rs : "")
 
     return (

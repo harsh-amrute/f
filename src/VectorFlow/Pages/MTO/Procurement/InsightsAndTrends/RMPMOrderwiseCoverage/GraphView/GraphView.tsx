@@ -15,7 +15,6 @@ import { GridRef } from "../../../../../../../VectorFlow/types/MDM";
 
 const GraphView = ({ shortageData }: any) => {
 
-    // const [date, setDate] = useState("19 April 2024 - 18 July 2024")
     const [date] = useState("01 July 2024 - 28 Sept 2024")
 
     const [rawData, setRawData] = useState(shortageData);
@@ -176,7 +175,6 @@ const GraphView = ({ shortageData }: any) => {
     const chartRef = useRef<AgChartsReact>(null);
     const [hideChart1, toggleChart1] = useState(false);
     const [gridLoading, setGridLoading] = useState(false);
-    console.log(gridLoading);
     const ColdDefs = [
         {
             colId: 'days_range',

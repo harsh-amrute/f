@@ -150,8 +150,6 @@ const OrderRescheduling = () => {
         try {
 
             const APIData = await getOrderSchedulingData();
-            console.log("API data", APIData.data.data.results);
-            console.log("==>", APIData);
             setCurrData(APIData);
             setRowData(APIData.data.data.results);
 
@@ -163,14 +161,12 @@ const OrderRescheduling = () => {
     };
 
     const handlePageChangeCumulative = async (pageNumber: number) => {
-        console.log("let seeeee", selectedRowData)
         setIsLoading(true);
         setCurrentPage(pageNumber);
         const APIData = await getOrderSchedulingPageData(pageNumber.toString());
         setCurrData(APIData);
         const newDat = APIData.data.data.results
         setRowData(newDat);
-        console.log("new data", APIData, "new dat", newDat);
         setIsLoading(false);
         // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
@@ -227,9 +223,8 @@ const OrderRescheduling = () => {
     const reasonCheck = (data: any): boolean => {
         for (let index = 0; index < data.length; index++) {
             const element = data[index];
-            console.log("yrr", element.r)
             if (element.r.toString().length === 0) {
-                console.log("works")
+
                 return false;
             }
 
@@ -239,7 +234,6 @@ const OrderRescheduling = () => {
 
 
     const PostData = async (data: any, message: string): Promise<boolean> => {
-        console.log('ee data!', data.ordData)
         if (reasonCheck(data.ordData)) {
 
             try {
@@ -261,7 +255,6 @@ const OrderRescheduling = () => {
             } catch (error) {
                 toast.dismiss();
                 notifyError("Failed to update Data!");
-                console.log(error);
                 return false;
             }
         }
