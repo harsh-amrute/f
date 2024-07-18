@@ -5,7 +5,6 @@ import {
 } from '../styles';
 import { AgChartsReact } from "ag-charts-react";
 import { AgChartOptions, AgCharts } from "ag-charts-community";
-import procData from "../ProcurementData";
 import { Order } from "../../../../../../types/MTO";
 import { InsightsAndTrendsString } from "../../../../Common/String";
 import { ProcurementSeriesDataFill, ProcurementSeriesDataYKey, ProcurementSeriesDataYName } from "../../../../Common/Enum";

@@ -5,7 +5,6 @@ import VFCapsule from '../../../../../../../components/VectorFLOW/commons/VFCaps
 import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'
 import { CapsuleWrapper } from '../../RMPMOrderwiseCoverage/GraphView/styles'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
-import dummyData from './BufferTrendData'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 
 
@@ -37,6 +36,9 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
         if (!buffData || buffData.length === 0) {
             return []; // Return empty array if data is undefined or empty
         }
+
+        buffData = (isPer) ? convertToPercentage(buffData) : buffData;
+
 
         const sortedData = buffData.slice().sort((a, b) => {
             // Ensure dt is defined before accessing split

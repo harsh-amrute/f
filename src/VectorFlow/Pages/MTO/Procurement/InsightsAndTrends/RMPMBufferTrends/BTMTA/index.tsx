@@ -88,11 +88,13 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
         w: number;
     };
 
+
+
     function filterDataByDaysGap(buffData: BufferTrendData[] | undefined, numberOfDaysGap: number, horizonDays: number, isPer: boolean): BufferTrendData[] {
         if (!buffData || buffData.length === 0) {
             return []; // Return empty array if data is undefined or empty
         }
-
+        buffData = (isPer) ? convertToPercentage(buffData) : buffData;
 
         const sortedData = buffData.slice().sort((a, b) => {
             const dateA = a.dt ? new Date(a.dt.split('-').reverse().join('-')) : null;

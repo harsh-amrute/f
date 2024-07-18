@@ -106,8 +106,6 @@ const RMPMOrderwiseCoverage = () => {
     };
 
     const [convertedData, setConvertedData] = useState([{}]);
-
-    const [ShortageDatas, setShortageDatas] = useState(convertedData);
     const [GraphDatas, setGraphDatas] = useState([{}])
 
     const GetData = async () => {
@@ -121,7 +119,6 @@ const RMPMOrderwiseCoverage = () => {
             }
             setGraphDatas(APIData.data.data.results)
             setConvertedData(mapDataToColumns(APIData.data.data.results, columnData));
-            setShortageDatas(convertedData);
             console.log("convertedData:=:=:", convertedData);
             console.log("graph:::", GraphDatas)
         } catch (e) {
