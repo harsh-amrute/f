@@ -5,7 +5,6 @@ import VFCapsule from '../../../../../../../components/VectorFLOW/commons/VFCaps
 import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'
 import { CapsuleWrapper } from '../../RMPMOrderwiseCoverage/GraphView/styles'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
-import dummyData from './BufferTrendData'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 
 
@@ -15,16 +14,10 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
     const [tableLoading, setTableLoading] = useState(false);
     const [horizonDays, setHorizondays] = useState(90);
 
-    console.log("final MTA ldata:", data)
     useEffect(() => {
         setNumericData(filterDataByDaysGap(data, 0, horizonDays, false))
     }, [data])
 
-
-
-    // if (MTAData !== undefined) {
-    //     setData(convertObject(MTAData))
-    // }
     const [numericData, setNumericData] = useState<BufferTrendData[]>([]);
 
 
@@ -100,8 +93,8 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
             return []; // Return empty array if data is undefined or empty
         }
 
+
         const sortedData = buffData.slice().sort((a, b) => {
-            // Ensure dt is defined before accessing split
             const dateA = a.dt ? new Date(a.dt.split('-').reverse().join('-')) : null;
             const dateB = b.dt ? new Date(b.dt.split('-').reverse().join('-')) : null;
             return dateA && dateB ? dateA.getTime() - dateB.getTime() : 0;
@@ -444,7 +437,6 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
         )
     }
 
-    console.log("num,,,,,", numericData);
     return (
         <div style={{ height: "70vh", display: 'flex', justifyContent: 'left' }}>
 
