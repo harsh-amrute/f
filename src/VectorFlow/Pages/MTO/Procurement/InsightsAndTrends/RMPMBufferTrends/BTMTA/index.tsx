@@ -1,5 +1,5 @@
 import { AgChartOptions } from 'ag-charts-community'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFCapsule from '../../../../../../../components/VectorFLOW/commons/VFCapsule'
 import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'
@@ -9,59 +9,23 @@ import dummyData from './BufferTrendData'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 
 
-const BTMTA = ({ isMTO, MTAData }: { isMTO: boolean, MTAData: any }) => {
+const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
     const [chartLoading, setChartLoading] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
     const [horizonDays, setHorizondays] = useState(90);
 
-    type InputObject = {
-        [key: string]: {
-            Bl?: number;
-            Y?: number;
-            G?: number;
-            B?: number;
-            R?: number;
-        };
-    };
+    console.log("final MTA ldata:", data)
+    useEffect(() => {
+        setNumericData(filterDataByDaysGap(data, 0, horizonDays, false))
+    }, [data])
 
-    type OutputObject = {
-        dt: string;
-        b?: number;
-        r?: number;
-        g?: number;
-        y?: number;
-    };
 
-    function convertObject(input: InputObject): any[] {
-        const result: OutputObject[] = [];
 
-        for (const [date, values] of Object.entries(input)) {
-            const [year, month, day] = date.split('-').map(Number);
-            const formattedDate = `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year}`;
-
-            const outputItem: OutputObject = {
-                dt: formattedDate,
-                b: values.B || 0,
-                r: values.R || 0,
-                g: values.G || 0,
-                y: values.Y || 0
-            };
-
-            result.push(outputItem);
-        }
-
-        return result;
-    }
-
-    // const [data] = useState(MTAData ? convertObject(MTAData) : [])
-
-    const [data, setData] = useState(dummyData)
-
-    if (MTAData !== undefined) {
-        setData(convertObject(MTAData))
-    }
-    const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(data, 0, horizonDays, false));
+    // if (MTAData !== undefined) {
+    //     setData(convertObject(MTAData))
+    // }
+    const [numericData, setNumericData] = useState<BufferTrendData[]>([]);
 
 
     const TooltipRenderer = ({ datum, xKey }: any) => {
@@ -131,26 +95,34 @@ const BTMTA = ({ isMTO, MTAData }: { isMTO: boolean, MTAData: any }) => {
         w: number;
     };
 
-    function filterDataByDaysGap(buffData: BufferTrendData[], numberOfDaysGap: number, horizonDays: number, isPer: boolean): BufferTrendData[] {
-        const filteredData: (BufferTrendData[]) = [];
-        const data = (isPer) ? convertToPercentage(buffData) : buffData;
-        let currentDate = new Date(data[0].dt.split('-').reverse().join('-')); // Convert dd-mm-yyyy to yyyy-mm-dd
-
-        filteredData.push(data[0]);
-
-        for (let i = 1; i < ((horizonDays < data.length) ? horizonDays : data.length); i++) {
-            const nextDate = new Date(data[i].dt.split('-').reverse().join('-'));
-
-            const diffInDays = (nextDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24);
-
-            if (diffInDays >= numberOfDaysGap) {
-                filteredData.push(data[i]);
-                currentDate = nextDate;
-            }
+    function filterDataByDaysGap(buffData: BufferTrendData[] | undefined, numberOfDaysGap: number, horizonDays: number, isPer: boolean): BufferTrendData[] {
+        if (!buffData || buffData.length === 0) {
+            return []; // Return empty array if data is undefined or empty
         }
 
-        return filteredData;
+        const sortedData = buffData.slice().sort((a, b) => {
+            // Ensure dt is defined before accessing split
+            const dateA = a.dt ? new Date(a.dt.split('-').reverse().join('-')) : null;
+            const dateB = b.dt ? new Date(b.dt.split('-').reverse().join('-')) : null;
+            return dateA && dateB ? dateA.getTime() - dateB.getTime() : 0;
+        });
+
+        const filteredData: BufferTrendData[] = [];
+        let currentDate: Date | null = null;
+
+        sortedData.forEach(item => {
+            if (item.dt) {
+                const itemDate = new Date(item.dt.split('-').reverse().join('-'));
+                if (!currentDate || (itemDate.getTime() - currentDate.getTime()) >= numberOfDaysGap * 24 * 60 * 60 * 1000) {
+                    filteredData.push(item);
+                    currentDate = itemDate;
+                }
+            }
+        });
+
+        return filteredData.slice(0, Math.min(horizonDays, filteredData.length));
     }
+
 
 
     function convertToPercentage(data: BufferTrendData[]): BufferTrendData[] {
@@ -398,8 +370,7 @@ const BTMTA = ({ isMTO, MTAData }: { isMTO: boolean, MTAData: any }) => {
 
             }
         ]
-    // const [rowData, setRowData] = useState(data)
-    const rowData = numericData;
+
 
 
     const generateHeader = () => {
@@ -472,6 +443,8 @@ const BTMTA = ({ isMTO, MTAData }: { isMTO: boolean, MTAData: any }) => {
 
         )
     }
+
+    console.log("num,,,,,", numericData);
     return (
         <div style={{ height: "70vh", display: 'flex', justifyContent: 'left' }}>
 
@@ -489,7 +462,7 @@ const BTMTA = ({ isMTO, MTAData }: { isMTO: boolean, MTAData: any }) => {
                 setTableLoading={setTableLoading}
                 setChartLoading={setChartLoading}
                 data={numericData}
-                rowData={rowData}
+                rowData={numericData}
                 graphTitle={"RM / PM Buffer Trend- MTA (14 Feb 2023 - 02 Mar 2024)"}
                 tableTitle={"RM / PM Buffer Trend- MTA (14 Feb 2023 - 02 Mar 2024)"}
                 options={options}

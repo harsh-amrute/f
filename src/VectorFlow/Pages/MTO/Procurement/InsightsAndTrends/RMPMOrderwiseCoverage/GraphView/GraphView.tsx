@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "allotment/dist/style.css";
 import {
     SCChartContainer, SCHorizontalDivider
@@ -19,8 +19,12 @@ const GraphView = ({ shortageData }: any) => {
     // const [date, setDate] = useState("19 April 2024 - 18 July 2024")
     const [date] = useState("01 July 2024 - 28 Sept 2024")
 
-    // const [rawData, setRawData] = useState(procData);
-    const [rawData] = useState(shortageData);
+    const [rawData, setRawData] = useState(shortageData);
+
+    useEffect(() => {
+        setRawData(shortageData)
+    }, [shortageData])
+
 
     function TooltipRenderer({ datum, xKey }: any) {
         return `

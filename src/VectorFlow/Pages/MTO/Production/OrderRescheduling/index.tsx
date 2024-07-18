@@ -11,13 +11,12 @@ import DueDateCellRenderer from './DueDateCellRenderer';
 import { usePutUpdateOrderDueDate, useGetOrderSchedulingData, useGetOrderSchedulingPageData } from '../../../../Services/MTO/Production/OrderRescheduling';
 import { AgGridReactProps } from 'ag-grid-react';
 import { GridRef } from '../../../../types/MDM';
-import VFOverlay from '../../../../../components/VectorFLOW/commons/VFOverlay';
-import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
-import { ATTR_TOAST, notifySuccess, notifyError } from '../../../../../helpers/notify';
+import { notifySuccess, notifyError } from '../../../../../helpers/notify';
 import { toast } from 'react-toastify';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
-import { CustomLoadingCellRendererProps } from '@ag-grid-community/react';
-import { GridReadyEvent } from 'ag-grid-charts-enterprise';
+import { IRowNode } from 'ag-grid-enterprise';
+import { FirstDataRenderedEvent } from 'ag-grid-community';
+import OverlayLoader from '../../Common/Loader';
 
 const user = { user: { them_ui: 'pure' } };
 
@@ -40,7 +39,21 @@ const OrderRescheduling = () => {
     const getSelectedRowData = () => {
         const selectedData = refGraph1.current?.api.getSelectedRows();
         if (selectedData) {
-            setSelectedRowData([...selectedRowData, ...selectedData as RowDataType[]]);
+            const mergedData = [...selectedRowData]; // Start with the existing selected data
+
+            selectedData.forEach((newItem) => {
+                const index = mergedData.findIndex(item => item.oid === newItem.oid);
+
+                if (index !== -1) {
+                    // If the item exists, replace it
+                    mergedData[index] = newItem;
+                } else {
+                    // Otherwise, add the new item
+                    mergedData.push(newItem);
+                }
+            });
+
+            setSelectedRowData(mergedData);
         }
     };
 
@@ -76,11 +89,11 @@ const OrderRescheduling = () => {
     ];
 
     let colDef = columnData;
-    const [rowData, setRowData] = useState<RowDataType[] | null>(null);
+    const [rowData, setRowData] = useState<RowDataType[]>([]);
 
     const addChangeDate = (date: string, key: string) => {
         const newData = rowData;
-        newData?.forEach(item => {
+        newData.forEach(item => {
             if (item.oid === key) {
                 item.dd = date;
             }
@@ -150,14 +163,16 @@ const OrderRescheduling = () => {
     };
 
     const handlePageChangeCumulative = async (pageNumber: number) => {
+        console.log("let seeeee", selectedRowData)
         setIsLoading(true);
         setCurrentPage(pageNumber);
         const APIData = await getOrderSchedulingPageData(pageNumber.toString());
         setCurrData(APIData);
-        const newDat = [...APIData.data.data.results]
+        const newDat = APIData.data.data.results
         setRowData(newDat);
         console.log("new data", APIData, "new dat", newDat);
         setIsLoading(false);
+        // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
 
     type OutputItem = {
@@ -209,25 +224,56 @@ const OrderRescheduling = () => {
         return output;
     }
 
+    const reasonCheck = (data: any): boolean => {
+        for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            console.log("yrr", element.r)
+            if (element.r.toString().length === 0) {
+                console.log("works")
+                return false;
+            }
 
-    const PostData = async (data: any, message: string) => {
-        try {
-            const response = await putUpdateOrderDueDate(JSON.parse(JSON.stringify(data)));
-            if (refGraph1) {
-                refGraph1.current?.api.deselectAll();
-            }
-            if (response.status === 200) {
-                toast.dismiss();
-                notifySuccess(message);
-            } else {
-                toast.dismiss();
-                notifyError("Failed to update data");
-            }
-        } catch (error) {
-            toast.dismiss();
-            notifyError("Failed to update Data!");
-            console.log(error);
         }
+        return true;
+    }
+
+
+    const PostData = async (data: any, message: string): Promise<boolean> => {
+        console.log('ee data!', data.ordData)
+        if (reasonCheck(data.ordData)) {
+
+            try {
+                const response = await putUpdateOrderDueDate(JSON.parse(JSON.stringify(data)));
+
+                if (response.status === 200) {
+                    if (refGraph1) {
+                        refGraph1.current?.api.deselectAll();
+                    }
+                    toast.dismiss();
+                    notifySuccess(message);
+
+                } else {
+                    toast.dismiss();
+                    notifyError("Failed to update data");
+
+                    return false;
+                }
+            } catch (error) {
+                toast.dismiss();
+                notifyError("Failed to update Data!");
+                console.log(error);
+                return false;
+            }
+        }
+        else {
+            toast.dismiss();
+            notifyError("Make sure you provide a reason for every update !")
+            // if (refGraph1) {
+            //     refGraph1.current?.api.deselectAll();
+            // }
+            return false;
+        }
+        return true;
     };
 
     useEffect(() => {
@@ -236,15 +282,56 @@ const OrderRescheduling = () => {
 
     const unschedule = async () => {
         const finalData = convertJsonForUnschedule(selectedRowData, 'Admin', 1);
-        PostData(finalData, "Order Unscheduled Successfully !");
-        await handlePageChangeCumulative(currentPage);
+        const isSuccesss = await PostData(finalData, "Order Unscheduled Successfully !");
+        if (isSuccesss) {
+            setSelectedRowData([]);
+            await handlePageChangeCumulative(currentPage);
+            handlePageChangeCumulative(currentPage);
+        }
     };
 
-    const overwriteDD = () => {
+    const overwriteDD = async () => {
         const finalData = convertJsonForDueDate(selectedRowData, 'Admin', 0);
-        PostData(finalData, "Order Due date updated successfully !");
-        setSelectedRowData([]);
+        const isSuccess = await PostData(finalData, "Order Due date updated successfully !");
+        if (isSuccess) {
+            setSelectedRowData([]);
+
+        }
+
     };
+
+    const existsInSelected = (reqOid: string): boolean => {
+        for (let index = 0; index < selectedRowData.length; index++) {
+            const element = selectedRowData[index];
+            if (element.oid === reqOid) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    const onFirstDataRendered =
+        (params: FirstDataRenderedEvent<any>) => {
+            const nodesToSelect: IRowNode[] = [];
+
+            params.api.forEachNode((node) => {
+                if (node.data && node.data.oid && existsInSelected(node.data.oid)) {
+                    node.data.rs = selectedRowData[0].r;
+                    for (let index = 0; index < selectedRowData.length; index++) {
+                        const element = selectedRowData[index];
+                        if (element.oid === node.data.oid) {
+                            node.data.rs = element.rs;
+                            node.data.dd = element.dd;
+                        }
+                    }
+                    nodesToSelect.push(node);
+                }
+
+            });
+            params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
+        }
+        ;
 
 
     return (
@@ -252,10 +339,8 @@ const OrderRescheduling = () => {
             <div style={{ width: "100%", position: 'relative', height: '85vh' }}>
 
                 <MTOActionToolBar comp={'orderReschedule'} />
-                {/* {isLoading && <VFOverlay>
-                    <h1 style={{ backgroundColor: "white", padding: '15px', borderRadius: '8px' }}>Loading....</h1>
-                </VFOverlay>} */}
-                {/* {isLoading ? <VFLoader /> : ( */}
+                {isLoading && <OverlayLoader />}
+
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                     <div>
                         <ApplyZoomOut>
@@ -285,7 +370,9 @@ const OrderRescheduling = () => {
                                         { statusPanel: 'agAggregationComponent', align: 'left' },
                                     ],
                                 }}
-
+                                onFirstDataRendered={onFirstDataRendered}
+                                onGridReady={onFirstDataRendered}
+                                onRowDataUpdated={onFirstDataRendered}
                                 {...agGridProps}
                                 pagination={false}
                                 height={"100%"}

@@ -1,10 +1,11 @@
 import { AgChartOptions } from 'ag-charts-community'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFCapsule from '../../../../../../../components/VectorFLOW/commons/VFCapsule'
 import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'
 import { CapsuleWrapper } from '../../RMPMOrderwiseCoverage/GraphView/styles'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
+import dummyData from './BufferTrendData'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 
 
@@ -12,21 +13,16 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 
 
 
-const BTMTO = ({ isMTO, MTOData }: { isMTO: boolean, MTOData: any }) => {
+const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
     const [horizonDays, setHorizondays] = useState(90);
 
-    type InputObject = {
-        [key: string]: {
-            Bl?: number;
-            Y?: number;
-            G?: number;
-            B?: number;
-            R?: number;
-            W?: number;
-        };
-    };
+    console.log("final MTA ldata:", data)
+    useEffect(() => {
+        setNumericData(filterDataByDaysGap(data, 0, horizonDays, false))
+    }, [data])
 
+    const [numericData, setNumericData] = useState<BufferTrendData[]>([]);
 
     type BufferTrendData = {
         dt: string;
@@ -37,57 +33,34 @@ const BTMTO = ({ isMTO, MTOData }: { isMTO: boolean, MTOData: any }) => {
         w: number;
     };
 
-
-
-    function convertObject(input: InputObject): BufferTrendData[] {
-        const result: BufferTrendData[] = [];
-
-        for (const [date, values] of Object.entries(input)) {
-            const [year, month, day] = date.split('-').map(Number);
-            const formattedDate = `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year}`;
-
-            const outputItem: BufferTrendData = {
-                dt: formattedDate,
-                b: values.B || 0,
-                r: values.R || 0,
-                g: values.G || 0,
-                y: values.Y || 0,
-                w: values.W || 0,
-            };
-
-            result.push(outputItem);
+    function filterDataByDaysGap(buffData: BufferTrendData[] | undefined, numberOfDaysGap: number, horizonDays: number, isPer: boolean): BufferTrendData[] {
+        if (!buffData || buffData.length === 0) {
+            return []; // Return empty array if data is undefined or empty
         }
 
-        return result;
-    }
+        const sortedData = buffData.slice().sort((a, b) => {
+            // Ensure dt is defined before accessing split
+            const dateA = a.dt ? new Date(a.dt.split('-').reverse().join('-')) : null;
+            const dateB = b.dt ? new Date(b.dt.split('-').reverse().join('-')) : null;
+            return dateA && dateB ? dateA.getTime() - dateB.getTime() : 0;
+        });
 
-    const [data] = useState(convertObject(MTOData))
-    const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(data, 0, horizonDays, false));
+        const filteredData: BufferTrendData[] = [];
+        let currentDate: Date | null = null;
 
-
-    function filterDataByDaysGap(buffData: BufferTrendData[], numberOfDaysGap: number, horizonDays: number, isPer: boolean): BufferTrendData[] {
-        const filteredData: (BufferTrendData[]) = [];
-        const data = (isPer) ? convertToPercentage(buffData) : buffData;
-        let currentDate = new Date(data[0].dt.split('-').reverse().join('-')); // Convert dd-mm-yyyy to yyyy-mm-dd
-        // let date = new Date(data[0].dt)
-
-        // let currentDate = format(date, "yyyy/MM/dd")
-
-        filteredData.push(data[0]);
-
-        for (let i = 1; i < ((horizonDays < data.length) ? horizonDays : data.length); i++) {
-            const nextDate = new Date(data[i].dt.split('-').reverse().join('-'));
-
-            const diffInDays = (nextDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24);
-
-            if (diffInDays >= numberOfDaysGap) {
-                filteredData.push(data[i]);
-                currentDate = nextDate;
+        sortedData.forEach(item => {
+            if (item.dt) {
+                const itemDate = new Date(item.dt.split('-').reverse().join('-'));
+                if (!currentDate || (itemDate.getTime() - currentDate.getTime()) >= numberOfDaysGap * 24 * 60 * 60 * 1000) {
+                    filteredData.push(item);
+                    currentDate = itemDate;
+                }
             }
-        }
+        });
 
-        return filteredData;
+        return filteredData.slice(0, Math.min(horizonDays, filteredData.length));
     }
+
 
 
     function convertToPercentage(data: BufferTrendData[]): BufferTrendData[] {

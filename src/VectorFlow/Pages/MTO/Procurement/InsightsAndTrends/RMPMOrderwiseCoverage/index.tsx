@@ -8,6 +8,8 @@ import { ColDef } from 'ag-grid-enterprise'
 import columnData from './ColumnData'
 import { AgGridReactProps } from 'ag-grid-react'
 import { useGetOrderwiseCoverageData } from '../../../../../../VectorFlow/Services/MTO/Procurement/OrderwiseCoverage'
+import { toast } from 'react-toastify'
+import { notifyError, notifyLoader, notifySuccess } from '../../../../../../helpers/notify'
 
 const RMPMOrderwiseCoverage = () => {
 
@@ -97,19 +99,35 @@ const RMPMOrderwiseCoverage = () => {
                 }
             });
             return mappedItem;
+
         });
+
+
     };
 
     const [convertedData, setConvertedData] = useState([{}]);
 
     const [ShortageDatas, setShortageDatas] = useState(convertedData);
+    const [GraphDatas, setGraphDatas] = useState([{}])
 
     const GetData = async () => {
-        const APIData = await getOrderwiseCoverageData();
-        console.log("orderwise: ", APIData.data.data.results)
-        setConvertedData(mapDataToColumns(APIData.data.data.results, columnData));
-        setShortageDatas(convertedData);
-        console.log("convertedData:=:=:", convertedData);
+        try {
+            notifyLoader("Loading Data...")
+            const APIData = await getOrderwiseCoverageData();
+            console.log("orderwise: ", APIData)
+            if (APIData.status.toString() === '200') {
+                toast.dismiss();
+                notifySuccess("Data Fetched Successfully!")
+            }
+            setGraphDatas(APIData.data.data.results)
+            setConvertedData(mapDataToColumns(APIData.data.data.results, columnData));
+            setShortageDatas(convertedData);
+            console.log("convertedData:=:=:", convertedData);
+            console.log("graph:::", GraphDatas)
+        } catch (e) {
+            toast.dismiss();
+            notifyError("Failed to fetch Data");
+        }
     }
 
     useEffect(() => {
@@ -122,7 +140,7 @@ const RMPMOrderwiseCoverage = () => {
 
                 <ActionToolBar comp={"rmpm"} isGridView={isGridView} setIsGridView={setIsGridView} />
             </div>
-            {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={convertedData} /> : <GraphView shortageData={convertedData} />}
+            {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={convertedData} /> : <GraphView shortageData={GraphDatas} />}
         </>
     )
 }

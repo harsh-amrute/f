@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 const DueDateCellRenderer = (params: any) => {
 
-    const [currDate, setCurrDate] = useState(params.data.dd);
+    const [currDate, setCurrDate] = useState(params.node.data.dd ? params.data.dd : params.data.dd);
     const [isDisabled, setIsDisabled] = useState(true);
     const [selectedRow, setSelectedRow] = useState(params.api.getSelectedRows())
 
@@ -38,6 +38,8 @@ const DueDateCellRenderer = (params: any) => {
         <>
 
             <input type="date"
+
+                className='date-pick'
                 data-testid="datepicker"
                 style={{
                     top: '141px',
