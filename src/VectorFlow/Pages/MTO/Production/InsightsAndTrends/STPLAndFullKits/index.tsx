@@ -25,6 +25,7 @@ const STPLAndFullKits = () => {
 const gridOptions: GridOptions = {
     defaultColDef: {
       flex: 1,
+      enableRowGroup: true,
     },
     groupDefaultExpanded: 0,
     masterDetail: true,
@@ -59,6 +60,7 @@ const gridOptions: GridOptions = {
                 <VFTable
                     {...gridOptions}
                     sideBar="columns"
+                    disableZoomScaling
                     columnDefs={colDefs}
                     rowData={APIMock?.grid}
                     tooltipHideDelay={100000}
