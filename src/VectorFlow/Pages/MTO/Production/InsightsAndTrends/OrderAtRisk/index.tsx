@@ -228,7 +228,6 @@ const OrderAtRisk = () => {
           <div data-testid="grid-view" style={{height:screenHeight - 300}}>
             <VFTable
               {...gridOptions}
-              disableZoomScaling
               sideBar="columns"
               columnDefs={tableColDefs}
               rowData={APIMock.gridData}

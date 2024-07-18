@@ -60,7 +60,6 @@ const gridOptions: GridOptions = {
                 <VFTable
                     {...gridOptions}
                     sideBar="columns"
-                    disableZoomScaling
                     columnDefs={colDefs}
                     rowData={APIMock?.grid}
                     tooltipHideDelay={100000}
