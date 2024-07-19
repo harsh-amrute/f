@@ -67,6 +67,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
+    '/production-planning-scheduling/insight-and-trends/order-balance',
+    '/production-planning-scheduling/enquiry-response',
   ]
   const urlAllPage = [
     ...authenPage,

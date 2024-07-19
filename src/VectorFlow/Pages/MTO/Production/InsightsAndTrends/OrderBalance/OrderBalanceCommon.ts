@@ -7,35 +7,35 @@ export function TooltipRenderer({ datum, xKey }: any) {
 <div style="border-top: 1px dashed lightgray"></div>
 <div>
     <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: black"></div>
+        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #151515"></div>
         <div style="display:flex ; width: 100%; justify-content: space-between">
             <div>Black</div>
             <div style="margin-left: 20px"> ${datum["b"]}</div>
         </div>
     </div>
     <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: red"></div>
+        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #E53F40"></div>
         <div style="display:flex ;width: 100%; justify-content: space-between">
             <div>Red</div>
             <div>${datum["r"]}</div>
         </div>
     </div>
     <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: yellow"></div>
+        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #EBBF2C"></div>
         <div style="display:flex ;width: 100%; justify-content: space-between">
             <div>Yellow</div>
             <div>${datum["y"]}</div>
         </div>
     </div>
     <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: green"></div>
+        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #418D18"></div>
         <div style="display:flex ;width: 100%; justify-content: space-between">
             <div>Green</div>
             <div>${datum["g"]}</div>
         </div>
     </div>
     <div style="display: flex;">
-        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: blue"></div>
+        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #3876FE"></div>
         <div style="display:flex ;width: 100%; justify-content: space-between">
             <div>Blue</div>
             <div>${datum["bl"]}</div>
@@ -47,11 +47,11 @@ export function TooltipRenderer({ datum, xKey }: any) {
 export function createSeriesData() {
   const seriesData: any = [];
   const labels = [
-    { text: "Black", color: "black", key: "b" },
-    { text: "Red", color: "red", key: "r" },
-    { text: "Yellow", color: "yellow", key: "y" },
-    { text: "Green", color: "green", key: "g" },
-    { text: "Blue", color: "blue", key: "bl" },
+    { text: "Black", color: "#151515", key: "b" },
+    { text: "Red", color: "#E53F40", key: "r" },
+    { text: "Yellow", color: "#EBBF2B", key: "y" },
+    { text: "Green", color: "#418D18", key: "g" },
+    { text: "Blue", color: "#3876FE", key: "bl" },
   ];
 
   for (let i = 0; i < labels.length; i++) {
