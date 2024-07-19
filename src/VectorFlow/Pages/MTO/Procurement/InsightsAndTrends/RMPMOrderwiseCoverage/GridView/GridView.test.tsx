@@ -65,7 +65,7 @@ const agGridProps: AgGridReactProps = {
         pagination: true,
         defaultColDef: {
             cellStyle: {
-                'text-align': 'center',
+                'textAlign': 'center',
                 'height': '50px',
                 "font-style": "normal",
                 "font-variant": "normal",
@@ -130,6 +130,7 @@ const mapDataToColumns = (data: Order[], columns: ColDef[]) => {
 
 const convertedData = mapDataToColumns(procData, columnData);
 const ShortageDatas = convertedData;
+
 
 jest.mock('@ag-grid-community/react', () => ({
     AgGridReact: () => <div>AgGridReact Mock</div>,
@@ -199,3 +200,5 @@ describe('GridView Component', () => {
         expect(rows[2]).toHaveStyle('background: #F7F7F7');
     });
 });
+
+

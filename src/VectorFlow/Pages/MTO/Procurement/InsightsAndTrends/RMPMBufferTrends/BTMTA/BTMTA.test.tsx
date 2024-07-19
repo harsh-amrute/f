@@ -14,6 +14,8 @@ const dummyStore: any = {
     AnalyticsData: {}
 }
 
+const dummyData = [{}];
+
 afterEach(() => {
     jest.resetAllMocks(); // Reset mocks after each test
 });
@@ -55,20 +57,20 @@ const contextWrapper = (children: ReactNode, store: any) => {
 describe('BTMTA Component', () => {
 
     test('renders BTMTA component with isMTO prop as false', () => {
-        render(contextWrapper(<BTMTA isMTO={false} />, mockedStore));
+        render(contextWrapper(<BTMTA data={dummyData} isMTO={false} />, mockedStore));
 
         expect(screen.getByText(/Select Horizon/i)).toBeInTheDocument();
     });
 
     test('renders BTMTA component with isMTO prop as true', () => {
-        render(contextWrapper(<BTMTA isMTO={true} />, mockedStore));
+        render(contextWrapper(<BTMTA data={dummyData} isMTO={true} />, mockedStore));
 
         expect(screen.getByText(/Select Horizon/i)).toBeInTheDocument();
     });
 
 
     test('toggles between Percentage and Absolute Value and updates the chart', async () => {
-        render(contextWrapper(<BTMTA isMTO={false} />, mockedStore));
+        render(contextWrapper(<BTMTA data={dummyData} isMTO={false} />, mockedStore));
 
         const capsuleButton = screen.getByText('Percentage');
         fireEvent.click(capsuleButton);

@@ -1,11 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "allotment/dist/style.css";
 import {
     SCChartContainer, SCHorizontalDivider
 } from '../styles';
 import { AgChartsReact } from "ag-charts-react";
 import { AgChartOptions, AgCharts } from "ag-charts-community";
-import procData from "../ProcurementData";
 import { Order } from "../../../../../../types/MTO";
 import { InsightsAndTrendsString } from "../../../../Common/String";
 import { ProcurementSeriesDataFill, ProcurementSeriesDataYKey, ProcurementSeriesDataYName } from "../../../../Common/Enum";
@@ -14,13 +13,16 @@ import VFModalCard from "../../../../../../../components/VectorFLOW/commons/VFMo
 import VFTable from "../../../../../../../components/VectorFLOW/commons/VFTable";
 import { GridRef } from "../../../../../../../VectorFlow/types/MDM";
 
-const GraphView = () => {
+const GraphView = ({ shortageData }: any) => {
 
-    // const [date, setDate] = useState("19 April 2024 - 18 July 2024")
     const [date] = useState("01 July 2024 - 28 Sept 2024")
 
-    // const [rawData, setRawData] = useState(procData);
-    const [rawData] = useState(procData);
+    const [rawData, setRawData] = useState(shortageData);
+
+    useEffect(() => {
+        setRawData(shortageData)
+    }, [shortageData])
+
 
     function TooltipRenderer({ datum, xKey }: any) {
         return `
