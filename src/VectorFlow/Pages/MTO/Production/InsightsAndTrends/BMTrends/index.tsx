@@ -374,8 +374,8 @@ const BMTrends = () => {
                 setChartLoading={setChartLoading}
                 data={numericData}
                 rowData={rowData}
-                graphTitle={`Overall BM Trend (${numericData[0]?.dt} - ${numericData[numericData?.length - 1]?.dt} )`}
-                tableTitle={`Overall BM Trend (${numericData[0]?.dt} - ${numericData[numericData?.length - 1]?.dt} )`}
+                graphTitle={`Overall BM Trend (${numericData[0]?.dt || '--'} - ${numericData[numericData?.length - 1]?.dt || '--'} )`}
+                tableTitle={`Overall BM Trend (${numericData[0]?.dt || '--'} - ${numericData[numericData?.length - 1]?.dt || '--'} )`}
                 options={options}
                 colDef={colDef}
                 header={generateHeader}
