@@ -142,7 +142,7 @@ const ResizableTable = (props: IResizeTableProps) => {
         display: "flex",
         justifyContent: "flex-start",
       },
-      headerComponent: () => <CustomHeader headerName="FOL ( in Dyays )" />,
+      headerComponent: () => <CustomHeader headerName="FOL ( in Days )" />,
     },
   ];
 

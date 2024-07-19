@@ -53,7 +53,7 @@ export const Button = styled.button<{ themeUi: string; arrowName: string }>`
     font-family: Roboto;
     border-radius: 50%;
     background: url(/assets/img/mto/fullKitAssignment/${(props) =>
-      props.arrowName}.svg);
+    props.arrowName}.svg);
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;

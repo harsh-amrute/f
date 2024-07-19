@@ -26,6 +26,24 @@ describe('OrderRescheduling', () => {
     });
 
 
+    it('should fetch data with pagination for next page', async () => {
+
+        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await OrderReschedulingService.getOrderReschedulingPageData('2');
+        expect(response.status).toBe(200);
+    });
+
+
+    it('should update order due date', async () => {
+
+        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await OrderReschedulingService.putUpdateOrderDueDate([{ "unm": "Admin", "isUnSch": 1, "ordData": [{ "ok": "ord 022_1", "r": "" }] }]);
+        expect(response).toBe(undefined);
+    });
+
+
+
+
 
     it('should fetch Material Requirement Cumulative', async () => {
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
