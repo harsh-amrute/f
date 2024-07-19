@@ -67,7 +67,9 @@ export const DeptWiseBMReport: (ColDef | ColGroupDef)[] = [
         suppressStickyLabel: true,
         openByDefault: true,
         children: [
-            { field: "BPP", headerName: "BPP", colId: "BPP" },
+            { field: 'ec', headerName: '', colId: '', cellRenderer: "customCellRenderer", initialWidth: 80 },
+            { field: 'ic', headerName: '', colId: '', cellRenderer: "AgeingCellRenderer", initialWidth: 80 },
+            { field: "BPP", headerName: "BPP", colId: "BPP", cellRenderer: "colorCellRenderer" },
             { field: "D_Ag", headerName: 'Dept Ageing', colId: "Dept Ageing", columnGroupShow: "open" },
             { field: "Ord_Typ", headerName: "Order Type", colId: "Order Type", columnGroupShow: "open" },
             { field: "Ord_ID", headerName: "Order Type", colId: "Order ID", columnGroupShow: "closed" },
@@ -131,13 +133,27 @@ export const DeptWiseBMReport: (ColDef | ColGroupDef)[] = [
         suppressStickyLabel: true,
         openByDefault: false,
         children: [
-            { field: "Rem_Cd", headerName: "Remark Code", pinned: 'right', colId: "Remark Code" },
-            { field: "Lst_Rmrk", headerName: "Latest Remark", pinned: 'right', colId: "Latest Remark" },
+            {
+                field: "Rem_Cd", headerName: "Remark Code", pinned: 'right', colId: "Remark Code", cellRenderer: "TextBoxCellRenderer", cellRendererParams: {
+                    data: {
+                        flag: true
+                    }
+                }
+            },
+            { field: "Lst_Rmrk", headerName: "Latest Remark", pinned: 'right', colId: "Latest Remark", cellRenderer: "TextBoxCellRenderer" },
             { field: "Rmrk_Hstry", headerName: "Remark History", pinned: 'right', colId: "Remark History" },
         ]
     }
 ];
 
+export const orderDataDropDown: (ColDef)[] = [
+    { field: "FG_Cod", headerName: 'FG Code', rowGroup: true, hide: true },
+    { field: "Lvl", rowGroup: true, hide: true },
+    { field: "Rqrment", headerName: 'Requirement' },
+    { field: "Stck", headerName: 'Stock' },
+    { field: "WIP", headerName: 'WIP' },
+    { field: 'Gp', headerName: 'Gap' }
+]
 
 export const orderStatus: (ColDef | ColGroupDef)[] = [
     {
@@ -390,7 +406,7 @@ export const ageingData = [
 
 
 export const deptwiseBMReportData1 = {
-    "BPP": "Value 1",
+    "BPP": "Red",
     "D_Ag": "Dept Ageing 1",
     "Ord_Typ": "Order Type 1",
     "Ord_ID": "Order ID 1",
@@ -427,7 +443,7 @@ export const deptwiseBMReportData1 = {
 
 export const deptwiseBMReportData = [
     {
-        "BPP": "Value 1",
+        "BPP": "Red",
         "D_Ag": "Dept Ageing 1",
         "Ord_Typ": "Order Type 1",
         "Ord_ID": "Order ID 1",
@@ -458,7 +474,25 @@ export const deptwiseBMReportData = [
         "Cntry": "Country 1",
         "Rem_Cd": "Remark Code 1",
         "Lst_Rmrk": "Latest Remark 1",
-        "Rmrk_Hstry": "Remark History 1"
+        "Rmrk_Hstry": "Remark History 1",
+        "children": [
+            {
+                "FG_Cod": "A123",
+                "Lvl": "Level 1",
+                "Rqrment": "Requirement 1",
+                "Stck": 100,
+                "WIP": 50,
+                "Gp": 50
+            },
+            {
+                "FG_Cod": "A123",
+                "Lvl": "Level 2",
+                "Rqrment": "Requirement 2",
+                "Stck": 150,
+                "WIP": 70,
+                "Gp": 80
+            },
+        ]
     },
     {
         "BPP": "Value 2",
@@ -492,7 +526,25 @@ export const deptwiseBMReportData = [
         "Cntry": "Country 2",
         "Rem_Cd": "Remark Code 2",
         "Lst_Rmrk": "Latest Remark 2",
-        "Rmrk_Hstry": "Remark History 2"
+        "Rmrk_Hstry": "Remark History 2",
+        "children": [
+            {
+                "FG_Cod": "B123",
+                "Lvl": "Level 1",
+                "Rqrment": "Requirement 1",
+                "Stck": 100,
+                "WIP": 50,
+                "Gp": 50
+            },
+            {
+                "FG_Cod": "B123",
+                "Lvl": "Level 2",
+                "Rqrment": "Requirement 2",
+                "Stck": 150,
+                "WIP": 70,
+                "Gp": 80
+            },
+        ]
     },
     {
         "BPP": "Value 3",
@@ -526,7 +578,25 @@ export const deptwiseBMReportData = [
         "Cntry": "Country 3",
         "Rem_Cd": "Remark Code 3",
         "Lst_Rmrk": "Latest Remark 3",
-        "Rmrk_Hstry": "Remark History 3"
+        "Rmrk_Hstry": "Remark History 3",
+        "children": [
+            {
+                "FG_Cod": "B456",
+                "Lvl": "Level 1",
+                "Rqrment": "Requirement 3",
+                "Stck": 120,
+                "WIP": 60,
+                "Gp": 60
+            },
+            {
+                "FG_Cod": "B456",
+                "Lvl": "Level 2",
+                "Rqrment": "Requirement 4",
+                "Stck": 90,
+                "WIP": 30,
+                "Gp": 60
+            },
+        ]
     },
     {
         "BPP": "Value 4",
@@ -560,7 +630,25 @@ export const deptwiseBMReportData = [
         "Cntry": "Country 4",
         "Rem_Cd": "Remark Code 4",
         "Lst_Rmrk": "Latest Remark 4",
-        "Rmrk_Hstry": "Remark History 4"
+        "Rmrk_Hstry": "Remark History 4",
+        "children": [
+            {
+                "FG_Cod": "C123",
+                "Lvl": "Level 1",
+                "Rqrment": "Requirement 1",
+                "Stck": 100,
+                "WIP": 50,
+                "Gp": 50
+            },
+            {
+                "FG_Cod": "C123",
+                "Lvl": "Level 2",
+                "Rqrment": "Requirement 2",
+                "Stck": 150,
+                "WIP": 70,
+                "Gp": 80
+            },
+        ]
     },
     {
         "BPP": "Value 5",
@@ -594,7 +682,25 @@ export const deptwiseBMReportData = [
         "Cntry": "Country 5",
         "Rem_Cd": "Remark Code 5",
         "Lst_Rmrk": "Latest Remark 5",
-        "Rmrk_Hstry": "Remark History 5"
+        "Rmrk_Hstry": "Remark History 5",
+        "children": [
+            {
+                "FG_Cod": "D123",
+                "Lvl": "Level 1",
+                "Rqrment": "Requirement 1",
+                "Stck": 100,
+                "WIP": 50,
+                "Gp": 50
+            },
+            {
+                "FG_Cod": "D123",
+                "Lvl": "Level 2",
+                "Rqrment": "Requirement 2",
+                "Stck": 150,
+                "WIP": 70,
+                "Gp": 80
+            },
+        ]
     }
     // Add more entries as needed...
 ]

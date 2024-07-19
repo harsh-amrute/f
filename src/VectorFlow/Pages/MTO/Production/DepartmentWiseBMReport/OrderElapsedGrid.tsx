@@ -16,7 +16,8 @@ import {
     ExpansionHeaderNormalText,
     ExpansionHeaderColoredText,
     ExpansionHeaderGroup,
-    IconWrapper
+    IconWrapper,
+    HigHAgeingIconWrapper
 } from './styles'
 
 import { BPRViewTableGrid } from '../../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/styles';
@@ -39,6 +40,15 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
 
     const [leftPanelActiveTab, SetLeftPanelActiveTab] = useState<string>('Order_Status')
 
+
+    const dropDownButton = () => {
+        return (
+            themeUi !== 'REGALBLAZE' ?
+                isLeftPanelOrderStatusOpen ? <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowup.svg' /> : <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowdown.svg' /> :
+                isLeftPanelOrderStatusOpen ? <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowup-regal.svg' /> : <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowdown-regal.svg' />
+        )
+    }
+
     return (
         isTrue ?
             <div style={{ display: 'flex', gap: "2rem" }}>
@@ -46,7 +56,7 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                     <BPRViewTablePrefixWrapper>
                         <BPRViewTableHeaderTab
                             themeUi={themeUi}
-                            zIndex={leftPanelActiveTab === 'Order_Status' ? 1:0}
+                            zIndex={leftPanelActiveTab === 'Order_Status' ? 1 : 0}
                             marLeft={false}
                             status={leftPanelActiveTab === 'Order_Status' ? "active" : 'inactive'}
                             onClick={() => SetLeftPanelActiveTab('Order_Status')}
@@ -55,7 +65,7 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                         </BPRViewTableHeaderTab>
                         <BPRViewTableHeaderTab
                             themeUi={themeUi}
-                            zIndex={leftPanelActiveTab === 'Elapsed_Time' ? 1:0}
+                            zIndex={leftPanelActiveTab === 'Elapsed_Time' ? 1 : 0}
                             marLeft={false}
                             status={leftPanelActiveTab === 'Elapsed_Time' ? "active" : 'inactive'}
                             onClick={() => SetLeftPanelActiveTab('Elapsed_Time')}
@@ -85,9 +95,8 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                         </ExpansionHeaderColoredText>
                                     </ExpansionHeaderGroup>
                                     <ExpansionHeaderGroup onClick={() => toggleLeftPanelOrderStatus(!isLeftPanelOrderStatusOpen)} style={{ marginLeft: 'auto' }}>
-                                        {themeUi!=='REGALBLAZE'?
-                                        isLeftPanelOrderStatusOpen? <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowup.svg'/>: <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowdown.svg'/>:
-                                        isLeftPanelOrderStatusOpen?<IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowup-regal.svg'/>:<IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowdown-regal.svg'/>
+                                        {
+                                            dropDownButton()
                                         }
                                     </ExpansionHeaderGroup>
                                 </ExpansionHeader>
@@ -120,8 +129,10 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                             10 days
                                         </ExpansionHeaderColoredText>
                                     </ExpansionHeaderGroup>
-                                    <ExpansionHeaderGroup onClick={() => toggleLeftPanelElapsedTime(!isleftPanelElapsedTimeOpen)} style={{ marginLeft: '45%' }}>
-                                        ^
+                                    <ExpansionHeaderGroup onClick={() => toggleLeftPanelElapsedTime(!isleftPanelElapsedTimeOpen)} style={{ marginLeft: 'auto' }}>
+                                        {
+                                            dropDownButton()
+                                        }
                                     </ExpansionHeaderGroup>
                                 </ExpansionHeader>
                                 {(isleftPanelElapsedTimeOpen) && (
@@ -141,11 +152,15 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                 <BPRViewTableWrapper >
                     <BPRViewTablePrefixWrapper>
                         <BPRViewTableHeaderTab
+                            bgColor='red'
                             themeUi={themeUi}
                             zIndex={1}
                             marLeft={false}
                             status="active"
                         >
+                            <HigHAgeingIconWrapper
+                                src='/assets/img/mto/DeptWiseBmReport/highageing.svg'
+                            />
                             High Ageing Batches
                         </BPRViewTableHeaderTab>
                     </BPRViewTablePrefixWrapper>
@@ -161,7 +176,7 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                         4
                                     </ExpansionHeaderColoredText>
                                 </ExpansionHeaderGroup>
-                                <ExpansionHeaderGroup style={{ marginLeft: '10px' }}>
+                                <ExpansionHeaderGroup style={{ marginLeft: 'auto' }}>
                                     <ExpansionHeaderNormalText>
                                         Min Ageing  :
                                     </ExpansionHeaderNormalText>
@@ -169,7 +184,7 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                         10 days
                                     </ExpansionHeaderColoredText>
                                 </ExpansionHeaderGroup>
-                                <ExpansionHeaderGroup style={{ marginLeft: '10px' }}>
+                                <ExpansionHeaderGroup style={{ marginLeft: 'auto' }}>
                                     <ExpansionHeaderNormalText>
                                         Max Ageing  :
                                     </ExpansionHeaderNormalText>
@@ -178,7 +193,9 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                     </ExpansionHeaderColoredText>
                                 </ExpansionHeaderGroup>
                                 <ExpansionHeaderGroup onClick={() => toggleRightPanel(!isRightPanel)} style={{ marginLeft: '100px' }}>
-                                    ^
+                                    {
+                                        dropDownButton()
+                                    }
                                 </ExpansionHeaderGroup>
                             </ExpansionHeader>
                             {(isRightPanel) && (

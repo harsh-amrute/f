@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import {
     BMDepWrapper,
@@ -19,13 +19,25 @@ import { Allotment } from 'allotment';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
 import useViewPort from '../../../../../hooks/useViewPort';
 import OrderElapsedGrid from './OrderElapsedGrid';
-
+import ColorCellRenderer from '../../Common/ColorCellRenderer';
+import AgeingCellRenderer from './AgeingIconCellRenderer';
+import customCellRenderer from './CustomCellRenderer';
+import RowGroupRenderer from './RowGroupRenderer';
+import TextBoxCellRenderer from './TextBoxCellRenderer';
 
 
 const DptWiseBMReport = () => {
 
     //const [conColDef, setCoverColDef] = useState<any>();
 
+    const customCellRenderers = useMemo(() => (
+        {
+            "colorCellRenderer": ColorCellRenderer,
+            "AgeingCellRenderer": AgeingCellRenderer,
+            // "availabilityToolTip": AvailabilityToolTip,
+            "customCellRenderer": customCellRenderer,
+            "TextBoxCellRenderer": TextBoxCellRenderer
+        }), []);
 
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
@@ -42,7 +54,7 @@ const DptWiseBMReport = () => {
             suppressRowClickSelection: true,
             enableBrowserTooltips: true,
             enableRangeSelection: true,
-
+            components: customCellRenderers,
             pagination: true,
             defaultColDef: {
                 cellStyle: {
@@ -61,11 +73,13 @@ const DptWiseBMReport = () => {
 
         },
         masterDetail: true,
-
+        detailCellRenderer: RowGroupRenderer,
         paginationAutoPageSize: true,
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,
         groupDefaultExpanded: 0,
+
+
     };
 
     const { screenHeight } = useViewPort()

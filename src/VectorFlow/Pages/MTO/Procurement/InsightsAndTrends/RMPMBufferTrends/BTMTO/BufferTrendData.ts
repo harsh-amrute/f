@@ -67,6 +67,5 @@ function getRandomValue(str: string): number {
 const startDate = '26-06-2024';
 const numDays = 90;
 const dummyData = generateDummyData(startDate, numDays);
-console.log(dummyData);
 
 export default dummyData;

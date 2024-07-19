@@ -58,7 +58,7 @@ export const BPRViewTablePrefixIcon = styled.img`
 export const BPRViewTableGrid = styled.div`
     display:flex;
     flex-direction:column;
-    border: 1px solid black;
+    border: 1px solid #CCCCCC;
     width:100%;
     min-height:150px;
     max-height:90%;

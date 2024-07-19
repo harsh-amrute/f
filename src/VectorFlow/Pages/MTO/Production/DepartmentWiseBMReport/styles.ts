@@ -67,8 +67,9 @@ export const BPRViewTableHeaderTab = styled.div<{
   zIndex: number
   marLeft: true | false
   themeUi: string
+  bgColor?: string
 }>`
-color: ${(props) => (props.status==='active' ? '#FFFFFF' : '')};
+color: ${(props) => (props.status === 'active' ? '#FFFFFF' : '')};
 opacity: 1;
 min-height: 60px;
 text-align: center;
@@ -84,7 +85,7 @@ padding:0px 20px;
 
 cursor: pointer;
 
-// pointer-events:${(props)=>props.status === 'completed' ? 'none' : 'all'};
+// pointer-events:${(props) => props.status === 'completed' ? 'none' : 'all'};
 
 ::before {
   border: 0.5px solid #cccccc;
@@ -98,89 +99,33 @@ cursor: pointer;
   border-bottom: none;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
-  background: ${(props) =>props.status==="active"?props.themeUi === "REGALBLAZE"
-  ? globalStyles.chooseThemeColor[props.themeUi]?.color5
-  : "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box":'white'};
+  ${(props) => props.bgColor ? `background-color:${props.bgColor};` : `background: ${props.status === "active" ? props.themeUi === "REGALBLAZE"
+    ? globalStyles.chooseThemeColor[props.themeUi]?.color5
+    : "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box" : 'white'};`}
   box-shadow: 0px 5px 25px #9d9d9d29;
   transform: scale(1.2, 1.3) perspective(0.5em) rotateX(2.5deg);
   transform-origin: bottom left;
 }
 `
 
-  // export const OrderElapasedGridWrapper=styled.div`
-  //     margin: 20px auto;
-  //     width: 80%;
-  //     background-color: #fff;
-  //     border: 1px solid #ccc;
-  //     border-radius: 5px;
-  //     padding: 20px;
-  // `
 
-  // export const TabWrapper=styled.div`
-  //   overflow: hidden;
-  //   border-bottom: 1px solid #ccc;
-  // `
-
-  // export const CardWrapper= styled.div`
-  //     border: 1px solid #ccc;
-  //     border-radius: 5px;
-  //     padding: 20px;
-  //     background-color: #fff;
-  // `
-
-  // export const TabContentWraper= styled.div`
-  //     display: none;
-  //     padding: 20px;
-  //     border-top: none;
-  // `
-
-  // export const TabLinkActive = styled.button`
-  //     background-color: inherit;
-  //     border: none;
-  //     outline: none;
-  //     cursor: pointer;
-  //     padding: 14px 16px;
-  //     transition: 0.3s;
-  //     font-size: 16px;
-  //     background-color: #f1f1f1;
-  //     color: #333;
-  //     border-bottom: 2px solid #d9534f;
-  // `
-
-  // export const TabLinkButton = styled.button`
-  //   background-color: inherit;
-  //   border: none;
-  //   outline: none;
-  //   cursor: pointer;
-  //   padding: 14px 16px;
-  //   transition: 0.3s;
-  //   font-size: 16px;
-  // `
-
-  // export const DashboardWrapper = styled.div`
-  //   width: 90%;
-  //   margin: 20px auto;
-  //   flex-direction: column;
-  //`
-
-
-  export const ExpansionWrapper = styled.div`
+export const ExpansionWrapper = styled.div`
     border:solid 1px #E3ACC9;
     border-radius:4px;
     width:100%;
   `
 
-  export const ExpansionHeader = styled.div`
+export const ExpansionHeader = styled.div`
     margin:0px 10px;
     display:flex;
     align-items:center;
   `
 
-  export const ExpansionHeaderGroup = styled.div`
+export const ExpansionHeaderGroup = styled.div`
   
   `
 
-  export const IconWrapper = styled.img`
+export const IconWrapper = styled.img`
     height:20px;
     width:20px;
   `
@@ -193,13 +138,29 @@ export const ExpansionHeaderNormalText = styled.span`
 `
 
 export const ExpansionHeaderColoredText = styled.span`
-font-family:Roboto;
+  font-family:Roboto;
   font-size:12px;
   font-weight:500;
   line-height:40px;
   color:#BC3D81;
 `
 
-  export const ExpansionContent = styled.div`
+export const ExpansionContent = styled.div`
   
   `
+
+export const HigHAgeingIconWrapper = styled.img`
+    height:20px;
+    width:20px;
+    margin-right:10px;
+  `
+
+export const FlatIcon=styled.img``
+
+export const ETACellRendererWrapper = styled.div`
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100%;
+    width:100%;
+`
