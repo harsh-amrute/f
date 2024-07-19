@@ -72,7 +72,7 @@ const TaskPendingForReview = ()=>{
     return (
         <TaskPendingWrapper>
             <VFTable
-                height={"100%"}
+                height={"85%"}
                 ref={ref}
                 columnDefs={detailTableColDefs}
                 gridOptions={{

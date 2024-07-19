@@ -325,14 +325,16 @@ export const SubmitDataButtonWrapper = styled.div`
 
 export const ConflictErrorToolTipWrapper = styled.div`
     position:fixed;
+    min-width:140px;
     background-color:white;
     display:flex;
     flex-direction:column;
     padding:5px;
-    min-width: 135px;
     z-index:10000;
+    border-radius:4px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     animation:${fadeIn} 0.2s ease-in;
+    transform:translateX(-50%);
    
 `
 export const ConflictErrorToolTipSection = styled.div`
@@ -347,13 +349,13 @@ export const ConflictErrorText = styled.p`
 
 `
 
+
 export const ToolTipTriangle = styled.div`
     position:absolute;
-    left:55px;
-    width: 0px;
+    left:45%;
     height: 0px;
     border-style: solid;
     border-width: 0 7.5px 13.0px 7.5px;
     border-color: transparent transparent white transparent;
-    transform: rotate(0deg);
+    // transform: rotate(0deg);
 ` 

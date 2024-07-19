@@ -74,7 +74,7 @@ const useTaskPendingForReview = ()=>{
             
             setTaskActionType(taskData.Actiontype)
             
-            const tempToastId = notifyLoader('Laoding Data')
+            const tempToastId = notifyLoader('Loading Data')
             const res:any = await getTaskCount(taskData.TaskID);
 
             const taskCount = JSON.parse(res.data.recordCount)[0].recordcount;
@@ -91,7 +91,6 @@ const useTaskPendingForReview = ()=>{
             toast.dismiss(tempToastId)
             toastId = notifyLoader(`Downloading Data 0 / ${taskCount}`)
 
-
             if(taskCount <= chunkSize){
                 const result = await getTaskDetails(payload);
                 taskDataStore = result.data.data;
@@ -101,7 +100,11 @@ const useTaskPendingForReview = ()=>{
                 for(let i=1; i<=numberOfPages; i++){
                     payload.paginationParameter.pageNumber = i;
                     const result = await getTaskDetails(payload)
-                    taskDataStore.push(...result.data.data);
+                    if(i===1){
+                        taskDataStore.push(...result.data.data);
+                    }
+                    taskDataStore[0].data.push(...result.data.data[0].data);
+                    console.log(result.data.data)
                     if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${taskCount} / ${taskCount}`})
                     else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${taskCount}`})
                 }
@@ -110,11 +113,9 @@ const useTaskPendingForReview = ()=>{
             toast.dismiss(toastId);
             
             const currentTaskMaster = taskDataStore[0]
-            console.log(currentTaskMaster)
             const currentTaskMasterId:number = currentTaskMaster.MasterId
             setCurrMasterId(currentTaskMasterId)
             
-            setDetailTableRowData(taskDataStore)
         
             const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value)
             
