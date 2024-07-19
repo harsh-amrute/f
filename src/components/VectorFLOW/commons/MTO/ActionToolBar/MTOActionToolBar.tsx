@@ -78,7 +78,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
             >
 
                 <>
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'stplAndFullKit') && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp !== 'MaterialRequirement') && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') && (comp != "FullKitAssignment") && (comp != "orderAtRisk") &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'stplAndFullKit') && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp !== 'MaterialRequirement') && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') && (comp != "FullKitAssignment") && (comp != "orderBalance") && (comp != "orderAtRisk") &&
 
                         <SCGoBackContainer onClick={() => { if (handleGoBack) handleGoBack() }}>
                             <img
@@ -89,7 +89,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                         </SCGoBackContainer>
                     }
 
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'stplAndFullKit') && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp != "MaterialCovDetailData") && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') && (comp != "FullKitAssignment") && (comp != "orderAtRisk") &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'stplAndFullKit') && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp != "MaterialCovDetailData") && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') && (comp != "FullKitAssignment") && (comp != "orderBalance") && (comp != "orderAtRisk") &&
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -240,7 +240,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                     </>
 
                     {/* Toggle button for chartview/ grid view */}
-                    {((comp === 'rmpm') || (comp === 'stplAndFullKit') || (comp === "orderAtRisk")) &&
+                    {((comp === 'rmpm') || (comp === 'stplAndFullKit') || (comp === "orderAtRisk") || (comp === "orderBalance")) &&
                         <>
                             <SCViewContainerWithBgToggle onClick={() => { setIsGridView && (setIsGridView(!isGridView)); console.log(isGridView) }}>
                                 <SCViewContainer>
