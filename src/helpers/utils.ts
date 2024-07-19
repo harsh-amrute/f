@@ -925,7 +925,6 @@ export const mapDraftDataToTableRowData = (rowData:any[])=>{
 }
 
 export const getExistingColumns = (rowData:any)=>{
-  console.log(rowData)
   return Object.keys(rowData)
 }
 
@@ -1012,7 +1011,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
             field:'Add'+f.key,
             colId:'Add'+f.key,
             cellStyle:{
-              "color":'#BC3D81',
+              "color":textColor,
               "text-align":"center",
               "border-left":"solid 1px #B9B9B9",
             }
@@ -1035,7 +1034,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
             field:'Delete'+f.key,
             colId:'Delete'+f.key,
             cellStyle:{
-              "color":'#BC3D81',
+              "color":textColor,
               "text-align":"center",
               "border-left":"solid 1px #B9B9B9",
             }
@@ -1265,11 +1264,9 @@ export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields:Field
 
 
 export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string,masterId:number)=>{
-  console.log(dirtyRowData)
   return dirtyRowData.map(entry => {
 
     if(((taskType==='modify' && masterId!==6) || masterId===13)){
-      console.log(entry.RN,entry.new, JSON.parse(entry.new))
       const oldData = JSON.parse(entry.old);
       const newData = JSON.parse(entry.new);
       

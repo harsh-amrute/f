@@ -903,7 +903,7 @@ const useViewModify = (pageType:string) => {
 
       const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean,actionStatus="") => {
         const columnsToOmit = activeMaster.fields.filter((field:Field)=>!field.isDownload).map((field:Field)=>field.key)
-        if(([6,10].includes(parseInt(String(activeMaster.id),10)) === false)){
+        if(([6].includes(parseInt(String(activeMaster.id),10)) === false)){
           //CleanUp Row Data
           rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
         }
@@ -1514,6 +1514,12 @@ const useViewModify = (pageType:string) => {
           // cellRenderer:'conflictErrorCellRenderer',
           // tooltipField:colDef.field,
           cellRenderer:'conflictErrorCellRenderer',
+          cellStyle:(params)=>{
+            return{
+              ...params.colDef.cellStyle,
+              padding:0
+            }
+          }
           // onCellClicked:(params:any)=>console.log(params)
           // tooltipField:colDef.field
 
