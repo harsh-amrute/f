@@ -20,7 +20,7 @@ export type BufferTrendData = {
 };
 
 export type ReasonOrderAtRiskType = {
-    reason: string;
-    black: number;
-    red: number;
+    r: string;
+    bo: number;
+    ro: number;
 }
