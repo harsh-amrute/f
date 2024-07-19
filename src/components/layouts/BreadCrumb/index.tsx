@@ -43,9 +43,8 @@ const BreadCrumb = () => {
   if(location.pathname==='/procurement/insights-and-trends/rmpm-expediting-rm-suppliers')return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Expediting RM/Suppliers</span>
   
   if(location.pathname==='/production-planning-and-scheduling/order-rescheduling')return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} />  Order Rescheduling</span>
-
-
   if(location.pathname ==='/production-planning-scheduling/full-kit-assignment') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Full Kit Assignement</span>
+  if(location.pathname ==='/production-planning-and-scheduling/due-date-quotation') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Due Date Quotation</span>
 
   
 

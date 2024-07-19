@@ -48,6 +48,7 @@ import BMTrends from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/BMTren
 import SupplierDispatchReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport'
 
 import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
+import DueDateQuotation from './VectorFlow/Pages/MTO/Production/DueDateQuotation'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -108,8 +109,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/production-planning-scheduling/insight-and-trends/bm-trends',
     '/production-planning-scheduling/full-kit-assignment',
     '/supply-chain-intelligence-hub/sdr',
-    '/master-data-management/data-modification-history'
-
+    '/master-data-management/data-modification-history',
+    '/production-planning-and-scheduling/due-date-quotation'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -618,6 +619,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<OrderRescheduling />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-and-scheduling/due-date-quotation',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DueDateQuotation />)
         },
         ...getStoreTransferModuleRoutes()
       ]
