@@ -238,10 +238,11 @@ const OrderAtRisk = () => {
       {isLoading ? <VFLoader/> :
        <HorizontalViewWrapper style={{ marginTop: "20px" }}>
         {isGridView ? (
-          <div data-testid="grid-view" style={{height:screenHeight - 300}}>
+          <div data-testid="grid-view" style={{height:screenHeight - 200}}>
             <VFTable
               {...gridOptions}
               sideBar="columns"
+              pagination={true}
               columnDefs={tableColDefs}
               rowData={gridData}
               tooltipHideDelay={100000}

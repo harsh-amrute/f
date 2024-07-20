@@ -50,6 +50,7 @@ import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModification
 import STPLAndFullKits from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/STPLAndFullKits'
 import OrderAtRisk from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/OrderAtRisk'
 import OrderBalance from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/OrderBalance'
+import ResourceUtilization from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/ResourceUtilization'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -67,8 +68,10 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
-    '/production-planning-scheduling/insight-and-trends/order-balance',
     '/production-planning-scheduling/enquiry-response',
+    '/production-planning-scheduling/insight-and-trends/order-at-risk',
+    '/production-planning-scheduling/insight-and-trends/order-balance',
+    '/poogi/insight-and-trends/resource-utilization-wip-profile'
   ]
   const urlAllPage = [
     ...authenPage,
@@ -116,6 +119,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/master-data-management/data-modification-history',
     '/production-planning-scheduling/insight-and-trends/order-at-risk',
     '/production-planning-scheduling/insight-and-trends/order-balance',
+    '/poogi/insight-and-trends/resource-utilization-wip-profile',
+    
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -657,6 +662,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<OrderRescheduling />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/insight-and-trends/resource-utilization-wip-profile',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ResourceUtilization />)
         },
         ...getStoreTransferModuleRoutes()
       ]
