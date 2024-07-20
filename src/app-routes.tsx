@@ -49,6 +49,7 @@ import SupplierDispatchReport from './VectorFlow/Pages/MTA/SupplyChainIntelligen
 import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
 import STPLAndFullKits from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/STPLAndFullKits'
 import OrderAtRisk from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/OrderAtRisk'
+import OrderBalance from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/OrderBalance'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -66,6 +67,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
+    '/production-planning-scheduling/insight-and-trends/order-balance',
+    '/production-planning-scheduling/enquiry-response',
   ]
   const urlAllPage = [
     ...authenPage,
@@ -112,6 +115,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/supply-chain-intelligence-hub/sdr',
     '/master-data-management/data-modification-history',
     '/production-planning-scheduling/insight-and-trends/order-at-risk',
+    '/production-planning-scheduling/insight-and-trends/order-balance',
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -507,6 +511,17 @@ export const initRoutes = (): RouteObject[] => {
        {
          index: true,
          element: lazyLoad(<OrderAtRisk/>)
+       },
+       ...getStoreTransferModuleRoutes()
+     ]
+    },
+    {
+     path: '/production-planning-scheduling/insight-and-trends/order-balance',
+     element: <AppLayout />,
+     children: [
+       {
+         index: true,
+         element: lazyLoad(<OrderBalance/>)
        },
        ...getStoreTransferModuleRoutes()
      ]
