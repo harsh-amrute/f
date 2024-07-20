@@ -307,7 +307,7 @@ const SplitGraphContainer = ({
               refGraph1.current?.api.createRangeChart({
                 chartType: "stackedBar",
                 cellRange: {
-                  columns: ["reason", "black", "red"],
+                  columns: ["r", "bo", "ro"],
                 },
                 chartThemeOverrides: {
                   bar: {
