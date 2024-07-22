@@ -22,7 +22,6 @@ const MaterialCov = () => {
   const [currTab, setCurrTab] = useState<string>("CurrentCoverage");
   const [toggleComponent, setToggleComponent] = useState<boolean>(false);
   const [soData, setSOData] = useState<any>([]);
-  const [myData, setMyData] = useState<any>([]);
   const { data, isLoading, /*refetch*/ } = useGetSOSummaydetails();
 
 

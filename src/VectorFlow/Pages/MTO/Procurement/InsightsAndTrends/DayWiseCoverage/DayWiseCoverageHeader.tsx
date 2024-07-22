@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import VFButtonOutline from '../../../../../../components/VectorFLOW/commons/VFButtonOutline'
+import { useState } from 'react'
 import { useUserData } from '../../../../../../context'
 import DatePicker from '../../../../../../components/VectorFLOW/commons/MTO/DatePicker'
 import { DayWiseCoverageHeaderContainer, DayWiseCoverageStatus, Divider, Text } from './style'

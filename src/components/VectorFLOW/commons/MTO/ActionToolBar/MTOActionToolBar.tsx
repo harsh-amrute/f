@@ -29,7 +29,6 @@ import {
     DateIcon,
     DateTitle,
     DateValue,
-    SCViewBackground,
     /**Date component style end */
 } from './styles';
 import moment from 'moment';

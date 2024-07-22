@@ -190,7 +190,7 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                             strictMode={false}
                             width={200}
                             defaultValue={horizonDays}
-                            handleChange={(e) => setHorizondays(e)}
+                            handleChange={(e) => handleSliderChange(e)}
                             labelValueFormatter={(value: number) => value.toString()}
                         />
                         <div>
