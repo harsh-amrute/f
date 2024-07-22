@@ -4,7 +4,7 @@ import { RowEvent } from '@ag-grid-community/core';
 import { FlatIcon } from './styles';
 
 const customCellRenderer = (props: CustomCellRendererProps) => {
-    const { node, value } = props;
+    const { node } = props;
     const [expanded, setExpanded] = useState(node.expanded);
 
     useEffect(() => {
@@ -20,10 +20,10 @@ const customCellRenderer = (props: CustomCellRendererProps) => {
     const onClick = useCallback(() => node.setExpanded(!node.expanded), [node]);
 
     return (
-       
-            <button data-testid='collapsable' style={{ fontSize: "18px", background: "transparent", fontWeight: "bold" }} onClick={onClick}>
-               <FlatIcon src={expanded ? "/assets/img/mto/dayWiseCoverage/arrow_down.svg" : "/assets/img/mto/dayWiseCoverage/arrow_right.svg"} />
-            </button>
+
+        <button data-testid='collapsable' style={{ fontSize: "18px", background: "transparent", fontWeight: "bold" }} onClick={onClick}>
+            <FlatIcon src={expanded ? "/assets/img/mto/dayWiseCoverage/arrow_down.svg" : "/assets/img/mto/dayWiseCoverage/arrow_right.svg"} />
+        </button>
     )
 }
 

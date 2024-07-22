@@ -6,13 +6,7 @@ import {
 } from './styles';
 import { AgGridReactProps } from 'ag-grid-react';
 //import { ColDef } from 'ag-grid-enterprise'
-import {
-    ColDef,
-    ColGroupDef,
-    GridApi,
-    GridOptions,
-    /*createGrid,*/
-} from "ag-grid-enterprise";
+
 import { deptwiseBMReportData, DeptWiseBMReport,RemarkHistoryData } from './DeptWiseBMReportData';
 import GridView from './GridView';
 import { Allotment } from 'allotment';

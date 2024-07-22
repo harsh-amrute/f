@@ -1,12 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import { orderDataDropDown, deptwiseBMReportData } from './DeptWiseBMReportData';
-import { ColDef, ColGroupDef, ColumnGroup } from "ag-grid-enterprise";
+import { ColDef } from "ag-grid-enterprise";
 
 const RowGroupRenderer = (params: any) => {
-    //console.log('Parekmkfv=', params)
-    //  const {HeaderChildren} = HeaderChildren
-    const [rowData, setRowData] = useState<any[]>();
+
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>([
         { field: "FG_Cod", headerName: 'FG Code', rowGroup: true, hide: true },

@@ -1,59 +1,12 @@
-import { ColDef, ColGroupDef, ColumnGroup } from "ag-grid-enterprise";
-import React, { Children } from "react";
-
-interface ColumnDefinition {
-    headerName: string;
-    suppressStickyLabel: boolean;
-    openByDefault: boolean;
-    children: ColumnField[];
-}
-
-interface ColumnField {
-    field: string;
-    headerName: string;
-    colId: string;
-    columnGroupShow?: string;
-    pinned?: boolean;
-}
-
-interface JSONData {
-    BPP: string;
-    D_Ag: string;
-    Ord_Typ: string;
-    Ord_ID: string;
-    L_Itm: string;
-    Itm_Code: string;
-    Itm_Desc: string;
-    Ord_Qty: number;
-    WIP_O_Hd: number;
-    M_Bal: number;
-    CCR_Nme: string;
-    Cust_Nme: string;
-    CRDDate: string;
-    DDt: string;
-    R_DDt: string;
-    Trail_Dpt: string;
-    Elap_days: number;
-    Attr: string;
-    Pl_Nam: string;
-    PO_No: string;
-    Price: number;
-    Itm_Grp: string;
-    Att_1: string;
-    Att_2: string;
-    Att_3: string;
-    Att_4: string;
-    Cust_Cd: string;
-    Rgn: string;
-    Cntry: string;
-    Rem_Cd: string;
-    Lst_Rmrk: string;
-    Rmrk_Hstry: string;
-}
+import { ColDef, ColGroupDef } from "ag-grid-enterprise";
 
 
 
-export const DeptWiseBMReport=(onOpenRemarkHistory:()=>void): (ColDef | ColGroupDef)[] =>{
+
+
+
+
+export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | ColGroupDef)[] => {
     return [
         {
             headerName: "",
@@ -139,7 +92,7 @@ export const DeptWiseBMReport=(onOpenRemarkHistory:()=>void): (ColDef | ColGroup
                         visible: {
                             flag: true
                         },
-    
+
                     }
                 },
                 {
@@ -149,9 +102,11 @@ export const DeptWiseBMReport=(onOpenRemarkHistory:()=>void): (ColDef | ColGroup
                         }
                     }
                 },
-                { field: "Rmrk_Hstry", headerName: "Remark History", pinned: 'right', colId: "Remark History", cellRenderer: "RemarkHistoryRenderer",cellRendererParams:{
-                    onClick:onOpenRemarkHistory
-                } },
+                {
+                    field: "Rmrk_Hstry", headerName: "Remark History", pinned: 'right', colId: "Remark History", cellRenderer: "RemarkHistoryRenderer", cellRendererParams: {
+                        onClick: onOpenRemarkHistory
+                    }
+                },
             ]
         }
     ]
@@ -717,20 +672,20 @@ export const deptwiseBMReportData = [
 ]
 
 
-export const RemarkHistoryData=[
+export const RemarkHistoryData = [
     {
-        'un':'fristan',
-        'r':'enter the last remark data',
-        'rd':'2023-12-23'
+        'un': 'fristan',
+        'r': 'enter the last remark data',
+        'rd': '2023-12-23'
     },
     {
-        'un':'fristan',
-        'r':'enter the  remark 1 data',
-        'rd':'2023-12-24'
+        'un': 'fristan',
+        'r': 'enter the  remark 1 data',
+        'rd': '2023-12-24'
     },
     {
-        'un':'fristan',
-        'r':'enter the remark 2 data',
-        'rd':'2023-12-24'
+        'un': 'fristan',
+        'r': 'enter the remark 2 data',
+        'rd': '2023-12-24'
     }
 ]

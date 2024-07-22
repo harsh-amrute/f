@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { useUserData } from '../../../../../context';
-import { SCTabButton } from '../../../../../components/VectorFLOW/commons/VFTab/styles';
 import {
     NoDataAvailableContainer,
     NoDataToShowDiv,
@@ -33,7 +32,6 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
     const { user } = useUserData()
 
     const themeUi = user.user.theme_ui
-    const [activeTab, setActiveTab] = useState('OrderStatus');
     const [isLeftPanelOrderStatusOpen, toggleLeftPanelOrderStatus] = useState<boolean>(false);
     const [isleftPanelElapsedTimeOpen, toggleLeftPanelElapsedTime] = useState<boolean>(false)
     const [isRightPanel, toggleRightPanel] = useState<boolean>(false);
