@@ -158,7 +158,7 @@ const MTOActionToolBar = ({ isGoBackButton, isReleaseDate, isAsOnDate, isAddFilt
                                     src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
                                     height={50}
                                     width={60}
-
+                                    alt="Group 627"
                                     onClick={() => { if (submitDate) submitDate() }}
                                 />
 
@@ -167,7 +167,7 @@ const MTOActionToolBar = ({ isGoBackButton, isReleaseDate, isAsOnDate, isAddFilt
 
                     }
 
-                    {comp !== 'EnquiryResponse' && <SCVerticalDivider />}
+                    <SCVerticalDivider />
                 </>
 
                 {isAsOnDate &&
@@ -199,7 +199,7 @@ const MTOActionToolBar = ({ isGoBackButton, isReleaseDate, isAsOnDate, isAddFilt
                                             </VFSelectedFiltersFilterValue>
                                             <VFSelectedFiltersFilterCloseIcon
                                                 onClick={() => handleRemoveFilter(filter?.label, value)}
-                                                src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'}
+                                                src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
                                             />
                                             {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
                                         </VFSelectedFiltersFilterContent>

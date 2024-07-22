@@ -37,6 +37,7 @@ const DayWiseCoverageHeader = ({
                 src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
                 height={50}
                 width={60}
+                alt={"Submit"}
                 onClick={() => { setDateRange(start, end) }}
             />
 
