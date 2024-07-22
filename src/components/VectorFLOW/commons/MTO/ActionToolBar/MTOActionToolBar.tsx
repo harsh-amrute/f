@@ -74,6 +74,8 @@ const MTOActionToolBar = ({ isGoBackButton, isReleaseDate, isAsOnDate, isAddFilt
         }
     }
 
+    console.log("mto toolbar for ", comp);
+
     const format2 = "YYYY-MM-DD"
     const d = new Date();
     //.setDate(d.getDate() - 1)

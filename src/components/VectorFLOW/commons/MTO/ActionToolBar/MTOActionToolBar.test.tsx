@@ -10,7 +10,7 @@ describe('MTOActionToolBar Component', () => {
   const mockSubmitDate = jest.fn();
   const mockSetIsGridView = jest.fn();
   const mockOnAddFilter = jest.fn();
-  const mockRemoveFilters = jest.fn();
+
 
   const selectedFilters = [
     { label: 'Plant Name', values: ['Plant 1', 'Plant 2'] },
