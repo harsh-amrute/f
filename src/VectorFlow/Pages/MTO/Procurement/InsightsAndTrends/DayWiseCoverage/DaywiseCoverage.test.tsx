@@ -9,7 +9,7 @@ describe('DayWiseCoverage', () => {
     it('updates date range when setDateRange is called', async () => {
         render(<DayWiseCoverage />);
         screen.logTestingPlaygroundURL()
-        fireEvent.click(screen.getByText("Submit"))
+        fireEvent.click(screen.getByAltText("Submit"))
     });
 
 

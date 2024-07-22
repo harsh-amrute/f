@@ -411,11 +411,20 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
 
 
             <div style={{
-                width: "95%",
-                border: `1px dashed ${ColorsMTO.LightGrey.code}`,
-                color: ColorsMTO.White.code,
-                marginBottom: '20px'
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                paddingLeft: '20px'
             }}>
+
+                <div style={{
+                    width: "98%",
+
+                    border: `1px dashed ${ColorsMTO.LightGrey.code}`,
+                    color: ColorsMTO.White.code,
+                    marginBottom: '20px'
+                }}>
+                </div>
             </div>
 
             <MainContainer >

@@ -1,5 +1,5 @@
 export const MaterialCoverageString = {
-    orderPriority: " Orders Priority",
+    orderPriority: " Order Priority",
     statusKits: " Status Of Kits",
     viewAllRecords: "View All Records"
 }

@@ -1,21 +1,19 @@
 import { ColDef } from "ag-grid-enterprise"
+import AvlCellRenderer from "../../../Common/AvlCellRenderer"
+import ColorRangeCellRenderer from "../../../Common/ColorRangeCellRenderer"
 const columnData: ColDef[] = [
     {
         colId: "bpp",
         field: "bpp",
         headerName: "BPP",
         hide: false,
-        cellRenderer: "coloPriority",
+        cellRenderer: ColorRangeCellRenderer,
         tooltipComponent: "availabilityToolTip",
         initialWidth: 100,
         autoHeaderHeight: true,
         wrapHeaderText: true,
-        cellStyle: {
-            backgroundColor: "black",
-            color: "white",
-            border: "8px solid white"
-
-        }
+        filter: "agMultiColumnFilter",
+        floatingFilter: true,
 
     },
     {
@@ -27,14 +25,23 @@ const columnData: ColDef[] = [
         tooltipComponent: "availabilityToolTip",
         initialWidth: 200,
         autoHeaderHeight: true,
-        wrapHeaderText: true
+        filter: "agMultiColumnFilter",
+        wrapHeaderText: true,
+        floatingFilter: true,
+        cellStyle: {
+            display: 'flex',
+            justifyContent: 'left',
+        }
     },
     {
         colId: "oid",
         field: "oid",
         headerName: "Order ID",
         hide: false,
-
+        cellStyle: {
+            display: 'flex',
+            justifyContent: 'left',
+        },
         tooltipField: "rm",
         initialWidth: 200,
         filter: "agMultiColumnFilter",
@@ -50,7 +57,11 @@ const columnData: ColDef[] = [
         wrapHeaderText: true,
         initialWidth: 200,
         filter: "agMultiColumnFilter",
-        floatingFilter: true
+        floatingFilter: true,
+        cellStyle: {
+            display: 'flex',
+            justifyContent: 'left',
+        }
     },
     {
         colId: "ic",
@@ -62,7 +73,11 @@ const columnData: ColDef[] = [
         wrapHeaderText: true,
         initialWidth: 200,
         filter: "agMultiColumnFilter",
-        floatingFilter: true
+        floatingFilter: true,
+        cellStyle: {
+            display: 'flex',
+            justifyContent: 'left',
+        }
     },
     {
         colId: "id",
@@ -74,7 +89,11 @@ const columnData: ColDef[] = [
         wrapHeaderText: true,
         initialWidth: 200,
         filter: "agMultiColumnFilter",
-        floatingFilter: true
+        floatingFilter: true,
+        cellStyle: {
+            display: 'flex',
+            justifyContent: 'left',
+        }
     },
     {
         colId: "dd",
@@ -86,7 +105,11 @@ const columnData: ColDef[] = [
         wrapHeaderText: true,
         initialWidth: 200,
         filter: "agMultiColumnFilter",
-        floatingFilter: true
+        floatingFilter: true,
+        cellStyle: {
+            display: 'flex',
+            justifyContent: 'center',
+        }
     },
     {
         colId: "rd",
@@ -110,31 +133,39 @@ const columnData: ColDef[] = [
         wrapHeaderText: true,
         initialWidth: 200,
         filter: "agMultiColumnFilter",
-        floatingFilter: true
+        floatingFilter: true,
+        cellStyle: {
+            display: 'flex',
+            justifyContent: 'right',
+        }
     },
     {
         colId: "bs",
         field: "bs",
         headerName: "Batch Size",
         hide: false,
-
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,
         filter: "agMultiColumnFilter",
-        floatingFilter: true
+        floatingFilter: true,
+        cellStyle: {
+            display: 'flex',
+            justifyContent: 'right',
+        }
     },
     {
         colId: "fk",
         field: "fk",
         headerName: "Full Kit Available",
         hide: false,
-
+        cellRenderer: AvlCellRenderer,
         autoHeaderHeight: true,
         wrapHeaderText: true,
         initialWidth: 200,
         filter: "agMultiColumnFilter",
         floatingFilter: true
+
     },
     {
         colId: "rmpm",

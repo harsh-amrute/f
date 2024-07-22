@@ -331,7 +331,7 @@ const OrderRescheduling = () => {
         <>
             <div style={{ width: "100%", position: 'relative', height: '85vh' }}>
 
-                <MTOActionToolBar comp={'orderReschedule'} />
+                <MTOActionToolBar comp={'orderReschedule'} isExcelExport />
                 {isLoading && <OverlayLoader />}
 
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>

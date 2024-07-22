@@ -107,7 +107,7 @@ const RMPMBufferTrends = () => {
         <div style={{ zoom: 1.33, marginLeft: '30px' }}>
 
 
-            <MTOActionToolBar comp={"BTRMTO"} />
+            <MTOActionToolBar comp={"BTRMTO"} isAddFilterButton />
             <HorizontalViewWrapper style={{ marginTop: '20px' }}>
                 <BTRTableWrapper style={{ height: screenHeight - 145, margin: '0' }}>
                     {

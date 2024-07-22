@@ -45,6 +45,7 @@ const MaterialCellRenderer = (params: any) => {
                 enableRangeSelection={true}
                 paginationAutoPageSize={true}
                 alwaysShowVerticalScroll={true}
+                suppressPaginationPanel
                 statusBar={{
                     statusPanels: [
                         { statusPanel: 'agTotalRowCountComponent', align: 'left' },

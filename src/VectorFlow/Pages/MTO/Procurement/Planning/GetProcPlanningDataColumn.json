@@ -67,7 +67,7 @@
             "rn": "ProcPlanningReport",
             "jf": "soh",
             "cp": 8,
-            "hdr": "Stock On Hand",
+            "hdr": "Stock On-Hand",
             "vs": true,
             "ca": "right",
             "val": "*Error*"
