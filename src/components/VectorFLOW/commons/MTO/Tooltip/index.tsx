@@ -2,11 +2,11 @@ import React, { useState, useRef, CSSProperties } from 'react';
 import Portal from '../../../../../components/VectorFLOW/layouts/Portal';
 import { TooltipContainer, TooltipTarget } from './styles';
 
-interface IToolTipProps extends CSSProperties{
+interface IToolTipProps extends CSSProperties {
     arrowLeft: string | number;
 }
 
-const Tooltip = ({ children, content, zoomFactorEnabled = true }: any) => {
+const Tooltip = ({ children, content, zoom = 1 }: any) => {
     const [showTooltip, setShowTooltip] = useState(false);
     const [toolTipPosition, setoolTipPosition] = useState<IToolTipProps | null>();
     const tooltipRef = useRef<HTMLDivElement>(null);
@@ -24,13 +24,13 @@ const Tooltip = ({ children, content, zoomFactorEnabled = true }: any) => {
                 let tooltipLeft = left + (width / 2) - (tooltipRect.width / 2);
                 let arrowLeft: any = "50%";
 
-               
+
                 // Adjust if tooltip goes outside the viewport
                 let viewportWidth = window.innerWidth
-                if(zoomFactorEnabled){
-                    viewportWidth = viewportWidth * 1 / 0.75 - 20;
-                }
-                
+
+                viewportWidth = viewportWidth * 1 / zoom - 20;
+
+
                 if (tooltipLeft < 0) {
                     arrowLeft = ((left + width / 2) / tooltipRect.width) * 100 + "%"; // Adjust the arrow when tooltip is at the left edge
                     tooltipLeft = 0 + 10;

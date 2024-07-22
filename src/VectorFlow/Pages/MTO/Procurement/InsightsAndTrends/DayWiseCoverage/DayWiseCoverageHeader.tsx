@@ -32,9 +32,16 @@ const DayWiseCoverageHeader = ({
             <DatePicker type="month" date={start} setDate={setStart} data-testid="start" />
             <Text>To</Text>
             <DatePicker type="month" date={end} setDate={setEnd} data-testid="end" />
-            <VFButtonOutline themeUi={themeUi} onClick={() => { setDateRange(start, end) }} style={{ height: "unset" }}>
-                Submit
-            </VFButtonOutline>
+            {/* <div style={{ display: 'flex', alignItems: 'center' }}> */}
+            <img
+                style={{ cursor: 'pointer' }}
+                src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
+                height={50}
+                width={60}
+                onClick={() => { setDateRange(start, end) }}
+            />
+
+            {/* </div> */}
         </DayWiseCoverageHeaderContainer>
     )
 }

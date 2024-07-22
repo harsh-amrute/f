@@ -10,13 +10,19 @@ const MaterialRequirement = () => {
     const { renderView, toggleCurrentTab, onDateChangeReq, onDateSubmitReq, date } = useMaterialReq();
     return (
         <>
-            <ActionToolBar
-                comp={"MaterialRequirement"}
-                onDateChange={onDateChangeReq}
-                submitDate={() => onDateSubmitReq()}
-                date={date}
+            <div style={{ zoom: 1.25 }}>
 
-            />
+                <ActionToolBar
+                    isReleaseDate
+                    isAddFilterButton
+                    isExcelExport
+                    comp={"MaterialRequirement"}
+                    onDateChange={onDateChangeReq}
+                    submitDate={() => onDateSubmitReq()}
+                    date={date}
+
+                />
+            </div>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 
                 <VFFloatingTab
@@ -29,7 +35,7 @@ const MaterialRequirement = () => {
                         },
                         {
                             id: 'cv',
-                            label: 'Cumulative View',
+                            label: 'Cummulative View',
                             value: 'cv'
                         }
                     ]}
@@ -45,7 +51,7 @@ const MaterialRequirement = () => {
                     {moment(date).format('Do MMMM YYYY')}
                 </MaterialRequirementDate>
             </MaterialRequirementHeading>
-            <MaterialRequiremetLayout>
+            <MaterialRequiremetLayout style={{ marginLeft: '30px' }}>
                 {renderView()}
             </MaterialRequiremetLayout>
 

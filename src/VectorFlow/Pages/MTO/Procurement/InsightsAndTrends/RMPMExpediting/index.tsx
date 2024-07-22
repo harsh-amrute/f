@@ -12,14 +12,14 @@ import { useGetDate } from '../../../../../Services/MTO/Production/InsightsAndTr
 const RMExpeditionSuppliers = () => {
     const [isMTO] = useState(true);
     const { data, /*isLoading, refetch*/ } = useGetDate();
-  
+
 
     const { screenHeight } = useViewPort()
 
-    
+
     return (
         <div style={{ zoom: 1.33, marginLeft: '30px' }}>
-            <MTOActionToolBar comp={"BTRMTO"} />
+            <MTOActionToolBar comp={"BTRMTO"} isAddFilterButton />
             <HorizontalViewWrapper style={{ marginTop: '20px' }}>
                 <BTRTableWrapper style={{ height: screenHeight - 145, margin: '0' }}>
                     {
@@ -43,7 +43,7 @@ const RMExpeditionSuppliers = () => {
                                         <ExpeditingMTA
                                             isMTO={isMTO}
                                             date={data?.data?.data}
-                                          
+
                                         />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
@@ -52,7 +52,7 @@ const RMExpeditionSuppliers = () => {
                             <ExpeditingMTO
                                 isMTO={isMTO}
                                 date={data?.data?.data}
-                                
+
                             />
                     }
                 </BTRTableWrapper>

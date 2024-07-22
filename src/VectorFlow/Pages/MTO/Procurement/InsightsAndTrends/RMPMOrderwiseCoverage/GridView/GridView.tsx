@@ -1,6 +1,6 @@
 import { useRef } from "react"
-import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable';
-
+import { VFTableWrapper } from "../../../../../../../components/VectorFLOW/commons/VFTable/styles"
+import VFTable from "../../../../../../../components/VectorFLOW/commons/VFTable"
 
 
 interface GridProps {
@@ -18,23 +18,28 @@ const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) =>
 
     return (
         <>
-            <VFTable
+            <VFTableWrapper>
 
-                {...agGridProps}
-                sideBar="columns"
-                columnDefs={ShortageColumns}
-                rowData={ShortageDatas}
-                tooltipHideDelay={100000}
-                tooltipShowDelay={0}
-                tooltipMouseTrack={true}
-                height={"750px"}
-                ref={gridRef}
-                statusBar={{
-                    statusPanels: [
-                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                    ]
-                }}
-            />
+
+                <VFTable
+
+                    {...agGridProps}
+                    columnDefs={ShortageColumns}
+                    rowData={ShortageDatas}
+                    tooltipHideDelay={100000}
+                    tooltipShowDelay={0}
+                    tooltipMouseTrack={true}
+                    height={"700px"}
+                    ref={gridRef}
+                    statusBar={{
+                        statusPanels: [
+                            { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                        ]
+                    }}
+
+                />
+            </VFTableWrapper>
+
 
         </>
     );

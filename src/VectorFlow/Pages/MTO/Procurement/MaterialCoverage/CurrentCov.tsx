@@ -411,7 +411,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
 
 
             <div style={{
-                width: "95%",
+                width: "100%",
                 border: `1px dashed ${ColorsMTO.LightGrey.code}`,
                 color: ColorsMTO.White.code,
                 marginBottom: '20px'

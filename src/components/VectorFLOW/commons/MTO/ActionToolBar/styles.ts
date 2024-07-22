@@ -15,7 +15,7 @@ export const SCTaskBarContainer = styled.div`
   justify-content: space-between; //changed
 
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
-      .size.desktop}) {
+    .size.desktop}) {
     zoom: 0.7;
   }
 
@@ -50,7 +50,7 @@ export const SCViewContainer = styled.div`
 export const SCHorizontalDivison = styled.div`
   height: 80%;
   width: 2px;
-  background: ${ColorsMTO.LightGrey};
+  background: ${ColorsMTO.LightGrey.code};
   margin: 0 20px;
 `;
 

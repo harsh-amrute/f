@@ -17,13 +17,40 @@ const RMPMOrderwiseCoverage = () => {
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
         tooltipTrigger: "focus",
+        sideBar: {
+            toolPanels: [
+                {
+                    id: 'columns',
+                    labelDefault: 'Columns',
+                    labelKey: 'columns',
+                    iconKey: 'columns',
+                    toolPanel: 'agColumnsToolPanel',
+                    minWidth: 225,
+                    maxWidth: 225,
+                    width: 225
+                },
+                {
+                    id: 'filters',
+                    labelDefault: 'Filters',
+                    labelKey: 'filters',
+                    iconKey: 'filter',
+                    toolPanel: 'agFiltersToolPanel',
+                    minWidth: 180,
+                    maxWidth: 400,
+                    width: 250
+                }
+            ],
+        },
+
         gridOptions: {
+
             rowHeight: 50,
             getRowStyle: (params: any) => {
                 return {
                     background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
                 };
             },
+
 
             rowSelection: 'multiple',
             suppressRowClickSelection: true,
@@ -44,6 +71,7 @@ const RMPMOrderwiseCoverage = () => {
                     'white-space': 'nowrap',
                     'resizable': 'true',
                 },
+                flex: 1
             },
 
         },
@@ -100,11 +128,16 @@ const RMPMOrderwiseCoverage = () => {
     const [ShortageDatas] = useState(convertedData);
     return (
         <>
-            <div style={{ zoom: 1.3 }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
 
-                <ActionToolBar comp={"rmpm"} isGridView={isGridView} setIsGridView={setIsGridView} />
+
+                <ActionToolBar comp={"rmpm"} isGoBackButton={isGridView} handleGoBack={() => { (setIsGridView(false)) }} isAddFilterButton isChartGridToggle isGridView={isGridView} setIsGridView={setIsGridView} />
+
+                <div style={{ flex: '1' }}>
+
+                    {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={ShortageDatas} /> : <GraphView />}
+                </div>
             </div>
-            {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={ShortageDatas} /> : <GraphView />}
         </>
     )
 }
