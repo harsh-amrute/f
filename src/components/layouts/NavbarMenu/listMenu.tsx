@@ -64,7 +64,7 @@ export const listMenuParent: any = [
         name: "navbar.listMenuParent.masterDataManagement.modificationHistory",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/master-data-management/data-modification-history",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","MasterUpdater"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
     ],
   },
@@ -305,7 +305,7 @@ export const listMenuParent: any = [
             name: "Supplier Dispatch Report",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/sdr",
-            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+            role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
 
           }
         ]
@@ -582,7 +582,7 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.fullKitAssignment",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "",
+        url: "/production-planning-scheduling/full-kit-assignment",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {
@@ -613,6 +613,24 @@ export const listMenuParent: any = [
             name: "BM Trends",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/production-planning-scheduling/insight-and-trends/bm-trends",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
+          {
+            name: "STPL & Full Kits",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/production-planning-scheduling/insight-and-trends/stpl-full-kits",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
+          {
+            name: "Orders At Risk",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/production-planning-scheduling/insight-and-trends/order-at-risk",
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
+          {
+            name: "Orders Balance",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/production-planning-scheduling/insight-and-trends/order-balance",
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           }
         ]

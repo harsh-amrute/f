@@ -513,9 +513,9 @@ const EnquiryResponse = () => {
   useEffect(() => {
     notifyLoader("Loading Grid Data")
     if (data?.data?.data?.results) {
-      toast.dismiss()
       setTableData(data?.data?.data?.results);
     }
+    toast.dismiss()
   }, [data]);
 
   useEffect(() => {

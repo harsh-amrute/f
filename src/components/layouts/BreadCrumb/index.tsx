@@ -33,9 +33,22 @@ const BreadCrumb = () => {
   if(location.pathname ==='/dbm/dbm-norm-suggestions')return <span>DBM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> DBM Norm Suggestion</span>
   if(location.pathname ==='/production-planning-scheduling/enquiry-response')return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Enquiry Response</span>
   if(location.pathname ==='/production-planning-scheduling/insight-and-trends/bm-trends')return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Insight & Trends / BM Trends</span>
+  if(location.pathname ==='/production-planning-scheduling/insight-and-trends/stpl-full-kits')return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Insight & Trends / STPL & Full Kits</span>
+  if(location.pathname ==='/production-planning-scheduling/insight-and-trends/order-at-risk')return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Insight & Trends / Orders At Risk</span>
+  if(location.pathname ==='/production-planning-scheduling/insight-and-trends/order-balance')return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Insight & Trends / Orders Balance</span>
 
-  if(location.pathname==='/procurement/material-coverage-open-sales')return <span>Procurement<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} />Material Coverage For Open Sales Order</span>
+  if(location.pathname==='/procurement/material-coverage-open-sales')return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Material Coverage For Open Sales Order</span>
+  if(location.pathname==='/procurement-planning/planning')return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Procurement Planning</span>
+  if(location.pathname==='/procurement/material-requirement')return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Material Requirement</span>
+  if(location.pathname==='/procurement/insights-and-trends/day-wise-coverage')return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Day Wise Coverage</span>
+  if(location.pathname==='/procurement/insights-and-trends/rmpm-orderwise-coverage')return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> RM/PM Orderwise Coverage</span>
+  if(location.pathname==='/procurement/insights-and-trends/rmpm-buffer-trends')return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> RM/PM Buffer Trends</span>
+  if(location.pathname==='/procurement/insights-and-trends/rmpm-expediting-rm-suppliers')return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Expediting RM/Suppliers</span>
+  
+  if(location.pathname==='/production-planning-and-scheduling/order-rescheduling')return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} />  Order Rescheduling</span>
 
+
+  if(location.pathname ==='/production-planning-scheduling/full-kit-assignment') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Full Kit Assignement</span>
 
   
 

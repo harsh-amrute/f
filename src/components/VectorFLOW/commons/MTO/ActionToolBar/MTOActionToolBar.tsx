@@ -36,6 +36,7 @@ import {
     InputCheckBoxTitle
 } from './styles';
 import moment from 'moment';
+import { format } from 'date-fns';
 
 type filterType = {
     label: string,
@@ -65,28 +66,13 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
         }
     }
 
-    const getTodayDate = () => {
-        const today = new Date();
-
-        // Extract year, month, and day
-        const year = today.getFullYear();
-        const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed
-        const day = today.getDate().toString().padStart(2, '0');
-
-        // Construct the date string in the desired format
-        const formattedDate = `${year}-${month}-${day}`;
-
-        return formattedDate;
-    }
-
-
     const format2 = "YYYY-MM-DD"
     const d = new Date();
     //.setDate(d.getDate() - 1)
     const datetime = moment(d).format(format2);
 
     return (
-        <SCTaskBarContainer>
+        <SCTaskBarContainer className='toolbar-container'>
             <SCTaskFilterContainer
                 style={{
                     maxWidth: '50%',
@@ -96,7 +82,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
             >
 
                 <>
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp !== 'MaterialRequirement') && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'stplAndFullKit') && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp !== 'MaterialRequirement') && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') && (comp != "FullKitAssignment") && (comp != "orderBalance") && (comp != "orderAtRisk") &&
 
                         <SCGoBackContainer onClick={() => { if (handleGoBack) handleGoBack() }}>
                             <img
@@ -112,12 +98,12 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                             name="select"
                             value="1"
                             defaultChecked={true}
-                            onChange={()=>console.log('hi')}
+                            onChange={() => console.log('hi')}
                         />
                         <InputCheckBoxTitle>Show order with available WIP Only</InputCheckBoxTitle>
                     </CheckBoxDiv>
 
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp != "MaterialCovDetailData") && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') &&
+                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'stplAndFullKit') && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp != "MaterialCovDetailData") && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') && (comp != "FullKitAssignment") && (comp != "orderBalance") && (comp != "orderAtRisk") &&
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -193,7 +179,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                         />
                         <DateTitle>As on Date</DateTitle>
                         <DateValue>
-                            {getTodayDate()}
+                            {format(new Date(), 'yyyy-MM-dd')}
                         </DateValue>
                     </DateWrapper>}
                 {/**Selected Filter start */}
@@ -268,7 +254,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                     </>
 
                     {/* Toggle button for chartview/ grid view */}
-                    {(comp === 'rmpm') &&
+                    {((comp === 'rmpm') || (comp === 'stplAndFullKit') || (comp === "orderAtRisk") || (comp === "orderBalance")) &&
                         <>
                             <SCViewContainerWithBgToggle onClick={() => { setIsGridView && (setIsGridView(!isGridView)); console.log(isGridView) }}>
                                 <SCViewContainer>

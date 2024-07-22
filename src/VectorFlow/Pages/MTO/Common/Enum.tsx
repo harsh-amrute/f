@@ -23,6 +23,3 @@ export enum ProcurementSeriesDataFill {
     "#AD5000" = 2,
     "#6A3001" = 3
 }
-
-
-

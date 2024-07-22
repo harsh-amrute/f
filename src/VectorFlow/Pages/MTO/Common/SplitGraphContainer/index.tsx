@@ -57,6 +57,37 @@ const SplitGraphContainer = ({
                     },
                 }
 
+            case 4:
+                return {
+                    palette: {
+                        fills: ["#AD5000", 'gray', '#459D55'],
+                        strokes: ["#AD5000", 'gray', '#459D55'],
+                    },
+                }
+
+            case 5:
+                return {
+                    palette: {
+                        fills: ['gray'],
+                        strokes: ['gray'],
+                    },
+                }
+
+            case 6:
+                return {
+                    palette: {
+                        fills: ['black', 'red'],
+                        strokes: ['black', 'red'],
+                    },
+                }
+            case 7: 
+                return {
+                    palette: {
+                        fills: ['black', 'red', 'yellow', 'green', 'blue'],
+                        strokes: ['black', 'red',  'yellow', 'green', 'blue'],
+                    },
+                }
+
             default:
                 return {
                     palette: {
@@ -159,8 +190,234 @@ const SplitGraphContainer = ({
                     }
                 })
                 break;
+            case 4:
+                refGraph1.current?.api.createRangeChart({
+                    chartType: "stackedColumn",
+                    cellRange: {
+                      columns: ["ccr", "exceedDays", 'days', 'limit'],
+                    },
+                    seriesChartTypes: [
+                      {colId: "exceedDays", chartType: "stackedColumn"},
+                      {colId: "days", chartType: "stackedColumn"},
+                      {colId: "limit", chartType: "line"}
+                    ],
+                    chartThemeOverrides: {
+                      column: {
+                        axes: {
+                          category: {
+                            gridStyle: [{ stroke: "transparent" }],
+              
+                            bottom: {
+                              label: {
+                                fontSize: 8,
+                              },
+                            },
+                          },
+                        },
+                        series: {
+                          highlightStyle: {
+                            item: {
+                              fill: "white",
+                              fillOpacity: 0.2,
+                            },
+                          },
+                          tooltip: {
+                            renderer: TooltipRenderer,
+                          },
+                          strokeWidth: 1,
+                          strokeOpacity: 0,
+                        },
+                        legend: {
+                          item: {
+                            label: {
+                              fontSize: 10,
+                            },
+              
+                            marker: {
+                              shape: "square",
+                            },
+                          },
+                        },
+                      },
+                      bar: {
+                        axes: {
+                          category: {
+                            gridStyle: [{ stroke: "transparent" }, { stroke: "transparent" }],
+                          },
+                        },
+                      },
+                    },
+                  });
+                break;
+            case 5:
+                refGraph1.current?.api.createRangeChart({
+                    chartType: "stackedColumn",
+                    cellRange: {
+                      columns: ["ccr", "days"],
+                    },
+                    chartThemeOverrides: {
+                      column: {
+                        axes: {
+                          category: {
+                            gridStyle: [{ stroke: "transparent" }],
+              
+                            bottom: {
+                              label: {
+                                fontSize: 8,
+                              },
+                            },
+                          },
+                        },
+                        series: {
+                          highlightStyle: {
+                            item: {
+                              fill: "white",
+                              fillOpacity: 0.2,
+                            },
+                          },
+                          tooltip: {
+                            renderer: TooltipRenderer,
+                          },
+                          strokeWidth: 1,
+                          strokeOpacity: 0,
+                        },
+                        legend: {
+                          item: {
+                            label: {
+                              fontSize: 10,
+                            },
+              
+                            marker: {
+                              shape: "square",
+                            },
+                          },
+                        },
+                      },
+                      bar: {
+                        axes: {
+                          category: {
+                            gridStyle: [{ stroke: "transparent" }, { stroke: "transparent" }],
+                          },
+                        },
+                      },
+                    },
+                  });
+                break;
+            case 6:
+              refGraph1.current?.api.createRangeChart({
+                chartType: "stackedBar",
+                cellRange: {
+                  columns: ["r", "bo", "ro"],
+                },
+                chartThemeOverrides: {
+                  bar: {
+                    axes: {
+                      category: {
+                        position: 'left', // Position the category axis on the left
+                        gridStyle: [{ stroke: "transparent" }],
+                        label: {
+                          fontSize: 8,
+                          rotation: 0
+                        },
+                        left: {
+                          label: {
+                            fontSize: 8,
+                          },
+                        },
+                      },
+                      number: {
+                        position: 'bottom',
+                        gridStyle: [{ stroke: "transparent" }],
+                        label: {
+                          fontSize: 8,
+                        },
+                      },
+                    },
+                    series: {
+                      highlightStyle: {
+                        item: {
+                          fill: "white",
+                          fillOpacity: 0.2,
+                        },
+                      },
+                      tooltip: {
+                        renderer: TooltipRenderer,
+                      },
+                      strokeWidth: 1,
+                      strokeOpacity: 0,
+                    },
+                    legend: {
+                      item: {
+                        label: {
+                          fontSize: 10,
+                        },
+          
+                        marker: {
+                          shape: "square",
+                        },
+                      },
+                    },
+                  }
+                },
+              });
+            break;             
+            break;
+            case 7:
+              refGraph1.current?.api.createRangeChart({
+                  chartType: "stackedColumn",
+                  cellRange: {
+                    columns: ["trailDept", "b", 'r', 'y','g','bl'],
+                  },
+                  chartThemeOverrides: {
+                    column: {
+                      axes: {
+                        category: {
+                          gridStyle: [{ stroke: "transparent" }],
+            
+                          bottom: {
+                            label: {
+                              fontSize: 8,
+                            },
+                          },
+                        },
+                      },
+                      series: {
+                        highlightStyle: {
+                          item: {
+                            fill: "white",
+                            fillOpacity: 0.2,
+                          },
+                        },
+                        tooltip: {
+                          renderer: TooltipRenderer,
+                        },
+                        strokeWidth: 1,
+                        strokeOpacity: 0,
+                      },
+                      legend: {
+                        item: {
+                          label: {
+                            fontSize: 10,
+                          },
+            
+                          marker: {
+                            shape: "square",
+                          },
+                        },
+                      },
+                    },
+                    bar: {
+                      axes: {
+                        category: {
+                          gridStyle: [{ stroke: "transparent" }, { stroke: "transparent" }],
+                        },
+                      },
+                    },
+                  },
+                });
+              break;
             default:
-                <></>
+          <></>
         }
 
 
