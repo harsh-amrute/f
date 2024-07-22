@@ -464,7 +464,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                             fontFamily: "Roboto",
                             paddingLeft: '10px'
                         }}
-                        > <b>Select Horizon: </b></label>
+                        > <b>Select Horizon (in days): </b></label>
                         <VFRangeSlider
                             style={{ paddingTop: '12px' }}
                             showTriangle={false}

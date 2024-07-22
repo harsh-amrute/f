@@ -203,7 +203,7 @@ const FullKitAssignment = () => {
 
   return (
     <Wrapper>
-      <MTOActionToolBar comp="FullKitAssignment" />
+      <MTOActionToolBar comp="FullKitAssignment" isExcelExport isAddFilterButton />
       {/* <button onClick={() => setShowModal(true)}>Click</button> */}
       <VFTable
         ref={grid}

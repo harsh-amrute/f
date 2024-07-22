@@ -5,7 +5,7 @@ import * as gridSystem from "../../../../../styles/gridSystem";
 export const SCTaskBarContainer = styled.div`
   //margin-top:5px;
   // margin-bottom:10px;
-  // padding-left:10px;
+  padding : 0 25px;
   display: flex;
   align-items: center;
   //margin-bottom:20px;

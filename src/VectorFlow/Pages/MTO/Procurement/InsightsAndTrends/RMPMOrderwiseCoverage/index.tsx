@@ -135,20 +135,19 @@ const RMPMOrderwiseCoverage = () => {
 
     const [convertedData, setConvertedData] = useState([{}]);
     const [GraphDatas, setGraphDatas] = useState([{}])
-
+    const [apiData, setApiData] = useState([{}]);
     const GetData = async () => {
         try {
             notifyLoader("Loading Data...")
             const APIData = await getOrderwiseCoverageData();
-            console.log("orderwise: ", APIData)
+            console.log("orderwise:...... ", APIData)
             if (APIData.status.toString() === '200') {
                 toast.dismiss();
                 notifySuccess("Data Fetched Successfully!")
             }
-            setGraphDatas(APIData.data.data.results)
-            setConvertedData(mapDataToColumns(APIData.data.data.results, columnData));
-            console.log("convertedData:=:=:", convertedData);
-            console.log("graph:::", GraphDatas)
+            setApiData(APIData.data.data);
+
+
         } catch (e) {
             toast.dismiss();
             notifyError("Failed to fetch Data");
@@ -159,6 +158,13 @@ const RMPMOrderwiseCoverage = () => {
         GetData();
 
     }, [])
+
+    useEffect(() => {
+        setGraphDatas(apiData)
+        setConvertedData(mapDataToColumns(apiData, columnData));
+        console.log("convertedData:=:=:", convertedData);
+        console.log("graph:::", GraphDatas)
+    }, [apiData])
     return (
         <>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -168,10 +174,9 @@ const RMPMOrderwiseCoverage = () => {
 
                 <div style={{ flex: '1' }}>
 
-                    {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={convertedData} /> : <GraphView />}
+                    {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={convertedData} /> : <GraphView shortageData={GraphDatas} />}
                 </div>
             </div>
-            {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={convertedData} /> : <GraphView shortageData={GraphDatas} />}
         </>
     )
 }

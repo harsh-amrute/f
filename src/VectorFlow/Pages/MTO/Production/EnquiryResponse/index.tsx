@@ -527,47 +527,52 @@ const EnquiryResponse = () => {
       <FilterWrapper>
         <MTOActionToolBar
           comp={"EnquiryResponse"}
+          isAddFilterButton
+          isAsOnDate
           onAddFilter={handleModalToggle}
           selectedFilters={selectedFilters}
           removeFilters={removeFilters}
           themeUi={themeUi}
         />
       </FilterWrapper>
-      <ResizableTable header={prodPlanningMock?.header} data={filterData} />
-      <EstimatedWrapper>
-        <div
-          style={{ WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})`, padding: "1rem" }}
-        >
-          <TabSwitchContainer>
-            <TabSwitchHeading>Estimated Due Date</TabSwitchHeading>
-            <TabsWrapper>
-              <VFCapsule activeBtn={activeCapsule} capsules={tabOptions} handleClick={handleTabChange} />
-            </TabsWrapper>
-          </TabSwitchContainer>
-          {getRMUI()}
-          <Note type="danger" message={message} />
-        </div>
-        <BlurCover style={{ display: hasProductGroup ? "none" : "block" }}>
-          <CardCover>
-            <DashedCard>
-              <MessageText>
-                Please select filter for product group to view estimated due
-                date
-              </MessageText>
-            </DashedCard>
-          </CardCover>
-        </BlurCover>
-      </EstimatedWrapper>
-      <FilterModal
-        filters={filters}
-        isOpen={isModalOpen}
-        handleClose={handleModalToggle}
-        handleOkay={() => applyFilter(selectedOptions)}
-        selectedOptions={selectedOptions}
-        handleOptionSelect={handleFilterSelect}
-        handleNameChange={handleNameChange}
-        themeUi={themeUi}
-      />
+      <div style={{ paddingLeft: '25px' }}>
+
+        <ResizableTable header={prodPlanningMock?.header} data={filterData} />
+        <EstimatedWrapper>
+          <div
+            style={{ WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})`, padding: "1rem" }}
+          >
+            <TabSwitchContainer>
+              <TabSwitchHeading>Estimated Due Date</TabSwitchHeading>
+              <TabsWrapper>
+                <VFCapsule activeBtn={activeCapsule} capsules={tabOptions} handleClick={handleTabChange} />
+              </TabsWrapper>
+            </TabSwitchContainer>
+            {getRMUI()}
+            <Note type="danger" message={message} />
+          </div>
+          <BlurCover style={{ display: hasProductGroup ? "none" : "block" }}>
+            <CardCover>
+              <DashedCard>
+                <MessageText>
+                  Please select filter for product group to view estimated due
+                  date
+                </MessageText>
+              </DashedCard>
+            </CardCover>
+          </BlurCover>
+        </EstimatedWrapper>
+        <FilterModal
+          filters={filters}
+          isOpen={isModalOpen}
+          handleClose={handleModalToggle}
+          handleOkay={() => applyFilter(selectedOptions)}
+          selectedOptions={selectedOptions}
+          handleOptionSelect={handleFilterSelect}
+          handleNameChange={handleNameChange}
+          themeUi={themeUi}
+        />
+      </div>
     </EnquiryWrapper>
   );
 };

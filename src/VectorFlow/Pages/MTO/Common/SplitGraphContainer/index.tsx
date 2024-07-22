@@ -424,87 +424,87 @@ const SplitGraphContainer = ({
   }
 
 
-}
-
-return (
-  <div style={{ width: "100%" }}>
 
 
-    <SCChartContainer style={{ border: '1px solid #CCCCCC', margin: '2px' }}>
-      <SCChartMainContainer style={{ zoom: 1 }}>
-        {header()}
-      </SCChartMainContainer>
+  return (
+    <div style={{ width: "100%" }}>
 
-      <SCHorizontalDivider />
-      <ChartWrapper>
-        <div style={{ height: '100%', width: '100%' }}>
-          <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-            <div style={{ fontSize: '10px', fontWeight: 500, textAlign: 'center', margin: '0 auto' }}>
-              {graphTitle}
+
+      <SCChartContainer style={{ border: '1px solid #CCCCCC', margin: '2px' }}>
+        <SCChartMainContainer style={{ zoom: 1 }}>
+          {header()}
+        </SCChartMainContainer>
+
+        <SCHorizontalDivider />
+        <ChartWrapper>
+          <div style={{ height: '100%', width: '100%' }}>
+            <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
+              <div style={{ fontSize: '10px', fontWeight: 500, textAlign: 'center', margin: '0 auto' }}>
+                {graphTitle}
+              </div>
+              <div style={{ marginLeft: '0 10px -5px', marginBottom: '-5px' }} onClick={() => {
+
+                (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart, { fileName: graphTitle });
+
+              }}>
+                <img src='/assets/img/mto/RMPMBufferTrend/download.svg' style={{ color: "#CCCCCC", paddingBottom: '5px' }} height={15} width={15} color={"#CCCCCC"} />
+              </div>
+
             </div>
-            <div style={{ marginLeft: '0 10px -5px', marginBottom: '-5px' }} onClick={() => {
-
-              (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart, { fileName: graphTitle });
-
-            }}>
-              <img src='/assets/img/mto/RMPMBufferTrend/download.svg' style={{ color: "#CCCCCC", paddingBottom: '5px' }} height={15} width={15} color={"#CCCCCC"} />
-            </div>
-
           </div>
-        </div>
-      </ChartWrapper>
+        </ChartWrapper>
 
-      <VFModalCard
-        openModal={hideChart}
-        closeModal={() => toggleChart(false)}
-        headerIcon=''
-        headerText={tableTitle}
-        headerBgColor=""
-        headerTextColor="#00000"
-        paddingLeftAndRight={27}
-        closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-        <div className="ag-theme-planning" style={{ width: '1000px' }}>
-          <VFTable
-            ref={refGraph1}
-            columnDefs={colDef}
-            rowData={rowData}
-            enableCharts={true}
-            enableRangeSelection={true}
-            rowSelection="multiple"
-            statusBar={{
-              statusPanels: [
-                { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                { statusPanel: 'agAggregationComponent', align: 'left' },
-              ],
-            }} onGridReady={() => { setTableLoading(false); generateChart(graphType) }}
-            chartToolPanelsDef={
-              {
-                panels: []
+        <VFModalCard
+          openModal={hideChart}
+          closeModal={() => toggleChart(false)}
+          headerIcon=''
+          headerText={tableTitle}
+          headerBgColor=""
+          headerTextColor="#00000"
+          paddingLeftAndRight={27}
+          closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+          <div className="ag-theme-planning" style={{ width: '1000px' }}>
+            <VFTable
+              ref={refGraph1}
+              columnDefs={colDef}
+              rowData={rowData}
+              enableCharts={true}
+              enableRangeSelection={true}
+              rowSelection="multiple"
+              statusBar={{
+                statusPanels: [
+                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                  { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                  { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                  { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                  { statusPanel: 'agAggregationComponent', align: 'left' },
+                ],
+              }} onGridReady={() => { setTableLoading(false); generateChart(graphType) }}
+              chartToolPanelsDef={
+                {
+                  panels: []
+                }
               }
-            }
-            disableZoomScaling={true}
-            defaultColDef={{
-              floatingFilter: true,
-              filter: "agMultiColumnFilter",
-            }}
-            chartThemes={['myCustomTheme']}
-            customChartThemes={{
-              'myCustomTheme': myCustomTheme()
-            }}
-            height={'480px'}
-          />
+              disableZoomScaling={true}
+              defaultColDef={{
+                floatingFilter: true,
+                filter: "agMultiColumnFilter",
+              }}
+              chartThemes={['myCustomTheme']}
+              customChartThemes={{
+                'myCustomTheme': myCustomTheme()
+              }}
+              height={'480px'}
+            />
+          </div>
+        </VFModalCard>
+        <div style={{ height: `${chartHeight ? chartHeight : 50}vh` }}>
+          <AgChartsReact suppressDragLeaveHidesColumns={true} ref={chartRef} options={{ ...options, data: data }} onChartReady={() => { setChartLoading(false) }} />
         </div>
-      </VFModalCard>
-      <div style={{ height: `${chartHeight ? chartHeight : 50}vh` }}>
-        <AgChartsReact suppressDragLeaveHidesColumns={true} ref={chartRef} options={{ ...options, data: data }} onChartReady={() => { setChartLoading(false) }} />
-      </div>
-    </SCChartContainer>
-  </div>
+      </SCChartContainer>
+    </div>
 
-)
+  )
 }
 
 export default SplitGraphContainer

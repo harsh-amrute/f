@@ -30,7 +30,7 @@ const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) =>
                     tooltipHideDelay={100000}
                     tooltipShowDelay={0}
                     tooltipMouseTrack={true}
-                    height={"700px"}
+                    height={"790px"}
                     ref={gridRef}
                     statusBar={{
                         statusPanels: [

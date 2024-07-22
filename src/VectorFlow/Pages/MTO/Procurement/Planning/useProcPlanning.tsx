@@ -263,13 +263,13 @@ const useProcPlanning = (date: string) => {
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', flexDirection: 'row' }}>
 
                             <VFButtonOutline
-                                onClick={navigateToSimulateScreen}
+                                onClick={() => { fetchData(date) }}
                                 themeUi=""
                                 disabled={false}
                                 width={135}
 
                                 style={{
-                                    height: '40px',
+                                    height: '50px',
                                     marginRight: 20,
                                     borderColor: '#BC3D81',
                                     color: '#BC3D81',
@@ -278,7 +278,7 @@ const useProcPlanning = (date: string) => {
                                 }}
                             >
 
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', }}>
                                     <img src="/assets/img/VectorFLOW/reset.svg" alt="Reset Icon" height={20} width={20} style={{ margin: '0 12px' }} />
                                     <p style={{ fontSize: '14px' }}>
                                         Reset Data
