@@ -1,5 +1,5 @@
 import { ColDef, ColGroupDef, ColumnGroup } from "ag-grid-enterprise";
-import { Children } from "react";
+import React, { Children } from "react";
 
 interface ColumnDefinition {
     headerName: string;
@@ -53,98 +53,109 @@ interface JSONData {
 
 
 
-export const DeptWiseBMReport: (ColDef | ColGroupDef)[] = [
-    {
-        headerName: "",
-        headerCheckboxSelection: false,
-        checkboxSelection: true,
-        maxWidth: 50,
-        floatingFilter: false,
-    }
-    ,
-    {
-        headerName: "Default Attributes",
-        suppressStickyLabel: true,
-        openByDefault: true,
-        children: [
-            { field: 'ec', headerName: '', colId: '', cellRenderer: "customCellRenderer", initialWidth: 80 },
-            { field: 'ic', headerName: '', colId: '', cellRenderer: "AgeingCellRenderer", initialWidth: 80 },
-            { field: "BPP", headerName: "BPP", colId: "BPP", cellRenderer: "colorCellRenderer" },
-            { field: "D_Ag", headerName: 'Dept Ageing', colId: "Dept Ageing", columnGroupShow: "open" },
-            { field: "Ord_Typ", headerName: "Order Type", colId: "Order Type", columnGroupShow: "open" },
-            { field: "Ord_ID", headerName: "Order Type", colId: "Order ID", columnGroupShow: "closed" },
-            { field: "L_Itm", headerName: "Line Item", colId: "Line Item", columnGroupShow: "closed" },
-            { field: "Itm_Code", headerName: "Item Code", colId: "Item Code", columnGroupShow: "closed" },
-            { field: "Itm_Desc", headerName: "Item Description", colId: "Item Description", columnGroupShow: "closed" },
-            { field: "Ord_Qty", headerName: "Order Quantity", colId: "Order Quantity", columnGroupShow: "closed" },
-            { field: "WIP_O_Hd", headerName: "WIP On Hand", colId: "WIP On Hand", columnGroupShow: "closed" },
-            { field: "M_Bal", headerName: "Mfg. Balance", colId: "Mfg. Balance", columnGroupShow: "closed" },
-            { field: "CCR_Nme", headerName: "CCR Name", colId: "CCR Name", columnGroupShow: "closed" },
-            { field: "Cust_Nme", headerName: "Customer Name", colId: "Customer Name", columnGroupShow: "closed" },
-            { field: "CRDDate", headerName: "CRDDate", colId: "CRDDate", columnGroupShow: "closed" },
-            { field: "DDt", headerName: "Due Date", colId: "Due Date", columnGroupShow: "closed" },
-            { field: "R_DDt", headerName: "Release Date", colId: "Release Date", columnGroupShow: "closed" }
-        ]
-    },
-    {
-        headerName: "Calculate Attribute",
-        suppressStickyLabel: true,
-        openByDefault: true,
-        children: [
-            { field: "Trail_Dpt", headerName: "Trailing Department", colId: "Trailing Department" },
-            { field: "Elap_days", headerName: "Elapsed Days", colId: "Elapsed Days", columnGroupShow: 'closed' },
-            { field: "Attr", headerName: "Attribute", colId: "Attribute", columnGroupShow: 'closed' },
-        ]
-    },
-    {
-        headerName: "Order Attribute",
-        suppressStickyLabel: true,
-        openByDefault: true,
-        children: [
-            { field: "Pl_Nam", headerName: "Plant Name", colId: "Plant Name" },
-            { field: "PO_No", headerName: "PO No.", colId: "Po No.", columnGroupShow: 'closed' },
-        ]
-    },
-    {
-        headerName: "Product Attribute",
-        suppressStickyLabel: true,
-        openByDefault: true,
-        children: [
-            { field: "Price", headerName: "Price", colId: "Price" },
-            { field: "Itm_Grp", headerName: "Item Group", colId: "Item Group" },
-            { field: "Att_1", headerName: "Attribute 1", colId: "Attribute 1", columnGroupShow: 'closed' },
-            { field: "Att_2", headerName: "Attribute 2", colId: "Attribute 2", columnGroupShow: 'closed' },
-            { field: "Att_3", headerName: "Attribute 3", colId: "Attribute 3", columnGroupShow: 'closed' },
-            { field: "Att_4", headerName: "Attribute 4", colId: "Attribute 4", columnGroupShow: 'closed' },
-        ]
-    },
-    {
-        headerName: "Customer Attribute",
-        suppressStickyLabel: true,
-        openByDefault: true,
-        children: [
-            { field: "Cust_Cd", headerName: "Customer Code", colId: "Customer Code" },
-            { field: "Rgn", headerName: "Region", colId: "Region", columnGroupShow: 'closed' },
-            { field: "Cntry", headerName: "Country", colId: "Country", columnGroupShow: 'closed' },
-        ]
-    },
-    {
-        headerName: "",
-        suppressStickyLabel: true,
-        openByDefault: false,
-        children: [
-            {
-                field: "Rem_Cd", headerName: "Remark Code", pinned: 'right', colId: "Remark Code", cellRenderer: "TextBoxCellRenderer", cellRendererParams: {
-                    data: {
-                        flag: true
+export const DeptWiseBMReport=(onOpenRemarkHistory:()=>void): (ColDef | ColGroupDef)[] =>{
+    return [
+        {
+            headerName: "",
+            headerCheckboxSelection: false,
+            checkboxSelection: true,
+            maxWidth: 50,
+            floatingFilter: false,
+        }
+        ,
+        {
+            headerName: "Default Attributes",
+            suppressStickyLabel: true,
+            openByDefault: true,
+            children: [
+                { field: 'ec', headerName: '', colId: '', cellRenderer: "customCellRenderer", initialWidth: 80 },
+                { field: 'ic', headerName: '', colId: '', cellRenderer: "AgeingCellRenderer", initialWidth: 80 },
+                { field: "BPP", headerName: "BPP", colId: "BPP", cellRenderer: "colorCellRenderer" },
+                { field: "D_Ag", headerName: 'Dept Ageing', colId: "Dept Ageing", columnGroupShow: "open" },
+                { field: "Ord_Typ", headerName: "Order Type", colId: "Order Type", columnGroupShow: "open" },
+                { field: "Ord_ID", headerName: "Order Type", colId: "Order ID", columnGroupShow: "closed" },
+                { field: "L_Itm", headerName: "Line Item", colId: "Line Item", columnGroupShow: "closed" },
+                { field: "Itm_Code", headerName: "Item Code", colId: "Item Code", columnGroupShow: "closed" },
+                { field: "Itm_Desc", headerName: "Item Description", colId: "Item Description", columnGroupShow: "closed" },
+                { field: "Ord_Qty", headerName: "Order Quantity", colId: "Order Quantity", columnGroupShow: "closed" },
+                { field: "WIP_O_Hd", headerName: "WIP On Hand", colId: "WIP On Hand", columnGroupShow: "closed" },
+                { field: "M_Bal", headerName: "Mfg. Balance", colId: "Mfg. Balance", columnGroupShow: "closed" },
+                { field: "CCR_Nme", headerName: "CCR Name", colId: "CCR Name", columnGroupShow: "closed" },
+                { field: "Cust_Nme", headerName: "Customer Name", colId: "Customer Name", columnGroupShow: "closed" },
+                { field: "CRDDate", headerName: "CRDDate", colId: "CRDDate", columnGroupShow: "closed" },
+                { field: "DDt", headerName: "Due Date", colId: "Due Date", columnGroupShow: "closed" },
+                { field: "R_DDt", headerName: "Release Date", colId: "Release Date", columnGroupShow: "closed" }
+            ]
+        },
+        {
+            headerName: "Calculate Attribute",
+            suppressStickyLabel: true,
+            openByDefault: true,
+            children: [
+                { field: "Trail_Dpt", headerName: "Trailing Department", colId: "Trailing Department" },
+                { field: "Elap_days", headerName: "Elapsed Days", colId: "Elapsed Days", columnGroupShow: 'closed' },
+                { field: "Attr", headerName: "Attribute", colId: "Attribute", columnGroupShow: 'closed' },
+            ]
+        },
+        {
+            headerName: "Order Attribute",
+            suppressStickyLabel: true,
+            openByDefault: true,
+            children: [
+                { field: "Pl_Nam", headerName: "Plant Name", colId: "Plant Name" },
+                { field: "PO_No", headerName: "PO No.", colId: "Po No.", columnGroupShow: 'closed' },
+            ]
+        },
+        {
+            headerName: "Product Attribute",
+            suppressStickyLabel: true,
+            openByDefault: true,
+            children: [
+                { field: "Price", headerName: "Price", colId: "Price" },
+                { field: "Itm_Grp", headerName: "Item Group", colId: "Item Group" },
+                { field: "Att_1", headerName: "Attribute 1", colId: "Attribute 1", columnGroupShow: 'closed' },
+                { field: "Att_2", headerName: "Attribute 2", colId: "Attribute 2", columnGroupShow: 'closed' },
+                { field: "Att_3", headerName: "Attribute 3", colId: "Attribute 3", columnGroupShow: 'closed' },
+                { field: "Att_4", headerName: "Attribute 4", colId: "Attribute 4", columnGroupShow: 'closed' },
+            ]
+        },
+        {
+            headerName: "Customer Attribute",
+            suppressStickyLabel: true,
+            openByDefault: true,
+            children: [
+                { field: "Cust_Cd", headerName: "Customer Code", colId: "Customer Code" },
+                { field: "Rgn", headerName: "Region", colId: "Region", columnGroupShow: 'closed' },
+                { field: "Cntry", headerName: "Country", colId: "Country", columnGroupShow: 'closed' },
+            ]
+        },
+        {
+            headerName: "",
+            suppressStickyLabel: true,
+            openByDefault: false,
+            children: [
+                {
+                    field: "Rem_Cd", headerName: "Remark Code", pinned: 'right', colId: "Remark Code", cellRenderer: "TextBoxCellRenderer", cellRendererParams: {
+                        visible: {
+                            flag: true
+                        },
+    
                     }
-                }
-            },
-            { field: "Lst_Rmrk", headerName: "Latest Remark", pinned: 'right', colId: "Latest Remark", cellRenderer: "TextBoxCellRenderer" },
-            { field: "Rmrk_Hstry", headerName: "Remark History", pinned: 'right', colId: "Remark History" },
-        ]
-    }
-];
+                },
+                {
+                    field: "Lst_Rmrk", headerName: "Latest Remark", pinned: 'right', colId: "Latest Remark", cellRenderer: "TextBoxCellRenderer", cellRendererParams: {
+                        visible: {
+                            flag: false
+                        }
+                    }
+                },
+                { field: "Rmrk_Hstry", headerName: "Remark History", pinned: 'right', colId: "Remark History", cellRenderer: "RemarkHistoryRenderer",cellRendererParams:{
+                    onClick:onOpenRemarkHistory
+                } },
+            ]
+        }
+    ]
+};
 
 export const orderDataDropDown: (ColDef)[] = [
     { field: "FG_Cod", headerName: 'FG Code', rowGroup: true, hide: true },
@@ -706,82 +717,20 @@ export const deptwiseBMReportData = [
 ]
 
 
-
- // const columnDefs: (ColDef | ColGroupDef)[] = [
-    //     {
-    //         headerName: "Default Attributes",
-    //         suppressStickyLabel: true,
-    //         openByDefault: true,
-    //         children: [
-    //             { field: "BPP" /*, pinned: true*/, colId: "BPP" },
-    //             { field: "D_Ag", headerName: 'Dept Ageing', colId: "Dept Ageing", columnGroupShow: "open" },
-    //             { field: "Ord_Typ", headerName: "Order Type", colId: "Order Type", columnGroupShow: "open" },
-    //             { field: "Ord_ID", headerName: "Order Type", colId: "Order ID", columnGroupShow: "closed" },
-    //             { field: "L_Itm", headerName: "Line Item", colId: "Line Item", columnGroupShow: "closed" },
-    //             { field: "Itm_Code", headerName: "Item Code", colId: "Item Code", columnGroupShow: "closed" },
-    //             { field: "Itm_Desc", headerName: "Item Description", colId: "Item Description", columnGroupShow: "closed" },
-    //             { field: "Ord_Qty", headerName: "Order Quantity", colId: "Order Quantity", columnGroupShow: "closed" },
-    //             { field: "WIP_O_Hd", headerName: "WIP On Hand", colId: "WIP On Hand", columnGroupShow: "closed" },
-    //             { field: "M_Bal", headerName: "Mfg. Balance", colId: "Mfg. Balance", columnGroupShow: "closed" },
-    //             { field: "CCR_Nme", headerName: "CCR Name", colId: "CCR Name", columnGroupShow: "closed" },
-    //             { field: "Cust_Nme", headerName: "Customer Name", colId: "Customer Name", columnGroupShow: "closed" },
-    //             { field: "CRDDate", headerName: "CRDDate", colId: "CRDDate", columnGroupShow: "closed" },
-    //             { field: "DDt", headerName: "Due Date", colId: "Due Date", columnGroupShow: "closed" },
-    //             { field: "R_DDt", headerName: "Release Date", colId: "Release Date", columnGroupShow: "closed" }
-    //         ],
-    //     },
-    //     {
-    //         headerName: "Calculate Attribute",
-    //         suppressStickyLabel: true,
-    //         openByDefault: true,
-    //         children: [
-    //             { field: "Trail_Dpt", headerName: "Trailing Department", colId: "Trailing Department" },
-    //             { field: "Elap_days", headerName: "Elapsed Days", colId: "Elapsed Days", columnGroupShow: 'closed' },
-    //             { field: "Attr", headerName: "Attribute", colId: "Attribute", columnGroupShow: 'closed' },
-    //         ],
-    //     },
-    //     {
-    //         headerName: "Order Attribute",
-    //         suppressStickyLabel: true,
-    //         openByDefault: true,
-    //         children: [
-    //             { field: "Pl_Nam", headerName: "Plant Name", colId: "Plant Name" },
-    //             { field: "PO_No", headerName: "PO No.", colId: "Po No.", columnGroupShow: 'closed' },
-    //         ],
-    //     },
-    //     {
-    //         headerName: "Product Attribute",
-    //         suppressStickyLabel: true,
-    //         openByDefault: true,
-    //         children: [
-    //             { field: "Price", headerName: "Price", colId: "Price" },
-    //             { field: "Itm_Grp", headerName: "Item Group", colId: "Item Group" },
-    //             { field: "Att_1", headerName: "Attribute 1", colId: "Attribute 1", columnGroupShow: 'closed' },
-    //             { field: "Att_2", headerName: "Attribute 2", colId: "Attribute 2", columnGroupShow: 'closed' },
-    //             { field: "Att_3", headerName: "Attribute 3", colId: "Attribute 3", columnGroupShow: 'closed' },
-    //             { field: "Att_4", headerName: "Attribute 4", colId: "Attribute 4", columnGroupShow: 'closed' },
-    //         ],
-    //     },
-    //     {
-    //         headerName: "Customer Attribute",
-    //         suppressStickyLabel: true,
-    //         openByDefault: true,
-    //         children: [
-    //             { field: "Cust_Cd", headerName: "Customer Code", colId: "Customer Code" },
-    //             { field: "Rgn", headerName: "Region", colId: "Region", columnGroupShow: 'closed' },
-    //             { field: "Cntry", headerName: "Country", colId: "Country", columnGroupShow: 'closed' },
-    //         ],
-    //     },
-    //     {
-    //         headerName: "",
-    //         suppressStickyLabel: true,
-    //         children: [
-    //             { field: "Rem_Cd", headerName: "Remark Code", pinned: true, colId: "Remark Code" },
-    //             { field: "Lst_Rmrk", headerName: "Latest Remark", pinned: true, colId: "Latest Remark" },
-    //             { field: "Rmrk_Hstry", headerName: "Remark History", pinned: true, colId: "Remark History" },
-    //         ],
-    //     }
-
-
-
-    // ];
+export const RemarkHistoryData=[
+    {
+        'un':'fristan',
+        'r':'enter the last remark data',
+        'rd':'2023-12-23'
+    },
+    {
+        'un':'fristan',
+        'r':'enter the  remark 1 data',
+        'rd':'2023-12-24'
+    },
+    {
+        'un':'fristan',
+        'r':'enter the remark 2 data',
+        'rd':'2023-12-24'
+    }
+]

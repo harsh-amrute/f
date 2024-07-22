@@ -4,19 +4,13 @@ import { orderDataDropDown, deptwiseBMReportData } from './DeptWiseBMReportData'
 import { ColDef, ColGroupDef, ColumnGroup } from "ag-grid-enterprise";
 
 const RowGroupRenderer = (params: any) => {
-    console.log('Parekmkfv=', params)
+    //console.log('Parekmkfv=', params)
     //  const {HeaderChildren} = HeaderChildren
-    const [rowData, setRowData] = useState<any[]>(/*[
-        { "FG_Cod": "A123", "Lvl": "Level 1", "Rqrment": "Requirement 1", "Stck": 100, "WIP": 50, "Gp": 50 },
-        { "FG_Cod": "A123", "Lvl": "Level 2", "Rqrment": "Requirement 2", "Stck": 150, "WIP": 70, "Gp": 80 },
-        { "FG_Cod": "B456", "Lvl": "Level 1", "Rqrment": "Requirement 3", "Stck": 120, "WIP": 60, "Gp": 60 },
-        { "FG_Cod": "B456", "Lvl": "Level 2", "Rqrment": "Requirement 4", "Stck": 90, "WIP": 30, "Gp": 60 }
-    ]*/
-    );
+    const [rowData, setRowData] = useState<any[]>();
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>([
-        { field: "FG_Cod", rowGroup: true, hide: true },
-        { field: "Lvl", rowGroup: true, hide: true },
+        { field: "FG_Cod", headerName: 'FG Code', rowGroup: true, hide: true },
+        { field: "Lvl", headerName: 'FG Code', rowGroup: true, hide: true },
         { field: "Rqrment", headerName: 'Requirement' },
         { field: "Stck", headerName: 'Stock' },
         { field: "WIP", headerName: 'WIP' },
@@ -52,7 +46,7 @@ const RowGroupRenderer = (params: any) => {
     return (
         <div style={{ backgroundColor: 'white' }}>
             <VFTable
-                //className='child-grid'
+                className='child-grid'
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 autoGroupColumnDef={autoGroupColumnDef}

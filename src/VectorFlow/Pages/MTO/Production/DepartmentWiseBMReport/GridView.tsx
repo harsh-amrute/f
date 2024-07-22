@@ -23,12 +23,6 @@ const GridView = ({ agGridProps, columDef, convercolumnDef }: GridProps) => {
                 height={"750px"}
                 ref={gridRef}
                 defaultColDef={{maxWidth:150}}
-                //gridOptions={...columDef}
-                // statusBar={{
-                //     statusPanels: [
-                //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                //     ]
-                // }}
                 statusBar={{
                     statusPanels: [
                       { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },

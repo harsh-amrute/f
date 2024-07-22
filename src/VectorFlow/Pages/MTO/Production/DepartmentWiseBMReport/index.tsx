@@ -13,7 +13,7 @@ import {
     GridOptions,
     /*createGrid,*/
 } from "ag-grid-enterprise";
-import { deptwiseBMReportData, DeptWiseBMReport } from './DeptWiseBMReportData';
+import { deptwiseBMReportData, DeptWiseBMReport,RemarkHistoryData } from './DeptWiseBMReportData';
 import GridView from './GridView';
 import { Allotment } from 'allotment';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
@@ -24,11 +24,12 @@ import AgeingCellRenderer from './AgeingIconCellRenderer';
 import customCellRenderer from './CustomCellRenderer';
 import RowGroupRenderer from './RowGroupRenderer';
 import TextBoxCellRenderer from './TextBoxCellRenderer';
-
+import RemarkHistoryRenderer from './RemarkHistoryRenderer';
+import BPRRemarkHistoryModal from './MTORemarkHistoryModal';
 
 const DptWiseBMReport = () => {
 
-    //const [conColDef, setCoverColDef] = useState<any>();
+    const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
 
     const customCellRenderers = useMemo(() => (
         {
@@ -36,8 +37,11 @@ const DptWiseBMReport = () => {
             "AgeingCellRenderer": AgeingCellRenderer,
             // "availabilityToolTip": AvailabilityToolTip,
             "customCellRenderer": customCellRenderer,
-            "TextBoxCellRenderer": TextBoxCellRenderer
+            "TextBoxCellRenderer": TextBoxCellRenderer,
+            "RemarkHistoryRenderer": RemarkHistoryRenderer
         }), []);
+
+
 
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
@@ -100,7 +104,7 @@ const DptWiseBMReport = () => {
                     <Allotment vertical={true} separator={true}   >
                         <Allotment.Pane preferredSize={'60%'}>
                             <BTRAllomentSection>
-                                <GridView agGridProps={agGridProps} columDef={DeptWiseBMReport} convercolumnDef={deptwiseBMReportData} />
+                                <GridView agGridProps={agGridProps} columDef={DeptWiseBMReport(()=>setIsRemarkHistoryOpen(true))} convercolumnDef={deptwiseBMReportData} />
                             </BTRAllomentSection>
                         </Allotment.Pane>
 
@@ -112,7 +116,16 @@ const DptWiseBMReport = () => {
                     </Allotment>
                 </BTRTableWrapper>
             </HorizontalViewWrapper>
+
+            <BPRRemarkHistoryModal
+                data={RemarkHistoryData}
+                isOpen={isRemarkHistoryOpen}
+                onClose={()=>setIsRemarkHistoryOpen(false)}
+            />
+
         </BMDepWrapper>
+
+
     )
 }
 
