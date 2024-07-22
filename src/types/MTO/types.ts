@@ -18,3 +18,9 @@ export type BufferTrendData = {
     bl?: number;
     w?: number;
 };
+
+export type ReasonOrderAtRiskType = {
+    r: string;
+    bo: number;
+    ro: number;
+}

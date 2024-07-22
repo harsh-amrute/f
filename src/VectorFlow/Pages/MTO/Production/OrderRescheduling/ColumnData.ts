@@ -3,8 +3,9 @@ const columnData: ColDef[] = [
     {
         colId: "oid",
         field: "oid",
-        headerName: "Column Id",
+        headerName: "Order Id",
         hide: false,
+        cellStyle: { display: 'flex' },
         tooltipComponent: "availabilityToolTip",
         initialWidth: 800,
         autoHeaderHeight: true,
@@ -13,6 +14,7 @@ const columnData: ColDef[] = [
         colId: "lid",
         field: "lid",
         headerName: "Line Item",
+        cellStyle: { display: 'flex', justifyContent: 'right' },
         hide: false,
         tooltipComponent: "availabilityToolTip",
         initialWidth: 150,
@@ -24,6 +26,7 @@ const columnData: ColDef[] = [
     {
         colId: "PcSz",
         field: "PcSz",
+        cellStyle: { display: 'flex', justifyContent: 'right' },
         headerName: "Procurement Buffer",
         hide: false,
         tooltipField: "rm",
@@ -36,6 +39,7 @@ const columnData: ColDef[] = [
     {
         colId: "PdSz",
         field: "PdSz",
+        cellStyle: { display: 'flex', justifyContent: 'right' },
         headerName: "Production Buffer",
         hide: false,
         autoHeaderHeight: true,
@@ -47,6 +51,7 @@ const columnData: ColDef[] = [
     {
         colId: "rnm",
         field: "rnm",
+        cellStyle: { display: 'flex' },
         headerName: "Route",
         hide: false,
         autoHeaderHeight: true,

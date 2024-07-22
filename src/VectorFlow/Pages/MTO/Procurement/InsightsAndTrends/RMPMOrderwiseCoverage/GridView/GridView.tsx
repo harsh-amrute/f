@@ -16,6 +16,7 @@ const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) =>
 
 
 
+
     return (
         <>
             <VFTableWrapper>

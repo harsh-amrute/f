@@ -1,12 +1,14 @@
 import { ETACellRendererWrapper } from "./styles"
-
+import { useState } from "react"
 const ReasonCellRenderer = (params: any) => {
+
+    const [val, setVal] = useState(params.node.data.rs ? params.node.data.rs : "")
 
     return (
         <ETACellRendererWrapper  >
 
             {/* <ETACellValue> */}
-            <input onChange={(e) => { params.data.rs = e.target.value }} placeholder="Enter your reason here..." type={'text'} style={{ fontSize: '14px', height: '28px', width: '180px' }} />
+            <input value={val} onChange={(e) => { params.data.rs = e.target.value, setVal(params.data.rs) }} placeholder="Enter your reason here..." type={'text'} style={{ fontSize: '14px', height: '28px', width: '180px' }} />
             {/* </ETACellValue> */}
         </ETACellRendererWrapper>
     )

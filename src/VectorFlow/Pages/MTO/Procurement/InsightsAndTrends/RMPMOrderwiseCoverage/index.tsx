@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import GridView from './GridView/GridView'
 import GraphView from './GraphView/GraphView'
@@ -7,11 +7,17 @@ import { Order } from '../../../../../../VectorFlow/types/MTO'
 import { ColDef } from 'ag-grid-enterprise'
 import columnData from './ColumnData'
 import { AgGridReactProps } from 'ag-grid-react'
-import procData from './ProcurementData'
+import { useGetOrderwiseCoverageData } from '../../../../../../VectorFlow/Services/MTO/Procurement/OrderwiseCoverage'
+import { toast } from 'react-toastify'
+import { notifyError, notifyLoader, notifySuccess } from '../../../../../../helpers/notify'
 
 const RMPMOrderwiseCoverage = () => {
 
     const [isGridView, setIsGridView] = useState(false);
+
+
+    const { mutateAsync: getOrderwiseCoverageData } = useGetOrderwiseCoverageData();
+
 
 
     const agGridProps: AgGridReactProps = {
@@ -96,8 +102,8 @@ const RMPMOrderwiseCoverage = () => {
     // const [ShortageColumns, setShortageColumns] = useState(columnData);
     const [ShortageColumns] = useState(columnData);
 
-    const mapDataToColumns = (data: Order[], columns: ColDef[]) => {
-        return data.map(item => {
+    const mapDataToColumns = (data: any, columns: ColDef[]) => {
+        return data.map((item: any) => {
             const mappedItem: any = {};
             columns.forEach(column => {
                 if (column.field) {
@@ -121,11 +127,38 @@ const RMPMOrderwiseCoverage = () => {
                 }
             });
             return mappedItem;
+
         });
+
+
     };
 
-    const convertedData = mapDataToColumns(procData, columnData);
-    const [ShortageDatas] = useState(convertedData);
+    const [convertedData, setConvertedData] = useState([{}]);
+    const [GraphDatas, setGraphDatas] = useState([{}])
+
+    const GetData = async () => {
+        try {
+            notifyLoader("Loading Data...")
+            const APIData = await getOrderwiseCoverageData();
+            console.log("orderwise: ", APIData)
+            if (APIData.status.toString() === '200') {
+                toast.dismiss();
+                notifySuccess("Data Fetched Successfully!")
+            }
+            setGraphDatas(APIData.data.data.results)
+            setConvertedData(mapDataToColumns(APIData.data.data.results, columnData));
+            console.log("convertedData:=:=:", convertedData);
+            console.log("graph:::", GraphDatas)
+        } catch (e) {
+            toast.dismiss();
+            notifyError("Failed to fetch Data");
+        }
+    }
+
+    useEffect(() => {
+        GetData();
+
+    }, [])
     return (
         <>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -135,9 +168,10 @@ const RMPMOrderwiseCoverage = () => {
 
                 <div style={{ flex: '1' }}>
 
-                    {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={ShortageDatas} /> : <GraphView />}
+                    {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={convertedData} /> : <GraphView />}
                 </div>
             </div>
+            {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={convertedData} /> : <GraphView shortageData={GraphDatas} />}
         </>
     )
 }
