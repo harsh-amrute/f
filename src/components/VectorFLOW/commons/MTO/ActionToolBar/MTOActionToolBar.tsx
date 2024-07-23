@@ -75,11 +75,6 @@ interface MTOActionToolBarProps {
     //// new props
 }
 
-
-// const MTOActionToolBar = ({ isGoBackButton, isReleaseDate, isAsOnDate, isAddFilterButton, isExcelExport, isChartGridToggle, comp, onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters, submitDate, date, handleGoBack, themeUi }: MTOActionToolBarProps) => {
-
-
-
 const MTOActionToolBar = ({ 
         comp, 
         onDateChange, 
