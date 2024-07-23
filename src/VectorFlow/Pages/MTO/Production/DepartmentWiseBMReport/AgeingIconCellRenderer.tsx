@@ -1,7 +1,7 @@
-import { CustomCellRendererProps } from "@ag-grid-community/react";
+//import { CustomCellRendererProps } from "@ag-grid-community/react";
 import { FlatIcon } from "./styles";
 
-const ActionCellRenderer = (props: CustomCellRendererProps) => {
+const ActionCellRenderer = (/*props: CustomCellRendererProps*/) => {
 
     return (
         <div className="action-cell">
