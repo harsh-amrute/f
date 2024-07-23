@@ -7,7 +7,7 @@ import {
 import { AgGridReactProps } from 'ag-grid-react';
 //import { ColDef } from 'ag-grid-enterprise'
 
-import { deptwiseBMReportData, DeptWiseBMReport,RemarkHistoryData } from './DeptWiseBMReportData';
+import { deptwiseBMReportData, DeptWiseBMReport, RemarkHistoryData } from './DeptWiseBMReportData';
 import GridView from './GridView';
 import { Allotment } from 'allotment';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
@@ -88,6 +88,9 @@ const DptWiseBMReport = () => {
 
                 <MTOActionToolBar
                     comp={'DeptWiseBMReport'}
+                    isAddFilterButton
+                    isExcelExport
+                    isWIPCheckBox
                     onDateChange={() => { console.log('') }}
                     submitDate={() => { console.log('') }}
                 />
@@ -98,7 +101,7 @@ const DptWiseBMReport = () => {
                     <Allotment vertical={true} separator={true}   >
                         <Allotment.Pane preferredSize={'60%'}>
                             <BTRAllomentSection>
-                                <GridView agGridProps={agGridProps} columDef={DeptWiseBMReport(()=>setIsRemarkHistoryOpen(true))} convercolumnDef={deptwiseBMReportData} />
+                                <GridView agGridProps={agGridProps} columDef={DeptWiseBMReport(() => setIsRemarkHistoryOpen(true))} convercolumnDef={deptwiseBMReportData} />
                             </BTRAllomentSection>
                         </Allotment.Pane>
 
@@ -114,7 +117,7 @@ const DptWiseBMReport = () => {
             <BPRRemarkHistoryModal
                 data={RemarkHistoryData}
                 isOpen={isRemarkHistoryOpen}
-                onClose={()=>setIsRemarkHistoryOpen(false)}
+                onClose={() => setIsRemarkHistoryOpen(false)}
             />
 
         </BMDepWrapper>

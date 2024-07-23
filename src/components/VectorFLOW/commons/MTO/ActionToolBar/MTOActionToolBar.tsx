@@ -56,7 +56,6 @@ interface MTOActionToolBarProps {
     handleGoBack?: () => void;
     themeUi?: string;
 
-
     //// new props
     isGoBackButton?: boolean
     isReleaseDate?: boolean
@@ -64,13 +63,12 @@ interface MTOActionToolBarProps {
     isAddFilterButton?: boolean
     isExcelExport?: boolean
     isChartGridToggle?: boolean
-
-
+    isWIPCheckBox?: boolean
     //// new props
 }
 
 
-const MTOActionToolBar = ({ isGoBackButton, isReleaseDate, isAsOnDate, isAddFilterButton, isExcelExport, isChartGridToggle, comp, onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters, submitDate, date, handleGoBack, themeUi }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ isGoBackButton, isReleaseDate, isAsOnDate, isAddFilterButton, isExcelExport, isChartGridToggle, comp, onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters, submitDate, date, handleGoBack, themeUi, isWIPCheckBox }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
         if (removeFilters) {
@@ -78,11 +76,9 @@ const MTOActionToolBar = ({ isGoBackButton, isReleaseDate, isAsOnDate, isAddFilt
         }
     }
 
-    console.log("mto toolbar for ", comp);
 
     const format2 = "YYYY-MM-DD"
     const d = new Date();
-    //.setDate(d.getDate() - 1)
     const datetime = moment(d).format(format2);
 
     return (
@@ -108,17 +104,21 @@ const MTOActionToolBar = ({ isGoBackButton, isReleaseDate, isAsOnDate, isAddFilt
                         </SCGoBackContainer>
                     }
 
-                    <CheckBoxDiv>
-                        <Checkbox
-                            name="select"
-                            value="1"
-                            defaultChecked={true}
-                            onChange={() => console.log('hi')}
-                        />
-                        <InputCheckBoxTitle>Show order with available WIP Only</InputCheckBoxTitle>
-                    </CheckBoxDiv>
+                    {isWIPCheckBox &&
+                        <CheckBoxDiv>
+                            <Checkbox
+                                name="select"
+                                value="1"
+                                defaultChecked={true}
+                                //type="checkbox"
+                                onChange={() => console.log('hi')}
+                                //style={{ display: 'inline' }}
+                            />
+                            <InputCheckBoxTitle>Show order with available WIP Only</InputCheckBoxTitle>
+                        </CheckBoxDiv>
+                    }
 
-                    
+
                     {isReleaseDate &&
                         <div style={{
                             display: 'flex',

@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import {  useMemo, useState } from 'react';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import { ColDef } from "ag-grid-enterprise";
 
 const RowGroupRenderer = (params: any) => {
 
 
-    const [columnDefs, setColumnDefs] = useState<ColDef[]>([
+    const [columnDefs] = useState<ColDef[]>([
         { field: "FG_Cod", headerName: 'FG Code', rowGroup: true, hide: true },
         { field: "Lvl", headerName: 'FG Code', rowGroup: true, hide: true },
         { field: "Rqrment", headerName: 'Requirement' },

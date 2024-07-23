@@ -314,18 +314,24 @@ export const DateValue = styled.div`
   border-radius: 4px;
   min-width: 180px;
 `;
-export const CheckBoxDiv=styled.div`
+export const CheckBoxDiv = styled.div`
     width: max-content;
     text-wrap: nowrap;
-`
-
-export const InputCheckBox= styled.input`
+    background-color:pink;
 
 `
 
-export const InputCheckBoxTitle= styled.div`
-  
+export const InputCheckBox = styled.input`
+    display:inline;
+`
 
+export const InputCheckBoxTitle = styled.div`
+  font-size:16px;
+  color:#000000;
+  font-family:Roboto;
+  font-weight:bold;
+  display:inline;
+  padding-left:2px;
 `
 
 /**constant date */
