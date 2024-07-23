@@ -32,7 +32,6 @@ import {
     DateValue,
     /**Date component style end */
     CheckBoxDiv,
-    InputCheckBox,
     InputCheckBoxTitle
 } from './styles';
 import moment from 'moment';
@@ -68,7 +67,7 @@ interface MTOActionToolBarProps {
 }
 
 
-const MTOActionToolBar = ({ isGoBackButton, isReleaseDate, isAsOnDate, isAddFilterButton, isExcelExport, isChartGridToggle, comp, onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters, submitDate, date, handleGoBack, themeUi, isWIPCheckBox }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ isGoBackButton, isReleaseDate, isAsOnDate, isAddFilterButton, isExcelExport, isChartGridToggle,  onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters, submitDate, date, handleGoBack, themeUi, isWIPCheckBox }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
         if (removeFilters) {

@@ -84,8 +84,6 @@ const DptWiseBMReport = () => {
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>
-
-
                 <MTOActionToolBar
                     comp={'DeptWiseBMReport'}
                     isAddFilterButton
