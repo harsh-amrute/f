@@ -28,9 +28,31 @@ const OrderAtRisk = () => {
   const { data, isLoading } = useGetOrderRiskData() || {};
 
   const gridOptions: GridOptions = {
+    sideBar: {
+      toolPanels: [
+        {
+          id: 'columns',
+          labelDefault: 'Columns',
+          labelKey: 'columns',
+          iconKey: 'columns',
+          toolPanel: 'agColumnsToolPanel',
+          minWidth: 225,
+          maxWidth: 225,
+          width: 225
+        },
+        {
+          id: 'filters',
+          labelDefault: 'Filters',
+          labelKey: 'filters',
+          iconKey: 'filter',
+          toolPanel: 'agFiltersToolPanel',
+          minWidth: 180,
+          maxWidth: 400,
+          width: 250
+        }
+      ],
+    },
     defaultColDef: {
-      resizable: true,
-      suppressMenu: true,
       initialFlex: 1,
       wrapHeaderText: true,
       autoHeaderHeight: true,
@@ -241,7 +263,6 @@ const OrderAtRisk = () => {
             <div data-testid="grid-view" style={{ height: screenHeight - 300 }}>
               <VFTable
                 {...gridOptions}
-                sideBar="columns"
                 columnDefs={tableColDefs}
                 rowData={gridData}
                 tooltipHideDelay={100000}

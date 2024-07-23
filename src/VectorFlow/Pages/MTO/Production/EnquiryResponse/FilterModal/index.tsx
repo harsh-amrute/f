@@ -3,9 +3,9 @@ import VFButtonOutline from '../../../../../../components/VectorFLOW/commons/VFB
 import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton';
 import VFModalCard from '../../../../../../components/VectorFLOW/commons/VFModalCard';
 
-import { AccordianContainer, ButtonContainer, ButtonFilterWrapper, FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, ModalBody, ModalWrapper, Option, OptionsWrapper, PlantInput, SearchBar } from './styles';
+import { AccordianContainer, ButtonContainer, ButtonFilterWrapper, FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, ModalBody, ModalWrapper, Option, OptionsWrapper, } from './styles';
 import FilterCheckboxAccordian from '../../../../../../components/VectorFLOW/commons/MTO/FilterCheckboxAccordian';
-import { DropdownGroupWrapper, FilterCardWrapper, FilterComponent, FilterHeader, SelectDropdownComponent } from '../../../../../../components/VectorFLOW/commons/VFMultiFilter/style';
+import { DropdownGroupWrapper, SelectDropdownComponent } from '../../../../../../components/VectorFLOW/commons/VFMultiFilter/style';
 import VFMasterFieldSearch from '../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch';
 import Select from 'react-select';
 // import VFMasterFieldSearch from '../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch';
@@ -283,7 +283,6 @@ const FilterModal = (props: IFilterModalProps) => {
     const [activeAccordian, setActiveAccordian] = useState<string>('');
 
     const handleChange = (event: any) => {
-        const { name, value } = event
 
         handleNameChange({ name: 'plantName', value: event.value });
     }
@@ -318,7 +317,6 @@ const FilterModal = (props: IFilterModalProps) => {
         }
     }
 
-    const [folValue, setFolValue] = useState("");
 
     return (
         <VFModalCard
@@ -391,7 +389,7 @@ const FilterModal = (props: IFilterModalProps) => {
                                                                 name={option}
                                                                 checked={getChecked(filter?.heading, option)}
                                                                 onChange={(e) => { handleOptionChange(e, filter?.heading, idx) }}
-                                                                type='checkbox'
+                                                                type={`${filter.key === 'prdGrp' ? 'radio' : 'checkbox'}`}
                                                             />
                                                             <label>{option}</label>
                                                         </Option>

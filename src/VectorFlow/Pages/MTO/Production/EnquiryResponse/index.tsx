@@ -547,19 +547,19 @@ const EnquiryResponse = () => {
         <BTRTableWrapper style={{ height: screenHeight - 145, margin: '0' }}>
 
           <Allotment vertical separator   >
-            <Allotment.Pane preferredSize={'50%'}>
+            <Allotment.Pane preferredSize={'40%'}>
               <BTRAllomentSection>
                 <ResizableTable header={prodPlanningMock?.header} data={filterData} />
 
               </BTRAllomentSection>
             </Allotment.Pane>
 
-            <Allotment.Pane preferredSize={'50%'}>
-              <BTRAllomentSection>
+            <Allotment.Pane preferredSize={'60%'}>
+              <BTRAllomentSection style={{ paddingTop: '10px' }}>
 
                 <EstimatedWrapper>
                   <div
-                    style={{ WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})`, padding: "1rem" }}
+                    style={{ WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})`, padding: "20px 25px" }}
                   >
                     <TabSwitchContainer>
                       <TabSwitchHeading>Estimated Due Date</TabSwitchHeading>

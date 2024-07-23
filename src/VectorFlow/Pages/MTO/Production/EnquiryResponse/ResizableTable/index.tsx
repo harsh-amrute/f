@@ -1,5 +1,5 @@
 import { ColDef } from "ag-grid-enterprise";
-import { useState, useMemo, useRef } from "react";
+import { useRef } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
@@ -23,7 +23,6 @@ const ResizableTable = (props: IResizeTableProps) => {
       field: "plnm",
       colId: "plnm",
       minWidth: 150,
-
       cellStyle: {
         fontSize: "18px",
         alignItems: "center",
@@ -95,8 +94,8 @@ const ResizableTable = (props: IResizeTableProps) => {
       'text-align': 'center',
       "font-style": "normal",
       "font-variant": "normal",
-      "font-weight": "300",
-      "font-size": "20px",
+      "font-weight": "200",
+      "font-size": "16px",
       "font-family": "Roboto",
       'text-overflow': 'ellipsis',
       'white-space': 'nowrap',
@@ -114,7 +113,6 @@ const ResizableTable = (props: IResizeTableProps) => {
         rowData={data}
         defaultColDef={defaultColDef}
         getRowStyle={getRowStyle}
-        disableZoomScaling
         pagination
 
       />

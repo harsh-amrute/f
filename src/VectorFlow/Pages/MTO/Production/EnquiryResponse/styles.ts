@@ -106,10 +106,10 @@ export const EstimatedWrapper = styled.div`
 `;
 export const BlurCover = styled.div`
   top: 0;
-  left: 0;
+  left: 1%;
   position: absolute;
   background: #80808080;
-  width: 100%;
+  width: 98%;
   height: 100%;
   border-radius: 20px;
 `;
