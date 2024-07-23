@@ -1,0 +1,5 @@
+.compact {
+  --ag-grid-size: 3px !important;
+  --ag-list-item-height: 20px !important;
+  --ag-font-size: 10px !important;
+}

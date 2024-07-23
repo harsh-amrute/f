@@ -51,8 +51,10 @@ const OrderBalance = () => {
         comp={"orderBalance"}
         isGridView={isGridView}
         setIsGridView={setIsGridView}
+        isChartGridToggle
+        isAddFilterButton
       />
-      <HorizontalViewWrapper style={{ marginTop: "20px" }}>
+      <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: '25px' }}>
         {isGridView ? (
           <div data-testid="grid-view" style={{ height: screenHeight - 300 }}>
             <VFTable

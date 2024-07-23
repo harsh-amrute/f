@@ -44,7 +44,7 @@ type filterType = {
 }
 
 interface MTOActionToolBarProps {
-    comp: string,
+    comp?: string,
     onDateChange?: (date: string) => void;
     submitDate?: () => void;
     isGridView?: boolean;
@@ -55,10 +55,22 @@ interface MTOActionToolBarProps {
     date?: string
     handleGoBack?: () => void;
     themeUi?: string;
+
+
+    //// new props
+    isGoBackButton?: boolean
+    isReleaseDate?: boolean
+    isAsOnDate?: boolean
+    isAddFilterButton?: boolean
+    isExcelExport?: boolean
+    isChartGridToggle?: boolean
+
+
+    //// new props
 }
 
 
-const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters, submitDate, date, handleGoBack, themeUi }: MTOActionToolBarProps) => {
+const MTOActionToolBar = ({ isGoBackButton, isReleaseDate, isAsOnDate, isAddFilterButton, isExcelExport, isChartGridToggle, comp, onDateChange, isGridView, setIsGridView, onAddFilter, selectedFilters, removeFilters, submitDate, date, handleGoBack, themeUi }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
         if (removeFilters) {
@@ -66,12 +78,15 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
         }
     }
 
+    console.log("mto toolbar for ", comp);
+
     const format2 = "YYYY-MM-DD"
     const d = new Date();
     //.setDate(d.getDate() - 1)
     const datetime = moment(d).format(format2);
 
     return (
+
         <SCTaskBarContainer className='toolbar-container'>
             <SCTaskFilterContainer
                 style={{
@@ -82,7 +97,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
             >
 
                 <>
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'stplAndFullKit') && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp !== 'MaterialRequirement') && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') && (comp != "FullKitAssignment") && (comp != "orderBalance") && (comp != "orderAtRisk") &&
+                    {isGoBackButton &&
 
                         <SCGoBackContainer onClick={() => { if (handleGoBack) handleGoBack() }}>
                             <img
@@ -103,7 +118,8 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                         <InputCheckBoxTitle>Show order with available WIP Only</InputCheckBoxTitle>
                     </CheckBoxDiv>
 
-                    {((comp !== 'MaterialCov') && (comp !== 'rmpm')) && (comp !== 'stplAndFullKit') && (comp !== 'EnquiryResponse') && (comp !== 'BMTrends') && (comp != "MaterialCovDetailData") && (comp !== 'BTRMTO') && (comp !== 'orderReschedule') && (comp != "FullKitAssignment") && (comp != "orderBalance") && (comp != "orderAtRisk") &&
+                    
+                    {isReleaseDate &&
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -153,26 +169,25 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                                 />
                             </div>
                             &nbsp;
-                            <div>
-                                <button
-                                    style={{
-                                        borderRadius: '8px',
-                                        border: 'solid 1px #BC3D81',
-                                        width: '112px',
-                                        height: '43px',
-                                    }}
-
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <img
+                                    style={{ cursor: 'pointer' }}
+                                    src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
+                                    height={50}
+                                    width={60}
+                                    alt="Group 627"
                                     onClick={() => { if (submitDate) submitDate() }}
-                                >Submit</button>
+                                />
+
                             </div>
                         </div>
 
                     }
 
-                    {comp !== 'EnquiryResponse' && <SCVerticalDivider />}
+                    <SCVerticalDivider />
                 </>
 
-                {comp === 'EnquiryResponse' &&
+                {isAsOnDate &&
                     <DateWrapper>
                         <DateIcon
                             src='/assets/img/calender-icon.svg' alt='calender-icon'
@@ -201,7 +216,7 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                                             </VFSelectedFiltersFilterValue>
                                             <VFSelectedFiltersFilterCloseIcon
                                                 onClick={() => handleRemoveFilter(filter?.label, value)}
-                                                src='/assets/img/VectorFLOW/BPR/close-circle.svg' data-testid={'closeIcon-filter'}
+                                                src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
                                             />
                                             {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
                                         </VFSelectedFiltersFilterContent>
@@ -217,15 +232,15 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
             </SCTaskFilterContainer>
 
             <SCCustomActionsContainer>
-                {comp === 'EnquiryResponse' && onAddFilter ?
-                    <VFButton onClick={() => onAddFilter()} themeUi={themeUi || ''} disabled={false} width={110}>{selectedFilters && selectedFilters?.length > 0 ? <p>Edit Filter</p> : <p>+ Add Filter</p>}</VFButton>
+                {isAddFilterButton && (onAddFilter ?
+                    <VFButton onClick={() => onAddFilter()} themeUi={themeUi || ''} disabled={false} width={110}>{selectedFilters && selectedFilters?.length > 0 ? <p style={{ padding: '2px' }}>Edit Filter</p> : <p style={{ padding: '2px' }}>+ Add Filter</p>}</VFButton>
                     :
                     <SCButton>
                         <p>+ Add Filter</p>
-                    </SCButton>
+                    </SCButton>)
                 }
                 <>
-                    {comp !== 'EnquiryResponse' && comp !== 'BMTrends' && <>
+                    {isExcelExport && <>
                         <SCVerticalDivider />
                         <SCViewContainerWithBg >
                             <>
@@ -254,16 +269,18 @@ const MTOActionToolBar = ({ comp, onDateChange, isGridView, setIsGridView, onAdd
                     </>
 
                     {/* Toggle button for chartview/ grid view */}
-                    {((comp === 'rmpm') || (comp === 'stplAndFullKit') || (comp === "orderAtRisk") || (comp === "orderBalance")) &&
+                    {isChartGridToggle &&
                         <>
-                            <SCViewContainerWithBgToggle onClick={() => { setIsGridView && (setIsGridView(!isGridView)); console.log(isGridView) }}>
-                                <SCViewContainer>
+                            <SCViewContainerWithBgToggle >
+                                <SCViewContainer onClick={() => { isGridView && setIsGridView && (setIsGridView(!isGridView)) }}>
                                     <SCViewImage src={`/assets/img/VectorFLOW/BPR/${(isGridView) ? 'chart-view-grey' : 'chart-view-pink'}.svg`} />
                                     <p>Chart View</p>
 
                                 </SCViewContainer>
+
                                 <SCHorizontalDivison />
-                                <SCViewContainer>
+
+                                <SCViewContainer onClick={() => { !isGridView && setIsGridView && (setIsGridView(!isGridView)) }}>
                                     <SCViewImage src={`/assets/img/VectorFLOW/BPR/${(!isGridView) ? 'grid-view-grey' : 'grid-view-pink'}.svg`} />
                                     <p>Grid View</p>
 

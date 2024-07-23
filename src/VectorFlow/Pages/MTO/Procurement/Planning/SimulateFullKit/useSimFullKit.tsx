@@ -136,7 +136,7 @@ const useSimFullKit = () => {
         return {
             groupExpanded: `<img src="${'/assets/img/mto/procPlanning/minus_circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
             groupContracted: `<img src="${'/assets/img/mto/procPlanning/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
-    };
+        };
     }, []);
 
     const autoGroupColumnDef = useMemo(() => {

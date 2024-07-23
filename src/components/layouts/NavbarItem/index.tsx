@@ -241,7 +241,7 @@ const NavbarItem = ({
         )}
 
         {isHide && pathname === '/procurement/material-coverage-open-sales' && menuItem.id === 19 && (
-          <AnalyticalScreen/>
+          <AnalyticalScreen />
         )}
 
         {isHide && pathname === '/supply-chain-intelligence-hub/rrr' && menuItem.id === 9 && (

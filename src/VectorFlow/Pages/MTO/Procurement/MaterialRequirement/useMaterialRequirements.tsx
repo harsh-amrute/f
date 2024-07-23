@@ -16,6 +16,7 @@ import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRendere
 import { useGetMaterialRequirementDetails, useGetMaterialRequirementDetailsDatewise } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import moment from "moment";
+import { VFTableWrapper } from "../../../../../components/VectorFLOW/commons/VFTable/styles";
 
 
 
@@ -191,66 +192,144 @@ const useMaterialReq = () => {
     }
 
     const renderView = () => {
+        const agGridProps: AgGridReactProps = {
+            tooltipShowDelay: 0,
+            tooltipTrigger: "focus",
+
+            gridOptions: {
+                rowHeight: 50,
+                getRowStyle: (params: any) => {
+                    return {
+                        background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
+                    };
+                },
+                components: customCellRenderers,
+                rowSelection: 'multiple',
+                suppressRowClickSelection: true,
+                enableBrowserTooltips: true,
+                enableRangeSelection: true,
+                pagination: true,
+                defaultColDef: {
+                    floatingFilter: true,
+                    filter: "agMultiColumnFilter",
+                    cellDataType: false,
+                    resizable: false,
+                    minWidth: 140,
+                    wrapHeaderText: true,
+                    autoHeaderHeight: true,
+                    cellStyle: {
+                        'text-align': 'center',
+                        "font-style": "normal",
+                        "font-variant": "normal",
+                        "font-weight": "300",
+                        "font-size": "20px",
+                        "font-family": "Roboto",
+                        'text-overflow': 'ellipsis',
+                        'white-space': 'nowrap',
+                        'resizable': 'true',
+                    },
+                    initialFlex: 1
+                },
+
+            },
+            masterDetail: true,
+            detailCellRenderer: ChildrenProcPlanningCellRenderer,
+            autoGroupColumnDef: autoGroupColumnDef,
+            paginationAutoPageSize: true,
+            enterNavigatesVertically: true,
+            enterNavigatesVerticallyAfterEdit: true,
+            groupDefaultExpanded: 0,
+            defaultExcelExportParams: defaultExcelExportParams,
+            excelStyles: excelStyles,
+            sideBar: sideBar,
+            onCellEditingStopped(event: any) {
+                const field = event.colDef.field;
+                const newValue = event.newValue;
+                const rowIndex = event.rowIndex;
+
+                if (!field || rowIndex == null) {
+                    return;
+                }
+
+                SetCumulativeData((prevData: any) => {
+                    const newData = [...prevData];
+                    const updatedRow = {
+                        ...newData[rowIndex],
+                        [field]: newValue,
+                        tsfs: newData[rowIndex].soh + newValue
+                    };
+                    newData[rowIndex] = updatedRow;
+                    return newData;
+                });
+                gridRef.current?.api.refreshCells({ force: true });
+            }
+        };
         switch (currentTab.id) {
             case "sdv":
                 return (
                     <div>
-                        <VFTable
-                            paginationPageSize={10}
-                            {...agGridProps}
-                            columnDefs={CompleteAvailableColumns}
-                            rowData={DayWiseData}
-                            tooltipHideDelay={100000}
-                            tooltipShowDelay={0}
-                            tooltipMouseTrack={true}
-                            height={'700px'}
-                            ref={gridRef}
-                            pagination={false}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
-                            }}
-                            disableZoomScaling={true}
-                            
-                        />
-                        <VFPagination
-                            selectedRows={0}
-                            rowsPerPage={10}
-                            totalRows={dayWiseRecordCount}
-                            currentPage={currentPage}
-                            handleChangePage={handlePageChangeDayWise}
-                        />
+                        <VFTableWrapper>
+
+                            <VFTable
+                                paginationPageSize={10}
+                                {...agGridProps}
+                                columnDefs={CompleteAvailableColumns}
+                                rowData={DayWiseData}
+                                tooltipHideDelay={100000}
+                                tooltipShowDelay={0}
+                                tooltipMouseTrack={true}
+                                height={'620px'}
+                                ref={gridRef}
+                                pagination={false}
+                                statusBar={{
+                                    statusPanels: [
+                                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                                    ]
+                                }}
+                                disableZoomScaling={true}
+
+                            />
+                            <VFPagination
+                                selectedRows={0}
+                                rowsPerPage={10}
+                                totalRows={dayWiseRecordCount}
+                                currentPage={currentPage}
+                                handleChangePage={handlePageChangeDayWise}
+                            />
+                        </VFTableWrapper>
                     </div>
                 );
             case "cv":
                 return (
                     <div>
-                        <VFTable
-                            paginationPageSize={10}
-                            {...agGridProps}
-                            columnDefs={ShortageColumns}
-                            rowData={CumulativeData}
-                            tooltipHideDelay={100000}
-                            tooltipShowDelay={0}
-                            tooltipMouseTrack={true}
-                            height={'700px'}
-                            ref={gridRef}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
-                            }}
-                            disableZoomScaling={true}
-                           
-                        />
-                        <VFPagination
-                            selectedRows={0}
-                            rowsPerPage={10}
-                            totalRows={cumulativeRecordCount}
-                            currentPage={currentCumPage}
-                            handleChangePage={handlePageChangeCumulative}
-                        />
+                        <VFTableWrapper>
+
+                            <VFTable
+                                paginationPageSize={10}
+                                {...agGridProps}
+                                columnDefs={ShortageColumns}
+                                rowData={CumulativeData}
+                                tooltipHideDelay={100000}
+                                tooltipShowDelay={0}
+                                tooltipMouseTrack={true}
+                                height={'620px'}
+                                ref={gridRef}
+                                statusBar={{
+                                    statusPanels: [
+                                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                                    ]
+                                }}
+                                disableZoomScaling={true}
+
+                            />
+                            <VFPagination
+                                selectedRows={0}
+                                rowsPerPage={10}
+                                totalRows={cumulativeRecordCount}
+                                currentPage={currentCumPage}
+                                handleChangePage={handlePageChangeCumulative}
+                            />
+                        </VFTableWrapper>
 
                     </div>
                 );
@@ -258,71 +337,7 @@ const useMaterialReq = () => {
                 return <VFTable columnDefs={[]} rowData={[]} {...agGridProps} />
         }
     }
-    const agGridProps: AgGridReactProps = {
-        tooltipShowDelay: 0,
-        tooltipTrigger: "focus",
-        gridOptions: {
-            rowHeight: 50,
-            getRowStyle: (params: any) => {
-                return {
-                    background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
-                };
-            },
-            components: customCellRenderers,
-            rowSelection: 'multiple',
-            suppressRowClickSelection: true,
-            enableBrowserTooltips: true,
-            enableRangeSelection: true,
-            pagination: true,
-            defaultColDef: {
-                cellStyle: {
-                    'text-align': 'center',
-                    'height': '50px',
-                    "font-style": "normal",
-                    "font-variant": "normal",
-                    "font-weight": "300",
-                    "font-size": "20px",
-                    "font-family": "Roboto",
-                    'text-overflow': 'ellipsis',
-                    'white-space': 'nowrap',
-                    'resizable': 'true'
-                },
-                initialFlex: 1
-            },
 
-        },
-        masterDetail: true,
-        detailCellRenderer: ChildrenProcPlanningCellRenderer,
-        autoGroupColumnDef: autoGroupColumnDef,
-        paginationAutoPageSize: true,
-        enterNavigatesVertically: true,
-        enterNavigatesVerticallyAfterEdit: true,
-        groupDefaultExpanded: 0,
-        defaultExcelExportParams: defaultExcelExportParams,
-        excelStyles: excelStyles,
-        sideBar: sideBar,
-        onCellEditingStopped(event: any) {
-            const field = event.colDef.field;
-            const newValue = event.newValue;
-            const rowIndex = event.rowIndex;
-
-            if (!field || rowIndex == null) {
-                return;
-            }
-
-            SetCumulativeData((prevData: any) => {
-                const newData = [...prevData];
-                const updatedRow = {
-                    ...newData[rowIndex],
-                    [field]: newValue,
-                    tsfs: newData[rowIndex].soh + newValue
-                };
-                newData[rowIndex] = updatedRow;
-                return newData;
-            });
-            gridRef.current?.api.refreshCells({ force: true });
-        }
-    };
 
     return {
         // isSideBarOpen,

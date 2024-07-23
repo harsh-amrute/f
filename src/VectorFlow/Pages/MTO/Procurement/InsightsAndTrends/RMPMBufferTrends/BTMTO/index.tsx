@@ -2,7 +2,7 @@ import { AgChartOptions } from 'ag-charts-community'
 import { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFCapsule from '../../../../../../../components/VectorFLOW/commons/VFCapsule'
-import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'
+import VFRangeSlider from '../../../../../../../VectorFlow/Pages/MTO/Common/VFRangeSlider'
 import { CapsuleWrapper } from '../../RMPMOrderwiseCoverage/GraphView/styles'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
@@ -464,8 +464,9 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                             fontFamily: "Roboto",
                             paddingLeft: '10px'
                         }}
-                        > <b>Select Horizon: </b></label>
+                        > <b>Select Horizon (in days): </b></label>
                         <VFRangeSlider
+                            style={{ paddingTop: '12px' }}
                             showTriangle={false}
                             min={1}
                             max={90}
@@ -474,7 +475,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                             width={200}
                             defaultValue={horizonDays}
                             handleChange={(e) => setHorizondays(e)}
-                            labelValueFormatter={(value: number) => value > 1 ? `${value} Days` : `${value} Day`}
+                            labelValueFormatter={(value: number) => value.toString()}
                         />
                         <div>
                             {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>

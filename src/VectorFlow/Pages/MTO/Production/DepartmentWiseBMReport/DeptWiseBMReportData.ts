@@ -1,11 +1,6 @@
 import { ColDef, ColGroupDef } from "ag-grid-enterprise";
 
 
-
-
-
-
-
 export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | ColGroupDef)[] => {
     return [
         {
@@ -686,6 +681,21 @@ export const RemarkHistoryData = [
     {
         'un': 'fristan',
         'r': 'enter the remark 2 data',
+        'rd': '2023-12-24'
+    },
+    {
+        'un': 'Tarun',
+        'r': 'enter the remark 3 data',
+        'rd': '2023-12-23'
+    },
+    {
+        'un': 'Tarun',
+        'r': 'enter the remark 4 data',
+        'rd': '2023-12-24'
+    },
+    {
+        'un': 'Tarun',
+        'r': 'enter the remark 5 data',
         'rd': '2023-12-24'
     }
 ]

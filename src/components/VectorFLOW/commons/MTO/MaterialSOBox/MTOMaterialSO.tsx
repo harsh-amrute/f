@@ -35,7 +35,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
         <>
             {
                 colors.c1 == '#000' || colors.c2 == '#E53F40' || colors.c3 == '#EBBF2B' ?
-                    <Tooltip content={getToolTipContent('Red', ToolTipdata)}>
+                    <Tooltip content={getToolTipContent('Red', ToolTipdata)} >
                         <ColoronLeftWrapper>
                             <ColorOnLeft
                                 color={colors.c1} height={height}>
@@ -50,7 +50,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
                     </Tooltip>
                     :
                     colors.c1 == '#418D18' ?
-                        <Tooltip content={getToolTipContent('Green', ToolTipdata)}>
+                        <Tooltip content={getToolTipContent('Green', ToolTipdata)} >
                             <ColoronLeftWrapper>
                                 <ColorOnLeft
                                     color={colors.c1} height={height}>
@@ -113,7 +113,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
 
             <BtnGroup>
                 <Btns>
-                    <Tooltip content={<div style={{ padding: "10px 5px 10px 5px" }}>Order Count</div>}>
+                    <Tooltip content={<div style={{ padding: "10px 5px 10px 5px" }}>Order Count</div>} >
                         <ButtonImg
                             src='/assets/img/order-tracking.png'
                             height='20px' width='20px'
@@ -124,7 +124,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
 
                 <Separator color={'grey'} ></Separator>
                 <Btns>
-                    <Tooltip content={<div style={{ padding: "10px 5px 10px 5px" }}>No of Customer</div>}>
+                    <Tooltip content={<div style={{ padding: "10px 5px 10px 5px" }}>No of Customer</div>} >
                         <ButtonImg
                             src='/assets/img/people.png'
                             height='20px' width='20px'
@@ -137,7 +137,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
                 <Separator color={'grey'} ></Separator>
 
                 <Btns>
-                    <Tooltip content={<div style={{ padding: "10px 5px 10px 5px" }}>Order Value</div>}>
+                    <Tooltip content={<div style={{ padding: "10px 5px 10px 5px" }}>Order Value</div>} >
                         <ButtonImg
                             src='/assets/img/rupee.png'
                             height='20px' width='20px'
