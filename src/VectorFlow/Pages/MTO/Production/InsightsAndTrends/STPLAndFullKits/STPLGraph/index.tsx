@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { AgChartOptions } from "ag-charts-community";
-import {APIMock} from "../StplAndFullKitsData";
+import { APIMock } from "../StplAndFullKitsData";
 import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
@@ -14,7 +14,7 @@ const STPLGraph = () => {
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
-  
+
   function TooltipRenderer({ datum, xKey }: any) {
     return `
        <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
@@ -119,85 +119,85 @@ const STPLGraph = () => {
   const colDefs = useMemo(() => {
     return getColumnDefinations(columnConfigData?.stplTableColumn, {}, [])
   }, []);
-  
+
   const generateHeader = () => {
     return (
+      <div
+        className="title"
+        style={{
+          backgroundColor: "white",
+          height: "40px",
+          display: "flex",
+          justifyContent: "right",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
         <div
-            className="title"
+          data-testid="stpl-graph"
+          style={{
+            fontSize: "16px",
+            margin: "0 auto",
+
+            textAlign: "center",
+          }}>
+          <span style={{ fontWeight: 500, }}>
+            {`${ProductionInsightsAndTrendsString.stplWithLimits}  `}
+          </span>
+          <span style={{ fontWeight: 300, }}>
+            {` (${date})`}
+          </span>
+        </div>
+        <div style={{ display: "flex" }}>
+          <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
+            <VFInfoToolTip
+              infoList={[
+                "The graph highlights CCR wise current released WIP (In Days) against their respective limits. ",
+              ]}
+            />
+          </div>
+          <div
+            data-testid="grid-toggle-btn"
+            onClick={() => {
+              toggleChart1(!hideChart1);
+            }}
             style={{
-              backgroundColor: "white",
-              height: "40px",
-              display: "flex",
-              justifyContent: "right",
-              alignItems: "center",
-              width: "100%",
+              marginLeft: 10,
+              marginBottom: "-5px",
+              marginRight: "10px",
             }}
           >
-            <div 
-              data-testid="stpl-graph"
-              style={{
-                  fontSize: "16px",
-                  margin: "0 auto",
-                  
-                  textAlign: "center",
-              }}>
-            <span style={{fontWeight: 500,}}>
-              {`${ProductionInsightsAndTrendsString.stplWithLimits}  `}
-            </span>
-            <span style={{fontWeight: 300,}}>
-              {` (${date})`}
-            </span>
-            </div>
-            <div style={{ display: "flex" }}>
-              <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
-                <VFInfoToolTip
-                  infoList={[
-                    "The graph highlights CCR wise current released WIP (In Days) against their respective limits. ",
-                  ]}
-                />
-              </div>
-              <div
-                data-testid="grid-toggle-btn"
-                onClick={() => {
-                  toggleChart1(!hideChart1);
-                }}
-                style={{
-                  marginLeft: 10,
-                  marginBottom: "-5px",
-                  marginRight: "10px",
-                }}
-              >
-                <img
-                  src="/assets/img/VectorFLOW/BPR/minimize.svg"
-                  height={13}
-                  width={13}
-                  color={"#CCCCCC"}
-                />
-              </div>
-            </div>
+            <img
+              src="/assets/img/VectorFLOW/BPR/minimize.svg"
+              height={13}
+              width={13}
+              color={"#CCCCCC"}
+            />
           </div>
+        </div>
+      </div>
     )
   }
 
   return (
     <div style={{ height: "70vh", display: "flex", justifyContent: "left" }}>
-        <SplitGraphContainer
-            tableLoading={tableLoading}
-            chartLoading={chartLoading}
-            setTableLoading={setTableLoading}
-            setChartLoading={setChartLoading}
-            data={rawData}
-            rowData={options.data}
-            graphTitle={''}
-            tableTitle={ProductionInsightsAndTrendsString.stplWithLimits}
-            options={options}
-            colDef={colDefs}
-            header={generateHeader}
-            hideChart={hideChart1}
-            toggleChart={toggleChart1}
-            TooltipRenderer={TooltipRenderer}
-            graphType={4}
-        />
+      <SplitGraphContainer
+        tableLoading={tableLoading}
+        chartLoading={chartLoading}
+        setTableLoading={setTableLoading}
+        setChartLoading={setChartLoading}
+        data={rawData}
+        rowData={options.data}
+        graphTitle={''}
+        tableTitle={ProductionInsightsAndTrendsString.stplWithLimits}
+        options={options}
+        colDef={colDefs}
+        header={generateHeader}
+        hideChart={hideChart1}
+        toggleChart={toggleChart1}
+        TooltipRenderer={TooltipRenderer}
+        graphType={4}
+      />
       <div
         style={{
           width: "14px",

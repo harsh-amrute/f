@@ -5,6 +5,7 @@ import DayWiseCoverageHeader from './DayWiseCoverageHeader'
 import DayWiseCoverageTable from './DayWiseCoverageTable';
 import { Player } from '@lottiefiles/react-lottie-player';
 import { AnimationWrapper, HelperText, TableContainer } from './style';
+import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 
 
 const DayWiseCoverage = () => {
@@ -72,15 +73,18 @@ const DayWiseCoverage = () => {
 
     return (
         <div>
+            <div style={{ zoom: 1.25 }}>
+                <MTOActionToolBar isExcelExport isAddFilterButton />
+            </div>
             <DayWiseCoverageHeader startDate={startDate} endDate={endDate} setDateRange={setDateRange} />
             <DayWiseCoverageCalender start={startDate} end={endDate} getToolTipContent={getToolTipContent} getColor={getColor} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-            <TableContainer>           
+            <TableContainer>
                 {selectedDate ?
                     <DayWiseCoverageTable
                     // selectedDate={selectedDate}
                     />
                     : <AnimationWrapper>
-                        <Player src={'/assets/img/VectorFLOW/BPR/swipe pointer.json'} loop autoplay style={{height:100,width:100}}/>
+                        <Player src={'/assets/img/VectorFLOW/BPR/swipe pointer.json'} loop autoplay style={{ height: 100, width: 100 }} />
                         <HelperText>Please select the <strong>Dates</strong> from above to  view <strong>Order lists</strong></HelperText>
                     </AnimationWrapper>
                 }

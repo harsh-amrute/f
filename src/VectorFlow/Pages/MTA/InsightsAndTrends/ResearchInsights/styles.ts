@@ -8,9 +8,6 @@ export const ResearchInsightsLayout = styled.div`
     display:grid;
     grid-template-columns:3fr 1fr;
     padding-bottom:50px;
- 
-
-    
 `
 
 export const ResearchInsightsTableWrapper = styled.div`

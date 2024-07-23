@@ -12,14 +12,38 @@ import { MaterialCoverageString } from '../../Common/String';
 import MaterialSODetailed from './MaterialSODetailed';
 import { DetailsObj } from './CommonFunc';
 import { useGetSOSummaydetails } from '../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage';
+import { toast } from 'react-toastify';
+import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
+import VFOverlay from '../../../../../components/VectorFLOW/commons/VFOverlay';
 
 const MaterialCov = () => {
   const [detailDataObj, setDetailDataObj] = useState<DetailsObj>();
   // const [currTab, setCurrTab] = useState<string>("Current Coverage");
   const [currTab, setCurrTab] = useState<string>("CurrentCoverage");
   const [toggleComponent, setToggleComponent] = useState<boolean>(false);
-  const { data, /*isLoading, refetch*/ } = useGetSOSummaydetails();
   const [soData, setSOData] = useState<any>([]);
+  const { data, isLoading, /*refetch*/ } = useGetSOSummaydetails();
+
+
+  useEffect(() => {
+    if (isLoading) {
+
+      toast.dismiss();
+      notifyLoader("Loading Data ...")
+    }
+    else {
+      if (data?.status === 200) {
+
+
+        toast.dismiss();
+        notifySuccess("Data Fetched Successfully!")
+      }
+      else {
+        toast.dismiss();
+        notifyError("Failed to fetch data!")
+      }
+    }
+  }, [isLoading])
 
 
   const handleToggleComponent = (value: boolean) => {
@@ -29,10 +53,10 @@ const MaterialCov = () => {
   const handleParameterData = (data: any) => {
     setDetailDataObj(data)
   }
-  
-  useEffect(()=>{
-     setSOData(data?.data.data)
-  },[data])
+
+  useEffect(() => {
+    setSOData(data?.data.data)
+  }, [data])
 
   const tabs = [
     {
@@ -47,17 +71,28 @@ const MaterialCov = () => {
     }
   ]
 
-  const defaultTab = tabs.findIndex(tab => tab.value === currTab) 
-  
+  const defaultTab = tabs.findIndex(tab => tab.value === currTab)
+
   return (
     <div style={{ width: "100%" }}>
       {!toggleComponent ?
         <>
-          <ActionToolBar
-            comp={'MaterialCov'}
-            onDateChange={() => { console.log('') }}
-            submitDate={() => { console.log('') }}
-          />
+          {
+            isLoading && (
+              <VFOverlay>
+                <h1 style={{ backgroundColor: "white", padding: '15px', borderRadius: '8px' }}>Loading....</h1>
+              </VFOverlay>
+            )
+          }
+          <div style={{ zoom: '1.3' }}>
+            <ActionToolBar
+              comp={'MaterialCov'}
+              isExcelExport
+              isAddFilterButton
+              onDateChange={() => { console.log('') }}
+              submitDate={() => { console.log('') }}
+            />
+          </div>
           <BTRLayoutTabsWrapper>
             <VFFloatingTab
               handleClick={(e) => setCurrTab(e.value)}
@@ -65,10 +100,33 @@ const MaterialCov = () => {
               defaultTab={defaultTab}
             />
           </BTRLayoutTabsWrapper>
-          <div style={{display: 'flex', justifyContent:"center", width: "100%"}}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", width: "max-content", position: "relative" }}>
-            <TextXAxis style={{ height: 'max-content', position: "absolute", right: "100%" }}>
-              {MaterialCoverageString.orderPriority}
+          <div style={{ display: 'flex', justifyContent: "center", width: "100%" }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", width: "max-content", position: "relative" }}>
+              <TextXAxis style={{ height: 'max-content', position: "absolute", right: "100%" }}>
+                {MaterialCoverageString.orderPriority}
+                <div style={{
+                  width: "85%",
+                  border: "1px solid #000",
+                  color: "#FFFFFF",
+                  marginBottom: '10px',
+                  marginLeft: '5px'
+                }}>
+                </div>
+              </TextXAxis>
+
+              {/**code goes here */}
+              {
+                currTab === 'FutureCoverage' ?
+                  <FutureCov handleToggleComponent={handleToggleComponent} setDetailDataObj={handleParameterData} data={soData} />
+                  :
+                  <CurrentCov handleToggleComponent={handleToggleComponent} setDetailDataObj={handleParameterData} data={soData} />
+              }
+            </div>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <TextYAxis style={{ width: "max-content" }}>
+              {MaterialCoverageString.statusKits}
               <div style={{
                 width: "85%",
                 border: "1px solid #000",
@@ -77,44 +135,27 @@ const MaterialCov = () => {
                 marginLeft: '5px'
               }}>
               </div>
-            </TextXAxis>
-
-            {/**code goes here */}
-            {
-              currTab === 'FutureCoverage' ?
-                <FutureCov handleToggleComponent={handleToggleComponent} setDetailDataObj={handleParameterData} data={soData}/>
-                :
-                <CurrentCov handleToggleComponent={handleToggleComponent} setDetailDataObj={handleParameterData} data={soData}/>
-            }
-          </div>
-          </div>
-
-          <div style={{display:"flex",justifyContent: "center"}}>
-            <TextYAxis style={{width:"max-content"}}>
-              {MaterialCoverageString.statusKits}
-              <div style={{
-                  width: "85%",
-                  border: "1px solid #000",
-                  color: "#FFFFFF",
-                  marginBottom: '10px',
-                  marginLeft: '5px'
-                }}>
-                </div>
             </TextYAxis>
           </div>
-          
+
         </>
         :
         <>
-          <ActionToolBar
-            comp={'MaterialCovDetailData'}
-            onDateChange={() => { console.log('') }}
-            submitDate={() => { console.log('') }}
-            handleGoBack={()=>{
-              handleToggleComponent(false);
-              // setCurrTab("CurrentCoverage")
-            }}
-          />
+          <div style={{ zoom: 1.25 }}>
+
+            <ActionToolBar
+              isGoBackButton
+              isAddFilterButton
+              isExcelExport
+              comp={'MaterialCovDetailData'}
+              onDateChange={() => { console.log('') }}
+              submitDate={() => { console.log('') }}
+              handleGoBack={() => {
+                handleToggleComponent(false);
+                // setCurrTab("CurrentCoverage")
+              }}
+            />
+          </div>
           <MaterialSODetailed parameterData={detailDataObj} />
         </>
 

@@ -14,6 +14,8 @@ import GetProcPlanningDataColumn from './GetProcPlanningDataColumn.json';
 import { mapProcPlanningFieldsToColDefs } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { userGetProcPlanningData } from "../../../../Services/MTO/Procurement/ProcPlanning/index";
+import { toast } from "react-toastify";
+import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -86,12 +88,29 @@ const useProcPlanning = (date: string) => {
     ];
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
+    const [isLoading, setIsLoading] = useState(false);
     const fetchData = useCallback(async (date: string) => {
+        setIsLoading(true);
         try {
+            toast.dismiss();
+            notifyLoader("Loading data...")
             const response = await getProcPlanningData(date);
+            if (response.status === 200) {
+                toast.dismiss();
+                notifySuccess("Data fetched Successfully!");
+                setIsLoading(false);
+            }
+            else {
+                toast.dismiss();
+                notifyError("Failed to fetch data!");
+                setIsLoading(false);
+            }
             setData(response?.data?.data?.results || []);
         } catch (error) {
             console.log("error ")
+            toast.dismiss();
+            notifyError("Failed to fetch data!");
+            setIsLoading(false);
         }
     }, [getProcPlanningData]);
 
@@ -146,7 +165,7 @@ const useProcPlanning = (date: string) => {
         return {
             groupExpanded: `<img src="${'/assets/img/mto/procPlanning/minus_circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
             groupContracted: `<img src="${'/assets/img/mto/procPlanning/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
-    };
+        };
     }, []);
     const autoGroupColumnDef = useMemo(() => {
         return {
@@ -210,7 +229,7 @@ const useProcPlanning = (date: string) => {
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'750px'}
+                            height={'700px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [
@@ -222,7 +241,9 @@ const useProcPlanning = (date: string) => {
                 );
             case "short":
                 return (
+
                     <div>
+
                         <VFTable
                             {...agGridProps}
                             columnDefs={ShortageColumns}
@@ -230,7 +251,7 @@ const useProcPlanning = (date: string) => {
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'750px'}
+                            height={'700px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [
@@ -238,29 +259,36 @@ const useProcPlanning = (date: string) => {
                                 ]
                             }}
                         />
-                        <div style={{ textAlign: 'right', flexDirection: 'row' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', flexDirection: 'row' }}>
 
                             <VFButtonOutline
-                                onClick={navigateToSimulateScreen}
+                                onClick={() => { fetchData(date) }}
                                 themeUi=""
                                 disabled={false}
-                                width={150}
+                                width={135}
+
                                 style={{
+                                    height: '50px',
                                     marginRight: 20,
                                     borderColor: '#BC3D81',
                                     color: '#BC3D81',
+                                    background: 'transparent',
                                     fontWeight: 'bold',
                                 }}
                             >
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <img src="/assets/img/VectorFLOW/reset.svg" alt="Reset Icon" style={{ marginRight: 8 }} />
-                                    Reset Data
+
+                                <div style={{ display: 'flex', alignItems: 'center', }}>
+                                    <img src="/assets/img/VectorFLOW/reset.svg" alt="Reset Icon" height={20} width={20} style={{ margin: '0 12px' }} />
+                                    <p style={{ fontSize: '14px' }}>
+                                        Reset Data
+                                    </p>
                                 </div>
                             </VFButtonOutline>
                             <VFButton
                                 onClick={navigateToSimulateScreen}
                                 themeUi=""
                                 disabled={false}
+
                                 width={250}>Simulate improvement in Full Kits
                             </VFButton>
                         </div>
@@ -289,6 +317,11 @@ const useProcPlanning = (date: string) => {
             icons: icons,
             pagination: true,
             defaultColDef: {
+                floatingFilter: true,
+                filter: "agMultiColumnFilter",
+                minWidth: 140,
+                wrapHeaderText: true,
+                autoHeaderHeight: true,
                 cellStyle: {
                     'text-align': 'center',
                     'height': '50px',
@@ -301,7 +334,9 @@ const useProcPlanning = (date: string) => {
                     'white-space': 'nowrap',
                     'resizable': 'true',
                 },
+                flex: 1,
             },
+
 
         },
         masterDetail: true,
@@ -353,6 +388,7 @@ const useProcPlanning = (date: string) => {
         GetCount,
         fetchData,
         date,
+        isLoading
     }
 }
 

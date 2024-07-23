@@ -24,7 +24,7 @@ const OrderAtRisk = () => {
   const [tableLoading, setTableLoading] = useState(false);
   const [rawData, setRawData] = useState<ReasonOrderAtRiskType[]>([]);
   const [gridData, setGridData] = useState([]);
-  const {screenHeight} = useViewPort();
+  const { screenHeight } = useViewPort();
   const { data, isLoading } = useGetOrderRiskData() || {};
 
   const gridOptions: GridOptions = {
@@ -130,12 +130,10 @@ const OrderAtRisk = () => {
             </div>
             <div style="border-top: 1px dashed lightgray"></div>
             <div style="display:flex ;width: 100%; justify-content: space-around; color: lightgray">
-              <span style="padding: 5px ">${
-                (datum?.bo || 0) + (datum?.ro || 0)
-              }</span>
-              <span style="padding: 5px; margin-left: 30px; ">${
-                datum?.bo || 0
-              }</span>
+              <span style="padding: 5px ">${(datum?.bo || 0) + (datum?.ro || 0)
+      }</span>
+              <span style="padding: 5px; margin-left: 30px; ">${datum?.bo || 0
+      }</span>
               <span style="padding: 5px ">${datum?.ro || 0}</span>
             </div>
            <div>
@@ -221,62 +219,63 @@ const OrderAtRisk = () => {
     },
   };
 
-  useEffect(()=>{
-    if(data?.data?.data?.r && data?.data?.data?.g){
+  useEffect(() => {
+    if (data?.data?.data?.r && data?.data?.data?.g) {
       setRawData(data?.data?.data?.r);
       setGridData(data?.data?.data?.g);
     }
-  },[data]);
+  }, [data]);
 
   return (
     <div>
       <MTOActionToolBar
         comp={"orderAtRisk"}
         isGridView={isGridView}
+        isChartGridToggle
+        isAddFilterButton
         setIsGridView={setIsGridView}
       />
-      {isLoading ? <VFLoader/> :
-       <HorizontalViewWrapper style={{ marginTop: "20px" }}>
-        {isGridView ? (
-          <div data-testid="grid-view" style={{height:screenHeight - 200}}>
-            <VFTable
-              {...gridOptions}
-              sideBar="columns"
-              pagination={true}
-              columnDefs={tableColDefs}
-              rowData={gridData}
-              tooltipHideDelay={100000}
-              tooltipShowDelay={0}
-              tooltipMouseTrack={true}
-              height={"100%"}
-              ref={gridRef}
-              statusBar={{
-                statusPanels: [
-                  { statusPanel: "agTotalRowCountComponent", align: "left" },
-                ],
-              }}
+      {isLoading ? <VFLoader /> :
+        <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: "25px" }}>
+          {isGridView ? (
+            <div data-testid="grid-view" style={{ height: screenHeight - 300 }}>
+              <VFTable
+                {...gridOptions}
+                sideBar="columns"
+                columnDefs={tableColDefs}
+                rowData={gridData}
+                tooltipHideDelay={100000}
+                tooltipShowDelay={0}
+                tooltipMouseTrack={true}
+                height={"100%"}
+                ref={gridRef}
+                statusBar={{
+                  statusPanels: [
+                    { statusPanel: "agTotalRowCountComponent", align: "left" },
+                  ],
+                }}
+              />
+            </div>
+          ) : (
+            <SplitGraphContainer
+              tableLoading={tableLoading}
+              chartLoading={chartLoading}
+              setTableLoading={setTableLoading}
+              setChartLoading={setChartLoading}
+              data={rawData}
+              rowData={rawData}
+              graphTitle={""}
+              tableTitle={ProductionInsightsAndTrendsString.orderAtRisk}
+              options={options}
+              colDef={gridColDefs}
+              header={generateHeader}
+              hideChart={hideChart1}
+              toggleChart={toggleChart1}
+              TooltipRenderer={TooltipRenderer}
+              graphType={6}
             />
-          </div>
-        ) : (
-          <SplitGraphContainer
-            tableLoading={tableLoading}
-            chartLoading={chartLoading}
-            setTableLoading={setTableLoading}
-            setChartLoading={setChartLoading}
-            data={rawData}
-            rowData={rawData}
-            graphTitle={""}
-            tableTitle={ProductionInsightsAndTrendsString.orderAtRisk}
-            options={options}
-            colDef={gridColDefs}
-            header={generateHeader}
-            hideChart={hideChart1}
-            toggleChart={toggleChart1}
-            TooltipRenderer={TooltipRenderer}
-            graphType={6}
-          />
-        )}
-      </HorizontalViewWrapper>}
+          )}
+        </HorizontalViewWrapper>}
     </div>
   );
 };
