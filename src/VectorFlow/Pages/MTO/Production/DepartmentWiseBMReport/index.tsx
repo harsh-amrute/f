@@ -89,8 +89,6 @@ const DptWiseBMReport = () => {
                     isAddFilterButton
                     isExcelExport
                     isWIPCheckBox
-                    onDateChange={() => { console.log('') }}
-                    submitDate={() => { console.log('') }}
                 />
             </BMDepHeaderWraper>
 
