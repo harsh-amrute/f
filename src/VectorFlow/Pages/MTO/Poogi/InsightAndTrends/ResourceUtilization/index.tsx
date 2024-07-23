@@ -56,7 +56,7 @@ const ResourceUtilization = () => {
                       ? "Limit"
                       : "Utilization Percentage"
                   }</div>
-                  <div style="margin-left: 20px">${datum?.val}%</div>
+                  <div style="margin-left: 20px">${datum?.limit}%</div>
               </div>
           </div>
           ${
@@ -457,6 +457,7 @@ const ResourceUtilization = () => {
                 selected={false}
                 options={[]}
                 width={"100%"}
+                optionsWidth={"100%"}
               />
             </div>
           </SectionFlex>

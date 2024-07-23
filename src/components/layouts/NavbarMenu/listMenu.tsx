@@ -640,7 +640,7 @@ export const listMenuParent: any = [
   {
     id: 11,
     name: "navbar.listMenuParent.poogi.title",
-    img: "/assets/img/nav/prod-plan-icon",
+    img: "/assets/img/nav/poogi-module",
     url: "",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],

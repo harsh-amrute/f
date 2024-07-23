@@ -282,8 +282,8 @@ const MTOActionToolBar = ({
                                 Select Plant/ Department/ CCR
                             </div> 
                             <SelectGroup>
-                                <CustomSelect placeholder="Select Plant" selected={false} options={[]}/>
-                                <CustomSelect placeholder="Select Department" selected={false} options={[]}/>
+                                <CustomSelect placeholder="Select Plant" selected={false} options={[]} optionsWidth={"100%"}/>
+                                <CustomSelect placeholder="Select Department" selected={false} options={[]} optionsWidth={"100%"}/>
                             </SelectGroup>
                         </div>
                         <SCVerticalDividerGray />
@@ -303,7 +303,7 @@ const MTOActionToolBar = ({
                                     min={1}
                                     max={90}
                                     milestones={[0,30,60,90]}
-                                    strictMode={true}
+                                    strictMode={false}
                                     width={250}
                                     defaultValue={horizonDays || 0}
                                     handleChange={(e) => setHorizonDays &&  setHorizonDays(e)}

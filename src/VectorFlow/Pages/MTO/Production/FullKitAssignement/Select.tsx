@@ -2,7 +2,7 @@ import React from 'react'
 import Select, { components, OptionProps } from 'react-select'
 import { Checkbox } from '../../../../../components';
 
-const CustomSelect = ({ selected, placeholder, options, width }: any) => {
+const CustomSelect = ({ selected, placeholder, options, width, optionsWidth }: any) => {
     const Option = (props: OptionProps<any>) => {
         return (
             <components.Option {...props}>
@@ -41,7 +41,7 @@ const CustomSelect = ({ selected, placeholder, options, width }: any) => {
                 menu: (base) => ({
                     ...base,
                     width: "max-content",
-                    minWidth: "150px",
+                    minWidth: optionsWidth || "150px",
                     right: 0,
                 }),
                 option: (base) => ({

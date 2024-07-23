@@ -68,6 +68,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
+    '/poogi/insight-and-trends/resource-utilization-wip-profile'
   ]
   const urlAllPage = [
     ...authenPage,
