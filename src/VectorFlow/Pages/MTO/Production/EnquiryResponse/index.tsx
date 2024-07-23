@@ -6,6 +6,8 @@ import MTOActionToolBar from "../../../../../../src/components/VectorFLOW/common
 import { prodPlanningMock } from "./PROD";
 import {
   BlurCover,
+  BTRAllomentSection,
+  BTRTableWrapper,
   CardCover,
   DashedCard,
   EnquiryWrapper,
@@ -30,6 +32,8 @@ import { useUserData } from "../../../../../context/index";
 import { notifyLoader } from "../../../../../helpers/notify";
 import { toast } from "react-toastify"
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule";
+import { Allotment } from "allotment";
+import useViewPort from "../../../../../hooks/useViewPort";
 
 const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { label: "RM Available", value: "RM Available" }];
 
@@ -146,7 +150,7 @@ const EnquiryResponse = () => {
   const getEarliestDate = (activeTab: number) => {
     let bufferData = filterData?.length > 0 ? filterData[0] : {};
     const productGroup: keyof BufferData = selectedOptions?.productGroup && selectedOptions?.productGroup[0];
-
+    let fol = 0;
     if (!productGroup) {
       return "--";
     }
@@ -156,21 +160,21 @@ const EnquiryResponse = () => {
 
       if (current?.it[productGroup]) {
         bufferData = current;
+        fol = Math.max(fol, bufferData?.fol)
       }
     }
 
     const prodBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.prod_size;
     const procBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.proc_size;
-    const fol = bufferData?.fol;
 
     const today = new Date();
     const result = new Date(today);
     let daysToAdd = 0;
 
     if (activeTab === 0) {
-      daysToAdd = (prodBuffer + procBuffer) || 0;
+      daysToAdd = (prodBuffer + procBuffer + fol);
     } else {
-      daysToAdd = Math.max(prodBuffer, fol + (0.5 * prodBuffer));
+      daysToAdd = fol + (prodBuffer);
     }
 
     return getFormattedDate(
@@ -522,6 +526,8 @@ const EnquiryResponse = () => {
     setFilterData(data?.data?.data?.results);
   }, [tableData]);
 
+  const { screenHeight } = useViewPort()
+
   return (
     <EnquiryWrapper>
       <FilterWrapper>
@@ -537,31 +543,52 @@ const EnquiryResponse = () => {
       </FilterWrapper>
       <div style={{ paddingLeft: '25px' }}>
 
-        <ResizableTable header={prodPlanningMock?.header} data={filterData} />
-        <EstimatedWrapper>
-          <div
-            style={{ WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})`, padding: "1rem" }}
-          >
-            <TabSwitchContainer>
-              <TabSwitchHeading>Estimated Due Date</TabSwitchHeading>
-              <TabsWrapper>
-                <VFCapsule activeBtn={activeCapsule} capsules={tabOptions} handleClick={handleTabChange} />
-              </TabsWrapper>
-            </TabSwitchContainer>
-            {getRMUI()}
-            <Note type="danger" message={message} />
-          </div>
-          <BlurCover style={{ display: hasProductGroup ? "none" : "block" }}>
-            <CardCover>
-              <DashedCard>
-                <MessageText>
-                  Please select filter for product group to view estimated due
-                  date
-                </MessageText>
-              </DashedCard>
-            </CardCover>
-          </BlurCover>
-        </EstimatedWrapper>
+
+        <BTRTableWrapper style={{ height: screenHeight - 145, margin: '0' }}>
+
+          <Allotment vertical separator   >
+            <Allotment.Pane preferredSize={'50%'}>
+              <BTRAllomentSection>
+                <ResizableTable header={prodPlanningMock?.header} data={filterData} />
+
+              </BTRAllomentSection>
+            </Allotment.Pane>
+
+            <Allotment.Pane preferredSize={'50%'}>
+              <BTRAllomentSection>
+
+                <EstimatedWrapper>
+                  <div
+                    style={{ WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})`, padding: "1rem" }}
+                  >
+                    <TabSwitchContainer>
+                      <TabSwitchHeading>Estimated Due Date</TabSwitchHeading>
+                      <TabsWrapper>
+                        <VFCapsule activeBtn={activeCapsule} capsules={tabOptions} handleClick={handleTabChange} />
+                      </TabsWrapper>
+                    </TabSwitchContainer>
+                    {getRMUI()}
+                    <Note type="danger" message={message} />
+                  </div>
+                  <BlurCover style={{ display: hasProductGroup ? "none" : "block" }}>
+                    <CardCover>
+                      <DashedCard>
+                        <MessageText>
+                          Please select filter for product group to view estimated due
+                          date
+                        </MessageText>
+                      </DashedCard>
+                    </CardCover>
+                  </BlurCover>
+                </EstimatedWrapper>
+
+              </BTRAllomentSection>
+            </Allotment.Pane>
+          </Allotment>
+
+
+
+        </BTRTableWrapper>
         <FilterModal
           filters={filters}
           isOpen={isModalOpen}

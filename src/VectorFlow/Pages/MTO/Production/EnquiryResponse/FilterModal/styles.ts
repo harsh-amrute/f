@@ -12,16 +12,14 @@ export const BackgroundCover = styled.div`
     justify-content: center;
     align-items: center;
 `;
- 
-export const ModalWrapper= styled.div`
-    /* height: 50%; */
+
+export const ModalWrapper = styled.div`
+    overflow: auto;
+    height : 95vh;
     width: 690px;
-    position: absolute;
-    background-color: #F4F4F4;
-    border-radius: 8px;
 `;
 
- export const ModalHeader = styled.div` 
+export const ModalHeader = styled.div` 
     border-radius: 8px 8px 0px 0px;
     height: 50px;
     background-color: black;
@@ -29,7 +27,7 @@ export const ModalWrapper= styled.div`
     justify-content: center;
     align-items: center;
 `;
- 
+
 export const Heading = styled.div` 
     color: white;
     font-size: 1.5rem;
@@ -41,7 +39,7 @@ export const ModalBody = styled.div`
  display: flex;
  align-items: center;
  justify-content: center;
- padding: 40px 100px 200px;
+ padding: 40px 100px;
 `;
 
 export const ModalFooter = styled.div` 
@@ -52,7 +50,7 @@ export const ModalFooter = styled.div`
     padding: 50px;
 `;
 
- export const CloseIcon = styled.div`
+export const CloseIcon = styled.div`
     color: white;
     padding: 20px;
     position: absolute;
@@ -60,7 +58,7 @@ export const ModalFooter = styled.div`
     cursor: pointer;
 `;
 
- export const CloseBtn = styled.div` 
+export const CloseBtn = styled.div` 
     border: 1px solid #868585;
     color: #868585;
     display: flex;
@@ -163,7 +161,7 @@ export const OptionsWrapper = styled.div`
     flex-direction: column;
     margin-left: 20px;
 `;
- 
+
 export const Option = styled.div`
     width: 100%;
     display: flex;
