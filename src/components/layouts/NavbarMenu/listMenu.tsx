@@ -594,7 +594,7 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.deptWiseBMReport",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "",
+        url: "/production-planning-scheduling/deptwise-bm-report",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {
