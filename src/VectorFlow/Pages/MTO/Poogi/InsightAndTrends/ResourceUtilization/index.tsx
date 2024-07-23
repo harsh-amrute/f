@@ -328,7 +328,7 @@ const ResourceUtilization = () => {
       },
       {
         title: {
-          text: "",
+          text: "WIP In Days",
           fontSize: 10,
           fontWeight: "bold",
           spacing: 3,
@@ -340,9 +340,6 @@ const ResourceUtilization = () => {
           fontSize: 8,
           fontWeight: "bold",
           color: "black",
-          formatter(params) {
-            return params?.value + "%";
-          },
         },
         gridLine: {
           enabled: false,
