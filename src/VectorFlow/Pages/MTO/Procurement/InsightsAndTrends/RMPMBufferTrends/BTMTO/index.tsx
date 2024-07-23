@@ -368,7 +368,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
     }
 
     const updateGraphState = async () => {
-        console.log("button clicked", actBtn)
+    
         if (actBtn.label === 'Percentage') {
 
             setActBtn({
