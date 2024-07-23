@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { AgChartOptions, AgCharts } from "ag-charts-community";
+import { AgChartOptions } from "ag-charts-community";
 import { AgChartsReact } from "ag-charts-react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import { APIMock } from "./mockData";
@@ -38,8 +38,9 @@ const ResourceUtilization = () => {
   });
   const { user } = useUserData();
   const themeUi = user.user.theme_ui;
+  console.log(chartLoading);
 
-  function TooltipRenderer({ datum, xKey }: any) {
+  function TooltipRenderer({ datum }: any) {
     return `
       <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: flex-start; align-items: center; min-width: 200px">
           Details
@@ -450,7 +451,7 @@ const ResourceUtilization = () => {
         <VerticalWrapper>
           <SectionFlex>
             <VerticalTitle>Analytics</VerticalTitle>
-            <div style={{ width: "100%"}}>
+            <div data-testid="custom-select" style={{ width: "100%"}}>
               <CustomSelect
                 placeholder="Select CCR"
                 selected={false}
@@ -476,7 +477,7 @@ const ResourceUtilization = () => {
               </MarkerWrapper>
             </CalenderLabel>
             <CalenderWrapper>
-              <CalenderHeading>Utilization</CalenderHeading>
+              <CalenderHeading data-testid="utilization">Utilization</CalenderHeading>
               <DayPicker
                 style={{
                   zoom: 0.8,
@@ -514,7 +515,7 @@ const ResourceUtilization = () => {
               </MarkerWrapper>
             </CalenderLabel>
             <CalenderWrapper>
-              <CalenderHeading>WIP Control</CalenderHeading>
+              <CalenderHeading data-testid="wipControl">WIP Control</CalenderHeading>
               <DayPicker
                 style={{
                   zoom: 0.8,

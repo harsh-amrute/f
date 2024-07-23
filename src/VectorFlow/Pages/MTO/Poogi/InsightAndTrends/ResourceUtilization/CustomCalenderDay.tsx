@@ -20,7 +20,9 @@ const CustomCalenderDay = (props: CustomCalenderDayProps) => {
 
     if (isDateValid) {
         return (
-            <CustomCalenderDayWrapper style={{
+            <CustomCalenderDayWrapper
+                data-testid="custom-calender-day"
+                style={{
                 backgroundColor: currColors.bg,
                 color: currColors.text
             }}>
