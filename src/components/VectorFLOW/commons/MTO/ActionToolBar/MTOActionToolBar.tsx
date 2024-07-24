@@ -1,4 +1,5 @@
 import VFButton from '../../VFButton';
+import Checkbox from '../../../../../components/commons/Checkbox';
 import {
     SCTaskBarContainer,
     SCGoBackContainer,
@@ -33,7 +34,9 @@ import {
     /**Date component style end */
     ChartHeaderRadioGroup, 
     RadioGroup, 
-    SelectGroup
+    SelectGroup,
+    CheckBoxDiv,
+    InputCheckBoxTitle
 } from './styles';
 import moment from 'moment';
 import { format } from 'date-fns';
@@ -70,8 +73,7 @@ interface MTOActionToolBarProps {
     isAddFilterButton?: boolean
     isExcelExport?: boolean
     isChartGridToggle?: boolean
-
-
+    isWIPCheckBox?: boolean
     //// new props
 }
 
@@ -97,7 +99,8 @@ const MTOActionToolBar = ({
         isAsOnDate, 
         isAddFilterButton, 
         isExcelExport, 
-        isChartGridToggle
+        isChartGridToggle,
+        isWIPCheckBox
     }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
@@ -106,11 +109,9 @@ const MTOActionToolBar = ({
         }
     }
 
-    console.log("mto toolbar for ", comp);
 
     const format2 = "YYYY-MM-DD"
     const d = new Date();
-    //.setDate(d.getDate() - 1)
     const datetime = moment(d).format(format2);
 
     return (
@@ -135,6 +136,21 @@ const MTOActionToolBar = ({
                             <SCGoBackText ><b>Go Back</b></SCGoBackText>
                         </SCGoBackContainer>
                     }
+
+                    {isWIPCheckBox &&
+                        <CheckBoxDiv>
+                            <Checkbox
+                                name="select"
+                                value="1"
+                                defaultChecked={true}
+                                //type="checkbox"
+                                onChange={() => console.log('hi')}
+                                //style={{ display: 'inline' }}
+                            />
+                            <InputCheckBoxTitle>Show order with available WIP Only</InputCheckBoxTitle>
+                        </CheckBoxDiv>
+                    }
+
 
                     {isReleaseDate &&
                         <div style={{

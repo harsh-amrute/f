@@ -1,12 +1,12 @@
 import './styles.css'
 import { useState, useEffect } from 'react';
+import moment from 'moment';
 
 const DueDateCellRenderer = (params: any) => {
 
     const [currDate, setCurrDate] = useState(params.node.data.dd ? params.data.dd : params.data.dd);
     const [isDisabled, setIsDisabled] = useState(true);
     const [selectedRow, setSelectedRow] = useState(params.api.getSelectedRows())
-
 
     const checkIfSelected = () => {
         setSelectedRow(params.api.getSelectedRows())
@@ -33,11 +33,15 @@ const DueDateCellRenderer = (params: any) => {
         checkIfSelected()
     }, [selectedRow])
 
+    const format2 = "YYYY-MM-DD"
+    const d = new Date();
+    //.setDate(d.getDate() - 1)
+    const [datetime] = useState(moment(d).format(format2));
+
     return (
         <>
 
             <input type="date"
-
                 className='date-pick'
                 data-testid="datepicker"
                 style={{
@@ -58,7 +62,7 @@ const DueDateCellRenderer = (params: any) => {
                     pointerEvents: isDisabled ? 'none' : 'unset',
                     cursor: isDisabled ? 'not-allowed' : 'pointer'
                 }}
-
+                min={datetime}
 
                 disabled={false}
 

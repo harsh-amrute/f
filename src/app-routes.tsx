@@ -41,6 +41,7 @@ import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrend
 import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
 import RMPMBufferTrends from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMBufferTrends'
 import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
+import DptWiseBMReport from './VectorFlow/Pages/MTO/Production/DepartmentWiseBMReport/index';
 import FullKitAssignment from './VectorFlow/Pages/MTO/Production/FullKitAssignement'
 import OrderRescheduling from './VectorFlow/Pages/MTO/Production/OrderRescheduling'
 import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index'
@@ -110,6 +111,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
     '/production-planning-scheduling/enquiry-response',
     '/production-planning-scheduling/insight-and-trends/bm-trends',
+    '/production-planning-scheduling/deptwise-bm-report',
     '/production-planning-scheduling/insight-and-trends/stpl-full-kits',
     '/production-planning-scheduling/full-kit-assignment',
     '/supply-chain-intelligence-hub/sdr',
@@ -625,6 +627,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<RMPMBufferTrends />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/deptwise-bm-report',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DptWiseBMReport />)
         },
         ...getStoreTransferModuleRoutes()
       ]
