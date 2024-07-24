@@ -36,6 +36,7 @@ export const CapsuleWrapper = styled.div`
 
 export const HorizontalWrapper = styled.div`
 display:flex;
+align-items: flex-start;
 margin-top: 30px;
 `
 
@@ -83,11 +84,15 @@ export const CalenderHeading = styled.div`
 export const CalenderWrapper = styled.div`
     background: #ACABAB33;
     border-radius: 8px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 `
 
 export const CalenderLabel = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     padding: 0px 10px 10px;
 `
 

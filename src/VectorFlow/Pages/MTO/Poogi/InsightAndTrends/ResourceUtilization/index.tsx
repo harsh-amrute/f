@@ -246,7 +246,7 @@ const ResourceUtilization = () => {
       fill: "transparent", // Set the background to transparent
     },
     legend: {
-      position: "top",
+      position: "bottom",
       item: {
         showSeriesStroke: true,
         marker: {
@@ -351,7 +351,7 @@ const ResourceUtilization = () => {
       fill: "transparent",
     },
     legend: {
-      position: "top",
+      position: "bottom",
       item: {
         showSeriesStroke: true,
         marker: {
@@ -462,7 +462,7 @@ const ResourceUtilization = () => {
             </div>
           </SectionFlex>
           <HorizontalLineDashed />
-          <div style={{ padding: "10px" }}>
+          <div style={{ padding: "10px", width: '100%' }}>
             <CalenderLabel>
               <MarkerWrapper>
                 <ColoredMarker color={"#A2A2A2"} />
@@ -482,6 +482,8 @@ const ResourceUtilization = () => {
               <DayPicker
                 style={{
                   zoom: 0.8,
+                  display: 'flex',
+                  justifyContent: 'center'
                 }}
                 mode="single"
                 components={{
@@ -504,7 +506,7 @@ const ResourceUtilization = () => {
             </CalenderWrapper>
           </div>
           <HorizontalLineDashed />
-          <div style={{ padding: "10px" }}>
+          <div style={{ padding: "10px", width: '100%' }}>
             <CalenderLabel>
               <MarkerWrapper>
                 <ColoredMarker color="#33800B" />
@@ -520,6 +522,8 @@ const ResourceUtilization = () => {
               <DayPicker
                 style={{
                   zoom: 0.8,
+                  display: 'flex',
+                  justifyContent: 'center'
                 }}
                 mode="single"
                 components={{
