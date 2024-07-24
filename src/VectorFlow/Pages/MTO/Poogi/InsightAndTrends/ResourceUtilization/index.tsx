@@ -256,9 +256,9 @@ const ResourceUtilization = () => {
         },
       },
     },
-    padding: {
-      bottom: 0,
-    },
+    // padding: {
+    //   bottom: 0,
+    // },
   };
 
   const wipOptions: AgChartOptions = {
@@ -361,9 +361,9 @@ const ResourceUtilization = () => {
         },
       },
     },
-    padding: {
-      bottom: 0,
-    },
+    // padding: {
+    //   bottom: 0,
+    // },
   };
 
   const handleHorizonSubmit = () => {
