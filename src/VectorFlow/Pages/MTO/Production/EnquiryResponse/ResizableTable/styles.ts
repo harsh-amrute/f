@@ -11,7 +11,7 @@ export const TableContainer = styled.div`
   overflow: hidden;
 
   @media only screen and (min-width: ${gridSystem.size
-      .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
+    .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
     position: relative;
     width: 100%;
     overflow: hidden;
@@ -49,7 +49,7 @@ export const CellWithBar = styled.div`
   padding-right: 20px;
 
   @media only screen and (min-width: ${gridSystem.size
-      .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
+    .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
     font-weight: 400;
     font-size: 18px;
     color: #686060;
@@ -66,7 +66,7 @@ export const BarContainer = styled.div`
   width: 100px;
 
   @media only screen and (min-width: ${gridSystem.size
-      .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
+    .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
     width: 30px;
   }
 `;
@@ -81,7 +81,31 @@ export const CellBarValue = styled.div`
   margin-right: 20px;
 
   @media only screen and (min-width: ${gridSystem.size
-      .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
+    .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
     margin-right: 0px;
   }
 `;
+
+export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?: boolean }>`
+    height:${(props) => props.height ? props.height : 'auto'};
+    // max-height:90%;
+
+    zoom:${props => props.disableZoomScaling ? 1 : 0.75};
+    width:100%;
+    padding-right: 25px;
+    display: flex;
+    height: 100%;
+    margin: 0 20px;
+    & .ag-theme-alpine {
+      flex: 1;
+    }
+
+    @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
+    .size.desktop}) {
+        ${props => props.disableZoomScaling ? 1 : 0.75};
+    }
+  
+    @media (min-width: ${gridSystem.size.desktop}) {
+      zoom:1;
+    }
+` 
