@@ -36,7 +36,7 @@ export const CapsuleWrapper = styled.div`
 
 export const HorizontalWrapper = styled.div`
 display:flex;
-margin-top: 30px;
+margin-top: 10px;
 padding-bottom: 10px;
 `
 

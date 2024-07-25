@@ -51,34 +51,31 @@ const ResourceUtilization = () => {
           <div style="display: flex; width: 100%;">
               <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #A8A8A8"></div>
               <div style="display:flex; justify-content: space-between; width: 100%;">
-                  <div>${
-                    selectedGraphState === "wipLimit"
-                      ? "Limit"
-                      : "Utilization Percentage"
-                  }</div>
+                  <div>${selectedGraphState === "wipLimit"
+        ? "Limit"
+        : "Utilization Percentage"
+      }</div>
                   <div style="margin-left: 20px">${datum?.limit}%</div>
               </div>
           </div>
-          ${
-            selectedGraphState === "wipLimit"
-              ? `<div style="display: flex; width: 100%;">
+          ${selectedGraphState === "wipLimit"
+        ? `<div style="display: flex; width: 100%;">
               <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
               <div style="display:flex; justify-content: space-between; width: 100%;">
                   <div>usage</div>
-                  <div>${
-                    actBtn?.label === "Over Limit"
-                      ? datum?.overLimit
-                      : datum?.underLimit
-                  }%</div>
+                  <div>${actBtn?.label === "Over Limit"
+          ? datum?.overLimit
+          : datum?.underLimit
+        }%</div>
               </div>
           </div>`
-              : ""
-          }
+        : ""
+      }
       </div>`;
   }
 
   const getUtilizationColor = (date: any) => {
-    
+
     const redDates = [
       "01-07-2024",
       "07-07-2024",
@@ -189,8 +186,8 @@ const ResourceUtilization = () => {
         fill: "#A8A8A8",
         highlightStyle: {
           item: {
-            fill: "#B93B7E", 
-            stroke: "#B93B7E", 
+            fill: "#B93B7E",
+            stroke: "#B93B7E",
             strokeWidth: 2,
           },
         },
@@ -274,9 +271,9 @@ const ResourceUtilization = () => {
         fill: "#A8A8A8",
         highlightStyle: {
           item: {
-            fill: "#B93B7E", 
-            stroke: "#B93B7E", 
-            strokeWidth: 2, 
+            fill: "#B93B7E",
+            stroke: "#B93B7E",
+            strokeWidth: 2,
           },
         },
         tooltip: {
@@ -320,7 +317,8 @@ const ResourceUtilization = () => {
           fontSize: 8,
           fontWeight: "bold",
           color: "black",
-          padding: 10,
+          padding: 0,
+
         },
 
         gridLine: {
@@ -354,12 +352,14 @@ const ResourceUtilization = () => {
       position: "bottom",
       item: {
         showSeriesStroke: true,
+        // paddingY: 0,
         marker: {
           size: 15,
           strokeWidth: 0,
           shape: "square",
         },
       },
+
     },
     padding: {
       bottom: 0,
@@ -403,7 +403,7 @@ const ResourceUtilization = () => {
         <GraphWrapper>
           {
             selectedGraphState === "wipLimit" && (
-              // <div style={{ position: 'absolute', right: 0 }}>
+
 
               <CapsuleWrapper
                 style={{
@@ -431,9 +431,9 @@ const ResourceUtilization = () => {
                 />
               </CapsuleWrapper>
             )
-            // </div>
+
           }
-          <div style={{ width: "100%", height: "100%"}}>
+          <div style={{ width: "100%", height: "87%" }}>
             <AgChartsReact
               suppressDragLeaveHidesColumns={true}
               ref={chartRef}
@@ -451,7 +451,7 @@ const ResourceUtilization = () => {
         <VerticalWrapper>
           <SectionFlex>
             <VerticalTitle>Analytics</VerticalTitle>
-            <div data-testid="custom-select" style={{ width: "100%"}}>
+            <div data-testid="custom-select" style={{ width: "100%" }}>
               <CustomSelect
                 placeholder="Select CCR"
                 selected={false}
@@ -462,88 +462,91 @@ const ResourceUtilization = () => {
             </div>
           </SectionFlex>
           <HorizontalLineDashed />
-          <div style={{ padding: "10px", width: '100%' }}>
-            <CalenderLabel>
-              <MarkerWrapper>
-                <ColoredMarker color={"#A2A2A2"} />
-                &lt;60%
-              </MarkerWrapper>
-              <MarkerWrapper>
-                <ColoredMarker color="#EBBF2C" />
-                60-85%
-              </MarkerWrapper>
-              <MarkerWrapper>
-                <ColoredMarker color="#E53F3F" />
-                85%+
-              </MarkerWrapper>
-            </CalenderLabel>
-            <CalenderWrapper>
-              <CalenderHeading data-testid="utilization">Utilization</CalenderHeading>
-              <DayPicker
-                style={{
-                  // zoom: 0.8,
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}
-                mode="single"
-                components={{
-                  Caption: CustomCalenderCaption,
-                  Day: (props) => {
-                    return (
-                      <CustomCalenderDay
-                        {...props}
-                        color={getUtilizationColor(props.date)}
-                      />
-                    );
-                  },
-                }}
-                styles={{
-                  cell: {
-                    padding: "5px",
-                  },
-                }}
-              />
-            </CalenderWrapper>
-          </div>
-          <HorizontalLineDashed />
-          <div style={{ padding: "10px", width: '100%' }}>
-            <CalenderLabel>
-              <MarkerWrapper>
-                <ColoredMarker color="#33800B" />
-                Under Limit
-              </MarkerWrapper>
-              <MarkerWrapper>
-                <ColoredMarker color="#E53F3F" />
-                Over Limit
-              </MarkerWrapper>
-            </CalenderLabel>
-            <CalenderWrapper>
-              <CalenderHeading data-testid="wipControl">WIP Control</CalenderHeading>
-              <DayPicker
-                style={{
-                  // zoom: 0.8,
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}
-                mode="single"
-                components={{
-                  Caption: CustomCalenderCaption,
-                  Day: (props) => {
-                    return (
-                      <CustomCalenderDay
-                        {...props}
-                        color={getWIPColor(props.date)}
-                      />
-                    );
-                  },
-                }}
-                styles={{
-                  cell: {
-                    padding: "5px",
-                  },
-                }}
-              />
-            </CalenderWrapper>
+          <div style={{ display: "flex", flexDirection: 'column', zoom: 0.8 }}>
+
+            <div style={{ padding: "10px", width: '100%' }}>
+              <CalenderLabel>
+                <MarkerWrapper>
+                  <ColoredMarker color={"#A2A2A2"} />
+                  &lt;60%
+                </MarkerWrapper>
+                <MarkerWrapper>
+                  <ColoredMarker color="#EBBF2C" />
+                  60-85%
+                </MarkerWrapper>
+                <MarkerWrapper>
+                  <ColoredMarker color="#E53F3F" />
+                  85%+
+                </MarkerWrapper>
+              </CalenderLabel>
+              <CalenderWrapper>
+                <CalenderHeading data-testid="utilization">Utilization</CalenderHeading>
+                <DayPicker
+                  style={{
+
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}
+                  mode="single"
+                  components={{
+                    Caption: CustomCalenderCaption,
+                    Day: (props) => {
+                      return (
+                        <CustomCalenderDay
+                          {...props}
+                          color={getUtilizationColor(props.date)}
+                        />
+                      );
+                    },
+                  }}
+                  styles={{
+                    cell: {
+                      padding: "5px",
+                    },
+                  }}
+                />
+              </CalenderWrapper>
+            </div>
+            <HorizontalLineDashed />
+            <div style={{ padding: "10px", width: '100%' }}>
+              <CalenderLabel>
+                <MarkerWrapper>
+                  <ColoredMarker color="#33800B" />
+                  Under Limit
+                </MarkerWrapper>
+                <MarkerWrapper>
+                  <ColoredMarker color="#E53F3F" />
+                  Over Limit
+                </MarkerWrapper>
+              </CalenderLabel>
+              <CalenderWrapper>
+                <CalenderHeading data-testid="wipControl">WIP Control</CalenderHeading>
+                <DayPicker
+                  style={{
+                    // zoom: 0.8,
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}
+                  mode="single"
+                  components={{
+                    Caption: CustomCalenderCaption,
+                    Day: (props) => {
+                      return (
+                        <CustomCalenderDay
+                          {...props}
+                          color={getWIPColor(props.date)}
+                        />
+                      );
+                    },
+                  }}
+                  styles={{
+                    cell: {
+                      padding: "5px",
+                    },
+                  }}
+                />
+              </CalenderWrapper>
+            </div>
           </div>
         </VerticalWrapper>
       </HorizontalWrapper>
