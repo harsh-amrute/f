@@ -11,11 +11,15 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
 import GetProcPlanningDataColumn from './GetProcPlanningDataColumn.json';
-import { mapProcPlanningFieldsToColDefs } from '../../../../../helpers/utils';
+import { getColumnDefinations, mapProcPlanningFieldsToColDefs } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { userGetProcPlanningData } from "../../../../Services/MTO/Procurement/ProcPlanning/index";
 import { toast } from "react-toastify";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
+import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import { ColorGroupCellRenderer } from "../../../../../VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts/CellRenderers";
+import { Integer } from "read-excel-file";
+
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -65,7 +69,25 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 };
 
 const useProcPlanning = (date: string) => {
-    const { HeaderData } = GetProcPlanningDataColumn;
+    const [HeaderData, setHeaderData] = useState([{}]);
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+    const reportName = "ProcurementPlanningShortage";
+
+    const setColumnDef = async () => {
+        try {
+            const response = await getUIConfigData(reportName);
+            setHeaderData(response.data.data);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    useEffect(() => {
+        setColumnDef();
+    }, [])
+
     const gridRef = useRef<AgGridReact>(null);
     const { isSideBarOpen } = useUserData()
     const [currentPage] = useState<any>(1);
@@ -151,15 +173,62 @@ const useProcPlanning = (date: string) => {
         }
     }, [datas, HeaderData]);
 
-    const ShortageColumns = useMemo(() => mapProcPlanningFieldsToColDefs(HeaderData.map((header: any) => ({
-        ...header,
-        vs: header.jf === 'eas' ? true : header.vs
-    }))), [HeaderData]);
+    const customHeader = {
+        ColorPriority: {
+            cellRenderer: 'coloPriority',
+            tooltipValueGetter: (params: any) => {
+                const cpData = params.data.cp[0];
+                const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
+                let tooltipText = '';
+                keysToPrint.forEach((key) => {
+                    if (Object.prototype.hasOwnProperty.call(cpData, key)) {
+                        if (tooltipText !== '') {
+                            tooltipText += ' | ';
+                        }
+                        tooltipText += `${key}: ${cpData[key]}`;
+                    }
+                });
+                return tooltipText;
+            },
+            tooltipComponent: "availabilityToolTip",
+            initialWidth: 200, //160
+            autoHeaderHeight: true,
+            wrapHeaderText: true,
 
-    const CompleteAvailableColumns = useMemo(() => mapProcPlanningFieldsToColDefs(HeaderData.map((header: any) => ({
-        ...header,
-        vs: header.jf === 'eas' ? false : header.vs
-    }))), [HeaderData]);
+        },
+
+        'ExpAdd.StockToday': {
+            cellRenderer: "inputbox",
+            editable: true,
+            autoHeaderHeight: true,
+            wrapHeaderText: true,
+            initialWidth: 200, //160
+            filter: 'agMultiColumnFilter',
+            floatingFilter: true,
+            cellStyle: {
+                backgroundColor: 'white',
+                border: '1px solid #b9bdba',
+                color: 'black',
+                padding: '1px',
+            },
+        }
+
+    }
+    const extras = [
+        {
+            field: "",
+            position: 0,
+            suppressHeaderFilterButton: true,
+            suppressMenu: true,
+            filter: false,
+            maxWidth: 50,
+            cellRenderer: 'agGroupCellRenderer'
+        }
+    ]
+    const ShortageColumns = getColumnDefinations(HeaderData, customHeader, extras)
+
+
+    const CompleteAvailableColumns = getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]);
 
     const icons = useMemo(() => {
         return {

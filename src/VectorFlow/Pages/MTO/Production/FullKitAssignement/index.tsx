@@ -1,6 +1,6 @@
 import { AgChartsReact } from 'ag-charts-react';
 import { GridOptions } from 'ag-grid-enterprise';
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
 import { AgChartOptions } from 'ag-charts-community';
@@ -14,6 +14,7 @@ import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/A
 import EditRouteModal from './EditRouteModal';
 import * as globalStyles from "../../../../../styles/global";
 import { Rectangle } from './RectangleMarker';
+import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 
 const FullKitAssignment = () => {
 
@@ -59,6 +60,24 @@ const FullKitAssignment = () => {
   }
 
   const extra: any = []
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+  const reportName = "";
+
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    setColumnDef();
+  }, [])
 
   const colDefs = useMemo(() => {
     return getColumnDefinations(fullKitAssignmentHeader.data, colDefCustomizations, extra)
