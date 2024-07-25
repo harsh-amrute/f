@@ -3,7 +3,6 @@ import { AgChartOptions } from "ag-charts-community";
 import { AgChartsReact } from "ag-charts-react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import { APIMock } from "./mockData";
-import useViewPort from "../../../../../../hooks/useViewPort";
 import { DayPicker } from "react-day-picker";
 import CustomCalenderCaption from "./CustomCalenderCaption";
 import CustomCalenderDay from "./CustomCalenderDay";
@@ -29,7 +28,6 @@ import CustomSelect from "../../../Production/FullKitAssignement/Select";
 const ResourceUtilization = () => {
   const [chartLoading, setChartLoading] = useState(false);
   const chartRef = useRef<AgChartsReact>(null);
-  const { screenHeight } = useViewPort();
   const [horizonDays, setHorizonDays] = useState(30);
   const [selectedGraphState, setSelectedGraphState] = useState("wipLimit");
   const [actBtn, setActBtn] = useState({
