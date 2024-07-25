@@ -54,6 +54,7 @@ export const VerticalWrapper = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
+    zoom: 0.8;
 `
 
 export const HorizontalLineDashed = styled.div`

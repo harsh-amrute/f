@@ -361,9 +361,9 @@ const ResourceUtilization = () => {
         },
       },
     },
-    // padding: {
-    //   bottom: 0,
-    // },
+    padding: {
+      bottom: 0,
+    },
   };
 
   const handleHorizonSubmit = () => {
@@ -481,7 +481,7 @@ const ResourceUtilization = () => {
               <CalenderHeading data-testid="utilization">Utilization</CalenderHeading>
               <DayPicker
                 style={{
-                  zoom: 0.8,
+                  // zoom: 0.8,
                   display: 'flex',
                   justifyContent: 'center'
                 }}
@@ -521,7 +521,7 @@ const ResourceUtilization = () => {
               <CalenderHeading data-testid="wipControl">WIP Control</CalenderHeading>
               <DayPicker
                 style={{
-                  zoom: 0.8,
+                  // zoom: 0.8,
                   display: 'flex',
                   justifyContent: 'center'
                 }}
