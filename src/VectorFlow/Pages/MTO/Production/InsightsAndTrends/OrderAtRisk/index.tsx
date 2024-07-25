@@ -15,6 +15,7 @@ import useViewPort from "../../../../../../hooks/useViewPort";
 import { useGetOrderRiskData } from "../../../../../Services/MTO/Production/InsightsAndTrends/OrderAtRisk";
 import { ReasonOrderAtRiskType } from "../../../../../../../src/types/MTO/types";
 import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
+import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 
 const OrderAtRisk = () => {
   const [isGridView, setIsGridView] = useState(false);
@@ -64,15 +65,36 @@ const OrderAtRisk = () => {
     rowGroupPanelShow: "always",
   };
 
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+  const reportName = "Orders At Risk";
+
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    setColumnDef();
+  }, [])
+
+
+
   const colDefCustomizations = {
-    bpp: {
+    BPP: {
       cellRenderer: ColorCellRenderer,
     },
   };
 
   const tableColDefs = useMemo(() => {
-    return getColumnDefinations(columnConfig, colDefCustomizations, []);
-  }, []);
+    return getColumnDefinations(HeaderData, colDefCustomizations, []);
+  }, [HeaderData]);
 
   const gridColDefs = useMemo(() => {
     return getColumnDefinations(reasonColConfig, {}, []);
@@ -268,7 +290,7 @@ const OrderAtRisk = () => {
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}
-                height={"100%"}
+                height={"95vh"}
                 ref={gridRef}
                 statusBar={{
                   statusPanels: [

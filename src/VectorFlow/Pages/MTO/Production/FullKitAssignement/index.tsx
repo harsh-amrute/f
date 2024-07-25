@@ -63,7 +63,7 @@ const FullKitAssignment = () => {
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
-  const reportName = "";
+  const reportName = "Full Kit Assignement";
 
   const setColumnDef = async () => {
     try {
@@ -80,8 +80,8 @@ const FullKitAssignment = () => {
   }, [])
 
   const colDefs = useMemo(() => {
-    return getColumnDefinations(fullKitAssignmentHeader.data, colDefCustomizations, extra)
-  }, []);
+    return getColumnDefinations(HeaderData, colDefCustomizations, extra)
+  }, [HeaderData])
 
   const options: GridOptions<any> = {
     getRowStyle: (params: any) => {

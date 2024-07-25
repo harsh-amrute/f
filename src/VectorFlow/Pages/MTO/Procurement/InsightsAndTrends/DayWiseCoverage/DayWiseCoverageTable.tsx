@@ -42,7 +42,7 @@ const DayWiseCoverageTable = () => {
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
-  const reportName = "DayWiseCoverage";
+  const reportName = "Day Wise Coverage";
 
   const setColumnDef = async () => {
     try {
@@ -58,7 +58,13 @@ const DayWiseCoverageTable = () => {
     setColumnDef();
   }, [])
 
-  const colDef = useMemo(() => getColumnDefinations(HeaderData, colDefCustomizations), []);
+  const [colDef, setColDef] = useState([{}]);
+
+  useEffect(() => {
+    setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
+  }, [])
+
+
 
   const options: GridOptions<any> = {
     getRowStyle: (params: any) => {
