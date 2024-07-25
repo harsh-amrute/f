@@ -433,7 +433,7 @@ const ResourceUtilization = () => {
             )
             // </div>
           }
-          <div style={{ width: "100%", height: screenHeight - 200 }}>
+          <div style={{ width: "100%", height: "100%"}}>
             <AgChartsReact
               suppressDragLeaveHidesColumns={true}
               ref={chartRef}

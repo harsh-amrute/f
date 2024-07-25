@@ -36,14 +36,15 @@ export const CapsuleWrapper = styled.div`
 
 export const HorizontalWrapper = styled.div`
 display:flex;
-align-items: flex-start;
 margin-top: 30px;
+padding-bottom: 10px;
 `
 
 export const GraphWrapper = styled.div`
 width: 75%;
 display:flex;
 position: relative;
+flex-grow: 1;
 `
 
 export const VerticalWrapper = styled.div`
