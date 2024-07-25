@@ -24,8 +24,12 @@ const OTIFAnalysis = () => {
 
   const gridOptions: GridOptions = {
     defaultColDef: {
-      flex: 1,
+      suppressMenu: true,
+      autoHeaderHeight: true,
+      filter: "agTextColumnFilter",
+      floatingFilter: true,
       enableRowGroup: true,
+      floatingFilterComponentParams: { suppressFilterButton: true },
     },
     groupDefaultExpanded: 0,
     detailRowHeight: 500,

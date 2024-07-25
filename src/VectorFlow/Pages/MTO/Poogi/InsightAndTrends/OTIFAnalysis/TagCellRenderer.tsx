@@ -37,41 +37,9 @@ const tagToolTip =(color:number)=> {
 
     const tags = Object.keys(params.value).filter((key) => params.value[key] );
 
-    console.log(tags);
-
-    // const cellColor = colorMapper(params.value)
-
-    // if(color===null || color===undefined || isNaN(color)){
-    //     return(
-    //         <>
-            
-    //         </>
-    //     )
-    // }
-
-    if(tags.length === 1){
-        return(
-            <BPRColorCellRendererWrapper>
-                <div className="tag-wrapper">
-                    <div className="tag" style={{ backgroundColor: 'yellow' }}>
-                        <div className="circle" style={{ backgroundColor: 'blue' }}></div>
-                        <div className="text">{tags[0]}</div>
-                    </div>
-                </div>
-            </BPRColorCellRendererWrapper>
-        )
-    }
-
+    
     return(
-        <BPRColorCellRendererWrapper>
-            <div className="tag-wrapper">
-                <div className="tag" style={{ backgroundColor: 'yellow' }}>
-                    <div className="circle" style={{ backgroundColor: 'blue' }}></div>
-                    <div className="text">{tags[0]}</div>
-                </div>
-                <div className="tag-overlay" style={{ backgroundColor: 'green' }}></div>
-            </div>
-        </BPRColorCellRendererWrapper>
+        <div>SVG</div>
     )
 }
 
