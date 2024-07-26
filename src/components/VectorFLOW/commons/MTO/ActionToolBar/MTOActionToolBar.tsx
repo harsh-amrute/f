@@ -138,7 +138,7 @@ const MTOActionToolBar = ({
                     }
 
                     {isWIPCheckBox &&
-                        <CheckBoxDiv>
+                        <CheckBoxDiv data-testid='check-box'>
                             <Checkbox
                                 data-testid='check-box'
                                 name="select"
@@ -154,15 +154,17 @@ const MTOActionToolBar = ({
 
 
                     {isReleaseDate &&
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            marginRight: '3px',
-                            fontSize: '18px',
-                            fontWeight: 'bold',
-                            width: '100%'
-                        }}>
+                        <div
+                            data-testid='isReleaseDate'
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                marginRight: '3px',
+                                fontSize: '18px',
+                                fontWeight: 'bold',
+                                width: '100%'
+                            }}>
 
                             &nbsp;
                             <p>Release Date Till</p>
@@ -222,7 +224,7 @@ const MTOActionToolBar = ({
                 </>
 
                 {isAsOnDate &&
-                    <DateWrapper>
+                    <DateWrapper data-testid='isAsOnDate'>
                         <DateIcon
                             src='/assets/img/calender-icon.svg' alt='calender-icon'
                         />
@@ -263,7 +265,7 @@ const MTOActionToolBar = ({
                 {/**Selected Filter ends*/}
 
                 {(comp === 'resourceUtilization') &&
-                    <div style={{ display: ' flex', alignItems: 'flex-end', gap: '20px' }}>
+                    <div data-testid='resourceUtilization' style={{ display: ' flex', alignItems: 'flex-end', gap: '20px' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
                             <div style={{
                                 fontStyle: "normal",
