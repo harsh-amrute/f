@@ -276,11 +276,11 @@ const MTOActionToolBar = ({
                             </div>
                             <RadioGroup>
                                 <ChartHeaderRadioGroup style={{gap:'4px'}} theme={themeUi}>
-                                    <input type="radio" checked={selectedGraphState === 'wipLimit'} value="wipLimit" name="wipLimit" id="wipLimit" onChange={()=> updateGraphState && updateGraphState(1, 'wipLimit')} style={{margin:0, zoom: 1.8, cursor: 'pointer'}}/>
+                                    <input type="radio" checked={selectedGraphState === 'wipLimit'} value="wipLimit" name="wipLimit" id="wipLimit" data-testid="wip-limit-radio" onChange={()=> updateGraphState && updateGraphState(1, 'wipLimit')} style={{margin:0, zoom: 1.8, cursor: 'pointer'}}/>
                                     <label htmlFor="parent" style={{fontSize:'14px', fontWeight: 500}}>WIP Limit</label>
                                 </ChartHeaderRadioGroup>
                                 <ChartHeaderRadioGroup style={{marginLeft:'10px',gap:'4px'}} theme={themeUi}>
-                                    <input type="radio" checked={selectedGraphState === 'utilization'} value="utilization" name="utilization" id="utilization" onChange={()=>updateGraphState && updateGraphState(2, 'utilization')} style={{margin:0, zoom: 1.8, cursor: 'pointer'}}/>
+                                    <input type="radio" checked={selectedGraphState === 'utilization'} value="utilization" name="utilization" id="utilization" data-testid="utilization-radio" onChange={()=>updateGraphState && updateGraphState(2, 'utilization')} style={{margin:0, zoom: 1.8, cursor: 'pointer'}}/>
                                     <label htmlFor="child"  style={{fontSize:'14px', fontWeight: 500}}>Utilization</label>
                                 </ChartHeaderRadioGroup>
                             </RadioGroup>
@@ -330,6 +330,7 @@ const MTOActionToolBar = ({
                                     Submit
                                 </VFButtonOutline> */}
                                 <img 
+                                    data-testid='horizon-submit'
                                     style={{cursor:'pointer'}}
                                     src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
                                     height={50} 

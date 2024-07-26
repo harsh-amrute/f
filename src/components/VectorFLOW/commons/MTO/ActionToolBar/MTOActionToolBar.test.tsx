@@ -1,7 +1,26 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import MTOActionToolBar from './MTOActionToolBar';
 import moment from 'moment';
+import { UserDataContext } from "../../../../../context";
+
+
+
+const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {
+  return (
+    <UserDataContext.Provider
+      value={{
+        user: { user: { theme_ui: theme } },
+        changeColorTheme: (color) => {
+          return color;
+        },
+        isSideBarOpen:true,toggleSideBar:jest.fn
+      }}
+    >
+      {children}
+    </UserDataContext.Provider>
+  );
+};
 
 describe('MTOActionToolBar Component', () => {
   // Mock functions
@@ -10,11 +29,12 @@ describe('MTOActionToolBar Component', () => {
   const mockSubmitDate = jest.fn();
   const mockSetIsGridView = jest.fn();
   const mockOnAddFilter = jest.fn();
-
+  const mockRemoveFilters = jest.fn();
+  const mockHandleHorizonSubmit = jest.fn();
+  const mockUpdateGraphState = jest.fn();
 
   const selectedFilters = [
-    { label: 'Plant Name', values: ['Plant 1', 'Plant 2'] },
-    { label: 'Location', values: ['Location 1'] },
+    { label: 'Plant Name', values: ['Plant 1'] },
   ];
 
   const date = moment(new Date()).format('YYYY-MM-DD');
@@ -76,6 +96,13 @@ describe('MTOActionToolBar Component', () => {
     expect(screen.getByText('As on Date')).toBeInTheDocument();
   });
 
+  test('renders when remove filters is invoked', () => {
+    render(<MTOActionToolBar selectedFilters={selectedFilters}  removeFilters={mockRemoveFilters} />);
+    expect(screen.getByTestId('closeIcon-filter')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('closeIcon-filter'));
+    expect(mockRemoveFilters).toHaveBeenCalled();
+  });
+
   test('renders Add/Edit Filter button and calls onAddFilter when clicked', () => {
     render(<MTOActionToolBar isAddFilterButton onAddFilter={mockOnAddFilter} selectedFilters={selectedFilters} />);
     expect(screen.getByText('Edit Filter')).toBeInTheDocument();
@@ -86,6 +113,26 @@ describe('MTOActionToolBar Component', () => {
     expect(screen.getByText('+ Add Filter')).toBeInTheDocument();
     fireEvent.click(screen.getByText('+ Add Filter'));
     expect(mockOnAddFilter).toHaveBeenCalled();
+  });
+
+  test('renders radio button and horizon when called from Resource WIP', () => {
+    render(contextWrapperWithCustomTheme(<MTOActionToolBar handleHorizonSubmit={mockHandleHorizonSubmit} updateGraphState={mockUpdateGraphState} comp='resourceUtilization'  themeUi="NOIRFUSION"/>,"NOIRFUSION"));
+    
+    expect(screen.getByTestId('wip-limit-radio')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('wip-limit-radio'));
+    expect(mockUpdateGraphState).toHaveBeenCalled();
+
+    expect(screen.getByTestId('utilization-radio')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('utilization-radio'));
+    expect(mockUpdateGraphState).toHaveBeenCalled();
+
+    expect(screen.getByText('Select Plant/ Department/ CCR')).toBeInTheDocument();
+    expect(screen.getByText('Select Plant')).toBeInTheDocument();
+    expect(screen.getByText('Select Department')).toBeInTheDocument();
+
+    expect(screen.getByTestId('horizon-submit')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('horizon-submit'));
+    expect(mockHandleHorizonSubmit).toHaveBeenCalled();
   });
 
 
