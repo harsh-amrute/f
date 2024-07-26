@@ -10,6 +10,9 @@ import { AgGridReactProps } from 'ag-grid-react'
 import { useGetOrderwiseCoverageData } from '../../../../../../VectorFlow/Services/MTO/Procurement/OrderwiseCoverage'
 import { toast } from 'react-toastify'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../helpers/notify'
+import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig'
+import { getColumnDefinations } from '../../../../../../helpers/utils'
+
 
 const RMPMOrderwiseCoverage = () => {
 
@@ -100,7 +103,42 @@ const RMPMOrderwiseCoverage = () => {
     };
 
     // const [ShortageColumns, setShortageColumns] = useState(columnData);
-    const [ShortageColumns] = useState(columnData);
+    const [HeaderData, setHeaderData] = useState([{}]);
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+    const reportName = "RMPMOrderWiseCoverage";
+
+    const [ShortageColumns, setShortageColumns] = useState([{}]);
+    const setColumnDef = async () => {
+        try {
+            const response = await getUIConfigData(reportName);
+            setHeaderData(response.data.data);
+            getColumnDefinations(HeaderData)
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    useEffect(() => {
+        setColumnDef();
+    }, [])
+
+    const customHeader = {
+        BPP: {
+            cellRenderer: 'ColorRangeCellRenderer',
+            initialWidth: 200,
+            autoHeaderHeight: true,
+            wrapHeaderText: true,
+
+        },
+
+    }
+
+
+    useEffect(() => {
+        setShortageColumns(getColumnDefinations(HeaderData, customHeader))
+    }, [HeaderData])
 
     const mapDataToColumns = (data: any, columns: ColDef[]) => {
         return data.map((item: any) => {
@@ -140,7 +178,6 @@ const RMPMOrderwiseCoverage = () => {
         try {
             notifyLoader("Loading Data...")
             const APIData = await getOrderwiseCoverageData();
-            console.log("orderwise:...... ", APIData)
             if (APIData.status.toString() === '200') {
                 toast.dismiss();
                 notifySuccess("Data Fetched Successfully!")
@@ -162,8 +199,6 @@ const RMPMOrderwiseCoverage = () => {
     useEffect(() => {
         setGraphDatas(apiData)
         setConvertedData(mapDataToColumns(apiData, columnData));
-        console.log("convertedData:=:=:", convertedData);
-        console.log("graph:::", GraphDatas)
     }, [apiData])
     return (
         <>

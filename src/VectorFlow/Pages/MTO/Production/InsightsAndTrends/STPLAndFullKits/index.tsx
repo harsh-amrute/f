@@ -1,8 +1,7 @@
 import { Allotment } from "allotment";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { columnConfigLevel1 } from "./ColumnData";
 import { GridOptions } from "ag-grid-enterprise";
 import STPLGraph from "./STPLGraph";
 import FullKitGraph from "./FullKitGraph";
@@ -15,6 +14,7 @@ import { APIMock } from "./StplAndFullKitsData";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import OrderDetailsCellRenderer from "./OrderDetailsCellRenderer";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
+import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 
 const STPLAndFullKits = () => {
   const [isGridView, setIsGridView] = useState(false);
@@ -23,6 +23,30 @@ const STPLAndFullKits = () => {
   const gridRef = useRef();
 
   const gridOptions: GridOptions = {
+    sideBar: {
+      toolPanels: [
+        {
+          id: 'columns',
+          labelDefault: 'Columns',
+          labelKey: 'columns',
+          iconKey: 'columns',
+          toolPanel: 'agColumnsToolPanel',
+          minWidth: 225,
+          maxWidth: 225,
+          width: 225
+        },
+        {
+          id: 'filters',
+          labelDefault: 'Filters',
+          labelKey: 'filters',
+          iconKey: 'filter',
+          toolPanel: 'agFiltersToolPanel',
+          minWidth: 180,
+          maxWidth: 400,
+          width: 250
+        }
+      ],
+    },
     defaultColDef: {
       flex: 1,
       enableRowGroup: true,
@@ -37,15 +61,36 @@ const STPLAndFullKits = () => {
     rowGroupPanelShow: 'always'
   };
 
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+  const reportName = "STPLAndFullKits";
+
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    setColumnDef();
+  }, [])
+
+
+
   const colDefCustomizations = {
-    plnt: {
+    Plant: {
       cellRenderer: "agGroupCellRenderer",
     }
   }
 
   const colDefs = useMemo(() => {
-    return getColumnDefinations(columnConfigLevel1, colDefCustomizations, [])
-  }, []);
+    return getColumnDefinations(HeaderData, colDefCustomizations, [])
+  }, [HeaderData]);
 
   return (
     <div style={{}}>
@@ -61,13 +106,12 @@ const STPLAndFullKits = () => {
           <div data-testid='grid-view'>
             <VFTable
               {...gridOptions}
-              sideBar="columns"
               columnDefs={colDefs}
               rowData={APIMock?.grid}
               tooltipHideDelay={100000}
               tooltipShowDelay={0}
               tooltipMouseTrack={true}
-              height={"750px"}
+              height={"95vh"}
               ref={gridRef}
               statusBar={{
                 statusPanels: [
@@ -78,7 +122,7 @@ const STPLAndFullKits = () => {
           </div>
 
         ) : (
-          <BTRTableWrapper style={{ height: screenHeight - 210, margin: "0" }}>
+          <BTRTableWrapper style={{ height: screenHeight - 20, margin: "0" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>

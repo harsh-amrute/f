@@ -3,7 +3,6 @@ import FilterModal from "./FilterModal";
 import Note from "./Note";
 import ResizableTable from "./ResizableTable";
 import MTOActionToolBar from "../../../../../../src/components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { prodPlanningMock } from "./PROD";
 import {
   BlurCover,
   BTRAllomentSection,
@@ -34,6 +33,9 @@ import { toast } from "react-toastify"
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule";
 import { Allotment } from "allotment";
 import useViewPort from "../../../../../hooks/useViewPort";
+import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import { getColumnDefinations } from "../../../../../helpers/utils";
+import FullkitCellRenderer from "../../Common/FullkitCellRenderer";
 
 const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { label: "RM Available", value: "RM Available" }];
 
@@ -528,6 +530,37 @@ const EnquiryResponse = () => {
 
   const { screenHeight } = useViewPort()
 
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+  const reportName = "EnquiryResponse";
+  const [myColDefs, setMyColDefs] = useState([{}]);
+
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    setColumnDef();
+  }, [])
+
+  const CustomHeader = {
+    'FOL(inDays)': {
+      cellRenderer: FullkitCellRenderer
+    }
+  }
+
+  useEffect(() => {
+    setMyColDefs(getColumnDefinations(HeaderData, CustomHeader));
+  }, [HeaderData])
+
+
   return (
     <EnquiryWrapper>
       <FilterWrapper>
@@ -549,7 +582,7 @@ const EnquiryResponse = () => {
           <Allotment vertical separator   >
             <Allotment.Pane preferredSize={'40%'}>
               <BTRAllomentSection>
-                <ResizableTable header={prodPlanningMock?.header} data={filterData} />
+                <ResizableTable header={myColDefs} data={filterData} />
 
               </BTRAllomentSection>
             </Allotment.Pane>
