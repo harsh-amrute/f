@@ -167,6 +167,12 @@ test('calls removeFilters function for each filter value', () => {
     expect(mockHandleHorizonSubmit).toHaveBeenCalled();
   });
 
+  test('renders WIP checkbox and handles change event', () => {
+    render(<MTOActionToolBar isWIPCheckBox />);
+    const checkbox = screen.getByTestId('check-box');
+    expect(checkbox).toBeInTheDocument();
+  });
+
   test('renders Excel Export button', () => {
     render(<MTOActionToolBar isExcelExport />);
     const excelExportButton = screen.getByText('Excel Export');
@@ -188,4 +194,16 @@ test('calls removeFilters function for each filter value', () => {
     expect(mockSetHorizonDays).toHaveBeenCalledWith(60);
   });
 
+  test('renders isReleaseDate', () => {
+    render(contextWrapperWithCustomTheme(<MTOActionToolBar isReleaseDate submitDate={mockSubmitDate} date={date} />, "REGALBLAZE"));
+    const isReleaseDate = screen.getByTestId("isReleaseDate");
+    expect(isReleaseDate).toBeInTheDocument();
+  });
+
+  test('renders isAsOnDate', () => {
+    render(contextWrapperWithCustomTheme(<MTOActionToolBar isAsOnDate submitDate={mockSubmitDate} date={date} />, "REGALBLAZE"));
+    const isAsOnDate = screen.getByTestId("isAsOnDate");
+    expect(isAsOnDate).toBeInTheDocument();
+  });
+  
 });
