@@ -62,7 +62,7 @@ const DayWiseCoverageTable = () => {
 
   useEffect(() => {
     setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
-  }, [])
+  }, [HeaderData])
 
 
 
