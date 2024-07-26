@@ -42,7 +42,7 @@ const DayWiseCoverageTable = () => {
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
-  const reportName = "Day Wise Coverage";
+  const reportName = "DayWiseCoverage";
 
   const setColumnDef = async () => {
     try {

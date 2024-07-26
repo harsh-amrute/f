@@ -63,7 +63,7 @@ const FullKitAssignment = () => {
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
-  const reportName = "Full Kit Assignement";
+  const reportName = "FullKitAssignment";
 
   const setColumnDef = async () => {
     try {

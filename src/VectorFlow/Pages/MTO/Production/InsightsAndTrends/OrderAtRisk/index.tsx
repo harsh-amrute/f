@@ -68,7 +68,7 @@ const OrderAtRisk = () => {
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
-  const reportName = "Orders At Risk";
+  const reportName = "OrdersAtRisk";
 
   const setColumnDef = async () => {
     try {

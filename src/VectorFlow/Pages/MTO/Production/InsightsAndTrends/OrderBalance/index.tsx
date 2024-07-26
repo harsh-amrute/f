@@ -75,7 +75,7 @@ const OrderBalance = () => {
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
-  const reportName = "Order Balance";
+  const reportName = "OrderBalance";
 
   const setColumnDef = async () => {
     try {

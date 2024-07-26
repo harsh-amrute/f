@@ -64,7 +64,7 @@ const STPLAndFullKits = () => {
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
-  const reportName = "STPL%20%26%20Full%20Kits";
+  const reportName = "STPLAndFullKits";
 
   const setColumnDef = async () => {
     try {
