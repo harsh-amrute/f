@@ -3,8 +3,7 @@ import { AgGridReactProps } from "ag-grid-react"
 import AvlCellRenderer from '../../Common/AvlCellRenderer';
 import AvailabilityToolTip from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import DetailCellRenderer from "./MaterialCellRenderer";
-import { OrderDetailsHeaderData } from '../MaterialCoverage/Data';
-import { getColumnDefinations, mapMaterialCoverageFieldsToColDefs } from '../../../../../helpers/utils'
+import { getColumnDefinations } from '../../../../../helpers/utils'
 import ColorCellRenderer from "../../Common/ColorCellRenderer";
 import { useGetOpenSODetailsData } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage";
 import CustomGroupCellRenderer from "../InsightsAndTrends/DayWiseCoverage/CustomGroupCellRenderer";

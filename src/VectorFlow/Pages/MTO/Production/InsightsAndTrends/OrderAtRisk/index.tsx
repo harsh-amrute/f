@@ -14,8 +14,8 @@ import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRen
 import useViewPort from "../../../../../../hooks/useViewPort";
 import { useGetOrderRiskData } from "../../../../../Services/MTO/Production/InsightsAndTrends/OrderAtRisk";
 import { ReasonOrderAtRiskType } from "../../../../../../../src/types/MTO/types";
-import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import OverlayLoader from "../../../Common/Loader";
 
 const OrderAtRisk = () => {
   const [isGridView, setIsGridView] = useState(false);
@@ -279,46 +279,46 @@ const OrderAtRisk = () => {
         isAddFilterButton
         setIsGridView={setIsGridView}
       />
-      {isLoading ? <VFLoader /> :
-        <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: "25px" }}>
-          {isGridView ? (
-            <div data-testid="grid-view" style={{ height: screenHeight - 300 }}>
-              <VFTable
-                {...gridOptions}
-                columnDefs={tableColDefs}
-                rowData={gridData}
-                tooltipHideDelay={100000}
-                tooltipShowDelay={0}
-                tooltipMouseTrack={true}
-                height={"95vh"}
-                ref={gridRef}
-                statusBar={{
-                  statusPanels: [
-                    { statusPanel: "agTotalRowCountComponent", align: "left" },
-                  ],
-                }}
-              />
-            </div>
-          ) : (
-            <SplitGraphContainer
-              tableLoading={tableLoading}
-              chartLoading={chartLoading}
-              setTableLoading={setTableLoading}
-              setChartLoading={setChartLoading}
-              data={rawData}
-              rowData={rawData}
-              graphTitle={""}
-              tableTitle={ProductionInsightsAndTrendsString.orderAtRisk}
-              options={options}
-              colDef={gridColDefs}
-              header={generateHeader}
-              hideChart={hideChart1}
-              toggleChart={toggleChart1}
-              TooltipRenderer={TooltipRenderer}
-              graphType={6}
+      {isLoading && <OverlayLoader />}
+      <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: "25px" }}>
+        {isGridView ? (
+          <div data-testid="grid-view" style={{ height: screenHeight - 300 }}>
+            <VFTable
+              {...gridOptions}
+              columnDefs={tableColDefs}
+              rowData={gridData}
+              tooltipHideDelay={100000}
+              tooltipShowDelay={0}
+              tooltipMouseTrack={true}
+              height={"95vh"}
+              ref={gridRef}
+              statusBar={{
+                statusPanels: [
+                  { statusPanel: "agTotalRowCountComponent", align: "left" },
+                ],
+              }}
             />
-          )}
-        </HorizontalViewWrapper>}
+          </div>
+        ) : (
+          <SplitGraphContainer
+            tableLoading={tableLoading}
+            chartLoading={chartLoading}
+            setTableLoading={setTableLoading}
+            setChartLoading={setChartLoading}
+            data={rawData}
+            rowData={rawData}
+            graphTitle={""}
+            tableTitle={ProductionInsightsAndTrendsString.orderAtRisk}
+            options={options}
+            colDef={gridColDefs}
+            header={generateHeader}
+            hideChart={hideChart1}
+            toggleChart={toggleChart1}
+            TooltipRenderer={TooltipRenderer}
+            graphType={6}
+          />
+        )}
+      </HorizontalViewWrapper>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react'
 import Select, { components, OptionProps } from 'react-select'
 import { Checkbox } from '../../../../../components';
 
-const CustomSelect = ({ selected }: any) => {
+const CustomSelect = ({ selected, placeholder, options, width, optionsWidth }: any) => {
     const Option = (props: OptionProps<any>) => {
         return (
             <components.Option {...props}>
@@ -19,9 +19,15 @@ const CustomSelect = ({ selected }: any) => {
             components={{ Option, IndicatorSeparator: () => null }}
             value={selected}
             styles={{
+                placeholder: (provided) => ({
+                    ...provided,
+                    color: 'black',
+                    fontWeight: 500,
+                    fontSize: '14px', 
+                }),
                 container: (base) => ({
                     ...base,
-                    width: "max-content"
+                    width: width || "max-content"
                 }),
                 control: (base: any, state: any) => ({
                     ...base,
@@ -35,7 +41,7 @@ const CustomSelect = ({ selected }: any) => {
                 menu: (base) => ({
                     ...base,
                     width: "max-content",
-                    minWidth: "150px",
+                    minWidth: optionsWidth || "150px",
                     right: 0,
                 }),
                 option: (base) => ({
@@ -47,8 +53,8 @@ const CustomSelect = ({ selected }: any) => {
                     }
                 })
             }}
-            placeholder=""
-            options={[
+            placeholder={placeholder || ''}
+            options={options || [
                 { label: "M1", value: "M1" },
                 { label: "M2", value: "M2" },
                 { label: "M3", value: "M3" },
