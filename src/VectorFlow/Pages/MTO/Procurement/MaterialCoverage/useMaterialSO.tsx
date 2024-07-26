@@ -63,7 +63,6 @@ const useMaterialSO = (data: any) => {
     const getHeaderData = async () => {
         try {
             const response = await getUIConfigData(reportName);
-            console.log("response:: ", response);
             setHeaderData(response.data.data);
         }
         catch (e) {

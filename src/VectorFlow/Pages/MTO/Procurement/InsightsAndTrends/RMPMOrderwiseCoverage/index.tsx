@@ -178,7 +178,6 @@ const RMPMOrderwiseCoverage = () => {
         try {
             notifyLoader("Loading Data...")
             const APIData = await getOrderwiseCoverageData();
-            console.log("orderwise:...... ", APIData)
             if (APIData.status.toString() === '200') {
                 toast.dismiss();
                 notifySuccess("Data Fetched Successfully!")
@@ -200,8 +199,6 @@ const RMPMOrderwiseCoverage = () => {
     useEffect(() => {
         setGraphDatas(apiData)
         setConvertedData(mapDataToColumns(apiData, columnData));
-        console.log("convertedData:=:=:", convertedData);
-        console.log("graph:::", GraphDatas)
     }, [apiData])
     return (
         <>
