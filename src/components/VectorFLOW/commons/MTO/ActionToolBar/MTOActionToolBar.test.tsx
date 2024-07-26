@@ -32,6 +32,7 @@ describe('MTOActionToolBar Component', () => {
   const mockRemoveFilters = jest.fn();
   const mockHandleHorizonSubmit = jest.fn();
   const mockUpdateGraphState = jest.fn();
+  const mockSetHorizonDays = jest.fn();
 
   const selectedFilters = [
     { label: 'Plant Name', values: ['Plant 1'] },
@@ -103,6 +104,37 @@ describe('MTOActionToolBar Component', () => {
     expect(mockRemoveFilters).toHaveBeenCalled();
   });
 
+  test('renders when remove filters is not invoked', () => {
+    render(<MTOActionToolBar selectedFilters={selectedFilters} />);
+    expect(screen.getByTestId('closeIcon-filter')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('closeIcon-filter'));
+    expect(mockRemoveFilters).not.toHaveBeenCalled();
+  });
+
+  test('renders with multiple selected filters', () => {
+    const filters = [
+        { label: 'Plant Name', values: ['Plant 1', 'Plant 2'] },
+        { label: 'Department', values: ['Dept 1'] }
+    ];
+    render(<MTOActionToolBar selectedFilters={filters} removeFilters={mockRemoveFilters} />);
+    filters.forEach(filter => {
+        filter.values.forEach(value => {
+            expect(screen.getByText(value)).toBeInTheDocument();
+        });
+    });
+});
+
+test('calls removeFilters function for each filter value', () => {
+    const filters = [
+        { label: 'Plant Name', values: ['Plant 1'] }
+    ];
+    render(<MTOActionToolBar selectedFilters={filters} removeFilters={mockRemoveFilters} />);
+    filters[0].values.forEach(value => {
+        fireEvent.click(screen.getAllByTestId('closeIcon-filter')[0]);
+        expect(mockRemoveFilters).toHaveBeenCalledWith(filters[0].label, value);
+    });
+});
+
   test('renders Add/Edit Filter button and calls onAddFilter when clicked', () => {
     render(<MTOActionToolBar isAddFilterButton onAddFilter={mockOnAddFilter} selectedFilters={selectedFilters} />);
     expect(screen.getByText('Edit Filter')).toBeInTheDocument();
@@ -149,6 +181,11 @@ describe('MTOActionToolBar Component', () => {
     expect(mockSubmitDate).toHaveBeenCalled();
   });
 
-
+  test('calls setHorizonDays function when slider value changes', () => {
+    render(contextWrapperWithCustomTheme(<MTOActionToolBar comp="resourceUtilization" setHorizonDays={mockSetHorizonDays} horizonDays={30} themeUi="NOIRFUSION"/>, "NOIRFUSION"));
+    const slider = screen.getByTestId('range-slider'); // Assuming there's a role slider for VFRangeSlider
+    fireEvent.change(slider, { target: { value: 60 } });
+    expect(mockSetHorizonDays).toHaveBeenCalledWith(60);
+  });
 
 });
