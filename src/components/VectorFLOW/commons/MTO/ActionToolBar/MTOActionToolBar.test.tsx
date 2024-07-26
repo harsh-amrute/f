@@ -6,7 +6,7 @@ import { UserDataContext } from "../../../../../context";
 
 
 
-const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {
+const contextWrapperWithCustomTheme = (children: ReactNode, theme: string) => {
   return (
     <UserDataContext.Provider
       value={{
@@ -14,7 +14,7 @@ const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {
         changeColorTheme: (color) => {
           return color;
         },
-        isSideBarOpen:true,toggleSideBar:jest.fn
+        isSideBarOpen: true, toggleSideBar: jest.fn
       }}
     >
       {children}
@@ -97,7 +97,7 @@ describe('MTOActionToolBar Component', () => {
   });
 
   test('renders when remove filters is invoked', () => {
-    render(<MTOActionToolBar selectedFilters={selectedFilters}  removeFilters={mockRemoveFilters} />);
+    render(<MTOActionToolBar selectedFilters={selectedFilters} removeFilters={mockRemoveFilters} />);
     expect(screen.getByTestId('closeIcon-filter')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('closeIcon-filter'));
     expect(mockRemoveFilters).toHaveBeenCalled();
@@ -116,8 +116,8 @@ describe('MTOActionToolBar Component', () => {
   });
 
   test('renders radio button and horizon when called from Resource WIP', () => {
-    render(contextWrapperWithCustomTheme(<MTOActionToolBar handleHorizonSubmit={mockHandleHorizonSubmit} updateGraphState={mockUpdateGraphState} comp='resourceUtilization'  themeUi="NOIRFUSION"/>,"NOIRFUSION"));
-    
+    render(contextWrapperWithCustomTheme(<MTOActionToolBar handleHorizonSubmit={mockHandleHorizonSubmit} updateGraphState={mockUpdateGraphState} comp='resourceUtilization' themeUi="NOIRFUSION" />, "NOIRFUSION"));
+
     expect(screen.getByTestId('wip-limit-radio')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('wip-limit-radio'));
     expect(mockUpdateGraphState).toHaveBeenCalled();
@@ -133,6 +133,20 @@ describe('MTOActionToolBar Component', () => {
     expect(screen.getByTestId('horizon-submit')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('horizon-submit'));
     expect(mockHandleHorizonSubmit).toHaveBeenCalled();
+  });
+
+  test('renders Excel Export button', () => {
+    render(<MTOActionToolBar isExcelExport />);
+    const excelExportButton = screen.getByText('Excel Export');
+    expect(excelExportButton).toBeInTheDocument();
+  });
+
+
+  test('renders with different themes', () => {
+    render(contextWrapperWithCustomTheme(<MTOActionToolBar isReleaseDate submitDate={mockSubmitDate} date={date} />, "REGALBLAZE"));
+    const submitButton = screen.getByAltText(/Group 627/);
+    fireEvent.click(submitButton);
+    expect(mockSubmitDate).toHaveBeenCalled();
   });
 
 
