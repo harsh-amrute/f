@@ -14,7 +14,8 @@ import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRen
 import useViewPort from "../../../../../../hooks/useViewPort";
 import { useGetOrderRiskData } from "../../../../../Services/MTO/Production/InsightsAndTrends/OrderAtRisk";
 import { ReasonOrderAtRiskType } from "../../../../../../../src/types/MTO/types";
-import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
+// import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
+import OverlayLoader from "../../../Common/Loader";
 
 const OrderAtRisk = () => {
   const [isGridView, setIsGridView] = useState(false);
@@ -257,7 +258,7 @@ const OrderAtRisk = () => {
         isAddFilterButton
         setIsGridView={setIsGridView}
       />
-      {isLoading ? <VFLoader /> :
+      {isLoading && <OverlayLoader /> }
         <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: "25px" }}>
           {isGridView ? (
             <div data-testid="grid-view" style={{ height: screenHeight - 300 }}>
@@ -296,7 +297,7 @@ const OrderAtRisk = () => {
               graphType={6}
             />
           )}
-        </HorizontalViewWrapper>}
+        </HorizontalViewWrapper>
     </div>
   );
 };

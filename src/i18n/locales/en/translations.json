@@ -147,6 +147,11 @@
         "deptWiseBMReport": "Dept-Wise BM Report",
         "overallBMReport": "Overall BM Report",
         "insightAndTrends": "Insight and Trends"
+      },
+      "poogi": {
+        "title": "POOGI",
+        "reasonForDelayedOrders": "Reason For Delayed Orders",
+        "insightAndTrends": "Insight and Trends"
       }
     },
     "particulars": {

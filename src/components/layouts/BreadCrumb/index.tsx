@@ -49,8 +49,9 @@ const BreadCrumb = () => {
 
 
   if(location.pathname ==='/production-planning-scheduling/full-kit-assignment') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Full Kit Assignement</span>
-
   
+  
+  if(location.pathname ==='/poogi/insight-and-trends/resource-utilization-wip-profile') return <span>Poogi<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Resource Utilization & WIP Profile</span>
 
 
 
