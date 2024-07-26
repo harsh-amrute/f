@@ -12,7 +12,7 @@ import { toast } from 'react-toastify'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../helpers/notify'
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig'
 import { getColumnDefinations } from '../../../../../../helpers/utils'
-import ColorRangeCellRenderer from '../../../Common/ColorRangeCellRenderer'
+
 
 const RMPMOrderwiseCoverage = () => {
 

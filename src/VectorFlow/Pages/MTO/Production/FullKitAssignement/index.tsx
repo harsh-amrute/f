@@ -1,11 +1,11 @@
 import { AgChartsReact } from 'ag-charts-react';
 import { GridOptions } from 'ag-grid-enterprise';
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
 import { AgChartOptions } from 'ag-charts-community';
 import { getColumnDefinations } from '../../../../../helpers/utils';
-import { fullKitAssignmentData, fullKitAssignmentHeader } from './data';
+import { fullKitAssignmentData } from './data';
 import AvailabilityCellRenderer from '../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
 import ColorCellRenderer from '../../Common/ColorCellRenderer';
 import { Button, Wrapper } from './FullKitAssignment.styled';

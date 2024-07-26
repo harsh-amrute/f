@@ -6,7 +6,6 @@ import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import { VFTableWrapper } from '../../../../../components/VectorFLOW/commons/VFTable/styles';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import ReasonCellRenderer from './ReasonCellRenderer';
-import columnData from './ColumnData';
 import DueDateCellRenderer from './DueDateCellRenderer';
 import { usePutUpdateOrderDueDate, useGetOrderSchedulingData, useGetOrderSchedulingPageData } from '../../../../Services/MTO/Production/OrderRescheduling';
 import { AgGridReactProps } from 'ag-grid-react';

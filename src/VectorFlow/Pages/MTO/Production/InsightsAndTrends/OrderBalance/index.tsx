@@ -2,7 +2,7 @@ import { Allotment } from "allotment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { APIMock, columnConfig } from "./OrderBalanceMockData";
+import { APIMock } from "./OrderBalanceMockData";
 import {
   BTRAllomentSection,
   BTRTableWrapper,

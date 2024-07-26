@@ -2,7 +2,6 @@ import { Allotment } from "allotment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { columnConfigLevel1 } from "./ColumnData";
 import { GridOptions } from "ag-grid-enterprise";
 import STPLGraph from "./STPLGraph";
 import FullKitGraph from "./FullKitGraph";

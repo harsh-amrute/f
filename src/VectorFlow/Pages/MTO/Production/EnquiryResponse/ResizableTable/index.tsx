@@ -4,7 +4,6 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import { VFTableWrapper } from "./styles";
-import FullkitCellRenderer from "../../../Common/FullkitCellRenderer";
 
 interface IResizeTableProps {
   header: ColDef[];

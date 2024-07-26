@@ -4,7 +4,7 @@ import { HorizontalViewWrapper } from "./styles";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import { GridOptions } from "ag-grid-enterprise";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
-import { columnConfig, reasonColConfig } from "./MockData";
+import { reasonColConfig } from "./MockData";
 import SplitGraphContainer from "../../../Common/SplitGraphContainer";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
