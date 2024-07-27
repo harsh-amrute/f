@@ -234,7 +234,7 @@ const FullKitAssignment = () => {
       <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
         <AgChartsReact ref={graph} options={chartoptions} />
       </div>
-      <EditRouteModal graphData={data} showModal={showModal} setShowModal={setShowModal} />
+      <EditRouteModal graphData={data} showModal={showModal} setShowModal={setShowModal} theme={themeUi}/>
     </Wrapper >
 
 

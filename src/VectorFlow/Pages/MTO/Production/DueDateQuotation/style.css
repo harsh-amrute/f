@@ -1,3 +1,6 @@
+:root{
+    --separator-border: transparent;
+}
 .sash-horizontal::after{
     content: url(../../../../../../public/assets/img/mto/dueDateQuotation/draggable.svg);
     width: 12px;
@@ -16,4 +19,9 @@
 .sash-horizontal{
     border: 8px solid lightgrey;
     border-radius: 4px;
+    z-index: 1 !important;
 }
+
+/* .split-view-view{
+    overflow: visible !important;
+} */

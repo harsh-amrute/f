@@ -22,3 +22,22 @@ export const useGetOrdersForDDQ = () => {
     })
 }
 
+export const useGetBufferMasterData = () => {
+    return useMutation(async () => {
+        return UIConfigService.getBufferMasterData()
+    })
+}
+
+export const useGetCCRGroupMaster = () => {
+    return useMutation(async () => {
+        return UIConfigService.getCCRGroupMaster()
+    })
+}
+
+
+export const useGetRouteDetails = () => {
+    return useMutation(async (route_id: number) => {
+        return UIConfigService.getRouteDetails(route_id)
+    })
+}
+

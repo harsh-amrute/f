@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
     display: flex;
     margin-left: 2rem;
     flex-direction: column;
-    & .ag-header-container {
+    & .ag-header-cell-text {
         font-size: 18px;
     }
     & .ag-header-cell-text {

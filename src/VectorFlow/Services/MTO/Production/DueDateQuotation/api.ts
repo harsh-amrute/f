@@ -26,6 +26,36 @@ export namespace UIConfigService {
             }
         })
     }
+
+    export const getBufferMasterData = async () => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getBufferMasterData/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        })
+    }
+
+    export const getCCRGroupMaster = async () => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getCCRGroupMasterData/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        })
+    }
+
+    export const getRouteDetails = async (route_id:number) => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getRouteDetails/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+            params:{
+                r_id: route_id
+            }
+        })
+    }
   
 
 }
