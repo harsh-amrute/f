@@ -194,41 +194,41 @@ export const isTrue = (value?: string | number) => {
 //   return [tagsColDef,...result,...BPRSpecificColumns]
 // }
 
-export const mapVDRFieldsToColDefs= (fields:RRRField[]):ColDef[] =>{
+export const mapVDRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
-  let result:ColDef[]=[];
-  result=fields?.map((f:RRRField)=>{
-    if(f.Col_Code==='DispatchPen'){
-      return{
-        colId:f.Col_Code,
-        field:f.Col_Code,
-        headerName:f.Header,
-        hide:!f.Visible,
-        cellRenderer:'colorDispatchRender'
+  let result: ColDef[] = [];
+  result = fields?.map((f: RRRField) => {
+    if (f.Col_Code === 'DispatchPen') {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        hide: !f.Visible,
+        cellRenderer: 'colorDispatchRender'
       }
     }
-    if(f.Col_Code==='WHDescription'){
-      return{
-        colId:f.Col_Code,
-        field:f.Col_Code,
-        headerName:f.Header,
+    if (f.Col_Code === 'WHDescription') {
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
         rowGroup: false
       }
     }
     return {
-      colId:f.Col_Code,
-      field:f.Col_Code,
-      headerName:f.Header,
-      hide:!f.Visible
+      colId: f.Col_Code,
+      field: f.Col_Code,
+      headerName: f.Header,
+      hide: !f.Visible
     }
-    
+
   })
 
   return result;
-  
+
 }
 
-export const mapRRRFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
+export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
   if (!fields || fields.length < 1) {
     return []
@@ -785,22 +785,22 @@ export const mapStateFiltersToPayload = (filters: Filter[]) => {
 
 export const mapMasterToMasterState = (masters: Master[], onShowChart?: any): MDMMasterState[] => {
 
-  return masters.map((master:Master)=>({
-    id:master.id,
-    name:master.name,
-    fields:master.fields,
-    filters:[
-    {
-      id:generateRandomId(),
-      masterId:master.id,
-      field:'',
-      operator:'',
-      text:''
-    }],
-    colDefs:mapMasterToColumnDefs(master.fields,master.id,onShowChart),
-    rowData:[],
-    progress:'default',
-    isChecked:true
+  return masters.map((master: Master) => ({
+    id: master.id,
+    name: master.name,
+    fields: master.fields,
+    filters: [
+      {
+        id: generateRandomId(),
+        masterId: master.id,
+        field: '',
+        operator: '',
+        text: ''
+      }],
+    colDefs: mapMasterToColumnDefs(master.fields, master.id, onShowChart),
+    rowData: [],
+    progress: 'default',
+    isChecked: true
   }))
 }
 
@@ -824,21 +824,21 @@ export const mapDraftToColumnDefs = (fields: Field[], customParams?: ColDef) => 
   return result
 }
 
-export const mapTaskStatusToColDefs = (taskStatus:ColDef[],color:string)=>{
-  let result:ColDef[] = []
-  result = taskStatus.map((t:ColDef)=>{
-    return{
+export const mapTaskStatusToColDefs = (taskStatus: ColDef[], color: string) => {
+  let result: ColDef[] = []
+  result = taskStatus.map((t: ColDef) => {
+    return {
       ...t,
       minWidth: 180,
       cellStyle: {
         "textAlign": "center",
-        'overflow':'hidden',
-        'text-overflow':'ellipsis',
-        'white-space':'nowrap',
-        'padding-top':'7px',
-        'font-weight':t.colId==='TaskStatus'?'500':'auto',
-        'color':t.colId==='TaskStatus'?color:'black',
-        'cursor':t.colId==='TaskStatus'?'pointer':'default'
+        'overflow': 'hidden',
+        'text-overflow': 'ellipsis',
+        'white-space': 'nowrap',
+        'padding-top': '7px',
+        'font-weight': t.colId === 'TaskStatus' ? '500' : 'auto',
+        'color': t.colId === 'TaskStatus' ? color : 'black',
+        'cursor': t.colId === 'TaskStatus' ? 'pointer' : 'default'
       },
       onCellClicked: (params: CellClickedEvent) => {
         if (params.colDef.colId === 'TaskStatus') {
@@ -939,16 +939,16 @@ export const getExistingColumnFields = (columns: string[], fields: Field[]): Fie
   return updatedFields
 }
 
-export const areValuesEqual = (a:any,b:any):boolean=>{
-  if(!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))){
-    return parseFloat(a).toFixed(0) ===parseFloat(b).toFixed(0)
+export const areValuesEqual = (a: any, b: any): boolean => {
+  if (!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))) {
+    return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
   }
   return a === b
 }
 
-export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,themeUi:string,tasktype?:string, showApproveAllModal?:any,showRejectAllModal?:any,actionStatus?:string):ColGroupDef[] | ColDef[]=>{
+export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], masterId: number, themeUi: string, tasktype?: string, showApproveAllModal?: any, showRejectAllModal?: any, actionStatus?: string): ColGroupDef[] | ColDef[] => {
 
-  const textColor =themeUi==="REGALBLAZE"? "#FCA311": "#BC3D81"
+  const textColor = themeUi === "REGALBLAZE" ? "#FCA311" : "#BC3D81"
 
   const sortedFields = existingColumnsFields.sort((a: Field, b: Field) => {
     return parseInt(a.col_Position) - parseInt(b.col_Position)
@@ -976,14 +976,14 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
           hide: !f.visible,
           children: [
             {
-              headerName:'New ' +f.displayName,
-              field:'New'+f.key,
-              colId:'New'+f.key,
-              cellStyle:(params:any)=>{
-                return{
-                  "color":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?textColor:'black',
-                  "text-align":"center",
-                  "border-left":"solid 1px #B9B9B9",
+              headerName: 'New ' + f.displayName,
+              field: 'New' + f.key,
+              colId: 'New' + f.key,
+              cellStyle: (params: any) => {
+                return {
+                  "color": !areValuesEqual(params.data[`New${f.key}`], params.data[`Old${f.key}`]) ? textColor : 'black',
+                  "text-align": "center",
+                  "border-left": "solid 1px #B9B9B9",
                 }
               }
             },
@@ -1062,12 +1062,12 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
             }
             return params.value;
           },
-          cellStyle:(params:any)=>{
-            return{
-              "color":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?textColor:'black',
-              "font-weight":!areValuesEqual(params.data[`New${f.key}`],params.data[`Old${f.key}`]) ?'700':'300',
-              "text-align":"center",
-              "border-left":"solid 1px #B9B9B9",
+          cellStyle: (params: any) => {
+            return {
+              "color": !areValuesEqual(params.data[`New${f.key}`], params.data[`Old${f.key}`]) ? textColor : 'black',
+              "font-weight": !areValuesEqual(params.data[`New${f.key}`], params.data[`Old${f.key}`]) ? '700' : '300',
+              "text-align": "center",
+              "border-left": "solid 1px #B9B9B9",
             }
           }
         },
@@ -1368,27 +1368,27 @@ export const getActionId = (actionName: string): DraftActionType => {
 
 export const createMastersStateFromDraftData = (draftData: any[], fields: Master[]): MDMMasterState[] => {
 
-  const masters:MDMMasterState[] = []
-  draftData.map((master)=>{
-    const existingMaster = fields.find((m:Master)=>m.id==master.MasterId)
-   if(existingMaster){
-    masters.push({
-      id:existingMaster.id,
-      name:existingMaster.name,
-      colDefs:master.GridState.length>0?JSON.parse(master.GridState):mapMasterToColumnDefs(existingMaster.fields,existingMaster.id),
-      rowData:master.DataMaster || [],
-      isChecked:true,
-      filters:[{
-        id:generateRandomId(),
-        masterId:existingMaster.id,
-        field:'',
-        operator:'',
-        text:''
-      }],
-      progress:master.Status,
-      fields:existingMaster.fields
-    })
-   }
+  const masters: MDMMasterState[] = []
+  draftData.map((master) => {
+    const existingMaster = fields.find((m: Master) => m.id == master.MasterId)
+    if (existingMaster) {
+      masters.push({
+        id: existingMaster.id,
+        name: existingMaster.name,
+        colDefs: master.GridState.length > 0 ? JSON.parse(master.GridState) : mapMasterToColumnDefs(existingMaster.fields, existingMaster.id),
+        rowData: master.DataMaster || [],
+        isChecked: true,
+        filters: [{
+          id: generateRandomId(),
+          masterId: existingMaster.id,
+          field: '',
+          operator: '',
+          text: ''
+        }],
+        progress: master.Status,
+        fields: existingMaster.fields
+      })
+    }
   })
   return masters
 }
@@ -2299,20 +2299,20 @@ export const mapInTransitWhereAboutsRowData = (rowData: Array<any>): Array<any> 
 
 }
 
-export const mapSubmitRemarkData = (row:any):any=>{
+export const mapSubmitRemarkData = (row: any): any => {
   console.log(row)
-  return{
+  return {
 
-      
-        OrderNo:row.OrderNo,
-        SKUCode:row.SKUCode,
-        WhCode:row.WhCode,
-        ParentWHCode:row.SenderLocation,
-        Remarks:row.action || "",
-        CurrentLocation:row.CurrentLoc,
-        ETA:row.ETA.replace(/-/g, '/')
-      
-    
+
+    OrderNo: row.OrderNo,
+    SKUCode: row.SKUCode,
+    WhCode: row.WhCode,
+    ParentWHCode: row.SenderLocation,
+    Remarks: row.action || "",
+    CurrentLocation: row.CurrentLoc,
+    ETA: row.ETA.replace(/-/g, '/')
+
+
   }
 
 }
@@ -2698,7 +2698,7 @@ export const mapMaterialFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef
   ]
 
   result = fields.map((f: ColumnHeaderConfig) => {
-   
+
     if (f.jf === 'cp') {
       return {
         colId: f.jf,
@@ -2726,7 +2726,7 @@ export const mapMaterialFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef
         wrapHeaderText: true,
       }
     }
-    
+
     return {
       colId: f.jf,
       [f.jf]: f.val,
@@ -2759,9 +2759,10 @@ export function mergeObjects(target: any, ...sources: any) {
 export function getColumnDefinations(
   fields: any,
   customizationParams: any = {},
-  extraFields: any = []
+  extraFields: any = [],
+  removeCols: any = [],
 ) {
-  const columnDefs = fields.map((data: any) => {
+  const columnDefs = fields.sort((a: any, b: any) => a.cp - b.cp).map((data: any) => {
     const columnDef = {
       colId: data.cc,
       headerName: data.hd,
@@ -2789,10 +2790,14 @@ export function getColumnDefinations(
     ) {
       position = columnDefs.length;
     }
-      columnDefs.splice(position, 0, field);
+    columnDefs.splice(position, 0, field);
   });
 
-  return columnDefs;
+  const finalcolDef = columnDefs.filter((obj: any) => !removeCols.includes(obj.colId));
+
+  console.log(finalcolDef)
+  return finalcolDef;
+
 }
 // ===================================================================================================
 

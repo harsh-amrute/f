@@ -3,27 +3,76 @@ import { AgGridReactProps } from "ag-grid-react"
 import AvlCellRenderer from '../../Common/AvlCellRenderer';
 import AvailabilityToolTip from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import DetailCellRenderer from "./MaterialCellRenderer";
-import { OrderDetailsHeaderData } from '../MaterialCoverage/Data';
-import { mapMaterialCoverageFieldsToColDefs } from '../../../../../helpers/utils'
+import { getColumnDefinations } from '../../../../../helpers/utils'
 import ColorCellRenderer from "../../Common/ColorCellRenderer";
 import { useGetOpenSODetailsData } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage";
 import CustomGroupCellRenderer from "../InsightsAndTrends/DayWiseCoverage/CustomGroupCellRenderer";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { toast } from "react-toastify";
+import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 
 const useMaterialSO = (data: any) => {
     const [orderDetailsData, setOrderDetailsData] = useState<any>();
 
-    const { HeaderData } = OrderDetailsHeaderData;
-    const columnDef = mapMaterialCoverageFieldsToColDefs(HeaderData);
+
+    // const columnDef = mapMaterialCoverageFieldsToColDefs(HeaderData);
+
+    const customHeader =
+    {
+        ColorPriority: {
+            cellRenderer: ColorCellRenderer
+        },
+        FullKitAvail: {
+            cellRenderer: "avlCellRenderer",
+            tooltipComponent: 'availabilityToolTip',
+            tooltipValueGetter: (params: any) => {
+                const oq = params.data.oq;
+                const fka = params.data.fka;
+                return `${fka}/${oq} kits can be manufactured`;
+            },
+        }
+
+
+    }
+
+    const extras = [
+        {
+            field: "",
+            position: 0,
+            suppressHeaderFilterButton: true,
+            suppressMenu: true,
+            filter: false,
+            initialWidth: 100,
+            cellRenderer: CustomGroupCellRenderer
+        }
+    ]
+
+
 
     const { mutateAsync: getOpenSODetailsData } = useGetOpenSODetailsData()
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+    const [HeaderData, setHeaderData] = useState([{}]);
+    const columnDef = getColumnDefinations(HeaderData, customHeader, extras);
 
     useEffect(() => {
         getInitialData()
     }, [])
 
     const [isLoading, setIsLoading] = useState(false);
+    const reportName = 'MaterialCoverageforOpenSalesOrder';
+    const getHeaderData = async () => {
+        try {
+            const response = await getUIConfigData(reportName);
+            setHeaderData(response.data.data);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    useEffect(() => {
+        getHeaderData();
+    }, [])
 
     const getInitialData = async () => {
 
@@ -108,6 +157,8 @@ const useMaterialSO = (data: any) => {
             enableRangeSelection: true,
             components: customCellRenderers,
             defaultColDef: {
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
                 cellStyle: {
                     'text-align': 'center',
                     'height': '50px',

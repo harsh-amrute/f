@@ -8,15 +8,15 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 //import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
-import { HeaderMaterialRequirement } from '../MaterialCoverage/Data'
 // import GetProcPlanningData from '../Planning/GetProcPlanningData.json';
 // import GetProcPlanningDataColumn from '../Planning/GetProcPlanningDataColumn.json';
-import { mapMaterialFieldsToColDefs } from '../../../../../helpers/utils';
+import { getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { useGetMaterialRequirementDetails, useGetMaterialRequirementDetailsDatewise } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import moment from "moment";
 import { VFTableWrapper } from "../../../../../components/VectorFLOW/commons/VFTable/styles";
+import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 
 
 
@@ -71,7 +71,24 @@ const useMaterialReq = () => {
     const format2 = "YYYY-MM-DD"
     const d = new Date();
     const datetime = moment(d).format(format2);
-    const { HeaderData } = HeaderMaterialRequirement;
+    const [HeaderData, setHeaderData] = useState([{}]);
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+    const reportName = "MaterialRequirement";
+
+    const setColumnDef = async () => {
+        try {
+            const response = await getUIConfigData(reportName);
+            setHeaderData(response.data.data);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    useEffect(() => {
+        setColumnDef();
+    }, [])
     const gridRef = useRef<AgGridReact>(null);
     // const { isSideBarOpen } = useUserData()
     const tabs: Array<VFFloatingTabItemProps> = [
@@ -86,9 +103,35 @@ const useMaterialReq = () => {
             value: 'cv'
         }
     ];
+
+    const customHeader = {
+        ColorPriority: {
+            cellRenderer: 'coloPriority',
+            tooltipValueGetter: (params: any) => {
+                const cpData = params.data.cp[0];
+                const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
+                let tooltipText = '';
+                keysToPrint.forEach((key) => {
+                    if (Object.prototype.hasOwnProperty.call(cpData, key)) {
+                        if (tooltipText !== '') {
+                            tooltipText += ' | ';
+                        }
+                        tooltipText += `${key}: ${cpData[key]}`;
+                    }
+                });
+                return tooltipText;
+            },
+            tooltipComponent: "availabilityToolTip",
+            initialWidth: 200, //160
+            autoHeaderHeight: true,
+            wrapHeaderText: true,
+
+        },
+
+    }
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
-    const ShortageColumns = mapMaterialFieldsToColDefs(HeaderData);
-    const CompleteAvailableColumns = mapMaterialFieldsToColDefs(HeaderData);
+    const ShortageColumns = getColumnDefinations(HeaderData, customHeader)
+    const CompleteAvailableColumns = getColumnDefinations(HeaderData, customHeader)
     const [CumulativeData, SetCumulativeData] = useState<any[]>([]);
     const [DayWiseData, setDayWiseData] = useState<any[]>([]);
     const { mutateAsync: getMaterialRequirementData } = useGetMaterialRequirementDetails();

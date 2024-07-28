@@ -4,7 +4,7 @@ import { HorizontalViewWrapper } from "./styles";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import { GridOptions } from "ag-grid-enterprise";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
-import { columnConfig, reasonColConfig } from "./MockData";
+import { reasonColConfig } from "./MockData";
 import SplitGraphContainer from "../../../Common/SplitGraphContainer";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
@@ -14,7 +14,8 @@ import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRen
 import useViewPort from "../../../../../../hooks/useViewPort";
 import { useGetOrderRiskData } from "../../../../../Services/MTO/Production/InsightsAndTrends/OrderAtRisk";
 import { ReasonOrderAtRiskType } from "../../../../../../../src/types/MTO/types";
-import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
+import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import OverlayLoader from "../../../Common/Loader";
 
 const OrderAtRisk = () => {
   const [isGridView, setIsGridView] = useState(false);
@@ -64,15 +65,36 @@ const OrderAtRisk = () => {
     rowGroupPanelShow: "always",
   };
 
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+  const reportName = "OrdersAtRisk";
+
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    setColumnDef();
+  }, [])
+
+
+
   const colDefCustomizations = {
-    bpp: {
+    BPP: {
       cellRenderer: ColorCellRenderer,
     },
   };
 
   const tableColDefs = useMemo(() => {
-    return getColumnDefinations(columnConfig, colDefCustomizations, []);
-  }, []);
+    return getColumnDefinations(HeaderData, colDefCustomizations, []);
+  }, [HeaderData]);
 
   const gridColDefs = useMemo(() => {
     return getColumnDefinations(reasonColConfig, {}, []);
@@ -257,46 +279,46 @@ const OrderAtRisk = () => {
         isAddFilterButton
         setIsGridView={setIsGridView}
       />
-      {isLoading ? <VFLoader /> :
-        <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: "25px" }}>
-          {isGridView ? (
-            <div data-testid="grid-view" style={{ height: screenHeight - 300 }}>
-              <VFTable
-                {...gridOptions}
-                columnDefs={tableColDefs}
-                rowData={gridData}
-                tooltipHideDelay={100000}
-                tooltipShowDelay={0}
-                tooltipMouseTrack={true}
-                height={"100%"}
-                ref={gridRef}
-                statusBar={{
-                  statusPanels: [
-                    { statusPanel: "agTotalRowCountComponent", align: "left" },
-                  ],
-                }}
-              />
-            </div>
-          ) : (
-            <SplitGraphContainer
-              tableLoading={tableLoading}
-              chartLoading={chartLoading}
-              setTableLoading={setTableLoading}
-              setChartLoading={setChartLoading}
-              data={rawData}
-              rowData={rawData}
-              graphTitle={""}
-              tableTitle={ProductionInsightsAndTrendsString.orderAtRisk}
-              options={options}
-              colDef={gridColDefs}
-              header={generateHeader}
-              hideChart={hideChart1}
-              toggleChart={toggleChart1}
-              TooltipRenderer={TooltipRenderer}
-              graphType={6}
+      {isLoading && <OverlayLoader />}
+      <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: "25px" }}>
+        {isGridView ? (
+          <div data-testid="grid-view" style={{ height: screenHeight - 300 }}>
+            <VFTable
+              {...gridOptions}
+              columnDefs={tableColDefs}
+              rowData={gridData}
+              tooltipHideDelay={100000}
+              tooltipShowDelay={0}
+              tooltipMouseTrack={true}
+              height={"95vh"}
+              ref={gridRef}
+              statusBar={{
+                statusPanels: [
+                  { statusPanel: "agTotalRowCountComponent", align: "left" },
+                ],
+              }}
             />
-          )}
-        </HorizontalViewWrapper>}
+          </div>
+        ) : (
+          <SplitGraphContainer
+            tableLoading={tableLoading}
+            chartLoading={chartLoading}
+            setTableLoading={setTableLoading}
+            setChartLoading={setChartLoading}
+            data={rawData}
+            rowData={rawData}
+            graphTitle={""}
+            tableTitle={ProductionInsightsAndTrendsString.orderAtRisk}
+            options={options}
+            colDef={gridColDefs}
+            header={generateHeader}
+            hideChart={hideChart1}
+            toggleChart={toggleChart1}
+            TooltipRenderer={TooltipRenderer}
+            graphType={6}
+          />
+        )}
+      </HorizontalViewWrapper>
     </div>
   );
 };

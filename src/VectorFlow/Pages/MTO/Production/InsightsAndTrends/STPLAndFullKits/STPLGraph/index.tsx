@@ -197,6 +197,7 @@ const STPLGraph = () => {
         toggleChart={toggleChart1}
         TooltipRenderer={TooltipRenderer}
         graphType={4}
+        chartHeight={50}
       />
       <div
         style={{

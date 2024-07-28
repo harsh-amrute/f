@@ -52,6 +52,7 @@ const BreadCrumb = () => {
   
   
   if(location.pathname === '/poogi/insight-and-trends/otif-analysis') return <span>POOGI <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> OTIF Analysis</span>  
+  if(location.pathname ==='/poogi/insight-and-trends/resource-utilization-wip-profile') return <span>Poogi<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Resource Utilization & WIP Profile</span>
 
 
 

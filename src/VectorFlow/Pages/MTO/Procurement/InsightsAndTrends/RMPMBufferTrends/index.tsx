@@ -1,6 +1,6 @@
 
 import { Allotment } from "allotment"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import useViewPort from "../../../../../../hooks/useViewPort"
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
 import BTMTA from "./BTMTA"
@@ -86,7 +86,6 @@ const RMPMBufferTrends = () => {
 
             setMTOData(updatedDataMTO);
             setMTAData(updatedDataMTA);
-            console.log("lets see mto", updatedDataMTO)
             toast.dismiss();
             notifySuccess("Grid Data fetched successfully!");
         }
