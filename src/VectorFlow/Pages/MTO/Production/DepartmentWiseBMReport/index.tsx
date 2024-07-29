@@ -29,13 +29,16 @@ const DptWiseBMReport = () => {
         {
             "colorCellRenderer": ColorCellRenderer,
             "AgeingCellRenderer": AgeingCellRenderer,
-            // "availabilityToolTip": AvailabilityToolTip,
             "customCellRenderer": customCellRenderer,
             "TextBoxCellRenderer": TextBoxCellRenderer,
             "RemarkHistoryRenderer": RemarkHistoryRenderer
         }), []);
 
-
+    const sideBar = useMemo(() => {
+        return {
+            toolPanels: ['columns'],
+        };
+    }, []);
 
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
@@ -47,7 +50,6 @@ const DptWiseBMReport = () => {
                     background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
                 };
             },
-
             rowSelection: 'multiple',
             suppressRowClickSelection: true,
             enableBrowserTooltips: true,
@@ -55,29 +57,30 @@ const DptWiseBMReport = () => {
             components: customCellRenderers,
             pagination: true,
             defaultColDef: {
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
                 cellStyle: {
                     'text-align': 'center',
                     'height': '50px',
-                    "font-style": "normal",
-                    "font-variant": "normal",
-                    "font-weight": "300",
-                    "font-size": "20px",
+                    //"font-style": "Roboto",
+                    //"font-variant": "normal",
+                    "font-size": "18px",
                     "font-family": "Roboto",
-                    'text-overflow': 'ellipsis',
                     'white-space': 'nowrap',
                     'resizable': 'true',
                 },
             },
 
         },
+        sideBar: sideBar,
         masterDetail: true,
         detailCellRenderer: RowGroupRenderer,
+        //detailCellRendererParams:RowGroupRenderer,
         paginationAutoPageSize: true,
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,
         groupDefaultExpanded: 0,
-
-
+        pivotMode: false
     };
 
     const { screenHeight } = useViewPort()
@@ -92,16 +95,16 @@ const DptWiseBMReport = () => {
                 />
             </BMDepHeaderWraper>
 
-            <HorizontalViewWrapper style={{ marginTop: '20px' }}>
-                <BTRTableWrapper style={{ height: screenHeight - 145, margin: '0' }}>
-                    <Allotment vertical={true} separator={true}   >
+            <HorizontalViewWrapper style={{ marginTop: '0px'}}>
+                <BTRTableWrapper style={{ height: screenHeight+100, margin: '0' }}>
+                    <Allotment vertical={true} separator={true} >
                         <Allotment.Pane preferredSize={'60%'}>
                             <BTRAllomentSection>
                                 <GridView agGridProps={agGridProps} columDef={DeptWiseBMReport(() => setIsRemarkHistoryOpen(true))} convercolumnDef={deptwiseBMReportData} />
                             </BTRAllomentSection>
                         </Allotment.Pane>
 
-                        <Allotment.Pane preferredSize={'50%'}>
+                        <Allotment.Pane preferredSize={'40%'}>
                             <BTRAllomentSection>
                                 <OrderElapsedGrid isTrue={true} />
                             </BTRAllomentSection>
