@@ -14,10 +14,10 @@ import {
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
-import TagCellRenderer from "./TagCellRenderer";
+import TagCellRenderer from "./TagCellRenderer/TagCellRenderer";
 
 const OTIFAnalysis = () => {
-  const [isGridView, setIsGridView] = useState(false);
+  const [isGridView, setIsGridView] = useState(true);
   const { screenHeight } = useViewPort();
 
   const gridRef = useRef();
@@ -79,6 +79,7 @@ const OTIFAnalysis = () => {
                   { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                 ]
               }}
+              pagination
             />
           </div>
 

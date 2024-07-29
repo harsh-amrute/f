@@ -434,7 +434,7 @@ const SplitGraphContainer = ({
           refGraph1.current?.api.createRangeChart({
             chartType: "line",
             cellRange: {
-              columns: ["wk", "otif", "otif_plus"],
+              columns: ["x_label", "otif", "otif_plus"],
             },
             chartThemeOverrides: {
               line: { // This should be 'line' since you are creating a line chart
@@ -491,7 +491,7 @@ const SplitGraphContainer = ({
             refGraph1.current?.api.createRangeChart({
               chartType: "line",
               cellRange: {
-                columns: ["wk", "ot", "if"],
+                columns: ["x_label", "ot", "if"],
               },
               chartThemeOverrides: {
                 line: { // This should be 'line' since you are creating a line chart

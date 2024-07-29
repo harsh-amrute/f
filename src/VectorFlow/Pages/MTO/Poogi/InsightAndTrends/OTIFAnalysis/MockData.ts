@@ -1,18 +1,18 @@
 export const gridColumnConfig = [
     {
-        "cc": "tags",
-        "cp": 2,
-        "hd": "Tags",
-        "v": true,
-        "cla": "left",
-        "scc": "tags"
+        cc: "tags",
+        cp: 0,
+        hd: "Tags",
+        v: true,
+        cla: "center",
+        scc: "tags"
     },
     {
         cc: "bpp",
         cp: 1,
         hd: "BPP",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "bpp",
       },
       {
@@ -20,7 +20,7 @@ export const gridColumnConfig = [
         cp: 2,
         hd: "Plant",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "plnt",
       },
       {
@@ -28,7 +28,7 @@ export const gridColumnConfig = [
         cp: 3,
         hd: "Order Id",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "order_id",
       },
       {
@@ -36,7 +36,7 @@ export const gridColumnConfig = [
         cp: 4,
         hd: "Order Type",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "order_type",
       },
       {
@@ -44,7 +44,7 @@ export const gridColumnConfig = [
         cp: 5,
         hd: "Line Item Id",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "line_item_id",
       },
       {
@@ -52,7 +52,7 @@ export const gridColumnConfig = [
         cp: 6,
         hd: "Item Code",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "item_code",
       },
       {
@@ -60,7 +60,7 @@ export const gridColumnConfig = [
         cp: 7,
         hd: "Item Description",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "item_desc",
       },
       {
@@ -68,7 +68,7 @@ export const gridColumnConfig = [
         cp: 8,
         hd: "Order Quantity",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "order_quantity",
       },
       {
@@ -76,7 +76,7 @@ export const gridColumnConfig = [
         cp: 9,
         hd: "Due Date",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "due_dt",
       },
       {
@@ -84,7 +84,7 @@ export const gridColumnConfig = [
         cp: 10,
         hd: "Order Closing Date",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "or_closing_dt",
       },
       {
@@ -92,7 +92,7 @@ export const gridColumnConfig = [
         cp: 11,
         hd: "Extend Of Delay (In Days)",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "ex_delay",
       },
       {
@@ -100,7 +100,7 @@ export const gridColumnConfig = [
         cp: 12,
         hd: "Extend Of Shortage",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "ex_short",
       },
       {
@@ -108,7 +108,7 @@ export const gridColumnConfig = [
         cp: 13,
         hd: "Customer Code",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "cus_code",
       },
       {
@@ -116,7 +116,7 @@ export const gridColumnConfig = [
         cp: 14,
         hd: "Customer Name",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "cus_name",
       },
       {
@@ -124,7 +124,7 @@ export const gridColumnConfig = [
         cp: 15,
         hd: "CRDD",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "crdd",
       },
       {
@@ -132,7 +132,7 @@ export const gridColumnConfig = [
         cp: 16,
         hd: "Release Date",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "relese_dt",
       },
       {
@@ -140,7 +140,7 @@ export const gridColumnConfig = [
         cp: 17,
         hd: "Order Attribute 1",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "or_Att1",
       },
       {
@@ -148,7 +148,7 @@ export const gridColumnConfig = [
         cp: 18,
         hd: "Order Attribute 2",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "or_Att2",
       },
       {
@@ -156,7 +156,7 @@ export const gridColumnConfig = [
         cp: 19,
         hd: "Order Attribute 3",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "or_Att3",
       },
       {
@@ -164,7 +164,7 @@ export const gridColumnConfig = [
         cp: 20,
         hd: "Major Reason",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "mjr_r",
       },
       {
@@ -172,7 +172,7 @@ export const gridColumnConfig = [
         cp: 21,
         hd: "Minor Reason",
         v: true,
-        cla: "left",
+        cla: "center",
         scc: "min_r",
       },
 
@@ -181,12 +181,12 @@ export const gridColumnConfig = [
 export const graphColumnConfig = {
     otif: [
         { 
-            "cc": "wk",
+            "cc": "x_label",
             "cp": 1,
             "hd": "Week",
             "v": true,
             "cla": "left",
-            "scc": "wk"
+            "scc": "x_label"
         },
         { 
             "cc": "otif_plus",
@@ -207,12 +207,12 @@ export const graphColumnConfig = {
     ],
     ot_n_if: [
         { 
-            "cc": "wk",
+            "cc": "x_label",
             "cp": 0,
             "hd": "Week",
             "v": true,
             "cla": "left",
-            "scc": "wk"
+            "scc": "x_label"
         },
         { 
             "cc": "ot",
@@ -313,158 +313,144 @@ export const APIMock = {
             or_Att3: "NA",
             mjr_r: "packing",
             min_r: "ABC"
-        }
+        },
+        {
+            tags: {
+                if: true,
+                ot: false,   // in case we want to show 'if' tag only than 'ot' will be false
+            },
+            bpp: 100,
+            plnt: "A",
+            order_id: "123",
+            order_type: "abc",
+            line_item_id: "321",
+            item_code: "a",
+            item_desc: "desc",
+            order_quantity: 120,
+            due_dt: "2024-04-24",
+            or_closing_dt: "2024-04-24",
+            ex_delay: 16,
+            cus_code: 101,
+            cus_name: "Zara", 
+            crdd: "2024-04-24",
+            relese_dt: "2024-04-24",
+            or_Att1: "NA",
+            or_Att2: "NA",
+            or_Att3: "NA",
+            mjr_r: "packing",
+            min_r: "ABC"
+        },
+        {
+            tags: {
+                if: true,
+                ot: false,   // in case we want to show 'if' tag only than 'ot' will be false
+            },
+            bpp: 100,
+            plnt: "A",
+            order_id: "123",
+            order_type: "abc",
+            line_item_id: "321",
+            item_code: "a",
+            item_desc: "desc",
+            order_quantity: 120,
+            due_dt: "2024-04-24",
+            or_closing_dt: "2024-04-24",
+            ex_delay: 16,
+            cus_code: 101,
+            cus_name: "Zara", 
+            crdd: "2024-04-24",
+            relese_dt: "2024-04-24",
+            or_Att1: "NA",
+            or_Att2: "NA",
+            or_Att3: "NA",
+            mjr_r: "packing",
+            min_r: "ABC"
+        },
+        {
+            tags: {
+                if: true,
+                ot: false,   // in case we want to show 'if' tag only than 'ot' will be false
+            },
+            bpp: 100,
+            plnt: "A",
+            order_id: "123",
+            order_type: "abc",
+            line_item_id: "321",
+            item_code: "a",
+            item_desc: "desc",
+            order_quantity: 120,
+            due_dt: "2024-04-24",
+            or_closing_dt: "2024-04-24",
+            ex_delay: 16,
+            cus_code: 101,
+            cus_name: "Zara", 
+            crdd: "2024-04-24",
+            relese_dt: "2024-04-24",
+            or_Att1: "NA",
+            or_Att2: "NA",
+            or_Att3: "NA",
+            mjr_r: "packing",
+            min_r: "ABC"
+        },
     ],
     graph: {
-        otif_graph: [
+        otif_graph: {
+            start: '1 May 2024',
+            end: '1 Aug 2024',
+            data: [
             {
                 otif_plus: 60,
                 otif: 50,
-                wk: 'Jan-wk1',
-                mon: 'Jan',
+                x_label: 'May 2024'
 
             },
             {
-                otif_plus: 55,
-                otif: 45,
-                wk: 'Jan-wk2',
-                mon: 'Jan',
+                otif_plus: 60,
+                otif: 50,
+                x_label: 'Jun 2024'
+
             },
             {
                 otif_plus: 42,
                 otif: 30,
-                wk: 'Jan-wk3',
-                mon: 'Jan',
-            },
-            {
-                otif_plus: 52,
-                otif: 40,
-                wk: 'Jan-wk4',
-                mon: 'Jan',
-            },
-            {
-                otif_plus: 40,
-                otif: 35,
-                wk: 'Feb-wk1',
-                mon: 'Feb',
-            },
-            {
-                otif_plus: 62,
-                otif: 40,
-                wk: 'Feb-wk2',
-                mon: 'Feb',
-            },
-            {
-                otif_plus: 68,
-                otif: 50,
-                wk: 'Feb-wk3',
-                mon: 'Feb',
-            },
-            {
-                otif_plus: 70,
-                otif: 55,
-                wk: 'Feb-wk4',
-                mon: 'Feb',
-            },
-            {
-                otif_plus: 65,
-                otif: 50,
-                wk: 'Mar-wk1',
-                mon: 'Mar',
-            },
-            {
-                otif_plus: 72,
-                otif: 60,
-                wk: 'Mar-wk2',
-                mon: 'Mar',
-            },
-            {
-                otif_plus: 52,
-                otif: 40,
-                wk: 'Mar-wk3',
-                mon: 'Mar',
+                x_label: 'Jul 2024 - wk 1'
             },
             {
                 otif_plus: 42,
                 otif: 30,
-                wk: 'Mar-wk4',
-                mon: 'Mar',
+                x_label: 'Jul 2024 - wk 2'
             },
-        ],
-        ot_n_if_graph:[
+            {
+                otif_plus: 42,
+                otif: 30,
+                x_label: 'Jul 2024 - wk 3'
+            },
+            {
+                otif_plus: 42,
+                otif: 30,
+                x_label: 'Jul 2024 - wk 4'
+            }
+        ]},
+        ot_n_if_graph:{
+            start: '1 Jun 2024',
+            end: '4 Aug 2024',
+            data: [
             {
                 if: 60,
                 ot: 50,
-                wk: 'Jan-wk1',
-                mon: 'Jan',
+                x_label: 'Jun 2024'
 
             },
             {
-                if: 55,
+                if: 115,
                 ot: 45,
-                wk: 'Jan-wk2',
-                mon: 'Jan',
+                x_label: 'Jul 2024'
             },
             {
                 if: 42,
                 ot: 30,
-                wk: 'Jan-wk3',
-                mon: 'Jan',
-            },
-            {
-                if: 52,
-                ot: 40,
-                wk: 'Jan-wk4',
-                mon: 'Jan',
-            },
-            {
-                if: 40,
-                ot: 35,
-                wk: 'Feb-wk1',
-                mon: 'Feb',
-            },
-            {
-                if: 62,
-                ot: 40,
-                wk: 'Feb-wk2',
-                mon: 'Feb',
-            },
-            {
-                if: 68,
-                ot: 50,
-                wk: 'Feb-wk3',
-                mon: 'Feb',
-            },
-            {
-                if: 70,
-                ot: 55,
-                wk: 'Feb-wk4',
-                mon: 'Feb',
-            },
-            {
-                if: 65,
-                ot: 50,
-                wk: 'Mar-wk1',
-                mon: 'Mar',
-            },
-            {
-                if: 72,
-                ot: 60,
-                wk: 'Mar-wk2',
-                mon: 'Mar',
-            },
-            {
-                if: 52,
-                ot: 40,
-                wk: 'Mar-wk3',
-                mon: 'Mar',
-            },
-            {
-                if: 42,
-                ot: 30,
-                wk: 'Mar-wk4',
-                mon: 'Mar',
-            },
-        ],
+                x_label: 'Aug 2024 - wk 1'
+            }
+        ]},
     }
 };

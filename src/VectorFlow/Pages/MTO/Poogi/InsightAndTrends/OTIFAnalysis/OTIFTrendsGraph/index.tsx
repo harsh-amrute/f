@@ -7,14 +7,15 @@ import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VF
 import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { format } from "date-fns";
-import { TooltipRenderer } from "../OTIFCommon";
+import { getDateDaysBack, TooltipRenderer } from "../OTIFCommon";
 
 const OTIFTrendsGraph = () => {
-  const [date] = useState(format(new Date(), "d MMM yyyy"));
+  const [startDate] = useState(APIMock.graph.otif_graph.start);
+  const [endDate] = useState(APIMock.graph.otif_graph.end);
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
-  const [rawData] = useState(APIMock.graph.otif_graph);
+  const [rawData] = useState(APIMock.graph.otif_graph.data);
 
   function createSeriesData(val: number) {
     const seriesData: any = [];
@@ -24,7 +25,7 @@ const OTIFTrendsGraph = () => {
       const key = i === 0 ? "otif" : "otif_plus";
       seriesData.push({
         type: "line",
-        xKey: "wk",
+        xKey: "x_label",
         yKey: key,
         yName: labels[i],
         lineDash: i === 0? null : [5, 5], // 5px dash, 5px gap
@@ -129,13 +130,14 @@ const OTIFTrendsGraph = () => {
           }}
         >
           <span style={{ fontWeight: 500 }}>{`${Poogi.otif}  `}</span>
-          <span style={{ fontWeight: 300 }}>{` (${date})`}</span>
+          <span style={{ fontWeight: 300 }}>{`(${startDate} - ${endDate})`}</span>
         </div>
         <div style={{ display: "flex" }}>
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
             <VFInfoToolTip
               infoList={[
-                "The graph highlights the amount of unreleased Full-kits (In Days) present for execution at each CCR.",
+                "The graph highlights the On-Time In-Full (OTIF) trend of complted orders.",
+                "Orders are plotted based on their respective completion dates."
               ]}
             />
           </div>
