@@ -12,16 +12,11 @@ import {
   EnquiryWrapper,
   EstimatedWrapper,
   FilterWrapper,
-  HeaderWrapper,
-  HighlightedValue,
   MessageText,
-  RmHeading,
   RmUICont,
   TabSwitchContainer,
   TabSwitchHeading,
   TabsWrapper,
-  ValueWrapper,
-  VerticalLine,
 } from "./styles";
 // import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 // import { FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, PlantInput, SearchBar } from "./FilterModal/styles";
@@ -68,7 +63,6 @@ const EnquiryResponse = () => {
   const themeUi = user.user.theme_ui;
 
   const handleTabChange = (tab: any) => {
-    console.log(tab, 'TAB');
     if (tab?.label === 'RM Not Available') {
       setActiveTab(0);
     } else {
@@ -77,40 +71,42 @@ const EnquiryResponse = () => {
     setActiveCapsule(tab);
   };
 
-  const getMostloadedCCR = () => {
-    let mostLoadedCR = filterData?.length > 0 ? filterData[0] : {};
-    for (let i = 0; i < filterData?.length; i++) {
-      const current = filterData[i];
-      if (current?.fol > mostLoadedCR?.fol) {
-        mostLoadedCR = current;
+
+
+
+  const getTableSimData = () => {
+    const bufferData = filterData?.length > 0 ? filterData : [];
+
+
+
+    const plantArray = Array.from(new Set(bufferData.map((plant: any) => plant.plnm)));
+
+    const simData: any = [];
+    for (let index = 0; index < bufferData.length; index++) {
+      const element = bufferData[index];
+      let existIndex: any = -1;
+      for (let i = 0; i < simData.length; i++) {
+        if (simData[i].plnm === element.plnm) {
+          existIndex = i;
+        }
+
       }
-    }
-    return mostLoadedCR?.cnm;
-  };
 
-  const getRMValues = (bufferType: string) => {
-    let bufferData = filterData?.length > 0 ? filterData[0] : {};
-    const productGroup: keyof BufferData = selectedOptions?.productGroup && selectedOptions?.productGroup[0];
-
-    if (!productGroup) {
-      return "--";
-    }
-
-    for (let i = 0; i < filterData?.length; i++) {
-      const current = filterData[i];
-
-      if (current?.it[productGroup]) {
-        bufferData = current;
+      if (existIndex !== -1) {
+        simData[existIndex].fol = Math.min(simData[existIndex].fol, element.fol)
+        if (element.fol === simData[existIndex].fol) {
+          simData[existIndex].cnm = element.cnm;
+        }
       }
-    }
-    if (bufferType === "procurement") {
-      return (
-        (bufferData?.it && bufferData?.it[productGroup]?.proc_size) || "--"
-      );
-    }
-    return (bufferData?.it && bufferData?.it[productGroup]?.prod_size) || "--";
-  };
+      else {
+        simData.push(element);
+      }
 
+
+    }
+
+    return simData;
+  }
   function getWeekOfMonth(dateString: string): string {
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -149,35 +145,40 @@ const EnquiryResponse = () => {
     return getWeekOfMonth(`${day} ${month} ${year}`);
   };
 
-  const getEarliestDate = (activeTab: number) => {
-    let bufferData = filterData?.length > 0 ? filterData[0] : {};
-    const productGroup: keyof BufferData = selectedOptions?.productGroup && selectedOptions?.productGroup[0];
-    let fol = 0;
-    if (!productGroup) {
-      return "--";
-    }
+  const getEarliestDate = (array: number[]) => {
+    // let bufferData = filterData?.length > 0 ? filterData[0] : {};
+    // const productGroup: keyof BufferData = selectedOptions?.productGroup && selectedOptions?.productGroup[0];
+    // let fol = 0;
+    // if (!productGroup) {
+    //   return "--";
+    // }
 
-    for (let i = 0; i < filterData?.length; i++) {
-      const current = filterData[i];
+    // for (let i = 0; i < filterData?.length; i++) {
+    //   const current = filterData[i];
 
-      if (current?.it[productGroup]) {
-        bufferData = current;
-        fol = Math.max(fol, bufferData?.fol)
-      }
-    }
+    //   if (current?.it[productGroup]) {
+    //     bufferData = current;
+    //     fol = Math.max(fol, bufferData?.fol)
+    //   }
+    // }
 
-    const prodBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.prod_size;
-    const procBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.proc_size;
+    // const prodBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.prod_size;
+    // const procBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.proc_size;
 
     const today = new Date();
     const result = new Date(today);
     let daysToAdd = 0;
 
-    if (activeTab === 0) {
-      daysToAdd = (prodBuffer + procBuffer + fol);
-    } else {
-      daysToAdd = fol + (prodBuffer);
+    for (let index = 0; index < array.length; index++) {
+      daysToAdd = daysToAdd + array[index];
+
     }
+
+    // if (activeTab === 0) {
+    //   daysToAdd = (prodBuffer + procBuffer + fol);
+    // } else {
+    //   daysToAdd = fol + (prodBuffer);
+    // }
 
     return getFormattedDate(
       new Date(result.setDate(today.getDate() + daysToAdd))
@@ -185,9 +186,10 @@ const EnquiryResponse = () => {
   };
 
   const getRMUI = () => {
+    const simData = getTableSimData();
     return (
-      <RmUICont>
-        <HeaderWrapper>
+      <RmUICont style={{ background: 'white' }}>
+        {/* <HeaderWrapper>
           {activeTab === 0 && <RmHeading>Procurement Buffer</RmHeading>}
           {activeTab === 0 && <VerticalLine />}
           <RmHeading>Production Buffer</RmHeading>
@@ -200,14 +202,62 @@ const EnquiryResponse = () => {
           {activeTab === 0 && <div>{getRMValues("procurement")}</div>}
           <div>{getRMValues("production")}</div>
           <div>{getMostloadedCCR()}</div>
-          <HighlightedValue>{getEarliestDate(activeTab)}</HighlightedValue>
-        </ValueWrapper>
+          <HighlightedValue>{getEarliestDate([1, 2, 3])}</HighlightedValue>
+        </ValueWrapper> */}
+
+        <table style={{ margin: '10px 0', borderSpacing: '0', fontFamily: 'Roboto' }}>
+          <thead style={{ marginBottom: '10px' }}>
+            <tr style={{ fontWeight: 'bold' }}>
+              <td style={{ borderRight: '1px solid grey', paddingLeft: '16px' }}>Plant</td>
+              {(!activeTab) &&
+
+                <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Procurement Buffer</td>
+
+              }
+              <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Production Buffer</td>
+              <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Least Loaded CCR</td>
+
+              <td style={{ paddingLeft: '6px' }}>Earliest Readiness Date</td>
+            </tr>
+          </thead>
+          <tbody>
+
+
+            {simData.map((row: any, index: any) => (
+              (row.it[selectedOptions.productGroup[0]]) &&
+
+              <tr style={{ background: `${(((index % 2 === 0))) ? '#F8F8F8' : 'white'}` }} key={index}>
+                <td style={{ padding: '5px', paddingLeft: '16px' }}>{row.plnm}</td>
+                {
+                  (!activeTab) &&
+                  <td>{row.it[selectedOptions.productGroup[0]]?.proc_size}</td>
+
+                }
+                <td style={{ paddingLeft: '4px' }} >{row.it[selectedOptions.productGroup[0]]?.prod_size}</td>
+                <td style={{ paddingLeft: '4px' }} >{row.cnm}</td>
+                {
+                  (!activeTab) ?
+
+                    <td style={{ color: '#BC3D81', paddingLeft: '6px' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.proc_size, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
+                    :
+                    <td style={{ color: '#BC3D81', paddingLeft: '6px' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
+                }
+              </tr>
+
+            ))}
+
+
+
+
+
+          </tbody>
+        </table>
       </RmUICont>
     );
   };
 
-  const handleNameChange = ({ name, value }: { name: string, value: string }) => {
-    setSelectedOptions((prev: any) => ({ ...prev, [name]: value }));
+  const handleNameChange = (arr: any) => {
+    setSelectedOptions((prev: any) => ({ ...prev, plantName: arr }));
   };
 
   const handleFilterSelect = (event: any, category: string, index: number) => {
@@ -261,15 +311,18 @@ const EnquiryResponse = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const filterByPlName = (name: string) => {
-    if (name === '') {
+  const filterByPlNames = (names: string[]) => {
+    if (names.length === 0) {
       return tableData;
     }
     const data = [];
     for (let i = 0; i < tableData?.length; i++) {
       const current = tableData[i];
-      if (current?.plnm?.includes(name)) {
-        data?.push(current);
+      for (let j = 0; j < names.length; j++) {
+        if (current?.plnm?.includes(names[j])) {
+          data?.push(current);
+          break; // If a match is found, break out of the inner loop
+        }
       }
     }
     return data;
@@ -323,7 +376,7 @@ const EnquiryResponse = () => {
     if (options?.plantName) {
       filters.push({
         label: "Plant",
-        values: [`${options?.plantName}`],
+        values: [...options.plantName],
       });
     }
     if (options?.productGroup?.length > 0) {
@@ -357,7 +410,7 @@ const EnquiryResponse = () => {
   const applyFilter = (options: any) => {
 
     let data = [];
-    data = filterByPlName(options?.plantName);
+    data = filterByPlNames(options?.plantName);
     data =
       options?.productGroup?.length > 0
         ? filterByProdGrpName(data, options?.productGroup)
@@ -459,6 +512,7 @@ const EnquiryResponse = () => {
 
   const removeFilters = (category: string, name: string) => {
 
+
     const updtedCCRName = selectedOptions?.ccrName;
     const updtedDept = selectedOptions?.department;
     const updtedCCRGrp = selectedOptions?.ccrGroup;
@@ -466,11 +520,23 @@ const EnquiryResponse = () => {
     let updatedProductGrp = selectedOptions?.productGroup;
 
     if (category === "Plant") {
-      updatedPlantName = '';
-      setSelectedOptions((prev: any) => ({
-        ...prev,
-        plantName: '',
-      }));
+      updatedPlantName = updatedPlantName.filter((item: string) => item !== name);
+      if (updatedPlantName.length === 0) {
+
+        updatedPlantName = "";
+
+        setSelectedOptions((prev: any) => ({
+          ...prev,
+          plantName: updatedPlantName
+        }));
+      }
+      else {
+        setSelectedOptions((prev: any) => ({
+          ...prev,
+          plantName: updatedPlantName
+        }));
+      }
+
     }
     if (category === "Product Group") {
       updatedProductGrp = [];

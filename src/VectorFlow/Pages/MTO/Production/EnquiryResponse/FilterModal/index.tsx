@@ -37,8 +37,14 @@ const FilterModal = (props: IFilterModalProps) => {
     const [activeAccordian, setActiveAccordian] = useState<string>('');
 
     const handleChange = (event: any) => {
+        const PlantArray = [];
 
-        handleNameChange({ name: 'plantName', value: event.value });
+        for (let index = 0; index < event?.length; index++) {
+            const element = event[index].value
+            PlantArray.push(element)
+
+        }
+        handleNameChange(PlantArray);
     }
 
     const handleOptionChange = (e: any, heading: string, index: number) => {
@@ -110,17 +116,16 @@ const FilterModal = (props: IFilterModalProps) => {
                                 setValue={(e: any) => {
                                     if (e) {
 
-                                        console.log(e);
+                                        console.log("this is it", e);
                                         if (e.length > 0) {
-
-                                            handleChange(e[0])
+                                            handleChange(e)
                                         }
                                     }
                                 }}
 
                                 options={filters[0].options}
-                                placeholder={''}
-                                handleListChild={() => null}
+                                placeholder={'Plant'}
+                                handleListChild={() => { console.log("child change") }}
                                 maxToShow={3}
                                 backgroundColor={'#F2F2F2'}
                                 borderRadius={40}
