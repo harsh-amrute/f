@@ -20,9 +20,9 @@ function LoginContainer() {
 
   useEffect(() => {
     if(token) {
-      const urlPermission: any = JSON.parse(localStorage?.getItem('url_permission') || "");
-      console.log(urlPermission);
-      const url = urlPermission.includes("/") ? "/" : urlPermission.includes('/master-data-management/control-panel') ? '/master-data-management/control-panel' : urlPermission[0]
+      const url: any = JSON.parse(localStorage?.getItem('landing_page') || "");
+      // console.log(urlPermission);
+      // const url = urlPermission.includes("/") ? "/" : urlPermission.includes('/master-data-management/control-panel') ? '/master-data-management/control-panel' : urlPermission[0]
       navigate(url, { replace: true });
     } else {
       localStorage.clear();
@@ -60,11 +60,12 @@ function LoginContainer() {
             localStorage.removeItem("token")
             localStorage.removeItem("url_permission")
           } else {
-            const urlPermission = data?.data?.data.url_permission;
-            const rolePermission = data?.data?.data.roles.permission;
-            const isRolePresent =  rolePermission.some((permission:any) => !permission.name.startsWith("IST"));
+            // const urlPermission = data?.data?.data.url_permission;
+            // const rolePermission = data?.data?.data.roles.permission;
+            // const isRolePresent =  rolePermission.some((permission:any) => !permission.name.startsWith("IST"));
             // const url = urlPermission.includes("/") && isRolePresent ? "/" : !urlPermission.includes("/") && isRolePresent ? '/master-data-management/control-panel' : urlPermission[0];
-            const url = urlPermission.includes("/") && isRolePresent ? "/" : urlPermission.includes('/supply-chain-intelligence-hub/planning') ? '/supply-chain-intelligence-hub/planning' : urlPermission[0];
+            // const url = urlPermission.includes("/") && isRolePresent ? "/" : urlPermission.includes('/supply-chain-intelligence-hub/planning') ? '/supply-chain-intelligence-hub/planning' : urlPermission[0];
+            const url = data.data.data.landing_page
             console.log(url);
             navigate(url, { replace: true });
             notifySuccess(t("loginPage.notify.success"));

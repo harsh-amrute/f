@@ -483,41 +483,32 @@ export const format_number = (num: number) => {
 } 
 
 // Helper Function to Dynamically Map Roles fetched from Backend to the Frontend as required by the ArrowList Component.
-export const generateRolesObject = (roles:Array<object>,permission:string[],is_admin:boolean) => {
-  const rolesArray = [] as object[];
-  const rolesObjectIST:{id:number,title:string,status:boolean,child:object[]} = {
-          id:0,
-          title:"",
-          status:false,
-          child:[],
-  }
-  const rolesObjectVF:{id:number,title:string,status:boolean,child:object[]} = {
-    id:0,
-    title:"",
-    status:false,
-    child:[],
-  }
+export const 
+generateRolesObject = (roles:Array<object>) => {
+  type Role = {
+    id: number;
+    title: string;
+    status: boolean;
+    child: Role[];
+  };
+  
+  const rolesArray:Role [] = [];
   
   roles.forEach((role:any)=>{
-
-    if(role.name.startsWith("IST")){
-      if(permission.includes("IST Admin") || is_admin){
-        rolesObjectIST.id = 1;
-        rolesObjectIST.title = "profile.tabContent.manageUsers.roles.interStoreTransfers";
-        rolesObjectIST.child.push(role);
-      }
+    const roleObj = rolesArray.find((app:Role)=>app.id===role.application_id);
+    if(roleObj){
+      roleObj.child.push(role)
     }
     else{
-      if(permission.includes("Admin") || is_admin){
-        rolesObjectVF.id = 2;
-        rolesObjectVF.title = "profile.tabContent.manageUsers.roles.distribution";
-        rolesObjectVF.child.push(role);
-      }
+      rolesArray.push({
+        id:role.application_id,
+        title:role.application_name,
+        status:false,
+        child:[role],
+      })
     }
   })
 
-  if(rolesObjectIST.child.length > 0) rolesArray.push(rolesObjectIST);
-  if(rolesObjectVF.child.length > 0) rolesArray.push(rolesObjectVF);
   return rolesArray;
 }
 

@@ -92,7 +92,7 @@ export const handleSelectParent = ({
 
     if (child?.length > 0) {
       child.forEach((eleChild: any) => {
-        if (eleChild.value.includes(eleParent.value)) {
+        if (eleChild.value.split(' ').includes(eleParent.value)) {
           valueChild.push(eleChild);
         }
       });
@@ -106,7 +106,7 @@ export const handleSelectParent = ({
       }
     }
   });
-
+ 
   setChild(valueChild);
   setGrandChild(valueGrandChild);
 };

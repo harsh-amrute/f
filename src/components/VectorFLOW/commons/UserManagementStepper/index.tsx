@@ -44,6 +44,7 @@ const UserManagementStepper = (props:UserManagementStepperProps)=>{
                         currentState={getCurrentStep(index)}
                         isLast={index===list.length-1}
                         themeUi={themeUi}
+                        key={index}
                     />
                 )
             })}

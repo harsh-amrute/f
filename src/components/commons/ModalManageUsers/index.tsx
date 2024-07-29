@@ -6,7 +6,6 @@ import { notifyError } from "../../../helpers/notify";
 import "./styles.css";
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../../../context";
-
 interface ModalProps {
   contentModal: any;
   openModal: boolean;
@@ -16,6 +15,8 @@ interface ModalProps {
   setInfoUser: any;
   listRoles: any;
   setListRoles: any;
+  fillAdvancedPermissionsModalData:any,
+  currentItem:any
 }
 
 const ModalManageUsers = ({
@@ -27,6 +28,8 @@ const ModalManageUsers = ({
   setInfoUser,
   listRoles,
   setListRoles,
+  fillAdvancedPermissionsModalData,
+  currentItem
 }: ModalProps) => {
   const { t } = useTranslation();
   const { user } = useUserData();
@@ -59,6 +62,8 @@ const ModalManageUsers = ({
       } else {
         setInfoUser({ ...infoUser, name: value.username, email: value.email_id });
       }
+    
+      fillAdvancedPermissionsModalData(currentItem);
       setIsOpenAdvanced(true);
       closeModal();
     } else {
