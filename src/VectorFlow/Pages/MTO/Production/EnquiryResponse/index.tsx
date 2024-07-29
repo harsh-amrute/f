@@ -184,17 +184,17 @@ const EnquiryResponse = () => {
                   <td style={{ padding: '5px', paddingLeft: '16px' }}>{row.plnm}</td>
                   {
                     (!activeTab) &&
-                    <td>{row.it[selectedOptions.productGroup[0]]?.proc_size}</td>
+                    <td style={{ paddingLeft: '4px', textAlign: 'right', paddingRight: '20px' }}>{row.it[selectedOptions.productGroup[0]]?.proc_size}</td>
 
                   }
-                  <td style={{ paddingLeft: '4px' }} >{row.it[selectedOptions.productGroup[0]]?.prod_size}</td>
-                  <td style={{ paddingLeft: '4px' }} >{row.cnm}</td>
+                  <td style={{ paddingLeft: '4px', textAlign: 'right', paddingRight: '20px' }} >{row.it[selectedOptions.productGroup[0]]?.prod_size}</td>
+                  <td style={{ paddingLeft: '4px', textAlign: 'center' }} >{row.cnm}</td>
                   {
                     (!activeTab) ?
 
-                      <td style={{ color: '#BC3D81', paddingLeft: '6px' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.proc_size, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
+                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.proc_size, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
                       :
-                      <td style={{ color: '#BC3D81', paddingLeft: '6px' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
+                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
                   }
                 </tr>
 
