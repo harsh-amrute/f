@@ -167,6 +167,7 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             marker:{
                                 fill:'red',
                                 size:2,
+                                shape:'square',
                                 stroke:"red"
                             },
                             stroke:'red'                       
@@ -179,6 +180,7 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             marker:{
                                 fill:'green',
                                 size:2,
+                                shape:'square',
                                 stroke:"green"
                             },
                             stroke:'green'
@@ -191,6 +193,7 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             marker:{
                                 fill:'#FFBF00',
                                 size:2,
+                                shape:'square',
                                 stroke:"#FFBF00"
                             },
                             stroke:'#FFBF00'
@@ -203,6 +206,7 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             marker:{
                                 fill:'black',
                                 size:2,
+                                shape:'square',
                                 stroke:"black"
                             },
                             stroke:'black'
@@ -215,6 +219,7 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             marker:{
                                 fill:'blue',
                                 size:2,
+                                shape:'square',
                                 stroke:"blue"
                             },
                             stroke:'blue'
@@ -227,6 +232,7 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                             marker:{
                                 fill:'gray',
                                 size:2,
+                                shape:'square',
                                 stroke:"gray"
                             },
                             stroke:'gray',

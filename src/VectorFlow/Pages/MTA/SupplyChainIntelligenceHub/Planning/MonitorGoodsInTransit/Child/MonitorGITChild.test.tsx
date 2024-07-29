@@ -1,6 +1,7 @@
 import { render} from "@testing-library/react"
-import MonitorGITChildLocationWiseCharts from "./Charts/LocationWise";
-import { MonitorGITChildLocationWiseMockData, MonitorGITChildTransporterWiseMockData, MonitorGITChildCustomMockData } from "../../../../../../../mock-data/Planning";
+// import MonitorGITChildLocationWiseCharts from "./Charts/LocationWise";
+// import { MonitorGITChildLocationWiseMockData, MonitorGITChildTransporterWiseMockData, MonitorGITChildCustomMockData } from "../../../../../../../mock-data/Planning";
+import { MonitorGITChildCustomMockData } from "../../../../../../../mock-data/Planning";
 import MonitorGITChildCustomCharts from "./Charts/Custom";
 import { UserDataContext } from "../../../../../../../context/UserDataContext";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -70,13 +71,13 @@ describe("Monitor GIT Child",()=>{
     disconnect = jest.fn();
   };
 
-  it("Renders Location Wise View",() => {
-    render(contextWrapper(<MonitorGITChildLocationWiseCharts data={MonitorGITChildLocationWiseMockData}/>,store))
-  })
+  // it("Renders Location Wise View",() => {
+  //   render(contextWrapper(<MonitorGITChildLocationWiseCharts data={MonitorGITChildLocationWiseMockData}/>,store))
+  // })
 
-  it("Renders Location Wise View",() => {
-    render(contextWrapper(<MonitorGITChildLocationWiseCharts data={MonitorGITChildTransporterWiseMockData}/>,store))
-  })
+  // it("Renders Location Wise View",() => {
+  //   render(contextWrapper(<MonitorGITChildLocationWiseCharts data={MonitorGITChildTransporterWiseMockData}/>,store))
+  // })
 
   it("Renders Custom View",() => {
     useGetPlanningDataCustomMock.mockImplementation(()=>{

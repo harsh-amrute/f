@@ -346,12 +346,12 @@ const usePlanning = ()=>{
                     const result = await getPlanningDataGraph(body);
                     setIsSelectCategoryOpen(false);
                     setCurrentGraphData(result.data.data.data)
+                    console.log(currentGraphData)
                     setCurrentTab('locationWise');
                     toast.dismiss(toastId);
                     notifySuccess("Graph Details Fetched Successfully");
                     break;
                 }
-
                 case 'ExpediteFromParent':{
                     const toastId = notifyLoader('Loading Graphs');
                     setCurrentCategory('ExpediteFromParent');
