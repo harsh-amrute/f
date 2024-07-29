@@ -67,36 +67,35 @@ const EnquiryResponse = () => {
 
 
 
-  const getTableSimData = () => {
-    const bufferData = filterData?.length > 0 ? filterData : [];
-
+  const getTableSimData = (filterData: any): any => {
+    const bufferData = filterData.length > 0 ? filterData : [];
 
     const simData: any = [];
+
     for (let index = 0; index < bufferData.length; index++) {
       const element = bufferData[index];
       let existIndex: any = -1;
+
       for (let i = 0; i < simData.length; i++) {
         if (simData[i].plnm === element.plnm) {
           existIndex = i;
+          break; // Found the matching element, no need to continue the loop
         }
-
       }
 
       if (existIndex !== -1) {
-        simData[existIndex].fol = Math.min(simData[existIndex].fol, element.fol)
-        if (element.fol === simData[existIndex].fol) {
-          simData[existIndex].cnm = element.cnm;
-        }
+        simData[existIndex] = {
+          ...simData[existIndex],
+          fol: Math.min(simData[existIndex].fol, element.fol),
+          cnm: element.fol === simData[existIndex].fol ? element.cnm : simData[existIndex].cnm,
+        };
+      } else {
+        simData.push({ ...element }); // Clone the object to avoid mutation
       }
-      else {
-        simData.push(element);
-      }
-
-
     }
 
     return simData;
-  }
+  };
   function getWeekOfMonth(dateString: string): string {
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -136,24 +135,6 @@ const EnquiryResponse = () => {
   };
 
   const getEarliestDate = (array: number[]) => {
-    // let bufferData = filterData?.length > 0 ? filterData[0] : {};
-    // const productGroup: keyof BufferData = selectedOptions?.productGroup && selectedOptions?.productGroup[0];
-    // let fol = 0;
-    // if (!productGroup) {
-    //   return "--";
-    // }
-
-    // for (let i = 0; i < filterData?.length; i++) {
-    //   const current = filterData[i];
-
-    //   if (current?.it[productGroup]) {
-    //     bufferData = current;
-    //     fol = Math.max(fol, bufferData?.fol)
-    //   }
-    // }
-
-    // const prodBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.prod_size;
-    // const procBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.proc_size;
 
     const today = new Date();
     const result = new Date(today);
@@ -164,86 +145,69 @@ const EnquiryResponse = () => {
 
     }
 
-    // if (activeTab === 0) {
-    //   daysToAdd = (prodBuffer + procBuffer + fol);
-    // } else {
-    //   daysToAdd = fol + (prodBuffer);
-    // }
-
     return getFormattedDate(
       new Date(result.setDate(today.getDate() + daysToAdd))
     );
   };
 
   const getRMUI = () => {
-    const simData = getTableSimData();
-    return (
-      <RmUICont style={{ background: 'white' }}>
-        {/* <HeaderWrapper>
-          {activeTab === 0 && <RmHeading>Procurement Buffer</RmHeading>}
-          {activeTab === 0 && <VerticalLine />}
-          <RmHeading>Production Buffer</RmHeading>
-          <VerticalLine />
-          <RmHeading>Most Loaded CCR</RmHeading>
-          <VerticalLine />
-          <RmHeading>Earliest Readiness Date</RmHeading>
-        </HeaderWrapper>
-        <ValueWrapper>
-          {activeTab === 0 && <div>{getRMValues("procurement")}</div>}
-          <div>{getRMValues("production")}</div>
-          <div>{getMostloadedCCR()}</div>
-          <HighlightedValue>{getEarliestDate([1, 2, 3])}</HighlightedValue>
-        </ValueWrapper> */}
+    if (filterData) {
 
-        <table style={{ margin: '10px 0', borderSpacing: '0', fontFamily: 'Roboto' }}>
-          <thead style={{ marginBottom: '10px' }}>
-            <tr style={{ fontWeight: 'bold' }}>
-              <td style={{ borderRight: '1px solid grey', paddingLeft: '16px' }}>Plant</td>
-              {(!activeTab) &&
-
-                <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Procurement Buffer</td>
-
-              }
-              <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Production Buffer</td>
-              <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Least Loaded CCR</td>
-
-              <td style={{ paddingLeft: '6px' }}>Earliest Readiness Date</td>
-            </tr>
-          </thead>
-          <tbody>
+      const simData = getTableSimData(filterData);
+      // const simData: any = [];
+      return (
+        <RmUICont style={{ background: 'white' }}>
 
 
-            {simData.map((row: any, index: any) => (
-              (row.it[selectedOptions.productGroup[0]]) &&
+          <table style={{ margin: '10px 0', borderSpacing: '0', fontFamily: 'Roboto' }}>
+            <thead style={{ marginBottom: '10px' }}>
+              <tr style={{ fontWeight: 'bold' }}>
+                <td style={{ borderRight: '1px solid grey', paddingLeft: '16px' }}>Plant</td>
+                {(!activeTab) &&
 
-              <tr style={{ background: `${(((index % 2 === 0))) ? '#F8F8F8' : 'white'}` }} key={index}>
-                <td style={{ padding: '5px', paddingLeft: '16px' }}>{row.plnm}</td>
-                {
-                  (!activeTab) &&
-                  <td>{row.it[selectedOptions.productGroup[0]]?.proc_size}</td>
+                  <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Procurement Buffer</td>
 
                 }
-                <td style={{ paddingLeft: '4px' }} >{row.it[selectedOptions.productGroup[0]]?.prod_size}</td>
-                <td style={{ paddingLeft: '4px' }} >{row.cnm}</td>
-                {
-                  (!activeTab) ?
+                <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Production Buffer</td>
+                <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Least Loaded CCR</td>
 
-                    <td style={{ color: '#BC3D81', paddingLeft: '6px' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.proc_size, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
-                    :
-                    <td style={{ color: '#BC3D81', paddingLeft: '6px' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
-                }
+                <td style={{ paddingLeft: '6px' }}>Earliest Readiness Date</td>
               </tr>
-
-            ))}
-
-
+            </thead>
+            <tbody>
 
 
+              {simData.map((row: any, index: any) => (
+                (row.it[selectedOptions.productGroup[0]]) &&
 
-          </tbody>
-        </table>
-      </RmUICont>
-    );
+                <tr style={{ background: `${(((index % 2 === 0))) ? '#F8F8F8' : 'white'}` }} key={index}>
+                  <td style={{ padding: '5px', paddingLeft: '16px' }}>{row.plnm}</td>
+                  {
+                    (!activeTab) &&
+                    <td>{row.it[selectedOptions.productGroup[0]]?.proc_size}</td>
+
+                  }
+                  <td style={{ paddingLeft: '4px' }} >{row.it[selectedOptions.productGroup[0]]?.prod_size}</td>
+                  <td style={{ paddingLeft: '4px' }} >{row.cnm}</td>
+                  {
+                    (!activeTab) ?
+
+                      <td style={{ color: '#BC3D81', paddingLeft: '6px' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.proc_size, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
+                      :
+                      <td style={{ color: '#BC3D81', paddingLeft: '6px' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
+                  }
+                </tr>
+
+              ))}
+
+            </tbody>
+          </table>
+        </RmUICont>
+      );
+    }
+    return (
+      <></>
+    )
   };
 
   const handleNameChange = (arr: any) => {
@@ -439,10 +403,24 @@ const EnquiryResponse = () => {
   const ccrNameOptions: any = [];
   const plantOptions: any = []
 
+  function getUniqueValues<T extends Record<any, any>>(array: T[], key: any): T[] {
+    const uniqueArray: T[] = [];
+    const uniqueValues: any[] = [];
+
+    for (const item of array) {
+      if (!uniqueValues.includes(item[key])) {
+        uniqueValues.push(item[key]);
+        uniqueArray.push(item);
+      }
+    }
+    return uniqueArray;
+  }
+
   for (let i = 0; i < tableData?.length; i++) {
     const ccrObj = tableData[i];
     if (ccrObj?.plnm) {
       plantOptions.push({ value: ccrObj.plnm, label: ccrObj.plnm, name: ccrObj.plnm });
+      // plantOptions = getUniqueValues(plantOptions)
     }
     if (ccrObj?.it) {
       const types = Object.keys(ccrObj?.it);
@@ -476,7 +454,7 @@ const EnquiryResponse = () => {
     {
       key: "plnm",
       heading: "Plant",
-      options: plantOptions
+      options: getUniqueValues(plantOptions, 'value')
     },
     {
       key: 'prdGrp',

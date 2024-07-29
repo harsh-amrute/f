@@ -116,7 +116,6 @@ const FilterModal = (props: IFilterModalProps) => {
                                 setValue={(e: any) => {
                                     if (e) {
 
-                                        console.log("this is it", e);
                                         if (e.length > 0) {
                                             handleChange(e)
                                         }
