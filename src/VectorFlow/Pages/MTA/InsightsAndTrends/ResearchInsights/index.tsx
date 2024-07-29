@@ -269,7 +269,7 @@ const ResearchInsights = ()=>{
                             </CapsuleWrapper>
                         </ChartHeader>
                         <CalenderWrapper>
-                            <CalenderHeader> Technical </CalenderHeader>
+                            <CalenderHeader> {calenderType === 'Tech' ? 'On-Hand' : 'Pipeline'}  </CalenderHeader>
                             <DayPicker
                                 style={{
                                     zoom:0.7
@@ -410,6 +410,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'red',
                                         size:2,
+                                        shape:'square',
                                         stroke:"red"
                                     },
                                     stroke:'red'
@@ -423,6 +424,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'green',
                                         size:2,
+                                        shape:'square',
                                         stroke:'green'
                                     },
                                     stroke:'green'
@@ -435,6 +437,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'#FFBF00',
                                         size:2,
+                                        shape:'square',
                                         stroke:'#FFBF00'
                                     },
                                     stroke:'#FFBF00'
@@ -447,6 +450,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'black',
                                         size:2,
+                                        shape:'square',
                                         stroke:"black"
                                     },
                                     stroke:'black'
@@ -459,6 +463,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'blue',
                                         size:2,
+                                        shape:'square',
                                         stroke:"blue"
                                     },
                                     stroke:'blue'
@@ -471,6 +476,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'gray',
                                         size:2,
+                                        shape:'square',
                                         stroke:"gray"
                                     },
                                     stroke:'gray'
@@ -559,6 +565,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'red',
                                         size:2,
+                                        shape:'square',
                                         stroke:"red"
                                     },
                                     stroke:'red'
@@ -572,6 +579,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'green',
                                         size:2,
+                                        shape:'square',
                                         stroke:"green"
                                     },
                                     stroke:'green'
@@ -584,6 +592,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'#FFBF00',
                                         size:2,
+                                        shape:'square',
                                         stroke:"#FFBF00"
                                     },
                                     stroke:'#FFBF00'
@@ -596,6 +605,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'black',
                                         size:2,
+                                        shape:'square',
                                         stroke:"black"
                                     },
                                     stroke:'black',
@@ -609,6 +619,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'blue',
                                         size:2,
+                                        shape:'square',
                                         stroke:"blue"
                                     },
                                     stroke:'blue'
@@ -621,6 +632,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'gray',
                                         size:2,
+                                        shape:'square',
                                         stroke:"gray"
                                     },
                                     stroke:'gray'
