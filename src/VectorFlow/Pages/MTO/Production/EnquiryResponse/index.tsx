@@ -34,13 +34,6 @@ import FullkitCellRenderer from "../../Common/FullkitCellRenderer";
 
 const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { label: "RM Available", value: "RM Available" }];
 
-interface BufferData {
-  ItemType1: { proc_size: number; prod_size: number };
-  ItemType2: { proc_size: number; prod_size: number };
-  ItemType3: { proc_size: number; prod_size: number };
-  ItemType4: { proc_size: number; prod_size: number };
-  // Add more types as needed
-}
 
 const EnquiryResponse = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -77,9 +70,6 @@ const EnquiryResponse = () => {
   const getTableSimData = () => {
     const bufferData = filterData?.length > 0 ? filterData : [];
 
-
-
-    const plantArray = Array.from(new Set(bufferData.map((plant: any) => plant.plnm)));
 
     const simData: any = [];
     for (let index = 0; index < bufferData.length; index++) {
