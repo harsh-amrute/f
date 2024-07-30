@@ -203,5 +203,6 @@
     color:white !important;
 }
 
-
-  
+.ag-pinned-right-cols-container{
+    margin-right: -12px !important;
+}

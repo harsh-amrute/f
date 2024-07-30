@@ -35,6 +35,8 @@ const useBPR =()=>{
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
 
+    const [editedRows,setEditedRows] = useState<Array<any>>([])
+
     const [isSubGridOpen,toggleSubGrid] = useState<boolean>(true)
     const [currGridPage,setCurrGridPage] = useState<number>(1)
     const [recordCount,setRecordCount] = useState<number>(0)
@@ -115,6 +117,8 @@ const useBPR =()=>{
         
         getInitialBPRRowData()
     },[])
+
+
   
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -132,7 +136,7 @@ const useBPR =()=>{
         tooltipTrigger:'focus',
         tooltipInteraction:true,
         // rowSelection:'single',
-        readOnlyEdit:true,
+        readOnlyEdit:false,
         sideBar:sideBar,
         paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
         onRowClicked:(params:any)=>{
@@ -170,8 +174,10 @@ const useBPR =()=>{
                 'text-overflow':'ellipsis',
                 'white-space':'nowrap'
             },
-        }
+        },
+        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode")
     }
+
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
@@ -203,6 +209,25 @@ const useBPR =()=>{
         setRecordCount(countData.data.recordCount)
     }
 
+    const onCellValueChanged = (newRow: any, primaryKey: string) => {
+        setEditedRows((prev) => {
+          let found = false; // Flag to track if the row has been updated
+          const updatedRows = prev.map((row) => {
+            if (row[primaryKey] === newRow[primaryKey]) {
+              found = true;
+              return { ...newRow }; // Return updated row
+            }
+            return row; // Return unchanged row
+          });
+      
+          if (!found) {
+            // If no existing row was found, add the new row
+            return [...updatedRows, {...newRow}];
+          }
+          return updatedRows;
+        });
+      };
+
     const getBPRRowData = async(filter:any,pageNo:number)=>{
         notifyLoader("Loading Grid Data")
         const rowData =await  getBPRData({
@@ -222,26 +247,46 @@ const useBPR =()=>{
     const updateRemark = (e:any)=>setRemark(e.currentTarget.value)
     
 
-    const onSubmitRemark = async()=>{
+    // const onSubmitRemark = async()=>{
         
-        try{
-            if(remark.length===0) throw new Error("Remark cannot be empty")
-            const toastId = notifyLoader("Submitting Remark")
-            const {data} = await submitRemark({
-                remark:remark,
-                whcode:submitRemarkData.whcode,
-                skucode:submitRemarkData.skucode
-            })
-            toast.dismiss(toastId)
-            // if(data.status!==200)notifyError('Something went wrong')
+    //     try{
+    //         if(remark.length===0) throw new Error("Remark cannot be empty")
+    //         const toastId = notifyLoader("Submitting Remark")
+    //         const {data} = await submitRemark({
+    //             remark:remark,
+    //             whcode:submitRemarkData.whcode,
+    //             skucode:submitRemarkData.skucode
+    //         })
+    //         toast.dismiss(toastId)
+    //         // if(data.status!==200)notifyError('Something went wrong')
             
-            notifySuccess(data.msg)
-            setRemark('')
+    //         notifySuccess(data.msg)
+    //         setRemark('')
             
-            setIsSubmitRemarkToolTipOpen(false)
-        }catch(err:any){
-            notifyError(err.message)
-        }
+    //         setIsSubmitRemarkToolTipOpen(false)
+    //     }catch(err:any){
+    //         notifyError(err.message)
+    //     }
+    // }
+
+    const onSubmitRemarks = async()=>{
+       try{
+        const toastId = notifyLoader("Submitting Remark")
+        const payload = editedRows.map((e)=>{
+            return {
+                remark:e.remarks,
+                whcode:e.WHCode,
+                skucode:e.SKUCode
+            }
+            
+        })
+        const {data} = await submitRemark(payload)
+        toast.dismiss(toastId)
+        notifySuccess(data.msg)
+        setEditedRows([])
+       }catch(err:any){
+        notifyError(err.message)
+       }
     }
     
 
@@ -356,7 +401,7 @@ const useBPR =()=>{
         setSubmitRemarkToolipPosition,
         toggleSubGrid,
         setActiveRow,
-        onSubmitRemark,
+        onSubmitRemarks,
         onCloseRemarkHistory,
         onCloseSubmitRemark,
         dailyData,
@@ -383,7 +428,8 @@ const useBPR =()=>{
         onDelete,
         setCurrFilter,
         onApplyFilter,
-        themeUi
+        themeUi,
+        editedRows
     }
 }
 

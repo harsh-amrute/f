@@ -57,8 +57,8 @@ export const VFMasterCardListContainer = styled.div`
 
 `
 
-export const VFMasterCardListItem = styled.div<{isSelected:boolean}>`
-background-color:${props=> props.isSelected ? '#bc3d814d' : ''};
+export const VFMasterCardListItem = styled.div<{isSelected:boolean,themeUi:string}>`
+background-color:${props=> props.isSelected ?props.themeUi==="REGALBLAZE"? 'rgb(252, 163, 17,0.3) ':'#bc3d814d' : ''};
 display:flex;
 align-items:center;
 height: 33px;

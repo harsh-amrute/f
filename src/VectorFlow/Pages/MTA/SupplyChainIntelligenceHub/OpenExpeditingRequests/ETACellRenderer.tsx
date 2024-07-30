@@ -2,7 +2,7 @@ import { format } from "date-fns"
 import { ETACellRendererWrapper,ETACellValue } from "./styles"
 
  const ETACellRenderer = (params:any)=>{
-    console.log(params.value)
+
 
     const date = new Date(params.value)
 

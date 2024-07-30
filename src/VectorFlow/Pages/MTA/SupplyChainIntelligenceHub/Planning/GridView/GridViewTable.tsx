@@ -150,26 +150,28 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                     !(isSubGridOpen || showStockGrid ) && (
                         <Allotment.Pane >
                     
-                        <VFTable
-                            ref={ref}
-                            {...agGridProps}
-                            columnDefs={agGridColDefs}
-                            rowData={agGridRowData}
-                            height={gridHeight ? gridHeight : '380px'}
-                            // onGridReady={(params)=>{
-                            //     if(columnState){
-                            //         params.columnApi.applyColumnState({state:columnState})
-                            //     }
-                            // }}
-                        />
-                        {paginationProps && <VFPagination {...paginationProps}/>}
+                            <VFTable
+                                ref={ref}
+                                {...agGridProps}
+                                columnDefs={agGridColDefs}
+                                rowData={agGridRowData}
+                                height={gridHeight ? gridHeight : '380px'}
+                                // onGridReady={(params)=>{
+                                //     if(columnState){
+                                //         params.columnApi.applyColumnState({state:columnState})
+                                //     }
+                                // }}
+                            />
+                            {paginationProps && <VFPagination {...paginationProps}/>}
     
                         </Allotment.Pane>
                     ) 
                 }
                 {isSubGridOpen && (
                     <Allotment.Pane minSize={180} maxSize={260}>
-                        {renderSubGrid()}
+                        <div style={{marginTop:'20px',height:'100%'}}>
+                            {renderSubGrid()}
+                        </div>
                     </Allotment.Pane>
                 )}
                 </Allotment>

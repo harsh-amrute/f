@@ -120,14 +120,18 @@ export const BPRSubmitRemarkCellRenderer = (params:any)=>{
 
     return(
         <BPRRemarksCellRendererWrapper>
-            <BPRSubmitRemarkInput placeholder="Type Remark" ref={(ref) => {
-                if (!ref) return;
+            <BPRSubmitRemarkInput 
+            // ref={(ref) => {
+            //     if (!ref) return;
 
-                ref.onclick = (e:any) => {
-                    params.onClick(e,{skucode:params.data.SKUCode,whcode:params.data.WHCode})
-                    e.stopPropagation();
-                };
-            }}/>
+            //     ref.onclick = (e:any) => {
+            //         params.onClick(e,{skucode:params.data.SKUCode,whcode:params.data.WHCode})
+            //         e.stopPropagation();
+            //     };
+            // }}
+            >
+                {params.value}
+            </BPRSubmitRemarkInput>
         </BPRRemarksCellRendererWrapper>
     )
 }

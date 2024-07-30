@@ -4,7 +4,7 @@ import {  AgGridReactProps } from "ag-grid-react"
 import { Allotment } from "allotment"
 
 import CustomVFTable from "./CustomVFTable"
-import { BTRTableWrapper,BTRTableHeader, LockBtnWrapper, LockBtn } from "./styles"
+import { BTRTableWrapper,BTRTableHeader, LockBtnWrapper, LockBtn, LocktBtnContent, LockLabel } from "./styles"
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 
@@ -148,7 +148,10 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                 </Allotment.Pane>
             </Allotment>
             <LockBtnWrapper>
-                <LockBtn style={{left:lockBtnPosition -12}} src={isLocked?themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/lock-regal.svg":"/assets/img/VectorFLOW/BPR/lock.svg":themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/unlock-regal.svg":"/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={()=>toggleLockMode(!isLocked)}/>
+                    <LocktBtnContent style={{left:lockBtnPosition -37}}>
+                        <LockBtn  src={isLocked?themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/lock-regal.svg":"/assets/img/VectorFLOW/BPR/lock.svg":themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/unlock-regal.svg":"/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={()=>toggleLockMode(!isLocked)}/>
+                        <LockLabel>{isLocked?"Unlock":"Lock"}</LockLabel>
+                    </LocktBtnContent>
             </LockBtnWrapper>
 
         </BTRTableWrapper>

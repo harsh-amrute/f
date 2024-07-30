@@ -465,7 +465,7 @@ const useInTransitWhereAbouts = ()=>{
     const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
 
     async function onOpenContactModal (data:any){
-      console.debug(data)
+
      try{
       notifyLoader("Loading Details")
       const contactData = await getTransporterDetails({orderNo:'VectorOrder_6662'})
@@ -527,6 +527,7 @@ const useInTransitWhereAbouts = ()=>{
       })
       await submitRemark({data:payload})
       toast.dismiss()
+      setEditedRows([])
      }catch(err){
       notifyError("Something went wrong")
      }
@@ -598,7 +599,8 @@ const useInTransitWhereAbouts = ()=>{
           onClick:onOpenSubmitETA
         },
         floatingFilter:false,
-        editable:true
+        editable:true,
+        cellDataType:'date'
     },
       {
           headerName: "",

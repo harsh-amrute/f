@@ -1669,15 +1669,18 @@ export const addPrefixToObjectKeys = (obj:any,prefix:string)=>{
 }
 
 export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,requestedData:any}[],user:string}[],masterId:any):ColDef[]=>{
-
+  console.log(conflicts)
+  console.log(TaskPendingAvoidColumnsMapper[masterId])
   const result:any[] = []
   conflicts.map((conflict)=>{
-     conflict.conflictdetails.map((conflictDetail)=>{
-      const existingRowIndex = result.findIndex((row:any)=>{
+     conflict.conflictdetails.map((conflictDetail,conflictIndex:number)=>{
+      const existingRowIndex = result.findIndex((row:any,index:number)=>{
         let isDuplicate = false
         const primaryKeys:string[] = TaskPendingAvoidColumnsMapper[masterId]
         for (let i = 0; i < primaryKeys.length; i++){
-          if(row[primaryKeys[i]]===conflictDetail.oldData[primaryKeys[i]]){
+          
+          if(row[primaryKeys[i]]===conflictDetail.requestedData[primaryKeys[i]]){
+            console.log(row,index,conflictDetail.oldData,conflictIndex)
             isDuplicate = true
           }
           else{
@@ -1687,6 +1690,7 @@ export const createConflictRowData = (conflicts:{conflictdetails:{oldData:any,re
         }
         return isDuplicate
       })
+      console.log(existingRowIndex)
 
       if(existingRowIndex===-1){
         result.push({...conflictDetail.requestedData,users:[{user:conflict.user,data:conflictDetail.oldData}]})
@@ -1862,7 +1866,8 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
      cellStyle:{
       overflow:'visible',
       'min-width':180,
-    }
+    },
+    editable:true
     },
     {
       colId:'rh',
@@ -1946,7 +1951,8 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDaily
     checkboxSelection:true,
     headerCheckboxSelection:true,
     headerCheckboxSelectionCurrentPageOnly:true,
-    width:10
+    width:10,
+    lockVisible:true
   }
 
 
@@ -2150,7 +2156,6 @@ export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):A
             colorValue:params.data[key]
           }
         },
-        floatingFilter: true,
         filter: "agMultiColumnFilter",
         ...BTRDefaultColDefs
       }
@@ -2162,7 +2167,6 @@ export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):A
         colId:key,
         headerName:key,
         cellRenderer:'tagsCellRenderer',
-        floatingFilter: true,
         filter: "agMultiColumnFilter",
         ...BTRDefaultColDefs
       }
@@ -2176,7 +2180,6 @@ export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):A
         cellRenderer:'availabilityCellRenderer',
         tooltipField:key,
         tooltipComponent:'availabilityToolTip',
-        floatingFilter: true,
         filter: "agMultiColumnFilter",
         ...BTRDefaultColDefs
       }
@@ -2188,7 +2191,6 @@ export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):A
         colId:key,
         headerName:key,
         cellRenderer:'categoryCellRenderer',
-        floatingFilter: true,
         tooltipField:key,
         tooltipComponent:'categoryToolTip',
         filter: "agMultiColumnFilter",
@@ -2200,7 +2202,6 @@ export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):A
       field:key,
       colId:key,
       headerName:key,
-      floatingFilter: true,
       filter: "agMultiColumnFilter",
       ...BTRDefaultColDefs
     }

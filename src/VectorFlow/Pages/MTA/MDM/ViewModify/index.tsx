@@ -23,6 +23,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 
 
 
+
   const ViewModify = () => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
@@ -100,7 +101,8 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         enableEditOnlineReset,
         submittedDataCount,
         uploadProgress,
-        totalProgress
+        totalProgress,
+        tempRecordCount
 
     } = useViewModify('modify');
 
@@ -116,6 +118,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         }
       }
     },[isTableDataLoading])
+
 
     return (
       <>
@@ -270,7 +273,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         </SCContainer>
         {isWarningModalOpen && 
           <WarningModal 
-            count={recordCount} 
+            count={tempRecordCount} 
             onCloseModal={onWarningModalClose} 
             onFailure={onWarningModalClose} 
             onSuccess={()=>onWarningModalSuccess()}

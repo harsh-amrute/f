@@ -177,7 +177,7 @@ const ResearchInsights = ()=>{
                 </AvailabilityTrendWrapper>
                 :
                 <AvailabilityTrendWrapper>
-                <AvailabilityTrendHeader>
+                <AvailabilityTrendHeader themeUi={themeUi}>
                     Availability Trend
                 </AvailabilityTrendHeader>
                 <AvailabilityTrendSection style={{borderBottom:'dashed 2px #B2B2B2'}}>

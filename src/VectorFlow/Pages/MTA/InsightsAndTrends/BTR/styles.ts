@@ -141,12 +141,22 @@ export  const LockBtnWrapper = styled.div`
     position:relative;
     z-index:300;
 `
+export const LocktBtnContent = styled.div`
+    display:flex;
+    flex-direction:column;
+   align-items:center;
+    position:absolute;
+    width:75px;
+`
 
 export const LockBtn = styled.img`
-    position:absolute;
-    height:25px;
-    width:25px;
+    height:20px;
+    width:20px;
     cursor:pointer;
+`
+
+export const LockLabel = styled.div`
+      font-size:12px;
 `
 
 export  const HorizontalViewWrapper = styled.div`

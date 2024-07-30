@@ -18,6 +18,7 @@ import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
 import { v4 as uuidv4 } from 'uuid';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 
+
 const useViewModify = (pageType:string) => {
 
     const dispatch = useDispatch();
@@ -33,6 +34,8 @@ const useViewModify = (pageType:string) => {
     const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize)
     const recordCount = useSelector((state:RootState) => state.mdm.recordCount)
     const isDataAvailableLocally = useSelector((state:RootState) => state.mdm.isDataAvailableLocally)
+
+    const [tempRecordCount,setTempRecordCount] = useState<number>(0)
 
     const [allMastersState,setAllMasterState] = useState<MDMMasterState[]>([])
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
@@ -608,16 +611,20 @@ const useViewModify = (pageType:string) => {
       }
 
       setIsTableDataLoading(false);
-      if(!result.data.recordCount || result.data.recordCount==0 || result.data.recordCount=='')dispatch(SET_RECORD_COUNT(0))
+      // if(!result.data.recordCount || result.data.recordCount==0 || result.data.recordCount=='')dispatch(SET_RECORD_COUNT(0))
+      // else{
+      //   dispatch(SET_RECORD_COUNT(result.data.recordCount))
+      // }
+      if(!result.data.recordCount || result.data.recordCount==0 || result.data.recordCount=='')setTempRecordCount(0)
       else{
-        dispatch(SET_RECORD_COUNT(result.data.recordCount))
+        setTempRecordCount(result.data.recordCount)
       }
-      if(result.data.recordCount<=rowsPerPage){
-        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
-      }
-      else{
-        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(false))
-      }
+      // if(result.data.recordCount<=rowsPerPage){
+      //   dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
+      // }
+      // else{
+      //   dispatch(UPDATE_DATA_AVAILABILITY_STATUS(false))
+      // }
 
       toggleWarningModal(true);    
     }
@@ -625,9 +632,11 @@ const useViewModify = (pageType:string) => {
     const onWarningModalClose = ()=>{
       toggleWarningModal(false);
       setIsTableDataLoading(false);
+      setTempRecordCount(0)
     }
 
     const onWarningModalSuccess = async (refetch?:boolean)=>{
+     
       refetch = refetch?refetch:false
 
       const currMasterFilters = activeMaster.filters;
@@ -673,10 +682,18 @@ const useViewModify = (pageType:string) => {
             pending:"Loading Data"
           }); 
       }
-        
+     
       }
       
-      if(recordCount <= rowsPerPage){
+
+      if(tempRecordCount<=rowsPerPage){
+        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
+      }
+      else{
+        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(false))
+      }
+      
+      if(tempRecordCount <= rowsPerPage){
         toggleEditOnline(true);
       }
       else{
@@ -685,7 +702,8 @@ const useViewModify = (pageType:string) => {
 
       
         setIsTableDataLoading(false);
-        if(recordCount == 0){
+        if(tempRecordCount == 0){
+          console.log('in iuf')
           toggleWarningModal(false);
           return;
         }
@@ -706,6 +724,7 @@ const useViewModify = (pageType:string) => {
           }
           else  dispatch(UPDATE_PROGRESS_STATE('view')); 
         }
+        dispatch(SET_RECORD_COUNT(tempRecordCount))
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
     }
 
@@ -925,7 +944,7 @@ const useViewModify = (pageType:string) => {
         let toastId:any = '';
         let conflictCount = 0;
         let errorCount = 0;
-        const conflictData:any = [];
+        const tempConflictData:any = [];
         const errorData:any = [];
         try {
           let submitProgress = 0;
@@ -984,12 +1003,12 @@ const useViewModify = (pageType:string) => {
               
               if(conflictedRows instanceof Array) {
                 conflictedRows.forEach((row:any)=>{
-                  const userIndex = conflictData.findIndex((data:any)=>data.user === row.user);
+                  const userIndex = tempConflictData.findIndex((data:any)=>data.user === row.user);
                   if(userIndex >= 0){
-                    conflictData[userIndex].conflictdetails = [...conflictData[userIndex].conflictdetails,...row.conflictdetails]
+                    tempConflictData[userIndex].conflictdetails = [...tempConflictData[userIndex].conflictdetails,...row.conflictdetails]
                   }
                   else{
-                    conflictData.push({
+                    tempConflictData.push({
                       user:row.user,
                       conflictdetails:row.conflictdetails
                     })
@@ -1016,13 +1035,14 @@ const useViewModify = (pageType:string) => {
             
             const pureErrorCount = activeMaster.rowData.length + intersectionCount - conflictCount
             const pureConflictCount = activeMaster.rowData.length + intersectionCount - errorCount
+
             toast.dismiss(toastId);
-            setConflictCount(pureErrorCount);
+            setConflictCount(pureConflictCount);
             setErrorCount(pureErrorCount);
-            setConflictData(conflictData);
+            setConflictData(tempConflictData);
             setErrorData(errorData)
-            console.log({isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} )
-            return {isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} 
+            // console.log({isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} )
+            return {isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData:tempConflictData} 
             
           }
          catch (error) {
@@ -1035,7 +1055,6 @@ const useViewModify = (pageType:string) => {
         }
       }
           
-
       const onSubmit = async(isOverWrite?:boolean) => {
         
         if(activeMaster.rowData.length === 0) {
@@ -1161,6 +1180,7 @@ const useViewModify = (pageType:string) => {
           else{
             // console.time('That took ')
             // console.log('Calculating...')
+
             const tempCon = createConflictRowData(localConflictData,activeMaster.id)
             const tempError = createErrorRowData(localErrorData,activeMaster.id)
 
@@ -1506,8 +1526,6 @@ const useViewModify = (pageType:string) => {
     // }
     const onReviewConflicts = ()=>{
       
-    
-
       const newColDefs:ColDef[] = activeMaster.colDefs.map((colDef:ColDef)=>{
         return {
           ...colDef,
@@ -1547,6 +1565,7 @@ const useViewModify = (pageType:string) => {
       
       setIsConflictModalOpen(false)
     }
+
 
     return {
         colDefs,
@@ -1626,7 +1645,8 @@ const useViewModify = (pageType:string) => {
         onPIPOStatusUpdate,
         enableEditOnlineReset,
         uploadProgress,
-        totalProgress
+        totalProgress,
+        tempRecordCount
     }
 }
 
