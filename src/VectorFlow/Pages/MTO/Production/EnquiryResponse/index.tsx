@@ -159,19 +159,20 @@ const EnquiryResponse = () => {
         <RmUICont style={{ background: 'white' }}>
 
 
+
           <table style={{ margin: '10px 0', borderSpacing: '0', fontFamily: 'Roboto' }}>
-            <thead style={{ marginBottom: '10px' }}>
-              <tr style={{ fontWeight: 'bold' }}>
-                <td style={{ borderRight: '1px solid grey', paddingLeft: '16px' }}>Plant</td>
+            <thead style={{ marginBottom: '20px', textAlign: 'center' }}>
+              <tr style={{ rowGap: '2px' }}>
+                <td style={{ borderRight: '1px solid grey', borderBottom: '5px solid white', paddingLeft: '16px' }}>Plant</td>
                 {(!activeTab) &&
 
-                  <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Procurement Buffer</td>
+                  <td style={{ borderRight: '1px solid grey', borderBottom: '5px solid white', paddingLeft: '6px' }}>Procurement Buffer</td>
 
                 }
-                <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Production Buffer</td>
-                <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Least Loaded CCR</td>
+                <td style={{ borderRight: '1px solid grey', borderBottom: '5px solid white', paddingLeft: '6px' }}>Production Buffer</td>
+                <td style={{ borderRight: '1px solid grey', borderBottom: '5px solid white', paddingLeft: '6px' }}>Least Loaded CCR</td>
 
-                <td style={{ paddingLeft: '6px' }}>Earliest Readiness Date</td>
+                <td style={{ paddingLeft: '6px', borderBottom: '5px solid white' }}>Earliest Readiness Date</td>
               </tr>
             </thead>
             <tbody>
@@ -181,20 +182,20 @@ const EnquiryResponse = () => {
                 (row.it[selectedOptions.productGroup[0]]) &&
 
                 <tr style={{ background: `${(((index % 2 === 0))) ? '#F8F8F8' : 'white'}` }} key={index}>
-                  <td style={{ padding: '5px', paddingLeft: '16px' }}>{row.plnm}</td>
+                  <td style={{ padding: '5px', paddingLeft: '16px', textAlign: 'center' }}>{row.plnm}</td>
                   {
                     (!activeTab) &&
-                    <td style={{ paddingLeft: '4px', textAlign: 'right', paddingRight: '20px' }}>{row.it[selectedOptions.productGroup[0]]?.proc_size}</td>
+                    <td style={{ paddingLeft: '4px', textAlign: 'center', paddingRight: '20px' }}>{row.it[selectedOptions.productGroup[0]]?.proc_size} &nbsp; days</td>
 
                   }
-                  <td style={{ paddingLeft: '4px', textAlign: 'right', paddingRight: '20px' }} >{row.it[selectedOptions.productGroup[0]]?.prod_size}</td>
+                  <td style={{ paddingLeft: '4px', textAlign: 'center', paddingRight: '20px' }} >{row.it[selectedOptions.productGroup[0]]?.prod_size}&nbsp; days</td>
                   <td style={{ paddingLeft: '4px', textAlign: 'center' }} >{row.cnm}</td>
                   {
                     (!activeTab) ?
 
-                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.proc_size, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
+                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center', fontWeight: 'bold' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.proc_size, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
                       :
-                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
+                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center', fontWeight: 'bold' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
                   }
                 </tr>
 
