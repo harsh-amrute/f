@@ -51,10 +51,6 @@ const useBPR =()=>{
     const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
    
     const [remark,setRemark] = useState<string>('')
-    const [submitRemarkData,setSubmitRemarkData] = useState({
-        skucode:'',
-        whcode:''
-    })
 
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
@@ -296,13 +292,12 @@ const useBPR =()=>{
     const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
 
 
-    const onOpenSubmitRemark = (e:React.MouseEvent<HTMLElement>,row:any)=>{
+    const onOpenSubmitRemark = (e:React.MouseEvent<HTMLElement>)=>{
         const {top,left} = e.currentTarget.getBoundingClientRect()
         setSubmitRemarkToolipPosition({
             top: top * gridZoom * screenZoom,
             left: left * gridZoom * screenZoom,
         })
-        setSubmitRemarkData(row)
         setIsSubmitRemarkToolTipOpen(true)
 
     }

@@ -464,7 +464,7 @@ const useInTransitWhereAbouts = ()=>{
 
     const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
 
-    async function onOpenContactModal (data:any){
+    async function onOpenContactModal (){
 
      try{
       notifyLoader("Loading Details")

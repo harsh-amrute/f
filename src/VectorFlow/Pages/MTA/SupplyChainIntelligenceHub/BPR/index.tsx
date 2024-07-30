@@ -5,7 +5,6 @@ import BPRViewTable from "./BPRViewTable"
 import { Allotment } from "allotment"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import useBPR from "./useBPR"
-import BPRSubmiRemarkToolTip from "./BPRSubmitRemarkToolTip"
 
 import "allotment/dist/style.css";
 import ActionToolBar from "../Planning/ActionToolBar"
@@ -29,13 +28,8 @@ const BPR = ()=>{
         BPRColumns,
         BPRRowData,
         agGridProps,
-        submitRemarkToolTipPosition,
-        isSubmitRemarkToolTipOpen,
-        remark,
         isRemarkHistoryToolTipOpen,
         remarkHistory,
-        updateRemark,
-        onCloseSubmitRemark,
         onSubmitRemarks,
         onCloseRemarkHistory,
         dailyData,
@@ -61,7 +55,6 @@ const BPR = ()=>{
         onDelete,
         setCurrFilter,
         onApplyFilter,
-        themeUi,
         editedRows
     } = useBPR();
 
