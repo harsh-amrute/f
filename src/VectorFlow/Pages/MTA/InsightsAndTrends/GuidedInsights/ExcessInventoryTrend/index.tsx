@@ -62,6 +62,7 @@ useEffect(() => {
                 },
             }
         ],
+      
         axes: [
             {
                 type: "category",
@@ -74,18 +75,23 @@ useEffect(() => {
                 label:{
                     fontSize:8,
                     fontFamily:'Roboto'
-                  }
+                  },
+                 
             } as const,
             {
                 type: "number",
                 position: "left",
                 title: {
-                    text: 'Value In Lakhs',
+                    text: 'Count Of SKUs',
                     fontSize:10,
                     fontFamily:'Roboto'
                 },
-            } as const
+            } as const,
+          
+            
         ]
+       
+        
     };
 
     const options2 = {
@@ -124,10 +130,11 @@ useEffect(() => {
                 type: "number",
                 position: "left",
                 title: {
-                    text: 'Count of SKUs',
+                    text: 'Value In Lakhs',
                     fontSize:10,
                     fontFamily:'Roboto'
                 },
+                
             } as const
         ]
     };
