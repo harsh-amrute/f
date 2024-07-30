@@ -1,49 +1,28 @@
 import { useEffect, useState } from "react";
 import FilterModal from "./FilterModal";
-import Note from "./Note";
 import ResizableTable from "./ResizableTable";
 import MTOActionToolBar from "../../../../../../../src/components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import {
-  BlurCover,
   BTRAllomentSection,
-  BTRTableWrapper,
-  CardCover,
-  DashedCard,
   EnquiryWrapper,
-  EstimatedWrapper,
-  FilterWrapper,
-  MessageText,
-  RmUICont,
-  TabSwitchContainer,
-  TabSwitchHeading,
-  TabsWrapper,
+  FilterWrapper
 } from "./styles";
-// import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
-// import { FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, PlantInput, SearchBar } from "./FilterModal/styles";
-// import FilterAccordian from "./FilterAccordian";
 import { useGetEnquiryResData } from "../../../../../Services/MTO/Production/EnquiryResponse";
 import { useUserData } from "../../../../../../context/index";
 import { notifyLoader } from "../../../../../../helpers/notify";
 import { toast } from "react-toastify"
-import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule";
-import { Allotment } from "allotment";
-import useViewPort from "../../../../../../hooks/useViewPort";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import FullkitCellRenderer from "../../../Common/FullkitCellRenderer";
 // import { valueContainerCSS } from "react-select/dist/declarations/src/components/containers";
 
-const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { label: "RM Available", value: "RM Available" }];
 
 
 const FOLSummary = () => {
-  const [activeTab, setActiveTab] = useState<number>(0);
-  const [activeCapsule, setActiveCapsule] = useState<{ label: string, value: string }>(tabOptions[0]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [tableData, setTableData] = useState<any>([]);
   const [filterData, setFilterData] = useState<any>([]);
   const [selectedFilters, setSelectedFilters] = useState<any>([]);
-  const [hasProductGroup, setHasProductGroup] = useState<any>(false);
   const { data } = useGetEnquiryResData() || {};
   const [selectedOptions, setSelectedOptions] = useState<any>({
     plantName: "",
@@ -57,160 +36,6 @@ const FOLSummary = () => {
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
   const themeUi = user.user.theme_ui;
 
-  const handleTabChange = (tab: any) => {
-    if (tab?.label === 'RM Not Available') {
-      setActiveTab(0);
-    } else {
-      setActiveTab(1);
-    }
-    setActiveCapsule(tab);
-  };
-
-
-
-
-  const getTableSimData = (filterData: any): any => {
-    const bufferData = filterData.length > 0 ? filterData : [];
-
-    const simData: any = [];
-
-    for (let index = 0; index < bufferData.length; index++) {
-      const element = bufferData[index];
-      let existIndex: any = -1;
-
-      for (let i = 0; i < simData.length; i++) {
-        if (simData[i].plnm === element.plnm) {
-          existIndex = i;
-          break; // Found the matching element, no need to continue the loop
-        }
-      }
-
-      if (existIndex !== -1) {
-        simData[existIndex] = {
-          ...simData[existIndex],
-          fol: Math.min(simData[existIndex].fol, element.fol),
-          cnm: element.fol === simData[existIndex].fol ? element.cnm : simData[existIndex].cnm,
-        };
-      } else {
-        simData.push({ ...element }); // Clone the object to avoid mutation
-      }
-    }
-
-    return simData;
-  };
-  function getWeekOfMonth(dateString: string): string {
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-
-    // Parse the input date string
-    const [dayStr, monthStr, yearStr] = dateString.split(' ');
-    const day = parseInt(dayStr, 10);
-    const monthIndex = months.findIndex(
-      (m) => m.toLowerCase() === monthStr.toLowerCase()
-    );
-    const year = parseInt(yearStr, 10);
-
-    // Create a Date object
-    const date = new Date(year, monthIndex, day);
-
-    // Get the day of the month and calculate the week number
-    const dayOfMonth = date.getDate();
-    const startOfMonth = new Date(year, monthIndex, 1);
-    const startOfMonthDay = startOfMonth.getDay();
-    const weekOfMonth = Math.ceil((dayOfMonth + startOfMonthDay) / 7);
-
-    // Format output
-    const month = months[monthIndex];
-    const weekString = `${month}-week ${weekOfMonth}`;
-
-    return weekString;
-  }
-
-  const getFormattedDate = (date: any) => {
-    const day = date.getDate();
-    const month = date.toLocaleString("default", { month: "short" });
-    const year = date.getFullYear();
-
-    return getWeekOfMonth(`${day} ${month} ${year}`);
-  };
-
-  const getEarliestDate = (array: number[]) => {
-
-    const today = new Date();
-    const result = new Date(today);
-    let daysToAdd = 0;
-
-    for (let index = 0; index < array.length; index++) {
-      daysToAdd = daysToAdd + array[index];
-
-    }
-
-    return getFormattedDate(
-      new Date(result.setDate(today.getDate() + daysToAdd))
-    );
-  };
-
-  const getRMUI = () => {
-    if (filterData) {
-
-      const simData = getTableSimData(filterData);
-      // const simData: any = [];
-      return (
-        <RmUICont style={{ background: 'white' }}>
-
-
-          <table style={{ margin: '10px 0', borderSpacing: '0', fontFamily: 'Roboto' }}>
-            <thead style={{ marginBottom: '10px' }}>
-              <tr style={{ fontWeight: 'bold' }}>
-                <td style={{ borderRight: '1px solid grey', paddingLeft: '16px' }}>Plant</td>
-                {(!activeTab) &&
-
-                  <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Procurement Buffer</td>
-
-                }
-                <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Production Buffer</td>
-                <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Least Loaded CCR</td>
-
-                <td style={{ paddingLeft: '6px' }}>Earliest Readiness Date</td>
-              </tr>
-            </thead>
-            <tbody>
-
-
-              {simData.map((row: any, index: any) => (
-                (row.it[selectedOptions.productGroup[0]]) &&
-
-                <tr style={{ background: `${(((index % 2 === 0))) ? '#F8F8F8' : 'white'}` }} key={index}>
-                  <td style={{ padding: '5px', paddingLeft: '16px' }}>{row.plnm}</td>
-                  {
-                    (!activeTab) &&
-                    <td style={{ paddingLeft: '4px', textAlign: 'right', paddingRight: '20px' }}>{row.it[selectedOptions.productGroup[0]]?.proc_size}</td>
-
-                  }
-                  <td style={{ paddingLeft: '4px', textAlign: 'right', paddingRight: '20px' }} >{row.it[selectedOptions.productGroup[0]]?.prod_size}</td>
-                  <td style={{ paddingLeft: '4px', textAlign: 'center' }} >{row.cnm}</td>
-                  {
-                    (!activeTab) ?
-
-                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.proc_size, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
-                      :
-                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
-                  }
-                </tr>
-
-              ))}
-
-            </tbody>
-          </table>
-        </RmUICont>
-      );
-    }
-    return (
-      <></>
-    )
-  };
 
   const handleNameChange = (arr: any) => {
     setSelectedOptions((prev: any) => ({ ...prev, plantName: arr }));
@@ -461,19 +286,11 @@ const FOLSummary = () => {
 
 
     updatedSelectedFilters(options);
-    setHasProductGroup(options?.productGroup?.length > 0);
     setFilterData(data);
     setIsModalOpen(false);
   };
 
-  const message = (
-    <p>
-      The Readiness date is valid for order booked today. This can change if
-      there are delays in order booking.
-      <br />
-      For large orders please contact planning team.
-    </p>
-  );
+
 
   const productGroupOptions: any = [];
   const departmentOptions: any = [];
@@ -657,7 +474,6 @@ const FOLSummary = () => {
     setFilterData(data?.data?.data?.results);
   }, [tableData]);
 
-  const { screenHeight } = useViewPort()
 
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()

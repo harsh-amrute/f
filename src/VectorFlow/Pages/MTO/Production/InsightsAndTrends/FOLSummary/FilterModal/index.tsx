@@ -3,9 +3,9 @@ import VFButtonOutline from '../../../../../../../components/VectorFLOW/commons/
 import VFButton from '../../../../../../../components/VectorFLOW/commons/VFButton';
 import VFModalCard from '../../../../../../../components/VectorFLOW/commons/VFModalCard';
 
-import { AccordianContainer, ButtonContainer, ButtonFilterWrapper, FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, ModalBody, Option, OptionsWrapper, PlantInput, SearchBar } from './styles';
+import { AccordianContainer, ButtonContainer, ButtonFilterWrapper, FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, ModalBody, Option, OptionsWrapper } from './styles';
 import FilterCheckboxAccordian from '../../../../../../../components/VectorFLOW/commons/MTO/FilterCheckboxAccordian';
-import { DropdownGroupWrapper, FilterCardWrapper, FilterComponent, FilterHeader, SelectDropdownComponent } from '../../../../../../../components/VectorFLOW/commons/VFMultiFilter/style';
+import { DropdownGroupWrapper, FilterComponent, SelectDropdownComponent } from '../../../../../../../components/VectorFLOW/commons/VFMultiFilter/style';
 import VFMasterFieldSearch from '../../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch';
 import Select from 'react-select';
 // import VFMasterFieldSearch from '../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch';
@@ -162,7 +162,7 @@ interface IFilterModalProps {
 }
 
 
-const AvailabilityFilter = ({ placeholder, header, onChange, filterId, filterState, handleFolChange }: any) => {
+const AvailabilityFilter = ({ header, filterId, handleFolChange }: any) => {
 
 
 
@@ -343,7 +343,7 @@ const FilterModal = (props: IFilterModalProps) => {
                             })
                         }
                         <FilterComponent style={{ borderTop: '0.5px solid #E1E2E8', padding: '15px' }} >
-                            <AvailabilityFilter handleFolChange={handleFolChange} placeholder={"FOL"} value={folValue} onChange={(e: any, key: string) => { console.log("let's see", e) }} header="Location Filter" filterId={'LF1'} filterState={filters}></AvailabilityFilter>
+                            <AvailabilityFilter handleFolChange={handleFolChange} placeholder={"FOL"} value={folValue} onChange={(e: any) => { setFolValue(e.target.value) }} header="Location Filter" filterId={'LF1'} filterState={filters}></AvailabilityFilter>
                         </FilterComponent>
                     </FilterAccordianWrapper>
 
