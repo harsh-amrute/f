@@ -514,6 +514,10 @@ const ResourceUtilization = () => {
                   <ColoredMarker color="#E53F3F" />
                   Over Limit
                 </MarkerWrapper>
+                <MarkerWrapper>
+                  <ColoredMarker color="#A2A2A2" />
+                  Other
+                </MarkerWrapper>
               </CalenderLabel>
               <CalenderWrapper>
                 <CalenderHeading data-testid="wipControl">WIP Control</CalenderHeading>
