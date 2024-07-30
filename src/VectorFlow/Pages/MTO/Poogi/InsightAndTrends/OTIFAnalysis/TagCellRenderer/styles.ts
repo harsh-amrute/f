@@ -9,17 +9,10 @@ const fadeIn = keyframes`
     }
 `
 
-export const Wrapper = styled.div`
-    position: relative;
-    height: 25px;
-    top: 5px;
-    display: flex;
-    justify-content: center;
-`
-
 export const Icon = styled.img`
-    height: 30px;
+    height: 60px;
     cursor:pointer;
+    display: flex;
 `
 export const TextWrapper = styled.div`
     position: absolute;
@@ -32,16 +25,6 @@ export const TextWrapper = styled.div`
     gap: 2px;
     padding: 2px;
     border-radius: 4px;
-    ::after {
-      content: '';
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border-width: 10px;
-      border-style: solid;
-      border-color: #333 transparent transparent transparent; // Adjust to match tooltip background
-    }
 `
 
 export const Tag = styled.div`
@@ -52,7 +35,7 @@ export const Tag = styled.div`
   list-style: circle;
   color: white;
   background: rgb(254, 162, 54);
-  min-width: 100px;
+  width: 150px;
   text-align: center;
   border-radius: 8px;
   padding: 5px 20px;

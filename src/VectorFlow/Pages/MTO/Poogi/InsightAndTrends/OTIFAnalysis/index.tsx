@@ -1,36 +1,47 @@
 import { Allotment } from "allotment";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import { gridColumnConfig, APIMock } from "./MockData";
-import { GridOptions } from "ag-grid-enterprise";
+import { ColDef, GridOptions } from "ag-grid-enterprise";
 import OTIFTrendsGraph from "./OTIFTrendsGraph";
 import OTAndIFTrendsGraph from "./OTAndIFTrendsGraph";
 import {
   BTRAllomentSection,
   BTRTableWrapper,
   HorizontalViewWrapper,
+  VFTableWrapper,
 } from "./styles";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
-import TagCellRenderer from "./TagCellRenderer/TagCellRenderer";
+import CustomTagTooltip from "./CustomTagTooltip";
+import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
+import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 
 const OTIFAnalysis = () => {
-  const [isGridView, setIsGridView] = useState(false);
+  const [isGridView, setIsGridView] = useState(true);
   const { screenHeight } = useViewPort();
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const [colDef, setColDef] = useState([{}]);
+  const reportName = "OTIFAnalysis";
 
   const gridRef = useRef();
 
-  const gridOptions: GridOptions = {
-    defaultColDef: {
+  const defaultColDef = useMemo<ColDef>(() => {
+    return {
       suppressMenu: true,
       autoHeaderHeight: true,
       filter: "agTextColumnFilter",
       floatingFilter: true,
       enableRowGroup: true,
       floatingFilterComponentParams: { suppressFilterButton: true },
-    },
+      tooltipComponent: CustomTagTooltip,
+    };
+  }, []);
+
+  const gridOptions: GridOptions = {    
     groupDefaultExpanded: 0,
     detailRowHeight: 500,
     detailCellRendererParams: {
@@ -40,17 +51,37 @@ const OTIFAnalysis = () => {
   };
 
   const colDefCustomizations = {
-    tags: {
-        cellRenderer: TagCellRenderer,
+    Tags: {
+      tooltipValueGetter: (params: any) => params.value,
+      cellRenderer: TagCellToolTip,
+      cellStyle: {
+        display: 'flex',
+        justifyContent: "center",
+      }
     },
-    bpp: {
+    BPP: {
         cellRenderer: ColorCellRenderer,
     },
   }
 
-  const colDefs = useMemo(() => {
-    return getColumnDefinations(gridColumnConfig, colDefCustomizations, [])
-  }, []);
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    setColumnDef();
+  }, [])
+
+
+  useEffect(() => {
+    setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
+  }, [HeaderData])
 
   return (
     <div style={{}}>
@@ -63,11 +94,14 @@ const OTIFAnalysis = () => {
       />
       <HorizontalViewWrapper style={{ marginTop: "20px" }}>
         {isGridView ? (
-          <div data-testid='grid-view' style={{ height: screenHeight - 300 }}>
+          <div data-testid='grid-view' style={{height: screenHeight - 250}} >
             <VFTable
               {...gridOptions}
-              sideBar="columns"
-              columnDefs={colDefs}
+              sideBar={{
+                toolPanels: ['columns'],
+              }}
+              defaultColDef={defaultColDef}
+              columnDefs={colDef}
               rowData={APIMock?.grid}
               tooltipHideDelay={100000}
               tooltipShowDelay={0}
