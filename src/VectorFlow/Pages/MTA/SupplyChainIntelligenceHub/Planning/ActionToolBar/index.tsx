@@ -59,7 +59,7 @@ interface ActionToolBarProps {
 
 
 
-const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter,multiFilter,setMultiFilter,onDelete,onUpdateInsight,hideUpdateInsightsBtn}:ActionToolBarProps) => {
+const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,onViewChange,currCategory,disableChartAndGridViewToggle,planningCount,showAllTick,handleGoButton,genericRecordCount,onExportToExcelCallBack,onApplyFilter,multiFilter,setMultiFilter,onDelete,onUpdateInsight,hideUpdateInsightsBtn,onSubmitEditedRows,disableSubmitEditedRowsBtn}:ActionToolBarProps) => {
     const { user } = useUserData();
     const {ref} = useContext(GridStateContext)
     // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
@@ -357,6 +357,16 @@ const ActionToolBar = ({view,currentTab,tabsList,onFloatingTabChange,onGoBack,on
                                 null
                             ) : (
                                 <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
+                            )}
+
+                            {(currCategory==="BPR" && onSubmitEditedRows) && (
+                                <VFButtonOutline
+                                    onClick={onSubmitEditedRows}
+                                    themeUi={themeUi}
+                                    disabled={disableSubmitEditedRowsBtn}
+                                >
+                                    Save Remarks
+                                </VFButtonOutline>
                             )}
 
                             

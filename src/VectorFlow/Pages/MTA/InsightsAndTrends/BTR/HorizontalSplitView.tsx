@@ -1,11 +1,10 @@
-import {useRef,useState} from 'react'
-import { AgGridReactProps } from "ag-grid-react"
+import { useRef,useState} from 'react'
+import { AgGridReact, AgGridReactProps } from "ag-grid-react"
 import { Allotment } from "allotment"
 import useViewPort from "../../../../../hooks/useViewPort"
-import { BTRTableHeader, BTRTableWrapper ,BTRAllomentSection,LockBtnWrapper, LockBtn, HorizontalViewWrapper} from "./styles"
+import { BTRTableHeader, BTRTableWrapper ,BTRAllomentSection,LockBtnWrapper, LockBtn, HorizontalViewWrapper, LocktBtnContent, LockLabel} from "./styles"
 import CustomVFTable from "./CustomVFTable"
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
-import { GridRef } from '../../../../../VectorFlow/types/MDM'
 
 interface SpliViewTableProps extends AgGridReactProps{
     header:string
@@ -30,8 +29,8 @@ const VerticalSplitView = (props:SplitViewProps)=>{
         themeUi
     } = props
 
-    const ref1 = useRef<GridRef>()
-    const ref2 = useRef<GridRef>()
+    const ref1 = useRef<AgGridReact>()
+    const ref2 = useRef<AgGridReact>()
 
     const [lockBtnPosition,setLockBtnPosition] = useState<number>(0)
 
@@ -53,6 +52,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
             }
             else{
                 const currIndex = parseInt((params.left/80).toFixed(0))
+                console.log(currIndex)
                 const columns = techTable.columnDefs
                 if(columns){
                     const currColumn:any = columns[currIndex]
@@ -101,7 +101,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                 </Allotment.Pane>
                 
                 <Allotment.Pane preferredSize={'50%'}>
-                    <BTRAllomentSection>
+                    <BTRAllomentSection style={{marginTop:'20px'}}>
                         <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
                         <CustomVFTable 
                             height={"100%"}
@@ -111,7 +111,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             gridOptions={{
                                 ...ecoTable.gridOptions
                             }}
-                            columnDefs={ecoTable.columnDefs}
+                            columnDefs={techTable.columnDefs}
                             rowData={ecoTable.rowData}
                             tooltipMouseTrack={true}
                             tooltipShowDelay={0}
@@ -128,8 +128,11 @@ const VerticalSplitView = (props:SplitViewProps)=>{
             </Allotment>
             
         </BTRTableWrapper>
-        <LockBtnWrapper style={{height:screenHeight - 100}}>
-            <LockBtn style={{top:lockBtnPosition -12}} src={isLocked?themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/lock-regal.svg":"/assets/img/VectorFLOW/BPR/lock.svg":themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/unlock-regal.svg":"/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={()=>toggleLockMode(!isLocked)}/>        
+        <LockBtnWrapper >
+            <LocktBtnContent style={{top:lockBtnPosition -5,right:100}}>
+                <LockBtn  src={isLocked?themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/lock-regal.svg":"/assets/img/VectorFLOW/BPR/lock.svg":themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/unlock-regal.svg":"/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={()=>toggleLockMode(!isLocked)}/>        
+                <LockLabel>{isLocked?"Unlock":"Lock"}</LockLabel>
+            </LocktBtnContent>
         </LockBtnWrapper>
         </HorizontalViewWrapper>
     )

@@ -137,7 +137,7 @@ position:relative;
     width:100%;
     display:flex;
     flex-direction:column;
-    // max-height:250px;
+        // max-height:250px;
     // margin-top:20px;
     
 `
@@ -227,9 +227,14 @@ export const BPRRemarksCellRendererWrapper = styled.div`
     justify-content:center;
 `
 
-export const BPRSubmitRemarkInput = styled.input`
+export const BPRSubmitRemarkInput = styled.div`
     height:30px;
     width:90%;
+    background-color:white;
+    border:solid 1px black;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
 `
 
 export const BPRRemarkToolTipTextArea = styled.textarea`

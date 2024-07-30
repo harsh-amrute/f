@@ -234,7 +234,8 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                                   { statusPanel: 'agSelectedRowCountComponent', align:'left' },
                                                   { statusPanel: 'agAggregationComponent', align:'left' },
                                                 ],
-                                              }}                                            onGridReady={()=>generateChart(1,true)}
+                                              }}                                            
+                                            onGridReady={()=>generateChart(1,true)}
                                             getChartToolbarItems={getChartToolbarItems}
                                             chartToolPanelsDef={
                                                 {

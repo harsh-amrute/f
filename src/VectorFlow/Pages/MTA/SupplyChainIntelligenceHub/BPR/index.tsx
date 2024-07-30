@@ -5,7 +5,6 @@ import BPRViewTable from "./BPRViewTable"
 import { Allotment } from "allotment"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import useBPR from "./useBPR"
-import BPRSubmiRemarkToolTip from "./BPRSubmitRemarkToolTip"
 
 import "allotment/dist/style.css";
 import ActionToolBar from "../Planning/ActionToolBar"
@@ -29,14 +28,9 @@ const BPR = ()=>{
         BPRColumns,
         BPRRowData,
         agGridProps,
-        submitRemarkToolTipPosition,
-        isSubmitRemarkToolTipOpen,
-        remark,
         isRemarkHistoryToolTipOpen,
         remarkHistory,
-        updateRemark,
-        onCloseSubmitRemark,
-        onSubmitRemark,
+        onSubmitRemarks,
         onCloseRemarkHistory,
         dailyData,
         showDailyDataGraphModal,
@@ -61,7 +55,7 @@ const BPR = ()=>{
         onDelete,
         setCurrFilter,
         onApplyFilter,
-        themeUi
+        editedRows
     } = useBPR();
 
     
@@ -101,6 +95,8 @@ const BPR = ()=>{
             multiFilter={currFilter}
             onDelete={onDelete}
             setMultiFilter={setCurrFilter}
+            onSubmitEditedRows={onSubmitRemarks}
+            disableSubmitEditedRowsBtn={editedRows.length===0}
         />
         </div>
         {
@@ -164,7 +160,8 @@ const BPR = ()=>{
                     handleChangePage={handleOnPageChange}
                 />
               </Allotment.Pane>
-              <Allotment.Pane maxSize={200} minSize={180}>
+              <Allotment.Pane maxSize={220} minSize={200}>
+              <div style={{marginTop:'20px'}}>
               {isSubGridOpen && (
                 <div style={{marginLeft:'15px'}}>
                     <BPRViewTable
@@ -225,10 +222,11 @@ const BPR = ()=>{
                 </div>
                
             )}
+              </div>
               </Allotment.Pane>
             </Allotment>
             </div>
-            {isSubmitRemarkToolTipOpen && (
+            {/* {isSubmitRemarkToolTipOpen && (
                 <BPRSubmiRemarkToolTip
                     remark={remark}
                     setRemark={updateRemark}
@@ -237,7 +235,7 @@ const BPR = ()=>{
                     onClose={onCloseSubmitRemark}
                     themeUi={themeUi}
                 />
-            )}
+            )} */}
 
             <BPRRemarkHistoryModal
                 data={remarkHistory}

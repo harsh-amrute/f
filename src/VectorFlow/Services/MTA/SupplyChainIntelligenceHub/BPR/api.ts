@@ -24,7 +24,7 @@ export namespace BPRService {
     });
   }
 
-  export const submitRemark = async (payload:SubmitBPRRemarkPayload) => {
+  export const submitRemark = async (payload:Array<SubmitBPRRemarkPayload>) => {
     return await axios.post(process.env.REACT_APP_VF_API_HOST + `/AddRemark`,payload,{
       headers:{ 'Content-Type': 'application/json' }
     });

@@ -25,6 +25,8 @@ const SubmitConflictModal=(props:SubmitConflictModalProps)=>{
 
     const {user} = useUserData()
 
+    console.log(modificationCount)
+
     return (
         <VFModalCard headerText="Submit Data" openModal={true} headerIcon={"/assets/img/VectorFLOW/NMS/approveall.svg"} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
             <SubmitDataTextContainer style={{paddingBottom:'30px'}}>

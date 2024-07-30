@@ -280,6 +280,7 @@ const useOpenExpeditingRequests = () => {
       })
       await addRemark({data:payload})
       toast.dismiss()
+      setEditedRows([])
      }catch(err){
       console.log(err)
       notifyError("Something went wrong")

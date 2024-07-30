@@ -319,15 +319,15 @@ const useBTR = ()=>{
 
     const techColDefs = useMemo(():Array<ColDef>=>{
         if(techRowData.length===0)return []
-       return mapBTRRowDataToColDefs(techRowData[0])
+       return mapBTRRowDataToColDefs(techRowData[0],["RN"])
     },[techRowData])
 
 
     const ecoColDefs = useMemo(():Array<ColDef>=>{
         if(ecoRowData.length===0)return []
-        if(verticalView && currentTab.id==="1")return mapBTRRowDataToColDefs(ecoRowData[0],['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm"])
-        return mapBTRRowDataToColDefs(ecoRowData[0])
-    },[ecoRowData,currentTab])
+        if(verticalView && currentTab.id==="1")return mapBTRRowDataToColDefs(ecoRowData[0],['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN"])
+        return mapBTRRowDataToColDefs(ecoRowData[0],["RN"])
+    },[ecoRowData,currentTab,verticalView])
 
     return{
         ecoRef,

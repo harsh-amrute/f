@@ -310,7 +310,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={'95%'}>
+                        <SCChartContainer height={'95%'} style={{marginRight:'10px'}}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products: Categorization Of Pending Quantity</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -395,7 +395,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                         </div> */}
                     </Allotment.Pane>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={"95%"}>
+                        <SCChartContainer height={"95%"} style={{marginLeft:'18px'}}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center',marginRight:7}}><SCChartHeader style={{marginRight:3}}>Top 10 Products: Max No Of Locations with Gap &gt; 67% of Requirement</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
