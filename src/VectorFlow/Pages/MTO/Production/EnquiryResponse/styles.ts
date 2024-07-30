@@ -160,7 +160,7 @@ export const TabSwitchContainer = styled.div`
 export const TabSwitchHeading = styled.div`
   font-family: "Roboto";
   font-weight: 500;
-  font-size: 20px;
+  font-size: 14px;
   color: #000000;
   letter-spacing: 0;
   line-height: 24px;
