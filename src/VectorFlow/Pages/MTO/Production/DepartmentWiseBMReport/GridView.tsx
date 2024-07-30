@@ -1,5 +1,6 @@
 import React, { useRef } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import { VFWrapper } from './styles';
 
 interface GridProps {
     agGridProps: any
@@ -12,14 +13,16 @@ const GridView = ({ agGridProps, columDef, convercolumnDef }: GridProps) => {
     const gridRef = useRef();
     return (
         <>
+        <VFWrapper>
+
             <VFTable
                 {...agGridProps}
                 columnDefs={columDef}
                 rowData={convercolumnDef}
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
+                rowSelection = {'multiple'}
                 tooltipMouseTrack={true}
-                height={"750px"}
                 ref={gridRef}
                 //defaultColDef={{maxWidth:150}}
                 statusBar={{
@@ -31,8 +34,9 @@ const GridView = ({ agGridProps, columDef, convercolumnDef }: GridProps) => {
                         { statusPanel: 'agAggregationComponent', align: 'left' },
                     ],
                 }}
-            />
+                />
 
+                </VFWrapper>
         </>
     )
 }

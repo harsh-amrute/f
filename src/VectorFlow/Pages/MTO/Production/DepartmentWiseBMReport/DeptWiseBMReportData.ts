@@ -3,6 +3,7 @@ import { ColDef, ColGroupDef } from "ag-grid-enterprise";
 
 export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | ColGroupDef)[] => {
     return [
+        
         {
             headerName: "",
             headerCheckboxSelection: false,
@@ -14,6 +15,7 @@ export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | Col
         {
             headerName: "Default Attributes",
             suppressStickyLabel: true,
+            colId:'Default Attributes',
             openByDefault: true,
             children: [
                 { field: 'ec', headerName: '', colId: '', cellRenderer: "customCellRenderer", initialWidth: 80, floatingFilter:false },
@@ -39,6 +41,7 @@ export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | Col
         {
             headerName: "Calculate Attribute",
             suppressStickyLabel: true,
+            colId:'Calculate Attributes',
             openByDefault: true,
             children: [
                 { field: "Elap_days", headerName: "Elapsed Days", colId: "Elapsed Days" },
@@ -48,6 +51,7 @@ export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | Col
         {
             headerName: "Order Attribute",
             suppressStickyLabel: true,
+            colId:'Order Attributes',
             openByDefault: true,
             children: [
                 { field: "Pl_Nam", headerName: "Plant Name", colId: "Plant Name" },
@@ -57,6 +61,7 @@ export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | Col
         {
             headerName: "Product Attribute",
             suppressStickyLabel: true,
+            colId:'Product Attributes',
             openByDefault: true,
             children: [
                 { field: "Price", headerName: "Price", colId: "Price" },
@@ -70,6 +75,7 @@ export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | Col
         {
             headerName: "Customer Attribute",
             suppressStickyLabel: true,
+            colId:'Customer Attributes',
             openByDefault: true,
             children: [
                 { field: "Cust_Cd", headerName: "Customer Code", colId: "Customer Code" },
@@ -81,6 +87,7 @@ export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | Col
             headerName: "",
             suppressStickyLabel: true,
             openByDefault: false,
+            colId:'',
             children: [
                 {
                     field: "Rem_Cd", headerName: "Remark Code", pinned: 'right', colId: "Remark Code", cellRenderer: "TextBoxCellRenderer", cellRendererParams: {

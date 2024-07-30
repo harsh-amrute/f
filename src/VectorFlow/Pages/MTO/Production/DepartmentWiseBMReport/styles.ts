@@ -162,9 +162,27 @@ export const HigHAgeingIconWrapper = styled.img`
     height:20px;
     width:20px;
     margin-right:10px;
+    
   `
 
-export const FlatIcon = styled.img``
+export const FlatIcon1 = styled.div`
+    display:flex;
+    align-items:'center';
+    height:20px;
+    width:20px;
+    margin-right:10px;
+    background: url('/assets/img/mto/DeptWiseBmReport/exclamatory.svg');
+
+    &:hover{
+        background: url('/assets/img/mto/DeptWiseBmReport/exclamatoryWhite.svg');
+        transform:scale(1.2);
+    }
+`
+export const FlatIcon = styled.img`
+  height:20px;
+  width:20px;
+  margin-right:10px;
+`
 
 export const ETACellRendererWrapper = styled.div`
     display:flex;
@@ -172,4 +190,23 @@ export const ETACellRendererWrapper = styled.div`
     align-items:center;
     height:100%;
     width:100%;
+`
+
+export const VFWrapper = styled.div`
+  height: 100%;
+  display: flex;
+  & .ag-theme-alpine {
+    flex: 1;
+  }
+  & .ag-theme-alpine .ag-header-row:nth-child(2){
+    background-color: black;
+    color: white;
+  }
+  & .ag-theme-alpine .ag-header-row:nth-child(1):hover{
+    background-color: black;
+    color: white;
+  }
+  & .ag-theme-noir-fusion {
+    --ag-header-background-color: rgb(255, 255, 255);
+  }
 `
