@@ -85,3 +85,27 @@ export const CellBarValue = styled.div`
     margin-right: 0px;
   }
 `;
+
+export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?: boolean }>`
+    height:${(props) => props.height ? props.height : 'auto'};
+    // max-height:90%;
+
+    zoom:${props => props.disableZoomScaling ? 1 : 0.75};
+    width:100%;
+    padding-right: 25px;
+    display: flex;
+    height: 100%;
+    margin: 0 20px;
+    & .ag-theme-alpine {
+      flex: 1;
+    }
+
+    @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
+    .size.desktop}) {
+        ${props => props.disableZoomScaling ? 1 : 0.75};
+    }
+  
+    @media (min-width: ${gridSystem.size.desktop}) {
+      zoom:1;
+    }
+` 

@@ -52,6 +52,7 @@ import STPLAndFullKits from './VectorFlow/Pages/MTO/Production/InsightsAndTrends
 import OrderAtRisk from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/OrderAtRisk'
 import OrderBalance from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/OrderBalance'
 import ResourceUtilization from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/ResourceUtilization'
+import FOLSummary from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FOLSummary'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -119,6 +120,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/production-planning-scheduling/insight-and-trends/order-at-risk',
     '/production-planning-scheduling/insight-and-trends/order-balance',
     '/poogi/insight-and-trends/resource-utilization-wip-profile',
+    '/production-planning-scheduling/insights-and-trends/fol-summary'
 
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
@@ -683,6 +685,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<ResourceUtilization />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/insights-and-trends/fol-summary',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<FOLSummary />)
         },
         ...getStoreTransferModuleRoutes()
       ]

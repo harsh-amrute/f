@@ -3,24 +3,20 @@ import FilterModal from "./FilterModal";
 import Note from "./Note";
 import ResizableTable from "./ResizableTable";
 import MTOActionToolBar from "../../../../../../../src/components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { prodPlanningMock } from "./PROD";
 import {
   BlurCover,
+  BTRAllomentSection,
+  BTRTableWrapper,
   CardCover,
   DashedCard,
   EnquiryWrapper,
   EstimatedWrapper,
   FilterWrapper,
-  HeaderWrapper,
-  HighlightedValue,
   MessageText,
-  RmHeading,
   RmUICont,
   TabSwitchContainer,
   TabSwitchHeading,
   TabsWrapper,
-  ValueWrapper,
-  VerticalLine,
 } from "./styles";
 // import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 // import { FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, PlantInput, SearchBar } from "./FilterModal/styles";
@@ -29,16 +25,16 @@ import { useGetEnquiryResData } from "../../../../../Services/MTO/Production/Enq
 import { useUserData } from "../../../../../../context/index";
 import { notifyLoader } from "../../../../../../helpers/notify";
 import { toast } from "react-toastify"
+import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule";
+import { Allotment } from "allotment";
+import useViewPort from "../../../../../../hooks/useViewPort";
+import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import { getColumnDefinations } from "../../../../../../helpers/utils";
+import FullkitCellRenderer from "../../../Common/FullkitCellRenderer";
+// import { valueContainerCSS } from "react-select/dist/declarations/src/components/containers";
 
 const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { label: "RM Available", value: "RM Available" }];
 
-interface BufferData {
-  ItemType1: { proc_size: number; prod_size: number };
-  ItemType2: { proc_size: number; prod_size: number };
-  ItemType3: { proc_size: number; prod_size: number };
-  ItemType4: { proc_size: number; prod_size: number };
-  // Add more types as needed
-}
 
 const FOLSummary = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -55,13 +51,13 @@ const FOLSummary = () => {
     department: {},
     ccrGroup: {},
     ccrName: {},
+    folfilter: { symbol: '', value: '' }
   });
   const { user } = useUserData();
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
   const themeUi = user.user.theme_ui;
 
   const handleTabChange = (tab: any) => {
-    console.log(tab, 'TAB');
     if (tab?.label === 'RM Not Available') {
       setActiveTab(0);
     } else {
@@ -70,40 +66,38 @@ const FOLSummary = () => {
     setActiveCapsule(tab);
   };
 
-  const getMostloadedCCR = () => {
-    let mostLoadedCR = filterData?.length > 0 ? filterData[0] : {};
-    for (let i = 0; i < filterData?.length; i++) {
-      const current = filterData[i];
-      if (current?.fol > mostLoadedCR?.fol) {
-        mostLoadedCR = current;
+
+
+
+  const getTableSimData = (filterData: any): any => {
+    const bufferData = filterData.length > 0 ? filterData : [];
+
+    const simData: any = [];
+
+    for (let index = 0; index < bufferData.length; index++) {
+      const element = bufferData[index];
+      let existIndex: any = -1;
+
+      for (let i = 0; i < simData.length; i++) {
+        if (simData[i].plnm === element.plnm) {
+          existIndex = i;
+          break; // Found the matching element, no need to continue the loop
+        }
+      }
+
+      if (existIndex !== -1) {
+        simData[existIndex] = {
+          ...simData[existIndex],
+          fol: Math.min(simData[existIndex].fol, element.fol),
+          cnm: element.fol === simData[existIndex].fol ? element.cnm : simData[existIndex].cnm,
+        };
+      } else {
+        simData.push({ ...element }); // Clone the object to avoid mutation
       }
     }
-    return mostLoadedCR?.cnm;
+
+    return simData;
   };
-
-  const getRMValues = (bufferType: string) => {
-    let bufferData = filterData?.length > 0 ? filterData[0] : {};
-    const productGroup: keyof BufferData = selectedOptions?.productGroup && selectedOptions?.productGroup[0];
-
-    if (!productGroup) {
-      return "--";
-    }
-
-    for (let i = 0; i < filterData?.length; i++) {
-      const current = filterData[i];
-
-      if (current?.it[productGroup]) {
-        bufferData = current;
-      }
-    }
-    if (bufferType === "procurement") {
-      return (
-        (bufferData?.it && bufferData?.it[productGroup]?.proc_size) || "--"
-      );
-    }
-    return (bufferData?.it && bufferData?.it[productGroup]?.prod_size) || "--";
-  };
-
   function getWeekOfMonth(dateString: string): string {
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -142,34 +136,15 @@ const FOLSummary = () => {
     return getWeekOfMonth(`${day} ${month} ${year}`);
   };
 
-  const getEarliestDate = (activeTab: number) => {
-    let bufferData = filterData?.length > 0 ? filterData[0] : {};
-    const productGroup: keyof BufferData = selectedOptions?.productGroup && selectedOptions?.productGroup[0];
-
-    if (!productGroup) {
-      return "--";
-    }
-
-    for (let i = 0; i < filterData?.length; i++) {
-      const current = filterData[i];
-
-      if (current?.it[productGroup]) {
-        bufferData = current;
-      }
-    }
-
-    const prodBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.prod_size;
-    const procBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.proc_size;
-    const fol = bufferData?.fol;
+  const getEarliestDate = (array: number[]) => {
 
     const today = new Date();
     const result = new Date(today);
     let daysToAdd = 0;
 
-    if (activeTab === 0) {
-      daysToAdd = (prodBuffer + procBuffer) || 0;
-    } else {
-      daysToAdd = Math.max(prodBuffer, fol + (0.5 * prodBuffer));
+    for (let index = 0; index < array.length; index++) {
+      daysToAdd = daysToAdd + array[index];
+
     }
 
     return getFormattedDate(
@@ -178,30 +153,72 @@ const FOLSummary = () => {
   };
 
   const getRMUI = () => {
+    if (filterData) {
+
+      const simData = getTableSimData(filterData);
+      // const simData: any = [];
+      return (
+        <RmUICont style={{ background: 'white' }}>
+
+
+          <table style={{ margin: '10px 0', borderSpacing: '0', fontFamily: 'Roboto' }}>
+            <thead style={{ marginBottom: '10px' }}>
+              <tr style={{ fontWeight: 'bold' }}>
+                <td style={{ borderRight: '1px solid grey', paddingLeft: '16px' }}>Plant</td>
+                {(!activeTab) &&
+
+                  <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Procurement Buffer</td>
+
+                }
+                <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Production Buffer</td>
+                <td style={{ borderRight: '1px solid grey', paddingLeft: '6px' }}>Least Loaded CCR</td>
+
+                <td style={{ paddingLeft: '6px' }}>Earliest Readiness Date</td>
+              </tr>
+            </thead>
+            <tbody>
+
+
+              {simData.map((row: any, index: any) => (
+                (row.it[selectedOptions.productGroup[0]]) &&
+
+                <tr style={{ background: `${(((index % 2 === 0))) ? '#F8F8F8' : 'white'}` }} key={index}>
+                  <td style={{ padding: '5px', paddingLeft: '16px' }}>{row.plnm}</td>
+                  {
+                    (!activeTab) &&
+                    <td style={{ paddingLeft: '4px', textAlign: 'right', paddingRight: '20px' }}>{row.it[selectedOptions.productGroup[0]]?.proc_size}</td>
+
+                  }
+                  <td style={{ paddingLeft: '4px', textAlign: 'right', paddingRight: '20px' }} >{row.it[selectedOptions.productGroup[0]]?.prod_size}</td>
+                  <td style={{ paddingLeft: '4px', textAlign: 'center' }} >{row.cnm}</td>
+                  {
+                    (!activeTab) ?
+
+                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.proc_size, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
+                      :
+                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
+                  }
+                </tr>
+
+              ))}
+
+            </tbody>
+          </table>
+        </RmUICont>
+      );
+    }
     return (
-      <RmUICont>
-        <HeaderWrapper>
-          {activeTab === 0 && <RmHeading>Procurement Buffer</RmHeading>}
-          {activeTab === 0 && <VerticalLine />}
-          <RmHeading>Production Buffer</RmHeading>
-          <VerticalLine />
-          <RmHeading>Most Loaded CCR</RmHeading>
-          <VerticalLine />
-          <RmHeading>Earliest Readiness Date</RmHeading>
-        </HeaderWrapper>
-        <ValueWrapper>
-          {activeTab === 0 && <div>{getRMValues("procurement")}</div>}
-          <div>{getRMValues("production")}</div>
-          <div>{getMostloadedCCR()}</div>
-          <HighlightedValue>{getEarliestDate(activeTab)}</HighlightedValue>
-        </ValueWrapper>
-      </RmUICont>
-    );
+      <></>
+    )
   };
 
-  const handleNameChange = ({ name, value }: { name: string, value: string }) => {
-    setSelectedOptions((prev: any) => ({ ...prev, [name]: value }));
+  const handleNameChange = (arr: any) => {
+    setSelectedOptions((prev: any) => ({ ...prev, plantName: arr }));
   };
+
+  const handleFolChange = (folfilterSymbol: string, folFilterValue: string) => {
+    setSelectedOptions((prev: any) => ({ ...prev, folfilter: { symbol: folfilterSymbol, value: folFilterValue } }))
+  }
 
   const handleFilterSelect = (event: any, category: string, index: number) => {
     const { name, checked } = event.target;
@@ -248,45 +265,91 @@ const FOLSummary = () => {
       }
       setSelectedOptions((prev: any) => ({ ...prev, ccrName: { ...ccrNm } }));
     }
+
   };
 
   const handleModalToggle = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const filterByPlName = (name: string) => {
-    if (name === '') {
+  const filterByPlNames = (names: string[]) => {
+    if (names.length === 0) {
       return tableData;
     }
     const data = [];
     for (let i = 0; i < tableData?.length; i++) {
       const current = tableData[i];
-      if (current?.plnm?.includes(name)) {
-        data?.push(current);
+      for (let j = 0; j < names.length; j++) {
+        if (current?.plnm?.includes(names[j])) {
+          data?.push(current);
+          break; // If a match is found, break out of the inner loop
+        }
       }
     }
     return data;
   };
-  const filterByFOL = (folFilterType: string, folFilterVal: string) => {
-    if (folFilterVal === '') {
-      return tableData;
-    }
-    const data = [];
-    for (let i = 0; i < tableData?.length; i++) {
-      const current = tableData[i];
-      if (folFilterType === '>=') {
 
-        if (parseInt(current?.fol) >= parseInt(folFilterVal)) {
-          data?.push(current);
-        }
-      }
-      else {
-        if (parseInt(current?.fol) <= parseInt(folFilterVal)) {
-          data?.push(current);
-        }
-      }
+
+  const filterByfol = (updata: any, folValues: any) => {
+    const { symbol, value } = folValues;
+    console.log("Brooo folFilter hua change ", symbol, value);
+    if (symbol.length === 0) {
+      return updata;
     }
-    return data;
+    if (value.length === 0) {
+      return updata;
+    }
+    const updatedData = [];
+    for (let i = 0; i < tableData?.length; i++) {
+      const current = updata[i];
+
+      if (symbol === '<') {
+
+        if (Number(current?.fol) < Number(value)) {
+          console.log("yeh hua compare", Number(current?.fol), symbol, Number(value))
+          updatedData?.push(current);
+        }
+      }
+      if (symbol === '>') {
+
+        if (Number(current?.fol) > Number(value)) {
+          console.log("yeh hua compare", Number(current?.fol), symbol, Number(value))
+          updatedData?.push(current);
+        }
+      }
+      if (symbol === '<=') {
+
+        if (Number(current?.fol) <= Number(value)) {
+          console.log("yeh hua compare", Number(current?.fol), symbol, Number(value))
+          updatedData?.push(current);
+        }
+      }
+      if (symbol === '>=') {
+
+        if (Number(current?.fol) >= Number(value)) {
+          console.log("yeh hua compare", Number(current?.fol), symbol, Number(value))
+          updatedData?.push(current);
+        }
+      }
+      if (symbol === 'Equal to') {
+
+        if (Number(current?.fol) === Number(value)) {
+          console.log("yeh hua compare", Number(current?.fol), symbol, Number(value))
+          updatedData?.push(current);
+        }
+      }
+      if (symbol === 'Not Equal to') {
+
+        if (Number(current?.fol) !== Number(value)) {
+          console.log("yeh hua compare", Number(current?.fol), symbol, Number(value))
+          updatedData?.push(current);
+        }
+      }
+
+
+
+    }
+    return updatedData;
   };
 
   const filterByProdGrpName = (data: any, productGrp: any) => {
@@ -337,7 +400,7 @@ const FOLSummary = () => {
     if (options?.plantName) {
       filters.push({
         label: "Plant",
-        values: [`${options?.plantName}`],
+        values: [...options.plantName],
       });
     }
     if (options?.productGroup?.length > 0) {
@@ -364,6 +427,12 @@ const FOLSummary = () => {
         values: [...Object.keys(options?.ccrName)],
       });
     }
+    if (options?.folfilter.value !== '') {
+      filters.push({
+        label: "FOL",
+        values: [options.folfilter.symbol + " " + options.folfilter.value]
+      })
+    }
 
     setSelectedFilters(filters);
   }
@@ -371,7 +440,8 @@ const FOLSummary = () => {
   const applyFilter = (options: any) => {
 
     let data = [];
-    data = filterByPlName(options?.plantName);
+    data = filterByPlNames(options?.plantName);
+    data = filterByfol(data, options?.folfilter);
     data =
       options?.productGroup?.length > 0
         ? filterByProdGrpName(data, options?.productGroup)
@@ -388,10 +458,7 @@ const FOLSummary = () => {
       Object.keys(options?.ccrName)?.length > 0
         ? filterByccrName(data, options?.ccrName)
         : data;
-    // data =
-    //   Object.keys(options?.folVal)?.length > 0
-    //     ? filterByFOL(options?.folFilterType, options?.folFilterVal)
-    //     : data;
+
 
     updatedSelectedFilters(options);
     setHasProductGroup(options?.productGroup?.length > 0);
@@ -412,12 +479,27 @@ const FOLSummary = () => {
   const departmentOptions: any = [];
   const ccrGroupOptions: any = [];
   const ccrNameOptions: any = [];
-  const plantOptions: any = []
+  const plantOptions: any = [];
+  const folOptions: any = [];
+
+  function getUniqueValues<T extends Record<any, any>>(array: T[], key: any): T[] {
+    const uniqueArray: T[] = [];
+    const uniqueValues: any[] = [];
+
+    for (const item of array) {
+      if (!uniqueValues.includes(item[key])) {
+        uniqueValues.push(item[key]);
+        uniqueArray.push(item);
+      }
+    }
+    return uniqueArray;
+  }
 
   for (let i = 0; i < tableData?.length; i++) {
     const ccrObj = tableData[i];
     if (ccrObj?.plnm) {
       plantOptions.push({ value: ccrObj.plnm, label: ccrObj.plnm, name: ccrObj.plnm });
+      // plantOptions = getUniqueValues(plantOptions)
     }
     if (ccrObj?.it) {
       const types = Object.keys(ccrObj?.it);
@@ -451,7 +533,7 @@ const FOLSummary = () => {
     {
       key: "plnm",
       heading: "Plant",
-      options: plantOptions
+      options: getUniqueValues(plantOptions, 'value')
     },
     {
       key: 'prdGrp',
@@ -472,23 +554,50 @@ const FOLSummary = () => {
       key: 'ccrNm',
       heading: "CCR",
       options: ccrNameOptions,
+    },
+    {
+      key: 'FOL',
+      heading: 'fol Filter',
+      options: folOptions
     }
   ];
 
   const removeFilters = (category: string, name: string) => {
+
 
     const updtedCCRName = selectedOptions?.ccrName;
     const updtedDept = selectedOptions?.department;
     const updtedCCRGrp = selectedOptions?.ccrGroup;
     let updatedPlantName = selectedOptions?.plantName;
     let updatedProductGrp = selectedOptions?.productGroup;
+    let updatedFolFilter = selectedOptions?.folfilter;
 
-    if (category === "Plant") {
-      updatedPlantName = '';
+    if (category === "FOL") {
+      updatedFolFilter = { value: "", symbol: "" }
       setSelectedOptions((prev: any) => ({
         ...prev,
-        plantName: '',
+        folfilter: updatedFolFilter,
       }));
+    }
+
+    if (category === "Plant") {
+      updatedPlantName = updatedPlantName.filter((item: string) => item !== name);
+      if (updatedPlantName.length === 0) {
+
+        updatedPlantName = "";
+
+        setSelectedOptions((prev: any) => ({
+          ...prev,
+          plantName: updatedPlantName
+        }));
+      }
+      else {
+        setSelectedOptions((prev: any) => ({
+          ...prev,
+          plantName: updatedPlantName
+        }));
+      }
+
     }
     if (category === "Product Group") {
       updatedProductGrp = [];
@@ -523,41 +632,85 @@ const FOLSummary = () => {
       productGroup: updatedProductGrp,
       department: updtedDept,
       ccrGroup: updtedCCRGrp,
-      ccrName: updtedCCRName
+      ccrName: updtedCCRName,
+      folfilter: updatedFolFilter,
     });
     applyFilter({
       plantName: updatedPlantName,
       productGroup: updatedProductGrp,
       department: updtedDept,
       ccrGroup: updtedCCRGrp,
-      ccrName: updtedCCRName
+      ccrName: updtedCCRName,
+      folfilter: updatedFolFilter
     });
   };
 
   useEffect(() => {
     notifyLoader("Loading Grid Data")
     if (data?.data?.data?.results) {
-      toast.dismiss()
       setTableData(data?.data?.data?.results);
     }
+    toast.dismiss()
   }, [data]);
 
   useEffect(() => {
     setFilterData(data?.data?.data?.results);
   }, [tableData]);
 
+  const { screenHeight } = useViewPort()
+
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+  const reportName = "EnquiryResponse";
+  const [myColDefs, setMyColDefs] = useState([{}]);
+
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    setColumnDef();
+  }, [])
+
+  const CustomHeader = {
+    'FOL(inDays)': {
+      cellRenderer: FullkitCellRenderer
+    }
+  }
+
+  useEffect(() => {
+    setMyColDefs(getColumnDefinations(HeaderData, CustomHeader));
+  }, [HeaderData])
+
+
   return (
     <EnquiryWrapper>
       <FilterWrapper>
         <MTOActionToolBar
           comp={"EnquiryResponse"}
+          isAddFilterButton
+          isAsOnDate
           onAddFilter={handleModalToggle}
           selectedFilters={selectedFilters}
           removeFilters={removeFilters}
           themeUi={themeUi}
         />
       </FilterWrapper>
-      <ResizableTable header={prodPlanningMock?.header} data={filterData} />
+
+      <BTRAllomentSection style={{ height: '70vh' }}>
+
+
+        <ResizableTable header={myColDefs} data={filterData} />
+      </BTRAllomentSection>
+
+
 
       <FilterModal
         filters={filters}
@@ -568,6 +721,7 @@ const FOLSummary = () => {
         handleOptionSelect={handleFilterSelect}
         handleNameChange={handleNameChange}
         themeUi={themeUi}
+        handleFolChange={handleFolChange}
       />
     </EnquiryWrapper>
   );
