@@ -109,6 +109,9 @@ const MTOActionToolBar = ({
         }
     }
 
+    console.log("SelectedFilters=>>>", selectedFilters)
+
+
 
     const format2 = "YYYY-MM-DD"
     const d = new Date();
@@ -239,27 +242,29 @@ const MTOActionToolBar = ({
                         Selected Filters
                     </VFSelectedFiltersPlaceHolder>
                     <VFFilterScrollBar>
-                        {selectedFilters?.map((filter: filterType) => (
-                            <VFSelectedFiltersChip key={filter.label}>
-                                <VFSelectedFiltersFilterLabel>
-                                    {filter?.label}:
-                                </VFSelectedFiltersFilterLabel>
-                                {filter?.values?.map((value: string) => (
-                                    <div key={value}>
-                                        <VFSelectedFiltersFilterContent>
-                                            <VFSelectedFiltersFilterValue>
-                                                <p style={{ margin: '0px 5px 0px 5px' }}> {value}</p>
-                                            </VFSelectedFiltersFilterValue>
-                                            <VFSelectedFiltersFilterCloseIcon
-                                                onClick={() => handleRemoveFilter(filter?.label, value)}
-                                                src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
-                                            />
-                                            {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
-                                        </VFSelectedFiltersFilterContent>
-                                    </div>
-                                ))}
-                            </VFSelectedFiltersChip>
-                        ))}
+
+                        {
+                            selectedFilters?.map((filter: filterType) => (
+                                <VFSelectedFiltersChip key={filter.label}>
+                                    <VFSelectedFiltersFilterLabel>
+                                        {filter?.label}:
+                                    </VFSelectedFiltersFilterLabel>
+                                    {filter?.values?.map((value: string) => (
+                                        <div key={value}>
+                                            <VFSelectedFiltersFilterContent>
+                                                <VFSelectedFiltersFilterValue>
+                                                    <p style={{ margin: '0px 5px 0px 5px' }}> {value}</p>
+                                                </VFSelectedFiltersFilterValue>
+                                                <VFSelectedFiltersFilterCloseIcon
+                                                    onClick={() => handleRemoveFilter(filter?.label, value)}
+                                                    src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
+                                                />
+                                                {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
+                                            </VFSelectedFiltersFilterContent>
+                                        </div>
+                                    ))}
+                                </VFSelectedFiltersChip>
+                            ))}
                     </VFFilterScrollBar>
                 </VFSelectedFiltersWrapper>}
                 {/**Selected Filter ends*/}
