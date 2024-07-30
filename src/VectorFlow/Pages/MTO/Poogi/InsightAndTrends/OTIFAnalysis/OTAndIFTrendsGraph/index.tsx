@@ -6,8 +6,7 @@ import { Poogi } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
-import { format } from "date-fns";
-import { getDateDaysBack, TooltipRenderer } from "../OTIFCommon";
+import { TooltipRenderer } from "../OTIFCommon";
 
 const OTAndIFTrendsGraph = () => {
   const [startDate] = useState(APIMock.graph.ot_n_if_graph.start);
@@ -122,7 +121,7 @@ const OTAndIFTrendsGraph = () => {
         }}
       >
         <div
-          data-testid="fullKit-graph"
+          data-testid="ot-and-if-graph"
           style={{
             fontSize: "16px",
             margin: "0 auto",

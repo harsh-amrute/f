@@ -17,7 +17,7 @@ import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRen
 import TagCellRenderer from "./TagCellRenderer/TagCellRenderer";
 
 const OTIFAnalysis = () => {
-  const [isGridView, setIsGridView] = useState(true);
+  const [isGridView, setIsGridView] = useState(false);
   const { screenHeight } = useViewPort();
 
   const gridRef = useRef();

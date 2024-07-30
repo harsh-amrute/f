@@ -47,7 +47,7 @@ const ResourceUtilization = () => {
       <div style="border-top: 1px dashed lightgray"></div>
       <div style="width: 100%; padding: 10px 5px;">
           <div style="display: flex; width: 100%;">
-              <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
+              <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #E96666"></div>
               <div style="display:flex; justify-content: space-between; width: 100%;">
                   <div>${selectedGraphState === "wipLimit"
         ? "Limit"
@@ -58,9 +58,9 @@ const ResourceUtilization = () => {
           </div>
           ${selectedGraphState === "wipLimit"
         ? `<div style="display: flex; width: 100%;">
-              <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #A8A8A8"></div>
+              <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
               <div style="display:flex; justify-content: space-between; width: 100%;">
-                  <div>usage</div>
+                  <div>Usage</div>
                   <div>${actBtn?.label === "Over Limit"
           ? datum?.overLimit
           : datum?.underLimit
@@ -264,11 +264,11 @@ const ResourceUtilization = () => {
         yKey: actBtn.value === "Over Limit" ? "overLimit" : "underLimit",
         yName: "Released",
         stacked: true,
-        fill: "#A8A8A8",
+        fill: "#000000",
         highlightStyle: {
           item: {
-            fill: "#B93B7E",
-            stroke: "#B93B7E",
+            fill: "#D2CECE",
+            stroke: "#D2CECE",
             strokeWidth: 2,
           },
         },
@@ -283,7 +283,7 @@ const ResourceUtilization = () => {
         yName: "Limit",
         marker: {
           size: 10,
-          fill: "#000000",
+          fill: "#E96666",
           shape: Rectangle,
           strokeWidth: 0,
         },
