@@ -10,7 +10,7 @@ const SuppCodeValidator = (value:any,helper:any)=>{
 
 export const MOQSchema = Joi.object({
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
-    wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
+    wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).messages(generateCommonMessages('WhCode')),
     SuppCode:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator),
     MOQ:Joi.number().integer().min(0)
 

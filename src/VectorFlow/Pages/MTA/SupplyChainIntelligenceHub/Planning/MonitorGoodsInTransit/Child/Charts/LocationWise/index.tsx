@@ -228,7 +228,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                     number:{
                         title:{
                             enabled:true,
-                            text:"Count of SKUs",
+                            text:"Count Of SKUs",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -355,7 +355,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                 <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={"95%"}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Statistical Overview of Delay Days in Transport at Receiving Locations</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Statistical Overview Of Delay Days In Transport At Receiving Locations</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
                                     {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(2)}/>}
@@ -401,7 +401,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                        
                                         labels: {
                                             style: {
-                                              fontSize: '14px', // Font size of y-axis labels
+                                              fontSize: '12px', // Font size of y-axis labels
                                               fontFamily: 'Roboto', // Font family of y-axis labels
                                                 colors:'#717171',
                                                 fontWeight:400                    

@@ -105,7 +105,7 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
         type: "number",
         position: "left",
         title: {
-          text: "No of SKU-Locations",
+          text: "No Of SKU-Locations",
           fontSize: 10,
           fontFamily: "Roboto",
         },

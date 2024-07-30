@@ -225,7 +225,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"No of Orders",
+                            text:"No Of Orders",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -266,7 +266,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"No of SKUs",
+                            text:"No Of SKUs",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -396,7 +396,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={'95%'}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations: Max SKUs With Gap &gt; 67% of Requirement</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations: Max SKUs With Gap &gt; 67% Of Requirement</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
                                     {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(2)}/>}

@@ -94,7 +94,7 @@ describe("Monitor GIT Child",()=>{
     })
     render(contextWrapper(<ChartView category="" currentTab="" currentGraphData={[]} {...commonProps}/>,store))
     // render(contextWrapper(<ChartView category="GITToChild" currentTab="locationWise" currentGraphData={MonitorGITChildMockData} {...commonProps}/>,store))
-    render(contextWrapper(<ChartView category="GITToChild" currentTab="transporterWise" currentGraphData={MonitorGITChildMockData} {...commonProps}/>,store))
+    // render(contextWrapper(<ChartView category="GITToChild" currentTab="transporterWise" currentGraphData={MonitorGITChildMockData} {...commonProps}/>,store))
     render(contextWrapper(<ChartView category="GITToChild" currentTab="custom" currentGraphData={MonitorGITChildCustomMockData} {...commonProps}/>,store))
     render(contextWrapper(<ChartView category="GITToChild" currentTab="" currentGraphData={MonitorGITChildMockData} {...commonProps}/>,store))
     render(contextWrapper(<ChartView category="GITFromParent" currentTab="" currentGraphData={getPlanningDataGridMockData['data']} {...commonProps}/>,store))

@@ -44,7 +44,7 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
       },
       {
         field: "SKUCounts",
-        headerName: "Count of SKUs",
+        headerName: "Count Of SKUs",
         colId: "SKUCounts",
       },
       {
@@ -386,7 +386,7 @@ const colDefs3: ColDef[] = [
           number: {
             title: {
               enabled: true,
-              text: "Count of SKUs",
+              text: "Count Of SKUs",
               position: "left",
               fontSize:10,
               fontFamily:'Roboto'
@@ -421,7 +421,7 @@ const colDefs3: ColDef[] = [
           number: {
             title: {
               enabled: true,
-              text: "Count of SKUs",
+              text: "Count Of SKUs",
               position: "left",
               fontSize:10,
               fontFamily:'Roboto'

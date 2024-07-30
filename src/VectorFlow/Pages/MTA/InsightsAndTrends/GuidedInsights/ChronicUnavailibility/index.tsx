@@ -434,7 +434,7 @@ const ChronicUnavailabilityCharts = () => {
                     number:{
                         title:{
                             enabled:true,
-                            text:'Count of SKUs',
+                            text:'Count Of SKUs',
                             position:'left',
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -481,7 +481,7 @@ const ChronicUnavailabilityCharts = () => {
                     number:{
                         title:{
                             enabled:true,
-                            text:'Count of Locations',
+                            text:'Count Of Locations',
                             position:'left',
                             fontSize:10,
                             fontFamily:'Roboto'

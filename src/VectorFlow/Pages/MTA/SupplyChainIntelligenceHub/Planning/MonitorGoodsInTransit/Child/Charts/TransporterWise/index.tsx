@@ -3,11 +3,14 @@ import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
 import { type GridRef } from "../../../../../../../../types/MDM";
-import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider, SCDynamicContainer} from '../../../styles';
+import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider, SCDynamicContainer, GlobalStyle, Xaxislegend} from '../../../styles';
 
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+
+import Chart from 'react-apexcharts';
+
 interface MonitorGITChildTransporterWiseProps{
     data:any
 }
@@ -16,12 +19,29 @@ interface MonitorGITChildTransporterWiseProps{
 const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterWiseProps) => {
 
     const refGraph1 = useRef<GridRef>();
-    // const refGraph2 = useRef<GridRef>();
+    const refGraph2 = useRef<GridRef>();
 
     const [hideChart1,toggleChart1] = useState<boolean>(false);
-    // const [hideChart2,toggleChart2] = useState<boolean>(false);
-    // const [grid2DisplayStatus,setGrid2DisplayStatus] = useState<string>('none');
+    const [hideChart2,toggleChart2] = useState<boolean>(false);
     // let chartRef2:ChartRef | undefined; 
+
+
+    const seriesData = useMemo(()=>{
+        if(!data)return []
+        return data['delayDaysStatisticalBox']['data'].map((item:any) => ({
+            x: item.name,
+            y: [parseFloat(item.mind), parseFloat(item.Q1), parseFloat(item.median),parseFloat(item.Q3), parseFloat(item.maxd)],
+
+          }))
+    },[data]);
+
+    const series = [           
+        {
+          name: 'boxplot',
+          data: seriesData
+        }
+      ];
+
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
         let colDefs = [];
@@ -54,7 +74,62 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
         return [...customColdefs,...colDefs];
     }
 
+    const mapUIConfigToColdefs2 = (columns:Array<{header:string,colCode:string}>) => {
+        let colDefs = [];
+
+        const customColdefs = [
+            {
+                field:'name',
+                colId:'name',
+                headerName:'Name'
+            },
+            {
+                field:'Q1',
+                colId:'Q1',
+                headerName:'Q1'
+            },
+            {
+                field:'Q3',
+                colId:'Q3',
+                headerName:'Q3'
+            },
+            {
+                field:'maxd',
+                colId:'maxd',
+                headerName:'Maximum'
+            },
+            {
+                field:'mean',
+                colId:'mean',
+                headerName:'Mean'
+            },
+            {
+                field:'median',
+                colId:'median',
+                headerName:'Median'
+            },
+           
+            {
+                field:'mind',
+                colId:'mind',
+                headerName:'Minimum'
+            },
+               
+        ]
+        
+        colDefs = columns.map((column:{header:string,colCode:string})=>{
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [...customColdefs,...colDefs];
+    }
+
     const colDefs1 = mapUIConfigToColdefs(data['maxTechBlackRedColumn']['uiconfig'])
+    const colDefs2 = mapUIConfigToColdefs2(data['delayDaysStatisticalBox']['uiconfig'])
+
 
     const convertToInt = (data:any)=>{
         return data.map((row:any)=>{
@@ -138,11 +213,11 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
     if(graphNo === 1){
         toggleChart1(true);
     }
-    // if(graphNo === 2){
-    //     chartRef2?.destroyChart()
-    //     toggleChart2(true);
-    //     setGrid2DisplayStatus('block')
-    // }
+    if(graphNo === 2){
+        // chartRef2?.destroyChart()
+        toggleChart2(true);
+        // setGrid2DisplayStatus('block')
+    }
     }
 
       const getChartToolbarItems:any = () => ['chartDownload'];
@@ -172,7 +247,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                     number:{
                         title:{
                             enabled:true,
-                            text:"Count of LRs",
+                            text:"Count Of LRs",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -198,9 +273,9 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
         'Delay : Transportation Lead Time > Standard Lead Time'
       ]
 
-    //   const graph2 = [
-    //     'This box plot graph displays the statistical distribution of delay days in transport for various transporters. Each box represents the range of delayed LRs as on today'
-    //   ]
+      const graph2 = [
+        'This box plot graph displays the statistical distribution of delay days in transport for various transporters. Each box represents the range of delayed LRs as on today'
+      ]
     
     
     return(
@@ -294,9 +369,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                         </div>
                         <div id="TransporterWiseG1" style={{height:'80%'}}></div>
                     </SCChartContainer>
-                    {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
-                        <VFInfoTip text={graph1}/>
-                    </div> */}
+                   
                 </Allotment.Pane>
                 {/* <Allotment.Pane>
                     <SCChartContainer height={547}>
@@ -331,6 +404,141 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                         <VFInfoTip text={graph2}/>
                     </div>
                 </Allotment.Pane> */}
+
+
+
+                    <Allotment.Pane preferredSize={'50%'}>
+                        <SCChartContainer height={"95%"}>
+                            <SCChartHeaderContainer>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Statistical Overview Of Delay Days In Transport At Receiving Locations</SCChartHeader></div>
+                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
+                                    <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
+                                    {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(2)}/>}
+                                </div>
+                            </SCChartHeaderContainer>
+                            <SCHorizontalDivider/>
+                            <div className="boxplot-chart">
+                                <GlobalStyle/>
+                                 <Chart
+                                    options={{
+                                    chart: {
+                                        type: 'boxPlot',
+                                        zoom: {
+                                        enabled: false,
+                                        },
+                                        toolbar: {
+                                            show: true,
+                                            tools: {
+                                              download: true,
+                                              customIcons: [],
+                                            },
+                                          },
+                                    },
+                                    grid: {
+                                        show: true,
+                                        strokeDashArray: 4, // Length of dashes
+                                    },
+                                    stroke: {
+                                        show: true,
+                                        curve: 'smooth',
+                                        lineCap: 'butt',
+                                        colors:['#848484'],
+                                        width: 1.5,
+                                        dashArray: 0
+                                    },
+                                    xaxis: {
+                                        crosshairs: {
+                                            show: false
+                                        },
+                                        tooltip:{
+                                            enabled:false,
+                                        },
+                                       
+                                        labels: {
+                                            style: {
+                                              fontSize: '12px', // Font size of y-axis labels
+                                              fontFamily: 'Roboto', // Font family of y-axis labels
+                                                colors:'#717171',
+                                                fontWeight:400                    
+                                            },
+                                          },
+                                    },
+                                    yaxis: {
+                                        title: {
+                                            text: 'Delay Days',
+                                            style: {
+                                                fontSize: '10px', 
+                                                fontFamily: 'Roboto', 
+                                                color:'#6d6d6d'
+                                            },
+                                        },
+                                        labels: {
+                                            style: {
+                                              fontSize: '14px', // Font size of y-axis labels
+                                              fontFamily: 'Roboto', // Font family of y-axis labels
+                                                colors:'#717171'                    
+                                            },
+                                          },
+                                         
+                                    },
+                                    plotOptions: {
+                                        boxPlot: {
+                                        colors: {
+                                            lower: '#D3D3D3', // Color for Q1 (1st quartile)
+                                            upper: '#848484'  // Color for Q3 (3rd quartile)
+                                        }
+                                        }
+                                    }
+                                    }}
+                                    series={series} // Make sure you have defined the series data
+                                    type="boxPlot"
+                                    height={290}
+
+                                />
+                                <Xaxislegend style={{marginTop:'-20px'}}>Transporter Name</Xaxislegend>
+                                </div>
+
+                                <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Statistical Overview of Delay Days in Transport at Receiving Locations" headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                                <div className="ag-theme-planning" style={{width:'1000px'}}>
+                                    <VFTable
+                                        ref={refGraph2}
+                                        columnDefs={colDefs2}
+                                        rowData={sortData(convertToInt(data['delayDaysStatisticalBox']['data']))}
+                                        enableCharts={true}
+                                        enableRangeSelection={true} 
+                                        rowSelection="multiple"
+                                        statusBar = {{
+                                            statusPanels: [
+                                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                              { statusPanel: 'agAggregationComponent', align:'left' },
+                                            ],
+                                          }}                                       
+                                         onGridReady={()=>generateChart(2,true)}
+                                        getChartToolbarItems={getChartToolbarItems}
+                                        chartToolPanelsDef={
+                                            {
+                                                panels:[]
+                                            }
+                                        }
+                                        chartThemeOverrides={chartThemeOverridesG1}
+                                        chartThemes={['myCustomTheme']}
+                                        customChartThemes={{
+                                            'myCustomTheme':myCustomTheme
+                                        }}
+                                        disableZoomScaling={true}
+                                        defaultColDef={{
+                                            floatingFilter:true,
+                                            filter: "agMultiColumnFilter",
+                                        }}
+                                        height={'480px'}
+                                    />
+                                </div>
+                            </VFModalCard>         
+                        </SCChartContainer>
+                    </Allotment.Pane>
             </Allotment>
         </SCDynamicContainer>
         </>
