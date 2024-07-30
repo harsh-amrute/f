@@ -1,5 +1,5 @@
 import * as NavStyle from "./styles";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { SCMenuLeft, SCMenuItem, SCItemChild } from "./styles";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useUserData } from "../../../context";
@@ -14,11 +14,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 import BPRDailyAnalytics from "../../../components/VectorFLOW/layouts/BPRDailyAnalytics";
-import ProcPlanningAnalytics from "../../../components/VectorFLOW/layouts/ProcPlanningAnalytics";
-import AnalyticalScreen from "../../../VectorFlow/Pages/MTO/Procurement/MaterialCoverage/AnalyticalScreen";
-
 import InTransitAnalytics from "../../../VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts/InTransitAnalytics";
 import OpenExpediteAnalytics from "../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/OpenExpediteAnalytics";
+import RRRAnalytics from "../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/RationedRequirementReport/RRRAnalytics";
+import BORAnalytics from "../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BuyerOrderReport/BORAnalytics";
+import DBMAnalytics from "../../../VectorFlow/Pages/MTA/DBM/DBMNormSuggestions/DBMAnalytics";
+import AnalyticalScreen from "../../../VectorFlow/Pages/MTO/Procurement/MaterialCoverage/AnalyticalScreen";
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -30,7 +31,7 @@ const NavbarItem = ({
   const { user, isSideBarOpen, toggleSideBar } = useUserData();
   const permission: any = user?.roles?.permission;
   const { currentView, currentCategory } = useSelector((state: RootState) => state.mta.planning)
-  const analyticsPaths: Array<string> = ["/supply-chain-intelligence-hub/bpr", "/supply-chain-intelligence-hub/rrr", "/supply-chain-intelligence-hub/bor", "/dbm/dbm-norm-suggestions", "/insights-and-trends/research-insights", "/insights-and-trends/buffer-trend-report", "/insights-and-trends/buffer-trends"]
+  const analyticsPaths: Array<string> = ["/supply-chain-intelligence-hub/bpr", "/insights-and-trends/research-insights", "/insights-and-trends/buffer-trend-report", "/insights-and-trends/buffer-trends"]
   const themeUi = user?.user?.theme_ui;
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,22 +39,7 @@ const NavbarItem = ({
 
   const mdm = useSelector((state: RootState) => state.mdm);
   const dispatch = useDispatch();
-  useEffect(() => {
-    // if(location.pathname==="/supply-chain-intelligence-hub/planning" && currentCategory===""){
-    //   dispatch(UPDATE_PLANNING_DATA({
-    //     currentView:'null',
-    //     currentTab:'',
-    //     currentCategory:''
-    //   }))
-    // }
-    // if(location.pathname!=="/supply-chain-intelligence-hub/planning"){
-    //   dispatch(UPDATE_PLANNING_DATA({
-    //     currentView:'null',
-    //     currentTab:'',
-    //     currentCategory:''
-    //   }))
-    // }
-  }, [location.pathname])
+
 
   const resetState = () => {
     dispatch(RESET_STATE());
@@ -250,19 +236,28 @@ const NavbarItem = ({
           />
         )}
 
-        {
-          //my code goes here
-          isHide && pathname === "/procurement/material-coverage-open-sales" && menuItem.id === 19 && (
-            <AnalyticalScreen />
-
-          )
-        }
-        {isHide  && pathname==='/logistics/intransit-whereabouts' && menuItem.id === 9 && (
-          <InTransitAnalytics/>
+        {isHide && pathname === '/logistics/intransit-whereabouts' && menuItem.id === 9 && (
+          <InTransitAnalytics />
         )}
 
-        {isHide  && pathname==='/supply-chain-intelligence-hub/open-expediting-requests' && menuItem.id === 9 && (
-          <OpenExpediteAnalytics/>
+        {isHide && pathname === '/procurement/material-coverage-open-sales' && menuItem.id === 19 && (
+          <AnalyticalScreen />
+        )}
+
+        {isHide && pathname === '/supply-chain-intelligence-hub/rrr' && menuItem.id === 9 && (
+          <RRRAnalytics />
+        )}
+
+        {isHide && pathname === '/supply-chain-intelligence-hub/bor' && menuItem.id === 9 && (
+          <BORAnalytics />
+        )}
+
+        {isHide && pathname === "/dbm/dbm-norm-suggestions" && menuItem.id === 9 && (
+          <DBMAnalytics />
+        )}
+
+        {isHide && pathname === '/supply-chain-intelligence-hub/open-expediting-requests' && menuItem.id === 9 && (
+          <OpenExpediteAnalytics />
         )}
 
         {isHide && pathname === "/ist-forced-closure" && menuItem.id === 6 && (
@@ -271,10 +266,6 @@ const NavbarItem = ({
 
         {isHide && pathname === "/store-status" && menuItem.id === 6 && (
           <ParticularStoreStatus themeUi={themeUi} />
-        )}
-
-        {isHide && pathname === "/procurement-planning/planning" && menuItem.id === 19 && (
-          <ProcPlanningAnalytics themeUi={themeUi} />
         )}
 
         {isHide &&

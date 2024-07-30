@@ -1,12 +1,12 @@
 import { GridOptions } from "ag-grid-enterprise";
-import React, { useMemo } from "react";
+import { useEffect, useState } from "react";
 import ColorCellRenderer from "../../../Common/ColorCellRenderer";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import DayWiseCoverageDetailsCellRenderer from "./DayWiseCoverageDetailsCellRenderer";
 import { tableData } from "./table_data";
-import { uiConfig } from "./UiConfig";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
+import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 
 // interface IDayWiseCoverageProps {
 //     selectedDate?: string,
@@ -38,7 +38,33 @@ const DayWiseCoverageTable = () => {
   //       position: 0
   //   }
   // ]
-  const colDef = useMemo(() => getColumnDefinations(uiConfig.data, colDefCustomizations),[]);
+
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+  const reportName = "DayWiseCoverage";
+
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    setColumnDef();
+  }, [])
+
+  const [colDef, setColDef] = useState([{}]);
+
+  useEffect(() => {
+    setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
+  }, [HeaderData])
+
+
 
   const options: GridOptions<any> = {
     getRowStyle: (params: any) => {
@@ -48,7 +74,7 @@ const DayWiseCoverageTable = () => {
     },
     columnDefs: colDef,
     defaultColDef: {
-        suppressMenu: true,
+      suppressMenu: true,
     },
     autoGroupColumnDef: {
       headerName: "Group",

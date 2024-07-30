@@ -3,23 +3,21 @@ import { MTAStore } from '../../VectorFlow/types/MTA';
 import { MDMStore } from '../../VectorFlow/types/MDM';
 import mdmReducer from '../reducers/MDM';
 import mtaReducer from '../reducers/MTA';
-
 import mtoReducer from '../reducers/MTO/index';
 import { MTOStore } from '../../VectorFlow/types/MTO';
 
-
-const mdmState: MDMStore = {
-    allMasters: [],
-    masters: [],
-    options: [],
-    selectedOptions: [],
-    activeMaster: { id: 0, fields: [], filters: [], progress: 'default', name: '', colDefs: [], rowData: [] },
-    isSelectMasterOpen: true,
-    draftId: '',
-    isUploadModalOpen: false,
-    chunkSize: 5000,
-    recordCount: 0,
-    isDataAvailableLocally: false
+const mdmState:MDMStore = {
+    allMasters:[],
+    masters:[],
+    options:[],
+    selectedOptions:[],
+    activeMaster:{id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true},
+    isSelectMasterOpen:true,
+    draftId:'',
+    isUploadModalOpen:false,
+    chunkSize:20000,
+    recordCount:0,
+    isDataAvailableLocally:false
 }
 
 const mtaState: MTAStore = {

@@ -38,7 +38,7 @@ describe('SelectMaster Component', () => {
     masters:MasterData,
     options:[],
     selectedOptions:[],
-    activeMaster:{id:0,fields:[],filters:MasterData[0].filters,progress:'default',name:'',colDefs:[],rowData:[]},
+    activeMaster:{id:0,fields:[],filters:MasterData[0].filters,progress:'default',name:'',colDefs:[],rowData:[],isChecked:true},
     isSelectMasterOpen:true,
     draftId:'',
     isUploadModalOpen:false,
@@ -114,7 +114,7 @@ describe('SelectMaster Component', () => {
       masters:[],
       options:[],
       selectedOptions:[],
-      activeMaster:{id:0,fields:[],filters:MasterData[0].filters,progress:'default',name:'',colDefs:[],rowData:[]},
+      activeMaster:{id:0,fields:[],filters:MasterData[0].filters,progress:'default',name:'',colDefs:[],rowData:[],isChecked:true},
       isSelectMasterOpen:true,
       draftId:'',
       isUploadModalOpen:false,
@@ -149,7 +149,7 @@ describe('SelectMaster Component', () => {
       masters:[],
       options:[],
       selectedOptions:[],
-      activeMaster:{id:0,fields:[],filters:MasterData[0].filters,progress:'default',name:'',colDefs:[],rowData:[]},
+      activeMaster:{id:0,fields:[],filters:MasterData[0].filters,progress:'default',name:'',colDefs:[],rowData:[],isChecked:true},
       isSelectMasterOpen:true,
       draftId:'',
       isUploadModalOpen:false,
@@ -184,7 +184,7 @@ describe('SelectMaster Component', () => {
       masters:MasterData,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:[],filters:MasterData[0].filters,progress:'default',name:'',colDefs:[],rowData:[]},
+      activeMaster:{id:1,fields:[],filters:MasterData[0].filters,progress:'default',name:'',colDefs:[],rowData:[],isChecked:true},
       isSelectMasterOpen:true,
       draftId:'',
       isUploadModalOpen:false,
@@ -263,4 +263,7 @@ describe('SelectMaster Component', () => {
     expect(storeDispatchSpy).toBeCalledWith({payload:[{label:'SKU Code',value:'sku_code'}],type:"FILL_SELECTED_OPTIONS"})
 
   });
+
+
+  
 });

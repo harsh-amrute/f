@@ -1,6 +1,25 @@
 import { render, screen } from '@testing-library/react';
-import React from 'react';
+import {ReactNode} from 'react';
 import VFTable from './';
+import { UserDataContext } from '../../../../context';
+
+const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {
+  return (
+
+          <UserDataContext.Provider
+            value={{
+              user: { user: { theme_ui: theme } },
+              changeColorTheme: (color) => {
+                return color;
+              },
+              isSideBarOpen:true,toggleSideBar:jest.fn
+            }}
+          >
+            {children}
+          </UserDataContext.Provider>
+
+  );
+};
 
 describe('should render the VFTable component', () => {
     window.URL.createObjectURL = jest.fn();
@@ -22,11 +41,38 @@ describe('should render the VFTable component', () => {
     columnVisible:jest.fn()
   }
   
-  it("Should render the table in the DOM",()=>{
-    render(<VFTable {...agGridProps}/>);
+  it("Should render with different themes",()=>{
+    render(contextWrapperWithCustomTheme(<VFTable {...agGridProps}/>,"NOIRFUSION"));
 
     const table = screen.getByRole('table');
     expect(table).toBeInTheDocument();
   })
 
+  it("Should render with different themes",()=>{
+    render(contextWrapperWithCustomTheme(<VFTable {...agGridProps}/>,"REGALBLAZE"));
+
+    const table = screen.getByRole('table');
+    expect(table).toBeInTheDocument();
+  })
+
+  it("Should render with different themes",()=>{
+    render(contextWrapperWithCustomTheme(<VFTable {...agGridProps}/>,"PUREELEGANCE"));
+
+    const table = screen.getByRole('table');
+    expect(table).toBeInTheDocument();
+  })
+
+  it("Should render with different themes",()=>{
+    render(contextWrapperWithCustomTheme(<VFTable {...agGridProps}/>,"CHARCOALCHIC"));
+
+    const table = screen.getByRole('table');
+    expect(table).toBeInTheDocument();
+  })
+
+  it("Should render with different themes",()=>{
+    render(contextWrapperWithCustomTheme(<VFTable {...agGridProps}/>,"CHARCOALgfagaCHIC"));
+
+    const table = screen.getByRole('table');
+    expect(table).toBeInTheDocument();
+  })
 });

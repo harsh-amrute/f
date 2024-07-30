@@ -2,16 +2,31 @@ import { ProcurementLayout } from '../styles';
 import ActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import useSimFullKit from '../SimulateFullKit/useSimFullKit';
 import VFFloatingTab from "../../../../../../components/VectorFLOW/commons/VFFloatingTab";
+import { useUserData } from "../../../../../../context";
+import { useNavigate } from 'react-router';
+
 
 const SimulateFullKit = () => {
     const { renderView, toggleCurrentTab } = useSimFullKit();
+    const { user } = useUserData()
+    const navigate = useNavigate();
+    const themeUi = user.user.theme_ui
     return (
         <>
-            <ActionToolBar
-                comp={'Procurement Planning'}
-                onDateChange={() => { console.log('') }}
-                submitDate={() => { console.log('') }}
-            />
+            <div style={{ zoom: 1.25 }}>
+
+                <ActionToolBar
+                    isExcelExport
+                    isGoBackButton
+                    handleGoBack={() => {
+                        navigate('/procurement-planning/planning')
+                    }}
+                    themeUi={themeUi}
+                    comp={'Procurement Planning'}
+                    onDateChange={() => { console.log('') }}
+                    submitDate={() => { console.log('') }}
+                />
+            </div>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 
                 <VFFloatingTab

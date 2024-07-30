@@ -10,10 +10,13 @@ import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
-import GetProcPlanningDataColumn from './GetProcPlanningDataColumn.json';
-import { mapProcPlanningFieldsToColDefs } from '../../../../../helpers/utils';
+import { getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { userGetProcPlanningData } from "../../../../Services/MTO/Procurement/ProcPlanning/index";
+import { toast } from "react-toastify";
+import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
+import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -63,7 +66,25 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 };
 
 const useProcPlanning = (date: string) => {
-    const { HeaderData } = GetProcPlanningDataColumn;
+    const [HeaderData, setHeaderData] = useState([{}]);
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+    const reportName = "ProcurementPlanningShortage";
+
+    const setColumnDef = async () => {
+        try {
+            const response = await getUIConfigData(reportName);
+            setHeaderData(response.data.data);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    useEffect(() => {
+        setColumnDef();
+    }, [])
+
     const gridRef = useRef<AgGridReact>(null);
     const { isSideBarOpen } = useUserData()
     const [currentPage] = useState<any>(1);
@@ -86,12 +107,29 @@ const useProcPlanning = (date: string) => {
     ];
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
+    const [isLoading, setIsLoading] = useState(false);
     const fetchData = useCallback(async (date: string) => {
+        setIsLoading(true);
         try {
+            toast.dismiss();
+            notifyLoader("Loading data...")
             const response = await getProcPlanningData(date);
+            if (response.status === 200) {
+                toast.dismiss();
+                notifySuccess("Data fetched Successfully!");
+                setIsLoading(false);
+            }
+            else {
+                toast.dismiss();
+                notifyError("Failed to fetch data!");
+                setIsLoading(false);
+            }
             setData(response?.data?.data?.results || []);
         } catch (error) {
             console.log("error ")
+            toast.dismiss();
+            notifyError("Failed to fetch data!");
+            setIsLoading(false);
         }
     }, [getProcPlanningData]);
 
@@ -132,21 +170,68 @@ const useProcPlanning = (date: string) => {
         }
     }, [datas, HeaderData]);
 
-    const ShortageColumns = useMemo(() => mapProcPlanningFieldsToColDefs(HeaderData.map((header: any) => ({
-        ...header,
-        vs: header.jf === 'eas' ? true : header.vs
-    }))), [HeaderData]);
+    const customHeader = {
+        ColorPriority: {
+            cellRenderer: 'coloPriority',
+            tooltipValueGetter: (params: any) => {
+                const cpData = params.data.cp[0];
+                const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
+                let tooltipText = '';
+                keysToPrint.forEach((key) => {
+                    if (Object.prototype.hasOwnProperty.call(cpData, key)) {
+                        if (tooltipText !== '') {
+                            tooltipText += ' | ';
+                        }
+                        tooltipText += `${key}: ${cpData[key]}`;
+                    }
+                });
+                return tooltipText;
+            },
+            tooltipComponent: "availabilityToolTip",
+            initialWidth: 200, //160
+            autoHeaderHeight: true,
+            wrapHeaderText: true,
 
-    const CompleteAvailableColumns = useMemo(() => mapProcPlanningFieldsToColDefs(HeaderData.map((header: any) => ({
-        ...header,
-        vs: header.jf === 'eas' ? false : header.vs
-    }))), [HeaderData]);
+        },
+
+        'ExpAdd.StockToday': {
+            cellRenderer: "inputbox",
+            editable: true,
+            autoHeaderHeight: true,
+            wrapHeaderText: true,
+            initialWidth: 200, //160
+            filter: 'agMultiColumnFilter',
+            floatingFilter: true,
+            cellStyle: {
+                backgroundColor: 'white',
+                border: '1px solid #b9bdba',
+                color: 'black',
+                padding: '1px',
+            },
+        }
+
+    }
+    const extras = [
+        {
+            field: "",
+            position: 0,
+            suppressHeaderFilterButton: true,
+            suppressMenu: true,
+            filter: false,
+            maxWidth: 50,
+            cellRenderer: 'agGroupCellRenderer'
+        }
+    ]
+    const ShortageColumns = getColumnDefinations(HeaderData, customHeader, extras)
+
+
+    const CompleteAvailableColumns = getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]);
 
     const icons = useMemo(() => {
         return {
             groupExpanded: `<img src="${'/assets/img/mto/procPlanning/minus_circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
             groupContracted: `<img src="${'/assets/img/mto/procPlanning/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
-    };
+        };
     }, []);
     const autoGroupColumnDef = useMemo(() => {
         return {
@@ -210,7 +295,7 @@ const useProcPlanning = (date: string) => {
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'750px'}
+                            height={'700px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [
@@ -222,7 +307,9 @@ const useProcPlanning = (date: string) => {
                 );
             case "short":
                 return (
+
                     <div>
+
                         <VFTable
                             {...agGridProps}
                             columnDefs={ShortageColumns}
@@ -230,7 +317,7 @@ const useProcPlanning = (date: string) => {
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'750px'}
+                            height={'700px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [
@@ -238,29 +325,36 @@ const useProcPlanning = (date: string) => {
                                 ]
                             }}
                         />
-                        <div style={{ textAlign: 'right', flexDirection: 'row' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', flexDirection: 'row' }}>
 
                             <VFButtonOutline
-                                onClick={navigateToSimulateScreen}
+                                onClick={() => { fetchData(date) }}
                                 themeUi=""
                                 disabled={false}
-                                width={150}
+                                width={135}
+
                                 style={{
+                                    height: '50px',
                                     marginRight: 20,
                                     borderColor: '#BC3D81',
                                     color: '#BC3D81',
+                                    background: 'transparent',
                                     fontWeight: 'bold',
                                 }}
                             >
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <img src="/assets/img/VectorFLOW/reset.svg" alt="Reset Icon" style={{ marginRight: 8 }} />
-                                    Reset Data
+
+                                <div style={{ display: 'flex', alignItems: 'center', }}>
+                                    <img src="/assets/img/VectorFLOW/reset.svg" alt="Reset Icon" height={20} width={20} style={{ margin: '0 12px' }} />
+                                    <p style={{ fontSize: '14px' }}>
+                                        Reset Data
+                                    </p>
                                 </div>
                             </VFButtonOutline>
                             <VFButton
                                 onClick={navigateToSimulateScreen}
                                 themeUi=""
                                 disabled={false}
+
                                 width={250}>Simulate improvement in Full Kits
                             </VFButton>
                         </div>
@@ -289,6 +383,11 @@ const useProcPlanning = (date: string) => {
             icons: icons,
             pagination: true,
             defaultColDef: {
+                floatingFilter: true,
+                filter: "agMultiColumnFilter",
+                minWidth: 140,
+                wrapHeaderText: true,
+                autoHeaderHeight: true,
                 cellStyle: {
                     'text-align': 'center',
                     'height': '50px',
@@ -301,7 +400,9 @@ const useProcPlanning = (date: string) => {
                     'white-space': 'nowrap',
                     'resizable': 'true',
                 },
+                flex: 1,
             },
+
 
         },
         masterDetail: true,
@@ -353,6 +454,7 @@ const useProcPlanning = (date: string) => {
         GetCount,
         fetchData,
         date,
+        isLoading
     }
 }
 

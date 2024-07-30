@@ -6,13 +6,13 @@ export const Main = styled.div`
 
 export const MainContainer = styled.div`
   display: flex;
-  gap: 60px;
+  gap: 120px;
   margin-left:20px;
   padding: 1rem;
 `
 
 export const Box = styled.div`
-    width: 250px;
+    width: 280px;
     min-height: 25vh;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow:0px 6px 12px #74747429;

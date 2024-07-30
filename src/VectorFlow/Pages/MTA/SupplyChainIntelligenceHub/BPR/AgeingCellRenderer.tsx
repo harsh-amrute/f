@@ -3,6 +3,7 @@ import { AgeingCell, AgeingIcon, AgeingText, AgeingToolTipSection, AgeingToolTip
 import Portal from '../../../../../components/VectorFLOW/layouts/Portal'
 
 import React, { CSSProperties, useState } from "react"
+import { useUserData } from "../../../../../context"
 
 
 interface AgeingCellRendererProps{
@@ -16,7 +17,9 @@ const AgeingCellRenderer = (props:AgeingCellRendererProps)=>{
         value
     } = props
 
-    
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
 
 
 
@@ -43,7 +46,7 @@ const AgeingCellRenderer = (props:AgeingCellRendererProps)=>{
                 <AgeingText>
                     {value.ag}
                 </AgeingText>
-                <AgeingIcon onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} src="/assets/img/VectorFLOW/BPR/ageing-sub-grid.svg"/>
+                <AgeingIcon onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/ageing-sub-grid-regal.svg":"/assets/img/VectorFLOW/BPR/ageing-sub-grid.svg"}/>
             </AgeingCell>
             {isOpen && (
                 <Portal wrapperId="viewtable">

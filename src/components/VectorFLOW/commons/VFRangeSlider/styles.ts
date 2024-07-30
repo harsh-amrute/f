@@ -1,5 +1,6 @@
 // RangeSliderStyles.ts
 import styled from 'styled-components';
+import * as  globalStyles from '../../../../styles/global'
 
 export const RangeSliderContainer = styled.div`
   position: relative;
@@ -7,7 +8,7 @@ export const RangeSliderContainer = styled.div`
   margin: 20px auto;
 `;
 
-export const RangeSliderInput = styled.input<{progressValue:number}>`
+export const RangeSliderInput = styled.input<{progressValue:number,theme:string}>`
   -webkit-appearance: none;
   width: 100%;
   height: 11px;
@@ -27,7 +28,7 @@ border-radius: 30px;
     justify-content:center;
     align-items:center;
     border-radius: 50%;
-    background: #BC3D81;
+    background: ${(props)=>globalStyles.chooseThemeColor[props.theme].color4};
     border:4px solid white;
     box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
     cursor: pointer;
@@ -37,7 +38,7 @@ border-radius: 30px;
   &::-webkit-slider-runnable-track {
     height:9px;
     cursor: pointer;
-    background: linear-gradient(to right,  #454545 0%,#454545 ${(props)=>props.progressValue}%,#ffffff ${(props)=>props.progressValue}%,#ffffff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    background: linear-gradient(to right,  ${(props)=>props.theme==="REGALBLAZE"?globalStyles.chooseThemeColor[props.theme].color1:'black'} 0%,${(props)=>props.theme==="REGALBLAZE"?globalStyles.chooseThemeColor[props.theme].color1:'black'} ${(props)=>props.progressValue}%,#ffffff ${(props)=>props.progressValue}%,#ffffff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     border-radius: 30px;
     border: none;
   }

@@ -6,8 +6,8 @@ import { setupReactQuery } from "../../../../../config/react-query-config";
 import { QueryClientProvider } from "@tanstack/react-query"
 import { BrowserRouter as Router } from "react-router-dom"
 import { Provider } from "react-redux"
-import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useDeleteMasterData,useDeleteDraft, useModifyMasterData, useDeleteTask, useValidateMaster, useGetMasterDataRetail, useGetRetailCount,useDeleteMasterDataRetail, useModifyMasterDataRetail } from "../../../../../VectorFlow/Services/MTA/MDM";
-import { getMasterUIConfigurationMockData ,createDraftMockData,MasterData, MasterDataWithSubmittedMaster,getSeasonalityDetailsMockData, mockMasterData,deleteDraftMockData,modifyMasterMockData, deleteTaskMockData,validateMasterMockData} from "../../../../../mock-data/MDM";
+import { useGetMasterUIConfiguration,useGetMasterData,useGetCount,useCreateDraft,useModifyDraft,useGetSeasonalityDetails,useDeleteMasterData,useDeleteDraft, useModifyMasterData, useDeleteTask, useValidateMaster, useGetMasterDataRetail, useGetRetailCount,useDeleteMasterDataRetail, useModifyMasterDataRetail, useGetUploadProgress } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { getMasterUIConfigurationMockData ,createDraftMockData,MasterData, MasterDataWithSubmittedMaster,getSeasonalityDetailsMockData, mockMasterData,deleteDraftMockData,modifyMasterMockData, deleteTaskMockData,validateMasterMockData, getUploadProgressMockData} from "../../../../../mock-data/MDM";
 import { type MDMStore } from "../../../../../VectorFlow/types/MDM";
 import {mapMasterToColumnDefs} from '../../../../../helpers/utils'
 import DeleteRecord from ".";
@@ -80,6 +80,10 @@ typeof useDeleteTask
 
 const useValidateMasterMock = useValidateMaster as jest.MockedFunction<
 typeof useValidateMaster
+>;
+
+const useGetUploadProgressMock = useGetUploadProgress as jest.MockedFunction<
+typeof useGetUploadProgress
 >;
 
 window.URL.createObjectURL = jest.fn();
@@ -169,6 +173,13 @@ const useRemoveMasterDataMockData:any = {
       return {data:validateMasterMockData}
     }
   }
+
+  const useGetUploadProgressMockData:any = {
+    mutateAsync:() => {
+      return {data:getUploadProgressMockData}
+    }
+  }
+
 const queryClient = setupReactQuery()
 
 const contextWrapper = (children: ReactNode,store:any) => {
@@ -203,7 +214,7 @@ describe("DeleteRecord Component", () => {
       masters:MasterData,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[]},
+      activeMaster:{id:1,fields:MasterData[0].fields,filters:MasterData[0].filters,progress:'default',name:MasterData[0].name,colDefs:mapMasterToColumnDefs(MasterData[0].fields),rowData:[],isChecked:true},
       isSelectMasterOpen:true,
       draftId:'',
       isUploadModalOpen:false,
@@ -272,6 +283,10 @@ describe("DeleteRecord Component", () => {
 
     useValidateMasterMock.mockImplementation(() => {
       return useValidateMasterMockData;
+    })
+
+    useGetUploadProgressMock.mockImplementation(() => {
+      return useGetUploadProgressMockData;
     })
 
     const mockedStore = createStore(mockState)
@@ -406,6 +421,10 @@ describe("Handles all custom redux interactions",()=>{
       return useValidateMasterMockData;
     })
 
+    useGetUploadProgressMock.mockImplementation(() => {
+      return useGetUploadProgressMockData;
+    })
+
   });
 
   afterEach(()=>{
@@ -417,7 +436,7 @@ describe("Handles all custom redux interactions",()=>{
       masters:MasterDataWithSubmittedMaster,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'submitted',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[]},
+      activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'submitted',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[],isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
@@ -439,7 +458,7 @@ describe("Handles all custom redux interactions",()=>{
       masters:MasterDataWithSubmittedMaster,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'default',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[]},
+      activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'default',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[],isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
@@ -461,7 +480,7 @@ describe("Handles all custom redux interactions",()=>{
       masters:MasterDataWithSubmittedMaster,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'default',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[]},
+      activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'default',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[],isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,
@@ -483,7 +502,7 @@ describe("Handles all custom redux interactions",()=>{
       masters:MasterDataWithSubmittedMaster,
       options:[],
       selectedOptions:[],
-      activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'default',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[]},
+      activeMaster:{id:1,fields:MasterDataWithSubmittedMaster[0].fields,filters:MasterDataWithSubmittedMaster[0].filters,progress:'default',name:MasterDataWithSubmittedMaster[0].name,colDefs:mapMasterToColumnDefs(MasterDataWithSubmittedMaster[0].fields),rowData:[],isChecked:true},
       isSelectMasterOpen:false,
       draftId:'',
       isUploadModalOpen:false,

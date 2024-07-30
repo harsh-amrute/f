@@ -1,11 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "allotment/dist/style.css";
 import {
     SCChartContainer, SCHorizontalDivider
 } from '../styles';
 import { AgChartsReact } from "ag-charts-react";
 import { AgChartOptions, AgCharts } from "ag-charts-community";
-import procData from "../ProcurementData";
 import { Order } from "../../../../../../types/MTO";
 import { InsightsAndTrendsString } from "../../../../Common/String";
 import { ProcurementSeriesDataFill, ProcurementSeriesDataYKey, ProcurementSeriesDataYName } from "../../../../Common/Enum";
@@ -14,13 +13,16 @@ import VFModalCard from "../../../../../../../components/VectorFLOW/commons/VFMo
 import VFTable from "../../../../../../../components/VectorFLOW/commons/VFTable";
 import { GridRef } from "../../../../../../../VectorFlow/types/MDM";
 
-const GraphView = () => {
+const GraphView = ({ shortageData }: any) => {
 
-    // const [date, setDate] = useState("19 April 2024 - 18 July 2024")
     const [date] = useState("01 July 2024 - 28 Sept 2024")
 
-    // const [rawData, setRawData] = useState(procData);
-    const [rawData] = useState(procData);
+    const [rawData, setRawData] = useState(shortageData);
+
+    useEffect(() => {
+        setRawData(shortageData)
+    }, [shortageData])
+
 
     function TooltipRenderer({ datum, xKey }: any) {
         return `
@@ -69,7 +71,7 @@ const GraphView = () => {
                     "fill": ProcurementSeriesDataFill[i],
                     "tooltip": {
                         renderer: TooltipRenderer
-                    }
+                    },
                 }
             )
         }
@@ -270,7 +272,7 @@ const GraphView = () => {
 
 
         <>
-            <SCChartContainer height={"450px"} style={{ zoom: 1.3, border: "1px solid #CCCCCC" }}>
+            <SCChartContainer height={"450px"} style={{ border: "1px solid #CCCCCC" }}>
                 <div style={{ height: '85%', width: '100%' }}>
                     <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
                         <div style={{ fontSize: '12px', margin: '0 auto', fontWeight: 500, textAlign: 'center' }}>
@@ -290,10 +292,10 @@ const GraphView = () => {
 
                         <div style={{ paddingRight: '10px' }} onClick={() => {
 
-                            (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart);
+                            (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart, { fileName: "RM_PM_Orderwise_Coverage" });
                         }}> <img height={12} width={12} src="/assets/img/mto/RMPMBufferTrend/download.svg" /></div>
                     </div>
-                    <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing" headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                    <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText="RM / PM Orderwise Coverage (01 July 2024 - 28 Sept 2024)" headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div className="ag-theme-planning" style={{ width: '1000px' }}>
                             <VFTable
                                 ref={refGraph1}

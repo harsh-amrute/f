@@ -1,5 +1,4 @@
 
-
 import styled from 'styled-components'
 
 export const VFMasterCardContainer = styled.div`
@@ -11,7 +10,6 @@ background: #FFFFFF 0% 0% no-repeat padding-box;
 box-shadow: 0px 6px 12px #95959529;
 border-radius: 6px;
 opacity: 1;
-
 
 `
 
@@ -30,6 +28,8 @@ export const VFMasterCardHeader = styled.div`
     width:100%;
     padding:20px 16px;
     border-bottom:solid 0.5px #ECECEC;
+
+    justify-content:space-between;
 `
 
 export const VFMasterCardListContainer = styled.div`
@@ -73,4 +73,25 @@ letter-spacing: 0px;
 color: #313131;
 opacity: 1;
 border-bottom:solid 0.5px #ECECEC;
+`
+
+
+export const VFMasterCardCheckBox = styled.input<{themeUi: string}>`
+appearance:none;
+width:20px;
+height:20px;
+border-radius:50%;
+outline:none;
+border:1px solid grey;  
+    &:checked {
+        // background-color: #bc3d81; 
+        background:${(props) => props.themeUi==="REGALBLAZE"?"#FCA311": "#BC3D80"  };
+        border:none;
+            &::after { 
+                content: '✓';
+                color:white;
+                margin-left:5px;
+            }
+    }
+ 
 `

@@ -11,6 +11,9 @@ import { AgGridReactProps } from "ag-grid-react"
 import { notifyError } from "../../../../../helpers/notify"
 import { ColDef } from "ag-grid-enterprise"
 import {  differenceInSeconds} from "date-fns"
+import { useUserData } from "../../../../../context"
+
+import * as globalStyles from '../../../../../styles/global'
 
 
 const TaskStatus = ()=>{
@@ -22,7 +25,9 @@ const TaskStatus = ()=>{
     const {mutateAsync:getTaskDetailDownloadData} = useGetTaskDetailDownloadData()
     const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration()
 
-    
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
     
     const [tempAgGridRowData,setTempAgridRowData] = useState<any>([])
     const [currentMasterName,setCurrentMasterName] = useState<string>('')
@@ -198,7 +203,7 @@ const TaskStatus = ()=>{
                             "textAlign": "center",
                         }
                     }
-                ])}
+                ],globalStyles.chooseThemeColor[themeUi].color4)}
                 pagination
                 // paginationPageSize={10}            
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKSTATUS_PAGE || '200')}  

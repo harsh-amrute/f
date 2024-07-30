@@ -5,9 +5,9 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import HorizontalSplitView from "./HorizontalSplitView"
 
 import VerticalSplitView from "./VerticalSplitView"
-import { mapBTRRowData, mapBTRRowDataToColDefs } from "../../../../../helpers/utils"
+import { mapBTRRowData, mapBTRRowDataToColDefs } from "../../../../../helpers/utils";
 
-import { useGetBTRDataCount, useGetBTRData } from "../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR"
+import { useGetBTRDataCount,useGetBTRData } from "../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR"
 
 import { ColDef } from "ag-grid-enterprise"
 import { BTRTableHeader } from "./styles"
@@ -25,32 +25,38 @@ import { notifyError, notifyLoader } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
+import { useUserData } from "../../../../../context"
 
 
 const useBTR = ()=>{
 
+    
     const ecoRef = useRef()
     const techRef = useRef()
     const tempRef = useRef()
-    const tabs: Array<VFFloatingTabItemProps> = [
+    const tabs:Array<VFFloatingTabItemProps> = [
         {
-            id: "1",
-            value: 'both',
-            label: "Both On-Hand & Pipeline View"
+            id:"1",
+            value:'both',
+            label:"Both On-Hand & Pipeline View"
         },
         {
-            id: "2",
-            value: 'on-hand',
-            label: "On-Hand Inv. View"
+            id:"2",
+            value:'on-hand',
+            label:"On-Hand Inv. View"
         },
         {
-            id: "3",
-            value: 'pipeline',
-            label: "Pipeline Inv. View"
+            id:"3",
+            value:'pipeline',
+            label:"Pipeline Inv. View"
         }
     ]
 
-    const [currentPage, setCurrentPage] = useState<number>(1);
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
+
+    const [currentPage,setCurrentPage] = useState<number>(1);
 
     const [isLockMode,toggleLockMode] = useState<boolean>(false)
 
@@ -59,7 +65,7 @@ const useBTR = ()=>{
 
     const rowsPerPage = parseInt(process.env.REACT_APP_PLANNING_ROWS_PER_PAGE || '50');
 
-    const { mutateAsync: getBTRData, isLoading } = useGetBTRData()
+    const {mutateAsync:getBTRData,isLoading} = useGetBTRData()
 
     const {data:countData,mutateAsync:getBTRDataCount,isLoading:isBTRCountLoading} = useGetBTRDataCount()
 
@@ -67,11 +73,11 @@ const useBTR = ()=>{
 
     const techTotalRows = useMemo(()=>{return countData?.data.data.TechCount},[isBTRCountLoading])
 
-    const [tempDownloadData, setTempDownloadData] = useState<boolean>(false);
+    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
 
-    const [exportExcelColumns, setExportExcelColumns] = useState<Array<any>>([])
+    const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
 
-    const [exportExcelRowData, setExportExcelRowData] = useState<Array<any>>([])
+    const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
 
     const techPaginationProps:VFPaginationProps = {
         selectedRows:0,
@@ -82,7 +88,7 @@ const useBTR = ()=>{
             getData(currFilter,currPage);
             setCurrentPage(currPage)
         }
-
+        
     }
 
     const ecoPaginationProps:VFPaginationProps = {
@@ -94,46 +100,46 @@ const useBTR = ()=>{
             getData(currFilter,currPage);
             setCurrentPage(currPage)
         }
-
+        
     }
 
-    const gridProps = useMemo((): AgGridReactProps => {
+    const gridProps = useMemo(():AgGridReactProps=>{
         return {
-            gridOptions: {
-                components: {
-                    graphCellRenderer: SeasonalityGraphCellRenderer,
-                    categoryCellRenderer: CategoryCellRenderer,
-                    categoryToolTip: CategoryToolTip,
-                    availabilityCellRenderer: AvailabilityCellRenderer,
-                    colorCellRenderer: ColorCellRenderer,
-                    tagsCellRenderer: TagsCellRenderer,
-                    availabilityToolTip: AvailabilityToolTip,
+            gridOptions:{
+                components:{
+                    graphCellRenderer:SeasonalityGraphCellRenderer,
+                    categoryCellRenderer:CategoryCellRenderer,
+                    categoryToolTip:CategoryToolTip,
+                    availabilityCellRenderer:AvailabilityCellRenderer,
+                    colorCellRenderer:ColorCellRenderer,
+                    tagsCellRenderer:TagsCellRenderer,
+                    availabilityToolTip:AvailabilityToolTip,
                     // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
 
 
                 },
                 getRowStyle: (params: any) => {
                     if (params.node.rowIndex % 2 === 0) {
-                        return { background: "#EBEBEB" };
+                      return { background: "#EBEBEB" };
                     }
                     return { background: "#F7F7F7" };
-                },
+                  },
             },
-            rowHeight: 25,
+            rowHeight:25,
         }
-    }, [])
+    },[])
 
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
          if(tempDownloadData) event.api.exportDataAsExcel({fileName:currentTab.value==='on-hand'?"OnHandInv":"PipelineInv"});
         }
-    };
+      };
 
-    const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0])
-    const [verticalView, setVerticalView] = useState<boolean>(true)
-    const [techRowData, setTechRowData] = useState<Array<any>>([])
-    const [ecoRowData, setEcoRowData] = useState<Array<any>>([])
+    const [currentTab,setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0])
+    const [verticalView,setVerticalView] = useState<boolean>(true)
+    const [techRowData,setTechRowData] = useState<Array<any>>([])
+    const [ecoRowData,setEcoRowData]  = useState<Array<any>>([])
     // const [defaultColDefs,setDefaultColDefs] = useState<Array<ColDef>>([])
 
 
@@ -155,12 +161,12 @@ const useBTR = ()=>{
             
             setEcoRowData(mapBTRRowData(data.data.data.eco))
             setTechRowData(mapBTRRowData(data.data.data.tech))
-        } catch (err: any) {
+        }catch(err:any){
             notifyError(err)
-        } finally {
+        }finally{
             toast.dismiss(loaderId)
         }
-
+        
     }
 
     useEffect(()=>{
@@ -196,26 +202,26 @@ const useBTR = ()=>{
 
     const toggleVerticalView = (isVertical:boolean)=>setVerticalView(isVertical)
 
-    const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab)
+    const toggleCurrentTab = (tab:VFFloatingTabItemProps)=>setCurrentTab(tab)
 
-    const renderView = () => {
-        switch (currentTab.id) {
+    const renderView = ()=>{
+        switch(currentTab.id){
             case "1":
-                if (verticalView) return (
-
-                    <VerticalSplitView
+                if(verticalView)return(
+                    <VerticalSplitView 
+                        themeUi={themeUi}
                         techTable={{
-                            columnDefs: techColDefs,
-                            rowData: techRowData,
-                            header: "On-Hand Inventory View Trend Report",
-                            paginationProps: techPaginationProps,
+                            columnDefs:techColDefs,
+                            rowData:techRowData,
+                            header:"On-Hand Inventory View Trend Report",
+                            paginationProps:techPaginationProps,
                             ...gridProps
-                        }}
+                        }} 
                         ecoTable={{
-                            columnDefs: ecoColDefs,
-                            paginationProps: ecoPaginationProps,
-                            rowData: ecoRowData,
-                            header: "Pipeline Inventory Trend Report",
+                            columnDefs:ecoColDefs,
+                            paginationProps:ecoPaginationProps,
+                            rowData:ecoRowData,
+                            header:"Pipeline Inventory Trend Report",
                             ...gridProps
                         }}
                         isLocked={isLockMode}
@@ -223,15 +229,15 @@ const useBTR = ()=>{
                     />
                 )
                 return (
-
-                    <HorizontalSplitView
+                    <HorizontalSplitView 
+                        themeUi={themeUi}
                         techTable={{
-                            columnDefs: techColDefs,
-                            rowData: techRowData,
-                            header: "On-Hand Inventory View Trend Report",
-                            paginationProps: techPaginationProps,
+                            columnDefs:techColDefs,
+                            rowData:techRowData,
+                            header:"On-Hand Inventory View Trend Report",
+                            paginationProps:techPaginationProps,
                             ...gridProps
-                        }}
+                        }} 
                         ecoTable={{
                             columnDefs:ecoColDefs,
                             rowData:ecoRowData,
@@ -243,7 +249,7 @@ const useBTR = ()=>{
                     />
                 )
             case "2":
-                return (
+                return(
                     <>
                         <BTRTableHeader>
                             On-Hand Inventory View Trend Report
@@ -261,13 +267,13 @@ const useBTR = ()=>{
                             pagination={false} 
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                         />
-                        <div style={{ zoom: 0.7, marginBottom: '20px' }}>
-                            <VFPagination {...techPaginationProps} />
+                        <div style={{zoom:0.7,marginBottom:'20px'}}>
+                            <VFPagination {...techPaginationProps}/>
                         </div>
                     </>
                 )
             case "3":
-                return (
+                return(
                     <>
                         <BTRTableHeader>
                             Pipeline Inventory Trend Report
@@ -285,13 +291,13 @@ const useBTR = ()=>{
                             pagination={false} 
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                         />
-                        <div style={{ zoom: 0.7, marginBottom: '20px' }}>
-                            <VFPagination {...ecoPaginationProps} />
+                        <div style={{zoom:0.7,marginBottom:'20px'}}>
+                            <VFPagination {...ecoPaginationProps}/>
                         </div>
                     </>
                 )
             default:
-                return <CustomVFTable columnDefs={[]} rowData={[]} {...gridProps} />
+                return <CustomVFTable  columnDefs={[]} rowData={[]} {...gridProps}/>
         }
     }
 
@@ -312,19 +318,19 @@ const useBTR = ()=>{
 
     }
 
-    const techColDefs = useMemo((): Array<ColDef> => {
-        if (techRowData.length === 0) return []
-        return mapBTRRowDataToColDefs(techRowData[0])
-    }, [techRowData])
+    const techColDefs = useMemo(():Array<ColDef>=>{
+        if(techRowData.length===0)return []
+       return mapBTRRowDataToColDefs(techRowData[0])
+    },[techRowData])
 
 
     const ecoColDefs = useMemo(():Array<ColDef>=>{
         if(ecoRowData.length===0)return []
         if(verticalView)return mapBTRRowDataToColDefs(ecoRowData[0],['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm"])
         return mapBTRRowDataToColDefs(ecoRowData[0])
-    }, [ecoRowData])
+    },[ecoRowData])
 
-    return {
+    return{
         ecoRef,
         techRef,
         tempRef,
@@ -347,6 +353,7 @@ const useBTR = ()=>{
         exportExcelColumns,
         setExportExcelColumns,
         currFilter,
+        themeUi,
         setCurrFilter,
         onDelete,
         onApplyFilter

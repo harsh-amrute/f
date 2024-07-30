@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { useUserData } from "../../../../../context"
 import {  useGetOpenExpediteAnalytics } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPRParticularAnalyticsWrapper,BPRParticularAnalyticsTableWrapper, BPRParticularAnalyticsTableHeaderWrapper, BPRParticularAnalyticsTableHeader, BPRParticularAnalyticsTableRowWrapper, BPRParticularAnalyticsTableRow, BPRParticularAnalyticsTableCell } from "../../Logistics/InTransitWhereAbouts/styles"
 
@@ -13,9 +14,13 @@ const OpenExpediteAnalytics = ()=>{
         return {nr:0,ur:0,sumplpd:0}
     },[data])
 
+    const {user} = useUserData()
+
+    const themeUi = user.user.theme_ui
+
     return(
         <BPRParticularAnalyticsWrapper>
-            <BPRParticularAnalyticsTableWrapper>
+            <BPRParticularAnalyticsTableWrapper themeUi={themeUi}>
                 <BPRParticularAnalyticsTableHeaderWrapper>
                     <BPRParticularAnalyticsTableHeader style={{textAlign:'left'}}>
                         Particulars

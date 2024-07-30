@@ -1,6 +1,6 @@
 
 
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import MRCard from '.';
 
 const sampleData = {
@@ -45,14 +45,14 @@ const selectedColor = 'rgba(188, 61, 129, 0.302)';
 
 describe('MRCard Component', () => {
   it('renders card header with the correct name', () => {
-    render(<MRCard data={sampleData} selectedFields={selectedFields}/>);
+    render(<MRCard data={sampleData} selectedFields={selectedFields} isSelected={false} onSelectCheckbox={()=>console.log('')} isCheckBoxDisabled={true} themeUi={'NOIRFUSION'}/>);
     const cardHeader = screen.getByText('Sample Card');
     expect(cardHeader).toBeInTheDocument();
   });
 
 
   it('renders card list items with the correct titles', () => {
-    render(<MRCard data={sampleData} selectedFields={selectedFields} />);
+    render(<MRCard data={sampleData} selectedFields={selectedFields} isSelected={false} onSelectCheckbox={()=>console.log('')} isCheckBoxDisabled={true} themeUi={'NOIRFUSION'} />);
     const field1 = screen.getByText('SKU Name');
     const field2 = screen.getByText('City');
     const field3 = screen.getByText('MRP');
@@ -63,7 +63,7 @@ describe('MRCard Component', () => {
   });
 
   it('applies "isSelected" background color to selected fields', () => {
-    render(<MRCard data={sampleData} selectedFields={selectedFields} />);
+    render(<MRCard data={sampleData} selectedFields={selectedFields} isSelected={false} onSelectCheckbox={()=>console.log('')} isCheckBoxDisabled={true} themeUi={'NOIRFUSION'}/>);
 
     const field1 = screen.getByText('SKU Name');
     const field2 = screen.getByText('City');
@@ -77,7 +77,7 @@ describe('MRCard Component', () => {
   });
 
   it('handles empty selectedFields', () => {
-    render(<MRCard data={sampleData} selectedFields={[]} />);
+    render(<MRCard data={sampleData} selectedFields={[]} isSelected={false} onSelectCheckbox={()=>console.log('')} isCheckBoxDisabled={true} themeUi={'NOIRFUSION'} />);
     const field1 = screen.getByText('SKU Name');
     const field2 = screen.getByText('City');
     const field3 = screen.getByText('MRP');
@@ -94,9 +94,44 @@ describe('MRCard Component', () => {
       name: 'Empty Card',
       fields: [],
     };
-    const {getByTestId} = render(<MRCard data={emptyData} selectedFields={selectedFields} />);
+    const {getByTestId} = render(<MRCard data={emptyData} selectedFields={selectedFields} isSelected={false} onSelectCheckbox={()=>console.log('')} isCheckBoxDisabled={true} themeUi={'NOIRFUSIONs'}/>);
     
     expect(getByTestId('list-container').children.length).toBe(0)
     
   });
-});
+
+  it("handles themeui", ()=>{
+    render(<MRCard data={sampleData} selectedFields={[]} isSelected={false} onSelectCheckbox={()=>console.log('')} isCheckBoxDisabled={false} themeUi={'REGALBLAZE'} />);
+    const btn=screen.getAllByTestId('check-box')[0]
+    expect(btn).toBeInTheDocument()
+    fireEvent.click(btn)
+    fireEvent.click(btn)
+   });
+
+   it("handles themeui", ()=>{
+    render(<MRCard data={sampleData} selectedFields={[]} isSelected={false} onSelectCheckbox={()=>console.log('')} isCheckBoxDisabled={false} themeUi={'NOIRFUSION'} />);
+    const btn=screen.getAllByTestId('check-box')[0]
+    expect(btn).toBeInTheDocument()
+    fireEvent.click(btn)
+    fireEvent.click(btn)
+   });
+   
+  })
+
+//   it('Handles checkbox', async () =>{
+//     render(<MRCard data={sampleData} selectedFields={[]} isSelected={false} onSelectCheckbox={()=>console.log('')} isCheckBoxDisabled={true} />);
+
+//     const checkboxes = screen.getAllByRole('checkbox')
+//     await waitFor(async () => {
+//     checkboxes.forEach((checkbox:any)=>{
+//         fireEvent.click(checkbox)
+//     })
+// })
+// checkboxes.forEach((checkbox:any)=>{
+//     fireEvent.change(checkbox, {target:{checked:false}})
+
+// })
+     
+
+
+  // })

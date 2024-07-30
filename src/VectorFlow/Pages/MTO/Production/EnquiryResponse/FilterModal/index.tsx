@@ -3,9 +3,10 @@ import VFButtonOutline from '../../../../../../components/VectorFLOW/commons/VFB
 import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton';
 import VFModalCard from '../../../../../../components/VectorFLOW/commons/VFModalCard';
 
-import { AccordianContainer, ButtonContainer, ButtonFilterWrapper, FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, ModalBody, Option, OptionsWrapper, PlantInput, SearchBar } from './styles';
+import { AccordianContainer, ButtonContainer, ButtonFilterWrapper, FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, ModalBody, ModalWrapper, Option, OptionsWrapper, } from './styles';
 import FilterCheckboxAccordian from '../../../../../../components/VectorFLOW/commons/MTO/FilterCheckboxAccordian';
-// import VFMasterFieldSearch from '../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch';
+import VFMasterFieldSearch from '../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch';
+
 
 
 interface IFilterModalProps {
@@ -18,6 +19,7 @@ interface IFilterModalProps {
     handleNameChange: (e: any) => void;
     themeUi?: string;
 }
+
 
 const FilterModal = (props: IFilterModalProps) => {
 
@@ -35,8 +37,14 @@ const FilterModal = (props: IFilterModalProps) => {
     const [activeAccordian, setActiveAccordian] = useState<string>('');
 
     const handleChange = (event: any) => {
-        const { name, value } = event.target
-        handleNameChange({ name, value });
+        const PlantArray = [];
+
+        for (let index = 0; index < event?.length; index++) {
+            const element = event[index].value
+            PlantArray.push(element)
+
+        }
+        handleNameChange(PlantArray);
     }
 
     const handleOptionChange = (e: any, heading: string, index: number) => {
@@ -69,6 +77,7 @@ const FilterModal = (props: IFilterModalProps) => {
         }
     }
 
+
     return (
         <VFModalCard
             zoom={'0.7'}
@@ -80,67 +89,81 @@ const FilterModal = (props: IFilterModalProps) => {
             paddingLeftAndRight={0}
             backgroundColor="rgb(244, 244, 244)"
         >
-            <ModalBody>
-                <FilterContainer>
-                    <FilterHeading>Resource Filters</FilterHeading>
-                    <HorizontalLine></HorizontalLine>
-                    <SearchBar>
+            <ModalWrapper>
+
+                <ModalBody>
+                    <FilterContainer>
+                        <FilterHeading>Resource Filters</FilterHeading>
+                        <HorizontalLine></HorizontalLine>
+                        {/* <SearchBar>
                         <PlantInput
-                            id={'plntNmInput'}
-                            data-testid="plntNmInput"
+                        id={'plntNmInput'}
+                        data-testid="plntNmInput"
                             name='plantName'
                             placeholder='Plant'
                             value={selectedOptions?.plantName}
                             onChange={(e) => handleChange(e)}
-                        />
-                        <img
+                            />
+                            <img
                             src="/assets/img/search-icon.svg"
                             alt="search-icon"
-                        />
-                    </SearchBar>
-                    {/* <VFMasterFieldSearch
-                        value={[selectedOptions?.plantName]}
-                        setValue={(e: any) => {
-                            console.log(e);
-                            handleChange(e[0])
-                        }}
-                        options={filters[0].options}
-                        placeholder={''}
-                        handleListChild={() => null}
-                        maxToShow={3}
-                        backgroundColor={'#F2F2F2'}
-                        borderRadius={40}
-                        disabled={false}
-                        boxShadow={'0'}
-                    /> */}
-                    <FilterAccordianWrapper>
-                        {
-                            filters?.map((filter: { key: string, heading: string, options: string[] }) => {
-                                if (filter.key === "plnm") return null
-                                return (
-                                    <AccordianContainer>
-                                        <FilterCheckboxAccordian filterType={filter?.heading} filterKey={filter?.key} isOpen={activeAccordian === filter?.key} handleToggleAccordian={handleToggleAccordian}>
-                                            <OptionsWrapper>
-                                                {filter?.options?.map((option: string, idx: number) => (
-                                                    <Option>
-                                                        <input
-                                                            key={option}
-                                                            name={option}
-                                                            checked={getChecked(filter?.heading, option)}
-                                                            onChange={(e) => { handleOptionChange(e, filter?.heading, idx) }}
-                                                            type='checkbox'
-                                                        />
-                                                        <label>{option}</label>
-                                                    </Option>
-                                                ))}
-                                            </OptionsWrapper>
-                                        </FilterCheckboxAccordian>
-                                    </AccordianContainer>)
-                            })
-                        }
-                    </FilterAccordianWrapper>
-                </FilterContainer>
-            </ModalBody>
+                            />
+                        </SearchBar> */}
+                        <FilterAccordianWrapper>
+
+                            <VFMasterFieldSearch
+                                value={selectedOptions?.plantName.name}
+                                setValue={(e: any) => {
+                                    if (e) {
+
+                                        if (e.length > 0) {
+                                            handleChange(e)
+                                        }
+                                    }
+                                }}
+
+                                options={filters[0].options}
+                                placeholder={'Plant'}
+                                handleListChild={() => { console.log("child change") }}
+                                maxToShow={3}
+                                backgroundColor={'#F2F2F2'}
+                                borderRadius={40}
+                                disabled={false}
+                                boxShadow={'0'}
+                            />
+                        </FilterAccordianWrapper>
+                        <FilterAccordianWrapper>
+                            {
+                                filters?.map((filter: { key: string, heading: string, options: string[] }) => {
+                                    if (filter.key === "plnm") return null
+                                    return (
+                                        <AccordianContainer>
+                                            <FilterCheckboxAccordian filterType={filter?.heading} filterKey={filter?.key} isOpen={activeAccordian === filter?.key} handleToggleAccordian={handleToggleAccordian}>
+                                                <OptionsWrapper>
+                                                    {filter?.options?.map((option: string, idx: number) => (
+                                                        <Option>
+                                                            <input
+                                                                key={option}
+                                                                name={option}
+                                                                checked={getChecked(filter?.heading, option)}
+                                                                onChange={(e) => { handleOptionChange(e, filter?.heading, idx) }}
+                                                                type={`${filter.key === 'prdGrp' ? 'radio' : 'checkbox'}`}
+                                                            />
+                                                            <label>{option}</label>
+                                                        </Option>
+                                                    ))}
+                                                </OptionsWrapper>
+                                            </FilterCheckboxAccordian>
+                                        </AccordianContainer>)
+                                })
+                            }
+
+                        </FilterAccordianWrapper>
+
+                    </FilterContainer>
+                </ModalBody>
+            </ModalWrapper>
+
             <ButtonFilterWrapper>
                 <ButtonContainer>
                     <VFButtonOutline themeUi={themeUi || ''} onClick={handleClose}>Go Back!</VFButtonOutline>

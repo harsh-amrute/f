@@ -58,6 +58,7 @@ export const BPRViewTablePrefixIcon = styled.img`
 export const BPRViewTableGrid = styled.div`
     display:flex;
     flex-direction:column;
+    border: 1px solid #CCCCCC;
     width:100%;
     min-height:150px;
     max-height:90%;
@@ -71,18 +72,16 @@ export const BPRViewTableGrid = styled.div`
         width: 4px;      
         height:4px; 
     }
-    
     &::-webkit-scrollbar-track{
-        border-radius: 30px;
+        //border-radius: 30px;
         opacity: 1;
     }
-    
     &::-webkit-scrollbar-thumb{
         width: 7px;
     /* UI Properties */
     background: #313131 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 9px #41414129;
-    border-radius: 30px;
+    //border-radius: 30px;
     opacity: 1;
     }
 `
@@ -428,7 +427,6 @@ export const BPRViewTableRequestCellRendererText = styled.p`
     font-size:12px;
     font-weight:500;
     font-family:Roboto;
-    color:rgb(188, 61, 129);
     margin-left:5px;
 `
 
@@ -561,7 +559,6 @@ export const WhereAboutsMoreInfo = styled.div`
     font-size:14px;
     font-family:Roboto;
     letter-spacing: 0px;
-    color: #BC3D81;
     margin-left:5px;
     text-decoration: underline;
     cursor:default;

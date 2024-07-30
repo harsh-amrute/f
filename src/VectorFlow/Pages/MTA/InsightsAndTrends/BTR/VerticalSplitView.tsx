@@ -18,6 +18,7 @@ export interface SplitViewProps{
     ecoTable:SpliViewTableProps
     isLocked:boolean
     toggleLockMode:(value:boolean)=>void
+    themeUi:string
 }
 
 const VerticalSplitView = (props: SplitViewProps) => {
@@ -25,7 +26,8 @@ const VerticalSplitView = (props: SplitViewProps) => {
         techTable,
         ecoTable,
         isLocked,
-        toggleLockMode
+        toggleLockMode,
+        themeUi
     } = props
 
     const ref1 = useRef<GridRef>()
@@ -79,7 +81,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                             ref={ref1}
                             rowHeight={25}
                             height={"95%"}
-                                disableZoomScaling
+                            disableZoomScaling
                             gridOptions={{
                                 ...techTable.gridOptions
                             }}
@@ -145,7 +147,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                 </Allotment.Pane>
             </Allotment>
             <LockBtnWrapper>
-                <LockBtn style={{left:lockBtnPosition -12}} src={isLocked?"/assets/img/VectorFLOW/BPR/lock.svg":"/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={()=>toggleLockMode(!isLocked)}/>
+                <LockBtn style={{left:lockBtnPosition -12}} src={isLocked?themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/lock-regal.svg":"/assets/img/VectorFLOW/BPR/lock.svg":themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/unlock-regal.svg":"/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={()=>toggleLockMode(!isLocked)}/>
             </LockBtnWrapper>
 
         </BTRTableWrapper>

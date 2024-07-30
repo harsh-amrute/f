@@ -7,18 +7,26 @@ export const ETACellRendererWrapper = styled.div`
     align-items:center;
     height:100%;
     width:100%;
-    padding:5px;
+
 `
 
 export const ETACellValue = styled.p`
-    display:flex;
-    justify-content:center;
-    align-items:center;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #77777729;
     border: 0.4000000059604645px solid #707070;
     border-radius: 2px;
-    height:30px;
+    height:100%;
     width:100%;
-    padding:4px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+`
+
+export const SubmitRemarkInputWrapper = styled.div`
+    height:90%;
+    width:100%;
+    border:solid 1px black;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 `

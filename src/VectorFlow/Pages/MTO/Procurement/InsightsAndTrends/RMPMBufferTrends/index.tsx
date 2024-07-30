@@ -1,24 +1,112 @@
 
 import { Allotment } from "allotment"
-import React, { useState } from "react"
+import { useEffect, useState } from "react"
 import useViewPort from "../../../../../../hooks/useViewPort"
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
 import BTMTA from "./BTMTA"
 import BTMTO from "./BTMTO"
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from "./styles"
 import "./style.css"
-
-
+import { useGetRMPMBufferTrendsData } from "../../../../../../VectorFlow/Services/MTO/Procurement/RMPMBufferTrends"
+import { BufferTrendData } from "../../../../../../types/MTO/types"
+import { toast } from "react-toastify"
+import { notifyError, notifyLoader, notifySuccess } from "../../../../../../helpers/notify"
 const RMPMBufferTrends = () => {
 
 
+    const formatDate = (date: Date): string => {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    }
+
+
+
+    const convertToGraphData = (apiData: any) => {
+        const startDate = formatDate(new Date());
+        const numDays = 90;
+        const updatedData: BufferTrendData[] = [];
+        const dateParts = startDate?.split('-');
+        const date = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`); // Convert to YYYY-MM-DD
+
+        for (let i = 0; i < numDays; i++) {
+            const day = formatDate(date);
+            let entry: any = {
+                'dt': day,
+                'b': 0,
+                'r': 0,
+                'g': 0,
+                'y': 0,
+                'bl': 0,
+                'w': 0,
+            };
+            const newDate = day?.split('-')?.reverse()?.join('-');
+            if (apiData[newDate]) {
+                if (apiData[newDate]?.B) {
+                    entry = { ...entry, b: apiData[newDate]?.B || 0 }
+                }
+                if (apiData[newDate]?.R) {
+                    entry = { ...entry, r: apiData[newDate]?.R || 0 }
+                }
+                if (apiData[newDate]?.G) {
+                    entry = { ...entry, g: apiData[newDate]?.G || 0 }
+                }
+                if (apiData[newDate]?.Y) {
+                    entry = { ...entry, y: apiData[newDate]?.Y || 0 }
+                }
+                if (apiData[newDate]?.W) {
+                    entry = { ...entry, w: apiData[newDate]?.W || 0 }
+                }
+                if (apiData[newDate]?.Bl) {
+                    entry = { ...entry, bl: apiData[newDate]?.Bl || 0 }
+                }
+            }
+
+            updatedData.push(entry);
+            date.setDate(date.getDate() - 1);
+        }
+        return updatedData;
+    }
+
     const [isMTO] = useState(true);
     const { screenHeight } = useViewPort()
+
+    const { mutateAsync: getRMPMBufferTrendsData } = useGetRMPMBufferTrendsData();
+
+    const [MTOData, setMTOData] = useState<any>([]);
+    const [MTAData, setMTAData] = useState<any>([]);
+    const GetData = async () => {
+        try {
+            toast.dismiss();
+            notifyLoader("Loading Graph Data ...")
+            const APIData = await getRMPMBufferTrendsData();
+            const updatedDataMTO = convertToGraphData(APIData?.data?.data.MTO);
+            const updatedDataMTA = convertToGraphData(APIData?.data?.data.MTA);
+
+            setMTOData(updatedDataMTO);
+            setMTAData(updatedDataMTA);
+            toast.dismiss();
+            notifySuccess("Grid Data fetched successfully!");
+        }
+        catch (e) {
+            toast.dismiss();
+            notifyError("Failed to fetch Grid data");
+        }
+
+    }
+
+    useEffect(() => {
+        GetData();
+
+    }, [])
+
+
     return (
         <div style={{ zoom: 1.33, marginLeft: '30px' }}>
 
 
-            <MTOActionToolBar comp={"BTRMTO"} />
+            <MTOActionToolBar comp={"BTRMTO"} isAddFilterButton />
             <HorizontalViewWrapper style={{ marginTop: '20px' }}>
                 <BTRTableWrapper style={{ height: screenHeight - 145, margin: '0' }}>
                     {
@@ -26,18 +114,18 @@ const RMPMBufferTrends = () => {
                             (<Allotment vertical={false} separator={false}   >
                                 <Allotment.Pane preferredSize={'50%'}>
                                     <BTRAllomentSection>
-                                        <BTMTO isMTO={isMTO} />
+                                        <BTMTO data={MTOData} isMTO={isMTO} />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
 
                                 <Allotment.Pane preferredSize={'50%'}>
                                     <BTRAllomentSection>
-                                        <BTMTA isMTO={isMTO} />
+                                        <BTMTA data={MTAData} isMTO={isMTO} />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
                             </Allotment>)
                             :
-                            <BTMTO isMTO={isMTO} />
+                            <BTMTO data={MTOData} isMTO={isMTO} />
 
                     }
                 </BTRTableWrapper>

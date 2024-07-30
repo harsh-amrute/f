@@ -1,22 +1,24 @@
 import { AgChartOptions } from 'ag-charts-community'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFCapsule from '../../../../../../../components/VectorFLOW/commons/VFCapsule'
-import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'
+import VFRangeSlider from '../../../../../../../VectorFlow/Pages/MTO/Common/VFRangeSlider'
 import { CapsuleWrapper } from '../../RMPMOrderwiseCoverage/GraphView/styles'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
-import dummyData from './BufferTrendData'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 
 
-const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
+const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
     const [chartLoading, setChartLoading] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
     const [horizonDays, setHorizondays] = useState(90);
 
-    const [data] = useState(dummyData)
-    const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(data, horizonDays / 5, horizonDays, false));
+    useEffect(() => {
+        setNumericData(filterDataByDaysGap(data, 0, horizonDays, false))
+    }, [data])
+
+    const [numericData, setNumericData] = useState<BufferTrendData[]>([]);
 
 
     const TooltipRenderer = ({ datum, xKey }: any) => {
@@ -38,7 +40,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
             perArr = [datum['b'], datum['r'], datum['y'], datum['g'], datum['w']];
             let reqData = null;
             countArr = [0, 0, 0, 0, 0];
-            data.forEach(element => {
+            data.forEach((element: any) => {
                 if (element.dt === datum['dt']) {
                     reqData = element;
                     countArr = [reqData.b, reqData.r, reqData.y, reqData.g, reqData.w]
@@ -86,26 +88,36 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
         w: number;
     };
 
-    function filterDataByDaysGap(buffData: BufferTrendData[], numberOfDaysGap: number, horizonDays: number, isPer: boolean): BufferTrendData[] {
-        const filteredData: (BufferTrendData[]) = [];
-        const data = (isPer) ? convertToPercentage(buffData) : buffData;
-        let currentDate = new Date(data[0].dt.split('-').reverse().join('-')); // Convert dd-mm-yyyy to yyyy-mm-dd
 
-        filteredData.push(data[0]);
 
-        for (let i = 1; i < ((horizonDays < data.length) ? horizonDays : data.length); i++) {
-            const nextDate = new Date(data[i].dt.split('-').reverse().join('-'));
-
-            const diffInDays = (nextDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24);
-
-            if (diffInDays >= numberOfDaysGap) {
-                filteredData.push(data[i]);
-                currentDate = nextDate;
-            }
+    function filterDataByDaysGap(buffData: BufferTrendData[] | undefined, numberOfDaysGap: number, horizonDays: number, isPer: boolean): BufferTrendData[] {
+        if (!buffData || buffData.length === 0) {
+            return []; // Return empty array if data is undefined or empty
         }
+        buffData = (isPer) ? convertToPercentage(buffData) : buffData;
 
-        return filteredData;
+        const sortedData = buffData.slice().sort((a, b) => {
+            const dateA = a.dt ? new Date(a.dt.split('-').reverse().join('-')) : null;
+            const dateB = b.dt ? new Date(b.dt.split('-').reverse().join('-')) : null;
+            return dateA && dateB ? dateA.getTime() - dateB.getTime() : 0;
+        });
+
+        const filteredData: BufferTrendData[] = [];
+        let currentDate: Date | null = null;
+
+        sortedData.forEach(item => {
+            if (item.dt) {
+                const itemDate = new Date(item.dt.split('-').reverse().join('-'));
+                if (!currentDate || (itemDate.getTime() - currentDate.getTime()) >= numberOfDaysGap * 24 * 60 * 60 * 1000) {
+                    filteredData.push(item);
+                    currentDate = itemDate;
+                }
+            }
+        });
+
+        return filteredData.slice(0, Math.min(horizonDays, filteredData.length));
     }
+
 
 
     function convertToPercentage(data: BufferTrendData[]): BufferTrendData[] {
@@ -137,7 +149,10 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 label: {
                     fontSize: 8,
                     fontWeight: 'bold',
-                    color: 'black'
+                    color: 'black',
+                    avoidCollisions: true,
+                    autoRotate: false
+
                 },
                 gridLine: {
                     enabled: false
@@ -154,7 +169,8 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                     },
                     fontSize: 8,
                     fontWeight: 'bold',
-                    color: 'black'
+                    color: 'black',
+
                 },
                 gridLine: {
                     enabled: false
@@ -274,7 +290,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
     ]
 
     const handleSubmitClick = () => {
-        setNumericData(filterDataByDaysGap(data, horizonDays / 5, horizonDays, (actBtn.label === 'Percentage')));
+        setNumericData(filterDataByDaysGap(data, 0, horizonDays, (actBtn.label === 'Percentage')));
     }
 
     const updateGraphState = async () => {
@@ -285,8 +301,8 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 value: 'Absolute Value'
             })
             setNumericData(data);
-            setNumericData(filterDataByDaysGap(numericData, horizonDays / 5, horizonDays, true));
-            setNumericData(filterDataByDaysGap(data, horizonDays / 5, horizonDays, (actBtn.label !== 'Percentage')));
+            setNumericData(filterDataByDaysGap(numericData, 0, horizonDays, true));
+            setNumericData(filterDataByDaysGap(data, 0, horizonDays, (actBtn.label !== 'Percentage')));
         }
         else {
             setActBtn({
@@ -294,8 +310,8 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 value: 'Percentage'
             })
             setNumericData(convertToPercentage(data))
-            setNumericData(filterDataByDaysGap(numericData, horizonDays / 5, horizonDays, false));
-            setNumericData(filterDataByDaysGap(data, horizonDays / 5, horizonDays, (actBtn.label !== 'Percentage')));
+            setNumericData(filterDataByDaysGap(numericData, 0, horizonDays, false));
+            setNumericData(filterDataByDaysGap(data, 0, horizonDays, (actBtn.label !== 'Percentage')));
 
         }
 
@@ -349,8 +365,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
 
             }
         ]
-    // const [rowData, setRowData] = useState(data)
-    const rowData = numericData;
+
 
 
     const generateHeader = () => {
@@ -366,8 +381,9 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                             fontFamily: "Roboto",
                             paddingLeft: '10px'
                         }}
-                        > <b>Select Horizon: </b></label>
+                        > <b>Select Horizon (in days):  </b></label>
                         <VFRangeSlider
+                            style={{ paddingTop: '10px' }}
                             showTriangle={false}
                             min={1}
                             max={90}
@@ -376,7 +392,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                             width={200}
                             defaultValue={horizonDays}
                             handleChange={(e) => setHorizondays(e)}
-                            labelValueFormatter={(value: number) => value > 1 ? `${value} Days` : `${value} Day`}
+                            labelValueFormatter={(value: number) => value.toString()}
                         />
                         <div>
                             <img
@@ -423,6 +439,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
 
         )
     }
+
     return (
         <div style={{ height: "70vh", display: 'flex', justifyContent: 'left' }}>
 
@@ -440,7 +457,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 setTableLoading={setTableLoading}
                 setChartLoading={setChartLoading}
                 data={numericData}
-                rowData={rowData}
+                rowData={numericData}
                 graphTitle={"RM / PM Buffer Trend- MTA (14 Feb 2023 - 02 Mar 2024)"}
                 tableTitle={"RM / PM Buffer Trend- MTA (14 Feb 2023 - 02 Mar 2024)"}
                 options={options}
@@ -449,6 +466,7 @@ const BTMTA = ({ isMTO }: { isMTO: boolean }) => {
                 hideChart={hideChart1}
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRenderer}
+                graphType={1}
             />
         </div>
     )

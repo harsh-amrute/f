@@ -1,5 +1,5 @@
 export const MaterialCoverageString = {
-    orderPriority: " Orders Priority",
+    orderPriority: " Order Priority",
     statusKits: " Status Of Kits",
     viewAllRecords: "View All Records"
 }
@@ -10,4 +10,13 @@ export const InsightsAndTrendsString = {
     ordersWithFullkitSIT: "Orders With Full Kit (incl. In Transit Inventory + In QC)",
     ordersWithFullkitOPO: "Orders With Full Kit (incl. In Open Orders)",
     ordersWithRMPM: "Orders With RM /PM Shortage"
+}
+
+export const ProductionInsightsAndTrendsString = {
+    stplWithLimits: "Released WIP In Days - STPL With Limits",
+    fullKitInDays: "Full Kit In Days",
+    orderAtRisk: "Top 10 Reasons For Orders At Risk",
+    trailDeptCount: "Trailing Department-Wise Count Of Orders",
+    trailDeptMfg: "Trailing Department-Wise Balance To Manufacture",
+    trailDeptDisp: "Trailing Department-Wise Balance To Dispatch",
 }

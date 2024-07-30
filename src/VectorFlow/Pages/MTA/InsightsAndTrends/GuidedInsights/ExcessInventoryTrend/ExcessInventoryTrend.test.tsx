@@ -1,12 +1,35 @@
 import { render} from "@testing-library/react";
-
+import {ReactNode} from 'react'
 import {useGetExcessInventorySku, useGetExcessInventoryValue} from "../../../../../Services/MTA/InsightsAndTrends";
 import { GuidedInsights } from "../../../../../../mock-data/GuidedInsights";
 import ExcessInventoryTrend from './';
+import {UserDataContext} from '../../../../../../context'
+
 jest.mock("../../../../../Services/MTA/InsightsAndTrends");
 jest.mock("ag-charts-react", () => ({
   AgChartsReact: jest.fn(() => null) // Replace null with a mock component if needed
 }));
+
+
+const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {
+    return (
+  
+            <UserDataContext.Provider
+              value={{
+                user: { user: { theme_ui: theme } },
+                changeColorTheme: (color) => {
+                  return color;
+                },
+                isSideBarOpen:true,toggleSideBar:jest.fn
+              }}
+            >
+              {children}
+            </UserDataContext.Provider>
+  
+    );
+  };
+  
+
 const useGetExcessInventorySkuMock = useGetExcessInventorySku as jest.MockedFunction<
     typeof useGetExcessInventorySku
 >;
@@ -44,7 +67,7 @@ global.ResizeObserver = class MockedResizeObserver {
       
      it("Renders Excess  Inventory", () => {
  
-        render(<ExcessInventoryTrend/>)
+        render(contextWrapperWithCustomTheme(<ExcessInventoryTrend themeUi="REGALBLAZE"/>,"REGALBLAZE"))
        
     })
 })

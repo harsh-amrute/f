@@ -6,9 +6,44 @@ import columnData from '../ColumnData';
 import { InsightsAndTrendsString } from '../../../../../../../VectorFlow/Pages/MTO/Common/String';
 import { ColDef } from 'ag-grid-enterprise';
 import { Order } from '../../../../../../../VectorFlow/types/MTO';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { AgGridReactProps } from 'ag-grid-react';
+import { setupReactQuery } from '../../../../../../../config/react-query-config';
+import { createStore } from '../../../../../../../redux/store/store';
+import { ReactNode } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { UserDataContext } from '../../../../../../../context';
 
+const queryClient = setupReactQuery();
 
+const dummyStore: any = {
+    AnalyticsData: {}
+};
+
+const mockedStore = createStore(dummyStore);
+
+const contextWrapper = (children: ReactNode, store: any) => {
+    return (
+        <QueryClientProvider client={queryClient}>
+            <Router>
+                <Provider store={store}>
+                    <UserDataContext.Provider
+                        value={{
+                            user: { user: { theme_ui: "NOIRFUSION" } },
+                            changeColorTheme: (color) => {
+                                return color;
+                            },
+                            isSideBarOpen: true, toggleSideBar: jest.fn
+                        }}
+                    >
+                        {children}
+                    </UserDataContext.Provider>
+                </Provider>
+            </Router>
+        </QueryClientProvider>
+    );
+};
 
 
 const agGridProps: AgGridReactProps = {
@@ -30,7 +65,7 @@ const agGridProps: AgGridReactProps = {
         pagination: true,
         defaultColDef: {
             cellStyle: {
-                'text-align': 'center',
+                'textAlign': 'center',
                 'height': '50px',
                 "font-style": "normal",
                 "font-variant": "normal",
@@ -96,6 +131,7 @@ const mapDataToColumns = (data: Order[], columns: ColDef[]) => {
 const convertedData = mapDataToColumns(procData, columnData);
 const ShortageDatas = convertedData;
 
+
 jest.mock('@ag-grid-community/react', () => ({
     AgGridReact: () => <div>AgGridReact Mock</div>,
 }));
@@ -116,7 +152,7 @@ jest.mock('../ColumnData', () => [
 
 describe('GridView Component', () => {
     beforeEach(() => {
-        render(<GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={ShortageDatas} />);
+        render(contextWrapper(<GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={ShortageDatas} />, mockedStore));
     });
 
     test('renders the correct number of columns', () => {
@@ -164,3 +200,5 @@ describe('GridView Component', () => {
         expect(rows[2]).toHaveStyle('background: #F7F7F7');
     });
 });
+
+

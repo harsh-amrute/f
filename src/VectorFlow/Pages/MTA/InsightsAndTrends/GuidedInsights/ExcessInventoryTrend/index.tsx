@@ -8,7 +8,7 @@ import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInf
 import { useEffect, useState } from 'react';
 
 
-const ExcessInventoryTrend = () => {
+const ExcessInventoryTrend = ({themeUi}:{themeUi:string}) => {
 
      const [horizon1, setHorizon1] = useState<number>(9);
      const [horizon2, setHorizon2] = useState<number>(9);
@@ -41,7 +41,9 @@ useEffect(() => {
     //SetExcessInventorySku(ExcessInventorySkuData?.data?.data);
    SetExcessInventoryValue(ExcessInventoryValueData?.data?.data);
   };
-   
+  
+  const markerFill = themeUi==="REGALBLAZE"?"#FCA311":"#BC3D81"
+
     const options1 = {
         data: ExcessInventorySku,
         series: [
@@ -53,7 +55,7 @@ useEffect(() => {
                 strokeWidth: 3,
                 stroke: "#A5A5A5",
                 marker: {
-                    fill: "#BC3D81",
+                    fill: markerFill,
                     size: 8,
                     stroke: "white",
                     strokeWidth: 2,
@@ -97,7 +99,7 @@ useEffect(() => {
                 strokeWidth: 3,
                 stroke: "#A5A5A5",
                 marker: {
-                    fill: "#BC3D81",
+                    fill: markerFill,
                     size: 8,
                     stroke: "white",
                     strokeWidth: 2,
@@ -181,7 +183,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                    <img 
 
                     style={{cursor:'pointer', marginLeft:'-15px'}}
-                    src="/assets/img/Group 627.svg" 
+                    src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
                     height={40} 
                     width={50}
                     onClick={() => OnHorizon1Change(horizon1)}
@@ -257,7 +259,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                 </VFButtonOutline> */}
                  <img 
                     style={{cursor:'pointer', marginLeft:'-15px'}}
-                    src="/assets/img/Group 627.svg" 
+                    src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
                     height={40} 
                     width={50} 
                     onClick={() => OnHorizon2Change(horizon2)}

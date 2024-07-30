@@ -1,6 +1,28 @@
-import React from 'react'
+import {ReactNode} from 'react'
 import { render,screen,fireEvent } from '@testing-library/react';
 import ErrorCell from '.';
+
+import { UserDataContext } from '../../../../context';
+
+
+const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {
+  return (
+
+          <UserDataContext.Provider
+            value={{
+              user: { user: { theme_ui: theme } },
+              changeColorTheme: (color) => {
+                return color;
+              },
+              isSideBarOpen:true,toggleSideBar:jest.fn
+            }}
+          >
+            {children}
+          </UserDataContext.Provider>
+
+  );
+};
+
 
 const props:any = {
     value:'dummy',
@@ -11,7 +33,7 @@ const props:any = {
 describe("Renders Error Cell",() => {
 
     it("Render the component when message is more than 30 char",()=>{
-        render(<ErrorCell {...props}/>);
+        render(contextWrapperWithCustomTheme(<ErrorCell {...props}/>,'NOIRFUSION'));
         expect(screen.getByText('SKU Code has pipe and commates...')).toBeInTheDocument();
         
     })
@@ -19,7 +41,7 @@ describe("Renders Error Cell",() => {
     it("Renders the component with message is less than 30 char",()=>{
         const message = "dummydumm"
         props.data.error = message;
-        render(<ErrorCell {...props}/>);
+        render(contextWrapperWithCustomTheme(<ErrorCell {...props}/>,'REGALBLAZE'));
         expect(screen.getByText('dummydumm')).toBeInTheDocument();
         
     })
@@ -27,7 +49,7 @@ describe("Renders Error Cell",() => {
     it("Renders the Tooltip",()=>{
         const message = "dummydumm"
         props.data.error = message;
-        render(<ErrorCell {...props}/>);
+        render(contextWrapperWithCustomTheme(<ErrorCell {...props}/>,'NOIRFUSION'));
         fireEvent.mouseEnter(screen.getByTestId('errorImage'))
         fireEvent.mouseEnter(screen.getByTestId('tooltip-wrapper'))
         fireEvent.mouseLeave(screen.getByTestId('errorImage'))
@@ -36,7 +58,7 @@ describe("Renders Error Cell",() => {
     
     it("Renders an Empty fragment when message is undefined",()=>{
         props.data.error = undefined;
-        render(<ErrorCell {...props}/>);
+        render(contextWrapperWithCustomTheme(<ErrorCell {...props}/>,'REGALBLAZE'));
         
     })
 })
@@ -53,7 +75,7 @@ describe('ErrorCell component', () => {
         }
       };
   
-      const { getByTestId } = render(<ErrorCell {...props} />);
+      const { getByTestId } = render(contextWrapperWithCustomTheme(<ErrorCell {...props}/>,'NOIRFUSION'));
   
       const errorImage = getByTestId('errorImage');
   

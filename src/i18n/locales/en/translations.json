@@ -78,7 +78,8 @@
         "controlPanel": "Control Panel",
         "savedDrafts": "Saved Drafts",
         "taskPendingForReview": "Task Pending for Review",
-        "taskStatus": "Task Status"
+        "taskStatus": "Task Status",
+        "modificationHistory": "Data Modification History"
       },
       "dynamicGridControl_AssortmentPlanning": {
         "title": "Dynamic Grid Control & Assortment Planning",
@@ -142,10 +143,12 @@
         "dynamicReleaseManagement": "Dynamic Release Management",
         "deptWiseBMReport": "Dept-Wise BM Report",
         "overallBMReport": "Overall BM Report",
-        "insightAndTrends": {
-          "title": "Insights And Trends",
-          "folSummary": "FOL Summary"
-        }
+        "insightAndTrends": "Insight and Trends"
+      },
+      "poogi": {
+        "title": "POOGI",
+        "reasonForDelayedOrders": "Reason For Delayed Orders",
+        "insightAndTrends": "Insight and Trends"
       }
     },
     "particulars": {
