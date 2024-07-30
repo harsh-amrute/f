@@ -7,7 +7,7 @@ import {
 import { AgGridReactProps } from 'ag-grid-react';
 //import { ColDef } from 'ag-grid-enterprise'
 
-import { deptwiseBMReportData, DeptWiseBMReport, RemarkHistoryData } from './DeptWiseBMReportData';
+import { deptwiseBMReportData, RemarkHistoryData } from './DeptWiseBMReportData';
 import GridView from './GridView';
 import { Allotment } from 'allotment';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
@@ -451,7 +451,6 @@ const DptWiseBMReport = () => {
 
 
     const mapApiResponseToColDefs = (apiResponse: ApiResponse[]): ColDef[] => {
-
         const mapChildren = (children: ApiResponse[]): ColDefChild[] => {
             return children.map(child => ({
                 field: child.scc.trim(),
@@ -579,7 +578,6 @@ const DptWiseBMReport = () => {
             />
 
         </BMDepWrapper>
-
 
     )
 }
