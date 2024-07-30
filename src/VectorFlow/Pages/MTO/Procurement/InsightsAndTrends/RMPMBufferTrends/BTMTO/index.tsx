@@ -368,7 +368,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
     }
 
     const updateGraphState = async () => {
-    
+
         if (actBtn.label === 'Percentage') {
 
             setActBtn({
@@ -444,10 +444,11 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
             }
         ]
-    const [rowData] = useState(
-        numericData
-    )
+    const [rowData, setRowData] = useState(numericData)
 
+    useEffect(() => {
+        setRowData(numericData)
+    }, [numericData])
     const [chartLoading, setChartLoading] = useState(true);
     const [tableLoading, setTableLoading] = useState(true);
 
