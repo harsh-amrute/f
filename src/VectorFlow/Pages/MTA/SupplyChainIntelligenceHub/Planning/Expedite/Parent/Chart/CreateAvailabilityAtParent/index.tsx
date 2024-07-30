@@ -275,8 +275,8 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane>
-                        <SCChartContainer height={"100%"}>
-                            <SCChartHeaderContainer>
+                        <SCChartContainer height={"100%"} style={{marginRight:'10px'}}>
+                            <SCChartHeaderContainer >
                                 <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                                     <SCChartHeader>Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock For Receiving Locations</SCChartHeader>
                                 </div>
@@ -363,7 +363,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                         </div> */}
                     </Allotment.Pane>
                     <Allotment.Pane>
-                        <SCChartContainer height={"100%"}>
+                        <SCChartContainer height={"100%"} style={{marginLeft:'18px'}}>
                                 <SCChartHeaderContainer>
                                     <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                                         <SCChartHeader>Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location</SCChartHeader>   

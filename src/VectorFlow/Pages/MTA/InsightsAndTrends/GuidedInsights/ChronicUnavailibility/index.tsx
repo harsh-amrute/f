@@ -515,7 +515,7 @@ const ChronicUnavailabilityCharts = () => {
             <SCDynamicContainer style={{marginTop:'10px'}}>
                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={"98%"}>
+                        <SCChartContainer height={"98%"} style={{marginRight:'10px'}}>
                             <SCChartHeaderContainer>
                                 <SCChartHeader>Top 10 Locations: Max SKUs In Continuous Pipeline Black Or Red Ageing Greater Than RLT</SCChartHeader>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -601,7 +601,7 @@ const ChronicUnavailabilityCharts = () => {
                         </div> */}
                     </Allotment.Pane>
                     <Allotment.Pane>
-                        <SCChartContainer height={"98%"}>
+                        <SCChartContainer height={"98%"} style={{marginLeft:'18px'}}>
                                 <SCChartHeaderContainer>
                                     <SCChartHeader>Top 10 SKUs: Max Number Of Locations Where The SKU Has Pipeline Black/Red Ageing Greater Than RLT</SCChartHeader>
                                     <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>

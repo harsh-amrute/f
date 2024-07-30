@@ -471,7 +471,7 @@ const colDefs3: ColDef[] = [
             <Allotment vertical>
               <Allotment.Pane preferredSize={"50%"}>
                 <SCHorizontalAllignmentWrapper>
-                  <SCChartContainer height={"100%"}>
+                  <SCChartContainer height={"100%"} >
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
                         <SCChartHeader style={{marginRight:10}}>
@@ -572,7 +572,7 @@ const colDefs3: ColDef[] = [
               </Allotment.Pane>
               <Allotment.Pane preferredSize={"50%"}>
                 <SCHorizontalAllignmentWrapper>
-                <SCChartContainer className="ag-theme-planning" style={{marginTop:'10px'}} height={"100%"}>
+                <SCChartContainer className="ag-theme-planning" style={{marginTop:'20px'}} height={"100%"}>
                   <SCChartHeaderContainer>
                     <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
                       <SCChartHeader style={{marginRight:10}}>

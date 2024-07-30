@@ -227,7 +227,7 @@ if(isLoaderGraph1||isLoaderGraph2){
 
         </Allotment.Pane>
         {/* <Allotment.Pane preferredSize={'50%'}> */}
-        <div className="main" style={{marginTop:'20px',backgroundColor:'white',height:'415px',boxShadow: '-5px 5px 12px #0000001C', marginLeft:'15px'}}>
+        <div className="main" style={{marginTop:'20px',backgroundColor:'white',height:'415px',boxShadow: '-5px 5px 12px #0000001C', marginLeft:'25px'}}>
             <div className="horiozn one" style={{ width:'100%', height:'50px', display:'flex', justifyContent:'space-evenly', alignItems:'center',zoom:'0.9'}}>
                 <label
                 style={{

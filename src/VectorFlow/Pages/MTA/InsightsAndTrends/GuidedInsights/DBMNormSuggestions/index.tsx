@@ -730,7 +730,7 @@ const DBMNormSuggestions = () => {
             {/* <SCHorizontalAllignmentWrapper> */}
               <Allotment>
                 <Allotment.Pane preferredSize={"50%"}>
-                  <SCChartContainer height={'98%'} >
+                  <SCChartContainer height={'98%'} style={{marginRight:'10px'}}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -825,7 +825,7 @@ const DBMNormSuggestions = () => {
                   </div> */}
                 </Allotment.Pane>
                 <Allotment.Pane preferredSize={"50%"}>
-                  <SCChartContainer height={'98%'}>
+                  <SCChartContainer height={'98%'} style={{marginLeft:'18px'}}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -916,7 +916,7 @@ const DBMNormSuggestions = () => {
             {/* <SCHorizontalAllignmentWrapper> */}
               <Allotment>
                 <Allotment.Pane preferredSize={"50%"}>
-                  <SCChartContainer height={'98%'}>
+                  <SCChartContainer height={'98%'} style={{marginRight:'10px',marginTop:'15px'}}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -1010,7 +1010,7 @@ const DBMNormSuggestions = () => {
                   </div> */}
                 </Allotment.Pane>
                 <Allotment.Pane preferredSize={"50%"}>
-                  <SCChartContainer height={'98%'}>
+                  <SCChartContainer height={'98%'} style={{marginLeft:'18px',marginTop:'15px'}}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
