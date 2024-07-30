@@ -34,7 +34,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
             {
                 field:'SKUCounts',
                 colId:'SKUCounts',
-                headerName:'Count of SKUs'
+                headerName:'Count Of SKUs'
             }
         ]
         
@@ -201,7 +201,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"Count of SKUs",
+                            text:"Count Of SKUs",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -245,7 +245,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"Value in Lakhs",
+                            text:"Value In Lakhs",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -287,14 +287,14 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={"95%"} style={{marginRight:'10px'}}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations with Excess Inventory: Count Of SKUs</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations With Excess Inventory: Count Of SKUs</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
                                     {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(1)}/>}
                                 </div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                            <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations with Excess Inventory: Count of SKUs" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                            <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations With Excess Inventory: Count Of SKUs" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                                 <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
                                         ref={refGraph1}

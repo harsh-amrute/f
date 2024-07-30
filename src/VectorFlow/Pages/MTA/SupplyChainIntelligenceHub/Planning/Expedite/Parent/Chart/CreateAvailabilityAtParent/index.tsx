@@ -34,7 +34,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             {
                 field:'Counts',
                 colId:'Counts',
-                headerName:'Count of SKU Locations'
+                headerName:'Count Of SKU Locations'
             },
             {
                 field:'BlackCount',
@@ -74,7 +74,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             {
                 field:'SKUCounts',
                 colId:'SKUCounts',
-                headerName:'Count of SKU Locations'
+                headerName:'Count Of SKU Locations'
             },
             {
                 field:'BlackCount',
@@ -214,7 +214,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"Count of SKUs",
+                            text:"Count Of SKUs",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'

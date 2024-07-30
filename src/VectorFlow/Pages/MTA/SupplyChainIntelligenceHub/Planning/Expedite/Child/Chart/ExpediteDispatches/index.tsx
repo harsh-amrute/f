@@ -44,7 +44,7 @@ const ExpediteDispatches = ({ data }: ExpediteChildDispatchesProps) => {
       },
       {
         field: "SKUCounts",
-        headerName: "Count of SKUs",
+        headerName: "Count Of SKUs",
         colId: "SKUCounts",
       },
       {
@@ -406,7 +406,7 @@ const mapDataToRowData = (data: any) => {
           number: {
             title: {
               enabled: true,
-              text: "Count of SKUs",
+              text: "Count Of SKUs",
               position: "left",
               fontSize:10,
               fontFamily:'Roboto'
@@ -441,7 +441,7 @@ const mapDataToRowData = (data: any) => {
           number: {
             title: {
               enabled: true,
-              text: "Count of SKUs",
+              text: "Count Of SKUs",
               position: "left",
               fontSize:10,
               fontFamily:'Roboto'

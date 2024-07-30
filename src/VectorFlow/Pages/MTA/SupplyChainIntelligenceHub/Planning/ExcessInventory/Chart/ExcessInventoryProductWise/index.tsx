@@ -205,7 +205,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"Count of Locations",
+                            text:"Count Of Locations",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -249,7 +249,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"Value in Lakhs",
+                            text:"Value In Lakhs",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'

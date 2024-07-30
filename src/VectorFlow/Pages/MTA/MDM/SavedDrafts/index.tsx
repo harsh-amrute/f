@@ -83,7 +83,7 @@ const SavedDrafts = ()=>{
                 isDownload:true,
                 isEdit:true,
                 "col_Position":'5',
-                "isApplicable":true
+                "isApplicable":true,
             }
           ],{
             cellRendererParams:{
@@ -103,7 +103,7 @@ const SavedDrafts = ()=>{
               }
               return { background: "#F7F7F7" };
             },
-              enableRangeSelection:true,
+              enableRangeSelection:false,
               rowSelection:'multiple',
           }}
           statusBar={{

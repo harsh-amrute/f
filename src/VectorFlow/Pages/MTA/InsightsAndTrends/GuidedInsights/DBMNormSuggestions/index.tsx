@@ -521,7 +521,7 @@ const DBMNormSuggestions = () => {
             
             title: {
               enabled: true,
-              text: "No of Suggestions",
+              text: "No Of Suggestions",
               position: "left",
               fontSize:8,
               fontFamily:'Roboto',
@@ -631,7 +631,7 @@ const DBMNormSuggestions = () => {
           number: {
             title: {
               enabled: true,
-              text: "No of suggestions",
+              text: "No Of suggestions",
               position: "left",
               fontSize:10,
               fontFamily:'Roboto'
@@ -681,7 +681,7 @@ const DBMNormSuggestions = () => {
           number: {
             title: {
               enabled: true,
-              text: "No of suggestions",
+              text: "No Of suggestions",
               position: "left",
               fontSize:10,
               fontFamily:'Roboto'
