@@ -510,7 +510,7 @@ const DBMNormSuggestions = () => {
             },   
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,
@@ -528,7 +528,7 @@ const DBMNormSuggestions = () => {
             },
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,
@@ -571,7 +571,7 @@ const DBMNormSuggestions = () => {
             },
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,
@@ -621,7 +621,7 @@ const DBMNormSuggestions = () => {
             },
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,
@@ -671,7 +671,7 @@ const DBMNormSuggestions = () => {
             },
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,

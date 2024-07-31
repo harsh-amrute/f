@@ -218,6 +218,10 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
 
                         },
                         label:{
+                                formatter:(params:any)=>{
+                                    if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                    return params.value;
+                                },
                             fontSize:8,
                             fontFamily:'Roboto'
                         }
@@ -258,6 +262,10 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
 
                         },
                         label:{
+                                formatter:(params:any)=>{
+                                    if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                    return params.value;
+                                },
                             fontSize:8,
                             fontFamily:'Roboto'
                         }

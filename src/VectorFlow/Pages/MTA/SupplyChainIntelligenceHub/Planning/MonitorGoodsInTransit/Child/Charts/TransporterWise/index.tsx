@@ -242,6 +242,12 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                             fontSize:10,
                             fontFamily:'Roboto'
 
+                        },
+                        label:{
+                            formatter:(params:any)=>{
+                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                return params.value;
+                            },
                         }
                     },
                     number:{
@@ -483,11 +489,15 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                          
                                     },
                                     plotOptions: {
+                                        bar: {
+                                            columnWidth: "40%"
+                                            // columnWidth: "70%"
+                                          },
                                         boxPlot: {
                                         colors: {
                                             lower: '#D3D3D3', // Color for Q1 (1st quartile)
-                                            upper: '#848484'  // Color for Q3 (3rd quartile)
-                                        }
+                                            upper: '#848484',
+                                        }, 
                                         }
                                     }
                                     }}

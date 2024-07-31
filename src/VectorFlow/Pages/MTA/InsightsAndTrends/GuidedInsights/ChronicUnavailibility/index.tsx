@@ -421,12 +421,16 @@ const ChronicUnavailabilityCharts = () => {
                     category:{
                         title:{
                             enabled:true,
-                            text:'Date',
+                            text:'Location Name',
                             position:'bottom',
                             fontSize:10,
                             fontFamily:'Roboto'
                         },
                         label:{
+                            formatter:(params:any)=>{
+                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                return params.value;
+                            },
                             fontSize:8,
                             fontFamily:'Roboto'
                           }
@@ -468,12 +472,16 @@ const ChronicUnavailabilityCharts = () => {
                     category:{
                         title:{
                             enabled:true,
-                            text:'Date',
+                            text:'SKU Code',
                             position:'bottom',
                             fontSize:10,
                             fontFamily:'Roboto'
                         },
                         label:{
+                            formatter:(params:any)=>{
+                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                return params.value;
+                            },
                             fontSize:8,
                             fontFamily:'Roboto'
                           }

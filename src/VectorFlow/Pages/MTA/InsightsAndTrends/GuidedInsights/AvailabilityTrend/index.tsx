@@ -73,7 +73,9 @@ const AvailabilityTrend = ({themeUi}:{themeUi:string}) => {
           },
           label: {
             formatter: (params:any) => new Date(params.value).toISOString().split('T')[0],
+            fontSize: 10,
           },
+          
         },
         {
           type: 'number',
