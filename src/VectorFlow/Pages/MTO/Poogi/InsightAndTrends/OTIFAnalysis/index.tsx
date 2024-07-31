@@ -2,7 +2,7 @@ import { Allotment } from "allotment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { gridColumnConfig, APIMock } from "./MockData";
+import { APIMock } from "./MockData";
 import { ColDef, GridOptions } from "ag-grid-enterprise";
 import OTIFTrendsGraph from "./OTIFTrendsGraph";
 import OTAndIFTrendsGraph from "./OTAndIFTrendsGraph";
@@ -10,7 +10,6 @@ import {
   BTRAllomentSection,
   BTRTableWrapper,
   HorizontalViewWrapper,
-  VFTableWrapper,
 } from "./styles";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
@@ -20,7 +19,7 @@ import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 
 const OTIFAnalysis = () => {
-  const [isGridView, setIsGridView] = useState(true);
+  const [isGridView, setIsGridView] = useState(false);
   const { screenHeight } = useViewPort();
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
