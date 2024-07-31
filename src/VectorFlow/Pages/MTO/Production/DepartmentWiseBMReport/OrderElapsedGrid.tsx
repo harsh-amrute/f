@@ -16,7 +16,8 @@ import {
     ExpansionHeaderColoredText,
     ExpansionHeaderGroup,
     IconWrapper,
-    HigHAgeingIconWrapper
+    HigHAgeingIconWrapper,
+    VFWrapper
 } from './styles'
 import { AgGridReactProps } from 'ag-grid-react';
 import { BPRViewTableGrid } from '../../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/styles';
@@ -102,8 +103,11 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                     'white-space': 'nowrap',
                     'resizable': 'true',
                 },
-                initialFlex:1
-            },  
+                floatingFilterComponentParams: {
+                    suppressFilterButton: true
+                },
+                initialFlex: 1
+            },
 
         },
         sideBar: sideBar,
@@ -182,12 +186,14 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                 </ExpansionHeader>
                                 {(isLeftPanelOrderStatusOpen) && (
                                     <ExpansionContent>
-                                        <VFTable
-                                            {...agGridProps}
-                                            columnDefs={orderStatus}
-                                            rowData={orderStatusData}
-                                            height='400px'
-                                        />
+                                        <VFWrapper>
+                                            <VFTable
+                                                {...agGridProps}
+                                                columnDefs={orderStatus}
+                                                rowData={orderStatusData}
+                                                height='400px'
+                                            />
+                                        </VFWrapper>
                                     </ExpansionContent>
                                 )}
                             </ExpansionWrapper>
@@ -263,7 +269,7 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                         Min Ageing  :
                                     </ExpansionHeaderNormalText>
                                     <ExpansionHeaderColoredText>
-                                        10 days
+                                        10 days, 2hrs
                                     </ExpansionHeaderColoredText>
                                 </ExpansionHeaderGroup>
                                 <ExpansionHeaderGroup style={{ marginLeft: 'auto' }}>
@@ -271,7 +277,7 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                         Max Ageing  :
                                     </ExpansionHeaderNormalText>
                                     <ExpansionHeaderColoredText>
-                                        10 days
+                                        10 days, 2hrs
                                     </ExpansionHeaderColoredText>
                                 </ExpansionHeaderGroup>
                                 <ExpansionHeaderGroup onClick={() => toggleRightPanel(!isRightPanel)} style={{ marginLeft: '100px' }}>

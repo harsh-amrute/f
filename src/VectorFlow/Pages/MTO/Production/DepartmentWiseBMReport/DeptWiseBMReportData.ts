@@ -3,7 +3,7 @@ import { ColDef, ColGroupDef } from "ag-grid-enterprise";
 
 export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | ColGroupDef)[] => {
     return [
-        
+
         {
             headerName: "",
             headerCheckboxSelection: false,
@@ -15,11 +15,11 @@ export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | Col
         {
             headerName: "Default Attributes",
             suppressStickyLabel: true,
-            colId:'Default Attributes',
+            colId: 'Default Attributes',
             openByDefault: true,
             children: [
-                { field: 'ec', headerName: '', colId: '', cellRenderer: "customCellRenderer", initialWidth: 80, floatingFilter:false },
-                { field: 'ic', headerName: '', colId: '', cellRenderer: "AgeingCellRenderer", initialWidth: 80,floatingFilter:false },
+                { field: 'ec', headerName: '', colId: '', cellRenderer: "customCellRenderer", initialWidth: 80, floatingFilter: false },
+                { field: 'ic', headerName: '', colId: '', cellRenderer: "AgeingCellRenderer", initialWidth: 80, floatingFilter: false },
                 { field: "BPP", headerName: "BPP", colId: "BPP", cellRenderer: "colorCellRenderer" },
                 { field: "D_Ag", headerName: 'Dept Ageing', colId: "Dept Ageing", columnGroupShow: "open" },
                 { field: "Ord_Typ", headerName: "Order Type", colId: "Order Type", columnGroupShow: "open" },
@@ -41,7 +41,7 @@ export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | Col
         {
             headerName: "Calculate Attribute",
             suppressStickyLabel: true,
-            colId:'Calculate Attributes',
+            colId: 'Calculate Attributes',
             openByDefault: true,
             children: [
                 { field: "Elap_days", headerName: "Elapsed Days", colId: "Elapsed Days" },
@@ -51,7 +51,7 @@ export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | Col
         {
             headerName: "Order Attribute",
             suppressStickyLabel: true,
-            colId:'Order Attributes',
+            colId: 'Order Attributes',
             openByDefault: true,
             children: [
                 { field: "Pl_Nam", headerName: "Plant Name", colId: "Plant Name" },
@@ -61,7 +61,7 @@ export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | Col
         {
             headerName: "Product Attribute",
             suppressStickyLabel: true,
-            colId:'Product Attributes',
+            colId: 'Product Attributes',
             openByDefault: true,
             children: [
                 { field: "Price", headerName: "Price", colId: "Price" },
@@ -75,7 +75,7 @@ export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | Col
         {
             headerName: "Customer Attribute",
             suppressStickyLabel: true,
-            colId:'Customer Attributes',
+            colId: 'Customer Attributes',
             openByDefault: true,
             children: [
                 { field: "Cust_Cd", headerName: "Customer Code", colId: "Customer Code" },
@@ -87,7 +87,7 @@ export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | Col
             headerName: "",
             suppressStickyLabel: true,
             openByDefault: false,
-            colId:'',
+            colId: '',
             children: [
                 {
                     field: "Rem_Cd", headerName: "Remark Code", pinned: 'right', colId: "Remark Code", cellRenderer: "TextBoxCellRenderer", cellRendererParams: {
@@ -125,22 +125,20 @@ export const orderDataDropDown: (ColDef)[] = [
 
 export const orderStatus: (ColDef | ColGroupDef)[] = [
     {
-        headerName: "",
-        children: [{
-            headerName: "Order Id",
-            field: 'ord_id',
-            colId: 'ord_id',
-        },
-        {
-            headerName: "Line Item",
-            field: 'l_itm',
-            colId: 'l_itm',
-        },
-        {
-            headerName: "Quantity",
-            field: 'qty',
-            colId: 'qty',
-        }]
+        headerName: "Order ID",
+        field: 'ord_id',
+        colId: 'ord_id',
+    },
+    {
+        headerName: "Line Item",
+        field: 'l_itm',
+        colId: 'l_itm',
+
+    },
+    {
+        headerName: "Quantity",
+        field: 'qty',
+        colId: 'qty',
     },
     {
         headerName: 'Department 1',
@@ -290,22 +288,22 @@ export const ElapsedTime: (ColDef | ColGroupDef)[] = [
 
 export const ElapsedTimeData = [
     {
-        "time": "In time",
-        "dpt1": 10,
-        "dpt2": 15,
-        "dpt3": 20
+        "time": "In Time",
+        "dpt1": '1 Feb 2024, 10.00am',
+        "dpt2": '2 Feb 2024, 10.00am',
+        "dpt3": '16 Feb 2024, 10.00am',
     },
     {
         "time": "Out Time",
-        "dpt1": 12,
-        "dpt2": 18,
-        "dpt3": 22
+        "dpt1": '2 Feb 2024, 11.00am',
+        "dpt2": '5 Feb 2024, 10.00am',
+        "dpt3": '21 Feb 2024, 10.00am',
     },
     {
         "time": "Elapsed Time",
-        "dpt1": 14,
-        "dpt2": 20,
-        "dpt3": 25
+        "dpt1": '3 Feb 2024, 12.00pm',
+        "dpt2": '11 Feb 2024, 10.00am',
+        "dpt3": '29 Feb 2024, 10.00am',
     },
 ]
 
@@ -578,7 +576,7 @@ export const deptwiseBMReportData = [
                 "Stck": 120,
                 "WIP": 60,
                 "Gp": 60,
-                "children":[
+                "children": [
                     {
                         "FG_Cod": "B456",
                         "Lvl": "L1",
@@ -589,7 +587,7 @@ export const deptwiseBMReportData = [
                     },
                 ]
             },
-            
+
         ]
     },
     {
@@ -633,7 +631,7 @@ export const deptwiseBMReportData = [
                 "Stck": 100,
                 "WIP": 50,
                 "Gp": 50,
-                "children":[
+                "children": [
                     {
                         "FG_Cod": "C123",
                         "Lvl": "L1",
@@ -644,7 +642,7 @@ export const deptwiseBMReportData = [
                     },
                 ]
             },
-           
+
         ]
     },
     {
@@ -688,7 +686,7 @@ export const deptwiseBMReportData = [
                 "Stck": 100,
                 "WIP": 50,
                 "Gp": 50,
-                "children":[
+                "children": [
                     {
                         "FG_Cod": "D123",
                         "Lvl": "L1",
@@ -699,7 +697,7 @@ export const deptwiseBMReportData = [
                     },
                 ]
             },
-           
+
         ]
     }
     // Add more entries as needed...
