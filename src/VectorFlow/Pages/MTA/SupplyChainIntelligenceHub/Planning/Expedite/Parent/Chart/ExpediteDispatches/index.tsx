@@ -379,6 +379,10 @@ const colDefs3: ColDef[] = [
               fontFamily:'Roboto'
             },
             label:{
+                formatter:(params:any)=>{
+                    if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                    return params.value;
+            },
               fontSize:8,
               fontFamily:'Roboto'
             }
@@ -414,6 +418,10 @@ const colDefs3: ColDef[] = [
               fontFamily:'Roboto'
             },
             label:{
+                formatter:(params:any)=>{
+                    if(params.value.length > 6) return params.value.toString().slice(0,6) + '...';
+                    return params.value;
+                },
               fontSize:8,
               fontFamily:'Roboto'
             }

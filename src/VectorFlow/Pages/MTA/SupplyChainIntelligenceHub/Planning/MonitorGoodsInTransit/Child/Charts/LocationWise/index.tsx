@@ -223,6 +223,12 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                             fontSize:10,
                             fontFamily:'Roboto'
 
+                        },
+                        label:{
+                            formatter:(params:any)=>{
+                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                return params.value;
+                            },
                         }
                     },
                     number:{
@@ -391,23 +397,47 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                         width: 1.5,
                                         dashArray: 0
                                     },
+                                    // xaxis: {
+                                    //     crosshairs: {
+                                    //         show: false
+                                    //     },
+                                    //     tooltip:{
+                                    //         enabled:false,
+                                    //     },
+                                       
+                                    //     labels: {
+                                    //         style: {
+                                    //           fontSize: '12px', // Font size of y-axis labels
+                                    //           fontFamily: 'Roboto', // Font family of y-axis labels
+                                    //             colors:'#717171',
+                                    //             fontWeight:400                    
+                                    //         },
+                                    //       },
+                                    // },
                                     xaxis: {
                                         crosshairs: {
-                                            show: false
+                                          show: false
                                         },
                                         tooltip:{
-                                            enabled:false,
+                                          enabled:false,
                                         },
-                                       
                                         labels: {
-                                            style: {
-                                              fontSize: '12px', // Font size of y-axis labels
-                                              fontFamily: 'Roboto', // Font family of y-axis labels
-                                                colors:'#717171',
-                                                fontWeight:400                    
-                                            },
+                                          style: {
+                                            fontSize: '12px', // Font size of y-axis labels
+                                            fontFamily: 'Roboto', // Font family of y-axis labels
+                                            colors:'#717171',
+                                            fontWeight:400                    
                                           },
-                                    },
+                                        //   formatter: (params:any) => {
+                                        //     if (params !== undefined && params.value !== undefined) {
+                                        //       const stringValue = params.value.toString();
+                                        //       if(stringValue.length > 10) return stringValue.slice(0,10) + '...';
+                                        //       return params.value;
+                                        //     }
+                                        //     return ''; 
+                                        //   },
+                                        },
+                                      },
                                     yaxis: {
                                         title: {
                                             text: 'Delay Days',
@@ -426,6 +456,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                           },
                                          
                                     },
+                                   
                                     plotOptions: {
                                         boxPlot: {
                                         colors: {

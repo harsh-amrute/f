@@ -194,7 +194,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                         },
                         label:{
                             formatter:(params:any)=>{
-                                if(params.value.length > 15) return params.value.toString().slice(0,15) + '...';
+                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
                                 return params.value;
                             },
                             fontSize:8,
