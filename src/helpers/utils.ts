@@ -55,7 +55,8 @@ export const login = (navigate: NavigateFunction) => {
 
 export const hashPassword = (password: string): Promise<string> => {
   const iv = CryptoJS.lib.WordArray.random(16); 
-  const encrypted = CryptoJS.AES.encrypt(password, CryptoJS.enc.Utf8.parse("your-secret-key-1234567890abcdef"), {
+  console.log(process.env.REACT_APP_SECRET_KEY)
+  const encrypted = CryptoJS.AES.encrypt(password, CryptoJS.enc.Utf8.parse(process.env.REACT_APP_SECRET_KEY), {
     iv: iv,
     mode: CryptoJS.mode.CTR,
     padding: CryptoJS.pad.NoPadding,
