@@ -10,6 +10,7 @@ import VFModalCard from "../../../../../../../../../components/VectorFLOW/common
 import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
 import Chart from 'react-apexcharts';
+import {convertToInt} from '../../../../../../../../../helpers/utils';
 
 interface MonitorGITChildTransporterWiseProps{
     data:any
@@ -130,22 +131,6 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
     const colDefs1 = mapUIConfigToColdefs(data['maxTechBlackRedColumn']['uiconfig'])
     const colDefs2 = mapUIConfigToColdefs2(data['delayDaysStatisticalBox']['uiconfig'])
 
-
-    const convertToInt = (data:any)=>{
-        return data.map((row:any)=>{
-            const tempObj:any = {};
-            Object.keys(row).forEach((key:string)=>{
-                const value = parseFloat(row[key])
-                if(!isNaN(value)){
-                    tempObj[key] = value
-                }
-                else{
-                    tempObj[key] = row[key];
-                }
-            })
-            return {...tempObj}
-        })
-    }
 
     const sortData = (data:any) => {
         data.sort((row1:any,row2:any)=>{
@@ -303,7 +288,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                 <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
-                                            rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
+                                            rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data'],['delay','superdelay']))}
                                             enableCharts={true}
                                             enableRangeSelection={true} 
                                             rowSelection="multiple"
@@ -343,7 +328,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                             <VFTable
                                 ref={refGraph1}
                                 columnDefs={colDefs1}
-                                rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
+                                rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data'],['delay','superdelay']))}
                                 enableCharts={true}
                                 enableRangeSelection={true} 
                                 rowSelection="multiple"

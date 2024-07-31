@@ -2358,3 +2358,20 @@ export const mapSubmitRemarkData = (row:any):any=>{
     
   }
 }
+
+
+export const convertToInt = (data:any,keys:string[])=>{
+  return data.map((row:any)=>{
+      const tempObj:any = {};
+      Object.keys(row).forEach((key:string)=>{
+          const value = parseFloat(row[key])
+          if(keys.includes(key) && !isNaN(value)){
+              tempObj[key] = value
+          }
+          else{
+              tempObj[key] = row[key];
+          }
+      })
+      return {...tempObj}
+  })
+}

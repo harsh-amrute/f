@@ -9,6 +9,7 @@ import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/V
 
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
 import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+import {convertToInt} from '../../../../../../../../helpers/utils';
 interface ExcessInventoryProps{
     data:any
 }
@@ -77,22 +78,6 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
     }
 
     const colDefs2 = mapUIConfigToColdefs2(data['topTenLocationsWithExcessInventoryValue']['uiconfig']);
-
-    const convertToInt = (data:any)=>{
-        return data.map((row:any)=>{
-            const tempObj:any = {};
-            Object.keys(row).forEach((key:string)=>{
-                const value = parseFloat(row[key])
-                if(!isNaN(value)){
-                    tempObj[key] = value
-                }
-                else{
-                    tempObj[key] = row[key];
-                }
-            })
-            return {...tempObj}
-        })
-    }
 
     const sortData = (data:any,key:string) => {
         data.sort((row1:any,row2:any)=>{
@@ -303,7 +288,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                     <VFTable
                                         ref={refGraph1}
                                         columnDefs={colDefs1}
-                                        rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data']),'SKUCounts')}
+                                        rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data'],['SKUCounts']),'SKUCounts')}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -340,7 +325,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                 <VFTable
                                     ref={refGraph1}
                                     columnDefs={colDefs1}
-                                    rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data']),'SKUCounts')}
+                                    rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data'],['SKUCounts']),'SKUCounts')}
                                     enableCharts={true}
                                     enableRangeSelection={true} 
                                     rowSelection="multiple"
@@ -388,7 +373,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}
-                                        rowData={scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data']),'SumOfAmount'),'SumOfAmount',100000)}
+                                        rowData={scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data'],['SumOfAmount']),'SumOfAmount'),'SumOfAmount',100000)}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -425,7 +410,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}
-                                        rowData={scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data']),'SumOfAmount'),'SumOfAmount',100000)}
+                                        rowData={scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data'],['SumOfAmount']),'SumOfAmount'),'SumOfAmount',100000)}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
