@@ -499,7 +499,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}
-                                        rowData={sortData(convertToInt(data['delayDaysStatisticalBox']['data']))}
+                                        rowData={sortData(convertToInt(data['delayDaysStatisticalBox']['data'],['Q1','Q3','maxd','mind','mean','median']))}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
