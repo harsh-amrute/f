@@ -331,7 +331,6 @@ const useInTransitWhereAbouts = ()=>{
     setIsSubmitRemarkToolTipOpen(false)
     setIsSubmitETAToolTipOpen(false)
     setActiveRow(data)
-    console.log(data)
     setCurrentLocationValue(e.currentTarget.value)
     const { top, left } = e.currentTarget.getBoundingClientRect()
     setSubmitCurrentLocationToolipPosition({
@@ -464,11 +463,12 @@ const useInTransitWhereAbouts = ()=>{
 
     const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
 
-    async function onOpenContactModal (){
+    async function onOpenContactModal (params:any){
+      console.log(params)
 
      try{
       notifyLoader("Loading Details")
-      const contactData = await getTransporterDetails({orderNo:'VectorOrder_6662'})
+      const contactData = await getTransporterDetails({orderNo:params["OrderNo"]})
       if(contactData.data.data[0]){
         setCurrentUserDetails(contactData.data.data[0])
         toggleContactModal(true)
@@ -502,6 +502,11 @@ const useInTransitWhereAbouts = ()=>{
       
 
     }
+
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+      const updatedFilter = onDelete(parentId,filterId,value)
+      onApplyFilter(updatedFilter)
+  }
 
     const onExportToExcelCallBack = async(pageNo:number)=>{
       const payload = {
@@ -661,7 +666,7 @@ const useInTransitWhereAbouts = ()=>{
         getRowData,
         currentFilter,
         setCurrFilter,
-        onDelete,
+        onDeleteFilter,
         onApplyFilter,
         onExportToExcelCallBack,
         onSubmitCurrentLocation,

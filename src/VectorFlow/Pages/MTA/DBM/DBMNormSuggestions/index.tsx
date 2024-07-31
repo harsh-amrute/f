@@ -35,7 +35,7 @@ const DBM = () => {
   handleApplyFilter,
   currentFilter,
   setCurrentFilter,
-  onDelete,
+  onDeleteFilter,
   onExportToExcelCallBack
 } = useDBM();
 
@@ -72,7 +72,7 @@ const DBM = () => {
         onApplyFilter={handleApplyFilter}
         multiFilter={currentFilter}
         setMultiFilter={setCurrentFilter}
-        onDelete={onDelete}
+        onDelete={onDeleteFilter}
       />
       <DBMLayout>
         <div style={{height:'90vh'}}>

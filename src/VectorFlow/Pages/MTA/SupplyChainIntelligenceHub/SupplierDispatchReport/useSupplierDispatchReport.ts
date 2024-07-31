@@ -102,13 +102,14 @@ const useSupplierDispatchReport= ()=>{
 
     const onApplyFilter = async(filter:any)=>{
         try{
-            await getSDRDataCount({
+            const DataCount = await getSDRDataCount({
                 filters:filter ,
                 paginationParameter:{
                     pageNumber:1,
                     recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')
                 }
             })
+            setSDRCount(DataCount.data.data[0].count);
         notifyLoader("Loading Grid Data")
             const rowData =await getSDRData({
                 filters:filter ,
@@ -120,13 +121,20 @@ const useSupplierDispatchReport= ()=>{
             
         
         // setRecordCount(rowData.data.recordCount)
-        setCurrFilter(filter)
+            setCurrFilter(filter)
             setCurrentPage(1)
             setRowData(rowData?.data?.data)
             toast.dismiss()
         }catch(err:any){
             notifyError(err)
+            setRowData([])
+            setSDRCount(0)
         }
+    }
+
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+        const updatedFilter = onDelete(parentId,filterId,value)
+        onApplyFilter(updatedFilter)
     }
         
 
@@ -149,7 +157,7 @@ const useSupplierDispatchReport= ()=>{
         customCellRenderers,
         currFilter,
         setCurrFilter,
-        onDelete,
+        onDeleteFilter,
         onExportToExcelCallBack,
         onApplyFilter
 

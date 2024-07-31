@@ -148,9 +148,6 @@ const useBufferTrends = () => {
             setCurrentGraphData(result.data?.data?.absolute);
             setGraphData(result.data);
             notifySuccess("Graph Details Fetched Successfully")
-    
-            console.log("no error")
-        
             
         } catch (error) {
             toast.dismiss();
@@ -159,6 +156,10 @@ const useBufferTrends = () => {
         }
        }
 
+       const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+        const updatedFilter = onDelete(parentId,filterId,value)
+        handleApplyFilter(updatedFilter)
+    }
 
     return {
         currentTab ,
@@ -178,7 +179,7 @@ const useBufferTrends = () => {
         handleApplyFilter,
         multiFilterState,
         setMultiFilterState,
-        onDelete,
+        onDeleteFilter,
         onGoBack
     }
   

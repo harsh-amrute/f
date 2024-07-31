@@ -54,7 +54,7 @@ export const useGetBPRRemarkHistory = () => {
 }
 
 export const useSubmitBPRRemark = () => {
-  return useMutation(async (payload:Array<SubmitBPRRemarkPayload>) => {
+  return useMutation(async (payload:{data:Array<SubmitBPRRemarkPayload>}) => {
     return await BPRService.submitRemark(payload);
   });
 }

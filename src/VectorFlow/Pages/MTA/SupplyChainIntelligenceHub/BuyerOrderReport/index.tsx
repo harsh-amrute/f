@@ -35,7 +35,7 @@ const BuyerOrderReport = ()=>{
         dailyData,
         currFilter,
         setCurrFilter,
-        onDelete, 
+        onDeleteFilter, 
         onApplyFilter 
     } = useBOR()
 
@@ -68,7 +68,7 @@ const BuyerOrderReport = ()=>{
             onExportToExcelCallBack={onExportToExcelCallBack}
             multiFilter={currFilter}
             setMultiFilter={setCurrFilter}
-            onDelete={onDelete}
+            onDelete={onDeleteFilter}
         />
        </div> 
         <BORLayout>
@@ -104,7 +104,7 @@ const BuyerOrderReport = ()=>{
                 rowData={rowData}
                 ref={ref}
                 onGridReady={(params)=>{
-                    if(columnState)params.columnApi.applyColumnState({state:columnState})
+                    if(columnState)params.api.applyColumnState({state:columnState})
                 }}
                 enableRangeSelection={true} // Added property
                 rowSelection="multiple"

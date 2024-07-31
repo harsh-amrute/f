@@ -35,7 +35,7 @@ const RRR = () => {
   onApplyFilter,
   currFilter,
   setCurrFilter,
-  onDelete
+  onDeleteFilter
 } = useRRR();
  const ref = useRef()
 
@@ -82,7 +82,7 @@ const RRR = () => {
         onExportToExcelCallBack={onExportToExcelCallBack}
         multiFilter={currFilter}
         setMultiFilter={setCurrFilter}
-        onDelete={onDelete}
+        onDelete={onDeleteFilter}
       />
     </div>
     <RRRLayout>
@@ -119,7 +119,7 @@ const RRR = () => {
                   rowData={RRRRowData}
                   onGridReady={(params)=>{
                     if(columnState){
-                      params.columnApi.applyColumnState({state:columnState})
+                      params.api.applyColumnState({state:columnState})
                     }
                   }}
                   enableRangeSelection={true} // Added property

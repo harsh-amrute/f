@@ -79,6 +79,11 @@ const useBTR = ()=>{
 
     const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
 
+    const [currentTab,setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0])
+    const [verticalView,setVerticalView] = useState<boolean>(true)
+    const [techRowData,setTechRowData] = useState<Array<any>>([])
+    const [ecoRowData,setEcoRowData]  = useState<Array<any>>([])
+
     const techPaginationProps:VFPaginationProps = {
         selectedRows:0,
         totalRows:techTotalRows,
@@ -125,7 +130,7 @@ const useBTR = ()=>{
                     return { background: "#F7F7F7" };
                   },
             },
-            rowHeight:25,
+            rowHeight:25
         }
     },[])
 
@@ -136,10 +141,7 @@ const useBTR = ()=>{
         }
       };
 
-    const [currentTab,setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0])
-    const [verticalView,setVerticalView] = useState<boolean>(true)
-    const [techRowData,setTechRowData] = useState<Array<any>>([])
-    const [ecoRowData,setEcoRowData]  = useState<Array<any>>([])
+    
     // const [defaultColDefs,setDefaultColDefs] = useState<Array<ColDef>>([])
 
 
@@ -162,6 +164,8 @@ const useBTR = ()=>{
             setTechRowData(mapBTRRowData(data.data.data.tech))
         }catch(err:any){
             notifyError(err)
+            setTechRowData([])
+            setEcoRowData([])
         }finally{
             toast.dismiss(loaderId)
         }
@@ -197,6 +201,11 @@ const useBTR = ()=>{
         }
         getBTRDataCount(payload)
         getData(filter,1)
+    }
+
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+        const updatedFilter = onDelete(parentId,filterId,value)
+        onApplyFilter(updatedFilter)
     }
 
     const toggleVerticalView = (isVertical:boolean)=>setVerticalView(isVertical)
@@ -264,6 +273,9 @@ const useBTR = ()=>{
                             rowData={techRowData} 
                             {...gridProps} 
                             pagination={false} 
+                            defaultColDef={{
+                                floatingFilter:true
+                            }}
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                         />
                         <div style={{zoom:0.7,marginBottom:'20px'}}>
@@ -288,6 +300,9 @@ const useBTR = ()=>{
                             rowData={ecoRowData} 
                             {...gridProps} 
                             pagination={false} 
+                            defaultColDef={{
+                                floatingFilter:true
+                            }}
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                         />
                         <div style={{zoom:0.7,marginBottom:'20px'}}>
@@ -354,7 +369,7 @@ const useBTR = ()=>{
         currFilter,
         themeUi,
         setCurrFilter,
-        onDelete,
+        onDeleteFilter,
         onApplyFilter
     }
 }

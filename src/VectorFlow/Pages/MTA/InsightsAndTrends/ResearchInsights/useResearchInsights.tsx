@@ -159,7 +159,6 @@ const useResearchInsights = ()=>{
         components:customCellRenderers,
         defaultColDef:{
             floatingFilter: true,
-            filter: "agMultiColumnFilter",
             cellDataType:false,
             resizable:false,
             cellStyle:{
@@ -226,6 +225,11 @@ const useResearchInsights = ()=>{
             notifyError(err)
         }
         
+    }
+
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+        const updatedFilter = onDelete(parentId,filterId,value)
+        onApplyFilter(updatedFilter)
     }
 
     const handlePageChange = async(pageNo:number)=>{
@@ -472,7 +476,6 @@ const useResearchInsights = ()=>{
             SKUCode:params.data['SKUCode'],
             WHCode:params.data['WHCode']
         }
-        console.log(params)
         const result = await getDailyData(payload)
         const data = result.data.data[0];
         const dailyData:DailyDataGraph = {
@@ -558,7 +561,7 @@ const useResearchInsights = ()=>{
         dailyData,
         onApplyFilter,
         handlePageChange,
-        onDelete,
+        onDeleteFilter,
         currentFilter,
         setCurrentFilter
     }

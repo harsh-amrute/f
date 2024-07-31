@@ -42,7 +42,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
         const getTableState = async()=>{
           try{
             const data =  await getState(`${currentCategory}${currentTab}`)
-            ref.current.columnApi.applyColumnState({state:JSON.parse(data.data.data)})
+            ref.current.api.applyColumnState({state:JSON.parse(data.data.data)})
           }catch(err:any){
             notifyError(err)
           }

@@ -1951,8 +1951,9 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDaily
     checkboxSelection:true,
     headerCheckboxSelection:true,
     headerCheckboxSelectionCurrentPageOnly:true,
-    width:10,
-    lockVisible:true
+    width:40,
+    lockVisible:true,
+    filter:false,
   }
 
 
@@ -1961,6 +1962,7 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDaily
     field:'tags',
     headerName:"Tags",
     cellRenderer:'tagsCellRenderer',
+    filter: "agMultiColumnFilter",
     width:100
   }
 
@@ -1971,6 +1973,7 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDaily
         field:f.Col_Code,
         headerName:f.Header,
         hide:!f.Visible,
+        filter: "agMultiColumnFilter",
         cellRenderer:'colorTechCellRenderer',
         cellStyle:{
           'min-width':180,
@@ -1983,6 +1986,7 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDaily
         field:f.Col_Code,
         headerName:f.Header,
         hide:!f.Visible,
+        filter: "agMultiColumnFilter",
         cellRenderer:'colorEcoCellRenderer',
         cellStyle:{
           'min-width':180,
@@ -1994,6 +1998,7 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDaily
       field:f.Col_Code,
       headerName:f.Header,
       hide:!f.Visible,
+      filter: "agMultiColumnFilter",
       cellStyle:{
         'min-width':180,
       }
@@ -2212,7 +2217,7 @@ export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):A
 
 }
 
-export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any):ColDef[]=>{
+export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any,afterSleepCallBack:()=>void):ColDef[]=>{
 
 
   if(!fields || fields.length<1){
@@ -2259,6 +2264,9 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
        headerName:'Sleep',
        lockPosition:true,
        cellRenderer:'sleepCellRenderer',
+       cellRendererParams:{
+        callBack:afterSleepCallBack
+       },
        floatingFilter:false,
        minWidth:140,
        maxWidth:140

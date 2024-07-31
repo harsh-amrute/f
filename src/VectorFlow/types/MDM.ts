@@ -1,6 +1,5 @@
 import {
     GridApi,
-    ColumnApi,
     ColDef
 } from 'ag-grid-enterprise'
 import Joi from 'joi'
@@ -90,7 +89,6 @@ export interface VFtableProps{
 
 export interface GridRef{
     api:GridApi
-    columnApi:ColumnApi
 }
 
 export interface AddRecordMaster{

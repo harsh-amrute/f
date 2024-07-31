@@ -74,7 +74,7 @@ const ResearchInsights = ()=>{
         dailyData,
         handlePageChange,
         onApplyFilter,
-        onDelete,
+        onDeleteFilter,
         currentFilter,
         setCurrentFilter
     } = useResearchInsights()
@@ -108,7 +108,7 @@ const ResearchInsights = ()=>{
             onApplyFilter={onApplyFilter}
             multiFilter={currentFilter}
             setMultiFilter={setCurrentFilter}
-            onDelete={onDelete}
+            onDelete={onDeleteFilter}
             onUpdateInsight={handleOnUpdateGraph}
             hideUpdateInsightsBtn={graphState==='default'}
         />
@@ -134,7 +134,7 @@ const ResearchInsights = ()=>{
                             columnDefs={ResearchInsightsColumns}
                             rowData={ResearchInsightsData}
                             onGridReady={(params)=>{
-                                if(columnState)params.columnApi.applyColumnState({state:columnState})
+                                if(columnState)params.api.applyColumnState({state:columnState})
                             }}
                             enableRangeSelection={true} // Added property
                             rowSelection="multiple"

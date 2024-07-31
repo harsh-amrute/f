@@ -75,7 +75,12 @@ const useDBM =()=>{
         dispatch(TOGGLE_GRAPH_MODAL(true));
 
     }
-    const DBMColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph)
+
+    const refetchAfter = ()=>{
+        getDataCount(currentFilter);
+        getDBMRowData(currentFilter,currentPage);
+    }
+    const DBMColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter)
 
     const showAllCheckbox = () => {
         const rows:any[] = []
@@ -121,7 +126,8 @@ const useDBM =()=>{
                 }
             })
         toast.dismiss()
-        notifySuccess("Submitte Successfully")
+        notifySuccess("Submitted Successfully")
+        refetchAfter()
         //console.log(rowData)
    }
 
@@ -130,6 +136,8 @@ const useDBM =()=>{
         getDataCount(currentFilter);
         getDBMRowData(currentFilter,currentPage);
     },[])
+
+   
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
@@ -160,13 +168,18 @@ const useDBM =()=>{
         toast.dismiss()
         notifySuccess("Data Loaded Successfully")
         // console.log(rowData.data.data)
-        setDBMRowData(rowData?.data?.data)
+        setDBMRowData(rowData?.data?.data || [])
     }
 
     const handleApplyFilter = async(filter:any)=>{
         setCurrentFilter(filter)
         await getDataCount(filter)
         await getDBMRowData(filter,1)
+    }
+
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+        const updatedFilter = onDelete(parentId,filterId,value)
+        handleApplyFilter(updatedFilter)
     }
 
     const onExportToExcelCallBack= async(pageNo:any)=>{
@@ -246,7 +259,7 @@ const useDBM =()=>{
         handleApplyFilter,
         currentFilter,
         setCurrentFilter,
-        onDelete,
+        onDeleteFilter,
         onExportToExcelCallBack,
     }
 }

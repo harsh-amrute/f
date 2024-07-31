@@ -141,8 +141,8 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                 }}
                 onGridReady={(params)=>{
                     if(gridState){
-                        params.columnApi.applyColumnState({state:gridState.columns})
-                        params.api.setPivotMode(gridState.pivot)
+                        params.api.applyColumnState({state:gridState.columns})
+                        params.api.setGridOption('pivotMode',gridState.pivot)
                         if(gridState.charts && Array.isArray(gridState.charts) && gridState.charts.length>0){
                             gridState.charts.forEach((c:any)=>{
                                 params.api.restoreChart(c)

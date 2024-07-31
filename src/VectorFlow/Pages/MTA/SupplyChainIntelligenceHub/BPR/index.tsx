@@ -52,10 +52,10 @@ const BPR = ()=>{
         setExportExcelColumns,
         onExportToExcelCallBack,
         currFilter,
-        onDelete,
         setCurrFilter,
         onApplyFilter,
-        editedRows
+        editedRows,
+        onDeleteFilter
     } = useBPR();
 
     
@@ -93,7 +93,7 @@ const BPR = ()=>{
             genericRecordCount={recordCount}
             onExportToExcelCallBack={onExportToExcelCallBack}
             multiFilter={currFilter}
-            onDelete={onDelete}
+            onDelete={onDeleteFilter}
             setMultiFilter={setCurrFilter}
             onSubmitEditedRows={onSubmitRemarks}
             disableSubmitEditedRowsBtn={editedRows.length===0}
@@ -137,7 +137,7 @@ const BPR = ()=>{
                 rowData={BPRRowData}
                 onGridReady={(params)=>{
                    if(columnState){
-                    params.columnApi.applyColumnState({state:columnState})
+                    params.api.applyColumnState({state:columnState})
                    }
                 }}
                 enableRangeSelection={true} 

@@ -149,10 +149,12 @@ export const useBOR =()=>{
             paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
         }
         const result = await getBorData(payload);
-        setRowData(result?.data.data)
+        setRowData(result.data.data || [])
         toast.dismiss()
         }catch(err:any){
           notifyError(err)
+          setRecordCount(0)
+          setRowData([])
         }
 
     }
@@ -163,6 +165,11 @@ export const useBOR =()=>{
       setCurrFilter(filter)
       setCurrentPage(1)
     }
+
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+      const updatedFilter = onDelete(parentId,filterId,value)
+      onApplyFilter(updatedFilter)
+  }
 
      const agGridProps:AgGridReactProps = {
         tooltipShowDelay:0,
@@ -265,6 +272,6 @@ export const useBOR =()=>{
         onApplyFilter,
         currFilter,
         setCurrFilter,
-        onDelete,
+        onDeleteFilter,
     }
 }

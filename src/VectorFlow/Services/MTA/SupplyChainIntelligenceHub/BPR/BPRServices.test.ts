@@ -58,11 +58,13 @@ describe('Testing the MDMService',  () => {
             "conflictErrorCount": null,
             "conflictError": null
         });
-        const mockBody = [{
-          remark:"Some remark",
-          skucode:'4124',
-          whcode:'dsaf'
-      }]
+        const mockBody = {
+          data:[{
+            remark:"Some remark",
+            skucode:'4124',
+            whcode:'dsaf'
+        }]
+        }
         const response = await BPRService.submitRemark(mockBody);
         expect(mockedAxios.post).toHaveBeenCalledWith('http://10.8.1.10:8082/AddRemark',mockBody,{
           headers: { 'Content-Type': 'application/json' }
