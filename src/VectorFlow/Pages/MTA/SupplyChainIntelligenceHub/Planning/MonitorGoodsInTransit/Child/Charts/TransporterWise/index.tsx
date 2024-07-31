@@ -10,6 +10,7 @@ import VFModalCard from "../../../../../../../../../components/VectorFLOW/common
 import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
 import Chart from 'react-apexcharts';
+import {convertToInt} from '../../../../../../../../../helpers/utils';
 
 interface MonitorGITChildTransporterWiseProps{
     data:any
@@ -131,22 +132,6 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
     const colDefs2 = mapUIConfigToColdefs2(data['delayDaysStatisticalBox']['uiconfig'])
 
 
-    const convertToInt = (data:any)=>{
-        return data.map((row:any)=>{
-            const tempObj:any = {};
-            Object.keys(row).forEach((key:string)=>{
-                const value = parseFloat(row[key])
-                if(!isNaN(value)){
-                    tempObj[key] = value
-                }
-                else{
-                    tempObj[key] = row[key];
-                }
-            })
-            return {...tempObj}
-        })
-    }
-
     const sortData = (data:any) => {
         data.sort((row1:any,row2:any)=>{
             return (row2['superdelay']+row2['delay']) - (row1['superdelay']+row1['delay'])
@@ -242,6 +227,12 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                             fontSize:10,
                             fontFamily:'Roboto'
 
+                        },
+                        label:{
+                            formatter:(params:any)=>{
+                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                return params.value;
+                            },
                         }
                     },
                     number:{
@@ -297,7 +288,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                 <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
-                                            rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
+                                            rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data'],['delay','superdelay']))}
                                             enableCharts={true}
                                             enableRangeSelection={true} 
                                             rowSelection="multiple"
@@ -337,7 +328,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                             <VFTable
                                 ref={refGraph1}
                                 columnDefs={colDefs1}
-                                rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
+                                rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data'],['delay','superdelay']))}
                                 enableCharts={true}
                                 enableRangeSelection={true} 
                                 rowSelection="multiple"
@@ -483,11 +474,15 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                          
                                     },
                                     plotOptions: {
+                                        bar: {
+                                            columnWidth: "40%"
+                                            // columnWidth: "70%"
+                                          },
                                         boxPlot: {
                                         colors: {
                                             lower: '#D3D3D3', // Color for Q1 (1st quartile)
-                                            upper: '#848484'  // Color for Q3 (3rd quartile)
-                                        }
+                                            upper: '#848484',
+                                        }, 
                                         }
                                     }
                                     }}
@@ -504,7 +499,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}
-                                        rowData={sortData(convertToInt(data['delayDaysStatisticalBox']['data']))}
+                                        rowData={sortData(convertToInt(data['delayDaysStatisticalBox']['data'],['Q1','Q3','maxd','mind','mean','median']))}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"

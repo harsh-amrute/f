@@ -145,6 +145,10 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
             position: 'bottom',
             item: {
                 label: {
+                        formatter:(params:any)=>{
+                            if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                            return params.value;
+                        },
                     fontSize: 12,
 
                 },

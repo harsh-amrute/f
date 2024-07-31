@@ -10,6 +10,7 @@ import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/V
 
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
 import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+import {convertToInt} from '../../../../../../../../helpers/utils';
 
 interface OrderFulfillmentProps{
     data:any
@@ -100,22 +101,6 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
     }
 
     const colDefs2 = mapUIConfigToColdefs2(data['maxNumberOfLocationsWithGap']['uiconfig']);
-
-    const convertToInt = (data:any)=>{
-        return data.map((row:any)=>{
-            const tempObj:any = {};
-            Object.keys(row).forEach((key:string)=>{
-                const value = parseFloat(row[key])
-                if(!isNaN(value)){
-                    tempObj[key] = value
-                }
-                else{
-                    tempObj[key] = row[key];
-                }
-            })
-            return {...tempObj}
-        })
-    }
 
     const sortData = (data:any,key1:string,key2:string,key3:string) => {
         data.sort((row1:any,row2:any)=>{
@@ -215,7 +200,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                         },
                         label:{
                             formatter:(params:any)=>{
-                                if(params.value.length > 15) return params.value.toString().slice(0,15) + '...';
+                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
                                 return params.value;
                             },
                             fontSize:8,
@@ -256,7 +241,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                         },
                         label:{
                             formatter:(params:any)=>{
-                                if(params.value.length > 15) return params.value.toString().slice(0,15) + '...';
+                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
                                 return params.value;
                             },
                             fontSize:8,
@@ -324,7 +309,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                                     <VFTable
                                         ref={refGraph1}
                                         columnDefs={colDefs1}
-                                        rowData={sortData(convertToInt(data['categorizationOfPendingQuantity']['data']),'overdue','due','others')}
+                                        rowData={sortData(convertToInt(data['categorizationOfPendingQuantity']['data'],['overdue','due','others']),'overdue','due','others')}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -361,7 +346,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                                 <VFTable
                                     ref={refGraph1}
                                     columnDefs={colDefs1}
-                                    rowData={sortData(convertToInt(data['categorizationOfPendingQuantity']['data']),'overdue','due','others')}
+                                    rowData={sortData(convertToInt(data['categorizationOfPendingQuantity']['data'],['overdue','due','others']),'overdue','due','others')}
                                     enableCharts={true}
                                     enableRangeSelection={true} 
                                     rowSelection="multiple"
@@ -407,9 +392,9 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                             <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Products: Max No Of Locations with Gap &gt; 67% of Requirement" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                                 <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
-                                        ref={refGraph1}
-                                        columnDefs={colDefs1}
-                                        rowData={sortData(convertToInt(data['categorizationOfPendingQuantity']['data']),'overdue','due','others')}
+                                        ref={refGraph2}
+                                        columnDefs={colDefs2}
+                                        rowData={sortData(convertToInt(data['maxNumberOfLocationsWithGap']['data'],['greater','between','smaller']),'greater','between','smaller')}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -421,17 +406,17 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                                               { statusPanel: 'agSelectedRowCountComponent', align:'left' },
                                               { statusPanel: 'agAggregationComponent', align:'left' },
                                             ],
-                                          }}                                        onGridReady={()=>generateChart(1,true)}
+                                          }}                                        onGridReady={()=>generateChart(2,true)}
                                         getChartToolbarItems={getChartToolbarItems}
                                         chartToolPanelsDef={
                                             {
                                                 panels:[]
                                             }
                                         }
-                                        chartThemeOverrides={chartThemeOverridesG1}
+                                        chartThemeOverrides={chartThemeOverridesG2}
                                         chartThemes={['myCustomTheme']}
                                         customChartThemes={{
-                                            'myCustomTheme':myCustomThemeG1
+                                            'myCustomTheme':myCustomThemeG2
                                         }}
                                         disableZoomScaling={true}
                                         defaultColDef={{
@@ -446,7 +431,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                                 <VFTable
                                     ref={refGraph2}
                                     columnDefs={colDefs2}
-                                    rowData={sortData(convertToInt(data['maxNumberOfLocationsWithGap']['data']),'greater','between','smaller')}
+                                    rowData={sortData(convertToInt(data['maxNumberOfLocationsWithGap']['data'],['greater','between','smaller']),'greater','between','smaller')}
                                     enableCharts={true}
                                     enableRangeSelection={true} 
                                     rowSelection="multiple"

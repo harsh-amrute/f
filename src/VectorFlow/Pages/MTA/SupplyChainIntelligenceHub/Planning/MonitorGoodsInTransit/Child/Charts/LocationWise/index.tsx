@@ -9,6 +9,7 @@ import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDiv
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants';
 import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+import {convertToInt} from '../../../../../../../../../helpers/utils';
 
 import Chart from 'react-apexcharts';
 
@@ -139,23 +140,6 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
 
     const colDefs2 = mapUIConfigToColdefs2(data['delayDaysStatisticalBox']['uiconfig'])
 
-
-    const convertToInt = (data:any)=>{
-        return data.map((row:any)=>{
-            const tempObj:any = {};
-            Object.keys(row).forEach((key:string)=>{
-                const value = parseFloat(row[key])
-                if(!isNaN(value)){
-                    tempObj[key] = value
-                }
-                else{
-                    tempObj[key] = row[key];
-                }
-            })
-            return {...tempObj}
-        })
-    }
-
     const sortData = (data:any) => {
         data.sort((row1:any,row2:any)=>{
             return (row2['superdelay']+row2['delay']) - (row1['superdelay']+row1['delay'])
@@ -223,6 +207,12 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                             fontSize:10,
                             fontFamily:'Roboto'
 
+                        },
+                        label:{
+                            formatter:(params:any)=>{
+                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                return params.value;
+                            },
                         }
                     },
                     number:{
@@ -281,7 +271,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                     <VFTable
                                         ref={refGraph1}
                                         columnDefs={colDefs1}
-                                        rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
+                                        rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data'],['delay','superdelay']))}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -319,7 +309,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                     <VFTable
                                         ref={refGraph1}
                                         columnDefs={colDefs1}
-                                        rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
+                                        rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data'],['delay','superdelay']))}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -391,23 +381,47 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                         width: 1.5,
                                         dashArray: 0
                                     },
+                                    // xaxis: {
+                                    //     crosshairs: {
+                                    //         show: false
+                                    //     },
+                                    //     tooltip:{
+                                    //         enabled:false,
+                                    //     },
+                                       
+                                    //     labels: {
+                                    //         style: {
+                                    //           fontSize: '12px', // Font size of y-axis labels
+                                    //           fontFamily: 'Roboto', // Font family of y-axis labels
+                                    //             colors:'#717171',
+                                    //             fontWeight:400                    
+                                    //         },
+                                    //       },
+                                    // },
                                     xaxis: {
                                         crosshairs: {
-                                            show: false
+                                          show: false
                                         },
                                         tooltip:{
-                                            enabled:false,
+                                          enabled:false,
                                         },
-                                       
                                         labels: {
-                                            style: {
-                                              fontSize: '12px', // Font size of y-axis labels
-                                              fontFamily: 'Roboto', // Font family of y-axis labels
-                                                colors:'#717171',
-                                                fontWeight:400                    
-                                            },
+                                          style: {
+                                            fontSize: '12px', // Font size of y-axis labels
+                                            fontFamily: 'Roboto', // Font family of y-axis labels
+                                            colors:'#717171',
+                                            fontWeight:400                    
                                           },
-                                    },
+                                        //   formatter: (params:any) => {
+                                        //     if (params !== undefined && params.value !== undefined) {
+                                        //       const stringValue = params.value.toString();
+                                        //       if(stringValue.length > 10) return stringValue.slice(0,10) + '...';
+                                        //       return params.value;
+                                        //     }
+                                        //     return ''; 
+                                        //   },
+                                        },
+                                      },
                                     yaxis: {
                                         title: {
                                             text: 'Delay Days',
@@ -426,6 +440,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                           },
                                          
                                     },
+                                   
                                     plotOptions: {
                                         boxPlot: {
                                         colors: {
@@ -448,7 +463,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}
-                                        rowData={sortData(convertToInt(data['delayDaysStatisticalBox']['data']))}
+                                        rowData={sortData(convertToInt(data['delayDaysStatisticalBox']['data'],['Q1','Q3','maxd','mind','mean','median']))}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"

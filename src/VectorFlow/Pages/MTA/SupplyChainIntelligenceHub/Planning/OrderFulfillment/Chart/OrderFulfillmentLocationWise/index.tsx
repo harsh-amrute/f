@@ -10,7 +10,7 @@ import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/V
 
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
 import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-
+import {convertToInt} from '../../../../../../../../helpers/utils';
 
 interface OrderFulfillmentProps{
     data:any
@@ -101,22 +101,6 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
     }
 
     const colDefs2 = mapUIConfigToColdefs2(data['maxNumberOfLocationsWithGap']['uiconfig']);
-
-    const convertToInt = (data:any)=>{
-        return data.map((row:any)=>{
-            const tempObj:any = {};
-            Object.keys(row).forEach((key:string)=>{
-                const value = parseFloat(row[key])
-                if(!isNaN(value)){
-                    tempObj[key] = value
-                }
-                else{
-                    tempObj[key] = row[key];
-                }
-            })
-            return {...tempObj}
-        })
-    }
 
     const sortData = (data:any,key1:string,key2:string,key3:string) => {
         data.sort((row1:any,row2:any)=>{
@@ -218,6 +202,10 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
 
                         },
                         label:{
+                                formatter:(params:any)=>{
+                                    if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                    return params.value;
+                                },
                             fontSize:8,
                             fontFamily:'Roboto'
                         }
@@ -258,6 +246,10 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
 
                         },
                         label:{
+                                formatter:(params:any)=>{
+                                    if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                    return params.value;
+                                },
                             fontSize:8,
                             fontFamily:'Roboto'
                         }
@@ -323,7 +315,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                     <VFTable
                                         ref={refGraph1}
                                         columnDefs={colDefs1}
-                                        rowData={sortData(convertToInt(data['maximumOverdueOrders']['data']),'overdue','due','others')}
+                                        rowData={sortData(convertToInt(data['maximumOverdueOrders']['data'],['overdue','due','others']),'overdue','due','others')}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -360,7 +352,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                 <VFTable
                                     ref={refGraph1}
                                     columnDefs={colDefs1}
-                                    rowData={sortData(convertToInt(data['maximumOverdueOrders']['data']),'overdue','due','others')}
+                                    rowData={sortData(convertToInt(data['maximumOverdueOrders']['data'],['overdue','due','others']),'overdue','due','others')}
                                     enableCharts={true}
                                     enableRangeSelection={true} 
                                     rowSelection="multiple"
@@ -408,7 +400,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}
-                                        rowData={sortData(convertToInt(data['maxSkuWithGap']['data']),'greater','between','smaller')}
+                                        rowData={sortData(convertToInt(data['maxSkuWithGap']['data'],['greater','between','smaller']),'greater','between','smaller')}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -445,7 +437,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                 <VFTable
                                     ref={refGraph2}
                                     columnDefs={colDefs2}
-                                    rowData={sortData(convertToInt(data['maxSkuWithGap']['data']),'greater','between','smaller')}
+                                    rowData={sortData(convertToInt(data['maxSkuWithGap']['data'],['greater','between','smaller']),'greater','between','smaller')}
                                     enableCharts={true}
                                     enableRangeSelection={true} 
                                     rowSelection="multiple"

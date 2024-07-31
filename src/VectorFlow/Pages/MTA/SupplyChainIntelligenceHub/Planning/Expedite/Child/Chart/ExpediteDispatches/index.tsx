@@ -19,6 +19,7 @@ import { AgChartOptions } from "ag-charts-community";
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+import {convertToInt} from '../../../../../../../../../helpers/utils';
 
 interface ExpediteChildDispatchesProps {
   data: any;
@@ -94,25 +95,18 @@ const mapUIConfigToColdefs2 = (columns:Array<{header:string,colCode:string}>) =>
 
 const colDefs2 = mapUIConfigToColdefs2(data['maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig']['uiconfig']);
 
-const convertToInt = (data:any)=>{
-    return data.map((row:any)=>{
-        const tempObj:any = {};
-        Object.keys(row).forEach((key:string)=>{
-            const value = parseFloat(row[key])
-            if(!isNaN(value)){
-                tempObj[key] = value
-            }
-            else{
-                tempObj[key] = row[key];
-            }
-        })
-        return {...tempObj}
-    })
-}
 
-const sortData = (data:any,key:string) => {
+const sortData = (data:any,key:string|string[],) => {
+    
     data.sort((row1:any,row2:any)=>{
-        return (row2[key]) - (row1[key])
+      if(typeof key === 'string') return (row2[key]) - (row1[key])
+
+      if(Array.isArray(key) && key.length > 0){
+        const row1Sum = key.reduce((accumulator,currentKey:string)=>accumulator + row1[currentKey],0);
+        const row2Sum = key.reduce((accumulator,currentKey:string)=>accumulator + row2[currentKey],0);
+        return row2Sum-row1Sum
+      }
+      
     })
     return [...data];
 }
@@ -225,7 +219,7 @@ const mapDataToRowData = (data: any) => {
     // title: {
     //   text: "PRE",
     // },
-    data: convertToInt(data["prePostRationing"]),
+    data: convertToInt(data["prePostRationing"],['pre','post']),
     series: [
       {
         type: "pie",
@@ -399,6 +393,10 @@ const mapDataToRowData = (data: any) => {
               fontFamily:'Roboto'
             },
             label:{
+                formatter:(params:any)=>{
+                    if(params.value.length > 6) return params.value.toString().slice(0,6) + '...';
+                    return params.value;
+                },
               fontSize:8,
               fontFamily:'Roboto'
             }
@@ -434,6 +432,10 @@ const mapDataToRowData = (data: any) => {
               fontFamily:'Roboto'
             },
             label:{
+                formatter:(params:any)=>{
+                    if(params.value.length > 6) return params.value.toString().slice(0,6) + '...';
+                    return params.value;
+                },
               fontSize:8,
               fontFamily:'Roboto',
             }
@@ -483,17 +485,17 @@ const mapDataToRowData = (data: any) => {
     "This graph shows the potential improvement in Pipeline availability assuming the entire rationed qty would become goods in transit.",
   ];
 
-  const splitDataIntoRandomPercentage = (data:any,key:string) => {
-    return data.map((row:any)=>{
-        const redPercentage = Math.random() * 100;
-        const blackPercentage = 100 - redPercentage;
+  // const splitDataIntoRandomPercentage = (data:any,key:string) => {
+  //   return data.map((row:any)=>{
+  //       const redPercentage = Math.random() * 100;
+  //       const blackPercentage = 100 - redPercentage;
 
-        const red = (parseFloat(row[key]) * redPercentage) / 100;
-        const black = (parseFloat(row[key]) * blackPercentage) / 100;
-        return {...row,red:Math.round(red),black:Math.round(black)};
+  //       const red = (parseFloat(row[key]) * redPercentage) / 100;
+  //       const black = (parseFloat(row[key]) * blackPercentage) / 100;
+  //       return {...row,red:Math.round(red),black:Math.round(black)};
         
-    })
-  }
+  //   })
+  // }
 
   return (
     <>
@@ -531,7 +533,7 @@ const mapDataToRowData = (data: any) => {
                           <VFTable
                             ref={refGraph1}
                             columnDefs={colDefs1}
-                            rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts'),'SKUCounts')}
+                            rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data'],['BlackCount','RedCount']),['BlackCount','RedCount'])}
                             enableCharts={true}
                             enableRangeSelection={true} 
                             rowSelection="multiple"
@@ -566,7 +568,7 @@ const mapDataToRowData = (data: any) => {
                       <VFTable
                         ref={refGraph1}
                         columnDefs={colDefs1}
-                        rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts'),'SKUCounts')}
+                        rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data'],['BlackCount','RedCount']),['BlackCount','RedCount'])}
                         enableCharts={true}
                         enableRangeSelection={true} 
                         rowSelection="multiple"
@@ -747,7 +749,7 @@ const mapDataToRowData = (data: any) => {
                   <VFTable
                     ref={refGraph3}
                     columnDefs={colDefs3}
-                    rowData={convertToInt(data["prePostRationing"])}
+                    rowData={convertToInt(data["prePostRationing"],['pre','post'])}
                     enableCharts={true}
                     enableRangeSelection={true} 
                     rowSelection="multiple"
