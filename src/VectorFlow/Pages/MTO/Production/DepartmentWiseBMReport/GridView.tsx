@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import { VFWrapper } from './styles';
 

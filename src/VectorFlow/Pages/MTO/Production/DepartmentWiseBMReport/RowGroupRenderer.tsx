@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import { ColDef, GridOptions, IDetailCellRendererParams } from "ag-grid-enterprise";
-
+import {
+    VFChilWrapper
+} from './styles'
 interface CustomColDef extends ColDef {
     field: string;
     headerName: string;
@@ -23,21 +25,10 @@ interface CustomGridOptions extends GridOptions {
     //detailCellRendererParams?: CustomDetailCellRendererParams; // Optional for nested grids
 }
 
-// Define the detail cell renderer parameters interface
-// interface CustomDetailCellRendererParams extends IDetailCellRendererParams {
-//     detailGridOptions: CustomGridOptions;
-//     getDetailRowData: (params: {
-//         data: any;
-//         successCallback: (rows: any[]) => void;
-//         failCallback?: () => void;
-//     }) => void;
-// }
 const RowGroupRenderer = (params: any) => {
-    const containerStyle = useMemo(() => ({ width: "100%", height: "100%" }), []);
-    const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
-    const [rowData, setRowData] = useState<any[]>(params.data.children)
+    const [rowData,] = useState<any[]>(params.data.children)
 
-    const [columnDefs, setColumnDefs] = useState<ColDef[]>([
+    const [columnDefs,] = useState<ColDef[]>([
         { field: "FG_Cod", headerName: 'FG Code', cellRenderer: "agGroupCellRenderer" },
         { field: "Lvl", headerName: 'Level', },
         { field: "Rqrment", headerName: 'Requirement' },
@@ -46,49 +37,50 @@ const RowGroupRenderer = (params: any) => {
         { field: 'Gp', headerName: 'Gap' }
     ]);
 
-    // const detailCellRendererParams = useMemo<any>(() => {
-    //     return {
-    //       // level 2 grid options
-    //   detailGridOptions: {
-    //     columnDefs: [
-    //         { field: "FG_Cod", headerName: 'FG Code', cellRenderer: "agGroupCellRenderer" },
-    //         { field: "Lvl", headerName: 'Level', },
-    //         { field: "Rqrment", headerName: 'Requirement' },
-    //         { field: "Stck", headerName: 'Stock' },
-    //         { field: "WIP", headerName: 'WIP' },
-    //         { field: 'Gp', headerName: 'Gap' },
-    //     ],
-    //     defaultColDef: {
-    //       flex: 1,
-    //     },
-    //     groupDefaultExpanded: 1,
-    //     masterDetail: true,
-    //     detailRowHeight: 240,
-    //     detailCellRendererParams: {
-    //       // level 3 grid options
-    //       detailGridOptions: {
-    //         columnDefs: [
-    //             { field: "FG_Cod", headerName: 'FG Code', cellRenderer: "agGroupCellRenderer" },
-    //             { field: "Lvl", headerName: 'Level', },
-    //             { field: "Rqrment", headerName: 'Requirement' },
-    //             { field: "Stck", headerName: 'Stock' },
-    //             { field: "WIP", headerName: 'WIP' },
-    //             { field: 'Gp', headerName: 'Gap' },
-    //         ],
-    //         defaultColDef: {
-    //           flex: 1,
-    //         },
-    //       },
-    //       getDetailRowData: (params) => {
-    //         params.successCallback(params.data.children);
-    //       },
-    //     } as IDetailCellRendererParams,
-    //   },
-    //   getDetailRowData: (params) => {
-    //     params.successCallback(params.data.children);
-    //   },
-    //     } as IDetailCellRendererParams;
-    //   }, []);
+    //static function to create the same 
+    /*const detailCellRendererParams = useMemo<any>(() => {
+        return {
+          // level 2 grid options
+      detailGridOptions: {
+        columnDefs: [
+            { field: "FG_Cod", headerName: 'FG Code', cellRenderer: "agGroupCellRenderer" },
+            { field: "Lvl", headerName: 'Level', },
+            { field: "Rqrment", headerName: 'Requirement' },
+            { field: "Stck", headerName: 'Stock' },
+            { field: "WIP", headerName: 'WIP' },
+            { field: 'Gp', headerName: 'Gap' },
+        ],
+        defaultColDef: {
+          flex: 1,
+        },
+        groupDefaultExpanded: 1,
+        masterDetail: true,
+        detailRowHeight: 240,
+        detailCellRendererParams: {
+          // level 3 grid options
+          detailGridOptions: {
+            columnDefs: [
+                { field: "FG_Cod", headerName: 'FG Code', cellRenderer: "agGroupCellRenderer" },
+                { field: "Lvl", headerName: 'Level', },
+                { field: "Rqrment", headerName: 'Requirement' },
+                { field: "Stck", headerName: 'Stock' },
+                { field: "WIP", headerName: 'WIP' },
+                { field: 'Gp', headerName: 'Gap' },
+            ],
+            defaultColDef: {
+              flex: 1,
+            },
+          },
+          getDetailRowData: (params) => {
+            params.successCallback(params.data.children);
+          },
+        } as IDetailCellRendererParams,
+      },
+      getDetailRowData: (params) => {
+        params.successCallback(params.data.children);
+      },
+        } as IDetailCellRendererParams;
+      }, []);*/
 
     const generateGridOptions = (level: number): CustomGridOptions => {
         const options: CustomGridOptions = {
@@ -109,7 +101,7 @@ const RowGroupRenderer = (params: any) => {
             options.groupDefaultExpanded = 0;
             options.masterDetail = true;
             //options.detailRowHeight = 240;
-            options.detailRowAutoHeight = true
+            options.detailRowAutoHeight = true;
             options.detailCellRendererParams = {
                 detailGridOptions: generateGridOptions(level - 1),
                 getDetailRowData: (params) => {
@@ -157,7 +149,7 @@ const RowGroupRenderer = (params: any) => {
     }, []);
 
     return (
-        <div style={containerStyle}>
+        <VFChilWrapper>
             <VFTable
                 rowData={rowData}
                 detailRowHeight={3000}
@@ -169,7 +161,7 @@ const RowGroupRenderer = (params: any) => {
                 height={'90%'}
                 disableZoomScaling
             />
-        </div>
+        </VFChilWrapper>
     );
 };
 export default RowGroupRenderer;
