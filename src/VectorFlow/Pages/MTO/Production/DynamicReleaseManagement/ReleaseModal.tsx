@@ -1,24 +1,41 @@
-import { AgChartOptions } from 'ag-charts-community'
-import { AgChartsReact } from 'ag-charts-react'
-import React, { useEffect, } from 'react'
+import { SCFilterBtn } from '../../../../../module-main/pages/home/styles'
+import { SCButton } from '../../../../../components/layouts/NavbarRight/styles'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import { StepperWrapper, StepGroup, StepLabel, ContentWrapper, Text } from './DynamicReleaseManagement.styled'
-import { Rectangle } from './RectangleMarker'
-import CustomSelect from './Select'
 
-const EditRouteModal = ({ showModal, totalOrders, selectedOrders, setShowModal }: any) => {
+
+const EditRouteModal = ({ themeUi, showModal, totalOrders, selectedOrders, setShowModal }: any) => {
 
 
 
     return (
         <VFModalCard key={"key2"} openModal={showModal} closeModal={() => { setShowModal((false)) }} headerText={'Release Orders'} headerIcon={''} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
             <ContentWrapper>
-                <Text>
-                    Are you sure you want to release these orders?
-                    {totalOrders}
-                    {selectedOrders}
+                <Text style={{ height: '20vh', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', padding: '0 80px 20px 80px', fontSize: '18px' }}>
+                    <p>
+                        Are you sure? Do you want to
+                    </p>
+                    <p style={{ fontWeight: 'bold' }}>
+                        Release {selectedOrders} selected orders out of {totalOrders} orders?
+                    </p>
 
                 </Text>
+
+                <div style={{ display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '10px 10px 0 0' }}>
+
+                    <div>
+                        <SCButton onClick={() => { setShowModal(false) }} style={{ background: 'white', color: 'grey' }} themeUi={themeUi}>
+                            No, Go Back
+                        </SCButton>
+                    </div>
+                    <div>
+
+                        <SCButton themeUi={themeUi}>
+                            Yes, Release
+                        </SCButton>
+                    </div>
+                </div>
+
 
 
             </ContentWrapper>

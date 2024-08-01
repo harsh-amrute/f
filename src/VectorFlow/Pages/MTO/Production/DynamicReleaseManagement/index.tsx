@@ -320,7 +320,7 @@ const DynamicReleaseManagement = () => {
           <AgChartsReact ref={graph} options={chartoptions} />
         </div>
         <EditRouteModal graphData={data} showModal={showModal} setShowModal={setShowModal} />
-        <ReleaseModal totalOrders={120} selectedOrders={4} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />
+        <ReleaseModal themeUi={themeUi} totalOrders={120} selectedOrders={4} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />
       </Wrapper >
     </>
 
