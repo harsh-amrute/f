@@ -137,7 +137,7 @@ const DptWiseBMReport = () => {
                         "v": true,
                         "cla": "Centre",
                         "scc": "Ord_Typ",
-                        "cgs": "closed"
+                      
                     },
                     {
                         "cc": "OrderID",
@@ -146,7 +146,7 @@ const DptWiseBMReport = () => {
                         "v": true,
                         "cla": "Centre",
                         "scc": "Ord_ID",
-                        "cgs": "closed"
+                     
                     },
                     {
                         "cc": "LineItem",
@@ -516,7 +516,7 @@ const DptWiseBMReport = () => {
                 //suppressFiltersToolPanel:true,
                 cellStyle: {
                     'text-align': 'center',
-                    'height': '50px',
+                    //'height': '50px',
                     //"font-style": "Roboto",
                     //"font-variant": "normal",
                     "font-size": "18px",

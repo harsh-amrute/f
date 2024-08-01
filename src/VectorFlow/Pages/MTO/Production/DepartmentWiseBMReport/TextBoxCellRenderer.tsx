@@ -1,7 +1,7 @@
 import { ETACellRendererWrapper } from "./styles"
 import { BPRRemarksCellRendererWrapper, BPRSubmitRemarkInput } from '../../../MTA/SupplyChainIntelligenceHub/BPR/styles'
 const TextBoxCellRenderer = (params: any) => {
-    console.log('TextBoxCellRenderer', params.column.colDef.cellRendererParams.visible.flag)
+
     return (
         <ETACellRendererWrapper  >
 

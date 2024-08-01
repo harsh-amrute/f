@@ -1,3 +1,4 @@
+
 import { ColDef, ColGroupDef } from "ag-grid-enterprise";
 
 
@@ -371,42 +372,6 @@ export const ageingData = [
 
 
 
-export const deptwiseBMReportData1 = {
-    "BPP": "Red",
-    "D_Ag": "Dept Ageing 1",
-    "Ord_Typ": "Order Type 1",
-    "Ord_ID": "Order ID 1",
-    "L_Itm": "Line Item 1",
-    "Itm_Code": "Item Code 1",
-    "Itm_Desc": "Item Description 1",
-    "Ord_Qty": 10,
-    "WIP_O_Hd": 5,
-    "M_Bal": 8,
-    "CCR_Nme": "CCR Name 1",
-    "Cust_Nme": "Customer Name 1",
-    "CRDDate": "2024-07-14",
-    "DDt": "2024-07-20",
-    "R_DDt": "2024-07-15",
-    "Trail_Dpt": "Trailing Department 1",
-    "Elap_days": 5,
-    "Attr": "Attribute 1",
-    "Pl_Nam": "Plant Name 1",
-    "PO_No": "PO No. 1",
-    "Price": 20,
-    "Itm_Grp": "Item Group 1",
-    "Att_1": "Attribute 1-1",
-    "Att_2": "Attribute 1-2",
-    "Att_3": "Attribute 1-3",
-    "Att_4": "Attribute 1-4",
-    "Cust_Cd": "Customer Code 1",
-    "Rgn": "Region 1",
-    "Cntry": "Country 1",
-    "Rem_Cd": "Remark Code 1",
-    "Lst_Rmrk": "Latest Remark 1",
-    "Rmrk_Hstry": "Remark History 1"
-};
-
-
 export const deptwiseBMReportData = [
     {
         "BPP": "Red",
@@ -443,6 +408,7 @@ export const deptwiseBMReportData = [
         "Rmrk_Hstry": "Remark History 1",
         "children": [
             {
+
                 "FG_Cod": "A123",
                 "Lvl": "L0",
                 "Rqrment": "Requirement 1",
@@ -465,19 +431,98 @@ export const deptwiseBMReportData = [
                                 "Stck": 100,
                                 "WIP": 50,
                                 "Gp": 50,
+                                "children": [
+                                    {
+                                        "FG_Cod": "A124",
+                                        "Lvl": "L3",
+                                        "Rqrment": "Requirement 1",
+                                        "Stck": 100,
+                                        "WIP": 50,
+                                        "Gp": 50,
+                                        "children": [
+                                            {
+                                                "FG_Cod": "A124",
+                                                "Lvl": "L4",
+                                                "Rqrment": "Requirement 1",
+                                                "Stck": 100,
+                                                "WIP": 50,
+                                                "Gp": 50,
+                                                "children": [
+                                                    {
+                                                        "FG_Cod": "A124",
+                                                        "Lvl": "L5",
+                                                        "Rqrment": "Requirement 1",
+                                                        "Stck": 100,
+                                                        "WIP": 50,
+                                                        "Gp": 50,
+                                                        "children": [
+                                                            {
+                                                                "FG_Cod": "A124",
+                                                                "Lvl": "L6",
+                                                                "Rqrment": "Requirement 1",
+                                                                "Stck": 100,
+                                                                "WIP": 50,
+                                                                "Gp": 50,
+                                                                "children": [
+                                                                    {
+                                                                        "FG_Cod": "A124",
+                                                                        "Lvl": "L7",
+                                                                        "Rqrment": "Requirement 1",
+                                                                        "Stck": 100,
+                                                                        "WIP": 50,
+                                                                        "Gp": 50,
+                                                                        "children": [
+                                                                            {
+                                                                                "FG_Cod": "A124",
+                                                                                "Lvl": "L8",
+                                                                                "Rqrment": "Requirement 1",
+                                                                                "Stck": 100,
+                                                                                "WIP": 50,
+                                                                                "Gp": 50,
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
                         ]
                     }
-                ]
+                ],
             },
-            // {
-            //     "FG_Cod": "A123",
-            //     "Lvl": "Level1",
-            //     "Rqrment": "Requirement 2",
-            //     "Stck": 150,
-            //     "WIP": 70,
-            //     "Gp": 80
-            // },
+            {
+                "FG_Cod": "B125",
+                "Lvl": "L0",
+                "Rqrment": "Requirement 1",
+                "Stck": 100,
+                "WIP": 50,
+                "Gp": 50,
+               
+            },
+            {
+                "FG_Cod": "B126",
+                "Lvl": "L0",
+                "Rqrment": "Requirement 1",
+                "Stck": 100,
+                "WIP": 50,
+                "Gp": 50,
+                
+            },
+            {
+                "FG_Cod": "B127",
+                "Lvl": "L0",
+                "Rqrment": "Requirement 1",
+                "Stck": 100,
+                "WIP": 50,
+                "Gp": 50,
+               
+            }
         ]
     },
     {
@@ -700,7 +745,7 @@ export const deptwiseBMReportData = [
 
         ]
     }
-    // Add more entries as needed...
+
 ]
 
 
@@ -736,3 +781,76 @@ export const RemarkHistoryData = [
         'rd': '2023-12-24'
     }
 ]
+
+
+// const gridOptionForMapping : GridOptions = {
+//     rowData: "rowData",
+//     columnDef: [
+//         { field: "FG_Code", cellRenderer: "agGroupCellRenderer" },
+//         { field: "Lvl" },
+//         { field: "Rqrmtn" },
+//         { field: "stck" },
+//         { field: "wip" },
+//         { field: "gp" }
+//     ],
+//     defaultColDef: {
+//       flex: 1,
+//     },
+//     groupDefaultExpanded: 1,
+//     masterDetail: true,
+//     detailCellRendererParams: {
+//       // level 2 grid options
+//       detailGridOptions: {
+//         columnDef: [
+//             { field: "FG_Code", cellRenderer: "agGroupCellRenderer" },
+//             { field: "Lvl" },
+//             { field: "Rqrmtn" },
+//             { field: "stck" },
+//             { field: "wip" },
+//             { field: "gp" }
+//         ],
+//         defaultColDef: {
+//           flex: 1,
+//         },
+//         groupDefaultExpanded: 1,
+//         masterDetail: true,
+//         detailRowHeight: 240,
+//         detailCellRendererParams: {
+//           // level 3 grid options
+//           detailGridOptions: {
+//             columnDef: [
+//                 { field: "FG_Code", cellRenderer: "agGroupCellRenderer" },
+//                 { field: "Lvl" },
+//                 { field: "Rqrmtn" },
+//                 { field: "stck" },
+//                 { field: "wip" },
+//                 { field: "gp" }
+//             ],
+//             defaultColDef: {
+//               flex: 1,
+//             },
+//           },
+//           getDetailRowData: (params) => {
+//             params.successCallback(params.data.children);
+//           },
+//         } as IDetailCellRendererParams,
+//       },
+//       getDetailRowData: (params) => {
+//         params.successCallback(params.data.children);
+//       },
+//     } as IDetailCellRendererParams,
+//   }; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

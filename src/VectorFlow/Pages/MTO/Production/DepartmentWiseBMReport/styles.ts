@@ -19,7 +19,7 @@ export const BMDepWrapper = styled.div`
 `
 
 export const BMDepHeaderWraper = styled.div`
-//  zoom:1.3;
+  zoom:1.3;
  
 `
 export const BMDepSubHeaderWraper = styled.div`
@@ -29,7 +29,7 @@ export const BMDepSubHeaderWraper = styled.div`
 export const NoDataAvailableContainer = styled.div`
       border: 2px dashed #ccc;
       width: 100%;
-      height: 100%;
+      height: 90%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -206,7 +206,9 @@ export const VFWrapper = styled.div`
     background-color: black;
     color: white;
   }
-  & .ag-theme-noir-fusion {
-    --ag-header-background-color: rgb(255, 255, 255);
+  & .ag-theme-alpine .ag-header-row:nth-child(3){
+    background-color: rgb(255,255,255);
+    //color: white;
   }
+
 `
