@@ -44,11 +44,11 @@ const BreadCrumb = () => {
   if (location.pathname === '/procurement/insights-and-trends/rmpm-orderwise-coverage') return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> RM/PM Orderwise Coverage</span>
   if (location.pathname === '/procurement/insights-and-trends/rmpm-buffer-trends') return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> RM/PM Buffer Trends</span>
   if (location.pathname === '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers') return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Expediting RM/Suppliers</span>
+  if (location.pathname === '/production-planning-scheduling/insights-and-trends/fol-summary') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> FOL Summary</span>
 
   if (location.pathname === '/production-planning-and-scheduling/order-rescheduling') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} />  Order Rescheduling</span>
 
   if (location.pathname === '/production-planning-scheduling/deptwise-bm-report') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Dept-wise BM Report</span>
-
   if (location.pathname === '/production-planning-scheduling/full-kit-assignment') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Full Kit Assignement</span>
 
 
