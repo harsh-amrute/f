@@ -30,7 +30,7 @@ const BufferTrendReport = () => {
         setExportExcelColumns,
         currFilter,
         setCurrFilter,
-        onDelete,
+        onDeleteFilter,
         onApplyFilter,
         themeUi
     } = useBTR()
@@ -62,7 +62,7 @@ const BufferTrendReport = () => {
                     genericRecordCount={parseInt(techTotalRows)}
                     multiFilter={currFilter}
                     setMultiFilter={setCurrFilter}
-                    onDelete={onDelete}
+                    onDelete={onDeleteFilter}
                     onApplyFilter={onApplyFilter}
                 />
             </div>

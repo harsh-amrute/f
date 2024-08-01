@@ -14,6 +14,7 @@ import { useGetAllSKUs,  useGetAllLocations } from "../../../../VectorFlow/Servi
 import VFLoader from "../../../../components/VectorFLOW/commons/VFLoader";
 import VFRangeSlider from "../VFRangeSlider";
 import {  BPRFilter, BPRFilterState } from "../../../../VectorFlow/types/BPR";
+import { BTRCategoryNumberToTextMapper } from "../../../../helpers/BPRConstants";
 
 interface VFMultiFilterProps{
     onApplyFilter:(params:any)=>void
@@ -35,7 +36,6 @@ interface VFMultiFilterProps{
 }
 
 const FilterCheckboxAccordian = ({filterType,filterKey,isOpen,setOpenStatus,children}:any) => {
-
     const openStatusReducer = (prevStatus:any)=> {
         Object.keys(prevStatus).forEach((filterType)=>{
             if(filterKey !== filterType){
@@ -464,6 +464,10 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             filterObj.attributeName='PIPO,Seasonality';
             filterObj.operator='='
         }
+        if(filterId==='AF8'){
+            filterObj.attributeName='Category';
+            filterObj.operator='='
+        }
         if(filterId==='CGF3'){
             filterObj.attributeName='Coverage';
             filterObj.operator='='
@@ -653,7 +657,8 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         availabilty_eco_color:false,
         availabilty_tags:false,
         coverage_filter:false,
-        model:false
+        model:false,
+        btrCategory:false
     })
 
     const [child, setChild] = useState({
@@ -727,7 +732,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             : null } 
 
 
-            <FilterBody>
+            <FilterBody style={{maxHeight:horizonActive?'450px':"unset"}}>
                 {supplyChainNodeFilterActive && (
                       <FilterCardWrapper data-testid="supplyChainNodeFilter">
                       <FilterHeader >
@@ -935,6 +940,21 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                 onChange={(e:any,key:string)=>onFilterChange('AF7',e,'4',key)} filterId={'AF7'}/> 
                             </FilterCheckboxAccordian>
                         </FilterComponent>
+                       {location.pathname==='/insights-and-trends/buffer-trend-report' && (
+                            <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.btrCategory?'unset' : '50px'}}>
+                            <FilterCheckboxAccordian filterType="Category" filterKey="btrCategory" isOpen={openStatus.btrCategory} setOpenStatus={setOpenStatus}>
+                            <FilterMultiSelectCheckbox header={'Category'} filterOptions={Object.keys(BTRCategoryNumberToTextMapper).map((key:string)=>{
+                                return{
+                                    label:BTRCategoryNumberToTextMapper[key],
+                                    id:key
+                                }
+                            })} 
+                                
+                                filterState={multiFilter.availabilityFilter.filters.filter((f)=>f.name==='AF8')}
+                                onChange={(e:any,key:string)=>onFilterChange('AF8',e,'4',key)} filterId={'AF8'}/> 
+                            </FilterCheckboxAccordian>
+                        </FilterComponent>
+                       )}
                 </FilterCardWrapper>
                   )}
 

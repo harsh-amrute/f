@@ -72,10 +72,10 @@ const useSaveAllState = () => {
   const onSaveState = async (name: string) => {
     try {
       
-      const columnState = ref.current.columnApi.getColumnState();
+      const columnState = ref.current.api.getColumnState();
       console.log(columnState)
       const chartsState =  ref.current.api.getChartModels()
-      const isPivot = ref.current.columnApi.isPivotMode()
+      const isPivot = ref.current.api.isPivotMode()
       const gridState:GridState = {
         pivot:isPivot,
         charts:chartsState,
@@ -86,9 +86,9 @@ const useSaveAllState = () => {
         state: JSON.stringify(gridState),
       });
       notifySuccess("State has been saved");
-      ref.columnApi.applyColumnState({ state: columnState });
+      ref.api.applyColumnState({ state: columnState });
       ref.api.restoreChart(chartsState)
-      ref.api.setPivotMode(isPivot)
+      ref.api.setGridOption('pivotMode',isPivot)
     } catch (err: any) {
         console.log(err)
       notifyError(err);
@@ -100,16 +100,16 @@ const useSaveAllState = () => {
     try {
       
       await resetState(name);
-      let tempCurrentGridState = ref.current?.columnApi.getColumnState()
+      let tempCurrentGridState = ref.current?.api.getColumnState()
       tempCurrentGridState = tempCurrentGridState.map((t:any) => {
         return {
           ...t,
           hide: false,
         };
       });
-      ref.current.columnApi.applyColumnState({state:tempCurrentGridState})
-      ref.current.columnApi.resetColumnState()
-      ref.current.api.setPivotMode(false)
+      ref.current.api.applyColumnState({state:tempCurrentGridState})
+      ref.current.api.resetColumnState()
+      ref.current.api.setGridOption('pivotMode',false)
       const charts  = ref.current.api.getChartModels()
       charts.forEach((c:any)=>{
         const tempRef = ref.current.api.getChartRef(c.chartId)

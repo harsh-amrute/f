@@ -136,7 +136,7 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
                 }}
                 onGridReady={(params)=>{
                     if(columnState){
-                     params.columnApi.applyColumnState({state:columnState})
+                     params.api.applyColumnState({state:columnState})
                     }
                  }}
                 height={'100%'}

@@ -57,7 +57,7 @@ const InTransitWhereAbouts = ()=>{
         currentPage,
         currentFilter,
         setCurrFilter,
-        onDelete,
+        onDeleteFilter,
         onApplyFilter,
         onExportToExcelCallBack,
         tempRef,
@@ -98,7 +98,7 @@ const InTransitWhereAbouts = ()=>{
                 onExportToExcelCallBack={onExportToExcelCallBack}
                 multiFilter={currentFilter}
                 setMultiFilter={setCurrFilter}
-                onDelete={onDelete}
+                onDelete={onDeleteFilter}
                 onApplyFilter={onApplyFilter}
                 onSubmitEditedRows={onSubmitEditedRows}
                 disableSubmitEditedRowsBtn={editedRows.length===0}

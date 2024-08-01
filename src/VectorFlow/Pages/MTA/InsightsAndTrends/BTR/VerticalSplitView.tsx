@@ -1,11 +1,10 @@
 import {useRef,useState} from 'react'
 
-import {  AgGridReactProps } from "ag-grid-react"
+import {  AgGridReact, AgGridReactProps } from "ag-grid-react"
 import { Allotment } from "allotment"
 
 import CustomVFTable from "./CustomVFTable"
 import { BTRTableWrapper,BTRTableHeader, LockBtnWrapper, LockBtn, LocktBtnContent, LockLabel } from "./styles"
-import { GridRef } from '../../../../../VectorFlow/types/MDM'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 
 interface SpliViewTableProps extends AgGridReactProps{
@@ -31,8 +30,8 @@ const VerticalSplitView = (props:SplitViewProps)=>{
         themeUi
     } = props
 
-    const ref1 = useRef<GridRef>()
-    const ref2 = useRef<GridRef>()
+    const ref1 = useRef<AgGridReact>(null)
+    const ref2 = useRef<AgGridReact>(null)
 
     const [lockBtnPosition,setLockBtnPosition] = useState<number>(0)
 
@@ -53,21 +52,21 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                     ref1.current?.api.ensureIndexVisible(currIndex)
                 }
             }
-            else{
-                const currIndex = parseInt((params.left/80).toFixed(0))
-                const columns = techTable.columnDefs
+            // else{
+            //     const currIndex = parseInt((params.left/80).toFixed(0))
+            //     const columns = techTable.columnDefs
 
-                if(columns){
-                    const currColumn:any = columns[currIndex]
+            //     if(columns){
+            //         const currColumn:any = columns[currIndex]
                 
-                    if(from===1){
-                        ref2.current?.api.ensureColumnVisible(currColumn.colId)
-                    }
-                    else{
-                        ref1.current?.api.ensureColumnVisible(currColumn.colId)
-                    }
-                }
-            }
+            //         if(from===1){
+            //             ref2.current?.api.ensureColumnVisible(currColumn.colId)
+            //         }
+            //         else{
+            //             ref1.current?.api.ensureColumnVisible(currColumn.colId)
+            //         }
+            //     }
+            // }
         }
     }
     
@@ -91,7 +90,11 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             tooltipMouseTrack={true}
                             tooltipShowDelay={0}
                             tooltipHideDelay={100000}
+                            defaultColDef={{
+                                floatingFilter:false
+                            }}
                             onBodyScroll={(params)=>onBodyScroll(params,1)}
+                            alignedGrids={isLocked?[ref2]:[]}
                         />
                         <div style={{zoom:0.7}}>
                             <VFPagination
@@ -126,7 +129,11 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                         tooltipMouseTrack={true}
                         tooltipShowDelay={0}
                         tooltipHideDelay={100000}
+                        defaultColDef={{
+                            floatingFilter:false
+                        }}
                         onBodyScroll={(params)=>onBodyScroll(params,2)}
+                        alignedGrids={isLocked?[ref1]:[]}
                     />
                     <div style={{zoom:0.7}}>
                         <VFPagination

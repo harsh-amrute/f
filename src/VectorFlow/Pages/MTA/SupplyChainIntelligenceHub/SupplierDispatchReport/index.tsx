@@ -31,7 +31,7 @@ const SupplierDispatchReport = () => {
     customCellRenderers,
     currFilter,
     setCurrFilter,
-    onDelete,
+    onDeleteFilter,
     onExportToExcelCallBack,
     onApplyFilter
   } = useSupplierDispatchReport();
@@ -46,7 +46,7 @@ const SupplierDispatchReport = () => {
               const data =  await getState(`SDR`)
               const {columns} = JSON.parse(data.data.data)
             
-              ref.current.columnApi.applyColumnState({state:columns})
+              ref.current.api.applyColumnState({state:columns})
             }catch(err:any){
               notifyError(err)
             }
@@ -139,7 +139,7 @@ const SupplierDispatchReport = () => {
         onExportToExcelCallBack={onExportToExcelCallBack}
         multiFilter={currFilter}
         setMultiFilter={setCurrFilter}
-        onDelete={onDelete}
+        onDelete={onDeleteFilter}
       />
       </div>
       <VDRLayout>

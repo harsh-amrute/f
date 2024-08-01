@@ -283,7 +283,7 @@ const useViewModify = (pageType:string) => {
         
         if(downloadData){
           const currentMaster = masters.find((master:MDMMasterState)=>master.id === activeMaster.id);
-          const visibleColumns = ref.current?.columnApi.getAllDisplayedColumns();
+          const visibleColumns = ref.current?.api.getAllDisplayedColumns();
           const validColumnKeys:string[] = [];
           if(visibleColumns){
             visibleColumns.forEach((col:any)=>{
@@ -410,7 +410,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const getCurrentVisbileColumns = () => {
-      const columnData = ref.current?.columnApi.getAllDisplayedColumns();
+      const columnData = ref.current?.api.getAllDisplayedColumns();
       return columnData?.map((column:any) => ({key:column.colDef.field}));
     }
 
@@ -749,7 +749,7 @@ const useViewModify = (pageType:string) => {
             notifyError('Please select a file to upload.');
             return
           }
-          const selectedColumns = ref.current?.columnApi.getAllDisplayedColumns();
+          const selectedColumns = ref.current?.api.getAllDisplayedColumns();
           // const toasId = notifyLoader("Reading File");
           setIsOverlayVisible(true)
   

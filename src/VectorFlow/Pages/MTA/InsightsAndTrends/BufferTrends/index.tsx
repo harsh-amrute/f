@@ -13,7 +13,7 @@ const BufferTrends = () => {
     currentPageTab,onFloatingTabChangeOnPages,graphs,updateGraphState,setHorizondays,handleSubmitClick,horizonDays
     ,onGoBack,handleApplyFilter,multiFilterState,
     setMultiFilterState,
-    onDelete,} =useBufferTrends();
+    onDeleteFilter,} =useBufferTrends();
    
    const renderView=()=>{
     switch(currentView){
@@ -40,7 +40,7 @@ const BufferTrends = () => {
    
   return (
     <>
-     <ActionToolBar view={'grid'} setCurrentTab={currentTab} currCategory={'BufferTrend'} currentTab={''} tabsList={[]} onFloatingTabChange={onFloatingTabChange} onGoBack={onGoBack} onViewChange={()=>console.log('')} onApplyFilter={handleApplyFilter} onExportToExcelCallBack genericRecordCount={0} multiFilter={multiFilterState} setMultiFilter={setMultiFilterState} onDelete={onDelete}/>
+     <ActionToolBar view={'grid'} setCurrentTab={currentTab} currCategory={'BufferTrend'} currentTab={''} tabsList={[]} onFloatingTabChange={onFloatingTabChange} onGoBack={onGoBack} onViewChange={()=>console.log('')} onApplyFilter={handleApplyFilter} onExportToExcelCallBack genericRecordCount={0} multiFilter={multiFilterState} setMultiFilter={setMultiFilterState} onDelete={onDeleteFilter}/>
 
     <div style={{display:'flex',justifyContent:'center',marginBottom:'8px'}}>
                         <div style={{zoom:0.7}}>

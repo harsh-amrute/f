@@ -127,26 +127,34 @@ const useRRR =()=>{
     }
 
     const onApplyFilter = async(filter:any)=>{
-        try{
-            await getDataCount(filter)
-        notifyLoader("Loading Grid Data")
-            const rowData =await getRRRData({
-                filters:filter ,
-                paginationParameter:{
-                    pageNumber:1,
-                    recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')
-                }
-            })
-            
-        
-        // setRecordCount(rowData.data.recordCount)
-        setCurrFilter(filter)
-            setCurrentPage(1)
-            setRRRRowData(rowData?.data?.data)
-            toast.dismiss()
-        }catch(err:any){
-            notifyError(err)
+        try {
+          await getDataCount(filter);
+          notifyLoader("Loading Grid Data");
+          const rowData = await getRRRData({
+            filters: filter,
+            paginationParameter: {
+              pageNumber: 1,
+              recordsPerPage: parseInt(
+                process.env.REACT_APP_RRR_ROWS_PER_PAGE || "100"
+              ),
+            },
+          });
+
+          // setRecordCount(rowData.data.recordCount)
+          setCurrFilter(filter);
+          setCurrentPage(1);
+          setRRRRowData(rowData?.data?.data);
+          toast.dismiss();
+        } catch (err: any) {
+          notifyError(err);
+          setRRRRowData([])
+          setRRRDataCount(0)
         }
+    }
+
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+        const updatedFilter = onDelete(parentId,filterId,value)
+        onApplyFilter(updatedFilter)
     }
 
     const customCellRenderers = useMemo(() => (   
@@ -270,7 +278,7 @@ const useRRR =()=>{
         onApplyFilter,
         currFilter,
         setCurrFilter,
-        onDelete
+        onDeleteFilter
     }
 }
 

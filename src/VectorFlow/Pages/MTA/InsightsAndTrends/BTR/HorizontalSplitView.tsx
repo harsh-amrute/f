@@ -29,8 +29,8 @@ const VerticalSplitView = (props:SplitViewProps)=>{
         themeUi
     } = props
 
-    const ref1 = useRef<AgGridReact>()
-    const ref2 = useRef<AgGridReact>()
+    const ref1 = useRef<AgGridReact>(null)
+    const ref2 = useRef<AgGridReact>(null)
 
     const [lockBtnPosition,setLockBtnPosition] = useState<number>(0)
 
@@ -50,21 +50,21 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                     ref1.current?.api.ensureIndexVisible(currIndex)
                 }
             }
-            else{
-                const currIndex = parseInt((params.left/80).toFixed(0))
-                console.log(currIndex)
-                const columns = techTable.columnDefs
-                if(columns){
-                    const currColumn:any = columns[currIndex]
+            // else{
+            //     const currIndex = parseInt((params.left/80).toFixed(0))
+            //     console.log(currIndex)
+            //     const columns = techTable.columnDefs
+            //     if(columns){
+            //         const currColumn:any = columns[currIndex]
                 
-                    if(from===1){
-                        ref2.current?.api.ensureColumnVisible(currColumn.colId)
-                    }
-                    else{
-                        ref1.current?.api.ensureColumnVisible(currColumn.colId)
-                    }
-                }
-            }
+            //         if(from===1){
+            //             ref2.current?.api.ensureColumnVisible(currColumn.colId)
+            //         }
+            //         else{
+            //             ref1.current?.api.ensureColumnVisible(currColumn.colId)
+            //         }
+            //     }
+            // }
         }
     }
    
@@ -91,6 +91,10 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             tooltipHideDelay={100000}
                             onBodyScroll={(params)=>onBodyScroll(params,1)}
                             height={"100%"}
+                            defaultColDef={{
+                                floatingFilter:false
+                            }}
+                            alignedGrids={isLocked?[ref2]:[]}
                         />
                         <div style={{zoom:0.7,marginBottom:'20px'}}>
                             <VFPagination
@@ -117,6 +121,10 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             tooltipShowDelay={0}
                             tooltipHideDelay={100000}
                             onBodyScroll={(params)=>onBodyScroll(params,2)}
+                            defaultColDef={{
+                                floatingFilter:false
+                            }}
+                            alignedGrids={isLocked?[ref1]:[]}
                         />
                          <div style={{zoom:0.7,marginBottom:'20px'}}>
                             <VFPagination

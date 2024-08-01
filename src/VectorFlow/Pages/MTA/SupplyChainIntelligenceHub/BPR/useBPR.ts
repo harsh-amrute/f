@@ -237,7 +237,9 @@ const useBPR =()=>{
             }
         })
         toast.dismiss()
-        setBPRRowData(rowData.data.data)
+        if(rowData.data.data && Array.isArray(rowData.data.data))setBPRRowData(rowData.data.data)
+        else setBPRRowData([])
+        
     }
 
     const updateRemark = (e:any)=>setRemark(e.currentTarget.value)
@@ -276,7 +278,7 @@ const useBPR =()=>{
             }
             
         })
-        const {data} = await submitRemark(payload)
+        const {data} = await submitRemark({data:payload})
         toast.dismiss(toastId)
         notifySuccess(data.msg)
         setEditedRows([])
@@ -370,6 +372,11 @@ const useBPR =()=>{
         getBPRRowData(filter,1)
     }
 
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+        const updatedFilter = onDelete(parentId,filterId,value)
+        onApplyFilter(updatedFilter)
+    }
+
     const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
 
     const BPRColumns =mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph)
@@ -424,7 +431,8 @@ const useBPR =()=>{
         setCurrFilter,
         onApplyFilter,
         themeUi,
-        editedRows
+        editedRows,
+        onDeleteFilter
     }
 }
 
