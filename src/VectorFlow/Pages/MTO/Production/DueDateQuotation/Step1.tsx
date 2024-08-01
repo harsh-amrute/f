@@ -38,7 +38,7 @@ const Step1 = ({theme, gridOptions, rows, selectedRows, currentPageSelectedRows,
               const selectedRowIds = Array.from(selectedRows.keys());
               const newCurrentPageSeleceted: any = []
               params.api.forEachNode(node => {
-                  if (selectedRowIds.includes(node.data.oid)) {
+                  if (selectedRowIds.includes(node.data.ok)) {
                       newCurrentPageSeleceted.push(node)
                   }
               });
@@ -48,10 +48,10 @@ const Step1 = ({theme, gridOptions, rows, selectedRows, currentPageSelectedRows,
             
             onSelectionChanged={(params: any) => {
               _.differenceWith(currentPageSelectedRows.current, params.api.getSelectedNodes(), _.isEqual).forEach((node: any) => {
-                selectedRows.delete(node.data.oid);
+                selectedRows.delete(node.data.ok);
               }) 
               params.api.getSelectedNodes().forEach((node: any) => {
-                  selectedRows.set(node.data.oid, node);
+                  selectedRows.set(node.data.ok, node);
               })
               currentPageSelectedRows.current = params.api.getSelectedNodes();
             }}

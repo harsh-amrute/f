@@ -4,7 +4,7 @@ import { useUserData } from '../../../../../context'
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { Footer, Wrapper } from './DueDateQuotation.styled'
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
-import { useGetBufferMasterData, useGetCCRGroupMaster, useGetOrdersForDDQ, useGetUIConfig } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
+import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetFOLData, useGetOrdersForDDQ, useGetUIConfig } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
 import { getColumnDefinations } from '../../../../../helpers/utils'
 import { GridOptions } from 'ag-grid-enterprise'
 import VFOverlay from '../../../../../components/VectorFLOW/commons/VFOverlay'
@@ -34,6 +34,9 @@ const DueDateQuotation = () => {
     const { mutateAsync: getData, isLoading: isDataLoading } = useGetOrdersForDDQ();
     const { mutateAsync: getBufferMaster, } = useGetBufferMasterData();
     const { mutateAsync: getCCRGroupMaster, } = useGetCCRGroupMaster();
+    const { mutateAsync: getCCRItemTypeMappingMaster, } = useGetCCRItemTypeMappingMaster();
+    const { mutateAsync: getFOLData, } = useGetFOLData();
+    const { mutateAsync: getCCRMasterData, } = useGetCCRMasterData();
     const { data: UIConfig, isLoading: isUIConfigLoading } = useGetUIConfig("DueDateQuotation");
 
     const extras: any = [
@@ -68,6 +71,10 @@ const DueDateQuotation = () => {
             suppressSizeToFit: false,
             filter: "agTextColumnFilter",
             floatingFilter: true,
+            resizable: true,
+            cellStyle:{
+              fontSize:"16px",
+            }
         },
         sideBar: {
             toolPanels: ["columns"],
@@ -199,10 +206,10 @@ const DueDateQuotation = () => {
         if(allBufferMaster){
           allBufferMaster.forEach((master: any)=>{
             if(master.buffer_type.buffer_type.toLowerCase() === "prod"){
-              prodMaster.push({label:`${master.buffer_code} - [${master.buffer_size}d]`, value: master.buffer_id})
+              prodMaster.push({label: master.buffer_code, value: master.buffer_id, size: master.buffer_size})
             }
             else if(master.buffer_type.buffer_type.toLowerCase() === "proc"){
-              procMaster.push({label:`${master.buffer_code} - [${master.buffer_size}d]`, value: master.buffer_id})
+              procMaster.push({label: master.buffer_code, value: master.buffer_id, size: master.buffer_size})
             }
           })
         }
@@ -218,12 +225,18 @@ const DueDateQuotation = () => {
             obj.ccrs.push({label:ccr.ccr_name, value: ccr.ccr_id});
           })
           ccrGroups.push(obj);
-        })
+        })      
+        const CCRItemTypeMappingMasterData = await getCCRItemTypeMappingMaster();
 
-        console.log("ccrGroupData", ccrGroups); 
-       
-        
-        setMasters({procMaster, prodMaster, ccrGroups});
+        const CCRItemTypeMappingMaster = CCRItemTypeMappingMasterData?.data?.data;
+        const FOLData = await getFOLData();
+        const FOL = FOLData?.data?.data;
+
+        const CCRMasterData = await getCCRMasterData();
+        const CCRMaster = CCRMasterData?.data?.data
+
+        setMasters({procMaster, prodMaster, ccrGroups, CCRItemTypeMappingMaster, FOL, CCRMaster});
+
       }
     }
 
@@ -255,7 +268,6 @@ const DueDateQuotation = () => {
                           getMastersData={getMastersData}
                           rowsSelectedForAssignment={rowsSelectedForAssignment}
                           setRowsSelectedForAssignment={setRowsSelectedForAssignment}
-                          // setBufferMaster={setBufferMaster}
                         />
                 )
             }

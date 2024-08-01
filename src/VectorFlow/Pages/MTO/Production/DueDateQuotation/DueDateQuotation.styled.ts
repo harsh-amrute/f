@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
     margin-left: 2rem;
     flex-direction: column;
     & .ag-header-cell-text {
-        font-size: 18px;
+        font-size: 16px;
     }
     & .ag-header-cell-text {
         text-align: center;
@@ -16,7 +16,7 @@ export const Wrapper = styled.div`
         height: 100%;
     }
     & > .toolbar-container, & > .ag-theme-alpine{
-        margin: 20px 0;
+        margin: 20px 10px;
     }
     & > .toolbar-container{
         margin: 0;

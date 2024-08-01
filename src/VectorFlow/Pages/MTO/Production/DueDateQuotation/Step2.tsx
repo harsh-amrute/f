@@ -12,11 +12,18 @@ import { BlurCover, CardCover, DashedCard, MessageText } from '../EnquiryRespons
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
 import { useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
+import _ from 'lodash';
 
 const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, masters, getMastersData, rowsSelectedForAssignment,setRowsSelectedForAssignment}: any) => {
     useEffect(()=>{
         getMastersData();
-        setRowsSelectedForAssignment(false)
+        setRowsSelectedForAssignment(false);
+        setRows(Array.from(selectedRows.values()).map((node: any) => {
+            if(node.data.rid){
+                routeLookup.current.set(node.data.rn, node.data.rid);
+            }
+            return node.data
+        }))
     },[]);
 
     useEffect(() => {
@@ -30,9 +37,10 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         Route:{
             pinned: "right",
             lockPosition: true,
-            maxWidth:150,
+            // maxWidth:150,
+            tooltipField: "rn",
             cellStyle:{
-                background: "#BC3D814F",
+                // background: "#BC3D814F",
                 color: "#BC3D81",
                 fontWeight: "bold"
             }
@@ -42,7 +50,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
             lockPosition: true,
             maxWidth:150,
             cellStyle:{
-                background: "#BC3D814F",
+                // background: "#BC3D814F",
                 color: "#BC3D81",
                 fontWeight: "bold"
             }
@@ -52,7 +60,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
             lockPosition: true,
             maxWidth:150,
             cellStyle:{
-                background: "#BC3D814F",
+                // background: "#BC3D814F",
                 color: "#BC3D81",
                 fontWeight: "bold"
             }
@@ -60,9 +68,9 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         CRDD:{
             pinned:"right",
             lockPosition: true,
-            maxWidth:150,
+            maxWidth:160,
             cellStyle:{
-                background: "#BC3D814F",
+                // background: "#BC3D814F",
                 color: "#BC3D81",
                 fontWeight: "bold"
             }
@@ -72,7 +80,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
             lockPosition: true,
             maxWidth:150,
             cellStyle:{
-                background: "#BC3D814F",
+                // background: "#BC3D814F",
                 color: "#BC3D81",
                 fontWeight: "bold"
             }
@@ -99,37 +107,49 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
     const options: GridOptions = {
             ...gridOptions,
             columnDefs: columnDefs,
+            // tooltipTrigger:"focus",
             getRowStyle:(params: any) => null
         }
 
     // const rows = useMemo(()=> selectedRows.values().map((node: any) => node.data), [])   
-    const [rows, setRows] = useState(selectedRows.values().map((node: any) => node.data));
+    const routeLookup = useRef(new Map());
+    const [rows, setRows] = useState<any>(null);
     const [newSelectedRows, setNewSelectedRows] = useState<any>({rows:null, isAssignmentPossible: false});
-    const [selectedRoutes, setSelectedRoutes] = useState([])
+    const [selectedRoute, setSelectedRoute] = useState<any>([])
     
     const allotment = useRef<any>();
     const routeDiv = useRef<any>();
-    const [selectedBuffers, setSelectedBuffers] = useState([]);
+    const gridRef = useRef<any>();
+    const [selectedBuffers, setSelectedBuffers] = useState<any[]>([]);
     const [isEditable, setIsEditable] = useState(false);
 
     const { mutateAsync: getRouteDetails, } = useGetRouteDetails();
-    const getRoute = async (route_id: number) => {
-        const data = await getRouteDetails(route_id);
-        const routeDetails = data.data.data;
-        routeDetails.sort((a:any,b:any) => a.ps - b.ps)
-        const selectedRoute: any = []
-        routeDetails.forEach((routeDetail: any) => {
-            const obj = []
-            const ccrGroup = masters.ccrGroups.find((ccr: any) => ccr.value === routeDetail.ccrGrpId);
-            obj[0] = ccrGroup;
-            obj[1] = ccrGroup.ccrs.find((ccr: any) => ccr.value === routeDetail.ccrId)
-            selectedRoute[routeDetail.ps - 1] = obj 
-        })
+    const routeCache = useRef<Record<number, any>>({});
+    const [no, setNo] = useState(false);
 
-        return selectedRoute
+    const getRoute = async (route: any) => {
+        if(typeof route === "number"){
+            if(routeCache.current[route]){
+                return _.cloneDeep(routeCache.current[route])
+            }
+            const data = await getRouteDetails(route);
+            const routeDetails = data.data.data;
+            routeDetails.sort((a:any,b:any) => a.ps - b.ps)
+            const newRoute: any = []
+            routeDetails.forEach((routeDetail: any) => {
+                const obj = []
+                const ccrGroup = masters.ccrGroups.find((ccr: any) => ccr.value === routeDetail.ccrGrpId);
+                obj[0] = ccrGroup;
+                obj[1] = ccrGroup.ccrs.find((ccr: any) => ccr.value === routeDetail.ccrId)
+                newRoute[routeDetail.ps - 1] = obj 
+            })
+            routeCache.current[route] = newRoute;
+            return _.cloneDeep(newRoute)
+        } 
+        return JSON.parse(route)
     }
 
-    const getSelectedBuffer = (prod_buffer: any, proc_buffer: any) => {
+    const getBuffer = (prod_buffer: any, proc_buffer: any) => {
         const buffer = [null, null];
         if(prod_buffer.length == 1){
             const prodBuff = masters.prodMaster.find((prod: any)=> prod.value === prod_buffer[0]);
@@ -142,8 +162,121 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         return buffer
     }   
 
-    console.log(routeDiv.current?.offsetHeight);
+
+    const onSave = () => {
+        if(isEditable){
+            const selectedOrders = new Set(gridRef.current.api.getSelectedRows().map((row:any) => row.ok));
+            const ccrIds:any = [];
+            const formattedRoute = formatRoute(selectedRoute);
+
+            const prodBuffer = selectedBuffers[0];
+            const procBuffer = selectedBuffers[1];
+            
+            // const newRows = _.cloneDeep(rows)
+            const orderLoad = new Array(ccrIds.length).fill(0);
+            const newRows = rows.map((row:any) => {
+                if(selectedOrders.has(row.ok)){
+                    //update the routes in all the orders
+                    row.rn = formattedRoute;
+                    row.newRoute = selectedRoute;
+                    ccrIds.forEach((ccrId:any, index: number)=>{
+                        let ccrWorkingDays = masters.CCRMaster.find((ccr:any)=>{
+                            return ccr.ccr_id === ccrId
+                        })?.working_hours_per_day || "0";
+                        ccrWorkingDays = parseInt(ccrWorkingDays); 
+                        orderLoad[index] +=  Math.ceil((masters?.CCRItemTypeMappingMaster.find((ccr:any)=> ccr.ccrId === ccrId && ccr.it == row.itid).tt / (60 * ccrWorkingDays))  * row.pcqty)
+                    })
+                    //update the buffers in all the orders
+                    row.nprid = prodBuffer?.value
+                    row.npcid =  procBuffer?.value
+                    row.prodc = prodBuffer?.label
+                    row.procc = procBuffer?.label
+                    
+                }
+                return row
+            });
+
+            console.log(selectedRoute)
+
+            setRows(newRows);
+            setSelectedBuffers([])
+            setSelectedRoute([])
+            setRowsSelectedForAssignment(false);
+        }
+        setIsEditable(!isEditable);
+        
+    }
+
+    const onReset = async () => {
+        const selectedOrders = new Set(gridRef.current.api.getSelectedRows().map((row:any) => row.ok));
+        const newRows = [...rows];
+
+        // for(const row of newRows){
+        //     if(selectedOrders.has(row.ok)){ 
+        //         console.log("inside")              
+        //         //unset the modified values
+        //         row.newRoute = undefined;
+        //         row.nprid = undefined;
+        //         row.npcid = undefined;
+        //         //reset the existing values
+        //         const route = await getRoute(row.rid);
+        //         row.rn = formatRoute(route);
+        //         console.log("format", formatRoute(route));
+        //         const buffer:any = getBuffer([row.prid], [row.pcid])
+        //         row.prodc = buffer[0]?.label || ""; 
+        //         row.procc = buffer[1]?.label || "";
+        //     }
+        // }
+        const promises = newRows.map(async (row) => {
+            if (selectedOrders.has(row.ok)) {
+                // Unset the modified values
+                row.newRoute = undefined;
+                row.nprid = undefined;
+                row.npcid = undefined;
     
+                try {
+                    // Retrieve route and format it
+                    const route = await getRoute(row.rid);
+                    row.rn = formatRoute(route);
+    
+                    // Retrieve buffer data
+                    const buffer:any = await getBuffer([row.prid], [row.pcid]);
+                    row.prodc = buffer[0]?.label || "";
+                    row.procc = buffer[1]?.label || "";
+                } catch (error) {
+                    console.error(`Error fetching data for row ${row}:`, error);
+                }
+            }
+        });
+    
+        // Wait for all promises to resolve
+        await Promise.all(promises);
+        setRows(newRows);
+        setSelectedBuffers([])
+        setSelectedRoute([])
+        setRowsSelectedForAssignment(false);
+    }
+
+
+    const formatRoute = (route:any) => {
+        let formattedRoute:any = []
+        route.forEach((route: any)=>{
+            if(route[1]?.label){
+                formattedRoute.push(route[1]?.label);             
+            }
+        })
+        formattedRoute = formattedRoute.join("/"); 
+        return formattedRoute
+    }
+
+    // console.log(routeCache);
+
+    // useEffect(()=>{
+    //     console.log("changed");
+    //     console.log(selectedRoute);
+    //     console.log(selectedBuffers);
+    // }, [selectedBuffers, selectedRoute])
+   
     return (
         <>
             <Allotment vertical separator ref={allotment} snap={false} proportionalLayout={false}>
@@ -151,45 +284,70 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                     <Wrapper style={{ margin: 0 }}>
                         <VFTable
                             key="selectedRows"
+                            ref={gridRef}
+                            tooltipShowDelay={0}
                             gridOptions={options}
                             columnDefs={options.columnDefs}
                             rowData={rows}
                             onSelectionChanged={async (params: GridReadyEvent)=>{
+                                setIsEditable(false);
+                                setNo(false)
+                                console.log(selectedRoute);
                                 const selected = params.api.getSelectedRows();
                                 if(selected.length){
                                     setRowsSelectedForAssignment(true);
                                 }else{
+                                    setSelectedBuffers([])
+                                    setSelectedRoute([])
                                     setRowsSelectedForAssignment(false);
                                     return
                                 }
                                 const selectedRoutes: any = new Set();
                                 const selectedProdBuffer: any = new Set();
                                 const selectedProcBuffer: any = new Set();
+
                                 selected.forEach((row: any) => {
-                                    if(row.rid){
+                                    if(row.newRoute){
+                                        const formattedRoute = formatRoute(row.newRoute);
+                                        if(routeLookup.current.get(formattedRoute)){
+                                            selectedRoutes.add(routeLookup.current.get(formattedRoute));
+                                        }else{
+                                            selectedRoutes.add(JSON.stringify(row.newRoute));
+                                        }
+                                    }
+                                    else if (row.rid){
                                         selectedRoutes.add(row.rid);
                                     }
-                                    if(row.prid){
+                                    if(row.nprid){
+                                        selectedProdBuffer.add(row.nprid);
+                                    }
+                                    else if(row.prid){
                                         selectedProdBuffer.add(row.prid);
                                     }
-                                    if(row.pcid){
+                                    if(row.npcid){
+                                        selectedProcBuffer.add(row.npcid);
+                                    }
+                                    else if(row.pcid){
                                         selectedProcBuffer.add(row.pcid);
                                     }
                                 }) 
-                                const isAssignmentPossible = ([0,1].includes(selectedRoutes.size))&&([0,1].includes(selectedProdBuffer.size))&&([0,1].includes(selectedProcBuffer.size))
-                                if(selectedRoutes.size == 1 && isAssignmentPossible){
-                                    const routeDetails = await getRoute([...selectedRoutes][0]);
-                                    setSelectedRoutes(routeDetails);
+                                console.log("selectedRoutes from selection change fn", selectedRoutes)
+                                const isAssignmentPossible = ([1].includes(selectedRoutes.size))&&([0,1].includes(selectedProdBuffer.size))&&([0,1].includes(selectedProcBuffer.size))
+                                // const isAssignmentPossible = (selectedRoutes.size == 1 )&&(selectedProdBuffer.size == 1 )&&(selectedProcBuffer.size == 1)
+                                if(!isAssignmentPossible){
+                                    setSelectedBuffers([])
+                                    setSelectedRoute([])
                                 }
-                                if((selectedProdBuffer.size == 1 || selectedProcBuffer.size == 1) && isAssignmentPossible){
-                                    const buffer: any = getSelectedBuffer([...selectedProdBuffer], [...selectedProcBuffer]);
+                                if(selectedRoutes.size == 1 ){
+                                    const routeDetails = await getRoute([...selectedRoutes][0]);
+                                    setSelectedRoute(routeDetails);
+                                }
+                                if((selectedProdBuffer.size == 1 || selectedProcBuffer.size == 1)){
+                                    const buffer: any = getBuffer([...selectedProdBuffer], [...selectedProcBuffer]);
                                     setSelectedBuffers(buffer)
                                 }
                                 setNewSelectedRows({rows:selected, isAssignmentPossible });
-                                if(!isAssignmentPossible){
-                                    setSelectedBuffers([])
-                                    setSelectedRoutes([])
-                                }
+                                
                             }}
                             onColumnPinned={(params: GridReadyEvent)=>{
                                 params.columnApi.autoSizeAllColumns();
@@ -205,27 +363,25 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                         <Allotment.Pane preferredSize={176 + 50} key={2}>
                                 {/* <Wrapper style={{ margin: 0, filter:"blur(3px)" }} > */}
                                 <Wrapper style={{ margin: 0, filter: newSelectedRows.isAssignmentPossible ? "unset" :"blur(3px)"}} >
-                                    <div ref={routeDiv} style={{ height:"100%",background: "white", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", margin: "20px 10px", padding: "1rem", position:"relative" }}>
+                                    <div ref={routeDiv} style={{ height:"100%",background: "white", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", margin: "20px 10px", padding: "1rem", position:"relative", overflow:"auto"}}>
                                         <div style={{display:"flex", position:"absolute", right:"1rem", gap:"0.5rem"}}>
                                             <VFButton 
                                                 themeUi={theme} 
-                                                onClick={()=>{
-                                                    setIsEditable(!isEditable);
-                                                }} 
+                                                onClick={onSave} 
                                                 style={{fontSize:"10px", width:"50px", height:"20px", padding:"0 1rem"}}>
                                                     {isEditable?"Save": "Edit"}
                                                 </VFButton>
-                                            <VFButtonOutline themeUi={theme} onClick={()=>console.log()} style={{fontSize:"10px", width:"50px", height:"20px", padding:"0 1rem"}}>Reset</VFButtonOutline>
+                                            <VFButtonOutline themeUi={theme} onClick={onReset} style={{fontSize:"10px", width:"50px", height:"20px", padding:"0 1rem"}}>Reset</VFButtonOutline>
                                         </div>
                                         <div style={{display: "flex", gap: "2rem"}}>
-                                            <div style={{ flex: "1" }}>
+                                            <div style={{ flex: "2" }}>
                                                 <h3>Route Assignment</h3>
                                                 <RouteAssignment 
                                                     isEditable={isEditable}
                                                     theme={theme} 
                                                     ccrGroupMaster={masters.ccrGroups} 
-                                                    selectedRoutes={selectedRoutes}
-                                                    setSelectedRoutes={setSelectedRoutes}
+                                                    selectedRoutes={selectedRoute}
+                                                    setSelectedRoutes={setSelectedRoute}
                                                 />
                                             </div>
                                             <div style={{ flex: "1" }}>
@@ -246,7 +402,8 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                                  <CardCover>
                                      <DashedCard style={{width:"500px"}}>
                                      <MessageText style={{textAlign: "center", display:"flex", flexDirection:"column", width:"100%", gap:"2rem"}}>
-                                         <div>
+                                         {!no ? <>
+                                            <div>
                                              Selected orders have different routes and buffer.<br/>
                                              Do you want to edit these orders together?
                                          </div>
@@ -256,13 +413,15 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                                                 onClick={()=>{
                                                     setNewSelectedRows({...newSelectedRows, isAssignmentPossible: true})
                                                     setSelectedBuffers([])
-                                                    setSelectedRoutes([])
+                                                    setSelectedRoute([])
                                                 }}
                                             >
                                                 Yes
                                             </VFButtonOutline>
-                                             <VFButtonOutline themeUi={theme} onClick={()=>{console.log()}}>No</VFButtonOutline>
-                                         </div>
+                                             <VFButtonOutline themeUi={theme} onClick={()=>{setNo(true)}}>No</VFButtonOutline>
+                                         </div></>: 
+                                            <div>Selected orders have different route and buffer.</div>
+                                         }
                                      </MessageText>
                                      </DashedCard>
                                  </CardCover>

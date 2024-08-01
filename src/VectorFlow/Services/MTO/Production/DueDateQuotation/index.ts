@@ -41,3 +41,19 @@ export const useGetRouteDetails = () => {
     })
 }
 
+export const useGetCCRItemTypeMappingMaster = () => {
+    return useMutation(async () => {
+        return UIConfigService.getCCRItemTypeMappingMaster()
+    })
+}
+export const useGetFOLData = () => {
+    return useMutation(async () => {
+        return UIConfigService.getFOLData()
+    })
+}
+export const useGetCCRMasterData = () => {
+    return useMutation(async () => {
+        return UIConfigService.getCCRMasterData()
+    })
+}
+

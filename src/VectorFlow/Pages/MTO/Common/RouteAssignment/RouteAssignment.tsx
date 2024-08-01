@@ -56,16 +56,17 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
     // }, []);
 
   return (
-    <StepperWrapper>
+    <StepperWrapper key="route-assignment">
         {ccrGroupMaster.map((ccrGroup: any, index: number)=>{
             return(
-            <StepGroup $step={true}>
+            <StepGroup $step={false} key={`route-assignment-${index}`}>
                 <RadioSelect 
+                    key={`route-assignment-${index}-${1}`}
                     isDisabled={!isEditable}
                     theme={theme} 
                     color="lightgrey" 
                     options={ccrGroupMaster} 
-                    selected={selectedRoutes[index]?.[0]}
+                    value={selectedRoutes[index]?.[0] || null}
                     onChange={(newValue: any)=>{
                         const newGroups = [...selectedRoutes];
                         newGroups[index] = [newValue,null];
@@ -73,12 +74,12 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
                     }}
                 />
                 <RadioSelect 
+                    key={`route-assignment-${index}-${2}`}
                     isDisabled={!isEditable}
                     theme={theme} 
-                    selected={selectedRoutes[index]?.[1]}
+                    value={selectedRoutes[index]?.[1] || null}
                     options={selectedRoutes[index]?.[0].ccrs}
                     onChange={(newValue: any)=>{
-                        console.log("valueChanged", newValue)
                         const newGroups = [...selectedRoutes];
                         newGroups[index][1] = newValue;
                         setSelectedRoutes(newGroups);
