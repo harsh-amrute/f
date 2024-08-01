@@ -13,6 +13,7 @@ interface CustomColDef extends ColDef {
 // Define the default column definition interface
 interface CustomDefaultColDef {
     flex: number;
+    cellStyle:any;
 }
 
 // Define the grid options interface
@@ -94,6 +95,15 @@ const RowGroupRenderer = (params: any) => {
             ],
             defaultColDef: {
                 flex: 1,
+                cellStyle: {
+                    'text-align': 'center',
+                    //'height': '50px',
+                    "font-size": "18px",
+                    "font-family": "Roboto",
+                    'white-space': 'nowrap',
+                    'resizable': 'true',
+                    'color': '#000'
+                },
             },
         };
 

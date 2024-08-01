@@ -1,5 +1,6 @@
 
 import { ColDef, ColGroupDef } from "ag-grid-enterprise";
+import { ColorsMTO } from "../../Common/Colors";
 
 
 export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | ColGroupDef)[] => {
@@ -335,7 +336,10 @@ export const AgieingTime: (ColDef | ColGroupDef)[] = [
     {
         headerName: 'Ageing',
         field: 'agng',
-        colId: 'agng'
+        colId: 'agng',
+        cellStyle:{
+            'color':ColorsMTO.Pink.code
+        }
     }
 ]
 

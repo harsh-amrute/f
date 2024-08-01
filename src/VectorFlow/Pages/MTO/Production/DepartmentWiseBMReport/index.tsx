@@ -472,7 +472,7 @@ const DptWiseBMReport = () => {
         };
 
         return apiResponse.map(section => ({
-            headerCheckboxSelection: section.scc === "chckbx" ? false : undefined,
+            headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
             checkboxSelection: section.scc === "chckbx" ? true : undefined,
             maxWidth: section.scc === "chckbx" ? 80 : undefined,
             floatingFilter: section.scc === "chckbx" ? false : undefined,
