@@ -60,8 +60,8 @@ export const BPRViewTableGrid = styled.div`
     flex-direction:column;
     border: 1px solid #CCCCCC;
     width:100%;
-    min-height:150px;
-    max-height:90%;
+    min-height:200px;
+    max-height:100%;
     // max-height:205px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #9B9B9B29;
