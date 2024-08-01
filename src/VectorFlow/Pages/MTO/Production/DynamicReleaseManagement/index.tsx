@@ -274,9 +274,6 @@ const DynamicReleaseManagement = () => {
       <Wrapper>
         <MTOActionToolBar comp="FullKitAssignment" isExcelExport isAddFilterButton isReleaseButton onOrderRelease={onOrderRelease} />
 
-
-
-
         <SCTabHeader>
 
           <BPRViewTableHeaderTab onClick={() => { setTable1(true) }} status={table1} marLeft={true} themeUi={themeUi} zIndex={2} style={{ width: '250px', fontSize: '12px' }} >
