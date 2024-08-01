@@ -74,6 +74,8 @@ interface MTOActionToolBarProps {
     isExcelExport?: boolean
     isChartGridToggle?: boolean
     isWIPCheckBox?: boolean
+    isReleaseButton?: boolean
+    onOrderRelease?: () => void;
     //// new props
 }
 
@@ -100,7 +102,9 @@ const MTOActionToolBar = ({
     isAddFilterButton,
     isExcelExport,
     isChartGridToggle,
-    isWIPCheckBox
+    isWIPCheckBox,
+    isReleaseButton,
+    onOrderRelease,
 }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
@@ -127,6 +131,26 @@ const MTOActionToolBar = ({
                     justifyContent: 'unset'
                 }}
             >
+                <>
+                    {isReleaseButton &&
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold', gap: '15px' }}>
+
+                            <div style={{ borderRadius: '5px', background: 'white', padding: '10px 30px', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: 'rgba(133, 132, 132, 0.247) -5px 4px 10px', gap: '10px' }}>
+                                <input type="checkbox" style={{ color: 'pink' }} />
+                                <p>Release</p>
+                            </div>
+                            <img
+                                style={{ cursor: 'pointer' }}
+                                src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
+                                height={50}
+                                width={60}
+                                alt="Group 627"
+                                onClick={onOrderRelease}
+                            />
+
+                        </div>
+                    }
+                </>
 
                 <>
                     {isGoBackButton &&
