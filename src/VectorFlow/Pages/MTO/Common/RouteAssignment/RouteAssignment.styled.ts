@@ -7,10 +7,10 @@ export const StepperWrapper = styled.div`
   font-size: 12px;
   padding: 2rem 1rem;
   margin: 1.5rem 0;
-  gap: 3rem;
+  gap: 32px;
   border: 1px dashed #707070;
   border-radius: 10px;
-  // position: relative;
+  position: relative;
 `;
 
 StepperWrapper.defaultProps = {

@@ -13,18 +13,62 @@ interface IRouteAssignmentProps{
 const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedRoutes, isEditable = true}: IRouteAssignmentProps) => {
     // useEffect(() => {
     //     // let animationFrameId: any;
+    //     const adjustLayout =(containerWidth:number, items:any) =>{
+    //       let currWidth = 0;
+    //       let lineType = true;
+    //       let array:any = [];
+    //       let myIndex = 1;
+      
+    //       items.forEach((element:any) => {
+    //         if (currWidth + element.offsetWidth + 32 > containerWidth) {
+    //           if (!lineType) {
+    //             array.reverse();
+    //           }
+    //           array.forEach((e:any) => {
+    //             e.style.order = myIndex++;
+    //           });
+    //           array = [element];
+    //           currWidth = element.offsetWidth;
+    //           lineType = !lineType;
+    //         } else {
+    //           array.push(element);
+    //           currWidth += element.offsetWidth + 32;
+    //         }
+    //       });
+      
+    //       if (!lineType) {
+    //         array.reverse();
+    //       }
+    //       array.forEach((e:any) => {
+    //         e.style.order = myIndex++;
+    //       });
+    //     }
     //     const animate = () => {
     //         const stepGroups = document.querySelectorAll('.step-group');
     //         const svg: any = document.querySelector('.line');
+    //         const stepperWrapper: any = document.querySelector('.stepper-container');
+    //         const stepperRect = stepperWrapper.getBoundingClientRect();
+    //         adjustLayout(stepperWrapper.offsetWidth,stepGroups);
     //         if (svg?.innerHTML) {
     //             svg.innerHTML = "";
     //         }
     //         for (let i = 0; i < stepGroups?.length - 1; i++) {
     //             const start: any = stepGroups[i].getBoundingClientRect();
     //             const end: any = stepGroups[i + 1].getBoundingClientRect();
+    //             // Adjust the positions
+    //             const adjustedStart = {
+    //                 top: start.top - stepperRect.top,
+    //                 right: start.right - stepperRect.left,
+    //                 height: start.height        };        
+    //             const adjustedEnd = {
+    //                 top: end.top - stepperRect.top,
+    //                 left: end.left - stepperRect.left,
+    //                 height: end.height,
+    //                 width: end.width
+    //             };
     //             if (stepGroups[i + 1].id == "inactive") {
     //                 const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-    //                 polyline.setAttribute('points', `${end.left - 8},${end.top + end.height / 2 - 2.5} ${end.left - 8},${end.top - 10} ${end.left + 8 + end.width},${end.top - 10} ${end.left + 8 + end.width},${end.top + end.height / 2 - 2.5}`);
+    //                 polyline.setAttribute('points', `${adjustedEnd.left - 8},${adjustedEnd.top + adjustedEnd.height / 2 - 2.5} ${adjustedEnd.left - 8},${adjustedEnd.top - 10} ${adjustedEnd.left + 8 + adjustedEnd.width},${adjustedEnd.top - 10} ${adjustedEnd.left + 8 + adjustedEnd.width},${adjustedEnd.top + adjustedEnd.height / 2 - 2.5}`);
     //                 svg.appendChild(polyline);
     //                 polyline.setAttribute('stroke', '#82104C');
     //                 polyline.setAttribute('fill', 'none');
@@ -39,10 +83,10 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
     //             if (stepGroups[i + 1].id == "inactive") {
     //                 leftOffset = 5
     //             }
-    //             line.setAttribute('x1', (start.right + 6 + rightOffset).toString());
-    //             line.setAttribute('y1', start.top + start.height / 2);
-    //             line.setAttribute('x2', (end.left - 6 - leftOffset).toString());
-    //             line.setAttribute('y2', end.top + end.height / 2);
+    //             line.setAttribute('x1', (adjustedStart.right + 6 + rightOffset).toString());
+    //             line.setAttribute('y1', (adjustedStart.top + adjustedStart.height / 2).toString());
+    //             line.setAttribute('x2', (adjustedEnd.left - 6 - leftOffset).toString());
+    //             line.setAttribute('y2', (adjustedEnd.top + adjustedEnd.height / 2).toString());
     //             line.setAttribute('stroke', '#82104C');
     //             svg.appendChild(line);
     //         }
@@ -59,7 +103,7 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
     <StepperWrapper key="route-assignment">
         {ccrGroupMaster.map((ccrGroup: any, index: number)=>{
             return(
-            <StepGroup $step={false} key={`route-assignment-${index}`}>
+            <StepGroup $step={true} key={`route-assignment-${index}`}>
                 <RadioSelect 
                     key={`route-assignment-${index}-${1}`}
                     isDisabled={!isEditable}

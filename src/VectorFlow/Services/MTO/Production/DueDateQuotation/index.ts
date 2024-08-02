@@ -57,3 +57,15 @@ export const useGetCCRMasterData = () => {
     })
 }
 
+export const useGetDailyWorkingCalendar = () => {
+    return useMutation(async () => {
+        return UIConfigService.getDailyWorkingCalendar()
+    })
+}
+
+export const useGetMarketOperatingLeadTimeMasterData = () => {
+    return useMutation(async () => {
+        return UIConfigService.getMarketOperatingLeadTimeMasterData()
+    })
+}
+

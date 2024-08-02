@@ -83,6 +83,24 @@ export namespace UIConfigService {
             },
         })
     }
+
+    export const getDailyWorkingCalendar = async () => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getDailyWorkingCalendar/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        })
+    }
+
+    export const getMarketOperatingLeadTimeMasterData = async () => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getMarketOperatingLeadTimeMasterData/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        })
+    }
   
 
 }

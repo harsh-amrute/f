@@ -45,7 +45,6 @@ const Step1 = ({theme, gridOptions, rows, selectedRows, currentPageSelectedRows,
               currentPageSelectedRows.current = newCurrentPageSeleceted;
               params.api.setNodesSelected({ nodes: newCurrentPageSeleceted, newValue: true });
             }}
-            
             onSelectionChanged={(params: any) => {
               _.differenceWith(currentPageSelectedRows.current, params.api.getSelectedNodes(), _.isEqual).forEach((node: any) => {
                 selectedRows.delete(node.data.ok);

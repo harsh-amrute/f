@@ -4,7 +4,7 @@ import { useUserData } from '../../../../../context'
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { Footer, Wrapper } from './DueDateQuotation.styled'
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
-import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetFOLData, useGetOrdersForDDQ, useGetUIConfig } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
+import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetFOLData, useGetMarketOperatingLeadTimeMasterData, useGetOrdersForDDQ, useGetUIConfig } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
 import { getColumnDefinations } from '../../../../../helpers/utils'
 import { GridOptions } from 'ag-grid-enterprise'
 import VFOverlay from '../../../../../components/VectorFLOW/commons/VFOverlay'
@@ -37,6 +37,8 @@ const DueDateQuotation = () => {
     const { mutateAsync: getCCRItemTypeMappingMaster, } = useGetCCRItemTypeMappingMaster();
     const { mutateAsync: getFOLData, } = useGetFOLData();
     const { mutateAsync: getCCRMasterData, } = useGetCCRMasterData();
+    const { mutateAsync: getDailyWorkingCalendar, } = useGetDailyWorkingCalendar();
+    const { mutateAsync: getMarketOperatingLeadTimeMasterData, } = useGetMarketOperatingLeadTimeMasterData();
     const { data: UIConfig, isLoading: isUIConfigLoading } = useGetUIConfig("DueDateQuotation");
 
     const extras: any = [
@@ -233,9 +235,15 @@ const DueDateQuotation = () => {
         const FOL = FOLData?.data?.data;
 
         const CCRMasterData = await getCCRMasterData();
-        const CCRMaster = CCRMasterData?.data?.data
+        const CCRMaster = CCRMasterData?.data?.data;
 
-        setMasters({procMaster, prodMaster, ccrGroups, CCRItemTypeMappingMaster, FOL, CCRMaster});
+        const WorkingCalenderData = await getDailyWorkingCalendar();
+        const WorkingCalender = WorkingCalenderData.data.data;
+
+        // const MarketLeadTimeMasterData = await getMarketOperatingLeadTimeMasterData();
+        // const MarketLeadTimeMaster = MarketLeadTimeMasterData.data?.data;
+
+        setMasters({procMaster, prodMaster, ccrGroups, CCRItemTypeMappingMaster, FOL, CCRMaster, WorkingCalender});
 
       }
     }

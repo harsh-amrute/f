@@ -5,6 +5,7 @@ export const Wrapper = styled.div`
     display: flex;
     margin-left: 2rem;
     flex-direction: column;
+    
     & .ag-header-cell-text {
         font-size: 16px;
     }
@@ -14,6 +15,7 @@ export const Wrapper = styled.div`
     & > .ag-theme-alpine{
         flex: 1;
         height: 100%;
+        --ag-row-hover-color: rgb(188, 61, 129,0.3) !important;
     }
     & > .toolbar-container, & > .ag-theme-alpine{
         margin: 20px 10px;

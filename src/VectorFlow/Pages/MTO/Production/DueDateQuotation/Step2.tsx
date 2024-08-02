@@ -13,6 +13,7 @@ import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButt
 import { useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import _ from 'lodash';
+import { format, max } from 'date-fns';
 
 const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, masters, getMastersData, rowsSelectedForAssignment,setRowsSelectedForAssignment}: any) => {
     useEffect(()=>{
@@ -37,7 +38,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         Route:{
             pinned: "right",
             lockPosition: true,
-            // maxWidth:150,
+            minWidth:120,
             tooltipField: "rn",
             cellStyle:{
                 // background: "#BC3D814F",
@@ -48,7 +49,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         ProductionBuffer:{
             pinned: "right",
             lockPosition: true,
-            maxWidth:150,
+            minWidth:120,
             cellStyle:{
                 // background: "#BC3D814F",
                 color: "#BC3D81",
@@ -58,7 +59,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         ProcurementBuffer:{
             pinned:"right",
             lockPosition: true,
-            maxWidth:150,
+            minWidth:120,
             cellStyle:{
                 // background: "#BC3D814F",
                 color: "#BC3D81",
@@ -68,7 +69,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         CRDD:{
             pinned:"right",
             lockPosition: true,
-            maxWidth:160,
+            minWidth:120,
             cellStyle:{
                 // background: "#BC3D814F",
                 color: "#BC3D81",
@@ -78,7 +79,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         EstimatedDD:{
             pinned: "right",
             lockPosition: true,
-            maxWidth:150,
+            minWidth:120,
             cellStyle:{
                 // background: "#BC3D814F",
                 color: "#BC3D81",
@@ -108,7 +109,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
             ...gridOptions,
             columnDefs: columnDefs,
             // tooltipTrigger:"focus",
-            getRowStyle:(params: any) => null
+            // getRowStyle:(params: any) => null
         }
 
     // const rows = useMemo(()=> selectedRows.values().map((node: any) => node.data), [])   
@@ -168,35 +169,144 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
             const selectedOrders = new Set(gridRef.current.api.getSelectedRows().map((row:any) => row.ok));
             const ccrIds:any = [];
             const formattedRoute = formatRoute(selectedRoute);
+            selectedRoute.forEach((route: any)=>{
+                if(route[1]?.value){
+                    ccrIds.push(route[1].value)
+                }
+            })
 
             const prodBuffer = selectedBuffers[0];
             const procBuffer = selectedBuffers[1];
             
             // const newRows = _.cloneDeep(rows)
-            const orderLoad = new Array(ccrIds.length).fill(0);
+            // const orderLoad = new Array(ccrIds.length).fill(0);
+            const ccr_prev_pending:any = {};
+            
+            ccrIds.forEach((ccrId:any, index: number)=>{
+                const ccr = masters.CCRMaster.find((ccr:any)=>{
+                    return ccr.ccr_id === ccrId
+                })
+                const ccr_fol_data = masters.FOL[ccrId];
+                let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
+                const folInDays =  ccr_fol_data.fol;
+                ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay); 
+
+                ccr_prev_pending[ccrId] = {
+                    ccr_id: ccrId,
+                    prevPend: Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm)
+                }
+            });
+
+            console.log(masters);
+            console.log(ccrIds)
+            console.log(ccr_prev_pending)
+
             const newRows = rows.map((row:any) => {
                 if(selectedOrders.has(row.ok)){
                     //update the routes in all the orders
                     row.rn = formattedRoute;
                     row.newRoute = selectedRoute;
-                    ccrIds.forEach((ccrId:any, index: number)=>{
-                        let ccrWorkingDays = masters.CCRMaster.find((ccr:any)=>{
-                            return ccr.ccr_id === ccrId
-                        })?.working_hours_per_day || "0";
-                        ccrWorkingDays = parseInt(ccrWorkingDays); 
-                        orderLoad[index] +=  Math.ceil((masters?.CCRItemTypeMappingMaster.find((ccr:any)=> ccr.ccrId === ccrId && ccr.it == row.itid).tt / (60 * ccrWorkingDays))  * row.pcqty)
-                    })
                     //update the buffers in all the orders
                     row.nprid = prodBuffer?.value
                     row.npcid =  procBuffer?.value
+
                     row.prodc = prodBuffer?.label
                     row.procc = procBuffer?.label
+
+                    row.prSz = prodBuffer?.size;
+                    row.pcSz = procBuffer?.size;
+
+                    const order_ccr_data:any = {};
+
+                    //calculating order load
+                    ccrIds.forEach((ccrId:any, index: number)=>{
+                        const ccr = masters.CCRMaster.find((ccr:any)=>{
+                            return ccr.ccr_id === ccrId
+                        })
+                        const fol = masters.FOL[ccrId];
+                        const ccrItem = masters?.CCRItemTypeMappingMaster.find((ccr:any)=> ccr.ccrId === ccrId && ccr.it == row.itid)
+
+                        let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
+                        const folInDays = fol.fol;
+                        ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay); 
+
+                        const orderLoad = Math.ceil((ccrItem.tt * row.pcqty)) // (60 * ccrWorkingHoursPerDay))
+
+                        order_ccr_data[ccrId] = {
+                            ccr_id: ccrId,
+                            orderLoad: orderLoad,
+                            folSpan: ((ccr_prev_pending[ccrId].prevPend) + orderLoad)/ (ccrWorkingHoursPerDay * 60),
+                        }
+                        // console.log(ccrId, "orderLoad", order_ccr_data[ccrId].orderLoad, "folSpan" ,order_ccr_data[ccrId].folSpan, "order pending qty",row.pcqty, "ccr tt", ccrItem.tt, "ccrWorkingHoursPerDay" ,ccrWorkingHoursPerDay)
+                        ccr_prev_pending[ccrId].prevPend = (ccr_prev_pending[ccrId].prevPend) + orderLoad
+                    });
+
+                    console.log("order_ccr_data", order_ccr_data)
+                    console.log("ccr_prev_pending", ccr_prev_pending)
+
+                    //DDIndex
+                    const maxFol: any = Object.values(order_ccr_data).reduce((prev: any, current: any) => (current.folSpan > prev.folSpan) ? current : prev);
+
+                    console.log(maxFol);
+                    console.log(row.plid);
                     
+                    // const formattedDate = format(new Date(), 'yyyy-MM-dd');
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    // console.log()
+
+                    const latestWorkingDayLno = masters.WorkingCalender.find((data: any)=>{
+                        return new Date(data.wd) >= today && data.ccrId == maxFol.ccr_id && data.PlId == row.plid
+                    })?.lno;
+
+                    console.log("latestWorkingDayLno", latestWorkingDayLno)
+
+
+                    const residualBuffer = parseFloat(masters?.CCRMaster.find((ccr:any)=>ccr.ccr_id == maxFol.ccr_id)?.residual_buffer); 
+
+                    const prodBufferSize = row.prSz || 0;
+                    const procBufferSize = row.pcSz || 0;
+                    
+                    //optimise the logic
+                    const folDDIndex = Math.ceil(latestWorkingDayLno + maxFol.folSpan + (residualBuffer * prodBufferSize));
+                    const folDD =  masters.WorkingCalender.find((data: any)=>{
+                        return data.lno == folDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == row.plid
+                    })?.wd;
+
+                    const bufferDDIndex = latestWorkingDayLno + procBufferSize + prodBufferSize;
+                    const bufferDD = masters.WorkingCalender.find((data: any)=>{
+                        return data.lno == bufferDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == row.plid
+                    })?.wd;
+
+                    console.log("prodBufferSize",  prodBufferSize)
+                    console.log("procBufferSize",  procBufferSize)
+                    console.log("residualBuffer",  residualBuffer)
+                    console.log("max fol span",  maxFol.folSpan)
+                    // console.log(folDDIndex, bufferDDIndex)
+
+                    console.log(folDDIndex)
+                    console.log(bufferDDIndex)
+
+                    const crDD = row.crdd;
+
+                    const crddFlag = 0
+                    let maxDate;
+
+                    if(crddFlag){
+                        maxDate = max([folDD, bufferDD, row.crdd]);
+                    }else{
+                        maxDate = max([folDD, bufferDD]);
+                    }
+
+                    // console.log(maxDate);
+
+                    row.cdd = format(maxDate, 'yyyy-MM-dd');
+
+                    // console.log("maxDate", format(maxDate, 'yyyy-MM-dd'));
                 }
                 return row
             });
-
-            console.log(selectedRoute)
 
             setRows(newRows);
             setSelectedBuffers([])
@@ -243,6 +353,8 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                     const buffer:any = await getBuffer([row.prid], [row.pcid]);
                     row.prodc = buffer[0]?.label || "";
                     row.procc = buffer[1]?.label || "";
+                    row.prSz = buffer[0]?.size;
+                    row.pcSz = buffer[1]?.size;
                 } catch (error) {
                     console.error(`Error fetching data for row ${row}:`, error);
                 }
@@ -268,14 +380,6 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         formattedRoute = formattedRoute.join("/"); 
         return formattedRoute
     }
-
-    // console.log(routeCache);
-
-    // useEffect(()=>{
-    //     console.log("changed");
-    //     console.log(selectedRoute);
-    //     console.log(selectedBuffers);
-    // }, [selectedBuffers, selectedRoute])
    
     return (
         <>
@@ -292,7 +396,6 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                             onSelectionChanged={async (params: GridReadyEvent)=>{
                                 setIsEditable(false);
                                 setNo(false)
-                                console.log(selectedRoute);
                                 const selected = params.api.getSelectedRows();
                                 if(selected.length){
                                     setRowsSelectedForAssignment(true);
@@ -331,7 +434,6 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                                         selectedProcBuffer.add(row.pcid);
                                     }
                                 }) 
-                                console.log("selectedRoutes from selection change fn", selectedRoutes)
                                 const isAssignmentPossible = ([1].includes(selectedRoutes.size))&&([0,1].includes(selectedProdBuffer.size))&&([0,1].includes(selectedProcBuffer.size))
                                 // const isAssignmentPossible = (selectedRoutes.size == 1 )&&(selectedProdBuffer.size == 1 )&&(selectedProcBuffer.size == 1)
                                 if(!isAssignmentPossible){
