@@ -1,6 +1,4 @@
-
 {
-
   "loginPage": {
     "welcome": "Welcome to a seamless, end to end supply chain management system",
     "title": "Login",
@@ -77,11 +75,11 @@
         "forceNormChange": "Force Norm Change",
         "PhaseIn_PhaseOut": "Phase-In & Phase Out",
         "Seasonality": "Seasonality",
-        "controlPanel":"Control Panel",
-        "savedDrafts":"Saved Drafts",
-        "taskPendingForReview":"Task Pending for Review",
-        "taskStatus":"Task Status",
-        "modificationHistory":"Data Modification History"
+        "controlPanel": "Control Panel",
+        "savedDrafts": "Saved Drafts",
+        "taskPendingForReview": "Task Pending for Review",
+        "taskStatus": "Task Status",
+        "modificationHistory": "Data Modification History"
       },
       "dynamicGridControl_AssortmentPlanning": {
         "title": "Dynamic Grid Control & Assortment Planning",
@@ -100,7 +98,6 @@
         "buyerOrderReport": "Buyer Order Report",
         "vendorDispatchReport": "Vendor Dispatch Report",
         "availabilityComparison": "Availability Comparison"
-      
       },
       "groupLifeCycleManagement": {
         "title": "Group Life Cycle Management",
@@ -139,13 +136,18 @@
       },
       "prodAndPlanningScheduling": {
         "title": "Production Planning & Scheduling",
-        "enquiryResponse":"Enquiry Response",
-        "dueDateQuotation":"Due Date Quotation",
-        "orderRescheduling":"Order Rescheduling",
-        "fullKitAssignment":"Full Kit Assignment",
-        "dynamicReleaseManagement":"Dynamic Release Management",
+        "enquiryResponse": "Enquiry Response",
+        "dueDateQuotation": "Due Date Quotation",
+        "orderRescheduling": "Order Rescheduling",
+        "fullKitAssignment": "Full Kit Assignment",
+        "dynamicReleaseManagement": "Dynamic Release Management",
         "deptWiseBMReport": "Dept-Wise BM Report",
         "overallBMReport": "Overall BM Report",
+        "insightAndTrends": "Insight and Trends"
+      },
+      "poogi": {
+        "title": "POOGI",
+        "reasonForDelayedOrders": "Reason For Delayed Orders",
         "insightAndTrends": "Insight and Trends"
       }
     },

@@ -1,13 +1,18 @@
 //import { CustomCellRendererProps } from "@ag-grid-community/react";
-import { FlatIcon } from "./styles";
+import { FlatIcon1 } from "./styles";
+
 
 const ActionCellRenderer = (/*props: CustomCellRendererProps*/) => {
 
     return (
-        <div className="action-cell">
-            <FlatIcon src={"/assets/img/mto/DeptWiseBmReport/exclamatory.svg"} />
-            {/* You can add additional content here */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+            <FlatIcon1
+                title="High Ageing"
+            //src={"/assets/img/mto/DeptWiseBmReport/exclamatory.svg"}
+            />
         </div>
+
+
     );
 }
 

@@ -316,7 +316,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
             <MainContainer>
                 <Box
                     data-testid="btn_navigate"
-                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "NK", "0", "2")}>
+                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "NK", BRYSrtDt, BRYEndDt)}>
                     <MTOMaterialSO
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
@@ -331,7 +331,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
                 </Box>
                 <Box
                     data-testid="handleNavigation"
-                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "PK", "0", "2")}>
+                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "PK", secSrtDt, secEndDt)}>
                     <MTOMaterialSO
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
@@ -346,7 +346,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
                 </Box>
                 <Box
                     data-testid="handleNavigation"
-                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "FK", "0", "2")}>
+                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "FK", thrdSrtDt, thrdEndDt)}>
                     <MTOMaterialSO
                         kit={"Full Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
@@ -366,7 +366,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
             <MainContainer>
                 <Box
                     data-testid="handleNavigation"
-                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "NK", "0", "3")}>
+                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "NK", frthSrtDt, frthEndDt)}>
                     <MTOMaterialSO
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
@@ -383,7 +383,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
 
                 <Box
                     data-testid="handleNavigation"
-                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "PK", "0", "3")}>
+                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "PK", fifthSrtDt, fifthEndDt)}>
                     <MTOMaterialSO
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
@@ -400,7 +400,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
 
                 <Box
                     data-testid="handleNavigation"
-                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "FK", "0", "3")}>
+                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "FK", sxthSrtDt, sxthEndDt)}>
                     <MTOMaterialSO
                         kit={"Full Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
@@ -419,7 +419,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
             <MainContainer>
                 <Box
                     data-testid="handleNavigation"
-                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "NK", "0", "4")}>
+                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "NK", svthSrtDt, svthEndDt)}>
                     <MTOMaterialSO
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
@@ -435,7 +435,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
                 </Box>
                 <Box
                     data-testid="handleNavigation"
-                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "PK", "0", "4")}>
+                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "PK", egthSrtDt, egthEndDt)}>
                     <MTOMaterialSO
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
@@ -451,7 +451,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
                 </Box>
                 <Box
                     data-testid="handleNavigation"
-                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "FK", "0", "4")}>
+                    onClick={() => handleToggle(ColorsMTO.Blue.label, "", "", "FK", nthSrtDt, nthEndDt)}>
                     <MTOMaterialSO
                         kit={"Full Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}

@@ -6,7 +6,6 @@ import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import { VFTableWrapper } from '../../../../../components/VectorFLOW/commons/VFTable/styles';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import ReasonCellRenderer from './ReasonCellRenderer';
-import columnData from './ColumnData';
 import DueDateCellRenderer from './DueDateCellRenderer';
 import { usePutUpdateOrderDueDate, useGetOrderSchedulingData, useGetOrderSchedulingPageData } from '../../../../Services/MTO/Production/OrderRescheduling';
 import { AgGridReactProps } from 'ag-grid-react';
@@ -17,6 +16,8 @@ import VFPagination from '../../../../../components/VectorFLOW/commons/VFPaginat
 import { IRowNode } from 'ag-grid-enterprise';
 import { FirstDataRenderedEvent } from 'ag-grid-community';
 import OverlayLoader from '../../Common/Loader';
+import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
+import { getColumnDefinations } from '../../../../../helpers/utils';
 
 const user = { user: { them_ui: 'pure' } };
 
@@ -88,9 +89,38 @@ const OrderRescheduling = () => {
         { label: 'Overwrite Due Date', value: 'Overwrite Due Date', id: 'Overwrite Due Date' }
     ];
 
-    let colDef = columnData;
-    const [rowData, setRowData] = useState<RowDataType[]>([]);
+    const [colDef, setColDef] = useState([{}]);
 
+    const [HeaderData, setHeaderData] = useState([{}]);
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+    const reportName = "OrderRescheduling";
+
+    const setColumnDef = async () => {
+        try {
+            const response = await getUIConfigData(reportName);
+            setHeaderData(response.data.data);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    useEffect(() => {
+        setColumnDef();
+    }, [])
+
+
+    const extras = [
+        {
+            field: "",
+            position: 0,
+            headerCheckboxSelection: false,
+            checkboxSelection: true,
+            maxWidth: 50,
+            floatingFilter: false,
+        }
+    ];
     const addChangeDate = (date: string, key: string) => {
         const newData = rowData;
         newData.forEach(item => {
@@ -101,20 +131,8 @@ const OrderRescheduling = () => {
         setRowData(newData);
     };
 
-    colDef = [
-        {
-            field: "",
-            headerCheckboxSelection: false,
-            checkboxSelection: true,
-            maxWidth: 50,
-            floatingFilter: false,
-        },
-        ...colDef,
-        {
-            colId: "dd",
-            field: "dd",
-            headerName: "Due Date",
-            hide: false,
+    const customHeader = {
+        DueDate: {
             autoHeaderHeight: true,
             wrapHeaderText: true,
             cellRenderer: currTab === 'Unschedule' ? "" : DueDateCellRenderer,
@@ -128,10 +146,11 @@ const OrderRescheduling = () => {
             width: 200,
             filter: "agMultiColumnFilter",
             floatingFilter: true
+
         },
-        {
-            colId: "rs",
-            field: "rs",
+        Reason: {
+            colId: 'rs',
+            field: 'rs',
             headerName: "Reason",
             hide: false,
             autoHeaderHeight: true,
@@ -142,7 +161,60 @@ const OrderRescheduling = () => {
             cellRenderer: ReasonCellRenderer,
             floatingFilter: true
         }
-    ];
+    }
+
+    useEffect(() => {
+        setColDef(getColumnDefinations(HeaderData, customHeader, extras))
+    }, [HeaderData])
+
+
+
+    const [rowData, setRowData] = useState<RowDataType[]>([]);
+
+
+
+    // colDef = [
+    //     {
+    //         field: "",
+    //         headerCheckboxSelection: false,
+    //         checkboxSelection: true,
+    //         maxWidth: 50,
+    //         floatingFilter: false,
+    //     },
+    //     ...colDef,
+    //     {
+    //         colId: "dd",
+    //         field: "dd",
+    //         headerName: "Due Date",
+    //         hide: false,
+    //         autoHeaderHeight: true,
+    //         wrapHeaderText: true,
+    //         cellRenderer: currTab === 'Unschedule' ? "" : DueDateCellRenderer,
+    //         cellRendererParams: {
+    //             data: {
+    //                 addChangeDate: addChangeDate,
+
+    //             }
+    //         },
+    //         initialWidth: 200,
+    //         width: 200,
+    //         filter: "agMultiColumnFilter",
+    //         floatingFilter: true
+    //     },
+    //     {
+    //         colId: "rs",
+    //         field: "rs",
+    //         headerName: "Reason",
+    //         hide: false,
+    //         autoHeaderHeight: true,
+    //         wrapHeaderText: true,
+    //         initialWidth: 210,
+    //         width: 210,
+    //         filter: "agMultiColumnFilter",
+    //         cellRenderer: ReasonCellRenderer,
+    //         floatingFilter: true
+    //     }
+    // ];
 
     const [currData, setCurrData] = useState<any>(null);
 
