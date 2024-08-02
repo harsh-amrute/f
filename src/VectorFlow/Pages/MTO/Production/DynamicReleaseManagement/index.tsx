@@ -123,6 +123,30 @@ const DynamicReleaseManagement = () => {
       };
     },
     rowHeight: 40,
+    sideBar: {
+      toolPanels: [
+        {
+          id: 'columns',
+          labelDefault: 'Columns',
+          labelKey: 'columns',
+          iconKey: 'columns',
+          toolPanel: 'agColumnsToolPanel',
+          minWidth: 225,
+          maxWidth: 225,
+          width: 225
+        },
+        {
+          id: 'filters',
+          labelDefault: 'Filters',
+          labelKey: 'filters',
+          iconKey: 'filter',
+          toolPanel: 'agFiltersToolPanel',
+          minWidth: 180,
+          maxWidth: 400,
+          width: 250
+        }
+      ],
+    },
     columnDefs: colDefs,
     defaultColDef: {
       // resizable: true,
@@ -130,6 +154,7 @@ const DynamicReleaseManagement = () => {
       initialFlex: 1,
       // wrapHeaderText: true,
       filter: "agMultiColumnFilter",
+
       autoHeaderHeight: true,
       floatingFilter: true,
       enableRowGroup: true,
@@ -138,9 +163,6 @@ const DynamicReleaseManagement = () => {
       cellStyle: {
         "font-size": "16px",
       },
-    },
-    sideBar: {
-      toolPanels: ["agColumnsToolPanel"],
     },
   };
   const [value3, setValue3] = useState(20);
