@@ -133,6 +133,7 @@ const DynamicReleaseManagement = () => {
       autoHeaderHeight: true,
       floatingFilter: true,
       enableRowGroup: true,
+
       floatingFilterComponentParams: { suppressFilterButton: true },
       cellStyle: {
         "font-size": "16px",
@@ -276,7 +277,7 @@ const DynamicReleaseManagement = () => {
       <Wrapper>
         <MTOActionToolBar comp="FullKitAssignment" isExcelExport isAddFilterButton isReleaseButton onOrderRelease={onOrderRelease} />
 
-        <SCTabHeader>
+        <SCTabHeader style={{ marginTop: '5px' }}>
 
           <BPRViewTableHeaderTab onClick={() => { setTable1(true) }} status={table1} marLeft={true} themeUi={themeUi} zIndex={2} style={{ width: '250px', fontSize: '12px' }} >
             Orders with simulated full kit
@@ -292,6 +293,11 @@ const DynamicReleaseManagement = () => {
           rowData={fullKitAssignmentData.data}
           gridOptions={options}
           columnDefs={options.columnDefs}
+          statusBar={{
+            statusPanels: [
+              { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+            ]
+          }}
           rowSelection="multiple"
           pagination={true}
         // onSelectionChanged={(params) => {
