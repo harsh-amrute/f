@@ -17,6 +17,7 @@ import { Rectangle } from './RectangleMarker';
 import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
 import { BPRViewTableHeaderTab, SCTabHeader } from './styles';
 import ReleaseModal from './ReleaseModal';
+import './styles.css'
 
 
 const DynamicReleaseManagement = () => {
@@ -144,25 +145,25 @@ const DynamicReleaseManagement = () => {
   const [value3, setValue3] = useState(20);
 
   const [data, setData] = useState([
-    { category: 'M5', value: 13, target: 43, value2: value3, groupName: "Underloaded\n", selected: true },
-    // { category: '    ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M6', value: 10, target: 35, value2: "", groupName: "Underloaded\n", selected: true },
-    // { category: '      ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M7', value: 12, target: 38, value2: "", groupName: "Underloaded\n", selected: true },
-    // { category: '        ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M8', value: 8, target: 12, value2: value3, groupName: "Underloaded\n", selected: true },
-    // { category: '          ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M1', value: 10, target: 35, value2: 20, groupName: "Overloaded\n", selected: true },
-    // { category: '', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M2', value: 12, target: 10, value2: 20, groupName: "Overloaded\n", selected: true },
-    // { category: ' ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M3', value: 8, target: 12, value2: 20, groupName: "Overloaded\n", selected: true },
-    // { category: '  ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M4', value: 15, target: 14, value2: 20, groupName: "Overloaded\n", selected: true },
-    // { category: '   ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M9', value: 15, target: 36, value2: 20, groupName: "Balanced\n", selected: true },
-    // { category: '            ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M10', value: 13, target: 35, value2: 20, groupName: "Balanced\n", selected: true },
+    { category: 'M5', "Released wip": 13, limit: 43, "incremental wip": value3, groupName: "Underloaded\n", selected: true },
+    { category: '    ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
+    { category: 'M6', "Released wip": 10, limit: 35, "incremental wip": "", groupName: "Underloaded\n", selected: true },
+    { category: '      ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
+    { category: 'M7', "Released wip": 12, limit: 38, "incremental wip": "", groupName: "Underloaded\n", selected: true },
+    { category: '        ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
+    { category: 'M8', "Released wip": 8, limit: 12, "incremental wip": value3, groupName: "Underloaded\n", selected: true },
+    { category: '          ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
+    { category: 'M1', "Released wip": 10, limit: 35, "incremental wip": 20, groupName: "Overloaded\n", selected: true },
+    { category: '', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
+    { category: 'M2', "Released wip": 12, limit: 10, "incremental wip": 20, groupName: "Overloaded\n", selected: true },
+    { category: ' ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
+    { category: 'M3', "Released wip": 8, limit: 12, "incremental wip": 20, groupName: "Overloaded\n", selected: true },
+    { category: '  ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
+    { category: 'M4', "Released wip": 15, limit: 14, "incremental wip": 20, groupName: "Overloaded\n", selected: true },
+    { category: '   ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
+    { category: 'M9', "Released wip": 15, limit: 36, "incremental wip": 20, groupName: "Balanced\n", selected: true },
+    { category: '            ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
+    { category: 'M10', "Released wip": 13, limit: 35, "incremental wip": 20, groupName: "Balanced\n", selected: true },
   ])
   const chartoptions: AgChartOptions = {
     data: data,
@@ -170,7 +171,7 @@ const DynamicReleaseManagement = () => {
       {
         type: 'bar',
         xKey: 'category',
-        yKey: "value",
+        yKey: "Released wip",
         stacked: true,
         strokeWidth: 0,
         fill: "#191919",
@@ -185,7 +186,7 @@ const DynamicReleaseManagement = () => {
       {
         type: 'bar',
         xKey: 'category',
-        yKey: "value2",
+        yKey: "incremental wip",
         stacked: true,
         strokeWidth: 0,
         fill: "#4BAAF7",
@@ -207,14 +208,13 @@ const DynamicReleaseManagement = () => {
       {
         type: 'scatter',
         xKey: 'category',
-        yKey: 'target',
+        yKey: 'limit',
         marker: {
           size: 10,
           fill: '#E53F3F',
           shape: Rectangle,
           strokeWidth: 0
-        },
-
+        }
       },
     ],
     axes: [
@@ -239,13 +239,16 @@ const DynamicReleaseManagement = () => {
     ],
     legend: {
       position: "top",
+
       item: {
+
         showSeriesStroke: true,
         marker: {
           size: 15,
           strokeWidth: 0,
-          shape: 'square', // 'circle', 'square', 'cross', 'plus', 'triangle'
-        },
+          shape: 'square'
+        }
+
       },
     },
 
@@ -258,6 +261,7 @@ const DynamicReleaseManagement = () => {
 
   const onOrderRelease = () => {
     console.log("order Release");
+    setShowReleaseModal(true);
     setValue3(value3 + 1);
   }
 
@@ -316,7 +320,7 @@ const DynamicReleaseManagement = () => {
         <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
           <AgChartsReact ref={graph} options={chartoptions} />
         </div>
-        <EditRouteModal graphData={data} showModal={showModal} setShowModal={setShowModal} />
+        <EditRouteModal graphData={data} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} />
         <ReleaseModal themeUi={themeUi} totalOrders={120} selectedOrders={4} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />
       </Wrapper >
     </>

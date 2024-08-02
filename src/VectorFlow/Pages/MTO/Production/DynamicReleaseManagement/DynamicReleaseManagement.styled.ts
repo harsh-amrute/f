@@ -135,7 +135,19 @@ export const StepLabel = styled.div`
 export const ContentWrapper = styled.div`
   margin: 2rem 0 0 0;
 `;
+export const RouteContentWrapper = styled.div`
+  margin: 2rem;
+`;
 export const Text = styled.div`
   font-size: 14px;
   font-weight: 300;
+`;
+
+export const SCButton = styled.button<{ themeUi: string }>`
+  font: normal normal 300 16px/24px Roboto;
+  padding: 10px 20px;
+  border-radius: 6px;
+  box-shadow: 0px 6px 25px #00000029;
+  color: ${globalStyles.white};
+  background: ${props => globalStyles?.chooseThemeColor[props.themeUi].colorButton};
 `;

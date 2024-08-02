@@ -14,7 +14,7 @@ export const fullKitAssignmentData = {
       bpp: 85,
     },
     {
-      cl: "Red",
+      cl: "Black",
       pdd: "02-Feb-2023",
       oid: "ORD124",
       batch_no: "BATCH002",
@@ -27,7 +27,7 @@ export const fullKitAssignmentData = {
       bpp: 90,
     },
     {
-      cl: "Yellow",
+      cl: "Red",
       pdd: "03-Mar-2023",
       oid: "ORD125",
       batch_no: "BATCH003",
@@ -40,7 +40,7 @@ export const fullKitAssignmentData = {
       bpp: 95,
     },
     {
-      cl: "Black",
+      cl: "Red",
       pdd: "04-Apr-2023",
       oid: "ORD126",
       batch_no: "BATCH004",
@@ -79,7 +79,7 @@ export const fullKitAssignmentData = {
       bpp: 93,
     },
     {
-      cl: "Black",
+      cl: "Green",
       pdd: "07-Jul-2023",
       oid: "ORD129",
       batch_no: "BATCH007",
@@ -92,7 +92,7 @@ export const fullKitAssignmentData = {
       bpp: 87,
     },
     {
-      cl: "Red",
+      cl: "Green",
       pdd: "08-Aug-2023",
       oid: "ORD130",
       batch_no: "BATCH008",
@@ -105,7 +105,7 @@ export const fullKitAssignmentData = {
       bpp: 92,
     },
     {
-      cl: "Yellow",
+      cl: "Green",
       pdd: "09-Sep-2023",
       oid: "ORD131",
       batch_no: "BATCH009",

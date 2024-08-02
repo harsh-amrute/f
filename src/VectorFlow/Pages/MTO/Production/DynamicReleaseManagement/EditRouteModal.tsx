@@ -1,12 +1,13 @@
 import { AgChartOptions } from 'ag-charts-community'
 import { AgChartsReact } from 'ag-charts-react'
 import React, { useEffect, } from 'react'
+import { SCButton } from './DynamicReleaseManagement.styled'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
-import { StepperWrapper, StepGroup, StepLabel, ContentWrapper, Text } from './DynamicReleaseManagement.styled'
+import { StepperWrapper, StepGroup, StepLabel, RouteContentWrapper, Text } from './DynamicReleaseManagement.styled'
 import { Rectangle } from './RectangleMarker'
 import CustomSelect from './Select'
 
-const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
+const EditRouteModal = ({ showModal, setShowModal, graphData, themeUi }: any) => {
 
     useEffect(() => {
         // let animationFrameId: any;
@@ -58,7 +59,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
             {
                 type: 'bar',
                 xKey: 'category',
-                yKey: "value",
+                yKey: "Released wip",
                 stacked: true,
                 strokeWidth: 0,
                 fill: "#191919",
@@ -72,7 +73,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
             {
                 type: 'bar',
                 xKey: 'category',
-                yKey: "value2",
+                yKey: "incremental wip",
                 stacked: true,
                 strokeWidth: 0,
                 fill: "#4BAAF7",
@@ -93,7 +94,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
             {
                 type: 'scatter',
                 xKey: 'category',
-                yKey: 'target',
+                yKey: 'limit',
                 marker: {
                     size: 10,
                     fill: '#E53F3F',
@@ -140,7 +141,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
 
     return (
         <VFModalCard openModal={showModal} closeModal={() => { setShowModal((false)) }} headerText={'Edit Route'} headerIcon={''} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
-            <ContentWrapper>
+            <RouteContentWrapper>
                 <Text>
                     You can change route by selecting CCR from drop-down
                 </Text>
@@ -171,7 +172,39 @@ const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
                 <div style={{ height: "300px" }}>
                     <AgChartsReact options={chartoptions} />
                 </div>
-            </ContentWrapper>
+                <div style={{ zoom: '0.7', marginTop: '10px' }}>
+                    <div key={'1'} style={{ display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 10px 0 0' }}>
+
+                        <div>
+                            <div onClick={() => { setShowModal(false) }} style={{
+                                background: 'white', color: 'grey', font: 'normal normal 300 16px/24px Roboto',
+                                padding: '10px 20px',
+                                fontWeight: '400',
+                                borderRadius: '6px',
+                                border: '1px solid grey',
+
+                                boxShadow: '0px 6px 25px #00000029'
+                            }} >
+                                Cancel
+                            </div>
+                        </div>
+                        <div>
+
+                            <div style={{
+                                font: 'normal normal 300 16px/24px Roboto',
+                                fontWeight: '400',
+                                padding: '10px 20px',
+                                color: 'white',
+                                borderRadius: '6px',
+                                background: '#820F4C',
+                                boxShadow: '0px 6px 25px #00000029'
+                            }}>
+                                Save Routes
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </RouteContentWrapper>
         </VFModalCard>
     )
 }
