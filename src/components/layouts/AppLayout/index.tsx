@@ -19,7 +19,7 @@ const isAnonymous = false;
 const AppLayout = () => {
   const { t } = useTranslation();
 
-  const mtoPageUrls: any = [];
+  const mtoPageUrls: any = ['/production-planning-scheduling/dynamic-release-mangement'];
 
   //URL arrays for excluding layout padding
   let urlDisableZoomScaling = ['/logistics/intransit-whereabouts', '/supply-chain-intelligence-hub/planning', '/insights-and-trends/research-insights', '/insights-and-trends/buffer-trends', '/insights-and-trends/buffer-trend-report', "/insights-and-trends/guided-insights", "/production-planning-scheduling/enquiry-response", "/production-planning-scheduling/insight-and-trends/bm-trends", "/production-planning-scheduling/insight-and-trends/stpl-full-kits", "/production-planning-and-scheduling/order-rescheduling", "/production-planning-scheduling/full-kit-assignment", '/production-planning-scheduling/insight-and-trends/order-at-risk', '/procurement/insights-and-trends/rmpm-orderwise-coverage', "/production-planning-scheduling/insight-and-trends/order-balance", "/poogi/insight-and-trends/resource-utilization-wip-profile", "/production-planning-scheduling/insights-and-trends/fol-summary"];
