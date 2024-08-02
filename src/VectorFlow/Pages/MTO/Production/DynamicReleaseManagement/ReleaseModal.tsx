@@ -1,7 +1,6 @@
-import { SCFilterBtn } from '../../../../../module-main/pages/home/styles'
 import { SCButton } from '../../../../../components/layouts/NavbarRight/styles'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
-import { StepperWrapper, StepGroup, StepLabel, ContentWrapper, Text } from './DynamicReleaseManagement.styled'
+import { ContentWrapper, Text } from './DynamicReleaseManagement.styled'
 
 
 const EditRouteModal = ({ themeUi, showModal, totalOrders, selectedOrders, setShowModal }: any) => {

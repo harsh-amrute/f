@@ -1,5 +1,5 @@
 import { AgChartsReact } from 'ag-charts-react';
-import { ColDef, GridOptions } from 'ag-grid-enterprise';
+import { GridOptions } from 'ag-grid-enterprise';
 import { useEffect, useMemo, useRef, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
@@ -14,7 +14,7 @@ import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/A
 import EditRouteModal from './EditRouteModal';
 import * as globalStyles from "../../../../../styles/global";
 import { Rectangle } from './RectangleMarker';
-import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
+// import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
 import { BPRViewTableHeaderTab, SCTabHeader } from './styles';
 import ReleaseModal from './ReleaseModal';
 import './styles.css'
@@ -34,7 +34,7 @@ const DynamicReleaseManagement = () => {
     Action: {
       floatingFilter: false,
       suppressMenu: true,
-      cellRenderer: (params: any) => {
+      cellRenderer: () => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#BC3D81', fontWeight: 'bold', fontFamily: 'roboto' }} onClick={() => { setShowReleaseModal(true) }}>
             <div>Release &nbsp; </div>
@@ -93,8 +93,8 @@ const DynamicReleaseManagement = () => {
     }
   ];
 
-  const [HeaderData, setHeaderData] = useState(fullKitAssignmentHeader);
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const [HeaderData] = useState(fullKitAssignmentHeader);
+  // const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
   // const reportName = "FullKitAssignment";
 
@@ -144,7 +144,7 @@ const DynamicReleaseManagement = () => {
   };
   const [value3, setValue3] = useState(20);
 
-  const [data, setData] = useState([
+  const [data] = useState([
     { category: 'M5', "Released wip": 13, limit: 43, "incremental wip": value3, groupName: "Underloaded\n", selected: true },
     { category: '    ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
     { category: 'M6', "Released wip": 10, limit: 35, "incremental wip": "", groupName: "Underloaded\n", selected: true },

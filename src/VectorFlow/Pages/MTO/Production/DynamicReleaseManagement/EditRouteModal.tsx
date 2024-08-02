@@ -1,7 +1,6 @@
 import { AgChartOptions } from 'ag-charts-community'
 import { AgChartsReact } from 'ag-charts-react'
-import React, { useEffect, } from 'react'
-import { SCButton } from './DynamicReleaseManagement.styled'
+import { useEffect, } from 'react'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import { StepperWrapper, StepGroup, StepLabel, RouteContentWrapper, Text } from './DynamicReleaseManagement.styled'
 import { Rectangle } from './RectangleMarker'
@@ -196,7 +195,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, themeUi }: any) =>
                                 padding: '10px 20px',
                                 color: 'white',
                                 borderRadius: '6px',
-                                background: '#820F4C',
+                                background: `${themeUi ? '#820F4C' : 'purple'}`,
                                 boxShadow: '0px 6px 25px #00000029'
                             }}>
                                 Save Routes
