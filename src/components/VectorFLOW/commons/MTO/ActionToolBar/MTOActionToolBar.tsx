@@ -113,10 +113,6 @@ const MTOActionToolBar = ({
         }
     }
 
-    console.log("SelectedFilters=>>>", selectedFilters)
-
-
-
     const format2 = "YYYY-MM-DD"
     const d = new Date();
     const datetime = moment(d).format(format2);

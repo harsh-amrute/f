@@ -260,7 +260,6 @@ const DynamicReleaseManagement = () => {
   const grid = useRef<any>();
 
   const onOrderRelease = () => {
-    console.log("order Release");
     setShowReleaseModal(true);
     setValue3(value3 + 1);
   }
@@ -268,7 +267,6 @@ const DynamicReleaseManagement = () => {
 
   useEffect(() => {
     chartoptions.data = data;
-    console.log("sdfds==>", chartoptions.data, "value3", value3)
 
   }, [data, value3])
 
