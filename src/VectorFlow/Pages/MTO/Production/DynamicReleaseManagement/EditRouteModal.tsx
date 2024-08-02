@@ -195,7 +195,8 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, themeUi }: any) =>
                                 padding: '10px 20px',
                                 color: 'white',
                                 borderRadius: '6px',
-                                background: `${themeUi ? '#820F4C' : 'purple'}`,
+                                background: `${themeUi ? '#820F4C' : '#820F4C'}`,
+
                                 boxShadow: '0px 6px 25px #00000029'
                             }}>
                                 Save Routes
