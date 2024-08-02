@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useUserData } from '../../../../../context';
 import {
     NoDataAvailableContainer,
@@ -16,9 +16,10 @@ import {
     ExpansionHeaderColoredText,
     ExpansionHeaderGroup,
     IconWrapper,
-    HigHAgeingIconWrapper
+    HigHAgeingIconWrapper,
+    VFWrapper
 } from './styles'
-
+import { AgGridReactProps } from 'ag-grid-react';
 import { BPRViewTableGrid } from '../../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/styles';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import { orderStatus, orderStatusData, ElapsedTime, ElapsedTimeData, AgieingTime, ageingData } from './DeptWiseBMReportData'
@@ -38,12 +39,97 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
 
     const [leftPanelActiveTab, SetLeftPanelActiveTab] = useState<string>('Order_Status')
 
+    const sideBar = useMemo(() => {
+        return {
+            toolPanels: ['columns'],
+        };
+    }, []);
 
-    const dropDownButton = () => {
+    const agGridProps: AgGridReactProps = {
+        tooltipShowDelay: 0,
+        tooltipTrigger: "focus",
+        gridOptions: {
+            rowHeight: 50,
+            getRowStyle: (params: any) => {
+                return {
+                    background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
+                };
+            },
+            pagination: true,
+            defaultColDef: {
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+                cellStyle: {
+                    'text-align': 'center',
+                    "font-style": "normal",
+                    "font-variant": "normal",
+                    //"font-weight": "300",
+                    "font-size": "18px",
+                    "font-family": "Roboto",
+                    'text-overflow': 'ellipsis',
+                    'white-space': 'nowrap',
+                    'resizable': 'true',
+                },
+
+            },
+
+        },
+        sideBar: sideBar,
+        pivotMode: false
+    };
+
+    const agGridPropsElapsedTime: AgGridReactProps = {
+        tooltipShowDelay: 0,
+        tooltipTrigger: "focus",
+        gridOptions: {
+            rowHeight: 50,
+            getRowStyle: (params: any) => {
+                return {
+                    background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
+                };
+            },
+            pagination: true,
+            defaultColDef: {
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+                cellStyle: {
+                    'text-align': 'center',
+                    "font-style": "normal",
+                    "font-variant": "normal",
+                    //"font-weight": "300",
+                    "font-size": "18px",
+                    "font-family": "Roboto",
+                    'text-overflow': 'ellipsis',
+                    'white-space': 'nowrap',
+                    'resizable': 'true',
+                },
+                floatingFilterComponentParams: {
+                    suppressFilterButton: true
+                },
+                initialFlex: 1
+            },
+
+        },
+        sideBar: sideBar,
+        pivotMode: false
+    };
+
+    const dropDownButton = (val: number) => {
         return (
-            themeUi !== 'REGALBLAZE' ?
-                isLeftPanelOrderStatusOpen ? <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowup.svg' /> : <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowdown.svg' /> :
-                isLeftPanelOrderStatusOpen ? <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowup-regal.svg' /> : <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowdown-regal.svg' />
+            val == 1 ?
+                themeUi !== 'REGALBLAZE' ?
+                    isLeftPanelOrderStatusOpen ? <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowup.svg' /> : <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowdown.svg' /> :
+                    isLeftPanelOrderStatusOpen ? <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowup-regal.svg' /> : <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowdown-regal.svg' />
+                :
+                val == 2 ?
+                    themeUi !== 'REGALBLAZE' ?
+                        isleftPanelElapsedTimeOpen ? <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowup.svg' /> : <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowdown.svg' /> :
+                        isleftPanelElapsedTimeOpen ? <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowup-regal.svg' /> : <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowdown-regal.svg' /> :
+
+                    themeUi !== 'REGALBLAZE' ?
+                        isRightPanel ? <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowup.svg' /> : <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowdown.svg' /> :
+                        isRightPanel ? <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowup-regal.svg' /> : <IconWrapper src='/assets/img/mto/DeptWiseBmReport/arrowdown-regal.svg' />
+
         )
     }
 
@@ -94,17 +180,20 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                     </ExpansionHeaderGroup>
                                     <ExpansionHeaderGroup onClick={() => toggleLeftPanelOrderStatus(!isLeftPanelOrderStatusOpen)} style={{ marginLeft: 'auto' }}>
                                         {
-                                            dropDownButton()
+                                            dropDownButton(1)
                                         }
                                     </ExpansionHeaderGroup>
                                 </ExpansionHeader>
                                 {(isLeftPanelOrderStatusOpen) && (
                                     <ExpansionContent>
-                                        <VFTable
-                                            columnDefs={orderStatus}
-                                            rowData={orderStatusData}
-                                            height='400px'
-                                        />
+                                        <VFWrapper>
+                                            <VFTable
+                                                {...agGridProps}
+                                                columnDefs={orderStatus}
+                                                rowData={orderStatusData}
+                                                height='400px'
+                                            />
+                                        </VFWrapper>
                                     </ExpansionContent>
                                 )}
                             </ExpansionWrapper>
@@ -129,13 +218,14 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                     </ExpansionHeaderGroup>
                                     <ExpansionHeaderGroup onClick={() => toggleLeftPanelElapsedTime(!isleftPanelElapsedTimeOpen)} style={{ marginLeft: 'auto' }}>
                                         {
-                                            dropDownButton()
+                                            dropDownButton(2)
                                         }
                                     </ExpansionHeaderGroup>
                                 </ExpansionHeader>
                                 {(isleftPanelElapsedTimeOpen) && (
                                     <ExpansionContent>
                                         <VFTable
+                                            {...agGridPropsElapsedTime}
                                             height='400px'
                                             rowData={ElapsedTimeData}
                                             columnDefs={ElapsedTime}
@@ -165,7 +255,7 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
 
                     <BPRViewTableGrid style={{ padding: '10px', borderRadius: 0 }}>
                         <ExpansionWrapper>
-                            <ExpansionHeader style={{ borderBottom: isleftPanelElapsedTimeOpen ? 'solid 1px #E3ACC9' : 'none' }}>
+                            <ExpansionHeader style={{ borderBottom: isRightPanel ? 'solid 1px #E3ACC9' : 'none' }}>
                                 <ExpansionHeaderGroup>
                                     <ExpansionHeaderNormalText>
                                         No. Of batches  :
@@ -179,7 +269,7 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                         Min Ageing  :
                                     </ExpansionHeaderNormalText>
                                     <ExpansionHeaderColoredText>
-                                        10 days
+                                        10 days, 2hrs
                                     </ExpansionHeaderColoredText>
                                 </ExpansionHeaderGroup>
                                 <ExpansionHeaderGroup style={{ marginLeft: 'auto' }}>
@@ -187,18 +277,19 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                         Max Ageing  :
                                     </ExpansionHeaderNormalText>
                                     <ExpansionHeaderColoredText>
-                                        10 days
+                                        10 days, 2hrs
                                     </ExpansionHeaderColoredText>
                                 </ExpansionHeaderGroup>
                                 <ExpansionHeaderGroup onClick={() => toggleRightPanel(!isRightPanel)} style={{ marginLeft: '100px' }}>
                                     {
-                                        dropDownButton()
+                                        dropDownButton(3)
                                     }
                                 </ExpansionHeaderGroup>
                             </ExpansionHeader>
                             {(isRightPanel) && (
                                 <ExpansionContent>
                                     <VFTable
+                                        {...agGridProps}
                                         height='400px'
                                         columnDefs={AgieingTime}
                                         rowData={ageingData}

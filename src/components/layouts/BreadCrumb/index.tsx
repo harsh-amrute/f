@@ -50,6 +50,7 @@ const BreadCrumb = () => {
 
   if (location.pathname === '/production-planning-scheduling/dynamic-release-mangement') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Dynamic Release Management </span>
 
+  if (location.pathname === '/production-planning-scheduling/deptwise-bm-report') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Dept-wise BM Report</span>
   if (location.pathname === '/production-planning-scheduling/full-kit-assignment') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Full Kit Assignement</span>
 
 

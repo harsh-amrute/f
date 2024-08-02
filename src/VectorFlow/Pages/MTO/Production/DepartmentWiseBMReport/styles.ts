@@ -2,16 +2,24 @@ import styled from "styled-components";
 import * as gridSystem from "../../../../../styles/gridSystem";
 import * as globalStyles from "../../../../../styles/global";
 
+//export const BMDepWrapper = styled.div`
+// @media only screen and (min-width: ${gridSystem.size.mobileS}) and (max-width: ${gridSystem.size.mobileL}) 
+//   {
+//     margin-left: -40px;
+//     margin-top: -40px;
+//     padding: 20px;
+//     background-color:red;
+//   }
 export const BMDepWrapper = styled.div`
-@media only screen and (min-width: ${gridSystem.size
-    .mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
-  margin-left: -40px;
-  margin-top: -40px;
-  padding: 20px;
-  background-color:red;
-}`
+@media only screen and (min-width: ${gridSystem.size.mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
+   margin-left: -40px;
+   margin-top: -40px;
+   padding: 20px;
+}
+`
 
 export const BMDepHeaderWraper = styled.div`
+  zoom:1.3;
  
 `
 export const BMDepSubHeaderWraper = styled.div`
@@ -21,7 +29,7 @@ export const BMDepSubHeaderWraper = styled.div`
 export const NoDataAvailableContainer = styled.div`
       border: 2px dashed #ccc;
       width: 100%;
-      height: 60%;
+      height: 90%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -54,6 +62,7 @@ export const BPRViewTableWrapper = styled.div`
     flex-direction:column;
     margin-top:10px;
     height:100%;
+    margin-top:20px
 `
 
 export const BPRViewTablePrefixWrapper = styled.div`
@@ -153,9 +162,27 @@ export const HigHAgeingIconWrapper = styled.img`
     height:20px;
     width:20px;
     margin-right:10px;
+    
   `
 
-export const FlatIcon=styled.img``
+export const FlatIcon1 = styled.div`
+    display:flex;
+    align-items:'center';
+    height:20px;
+    width:20px;
+    margin-right:10px;
+    background: url('/assets/img/mto/DeptWiseBmReport/exclamatory.svg');
+
+    &:hover{
+        background: url('/assets/img/mto/DeptWiseBmReport/exclamatoryWhite.svg');
+        transform:scale(1.2);
+    }
+`
+export const FlatIcon = styled.img`
+  height:20px;
+  width:20px;
+  margin-right:10px;
+`
 
 export const ETACellRendererWrapper = styled.div`
     display:flex;
@@ -163,4 +190,40 @@ export const ETACellRendererWrapper = styled.div`
     align-items:center;
     height:100%;
     width:100%;
+`
+
+export const VFWrapper = styled.div`
+  height: 100%;
+  display: flex;
+  & .ag-theme-alpine {
+    flex: 1;
+  }
+  & .ag-theme-alpine .ag-header-row:nth-child(2){
+    background-color: black;
+    color: white;
+  }
+  & .ag-theme-alpine .ag-header-row:nth-child(1):hover{
+    background-color: black;
+    color: white;
+  }
+  & .ag-theme-alpine .ag-header-row:nth-child(3){
+    background-color: rgb(255,255,255);
+    //color: white;
+  }
+
+`
+
+export const VFChilWrapper = styled.div`
+ width: 100%;
+ height: 100%;
+ & .ag-theme-alpine{
+ --ag-header-background-color: rgb(255, 255, 255) !important;
+ --ag-header-foreground-color:rgb(0,0,0) !important;
+ }
+ & .ag-theme-noir-fusion{
+  --ag-header-background-color: rgb(255, 255, 255) !important;
+  --ag-header-foreground-color:rgb(0,0,0) !important;
+ }
+
+}
 `
