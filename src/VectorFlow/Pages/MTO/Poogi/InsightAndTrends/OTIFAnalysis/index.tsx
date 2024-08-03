@@ -17,9 +17,11 @@ import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRen
 import CustomTagTooltip from "./CustomTagTooltip";
 import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import useFilter from "../../../../../../hooks/useFilter";
 
 const OTIFAnalysis = () => {
   const [isGridView, setIsGridView] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { screenHeight } = useViewPort();
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -27,6 +29,10 @@ const OTIFAnalysis = () => {
   const reportName = "OTIFAnalysis";
 
   const gridRef = useRef();
+
+  const toggleFilter = (state: boolean) => {
+    setIsFilterOpen(state);
+  }
 
   const defaultColDef = useMemo<ColDef>(() => {
     return {
@@ -82,6 +88,17 @@ const OTIFAnalysis = () => {
     setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
   }, [HeaderData])
 
+  const onApplyFilter = (filter:any)=>{
+    setCurrFilter(filter)
+    console.log(filter, 'API PAYLOAD');
+    setIsFilterOpen(false)
+  }
+  const onAddFilter = ()=>{
+    setIsFilterOpen(true)
+  }
+
+  const {state:currFilter,setState:setCurrFilter,onDelete} = useFilter()
+
   return (
     <div style={{}}>
       <MTOActionToolBar
@@ -90,6 +107,12 @@ const OTIFAnalysis = () => {
         setIsGridView={setIsGridView}
         isChartGridToggle
         isAddFilterButton
+        isFilterOpen={isFilterOpen}
+        onAddFilter={onAddFilter}
+        toggleFilter={toggleFilter}
+        onApplyFilter={onApplyFilter} 
+        multiFilter={currFilter}
+        setMultiFilter={setCurrFilter}
       />
       <HorizontalViewWrapper style={{ marginTop: "20px" }}>
         {isGridView ? (

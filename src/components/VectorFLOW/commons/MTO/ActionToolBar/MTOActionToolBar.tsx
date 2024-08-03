@@ -42,6 +42,8 @@ import moment from 'moment';
 import { format } from 'date-fns';
 import VFRangeSlider from '../../VFRangeSlider';
 import CustomSelect from '../../../../../VectorFlow/Pages/MTO/Production/FullKitAssignement/Select';
+import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
+import { FilterGroup, FilterState } from '../../../../../VectorFlow/types/MTO';
 
 type filterType = {
     label: string,
@@ -74,6 +76,11 @@ interface MTOActionToolBarProps {
     isExcelExport?: boolean
     isChartGridToggle?: boolean
     isWIPCheckBox?: boolean
+    isFilterOpen?: boolean
+    toggleFilter?: (state: boolean) => void  
+    multiFilter?: FilterState
+    setMultiFilter?: any
+    onApplyFilter?: (params: any) => void;
     //// new props
 }
 
@@ -100,7 +107,12 @@ const MTOActionToolBar = ({
     isAddFilterButton,
     isExcelExport,
     isChartGridToggle,
-    isWIPCheckBox
+    isWIPCheckBox,
+    isFilterOpen,
+    toggleFilter,
+    multiFilter,
+    setMultiFilter,
+    onApplyFilter
 }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
@@ -108,10 +120,6 @@ const MTOActionToolBar = ({
             removeFilters(category, name);
         }
     }
-
-    console.log("SelectedFilters=>>>", selectedFilters)
-
-
 
     const format2 = "YYYY-MM-DD"
     const d = new Date();
@@ -437,7 +445,15 @@ const MTOActionToolBar = ({
                     }
 
                 </>
-
+                    {isFilterOpen && toggleFilter && onApplyFilter && setMultiFilter && multiFilter && 
+                        <VFCommonFilter 
+                            onApplyFilter={onApplyFilter} 
+                            onGoBack={() => toggleFilter(false)}
+                            multiFilter={multiFilter}
+                            setMultiFilter={setMultiFilter}
+                            isFilterOpen={isFilterOpen}
+                        />
+                    }
 
             </SCCustomActionsContainer >
         </SCTaskBarContainer >

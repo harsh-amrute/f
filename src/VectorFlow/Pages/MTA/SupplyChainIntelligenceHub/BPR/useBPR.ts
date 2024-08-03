@@ -325,6 +325,7 @@ const useBPR =()=>{
 
     const onApplyFilter = (filter:any)=>{
         setCurrFilter(filter)
+        console.log(filter, 'APPLIED FILTERS');
         getBPRRecordCount(filter)
         setCurrGridPage(1)
         getBPRRowData(filter,1)
