@@ -5,6 +5,7 @@ import Select from "react-select";
 import { useState } from "react";
 import { DropdownGroupWrapper, SelectDropdownComponent } from "./styles";
 import { Filter } from "../../../../../VectorFlow/types/MTO";
+import './style.css'
 
 interface FilterMultiSelectCheckboxProps {
   filterOptions: Array<{ label: string; id: string }>;
@@ -263,11 +264,13 @@ const FilterTextInput = ({
   onChange,
   disabled = false,
   value,
+  type = "text"
 }: any) => {
   return (
     <input
-      type="text"
+      type={type}
       disabled={disabled}
+      className="no-arrows"
       style={{
         width: "100%",
         height: "38px",
@@ -290,120 +293,69 @@ const FilterTextInput = ({
 
 const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}:any)=>{
 
+  const comparatorConfig: any = {
+    equalto : {value:'equalto',label:'Equal to'},
+    notequalto : {value:'notequalto',label:'Not Equal to'},
+    doesnotcontain : {value:'doesnotcontain',label:'Does not contain'},
+    startswith: {value:'startswith',label:'Starts with'},
+    doesnotstartwith: {value:'doesnotstartwith',label:'Does not start with'},
+    endswith: {value:'endswith',label:'Ends with'},
+    doesnotendwith: {value:'doesnotendwith',label:'Does not end with'},
+    hasvalue: {value:'hasvalue',label:'Has value'},
+    greaterthan: {value:'greaterthan',label:'>'},
+    greaterthanequalto: {value:'greaterthanequalto',label:'>='},
+    smallerthan: {value:'smallerthan',label:'<'},
+    smallerthanequalto: {value:'smallerthanequalto',label:'<='},
+  }
 
-  const filterLocationOptions = [
-      {value:'l1',label:'L1'},
-      {value:'l2',label:'L2'},
-      {value:'l3',label:'L3'},
-      {value:'l4',label:'L4'},
-      {value:'l5',label:'L5'}, 
+  const textComparators = [
+    {value:'equalto',label:'Equal to'},
+    {value:'notequalto',label:'Not Equal to'},
+    {value:'doesnotcontain',label:'Does not contain'},
+    {value:'startswith',label:'Starts with'},
+    {value:'doesnotstartwith',label:'Does not start with'},
+    {value:'endswith',label:'Ends with'},
+    {value:'doesnotendwith',label:'Does not end with'},
+    {value:'hasvalue',label:'Has value'},
   ]
 
-  const filterProductOptions = [
-      {value:'p1',label:'P1'},
-      {value:'p2',label:'P2'},
-      {value:'p3',label:'P3'},
-      {value:'p4',label:'P4'},
-      {value:'p5',label:'P5'},  
-  ]
-
-  const colorFilterOptions = [
-      {value:'black',label:'Black'},
-      {value:'black/red',label:'Black/Red'},
-      {value:'red',label:'Red'},
-      {value:'yellow',label:'Yellow'},
-      {value:'green',label:'Green'},
-      {value:'white',label:'White'},
-  ]
-
-  const colorTypeFilterOptions =[
-      {value:'colorcount', label:'Color Count'},
-      {value:'colorage', label:'Color Age'},
-  ]
-
-  const comparisionOptions = [
-      {value:'equalto',label:'Equal to'},
-      {value:'notequalto',label:'Not Equal to'},
-      {value:'greaterthan',label:'>'},
-      {value:'greaterthanequalto',label:'>='},
-      {value:'smallerthan',label:'<'},
-      {value:'smallerthanequalto',label:'<='},
-      {value:'doesnotcontain',label:'Does not contain'},
-      {value:'startswith',label:'Starts with'},
-      {value:'doesnotstartwith',label:'Does not start with'},
-      {value:'endswith',label:'Ends with'},
-      {value:'doesnotendwith',label:'Does not end with'},
-      {value:'hasvalue',label:'Has value'},
-      // {value:'hasnovalue',label:'Has no value'},
+  const numberComparators = [
+    {value:'greaterthanequalto',label:'>='},
+    {value:'smallerthanequalto',label:'<='},
+    {value:'greaterthan',label:'>'},
+    {value:'smallerthan',label:'<'},
   ]
   
-  const getOperatorValue = ()=>{
-      const doesFilterExist = filterState.find((filter:any)=>filter.name===filterId)
-      if(doesFilterExist){
-          return comparisionOptions.find((c:any)=>c.value===doesFilterExist.operator)
+  const getOperatorValue = (type: string)=>{
+      const operator = filterState.operator;
+      if(type === "textCompare"){
+        return comparatorConfig[operator] || textComparators[0]
       }
-      return comparisionOptions[5]
+      return comparatorConfig[operator] || numberComparators[0]
   }
 
   const getValue = ()=>{
-
-      const doesFilterExist = filterState.find((o:any)=>o.attributeName===filterId)
-      if(doesFilterExist){
-          return doesFilterExist.value
-      }
-      return ''
-  }
-  
-
-  const getDropDownValue = (options:any)=>{
-      const doesFilterExist = filterState.find((m:any)=>m.name==filterId)
-     if(doesFilterExist){
-       if(options==='colorFilterOptions')return colorFilterOptions.find((n:any)=>n.value==doesFilterExist.attributeName)
-          if(options==='filterLocationOptions') {
-          return filterLocationOptions.find((n:any)=>n.value==doesFilterExist.attributeName)
-          }
-      if(options==='filterProductOptions'){
-          return filterProductOptions.find((n:any)=>n.value==doesFilterExist.attributeName)
-      }
-      if(options==='colorTypeFilterOptions'){
-          return colorTypeFilterOptions.find((n:any)=>n.value==doesFilterExist.type)
-      } 
-     
-     }
-         
+      return filterState ? filterState.value : ''
   }
 
-   
+  const getOptions = (type: string) => {
+    return type === 'textCompare' ? textComparators : numberComparators
+  }
+
   return(
-      <>
-          <DropdownGroupWrapper>
-                {
-                  header==="Availabilty Filter" ?
-                  <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-                      <FilterTextInput disabled={true} placeholder={placeholder} />  
-                  </SelectDropdownComponent> 
-                  : 
-                  <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-  
-                      {(header!=="Location Filter" && header!=="Color Filter")&& <FilterSelectDropdown className="custom-scrollbar" placeholder={placeholder} options={filterProductOptions} onChange={(e:any)=>onChange(e,'attributeName')} filterId={filterId} value={getDropDownValue('filterProductOptions')} />}
-                      {header==="Location Filter" && <FilterSelectDropdown className="custom-scrollbar" placeholder={placeholder} options={filterLocationOptions} onChange={(e:any)=>onChange(e,'attributeName')} filterId={filterId} value={getDropDownValue('filterLocationOptions')} />}
-                      {header ==="Color Filter" && <FilterSelectDropdown className="custom-scrollbar" placeholder={placeholder} options={colorTypeFilterOptions} onChange={(e:any)=>onChange(e,'type')} filterId={filterId} value={getDropDownValue('colorTypeFilterOptions')} />}
-                  </SelectDropdownComponent>
-                  }
-              {header === "Color Filter" && (
-                   <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-                      <FilterSelectDropdown className="custom-scrollbar" placeholder={"Color"} options={colorFilterOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'attributeName')} filterId={filterId} value={getDropDownValue('colorFilterOptions')}/>    
-                   </SelectDropdownComponent>
-              )}
-              
-              <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-                  <FilterSelectDropdown className="custom-scrollbar" placeholder={"<="} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator')} filterId={filterId} value={getOperatorValue()}/>    
-              </SelectDropdownComponent>
-              <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-                  <FilterTextInput placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()}/>    
-              </SelectDropdownComponent>  
-          </DropdownGroupWrapper>  
-          </>     
+    <>
+      <DropdownGroupWrapper>
+        <SelectDropdownComponent data-testid="BPR-filter-dropdown">
+          <FilterTextInput disabled={true} placeholder={placeholder} />  
+        </SelectDropdownComponent>
+        <SelectDropdownComponent data-testid="BPR-filter-dropdown">
+          <FilterSelectDropdown className="custom-scrollbar" placeholder={"<="} options={getOptions(filterState.type)} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator')} filterId={filterId} value={getOperatorValue(filterState.type)}/>    
+        </SelectDropdownComponent>
+        <SelectDropdownComponent data-testid="BPR-filter-dropdown">
+          <FilterTextInput type={filterState.type === "textCompare" ? "text" : 'number'} placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()}/>    
+        </SelectDropdownComponent>  
+      </DropdownGroupWrapper>  
+    </>     
   )
 }
 

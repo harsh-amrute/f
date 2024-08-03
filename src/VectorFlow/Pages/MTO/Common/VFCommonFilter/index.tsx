@@ -81,7 +81,8 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
       
       if (attributeName === filterId) {
         if( type === "textCompare"){
-          updatedFilters[i][property as keyof Filter]=property === "value" ?  e?.target?.value : e.value;
+          console.log(e , 'EVENT')
+          updatedFilters[i][property as keyof Filter]= (property === "value" ?  e?.target?.value : e.value);
         }
 
         if( type === "multiSelect"){
@@ -93,8 +94,6 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
         }
 
         if( type === "search"){
-          console.log(e , 'EVENT')
-
           if(Array.isArray(e)){
             const options = e.map((option) => option.label);
             updatedFilters[i].value = [...options];
@@ -174,7 +173,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                               onFilterChange("textCompare", filter.attributeName, e, category, key)
                             }
                             header={filter?.name}
-                            filterState={multiFilter[category as keyof FilterState]?.filters}
+                            filterState={filter}
                             filterId={filter?.attributeName}
                           ></AvailabilityFilter>
                         </FilterComponent>

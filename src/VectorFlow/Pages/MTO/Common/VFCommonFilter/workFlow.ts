@@ -357,7 +357,7 @@ import { FilterState } from "../../../../types/MTO";
 //             type: staticHeaderConfig[key]?.type || 'select',
 //             name: staticHeaderConfig[key]?.name || APIMock.data.hdrKeyMap[key],
 //             attributeName: key,
-//             operator: 'string',
+//             operator: '',
 //             value: '',
 //             options: filterOptionsConfig[key]
 //         }))
