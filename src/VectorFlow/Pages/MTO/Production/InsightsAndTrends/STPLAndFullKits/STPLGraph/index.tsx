@@ -7,7 +7,6 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { columnConfigData } from "../ColumnData";
 import { format } from "date-fns";
-import { Rectangle } from "../../../FullKitAssignement/RectangleMarker";
 
 const STPLGraph = () => {
   const [date] = useState(format(new Date(), 'd MMM yyyy'));
@@ -52,19 +51,13 @@ const STPLGraph = () => {
       const color = i === 0 ? "#AD5000" : i === 1 ? 'gray' : "green";
       const key = i === 0 ? "exceedDays" : i === 1 ? 'days' : "limit";
       seriesData.push({
-        type: isBar ? "bar" : "scatter",
+        type: isBar ? "bar" : "line",
         xKey: "ccr",
         yKey: key,
         yName: labels[i],
         strokeOpacity: isBar ? 0 : 0.25,
         fill: color,
         stacked: isBar,
-        marker: {
-          size: 10,
-          fill: "#459D55",
-          shape: Rectangle,
-          strokeWidth: 0,
-        },
         tooltip: {
           renderer: TooltipRenderer,
         },
@@ -117,12 +110,9 @@ const STPLGraph = () => {
     legend: {
       position: "bottom",
       item: {
-        showSeriesStroke: true,
-        marker: {
-          size: 15,
-          strokeWidth: 0,
-          shape: "square",
-        },
+        label: {
+          fontSize: 10,
+        }
       },
 
     },
