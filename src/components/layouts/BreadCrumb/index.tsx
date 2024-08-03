@@ -55,7 +55,7 @@ const BreadCrumb = () => {
 
 
   if (location.pathname === '/poogi/insight-and-trends/resource-utilization-wip-profile') return <span>Poogi<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Resource Utilization & WIP Profile</span>
-
+  if (location.pathname === '/poogi/reasons-for-delayed-orders') return <span>Poogi<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Reason For Delayed Orders</span>
 
 
 

@@ -1,9 +1,27 @@
 import React from 'react'
+import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
+import { SaveBtnWrapper, SaveBtn } from './styles'
 
-function index() {
+const ReasonForDelayOrder = () => {
     return (
-        <div>index</div>
+        <div style={{ zoom: 1.2 }}>
+            <MTOActionToolBar
+                isWIPCheckBox
+                isAddFilterButton
+                isExcelExport
+            />
+            <VFTable
+                height='750px'
+            />
+            <SaveBtnWrapper>
+                <SaveBtn>
+                    Save Reasons
+                </SaveBtn>
+            </SaveBtnWrapper>
+
+        </div>
     )
 }
 
-export default index
+export default ReasonForDelayOrder;
