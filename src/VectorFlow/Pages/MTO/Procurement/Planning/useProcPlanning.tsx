@@ -187,7 +187,7 @@ const useProcPlanning = (date: string) => {
                 });
                 return tooltipText;
             },
-            tooltipComponent: "availabilityToolTip",
+            // tooltipComponent: "availabilityToolTip",
             initialWidth: 200, //160
             autoHeaderHeight: true,
             wrapHeaderText: true,

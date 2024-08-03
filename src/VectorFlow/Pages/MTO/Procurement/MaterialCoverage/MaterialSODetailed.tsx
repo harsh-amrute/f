@@ -2,6 +2,7 @@ import { ProcurementLayout } from './styles';
 import useMaterialSO from './useMaterialSO';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFOverlay from '../../../../../components/VectorFLOW/commons/VFOverlay';
+import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 
 interface MaterialSODetailedProps {
     parameterData: any
@@ -12,12 +13,19 @@ const MaterialSODetailed = ({ parameterData }: MaterialSODetailedProps) => {
         columnDef,
         agGridProps,
         RRRRowData,
-        isLoading
-
+        isLoading,
+        rowDataCount,
+        handlePageChangeOnHook,
+        currentPage
     } = useMaterialSO(parameterData);
+
+   
+    const handlePageChange=(currPage: number)=>{
+        handlePageChangeOnHook(currPage);        
+    }   
+
     return (
         <>
-
             {
                 isLoading && (
                     <VFOverlay>
@@ -34,6 +42,20 @@ const MaterialSODetailed = ({ parameterData }: MaterialSODetailedProps) => {
                     tooltipShowDelay={0}
                     tooltipMouseTrack={true}
                     height={'780px'}
+                    paginationPageSize={10}
+                    pagination={false}
+                    statusBar={{
+                        statusPanels: [
+                            { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                        ]
+                    }}
+                />
+                <VFPagination
+                    selectedRows={0}
+                    rowsPerPage={10}
+                    totalRows={rowDataCount}
+                    currentPage={currentPage}
+                    handleChangePage={handlePageChange}
                 />
             </ProcurementLayout>
         </>

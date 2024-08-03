@@ -588,7 +588,7 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.dynamicReleaseManagement",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "",
+        url: "/production-planning-scheduling/dynamic-release-mangement",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {
