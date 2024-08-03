@@ -15,13 +15,13 @@ const TagCellToolTip = (params: any) => {
 
   if(tags.length === 2){
     return (
-      <Icon src={`/assets/img/VectorFLOW/BPR/otif.svg`} />
+      <Icon src={`/assets/img/mto/OTIFAnalysis/otif.svg`} />
     )
   }
 
   return (
     <>
-      {tags.length > 0 && <Icon src={`/assets/img/VectorFLOW/BPR/${tags[0] === "if" ? "if" : "ot"}.svg`} />}
+      {tags.length > 0 && <Icon src={`/assets/img/mto/OTIFAnalysis/${tags[0] === "if" ? "if" : "ot"}.svg`} />}
     </>
   );
 };
