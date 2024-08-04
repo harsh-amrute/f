@@ -195,6 +195,8 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                     ccr_id: ccrId,
                     prevPend: Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm)
                 }
+                console.log(ccrId, (ccr_prev_pending[ccrId].prevPend));
+                
             });
 
             console.log(masters);
@@ -227,7 +229,6 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                         const ccrItem = masters?.CCRItemTypeMappingMaster.find((ccr:any)=> ccr.ccrId === ccrId && ccr.it == row.itid)
 
                         let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
-                        const folInDays = fol.fol;
                         ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay); 
 
                         const orderLoad = Math.ceil((ccrItem.tt * row.pcqty)) // (60 * ccrWorkingHoursPerDay))
@@ -237,12 +238,14 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                             orderLoad: orderLoad,
                             folSpan: ((ccr_prev_pending[ccrId].prevPend) + orderLoad)/ (ccrWorkingHoursPerDay * 60),
                         }
+                        console.log("ccr_prev_pending", ccr_prev_pending[ccrId])
                         // console.log(ccrId, "orderLoad", order_ccr_data[ccrId].orderLoad, "folSpan" ,order_ccr_data[ccrId].folSpan, "order pending qty",row.pcqty, "ccr tt", ccrItem.tt, "ccrWorkingHoursPerDay" ,ccrWorkingHoursPerDay)
-                        ccr_prev_pending[ccrId].prevPend = (ccr_prev_pending[ccrId].prevPend) + orderLoad
+                        ccr_prev_pending[ccrId].prevPend = (ccr_prev_pending[ccrId].prevPend) + orderLoad;
+                        
                     });
 
                     console.log("order_ccr_data", order_ccr_data)
-                    console.log("ccr_prev_pending", ccr_prev_pending)
+                    
 
                     //DDIndex
                     const maxFol: any = Object.values(order_ccr_data).reduce((prev: any, current: any) => (current.folSpan > prev.folSpan) ? current : prev);

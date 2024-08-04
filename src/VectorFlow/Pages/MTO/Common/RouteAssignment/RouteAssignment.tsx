@@ -44,11 +44,15 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
     //       });
     //     }
     //     const animate = () => {
-    //         const stepGroups = document.querySelectorAll('.step-group');
+    //         let stepGroups:any = document.querySelectorAll('.route-assignment .step-group');
     //         const svg: any = document.querySelector('.line');
-    //         const stepperWrapper: any = document.querySelector('.stepper-container');
+    //         const stepperWrapper: any = document.querySelector('.route-assignment');
     //         const stepperRect = stepperWrapper.getBoundingClientRect();
-    //         adjustLayout(stepperWrapper.offsetWidth,stepGroups);
+    //         // adjustLayout(stepperWrapper.offsetWidth, stepGroups); 
+    //         // stepGroups = Array.from(stepGroups).sort((a:any,b:any)=>{
+    //         //     return a.style.order - b.style.order
+    //         // });
+    //         console.log(stepGroups)
     //         if (svg?.innerHTML) {
     //             svg.innerHTML = "";
     //         }
@@ -100,7 +104,7 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
     // }, []);
 
   return (
-    <StepperWrapper key="route-assignment">
+    <StepperWrapper key="route-assignment" className="route-assignment">
         {ccrGroupMaster.map((ccrGroup: any, index: number)=>{
             return(
             <StepGroup $step={true} key={`route-assignment-${index}`}>
