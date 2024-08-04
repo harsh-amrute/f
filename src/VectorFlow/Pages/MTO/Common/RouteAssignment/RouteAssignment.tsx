@@ -107,7 +107,7 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
     <StepperWrapper key="route-assignment" className="route-assignment">
         {ccrGroupMaster.map((ccrGroup: any, index: number)=>{
             return(
-            <StepGroup $step={true} key={`route-assignment-${index}`}>
+            <StepGroup $step={false} key={`route-assignment-${index}`}>
                 <RadioSelect 
                     key={`route-assignment-${index}-${1}`}
                     isDisabled={!isEditable}
