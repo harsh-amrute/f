@@ -59,6 +59,11 @@ export const operators:Option[] = [
     }
   ]
 
+export const operatorDataTypeMapper:any = {
+    'String':['=','contains','startsWith','endsWith','hasValue','hasNoValue'],
+    'Number':['=','!=','>','>=','<','<=']
+}
+
 export const masterIdToSchemaMapper:MasterIdToSchema = {
     '1':SKUSchema,
     '2':LocationSchema,
