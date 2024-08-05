@@ -112,7 +112,6 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
     const loadInitialData = () => {
 
         const totalOrdCunt: any = calculatePercentage(SOData, ColorsMTO.Black.label, ColorsMTO.Red.label, ColorsMTO.Yellow.label, ColorsMTO.Green.label, 0);
-        console.log('totalOrdCunt',totalOrdCunt)
         setTotalOrdeerCount(totalOrdCunt);
 
         const totalBlueOrdCount: any = calculatePercentage(SOData, ColorsMTO.Blue.label, ColorsMTO.White.label, "", "", 1);
@@ -138,7 +137,6 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
         setfrthBlockCustCnt(frthBlock.cusCunt);
         setfrthBlockOrdCnt(frthBlock.ordCunt);
         setfrthdOrderVal(frthBlock.totalCunt);
-        console.log('frthBlock=',frthBlock)
 
         const fifthBlock: any = mapOrderDetails(SOData, ColorsMTO.Green.label, "", "", "PK", 0);
         setfifthBlockCustCnt(fifthBlock.cusCunt);

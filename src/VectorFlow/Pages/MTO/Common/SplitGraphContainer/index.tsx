@@ -87,6 +87,20 @@ const SplitGraphContainer = ({
             strokes: ['black', 'red', 'yellow', 'green', 'blue'],
           },
         }
+      case 8:
+        return {
+          palette: {
+            fills: ['#BC3D81', '#FCADD7'],
+            strokes: ['#BC3D81', '#FCADD7'],
+          },
+        }
+      case 9:
+        return {
+          palette: {
+            fills: ['#838282', '#CBCBCB'],
+            strokes: ['#838282', '#CBCBCB'],
+          },
+        }
 
       default:
         return {
@@ -416,7 +430,121 @@ const SplitGraphContainer = ({
           },
         });
         break;
-      default:
+        case 8:
+          refGraph1.current?.api.createRangeChart({
+            chartType: "line",
+            cellRange: {
+              columns: ["x_label", "otif", "otif_plus"],
+            },
+            chartThemeOverrides: {
+              line: { // This should be 'line' since you are creating a line chart
+                axes: {
+                  category: {
+                    gridStyle: [{ stroke: "transparent" }],
+                    bottom: {
+                      label: {
+                        fontSize: 8,
+                      },
+                    },
+                  },
+                  number: {
+                    gridStyle: [{ stroke: "transparent" }],
+                    label: {
+                      fontSize: 10,
+                      formatter: (params) => `${params.value}%`, // Format as percentage
+                    },
+                    min: 0, // Ensure Y-axis starts from 0
+                  },
+                },
+                series: {
+                  highlightStyle: {
+                    item: {
+                      fill: "white",
+                      fillOpacity: 1,
+                    },
+                  },
+                  tooltip: {
+                    renderer: TooltipRenderer,
+                  },
+                  strokeWidth: 4,
+                  strokeOpacity: 1,
+                  marker: {
+                    shape: "circle", // Ensure markers are square
+                    size: 8, // Adjust the size as needed
+                  },
+                },
+                legend: {
+                  item: {
+                    label: {
+                      fontSize: 10,
+                    },
+                    marker: {
+                      shape: "square",
+                    },
+                  },
+                },
+              },
+            },
+          });
+          break;
+          case 9:
+            refGraph1.current?.api.createRangeChart({
+              chartType: "line",
+              cellRange: {
+                columns: ["x_label", "ot", "if"],
+              },
+              chartThemeOverrides: {
+                line: { // This should be 'line' since you are creating a line chart
+                  axes: {
+                    category: {
+                      gridStyle: [{ stroke: "transparent" }],
+                      bottom: {
+                        label: {
+                          fontSize: 8,
+                        },
+                      },
+                    },
+                    number: {
+                      gridStyle: [{ stroke: "transparent" }],
+                      label: {
+                        fontSize: 10,
+                        formatter: (params) => `${params.value}%`, // Format as percentage
+                      },
+                      min: 0, // Ensure Y-axis starts from 0
+                    },
+                  },
+                  series: {
+                    highlightStyle: {
+                      item: {
+                        fill: "white",
+                        fillOpacity: 1,
+                      },
+                    },
+                    tooltip: {
+                      renderer: TooltipRenderer,
+                    },
+                    strokeWidth: 4,
+                    strokeOpacity: 1,
+                    marker: {
+                      shape: "circle", // Ensure markers are square
+                      size: 8, // Adjust the size as needed
+                    },
+                  },
+                  legend: {
+                    item: {
+                      label: {
+                        fontSize: 10,
+                      },
+                      marker: {
+                        shape: "square",
+                      },
+                    },
+                  },
+                },
+              },
+            });
+            break;
+        default:
         <></>
     }
 

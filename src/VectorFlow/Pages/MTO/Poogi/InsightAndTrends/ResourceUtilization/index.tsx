@@ -47,7 +47,7 @@ const ResourceUtilization = () => {
       <div style="border-top: 1px dashed lightgray"></div>
       <div style="width: 100%; padding: 10px 5px;">
           <div style="display: flex; width: 100%;">
-              <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #A8A8A8"></div>
+              <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #E96666"></div>
               <div style="display:flex; justify-content: space-between; width: 100%;">
                   <div>${selectedGraphState === "wipLimit"
         ? "Limit"
@@ -60,7 +60,7 @@ const ResourceUtilization = () => {
         ? `<div style="display: flex; width: 100%;">
               <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
               <div style="display:flex; justify-content: space-between; width: 100%;">
-                  <div>usage</div>
+                  <div>Usage</div>
                   <div>${actBtn?.label === "Over Limit"
           ? datum?.overLimit
           : datum?.underLimit
@@ -101,8 +101,6 @@ const ResourceUtilization = () => {
       "04-07-2024",
       "05-07-2024",
       "06-07-2024",
-      //  '14-07-2024', '15-07-2024', '16-07-2024',
-      //   '17-07-2024', '18-07-2024', '19-07-2024',
     ];
 
     const day = date.getDate().toString().padStart(2, "0");
@@ -263,14 +261,14 @@ const ResourceUtilization = () => {
       {
         type: "bar",
         xKey: "ccr",
-        yKey: "limit",
-        yName: "Utilization",
+        yKey: actBtn.value === "Over Limit" ? "overLimit" : "underLimit",
+        yName: "Released",
         stacked: true,
-        fill: "#A8A8A8",
+        fill: "#000000",
         highlightStyle: {
           item: {
-            fill: "#B93B7E",
-            stroke: "#B93B7E",
+            fill: "#D2CECE",
+            stroke: "#D2CECE",
             strokeWidth: 2,
           },
         },
@@ -281,11 +279,11 @@ const ResourceUtilization = () => {
       {
         type: "scatter",
         xKey: "ccr",
-        yKey: actBtn.value === "Over Limit" ? "overLimit" : "underLimit",
-        yName: actBtn.value === "Over Limit" ? "Over Limit" : "Under Limit",
+        yKey: "limit",
+        yName: "Limit",
         marker: {
           size: 10,
-          fill: "#000000",
+          fill: "#E96666",
           shape: Rectangle,
           strokeWidth: 0,
         },
@@ -515,6 +513,10 @@ const ResourceUtilization = () => {
                 <MarkerWrapper>
                   <ColoredMarker color="#E53F3F" />
                   Over Limit
+                </MarkerWrapper>
+                <MarkerWrapper>
+                  <ColoredMarker color="#A2A2A2" />
+                  Other
                 </MarkerWrapper>
               </CalenderLabel>
               <CalenderWrapper>

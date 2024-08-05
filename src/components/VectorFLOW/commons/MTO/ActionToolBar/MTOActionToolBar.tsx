@@ -1,5 +1,4 @@
 import VFButton from '../../VFButton';
-import Checkbox from '../../../../../components/commons/Checkbox';
 import {
     SCTaskBarContainer,
     SCGoBackContainer,
@@ -35,10 +34,9 @@ import {
     ChartHeaderRadioGroup,
     RadioGroup,
     SelectGroup,
-    CheckBoxDiv,
-    InputCheckBoxTitle
 } from './styles';
 import moment from 'moment';
+import { ReactElement } from 'react';
 import { format } from 'date-fns';
 import VFRangeSlider from '../../VFRangeSlider';
 import CustomSelect from '../../../../../VectorFlow/Pages/MTO/Production/FullKitAssignement/Select';
@@ -60,6 +58,7 @@ interface MTOActionToolBarProps {
     date?: string
     handleGoBack?: () => void;
     themeUi?: string;
+    quickFilter?: ReactElement
     horizonDays?: number;
     setHorizonDays?: (e: number) => void;
     handleHorizonSubmit?: () => void;
@@ -73,7 +72,6 @@ interface MTOActionToolBarProps {
     isAddFilterButton?: boolean
     isExcelExport?: boolean
     isChartGridToggle?: boolean
-    isWIPCheckBox?: boolean
     isReleaseButton?: boolean
     onOrderRelease?: () => void;
     //// new props
@@ -102,9 +100,9 @@ const MTOActionToolBar = ({
     isAddFilterButton,
     isExcelExport,
     isChartGridToggle,
-    isWIPCheckBox,
     isReleaseButton,
     onOrderRelease,
+    quickFilter
 }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
@@ -160,7 +158,11 @@ const MTOActionToolBar = ({
                         </SCGoBackContainer>
                     }
 
-                    {isWIPCheckBox &&
+                    {quickFilter && <div style={{display:"flex", justifyContent:"center", alignItems:"center", fontSize:"1.8rem"}}>
+                        {quickFilter}
+                    </div>}
+
+                    {/* {isWIPCheckBox &&
                         <CheckBoxDiv data-testid='check-box'>
                             <Checkbox
                                 data-testid='check-box'
@@ -173,7 +175,7 @@ const MTOActionToolBar = ({
                             />
                             <InputCheckBoxTitle>Show order with available WIP Only</InputCheckBoxTitle>
                         </CheckBoxDiv>
-                    }
+                    } */}
 
 
                     {isReleaseDate &&
@@ -292,8 +294,8 @@ const MTOActionToolBar = ({
                 {/**Selected Filter ends*/}
 
                 {(comp === 'resourceUtilization') &&
-                    <div data-testid='resourceUtilization' style={{ display: ' flex', alignItems: 'flex-end', gap: '20px' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                    <div data-testid='resourceUtilization' style={{ display: ' flex', alignItems: 'flex-start', gap: '20px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
                             <div style={{
                                 fontStyle: "normal",
                                 fontVariant: "normal",
@@ -316,8 +318,10 @@ const MTOActionToolBar = ({
                                 </ChartHeaderRadioGroup>
                             </RadioGroup>
                         </div>
-                        <SCVerticalDividerGray />
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                        <div style={{ marginTop: '30px' }}>
+                            <SCVerticalDividerGray />
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             <div
                                 style={{
                                     fontStyle: "normal",
@@ -326,15 +330,34 @@ const MTOActionToolBar = ({
                                     fontSize: 14,
                                     fontFamily: "Roboto",
                                 }}
+                                data-testid="select-plnt"
                             >
-                                Select Plant/ Department/ CCR
+                                Select Plant
                             </div>
                             <SelectGroup>
                                 <CustomSelect placeholder="Select Plant" selected={false} options={[]} optionsWidth={"100%"} />
+                            </SelectGroup>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <div
+                                style={{
+                                    fontStyle: "normal",
+                                    fontVariant: "normal",
+                                    fontWeight: 300,
+                                    fontSize: 14,
+                                    fontFamily: "Roboto",
+                                }}
+                                data-testid="select-dept"
+                            >
+                                Select Department
+                            </div>
+                            <SelectGroup>
                                 <CustomSelect placeholder="Select Department" selected={false} options={[]} optionsWidth={"100%"} />
                             </SelectGroup>
                         </div>
-                        <SCVerticalDividerGray />
+                        <div style={{ marginTop: '30px' }}>
+                            <SCVerticalDividerGray />
+                        </div>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <div style={{
                                 fontStyle: "normal",
@@ -356,7 +379,7 @@ const MTOActionToolBar = ({
                                     width={250}
                                     defaultValue={horizonDays || 0}
                                     handleChange={(e) => setHorizonDays && setHorizonDays(e)}
-                                    labelValueFormatter={(value: number) => value > 1 ? `${value} Days` : `${value} Day`}
+                                    labelValueFormatter={(value: number) => value > 1 ? `${value}` : `${value}`}
                                 />
                                 <div>
                                     {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>

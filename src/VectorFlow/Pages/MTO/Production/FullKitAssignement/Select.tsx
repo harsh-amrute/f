@@ -1,13 +1,15 @@
 import React from 'react'
 import Select, { components, OptionProps } from 'react-select'
-import { Checkbox } from '../../../../../components';
+import Radio from '../../../../../components/VectorFLOW/commons/MTO/Radio';
+// import { Checkbox } from '../../../../../components';
 
-const CustomSelect = ({ selected, placeholder, options, width, optionsWidth }: any) => {
+const CustomSelect = ({ selected, placeholder, options, width, optionsWidth, theme }: any) => {
     const Option = (props: OptionProps<any>) => {
         return (
             <components.Option {...props}>
                 <div style={{ display: "flex", justifyContent: "start", alignItems: "center" }}>
-                    <Checkbox name="Select" defaultChecked={props.isSelected} value="1" onChange={() => { console.log("") }} />
+                    <Radio theme={theme} defaultChecked={props.isSelected}/>
+                    {/* <Checkbox name="Select" defaultChecked={props.isSelected} value="1" onChange={() => { console.log("") }} /> */}
                     {props.data.label}
                 </div>
             </components.Option>
@@ -18,6 +20,7 @@ const CustomSelect = ({ selected, placeholder, options, width, optionsWidth }: a
             isSearchable={false}
             components={{ Option, IndicatorSeparator: () => null }}
             value={selected}
+            // menuIsOpen={true}
             styles={{
                 placeholder: (provided) => ({
                     ...provided,
