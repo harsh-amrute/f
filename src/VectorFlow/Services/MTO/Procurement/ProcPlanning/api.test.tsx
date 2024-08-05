@@ -1,7 +1,9 @@
-import axios from 'axios';
+import axios, { AxiosStatic } from 'axios';
 import { ProcPlanningService } from './api';
 
 jest.mock('axios');
+
+const mockedAxios = axios as jest.Mocked<AxiosStatic>;
 
 describe('ProcPlanningService', () => {
     const mockDate = '2024-06-01';
@@ -59,34 +61,30 @@ describe('ProcPlanningService', () => {
         expect(response).toEqual(mockResponse);
     });
 
-    // it('should update the proucurement simulation data', async () => {
-    //     const requestBody = {
-    //         "username": "user2",
-    //         "stock": [
-    //             {
-    //                 "ic": "RM1",
-    //                 "as": 100
-    //             },
-    //             {
-    //                 "ic": "RM2",
-    //                 "as": 51
-    //             },
-    //             {
-    //                 "ic": "RM3",
-    //                 "as": 300
-    //             }
-    //         ]
-    //     }
 
-    //     const response = await ProcPlanningService.UpdateProcurementSimulationData(requestBody);
+    it('should update order due date', async () => {
+        const requestBody = {
+            "username": "user2",
+            "stock": [
+                {
+                    "ic": "RM1",
+                    "as": 100
+                },
+                {
+                    "ic": "RM2",
+                    "as": 51
+                },
+                {
+                    "ic": "RM3",
+                    "as": 300
+                }
+            ]
+        }
 
-    //     expect(axios.put).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/UpdateProcurementSimulationData/`, JSON.stringify(requestBody), {
-    //         headers: { 'Content-Type': 'application/json' }
-    //     });
-
-    //     expect(response).toEqual(mockResponse);
-
-    // })
+        mockedAxios.post.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await ProcPlanningService.UpdateProcurementSimulationData(requestBody);
+        expect(response.status).toBe(200);
+    });
 
 
 });
