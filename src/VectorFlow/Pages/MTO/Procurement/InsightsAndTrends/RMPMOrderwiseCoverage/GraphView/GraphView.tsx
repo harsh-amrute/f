@@ -12,10 +12,15 @@ import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VF
 import VFModalCard from "../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFTable from "../../../../../../../components/VectorFLOW/commons/VFTable";
 import { GridRef } from "../../../../../../../VectorFlow/types/MDM";
+import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
+import moment from "moment";
 
 const GraphView = ({ shortageData }: any) => {
 
-    const [date] = useState("01 July 2024 - 28 Sept 2024")
+    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+
+    const mydate = apiResponseData?.data?.data;
+    const [date] = useState(`${moment(mydate).format('D MMM YYYY')} - ${moment(mydate).add(90, 'days').format('D MMM YYYY')}`)
 
     const [rawData, setRawData] = useState(shortageData);
 
@@ -50,7 +55,7 @@ const GraphView = ({ shortageData }: any) => {
 
     const calculateDaysDifference = (releaseDateStr: string) => {
         const releaseDate = new Date(releaseDateStr);
-        const baseDate = new Date("2024-06-01");
+        const baseDate = new Date("2024-08-05");
         const diffInTime = releaseDate.getTime() - baseDate.getTime();
         const diffInDays = diffInTime / (1000 * 60 * 60 * 24);
         return diffInDays;

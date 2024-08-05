@@ -5,6 +5,30 @@ export const ApplyZoomOut = styled.div`
     zoom: 0.7;
 `
 
+export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?: boolean }>`
+    height:${(props) => props.height ? props.height : 'auto'};
+    // max-height:90%;
+    margin:20px;
+    zoom:${props => props.disableZoomScaling ? 1 : 0.75};
+    width:100%,
+
+ 
+    & .ag-theme-alpine {
+        margin: 0 !important;
+      }
+    & .ag-theme-noir-fusion {
+        margin: 0 !important;
+      }
+
+      & .ag-header-container {
+        font-size: 16px;
+      }
+    
+`
+export const PaginationWrapper = styled.div`
+
+`
+
 
 export const ETACellRendererWrapper = styled.div`
     display:flex;

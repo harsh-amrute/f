@@ -12,6 +12,9 @@ import { toast } from 'react-toastify'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../helpers/notify'
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig'
 import { getColumnDefinations } from '../../../../../../helpers/utils'
+import ColorCellRenderer from '../../../Common/ColorCellRenderer'
+import ColorRangeCellRenderer from '../../../Common/ColorRangeCellRenderer'
+import FullkitCellRenderer from '../../../Common/FullkitCellRenderer'
 
 
 const RMPMOrderwiseCoverage = () => {
@@ -67,6 +70,7 @@ const RMPMOrderwiseCoverage = () => {
             enableRangeSelection: true,
 
             pagination: true,
+
             defaultColDef: {
                 cellStyle: {
                     'text-align': 'center',
@@ -80,7 +84,8 @@ const RMPMOrderwiseCoverage = () => {
                     'white-space': 'nowrap',
                     'resizable': 'true',
                 },
-                flex: 1
+                flex: 1,
+                floatingFilter: true
             },
 
         },
@@ -108,12 +113,18 @@ const RMPMOrderwiseCoverage = () => {
 
     const reportName = "RMPMOrderWiseCoverage";
 
+    const customColumnDefs = {
+        BPP: {
+            cellRenderer: ColorCellRenderer,
+        }
+    }
+
     const [ShortageColumns, setShortageColumns] = useState([{}]);
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
             setHeaderData(response.data.data);
-            getColumnDefinations(HeaderData)
+            setShortageColumns(getColumnDefinations(HeaderData, customColumnDefs, []));
         }
         catch (e) {
             console.log(e);
@@ -126,12 +137,24 @@ const RMPMOrderwiseCoverage = () => {
 
     const customHeader = {
         BPP: {
-            cellRenderer: 'ColorRangeCellRenderer',
+            cellRenderer: ColorRangeCellRenderer,
             initialWidth: 200,
             autoHeaderHeight: true,
             wrapHeaderText: true,
 
         },
+        OrderType: {
+            cellRenderer: () => {
+
+                return (
+                    <>{"END-TO-END"}</>
+                )
+            },
+        },
+        FullKitAvailable: {
+            cellRenderer: FullkitCellRenderer
+        }
+
 
     }
 
@@ -200,6 +223,8 @@ const RMPMOrderwiseCoverage = () => {
         setGraphDatas(apiData)
         setConvertedData(mapDataToColumns(apiData, columnData));
     }, [apiData])
+
+    console.log("shortageColumns", ShortageColumns);
     return (
         <>
             <div style={{ display: 'flex', flexDirection: 'column' }}>

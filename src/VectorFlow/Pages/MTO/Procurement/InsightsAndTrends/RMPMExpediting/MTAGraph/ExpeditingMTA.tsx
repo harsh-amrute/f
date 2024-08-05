@@ -175,7 +175,7 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                         }}
                         > <b>Select Horizon (in days): </b></label>
                         <VFRangeSlider
-                            style={{ paddingTop: '10px' }}
+                            style={{ paddingTop: '13px' }}
                             showTriangle={false}
                             min={1}
                             max={90}
