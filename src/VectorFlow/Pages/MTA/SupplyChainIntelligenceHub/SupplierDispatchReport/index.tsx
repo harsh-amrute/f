@@ -93,9 +93,6 @@ const SupplierDispatchReport = () => {
 
     defaultColDef: {
       floatingFilter: true,
-      filter: "agMultiColumnFilter",
-
-      cellDataType: false,
       resizable: false,
       cellStyle: {
         flex: 1,

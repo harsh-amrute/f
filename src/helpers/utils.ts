@@ -5,7 +5,7 @@ import { notifyError } from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef,CellClickedEvent} from 'ag-grid-community';
-import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper,taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData, BTRDefaultColDefs, TaskPendingStopPIPOCustomColumns } from './MDMConstants';
+import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper,taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData, BTRDefaultColDefs, TaskPendingStopPIPOCustomColumns} from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
 import {subDays,format, differenceInSeconds,parse} from 'date-fns';
 //import { formatMDMDateFromat } from './format';
@@ -203,7 +203,9 @@ export const mapVDRFieldsToColDefs= (fields:RRRField[]):ColDef[] =>{
         field:f.Col_Code,
         headerName:f.Header,
         hide:!f.Visible,
-        cellRenderer:'colorDispatchRender'
+        cellRenderer:'colorDispatchRender',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
       }
     }
     if(f.Col_Code==='WHDescription'){
@@ -211,14 +213,18 @@ export const mapVDRFieldsToColDefs= (fields:RRRField[]):ColDef[] =>{
         colId:f.Col_Code,
         field:f.Col_Code,
         headerName:f.Header,
-        rowGroup: false
+        rowGroup: false,
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
       }
     }
     return {
       colId:f.Col_Code,
       field:f.Col_Code,
       headerName:f.Header,
-      hide:!f.Visible
+      hide:!f.Visible,
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
     }
     
   })
@@ -258,7 +264,9 @@ export const mapRRRFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
         field:f.Col_Code,
         headerName:f.Header,
         hide:!f.Visible,
-        cellRenderer:'colorTechCellRenderer'
+        cellRenderer:'colorTechCellRenderer',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
       }
     }
     if(f.Col_Code==='EPen'){
@@ -267,7 +275,9 @@ export const mapRRRFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
         field:f.Col_Code,
         headerName:f.Header,
         hide:!f.Visible,
-        cellRenderer:'colorEcoCellRenderer'
+        cellRenderer:'colorEcoCellRenderer',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
       }
     }
 
@@ -277,14 +287,18 @@ export const mapRRRFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
         field:f.Col_Code,
         headerName:f.Header,
         hide:!f.Visible,
-        cellRenderer:'colorDispatchRender'
+        cellRenderer:'colorDispatchRender',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
       }
     }
     return{
       colId:f.Col_Code,
       field:f.Col_Code,
       headerName:f.Header,
-      hide:!f.Visible
+      hide:!f.Visible,
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
     }
   })
   return [...result,...RRRSpecificColumns]
@@ -697,10 +711,13 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChar
       headerName:f.displayName,
       hide:!f.visible,
       floatingFilter: true,
-      filter: "agMultiColumnFilter",
-      cellDataType:false,
+      filter: getCellFilter(f.dataType),
+      cellDataType:getCellDataType(f.dataType),
       tooltipComponent:'conflictErrorToolTip',
       suppressColumnsToolPanel:!f.isApplicable,
+      valueFormatter: (params:any) => {
+        return (params.value === null || params.value === undefined) ? '' : params.value.toString();
+      },
       valueGetter:(params:any)=>{
         if(f.key==='sts'){
           const id=params.data.sts
@@ -722,7 +739,7 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChar
       checkboxSelection:true,
       headerCheckboxSelection:true,
       headerCheckboxSelectionCurrentPageOnly:true,
-      width:10
+      width:50
     }
     const seasonalityColorColDef:ColDef={
       field:'color',
@@ -962,6 +979,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
         colId:f.key,
         hide:!f.visible,
         suppressSpanHeaderHeight: true,
+        pinned:'left',
         ...defaultColDefs
       }
     }
@@ -1095,7 +1113,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
     {
         field:'action',
         colId:'action',
-        headerName:'Action',
+        headerName:'Action',      
         children:[
             {
                 headerComponent:TaskPendingActionHeader,
@@ -1108,7 +1126,8 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
                 width:300,
                 cellStyle:{
                     "border-left":"solid 1px #B9B9B9"
-                }
+                },
+                pinned:'right'
             }
             // {
             //     field:"reject",
@@ -1145,7 +1164,10 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
         colId:'comments',
         headerName:'Comments',
         suppressSpanHeaderHeight: true,
-        editable:true,
+        editable:(params:any)=>{
+          console.log(params)
+          return true
+        },
         ...defaultColDefs
     }
 ]
@@ -1264,7 +1286,7 @@ export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields:Field
 
 
 export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string,masterId:number)=>{
-  return dirtyRowData.map(entry => {
+  const response  = dirtyRowData.map(entry => {
 
     if(((taskType==='modify' && masterId!==6) || masterId===13)){
       const oldData = JSON.parse(entry.old);
@@ -1273,10 +1295,13 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
   
       const oldDataPrefixed:any = {};
       const newDataPrefixed:any = {};
-  
-  
+      let isRowModified = false // A flag to check equality of the current and previous rows
       existingColumnFields.map((f:Field)=>{
         
+        if(!areValuesEqual(oldData[f.key],newData[f.key])){
+         
+          isRowModified = true
+        }
 
         if(TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
           newDataPrefixed[f.key] = String(newData[f.key]!==undefined?newData[f.key]:"")
@@ -1291,7 +1316,8 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
           ...oldDataPrefixed,
           ...newDataPrefixed,
           status:'',
-          comments:''
+          comments:isRowModified?'':'No modifications made in this record',
+          isModified:isRowModified
       };
     }
     const data = entry;
@@ -1327,6 +1353,12 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
     };
    
 });
+
+// sort the rows wrt the isModified flag
+response.sort((a:any,b:any)=>{
+  return b.isModified - a.isModified
+})
+return response
 }
 
 export const mapTaskStatusDataToRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string)=>{
@@ -1845,6 +1877,16 @@ export const createIconColumn = (params:any):ColDef=>{
   }
 }
 
+export const getCellDataType =(dataType:"Number" | "String" | "Boolean"):string=>{
+  if(dataType==='Number')return "number"
+  return 'text'
+}
+
+export const getCellFilter = (dataType:"Number" | "String" | "Boolean"):string=>{
+  if(dataType==='Number')return "agNumberColumnFilter"
+  return 'agMultiColumnFilter'
+}
+
 export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(params:any,e:any)=>void,onOpenRemarkHistory:(e:any,params:any)=>void,onOpenDailyDataGraph:(params:any)=>void):ColDef[]=>{
 
   if(!fields || fields.length<1){
@@ -1905,7 +1947,9 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
         tooltipField:f.Col_Code,
         cellStyle:{
           'min-width':180,
-        }
+        },
+        cellDataType:getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType)
       }
     }
     if(f.Col_Code==='EcoPen'){
@@ -1918,7 +1962,9 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
         tooltipField:f.Col_Code,
         cellStyle:{
           'min-width':180,
-        }
+        },
+        cellDataType:getCellDataType(f.DataType),
+        filter: getCellFilter(f.DataType)
       }
     }
     return{
@@ -1929,7 +1975,9 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
       tooltipField:f.Col_Code,
       cellStyle:{
         'min-width':180,
-      }
+      },
+      cellDataType:getCellDataType(f.DataType),
+      filter: getCellFilter(f.DataType)
     }
   })
   return [{...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result,...BPRSpecificColumns]
@@ -1973,11 +2021,12 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDaily
         field:f.Col_Code,
         headerName:f.Header,
         hide:!f.Visible,
-        filter: "agMultiColumnFilter",
         cellRenderer:'colorTechCellRenderer',
         cellStyle:{
           'min-width':180,
-        }
+        },
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
       }
     }
     if(f.Col_Code==='EcoPen'){
@@ -1986,11 +2035,12 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDaily
         field:f.Col_Code,
         headerName:f.Header,
         hide:!f.Visible,
-        filter: "agMultiColumnFilter",
         cellRenderer:'colorEcoCellRenderer',
         cellStyle:{
           'min-width':180,
-        }
+        },
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
       }
     }
     return{
@@ -1998,10 +2048,11 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDaily
       field:f.Col_Code,
       headerName:f.Header,
       hide:!f.Visible,
-      filter: "agMultiColumnFilter",
       cellStyle:{
         'min-width':180,
-      }
+      },
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
     }
   })
   return [checkboxColDef,{...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result]
@@ -2047,7 +2098,8 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGrap
         hide:!f.Visible,
         floatingFilter:true,
         cellRenderer:'colorDispatchCellRenderer',
-       
+        filter:getCellFilter(f.DataType),
+        cellDataType:getCellDataType(f.DataType)
       }
     }
     return{
@@ -2056,7 +2108,8 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGrap
       headerName:f.Header,
       hide:!f.Visible,
       floatingFilter:true,
-      filter:"agMultiColumnFilter"
+      filter:getCellFilter(f.DataType),
+      cellDataType:getCellDataType(f.DataType)
     }
   })
   return [...result,...BORSpecificColumns]
@@ -2103,21 +2156,21 @@ export const BPRColorMapper =(color:string):{bg:string,text:string}=> {
   }
 }
 
-export const mapBTRRowData =(rows:Array<any>):Array<any>=>{
+export const mapBTRRowData =(rows:Array<any>,horizon:number):Array<any>=>{
   return rows.map((r)=>{
     const NewCategoryString = r.Category? r.Category.replace(/\d/g, (match:string) => BTRCategoryNumberToTextMapper[match] || match) :  ""
     const tempRow = {...r,Category:NewCategoryString}
     let tempAvailabilty = 0
     let nonBlackCount = 0
-    for (let index = 1; index <= 90; index++) {
+    for (let index = 90; index > 90-horizon; index--) {
      
       if(tempRow[`D${index}`] &&  tempRow[`D${index}`]<100){
         nonBlackCount = nonBlackCount + 1
       }
     
-      
     }
-    tempAvailabilty = parseFloat(((nonBlackCount/90) * 100).toFixed(2))
+   
+    tempAvailabilty = parseFloat(((nonBlackCount/horizon) * 100).toFixed(2))
     return {
       ...tempRow,
       Availability:tempAvailabilty
@@ -2127,7 +2180,7 @@ export const mapBTRRowData =(rows:Array<any>):Array<any>=>{
 }
 
 
-export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):Array<ColDef>=>{
+export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pinCatergory:boolean,excludeColumns?:Array<string>,):Array<ColDef>=>{
   // const graphCellRenderer:ColDef={
   //   field:'graph',
   //   colId:'graph',
@@ -2148,21 +2201,23 @@ export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):A
   //   flex: 1
   // }
 
+
   let result =Object.keys(row).map((key:string):ColDef=>{
    
-    if(key.startsWith('D')){
+    if(key.startsWith('D')){  
       return {
         field:key,
         colId:key,
-        headerName:key,
+        headerName:format(dateMapper[key],'PP'),
         cellRenderer:'colorCellRenderer',
         cellRendererParams:(params:any)=>{
           return{
             colorValue:params.data[key]
           }
         },
-        filter: "agMultiColumnFilter",
-        ...BTRDefaultColDefs
+
+        ...BTRDefaultColDefs,
+        minWidth:100
       }
     }
 
@@ -2172,7 +2227,7 @@ export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):A
         colId:key,
         headerName:key,
         cellRenderer:'tagsCellRenderer',
-        filter: "agMultiColumnFilter",
+
         ...BTRDefaultColDefs
       }
     }
@@ -2185,7 +2240,7 @@ export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):A
         cellRenderer:'availabilityCellRenderer',
         tooltipField:key,
         tooltipComponent:'availabilityToolTip',
-        filter: "agMultiColumnFilter",
+
         ...BTRDefaultColDefs
       }
     }
@@ -2198,8 +2253,9 @@ export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):A
         cellRenderer:'categoryCellRenderer',
         tooltipField:key,
         tooltipComponent:'categoryToolTip',
-        filter: "agMultiColumnFilter",
-        ...BTRDefaultColDefs
+        pinned:pinCatergory?'left':false,
+        ...BTRDefaultColDefs,
+        width:70
       }
     }
 
@@ -2207,11 +2263,11 @@ export const mapBTRRowDataToColDefs = (row:any,excludeColumns?:Array<string>,):A
       field:key,
       colId:key,
       headerName:key,
-      filter: "agMultiColumnFilter",
       ...BTRDefaultColDefs
     }
   })
   // if(onShowChart)result = [graphCellRenderer,...result]
+  result = result.filter((r)=>(!r.colId?.startsWith('D')) || (r.colId.startsWith('D') &&  parseInt(r.colId.slice(1))>90-horizon))
   if(excludeColumns)result = result.filter((r)=>r.colId && !excludeColumns.includes(r.colId))
   return result
 
@@ -2237,7 +2293,7 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
     floatingFilter:false,
     checkboxSelection:true,
     headerCheckboxSelectionCurrentPageOnly:true,
-    width:10,
+    width:60,
     lockPosition:'left',
   }
 
@@ -2289,7 +2345,9 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
       colId:f.Col_Code,
       field:f.Col_Code,
       headerName:f.Header,
-      hide:!f.Visible
+      hide:!f.Visible,
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
     }
   })
 
@@ -2298,19 +2356,25 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
       colId: 'OldNormValue',
       field: 'OldNormValue',
       headerName: 'Old Norm',
-      hide: false
+      hide: false,
+      cellDataType:getCellDataType('Number'),
+      filter:getCellFilter('Number')
     },
     {
       colId: 'NewNormValue',
       field: 'NewNormValue',
       headerName: 'New Norm',
-      hide: false
+      hide: false,
+      cellDataType:getCellDataType('Number'),
+      filter:getCellFilter("Number")
     },
     {
       colId: 'Comment',
       field: 'Comment',
       headerName: 'Reason',
-      hide: false
+      hide: false,
+      cellDataType:getCellDataType("String"),
+      filter:getCellFilter("String")
     }
   ]
  

@@ -162,7 +162,8 @@ const Header = (props:HeaderProps) => {
             position: 'sticky',
             top: 0,
             zIndex: 2,
-            paddingBottom: '2px'
+            paddingTop:15
+            // paddingBottom: '2px'
           }}
         >
           <HeaderStyled.SCHeaderText>

@@ -28,7 +28,8 @@ interface VFMultiFilterProps{
     availabilityFilterActive?:boolean
     colorFilterActive?:boolean
     coverageFilterActive?:boolean
-    horizonActive?:boolean
+    horizon?:number
+    onChangeHorizon?:(value:number)=>void
     multiFilter:BPRFilterState
     setMultiFilter:any 
     supplyChainForLocationCheckBoxList:Array<any> 
@@ -399,15 +400,19 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         availabilityFilterActive = false,
         colorFilterActive = false,
         coverageFilterActive = false,
-        horizonActive = false,
+        onChangeHorizon,
         onApplyFilter,
         supplyChainForLocationCheckBoxList,
-        supplyChainForChildrenOfCheckBoxList
-
+        supplyChainForChildrenOfCheckBoxList,
+        horizon = 0
         
     } = props
 
     const onFilterChange=(filterId:string,e:any,parentId:string,property:string, header?:string)=>{
+
+        // if(filterId==="Horizon"){
+        //     setMultiFilter({...multiFilter,horizon:e})
+        // }
 
         
         const filterObj:BPRFilter = {
@@ -719,20 +724,20 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             <VFLoader/>
             :
             <React.Fragment>
-            {horizonActive ? 
+            {onChangeHorizon ? 
             <>    
             <RangeSliderComponent data-testid="horizonActive">
                 <VFHorizonText>
                     <p>Horizon</p>
                 </VFHorizonText>
-                <VFRangeSlider min={0} max={90} milestones={[-1,0,30,60,90]} strictMode={false} width={500} defaultValue={0} handleChange={()=>console.log('')} showTriangle></VFRangeSlider>  
+                <VFRangeSlider min={1} max={90} milestones={[-1,1,30,60,90]} strictMode={false} width={500} defaultValue={horizon} handleChange={(value:number)=>onChangeHorizon(value)} showTriangle></VFRangeSlider>  
             </RangeSliderComponent>
                 <hr style={{ marginLeft:'30px', marginRight:'30px'}}></hr> 
             </>
             : null } 
 
 
-            <FilterBody style={{maxHeight:horizonActive?'450px':"unset"}}>
+            <FilterBody style={{maxHeight:onChangeHorizon?'450px':"unset"}}>
                 {supplyChainNodeFilterActive && (
                       <FilterCardWrapper data-testid="supplyChainNodeFilter">
                       <FilterHeader >

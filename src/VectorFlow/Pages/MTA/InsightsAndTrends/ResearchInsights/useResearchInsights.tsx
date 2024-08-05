@@ -159,7 +159,6 @@ const useResearchInsights = ()=>{
         components:customCellRenderers,
         defaultColDef:{
             floatingFilter: true,
-            cellDataType:false,
             resizable:false,
             cellStyle:{
                 "flex":1,

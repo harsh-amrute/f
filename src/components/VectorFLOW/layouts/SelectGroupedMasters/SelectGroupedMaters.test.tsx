@@ -32,7 +32,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "WhCode",
@@ -42,7 +43,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "SupplierCode",
@@ -52,7 +54,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "MOQ",
@@ -62,7 +65,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               }
           ],
           "filters": [
@@ -147,7 +151,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "Description",
@@ -157,7 +162,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "ElephantOrderCapping",
@@ -167,7 +173,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "Weight",
@@ -177,7 +184,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "Volume",
@@ -187,7 +195,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c1",
@@ -197,7 +206,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c2",
@@ -207,7 +217,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c3",
@@ -217,7 +228,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c4",
@@ -227,7 +239,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c5",
@@ -237,7 +250,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c6",
@@ -247,7 +261,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c7",
@@ -257,7 +272,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c8",
@@ -267,7 +283,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c9",
@@ -277,7 +294,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c10",
@@ -287,7 +305,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c11",
@@ -297,7 +316,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c12",
@@ -307,7 +327,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c13",
@@ -317,7 +338,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c14",
@@ -327,7 +349,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "c15",
@@ -337,7 +360,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": true,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               }
           ],
           "filters": [
@@ -627,7 +651,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "WhCode",
@@ -637,7 +662,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "SupplierCode",
@@ -647,7 +673,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               },
               {
                   "displayName": "MOQ",
@@ -657,7 +684,8 @@ const dummyprops:SelectGroupedMastersProps = {
                   "isEdit": false,
                   "isDownload": true,
                   "col_Position":'1',
-                  "isApplicable":true
+                  "isApplicable":true,
+                   dataType:'String'
               }
           ],
           "filters": [

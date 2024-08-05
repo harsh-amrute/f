@@ -1,10 +1,10 @@
-import {useRef,useState} from 'react'
+import {useMemo, useRef,useState} from 'react'
 
 import {  AgGridReact, AgGridReactProps } from "ag-grid-react"
 import { Allotment } from "allotment"
 
 import CustomVFTable from "./CustomVFTable"
-import { BTRTableWrapper,BTRTableHeader, LockBtnWrapper, LockBtn, LocktBtnContent, LockLabel } from "./styles"
+import { BTRTableWrapper,BTRTableHeader, LockBtnWrapper, LockBtn, LocktBtnContent, LockLabel, VerticalViewLeftTableWrapper } from "./styles"
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 
 interface SpliViewTableProps extends AgGridReactProps{
@@ -32,8 +32,19 @@ const VerticalSplitView = (props:SplitViewProps)=>{
 
     const ref1 = useRef<AgGridReact>(null)
     const ref2 = useRef<AgGridReact>(null)
+    const ref3 = useRef<AgGridReact>(null)
 
     const [lockBtnPosition,setLockBtnPosition] = useState<number>(0)
+
+    const staticTableColDefs = useMemo(()=>{
+        if(!techTable.columnDefs) return []
+        return techTable.columnDefs.filter((col)=>col.headerName &&  ['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN"].includes(col.headerName))
+    },[techTable.columnDefs])
+
+    const techTableColDefs = useMemo(()=>{
+        if(!techTable.columnDefs) return []
+        return techTable.columnDefs.filter((col)=>col.headerName &&  !['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN"].includes(col.headerName))
+    },[techTable.columnDefs])
 
     const handleChange = (sizes:Array<number>)=>{
         setLockBtnPosition(sizes[0])
@@ -47,9 +58,15 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                 if(currIndex>100)currIndex=100
                 if(from===1){
                     ref2.current?.api.ensureIndexVisible(currIndex)
+                    ref3.current?.api.ensureIndexVisible(currIndex)
+                }
+                else if(from===3){
+                    ref1.current?.api.ensureIndexVisible(currIndex)
+                    ref2.current?.api.ensureIndexVisible(currIndex)
                 }
                 else{
                     ref1.current?.api.ensureIndexVisible(currIndex)
+                    ref3.current?.api.ensureIndexVisible(currIndex)
                 }
             }
             // else{
@@ -73,10 +90,38 @@ const VerticalSplitView = (props:SplitViewProps)=>{
 
    return (
         <BTRTableWrapper>
-            <Allotment vertical={false} onChange={handleChange}>
+            <Allotment defaultSizes={[600,300]} vertical={false} onChange={handleChange}>
                 <Allotment.Pane >
                     <BTRTableHeader>{techTable.header}</BTRTableHeader>
-                    <div style={{marginTop:-10,height:'85%'}}>
+                    <VerticalViewLeftTableWrapper>
+                    <div style={{marginTop:-10,height:'85%',width:'100%'}}>
+                        <CustomVFTable
+                            ref={ref3}
+                            rowHeight={25}
+                            height={"95%"}
+                            disableZoomScaling
+                            gridOptions={{
+                                ...techTable.gridOptions
+                            }}
+                            columnDefs={staticTableColDefs}
+                            rowData={techTable.rowData}
+                            tooltipMouseTrack={true}
+                            tooltipShowDelay={0}
+                            tooltipHideDelay={100000}
+                            defaultColDef={{
+                                floatingFilter:false,
+                                filter:false,
+                                sortable:false
+                            }}
+                            onBodyScroll={(params)=>onBodyScroll(params,3)}
+                        />
+                        <div style={{zoom:0.7,margin:'0px -15px'}}>
+                            <VFPagination
+                                {...techTable.paginationProps}
+                            />
+                        </div>
+                    </div>
+                    <div style={{marginTop:-10,height:'85%',width:'100%'}}>
                         <CustomVFTable
                             ref={ref1}
                             rowHeight={25}
@@ -85,23 +130,26 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             gridOptions={{
                                 ...techTable.gridOptions
                             }}
-                            columnDefs={techTable.columnDefs}
+                            columnDefs={techTableColDefs}
                             rowData={techTable.rowData}
                             tooltipMouseTrack={true}
                             tooltipShowDelay={0}
                             tooltipHideDelay={100000}
                             defaultColDef={{
-                                floatingFilter:false
+                                floatingFilter:false,
+                                filter:false,
+                                sortable:false
                             }}
                             onBodyScroll={(params)=>onBodyScroll(params,1)}
                             alignedGrids={isLocked?[ref2]:[]}
                         />
-                        <div style={{zoom:0.7}}>
+                        <div style={{zoom:0.7,margin:'0px -15px'}}>
                             <VFPagination
                                 {...techTable.paginationProps}
                             />
                         </div>
                     </div>
+                    </VerticalViewLeftTableWrapper>
                     {/* <VFTableWrapper>
                         <AgGridReact
                             ref={techRef}
@@ -115,7 +163,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                 </Allotment.Pane>
                 <Allotment.Pane>
                     <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
-                    <div style={{marginTop:-10,height:'85%'}}>
+                    <div style={{marginTop:-10,height:'85%',paddingLeft:'17px'}}>
                     <CustomVFTable 
                         ref={ref2}
                         rowHeight={25}
@@ -130,12 +178,14 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                         tooltipShowDelay={0}
                         tooltipHideDelay={100000}
                         defaultColDef={{
-                            floatingFilter:false
+                            floatingFilter:false,
+                            filter:false,
+                            sortable:false
                         }}
                         onBodyScroll={(params)=>onBodyScroll(params,2)}
                         alignedGrids={isLocked?[ref1]:[]}
                     />
-                    <div style={{zoom:0.7}}>
+                    <div style={{zoom:0.7,margin:'0px -15px'}}>
                         <VFPagination
                                 {...ecoTable.paginationProps}
                             />

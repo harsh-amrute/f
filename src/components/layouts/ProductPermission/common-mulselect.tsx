@@ -176,6 +176,8 @@ export default forwardRef(({ ...props }: any, ref) => {
     // },
   ];
 
+  console.log(prdPermissions)
+
   return (
     <ProductPermission
       title={t(

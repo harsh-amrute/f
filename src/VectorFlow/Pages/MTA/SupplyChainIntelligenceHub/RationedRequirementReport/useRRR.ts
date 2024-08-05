@@ -189,9 +189,8 @@ const useRRR =()=>{
         enableBrowserTooltips:true,
         defaultColDef:{
             floatingFilter: true,
-            filter: "agMultiColumnFilter",
+            // filter: "agMultiColumnFilter",
             // tooltipComponent:'remarksToolTipComponent',
-            cellDataType:false,
             cellStyle:{
                 'text-align':'center',
                 'height':'50px',

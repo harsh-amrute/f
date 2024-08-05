@@ -1,9 +1,10 @@
 
 
 import { fireEvent, render, screen } from '@testing-library/react';
+import { Master } from '../../../../VectorFlow/types/MDM';
 import MRCard from '.';
 
-const sampleData = {
+const sampleData:Master = {
   id: 1,
   name: 'Sample Card',
   fields: [
@@ -15,7 +16,8 @@ const sampleData = {
       isDownload:true,
       isEdit:true,
       "col_Position":'1',
-      "isApplicable":true
+      "isApplicable":true,
+      dataType:'String'
     },
     {
       displayName:'City'
@@ -25,7 +27,8 @@ const sampleData = {
       isDownload:true,
       isEdit:true,
       "col_Position":'1',
-      "isApplicable":true
+      "isApplicable":true,
+      dataType:'String'
     },
     {
       displayName:'MRP'
@@ -35,7 +38,8 @@ const sampleData = {
       isDownload:true,
       isEdit:true,
       "col_Position":'1',
-      "isApplicable":true
+      "isApplicable":true,
+      dataType:'String'
     }
   ]
 };

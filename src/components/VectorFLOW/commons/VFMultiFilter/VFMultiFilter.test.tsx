@@ -48,6 +48,7 @@ const useGetAllLocationsMock = useGetAllLocations as jest.MockedFunction<
 const dummyprops={
     onApplyFilter:mockFunction,
     onGoBack:mockFunction,
+    onChangeHorizon:mockFunction,
     selectedOption:mockFunction,
     toggleAdd:mockFunction,
     supplyChainForLocationCheckBoxList:[
