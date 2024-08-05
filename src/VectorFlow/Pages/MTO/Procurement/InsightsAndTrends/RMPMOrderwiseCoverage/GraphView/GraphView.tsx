@@ -14,7 +14,6 @@ import VFTable from "../../../../../../../components/VectorFLOW/commons/VFTable"
 import { GridRef } from "../../../../../../../VectorFlow/types/MDM";
 import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 import moment from "moment";
-import { add } from "lodash";
 
 const GraphView = ({ shortageData }: any) => {
 

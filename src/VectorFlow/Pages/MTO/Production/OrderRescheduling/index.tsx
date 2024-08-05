@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import VFFloatingTab from '../../../../../components/VectorFLOW/commons/VFFloatingTab';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
-import { ApplyZoomOut, PaginationWrapper } from './styles';
+import { ApplyZoomOut, PaginationWrapper, VFTableWrapper } from './styles';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import { VFTableWrapper } from './styles';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import ReasonCellRenderer from './ReasonCellRenderer';
 import DueDateCellRenderer from './DueDateCellRenderer';
@@ -56,7 +55,7 @@ const OrderRescheduling = () => {
 
             rowData.forEach((item) => {
                 let isThere = 0;
-                selectedData.forEach((selectedD, i) => {
+                selectedData.forEach((selectedD) => {
                     if (selectedD.oid === item.oid) {
                         isThere = 1;
                     }

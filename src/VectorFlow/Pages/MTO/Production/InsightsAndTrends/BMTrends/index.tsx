@@ -377,20 +377,6 @@ const BMTrends = () => {
 
 
 
-    function convertDateFormat(dateStr: string): string {
-        const months = [
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-        ];
-
-        const [day, month, year] = dateStr.split('-').map(Number);
-
-        if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1) {
-            throw new Error("Invalid date format");
-        }
-
-        return `${day} ${months[month - 1]} ${year}`;
-    }
 
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 

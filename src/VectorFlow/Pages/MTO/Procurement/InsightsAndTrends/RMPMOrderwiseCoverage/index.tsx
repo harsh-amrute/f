@@ -144,7 +144,7 @@ const RMPMOrderwiseCoverage = () => {
 
         },
         OrderType: {
-            cellRenderer: (params: any) => {
+            cellRenderer: () => {
 
                 return (
                     <>{"END-TO-END"}</>

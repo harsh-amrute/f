@@ -18,7 +18,6 @@ import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import OverlayLoader from "../../Common/Loader";
-import { AnyAaaaRecord } from "dns";
 
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
@@ -98,7 +97,6 @@ const useProcPlanning = (date: string) => {
     const [totalRows, setTotalRows] = useState(0);
     const [isOverlayLoading, setIsOverlayLoading] = useState(false);
     const { user } = useUserData();
-    const themeUi = user?.user?.theme_ui;
 
     const tabs: Array<VFFloatingTabItemProps> = [
         {
