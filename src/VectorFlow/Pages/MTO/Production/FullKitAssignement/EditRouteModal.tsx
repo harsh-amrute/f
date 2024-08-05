@@ -2,9 +2,10 @@ import { AgChartOptions } from 'ag-charts-community'
 import { AgChartsReact } from 'ag-charts-react'
 import React from 'react'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
-import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
-import { ContentWrapper, Text } from './FullKitAssignment.styled'
+// import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
+import { ContentWrapper, StepGroup, StepLabel, StepperWrapper, Text } from './FullKitAssignment.styled'
 import { Rectangle } from './RectangleMarker'
+import CustomSelect from './Select'
 
 const EditRouteModal = ({ showModal, setShowModal, graphData, theme }: any) => {
 
@@ -144,7 +145,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme }: any) => {
                 <Text>
                     You can change route by selecting CCR from drop-down
                 </Text>
-                {/* <StepperWrapper>
+                <StepperWrapper>
                     <StepGroup>
                         <StepLabel>Dispensing</StepLabel>
                         <CustomSelect theme={theme} selected={{ label: "M1", value: "M1" }} />
@@ -159,15 +160,15 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme }: any) => {
                     </StepGroup>
                     <StepGroup id="inactive">
                         <StepLabel>Inactive</StepLabel>
-                        <CustomSelect theme={theme}/>
+                        <CustomSelect theme={theme} />
                     </StepGroup>
                     <StepGroup>
                         <StepLabel>Final Product</StepLabel>
                     </StepGroup>
                     <svg className="line" style={{ position: "absolute", width: "100%", height: "100%", top: "0", left: "0", pointerEvents: "none" }}>
                     </svg>
-                </StepperWrapper> */}
-                <RouteAssignment theme={theme}/>
+                </StepperWrapper>
+                {/* <RouteAssignment theme={theme} /> */}
                 <strong style={{ fontSize: "14px" }}>Route Load</strong>
                 <div style={{ height: "300px" }}>
                     <AgChartsReact options={chartoptions} />
