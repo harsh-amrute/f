@@ -23,3 +23,10 @@ export enum ProcurementSeriesDataFill {
     "#AD5000" = 2,
     "#6A3001" = 3
 }
+
+export enum OTIFTags {
+    "OT_False_IF_False" = 0,
+    "OT_True_IF_True" = 1,
+    "OT_True_IF_False" = 2,
+    "OT_False_IF_True" = 3,
+}

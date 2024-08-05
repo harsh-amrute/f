@@ -292,8 +292,8 @@ const MTOActionToolBar = ({
                 {/**Selected Filter ends*/}
 
                 {(comp === 'resourceUtilization') &&
-                    <div data-testid='resourceUtilization' style={{ display: ' flex', alignItems: 'flex-end', gap: '20px' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                    <div data-testid='resourceUtilization' style={{ display: ' flex', alignItems: 'flex-start', gap: '20px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
                             <div style={{
                                 fontStyle: "normal",
                                 fontVariant: "normal",
@@ -316,8 +316,10 @@ const MTOActionToolBar = ({
                                 </ChartHeaderRadioGroup>
                             </RadioGroup>
                         </div>
-                        <SCVerticalDividerGray />
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                        <div style={{ marginTop: '30px' }}>
+                            <SCVerticalDividerGray />
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             <div
                                 style={{
                                     fontStyle: "normal",
@@ -326,15 +328,34 @@ const MTOActionToolBar = ({
                                     fontSize: 14,
                                     fontFamily: "Roboto",
                                 }}
+                                data-testid="select-plnt"
                             >
-                                Select Plant/ Department/ CCR
+                                Select Plant
                             </div>
                             <SelectGroup>
                                 <CustomSelect placeholder="Select Plant" selected={false} options={[]} optionsWidth={"100%"} />
+                            </SelectGroup>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <div
+                                style={{
+                                    fontStyle: "normal",
+                                    fontVariant: "normal",
+                                    fontWeight: 300,
+                                    fontSize: 14,
+                                    fontFamily: "Roboto",
+                                }}
+                                data-testid="select-dept"
+                            >
+                                Select Department
+                            </div>
+                            <SelectGroup>
                                 <CustomSelect placeholder="Select Department" selected={false} options={[]} optionsWidth={"100%"} />
                             </SelectGroup>
                         </div>
-                        <SCVerticalDividerGray />
+                        <div style={{ marginTop: '30px' }}>
+                            <SCVerticalDividerGray />
+                        </div>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <div style={{
                                 fontStyle: "normal",
@@ -356,7 +377,7 @@ const MTOActionToolBar = ({
                                     width={250}
                                     defaultValue={horizonDays || 0}
                                     handleChange={(e) => setHorizonDays && setHorizonDays(e)}
-                                    labelValueFormatter={(value: number) => value > 1 ? `${value} Days` : `${value} Day`}
+                                    labelValueFormatter={(value: number) => value > 1 ? `${value}` : `${value}`}
                                 />
                                 <div>
                                     {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>

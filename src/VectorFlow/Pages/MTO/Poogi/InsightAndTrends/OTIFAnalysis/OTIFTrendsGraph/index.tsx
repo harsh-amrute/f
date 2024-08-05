@@ -1,82 +1,60 @@
 import { useMemo, useState } from "react";
+import "allotment/dist/style.css";
 import { AgChartOptions } from "ag-charts-community";
-import { APIMock } from "../StplAndFullKitsData";
-import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
+import { APIMock, graphColumnConfig } from "../MockData";
+import { Poogi } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
+import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
-import { columnConfigData } from "../ColumnData";
-import { format } from "date-fns";
+import { TooltipRenderer } from "../OTIFCommon";
 
-const STPLGraph = () => {
-  const [date] = useState(format(new Date(), 'd MMM yyyy'));
-  const [rawData] = useState(APIMock.stpl);
+const OTIFTrendsGraph = () => {
+  const [startDate] = useState(APIMock.graph.otif_graph.start);
+  const [endDate] = useState(APIMock.graph.otif_graph.end);
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
-
-  function TooltipRenderer({ datum, xKey }: any) {
-    return `
-       <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-           ${datum[xKey]}
-       </div>
-       <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
-       
-       <div>
-           <div style="display: flex;">
-               <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000">
-               </div>
-               <div style="display:flex ; width: 100%; justify-content: space-between">
-                   <div>Released WIP (In Days) Exceeding Limit
-                   </div>
-                   <div style="margin-left: 20px"> ${datum["exceedDays"]}
-                   </div>
-               </div>
-           </div> 
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: gray"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Released WIP (In Days)</div><div>${datum["days"]}</div></div></div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: green"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Limit</div><div>${datum["limit"]}</div></div></div>
-
-        </div>`;
-  }
+  const [rawData] = useState(APIMock.graph.otif_graph.data);
 
   function createSeriesData(val: number) {
     const seriesData: any = [];
-    const labels = [
-      "Released WIP (In Days) Exceeding Limit",
-      "Released WIP (In Days)",
-      "Limit",
-    ];
+    const labels = ["OTIF % Trends", "OTIF % Trends (+3 days)"];
     for (let i = 0; i < val; i++) {
-      const isBar = i < val - 1;
-      const color = i === 0 ? "#AD5000" : i === 1 ? 'gray' : "green";
-      const key = i === 0 ? "exceedDays" : i === 1 ? 'days' : "limit";
+      const color = i === 0 ? "#BC3D81" : "#FCADD7";
+      const key = i === 0 ? "otif" : "otif_plus";
       seriesData.push({
-        type: isBar ? "bar" : "line",
-        xKey: "ccr",
+        type: "line",
+        xKey: "x_label",
         yKey: key,
         yName: labels[i],
-        strokeOpacity: isBar ? 0 : 0.25,
-        fill: color,
-        stacked: isBar,
+        lineDash: i === 0? null : [5, 5], // 5px dash, 5px gap
+        strokeWidth: 4,
+        marker: {
+            enabled: true,
+            shape: 'circle',
+            size: 8,
+            fill: color
+        },
+        strokeOpacity: 1,
+        stroke: color,
         tooltip: {
           renderer: TooltipRenderer,
         },
       });
     }
-
     return seriesData;
   }
 
   const options: AgChartOptions = {
     data: rawData,
 
-    series: createSeriesData(3),
+    series: createSeriesData(2),
 
     axes: [
       {
         type: "category",
         position: "bottom",
-        title: { text: "CCR", fontSize: 10, fontWeight: "bold" },
+        title: { text: "", fontSize: 10, fontWeight: "bold" },
         label: {
           fontSize: 8,
           fontWeight: "bold",
@@ -88,7 +66,7 @@ const STPLGraph = () => {
       },
       {
         title: {
-          text: "WIP In Days",
+          text: "OTIF %",
           fontSize: 10,
           fontWeight: "bold",
           spacing: 3,
@@ -100,26 +78,32 @@ const STPLGraph = () => {
           fontSize: 8,
           fontWeight: "bold",
           color: "black",
+          formatter: (params) => `${params.value}%`
         },
         gridLine: {
           enabled: false,
         },
+        min: 0
       },
     ],
 
     legend: {
-      position: "bottom",
-      item: {
-        label: {
-          fontSize: 10,
-        }
-      },
-
+        item: {
+            label: {
+                fontSize: 10,
+                fontWeight: 'bold', // Make legend text bold
+            },
+            marker: {
+                size: 15,
+                strokeWidth: 0,
+                shape: "square",
+            },
+        },
     },
   };
 
   const colDefs = useMemo(() => {
-    return getColumnDefinations(columnConfigData?.stplTableColumn, {}, [])
+    return getColumnDefinations(graphColumnConfig?.otif, {}, []);
   }, []);
 
   const generateHeader = () => {
@@ -136,25 +120,23 @@ const STPLGraph = () => {
         }}
       >
         <div
-          data-testid="stpl-graph"
+          data-testid="ot-if-graph"
           style={{
             fontSize: "16px",
             margin: "0 auto",
 
             textAlign: "center",
-          }}>
-          <span style={{ fontWeight: 500, }}>
-            {`${ProductionInsightsAndTrendsString.stplWithLimits}  `}
-          </span>
-          <span style={{ fontWeight: 300, }}>
-            {` (${date})`}
-          </span>
+          }}
+        >
+          <span style={{ fontWeight: 500 }}>{`${Poogi.otif}  `}</span>
+          <span style={{ fontWeight: 300 }}>{`(${startDate} - ${endDate})`}</span>
         </div>
         <div style={{ display: "flex" }}>
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
             <VFInfoToolTip
               infoList={[
-                "The graph highlights CCR wise current released WIP (In Days) against their respective limits. ",
+                "The graph highlights the On-Time In-Full (OTIF) trend of complted orders.",
+                "Orders are plotted based on their respective completion dates."
               ]}
             />
           </div>
@@ -178,8 +160,8 @@ const STPLGraph = () => {
           </div>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div style={{ height: "70vh", display: "flex", justifyContent: "left" }}>
@@ -190,16 +172,15 @@ const STPLGraph = () => {
         setChartLoading={setChartLoading}
         data={rawData}
         rowData={options.data}
-        graphTitle={''}
-        tableTitle={ProductionInsightsAndTrendsString.stplWithLimits}
+        graphTitle={""}
+        tableTitle={Poogi.otif}
         options={options}
         colDef={colDefs}
         header={generateHeader}
         hideChart={hideChart1}
         toggleChart={toggleChart1}
         TooltipRenderer={TooltipRenderer}
-        graphType={4}
-        chartHeight={50}
+        graphType={8}
       />
       <div
         style={{
@@ -229,4 +210,4 @@ const STPLGraph = () => {
   );
 };
 
-export default STPLGraph;
+export default OTIFTrendsGraph;
