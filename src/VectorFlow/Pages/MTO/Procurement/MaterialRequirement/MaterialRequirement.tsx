@@ -7,7 +7,7 @@ import moment from 'moment';
 
 
 const MaterialRequirement = () => {
-    const { renderView, toggleCurrentTab, onDateChangeReq, onDateSubmitReq, date } = useMaterialReq();
+    const { renderView, toggleCurrentTab, onDateChangeReq, onDateSubmitReq, date, currentTab } = useMaterialReq();
     return (
         <>
             <div style={{ zoom: 1.25 }}>
@@ -45,7 +45,7 @@ const MaterialRequirement = () => {
 
             <MaterialRequirementHeading>
                 <MaterialRequirementTest>
-                    {`For all orders with release date till`}
+                    {`For all orders with release date ${currentTab.id === 'sdv' ? 'as on' : 'till'}`}
                 </MaterialRequirementTest>
                 <MaterialRequirementDate>
                     {moment(date).format('Do MMMM YYYY')}

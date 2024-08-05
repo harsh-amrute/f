@@ -113,7 +113,7 @@ const MTOActionToolBar = ({
         }
     }
 
-    const format2 = "YYYY-MM-DD"
+    const format2 = "MM-dd-yyyy"
     const d = new Date();
     const datetime = moment(d).format(format2);
 
@@ -221,7 +221,9 @@ const MTOActionToolBar = ({
                                         fontWeight: 'bold',
                                         fontFamily: 'Roboto',
                                         border: '0.5px solid #ACACAC',
+
                                     }}
+
                                     value={date}
                                     min={datetime}
                                     onChange={(e) => { if (onDateChange) onDateChange(e.target.value) }}
@@ -253,7 +255,7 @@ const MTOActionToolBar = ({
                         />
                         <DateTitle>As on Date</DateTitle>
                         <DateValue>
-                            {format(new Date(), 'yyyy-MM-dd')}
+                            {format(new Date(), format2)}
                         </DateValue>
                     </DateWrapper>}
                 {/**Selected Filter start */}

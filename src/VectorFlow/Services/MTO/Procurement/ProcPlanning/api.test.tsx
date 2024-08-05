@@ -5,6 +5,7 @@ jest.mock('axios');
 
 describe('ProcPlanningService', () => {
     const mockDate = '2024-06-01';
+    const pageNum = '1';
     const mockResponse = {
         data: {
             results: [
@@ -24,9 +25,9 @@ describe('ProcPlanningService', () => {
     });
 
     it('should fetch procurement planning data correctly', async () => {
-        const response = await ProcPlanningService.GetProcPlanningData(mockDate);
+        const response = await ProcPlanningService.GetProcPlanningData(mockDate, pageNum);
 
-        expect(axios.get).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/getProcPlanningData/?releaseDate=${mockDate}`, {
+        expect(axios.get).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/getProcPlanningData/?releaseDate=${mockDate}&?page=${pageNum}`, {
             headers: { 'Content-Type': 'application/json' }
         });
 
@@ -57,4 +58,35 @@ describe('ProcPlanningService', () => {
 
         expect(response).toEqual(mockResponse);
     });
+
+    // it('should update the proucurement simulation data', async () => {
+    //     const requestBody = {
+    //         "username": "user2",
+    //         "stock": [
+    //             {
+    //                 "ic": "RM1",
+    //                 "as": 100
+    //             },
+    //             {
+    //                 "ic": "RM2",
+    //                 "as": 51
+    //             },
+    //             {
+    //                 "ic": "RM3",
+    //                 "as": 300
+    //             }
+    //         ]
+    //     }
+
+    //     const response = await ProcPlanningService.UpdateProcurementSimulationData(requestBody);
+
+    //     expect(axios.put).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/UpdateProcurementSimulationData/`, JSON.stringify(requestBody), {
+    //         headers: { 'Content-Type': 'application/json' }
+    //     });
+
+    //     expect(response).toEqual(mockResponse);
+
+    // })
+
+
 });

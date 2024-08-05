@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import VFFloatingTab from '../../../../../components/VectorFLOW/commons/VFFloatingTab';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
-import { ApplyZoomOut } from './styles';
+import { ApplyZoomOut, PaginationWrapper } from './styles';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import { VFTableWrapper } from '../../../../../components/VectorFLOW/commons/VFTable/styles';
+import { VFTableWrapper } from './styles';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import ReasonCellRenderer from './ReasonCellRenderer';
 import DueDateCellRenderer from './DueDateCellRenderer';
@@ -40,7 +40,7 @@ const OrderRescheduling = () => {
     const getSelectedRowData = () => {
         const selectedData = refGraph1.current?.api.getSelectedRows();
         if (selectedData) {
-            const mergedData = [...selectedRowData]; // Start with the existing selected data
+            let mergedData = [...selectedRowData]; // Start with the existing selected data
 
             selectedData.forEach((newItem) => {
                 const index = mergedData.findIndex(item => item.oid === newItem.oid);
@@ -54,6 +54,19 @@ const OrderRescheduling = () => {
                 }
             });
 
+            rowData.forEach((item) => {
+                let isThere = 0;
+                selectedData.forEach((selectedD, i) => {
+                    if (selectedD.oid === item.oid) {
+                        isThere = 1;
+                    }
+                })
+
+                if (isThere == 0) {
+                    mergedData = mergedData.filter(e => e.oid !== item.oid)
+                }
+            })
+
             setSelectedRowData(mergedData);
         }
     };
@@ -66,6 +79,7 @@ const OrderRescheduling = () => {
         readOnlyEdit: true,
         pagination: true,
         suppressRowClickSelection: true,
+        rowHeight: 40,
         defaultColDef: {
             floatingFilter: true,
             filter: "agMultiColumnFilter",
@@ -75,6 +89,7 @@ const OrderRescheduling = () => {
             wrapHeaderText: true,
             autoHeaderHeight: true,
             cellStyle: {
+                'font-size': '16px',
                 "text-align": "center",
                 'text-overflow': 'ellipsis',
             },
@@ -118,6 +133,7 @@ const OrderRescheduling = () => {
             headerCheckboxSelection: false,
             checkboxSelection: true,
             maxWidth: 50,
+            suppressMenu: true,
             floatingFilter: false,
         }
     ];
@@ -135,18 +151,16 @@ const OrderRescheduling = () => {
         DueDate: {
             autoHeaderHeight: true,
             wrapHeaderText: true,
-            cellRenderer: currTab === 'Unschedule' ? "" : DueDateCellRenderer,
+            cellRenderer: (currTab === 'Unschedule') ? "" : DueDateCellRenderer,
             cellRendererParams: {
                 data: {
                     addChangeDate: addChangeDate,
-
                 }
             },
             initialWidth: 200,
             width: 200,
             filter: "agMultiColumnFilter",
             floatingFilter: true
-
         },
         Reason: {
             colId: 'rs',
@@ -161,11 +175,12 @@ const OrderRescheduling = () => {
             cellRenderer: ReasonCellRenderer,
             floatingFilter: true
         }
-    }
+    };
 
     useEffect(() => {
-        setColDef(getColumnDefinations(HeaderData, customHeader, extras))
-    }, [HeaderData])
+        const headerDataCopy = JSON.parse(JSON.stringify(HeaderData));
+        setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
+    }, [HeaderData, customHeader]);
 
 
 
@@ -442,20 +457,21 @@ const OrderRescheduling = () => {
                                 pagination={false}
                                 height={"100%"}
                             />
-                            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                <div style={{ width: '99.5%' }}>
 
-                                    <VFPagination
 
-                                        selectedRows={0}
-                                        rowsPerPage={10}
-                                        totalRows={currData ? currData.data.data.count : 0}
-                                        currentPage={currentPage}
-                                        handleChangePage={handlePageChangeCumulative}
-                                    />
-                                </div>
-                            </div>
+
+
                         </VFTableWrapper>
+                        <PaginationWrapper>
+
+                            <VFPagination
+                                selectedRows={0}
+                                rowsPerPage={10}
+                                totalRows={currData ? currData.data.data.count : 0}
+                                currentPage={currentPage}
+                                handleChangePage={handlePageChangeCumulative}
+                            />
+                        </PaginationWrapper>
                     </div>
                     <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%' }}>
                         <div style={{ width: '100%', height: '65px', padding: '30px 30px', background: 'white', display: 'flex', justifyContent: 'left', alignItems: 'center' }}>

@@ -52,8 +52,8 @@ const SplitGraphContainer = ({
       case 1:
         return {
           palette: {
-            fills: ['black', 'red', 'green', 'yellow', 'grey'],
-            strokes: ['black', 'red', 'green', 'yellow', 'grey'],
+            fills: ['black', 'red', 'yellow', 'green', 'grey'],
+            strokes: ['black', 'red', 'yellow', 'green', 'grey'],
           },
         }
 

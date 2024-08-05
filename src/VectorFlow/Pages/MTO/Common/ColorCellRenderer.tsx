@@ -1,26 +1,31 @@
 
 import { BPRColorCellRendererWrapper } from '../../MTA/SupplyChainIntelligenceHub/BPR/styles';
+import { ColorsMTO } from './Colors';
 
 const colorMapper = (color: string) => {
+
     switch (color) {
         case 'White':
-            return { bg: '#ffffff', text: '#000000' };
+            return { bg: ColorsMTO.White.code, text: ColorsMTO.Black.code };
         case 'Green':
-            return { bg: '#418D18', text: '#ffffff' };
+            return { bg: ColorsMTO.Green.code, text: ColorsMTO.White.code };
         case 'Yellow':
-            return { bg: '#EBBF2B', text: '#ffffff' };
+            return { bg: ColorsMTO.Yellow.code, text: ColorsMTO.White.code };
         case 'Red':
-            return { bg: '#F02424', text: '#ffffff' };
+            return { bg: ColorsMTO.Red.code, text: ColorsMTO.White.code };
         case 'Black':
-            return { bg: '#000000', text: '#ffffff' };
+            return { bg: ColorsMTO.Black.code, text: ColorsMTO.White.code };
+        case 'Blue':
+            return { bg: ColorsMTO.Blue.code, text: ColorsMTO.White.code }
         case "Overloaded":
-            return { bg: "#F02424", text: "#ffffff" }
+            return { bg: ColorsMTO.Red.code, text: ColorsMTO.White.code }
         case "Underloaded":
-            return { bg: "#CB830E", text: "#ffffff" }
+            return { bg: ColorsMTO.Orange.code, text: ColorsMTO.White.code }
         case "Balanced":
-            return { bg: "#A8A8A8", text: "#ffffff" }
+            return { bg: "#A8A8A8", text: ColorsMTO.White.code }
         default:
-            return { bg: '#ffffff', text: '#000000' };
+            return { bg: ColorsMTO.White.code, text: ColorsMTO.Black.code };
+
     }
 };
 
