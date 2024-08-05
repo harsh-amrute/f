@@ -15,7 +15,7 @@ import { VFPaginationProps } from "../../../../../../components/VectorFLOW/commo
 const queryClient = setupReactQuery();
 
 jest.mock("ag-charts-react", () => ({
-  AgChartsReact: jest.fn(() => null)
+  AgCharts: jest.fn(() => null)
 }));
 
 jest.mock("../../../../../Services/MTA/SupplyChainIntelligenceHub/Planning");

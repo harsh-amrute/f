@@ -1,5 +1,5 @@
 import { SCChartContainer, SCDynamicContainer } from '../style';
-import { AgChartsReact } from "ag-charts-react";
+import { AgCharts } from "ag-charts-react";
 import { Allotment } from "allotment";
 import { useGetExcessInventorySku, useGetExcessInventoryValue } from "../../../../../Services/MTA/InsightsAndTrends";
 import VFLoader from '../../../../../../components/VectorFLOW/commons/VFLoader';
@@ -216,7 +216,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                         </div>
 
                     </div>
-                    <AgChartsReact options={options1} />
+                    <AgCharts options={options1} />
             </div>
                 {/* <SCHorizontalDivider/> */}
             </SCChartContainer>
@@ -291,7 +291,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                  </div>
 
                     </div>
-                    <AgChartsReact options={options2} />
+                    <AgCharts options={options2} />
                 </div>
             {/* <SCHorizontalDivider/> */}
             </SCChartContainer>

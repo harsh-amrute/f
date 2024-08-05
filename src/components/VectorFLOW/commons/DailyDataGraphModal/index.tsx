@@ -18,7 +18,7 @@ import {
 
 import VFRangeSlider from '../VFRangeSlider'
 import Select from 'react-select'
-import { AgChartsReact } from "ag-charts-react";
+import { AgCharts} from "ag-charts-react";
 import { getDatesBetween, getFormattedDate } from "../../../../helpers/utils";
 import {suspensionMessages} from '../../../../helpers/BPRConstants';
 import { useDispatch } from 'react-redux';
@@ -496,7 +496,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
         <VFModalCard openModal={isModalOpen} closeModal={()=>dispatch(TOGGLE_GRAPH_MODAL(false))} headerIcon='' headerText="Daily Data Graph" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
             <SCSeasonalityContainer>
                 <SCChartContainer>
-                    <AgChartsReact options={generateChartOptions()}/>
+                    <AgCharts options={generateChartOptions()}/>
                 </SCChartContainer>
                 <SCSeasonalityStatusDetails>
                   <SCSeasonalityDetailsTitle>

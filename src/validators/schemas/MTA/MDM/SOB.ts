@@ -11,13 +11,13 @@ const SuppCodeValidator = (value:any,helper:any)=>{
 export const SOBSchema = Joi.object({
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
-    SuppCode:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator),
-    SOB:Joi.number().min(0.00).max(100.00)
+    spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator),
+    sb:Joi.number().min(0.00).max(100.00)
 
 }).preferences(defaultJOIOptions)
 
 export const SOBSchemaDelete = Joi.object({
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
-    SuppCode:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator)
+    sb:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator)
 }).preferences(defaultJOIOptions)

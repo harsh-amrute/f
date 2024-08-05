@@ -11,13 +11,13 @@ const SuppCodeValidator = (value:any,helper:any)=>{
 export const MOQSchema = Joi.object({
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).messages(generateCommonMessages('WhCode')),
-    SuppCode:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator),
-    MOQ:Joi.number().integer().min(0)
+    spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator),
+    mq:Joi.number().integer().min(0)
 
 }).preferences(defaultJOIOptions)
 
 export const MOQSchemaDelete = Joi.object({
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
-    SuppCode:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator)
+    spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator)
 }).preferences(defaultJOIOptions)
