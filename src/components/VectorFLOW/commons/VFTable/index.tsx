@@ -39,6 +39,7 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       <AgGridReact
         ref={ref}
         {...props}
+        paginationPageSizeSelector={false}
         suppressDragLeaveHidesColumns={true}
       />
     </VFTableWrapper>

@@ -92,11 +92,13 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             onBodyScroll={(params)=>onBodyScroll(params,1)}
                             height={"100%"}
                             defaultColDef={{
-                                floatingFilter:false
+                                floatingFilter:false,
+                                filter:false,
+                                sortable:false
                             }}
                             alignedGrids={isLocked?[ref2]:[]}
                         />
-                        <div style={{zoom:0.7,marginBottom:'20px'}}>
+                        <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
                             <VFPagination
                                 {...techTable.paginationProps}
                             />
@@ -105,7 +107,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                 </Allotment.Pane>
                 
                 <Allotment.Pane preferredSize={'50%'}>
-                    <BTRAllomentSection style={{marginTop:'20px'}}>
+                    <BTRAllomentSection style={{marginTop:'20px',paddingBottom:'20px'}}>
                         <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
                         <CustomVFTable 
                             height={"100%"}
@@ -122,11 +124,13 @@ const VerticalSplitView = (props:SplitViewProps)=>{
                             tooltipHideDelay={100000}
                             onBodyScroll={(params)=>onBodyScroll(params,2)}
                             defaultColDef={{
-                                floatingFilter:false
+                                floatingFilter:false,
+                                filter:false,
+                                sortable:false
                             }}
                             alignedGrids={isLocked?[ref1]:[]}
                         />
-                         <div style={{zoom:0.7,marginBottom:'20px'}}>
+                         <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
                             <VFPagination
                                 {...ecoTable.paginationProps}
                             />

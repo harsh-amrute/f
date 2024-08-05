@@ -32,7 +32,9 @@ const BufferTrendReport = () => {
         setCurrFilter,
         onDeleteFilter,
         onApplyFilter,
-        themeUi
+        themeUi,
+        horizon,
+        setHorizon
     } = useBTR()
 
 
@@ -64,6 +66,8 @@ const BufferTrendReport = () => {
                     setMultiFilter={setCurrFilter}
                     onDelete={onDeleteFilter}
                     onApplyFilter={onApplyFilter}
+                    horizon={horizon}
+                    onChangeHorizon={(value:number)=>setHorizon(value)}
                 />
             </div>
         <BTRLayoutWrapper>

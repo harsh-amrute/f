@@ -703,12 +703,25 @@ const useViewModify = (pageType:string) => {
       
         setIsTableDataLoading(false);
         if(tempRecordCount == 0){
-          console.log('in iuf')
           toggleWarningModal(false);
           return;
         }
         
-        dispatch(UPDATE_ROW_DATA(result.data.data));
+        const tempRowData = result.data.data.map((row:any)=>{
+          const newRow = {...row};
+          
+          Object.keys(newRow).map((key)=>{
+            const currentColDef = activeMaster.colDefs.find((c)=>c.colId===key)
+            const cellDataType = currentColDef?.cellDataType
+            if(cellDataType==='number' && newRow[key]!== null){
+              newRow[key] = parseFloat(newRow[key])
+            }
+          })
+
+          return newRow
+        })
+
+        dispatch(UPDATE_ROW_DATA(tempRowData));
         if(refetch)return
         toggleWarningModal(false);
         if(pageType==='remove'){
