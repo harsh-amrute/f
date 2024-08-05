@@ -1,4 +1,4 @@
-import { AgChartsReact } from "ag-charts-react"
+import { AgCharts } from "ag-charts-react"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 
 import { ExpandedChartFilterWrapper,ExpandedChartSelectWrapper,ExpandedChartSelectLabel,ExpandedChartCapsuleWrapper} from "./styles"
@@ -152,7 +152,7 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
                     />
                 </ExpandedChartCapsuleWrapper>
             </ExpandedChartFilterWrapper>
-            <AgChartsReact
+            <AgCharts
                 options={{
                     height:400,
                     width:1000,

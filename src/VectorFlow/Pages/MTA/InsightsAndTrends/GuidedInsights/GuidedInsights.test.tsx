@@ -13,7 +13,7 @@ import {store} from "../../../../../redux/store/store";
 
 jest.mock("../../../../Services/MTA/InsightsAndTrends");
 jest.mock("ag-charts-react", () => ({
-  AgChartsReact: jest.fn(() => null) // Replace null with a mock component if needed
+  AgCharts: jest.fn(() => null) // Replace null with a mock component if needed
 }));
 
 const queryClient = setupReactQuery();

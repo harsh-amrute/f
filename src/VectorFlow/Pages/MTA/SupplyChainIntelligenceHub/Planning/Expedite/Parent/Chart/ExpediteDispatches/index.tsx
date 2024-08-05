@@ -13,8 +13,8 @@ import {
   SCDynamicContainer,
   SCHorizontalAllignmentWrapper,
 } from "../../../styles";
-import { AgChartsReact } from "ag-charts-react";
-import { AgChartOptions } from "ag-charts-community";
+import { AgCharts } from "ag-charts-react";
+import { AgChartOptions} from "ag-charts-community";
 
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
@@ -32,7 +32,23 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
   const [hideChart1, toggleChart1] = useState<boolean>(false);
   const [hideChart2, toggleChart2] = useState<boolean>(false);
   const [hideChart3, toggleChart3] = useState<boolean>(false);
+  const chartRef = useRef<any>(null);
+
+  const [isHovered, setIsHovered] = useState(false);
+  const imgSrc = isHovered
+    ? '/assets/img/downlod-icon-hover.svg'
+    : '/assets/img/downlod-icon.svg';
   // const [hideChart3,toggleChart3] = useState<boolean>(false);
+
+
+  const download = () => {
+    console.log(chartRef);
+    chartRef?.current.download({
+      type: 'png',
+      filename: 'pie-chart',
+    });
+
+  };
 
   const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
     let colDefs = [];
@@ -707,6 +723,9 @@ const colDefs3: ColDef[] = [
                   </div>
                 </SCChartHeaderContainer>
                 <SCHorizontalDivider />
+                <div style={{display:'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight:'20px'}}>
+                <img src={imgSrc}  height={13} width={13} onClick={()=>download()} style={{cursor:'pointer'}} onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)} ></img>                    </div>
                 <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div className="ag-theme-planning" style={{width:'1000px'}}>
                           <VFTable
@@ -743,7 +762,7 @@ const colDefs3: ColDef[] = [
                         </div>
                 </VFModalCard>
                 <div id="ExpediteDispatchesG3" style={{height:'80%'}}>
-                  <AgChartsReact options={options} />
+                  <AgCharts options={options} ref={chartRef}/>
                 </div>
               </SCChartContainer>
               {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>

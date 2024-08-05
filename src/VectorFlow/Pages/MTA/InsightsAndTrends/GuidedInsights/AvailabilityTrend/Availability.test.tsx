@@ -10,7 +10,7 @@ const useGetAvailabilityTrendMock = useGetAvailabilityTrend as jest.MockedFuncti
     typeof useGetAvailabilityTrend
 >;
 jest.mock("ag-charts-react", () => ({
-  AgChartsReact: jest.fn(() => null) // Replace null with a mock component if needed
+  AgCharts: jest.fn(() => null) // Replace null with a mock component if needed
 }));
 
 const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {

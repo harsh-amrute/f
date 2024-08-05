@@ -1,4 +1,4 @@
-import { AgChartsReact } from "ag-charts-react";
+import { AgCharts } from "ag-charts-react";
 import { useGetAvailabilityAgeing } from "../../../../../Services/MTA/InsightsAndTrends";
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 import { useState, useEffect } from "react";
@@ -235,7 +235,7 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
             <VFInfoToolTip infoList={graph1} />
           </div>
         </div>
-        <div style={{height:'85%'}}><AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
+        <div style={{height:'85%'}}><AgCharts options={AvailabilityAgeingTrendOptions} /></div>
       </div>
     </div>
   );

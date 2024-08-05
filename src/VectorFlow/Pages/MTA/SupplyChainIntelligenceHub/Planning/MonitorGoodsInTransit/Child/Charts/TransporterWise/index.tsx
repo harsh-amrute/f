@@ -415,14 +415,26 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                     options={{
                                     chart: {
                                         type: 'boxPlot',
+                                        animations: {
+                                            enabled: false,
+                                            easing: 'easeinout',
+                                            speed: 800,
+                                            animateGradually: {
+                                                enabled: false,
+                                                delay: 150
+                                            },
+                                            dynamicAnimation: {
+                                                enabled: false,
+                                                speed: 350
+                                            }
+                                        },
                                         zoom: {
                                         enabled: false,
                                         },
                                         toolbar: {
                                             show: true,
                                             tools: {
-                                              download: true,
-                                              customIcons: [],
+                                                download: '<img src ="/assets/img/downlod-icon.svg" width=16 height=16/>',
                                             },
                                           },
                                     },
@@ -488,7 +500,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                     }}
                                     series={series} // Make sure you have defined the series data
                                     type="boxPlot"
-                                    height={290}
+                                    height={265} //290
 
                                 />
                                 <Xaxislegend style={{marginTop:'-20px'}}>Transporter Name</Xaxislegend>

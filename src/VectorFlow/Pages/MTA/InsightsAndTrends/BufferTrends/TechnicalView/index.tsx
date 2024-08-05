@@ -10,7 +10,7 @@ import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 
 
-import { AgChartsReact } from "ag-charts-react";
+import { AgCharts } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
@@ -242,7 +242,7 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                                 <VFInfoToolTip infoList={graph1} />
                             </div>
                         </div>
-                        <AgChartsReact options={{ ...options, data: numericData }} />
+                        <AgCharts options={{ ...options, data: numericData }} />
                     </div>
                 </ChartWrapper>
             </SCChartContainer>
