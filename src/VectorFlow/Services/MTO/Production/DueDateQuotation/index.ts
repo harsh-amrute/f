@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { UIConfigService } from './api'
+import { DueDateQuotationService } from './api'
 
 export const QUERY_KEYS = {
     useGetUIConfig: ['MDMService.useGetUIConfig'],
@@ -7,7 +7,7 @@ export const QUERY_KEYS = {
 
 export const useGetUIConfig = (reportName: string) => {
     return useQuery(QUERY_KEYS.useGetUIConfig ,async () => {
-        return UIConfigService.getUIConfig(reportName)
+        return DueDateQuotationService.getUIConfig(reportName)
     })
 }
 
@@ -18,54 +18,54 @@ interface DDQInputParams{
 
 export const useGetOrdersForDDQ = () => {
     return useMutation(async (data: DDQInputParams) => {
-        return UIConfigService.getOrdersForDDQ(data?.currentPage, data?.unScheduled)
+        return DueDateQuotationService.getOrdersForDDQ(data?.currentPage, data?.unScheduled)
     })
 }
 
 export const useGetBufferMasterData = () => {
     return useMutation(async () => {
-        return UIConfigService.getBufferMasterData()
+        return DueDateQuotationService.getBufferMasterData()
     })
 }
 
 export const useGetCCRGroupMaster = () => {
     return useMutation(async () => {
-        return UIConfigService.getCCRGroupMaster()
+        return DueDateQuotationService.getCCRGroupMaster()
     })
 }
 
 
 export const useGetRouteDetails = () => {
     return useMutation(async (route_id: number) => {
-        return UIConfigService.getRouteDetails(route_id)
+        return DueDateQuotationService.getRouteDetails(route_id)
     })
 }
 
 export const useGetCCRItemTypeMappingMaster = () => {
     return useMutation(async () => {
-        return UIConfigService.getCCRItemTypeMappingMaster()
+        return DueDateQuotationService.getCCRItemTypeMappingMaster()
     })
 }
 export const useGetFOLData = () => {
     return useMutation(async () => {
-        return UIConfigService.getFOLData()
+        return DueDateQuotationService.getFOLData()
     })
 }
 export const useGetCCRMasterData = () => {
     return useMutation(async () => {
-        return UIConfigService.getCCRMasterData()
+        return DueDateQuotationService.getCCRMasterData()
     })
 }
 
 export const useGetDailyWorkingCalendar = () => {
     return useMutation(async () => {
-        return UIConfigService.getDailyWorkingCalendar()
+        return DueDateQuotationService.getDailyWorkingCalendar()
     })
 }
 
 export const useGetMarketOperatingLeadTimeMasterData = () => {
     return useMutation(async () => {
-        return UIConfigService.getMarketOperatingLeadTimeMasterData()
+        return DueDateQuotationService.getMarketOperatingLeadTimeMasterData()
     })
 }
 

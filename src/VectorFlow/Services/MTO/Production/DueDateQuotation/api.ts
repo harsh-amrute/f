@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace UIConfigService {
+export namespace DueDateQuotationService {
     export const getUIConfig = async (reportName: string) => {
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getUIReportConfiguration/`, {
             headers: {
