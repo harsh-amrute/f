@@ -7,7 +7,7 @@ import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule
 import { BufferTrendsGraphState } from '../../../../../types/BPR'
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 
-import { AgChartsReact } from "ag-charts-react";
+import { AgCharts } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
@@ -236,7 +236,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
                             <VFInfoToolTip infoList={graph1} />
                         </div>
                     </div>
-                    <AgChartsReact options={{...options,data:numericData}}/>
+                    <AgCharts options={{...options,data:numericData}}/>
                 </div> 
                 {/* </ChartWrapper> */}
                     

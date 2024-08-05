@@ -25,6 +25,9 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
     const [hideChart1,toggleChart1] = useState<boolean>(false);
     const [hideChart2,toggleChart2] = useState<boolean>(false);
 
+
+    
+
     const seriesData = useMemo(()=>{
         if(!data)return []
         return data['delayDaysStatisticalBox']['data'].map((item:any) => ({
@@ -251,6 +254,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
       const graph2 = [
         'This box plot graph displays the statistical distribution of delay days in transport for various locations. Each box represents the range of delay days as on today'
       ]
+     
 
     return(
         <>
@@ -358,14 +362,26 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                     options={{
                                     chart: {
                                         type: 'boxPlot',
+                                        animations: {
+                                            enabled: false,
+                                            easing: 'easeinout',
+                                            speed: 800,
+                                            animateGradually: {
+                                                enabled: false,
+                                                delay: 150
+                                            },
+                                            dynamicAnimation: {
+                                                enabled: false,
+                                                speed: 350
+                                            }
+                                        },
                                         zoom: {
                                         enabled: false,
                                         },
                                         toolbar: {
                                             show: true,
                                             tools: {
-                                              download: true,
-                                              customIcons: [],
+                                              download: '<img src ="/assets/img/downlod-icon.svg" width=16 height=16 class="download-icon" />',
                                             },
                                           },
                                     },
@@ -452,7 +468,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                     }}
                                     series={series} // Make sure you have defined the series data
                                     type="boxPlot"
-                                    height={290}
+                                    height={265}
 
                                 />
                                 <Xaxislegend>Receiving Location Name</Xaxislegend>

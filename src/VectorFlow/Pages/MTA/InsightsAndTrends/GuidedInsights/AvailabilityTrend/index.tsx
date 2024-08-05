@@ -1,4 +1,4 @@
-import { AgChartsReact } from "ag-charts-react";
+import { AgCharts } from "ag-charts-react";
 import { useGetAvailabilityTrend } from "../../../../../Services/MTA/InsightsAndTrends";
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 import { useState, useEffect } from "react";
@@ -163,7 +163,7 @@ const AvailabilityTrend = ({themeUi}:{themeUi:string}) => {
         </div>
       </div>
       <div style={{height:'85%'}}>
-        <AgChartsReact options={options} />
+        <AgCharts options={options} />
       </div>
     </div>
 

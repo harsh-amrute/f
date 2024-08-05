@@ -8,7 +8,7 @@ import {UserDataContext} from '../../../../../../context'
 
 jest.mock("../../../../../Services/MTA/InsightsAndTrends");
 jest.mock("ag-charts-react", () => ({
-  AgChartsReact: jest.fn(() => null) 
+  AgCharts: jest.fn(() => null) 
 }));
 const useGetAvailabilityAgeingMock = useGetAvailabilityAgeing as jest.MockedFunction<
     typeof useGetAvailabilityAgeing

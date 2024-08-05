@@ -15,7 +15,7 @@ import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader'
 
 import 'react-day-picker/dist/style.css';
 import './styles.css'
-import { AgChartsReact } from 'ag-charts-react'
+import { AgCharts } from 'ag-charts-react'
 import React from 'react'
 import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar'
 import ExpandedGraph from './ReseachInsightsExpandedGraph'
@@ -378,7 +378,7 @@ const ResearchInsights = ()=>{
                     </ChartHeader>
                     <ChartWrapper>
                         <ExpandChartIcon src='/assets/img/VectorFLOW/BPR/expand-graph.svg' onClick={()=>toggleGraphModal(true,1)}/>
-                        <AgChartsReact 
+                        <AgCharts
                         options={{
                             height:200,
                             width:300,
@@ -534,7 +534,7 @@ const ResearchInsights = ()=>{
                     </ChartHeader>
                     <ChartWrapper>
                         <ExpandChartIcon src='/assets/img/VectorFLOW/BPR/expand-graph.svg' onClick={()=>toggleGraphModal(true,2)}/>
-                        <AgChartsReact options={{
+                        <AgCharts options={{
                             height:150,
                             width:300,
                             data:locationGraphData,
