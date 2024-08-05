@@ -1,11 +1,12 @@
 import { ColorsMTO } from "../../../../../VectorFlow/Pages/MTO/Common/Colors";
 import styled from "styled-components";
+import * as globalStyles from '../../../../../styles/global'
 import * as gridSystem from "../../../../../styles/gridSystem";
 
 export const SCTaskBarContainer = styled.div`
   //margin-top:5px;
   // margin-bottom:10px;
-  // padding-left:10px;
+  padding : 0 25px;
   display: flex;
   align-items: center;
   //margin-bottom:20px;
@@ -15,7 +16,7 @@ export const SCTaskBarContainer = styled.div`
   justify-content: space-between; //changed
 
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
-      .size.desktop}) {
+    .size.desktop}) {
     zoom: 0.7;
   }
 
@@ -50,7 +51,7 @@ export const SCViewContainer = styled.div`
 export const SCHorizontalDivison = styled.div`
   height: 80%;
   width: 2px;
-  background: ${ColorsMTO.LightGrey};
+  background: ${ColorsMTO.LightGrey.code};
   margin: 0 20px;
 `;
 
@@ -314,5 +315,56 @@ export const DateValue = styled.div`
   border-radius: 4px;
   min-width: 180px;
 `;
+export const CheckBoxDiv = styled.div`
+    width: max-content;
+    text-wrap: nowrap;
+    background-color:pink;
+
+`
+
+export const InputCheckBox = styled.input`
+    display:inline;
+`
+
+export const InputCheckBoxTitle = styled.div`
+  font-size:16px;
+  color:#000000;
+  font-family:Roboto;
+  font-weight:bold;
+  display:inline;
+  padding-left:2px;
+`
 
 /**constant date */
+
+export const SCChartSliderContainer = styled.div`
+    display: flex;
+    justify-content:space-between;
+    justify-content:center;
+    gap:13px;
+    align-items:center;
+    height:55px
+`
+
+export const RadioGroup = styled.div`
+    display:flex;
+    min-width: 200px;
+`
+
+export const SelectGroup = styled.div`
+    display:flex;
+    gap: 20px;
+`
+
+export const ChartHeaderRadioGroup = styled.div<{theme:string}>`
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    accent-color:${(props)=>globalStyles.chooseThemeColor[props.theme].color5};
+    font-style:normal;
+    font-variant:normal;
+    font-weight:300;
+    font-size:14px;
+    line-height:19px;
+    font-family:Roboto;
+`

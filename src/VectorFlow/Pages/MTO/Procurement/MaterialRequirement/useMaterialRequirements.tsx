@@ -8,14 +8,15 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 //import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
-import { HeaderMaterialRequirement } from '../MaterialCoverage/Data'
 // import GetProcPlanningData from '../Planning/GetProcPlanningData.json';
 // import GetProcPlanningDataColumn from '../Planning/GetProcPlanningDataColumn.json';
-import { mapMaterialFieldsToColDefs } from '../../../../../helpers/utils';
+import { getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { useGetMaterialRequirementDetails, useGetMaterialRequirementDetailsDatewise } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import moment from "moment";
+import { VFTableWrapper } from "../../../../../components/VectorFLOW/commons/VFTable/styles";
+import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 
 
 
@@ -70,7 +71,24 @@ const useMaterialReq = () => {
     const format2 = "YYYY-MM-DD"
     const d = new Date();
     const datetime = moment(d).format(format2);
-    const { HeaderData } = HeaderMaterialRequirement;
+    const [HeaderData, setHeaderData] = useState([{}]);
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+    const reportName = "MaterialRequirement";
+
+    const setColumnDef = async () => {
+        try {
+            const response = await getUIConfigData(reportName);
+            setHeaderData(response.data.data);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    useEffect(() => {
+        setColumnDef();
+    }, [])
     const gridRef = useRef<AgGridReact>(null);
     // const { isSideBarOpen } = useUserData()
     const tabs: Array<VFFloatingTabItemProps> = [
@@ -85,9 +103,35 @@ const useMaterialReq = () => {
             value: 'cv'
         }
     ];
+
+    const customHeader = {
+        ColorPriority: {
+            cellRenderer: 'coloPriority',
+            tooltipValueGetter: (params: any) => {
+                const cpData = params.data.cp[0];
+                const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
+                let tooltipText = '';
+                keysToPrint.forEach((key) => {
+                    if (Object.prototype.hasOwnProperty.call(cpData, key)) {
+                        if (tooltipText !== '') {
+                            tooltipText += ' | ';
+                        }
+                        tooltipText += `${key}: ${cpData[key]}`;
+                    }
+                });
+                return tooltipText;
+            },
+            tooltipComponent: "availabilityToolTip",
+            initialWidth: 200, //160
+            autoHeaderHeight: true,
+            wrapHeaderText: true,
+
+        },
+
+    }
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
-    const ShortageColumns = mapMaterialFieldsToColDefs(HeaderData);
-    const CompleteAvailableColumns = mapMaterialFieldsToColDefs(HeaderData);
+    const ShortageColumns = getColumnDefinations(HeaderData, customHeader)
+    const CompleteAvailableColumns = getColumnDefinations(HeaderData, customHeader)
     const [CumulativeData, SetCumulativeData] = useState<any[]>([]);
     const [DayWiseData, setDayWiseData] = useState<any[]>([]);
     const { mutateAsync: getMaterialRequirementData } = useGetMaterialRequirementDetails();
@@ -191,66 +235,144 @@ const useMaterialReq = () => {
     }
 
     const renderView = () => {
+        const agGridProps: AgGridReactProps = {
+            tooltipShowDelay: 0,
+            tooltipTrigger: "focus",
+
+            gridOptions: {
+                rowHeight: 50,
+                getRowStyle: (params: any) => {
+                    return {
+                        background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
+                    };
+                },
+                components: customCellRenderers,
+                rowSelection: 'multiple',
+                suppressRowClickSelection: true,
+                enableBrowserTooltips: true,
+                enableRangeSelection: true,
+                pagination: true,
+                defaultColDef: {
+                    floatingFilter: true,
+                    filter: "agMultiColumnFilter",
+                    cellDataType: false,
+                    resizable: false,
+                    minWidth: 140,
+                    wrapHeaderText: true,
+                    autoHeaderHeight: true,
+                    cellStyle: {
+                        'text-align': 'center',
+                        "font-style": "normal",
+                        "font-variant": "normal",
+                        "font-weight": "300",
+                        "font-size": "20px",
+                        "font-family": "Roboto",
+                        'text-overflow': 'ellipsis',
+                        'white-space': 'nowrap',
+                        'resizable': 'true',
+                    },
+                    initialFlex: 1
+                },
+
+            },
+            masterDetail: true,
+            detailCellRenderer: ChildrenProcPlanningCellRenderer,
+            autoGroupColumnDef: autoGroupColumnDef,
+            paginationAutoPageSize: true,
+            enterNavigatesVertically: true,
+            enterNavigatesVerticallyAfterEdit: true,
+            groupDefaultExpanded: 0,
+            defaultExcelExportParams: defaultExcelExportParams,
+            excelStyles: excelStyles,
+            sideBar: sideBar,
+            onCellEditingStopped(event: any) {
+                const field = event.colDef.field;
+                const newValue = event.newValue;
+                const rowIndex = event.rowIndex;
+
+                if (!field || rowIndex == null) {
+                    return;
+                }
+
+                SetCumulativeData((prevData: any) => {
+                    const newData = [...prevData];
+                    const updatedRow = {
+                        ...newData[rowIndex],
+                        [field]: newValue,
+                        tsfs: newData[rowIndex].soh + newValue
+                    };
+                    newData[rowIndex] = updatedRow;
+                    return newData;
+                });
+                gridRef.current?.api.refreshCells({ force: true });
+            }
+        };
         switch (currentTab.id) {
             case "sdv":
                 return (
                     <div>
-                        <VFTable
-                            paginationPageSize={10}
-                            {...agGridProps}
-                            columnDefs={CompleteAvailableColumns}
-                            rowData={DayWiseData}
-                            tooltipHideDelay={100000}
-                            tooltipShowDelay={0}
-                            tooltipMouseTrack={true}
-                            height={'700px'}
-                            ref={gridRef}
-                            pagination={false}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
-                            }}
-                            disableZoomScaling={true}
-                            
-                        />
-                        <VFPagination
-                            selectedRows={0}
-                            rowsPerPage={10}
-                            totalRows={dayWiseRecordCount}
-                            currentPage={currentPage}
-                            handleChangePage={handlePageChangeDayWise}
-                        />
+                        <VFTableWrapper>
+
+                            <VFTable
+                                paginationPageSize={10}
+                                {...agGridProps}
+                                columnDefs={CompleteAvailableColumns}
+                                rowData={DayWiseData}
+                                tooltipHideDelay={100000}
+                                tooltipShowDelay={0}
+                                tooltipMouseTrack={true}
+                                height={'620px'}
+                                ref={gridRef}
+                                pagination={false}
+                                statusBar={{
+                                    statusPanels: [
+                                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                                    ]
+                                }}
+                                disableZoomScaling={true}
+
+                            />
+                            <VFPagination
+                                selectedRows={0}
+                                rowsPerPage={10}
+                                totalRows={dayWiseRecordCount}
+                                currentPage={currentPage}
+                                handleChangePage={handlePageChangeDayWise}
+                            />
+                        </VFTableWrapper>
                     </div>
                 );
             case "cv":
                 return (
                     <div>
-                        <VFTable
-                            paginationPageSize={10}
-                            {...agGridProps}
-                            columnDefs={ShortageColumns}
-                            rowData={CumulativeData}
-                            tooltipHideDelay={100000}
-                            tooltipShowDelay={0}
-                            tooltipMouseTrack={true}
-                            height={'700px'}
-                            ref={gridRef}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
-                            }}
-                            disableZoomScaling={true}
-                           
-                        />
-                        <VFPagination
-                            selectedRows={0}
-                            rowsPerPage={10}
-                            totalRows={cumulativeRecordCount}
-                            currentPage={currentCumPage}
-                            handleChangePage={handlePageChangeCumulative}
-                        />
+                        <VFTableWrapper>
+
+                            <VFTable
+                                paginationPageSize={10}
+                                {...agGridProps}
+                                columnDefs={ShortageColumns}
+                                rowData={CumulativeData}
+                                tooltipHideDelay={100000}
+                                tooltipShowDelay={0}
+                                tooltipMouseTrack={true}
+                                height={'620px'}
+                                ref={gridRef}
+                                statusBar={{
+                                    statusPanels: [
+                                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                                    ]
+                                }}
+                                disableZoomScaling={true}
+
+                            />
+                            <VFPagination
+                                selectedRows={0}
+                                rowsPerPage={10}
+                                totalRows={cumulativeRecordCount}
+                                currentPage={currentCumPage}
+                                handleChangePage={handlePageChangeCumulative}
+                            />
+                        </VFTableWrapper>
 
                     </div>
                 );
@@ -258,71 +380,7 @@ const useMaterialReq = () => {
                 return <VFTable columnDefs={[]} rowData={[]} {...agGridProps} />
         }
     }
-    const agGridProps: AgGridReactProps = {
-        tooltipShowDelay: 0,
-        tooltipTrigger: "focus",
-        gridOptions: {
-            rowHeight: 50,
-            getRowStyle: (params: any) => {
-                return {
-                    background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
-                };
-            },
-            components: customCellRenderers,
-            rowSelection: 'multiple',
-            suppressRowClickSelection: true,
-            enableBrowserTooltips: true,
-            enableRangeSelection: true,
-            pagination: true,
-            defaultColDef: {
-                cellStyle: {
-                    'text-align': 'center',
-                    'height': '50px',
-                    "font-style": "normal",
-                    "font-variant": "normal",
-                    "font-weight": "300",
-                    "font-size": "20px",
-                    "font-family": "Roboto",
-                    'text-overflow': 'ellipsis',
-                    'white-space': 'nowrap',
-                    'resizable': 'true'
-                },
-                initialFlex: 1
-            },
 
-        },
-        masterDetail: true,
-        detailCellRenderer: ChildrenProcPlanningCellRenderer,
-        autoGroupColumnDef: autoGroupColumnDef,
-        paginationAutoPageSize: true,
-        enterNavigatesVertically: true,
-        enterNavigatesVerticallyAfterEdit: true,
-        groupDefaultExpanded: 0,
-        defaultExcelExportParams: defaultExcelExportParams,
-        excelStyles: excelStyles,
-        sideBar: sideBar,
-        onCellEditingStopped(event: any) {
-            const field = event.colDef.field;
-            const newValue = event.newValue;
-            const rowIndex = event.rowIndex;
-
-            if (!field || rowIndex == null) {
-                return;
-            }
-
-            SetCumulativeData((prevData: any) => {
-                const newData = [...prevData];
-                const updatedRow = {
-                    ...newData[rowIndex],
-                    [field]: newValue,
-                    tsfs: newData[rowIndex].soh + newValue
-                };
-                newData[rowIndex] = updatedRow;
-                return newData;
-            });
-            gridRef.current?.api.refreshCells({ force: true });
-        }
-    };
 
     return {
         // isSideBarOpen,

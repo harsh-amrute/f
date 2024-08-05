@@ -274,7 +274,7 @@ const BMTrends = () => {
                 headerName: 'White',
                 initialWidth: 200
             }
-    ]
+        ]
 
     const generateHeader = () => {
         return (
@@ -289,7 +289,7 @@ const BMTrends = () => {
                             fontFamily: "Roboto",
                             paddingLeft: '10px'
                         }}
-                        > <b>Select Horizon: </b></label>
+                        > <b>Select Horizon (in days): </b></label>
                         <VFRangeSlider
                             showTriangle={false}
                             min={1}
@@ -366,25 +366,28 @@ const BMTrends = () => {
 
     return (
         <BMTrendWrapper>
-            <MTOActionToolBar comp={'BMTrends'} />
-            <SplitGraphContainer
-                tableLoading={tableLoading}
-                chartLoading={chartLoading}
-                setTableLoading={setTableLoading}
-                setChartLoading={setChartLoading}
-                data={numericData}
-                rowData={rowData}
-                graphTitle={`Overall BM Trend (${numericData[0]?.dt} - ${numericData[numericData?.length - 1]?.dt} )`}
-                tableTitle={`Overall BM Trend (${numericData[0]?.dt} - ${numericData[numericData?.length - 1]?.dt} )`}
-                options={options}
-                colDef={colDef}
-                header={generateHeader}
-                hideChart={hideChart1}
-                toggleChart={toggleChart1}
-                TooltipRenderer={TooltipRenderer}
-                chartHeight={50}
-                graphType={1}
-            />
+            <MTOActionToolBar comp={'BMTrends'} isAddFilterButton />
+            <div style={{ paddingLeft: '25px' }}>
+
+                <SplitGraphContainer
+                    tableLoading={tableLoading}
+                    chartLoading={chartLoading}
+                    setTableLoading={setTableLoading}
+                    setChartLoading={setChartLoading}
+                    data={numericData}
+                    rowData={rowData}
+                    graphTitle={`Overall BM Trend (${numericData[0]?.dt || '--'} - ${numericData[numericData?.length - 1]?.dt || '--'} )`}
+                    tableTitle={`Overall BM Trend (${numericData[0]?.dt || '--'} - ${numericData[numericData?.length - 1]?.dt || '--'} )`}
+                    options={options}
+                    colDef={colDef}
+                    header={generateHeader}
+                    hideChart={hideChart1}
+                    toggleChart={toggleChart1}
+                    TooltipRenderer={TooltipRenderer}
+                    chartHeight={50}
+                    graphType={1}
+                />
+            </div>
         </BMTrendWrapper>
     )
 }

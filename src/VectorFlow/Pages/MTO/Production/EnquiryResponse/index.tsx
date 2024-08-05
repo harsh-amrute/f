@@ -3,24 +3,20 @@ import FilterModal from "./FilterModal";
 import Note from "./Note";
 import ResizableTable from "./ResizableTable";
 import MTOActionToolBar from "../../../../../../src/components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { prodPlanningMock } from "./PROD";
 import {
   BlurCover,
+  BTRAllomentSection,
+  BTRTableWrapper,
   CardCover,
   DashedCard,
   EnquiryWrapper,
   EstimatedWrapper,
   FilterWrapper,
-  HeaderWrapper,
-  HighlightedValue,
   MessageText,
-  RmHeading,
   RmUICont,
   TabSwitchContainer,
   TabSwitchHeading,
   TabsWrapper,
-  ValueWrapper,
-  VerticalLine,
 } from "./styles";
 // import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 // import { FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, PlantInput, SearchBar } from "./FilterModal/styles";
@@ -30,16 +26,14 @@ import { useUserData } from "../../../../../context/index";
 import { notifyLoader } from "../../../../../helpers/notify";
 import { toast } from "react-toastify"
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule";
+import { Allotment } from "allotment";
+import useViewPort from "../../../../../hooks/useViewPort";
+import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import { getColumnDefinations } from "../../../../../helpers/utils";
+import FullkitCellRenderer from "../../Common/FullkitCellRenderer";
 
 const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { label: "RM Available", value: "RM Available" }];
 
-interface BufferData {
-  ItemType1: { proc_size: number; prod_size: number };
-  ItemType2: { proc_size: number; prod_size: number };
-  ItemType3: { proc_size: number; prod_size: number };
-  ItemType4: { proc_size: number; prod_size: number };
-  // Add more types as needed
-}
 
 const EnquiryResponse = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -62,7 +56,6 @@ const EnquiryResponse = () => {
   const themeUi = user.user.theme_ui;
 
   const handleTabChange = (tab: any) => {
-    console.log(tab, 'TAB');
     if (tab?.label === 'RM Not Available') {
       setActiveTab(0);
     } else {
@@ -71,40 +64,38 @@ const EnquiryResponse = () => {
     setActiveCapsule(tab);
   };
 
-  const getMostloadedCCR = () => {
-    let mostLoadedCR = filterData?.length > 0 ? filterData[0] : {};
-    for (let i = 0; i < filterData?.length; i++) {
-      const current = filterData[i];
-      if (current?.fol > mostLoadedCR?.fol) {
-        mostLoadedCR = current;
+
+
+
+  const getTableSimData = (filterData: any): any => {
+    const bufferData = filterData.length > 0 ? filterData : [];
+
+    const simData: any = [];
+
+    for (let index = 0; index < bufferData.length; index++) {
+      const element = bufferData[index];
+      let existIndex: any = -1;
+
+      for (let i = 0; i < simData.length; i++) {
+        if (simData[i].plnm === element.plnm) {
+          existIndex = i;
+          break; // Found the matching element, no need to continue the loop
+        }
+      }
+
+      if (existIndex !== -1) {
+        simData[existIndex] = {
+          ...simData[existIndex],
+          fol: Math.min(simData[existIndex].fol, element.fol),
+          cnm: element.fol === simData[existIndex].fol ? element.cnm : simData[existIndex].cnm,
+        };
+      } else {
+        simData.push({ ...element }); // Clone the object to avoid mutation
       }
     }
-    return mostLoadedCR?.cnm;
+
+    return simData;
   };
-
-  const getRMValues = (bufferType: string) => {
-    let bufferData = filterData?.length > 0 ? filterData[0] : {};
-    const productGroup: keyof BufferData = selectedOptions?.productGroup && selectedOptions?.productGroup[0];
-
-    if (!productGroup) {
-      return "--";
-    }
-
-    for (let i = 0; i < filterData?.length; i++) {
-      const current = filterData[i];
-
-      if (current?.it[productGroup]) {
-        bufferData = current;
-      }
-    }
-    if (bufferType === "procurement") {
-      return (
-        (bufferData?.it && bufferData?.it[productGroup]?.proc_size) || "--"
-      );
-    }
-    return (bufferData?.it && bufferData?.it[productGroup]?.prod_size) || "--";
-  };
-
   function getWeekOfMonth(dateString: string): string {
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -143,34 +134,15 @@ const EnquiryResponse = () => {
     return getWeekOfMonth(`${day} ${month} ${year}`);
   };
 
-  const getEarliestDate = (activeTab: number) => {
-    let bufferData = filterData?.length > 0 ? filterData[0] : {};
-    const productGroup: keyof BufferData = selectedOptions?.productGroup && selectedOptions?.productGroup[0];
-
-    if (!productGroup) {
-      return "--";
-    }
-
-    for (let i = 0; i < filterData?.length; i++) {
-      const current = filterData[i];
-
-      if (current?.it[productGroup]) {
-        bufferData = current;
-      }
-    }
-
-    const prodBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.prod_size;
-    const procBuffer = (bufferData?.it && productGroup) && bufferData?.it[productGroup]?.proc_size;
-    const fol = bufferData?.fol;
+  const getEarliestDate = (array: number[]) => {
 
     const today = new Date();
     const result = new Date(today);
     let daysToAdd = 0;
 
-    if (activeTab === 0) {
-      daysToAdd = (prodBuffer + procBuffer) || 0;
-    } else {
-      daysToAdd = Math.max(prodBuffer, fol + (0.5 * prodBuffer));
+    for (let index = 0; index < array.length; index++) {
+      daysToAdd = daysToAdd + array[index];
+
     }
 
     return getFormattedDate(
@@ -179,29 +151,68 @@ const EnquiryResponse = () => {
   };
 
   const getRMUI = () => {
+    if (filterData) {
+
+      const simData = getTableSimData(filterData);
+      // const simData: any = [];
+      return (
+        <RmUICont style={{ background: 'white' }}>
+
+
+
+          <table style={{ margin: '10px 0', borderSpacing: '0', fontFamily: 'Roboto' }}>
+            <thead style={{ marginBottom: '20px', textAlign: 'center' }}>
+              <tr style={{ rowGap: '2px' }}>
+                <td style={{ borderRight: '1px solid grey', borderBottom: '5px solid white', paddingLeft: '16px' }}>Plant</td>
+                {(!activeTab) &&
+
+                  <td style={{ borderRight: '1px solid grey', borderBottom: '5px solid white', paddingLeft: '6px' }}>Procurement Buffer</td>
+
+                }
+                <td style={{ borderRight: '1px solid grey', borderBottom: '5px solid white', paddingLeft: '6px' }}>Production Buffer</td>
+                <td style={{ borderRight: '1px solid grey', borderBottom: '5px solid white', paddingLeft: '6px' }}>Least Loaded CCR</td>
+
+                <td style={{ paddingLeft: '6px', borderBottom: '5px solid white' }}>Earliest Readiness Date</td>
+              </tr>
+            </thead>
+            <tbody>
+
+
+              {simData.map((row: any, index: any) => (
+                (row.it[selectedOptions.productGroup[0]]) &&
+
+                <tr style={{ background: `${(((index % 2 === 0))) ? '#F8F8F8' : 'white'}` }} key={index}>
+                  <td style={{ padding: '5px', paddingLeft: '16px', textAlign: 'center' }}>{row.plnm}</td>
+                  {
+                    (!activeTab) &&
+                    <td style={{ paddingLeft: '4px', textAlign: 'center', paddingRight: '20px' }}>{row.it[selectedOptions.productGroup[0]]?.proc_size} &nbsp; days</td>
+
+                  }
+                  <td style={{ paddingLeft: '4px', textAlign: 'center', paddingRight: '20px' }} >{row.it[selectedOptions.productGroup[0]]?.prod_size}&nbsp; days</td>
+                  <td style={{ paddingLeft: '4px', textAlign: 'center' }} >{row.cnm}</td>
+                  {
+                    (!activeTab) ?
+
+                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center', fontWeight: 'bold' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.proc_size, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
+                      :
+                      <td style={{ color: '#BC3D81', paddingLeft: '6px', textAlign: 'center', fontWeight: 'bold' }} >{getEarliestDate([row.fol, row.it[selectedOptions.productGroup[0]]?.prod_size])}</td>
+                  }
+                </tr>
+
+              ))}
+
+            </tbody>
+          </table>
+        </RmUICont>
+      );
+    }
     return (
-      <RmUICont>
-        <HeaderWrapper>
-          {activeTab === 0 && <RmHeading>Procurement Buffer</RmHeading>}
-          {activeTab === 0 && <VerticalLine />}
-          <RmHeading>Production Buffer</RmHeading>
-          <VerticalLine />
-          <RmHeading>Most Loaded CCR</RmHeading>
-          <VerticalLine />
-          <RmHeading>Earliest Readiness Date</RmHeading>
-        </HeaderWrapper>
-        <ValueWrapper>
-          {activeTab === 0 && <div>{getRMValues("procurement")}</div>}
-          <div>{getRMValues("production")}</div>
-          <div>{getMostloadedCCR()}</div>
-          <HighlightedValue>{getEarliestDate(activeTab)}</HighlightedValue>
-        </ValueWrapper>
-      </RmUICont>
-    );
+      <></>
+    )
   };
 
-  const handleNameChange = ({ name, value }: { name: string, value: string }) => {
-    setSelectedOptions((prev: any) => ({ ...prev, [name]: value }));
+  const handleNameChange = (arr: any) => {
+    setSelectedOptions((prev: any) => ({ ...prev, plantName: arr }));
   };
 
   const handleFilterSelect = (event: any, category: string, index: number) => {
@@ -255,15 +266,18 @@ const EnquiryResponse = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const filterByPlName = (name: string) => {
-    if (name === '') {
+  const filterByPlNames = (names: string[]) => {
+    if (names.length === 0) {
       return tableData;
     }
     const data = [];
     for (let i = 0; i < tableData?.length; i++) {
       const current = tableData[i];
-      if (current?.plnm?.includes(name)) {
-        data?.push(current);
+      for (let j = 0; j < names.length; j++) {
+        if (current?.plnm?.includes(names[j])) {
+          data?.push(current);
+          break; // If a match is found, break out of the inner loop
+        }
       }
     }
     return data;
@@ -317,7 +331,7 @@ const EnquiryResponse = () => {
     if (options?.plantName) {
       filters.push({
         label: "Plant",
-        values: [`${options?.plantName}`],
+        values: [...options.plantName],
       });
     }
     if (options?.productGroup?.length > 0) {
@@ -351,7 +365,7 @@ const EnquiryResponse = () => {
   const applyFilter = (options: any) => {
 
     let data = [];
-    data = filterByPlName(options?.plantName);
+    data = filterByPlNames(options?.plantName);
     data =
       options?.productGroup?.length > 0
         ? filterByProdGrpName(data, options?.productGroup)
@@ -390,10 +404,24 @@ const EnquiryResponse = () => {
   const ccrNameOptions: any = [];
   const plantOptions: any = []
 
+  function getUniqueValues<T extends Record<any, any>>(array: T[], key: any): T[] {
+    const uniqueArray: T[] = [];
+    const uniqueValues: any[] = [];
+
+    for (const item of array) {
+      if (!uniqueValues.includes(item[key])) {
+        uniqueValues.push(item[key]);
+        uniqueArray.push(item);
+      }
+    }
+    return uniqueArray;
+  }
+
   for (let i = 0; i < tableData?.length; i++) {
     const ccrObj = tableData[i];
     if (ccrObj?.plnm) {
       plantOptions.push({ value: ccrObj.plnm, label: ccrObj.plnm, name: ccrObj.plnm });
+      // plantOptions = getUniqueValues(plantOptions)
     }
     if (ccrObj?.it) {
       const types = Object.keys(ccrObj?.it);
@@ -427,7 +455,7 @@ const EnquiryResponse = () => {
     {
       key: "plnm",
       heading: "Plant",
-      options: plantOptions
+      options: getUniqueValues(plantOptions, 'value')
     },
     {
       key: 'prdGrp',
@@ -453,6 +481,7 @@ const EnquiryResponse = () => {
 
   const removeFilters = (category: string, name: string) => {
 
+
     const updtedCCRName = selectedOptions?.ccrName;
     const updtedDept = selectedOptions?.department;
     const updtedCCRGrp = selectedOptions?.ccrGroup;
@@ -460,11 +489,23 @@ const EnquiryResponse = () => {
     let updatedProductGrp = selectedOptions?.productGroup;
 
     if (category === "Plant") {
-      updatedPlantName = '';
-      setSelectedOptions((prev: any) => ({
-        ...prev,
-        plantName: '',
-      }));
+      updatedPlantName = updatedPlantName.filter((item: string) => item !== name);
+      if (updatedPlantName.length === 0) {
+
+        updatedPlantName = "";
+
+        setSelectedOptions((prev: any) => ({
+          ...prev,
+          plantName: updatedPlantName
+        }));
+      }
+      else {
+        setSelectedOptions((prev: any) => ({
+          ...prev,
+          plantName: updatedPlantName
+        }));
+      }
+
     }
     if (category === "Product Group") {
       updatedProductGrp = [];
@@ -522,52 +563,111 @@ const EnquiryResponse = () => {
     setFilterData(data?.data?.data?.results);
   }, [tableData]);
 
+  const { screenHeight } = useViewPort()
+
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+  const reportName = "EnquiryResponse";
+  const [myColDefs, setMyColDefs] = useState([{}]);
+
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    setColumnDef();
+  }, [])
+
+  const CustomHeader = {
+    'FOL(inDays)': {
+      cellRenderer: FullkitCellRenderer
+    }
+  }
+
+  useEffect(() => {
+    setMyColDefs(getColumnDefinations(HeaderData, CustomHeader));
+  }, [HeaderData])
+
+
   return (
     <EnquiryWrapper>
       <FilterWrapper>
         <MTOActionToolBar
           comp={"EnquiryResponse"}
+          isAddFilterButton
+          isAsOnDate
           onAddFilter={handleModalToggle}
           selectedFilters={selectedFilters}
           removeFilters={removeFilters}
           themeUi={themeUi}
         />
       </FilterWrapper>
-      <ResizableTable header={prodPlanningMock?.header} data={filterData} />
-      <EstimatedWrapper>
-        <div
-          style={{ WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})`, padding: "1rem" }}
-        >
-          <TabSwitchContainer>
-            <TabSwitchHeading>Estimated Due Date</TabSwitchHeading>
-            <TabsWrapper>
-              <VFCapsule activeBtn={activeCapsule} capsules={tabOptions} handleClick={handleTabChange} />
-            </TabsWrapper>
-          </TabSwitchContainer>
-          {getRMUI()}
-          <Note type="danger" message={message} />
-        </div>
-        <BlurCover style={{ display: hasProductGroup ? "none" : "block" }}>
-          <CardCover>
-            <DashedCard>
-              <MessageText>
-                Please select filter for product group to view estimated due
-                date
-              </MessageText>
-            </DashedCard>
-          </CardCover>
-        </BlurCover>
-      </EstimatedWrapper>
-      <FilterModal
-        filters={filters}
-        isOpen={isModalOpen}
-        handleClose={handleModalToggle}
-        handleOkay={() => applyFilter(selectedOptions)}
-        selectedOptions={selectedOptions}
-        handleOptionSelect={handleFilterSelect}
-        handleNameChange={handleNameChange}
-        themeUi={themeUi}
-      />
+      <div style={{ paddingLeft: '25px' }}>
+
+
+        <BTRTableWrapper style={{ height: screenHeight - 145, margin: '0' }}>
+
+          <Allotment vertical separator   >
+            <Allotment.Pane preferredSize={'40%'}>
+              <BTRAllomentSection>
+                <ResizableTable header={myColDefs} data={filterData} />
+
+              </BTRAllomentSection>
+            </Allotment.Pane>
+
+            <Allotment.Pane preferredSize={'60%'}>
+              <BTRAllomentSection style={{ paddingTop: '10px' }}>
+
+                <EstimatedWrapper>
+                  <div
+                    style={{ WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})`, padding: "20px 25px" }}
+                  >
+                    <TabSwitchContainer>
+                      <TabSwitchHeading>Estimated Due Date</TabSwitchHeading>
+                      <TabsWrapper>
+                        <VFCapsule activeBtn={activeCapsule} capsules={tabOptions} handleClick={handleTabChange} />
+                      </TabsWrapper>
+                    </TabSwitchContainer>
+                    {getRMUI()}
+                    <Note type="danger" message={message} />
+                  </div>
+                  <BlurCover style={{ display: hasProductGroup ? "none" : "block" }}>
+                    <CardCover>
+                      <DashedCard>
+                        <MessageText>
+                          Please select filter for product group to view estimated due
+                          date
+                        </MessageText>
+                      </DashedCard>
+                    </CardCover>
+                  </BlurCover>
+                </EstimatedWrapper>
+
+              </BTRAllomentSection>
+            </Allotment.Pane>
+          </Allotment>
+
+
+
+        </BTRTableWrapper>
+        <FilterModal
+          filters={filters}
+          isOpen={isModalOpen}
+          handleClose={handleModalToggle}
+          handleOkay={() => applyFilter(selectedOptions)}
+          selectedOptions={selectedOptions}
+          handleOptionSelect={handleFilterSelect}
+          handleNameChange={handleNameChange}
+          themeUi={themeUi}
+        />
+      </div>
     </EnquiryWrapper>
   );
 };

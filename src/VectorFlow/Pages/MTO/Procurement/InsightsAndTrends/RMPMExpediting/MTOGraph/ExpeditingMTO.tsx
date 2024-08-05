@@ -1,7 +1,7 @@
 import { AgChartOptions } from 'ag-charts-community'
 import { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
-import VFRangeSlider from '../../../../../../../components/VectorFLOW/commons/VFRangeSlider'
+import VFRangeSlider from '../../../../../../../VectorFlow/Pages/MTO/Common/VFRangeSlider'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
 
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';
@@ -46,7 +46,7 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
         //Porperties to set here for x and y axises
         axes: [
             {
-                title: { text: 'Raw Material', fontSize: 10, spacing: 3 },
+                title: { text: 'Raw Material', fontSize: 10, spacing: 20 },
                 type: "category",
                 position: 'bottom',
                 label: {
@@ -180,8 +180,9 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                             fontFamily: "Roboto",
                             paddingLeft: '10px'
                         }}
-                        > <b>Select Horizon: </b></label>
+                        > <b>Select Horizon (in days): </b></label>
                         <VFRangeSlider
+                            style={{ paddingTop: '10px' }}
                             showTriangle={false}
                             min={1}
                             max={90}
@@ -190,10 +191,9 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                             width={200}
                             defaultValue={horizonDays}
                             handleChange={(e) => handleSliderChange(e)}
-                            labelValueFormatter={(value: number) => value > 1 ? `${value} Days` : `${value} Day`}
+                            labelValueFormatter={(value: number) => value.toString()}
                         />
                         <div>
-
                             <img
 
                                 style={{ cursor: 'pointer' }}
@@ -203,6 +203,7 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                                 onClick={() => handleSubmitClick()}
                             />
                         </div>
+
 
 
                     </SCChartSliderContainer>
@@ -224,7 +225,7 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
 
 
     return (
-        <div style={{ height: "70vh", display: 'flex', justifyContent: 'left' }}>
+        <div style={{ height: "75vh", display: 'flex', justifyContent: 'left' }}>
 
 
             <SplitGraphContainer
@@ -243,7 +244,9 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRenderer}
                 graphType={2}
+                chartHeight={55}
             />
+
 
             {
                 (isMTO) && (<div style={{ width: "14px", resize: "none", height: "100%", display: 'flex', justifyContent: 'right', alignItems: 'center' }}>

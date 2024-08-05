@@ -1146,8 +1146,8 @@ export const OrderDetailsHeaderData =
 }
 
 export const MaterRequirementData = {
- 
- 
+
+
     "data": [
         {
             "cp": [
@@ -1247,12 +1247,12 @@ export const MaterRequirementData = {
             "rmr": 12,
             "msrm": 12
         }
- 
+
     ]
 }
 
 
-export const HeaderMaterialRequirement={
+export const HeaderMaterialRequirement = {
     "HeaderData": [
         {
             "rn": "materialRequirement",
@@ -1727,7 +1727,7 @@ export const HeaderChildren =
             "rn": "MaterialReportChildren",
             "jf": "rmall",
             "cp": 6,
-            "hdr": "RM Allocatted",
+            "hdr": "RM Allocated",
             "vs": true,
             "ca": "left",
             "val": "*Error*"

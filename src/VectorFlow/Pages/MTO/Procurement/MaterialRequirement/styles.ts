@@ -10,7 +10,7 @@ export const MaterialRequirementTest = styled.div`
     display:flex;
     justify-content:center;
     align-item:center;
-    font-size:20px;
+    font-size:16px;
     color:${ColorsMTO.Black};
     font-family:Roboto-Light;
     font:normal normal 300 20px/24px Roboto;
@@ -23,7 +23,7 @@ export const MaterialRequirementDate = styled.div`
     font-familt:Roboto-Medium;
     justify-content:center;
     align-item:center;
-    font-size:20px;
+    font-size:18px;
     font:normal normal medium 20px/24px Roboto;
     padding-left:8px;
 `

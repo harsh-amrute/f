@@ -1,10 +1,10 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import { HorizontalViewWrapper } from "./styles";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import { GridOptions } from "ag-grid-enterprise";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
-import { APIMock, columnConfig, reasonColConfig } from "./MockData";
+import { reasonColConfig } from "./MockData";
 import SplitGraphContainer from "../../../Common/SplitGraphContainer";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
@@ -12,6 +12,10 @@ import { ProductionInsightsAndTrendsString } from "../../../Common/String";
 import { format } from "date-fns";
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import useViewPort from "../../../../../../hooks/useViewPort";
+import { useGetOrderRiskData } from "../../../../../Services/MTO/Production/InsightsAndTrends/OrderAtRisk";
+import { ReasonOrderAtRiskType } from "../../../../../../../src/types/MTO/types";
+import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import OverlayLoader from "../../../Common/Loader";
 
 const OrderAtRisk = () => {
   const [isGridView, setIsGridView] = useState(false);
@@ -19,13 +23,37 @@ const OrderAtRisk = () => {
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
-  const [rawData] = useState(APIMock.reasonsBarData);
-  const {screenHeight} = useViewPort();
+  const [rawData, setRawData] = useState<ReasonOrderAtRiskType[]>([]);
+  const [gridData, setGridData] = useState([]);
+  const { screenHeight } = useViewPort();
+  const { data, isLoading } = useGetOrderRiskData() || {};
 
   const gridOptions: GridOptions = {
+    sideBar: {
+      toolPanels: [
+        {
+          id: 'columns',
+          labelDefault: 'Columns',
+          labelKey: 'columns',
+          iconKey: 'columns',
+          toolPanel: 'agColumnsToolPanel',
+          minWidth: 225,
+          maxWidth: 225,
+          width: 225
+        },
+        {
+          id: 'filters',
+          labelDefault: 'Filters',
+          labelKey: 'filters',
+          iconKey: 'filter',
+          toolPanel: 'agFiltersToolPanel',
+          minWidth: 180,
+          maxWidth: 400,
+          width: 250
+        }
+      ],
+    },
     defaultColDef: {
-      resizable: true,
-      suppressMenu: true,
       initialFlex: 1,
       wrapHeaderText: true,
       autoHeaderHeight: true,
@@ -37,15 +65,36 @@ const OrderAtRisk = () => {
     rowGroupPanelShow: "always",
   };
 
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+  const reportName = "OrdersAtRisk";
+
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    setColumnDef();
+  }, [])
+
+
+
   const colDefCustomizations = {
-    bpp: {
+    BPP: {
       cellRenderer: ColorCellRenderer,
     },
   };
 
   const tableColDefs = useMemo(() => {
-    return getColumnDefinations(columnConfig, colDefCustomizations, []);
-  }, []);
+    return getColumnDefinations(HeaderData, colDefCustomizations, []);
+  }, [HeaderData]);
 
   const gridColDefs = useMemo(() => {
     return getColumnDefinations(reasonColConfig, {}, []);
@@ -125,13 +174,11 @@ const OrderAtRisk = () => {
             </div>
             <div style="border-top: 1px dashed lightgray"></div>
             <div style="display:flex ;width: 100%; justify-content: space-around; color: lightgray">
-              <span style="padding: 5px ">${
-                datum?.black || "-" + datum?.red || "-"
-              }</span>
-              <span style="padding: 5px; margin-left: 30px; ">${
-                datum?.black || "-"
-              }</span>
-              <span style="padding: 5px ">${datum?.red || "-"}</span>
+              <span style="padding: 5px ">${(datum?.bo || 0) + (datum?.ro || 0)
+      }</span>
+              <span style="padding: 5px; margin-left: 30px; ">${datum?.bo || 0
+      }</span>
+              <span style="padding: 5px ">${datum?.ro || 0}</span>
             </div>
            <div>
             </div>`;
@@ -144,8 +191,8 @@ const OrderAtRisk = () => {
       {
         type: "bar",
         direction: "horizontal",
-        xKey: "reason",
-        yKey: "black",
+        xKey: "r",
+        yKey: "bo",
         yName: "Impacted order - Black",
         stacked: true,
         fill: "black",
@@ -156,8 +203,8 @@ const OrderAtRisk = () => {
       {
         type: "bar",
         direction: "horizontal",
-        xKey: "reason",
-        yKey: "red",
+        xKey: "r",
+        yKey: "ro",
         yName: "Impacted order - Red",
         stacked: true,
         fill: "red",
@@ -216,25 +263,34 @@ const OrderAtRisk = () => {
     },
   };
 
+  useEffect(() => {
+    if (data?.data?.data?.r && data?.data?.data?.g) {
+      setRawData(data?.data?.data?.r);
+      setGridData(data?.data?.data?.g);
+    }
+  }, [data]);
+
   return (
     <div>
       <MTOActionToolBar
         comp={"orderAtRisk"}
         isGridView={isGridView}
+        isChartGridToggle
+        isAddFilterButton
         setIsGridView={setIsGridView}
       />
-      <HorizontalViewWrapper style={{ marginTop: "20px" }}>
+      {isLoading && <OverlayLoader />}
+      <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: "25px" }}>
         {isGridView ? (
-          <div data-testid="grid-view" style={{height:screenHeight - 300}}>
+          <div data-testid="grid-view" style={{ height: screenHeight - 300 }}>
             <VFTable
               {...gridOptions}
-              sideBar="columns"
               columnDefs={tableColDefs}
-              rowData={APIMock.gridData}
+              rowData={gridData}
               tooltipHideDelay={100000}
               tooltipShowDelay={0}
               tooltipMouseTrack={true}
-              height={"100%"}
+              height={"95vh"}
               ref={gridRef}
               statusBar={{
                 statusPanels: [

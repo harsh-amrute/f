@@ -51,3 +51,39 @@ export interface Order {
     ca: CustomerAttribute[]; // Customer Attributes
 }
 
+export interface DeptWiseOrder {
+    BPP: string;
+    D_Ag: string;
+    Ord_Typ: string;
+    Ord_ID: string;
+    L_Itm: string;
+    Itm_Code: string;
+    Itm_Desc: string;
+    Ord_Qty: number;
+    WIP_O_Hd: number;
+    M_Bal: number;
+    CCR_Nme: string;
+    Cust_Nme: string;
+    CRDDate: string;
+    DDt: string;
+    R_DDt: string;
+    Trail_Dpt: string;
+    Elap_days: number;
+    Attr: string;
+    Pl_Nam: string;
+    PO_No: string;
+    Price: number;
+    Itm_Grp: string;
+    Att_1: string;
+    Att_2: string;
+    Att_3: string;
+    Att_4: string;
+    Cust_Cd: string;
+    Rgn: string;
+    Cntry: string;
+    Rem_Cd: string;
+    Lst_Rmrk: string;
+    Rmrk_Hstry: string;
+}
+
+

@@ -41,6 +41,7 @@ import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrend
 import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
 import RMPMBufferTrends from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMBufferTrends'
 import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
+import DptWiseBMReport from './VectorFlow/Pages/MTO/Production/DepartmentWiseBMReport/index';
 import FullKitAssignment from './VectorFlow/Pages/MTO/Production/FullKitAssignement'
 import OrderRescheduling from './VectorFlow/Pages/MTO/Production/OrderRescheduling'
 import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index'
@@ -50,6 +51,10 @@ import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModification
 import STPLAndFullKits from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/STPLAndFullKits'
 import OrderAtRisk from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/OrderAtRisk'
 import DueDateQuotation from './VectorFlow/Pages/MTO/Production/DueDateQuotation'
+import OrderBalance from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/OrderBalance'
+import ResourceUtilization from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/ResourceUtilization'
+import FOLSummary from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FOLSummary'
+import DynamicReleaseManagement from './VectorFlow/Pages/MTO/Production/DynamicReleaseManagement'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -67,6 +72,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
+    '/poogi/insight-and-trends/resource-utilization-wip-profile'
   ]
   const urlAllPage = [
     ...authenPage,
@@ -108,12 +114,18 @@ const lazyLoad = (children: React.ReactNode) => {
     '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
     '/production-planning-scheduling/enquiry-response',
     '/production-planning-scheduling/insight-and-trends/bm-trends',
+    '/production-planning-scheduling/deptwise-bm-report',
     '/production-planning-scheduling/insight-and-trends/stpl-full-kits',
     '/production-planning-scheduling/full-kit-assignment',
     '/supply-chain-intelligence-hub/sdr',
     '/master-data-management/data-modification-history',
     '/production-planning-and-scheduling/due-date-quotation',
     '/production-planning-scheduling/insight-and-trends/order-at-risk',
+    '/production-planning-scheduling/insight-and-trends/order-balance',
+    '/poogi/insight-and-trends/resource-utilization-wip-profile',
+    '/production-planning-scheduling/insights-and-trends/fol-summary',
+    '/production-planning-scheduling/dynamic-release-mangement'
+
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -492,26 +504,37 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-     path: '/production-planning-scheduling/insight-and-trends/stpl-full-kits',
-     element: <AppLayout />,
-     children: [
-       {
-         index: true,
-         element: lazyLoad(<STPLAndFullKits/>)
-       },
-       ...getStoreTransferModuleRoutes()
-     ]
+      path: '/production-planning-scheduling/insight-and-trends/stpl-full-kits',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<STPLAndFullKits />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
     },
     {
-     path: '/production-planning-scheduling/insight-and-trends/order-at-risk',
-     element: <AppLayout />,
-     children: [
-       {
-         index: true,
-         element: lazyLoad(<OrderAtRisk/>)
-       },
-       ...getStoreTransferModuleRoutes()
-     ]
+      path: '/production-planning-scheduling/insight-and-trends/order-at-risk',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OrderAtRisk />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/insight-and-trends/order-balance',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OrderBalance />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
     },
     {
       path: '/dbm/dbm-norm-suggestions',
@@ -615,6 +638,17 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
+      path: '/production-planning-scheduling/deptwise-bm-report',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DptWiseBMReport />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
       path: '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
       element: <AppLayout />,
       children: [
@@ -644,6 +678,39 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<OrderRescheduling />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/insight-and-trends/resource-utilization-wip-profile',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ResourceUtilization />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/insights-and-trends/fol-summary',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<FOLSummary />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/dynamic-release-mangement',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DynamicReleaseManagement />)
         },
         ...getStoreTransferModuleRoutes()
       ]

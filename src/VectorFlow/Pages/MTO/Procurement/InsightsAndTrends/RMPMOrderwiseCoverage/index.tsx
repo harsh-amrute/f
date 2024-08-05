@@ -10,6 +10,9 @@ import { AgGridReactProps } from 'ag-grid-react'
 import { useGetOrderwiseCoverageData } from '../../../../../../VectorFlow/Services/MTO/Procurement/OrderwiseCoverage'
 import { toast } from 'react-toastify'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../helpers/notify'
+import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig'
+import { getColumnDefinations } from '../../../../../../helpers/utils'
+
 
 const RMPMOrderwiseCoverage = () => {
 
@@ -23,13 +26,40 @@ const RMPMOrderwiseCoverage = () => {
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
         tooltipTrigger: "focus",
+        sideBar: {
+            toolPanels: [
+                {
+                    id: 'columns',
+                    labelDefault: 'Columns',
+                    labelKey: 'columns',
+                    iconKey: 'columns',
+                    toolPanel: 'agColumnsToolPanel',
+                    minWidth: 225,
+                    maxWidth: 225,
+                    width: 225
+                },
+                {
+                    id: 'filters',
+                    labelDefault: 'Filters',
+                    labelKey: 'filters',
+                    iconKey: 'filter',
+                    toolPanel: 'agFiltersToolPanel',
+                    minWidth: 180,
+                    maxWidth: 400,
+                    width: 250
+                }
+            ],
+        },
+
         gridOptions: {
+
             rowHeight: 50,
             getRowStyle: (params: any) => {
                 return {
                     background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
                 };
             },
+
 
             rowSelection: 'multiple',
             suppressRowClickSelection: true,
@@ -50,6 +80,7 @@ const RMPMOrderwiseCoverage = () => {
                     'white-space': 'nowrap',
                     'resizable': 'true',
                 },
+                flex: 1
             },
 
         },
@@ -72,7 +103,42 @@ const RMPMOrderwiseCoverage = () => {
     };
 
     // const [ShortageColumns, setShortageColumns] = useState(columnData);
-    const [ShortageColumns] = useState(columnData);
+    const [HeaderData, setHeaderData] = useState([{}]);
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+    const reportName = "RMPMOrderWiseCoverage";
+
+    const [ShortageColumns, setShortageColumns] = useState([{}]);
+    const setColumnDef = async () => {
+        try {
+            const response = await getUIConfigData(reportName);
+            setHeaderData(response.data.data);
+            getColumnDefinations(HeaderData)
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    useEffect(() => {
+        setColumnDef();
+    }, [])
+
+    const customHeader = {
+        BPP: {
+            cellRenderer: 'ColorRangeCellRenderer',
+            initialWidth: 200,
+            autoHeaderHeight: true,
+            wrapHeaderText: true,
+
+        },
+
+    }
+
+
+    useEffect(() => {
+        setShortageColumns(getColumnDefinations(HeaderData, customHeader))
+    }, [HeaderData])
 
     const mapDataToColumns = (data: any, columns: ColDef[]) => {
         return data.map((item: any) => {
@@ -107,20 +173,18 @@ const RMPMOrderwiseCoverage = () => {
 
     const [convertedData, setConvertedData] = useState([{}]);
     const [GraphDatas, setGraphDatas] = useState([{}])
-
+    const [apiData, setApiData] = useState([{}]);
     const GetData = async () => {
         try {
             notifyLoader("Loading Data...")
             const APIData = await getOrderwiseCoverageData();
-            console.log("orderwise: ", APIData)
             if (APIData.status.toString() === '200') {
                 toast.dismiss();
                 notifySuccess("Data Fetched Successfully!")
             }
-            setGraphDatas(APIData.data.data.results)
-            setConvertedData(mapDataToColumns(APIData.data.data.results, columnData));
-            console.log("convertedData:=:=:", convertedData);
-            console.log("graph:::", GraphDatas)
+            setApiData(APIData.data.data);
+
+
         } catch (e) {
             toast.dismiss();
             notifyError("Failed to fetch Data");
@@ -131,13 +195,23 @@ const RMPMOrderwiseCoverage = () => {
         GetData();
 
     }, [])
+
+    useEffect(() => {
+        setGraphDatas(apiData)
+        setConvertedData(mapDataToColumns(apiData, columnData));
+    }, [apiData])
     return (
         <>
-            <div style={{ zoom: 1.3 }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
 
-                <ActionToolBar comp={"rmpm"} isGridView={isGridView} setIsGridView={setIsGridView} />
+
+                <ActionToolBar comp={"rmpm"} isGoBackButton={isGridView} handleGoBack={() => { (setIsGridView(false)) }} isAddFilterButton isChartGridToggle isGridView={isGridView} setIsGridView={setIsGridView} />
+
+                <div style={{ flex: '1' }}>
+
+                    {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={convertedData} /> : <GraphView shortageData={GraphDatas} />}
+                </div>
             </div>
-            {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={convertedData} /> : <GraphView shortageData={GraphDatas} />}
         </>
     )
 }

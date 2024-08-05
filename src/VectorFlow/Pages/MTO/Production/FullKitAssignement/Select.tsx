@@ -3,7 +3,7 @@ import Select, { components, OptionProps } from 'react-select'
 import Radio from '../../../../../components/VectorFLOW/commons/MTO/Radio';
 // import { Checkbox } from '../../../../../components';
 
-const CustomSelect = ({ selected, theme }: any) => {
+const CustomSelect = ({ selected, placeholder, options, width, optionsWidth, theme }: any) => {
     const Option = (props: OptionProps<any>) => {
         return (
             <components.Option {...props}>
@@ -22,9 +22,15 @@ const CustomSelect = ({ selected, theme }: any) => {
             value={selected}
             // menuIsOpen={true}
             styles={{
+                placeholder: (provided) => ({
+                    ...provided,
+                    color: 'black',
+                    fontWeight: 500,
+                    fontSize: '14px', 
+                }),
                 container: (base) => ({
                     ...base,
-                    width: "max-content"
+                    width: width || "max-content"
                 }),
                 control: (base: any, state: any) => ({
                     ...base,
@@ -38,7 +44,7 @@ const CustomSelect = ({ selected, theme }: any) => {
                 menu: (base) => ({
                     ...base,
                     width: "max-content",
-                    minWidth: "150px",
+                    minWidth: optionsWidth || "150px",
                     right: 0,
                 }),
                 option: (base) => ({
@@ -50,8 +56,8 @@ const CustomSelect = ({ selected, theme }: any) => {
                     }
                 })
             }}
-            placeholder=""
-            options={[
+            placeholder={placeholder || ''}
+            options={options || [
                 { label: "M1", value: "M1" },
                 { label: "M2", value: "M2" },
                 { label: "M3", value: "M3" },

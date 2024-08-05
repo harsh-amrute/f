@@ -1,52 +1,95 @@
-.custom-scrollbar{
-    overflow-y:overlay;
+.custom-scrollbar {
+    overflow-y: overlay;
 }
 
-.custom-scrollbar::-webkit-scrollbar{
-    width: 7px;       
+.custom-scrollbar::-webkit-scrollbar {
+    width: 7px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track{
+.custom-scrollbar::-webkit-scrollbar-track {
     border-radius: 30px;
     opacity: 1;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb{
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
     width: 7px;
-/* UI Properties */
-background: #D1D1D1 0% 0% no-repeat padding-box;
-box-shadow: 0px 6px 9px #F8F8F8; 
-border-radius: 30px;
-opacity: 1;
+    /* UI Properties */
+    background: #D1D1D1 0% 0% no-repeat padding-box;
+    box-shadow: 0px 6px 9px #F8F8F8;
+    border-radius: 30px;
+    opacity: 1;
 }
 
-#tooltip{
+#tooltip {
     zoom: 0.75;
     z-index: 100000000;
 }
 
-.react-calender{
+.react-calender {
     background-color: #F4F4F4 !important;
     border: none !important;
 }
 
-.react-calendar__navigation__label__labelText{
+.react-calendar__navigation__label__labelText {
     font-weight: 600 !important;
 }
 
-.sub-grid-allotment{
-    padding:10px;
+.sub-grid-allotment {
+    padding: 10px;
 }
 
-.planning-grid-allotment{
+.planning-grid-allotment {
     padding-bottom: 40px;
 }
 
-.intransit_header{
+.intransit_header {
     background-color: white;
     color: black;
 }
 
-.intransit_header:hover{
-    background-color: white  !important;
-    color: black  !important;
+.intransit_header:hover {
+    background-color: white !important;
+    color: black !important;
 }
+
+:root {
+    --separator-border: transparent;
+}
+
+.sash-horizontal::after {
+    content: url(/public/assets/img/mto/dueDateQuotation/draggable.svg);
+    width: 12px;
+    display: block;
+    /* z-index: 100000; */
+    /* background: black; */
+    position: absolute;
+    height: 12px;
+    left: 50%;
+    top: 50%;
+    display: flex;
+    transform: translate(-50%, -50%);
+    justify-content: center;
+}
+
+.sash-horizontal {
+    border: 8px solid lightgrey;
+    border-radius: 4px;
+}
+
+/* .sash-vertical::after {
+    content: url(/public/assets/img/mto/dueDateQuotation/draggable.svg);
+    width: 12px;
+    display: block;
+    position: absolute;
+    height: 12px;
+    left: 50%;
+    top: 50%;
+    display: flex;
+    transform: translate(-50%, -50%);
+    justify-content: center;
+}
+
+.sash-vertical {
+    border: 8px solid lightgrey;
+    border-radius: 4px;
+} */
