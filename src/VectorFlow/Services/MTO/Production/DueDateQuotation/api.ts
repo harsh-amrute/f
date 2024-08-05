@@ -1,0 +1,106 @@
+import axios from 'axios';
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace DueDateQuotationService {
+    export const getUIConfig = async (reportName: string) => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getUIReportConfiguration/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+            params: {
+                report_name: reportName
+            }
+        })
+    }
+
+    export const getOrdersForDDQ = async (currentPage: number,unScheduled: boolean) => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+            params: {
+                page: currentPage,
+                unSch: unScheduled ? 1 : 0
+            }
+        })
+    }
+
+    export const getBufferMasterData = async () => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getBufferMasterData/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        })
+    }
+
+    export const getCCRGroupMaster = async () => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getCCRGroupMasterData/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        })
+    }
+
+    export const getRouteDetails = async (route_id:number) => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getRouteDetails/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+            params:{
+                r_id: route_id
+            }
+        })
+    }
+
+    export const getCCRItemTypeMappingMaster = async () => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getCCRItemTypeMapping/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        })
+    }
+
+    export const getFOLData = async () => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getFOLData/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        })
+    }
+
+    export const getCCRMasterData = async () => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getCCRMasterData/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        })
+    }
+
+    export const getDailyWorkingCalendar = async () => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getDailyWorkingCalendar/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        })
+    }
+
+    export const getMarketOperatingLeadTimeMasterData = async () => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getMarketOperatingLeadTimeMasterData/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        })
+    }
+  
+
+}

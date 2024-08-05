@@ -1,5 +1,4 @@
 import VFButton from '../../VFButton';
-import Checkbox from '../../../../../components/commons/Checkbox';
 import {
     SCTaskBarContainer,
     SCGoBackContainer,
@@ -35,10 +34,9 @@ import {
     ChartHeaderRadioGroup,
     RadioGroup,
     SelectGroup,
-    CheckBoxDiv,
-    InputCheckBoxTitle
 } from './styles';
 import moment from 'moment';
+import { ReactElement } from 'react';
 import { format } from 'date-fns';
 import VFRangeSlider from '../../VFRangeSlider';
 import CustomSelect from '../../../../../VectorFlow/Pages/MTO/Production/FullKitAssignement/Select';
@@ -60,6 +58,7 @@ interface MTOActionToolBarProps {
     date?: string
     handleGoBack?: () => void;
     themeUi?: string;
+    quickFilter?: ReactElement
     horizonDays?: number;
     setHorizonDays?: (e: number) => void;
     handleHorizonSubmit?: () => void;
@@ -73,7 +72,6 @@ interface MTOActionToolBarProps {
     isAddFilterButton?: boolean
     isExcelExport?: boolean
     isChartGridToggle?: boolean
-    isWIPCheckBox?: boolean
     isReleaseButton?: boolean
     onOrderRelease?: () => void;
     //// new props
@@ -102,9 +100,9 @@ const MTOActionToolBar = ({
     isAddFilterButton,
     isExcelExport,
     isChartGridToggle,
-    isWIPCheckBox,
     isReleaseButton,
     onOrderRelease,
+    quickFilter
 }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
@@ -160,7 +158,11 @@ const MTOActionToolBar = ({
                         </SCGoBackContainer>
                     }
 
-                    {isWIPCheckBox &&
+                    {quickFilter && <div style={{display:"flex", justifyContent:"center", alignItems:"center", fontSize:"1.8rem"}}>
+                        {quickFilter}
+                    </div>}
+
+                    {/* {isWIPCheckBox &&
                         <CheckBoxDiv data-testid='check-box'>
                             <Checkbox
                                 data-testid='check-box'
@@ -173,7 +175,7 @@ const MTOActionToolBar = ({
                             />
                             <InputCheckBoxTitle>Show order with available WIP Only</InputCheckBoxTitle>
                         </CheckBoxDiv>
-                    }
+                    } */}
 
 
                     {isReleaseDate &&
