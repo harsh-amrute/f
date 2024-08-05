@@ -1,7 +1,7 @@
 import { AgChartsReact } from 'ag-charts-react';
 import { GridReadyEvent } from 'ag-grid-community';
 import { GridOptions } from 'ag-grid-enterprise';
-import { Allotment, LayoutPriority } from 'allotment';
+import { Allotment} from 'allotment';
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
@@ -163,6 +163,136 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         return buffer
     }   
 
+    // const calculateDueDate = () => {
+    //         const selectedOrders = new Set(gridRef.current.api.getSelectedRows().map((row:any) => row.ok));
+    //         const ccrIds:any = [];
+
+    //         selectedRoute.forEach((route: any)=>{
+    //             if(route[1]?.value){
+    //                 ccrIds.push(route[1].value)
+    //             }
+    //         })
+
+    //         const ccr_prev_pending:any = {};
+            
+    //         ccrIds.forEach((ccrId:any)=>{
+    //             const ccr = masters.CCRMaster.find((ccr:any)=>{
+    //                 return ccr.ccr_id === ccrId
+    //             })
+    //             const ccr_fol_data = masters.FOL[ccrId];
+    //             let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
+    //             const folInDays =  ccr_fol_data.fol;
+    //             ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay); 
+
+    //             ccr_prev_pending[ccrId] = {
+    //                 ccr_id: ccrId,
+    //                 prevPend: Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm)
+    //             }
+    //             console.log(ccrId, (ccr_prev_pending[ccrId].prevPend));
+                
+    //         });
+
+    //         console.log(masters);
+    //         console.log(ccrIds)
+    //         console.log(ccr_prev_pending)
+
+    //         const newRows = rows.map((row:any) => {
+    //             if(selectedOrders.has(row.ok)){
+    //                 const order_ccr_data:any = {};
+
+    //                 //calculating order load
+    //                 ccrIds.forEach((ccrId:any)=>{
+    //                     const ccr = masters.CCRMaster.find((ccr:any)=>{
+    //                         return ccr.ccr_id === ccrId
+    //                     })
+    //                     // const fol = masters.FOL[ccrId];
+    //                     const ccrItem = masters?.CCRItemTypeMappingMaster.find((ccr:any)=> ccr.ccrId === ccrId && ccr.it == row.itid)
+
+    //                     let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
+    //                     ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay); 
+
+    //                     const orderLoad = Math.ceil((ccrItem.tt * row.pcqty)) // (60 * ccrWorkingHoursPerDay))
+
+    //                     order_ccr_data[ccrId] = {
+    //                         ccr_id: ccrId,
+    //                         orderLoad: orderLoad,
+    //                         folSpan: ((ccr_prev_pending[ccrId].prevPend) + orderLoad)/ (ccrWorkingHoursPerDay * 60),
+    //                     }
+    //                     console.log("ccr_prev_pending", ccr_prev_pending[ccrId])
+    //                     // console.log(ccrId, "orderLoad", order_ccr_data[ccrId].orderLoad, "folSpan" ,order_ccr_data[ccrId].folSpan, "order pending qty",row.pcqty, "ccr tt", ccrItem.tt, "ccrWorkingHoursPerDay" ,ccrWorkingHoursPerDay)
+    //                     ccr_prev_pending[ccrId].prevPend = (ccr_prev_pending[ccrId].prevPend) + orderLoad;
+                        
+    //                 });
+
+    //                 console.log("order_ccr_data", order_ccr_data)
+                    
+
+    //                 //DDIndex
+    //                 const maxFol: any = Object.values(order_ccr_data).reduce((prev: any, current: any) => (current.folSpan > prev.folSpan) ? current : prev);
+
+    //                 console.log(maxFol);
+    //                 console.log(row.plid);
+                    
+    //                 // const formattedDate = format(new Date(), 'yyyy-MM-dd');
+    //                 const today = new Date();
+    //                 today.setHours(0, 0, 0, 0);
+
+    //                 // console.log()
+
+    //                 const latestWorkingDayLno = masters.WorkingCalender.find((data: any)=>{
+    //                     return new Date(data.wd) >= today && data.ccrId == maxFol.ccr_id && data.PlId == row.plid
+    //                 })?.lno;
+
+    //                 console.log("latestWorkingDayLno", latestWorkingDayLno)
+
+
+    //                 const residualBuffer = parseFloat(masters?.CCRMaster.find((ccr:any)=>ccr.ccr_id == maxFol.ccr_id)?.residual_buffer); 
+
+    //                 const prodBufferSize = row.prSz || 0;
+    //                 const procBufferSize = row.pcSz || 0;
+                    
+    //                 //optimise the logic
+    //                 const folDDIndex = Math.ceil(latestWorkingDayLno + maxFol.folSpan + (residualBuffer * prodBufferSize));
+    //                 const folDD =  masters.WorkingCalender.find((data: any)=>{
+    //                     return data.lno == folDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == row.plid
+    //                 })?.wd;
+
+    //                 const bufferDDIndex = latestWorkingDayLno + procBufferSize + prodBufferSize;
+    //                 const bufferDD = masters.WorkingCalender.find((data: any)=>{
+    //                     return data.lno == bufferDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == row.plid
+    //                 })?.wd;
+
+    //                 console.log("prodBufferSize",  prodBufferSize)
+    //                 console.log("procBufferSize",  procBufferSize)
+    //                 console.log("residualBuffer",  residualBuffer)
+    //                 console.log("max fol span",  maxFol.folSpan)
+    //                 // console.log(folDDIndex, bufferDDIndex)
+
+    //                 console.log(folDDIndex)
+    //                 console.log(bufferDDIndex)
+
+    //                 const crDD = row.crdd;
+
+    //                 const crddFlag = 0
+    //                 let maxDate;
+
+    //                 if(crddFlag){
+    //                     maxDate = max([folDD, bufferDD, crDD]);
+    //                 }else{
+    //                     maxDate = max([folDD, bufferDD]);
+    //                 }
+
+    //                 // console.log(maxDate);
+
+    //                 row.cdd = format(maxDate, 'yyyy-MM-dd');
+
+    //                 // console.log("maxDate", format(maxDate, 'yyyy-MM-dd'));
+    //             }
+    //             return row
+    //         });
+    //         setRows(newRows);
+    // }
+
 
     const onSave = () => {
         if(isEditable){
@@ -177,12 +307,10 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
 
             const prodBuffer = selectedBuffers[0];
             const procBuffer = selectedBuffers[1];
-            
-            // const newRows = _.cloneDeep(rows)
-            // const orderLoad = new Array(ccrIds.length).fill(0);
+
             const ccr_prev_pending:any = {};
             
-            ccrIds.forEach((ccrId:any, index: number)=>{
+            ccrIds.forEach((ccrId:any)=>{
                 const ccr = masters.CCRMaster.find((ccr:any)=>{
                     return ccr.ccr_id === ccrId
                 })
@@ -221,11 +349,11 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                     const order_ccr_data:any = {};
 
                     //calculating order load
-                    ccrIds.forEach((ccrId:any, index: number)=>{
+                    ccrIds.forEach((ccrId:any)=>{
                         const ccr = masters.CCRMaster.find((ccr:any)=>{
                             return ccr.ccr_id === ccrId
                         })
-                        const fol = masters.FOL[ccrId];
+                        // const fol = masters.FOL[ccrId];
                         const ccrItem = masters?.CCRItemTypeMappingMaster.find((ccr:any)=> ccr.ccrId === ccrId && ccr.it == row.itid)
 
                         let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
@@ -297,7 +425,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                     let maxDate;
 
                     if(crddFlag){
-                        maxDate = max([folDD, bufferDD, row.crdd]);
+                        maxDate = max([folDD, bufferDD, crDD]);
                     }else{
                         maxDate = max([folDD, bufferDD]);
                     }
@@ -324,22 +452,6 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         const selectedOrders = new Set(gridRef.current.api.getSelectedRows().map((row:any) => row.ok));
         const newRows = [...rows];
 
-        // for(const row of newRows){
-        //     if(selectedOrders.has(row.ok)){ 
-        //         console.log("inside")              
-        //         //unset the modified values
-        //         row.newRoute = undefined;
-        //         row.nprid = undefined;
-        //         row.npcid = undefined;
-        //         //reset the existing values
-        //         const route = await getRoute(row.rid);
-        //         row.rn = formatRoute(route);
-        //         console.log("format", formatRoute(route));
-        //         const buffer:any = getBuffer([row.prid], [row.pcid])
-        //         row.prodc = buffer[0]?.label || ""; 
-        //         row.procc = buffer[1]?.label || "";
-        //     }
-        // }
         const promises = newRows.map(async (row) => {
             if (selectedOrders.has(row.ok)) {
                 // Unset the modified values
@@ -383,6 +495,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         formattedRoute = formattedRoute.join("/"); 
         return formattedRoute
     }
+
    
     return (
         <>

@@ -7,10 +7,8 @@ import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
 import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetFOLData, useGetMarketOperatingLeadTimeMasterData, useGetOrdersForDDQ, useGetUIConfig } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
 import { getColumnDefinations } from '../../../../../helpers/utils'
 import { GridOptions } from 'ag-grid-enterprise'
-import VFOverlay from '../../../../../components/VectorFLOW/commons/VFOverlay'
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox'
 import { AgChartOptions } from 'ag-charts-community'
-import _ from 'lodash'
 import "./style.css"
 import Step1 from './Step1'
 import Step2 from './Step2'
@@ -240,10 +238,10 @@ const DueDateQuotation = () => {
         const WorkingCalenderData = await getDailyWorkingCalendar();
         const WorkingCalender = WorkingCalenderData.data.data;
 
-        // const MarketLeadTimeMasterData = await getMarketOperatingLeadTimeMasterData();
-        // const MarketLeadTimeMaster = MarketLeadTimeMasterData.data?.data;
+        const MarketLeadTimeMasterData = await getMarketOperatingLeadTimeMasterData();
+        const MarketLeadTimeMaster = MarketLeadTimeMasterData.data?.data;
 
-        setMasters({procMaster, prodMaster, ccrGroups, CCRItemTypeMappingMaster, FOL, CCRMaster, WorkingCalender});
+        setMasters({procMaster, prodMaster, ccrGroups, CCRItemTypeMappingMaster, FOL, CCRMaster, WorkingCalender, MarketLeadTimeMaster});
 
       }
     }
@@ -253,7 +251,6 @@ const DueDateQuotation = () => {
             case 1: {
                 return (
                     <Step1 
-                      theme={themeUi} 
                       gridOptions={gridOptions} 
                       rows={rows} 
                       selectedRows={selectedRows} 

@@ -1,11 +1,10 @@
 import { AgChartOptions } from 'ag-charts-community'
 import { AgChartsReact } from 'ag-charts-react'
-import React, { useEffect,} from 'react'
+import React from 'react'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
-import { StepperWrapper, StepGroup, StepLabel, ContentWrapper, Text } from './FullKitAssignment.styled'
+import { ContentWrapper, Text } from './FullKitAssignment.styled'
 import { Rectangle } from './RectangleMarker'
-import CustomSelect from './Select'
 
 const EditRouteModal = ({ showModal, setShowModal, graphData, theme }: any) => {
 

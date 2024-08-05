@@ -1,5 +1,4 @@
 import VFButton from '../../VFButton';
-import Checkbox from '../../../../../components/commons/Checkbox';
 import {
     SCTaskBarContainer,
     SCGoBackContainer,
@@ -35,8 +34,6 @@ import {
     ChartHeaderRadioGroup,
     RadioGroup,
     SelectGroup,
-    CheckBoxDiv,
-    InputCheckBoxTitle
 } from './styles';
 import moment from 'moment';
 import { ReactElement } from 'react';
@@ -75,7 +72,6 @@ interface MTOActionToolBarProps {
     isAddFilterButton?: boolean
     isExcelExport?: boolean
     isChartGridToggle?: boolean
-    isWIPCheckBox?: boolean
     isReleaseButton?: boolean
     onOrderRelease?: () => void;
     //// new props
@@ -104,7 +100,6 @@ const MTOActionToolBar = ({
     isAddFilterButton,
     isExcelExport,
     isChartGridToggle,
-    isWIPCheckBox,
     isReleaseButton,
     onOrderRelease,
     quickFilter
@@ -167,7 +162,7 @@ const MTOActionToolBar = ({
                         {quickFilter}
                     </div>}
 
-                    {isWIPCheckBox &&
+                    {/* {isWIPCheckBox &&
                         <CheckBoxDiv data-testid='check-box'>
                             <Checkbox
                                 data-testid='check-box'
@@ -180,7 +175,7 @@ const MTOActionToolBar = ({
                             />
                             <InputCheckBoxTitle>Show order with available WIP Only</InputCheckBoxTitle>
                         </CheckBoxDiv>
-                    }
+                    } */}
 
 
                     {isReleaseDate &&

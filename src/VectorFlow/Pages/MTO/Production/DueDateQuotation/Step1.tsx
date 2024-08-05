@@ -1,11 +1,10 @@
 import { GridOptions } from 'ag-grid-enterprise';
 import _ from 'lodash';
-import React, { useState } from 'react'
+import React from 'react'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
 interface IStep1Props{
-    theme: string,
     gridOptions: GridOptions,
     rows: any,
     selectedRows: any,
@@ -15,7 +14,7 @@ interface IStep1Props{
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>
 }
 
-const Step1 = ({theme, gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage}: IStep1Props) => {
+const Step1 = ({gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage}: IStep1Props) => {
 
   const handlePageChange = async (currPage: number) => {
     setCurrentPage(currPage)

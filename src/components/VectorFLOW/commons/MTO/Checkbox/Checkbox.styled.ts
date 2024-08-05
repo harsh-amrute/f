@@ -2,8 +2,8 @@ import styled from "styled-components";
 import * as globalStyles from "../../../../../styles/global";
 
 export const MTOCheckBox = styled.input<{theme:string}>`
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
     border-radius: 2px;
     border: 2px solid rgb(148, 154, 171);
     background-color: white;

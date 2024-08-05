@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import RadioSelect from '../../../../../components/VectorFLOW/commons/MTO/RadioSelect'
-import { StepGroup, StepLabel, StepperWrapper } from './RouteAssignment.styled'
+import { StepGroup, StepperWrapper } from './RouteAssignment.styled'
 
 interface IRouteAssignmentProps{
     theme: string,

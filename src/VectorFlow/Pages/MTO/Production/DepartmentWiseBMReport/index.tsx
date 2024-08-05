@@ -20,6 +20,8 @@ import RowGroupRenderer from './RowGroupRenderer';
 import TextBoxCellRenderer from './TextBoxCellRenderer';
 import RemarkHistoryRenderer from './RemarkHistoryRenderer';
 import BPRRemarkHistoryModal from './MTORemarkHistoryModal';
+import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
+import { useUserData } from '../../../../../context';
 
 interface ApiResponse {
     cc: string;
@@ -541,7 +543,9 @@ const DptWiseBMReport = () => {
         pivotMode: false
     };
 
-    const { screenHeight } = useViewPort()
+    const { screenHeight } = useViewPort();
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>
@@ -549,7 +553,7 @@ const DptWiseBMReport = () => {
                     comp={'DeptWiseBMReport'}
                     isAddFilterButton
                     isExcelExport
-                    isWIPCheckBox
+                    quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={true} onChange={() => console.log()} theme={themeUi} /> &nbsp;&nbsp; <strong>Show order with available WIP Only</strong></div>}
                 />
             </BMDepHeaderWraper>
 
