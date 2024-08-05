@@ -20,3 +20,8 @@ export const ProductionInsightsAndTrendsString = {
     trailDeptMfg: "Trailing Department-Wise Balance To Manufacture",
     trailDeptDisp: "Trailing Department-Wise Balance To Dispatch",
 }
+
+export const Poogi = {
+    otif: "OTIF % Trend",
+    otNif: "OT & IF % Trend",
+}
