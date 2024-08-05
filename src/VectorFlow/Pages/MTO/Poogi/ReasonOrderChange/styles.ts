@@ -70,3 +70,49 @@ export const BPRDailyAnalyticsTableRowContainer = styled.div`
     flex-direction:column;
     justify-content:center;
 `
+
+export const BPRDailyAnalyticsTableRow = styled.div`
+    display:flex;
+    flex-direction:row;
+    width:95%;
+    border-radius: 4px ;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 12px #58585829;
+    margin-bottom:5px;
+    overflow:hidden;
+    zoom:0.7;
+`
+
+export const BPRDailyAnalyticsTableCell = styled.div`
+    
+    text-align:center;
+    position:relative;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    font-weight:500;
+    font-size:11px;
+    line-height:21px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #313131;
+    &:before{
+        content:'';
+        position:absolute;
+        right:0;
+        height:100%;
+        width:1px;
+    }
+`
+
+export const BPRDailyAnalyticsTableCellHeader = styled.p`
+    font-style:normal;
+    font-variant:normal;
+    font-weight:500;
+    font-size:16px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #313131;
+`
