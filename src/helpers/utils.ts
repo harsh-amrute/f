@@ -1873,7 +1873,8 @@ export const createIconColumn = (params:any):ColDef=>{
     colId:id,
     headerName:label,
     cellRenderer:cellRenderer,
-    floatingFilter:false
+    floatingFilter:false,
+    suppressColumnsToolPanel:true
   }
 }
 
@@ -2000,7 +2001,7 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDaily
     headerCheckboxSelection:true,
     headerCheckboxSelectionCurrentPageOnly:true,
     width:40,
-    lockVisible:true,
+    suppressColumnsToolPanel:true,
     filter:false,
   }
 

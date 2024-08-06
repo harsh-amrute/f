@@ -299,9 +299,10 @@ const useBTR = ()=>{
                             columnDefs={techColDefs} 
                             rowData={techRowData} 
                             defaultColDef={{
-                                floatingFilter:false,
-                                filter:false,
-                                sortable:false,
+                                floatingFilter:true,
+                                filter:'agMultiColumnFilter',
+                                sortable:true,
+                                
                             }}
                             {...gridProps} 
                             pagination={false} 
@@ -328,9 +329,9 @@ const useBTR = ()=>{
                             columnDefs={ecoColDefs} 
                             rowData={ecoRowData} 
                             defaultColDef={{
-                                floatingFilter:false,
-                                filter:false,
-                                sortable:false
+                                floatingFilter:true,
+                                filter:'agMultiColumnFilter',
+                                sortable:true
                             }}
                             {...gridProps} 
                             pagination={false} 

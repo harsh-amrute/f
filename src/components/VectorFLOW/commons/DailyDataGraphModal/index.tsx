@@ -395,6 +395,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
             axes: [{
                 type: "category",
                 position: "bottom",
+                label:{
+                  autoRotate:false,
+                  avoidCollisions:true
+                }
             } as const,
             {         
                 type: "number",
