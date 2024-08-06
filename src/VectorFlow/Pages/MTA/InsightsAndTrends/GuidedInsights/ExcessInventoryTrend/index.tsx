@@ -42,7 +42,7 @@ const ExcessInventoryTrend = ({themeUi}:{themeUi:string}) => {
     ];
      const ExcessInventoryDataSku=ExcessInventorySkuData?.data?.data;
     const locationTypes = Array.from(new Set(ExcessInventoryDataSku.map((d:any) => d.locationtype)));
-     const series = locationTypes.map((locationType, index) => {
+     const series:any = locationTypes.map((locationType, index) => {
     const seriesData = ExcessInventoryDataSku.filter((d:any) => d.locationtype === locationType)
                             .map((d:any) => ({ date: d.date, countSku: d.countSku }));
                             return {
@@ -60,8 +60,37 @@ const ExcessInventoryTrend = ({themeUi}:{themeUi:string}) => {
                     stroke: "white",
                     strokeWidth: 2,
                 },
+                
       };
     });
+
+    const totalSeriesData = ExcessInventoryDataSku.reduce((acc:any, current:any) => {
+      const existingDate = acc.find((d:any) => d.date === current.date);
+      if (existingDate) {
+          existingDate.countSku += current.countSku;
+      } else {
+          acc.push({ date: current.date, countSku: current.countSku });
+      }
+      return acc;
+  }, []);
+
+  series.push({
+      type: 'line',
+      xKey: 'date',
+      yKey: 'countSku',
+      yName: 'Total',
+      data: totalSeriesData,
+      stroke: '#BC3D81',
+      strokeWidth: 3,
+      marker: {
+          fill: '#BC3D81',
+          size: 6,
+          stroke: "#BC3D81",
+          strokeWidth: 2,
+      },
+      visible:false
+  });
+
    
     setOptions1(
       {
@@ -122,7 +151,7 @@ const ExcessInventoryTrend = ({themeUi}:{themeUi:string}) => {
     ];
      const ExcessInventoryDataValue=ExcessInventoryValueData?.data?.data;
     const locationTypes = Array.from(new Set(ExcessInventoryDataValue.map((d:any) => d.locationtype)));
-     const series = locationTypes.map((locationType, index) => {
+     const series:any = locationTypes.map((locationType, index) => {
     const seriesData = ExcessInventoryDataValue.filter((d:any) => d.locationtype === locationType)
                             .map((d:any) => ({ date: d.date, value: d.value }));
                             return {
@@ -143,6 +172,34 @@ const ExcessInventoryTrend = ({themeUi}:{themeUi:string}) => {
       };
     });
    
+    const totalSeriesData = ExcessInventoryDataValue.reduce((acc:any, current:any) => {
+      const existingDate = acc.find((d:any) => d.date === current.date);
+      if (existingDate) {
+          existingDate.value += current.value;
+      } else {
+          acc.push({ date: current.date, value: current.value });
+      }
+      return acc;
+  }, []);
+
+  series.push({
+      type: 'line',
+      xKey: 'date',
+      yKey: 'value',
+      yName: 'Total',
+      data: totalSeriesData,
+      stroke: '#BC3D81',
+      strokeWidth: 3,
+      marker: {
+          fill: '#BC3D81',
+          size: 6,
+          stroke: "#BC3D81",
+          strokeWidth: 2,
+      },
+      visible:false
+  });
+
+
     setOptions2(
       {
       autoSize: true,
