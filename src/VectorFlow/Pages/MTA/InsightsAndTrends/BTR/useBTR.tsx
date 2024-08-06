@@ -26,7 +26,10 @@ import { toast } from "react-toastify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context"
+import { BPRFilterState } from "../../../../../VectorFlow/types/BPR"
+import { BTRCategoryTextToNumberMapper } from "../../../../../helpers/BPRConstants"
 
+import _ from 'lodash'
 
 const useBTR = ()=>{
 
@@ -60,6 +63,8 @@ const useBTR = ()=>{
 
     const [isLockMode,toggleLockMode] = useState<boolean>(false)
 
+    const [horizon,setHorizon] = useState<number>(90)
+
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
 
@@ -72,6 +77,8 @@ const useBTR = ()=>{
     const ecoTotalRows = useMemo(()=>{return countData?.data.data.EcoCount},[isBTRCountLoading])
 
     const techTotalRows = useMemo(()=>{return countData?.data.data.TechCount},[isBTRCountLoading])
+
+    const [dateLabels,setDateLabels] = useState<any>()
 
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
 
@@ -90,7 +97,7 @@ const useBTR = ()=>{
         rowsPerPage:rowsPerPage,
         currentPage:currentPage,
         handleChangePage:(currPage:number) => {
-            getData(currFilter,currPage);
+            getData(getPreparedFilter(currFilter),currPage);
             setCurrentPage(currPage)
         }
         
@@ -102,7 +109,7 @@ const useBTR = ()=>{
         rowsPerPage:rowsPerPage,
         currentPage:currentPage,
         handleChangePage:(currPage:number) => {
-            getData(currFilter,currPage);
+            getData(getPreparedFilter(currFilter),currPage);
             setCurrentPage(currPage)
         }
         
@@ -160,8 +167,9 @@ const useBTR = ()=>{
         try{
             const data = await getBTRData(payload)
             
-            setEcoRowData(mapBTRRowData(data.data.data.eco))
-            setTechRowData(mapBTRRowData(data.data.data.tech))
+            setEcoRowData(mapBTRRowData(data.data.data.eco,horizon))
+            setTechRowData(mapBTRRowData(data.data.data.tech,horizon))
+            setDateLabels(data.data.data.labels[0])
         }catch(err:any){
             notifyError(err)
             setTechRowData([])
@@ -187,25 +195,44 @@ const useBTR = ()=>{
         getData(currFilter,1)
     },[])
 
-    const onApplyFilter = async(filter:any)=>{
+    const getPreparedFilter = (filter:BPRFilterState):BPRFilterState=>{
+        const doesCategoryExist = (filter.availabilityFilter.filters.length>0 && filter.availabilityFilter.filters.some((f)=>f.name==="AF8"))
+        const tempFilter = _.cloneDeep(filter)
+        if(doesCategoryExist){
+            
+            tempFilter.availabilityFilter.filters = tempFilter.availabilityFilter.filters.map((f)=>{
+                return {
+                    ...f,
+                    value:BTRCategoryTextToNumberMapper[f.value]
+                }
+            })
+        }
+        return tempFilter
+    }
+
+    const onApplyFilter = async(filter:BPRFilterState)=>{
         setCurrFilter(filter)
+        const tempFilter = getPreparedFilter(filter)
+        
         const payload = {
             id: 0,
             name: '',
             fields: [],
-            filters:filter,
+            filters:tempFilter,
             paginationParameter:{
                 pageNumber: 1,
                 recordsPerPage: 100
             },
         }
         getBTRDataCount(payload)
-        getData(filter,1)
+        getData(tempFilter,1)
     }
+
 
     const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
         const updatedFilter = onDelete(parentId,filterId,value)
         onApplyFilter(updatedFilter)
+        setCurrentPage(1)
     }
 
     const toggleVerticalView = (isVertical:boolean)=>setVerticalView(isVertical)
@@ -271,14 +298,16 @@ const useBTR = ()=>{
                             disableZoomScaling 
                             columnDefs={techColDefs} 
                             rowData={techRowData} 
+                            defaultColDef={{
+                                floatingFilter:false,
+                                filter:false,
+                                sortable:false,
+                            }}
                             {...gridProps} 
                             pagination={false} 
-                            defaultColDef={{
-                                floatingFilter:true
-                            }}
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                         />
-                        <div style={{zoom:0.7,marginBottom:'20px'}}>
+                        <div style={{zoom:0.7,margin:'0px -15px 0px -15px'}}>
                             <VFPagination {...techPaginationProps}/>
                         </div>
                     </>
@@ -298,14 +327,16 @@ const useBTR = ()=>{
                             disableZoomScaling 
                             columnDefs={ecoColDefs} 
                             rowData={ecoRowData} 
+                            defaultColDef={{
+                                floatingFilter:false,
+                                filter:false,
+                                sortable:false
+                            }}
                             {...gridProps} 
                             pagination={false} 
-                            defaultColDef={{
-                                floatingFilter:true
-                            }}
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                         />
-                        <div style={{zoom:0.7,marginBottom:'20px'}}>
+                        <div style={{zoom:0.7,margin:'0px -15px 0px -15px'}}>
                             <VFPagination {...ecoPaginationProps}/>
                         </div>
                     </>
@@ -334,15 +365,16 @@ const useBTR = ()=>{
 
     const techColDefs = useMemo(():Array<ColDef>=>{
         if(techRowData.length===0)return []
-       return mapBTRRowDataToColDefs(techRowData[0],["RN"])
-    },[techRowData])
+        if(verticalView && currentTab.id==='1') return mapBTRRowDataToColDefs(techRowData[0],dateLabels,horizon,true,["RN"])
+       return mapBTRRowDataToColDefs(techRowData[0],dateLabels,horizon,false,["RN"])
+    },[techRowData,dateLabels])
 
 
     const ecoColDefs = useMemo(():Array<ColDef>=>{
         if(ecoRowData.length===0)return []
-        if(verticalView && currentTab.id==="1")return mapBTRRowDataToColDefs(ecoRowData[0],['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN"])
-        return mapBTRRowDataToColDefs(ecoRowData[0],["RN"])
-    },[ecoRowData,currentTab,verticalView])
+        if(verticalView && currentTab.id==="1")return mapBTRRowDataToColDefs(ecoRowData[0],dateLabels,horizon,false,['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN"])
+        return mapBTRRowDataToColDefs(ecoRowData[0],dateLabels,horizon,false,["RN"])
+    },[ecoRowData,currentTab,verticalView,dateLabels])
 
     return{
         ecoRef,
@@ -370,7 +402,9 @@ const useBTR = ()=>{
         themeUi,
         setCurrFilter,
         onDeleteFilter,
-        onApplyFilter
+        onApplyFilter,
+        horizon,
+        setHorizon
     }
 }
 

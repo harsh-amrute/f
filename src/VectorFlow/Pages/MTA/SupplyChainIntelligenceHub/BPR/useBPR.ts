@@ -154,7 +154,7 @@ const useBPR =()=>{
         components:customCellRenderers,
         defaultColDef:{
             floatingFilter: true,
-            filter: "agMultiColumnFilter",
+            // filter: "agMultiColumnFilter",
             cellDataType:false,
             resizable:false,
             cellStyle:{

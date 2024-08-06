@@ -48,8 +48,8 @@ export interface Field{
     isAdd:boolean
     isDownload:boolean
     col_Position:string
-    isApplicable:boolean,
-    dataType?:string
+    isApplicable:boolean
+    dataType:"Number" | "String" | "Boolean"
 }
 
 export interface Tab{

@@ -6,6 +6,7 @@ export interface DBMField {
     Visible:boolean
     CellAlignment:string
     Value:string
+    DataType:"Number" | "String" | "Boolean"
 }
 
 export interface DBMDataPayload{

@@ -394,3 +394,9 @@ export const TaskPendingStopPIPOCustomColumns:Array<ColDef | ColGroupDef> = [
     },
     
 ]
+
+export const CellDataTypeMapper:any = {
+    "Boolean":"boolean",
+    "Number":"number",
+    "String":"text"
+}

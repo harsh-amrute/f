@@ -43,7 +43,8 @@ const SavedDrafts = ()=>{
               isDownload:true,
               isEdit:true,
               "col_Position":'1',
-              "isApplicable":true
+              "isApplicable":true,
+              dataType:'String'
             },
             {
               displayName: "Last Modification Date",
@@ -53,7 +54,8 @@ const SavedDrafts = ()=>{
               isDownload:true,
               isEdit:true,
               "col_Position":'2',
-              "isApplicable":true
+              "isApplicable":true,
+              dataType:'String'
             },
             {
               displayName: "Instance Name",
@@ -63,7 +65,8 @@ const SavedDrafts = ()=>{
               isDownload:true,
               isEdit:true,
               "col_Position":'3',
-              "isApplicable":true
+              "isApplicable":true,
+              dataType:'String'
             },
             // {
             //   displayName: "Search Key",
@@ -84,6 +87,7 @@ const SavedDrafts = ()=>{
                 isEdit:true,
                 "col_Position":'5',
                 "isApplicable":true,
+                dataType:'String'
             }
           ],{
             cellRendererParams:{

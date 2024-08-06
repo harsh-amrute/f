@@ -184,9 +184,9 @@
     min-height: unset !important;
 }
 
-.ag-theme-alpine .ag-horizontal-right-spacer{
-    display:none !important;
-}
+/* .ag-theme-alpine .ag-horizontal-right-spacer{
+    visibility:hidden !important;
+} */
 
 .ag-theme-alpine .ag-body-vertical-scroll-viewport{
     min-width: unset !important;

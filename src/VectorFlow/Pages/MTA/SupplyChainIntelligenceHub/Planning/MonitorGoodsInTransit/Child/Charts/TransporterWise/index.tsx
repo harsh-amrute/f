@@ -274,7 +274,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
         <SCDynamicContainer>
             <Allotment>
                 <Allotment.Pane preferredSize={'80%'}>
-                    <SCChartContainer height={"95%"}>
+                    <SCChartContainer height={"95%"} style={{marginRight:'15px'}}>
                         <SCChartHeaderContainer>
                             <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Transporters: Max LRs With On-Hand Black/Red SKUs Along With High Transport Ageing</SCChartHeader></div>
                             <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -400,7 +400,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
 
 
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={"95%"}>
+                        <SCChartContainer height={"95%"} style={{marginLeft:'20px'}}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Statistical Overview Of Delay Days In Transport At Receiving Locations</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>

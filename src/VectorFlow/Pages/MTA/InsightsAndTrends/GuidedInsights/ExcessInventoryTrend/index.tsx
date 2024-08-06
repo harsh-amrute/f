@@ -12,14 +12,14 @@ const ExcessInventoryTrend = ({themeUi}:{themeUi:string}) => {
 
      const [horizon1, setHorizon1] = useState<number>(9);
      const [horizon2, setHorizon2] = useState<number>(9);
+     const [options1, setOptions1] = useState({});
+        const [options2, setOptions2] = useState({});
 
-     const [ExcessInventorySku, SetExcessInventorySku] = useState();
-     const [ExcessInventoryValue, SetExcessInventoryValue] = useState();
-
+    
      const { mutateAsync: GetExcessInventorySku, isLoading: isLoaderGraph1 } =useGetExcessInventorySku();
      const { mutateAsync: GetExcessInventoryValue, isLoading: isLoaderGraph2 } =useGetExcessInventoryValue();
 
-useEffect(() => {
+     useEffect(() => {
     OnHorizon1Change(horizon1);
     OnHorizon2Change(horizon2);
   }, []);
@@ -29,9 +29,79 @@ useEffect(() => {
     const param = { horison: horizon1 };
     const ExcessInventorySkuData = await GetExcessInventorySku(param);
    // const ExcessInventoryValueData =  await GetExcessInventoryValue(param);
-    SetExcessInventorySku(ExcessInventorySkuData?.data?.data);
-   // SetExcessInventoryValue(ExcessInventoryValueData?.data?.data);
-  };
+   const greyShades = [
+      // '#191919', 
+       '#333333', 
+       //'#4c4c4c',
+       // '#595959', 
+        '#666666', //'#737373', 
+        '#808080',// '#8c8c8c','#999999',
+       '#a6a6a6', //'#b2b2b2', '#bfbfbf', 
+       '#cccccc', '#d8d8d8'
+       
+    ];
+     const ExcessInventoryDataSku=ExcessInventorySkuData?.data?.data;
+    const locationTypes = Array.from(new Set(ExcessInventoryDataSku.map((d:any) => d.locationtype)));
+     const series = locationTypes.map((locationType, index) => {
+    const seriesData = ExcessInventoryDataSku.filter((d:any) => d.locationtype === locationType)
+                            .map((d:any) => ({ date: d.date, countSku: d.countSku }));
+                            return {
+        type: 'line',
+        xKey: 'date',
+        yKey: 'countSku',
+        yName: locationType,
+        data: seriesData,
+        stroke: greyShades[index % greyShades.length],
+        strokeWidth: 3,
+      
+        marker: {
+                    fill: greyShades[index % greyShades.length],
+                    size: 8,
+                    stroke: "white",
+                    strokeWidth: 2,
+                },
+      };
+    });
+   
+    setOptions1(
+      {
+      autoSize: true,
+      
+      data: ExcessInventoryDataSku,
+      series: series,
+      axes: [
+        {
+          type: 'category',
+          position: 'bottom',
+          title: {
+            text: 'Date',
+           
+          },
+          label: {
+            formatter: (params:any) => new Date(params.value).toISOString().split('T')[0],
+            fontSize: 10,
+          },
+          
+        },
+        {
+          type: 'number',
+          position: 'left',
+          title: {
+            text: 'Count of SKUs',
+          },
+          
+        },
+      ],
+      legend: {
+        position: 'bottom',
+        item:{
+          marker:{
+            shape:'square'
+          }
+        }
+      },
+    });
+     };
 
   const OnHorizon2Change = async (hvalue: any) => {
     setHorizon2(hvalue);
@@ -39,105 +109,82 @@ useEffect(() => {
     //const ExcessInventorySkuData = await GetExcessInventorySku(param);
     const ExcessInventoryValueData =  await GetExcessInventoryValue(param);
     //SetExcessInventorySku(ExcessInventorySkuData?.data?.data);
-   SetExcessInventoryValue(ExcessInventoryValueData?.data?.data);
+     const greyShades = [
+      // '#191919', 
+       '#333333', 
+       //'#4c4c4c',
+       // '#595959', 
+        '#666666', //'#737373', 
+        '#808080',// '#8c8c8c','#999999',
+       '#a6a6a6', //'#b2b2b2', '#bfbfbf', 
+       '#cccccc', '#d8d8d8'
+       
+    ];
+     const ExcessInventoryDataValue=ExcessInventoryValueData?.data?.data;
+    const locationTypes = Array.from(new Set(ExcessInventoryDataValue.map((d:any) => d.locationtype)));
+     const series = locationTypes.map((locationType, index) => {
+    const seriesData = ExcessInventoryDataValue.filter((d:any) => d.locationtype === locationType)
+                            .map((d:any) => ({ date: d.date, value: d.value }));
+                            return {
+        type: 'line',
+        xKey: 'date',
+        yKey: 'value',
+        yName: locationType,
+        data: seriesData,
+        stroke: greyShades[index % greyShades.length],
+        strokeWidth: 3,
+        
+        marker: {
+                    fill: greyShades[index % greyShades.length],
+                    size: 8,
+                    stroke: "white",
+                    strokeWidth: 2,
+                },
+      };
+    });
+   
+    setOptions2(
+      {
+      autoSize: true,
+      
+      data: ExcessInventoryDataValue,
+      series: series,
+      axes: [
+        {
+          type: 'category',
+          position: 'bottom',
+          title: {
+            text: 'Date',
+           
+          },
+          label: {
+            formatter: (params:any) => new Date(params.value).toISOString().split('T')[0],
+            fontSize: 10,
+          },
+          
+        },
+        {
+          type: 'number',
+          position: 'left',
+          title: {
+            text: 'Value In Lakhs',
+          },
+          
+        },
+      ],
+      legend: {
+        position: 'bottom',
+        item:{
+          marker:{
+            shape:'square'
+          }
+        }
+      },
+    });
+    
   };
   
-  const markerFill = themeUi==="REGALBLAZE"?"#FCA311":"#BC3D81"
-
-    const options1 = {
-        data: ExcessInventorySku,
-        series: [
-            {
-                xKey: 'date',
-                xName: 'Date',
-                yKey: 'countSku',
-                yName: 'Count of SKU',
-                strokeWidth: 3,
-                stroke: "#A5A5A5",
-                marker: {
-                    fill: markerFill,
-                    size: 8,
-                    stroke: "white",
-                    strokeWidth: 2,
-                },
-            }
-        ],
-      
-        axes: [
-            {
-                type: "category",
-                position: "bottom",
-                title: {
-                    text: 'Date',
-                    fontSize:10,
-                    fontFamily:'Roboto'
-                },
-                label:{
-                    fontSize:8,
-                    fontFamily:'Roboto'
-                  },
-                 
-            } as const,
-            {
-                type: "number",
-                position: "left",
-                title: {
-                    text: 'Count Of SKUs',
-                    fontSize:10,
-                    fontFamily:'Roboto'
-                },
-            } as const,
-          
-            
-        ]
-       
-        
-    };
-
-    const options2 = {
-        data: ExcessInventoryValue,
-        series: [
-            {
-                xKey: 'date',
-                xName: 'Date',
-                yKey: 'value',
-                yName: 'Value In Lakhs',
-                strokeWidth: 3,
-                stroke: "#A5A5A5",
-                marker: {
-                    fill: markerFill,
-                    size: 8,
-                    stroke: "white",
-                    strokeWidth: 2,
-                },
-            }
-        ],
-        axes: [
-            {
-                type: "category",
-                position: "bottom",
-                title: {
-                    text: 'Date',
-                    fontSize:10,
-                    fontFamily:'Roboto'
-                },
-                label:{
-                    fontSize:8,
-                    fontFamily:'Roboto'
-                  }
-            } as const,
-            {
-                type: "number",
-                position: "left",
-                title: {
-                    text: 'Value In Lakhs',
-                    fontSize:10,
-                    fontFamily:'Roboto'
-                },
-                
-            } as const
-        ]
-    };
+  
 const graph1=['This graph highlights the date-wise trend of excess inventory across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
 
 const graph2=['This graph highlights the date-wise trend of excess inventory in value across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']

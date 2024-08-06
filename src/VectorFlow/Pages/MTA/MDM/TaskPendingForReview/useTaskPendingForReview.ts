@@ -124,7 +124,7 @@ const useTaskPendingForReview = ()=>{
             if(currentMasterFields){
                 // console.log(currentTaskMaster.data[0].new)
                 const existingColumns = getExistingColumns(
-                    (taskData.Actiontype === 2 && currentTaskMasterId !== 6) || (currentTaskMasterId === 13)
+                    (taskData.Actiontype === 2 && currentTaskMasterId !== 6 && currentTaskMasterId !== 10) || (currentTaskMasterId === 13)
                     ? JSON.parse(currentTaskMaster.data[0].new)
                     : currentTaskMaster.data[0]
                 );
@@ -226,14 +226,16 @@ const useTaskPendingForReview = ()=>{
         switch (selectionType){
             case 'All':
                  ref.current?.api.forEachNode((rowNode)=>{
-                    rowNode.setDataValue('status',status)
-                    rowNode.setSelected(true)
+                    if(rowNode.data.isModified){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }
                 })
                 setActionStatus(status);
                 break;
             case 'Current':
                 ref.current?.api.forEachNode((rowNode)=>{
-                    if(pageData.includes(rowNode.id)){
+                    if(pageData.includes(rowNode.id) && rowNode.data.isModified){
                         rowNode.setDataValue('status',status)
                         rowNode.setSelected(true)
                         

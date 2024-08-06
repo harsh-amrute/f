@@ -193,8 +193,6 @@ export const useBOR =()=>{
         // pivotMode:true,
          defaultColDef:{
             floatingFilter: true,
-            filter: "agMultiColumnFilter",
-            cellDataType:false,
             cellStyle:{
                 'text-align':'center',
                 'height':'50px',

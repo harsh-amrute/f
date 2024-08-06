@@ -4,7 +4,7 @@ import styled from "styled-components";
 export const BTRLayoutWrapper = styled.div`
     display:flex;
     flex-direction:column;
-    height:90%;
+    height:85%;
     margin-left:5px;
 `
 
@@ -162,4 +162,11 @@ export const LockLabel = styled.div`
 export  const HorizontalViewWrapper = styled.div`
       display:flex;
       width:100%;
+`
+
+export const VerticalViewLeftTableWrapper = styled.div`
+      display:flex;
+      height:100%;
+      width:100%;
+      padding-right:10px;
 `

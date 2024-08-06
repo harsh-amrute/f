@@ -10,6 +10,16 @@ export const BTRCategoryNumberToTextMapper:any = {
     "7":"DN"
 }
 
+export const BTRCategoryTextToNumberMapper:any =  {
+    "SI": "1",
+    "CTB": "2",
+    "BR": "3",
+    "SD": "4",
+    "SE": "5",
+    "UN": "6",
+    "DN": "7"
+}
+
 export const BTRCategoryMapper:BTRCategoryMapperType = {
     "CTB":{
         bgColor:"black",
