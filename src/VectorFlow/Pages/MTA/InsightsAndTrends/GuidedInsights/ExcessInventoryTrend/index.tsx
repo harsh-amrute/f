@@ -84,8 +84,8 @@ const ExcessInventoryTrend = ({themeUi}:{themeUi:string}) => {
       strokeWidth: 3,
       marker: {
           fill: '#BC3D81',
-          size: 6,
-          stroke: "#BC3D81",
+          size: 8,
+          stroke: "white",
           strokeWidth: 2,
       },
       visible:false
@@ -192,8 +192,8 @@ const ExcessInventoryTrend = ({themeUi}:{themeUi:string}) => {
       strokeWidth: 3,
       marker: {
           fill: '#BC3D81',
-          size: 6,
-          stroke: "#BC3D81",
+          size: 8,
+          stroke: "white",
           strokeWidth: 2,
       },
       visible:false
