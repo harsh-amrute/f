@@ -6,6 +6,8 @@ import VFRangeSlider from '../../../../../../../VectorFlow/Pages/MTO/Common/VFRa
 import { CapsuleWrapper } from '../../RMPMOrderwiseCoverage/GraphView/styles'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
+import moment from 'moment'
+import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 
 
 
@@ -30,19 +32,23 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
         w: number;
     };
 
-    function filterDataByDaysGap(buffData: BufferTrendData[] | undefined, numberOfDaysGap: number, horizonDays: number, isPer: boolean): BufferTrendData[] {
+    function filterDataByDaysGap(
+        buffData: BufferTrendData[] | undefined,
+        numberOfDaysGap: number,
+        horizonDays: number,
+        isPer: boolean
+    ): BufferTrendData[] {
         if (!buffData || buffData.length === 0) {
             return []; // Return empty array if data is undefined or empty
         }
 
-        buffData = (isPer) ? convertToPercentage(buffData) : buffData;
-
+        buffData = isPer ? convertToPercentage(buffData) : buffData;
 
         const sortedData = buffData.slice().sort((a, b) => {
             // Ensure dt is defined before accessing split
             const dateA = a.dt ? new Date(a.dt.split('-').reverse().join('-')) : null;
             const dateB = b.dt ? new Date(b.dt.split('-').reverse().join('-')) : null;
-            return dateA && dateB ? dateA.getTime() - dateB.getTime() : 0;
+            return dateA && dateB ? dateB.getTime() - dateA.getTime() : 0;
         });
 
         const filteredData: BufferTrendData[] = [];
@@ -51,15 +57,18 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
         sortedData.forEach(item => {
             if (item.dt) {
                 const itemDate = new Date(item.dt.split('-').reverse().join('-'));
-                if (!currentDate || (itemDate.getTime() - currentDate.getTime()) >= numberOfDaysGap * 24 * 60 * 60 * 1000) {
+                if (!currentDate || (currentDate.getTime() - itemDate.getTime()) >= numberOfDaysGap * 24 * 60 * 60 * 1000) {
                     filteredData.push(item);
                     currentDate = itemDate;
                 }
             }
         });
 
-        return filteredData.slice(0, Math.min(horizonDays, filteredData.length));
+        // Slice the filtered data to keep the end date fixed
+        const result = filteredData.reverse().slice(-horizonDays);
+        return result;
     }
+
 
 
 
@@ -167,8 +176,8 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 <tr>
                     <td style="padding: 5px; background-color: #6C696A;">
                         <div style="display: flex; align-items: center;">
-                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: green"></div>
-                            Green
+                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: yellow"></div>
+                            Yellow
                         </div>
                     </td>
                     <td style="padding: 5px; background-color: #6C696A;">${Math.round(perArr[2])}%</td>
@@ -177,8 +186,8 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 <tr>
                     <td style="padding: 5px; background-color: #6C696A;">
                         <div style="display: flex; align-items: center;">
-                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: yellow"></div>
-                            Yellow
+                            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: green"></div>
+                            Green
                         </div>
                     </td>
                     <td style="padding: 5px; background-color: #6C696A;">${Math.round(perArr[3])}%</td>
@@ -212,7 +221,11 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                     fontWeight: 'bold',
                     color: 'black',
                     avoidCollisions: true,
-                    autoRotate: false
+                    autoRotate: false,
+                    formatter: function (params) {
+                        const myDate = params.value.split('-')[1] + '-' + params.value.split('-')[0] + '-' + params.value.split('-')[2];
+                        return (moment(myDate).format('D MMM YYYY'))
+                    }
                 },
                 gridLine: {
                     enabled: false
@@ -464,7 +477,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                         }}
                         > <b>Select Horizon (in days): </b></label>
                         <VFRangeSlider
-                            style={{ paddingTop: '12px' }}
+                            style={{ paddingTop: '13px' }}
                             showTriangle={false}
                             min={1}
                             max={90}
@@ -524,6 +537,9 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
         )
     }
 
+    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+
+    const date = apiResponseData?.data?.data;
 
 
     return (
@@ -537,8 +553,8 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 setChartLoading={setChartLoading}
                 data={numericData}
                 rowData={rowData}
-                graphTitle={"RM / PM Buffer Trend- MTO (14 Feb 2023 - 02 Mar 2024)"}
-                tableTitle={"RM / PM Buffer Trend- MTO (14 Feb 2023 - 02 Mar 2024)"}
+                graphTitle={`RM / PM Buffer Trend- MTO (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
+                tableTitle={`RM / PM Buffer Trend- MTO (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
                 options={options}
                 colDef={colDef}
                 header={generateHeader}

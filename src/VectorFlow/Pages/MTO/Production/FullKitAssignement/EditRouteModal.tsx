@@ -1,56 +1,57 @@
 import { AgChartOptions } from 'ag-charts-community'
 import { AgChartsReact } from 'ag-charts-react'
-import React, { useEffect,} from 'react'
+import React from 'react'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
-import { StepperWrapper, StepGroup, StepLabel, ContentWrapper, Text } from './FullKitAssignment.styled'
+// import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
+import { ContentWrapper, StepGroup, StepLabel, StepperWrapper, Text } from './FullKitAssignment.styled'
 import { Rectangle } from './RectangleMarker'
 import CustomSelect from './Select'
 
-const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
+const EditRouteModal = ({ showModal, setShowModal, graphData, theme }: any) => {
 
-    useEffect(() => {
-        // let animationFrameId: any;
-        const animate = () => {
-            const stepGroups = document.querySelectorAll('.step-group');
-            const svg: any = document.querySelector('.line');
-            if (svg?.innerHTML) {
-                svg.innerHTML = "";
-            }
-            for (let i = 0; i < stepGroups?.length - 1; i++) {
-                const start: any = stepGroups[i].getBoundingClientRect();
-                const end: any = stepGroups[i + 1].getBoundingClientRect();
-                if (stepGroups[i + 1].id == "inactive") {
-                    const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-                    polyline.setAttribute('points', `${end.left - 8},${end.top + end.height / 2 - 2.5} ${end.left - 8},${end.top - 10} ${end.left + 8 + end.width},${end.top - 10} ${end.left + 8 + end.width},${end.top + end.height / 2 - 2.5}`);
-                    svg.appendChild(polyline);
-                    polyline.setAttribute('stroke', '#82104C');
-                    polyline.setAttribute('fill', 'none');
-                    svg.appendChild(polyline);
-                }
-                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                let leftOffset = 0
-                let rightOffset = 0
-                if (stepGroups[i].id == "inactive") {
-                    rightOffset = 5
-                }
-                if (stepGroups[i + 1].id == "inactive") {
-                    leftOffset = 5
-                }
-                line.setAttribute('x1', (start.right + 6 + rightOffset).toString());
-                line.setAttribute('y1', start.top + start.height / 2);
-                line.setAttribute('x2', (end.left - 6 - leftOffset).toString());
-                line.setAttribute('y2', end.top + end.height / 2);
-                line.setAttribute('stroke', '#82104C');
-                svg.appendChild(line);
-            }
-            // animationFrameId = 
-            requestAnimationFrame(animate);
-        };
-        // animationFrameId = 
-        requestAnimationFrame(animate);
+    // useEffect(() => {
+    //     // let animationFrameId: any;
+    //     const animate = () => {
+    //         const stepGroups = document.querySelectorAll('.step-group');
+    //         const svg: any = document.querySelector('.line');
+    //         if (svg?.innerHTML) {
+    //             svg.innerHTML = "";
+    //         }
+    //         for (let i = 0; i < stepGroups?.length - 1; i++) {
+    //             const start: any = stepGroups[i].getBoundingClientRect();
+    //             const end: any = stepGroups[i + 1].getBoundingClientRect();
+    //             if (stepGroups[i + 1].id == "inactive") {
+    //                 const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    //                 polyline.setAttribute('points', `${end.left - 8},${end.top + end.height / 2 - 2.5} ${end.left - 8},${end.top - 10} ${end.left + 8 + end.width},${end.top - 10} ${end.left + 8 + end.width},${end.top + end.height / 2 - 2.5}`);
+    //                 svg.appendChild(polyline);
+    //                 polyline.setAttribute('stroke', '#82104C');
+    //                 polyline.setAttribute('fill', 'none');
+    //                 svg.appendChild(polyline);
+    //             }
+    //             const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    //             let leftOffset = 0
+    //             let rightOffset = 0
+    //             if (stepGroups[i].id == "inactive") {
+    //                 rightOffset = 5
+    //             }
+    //             if (stepGroups[i + 1].id == "inactive") {
+    //                 leftOffset = 5
+    //             }
+    //             line.setAttribute('x1', (start.right + 6 + rightOffset).toString());
+    //             line.setAttribute('y1', start.top + start.height / 2);
+    //             line.setAttribute('x2', (end.left - 6 - leftOffset).toString());
+    //             line.setAttribute('y2', end.top + end.height / 2);
+    //             line.setAttribute('stroke', '#82104C');
+    //             svg.appendChild(line);
+    //         }
+    //         // animationFrameId = 
+    //         requestAnimationFrame(animate);
+    //     };
+    //     // animationFrameId = 
+    //     requestAnimationFrame(animate);
 
-        // return cancelAnimationFrame(animationFrameId);
-    }, []);
+    //     // return cancelAnimationFrame(animationFrameId);
+    // }, []);
 
     const chartoptions: AgChartOptions = {
         data: graphData,
@@ -147,19 +148,19 @@ const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
                 <StepperWrapper>
                     <StepGroup>
                         <StepLabel>Dispensing</StepLabel>
-                        <CustomSelect selected={{ label: "M1", value: "M1" }} />
+                        <CustomSelect theme={theme} selected={{ label: "M1", value: "M1" }} />
                     </StepGroup>
                     <StepGroup>
                         <StepLabel>Granulation</StepLabel>
-                        <CustomSelect selected={{ label: "M2", value: "M2" }} />
+                        <CustomSelect theme={theme} selected={{ label: "M2", value: "M2" }} />
                     </StepGroup>
                     <StepGroup id="inactive">
                         <StepLabel>Shaft</StepLabel>
-                        <CustomSelect selected={{ label: "M3", value: "M3" }} />
+                        <CustomSelect theme={theme} selected={{ label: "M3", value: "M3" }} />
                     </StepGroup>
                     <StepGroup id="inactive">
                         <StepLabel>Inactive</StepLabel>
-                        <CustomSelect />
+                        <CustomSelect theme={theme} />
                     </StepGroup>
                     <StepGroup>
                         <StepLabel>Final Product</StepLabel>
@@ -167,6 +168,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData }: any) => {
                     <svg className="line" style={{ position: "absolute", width: "100%", height: "100%", top: "0", left: "0", pointerEvents: "none" }}>
                     </svg>
                 </StepperWrapper>
+                {/* <RouteAssignment theme={theme} /> */}
                 <strong style={{ fontSize: "14px" }}>Route Load</strong>
                 <div style={{ height: "300px" }}>
                     <AgChartsReact options={chartoptions} />

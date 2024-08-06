@@ -3,6 +3,7 @@ import { BPRColorCellRendererWrapper } from '../../MTA/SupplyChainIntelligenceHu
 import { ColorsMTO } from './Colors';
 
 const colorMapper = (color: string) => {
+
     switch (color) {
         case 'White':
             return { bg: ColorsMTO.White.code, text: ColorsMTO.Black.code };
@@ -17,9 +18,9 @@ const colorMapper = (color: string) => {
         case 'Blue':
             return { bg: ColorsMTO.Blue.code, text: ColorsMTO.White.code }
         case "Overloaded":
-            return { bg:ColorsMTO.Red.code, text: ColorsMTO.White.code }
+            return { bg: ColorsMTO.Red.code, text: ColorsMTO.White.code }
         case "Underloaded":
-            return { bg:ColorsMTO.Orange.code, text: ColorsMTO.White.code }
+            return { bg: ColorsMTO.Orange.code, text: ColorsMTO.White.code }
         case "Balanced":
             return { bg: "#A8A8A8", text: ColorsMTO.White.code }
         default:

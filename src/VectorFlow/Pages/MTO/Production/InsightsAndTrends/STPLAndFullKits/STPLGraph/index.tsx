@@ -108,11 +108,13 @@ const STPLGraph = () => {
     ],
 
     legend: {
+      position: "bottom",
       item: {
         label: {
           fontSize: 10,
-        },
+        }
       },
+
     },
   };
 

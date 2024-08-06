@@ -50,8 +50,10 @@ import SupplierDispatchReport from './VectorFlow/Pages/MTA/SupplyChainIntelligen
 import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
 import STPLAndFullKits from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/STPLAndFullKits'
 import OrderAtRisk from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/OrderAtRisk'
+import DueDateQuotation from './VectorFlow/Pages/MTO/Production/DueDateQuotation'
 import OrderBalance from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/OrderBalance'
-import ResourceUtilization from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/ResourceUtilization/index'
+import OTIFAnalysis from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/OTIFAnalysis'
+import ResourceUtilization from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/ResourceUtilization'
 import FOLSummary from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FOLSummary'
 import DynamicReleaseManagement from './VectorFlow/Pages/MTO/Production/DynamicReleaseManagement'
 import ReasonForDelayOrder from './VectorFlow/Pages/MTO/Poogi/ReasonOrderChange/index'
@@ -72,7 +74,6 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
-
   ]
   const urlAllPage = [
     ...authenPage,
@@ -119,9 +120,11 @@ const lazyLoad = (children: React.ReactNode) => {
     '/production-planning-scheduling/full-kit-assignment',
     '/supply-chain-intelligence-hub/sdr',
     '/master-data-management/data-modification-history',
+    '/production-planning-and-scheduling/due-date-quotation',
     '/production-planning-scheduling/insight-and-trends/order-at-risk',
     '/production-planning-scheduling/insight-and-trends/order-balance',
     '/poogi/insight-and-trends/resource-utilization-wip-profile',
+    '/poogi/insight-and-trends/otif-analysis',
     '/production-planning-scheduling/insights-and-trends/fol-summary',
     '/production-planning-scheduling/dynamic-release-mangement',
     '/poogi/insight-and-trends/resource-utilization-wip-profile',
@@ -683,12 +686,23 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/poogi/insight-and-trends/resource-utilization-wip-profile',
+      path:  '/poogi/insight-and-trends/resource-utilization-wip-profile',
       element: <AppLayout />,
       children: [
         {
           index: true,
           element: lazyLoad(<ResourceUtilization />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/insight-and-trends/otif-analysis',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OTIFAnalysis />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -716,12 +730,20 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
+<<<<<<< HEAD
       path: '/poogi/reasons-for-delayed-orders',
+=======
+      path: '/production-planning-and-scheduling/due-date-quotation',
+>>>>>>> develop-mto
       element: <AppLayout />,
       children: [
         {
           index: true,
+<<<<<<< HEAD
           element: lazyLoad(<ReasonForDelayOrder />)
+=======
+          element: lazyLoad(<DueDateQuotation />)
+>>>>>>> develop-mto
         },
         ...getStoreTransferModuleRoutes()
       ]

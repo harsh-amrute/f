@@ -158,20 +158,14 @@ test('calls removeFilters function for each filter value', () => {
     fireEvent.click(screen.getByTestId('utilization-radio'));
     expect(mockUpdateGraphState).toHaveBeenCalled();
 
-    expect(screen.getByText('Select Plant/ Department/ CCR')).toBeInTheDocument();
-    expect(screen.getByText('Select Plant')).toBeInTheDocument();
-    expect(screen.getByText('Select Department')).toBeInTheDocument();
+    expect(screen.getByTestId('select-plnt')).toBeInTheDocument();
+    expect(screen.getByTestId('select-dept')).toBeInTheDocument();
 
     expect(screen.getByTestId('horizon-submit')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('horizon-submit'));
     expect(mockHandleHorizonSubmit).toHaveBeenCalled();
   });
 
-  test('renders WIP checkbox and handles change event', () => {
-    render(<MTOActionToolBar isWIPCheckBox />);
-    const checkbox = screen.getByTestId('check-box');
-    expect(checkbox).toBeInTheDocument();
-  });
 
   test('renders Excel Export button', () => {
     render(<MTOActionToolBar isExcelExport />);

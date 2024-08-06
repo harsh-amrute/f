@@ -17,6 +17,7 @@ const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) =>
 
 
 
+
     return (
         <>
             <VFTableWrapper>
@@ -37,6 +38,7 @@ const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) =>
                             { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                         ]
                     }}
+
 
                 />
             </VFTableWrapper>
