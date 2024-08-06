@@ -2795,7 +2795,6 @@ export function getColumnDefinations(
 
   const finalcolDef = columnDefs.filter((obj: any) => !removeCols.includes(obj.colId));
 
-  console.log(finalcolDef)
   return finalcolDef;
 
 }
