@@ -730,20 +730,23 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-<<<<<<< HEAD
       path: '/poogi/reasons-for-delayed-orders',
-=======
-      path: '/production-planning-and-scheduling/due-date-quotation',
->>>>>>> develop-mto
       element: <AppLayout />,
       children: [
         {
           index: true,
-<<<<<<< HEAD
           element: lazyLoad(<ReasonForDelayOrder />)
-=======
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-and-scheduling/due-date-quotation',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
           element: lazyLoad(<DueDateQuotation />)
->>>>>>> develop-mto
         },
         ...getStoreTransferModuleRoutes()
       ]

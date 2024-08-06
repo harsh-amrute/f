@@ -8,12 +8,16 @@ import { useGetReasonForDelayOrder } from '../../../../../VectorFlow/Services/MT
 import { toast } from 'react-toastify';
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
 import { AgGridReactProps } from 'ag-grid-react';
+import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
+import { useUserData } from '../../../../../context';
+import RemarkHistoryRenderer from '../../Production/DepartmentWiseBMReport/RemarkHistoryRenderer';
 
 const ReasonForDelayOrder = () => {
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-    const { data, isLoading, /*refetch*/ } = useGetReasonForDelayOrder();
+    const { mutateAsync: getPoogiReasonsDelayedOrder, isLoading } = useGetReasonForDelayOrder();
     const [HeaderData, setHeaderData] = useState<any>([{}]);
     const [rowData, setRowData] = useState<any>();
+    const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
     const reportName = 'ReasonForDelayedOrders';
 
     const sideBar = useMemo(() => {
@@ -82,26 +86,12 @@ const ReasonForDelayOrder = () => {
         }
     }
 
-    const getInitialData = async () => {
+    const getInitialData = async (wipval: boolean) => {
         try {
-            if (isLoading) {
-
-                toast.dismiss();
-                notifyLoader("Loading Data ...")
-            }
-            else {
-                if (data?.status === 200) {
-                    // console.log('=getInitialData on ReasonORderChange==', data?.data?.data.results);
-
-                    toast.dismiss();
-                    setRowData(data?.data?.data?.results)
-                    notifySuccess("Data Fetched Successfully!")
-                }
-                else {
-                    toast.dismiss();
-                    notifyError("Failed to fetch data!")
-                }
-            }
+            console.log('wipval',wipval)
+            setWIPCheck(wipval)
+            const apiResponse = await getPoogiReasonsDelayedOrder(wipval === true ? 0 : 1);
+            setRowData(apiResponse?.data?.data?.results)
         }
         catch (e) {
             console.log(e)
@@ -112,6 +102,8 @@ const ReasonForDelayOrder = () => {
         RemarksHistory: {
             pinned: "right",
             minWidth: 120,
+            lockPosition: true,
+            cellRenderer:RemarkHistoryRenderer
         },
         MajorReason: {
             pinned: "right",
@@ -130,19 +122,35 @@ const ReasonForDelayOrder = () => {
 
     useEffect(() => {
         getHeaderData();
-        getInitialData();
-    }, [isLoading])
+        getInitialData(true);
+    }, [])
+
+    useEffect(() => {
+        if (isLoading) {
+            toast.dismiss();
+            notifyLoader("Loading Data ...")
+        }
+        else {
+            toast.dismiss();
+        }
+    }, [isLoading,isWIPChecked])
 
     if (!rowData) {
-
         return null;
     }
 
-   
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
     return (
         <div style={{ zoom: 1.2 }}>
             <MTOActionToolBar
-                isWIPCheckBox
+                quickFilter={
+                    <div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
+                        <Checkbox checked={isWIPChecked} onChange={(e) => getInitialData(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>
+                            Show order with available WIP Only
+                        </strong>
+                    </div>
+                }
                 isAddFilterButton
                 isExcelExport
             />
