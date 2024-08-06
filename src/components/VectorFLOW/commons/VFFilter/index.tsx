@@ -1,11 +1,13 @@
 import { VFFilterDustbinIcon, VFFilterInputField, VFFilterSeperator, VFFilterWrapper } from "./styles";
 import Select from 'react-select'
 import {type Option, type Filter} from '../../../../VectorFlow/types/MDM';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_FILTER } from "../../../../redux/actions/MDM";
 import { useUserData } from "../../../../context";
-
-
+import { useState } from 'react';
+import type { RootState } from '../../../../redux/store/store';
+import { operatorDataTypeMapper } from "../../../../helpers/MDMConstants";
+import { Field } from "../../../../VectorFlow/types/MDM";
 export interface VFFilterProps{
     onDelete:()=>void
     fields:Option[]
@@ -32,7 +34,7 @@ export interface CustomInputProps{
 
 const VFFilter = (props:VFFilterProps)=>{
     const dispatch = useDispatch();
-
+   
     const{
         fields,
         operators,
@@ -40,9 +42,17 @@ const VFFilter = (props:VFFilterProps)=>{
         currFilter,
         isDisabled
     } = props
+    
+    const [validOperators,setValidOperators] = useState(operators);
+    const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster)
+    const updateOperators = (value:string) => {
+        const selectedFieldObject:any = activeMaster.fields.find((field:Field)=>field.key === value);
+        if(selectedFieldObject) setValidOperators([...operators.filter((operator:{value:string,label:string})=>operatorDataTypeMapper[selectedFieldObject.dataType].includes(operator.value))])
+    }
 
 
     const handleOnChange = (value:string,property:string)=>{
+       updateOperators(value);
        dispatch(UPDATE_FILTER({value:value,property:property,filterId:currFilter.id}))
        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
     }
@@ -63,8 +73,8 @@ const VFFilter = (props:VFFilterProps)=>{
                 width="298px" 
                 placeholder="Select" 
                 onChange={(e:any)=>handleOnChange(e.value,'operator')} 
-                options={operators}
-                value={operators.find((field)=>field.value === currFilter.operator)}
+                options={validOperators}
+                value={validOperators.find((field)=>field.value === currFilter.operator)}
                 isDisabled={isDisabled}
             />
             <VFFilterSeperator/>
