@@ -76,11 +76,16 @@ const ResearchInsights = ()=>{
         onApplyFilter,
         onDeleteFilter,
         currentFilter,
-        setCurrentFilter
+        setCurrentFilter,
+        historicalAvailabilityData,
     } = useResearchInsights()
 
     const {user} = useUserData()
     const themeUi = user.user.theme_ui
+
+    const getFormattedPercentage = (number:number)=>{
+        return number.toFixed(2)
+    }
 
     return(
         <GridStateContext.Provider value={{
@@ -190,7 +195,7 @@ const ResearchInsights = ()=>{
                                 90-60 Days
                             </HistoricalAvailabiltyContentSectionHeader>
                             <HistoricalAvailabiltyContentSectionData>
-                                57.49%
+                                {getFormattedPercentage(historicalAvailabilityData.Availability_61_90)}%
                             </HistoricalAvailabiltyContentSectionData>
                         </HistoricalAvailabiltyContentSection>
                         <HistoricalAvailabiltyContentSection>
@@ -198,7 +203,7 @@ const ResearchInsights = ()=>{
                                 60-30 Days
                             </HistoricalAvailabiltyContentSectionHeader>
                             <HistoricalAvailabiltyContentSectionData>
-                                17.49%
+                                {getFormattedPercentage(historicalAvailabilityData.Availability_31_60)}%
                             </HistoricalAvailabiltyContentSectionData>
                         </HistoricalAvailabiltyContentSection>
                         <HistoricalAvailabiltyContentSection style={{border:"none"}}>
@@ -206,7 +211,7 @@ const ResearchInsights = ()=>{
                                 30-0 Days
                             </HistoricalAvailabiltyContentSectionHeader>
                             <HistoricalAvailabiltyContentSectionData>
-                                57.49%
+                                {getFormattedPercentage(historicalAvailabilityData.Availability_01_30)}%
                             </HistoricalAvailabiltyContentSectionData>
                         </HistoricalAvailabiltyContentSection>
                     </HistoricalAvailabiltyContent>

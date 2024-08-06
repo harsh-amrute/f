@@ -9,9 +9,10 @@ import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphC
 import { useGetBPRData, useGetBPRUIConfiguration,useGetBPRDataCount,useGetState,useGetDailyData } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { isSameDay,format,addDays } from 'date-fns'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
-import { useGetUpdatedGraphData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
+import { useGetUpdatedGraphData,useGetHistroricalAvailabilityData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
 import { notifyError, notifyLoader } from '../../../../../helpers/notify'
 import { toast } from 'react-toastify'
+
 
 import { useSelector,useDispatch } from 'react-redux'
 
@@ -49,6 +50,10 @@ const useResearchInsights = ()=>{
     const {mutateAsync:getBPRData} = useGetBPRData()
 
     const {mutateAsync:getBPRDataCount,isLoading:isBPRDataCountLoading} = useGetBPRDataCount()
+
+    
+    const {data:historicalAvailabilityResponse} = useGetHistroricalAvailabilityData()
+
 
     const [currGridPage,setCurrGridPage] = useState<number>(1)
     const [recordCount,setRecordCount] = useState<number>()
@@ -469,6 +474,17 @@ const useResearchInsights = ()=>{
         }
     },[selectedRowsDates,graphs])
 
+    const historicalAvailabilityData = useMemo(()=>{
+        if(historicalAvailabilityResponse){
+            return historicalAvailabilityResponse.data.data[0]
+        }
+        return {
+            Availability_01_30: 0,
+            Availability_31_60: 0,
+            Availability_61_90: 0
+        }
+    },[historicalAvailabilityResponse])
+
 
     const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
@@ -562,7 +578,8 @@ const useResearchInsights = ()=>{
         handlePageChange,
         onDeleteFilter,
         currentFilter,
-        setCurrentFilter
+        setCurrentFilter,
+        historicalAvailabilityData
     }
 }
 

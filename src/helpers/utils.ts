@@ -15,9 +15,8 @@ import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingFo
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField } from '../VectorFlow/types/BPR';
 import {RRRField} from '../VectorFlow/types/RRR'
-// import _ from 'lodash'
+import _ from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
-import { BTRCategoryNumberToTextMapper } from './BPRConstants';
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -1809,7 +1808,8 @@ export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number,m
   const  result:any[] = []
 
   rowData.forEach((item) => {
-    // Create a new object to store modified key-value pairs
+    if(item.isModified  || actionType!==2){
+      // Create a new object to store modified key-value pairs
     const  newItem:any = {};
 
     // Iterate through each key-value pair in the object
@@ -1851,7 +1851,9 @@ export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number,m
     });
 
     // Add the modified object to the result array
-    result.push(newItem);
+    const tempRow = _.omit({...newItem},['isModified'])
+    result.push(tempRow);
+    }
   });
 
   return result
@@ -2158,7 +2160,8 @@ export const BPRColorMapper =(color:string):{bg:string,text:string}=> {
 
 export const mapBTRRowData =(rows:Array<any>,horizon:number):Array<any>=>{
   return rows.map((r)=>{
-    const NewCategoryString = r.Category? r.Category.replace(/\d/g, (match:string) => BTRCategoryNumberToTextMapper[match] || match) :  ""
+    // const NewCategoryString = r.Category? r.Category.replace(/\d/g, (match:string) => BTRCategoryNumberToTextMapper[match] || match) :  ""
+    const NewCategoryString = r.Category
     const tempRow = {...r,Category:NewCategoryString}
     let tempAvailabilty = 0
     let nonBlackCount = 0
