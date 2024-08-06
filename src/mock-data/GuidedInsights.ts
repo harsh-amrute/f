@@ -308,74 +308,174 @@ DBMSuggestionAgeing:[
 }
 ],
 ExcessInventorySkuData:[
-    {
-        "date":"11 Dec 2023",
-        "countSku":40
-    },
-    {
-        "date":"12 Dec 2023",
-        "countSku":42
-    },
-    {
-        "date":"13 Dec 2023",
-        "countSku":45
-    },
-    {
-        "date":"14 Dec 2023",
-        "countSku":30
-    },
-    {
-        "date":"15 Dec 2023",
-        "countSku":35
-    },
-    {
-        "date":"16 Dec 2023",
-        "countSku":20
-    },
-    {
-        "date":"17 Dec 2023",
-        "countSku":25
-    },
-    {
-        "date":"18 Dec 2023",
-        "countSku":30
-    }
-]
+        {
+            "locationtype": "-",
+            "date": "2024-04-22",
+            "countSku": 4947
+        },
+        {
+            "locationtype": "CWH",
+            "date": "2024-04-22",
+            "countSku": 78
+        },
+        {
+            "locationtype": "Plant",
+            "date": "2024-04-22",
+            "countSku": 253
+        },
+        {
+            "locationtype": "-",
+            "date": "2024-04-23",
+            "countSku": 4925
+        },
+        {
+            "locationtype": "CWH",
+            "date": "2024-04-23",
+            "countSku": 78
+        },
+        {
+            "locationtype": "Plant",
+            "date": "2024-04-23",
+            "countSku": 268
+        },
+        {
+            "locationtype": "-",
+            "date": "2024-04-24",
+            "countSku": 4796
+        },
+        {
+            "locationtype": "CWH",
+            "date": "2024-04-24",
+            "countSku": 77
+        },
+        {
+            "locationtype": "Plant",
+            "date": "2024-04-24",
+            "countSku": 236
+        },
+        {
+            "locationtype": "-",
+            "date": "2024-04-25",
+            "countSku": 4797
+        },
+        {
+            "locationtype": "CWH",
+            "date": "2024-04-25",
+            "countSku": 75
+        },
+        {
+            "locationtype": "Plant",
+            "date": "2024-04-25",
+            "countSku": 232
+        },
+        {
+            "locationtype": "-",
+            "date": "2024-04-26",
+            "countSku": 4910
+        },
+        {
+            "locationtype": "CWH",
+            "date": "2024-04-26",
+            "countSku": 77
+        },
+        {
+            "locationtype": "Plant",
+            "date": "2024-04-26",
+            "countSku": 261
+        }
+    ]
 ,
 ExcessInventoryValueData:[
-   {
-        "date":"11 Dec 2023",
-        "value":4000
+    {
+        "locationtype": "CWH",
+        "date": "2024-05-22",
+        "value": 12120116
     },
     {
-        "date":"12 Dec 2023",
-        "value":4200
+        "locationtype": "Depot",
+        "date": "2024-05-22",
+        "value": 16360738
     },
     {
-        "date":"13 Dec 2023",
-        "value":4500
+        "locationtype": "CWH",
+        "date": "2024-05-23",
+        "value": 12041474
     },
     {
-        "date":"14 Dec 2023",
-        "value":3099
+        "locationtype": "Depot",
+        "date": "2024-05-23",
+        "value": 15468382
     },
     {
-        "date":"15 Dec 2023",
-        "value":3500
+        "locationtype": "CWH",
+        "date": "2024-05-24",
+        "value": 12367216
     },
     {
-        "date":"16 Dec 2023",
-        "value":2000
+        "locationtype": "Depot",
+        "date": "2024-05-24",
+        "value": 15470544
     },
     {
-        "date":"17 Dec 2023",
-        "value":2500
+        "locationtype": "CWH",
+        "date": "2024-05-25",
+        "value": 12427020
     },
     {
-        "date":"18 Dec 2023",
-        "value":3000
+        "locationtype": "Depot",
+        "date": "2024-05-25",
+        "value": 15686996
     },
-   
+    {
+        "locationtype": "CWH",
+        "date": "2024-05-26",
+        "value": 12604392
+    },
+    {
+        "locationtype": "Depot",
+        "date": "2024-05-26",
+        "value": 15848646
+    },
+    {
+        "locationtype": "CWH",
+        "date": "2024-05-27",
+        "value": 12621912
+    },
+    {
+        "locationtype": "Depot",
+        "date": "2024-05-27",
+        "value": 15932810
+    },
+    {
+        "locationtype": "CWH",
+        "date": "2024-05-28",
+        "value": 12546672
+    },
+    {
+        "locationtype": "Depot",
+        "date": "2024-05-28",
+        "value": 16300426
+    },
+    {
+        "locationtype": "CWH",
+        "date": "2024-05-29",
+        "value": 12460384
+    },
+    {
+        "locationtype": "Depot",
+        "date": "2024-05-29",
+        "value": 15716156
+    },
+    {
+        "locationtype": "CWH",
+        "date": "2024-05-30",
+        "value": 12342840
+    },
+    {
+        "locationtype": "Depot",
+        "date": "2024-05-30",
+        "value": 15073608
+    }
 ],
 ChronicGridViewData:[{
     "skucode":"sc1",
