@@ -27,13 +27,13 @@ const OTIFTrendsGraph = () => {
         xKey: "x_label",
         yKey: key,
         yName: labels[i],
-        lineDash: i === 0? null : [5, 5], // 5px dash, 5px gap
+        lineDash: i === 0 ? null : [5, 5], // 5px dash, 5px gap
         strokeWidth: 4,
         marker: {
-            enabled: true,
-            shape: 'circle',
-            size: 8,
-            fill: color
+          enabled: true,
+          shape: 'circle',
+          size: 8,
+          fill: color
         },
         strokeOpacity: 1,
         stroke: color,
@@ -88,17 +88,17 @@ const OTIFTrendsGraph = () => {
     ],
 
     legend: {
-        item: {
-            label: {
-                fontSize: 10,
-                fontWeight: 'bold', // Make legend text bold
-            },
-            marker: {
-                size: 15,
-                strokeWidth: 0,
-                shape: "square",
-            },
+      item: {
+        label: {
+          fontSize: 10,
+          fontWeight: 'bold', // Make legend text bold
         },
+        marker: {
+          size: 15,
+          strokeWidth: 0,
+          shape: "square",
+        },
+      },
     },
   };
 
@@ -122,7 +122,7 @@ const OTIFTrendsGraph = () => {
         <div
           data-testid="ot-if-graph"
           style={{
-            fontSize: "16px",
+            fontSize: "13px",
             margin: "0 auto",
 
             textAlign: "center",

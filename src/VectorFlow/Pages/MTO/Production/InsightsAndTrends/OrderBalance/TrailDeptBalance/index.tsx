@@ -106,24 +106,7 @@ const TrailDeptBalance = () => {
           width: "100%",
         }}
       >
-        <div
-          data-testid="fullKit-graph"
-          style={{
-            fontSize: "16px",
-            margin: "0 auto",
 
-            textAlign: "center",
-          }}
-        >
-          <span style={{ fontWeight: 500 }}>
-            {`${
-              actBtn.label === "Bal To Mfg."
-                ? ProductionInsightsAndTrendsString.trailDeptMfg
-                : ProductionInsightsAndTrendsString.trailDeptDisp
-            } `}
-          </span>
-          <span style={{ fontWeight: 300 }}>{` (${date})`}</span>
-        </div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <CapsuleWrapper style={{ zoom: 1, padding: "4px" }}>
             <VFCapsule
@@ -144,8 +127,7 @@ const TrailDeptBalance = () => {
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
             <VFInfoToolTip
               infoList={[
-                `The graph highlights trailing department wise quantities balance to ${
-                  actBtn.label === "Bal To Mfg." ? "manufacture" : "dispatch"
+                `The graph highlights trailing department wise quantities balance to ${actBtn.label === "Bal To Mfg." ? "manufacture" : "dispatch"
                 }`,
               ]}
             />
@@ -213,7 +195,10 @@ const TrailDeptBalance = () => {
         setChartLoading={setChartLoading}
         data={rawData}
         rowData={options.data}
-        graphTitle={""}
+        graphTitle={`${actBtn.label === "Bal To Mfg."
+          ? ProductionInsightsAndTrendsString.trailDeptMfg
+          : ProductionInsightsAndTrendsString.trailDeptDisp
+          } ` + ` (${date})`}
         tableTitle={tableTitle}
         options={options}
         colDef={colDefs}
