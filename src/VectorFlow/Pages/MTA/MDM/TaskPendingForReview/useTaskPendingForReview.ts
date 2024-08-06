@@ -159,6 +159,7 @@ const useTaskPendingForReview = ()=>{
        
         let toastId;
         const updatedRowData = createTaskPendingSubmitPayload(detailTableRowData,taskActionype || 0,currMasterId)
+        console.log(updatedRowData)
         
         try {
             const noActionPerformed = updatedRowData.find((row:any)=>row.status === '');
@@ -230,6 +231,10 @@ const useTaskPendingForReview = ()=>{
                         rowNode.setDataValue('status',status)
                         rowNode.setSelected(true)
                     }
+                    else if(taskActionype!==2){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }
                 })
                 setActionStatus(status);
                 break;
@@ -239,6 +244,10 @@ const useTaskPendingForReview = ()=>{
                         rowNode.setDataValue('status',status)
                         rowNode.setSelected(true)
                         
+                    }
+                    else if(pageData.includes(rowNode.id) && taskActionype!==2){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
                     }
                     
                 })

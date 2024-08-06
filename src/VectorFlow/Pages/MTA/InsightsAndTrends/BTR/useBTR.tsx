@@ -9,6 +9,7 @@ import { mapBTRRowData, mapBTRRowDataToColDefs } from "../../../../../helpers/ut
 
 import { useGetBTRDataCount,useGetBTRData } from "../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR"
 
+
 import { ColDef } from "ag-grid-enterprise"
 import { BTRTableHeader } from "./styles"
 import CategoryCellRenderer from "./CategoryCellRenderer"
@@ -73,6 +74,7 @@ const useBTR = ()=>{
     const {mutateAsync:getBTRData,isLoading} = useGetBTRData()
 
     const {data:countData,mutateAsync:getBTRDataCount,isLoading:isBTRCountLoading} = useGetBTRDataCount()
+
 
     const ecoTotalRows = useMemo(()=>{return countData?.data.data.EcoCount},[isBTRCountLoading])
 
@@ -347,11 +349,12 @@ const useBTR = ()=>{
     }
 
     const onExportToExcelCallBack = async(pageNumber:number,page:string)=>{
+        const tempFilter = getPreparedFilter(currFilter)
         const payload = {
             id: 0,
             name: '',
             fields: [],
-            filters:currFilter,
+            filters:tempFilter,
             paginationParameter:{
                 pageNumber: pageNumber,
                 recordsPerPage: 5000
@@ -367,7 +370,7 @@ const useBTR = ()=>{
         if(techRowData.length===0)return []
         if(verticalView && currentTab.id==='1') return mapBTRRowDataToColDefs(techRowData[0],dateLabels,horizon,true,["RN"])
        return mapBTRRowDataToColDefs(techRowData[0],dateLabels,horizon,false,["RN"])
-    },[techRowData,dateLabels])
+    },[techRowData,dateLabels,verticalView])
 
 
     const ecoColDefs = useMemo(():Array<ColDef>=>{

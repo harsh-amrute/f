@@ -161,11 +161,11 @@ export const routerToAnalyticsStringMap:RouterToAnalyticsStringMap = {
     "Stockout has occurred in Red Check Period. Upward revision suggested.": "3",
     "Buffer penetration has consistently been red. Upward revision suggested.": "4",
     "Buffer penetration has consistently been green. Downward revision suggested.": "5",
-    "High spike count.": "6",
-    "Norm 0 Order based Increase.": "7",
-    "Norm 0 Order based Increase suggestion generated and forcefully accepted.": "8",
-    "Norm 0 Order based Increase suggestion is not generated but forcefully accepted.": "9",
-    "Norm 1 Consumption based Increase.": "10",
-    "Norm 2 Consumption based Decrease.": "11"
+    "High spike count": "6",
+    "Norm 0 Order based Increase": "7",
+    "Norm 0 Order based Increase suggestion generated and forcefully accepted": "8",
+    "Norm 0 Order based Increase suggestion is not generated but forcefully accepted": "9",
+    "Norm 1 Consumption based Increase": "10",
+    "Norm 2 Consumption based Decrease": "11"
   }
   
