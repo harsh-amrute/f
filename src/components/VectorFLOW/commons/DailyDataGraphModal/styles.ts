@@ -8,7 +8,7 @@ export const SCSeasonalityContainer = styled.div`
 
     @media (min-width:1024px) and (max-width:1688px){
         width:1100px;
-        height:520px;
+        height:500px;
     } 
     
 `
@@ -17,6 +17,7 @@ export const SCChartContainer = styled.div`
     margin-right:33px;
     //width:81%;
     width:76%;
+    height:300px
 `
 
 export const SCSeasonalityStatusDetails = styled.div`
