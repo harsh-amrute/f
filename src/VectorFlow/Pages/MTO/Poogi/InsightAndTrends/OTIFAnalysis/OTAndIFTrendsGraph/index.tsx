@@ -30,10 +30,10 @@ const OTAndIFTrendsGraph = () => {
         fill: color,
         strokeWidth: 4,
         marker: {
-            enabled: true,
-            shape: 'circle',
-            size: 8,
-            fill: color
+          enabled: true,
+          shape: 'circle',
+          size: 8,
+          fill: color
         },
         strokeOpacity: 1,
         stroke: color,
@@ -89,17 +89,17 @@ const OTAndIFTrendsGraph = () => {
     ],
 
     legend: {
-        item: {
-            label: {
-                fontSize: 10,
-                fontWeight: 'bold', // Make legend text bold
-            },
-            marker: {
-                size: 15,
-                strokeWidth: 0,
-                shape: "square",
-            },
+      item: {
+        label: {
+          fontSize: 10,
+          fontWeight: 'bold', // Make legend text bold
         },
+        marker: {
+          size: 15,
+          strokeWidth: 0,
+          shape: "square",
+        },
+      },
     },
   };
 
@@ -123,7 +123,7 @@ const OTAndIFTrendsGraph = () => {
         <div
           data-testid="ot-and-if-graph"
           style={{
-            fontSize: "16px",
+            fontSize: "13px",
             margin: "0 auto",
 
             textAlign: "center",

@@ -107,7 +107,7 @@ const OrderBalance = () => {
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: '25px' }}>
         {isGridView ? (
-          <div data-testid="grid-view" style={{ height: screenHeight - 300 }}>
+          <div data-testid="grid-view" style={{ height: screenHeight - 30 }}>
             <VFTable
               {...gridOptions}
               pagination={true}

@@ -85,20 +85,7 @@ const TrailDeptCount = () => {
           width: "100%",
         }}
       >
-        <div
-          data-testid="stpl-graph"
-          style={{
-            fontSize: "16px",
-            margin: "0 auto",
 
-            textAlign: "center",
-          }}
-        >
-          <span style={{ fontWeight: 500 }}>
-            {`${ProductionInsightsAndTrendsString.trailDeptCount}  `}
-          </span>
-          <span style={{ fontWeight: 300 }}>{` (${date})`}</span>
-        </div>
         <div style={{ display: "flex" }}>
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
             <VFInfoToolTip
@@ -142,7 +129,7 @@ const TrailDeptCount = () => {
         setChartLoading={setChartLoading}
         data={rawData}
         rowData={options.data}
-        graphTitle={""}
+        graphTitle={`${ProductionInsightsAndTrendsString.trailDeptCount}  ` + ` (${date})`}
         tableTitle={ProductionInsightsAndTrendsString.trailDeptCount}
         options={options}
         colDef={colDefs}
