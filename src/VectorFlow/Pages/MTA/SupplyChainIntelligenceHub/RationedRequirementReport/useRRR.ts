@@ -5,7 +5,7 @@ import { SideBarDef } from 'ag-grid-enterprise';
 import { useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
-import { mapRRRFieldsToColDefs } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapRRRFieldsToColDefs } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader} from "../../../../../helpers/notify"
 import { toast } from "react-toastify";
 
@@ -240,7 +240,7 @@ const useRRR =()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'RationedRequirementReport'});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'RationedRequirementReport',columnKeys:getColumnsForExcelExport(RRRColumns)});
         }
       };
 

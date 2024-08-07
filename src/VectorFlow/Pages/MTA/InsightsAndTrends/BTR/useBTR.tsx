@@ -5,7 +5,7 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import HorizontalSplitView from "./HorizontalSplitView"
 
 import VerticalSplitView from "./VerticalSplitView"
-import { mapBTRRowData, mapBTRRowDataToColDefs } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs } from "../../../../../helpers/utils"
 
 import { useGetBTRDataCount,useGetBTRData } from "../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR"
 
@@ -146,7 +146,7 @@ const useBTR = ()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:currentTab.value==='on-hand'?"OnHandInv":"PipelineInv"});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:currentTab.value==='on-hand'?"OnHandInv":"PipelineInv",columnKeys:getColumnsForExcelExport(currentTab.value==='on-hand'?techColDefs:ecoColDefs)});
         }
       };
 
@@ -371,7 +371,7 @@ const useBTR = ()=>{
         if(techRowData.length===0)return []
         if(verticalView && currentTab.id==='1') return mapBTRRowDataToColDefs(techRowData[0],dateLabels,horizon,true,["RN"])
        return mapBTRRowDataToColDefs(techRowData[0],dateLabels,horizon,false,["RN"])
-    },[techRowData,dateLabels,verticalView])
+    },[techRowData,dateLabels,verticalView,currentTab])
 
 
     const ecoColDefs = useMemo(():Array<ColDef>=>{

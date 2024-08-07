@@ -14,7 +14,7 @@ import ShowRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpedit
 import SubmitRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/SubmitRemarkCellRenderer";
 import MasterDetail from "./MasterDetail";
 import { ColorGroupCellRenderer, CurrentLocationCellRenderer, ETACellRenderer } from "./CellRenderers";
-import { mapInTransitWhereAboutsRowData, mapSubmitRemarkData } from "../../../../../helpers/utils";
+import { getColumnsForExcelExport, mapInTransitWhereAboutsRowData, mapSubmitRemarkData } from "../../../../../helpers/utils";
 import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount,useGetRemarkDetailsForInTransit, useGetTransporterDetails, useSubmitRemarksForInTransit } from "../../../../../VectorFlow/Services/MTA/Logistics/InTransitWhereAbouts";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
@@ -224,7 +224,7 @@ const useInTransitWhereAbouts = ()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'InTransitWhereAbouts'});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'InTransitWhereAbouts',columnKeys:getColumnsForExcelExport(colDefs)});
         }
       };
 
@@ -605,12 +605,12 @@ const useInTransitWhereAbouts = ()=>{
         },
         floatingFilter:false,
         editable:true,
-        cellDataType:'date'
+        cellDataType:'dateString'
     },
       {
           headerName: "",
-          colId: 'history',
-          field: 'history',
+          colId: 'rh',
+          field: 'rh',
           cellRenderer:'remarksCellRenderer',
           cellRendererParams:{
               onClick:onOpenRemarkHistory

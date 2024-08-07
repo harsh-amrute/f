@@ -1983,7 +1983,7 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
       filter: getCellFilter(f.DataType)
     }
   })
-  return [{...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result,...BPRSpecificColumns]
+  return [{...createIconColumn({id:'dailydatagraph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result,...BPRSpecificColumns]
 }
 
 export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDailyDataGraph:any):ColDef[]=>{
@@ -2058,7 +2058,7 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDaily
       filter:getCellFilter(f.DataType)
     }
   })
-  return [checkboxColDef,{...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result]
+  return [checkboxColDef,{...createIconColumn({id:'dailydatagraph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result]
 }
 
 export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
@@ -2321,6 +2321,7 @@ export const mapDBMFieldsToColDefs = (fields:DBMField[],onOpenDailyDataGraph:any
 
    const DBMSleepColumn:ColDef[] =[
   {
+    colId:'sleep',
        headerName:'Sleep',
        lockPosition:true,
        cellRenderer:'sleepCellRenderer',
@@ -2419,7 +2420,6 @@ export const mapInTransitWhereAboutsRowData = (rowData:Array<any>):Array<any>=>{
 }
 
 export const mapSubmitRemarkData = (row:any):any=>{
-  console.log(row)
   return{
 
       
@@ -2450,4 +2450,10 @@ export const convertToInt = (data:any,keys:string[])=>{
       })
       return {...tempObj}
   })
+}
+
+export const getColumnsForExcelExport = (columns:Array<ColDef>):any=>{
+  const defaultColumnsToExclude = ['checkbox','dailydatagraph','sleep','tags','rh','remarks','AgeingOrder','t']
+  return columns.filter((c:ColDef)=>(c.colId!==undefined && !defaultColumnsToExclude.includes(c.colId))).map((c)=>(c.colId && c.colId))
+
 }

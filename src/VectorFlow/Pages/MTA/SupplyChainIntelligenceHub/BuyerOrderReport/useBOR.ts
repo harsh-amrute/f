@@ -1,6 +1,6 @@
 import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetState,useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { mapBORFieldsToColDefs } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapBORFieldsToColDefs } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import {DispatchColorCellRenderer} from "./CellRenderer"
@@ -226,7 +226,7 @@ export const useBOR =()=>{
 
       const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport'});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport',columnKeys:getColumnsForExcelExport(BORColumns)});
         }
       };
       const onExportToExcelCallBack=async(pageNumber:number)=>{

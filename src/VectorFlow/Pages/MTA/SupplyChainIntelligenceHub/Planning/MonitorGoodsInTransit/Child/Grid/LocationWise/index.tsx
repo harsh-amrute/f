@@ -152,7 +152,7 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
         let colDefs = [];
-        const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
+        const dailyDataColDef = {...createIconColumn({id:'dailydatagraph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
         const tagsColDef =  {
             colId:'tags',
             field:'t',
