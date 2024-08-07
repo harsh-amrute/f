@@ -15,7 +15,6 @@ import MTORemarkHistoryModal from '../../Production/DepartmentWiseBMReport/MTORe
 
 
 import DropdownCellRenderer from './DropDownRenderer';
-import { RemarkHistoryData } from '../../Production/DepartmentWiseBMReport/DeptWiseBMReportData'
 
 
 const ReasonForDelayOrder = () => {
@@ -141,7 +140,8 @@ const ReasonForDelayOrder = () => {
             cellEditor: "agSelectCellEditor",
             cellEditorParams: {
                 values: ["Male", "Female"]
-            }
+            },
+            cellRenderer:DropdownCellRenderer
             // frameworkComponents: {
             //     dropdownCellRenderer: DropdownCellRenderer,
             // },

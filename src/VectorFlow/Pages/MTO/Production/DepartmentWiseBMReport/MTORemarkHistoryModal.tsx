@@ -42,14 +42,14 @@ const MTORemarkHistoryModal = (props:RemarkModalProps)=>{
                             data.map((d:any,index:number)=>{
                                 return(
                                 <RemarkModalTableRow key={index} style={{borderTop:index===0?'none':'dashed 1px gray'}}>
-                                    <UserIcon data={d.added_by===''?'':d.added_by}/>
+                                    <UserIcon data={d.added_by}/>
                                     <RemarkModalTableCell>
                                         <RemarkModalRemarkCelLRenderer>
                                             <RemarkText>
-                                               {d.remark===''?'':d.remark}
+                                               {d.remark}
                                             </RemarkText>
                                             <RemarkDate>
-                                               {/* {d.added_on} */}
+                                               {d.added_on}
                                             </RemarkDate>
                                         </RemarkModalRemarkCelLRenderer>
                                     </RemarkModalTableCell>
