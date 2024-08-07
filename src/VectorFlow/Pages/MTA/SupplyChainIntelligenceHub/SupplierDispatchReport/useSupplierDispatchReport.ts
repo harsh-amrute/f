@@ -1,6 +1,6 @@
 
 import { useGetSDRUIConfiguration ,useGetSDRData,useGetSDRDataCount} from '../../../../Services/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport/index';
-import { mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
+import { getColumnsForExcelExport, mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
 import { useEffect, useState,useRef,useMemo } from 'react';
 import { notifyError,notifyLoader } from '../../../../../helpers/notify';
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
@@ -84,7 +84,7 @@ const useSupplierDispatchReport= ()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'SupplierDispatchReport'});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'SupplierDispatchReport',columnKeys:getColumnsForExcelExport(VDRColumns)});
         }
       };
     

@@ -1,7 +1,7 @@
 import {useEffect,useState,useMemo,useRef} from 'react'
 import {AgGridReactProps} from 'ag-grid-react'
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
-import { mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
+import { getColumnsForExcelExport, mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
 
 import {BPRTagsCellRenderer,BPRTechColorCellRenderer,BPREcoColorCellRenderer} from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
@@ -183,7 +183,7 @@ const useResearchInsights = ()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'ResearchInsights'});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'ResearchInsights',columnKeys:getColumnsForExcelExport(ResearchInsightsColumns)});
         }
       };
 

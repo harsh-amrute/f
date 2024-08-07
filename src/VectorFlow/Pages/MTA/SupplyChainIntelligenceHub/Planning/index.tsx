@@ -1,5 +1,3 @@
-import {useMemo} from 'react'
-
 import SelectCategory from "../../../../../components/VectorFLOW/layouts/SelectCategory";
 
 import usePlanning from "./usePlanning";
@@ -49,7 +47,8 @@ const Planning = () => {
         currentFilter,
         setCurrentFilter,
         onDeleteFilter,
-        isDataLoading
+        isDataLoading,
+        currentColDefs
     } = usePlanning();
 
 
@@ -69,34 +68,7 @@ const Planning = () => {
 
     
 
-    const currentColDefs = useMemo(()=>{
-        if(currentGridData){
-            let currUiConfig = []
-            if(currentCategory==="GITToChild"){
-                if(currentTab==="locationWise")currUiConfig=currentGridData['locationWise'].uiConfig
-                else currUiConfig=currentGridData['transporterWise'].uiConfig
-            }
-            else currUiConfig = currentGridData.uiConfig
-            let colDefs = [];
-        colDefs = currUiConfig.map((column:{header:string,colCode:string})=>{
-            if(['plp','pip'].includes(column.colCode)){
-                return {
-                    field:column['colCode'],
-                    colId:column['colCode'],
-                    headerName:column['header'],
-                    cellRenderer:'colorCellRenderer',
-                }
-            }
-            return {
-                field:column['colCode'],
-                colId:column['colCode'],
-                headerName:column['header']
-            }
-        })
-        return [...colDefs]
-        }
-        return []
-    },[currentGridData])
+   
 
     if(isDataLoading){
         return <VFLoader/>
