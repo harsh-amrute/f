@@ -4,6 +4,7 @@ import {
 } from '../../../MTA/SupplyChainIntelligenceHub/BPR/styles';
 
 const RemarkHistoryRenderer = (params: any) => {
+    //console.log('remarkcelrender' ,params.data.ok)
     return (
         <BPRRemarksCellRendererWrapper >
             <BPRColorCellRendererIcon
@@ -13,7 +14,7 @@ const RemarkHistoryRenderer = (params: any) => {
                     if (!ref) return;
 
                     ref.onclick = (e: any) => {
-                        params.onClick()
+                        params.onClick(params.data.ok)
                         e.stopPropagation();
                     };
                 }}

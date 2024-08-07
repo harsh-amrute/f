@@ -6,11 +6,16 @@ import { getColumnDefinations } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { useGetReasonForDelayOrder } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import { toast } from 'react-toastify';
-import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
+import { notifyLoader } from '../../../../../helpers/notify';
 import { AgGridReactProps } from 'ag-grid-react';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 import { useUserData } from '../../../../../context';
 import RemarkHistoryRenderer from '../../Production/DepartmentWiseBMReport/RemarkHistoryRenderer';
+import BPRRemarkHistoryModal from '../../Production/DepartmentWiseBMReport/MTORemarkHistoryModal';
+import DropdownCellRenderer from './DropDownRenderer';
+
+
+import { RemarkHistoryData } from '../../Production/DepartmentWiseBMReport/DeptWiseBMReportData'
 
 const ReasonForDelayOrder = () => {
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -18,6 +23,7 @@ const ReasonForDelayOrder = () => {
     const [HeaderData, setHeaderData] = useState<any>([{}]);
     const [rowData, setRowData] = useState<any>();
     const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
+    const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const reportName = 'ReasonForDelayedOrders';
 
     const sideBar = useMemo(() => {
@@ -27,8 +33,6 @@ const ReasonForDelayOrder = () => {
     }, []);
 
     const agGridProps: AgGridReactProps = {
-        tooltipShowDelay: 0,
-        tooltipTrigger: "focus",
         gridOptions: {
             rowHeight: 50,
             getRowStyle: (params: any) => {
@@ -40,12 +44,10 @@ const ReasonForDelayOrder = () => {
             suppressRowClickSelection: true,
             enableBrowserTooltips: true,
             enableRangeSelection: true,
-            //components: customCellRenderers,
             pagination: true,
             defaultColDef: {
                 filter: 'agTextColumnFilter',
                 floatingFilter: true,
-                //suppressFiltersToolPanel:true,
                 cellStyle: {
                     'text-align': 'center',
                     //'height': '50px',
@@ -64,8 +66,6 @@ const ReasonForDelayOrder = () => {
         },
         sideBar: sideBar,
         masterDetail: true,
-        //detailCellRenderer: RowGroupRenderer,
-        //detailCellRendererParams:RowGroupRenderer,
         paginationAutoPageSize: true,
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,
@@ -73,7 +73,7 @@ const ReasonForDelayOrder = () => {
         pivotMode: false
     };
 
-
+    //to get the header data from api
     const getHeaderData = async () => {
         try {
             const response = await getUIConfigData(reportName);
@@ -86,9 +86,9 @@ const ReasonForDelayOrder = () => {
         }
     }
 
+    //to get the rowdata for Aggrid
     const getInitialData = async (wipval: boolean) => {
         try {
-            console.log('wipval',wipval)
             setWIPCheck(wipval)
             const apiResponse = await getPoogiReasonsDelayedOrder(wipval === true ? 0 : 1);
             setRowData(apiResponse?.data?.data?.results)
@@ -98,17 +98,28 @@ const ReasonForDelayOrder = () => {
         }
     }
 
+    //to handle the modal for remark
+    const handleModal = (id: string) => {
+        console.log('ijfer', id);
+        setIsRemarkHistoryOpen(true)
+    }
+
     const customHeader = {
         RemarksHistory: {
             pinned: "right",
             minWidth: 120,
             lockPosition: true,
-            cellRenderer:RemarkHistoryRenderer
+            cellRenderer: RemarkHistoryRenderer,
+            cellRendererParams: {
+                onClick: (oid: string) => handleModal(oid)
+            }
         },
         MajorReason: {
             pinned: "right",
             lockPosition: true,
             minWidth: 120,
+            cellRenderer: DropdownCellRenderer,
+            //dropdownCellRenderer: DropdownCellRenderer
 
         },
         MinorReason: {
@@ -119,6 +130,8 @@ const ReasonForDelayOrder = () => {
     }
 
     const columnDef = getColumnDefinations(HeaderData, customHeader);
+
+    console.log(columnDef)
 
     useEffect(() => {
         getHeaderData();
@@ -133,11 +146,13 @@ const ReasonForDelayOrder = () => {
         else {
             toast.dismiss();
         }
-    }, [isLoading,isWIPChecked])
+    }, [isLoading, isWIPChecked])
 
     if (!rowData) {
         return null;
     }
+
+
 
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
@@ -159,6 +174,7 @@ const ReasonForDelayOrder = () => {
                 height='750px'
                 columnDefs={columnDef}
                 rowData={rowData}
+
             />
             <SaveBtnWrapper>
                 <SaveBtn>
@@ -166,7 +182,13 @@ const ReasonForDelayOrder = () => {
                 </SaveBtn>
             </SaveBtnWrapper>
 
+            <BPRRemarkHistoryModal
+                data={RemarkHistoryData}
+                isOpen={isRemarkHistoryOpen}
+                onClose={() => setIsRemarkHistoryOpen(false)}
+            />
         </div>
+
     )
 }
 

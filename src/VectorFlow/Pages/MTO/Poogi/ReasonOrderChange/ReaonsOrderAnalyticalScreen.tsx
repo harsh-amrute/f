@@ -19,7 +19,7 @@ const ReasonsOrderAnalyticalScreen = () => {
     const { data, isLoading, /*refetch*/ } = useGetReasonForPoogiAnalytics();
     const analyticsData = useMemo(()=>{
         if(!data)return []
-        return data.data.data
+        return data?.data?.data
     },[isLoading])
 
     const [rowData] = useState([
@@ -156,7 +156,7 @@ const ReasonsOrderAnalyticalScreen = () => {
                         </BPRDailyAnalyticsTableCell>
                         <BPRDailyAnalyticsTableCell>
                             <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
-                                {analyticsData.closed.assigned + analyticsData.open.assigned}
+                                {Number(analyticsData.closed.assigned) + Number(analyticsData.open.assigned)}
                             </BPRDailyAnalyticsTableCellHeader>
 
                         </BPRDailyAnalyticsTableCell>

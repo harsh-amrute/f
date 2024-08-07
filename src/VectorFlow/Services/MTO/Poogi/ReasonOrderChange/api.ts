@@ -14,7 +14,7 @@ export namespace ReasonOrderChangeServices {
     }
 
     export const getPoogiReasonsDelayedOrder = async (data: number) => {
-        console.log(process.env.REACT_APP_VF_API_HOST_MTO + `/getPoogiReasonForDealyedOrdersData/?isAssigned=${data}`)
+        // console.log(process.env.REACT_APP_VF_API_HOST_MTO + `/getPoogiReasonForDealyedOrdersData/?isAssigned=${data}`)
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getPoogiReasonForDealyedOrdersData/?isAssigned=${data}`, {
             headers: {
                 'Content-Type': 'application/json',
