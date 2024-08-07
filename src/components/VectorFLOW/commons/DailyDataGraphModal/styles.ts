@@ -1,4 +1,7 @@
 import styled from "styled-components";
+
+import * as globalStyles from '../../../../styles/global'
+
 export const SCSeasonalityContainer = styled.div`
     padding-top:20px;
     padding-bottom:20px;
@@ -29,8 +32,9 @@ export const SCSeasonalityStatusDetails = styled.div`
     }
     
 `
-export const SCSeasonalityDetailsTitle = styled.div`
-    background-color:#292C2E;
+export const SCSeasonalityDetailsTitle = styled.div<{themeUi:string}>`
+    background-color:${(props)=>props.themeUi==="PUREELEGANCE"?'black':globalStyles.chooseThemeColor[props.themeUi].color1};
+    // background-color:#292C2E;
     color:white;
     font-family:'Roboto';
     font-size:18px;

@@ -770,7 +770,7 @@ export const mapMasterToColumnDefs = (fields:Field[],masterId?:number,onShowChar
       checkboxSelection:true,
       headerCheckboxSelection:true,
       headerCheckboxSelectionCurrentPageOnly:true,
-      width:10
+      width:50
     }
     return [PIPOCheckboxColDef,...result]
   }
