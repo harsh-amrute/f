@@ -4,25 +4,28 @@ import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/A
 import { SaveBtnWrapper, SaveBtn } from './styles';
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import { useGetReasonForDelayOrder } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
+import { useGetReasonForDelayOrder, useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import { toast } from 'react-toastify';
 import { notifyLoader } from '../../../../../helpers/notify';
 import { AgGridReactProps } from 'ag-grid-react';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 import { useUserData } from '../../../../../context';
 import RemarkHistoryRenderer from '../../Production/DepartmentWiseBMReport/RemarkHistoryRenderer';
-import BPRRemarkHistoryModal from '../../Production/DepartmentWiseBMReport/MTORemarkHistoryModal';
+import MTORemarkHistoryModal from '../../Production/DepartmentWiseBMReport/MTORemarkHistoryModal';
+
+
 import DropdownCellRenderer from './DropDownRenderer';
-
-
 import { RemarkHistoryData } from '../../Production/DepartmentWiseBMReport/DeptWiseBMReportData'
+
 
 const ReasonForDelayOrder = () => {
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { mutateAsync: getPoogiReasonsDelayedOrder, isLoading } = useGetReasonForDelayOrder();
+    const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const [HeaderData, setHeaderData] = useState<any>([{}]);
     const [rowData, setRowData] = useState<any>();
     const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
+    const [remarkHistory, setRemarkHistory] = useState<any>();
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const reportName = 'ReasonForDelayedOrders';
 
@@ -99,8 +102,17 @@ const ReasonForDelayOrder = () => {
     }
 
     //to handle the modal for remark
-    const handleModal = (id: string) => {
-        console.log('ijfer', id);
+    const handleModal = async (data: any) => {
+        if (data.r.length === 0) {
+            const RemarkHistory = await getPoogIRemarks(data.ok)
+            if (RemarkHistory.data?.data === 'No remarks are present for the order') {
+                data.r = []
+            }
+            else {
+                data.r = RemarkHistory.data?.data;
+            }
+            setRemarkHistory(data.r)
+        }
         setIsRemarkHistoryOpen(true)
     }
 
@@ -118,7 +130,14 @@ const ReasonForDelayOrder = () => {
             pinned: "right",
             lockPosition: true,
             minWidth: 120,
-            cellRenderer: DropdownCellRenderer,
+            cellEditor: "agSelectCellEditor",
+            cellEditorParams: {
+                values: ["Male", "Female"]
+            }
+            // frameworkComponents: {
+            //     dropdownCellRenderer: DropdownCellRenderer,
+            // },
+            //dropdownCellRenderer: DropdownCellRenderer,
             //dropdownCellRenderer: DropdownCellRenderer
 
         },
@@ -131,7 +150,7 @@ const ReasonForDelayOrder = () => {
 
     const columnDef = getColumnDefinations(HeaderData, customHeader);
 
-    console.log(columnDef)
+    //console.log(columnDef)
 
     useEffect(() => {
         getHeaderData();
@@ -174,16 +193,16 @@ const ReasonForDelayOrder = () => {
                 height='750px'
                 columnDefs={columnDef}
                 rowData={rowData}
-
             />
+
             <SaveBtnWrapper>
                 <SaveBtn>
                     Save Reasons
                 </SaveBtn>
             </SaveBtnWrapper>
 
-            <BPRRemarkHistoryModal
-                data={RemarkHistoryData}
+            <MTORemarkHistoryModal
+                data={remarkHistory}
                 isOpen={isRemarkHistoryOpen}
                 onClose={() => setIsRemarkHistoryOpen(false)}
             />

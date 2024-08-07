@@ -3,6 +3,7 @@ import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTable, RemarkModalTableCell, RemarkModalTableHeader, RemarkModalTableHeaderContainer, RemarkModalTableRow, RemarkModalTableRowContainer, RemarkText } from "../../../MTA/Logistics/InTransitWhereAbouts/styles"
 import UserIcon from "../../../MTA/Logistics/InTransitWhereAbouts/UserIcon";
+import { memo } from "react";
 
 interface RemarkModalProps{
     isOpen:boolean
@@ -10,7 +11,7 @@ interface RemarkModalProps{
     data:Array<any>
 }
 
-const BPRRemarkHistoryModal = (props:RemarkModalProps)=>{
+const MTORemarkHistoryModal = (props:RemarkModalProps)=>{
 
     const {
         isOpen,
@@ -20,8 +21,9 @@ const BPRRemarkHistoryModal = (props:RemarkModalProps)=>{
 
     const {user} = useUserData()
     const theme_ui = user.user.theme_ui
-
+    
     return(
+
         <VFModalCard openModal={isOpen} headerIcon="/assets/img/VectorFLOW/BPR/remark.svg" headerText="Remark History" closeIcon="/assets/img/VectorFLOW/NMS/close-white.svg" closeModal={onClose}>
             <RemarkModalContentWrapper>
                 <RemarkModalTable className="custom-scrollbar">
@@ -40,14 +42,14 @@ const BPRRemarkHistoryModal = (props:RemarkModalProps)=>{
                             data.map((d:any,index:number)=>{
                                 return(
                                 <RemarkModalTableRow key={index} style={{borderTop:index===0?'none':'dashed 1px gray'}}>
-                                    <UserIcon data={d.un}/>
+                                    <UserIcon data={d.added_by===''?'':d.added_by}/>
                                     <RemarkModalTableCell>
                                         <RemarkModalRemarkCelLRenderer>
                                             <RemarkText>
-                                               {d.r}
+                                               {d.remark===''?'':d.remark}
                                             </RemarkText>
                                             <RemarkDate>
-                                               {d.rd}
+                                               {/* {d.added_on} */}
                                             </RemarkDate>
                                         </RemarkModalRemarkCelLRenderer>
                                     </RemarkModalTableCell>
@@ -70,5 +72,5 @@ const BPRRemarkHistoryModal = (props:RemarkModalProps)=>{
     )
 }
 
-export default BPRRemarkHistoryModal
+export default memo(MTORemarkHistoryModal)
  

@@ -1,4 +1,4 @@
-import { useQuery,useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import { ReasonOrderChangeServices } from './api'
 
 //useQuery for get 
@@ -19,4 +19,9 @@ export const useGetReasonForDelayOrder = () => {
     })
 }
 
+export const useGetPoogiRemarks = () => {
+    return useMutation(async (data: string) => {
+        return await ReasonOrderChangeServices.getPoogIRemarks(data);
+    })
+}
 

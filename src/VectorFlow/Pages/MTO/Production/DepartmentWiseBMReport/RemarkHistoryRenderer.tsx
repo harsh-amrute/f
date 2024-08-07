@@ -14,7 +14,7 @@ const RemarkHistoryRenderer = (params: any) => {
                     if (!ref) return;
 
                     ref.onclick = (e: any) => {
-                        params.onClick(params.data.ok)
+                        params.onClick(params.data)
                         e.stopPropagation();
                     };
                 }}
