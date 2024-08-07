@@ -103,17 +103,25 @@ const ReasonForDelayOrder = () => {
 
     //to handle the modal for remark
     const handleModal = async (data: any) => {
-        if (data.r.length === 0) {
-            const RemarkHistory = await getPoogIRemarks(data.ok)
-            if (RemarkHistory.data?.data === 'No remarks are present for the order') {
-                data.r = []
-            }
-            else {
-                data.r = RemarkHistory.data?.data;
+        try {
+            //console.log('data.r=', data)
+            if (data.r.length === 0) {
+                const RemarkHistory = await getPoogIRemarks(data.ok)
+                //console.log('remakr histoyr', RemarkHistory?.data?.data)
+                if (RemarkHistory.data?.data === 'No remarks are present for the order') {
+                    data.r = []
+                }
+                else {
+                    data.r = RemarkHistory.data?.data;
+                }
             }
             setRemarkHistory(data.r)
+            setIsRemarkHistoryOpen(true)
         }
-        setIsRemarkHistoryOpen(true)
+        catch (e) {
+            console.log(e);
+        }
+
     }
 
     const customHeader = {
