@@ -231,7 +231,7 @@ const useTaskPendingForReview = ()=>{
                         rowNode.setDataValue('status',status)
                         rowNode.setSelected(true)
                     }
-                    else if(taskActionype!==2){
+                    else if(taskActionype!==2 || currMasterId===6){
                         rowNode.setDataValue('status',status)
                         rowNode.setSelected(true)
                     }
@@ -245,7 +245,7 @@ const useTaskPendingForReview = ()=>{
                         rowNode.setSelected(true)
                         
                     }
-                    else if(pageData.includes(rowNode.id) && taskActionype!==2){
+                    else if(pageData.includes(rowNode.id) && (taskActionype!==2 || currMasterId===6)){
                         rowNode.setDataValue('status',status)
                         rowNode.setSelected(true)
                     }

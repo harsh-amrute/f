@@ -495,6 +495,8 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
     const onChangeHorizon = (horizon:number) => {
         setHorizon(horizon)
     } 
+
+    
    
     return(
         <VFModalCard openModal={isModalOpen} closeModal={()=>dispatch(TOGGLE_GRAPH_MODAL(false))} headerIcon='' headerText="Daily Data Graph" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
@@ -503,7 +505,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                     <AgCharts options={generateChartOptions()}/>
                 </SCChartContainer>
                 <SCSeasonalityStatusDetails>
-                  <SCSeasonalityDetailsTitle>
+                  <SCSeasonalityDetailsTitle themeUi={themeUi}>
                     Daily Data Graph Details
                   </SCSeasonalityDetailsTitle>
                   <SCSeasonalityDetailsBody>
