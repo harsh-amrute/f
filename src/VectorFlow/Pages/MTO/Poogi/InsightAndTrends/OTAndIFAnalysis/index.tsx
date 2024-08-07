@@ -25,13 +25,13 @@ const OTAndIFAnalysis = () => {
 
 
                                 <Allotment vertical={false} separator={false}   >
-                                    <Allotment.Pane preferredSize={'50%'} className='allotment-pane-custom'>
+                                    <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
                                         <BTRAllomentSection>
                                             <OTFailedGraph />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
 
-                                    <Allotment.Pane preferredSize={'50%'} className='allotment-pane-custom'>
+                                    <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
                                         <BTRAllomentSection>
                                             <IFFaildGraph />
                                         </BTRAllomentSection>

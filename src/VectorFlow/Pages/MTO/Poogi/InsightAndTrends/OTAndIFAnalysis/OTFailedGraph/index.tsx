@@ -5,7 +5,7 @@ import { InsightsAndTrendsString } from '../../../../../../../VectorFlow/Pages/M
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
-import { createSeriesData, data } from '../Data'
+import { createSeriesData, data, getMyColumnDefinitions, TooltipRenderer } from '../Data'
 import { AgChartOptions } from 'ag-charts-community'
 
 const OTFailedGraph = () => {
@@ -55,33 +55,16 @@ const OTFailedGraph = () => {
     const numericData: any = []
     const rowData: any = []
 
-    const colDef: any = []
+    const labels = [
+        { text: "1-2 days", color: "#F5B279", key: "1-2 days" },
+        { text: "3-7 days", color: "#F09241", key: "3-7 days" },
+        { text: "8-15 days", color: "#E36A00", key: "8-15 days" },
+        { text: "16-30 days", color: "#AD5000", key: "16-30 days" },
+    ];
+
+    const colDef: any = getMyColumnDefinitions(labels);
 
 
-
-    function TooltipRenderer({ datum, xKey }: any) {
-        return `
-    <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-        ${datum[xKey]}
-    </div>
-    <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
-    
-    <div>
-        <div style="display: flex;">
-            <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F4BD8E">
-            </div>
-            <div style="display:flex ; width: 100%; justify-content: space-between">
-                <div>${InsightsAndTrendsString.ordersWithFullkitOHS}
-                </div>
-                <div> ${datum['soh']}
-                </div>
-            </div>
-        </div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitOPO}</div><div>${datum["sit"]}</div></div></div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitSIT}</div><div>${datum["po"]}</div></div></div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithRMPM}</div><div> ${datum["or"]}</div></div></div>
-    </div>`
-    }
 
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 
@@ -148,7 +131,7 @@ const OTFailedGraph = () => {
                 setTableLoading={setTableLoading}
                 setChartLoading={setChartLoading}
                 data={data}
-                rowData={rowData}
+                rowData={data}
                 graphTitle={``}
                 tableTitle={``}
                 options={options}
@@ -158,7 +141,7 @@ const OTFailedGraph = () => {
                 chartHeight={70}
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRenderer}
-                graphType={1}
+                graphType={11}
             />
 
         </div>

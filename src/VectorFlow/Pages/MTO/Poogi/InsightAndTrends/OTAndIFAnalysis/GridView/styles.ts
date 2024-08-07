@@ -114,7 +114,7 @@ export const SCDynamicContainer = styled.div`
     }
 
     & .ag-header-cell-text {
-      font-size: 14px;
+      font-size: 13px;
   }
   & > .ag-theme-alpine{
       flex: 1;
@@ -131,6 +131,12 @@ export const SCDynamicContainer = styled.div`
 
       & .ag-side-buttons {
         zoom : 0.75;
+      }
+      & .ag-status-bar {
+        zoom: 0.75;
+      }
+      & .ag-column-drop{
+        background: #D2CECE;
       }
   }
 

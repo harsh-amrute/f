@@ -484,7 +484,7 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
     const date = apiResponseData?.data?.data;
 
     return (
-        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '14px' }}>
+        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '10px', paddingBottom: '20px' }}>
 
 
             <SplitGraphContainer

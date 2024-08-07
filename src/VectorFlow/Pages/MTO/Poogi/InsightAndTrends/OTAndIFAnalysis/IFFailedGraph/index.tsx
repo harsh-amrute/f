@@ -6,7 +6,7 @@ import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VF
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import { AgChartOptions } from 'ag-charts-community'
-import { createSeriesData, createSeriesDataIF, data, IFdata } from '../Data'
+import { createSeriesData, createSeriesDataIF, data, getMyColumnDefinitions, IFdata, TooltipRendererIF } from '../Data'
 
 const IFFailedGraph = () => {
 
@@ -54,31 +54,16 @@ const IFFailedGraph = () => {
     const numericData: any = []
     const rowData: any = []
 
-    const colDef: any = []
+    const labels = [
+        { text: "0-20%", color: "#F5B279", key: "0-20%" },
+        { text: "20%-40%", color: "#F09241", key: "20%-40%" },
+        { text: "40%-60%", color: "#E36A00", key: "40%-60%" },
+        { text: "60%-80%", color: "#AD5000", key: "60%-80%" },
+        { text: "80%-100%", color: "#6A3000", key: "80%-100%" }
+    ];
 
-    function TooltipRenderer({ datum, xKey }: any) {
-        return `
-    <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-        ${datum[xKey]}
-    </div>
-    <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
-    
-    <div>
-        <div style="display: flex;">
-            <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F4BD8E">
-            </div>
-            <div style="display:flex ; width: 100%; justify-content: space-between">
-                <div>${InsightsAndTrendsString.ordersWithFullkitOHS}
-                </div>
-                <div> ${datum['soh']}
-                </div>
-            </div>
-        </div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitOPO}</div><div>${datum["sit"]}</div></div></div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitSIT}</div><div>${datum["po"]}</div></div></div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithRMPM}</div><div> ${datum["or"]}</div></div></div>
-    </div>`
-    }
+    const colDef: any = getMyColumnDefinitions(labels);
+
 
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 
@@ -133,11 +118,13 @@ const IFFailedGraph = () => {
 
     }
 
+    console.log("Ifdatadd", IFdata)
+
 
 
 
     return (
-        <div style={{ height: "100%", paddingBottom: '20px', display: 'flex', justifyContent: 'left', marginLeft: '14px' }}>
+        <div style={{ height: "100%", paddingBottom: '20px', display: 'flex', justifyContent: 'left', marginLeft: '10px' }}>
 
 
             <SplitGraphContainer
@@ -146,7 +133,7 @@ const IFFailedGraph = () => {
                 setTableLoading={setTableLoading}
                 setChartLoading={setChartLoading}
                 data={IFdata}
-                rowData={rowData}
+                rowData={IFdata}
                 graphTitle={``}
                 tableTitle={``}
                 options={options}
@@ -155,8 +142,8 @@ const IFFailedGraph = () => {
                 hideChart={hideChart1}
                 chartHeight={70}
                 toggleChart={toggleChart1}
-                TooltipRenderer={TooltipRenderer}
-                graphType={1}
+                TooltipRenderer={TooltipRendererIF}
+                graphType={10}
             />
         </div>
     )

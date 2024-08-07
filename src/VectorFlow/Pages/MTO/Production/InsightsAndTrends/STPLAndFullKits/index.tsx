@@ -122,7 +122,7 @@ const STPLAndFullKits = () => {
           </div>
 
         ) : (
-          <BTRTableWrapper style={{ height: screenHeight - 20, margin: "0" }}>
+          <BTRTableWrapper style={{ height: screenHeight - 200, margin: "0" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>

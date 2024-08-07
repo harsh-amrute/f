@@ -3,6 +3,9 @@ import { Icon } from "./styles";
 
 const TagCellToolTip = (params: any) => {
 
+  if (!(params && params.value && OTIFTags[params.value] && OTIFTags[params.value].split('_'))) {
+    return <></>
+  }
   const allTags = OTIFTags[params.value].split('_');
   const tags: string[] = [];
   console.log(allTags);

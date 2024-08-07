@@ -12,6 +12,7 @@ import { convertToGraphData, convertToPercentage, filterDataByDaysGap } from '..
 import moment from 'moment'
 import { useGetDate } from '../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import VFRangeSlider from '../../../Common/VFRangeSlider'
+import useViewPort from '../../../../../../hooks/useViewPort'
 
 const BMTrends = () => {
 
@@ -381,11 +382,13 @@ const BMTrends = () => {
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 
     const date = apiResponseData?.data?.data;
+    const { screenHeight } = useViewPort();
+
 
     return (
         <BMTrendWrapper>
             <MTOActionToolBar comp={'BMTrends'} isAddFilterButton />
-            <div style={{ paddingLeft: '25px' }}>
+            <div style={{ paddingLeft: '25px', height: screenHeight - 180, display: 'flex' }}>
 
                 <SplitGraphContainer
                     tableLoading={tableLoading}

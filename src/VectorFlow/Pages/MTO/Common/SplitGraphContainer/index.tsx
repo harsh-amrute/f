@@ -47,6 +47,7 @@ const SplitGraphContainer = ({
   const chartRef = useRef<AgChartsReact>(null);
   const refGraph1 = useRef<GridRef>(null);
 
+
   const myCustomTheme = () => {
     switch (graphType) {
       case 1:
@@ -99,6 +100,20 @@ const SplitGraphContainer = ({
           palette: {
             fills: ['#838282', '#CBCBCB'],
             strokes: ['#838282', '#CBCBCB'],
+          },
+        }
+      case 10:
+        return {
+          palette: {
+            fills: ['#F5B279', "#F09241", "#E36A00", "#AD5000", "#6A3000"],
+            strokes: ['#F5B279', "#F09241", "#E36A00", "#AD5000", "#6A3000"],
+          },
+        }
+      case 11:
+        return {
+          palette: {
+            fills: ['#F5B279', "#F09241", "#E36A00", "#AD5000", "#6A3000"],
+            strokes: ['#F5B279', "#F09241", "#E36A00", "#AD5000", "#6A3000"],
           },
         }
 
@@ -375,12 +390,120 @@ const SplitGraphContainer = ({
           },
         });
         break;
-        break;
       case 7:
         refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
             columns: ["trailDept", "b", 'r', 'y', 'g', 'bl'],
+          },
+          chartThemeOverrides: {
+            column: {
+              axes: {
+                category: {
+                  gridStyle: [{ stroke: "transparent" }],
+
+                  bottom: {
+                    label: {
+                      fontSize: 8,
+                    },
+                  },
+                },
+              },
+              series: {
+                highlightStyle: {
+                  item: {
+                    fill: "white",
+                    fillOpacity: 0.2,
+                  },
+                },
+                tooltip: {
+                  renderer: TooltipRenderer,
+                },
+                strokeWidth: 1,
+                strokeOpacity: 0,
+              },
+              legend: {
+                item: {
+                  label: {
+                    fontSize: 10,
+                  },
+
+                  marker: {
+                    shape: "square",
+                  },
+                },
+              },
+            },
+            bar: {
+              axes: {
+                category: {
+                  gridStyle: [{ stroke: "transparent" }, { stroke: "transparent" }],
+                },
+              },
+            },
+          },
+        });
+        break;
+      case 10:
+        refGraph1.current?.api.createRangeChart({
+          chartType: "stackedColumn",
+          cellRange: {
+            columns: ["week", "0-20%", "20%-40%", "40%-60%", "60%-80%", "80%-100%"],
+          },
+          chartThemeOverrides: {
+            column: {
+              axes: {
+                category: {
+                  gridStyle: [{ stroke: "transparent" }],
+
+                  bottom: {
+                    label: {
+                      fontSize: 8,
+                    },
+                  },
+                },
+              },
+              series: {
+                highlightStyle: {
+                  item: {
+                    fill: "white",
+                    fillOpacity: 0.2,
+                  },
+                },
+                tooltip: {
+                  renderer: TooltipRenderer,
+                },
+                strokeWidth: 1,
+                strokeOpacity: 0,
+              },
+              legend: {
+                item: {
+                  label: {
+                    fontSize: 10,
+                  },
+
+                  marker: {
+                    shape: "square",
+                  },
+                },
+              },
+            },
+            bar: {
+              axes: {
+                category: {
+                  gridStyle: [{ stroke: "transparent" }, { stroke: "transparent" }],
+                },
+              },
+            },
+          },
+        });
+        break;
+
+      case 11:
+        refGraph1.current?.api.createRangeChart({
+          chartType: "stackedColumn",
+          cellRange: {
+            columns: ["week", "1-2 days", "3-7 days", "8-15 days", "16-30 days"],
           },
           chartThemeOverrides: {
             column: {
@@ -593,6 +716,7 @@ const SplitGraphContainer = ({
           closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
           <div className="ag-theme-planning" style={{ width: '1000px' }}>
             <VFTable
+
               ref={refGraph1}
               columnDefs={colDef}
               rowData={rowData}
@@ -617,6 +741,7 @@ const SplitGraphContainer = ({
               defaultColDef={{
                 floatingFilter: true,
                 filter: "agMultiColumnFilter",
+                flex: 1,
               }}
               chartThemes={['myCustomTheme']}
               customChartThemes={{

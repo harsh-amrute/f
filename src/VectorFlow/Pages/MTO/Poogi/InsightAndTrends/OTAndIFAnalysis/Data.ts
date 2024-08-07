@@ -1,6 +1,8 @@
+import { CellStyle } from "ag-grid-charts-enterprise";
+import { ColDef } from "ag-grid-enterprise";
 import { InsightsAndTrendsString } from "../../../Common/String";
 
-function TooltipRenderer({ datum, xKey }: any) {
+export function TooltipRenderer({ datum, xKey }: any) {
     return `
 <div style="width: 180px">
 <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
@@ -26,7 +28,7 @@ function TooltipRenderer({ datum, xKey }: any) {
 </div>
 `
 }
-function TooltipRendererIF({ datum, xKey }: any) {
+export function TooltipRendererIF({ datum, xKey }: any) {
     return `
 <div style="width: 180px">
 <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
@@ -520,3 +522,33 @@ export const gridColumnConfig = [
     },
 
 ];
+
+
+
+
+
+
+export const getMyColumnDefinitions = (labels: any): ColDef[] => {
+
+    const labelKeys = labels.map((label: any) => label.key);
+
+    const columns: ColDef[] = [
+        {
+            headerName: 'Week',
+            field: 'week',
+            sortable: true,
+            filter: true,
+            width: 150,
+        },
+        ...labelKeys.map((key: any, index: any) => ({
+            headerName: key,
+            field: key,
+            sortable: true,
+            filter: true,
+            width: 100,
+
+        })),
+    ];
+
+    return columns;
+};

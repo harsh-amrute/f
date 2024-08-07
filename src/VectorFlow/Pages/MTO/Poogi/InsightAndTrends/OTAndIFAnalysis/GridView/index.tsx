@@ -7,10 +7,9 @@ import TagCellToolTip from '../../OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import { APIMock, gridColumnConfig } from '../Data';
 import { VFTableWrapper } from './styles';
 import { useGetUIConfigData } from '../../../../../../Services/MTO/Common/UIConfig';
-import { ColorPriorityCellRenderer } from '../../../../../../../VectorFlow/Pages/MTO/Common/ColorPriority/styles';
-import ColorCellRenderer from '../../../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/ColorCellRenderer';
 import './styles.css'
 import { SCDynamicContainer } from './styles';
+import ColorCellRenderer from '../../../../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/ColorCellRenderer';
 const GridView = () => {
     const gridRef = useRef(null);
     const [colDef, setColDef] = React.useState([{}]);
@@ -26,7 +25,7 @@ const GridView = () => {
         enableRowGroup: true,
         floatingFilterComponentParams: { suppressFilterButton: true },
         tooltipComponent: CustomTagTooltip,
-
+        initialWidth: 110,
         cellStyle: {
             'text-align': 'center',
             'height': '50px',
@@ -38,6 +37,7 @@ const GridView = () => {
             'text-overflow': 'ellipsis',
             'white-space': 'nowrap',
             'resizable': 'true',
+
         },
     }
 
@@ -98,7 +98,6 @@ const GridView = () => {
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}
-                height={"75%"}
                 ref={gridRef}
                 statusBar={{
                     statusPanels: [
