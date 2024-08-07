@@ -430,121 +430,121 @@ const SplitGraphContainer = ({
           },
         });
         break;
-        case 8:
-          refGraph1.current?.api.createRangeChart({
-            chartType: "line",
-            cellRange: {
-              columns: ["x_label", "otif", "otif_plus"],
-            },
-            chartThemeOverrides: {
-              line: { // This should be 'line' since you are creating a line chart
-                axes: {
-                  category: {
-                    gridStyle: [{ stroke: "transparent" }],
-                    bottom: {
-                      label: {
-                        fontSize: 8,
-                      },
-                    },
-                  },
-                  number: {
-                    gridStyle: [{ stroke: "transparent" }],
+      case 8:
+        refGraph1.current?.api.createRangeChart({
+          chartType: "line",
+          cellRange: {
+            columns: ["x_label", "otif", "otif_plus"],
+          },
+          chartThemeOverrides: {
+            line: { // This should be 'line' since you are creating a line chart
+              axes: {
+                category: {
+                  gridStyle: [{ stroke: "transparent" }],
+                  bottom: {
                     label: {
-                      fontSize: 10,
-                      formatter: (params) => `${params.value}%`, // Format as percentage
-                    },
-                    min: 0, // Ensure Y-axis starts from 0
-                  },
-                },
-                series: {
-                  highlightStyle: {
-                    item: {
-                      fill: "white",
-                      fillOpacity: 1,
+                      fontSize: 8,
                     },
                   },
-                  tooltip: {
-                    renderer: TooltipRenderer,
-                  },
-                  strokeWidth: 4,
-                  strokeOpacity: 1,
-                  marker: {
-                    shape: "circle", // Ensure markers are square
-                    size: 8, // Adjust the size as needed
-                  },
                 },
-                legend: {
+                number: {
+                  gridStyle: [{ stroke: "transparent" }],
+                  label: {
+                    fontSize: 10,
+                    formatter: (params) => `${params.value}%`, // Format as percentage
+                  },
+                  min: 0, // Ensure Y-axis starts from 0
+                },
+              },
+              series: {
+                highlightStyle: {
                   item: {
-                    label: {
-                      fontSize: 10,
-                    },
-                    marker: {
-                      shape: "square",
-                    },
+                    fill: "white",
+                    fillOpacity: 1,
+                  },
+                },
+                tooltip: {
+                  renderer: TooltipRenderer,
+                },
+                strokeWidth: 4,
+                strokeOpacity: 1,
+                marker: {
+                  shape: "circle", // Ensure markers are square
+                  size: 8, // Adjust the size as needed
+                },
+              },
+              legend: {
+                item: {
+                  label: {
+                    fontSize: 10,
+                  },
+                  marker: {
+                    shape: "square",
                   },
                 },
               },
             },
-          });
-          break;
-          case 9:
-            refGraph1.current?.api.createRangeChart({
-              chartType: "line",
-              cellRange: {
-                columns: ["x_label", "ot", "if"],
-              },
-              chartThemeOverrides: {
-                line: { // This should be 'line' since you are creating a line chart
-                  axes: {
-                    category: {
-                      gridStyle: [{ stroke: "transparent" }],
-                      bottom: {
-                        label: {
-                          fontSize: 8,
-                        },
-                      },
-                    },
-                    number: {
-                      gridStyle: [{ stroke: "transparent" }],
-                      label: {
-                        fontSize: 10,
-                        formatter: (params) => `${params.value}%`, // Format as percentage
-                      },
-                      min: 0, // Ensure Y-axis starts from 0
-                    },
-                  },
-                  series: {
-                    highlightStyle: {
-                      item: {
-                        fill: "white",
-                        fillOpacity: 1,
-                      },
-                    },
-                    tooltip: {
-                      renderer: TooltipRenderer,
-                    },
-                    strokeWidth: 4,
-                    strokeOpacity: 1,
-                    marker: {
-                      shape: "circle", // Ensure markers are square
-                      size: 8, // Adjust the size as needed
-                    },
-                  },
-                  legend: {
-                    item: {
-                      label: {
-                        fontSize: 10,
-                      },
-                      marker: {
-                        shape: "square",
-                      },
+          },
+        });
+        break;
+      case 9:
+        refGraph1.current?.api.createRangeChart({
+          chartType: "line",
+          cellRange: {
+            columns: ["x_label", "ot", "if"],
+          },
+          chartThemeOverrides: {
+            line: { // This should be 'line' since you are creating a line chart
+              axes: {
+                category: {
+                  gridStyle: [{ stroke: "transparent" }],
+                  bottom: {
+                    label: {
+                      fontSize: 8,
                     },
                   },
                 },
+                number: {
+                  gridStyle: [{ stroke: "transparent" }],
+                  label: {
+                    fontSize: 10,
+                    formatter: (params) => `${params.value}%`, // Format as percentage
+                  },
+                  min: 0, // Ensure Y-axis starts from 0
+                },
               },
-            });
-            break;
-        default:
+              series: {
+                highlightStyle: {
+                  item: {
+                    fill: "white",
+                    fillOpacity: 1,
+                  },
+                },
+                tooltip: {
+                  renderer: TooltipRenderer,
+                },
+                strokeWidth: 4,
+                strokeOpacity: 1,
+                marker: {
+                  shape: "circle", // Ensure markers are square
+                  size: 8, // Adjust the size as needed
+                },
+              },
+              legend: {
+                item: {
+                  label: {
+                    fontSize: 10,
+                  },
+                  marker: {
+                    shape: "square",
+                  },
+                },
+              },
+            },
+          },
+        });
+        break;
+      default:
         <></>
     }
 
@@ -558,7 +558,7 @@ const SplitGraphContainer = ({
     <div style={{ width: "100%" }}>
 
 
-      <SCChartContainer style={{ border: '1px solid #CCCCCC', margin: '2px' }}>
+      <SCChartContainer style={{ border: '1px solid #CCCCCC', margin: '2px', height: '100%', display: 'flex', flexDirection: 'column', paddingBottom: '20px' }} height={'100%'}>
         <SCChartMainContainer style={{ zoom: 1 }}>
           {header()}
         </SCChartMainContainer>
@@ -626,7 +626,7 @@ const SplitGraphContainer = ({
             />
           </div>
         </VFModalCard>
-        <div style={{ height: `${chartHeight ? chartHeight : 50}vh` }}>
+        <div style={{ flex: 1 }}>
           <AgChartsReact suppressDragLeaveHidesColumns={true} ref={chartRef} options={{ ...options, data: data }} onChartReady={() => { setChartLoading(false) }} />
         </div>
       </SCChartContainer>
