@@ -1,16 +1,15 @@
 import moment from 'moment'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
-import { InsightsAndTrendsString } from '../../../../../../../VectorFlow/Pages/MTO/Common/String'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
-import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
+import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import { createSeriesData, data, getMyColumnDefinitions, TooltipRenderer } from '../Data'
 import { AgChartOptions } from 'ag-charts-community'
 
 const OTFailedGraph = () => {
 
-    const graph1 = ['sfsdfdsfff']
+    const graph1 = ['This Graph highlights the extent of delays experienced by OT Failed completed orders.']
 
     const [hideChart1, toggleChart1] = useState(false);
 
@@ -52,8 +51,6 @@ const OTFailedGraph = () => {
 
     const [tableLoading, setTableLoading] = useState(false);
     const [chartLoading, setChartLoading] = useState(false);
-    const numericData: any = []
-    const rowData: any = []
 
     const labels = [
         { text: "1-2 days", color: "#F5B279", key: "1-2 days" },
@@ -138,7 +135,6 @@ const OTFailedGraph = () => {
                 colDef={colDef}
                 header={generateHeader}
                 hideChart={hideChart1}
-                chartHeight={70}
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRenderer}
                 graphType={11}

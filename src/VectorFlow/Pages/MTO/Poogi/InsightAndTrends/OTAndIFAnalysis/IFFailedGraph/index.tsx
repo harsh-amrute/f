@@ -1,16 +1,15 @@
 import moment from 'moment'
 import React, { useState } from 'react'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
-import { InsightsAndTrendsString } from '../../../../../../../VectorFlow/Pages/MTO/Common/String'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
-import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
+import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import { AgChartOptions } from 'ag-charts-community'
-import { createSeriesData, createSeriesDataIF, data, getMyColumnDefinitions, IFdata, TooltipRendererIF } from '../Data'
+import { createSeriesDataIF, getMyColumnDefinitions, IFdata, TooltipRendererIF } from '../Data'
 
 const IFFailedGraph = () => {
 
-    const graph1 = ['sfsdfdsfff']
+    const graph1 = ['This graph highlights the extent of Shortage in In-Full failed orders.']
 
     const [hideChart1, toggleChart1] = useState(false);
 
@@ -51,9 +50,6 @@ const IFFailedGraph = () => {
 
     const [tableLoading, setTableLoading] = useState(false);
     const [chartLoading, setChartLoading] = useState(false);
-    const numericData: any = []
-    const rowData: any = []
-
     const labels = [
         { text: "0-20%", color: "#F5B279", key: "0-20%" },
         { text: "20%-40%", color: "#F09241", key: "20%-40%" },
@@ -118,7 +114,6 @@ const IFFailedGraph = () => {
 
     }
 
-    console.log("Ifdatadd", IFdata)
 
 
 
@@ -140,7 +135,6 @@ const IFFailedGraph = () => {
                 colDef={colDef}
                 header={generateHeader}
                 hideChart={hideChart1}
-                chartHeight={70}
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRendererIF}
                 graphType={10}

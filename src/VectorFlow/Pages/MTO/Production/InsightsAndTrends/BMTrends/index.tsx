@@ -406,7 +406,6 @@ const BMTrends = () => {
                     hideChart={hideChart1}
                     toggleChart={toggleChart1}
                     TooltipRenderer={TooltipRenderer}
-                    chartHeight={50}
                     graphType={1}
                 />
             </div>

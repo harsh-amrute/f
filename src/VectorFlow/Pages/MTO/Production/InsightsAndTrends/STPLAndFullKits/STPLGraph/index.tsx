@@ -55,12 +55,15 @@ const STPLGraph = () => {
         xKey: "ccr",
         yKey: key,
         yName: labels[i],
-        strokeOpacity: isBar ? 0 : 0.25,
+        strokeOpacity: isBar ? 0 : 1.25,
         fill: color,
         stacked: isBar,
         tooltip: {
           renderer: TooltipRenderer,
         },
+        marker: {
+          size: 0
+        }
       });
     }
 
@@ -199,7 +202,6 @@ const STPLGraph = () => {
         toggleChart={toggleChart1}
         TooltipRenderer={TooltipRenderer}
         graphType={4}
-        chartHeight={50}
       />
 
     </div>

@@ -12,6 +12,8 @@ import moment from 'moment'
 
 const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
+    console.log(isMTO)
+
     const [chartLoading, setChartLoading] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
     const [horizonDays, setHorizondays] = useState(14);
@@ -478,7 +480,6 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
         )
     }
 
-    console.log("numeric data", numericData)
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 
     const date = apiResponseData?.data?.data;
@@ -502,7 +503,6 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 hideChart={hideChart1}
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRenderer}
-                chartHeight={90}
                 graphType={1}
             />
         </div>

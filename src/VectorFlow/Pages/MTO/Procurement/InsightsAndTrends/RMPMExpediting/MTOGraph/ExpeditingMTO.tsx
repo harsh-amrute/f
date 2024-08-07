@@ -223,6 +223,8 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
     }
 
 
+    console.log(isMTO)
+
 
     return (
         <div style={{ height: "75vh", display: 'flex', justifyContent: 'left', marginRight: '8px' }}>
@@ -244,7 +246,6 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRenderer}
                 graphType={2}
-                chartHeight={55}
             />
 
 

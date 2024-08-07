@@ -1,8 +1,6 @@
 import { Allotment } from 'allotment'
 import { useState } from 'react'
-import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable'
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
-import useViewPort from '../../../../../../hooks/useViewPort'
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../../Common/SplitGraphContainer/styles'
 import IFFaildGraph from './IFFailedGraph'
 import OTFailedGraph from './OTFailedGraph'

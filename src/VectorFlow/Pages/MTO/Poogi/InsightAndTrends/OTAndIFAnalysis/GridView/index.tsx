@@ -1,11 +1,10 @@
-import { ColDef, GridOptions } from 'ag-grid-enterprise';
+import { GridOptions } from 'ag-grid-enterprise';
 import React, { useRef } from 'react'
 import { getColumnDefinations } from '../../../../../../../helpers/utils';
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomTagTooltip from '../../OTIFAnalysis/CustomTagTooltip';
 import TagCellToolTip from '../../OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import { APIMock, gridColumnConfig } from '../Data';
-import { VFTableWrapper } from './styles';
 import { useGetUIConfigData } from '../../../../../../Services/MTO/Common/UIConfig';
 import './styles.css'
 import { SCDynamicContainer } from './styles';

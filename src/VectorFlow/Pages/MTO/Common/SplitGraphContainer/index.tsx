@@ -23,7 +23,6 @@ interface SplitGrpahContainerProps {
   TooltipRenderer: (param: any) => string,
   graphType: number,
   date?: string,
-  chartHeight?: number
 }
 
 
@@ -42,7 +41,6 @@ const SplitGraphContainer = ({
   toggleChart,
   TooltipRenderer,
   graphType,
-  chartHeight,
 }: SplitGrpahContainerProps) => {
   const chartRef = useRef<AgChartsReact>(null);
   const refGraph1 = useRef<GridRef>(null);
@@ -231,7 +229,15 @@ const SplitGraphContainer = ({
             { colId: "limit", chartType: "line" }
           ],
           chartThemeOverrides: {
+            line: {
+              series: {
+                marker: {
+                  size: 0
+                }
+              }
+            },
             column: {
+
               axes: {
                 category: {
                   gridStyle: [{ stroke: "transparent" }],
@@ -244,20 +250,29 @@ const SplitGraphContainer = ({
                 },
               },
               series: {
+
                 highlightStyle: {
+
                   item: {
+
+
+
                     fill: "white",
                     fillOpacity: 0.2,
                   },
+
+
                 },
                 tooltip: {
                   renderer: TooltipRenderer,
                 },
                 strokeWidth: 1,
                 strokeOpacity: 0,
+
               },
               legend: {
                 item: {
+
                   label: {
                     fontSize: 10,
                   },

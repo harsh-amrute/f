@@ -1,6 +1,4 @@
-import { CellStyle } from "ag-grid-charts-enterprise";
 import { ColDef } from "ag-grid-enterprise";
-import { InsightsAndTrendsString } from "../../../Common/String";
 
 export function TooltipRenderer({ datum, xKey }: any) {
     return `
@@ -540,7 +538,7 @@ export const getMyColumnDefinitions = (labels: any): ColDef[] => {
             filter: true,
             width: 150,
         },
-        ...labelKeys.map((key: any, index: any) => ({
+        ...labelKeys.map((key: any) => ({
             headerName: key,
             field: key,
             sortable: true,
