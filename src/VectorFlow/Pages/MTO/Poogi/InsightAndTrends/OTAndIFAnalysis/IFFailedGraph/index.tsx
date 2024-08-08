@@ -30,7 +30,7 @@ const IFFailedGraph = () => {
                             textAlign: "center",
                         }}
                     >
-                        <span style={{ fontWeight: 500 }}>Extend Of Shortages In IF Failed Orders &nbsp;</span>
+                        <span style={{ fontWeight: 500 }}>Extent Of Shortages In IF Failed Orders &nbsp;</span>
                         <span style={{ fontWeight: 350 }}>{`(${moment(date).format('D MMM YYYY')} - ${moment(date).add(90, 'days').format('D MMM YYYY')})`}</span>
                     </div>
                     <SCChartHeaderContainer>
