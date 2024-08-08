@@ -282,7 +282,7 @@ const OrderAtRisk = () => {
       {isLoading && <OverlayLoader />}
       <HorizontalViewWrapper style={{ height: screenHeight - 180, display: 'flex', marginTop: "20px", paddingLeft: "25px" }}>
         {isGridView ? (
-          <div data-testid="grid-view" style={{ height: screenHeight - 300 }}>
+          <div data-testid="grid-view" style={{ height: screenHeight - 300, width: '100%' }}>
             <VFTable
               {...gridOptions}
               columnDefs={tableColDefs}
