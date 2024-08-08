@@ -93,7 +93,7 @@ const OTIFAnalysis = () => {
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>
         {isGridView ? (
-          <div data-testid='grid-view' style={{ height: screenHeight - 20 }} >
+          <div data-testid='grid-view' style={{ height: screenHeight - 50 }} >
             <VFTable
               {...gridOptions}
               sideBar={{
@@ -117,7 +117,7 @@ const OTIFAnalysis = () => {
           </div>
 
         ) : (
-          <BTRTableWrapper style={{ height: screenHeight - 21, margin: "0" }}>
+          <BTRTableWrapper style={{ height: screenHeight - 190, margin: "0" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>

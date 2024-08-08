@@ -76,20 +76,26 @@
     border-radius: 4px;
 }
 
-/* .sash-vertical::after {
+.sash-vertical::after {
     content: url(/public/assets/img/mto/dueDateQuotation/draggable.svg);
     width: 12px;
     display: block;
+    /* z-index: 100000; */
+    /* background: black; */
     position: absolute;
     height: 12px;
-    left: 50%;
+    left: -6px;
     top: 50%;
     display: flex;
     transform: translate(-50%, -50%);
+    transform: rotate(90deg);
     justify-content: center;
 }
 
+
 .sash-vertical {
-    border: 8px solid lightgrey;
+    border: 6px solid #E8E8E8;
     border-radius: 4px;
-} */
+    height: 92% !important;
+    top: 3% !important;
+}

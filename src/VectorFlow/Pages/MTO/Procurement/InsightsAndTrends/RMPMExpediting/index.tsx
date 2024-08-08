@@ -21,7 +21,7 @@ const RMExpeditionSuppliers = () => {
         <div style={{ zoom: 1.33, marginLeft: '30px' }}>
             <MTOActionToolBar comp={"BTRMTO"} isAddFilterButton />
             <HorizontalViewWrapper style={{ marginTop: '20px' }}>
-                <BTRTableWrapper style={{ height: screenHeight - 145, margin: '0' }}>
+                <BTRTableWrapper style={{ height: screenHeight - 185, margin: '0' }}>
                     {
                         (isMTO) ?
                             (<Allotment

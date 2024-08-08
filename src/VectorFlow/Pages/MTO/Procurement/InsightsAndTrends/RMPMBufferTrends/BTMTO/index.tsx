@@ -18,6 +18,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
     const [horizonDays, setHorizondays] = useState(14);
 
+    console.log(isMTO)
     console.log("final MTA ldata:", data)
     useEffect(() => {
         setNumericData(filterDataByDaysGap(data, 0, horizonDays, false))
@@ -264,7 +265,10 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 strokeWidth: 3,
                 marker: {
                     fill: "Black",
-                    stroke: "Black"
+                    stroke: "Black",
+                    formatter: function (params) {
+                        if (params.datum.b === 0) return { size: 0 }
+                    }
                 },
                 tooltip: {
 
@@ -282,7 +286,11 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 stroke: "Red",
                 marker: {
                     fill: "Red",
-                    stroke: "Red"
+                    stroke: "Red",
+                    formatter: function (params) {
+                        if (params.datum.r === 0) return { size: 0 }
+                    }
+
                 },
                 tooltip: {
 
@@ -301,7 +309,10 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 stroke: "Yellow",
                 marker: {
                     fill: "#FFBF00",
-                    stroke: "#FFBF00"
+                    stroke: "#FFBF00",
+                    formatter: function (params) {
+                        if (params.datum.y === 0) return { size: 0 }
+                    }
                 },
                 tooltip: {
 
@@ -319,7 +330,10 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 stroke: "Green",
                 marker: {
                     fill: "Green",
-                    stroke: "Green"
+                    stroke: "Green",
+                    formatter: function (params) {
+                        if (params.datum.g === 0) return { size: 0 }
+                    }
                 },
                 tooltip: {
 
@@ -340,7 +354,9 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 marker: {
                     fill: "grey",
                     stroke: "grey",
-
+                    formatter: function (params) {
+                        if (params.datum.w === 0) return { size: 0 }
+                    }
                 },
                 tooltip: {
 
@@ -546,7 +562,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
 
     return (
-        <div style={{ height: "70vh", display: 'flex', justifyContent: 'left' }}>
+        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginRight: '5px', paddingBottom: '20px' }}>
 
 
             <SplitGraphContainer
@@ -566,14 +582,6 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 TooltipRenderer={TooltipRenderer}
                 graphType={1}
             />
-
-            {
-                (isMTO) && (<div style={{ width: "14px", resize: "none", height: "100%", display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                    <div style={{ width: '8px', background: '#E8E8E8', height: '88%', borderRadius: "4px 0 0 4px", display: "flex", alignItems: "center", paddingRight: "1px" }}>
-                        <img src='/assets/img/mto/RMPMBufferTrend/slider-icon-left.svg' />
-                    </div>
-                </div>)
-            }
 
         </div>
 
