@@ -2,7 +2,7 @@ import { AgChartsReact } from 'ag-charts-react';
 import { GridReadyEvent } from 'ag-grid-community';
 import { GridOptions } from 'ag-grid-enterprise';
 import { Allotment} from 'allotment';
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import BufferAssignment from '../../Common/RouteAssignment/BufferAssignment';
@@ -13,9 +13,11 @@ import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButt
 import { useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import _ from 'lodash';
-import { format, max } from 'date-fns';
+import { add, format, max } from 'date-fns';
+import Tooltip from '../../../../../components/VectorFLOW/commons/MTO/Tooltip';
+import { AgChartOptions } from 'ag-charts-community';
 
-const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, masters, getMastersData, rowsSelectedForAssignment,setRowsSelectedForAssignment}: any) => {
+const Step2 = forwardRef(({gridOptions, columnData ,selectedRows, theme, masters, getMastersData, rowsSelectedForAssignment,setRowsSelectedForAssignment, setConfirmedRows}: any, ref) => {
     useEffect(()=>{
         getMastersData();
         setRowsSelectedForAssignment(false);
@@ -23,15 +25,44 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
             if(node.data.rid){
                 routeLookup.current.set(node.data.rn, node.data.rid);
             }
-            return node.data
+            //calculate leadtime 
+            // const marketLeadTime = masters.MarketLeadTimeMaster.find((item:any)=>{
+            //     return item.mbot === node.data.mbot && item.itid === node.data.itid;
+            // });
+
+            // const today = new Date(); 
+            // today.setHours(0, 0, 0, 0);
+            // const newDate = add(today, {
+            //     years: 0,
+            //     months: 0,
+            //     weeks: 0,
+            //     days: marketLeadTime.lt || 0,
+            //     hours: 0,
+            //     minutes: 0,
+            //     seconds: 0,
+            //   })
+            // node.data.isOptimalLeadTime = node.data.cdd <= newDate;
+            return {...node.data}
         }))
     },[]);
 
+    const routeDiv = useRef<any>();
+    const [routeDivHeight, setRouteDivHeight] = useState<any>();
+
     useEffect(() => {
       setTimeout(()=>{
-            allotment.current.reset();
-      }, 0)
+          allotment.current.reset();
+          if(routeDiv.current?.offsetHeight)
+            setRouteDivHeight(routeDiv.current.offsetHeight);
+      }, 0);
+      //RouteDiv Position Calculate and move it to state instead of ref
     }, [rowsSelectedForAssignment])
+
+//     useEffect(() => {
+//         allotment.current.reset();
+//     //RouteDiv Position Calculate and move it to state instead of ref
+//   }, [routeDivHeight])
+
     
 
     const customization = {
@@ -98,19 +129,124 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
             position: 0,
             filter: false
         },
+        {
+            field: "",
+            minWidth:58,
+            maxWidth:58,
+            cellRenderer: (params: any) => {
+                if(params.data.isOptimalLeadTime == undefined){
+                    return 
+                }
+                return (
+                    <div style={{height:"100%", display:"flex", alignItems:"center"}}>
+                            <Tooltip content={<div style={{padding:"1rem", maxWidth:"180px", textAlign:"center"}}>{params.data.isOptimalLeadTime? "Optimal Lead Time" : "Exceeding market operating leadtime"}</div>} zoom={false} style={{display:"flex"}}>
+                                {params.data.isOptimalLeadTime ?
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17.326" height="16.976" viewBox="0 0 17.326 16.976">
+                                    <g id="Component_237_99" data-name="Component 237 – 99" transform="translate(1.202 1.162)">
+                                        <g id="Icon_feather-check-circle" data-name="Icon feather-check-circle" transform="translate(-3 -2.991)">
+                                        <path id="Path_13420" data-name="Path 13420" d="M17.71,9.674v.677a7.355,7.355,0,1,1-4.362-6.722" transform="translate(0 0)" fill="none" stroke="#418d18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                        <path id="Path_13421" data-name="Path 13421" d="M23.061,6l-7.355,7.362L13.5,11.156" transform="translate(-5.352 -1.534)" fill="none" stroke="#418d18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                        </g>
+                                    </g>
+                                </svg>
+                                : <svg id="Icon_metro-warning" data-name="Icon metro-warning" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+                                <path id="Icon_metro-warning-2" data-name="Icon metro-warning" d="M12.571,3.74l8.381,16.7H4.19l8.381-16.7Zm0-1.812a1.446,1.446,0,0,0-1.189.872L2.845,19.814c-.654,1.163-.1,2.114,1.236,2.114H21.06c1.334,0,1.89-.951,1.236-2.114h0L13.76,2.8A1.445,1.445,0,0,0,12.571,1.928Zm1.25,16.25a1.25,1.25,0,1,1-1.25-1.25A1.25,1.25,0,0,1,13.821,18.178Zm-1.25-2.5a1.25,1.25,0,0,1-1.25-1.25v-3.75a1.25,1.25,0,0,1,2.5,0v3.75A1.25,1.25,0,0,1,12.571,15.678Z" transform="translate(-2.571 -1.928)" fill="#ff3636"/>
+                            </svg>}
+                            </Tooltip>
+                    </div>
+                    
+                )
+            },
+            suppressMenu: true,
+            position: 1,
+            filter: false
+        },
     ]
     
 
     const columnDefs = useMemo(() => {
         return getColumnDefinations(columnData || [], customization, extras);
     }, []);
-
+    
     const options: GridOptions = {
             ...gridOptions,
             columnDefs: columnDefs,
             // tooltipTrigger:"focus",
             // getRowStyle:(params: any) => null
         }
+        
+    const [chartData, setChartData] = useState<any>([])
+    const chartOptions: AgChartOptions = {
+        data:chartData,
+        series: [
+          {
+            type: "bar",
+            direction: "horizontal",
+            xKey: "ccr_name",
+            yKey: "ccrFolInDays",
+            yName: "FOL",
+            stacked: true,
+            fill: "black",
+            // tooltip: {
+            //   renderer: TooltipRenderer,
+            // },
+          },
+          {
+            type: "bar",
+            direction: "horizontal",
+            xKey: "ccr_name",
+            yKey: "orderLoad",
+            yName: "SOL",
+            stacked: true,
+            fill: "#3874FF",
+          },
+        ],
+    
+        axes: [
+          {
+            type: "category",
+            position: "left",
+            label: {
+              fontSize: 10,
+              color: "black",
+              padding: 10,
+            },
+            gridLine: {
+              enabled: false,
+            },
+          },
+          {
+            type: "number",
+            position: "bottom",
+            line: { enabled: true },
+            // interval: 1,
+            tick:{
+                interval: 2,
+            },
+            label: {
+              fontSize: 10,
+              color: "black",
+              formatter: labelFormatter,
+              rotation: -45,
+            //   avoidCollisions: true
+            },
+            gridLine: {
+              enabled: false,
+            },
+            
+          },
+        ],
+    
+        legend: {
+          position: 'right',
+          item: {
+            label: {
+              fontSize: 10,
+            },
+          },
+        },
+    };
+
 
     // const rows = useMemo(()=> selectedRows.values().map((node: any) => node.data), [])   
     const routeLookup = useRef(new Map());
@@ -119,7 +255,6 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
     const [selectedRoute, setSelectedRoute] = useState<any>([])
     
     const allotment = useRef<any>();
-    const routeDiv = useRef<any>();
     const gridRef = useRef<any>();
     const [selectedBuffers, setSelectedBuffers] = useState<any[]>([]);
     const [isEditable, setIsEditable] = useState(false);
@@ -163,173 +298,148 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         return buffer
     }   
 
-    // const calculateDueDate = () => {
-    //         const selectedOrders = new Set(gridRef.current.api.getSelectedRows().map((row:any) => row.ok));
-    //         const ccrIds:any = [];
+    const calculateEstimatedDueDate = async (rowData: any) => {
+            const ccr_prev_pending:any = {};
+            console.log(masters);
+            console.log(ccr_prev_pending)
 
-    //         selectedRoute.forEach((route: any)=>{
-    //             if(route[1]?.value){
-    //                 ccrIds.push(route[1].value)
-    //             }
-    //         })
+            const ordersForDDQ = [...rowData]
 
-    //         const ccr_prev_pending:any = {};
+            const promises = ordersForDDQ.map(async (order:any) => {
+                    const order_ccr_data:any = {};
+
+                    const ccrIds:any = [];
+
+                    const route = await getRoute(order.rid);
             
-    //         ccrIds.forEach((ccrId:any)=>{
-    //             const ccr = masters.CCRMaster.find((ccr:any)=>{
-    //                 return ccr.ccr_id === ccrId
-    //             })
-    //             const ccr_fol_data = masters.FOL[ccrId];
-    //             let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
-    //             const folInDays =  ccr_fol_data.fol;
-    //             ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay); 
+                    route.forEach((route: any)=>{
+                        if(route[1]?.value){
+                            ccrIds.push(route[1].value)
+                        }
+                    });
+                    
+                    console.log(ccrIds)
 
-    //             ccr_prev_pending[ccrId] = {
-    //                 ccr_id: ccrId,
-    //                 prevPend: Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm)
-    //             }
-    //             console.log(ccrId, (ccr_prev_pending[ccrId].prevPend));
+                    //calculating order load
+                    ccrIds.forEach((ccrId:any)=>{
+                        const ccr = masters.CCRMaster.find((ccr:any)=>{
+                            return ccr.ccr_id === ccrId
+                        })
+                        // const fol = masters.FOL[ccrId];
+                        const ccrItem = masters?.CCRItemTypeMappingMaster.find((ccr:any)=> ccr.ccrId === ccrId && ccr.it == order.itid)
+
+                        let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
+                        ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay); 
+                        const orderLoad = Math.ceil((ccrItem.tt * order.pcqty))
+
+                        if(!ccr_prev_pending[ccrId]){
+                            const ccr_fol_data = masters.FOL[ccrId];                       
+                            const folInDays =  ccr_fol_data.fol;
+                            ccr_prev_pending[ccrId] = {
+                                ccr_id: ccrId,
+                                prevPend: Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm)
+                            }
+                        }
+                        ccr_prev_pending[ccrId].prevPend = (ccr_prev_pending[ccrId].prevPend) + orderLoad;
+                        order_ccr_data[ccrId] = {
+                            ccr_id: ccrId,
+                            orderLoad: orderLoad,
+                            folSpan: ((ccr_prev_pending[ccrId].prevPend))/ (ccrWorkingHoursPerDay * 60),
+                        }
+                        console.log("ccr_prev_pending", ccr_prev_pending[ccrId])
+                        // console.log(ccrId, "orderLoad", order_ccr_data[ccrId].orderLoad, "folSpan" ,order_ccr_data[ccrId].folSpan, "order pending qty",row.pcqty, "ccr tt", ccrItem.tt, "ccrWorkingHoursPerDay" ,ccrWorkingHoursPerDay)
+                                              
+                    });
+
+                    console.log("order_ccr_data", order_ccr_data)
+                    
+
+                    //DDIndex
+                    const maxFol: any = Object.values(order_ccr_data).reduce((prev: any, current: any) => (current.folSpan > prev.folSpan) ? current : prev);
+
+                    console.log(maxFol);
+                    console.log(order.plid);
+                    console.log(order);
+                    
+                    // const formattedDate = format(new Date(), 'yyyy-MM-dd');
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    // console.log()
+
+                    const latestWorkingDayLno = masters.WorkingCalender.find((data: any)=>{
+                        return new Date(data.wd) >= today && data.ccrId == maxFol.ccr_id && data.PlId == order.plid
+                    })?.lno;
+
+                    console.log("latestWorkingDayLno", latestWorkingDayLno)
+
+                    const residualBuffer = parseFloat(masters?.CCRMaster.find((ccr:any)=>ccr.ccr_id == maxFol.ccr_id)?.residual_buffer); 
+
+                    const prodBufferSize = order.prSz || 0;
+                    const procBufferSize = order.pcSz || 0;
+                    
+                    //optimise the logic
+                    const folDDIndex = Math.ceil(latestWorkingDayLno + maxFol.folSpan + (residualBuffer * prodBufferSize));
+                    const folDD =  masters.WorkingCalender.find((data: any)=>{
+                        return data.lno == folDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == order.plid
+                    })?.wd;
+
+                    const bufferDDIndex = latestWorkingDayLno + procBufferSize + prodBufferSize;
+                    const bufferDD = masters.WorkingCalender.find((data: any)=>{
+                        return data.lno == bufferDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == order.plid
+                    })?.wd;
+
+                    console.log("prodBufferSize",  prodBufferSize)
+                    console.log("procBufferSize",  procBufferSize)
+                    console.log("residualBuffer",  residualBuffer)
+                    console.log("max fol span",  maxFol.folSpan)
+                    // console.log(folDDIndex, bufferDDIndex)
+
+                    console.log(folDDIndex)
+                    console.log(bufferDDIndex)
+
+                    const crDD = order.crdd;
+
+                    const crddFlag = 0
+                    let maxDate;
+
+                    if(crddFlag){
+                        maxDate = max([folDD, bufferDD, crDD]);
+                    }else{
+                        maxDate = max([folDD, bufferDD]);
+                    }
+
+                    // console.log(maxDate);
+
+                    order.cdd = format(maxDate, 'yyyy-MM-dd');
+
+                    // console.log("maxDate", format(maxDate, 'yyyy-MM-dd'));
+                    // const marketLeadTime = masters.MarketLeadTimeMaster.find((item:any)=>{
+                    //     return item.mbot === order.mbot && item.itid === order.itid;
+                    // });
+
+                    // // const optimalLeadTime = 
+                    // const newDate = add(today, {
+                    //     days: marketLeadTime.lt || 0,
+                    //   })
+                    // order.isOptimalLeadTime = maxDate <= newDate;
+                    // console.log(marketLeadTime);
                 
-    //         });
+                return order
+            });
 
-    //         console.log(masters);
-    //         console.log(ccrIds)
-    //         console.log(ccr_prev_pending)
-
-    //         const newRows = rows.map((row:any) => {
-    //             if(selectedOrders.has(row.ok)){
-    //                 const order_ccr_data:any = {};
-
-    //                 //calculating order load
-    //                 ccrIds.forEach((ccrId:any)=>{
-    //                     const ccr = masters.CCRMaster.find((ccr:any)=>{
-    //                         return ccr.ccr_id === ccrId
-    //                     })
-    //                     // const fol = masters.FOL[ccrId];
-    //                     const ccrItem = masters?.CCRItemTypeMappingMaster.find((ccr:any)=> ccr.ccrId === ccrId && ccr.it == row.itid)
-
-    //                     let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
-    //                     ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay); 
-
-    //                     const orderLoad = Math.ceil((ccrItem.tt * row.pcqty)) // (60 * ccrWorkingHoursPerDay))
-
-    //                     order_ccr_data[ccrId] = {
-    //                         ccr_id: ccrId,
-    //                         orderLoad: orderLoad,
-    //                         folSpan: ((ccr_prev_pending[ccrId].prevPend) + orderLoad)/ (ccrWorkingHoursPerDay * 60),
-    //                     }
-    //                     console.log("ccr_prev_pending", ccr_prev_pending[ccrId])
-    //                     // console.log(ccrId, "orderLoad", order_ccr_data[ccrId].orderLoad, "folSpan" ,order_ccr_data[ccrId].folSpan, "order pending qty",row.pcqty, "ccr tt", ccrItem.tt, "ccrWorkingHoursPerDay" ,ccrWorkingHoursPerDay)
-    //                     ccr_prev_pending[ccrId].prevPend = (ccr_prev_pending[ccrId].prevPend) + orderLoad;
-                        
-    //                 });
-
-    //                 console.log("order_ccr_data", order_ccr_data)
-                    
-
-    //                 //DDIndex
-    //                 const maxFol: any = Object.values(order_ccr_data).reduce((prev: any, current: any) => (current.folSpan > prev.folSpan) ? current : prev);
-
-    //                 console.log(maxFol);
-    //                 console.log(row.plid);
-                    
-    //                 // const formattedDate = format(new Date(), 'yyyy-MM-dd');
-    //                 const today = new Date();
-    //                 today.setHours(0, 0, 0, 0);
-
-    //                 // console.log()
-
-    //                 const latestWorkingDayLno = masters.WorkingCalender.find((data: any)=>{
-    //                     return new Date(data.wd) >= today && data.ccrId == maxFol.ccr_id && data.PlId == row.plid
-    //                 })?.lno;
-
-    //                 console.log("latestWorkingDayLno", latestWorkingDayLno)
-
-
-    //                 const residualBuffer = parseFloat(masters?.CCRMaster.find((ccr:any)=>ccr.ccr_id == maxFol.ccr_id)?.residual_buffer); 
-
-    //                 const prodBufferSize = row.prSz || 0;
-    //                 const procBufferSize = row.pcSz || 0;
-                    
-    //                 //optimise the logic
-    //                 const folDDIndex = Math.ceil(latestWorkingDayLno + maxFol.folSpan + (residualBuffer * prodBufferSize));
-    //                 const folDD =  masters.WorkingCalender.find((data: any)=>{
-    //                     return data.lno == folDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == row.plid
-    //                 })?.wd;
-
-    //                 const bufferDDIndex = latestWorkingDayLno + procBufferSize + prodBufferSize;
-    //                 const bufferDD = masters.WorkingCalender.find((data: any)=>{
-    //                     return data.lno == bufferDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == row.plid
-    //                 })?.wd;
-
-    //                 console.log("prodBufferSize",  prodBufferSize)
-    //                 console.log("procBufferSize",  procBufferSize)
-    //                 console.log("residualBuffer",  residualBuffer)
-    //                 console.log("max fol span",  maxFol.folSpan)
-    //                 // console.log(folDDIndex, bufferDDIndex)
-
-    //                 console.log(folDDIndex)
-    //                 console.log(bufferDDIndex)
-
-    //                 const crDD = row.crdd;
-
-    //                 const crddFlag = 0
-    //                 let maxDate;
-
-    //                 if(crddFlag){
-    //                     maxDate = max([folDD, bufferDD, crDD]);
-    //                 }else{
-    //                     maxDate = max([folDD, bufferDD]);
-    //                 }
-
-    //                 // console.log(maxDate);
-
-    //                 row.cdd = format(maxDate, 'yyyy-MM-dd');
-
-    //                 // console.log("maxDate", format(maxDate, 'yyyy-MM-dd'));
-    //             }
-    //             return row
-    //         });
-    //         setRows(newRows);
-    // }
+            await Promise.all(promises);
+ 
+            return ordersForDDQ
+    }
 
 
     const onSave = () => {
         if(isEditable){
             const selectedOrders = new Set(gridRef.current.api.getSelectedRows().map((row:any) => row.ok));
-            const ccrIds:any = [];
             const formattedRoute = formatRoute(selectedRoute);
-            selectedRoute.forEach((route: any)=>{
-                if(route[1]?.value){
-                    ccrIds.push(route[1].value)
-                }
-            })
-
             const prodBuffer = selectedBuffers[0];
             const procBuffer = selectedBuffers[1];
-
-            const ccr_prev_pending:any = {};
-            
-            ccrIds.forEach((ccrId:any)=>{
-                const ccr = masters.CCRMaster.find((ccr:any)=>{
-                    return ccr.ccr_id === ccrId
-                })
-                const ccr_fol_data = masters.FOL[ccrId];
-                let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
-                const folInDays =  ccr_fol_data.fol;
-                ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay); 
-
-                ccr_prev_pending[ccrId] = {
-                    ccr_id: ccrId,
-                    prevPend: Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm)
-                }
-                console.log(ccrId, (ccr_prev_pending[ccrId].prevPend));
-                
-            });
-
-            console.log(masters);
-            console.log(ccrIds)
-            console.log(ccr_prev_pending)
 
             const newRows = rows.map((row:any) => {
                 if(selectedOrders.has(row.ok)){
@@ -346,103 +456,19 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                     row.prSz = prodBuffer?.size;
                     row.pcSz = procBuffer?.size;
 
-                    const order_ccr_data:any = {};
-
-                    //calculating order load
-                    ccrIds.forEach((ccrId:any)=>{
-                        const ccr = masters.CCRMaster.find((ccr:any)=>{
-                            return ccr.ccr_id === ccrId
-                        })
-                        // const fol = masters.FOL[ccrId];
-                        const ccrItem = masters?.CCRItemTypeMappingMaster.find((ccr:any)=> ccr.ccrId === ccrId && ccr.it == row.itid)
-
-                        let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
-                        ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay); 
-
-                        const orderLoad = Math.ceil((ccrItem.tt * row.pcqty)) // (60 * ccrWorkingHoursPerDay))
-
-                        order_ccr_data[ccrId] = {
-                            ccr_id: ccrId,
-                            orderLoad: orderLoad,
-                            folSpan: ((ccr_prev_pending[ccrId].prevPend) + orderLoad)/ (ccrWorkingHoursPerDay * 60),
-                        }
-                        console.log("ccr_prev_pending", ccr_prev_pending[ccrId])
-                        // console.log(ccrId, "orderLoad", order_ccr_data[ccrId].orderLoad, "folSpan" ,order_ccr_data[ccrId].folSpan, "order pending qty",row.pcqty, "ccr tt", ccrItem.tt, "ccrWorkingHoursPerDay" ,ccrWorkingHoursPerDay)
-                        ccr_prev_pending[ccrId].prevPend = (ccr_prev_pending[ccrId].prevPend) + orderLoad;
-                        
-                    });
-
-                    console.log("order_ccr_data", order_ccr_data)
-                    
-
-                    //DDIndex
-                    const maxFol: any = Object.values(order_ccr_data).reduce((prev: any, current: any) => (current.folSpan > prev.folSpan) ? current : prev);
-
-                    console.log(maxFol);
-                    console.log(row.plid);
-                    
-                    // const formattedDate = format(new Date(), 'yyyy-MM-dd');
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-
-                    // console.log()
-
-                    const latestWorkingDayLno = masters.WorkingCalender.find((data: any)=>{
-                        return new Date(data.wd) >= today && data.ccrId == maxFol.ccr_id && data.PlId == row.plid
-                    })?.lno;
-
-                    console.log("latestWorkingDayLno", latestWorkingDayLno)
-
-
-                    const residualBuffer = parseFloat(masters?.CCRMaster.find((ccr:any)=>ccr.ccr_id == maxFol.ccr_id)?.residual_buffer); 
-
-                    const prodBufferSize = row.prSz || 0;
-                    const procBufferSize = row.pcSz || 0;
-                    
-                    //optimise the logic
-                    const folDDIndex = Math.ceil(latestWorkingDayLno + maxFol.folSpan + (residualBuffer * prodBufferSize));
-                    const folDD =  masters.WorkingCalender.find((data: any)=>{
-                        return data.lno == folDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == row.plid
-                    })?.wd;
-
-                    const bufferDDIndex = latestWorkingDayLno + procBufferSize + prodBufferSize;
-                    const bufferDD = masters.WorkingCalender.find((data: any)=>{
-                        return data.lno == bufferDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == row.plid
-                    })?.wd;
-
-                    console.log("prodBufferSize",  prodBufferSize)
-                    console.log("procBufferSize",  procBufferSize)
-                    console.log("residualBuffer",  residualBuffer)
-                    console.log("max fol span",  maxFol.folSpan)
-                    // console.log(folDDIndex, bufferDDIndex)
-
-                    console.log(folDDIndex)
-                    console.log(bufferDDIndex)
-
-                    const crDD = row.crdd;
-
-                    const crddFlag = 0
-                    let maxDate;
-
-                    if(crddFlag){
-                        maxDate = max([folDD, bufferDD, crDD]);
-                    }else{
-                        maxDate = max([folDD, bufferDD]);
-                    }
-
-                    // console.log(maxDate);
-
-                    row.cdd = format(maxDate, 'yyyy-MM-dd');
-
-                    // console.log("maxDate", format(maxDate, 'yyyy-MM-dd'));
+                    row.updated = true;
                 }
                 return row
             });
 
-            setRows(newRows);
-            setSelectedBuffers([])
-            setSelectedRoute([])
-            setRowsSelectedForAssignment(false);
+            calculateEstimatedDueDate(newRows).then((data)=>{
+                setRows(data);
+                setSelectedBuffers([])
+                setSelectedRoute([])
+                setRowsSelectedForAssignment(false);
+            })
+
+            
         }
         setIsEditable(!isEditable);
         
@@ -470,6 +496,8 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                     row.procc = buffer[1]?.label || "";
                     row.prSz = buffer[0]?.size;
                     row.pcSz = buffer[1]?.size;
+
+                    row.updated = false;
                 } catch (error) {
                     console.error(`Error fetching data for row ${row}:`, error);
                 }
@@ -496,6 +524,119 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
         return formattedRoute
     }
 
+    const loadGraph = (selectedRoute: any) => {
+        const ccrIds: any = [];
+        selectedRoute.forEach((route: any)=>{
+            if(route[1])
+                ccrIds.push(route[1]?.value);
+        })  
+        console.log(ccrIds);   
+
+        const orderLoadOfCCRs:any = {}
+        
+        newSelectedRows?.rows?.forEach((order: any)=>{
+            ccrIds.forEach((ccrId:any) =>{
+                const ccr = masters.CCRMaster.find((ccr:any)=>{
+                    return ccr.ccr_id === ccrId
+                })
+                let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "1";
+                ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay); 
+
+                const ccrItemTypeMapping = masters?.CCRItemTypeMappingMaster.find((ccr:any)=> ccr.ccrId === ccrId && ccr.it == order.itid)
+                // console.log(JSON.parse(JSON.stringify(orderLoadOfCcrs)))
+
+                const orderLoadInDays = ((orderLoadOfCCRs[ccrId]?.orderLoad || 0)*1.0)+ ((ccrItemTypeMapping?.tt || 1) * order.pcqty)/(ccrWorkingHoursPerDay*60);
+                
+                const ccrFolInDays = masters.FOL[ccrId]?.fol;
+
+                const today:any = new Date();
+                today.setHours(0,0,0,0);
+
+                const latestWorkingDayLno = masters.WorkingCalender.find((data: any)=>{
+                    return new Date(data.wd) >= today && data.ccrId == ccrId 
+                })?.lno;
+
+                const folIndex = latestWorkingDayLno + ccrFolInDays - 1;
+
+                const folDD:any = masters.WorkingCalender.find((data: any)=>{
+                    return data.lno == folIndex && data.ccrId == ccrId 
+                })?.wd; 
+                
+                const diffDays:any = dateDiffInDays(today, new Date(folDD));
+
+                orderLoadOfCCRs[ccrId] = {
+                    ccrId,
+                    ccr_name: ccr.ccr_name,
+                    orderLoad: orderLoadInDays,
+                    ccrFolInDays: diffDays
+                }
+            })
+        });
+
+        console.log(JSON.parse(JSON.stringify(orderLoadOfCCRs)))
+
+        
+        setChartData(Object.values(orderLoadOfCCRs).map((order: any) => {
+            return {...order, orderLoad: Math.ceil(order.orderLoad)}
+        }))
+    }
+
+    // Label formatter function
+    function labelFormatter(params: any) {
+        const today = new Date();
+        const value = parseInt(params.value);
+
+        // console.log(today)
+
+        if (value == 0) {
+            return format(today, "dd MMM yy");  // Returns today's date
+        } else if (value > 0) {
+            // const futureDate = addDays(today, value);
+            const futureDate = add(today, {days: value});
+            // console.log(value,futureDate)
+            return format(futureDate, "dd MMM yy");  // Returns future date
+        }
+    }
+
+
+
+
+    function dateDiffInDays(date1: any, date2: any) {
+        // One day in milliseconds
+        const oneDay = 1000 * 60 * 60 * 24;
+    
+        // Convert both dates to milliseconds
+        const date1Ms = date1.getTime();
+        const date2Ms = date2.getTime();
+    
+        // Calculate the difference in milliseconds
+        const diffMs = Math.abs(date1Ms - date2Ms);
+    
+        // Convert back to days and return
+        return Math.round(diffMs / oneDay) + 1;
+    }
+    
+    useEffect(()=>{
+        loadGraph(selectedRoute)
+    },[selectedRoute])
+
+    const onConfirm = () => {
+        const bufferAssignmentObj: any = []
+        rows.forEach((row: any)=>{
+            if(row.updated){
+                bufferAssignmentObj.push({
+                    ok: row.ok,
+                    proc_id: row.nprid,
+                    prod_id: row.npcid
+                })
+            }
+        })
+        setConfirmedRows(rows);
+    } 
+
+    useImperativeHandle(ref, () => ({
+        onConfirm: onConfirm
+    }));
    
     return (
         <>
@@ -578,7 +719,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                     </Wrapper>
                 </Allotment.Pane>
                 { rowsSelectedForAssignment &&
-                        <Allotment.Pane preferredSize={176 + 50} key={2}>
+                        <Allotment.Pane preferredSize={routeDivHeight - 50} key={2}>
                                 {/* <Wrapper style={{ margin: 0, filter:"blur(3px)" }} > */}
                                 <Wrapper style={{ margin: 0, filter: newSelectedRows.isAssignmentPossible ? "unset" :"blur(3px)"}} >
                                     <div ref={routeDiv} style={{ height:"100%",background: "white", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", margin: "20px 10px", padding: "1rem", position:"relative", overflow:"auto"}}>
@@ -593,7 +734,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                                         </div>
                                         <div style={{display: "flex", gap: "2rem"}}>
                                             <div style={{ flex: "2" }}>
-                                                <h3>Route Assignment</h3>
+                                                <h3 style={{margin: "1rem 0"}}>Route Assignment</h3>
                                                 <RouteAssignment 
                                                     isEditable={isEditable}
                                                     theme={theme} 
@@ -603,7 +744,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                                                 />
                                             </div>
                                             <div style={{ flex: "1" }}>
-                                                <h3>Buffer Assignment</h3>
+                                                <h3 style={{margin: "1rem 0"}}>Buffer Assignment</h3>
                                                 <BufferAssignment 
                                                     isEditable={isEditable}
                                                     theme={theme} 
@@ -616,7 +757,7 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                                     </div>
                                 </Wrapper>
                                 {!newSelectedRows.isAssignmentPossible &&
-                                 <BlurCover style={{borderRadius:"0"}}>
+                                 <BlurCover style={{borderRadius:"0", left:0, width:"100%"}}>
                                  <CardCover>
                                      <DashedCard style={{width:"500px"}}>
                                      <MessageText style={{textAlign: "center", display:"flex", flexDirection:"column", width:"100%", gap:"2rem"}}>
@@ -651,13 +792,15 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
                 {rowsSelectedForAssignment &&  
                         <Allotment.Pane preferredSize={'25%'} key={3}>
                             <Wrapper style={{ padding: "20px 0", margin: 0 }}>
-                                <AgChartsReact options={chartOptions} />
+                                <div style={{boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", height:"100%", margin: "0 1rem"}}>
+                                    <AgChartsReact options={chartOptions} />
+                                </div>
                             </Wrapper>
                         </Allotment.Pane>
                 }
                 { !rowsSelectedForAssignment && 
                     <Allotment.Pane preferredSize={"50%"} key={4}>
-                        <Wrapper style={{  justifyContent: "center", alignItems:"center", background: "white", margin: "20px 0",height: "calc(100% - 30px)", color:"grey"}}>
+                        <Wrapper style={{  justifyContent: "center", alignItems:"center", background: "white", margin: "20px 10px",height: "calc(100% - 30px)", color:"grey", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px"}}>
                             <div style={{fontSize:"16px"}}>No Data to Display</div>
                             <div style={{fontSize:"12px"}}>Please Select Orders to Process</div>
                         </Wrapper>
@@ -666,6 +809,6 @@ const Step2 = ({gridOptions, columnData ,selectedRows, theme, chartOptions, mast
             </Allotment>
         </>
     )
-}
+})
 
 export default Step2

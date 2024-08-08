@@ -8,11 +8,11 @@ import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingM
 import { getColumnDefinations } from '../../../../../helpers/utils'
 import { GridOptions } from 'ag-grid-enterprise'
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox'
-import { AgChartOptions } from 'ag-charts-community'
 import "./style.css"
 import Step1 from './Step1'
 import Step2 from './Step2'
 import OverlayLoader from '../../Common/Loader'
+import Step3 from './Step3'
 
 const DueDateQuotation = () => {
     const { user } = useUserData();
@@ -25,9 +25,13 @@ const DueDateQuotation = () => {
     const [step, setStep] = useState(1);
     const [masters, setMasters] = useState<any>(null);
     const [rowsSelectedForAssignment, setRowsSelectedForAssignment] = useState<any>(false);
+
+    const [confirmedRows, setConfirmedRows] = useState<any>(null);
+
     //Refs
     const totalRows = useRef(0);
     const currentPageSelectedRows = useRef<any>([]);
+    const assignmentRef = useRef<any>();
 
     const { mutateAsync: getData, isLoading: isDataLoading } = useGetOrdersForDDQ();
     const { mutateAsync: getBufferMaster, } = useGetBufferMasterData();
@@ -38,6 +42,8 @@ const DueDateQuotation = () => {
     const { mutateAsync: getDailyWorkingCalendar, } = useGetDailyWorkingCalendar();
     const { mutateAsync: getMarketOperatingLeadTimeMasterData, } = useGetMarketOperatingLeadTimeMasterData();
     const { data: UIConfig, isLoading: isUIConfigLoading } = useGetUIConfig("DueDateQuotation");
+
+    const [loading, setLoading] = useState(false);
 
     const extras: any = [
         {
@@ -68,12 +74,13 @@ const DueDateQuotation = () => {
             wrapHeaderText: true,
             autoHeaderHeight: true,
             // resizable: true,
+            // flex: 1,
             suppressSizeToFit: false,
             filter: "agTextColumnFilter",
             floatingFilter: true,
             resizable: true,
             cellStyle:{
-              fontSize:"16px",
+              fontSize:"18px",
             }
         },
         sideBar: {
@@ -81,115 +88,15 @@ const DueDateQuotation = () => {
         },
     }
 
-    const options: AgChartOptions = {
-        data:[
-            {
-              reason: "CCR5",
-              black: 50,
-              red: 16,
-            },
-            {
-              reason: "CCR4",
-              black: 70,
-              red: 20,
-            },
-            {
-              reason: "CCR3",
-              black: 60,
-              red: 20,
-            },
-            {
-              reason: "CCR2",
-              black: 60,
-              red: 24
-            },
-            {
-              reason: "CCR1",
-              black: 50,
-              red: 24
-            },
-          ],
-    
-        series: [
-          {
-            type: "bar",
-            direction: "horizontal",
-            xKey: "reason",
-            yKey: "black",
-            yName: "FOL",
-            stacked: true,
-            fill: "black",
-            // tooltip: {
-            //   renderer: TooltipRenderer,
-            // },
-          },
-          {
-            type: "bar",
-            direction: "horizontal",
-            xKey: "reason",
-            yKey: "red",
-            yName: "SOL",
-            stacked: true,
-            fill: "#3874FF",
-            // tooltip: {
-            //   renderer: TooltipRenderer,
-            // },
-          },
-        ],
-    
-        axes: [
-          {
-            type: "category",
-            position: "left",
-            // title: {
-            //   text: "Major | Minor Reasons",
-            //   fontSize: 10,
-            //   fontWeight: "bold",
-            // },
-            label: {
-              fontSize: 8,
-              fontWeight: "bold",
-              color: "black",
-              padding: 10,
-            },
-            gridLine: {
-              enabled: false,
-            },
-          },
-          {
-            // title: {
-            //   text: "Count Of Orders",
-            //   fontSize: 10,
-            //   fontWeight: "bold",
-            //   spacing: 3,
-            // },
-            type: "number",
-            position: "bottom",
-            line: { enabled: true },
-            label: {
-              fontSize: 8,
-              fontWeight: "bold",
-              color: "black",
-            },
-            gridLine: {
-              enabled: false,
-            },
-          },
-        ],
-    
-        legend: {
-          position: 'right',
-          item: {
-            label: {
-              fontSize: 10,
-            },
-          },
-        },
-    };
+
 
     useEffect(() => {
         getDDQData()
     }, [currentPage, unScheduled])
+
+    useEffect(()=>{
+      setLoading(false)
+    }, [masters])
 
     const getDDQData = async () => {
         const data = await getData({ currentPage, unScheduled: unScheduled });
@@ -199,6 +106,7 @@ const DueDateQuotation = () => {
 
     const getMastersData = async () => {
       if(!masters){
+        setLoading(true);
         const bufferMaster = await getBufferMaster();
         const allBufferMaster = bufferMaster?.data?.data;
         const prodMaster: any = []
@@ -264,25 +172,37 @@ const DueDateQuotation = () => {
             case 2: {
                 return (
                         <Step2 
+                          ref={assignmentRef}
                           columnData={UIConfig?.data?.data}
                           gridOptions={gridOptions} 
                           selectedRows={selectedRows} 
                           theme={themeUi} 
-                          chartOptions={options}
                           masters={masters}
                           getMastersData={getMastersData}
                           rowsSelectedForAssignment={rowsSelectedForAssignment}
                           setRowsSelectedForAssignment={setRowsSelectedForAssignment}
+                          setConfirmedRows={setConfirmedRows}
                         />
                 )
+            }
+            case 3: {
+              return (
+                <Step3
+                  columnData={UIConfig?.data?.data}
+                  gridOptions={gridOptions} 
+                  confirmedRows={confirmedRows}
+                  theme={themeUi}
+                />
+              )
             }
         }
     }
 
+
     return (
         <Wrapper style={{height:step === 2 && rowsSelectedForAssignment ? "130vh" : "100%"}} className="wrapper">
             <MTOActionToolBar comp="DDQ" quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={unScheduled} onChange={(e: any) => setUnScheduled(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Only Unscheduled Orders</strong></div>} />
-            {isDataLoading && <OverlayLoader/>}
+            {(isDataLoading || loading) && <OverlayLoader/>}
             
             {getCurrentStep()}
             <Footer>
@@ -297,7 +217,14 @@ const DueDateQuotation = () => {
                 <VFButtonOutline themeUi={themeUi} onClick={() => { console.log() }} style={{ fontSize: "12px", width: "100px", height: "40px" }}>
                     Cancel
                 </VFButtonOutline>
-                <VFButton themeUi={themeUi} onClick={() => { setStep(step + 1) }} style={{ fontSize: "12px", width: "100px", height: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <VFButton themeUi={themeUi} 
+                  onClick={() => { 
+                    setStep(step + 1) ;
+                    if(assignmentRef.current?.onConfirm){
+                      assignmentRef.current.onConfirm() 
+                    }
+                  }} 
+                  style={{ fontSize: "12px", width: "100px", height: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>
                     {step === 2 ? "Confirm" :"Continue"}
                 </VFButton>
             </Footer>

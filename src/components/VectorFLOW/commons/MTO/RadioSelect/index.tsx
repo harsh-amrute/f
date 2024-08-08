@@ -62,6 +62,11 @@ const RadioSelect = ({options ,theme, color="white", ...rest}: any) => {
                     color: "grey",
                     padding: "0"
                 }),
+                clearIndicator: (base) => ({
+                    ...base,
+                    color: "grey",
+                    padding: "0"
+                }),
                 indicatorsContainer:(base) => ({
                     ...base,
                     padding: "0 8px"
