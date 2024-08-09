@@ -30,10 +30,10 @@ const OTAndIFTrendsGraph = () => {
         fill: color,
         strokeWidth: 4,
         marker: {
-            enabled: true,
-            shape: 'circle',
-            size: 8,
-            fill: color
+          enabled: true,
+          shape: 'circle',
+          size: 8,
+          fill: color
         },
         strokeOpacity: 1,
         stroke: color,
@@ -89,17 +89,17 @@ const OTAndIFTrendsGraph = () => {
     ],
 
     legend: {
-        item: {
-            label: {
-                fontSize: 10,
-                fontWeight: 'bold', // Make legend text bold
-            },
-            marker: {
-                size: 15,
-                strokeWidth: 0,
-                shape: "square",
-            },
+      item: {
+        label: {
+          fontSize: 10,
+          fontWeight: 'bold', // Make legend text bold
         },
+        marker: {
+          size: 15,
+          strokeWidth: 0,
+          shape: "square",
+        },
+      },
     },
   };
 
@@ -123,7 +123,7 @@ const OTAndIFTrendsGraph = () => {
         <div
           data-testid="ot-and-if-graph"
           style={{
-            fontSize: "16px",
+            fontSize: "13px",
             margin: "0 auto",
 
             textAlign: "center",
@@ -165,30 +165,8 @@ const OTAndIFTrendsGraph = () => {
   };
 
   return (
-    <div style={{ height: "70vh", display: "flex", justifyContent: "left" }}>
-      <div
-        style={{
-          width: "14px",
-          resize: "none",
-          height: "88%",
-          display: "flex",
-          justifyContent: "left",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            width: "8px",
-            background: "#E8E8E8",
-            height: "88%",
-            borderRadius: "0 4px 4px 0",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <img src="/assets/img/mto/RMPMBufferTrend/slider-icon-right.svg" />
-        </div>
-      </div>
+    <div style={{ height: "100%", display: "flex", justifyContent: "left", marginLeft: '10px', paddingBottom: '10px' }}>
+
       <SplitGraphContainer
         tableLoading={tableLoading}
         chartLoading={chartLoading}

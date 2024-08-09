@@ -85,20 +85,7 @@ const TrailDeptCount = () => {
           width: "100%",
         }}
       >
-        <div
-          data-testid="stpl-graph"
-          style={{
-            fontSize: "16px",
-            margin: "0 auto",
 
-            textAlign: "center",
-          }}
-        >
-          <span style={{ fontWeight: 500 }}>
-            {`${ProductionInsightsAndTrendsString.trailDeptCount}  `}
-          </span>
-          <span style={{ fontWeight: 300 }}>{` (${date})`}</span>
-        </div>
         <div style={{ display: "flex" }}>
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
             <VFInfoToolTip
@@ -133,7 +120,7 @@ const TrailDeptCount = () => {
   return (
     <div
       data-testid="count-graph"
-      style={{ height: "70vh", display: "flex", justifyContent: "left" }}
+      style={{ height: "100%", display: "flex", justifyContent: "left", marginRight: '8px', paddingBottom: '10px' }}
     >
       <SplitGraphContainer
         tableLoading={tableLoading}
@@ -142,7 +129,7 @@ const TrailDeptCount = () => {
         setChartLoading={setChartLoading}
         data={rawData}
         rowData={options.data}
-        graphTitle={""}
+        graphTitle={`${ProductionInsightsAndTrendsString.trailDeptCount}  ` + ` (${date})`}
         tableTitle={ProductionInsightsAndTrendsString.trailDeptCount}
         options={options}
         colDef={colDefs}
@@ -152,30 +139,6 @@ const TrailDeptCount = () => {
         TooltipRenderer={TooltipRenderer}
         graphType={7}
       />
-      <div
-        style={{
-          width: "14px",
-          resize: "none",
-          height: "88%",
-          display: "flex",
-          justifyContent: "right",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            width: "8px",
-            background: "#E8E8E8",
-            height: "88%",
-            borderRadius: "4px 0 0 4px",
-            display: "flex",
-            alignItems: "center",
-            paddingRight: "1px",
-          }}
-        >
-          <img src="/assets/img/mto/RMPMBufferTrend/slider-icon-left.svg" />
-        </div>
-      </div>
     </div>
   );
 };

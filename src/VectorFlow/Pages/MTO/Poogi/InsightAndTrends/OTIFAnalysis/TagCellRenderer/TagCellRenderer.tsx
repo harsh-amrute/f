@@ -3,26 +3,32 @@ import { Icon } from "./styles";
 
 const TagCellToolTip = (params: any) => {
 
+  if (!(params && params.value && OTIFTags[params.value] && OTIFTags[params.value].split('_'))) {
+    return <></>
+  }
   const allTags = OTIFTags[params.value].split('_');
   const tags: string[] = [];
   console.log(allTags);
-  if(allTags[1] === 'True'){
-      tags.push('ot');
+  if (allTags[1] === 'True') {
+    tags.push('ot');
   }
-  if(allTags[3] === 'True'){
-      tags.push('if');
+  if (allTags[3] === 'True') {
+    tags.push('if');
   }
 
-  if(tags.length === 2){
+  if (tags.length === 2) {
     return (
-      <Icon src={`/assets/img/VectorFLOW/BPR/otif.svg`} />
+      <div style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+        <Icon src={`/assets/img/mto/OTIFAnalysis/otif.svg`} />
+      </div>
+
     )
   }
 
   return (
-    <>
-      {tags.length > 0 && <Icon src={`/assets/img/VectorFLOW/BPR/${tags[0] === "if" ? "if" : "ot"}.svg`} />}
-    </>
+    <div style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+      {tags.length > 0 && <Icon src={`/assets/img/mto/OTIFAnalysis/${tags[0] === "if" ? "if" : "ot"}.svg`} />}
+    </div>
   );
 };
 

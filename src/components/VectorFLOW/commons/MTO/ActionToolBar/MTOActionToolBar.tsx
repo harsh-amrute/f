@@ -1,5 +1,4 @@
 import VFButton from '../../VFButton';
-import Checkbox from '../../../../../components/commons/Checkbox';
 import {
     SCTaskBarContainer,
     SCGoBackContainer,
@@ -35,10 +34,9 @@ import {
     ChartHeaderRadioGroup,
     RadioGroup,
     SelectGroup,
-    CheckBoxDiv,
-    InputCheckBoxTitle
 } from './styles';
 import moment from 'moment';
+import { ReactElement } from 'react';
 import { format } from 'date-fns';
 import VFRangeSlider from '../../VFRangeSlider';
 import CustomSelect from '../../../../../VectorFlow/Pages/MTO/Production/FullKitAssignement/Select';
@@ -62,6 +60,7 @@ interface MTOActionToolBarProps {
     date?: string
     handleGoBack?: () => void;
     themeUi?: string;
+    quickFilter?: ReactElement
     horizonDays?: number;
     setHorizonDays?: (e: number) => void;
     handleHorizonSubmit?: () => void;
@@ -81,6 +80,8 @@ interface MTOActionToolBarProps {
     multiFilter?: FilterState
     setMultiFilter?: any
     onApplyFilter?: (params: any) => void;
+    isReleaseButton?: boolean
+    onOrderRelease?: () => void;
     //// new props
 }
 
@@ -112,7 +113,10 @@ const MTOActionToolBar = ({
     toggleFilter,
     multiFilter,
     setMultiFilter,
-    onApplyFilter
+    onApplyFilter,
+    isReleaseButton,
+    onOrderRelease,
+    quickFilter
 }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
@@ -121,7 +125,7 @@ const MTOActionToolBar = ({
         }
     }
 
-    const format2 = "YYYY-MM-DD"
+    const format2 = "MM-dd-yyyy"
     const d = new Date();
     const datetime = moment(d).format(format2);
 
@@ -135,6 +139,26 @@ const MTOActionToolBar = ({
                     justifyContent: 'unset'
                 }}
             >
+                <>
+                    {isReleaseButton &&
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold', gap: '15px' }}>
+
+                            <div style={{ borderRadius: '5px', background: 'white', padding: '10px 30px', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: 'rgba(133, 132, 132, 0.247) -5px 4px 10px', gap: '10px' }}>
+                                <input type="checkbox" style={{ color: 'pink' }} />
+                                <p>Release</p>
+                            </div>
+                            <img
+                                style={{ cursor: 'pointer' }}
+                                src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
+                                height={50}
+                                width={60}
+                                alt="Group 627"
+                                onClick={onOrderRelease}
+                            />
+
+                        </div>
+                    }
+                </>
 
                 <>
                     {isGoBackButton &&
@@ -148,7 +172,11 @@ const MTOActionToolBar = ({
                         </SCGoBackContainer>
                     }
 
-                    {isWIPCheckBox &&
+                    {quickFilter && <div style={{display:"flex", justifyContent:"center", alignItems:"center", fontSize:"1.8rem"}}>
+                        {quickFilter}
+                    </div>}
+
+                    {/* {isWIPCheckBox &&
                         <CheckBoxDiv data-testid='check-box'>
                             <Checkbox
                                 data-testid='check-box'
@@ -161,7 +189,7 @@ const MTOActionToolBar = ({
                             />
                             <InputCheckBoxTitle>Show order with available WIP Only</InputCheckBoxTitle>
                         </CheckBoxDiv>
-                    }
+                    } */}
 
 
                     {isReleaseDate &&
@@ -209,7 +237,9 @@ const MTOActionToolBar = ({
                                         fontWeight: 'bold',
                                         fontFamily: 'Roboto',
                                         border: '0.5px solid #ACACAC',
+
                                     }}
+
                                     value={date}
                                     min={datetime}
                                     onChange={(e) => { if (onDateChange) onDateChange(e.target.value) }}
@@ -241,7 +271,7 @@ const MTOActionToolBar = ({
                         />
                         <DateTitle>As on Date</DateTitle>
                         <DateValue>
-                            {format(new Date(), 'yyyy-MM-dd')}
+                            {format(new Date(), format2)}
                         </DateValue>
                     </DateWrapper>}
                 {/**Selected Filter start */}

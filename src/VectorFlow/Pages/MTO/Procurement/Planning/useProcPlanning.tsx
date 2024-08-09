@@ -12,10 +12,12 @@ import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
-import { userGetProcPlanningData } from "../../../../Services/MTO/Procurement/ProcPlanning/index";
+import { putUpdateProcurementSimulationData, userGetProcPlanningData } from "../../../../Services/MTO/Procurement/ProcPlanning/index";
 import { toast } from "react-toastify";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
+import OverlayLoader from "../../Common/Loader";
 
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
@@ -87,11 +89,14 @@ const useProcPlanning = (date: string) => {
 
     const gridRef = useRef<AgGridReact>(null);
     const { isSideBarOpen } = useUserData()
-    const [currentPage] = useState<any>(1);
     const navigate = useNavigate();
-    const [datas, setData] = useState([]);
+    const [datas, setData] = useState<any>([]);
     const [ShortageDatas, SetShortageData] = useState<any[]>([]);
     const [CompleteAvailableDatas, setCompleteAvailableData] = useState<any[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [totalRows, setTotalRows] = useState(0);
+    const [isOverlayLoading, setIsOverlayLoading] = useState(false);
+    const { user } = useUserData();
 
     const tabs: Array<VFFloatingTabItemProps> = [
         {
@@ -107,13 +112,14 @@ const useProcPlanning = (date: string) => {
     ];
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
+    const { mutateAsync: UpdateProcurementSimulationData } = putUpdateProcurementSimulationData()
     const [isLoading, setIsLoading] = useState(false);
     const fetchData = useCallback(async (date: string) => {
         setIsLoading(true);
         try {
             toast.dismiss();
             notifyLoader("Loading data...")
-            const response = await getProcPlanningData(date);
+            const response = await getProcPlanningData({ date, pageNum: currentPage.toString() });
             if (response.status === 200) {
                 toast.dismiss();
                 notifySuccess("Data fetched Successfully!");
@@ -124,6 +130,7 @@ const useProcPlanning = (date: string) => {
                 notifyError("Failed to fetch data!");
                 setIsLoading(false);
             }
+            setTotalRows(response?.data?.data?.count)
             setData(response?.data?.data?.results || []);
         } catch (error) {
             console.log("error ")
@@ -167,6 +174,7 @@ const useProcPlanning = (date: string) => {
 
             };
             initializeData(datas, HeaderData);
+            console.log("....", datas)
         }
     }, [datas, HeaderData]);
 
@@ -187,7 +195,7 @@ const useProcPlanning = (date: string) => {
                 });
                 return tooltipText;
             },
-            tooltipComponent: "availabilityToolTip",
+            // tooltipComponent: "availabilityToolTip",
             initialWidth: 200, //160
             autoHeaderHeight: true,
             wrapHeaderText: true,
@@ -240,8 +248,60 @@ const useProcPlanning = (date: string) => {
     }, []);
 
     const toggleCurrentTab = useCallback((tab: VFFloatingTabItemProps) => setCurrentTab(tab), []);
-    const navigateToSimulateScreen = useCallback(() => {
-        navigate("/planning/simulative-fullkit", { state: { ShortageDatas, date } });
+    const navigateToSimulateScreen = useCallback(async () => {
+
+        // TODO
+        // const { user } = useUserData();
+        // console.log("user...", user)
+        if (user) {
+            console.log('user...', user)
+        }
+        const inputJson: any = {
+            "username": user?.user.name,
+            "stock": [
+
+            ]
+        }
+        ShortageDatas.forEach((e, index) => {
+
+            const val = gridRef.current?.api.getRowNode(index.toString())?.data;
+            if (val.eas !== 0) {
+                inputJson.stock.push(
+                    {
+                        'ic': val.rm,
+                        'as': val.eas
+                    }
+                )
+            }
+
+        })
+        setIsOverlayLoading(true);
+        UpdateProcurementSimulationData(inputJson)
+            .then(response => {
+                // Handle the response and perform subsequent actions
+                setIsOverlayLoading(false);
+                if (response.status === 200) {
+                    toast.dismiss();
+                    notifySuccess("Simulation updated successfully!")
+                    console.log("API call succeeded:", response);
+                    navigate("/planning/simulative-fullkit", { state: { ShortageDatas, date } });
+
+                }
+                else {
+                    notifyError("Failed to update Simulation!")
+
+                }
+
+
+            })
+            .catch(error => {
+                // Handle any errors that occur during the API call
+                console.error("API call failed:", error);
+
+                //         // Add your error handling code here
+            });
+
+
     }, [navigate, ShortageDatas, date]);
 
     const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
@@ -283,6 +343,17 @@ const useProcPlanning = (date: string) => {
         };
     }, []);
 
+    const handlePageChangeCumulative = async (pageNumber: number) => {
+        setIsLoading(true);
+        setCurrentPage(pageNumber);
+        const APIData = await getProcPlanningData({ date, pageNum: currentPage.toString() });
+        // setData(APIData)
+        const newDat = APIData.data.data.results
+        setData(newDat);
+        setIsLoading(false);
+        // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
+    };
+
     const renderView = () => {
         switch (currentTab.id) {
             case "ca":
@@ -295,13 +366,22 @@ const useProcPlanning = (date: string) => {
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'700px'}
+                            height={'650px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                 ]
                             }}
+                        />
+                        <VFPagination
+                            key={1}
+                            selectedRows={0}
+                            rowsPerPage={Math.min(10, totalRows)}
+                            totalRows={totalRows}
+                            currentPage={currentPage}
+                            handleChangePage={handlePageChangeCumulative}
+
                         />
                     </div>
                 );
@@ -309,15 +389,17 @@ const useProcPlanning = (date: string) => {
                 return (
 
                     <div>
+                        {isOverlayLoading && <OverlayLoader message={"Updating the simulated data..."} />}
 
                         <VFTable
+                            key={2}
                             {...agGridProps}
                             columnDefs={ShortageColumns}
                             rowData={ShortageDatas}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'700px'}
+                            height={'650px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [
@@ -325,7 +407,15 @@ const useProcPlanning = (date: string) => {
                                 ]
                             }}
                         />
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', flexDirection: 'row' }}>
+                        <VFPagination
+                            selectedRows={0}
+                            rowsPerPage={Math.min(10, totalRows)}
+                            totalRows={totalRows}
+                            currentPage={currentPage}
+                            handleChangePage={handlePageChangeCumulative}
+
+                        />
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', flexDirection: 'row', marginTop: '5px' }}>
 
                             <VFButtonOutline
                                 onClick={() => { fetchData(date) }}
@@ -362,7 +452,22 @@ const useProcPlanning = (date: string) => {
                     </div>
                 );
             default:
-                return <VFTable columnDefs={[]} rowData={[]} {...agGridProps} />
+                return (
+                    <>
+                        <VFTable columnDefs={[]} rowData={[]} {...agGridProps} />
+
+
+                        <VFPagination
+
+                            selectedRows={0}
+                            rowsPerPage={Math.min(10, totalRows)}
+                            totalRows={totalRows}
+                            currentPage={currentPage}
+                            handleChangePage={handlePageChangeCumulative}
+
+                        />
+                    </>
+                )
         }
     }
     const agGridProps: AgGridReactProps = {
@@ -381,7 +486,6 @@ const useProcPlanning = (date: string) => {
             enableBrowserTooltips: true,
             enableRangeSelection: true,
             icons: icons,
-            pagination: true,
             defaultColDef: {
                 floatingFilter: true,
                 filter: "agMultiColumnFilter",
@@ -408,7 +512,6 @@ const useProcPlanning = (date: string) => {
         masterDetail: true,
         detailCellRenderer: ChildrenProcPlanningCellRenderer,
         autoGroupColumnDef: autoGroupColumnDef,
-        paginationAutoPageSize: true,
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,
         groupDefaultExpanded: 0,

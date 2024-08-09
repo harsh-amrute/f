@@ -7,7 +7,6 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { columnConfigData } from "../ColumnData";
 import { format } from "date-fns";
-import { Rectangle } from "../../../FullKitAssignement/RectangleMarker";
 
 const STPLGraph = () => {
   const [date] = useState(format(new Date(), 'd MMM yyyy'));
@@ -52,22 +51,19 @@ const STPLGraph = () => {
       const color = i === 0 ? "#AD5000" : i === 1 ? 'gray' : "green";
       const key = i === 0 ? "exceedDays" : i === 1 ? 'days' : "limit";
       seriesData.push({
-        type: isBar ? "bar" : "scatter",
+        type: isBar ? "bar" : "line",
         xKey: "ccr",
         yKey: key,
         yName: labels[i],
-        strokeOpacity: isBar ? 0 : 0.25,
+        strokeOpacity: isBar ? 0 : 1.25,
         fill: color,
         stacked: isBar,
-        marker: {
-          size: 10,
-          fill: "#459D55",
-          shape: Rectangle,
-          strokeWidth: 0,
-        },
         tooltip: {
           renderer: TooltipRenderer,
         },
+        marker: {
+          size: 0
+        }
       });
     }
 
@@ -117,12 +113,9 @@ const STPLGraph = () => {
     legend: {
       position: "bottom",
       item: {
-        showSeriesStroke: true,
-        marker: {
-          size: 15,
-          strokeWidth: 0,
-          shape: "square",
-        },
+        label: {
+          fontSize: 10,
+        }
       },
 
     },
@@ -192,7 +185,7 @@ const STPLGraph = () => {
   }
 
   return (
-    <div style={{ height: "70vh", display: "flex", justifyContent: "left" }}>
+    <div style={{ height: "100%", display: "flex", justifyContent: "left", paddingBottom: '10px', marginRight: '8px' }}>
       <SplitGraphContainer
         tableLoading={tableLoading}
         chartLoading={chartLoading}
@@ -209,32 +202,8 @@ const STPLGraph = () => {
         toggleChart={toggleChart1}
         TooltipRenderer={TooltipRenderer}
         graphType={4}
-        chartHeight={50}
       />
-      <div
-        style={{
-          width: "14px",
-          resize: "none",
-          height: "88%",
-          display: "flex",
-          justifyContent: "right",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            width: "8px",
-            background: "#E8E8E8",
-            height: "88%",
-            borderRadius: "4px 0 0 4px",
-            display: "flex",
-            alignItems: "center",
-            paddingRight: "1px",
-          }}
-        >
-          <img src="/assets/img/mto/RMPMBufferTrend/slider-icon-left.svg" />
-        </div>
-      </div>
+
     </div>
   );
 };

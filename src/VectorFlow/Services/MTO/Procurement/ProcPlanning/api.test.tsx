@@ -1,10 +1,13 @@
-import axios from 'axios';
+import axios, { AxiosStatic } from 'axios';
 import { ProcPlanningService } from './api';
 
 jest.mock('axios');
 
+const mockedAxios = axios as jest.Mocked<AxiosStatic>;
+
 describe('ProcPlanningService', () => {
     const mockDate = '2024-06-01';
+    const pageNum = '1';
     const mockResponse = {
         data: {
             results: [
@@ -24,9 +27,9 @@ describe('ProcPlanningService', () => {
     });
 
     it('should fetch procurement planning data correctly', async () => {
-        const response = await ProcPlanningService.GetProcPlanningData(mockDate);
+        const response = await ProcPlanningService.GetProcPlanningData(mockDate, pageNum);
 
-        expect(axios.get).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/getProcPlanningData/?releaseDate=${mockDate}`, {
+        expect(axios.get).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/getProcPlanningData/?releaseDate=${mockDate}&?page=${pageNum}`, {
             headers: { 'Content-Type': 'application/json' }
         });
 
@@ -57,4 +60,31 @@ describe('ProcPlanningService', () => {
 
         expect(response).toEqual(mockResponse);
     });
+
+
+    it('should update order due date', async () => {
+        const requestBody = {
+            "username": "user2",
+            "stock": [
+                {
+                    "ic": "RM1",
+                    "as": 100
+                },
+                {
+                    "ic": "RM2",
+                    "as": 51
+                },
+                {
+                    "ic": "RM3",
+                    "as": 300
+                }
+            ]
+        }
+
+        mockedAxios.post.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await ProcPlanningService.UpdateProcurementSimulationData(requestBody);
+        expect(response.status).toBe(200);
+    });
+
+
 });

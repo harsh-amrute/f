@@ -1,7 +1,7 @@
 import { ETACellRendererWrapper } from "./styles"
 import { BPRRemarksCellRendererWrapper, BPRSubmitRemarkInput } from '../../../MTA/SupplyChainIntelligenceHub/BPR/styles'
 const TextBoxCellRenderer = (params: any) => {
-    console.log('TextBoxCellRenderer', params.column.colDef.cellRendererParams.visible.flag)
+
     return (
         <ETACellRendererWrapper  >
 
@@ -28,6 +28,7 @@ const TextBoxCellRenderer = (params: any) => {
                         placeholder="Enter your reason here..."
                         type={'text'}
                         style={{ fontSize: '14px', height: '28px', width: '90%' }}
+                        value={params.data.Lst_Rmrk}
                         disabled
 
                     />

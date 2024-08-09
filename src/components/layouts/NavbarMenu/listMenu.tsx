@@ -570,7 +570,7 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.dueDateQuotation",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "",
+        url: "/production-planning-and-scheduling/due-date-quotation",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
       {
@@ -588,7 +588,7 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.dynamicReleaseManagement",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "",
+        url: "/production-planning-scheduling/dynamic-release-mangement",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {
@@ -639,7 +639,7 @@ export const listMenuParent: any = [
             url: "/production-planning-scheduling/insight-and-trends/order-balance",
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
-          
+
         ]
       },
     ],
@@ -674,6 +674,12 @@ export const listMenuParent: any = [
             name: "OTIF Analysis",
             img: "/assets/img/nav/arrow_down.svg",
             url: '/poogi/insight-and-trends/otif-analysis',
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
+          {
+            name: "OT & IF Analysis",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: '/poogi/insight-and-trends/ot-and-if-analysis',
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
         ]

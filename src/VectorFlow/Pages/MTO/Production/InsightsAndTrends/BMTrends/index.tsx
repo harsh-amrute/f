@@ -2,7 +2,6 @@ import { AgCartesianSeriesOptions, AgChartOptions } from 'ag-charts-community'
 import { useEffect, useState } from 'react'
 import VFCapsule from '../../../../../../components/VectorFLOW/commons/VFCapsule'
 import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
-import VFRangeSlider from '../../../../../../components/VectorFLOW/commons/VFRangeSlider'
 import SplitGraphContainer from '../../../Common/SplitGraphContainer'
 import { SCChartHeaderContainer, SCChartMainContainer, CapsuleWrapper, SCChartSliderContainer, BMTrendWrapper } from './styles'
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
@@ -10,6 +9,10 @@ import { useGetBMTrendsData } from '../../../../../Services/MTO/Production/Insig
 import { BufferTrendData, TooltipValuesProps } from "../../../../../../../src/types/MTO/types";
 
 import { convertToGraphData, convertToPercentage, filterDataByDaysGap } from '../../../Common/helpers'
+import moment from 'moment'
+import { useGetDate } from '../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
+import VFRangeSlider from '../../../Common/VFRangeSlider'
+import useViewPort from '../../../../../../hooks/useViewPort'
 
 const BMTrends = () => {
 
@@ -71,17 +74,18 @@ const BMTrends = () => {
         }
 
         const getToolTipValues = ({ countArr, perArr, actBtn }: TooltipValuesProps) => {
+            console.log("countArr", countArr)
             let values = '';
             for (let i = 0; i < colors?.length; i++) {
                 values += `<tr key=${i}>
                 <tr><td style="padding: 5px; background-color: #6C696A;"><div style="display: flex; align-items: center;"><div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${colors[i]?.value}"></div>${colors[i]?.label}</div></td>
                     ${actBtn.label === 'Percentage' ? (
                         `<td style={{ padding: '5px', backgroundColor: '#6C696A' }}>
-                            ${Math.round(perArr[i])}%
+                            &nbsp; ${Math.round(perArr[i])}%
                         </td>`
                     ) : (
                         `<td style={{ padding: '5px', backgroundColor: '#6C696A' }}>
-                            ${countArr[i]}
+                            &nbsp;  ${countArr[i]}
                         </td>`
                     )}
                 </tr>`;
@@ -146,7 +150,12 @@ const BMTrends = () => {
                     fontSize: 8,
                     autoRotate: false,
                     fontWeight: 'bold',
-                    color: 'black'
+                    color: 'black',
+                    formatter: function (params) {
+                        const myDate = params.value.split('-')[1] + '-' + params.value.split('-')[0] + '-' + params.value.split('-')[2];
+                        return (moment(myDate).format('D MMM YYYY'))
+                    }
+
                 },
                 gridLine: {
                     enabled: false
@@ -179,7 +188,9 @@ const BMTrends = () => {
                     fontFamily: 'Roboto',
                     fontWeight: 'normal'
 
+
                 },
+
                 marker: {
                     size: 14,
                     shape: 'square'
@@ -291,15 +302,16 @@ const BMTrends = () => {
                         }}
                         > <b>Select Horizon (in days): </b></label>
                         <VFRangeSlider
+                            style={{ paddingTop: '12px' }}
                             showTriangle={false}
                             min={1}
                             max={90}
-                            milestones={[0, 14, 30, 60, 90]}
+                            milestones={[0, 30, 60, 90]}
                             strictMode={false}
                             width={200}
                             defaultValue={horizonDays}
                             handleChange={(e) => setHorizondays(e)}
-                            labelValueFormatter={(value: number) => value > 1 ? `${value} Days` : `${value} Day`}
+                            labelValueFormatter={(value: number) => value.toString()}
                         />
                         <div>
                             {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
@@ -364,10 +376,19 @@ const BMTrends = () => {
         }
     }, [data])
 
+
+
+
+    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+
+    const date = apiResponseData?.data?.data;
+    const { screenHeight } = useViewPort();
+
+
     return (
         <BMTrendWrapper>
             <MTOActionToolBar comp={'BMTrends'} isAddFilterButton />
-            <div style={{ paddingLeft: '25px' }}>
+            <div style={{ paddingLeft: '25px', height: screenHeight - 180, display: 'flex' }}>
 
                 <SplitGraphContainer
                     tableLoading={tableLoading}
@@ -376,15 +397,15 @@ const BMTrends = () => {
                     setChartLoading={setChartLoading}
                     data={numericData}
                     rowData={rowData}
-                    graphTitle={`Overall BM Trend (${numericData[0]?.dt || '--'} - ${numericData[numericData?.length - 1]?.dt || '--'} )`}
-                    tableTitle={`Overall BM Trend (${numericData[0]?.dt || '--'} - ${numericData[numericData?.length - 1]?.dt || '--'} )`}
+                    // moment(d).format(format2)
+                    graphTitle={`Overall BM Trend (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
+                    tableTitle={`Overall BM Trend (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
                     options={options}
                     colDef={colDef}
                     header={generateHeader}
                     hideChart={hideChart1}
                     toggleChart={toggleChart1}
                     TooltipRenderer={TooltipRenderer}
-                    chartHeight={50}
                     graphType={1}
                 />
             </div>

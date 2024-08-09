@@ -46,7 +46,7 @@ const OTIFAnalysis = () => {
     };
   }, []);
 
-  const gridOptions: GridOptions = {    
+  const gridOptions: GridOptions = {
     groupDefaultExpanded: 0,
     detailRowHeight: 500,
     detailCellRendererParams: {
@@ -65,7 +65,7 @@ const OTIFAnalysis = () => {
       }
     },
     BPP: {
-        cellRenderer: ColorCellRenderer,
+      cellRenderer: ColorCellRenderer,
     },
   }
 
@@ -100,7 +100,7 @@ const OTIFAnalysis = () => {
   const {state:currFilter,setState:setCurrFilter,onDelete} = useFilter()
 
   return (
-    <div style={{}}>
+    <div>
       <MTOActionToolBar
         comp={"stplAndFullKit"}
         isGridView={isGridView}
@@ -114,9 +114,9 @@ const OTIFAnalysis = () => {
         multiFilter={currFilter}
         setMultiFilter={setCurrFilter}
       />
-      <HorizontalViewWrapper style={{ marginTop: "20px" }}>
+      <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>
         {isGridView ? (
-          <div data-testid='grid-view' style={{height: screenHeight - 250}} >
+          <div data-testid='grid-view' style={{ height: screenHeight - 50 }} >
             <VFTable
               {...gridOptions}
               sideBar={{
@@ -128,7 +128,7 @@ const OTIFAnalysis = () => {
               tooltipHideDelay={100000}
               tooltipShowDelay={0}
               tooltipMouseTrack={true}
-              height={"100%"}
+              height={"75%"}
               ref={gridRef}
               statusBar={{
                 statusPanels: [
@@ -140,7 +140,7 @@ const OTIFAnalysis = () => {
           </div>
 
         ) : (
-          <BTRTableWrapper style={{ height: screenHeight - 210, margin: "0" }}>
+          <BTRTableWrapper style={{ height: screenHeight - 190, margin: "0" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>

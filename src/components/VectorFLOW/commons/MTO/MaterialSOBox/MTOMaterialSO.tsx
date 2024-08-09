@@ -93,8 +93,6 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
                         kit === "No Kit" ? "No Kit" : kit === "Partial Kit" ? "Partial Kit" : "Full Kit"
                     }
                 </ImgDiv>
-
-
             </TextOnBox>
 
 
@@ -104,9 +102,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
                 </Percentborder>
             </PercentBorderContainer>
 
-            <ViewOrder
-
-            >
+            <ViewOrder>
                 {MaterialCoverageString.viewAllRecords}
             </ViewOrder>
 
