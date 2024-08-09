@@ -42,8 +42,9 @@ const DynamicReleaseManagement = () => {
   const [currGraphData, setCurrGraphData] = useState<any>([]);
   const [graphData, setGraphData] = useState<any>([]);
 
-  const [masters, setMasters] = useState<any>();
+  const [masters, setMasters] = useState<any>({});
 
+  const [routeNum, setRouteNum] = useState("");
 
   const GetData = async (ao = 0) => {
 
@@ -97,6 +98,7 @@ const DynamicReleaseManagement = () => {
 
 
 
+  const [routeTrigger, setRouteTrigger] = useState(false);
 
 
   const colDefCustomizations = {
@@ -123,8 +125,8 @@ const DynamicReleaseManagement = () => {
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
             <img alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
-
-              getRoute(params.data.rid)
+              setRouteTrigger(!routeTrigger);
+              setRouteNum(params.data.rid)
             }} />
           </div>
         )
@@ -398,6 +400,7 @@ const DynamicReleaseManagement = () => {
   const graph = useRef<any>();
 
 
+
   const onOrderRelease = () => {
     setShowReleaseModal(true);
   }
@@ -460,39 +463,52 @@ const DynamicReleaseManagement = () => {
 
   const [route, setRoute] = useState<any>();
 
+
+  useEffect(() => {
+
+
+
+
+    getRoute(routeNum);
+
+  }, [routeNum, routeTrigger])
   // TODO:
   const getRoute = async (route: any) => {
-    if (!masters) {
-      await getMastersData()
-    }
+    console.log("route, masters", route, masters);
 
-    if (masters) {
-      if (typeof route === "number") {
-        try {
-          const data = await getRouteDetails(route);
-          const routeDetails = data.data.data;
-          routeDetails.sort((a: any, b: any) => a.ps - b.ps);
 
-          const newRoute: any = [];
-          routeDetails.forEach((routeDetail: any) => {
-            const obj = [];
-            const ccrGroup = masters?.ccrGroups?.find((ccr: any) => ccr?.value === routeDetail?.ccrGrpId);
-            obj[0] = ccrGroup;
-            obj[1] = ccrGroup?.ccrs.find((ccr: any) => ccr?.value === routeDetail?.ccrId);
-            newRoute[routeDetail.ps - 1] = obj;
-          });
+    await getMastersData();
 
-          setRoute(newRoute);
-          setShowModal(true);
-        } catch (error) {
-          console.log("Error fetching Route Details:", error);
-        }
+
+    if (typeof route === "number") {
+      try {
+        const data = await getRouteDetails(route);
+        const routeDetails = data.data.data;
+
+        routeDetails.sort((a: any, b: any) => a.ps - b.ps);
+        console.log("route Details", routeDetails);
+
+        const newRoute: any = [];
+        routeDetails.forEach((routeDetail: any) => {
+          const obj = [];
+
+          const ccrGroup = masters?.ccrGroups?.find((ccr: any) => ccr?.value === routeDetail?.ccrGrpId);
+          obj[0] = ccrGroup;
+          obj[1] = ccrGroup?.ccrs.find((ccr: any) => ccr?.value === routeDetail?.ccrId);
+          newRoute[routeDetail.ps - 1] = obj;
+        });
+
+        console.log('newRoute', newRoute);
+        setRoute(newRoute);
+        setShowModal(true);
+      } catch (error) {
+        console.log(error);
       }
     } else {
-      console.error("Masters data is not available.");
+      // Handle cases where route is not a number
+      setRoute(route);
     }
   };
-
 
 
   return (
