@@ -42,6 +42,9 @@ const DynamicReleaseManagement = () => {
   const [currGraphData, setCurrGraphData] = useState<any>([]);
   const [graphData, setGraphData] = useState<any>([]);
 
+  const [masters, setMasters] = useState<any>();
+
+
   const GetData = async (ao = 0) => {
 
     if (ao) {
@@ -87,10 +90,12 @@ const DynamicReleaseManagement = () => {
   }, [currGraphData])
 
   useEffect(() => {
-    GetData();
     getMastersData();
-
+    GetData();
   }, [])
+
+
+
 
 
 
@@ -118,7 +123,7 @@ const DynamicReleaseManagement = () => {
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
             <img alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
-              // getRoute(params.)
+
               getRoute(params.data.rid)
             }} />
           </div>
@@ -417,65 +422,76 @@ const DynamicReleaseManagement = () => {
 
 
 
-  const [masters, setMasters] = useState<any>(null);
 
 
   const [ccrGroupingData, setCCRGroupingData] = useState<any>();
 
   const getMastersData = async () => {
-    if (!masters) {
-
+    // if (!masters) {
+    try {
       const ccrGroupMaster = await getCCRGroupMaster();
       const ccrGroupData = Object.values(ccrGroupMaster?.data?.data);
-      const ccrGroups: any = []
+      const ccrGroups: any = [];
 
       ccrGroupData.forEach((group: any) => {
-
-        const obj: any = { label: group.ccr_group_code, value: group.ccr_group_id, ccrs: [] }
+        const obj: any = { label: group.ccr_group_code, value: group.ccr_group_id, ccrs: [] };
         group.ccrs.forEach((ccr: any) => {
           obj.ccrs.push({ label: ccr.ccr_name, value: ccr.ccr_id });
-        })
+        });
         ccrGroups.push(obj);
-      })
+      });
 
-      console.log('ccrGroups', ccrGroups)
-      setCCRGroupingData({ ccrGroups });
-
+      console.log('ccrGroups', ccrGroups);
+      setMasters({ ccrGroups });
+    } catch (error) {
+      console.log("Error fetching CCR Group Master:", error);
     }
-  }
+    // }
+  };
+
+
+
 
   useEffect(() => {
-    setMasters(ccrGroupingData)
-    console.log("masters....", masters)
-  }, [ccrGroupingData]);
+    console.log("masters", masters);
+  }, [masters])
+
+
 
   const [route, setRoute] = useState<any>();
 
   // TODO:
   const getRoute = async (route: any) => {
-    if (typeof route === "number") {
-
-      const data = await getRouteDetails(route);
-      const routeDetails = data.data.data;
-      routeDetails.sort((a: any, b: any) => a.ps - b.ps)
-      console.log(routeDetails)
-      const newRoute: any = []
-      routeDetails.forEach((routeDetail: any) => {
-        const obj = []
-        const ccrGroup = masters.ccrGroups.find((ccr: any) => ccr.value === routeDetail.ccrGrpId);
-        obj[0] = ccrGroup;
-        obj[1] = ccrGroup.ccrs.find((ccr: any) => ccr.value === routeDetail.ccrId)
-        newRoute[routeDetail.ps - 1] = obj
-      })
-      // routeCache.current[route] = newRoute;
-      console.log('newRoute', newRoute)
-      setRoute(newRoute);
-      setShowModal(true);
-      // return _.cloneDeep(newRoute)
+    if (!masters) {
+      await getMastersData()
     }
-    return JSON.parse(route)
-  }
 
+    if (masters) {
+      if (typeof route === "number") {
+        try {
+          const data = await getRouteDetails(route);
+          const routeDetails = data.data.data;
+          routeDetails.sort((a: any, b: any) => a.ps - b.ps);
+
+          const newRoute: any = [];
+          routeDetails.forEach((routeDetail: any) => {
+            const obj = [];
+            const ccrGroup = masters?.ccrGroups?.find((ccr: any) => ccr?.value === routeDetail?.ccrGrpId);
+            obj[0] = ccrGroup;
+            obj[1] = ccrGroup?.ccrs.find((ccr: any) => ccr?.value === routeDetail?.ccrId);
+            newRoute[routeDetail.ps - 1] = obj;
+          });
+
+          setRoute(newRoute);
+          setShowModal(true);
+        } catch (error) {
+          console.log("Error fetching Route Details:", error);
+        }
+      }
+    } else {
+      console.error("Masters data is not available.");
+    }
+  };
 
 
 
