@@ -431,7 +431,6 @@ const BMTrends = () => {
                 setMultiFilter={setCurrFilter}
             />
             <div style={{ paddingLeft: '25px', height: screenHeight - 180, display: 'flex' }}>
-                <div style={{ paddingLeft: '25px' }}>
                     <SplitGraphContainer
                         tableLoading={tableLoading}
                         chartLoading={chartLoading}
@@ -450,7 +449,6 @@ const BMTrends = () => {
                         TooltipRenderer={TooltipRenderer}
                         graphType={1}
                     />
-                </div>
             </div>
         </BMTrendWrapper>
     )
