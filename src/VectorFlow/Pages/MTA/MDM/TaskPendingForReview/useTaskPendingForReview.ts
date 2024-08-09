@@ -222,12 +222,14 @@ const useTaskPendingForReview = ()=>{
         const pageData = filteredData.slice(startIndex, endIndex);
         
     
-
-        
         switch (selectionType){
             case 'All':
                  ref.current?.api.forEachNode((rowNode)=>{
                     if(rowNode.data.isModified){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }
+                    if(!rowNode.data.isModified && taskActionype===2 && status==="Rejected"){
                         rowNode.setDataValue('status',status)
                         rowNode.setSelected(true)
                     }
@@ -244,6 +246,10 @@ const useTaskPendingForReview = ()=>{
                         rowNode.setDataValue('status',status)
                         rowNode.setSelected(true)
                         
+                    }
+                    if(pageData.includes(rowNode.id) && !rowNode.data.isModified && taskActionype===2 && status==="Rejected"){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
                     }
                     else if(pageData.includes(rowNode.id) && (taskActionype!==2 || currMasterId===6)){
                         rowNode.setDataValue('status',status)

@@ -131,7 +131,7 @@ const TaskPendingForReview = ()=>{
             }
             <TaskPendingTaskBar
                 isSideBarOpen={isSideBarOpen}
-                disableSubmit={selectedRows==0}
+                disableSubmit={selectedRows!==detailTableRowData.length}
                 onCancel={onCancel}
                 onSubmit={onTaskSubmit}
             />
