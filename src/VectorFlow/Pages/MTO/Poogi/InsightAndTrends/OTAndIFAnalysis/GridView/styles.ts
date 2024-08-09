@@ -114,29 +114,70 @@ export const SCDynamicContainer = styled.div`
     }
 
     & .ag-header-cell-text {
-      font-size: 13px;
+      font-size: 12px;
   }
   & > .ag-theme-alpine{
+    --ag-grid-size: 3px !important;
+    --ag-list-item-height: 20px !important;
+    --ag-font-size: 10px !important;
       flex: 1;
       height: 100%;
       --ag-row-hover-color: rgb(188, 61, 129,0.3) !important;
 
       & .ag-cell {
-        height: 100% !important
+        height: 100% !important;
       }
 
       & .ag-paging-panel {
-        zoom: 0.75;
+        height: 24px !important;
       }
 
       & .ag-side-buttons {
-        zoom : 0.75;
+        font-size: 10px;
       }
-      & .ag-status-bar {
-        zoom: 0.75;
+
+      & .ag-header {
+        border-radius: 0;
       }
+
+      & .ag-pivot-off{
+        height: 47px !important;
+        min-height: 47px !important;
+
+      }
+     
+      & .ag-header-cell {
+        min-height: 24px !important;
+        height: 24px !important;
+      }
+      & .ag-header-row {
+        min-height: 20px !important;
+        height: 20px !important;
+      }
+      & .ag-header-container {
+        min-height: 20px !important;
+        height: 20px !important;
+      }
+      
+      
+       & .ag-header-row-column-filter{
+        top: 23px !important;
+        height: 24px !important;
+       }
+
+      
+       & .ag-input-field-input {
+        height: 14px !important;
+        min-height: 10px !important;
+        font-size: 12px;
+       }
       & .ag-column-drop{
         background: #D2CECE;
+      }
+
+      & .ag-status-bar{
+        height: 24px !important;
+        font-size: 10px;
       }
   }
 

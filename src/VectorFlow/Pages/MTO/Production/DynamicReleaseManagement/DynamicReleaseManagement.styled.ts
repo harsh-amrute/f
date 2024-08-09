@@ -137,6 +137,9 @@ export const ContentWrapper = styled.div`
 `;
 export const RouteContentWrapper = styled.div`
   margin: 2rem;
+  width: 900px;
+  height: 65vh;
+  overflow: auto;
 `;
 export const Text = styled.div`
   font-size: 14px;

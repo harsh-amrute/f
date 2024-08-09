@@ -5,7 +5,7 @@ import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
 import { AgChartOptions } from 'ag-charts-community';
 import { getColumnDefinations } from '../../../../../helpers/utils';
-import { fullKitAssignmentData, fullKitAssignmentHeader } from './data';
+import { fullKitAssignmentHeader } from './data';
 import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
 import ColorCellRenderer from '../../Common/ColorCellRenderer';
 import { Button, Wrapper } from './DynamicReleaseManagement.styled';
@@ -18,6 +18,10 @@ import { Rectangle } from './RectangleMarker';
 import { BPRViewTableHeaderTab, SCTabHeader } from './styles';
 import ReleaseModal from './ReleaseModal';
 import './styles.css'
+import { useGetDynamicReleaseData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement';
+import { notifyError } from '../../../../../helpers/notify';
+import { useGetCCRGroupMaster, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
+import OverlayLoader from '../../Common/Loader';
 
 
 const DynamicReleaseManagement = () => {
@@ -29,6 +33,66 @@ const DynamicReleaseManagement = () => {
   const [table1, setTable1] = useState(true);
 
   const [showReleaseModal, setShowReleaseModal] = useState(false)
+
+  const { mutateAsync: getDynamicReleaseData, isLoading, isError, isSuccess } = useGetDynamicReleaseData();
+
+  const [currData, setCurrData] = useState<any>([]);
+  const [rowData, setRowData] = useState<any>([]);
+
+  const [currGraphData, setCurrGraphData] = useState<any>([]);
+  const [graphData, setGraphData] = useState<any>([]);
+
+  const GetData = async (ao = 0) => {
+
+    if (ao) {
+
+      try {
+        const APIData = await getDynamicReleaseData({ graph: 0, ao });
+        setCurrData(APIData);
+        setRowData(APIData.data.data.results);
+      }
+      catch (e) {
+        notifyError("Failed to fetch Grid data!")
+      }
+    }
+    else {
+      try {
+        const APIData = await getDynamicReleaseData({ graph: 0, ao });
+        setCurrData(APIData);
+        setRowData(APIData.data.data.results);
+      }
+      catch (e) {
+        notifyError("Failed to fetch Grid data!")
+      }
+
+    }
+
+    if (graph) {
+
+      try {
+        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao });
+        setCurrGraphData(GraphAPIData);
+        setGraphData(GraphAPIData.data.data);
+      }
+      catch (e) {
+        console.log(e)
+      }
+    }
+
+
+  };
+
+  useEffect(() => {
+    console.log(currGraphData);
+  }, [currGraphData])
+
+  useEffect(() => {
+    GetData();
+    getMastersData();
+
+  }, [])
+
+
 
   const colDefCustomizations = {
     Action: {
@@ -49,26 +113,18 @@ const DynamicReleaseManagement = () => {
     Route: {
       // tooltipField: "r"
       cellRenderer: (params: any) => {
+        console.log('paramssss', params)
         return (
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
             <img alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
-              setShowModal(true)
+              // getRoute(params.)
+              getRoute(params.data.rid)
             }} />
           </div>
         )
       }
     },
-    // FullKitsAvail: {
-    //   cellStyle: {
-    //     background: "#bc3d814d"
-    //   }
-    // },
-    // KitBeforeSm: {
-    //   cellStyle: {
-    //     background: "#bc3d814d"
-    //   }
-    // },
     OrderInFullKitToday: {
       cellRenderer: AvailabilityCellRenderer,
     },
@@ -94,23 +150,45 @@ const DynamicReleaseManagement = () => {
   ];
 
   const [HeaderData] = useState(fullKitAssignmentHeader);
-  // const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
-  // const reportName = "FullKitAssignment";
 
-  // const setColumnDef = async () => {
-  //   try {
-  //     const response = await getUIConfigData(reportName);
-  //     setHeaderData(response.data.data);
-  //   }
-  //   catch (e) {
-  //     console.log(e);
-  //   }
-  // }
+  const refGrid = useRef<any>(null)
 
-  // useEffect(() => {
-  //   setColumnDef();
-  // }, [])
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  useEffect(() => {
+    console.log("selected Rows", selectedRows);
+    const newData = convertData(graphData);
+    console.log("selected row length", selectedRows.length);
+
+    if (selectedRows.length) {
+
+      newData?.forEach((ele) => {
+        ele['selected'] = false;
+      })
+    }
+    selectedRows.forEach((element: any) => {
+      // Use Object.entries to iterate over the key-value pairs of the wips object
+      Object.entries(element['wips']).forEach(([ccrName, value]: [string, any]) => {
+        newData?.forEach((ele) => {
+          if (ele['category'] === ccrName) {
+            // Assuming "incremental wip" is a number, initialize it if it's undefined
+            ele['incremental wip'] = (ele['incremental wip'] || 0) + (value);
+            ele['selected'] = true;
+          }
+        });
+      });
+    });
+
+    console.log("called");
+    setFinalGraphData(newData);
+    console.log("graph api", graph.current);
+  }, [selectedRows]);
+
+  const updateGraphOnSelect = () => {
+    const selectedData = refGrid.current?.api.getSelectedRows();
+    setSelectedRows(selectedData);
+  };
 
   const colDefs = useMemo(() => {
     return getColumnDefinations(HeaderData.data, colDefCustomizations, extras)
@@ -123,6 +201,8 @@ const DynamicReleaseManagement = () => {
       };
     },
     rowHeight: 40,
+    suppressRowClickSelection: true,
+    onSelectionChanged: updateGraphOnSelect,
     sideBar: {
       toolPanels: [
         {
@@ -165,31 +245,60 @@ const DynamicReleaseManagement = () => {
       },
     },
   };
-  const [value3, setValue3] = useState(20);
 
-  const [data] = useState([
-    { category: 'M5', "Released wip": 13, limit: 43, "incremental wip": value3, groupName: "Underloaded\n", selected: true },
-    { category: '    ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
-    { category: 'M6', "Released wip": 10, limit: 35, "incremental wip": "", groupName: "Underloaded\n", selected: true },
-    { category: '      ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
-    { category: 'M7', "Released wip": 12, limit: 38, "incremental wip": "", groupName: "Underloaded\n", selected: true },
-    { category: '        ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
-    { category: 'M8', "Released wip": 8, limit: 12, "incremental wip": value3, groupName: "Underloaded\n", selected: true },
-    { category: '          ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
-    { category: 'M1', "Released wip": 10, limit: 35, "incremental wip": 20, groupName: "Overloaded\n", selected: true },
-    { category: '', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
-    { category: 'M2', "Released wip": 12, limit: 10, "incremental wip": 20, groupName: "Overloaded\n", selected: true },
-    { category: ' ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
-    { category: 'M3', "Released wip": 8, limit: 12, "incremental wip": 20, groupName: "Overloaded\n", selected: true },
-    { category: '  ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
-    { category: 'M4', "Released wip": 15, limit: 14, "incremental wip": 20, groupName: "Overloaded\n", selected: true },
-    { category: '   ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
-    { category: 'M9', "Released wip": 15, limit: 36, "incremental wip": 20, groupName: "Balanced\n", selected: true },
-    { category: '            ', "Released wip": "", limit: "", "incremental wip": "", groupName: "", selected: true },
-    { category: 'M10', "Released wip": 13, limit: 35, "incremental wip": 20, groupName: "Balanced\n", selected: true },
-  ])
-  const chartoptions: AgChartOptions = {
-    data: data,
+
+  interface InputData {
+    [key: string]: {
+      ccr_code: string;
+      limit: number | null;
+      wip: number | null;
+    };
+  }
+
+  interface OutputData {
+    category: string;
+    "Released wip": number | string;
+    limit: number | string;
+    "incremental wip": number;
+    selected: boolean;
+  }
+
+  function convertData(input: InputData): OutputData[] {
+    const result: OutputData[] = [];
+
+    // Convert the input object to an array of keys for iteration
+    const keys = Object.keys(input);
+
+    keys.forEach((key, index) => {
+      const item = input[key];
+
+
+      // Create the main data entry
+      result.push({
+        category: item.ccr_code,
+        "Released wip": item.wip !== null ? item.wip : "",
+        limit: item.limit !== null ? item.limit : "",
+        // "incremental wip": index % 2 === 0 ? 20 : "", // Just as an example
+        "incremental wip": 0, // Just as an example
+        selected: true,
+      });
+
+      // Create the empty separator entry
+      result.push({
+        category: " ".repeat(index + 1),
+        "Released wip": "",
+        limit: "",
+        "incremental wip": 0,
+        selected: true,
+      });
+    });
+
+    return result;
+  }
+
+
+  const [chartoptions, setChartOptions] = useState<any>({
+    // data: graphData,
     series: [
       {
         type: 'bar',
@@ -198,7 +307,8 @@ const DynamicReleaseManagement = () => {
         stacked: true,
         strokeWidth: 0,
         fill: "#191919",
-        formatter: (params) => {
+        formatter: (params: any) => {
+          console.log("params", params)
           return {
             fillOpacity: params.datum.selected ? 1 : 0.5,
             fill: params.datum.selected ? params.fill : "#191919"
@@ -213,7 +323,7 @@ const DynamicReleaseManagement = () => {
         stacked: true,
         strokeWidth: 0,
         fill: "#4BAAF7",
-        formatter: (params) => {
+        formatter: (params: any) => {
           return {
             fill: params.datum.selected ? params.fill : "#4BAA66"
           }
@@ -276,43 +386,123 @@ const DynamicReleaseManagement = () => {
     },
 
   }
+  )
   const [hide, setHide] = useState(false);
   const [showModal, setShowModal] = useState(false)
 
   const graph = useRef<any>();
-  const grid = useRef<any>();
+
 
   const onOrderRelease = () => {
     setShowReleaseModal(true);
-    setValue3(value3 + 1);
   }
+
+  const [finalGraphData, setFinalGraphData] = useState<any>([]);
+
+  useEffect(() => {
+    setFinalGraphData(convertData(graphData));
+
+  }, [graphData])
 
 
   useEffect(() => {
-    chartoptions.data = data;
+    setChartOptions({ ...chartoptions, data: finalGraphData })
+    console.log("chartopsfs data", chartoptions.data);
+    console.log(graph.current)
+  }, [finalGraphData])
 
-  }, [data, value3])
+
+  const { mutateAsync: getRouteDetails, } = useGetRouteDetails();
+  const { mutateAsync: getCCRGroupMaster, } = useGetCCRGroupMaster();
+
+
+
+  const [masters, setMasters] = useState<any>(null);
+
+
+  const [ccrGroupingData, setCCRGroupingData] = useState<any>();
+
+  const getMastersData = async () => {
+    if (!masters) {
+
+      const ccrGroupMaster = await getCCRGroupMaster();
+      const ccrGroupData = Object.values(ccrGroupMaster?.data?.data);
+      const ccrGroups: any = []
+
+      ccrGroupData.forEach((group: any) => {
+
+        const obj: any = { label: group.ccr_group_code, value: group.ccr_group_id, ccrs: [] }
+        group.ccrs.forEach((ccr: any) => {
+          obj.ccrs.push({ label: ccr.ccr_name, value: ccr.ccr_id });
+        })
+        ccrGroups.push(obj);
+      })
+
+      console.log('ccrGroups', ccrGroups)
+      setCCRGroupingData({ ccrGroups });
+
+    }
+  }
+
+  useEffect(() => {
+    setMasters(ccrGroupingData)
+    console.log("masters....", masters)
+  }, [ccrGroupingData]);
+
+  const [route, setRoute] = useState<any>();
+
+  // TODO:
+  const getRoute = async (route: any) => {
+    if (typeof route === "number") {
+
+      const data = await getRouteDetails(route);
+      const routeDetails = data.data.data;
+      routeDetails.sort((a: any, b: any) => a.ps - b.ps)
+      console.log(routeDetails)
+      const newRoute: any = []
+      routeDetails.forEach((routeDetail: any) => {
+        const obj = []
+        const ccrGroup = masters.ccrGroups.find((ccr: any) => ccr.value === routeDetail.ccrGrpId);
+        obj[0] = ccrGroup;
+        obj[1] = ccrGroup.ccrs.find((ccr: any) => ccr.value === routeDetail.ccrId)
+        newRoute[routeDetail.ps - 1] = obj
+      })
+      // routeCache.current[route] = newRoute;
+      console.log('newRoute', newRoute)
+      setRoute(newRoute);
+      setShowModal(true);
+      // return _.cloneDeep(newRoute)
+    }
+    return JSON.parse(route)
+  }
+
+
 
 
   return (
     <>
       <Wrapper>
+        {
+          isLoading &&
+
+          <OverlayLoader />
+        }
         <MTOActionToolBar comp="FullKitAssignment" isExcelExport isAddFilterButton isReleaseButton onOrderRelease={onOrderRelease} />
 
         <SCTabHeader style={{ marginTop: '5px' }}>
 
-          <BPRViewTableHeaderTab onClick={() => { setTable1(true) }} status={table1} marLeft={true} themeUi={themeUi} zIndex={2} style={{ width: '250px', fontSize: '12px' }} >
+          <BPRViewTableHeaderTab onClick={() => { setTable1(true), GetData() }} status={table1} marLeft={true} themeUi={themeUi} zIndex={2} style={{ width: '250px', fontSize: '12px' }} >
             Orders with simulated full kit
           </BPRViewTableHeaderTab>
-          <BPRViewTableHeaderTab onClick={() => { setTable1(false) }} status={!table1} marLeft={true} themeUi={themeUi} zIndex={1} style={{ width: '250px', fontSize: '12px' }} >
+          <BPRViewTableHeaderTab onClick={() => { setTable1(false), GetData(1) }} status={!table1} marLeft={true} themeUi={themeUi} zIndex={1} style={{ width: '250px', fontSize: '12px' }} >
             All Orders
           </BPRViewTableHeaderTab>
         </SCTabHeader>
 
 
         <VFTable
-          ref={grid}
-          rowData={fullKitAssignmentData.data}
+          ref={refGrid}
+          rowData={rowData}
           gridOptions={options}
           columnDefs={options.columnDefs}
           statusBar={{
@@ -346,7 +536,7 @@ const DynamicReleaseManagement = () => {
         <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
           <AgChartsReact ref={graph} options={chartoptions} />
         </div>
-        <EditRouteModal graphData={data} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} />
+        <EditRouteModal route={route} master={masters} setRoute={setRoute} graphData={finalGraphData} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} />
         <ReleaseModal themeUi={themeUi} totalOrders={120} selectedOrders={4} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />
       </Wrapper >
     </>

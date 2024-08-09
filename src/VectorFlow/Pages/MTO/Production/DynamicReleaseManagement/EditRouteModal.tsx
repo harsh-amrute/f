@@ -2,11 +2,12 @@ import { AgChartOptions } from 'ag-charts-community'
 import { AgChartsReact } from 'ag-charts-react'
 import { useEffect, } from 'react'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
+import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
 import { StepperWrapper, StepGroup, StepLabel, RouteContentWrapper, Text } from './DynamicReleaseManagement.styled'
 import { Rectangle } from './RectangleMarker'
 import CustomSelect from './Select'
 
-const EditRouteModal = ({ showModal, setShowModal, graphData, themeUi }: any) => {
+const EditRouteModal = ({ master, setRoute, route, showModal, setShowModal, graphData, themeUi }: any) => {
 
     useEffect(() => {
         // let animationFrameId: any;
@@ -138,73 +139,62 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, themeUi }: any) =>
 
     }
 
+
     return (
         <VFModalCard openModal={showModal} closeModal={() => { setShowModal((false)) }} headerText={'Edit Route'} headerIcon={''} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
             <RouteContentWrapper>
                 <Text>
                     You can change route by selecting CCR from drop-down
                 </Text>
-                <StepperWrapper>
-                    <StepGroup>
-                        <StepLabel>Dispensing</StepLabel>
-                        <CustomSelect selected={{ label: "M1", value: "M1" }} />
-                    </StepGroup>
-                    <StepGroup>
-                        <StepLabel>Granulation</StepLabel>
-                        <CustomSelect selected={{ label: "M2", value: "M2" }} />
-                    </StepGroup>
-                    <StepGroup id="inactive">
-                        <StepLabel>Shaft</StepLabel>
-                        <CustomSelect selected={{ label: "M3", value: "M3" }} />
-                    </StepGroup>
-                    <StepGroup id="inactive">
-                        <StepLabel>Inactive</StepLabel>
-                        <CustomSelect />
-                    </StepGroup>
-                    <StepGroup>
-                        <StepLabel>Final Product</StepLabel>
-                    </StepGroup>
-                    <svg className="line" style={{ position: "absolute", width: "100%", height: "100%", top: "0", left: "0", pointerEvents: "none" }}>
-                    </svg>
-                </StepperWrapper>
+                {
+                    master && master?.ccrGroups &&
+
+                    (<RouteAssignment
+                        isEditable={true}
+                        theme={themeUi}
+                        ccrGroupMaster={master.ccrGroups}
+                        selectedRoutes={route}
+                        setSelectedRoutes={setRoute}
+                    />)
+                }
                 <strong style={{ fontSize: "14px" }}>Route Load</strong>
-                <div style={{ height: "300px" }}>
+                <div style={{ height: "250px" }}>
                     <AgChartsReact options={chartoptions} />
                 </div>
-                <div style={{ zoom: '0.7', marginTop: '10px' }}>
-                    <div key={'1'} style={{ display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 10px 0 0' }}>
+            </RouteContentWrapper>
+            <div style={{ zoom: '0.7', marginTop: '10px' }}>
+                <div key={'1'} style={{ display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 10px 0 0' }}>
 
-                        <div>
-                            <div onClick={() => { setShowModal(false) }} style={{
-                                background: 'white', color: 'grey', font: 'normal normal 300 16px/24px Roboto',
-                                padding: '10px 20px',
-                                fontWeight: '400',
-                                borderRadius: '6px',
-                                border: '1px solid grey',
+                    <div>
+                        <div onClick={() => { setShowModal(false) }} style={{
+                            background: 'white', color: 'grey', font: 'normal normal 300 16px/24px Roboto',
+                            padding: '10px 20px',
+                            fontWeight: '400',
+                            borderRadius: '6px',
+                            border: '1px solid grey',
 
-                                boxShadow: '0px 6px 25px #00000029'
-                            }} >
-                                Cancel
-                            </div>
+                            boxShadow: '0px 6px 25px #00000029'
+                        }} >
+                            Cancel
                         </div>
-                        <div>
+                    </div>
+                    <div>
 
-                            <div style={{
-                                font: 'normal normal 300 16px/24px Roboto',
-                                fontWeight: '400',
-                                padding: '10px 20px',
-                                color: 'white',
-                                borderRadius: '6px',
-                                background: `${themeUi ? '#820F4C' : '#820F4C'}`,
+                        <div style={{
+                            font: 'normal normal 300 16px/24px Roboto',
+                            fontWeight: '400',
+                            padding: '10px 20px',
+                            color: 'white',
+                            borderRadius: '6px',
+                            background: `${themeUi ? '#820F4C' : '#820F4C'}`,
 
-                                boxShadow: '0px 6px 25px #00000029'
-                            }}>
-                                Save Routes
-                            </div>
+                            boxShadow: '0px 6px 25px #00000029'
+                        }}>
+                            Save Routes
                         </div>
                     </div>
                 </div>
-            </RouteContentWrapper>
+            </div>
         </VFModalCard>
     )
 }
