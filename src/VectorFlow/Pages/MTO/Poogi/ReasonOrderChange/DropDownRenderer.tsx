@@ -12,13 +12,6 @@ const CustomCellEditor = (props: any) => {
   const [toogelView, setToggleView] = useState<boolean>(true);
   const getOuterObjectByKey = (data: any, searchKey: string) => {
     return data[searchKey];
-    // for (const outerKey in data) {
-    //   const innerObject = data[outerKey];
-    //   if (innerObject[searchKey]) {
-    //     return innerObject;
-    //   }
-    // }
-    // return undefined;
   }
 
   const initialData = useMemo(() => {
@@ -36,25 +29,6 @@ const CustomCellEditor = (props: any) => {
 
   }, [data])
 
-  // const findAllMindValues = (data: any) => {
-  //   let mindValues: string[] = [];
-  
-  //   for (const key in data) {
-  //     if (data.hasOwnProperty(key)) {
-  //       const innerObj = data[key];
-  //       for (const innerKey in innerObj) {
-  //         if (innerObj.hasOwnProperty(innerKey)) {
-  //           const majObject = innerObj[innerKey];
-  //           majObject.min.forEach((minItem) => {
-  //             mindValues.push(minItem.mind);
-  //           });
-  //         }
-  //       }
-  //     }
-  //   }
-  
-  //   return mindValues;
-  // };
 
   // const findAllMindValues = (data: any) => {
   //   let mindValues: string[] = [];
@@ -84,7 +58,6 @@ const CustomCellEditor = (props: any) => {
       console.log('first', event.target.value)
       setSelectedValue(event.target.value);
     }
-
   };
 
   useEffect(() => {
