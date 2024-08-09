@@ -108,7 +108,7 @@ const MTOActionToolBar = ({
     isAddFilterButton,
     isExcelExport,
     isChartGridToggle,
-    isWIPCheckBox,
+    // isWIPCheckBox,
     isFilterOpen,
     toggleFilter,
     multiFilter,
