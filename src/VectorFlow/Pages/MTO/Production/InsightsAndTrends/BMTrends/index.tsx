@@ -7,12 +7,24 @@ import { SCChartHeaderContainer, SCChartMainContainer, CapsuleWrapper, SCChartSl
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { useGetBMTrendsData } from '../../../../../Services/MTO/Production/InsightsAndTrends/BMTrends'
 import { BufferTrendData, TooltipValuesProps } from "../../../../../../../src/types/MTO/types";
-
 import { convertToGraphData, convertToPercentage, filterDataByDaysGap } from '../../../Common/helpers'
 import moment from 'moment'
 import { useGetDate } from '../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import VFRangeSlider from '../../../Common/VFRangeSlider'
 import useViewPort from '../../../../../../hooks/useViewPort'
+import useFilter from "../../../../../../hooks/useFilter";
+import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+
+export const APIFilterConfig = {
+    filSecVisConfig :  {
+        "Prod_BM_Trend" : {
+            mjr : false,
+            or: true,
+            res: true,
+            cus: true
+        },
+    }
+};
 
 const BMTrends = () => {
 
@@ -21,6 +33,7 @@ const BMTrends = () => {
         label: "Absolute Value",
         value: 'Absolute Value'
     });
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [bmTrendData, setBMTrendData] = useState<BufferTrendData[]>([]);
     const { data } = useGetBMTrendsData() || {};
     const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(bmTrendData, 0, horizonDays, false));
@@ -28,6 +41,22 @@ const BMTrends = () => {
     const [rowData, setRowData] = useState(numericData);
     const [chartLoading, setChartLoading] = useState(true);
     const [tableLoading, setTableLoading] = useState(true);
+    const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
+    const [filterData, setFilterData] = useState({});
+    const {state:currFilter,setState:setCurrFilter} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_BM_Trend);
+
+    const onApplyFilter = (filter:any)=>{
+      console.log(filter)
+      setIsFilterOpen(false)
+    }
+    const onAddFilter = ()=>{
+      setIsFilterOpen(true)
+    }
+  
+    const toggleFilter = (state: boolean) => {
+      setIsFilterOpen(state);
+    }
+  
 
     const colors = [
         { label: 'Black', value: 'black', key: 'b' },
@@ -374,7 +403,11 @@ const BMTrends = () => {
             setBMTrendData(updatedData);
             setNumericData(filterDataByDaysGap(updatedData, 0, horizonDays, false));
         }
-    }, [data])
+    }, [data]);
+
+    useEffect(() => {
+        setFilterData(filterResponse?.data.data)
+      }, [filterResponse]);
 
 
 
@@ -387,27 +420,37 @@ const BMTrends = () => {
 
     return (
         <BMTrendWrapper>
-            <MTOActionToolBar comp={'BMTrends'} isAddFilterButton />
+            <MTOActionToolBar 
+                comp={'BMTrends'} 
+                isAddFilterButton
+                isFilterOpen={isFilterOpen}
+                onAddFilter={onAddFilter}
+                toggleFilter={toggleFilter}
+                onApplyFilter={onApplyFilter} 
+                multiFilter={currFilter}
+                setMultiFilter={setCurrFilter}
+            />
             <div style={{ paddingLeft: '25px', height: screenHeight - 180, display: 'flex' }}>
-
-                <SplitGraphContainer
-                    tableLoading={tableLoading}
-                    chartLoading={chartLoading}
-                    setTableLoading={setTableLoading}
-                    setChartLoading={setChartLoading}
-                    data={numericData}
-                    rowData={rowData}
-                    // moment(d).format(format2)
-                    graphTitle={`Overall BM Trend (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
-                    tableTitle={`Overall BM Trend (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
-                    options={options}
-                    colDef={colDef}
-                    header={generateHeader}
-                    hideChart={hideChart1}
-                    toggleChart={toggleChart1}
-                    TooltipRenderer={TooltipRenderer}
-                    graphType={1}
-                />
+                <div style={{ paddingLeft: '25px' }}>
+                    <SplitGraphContainer
+                        tableLoading={tableLoading}
+                        chartLoading={chartLoading}
+                        setTableLoading={setTableLoading}
+                        setChartLoading={setChartLoading}
+                        data={numericData}
+                        rowData={rowData}
+                        // moment(d).format(format2)
+                        graphTitle={`Overall BM Trend (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
+                        tableTitle={`Overall BM Trend (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
+                        options={options}
+                        colDef={colDef}
+                        header={generateHeader}
+                        hideChart={hideChart1}
+                        toggleChart={toggleChart1}
+                        TooltipRenderer={TooltipRenderer}
+                        graphType={1}
+                    />
+                </div>
             </div>
         </BMTrendWrapper>
     )

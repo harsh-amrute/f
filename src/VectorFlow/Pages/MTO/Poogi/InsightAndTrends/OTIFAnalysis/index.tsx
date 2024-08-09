@@ -16,8 +16,20 @@ import { getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import CustomTagTooltip from "./CustomTagTooltip";
 import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
+import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import useFilter from "../../../../../../hooks/useFilter";
+
+const APIFilterConfig = {
+  filSecVisConfig :  {
+      "Poogi_OTIF_Analysis" : {
+          mjr : true,
+          or: true,
+          res: true,
+          cus: true
+      },
+  }
+};
 
 const OTIFAnalysis = () => {
   const [isGridView, setIsGridView] = useState(false);
@@ -25,7 +37,9 @@ const OTIFAnalysis = () => {
   const { screenHeight } = useViewPort();
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
   const [colDef, setColDef] = useState([{}]);
+  const [filterData, setFilterData] = useState({});
   const reportName = "OTIFAnalysis";
 
   const gridRef = useRef();
@@ -81,7 +95,11 @@ const OTIFAnalysis = () => {
 
   useEffect(() => {
     setColumnDef();
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    setFilterData(filterResponse?.data.data)
+  }, [filterResponse]);
 
 
   useEffect(() => {
@@ -89,15 +107,14 @@ const OTIFAnalysis = () => {
   }, [HeaderData])
 
   const onApplyFilter = (filter:any)=>{
-    setCurrFilter(filter)
-    console.log(filter, 'API PAYLOAD');
+    console.log(filter)
     setIsFilterOpen(false)
   }
   const onAddFilter = ()=>{
     setIsFilterOpen(true)
   }
 
-  const {state:currFilter,setState:setCurrFilter,onDelete} = useFilter()
+  const {state:currFilter,setState:setCurrFilter} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
 
   return (
     <div>

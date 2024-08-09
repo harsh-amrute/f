@@ -41,15 +41,48 @@
     padding-right: 10px;
   }
 
-  /* Chrome, Safari, Edge, Opera */
 .no-arrows::-webkit-outer-spin-button,
 .no-arrows::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Firefox */
 .no-arrows {
   -moz-appearance: textfield;
 }
   
+/* .drop-down-options::-webkit-scrollbar {
+  width: 10px;
+  transition: opacity 0.3s;
+  opacity: 0; 
+}
+
+.drop-down-options:hover::-webkit-scrollbar {
+  opacity: 1; 
+}
+
+
+.drop-down-options::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+  opacity: 0;
+}
+
+.drop-down-options::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 20px;
+}
+
+.drop-down-options::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.drop-down-options {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(136, 136, 136, 0.473) #f1f1f1;
+  transition: scrollbar-color 0.3s;
+}
+
+.drop-down-options:hover {
+  scrollbar-color: rgba(136, 136, 136, 0.473) #f1f1f1;
+} */

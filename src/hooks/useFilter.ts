@@ -1,34 +1,147 @@
-import {useState} from 'react';
-import { filterObjects } from '../VectorFlow/Pages/MTO/Common/VFCommonFilter/workFlow';
+import {useEffect, useState} from 'react';
+import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
+import { checkValue, findUniqueKeysAndValues, getDynamicAttributes, getKeyName } from '../helpers/utils';
+import { filterAttributes, staticHeaderConfig } from '../VectorFlow/Pages/MTO/Common/VFCommonFilter/Constants';
 import { FilterState } from '../VectorFlow/types/MTO';
 
-const useFilter=()=>{
-
-
-    const [multiFilter, setMultiFilter]= useState<FilterState>(filterObjects)
+const useFilter=(filterData: any, page: any)=>{
+    const [multiFilter, setMultiFilter]= useState<FilterState>({})
     
-
-
-    const onDelete = (parentId:any, filterId:any, value:any) => {
-        const updatedMultiFilter = { ...multiFilter };
+    // const onDelete = (parentId:any, filterId:any, value:any) => {
+    //     const updatedMultiFilter = { ...multiFilter };
     
-        const currGroupKey = Object.keys(updatedMultiFilter).find(key => updatedMultiFilter[key as keyof FilterState]?.id === parentId);
+    //     const currGroupKey = Object.keys(updatedMultiFilter).find(key => updatedMultiFilter[key as keyof FilterState]?.id === parentId);
     
-        if (updatedMultiFilter && currGroupKey && updatedMultiFilter[currGroupKey as keyof FilterState]?.filters) {
-            updatedMultiFilter[currGroupKey as keyof FilterState].filters = updatedMultiFilter[currGroupKey as keyof FilterState]?.filters?.filter(filter =>filter.name !== filterId || filter.value !== value) || [];
+    //     if (updatedMultiFilter && currGroupKey && updatedMultiFilter[currGroupKey as keyof FilterState]?.filters) {
+            
+    //         updatedMultiFilter[currGroupKey as keyof FilterState].filters = updatedMultiFilter[currGroupKey as keyof FilterState]?.filters?.filter(filter =>filter.name !== filterId || filter.value !== value) || [];
      
-        }
+    //     }
     
-        setMultiFilter(updatedMultiFilter);
-        return updatedMultiFilter
-    };
+    //     setMultiFilter(updatedMultiFilter);
+    //     return updatedMultiFilter
+    // };
+
+    useEffect(()=>{
+
+        if(filterData && Object.keys(filterData)?.length){
+
+        const updatedFilterAttributes: any = {
+            customer: [...filterAttributes.customer, ...getDynamicAttributes( filterData?.hdrkeymap?.cattr)],
+            resource: [...filterAttributes.resource],
+            order: [...filterAttributes.order, ...getDynamicAttributes(filterData?.hdrkeymap?.lattr), ...getDynamicAttributes(filterData?.hdrkeymap?.oattr)], 
+            major: [...filterAttributes.major]
+        };
+
+        const filterOptionsConfig = findUniqueKeysAndValues(filterData);
+
+        const routes = filterOptionsConfig?.route?.map((r: any) => r.id) || [];
+        const { ccrs, ccrgroups, mappings, dept } = filterData || {};
+        const department: any = [];
+        const ccr: any = [];
+        const ccrGrp: any = [];
+        const mjr: any = [];
+        let min: any = [];
+
+        for(let i = 0; i < mappings.length; i++){
+            const { rid, ccrid, grpid, deptid } = mappings[i];
+            if(routes.includes(rid)){
+                if(dept[deptid]?.nm && !checkValue(department, dept[deptid]?.nm)){
+                    department.push({id: deptid, label :dept[deptid]?.nm})
+                }
+                if(ccrs[ccrid]?.nm && !checkValue(ccr, ccrs[ccrid]?.nm)){
+                    ccr.push({id: ccrid, label: ccrs[ccrid]?.nm})
+                }
+                if(ccrgroups[grpid]?.nm && !checkValue(ccrGrp, ccrgroups[grpid]?.nm)){
+                    ccrGrp.push({id: grpid, label: ccrgroups[grpid]?.nm})
+                }
+            }
+        }
+
+        for(let i = 0; i < filterOptionsConfig?.majid?.length; i++){
+            const mjrid = filterOptionsConfig?.majid[i].id;
+            if(filterData?.mjar[mjrid]?.name && !mjr.includes(filterData?.mjar[mjrid]?.name)){
+                mjr.push({id: mjrid, label: filterData?.mjar[mjrid]?.name});
+                const minors = filterData?.mjar[mjrid]?.min?.map((reason: any) => ({ id: reason.id, label: reason.name}));
+                min = [...min, ...minors];
+            }
+        }
+
+        filterOptionsConfig.majid = mjr;
+        filterOptionsConfig.minid = min;
+        filterOptionsConfig.deptid = department;
+        filterOptionsConfig.grpid = ccrGrp;
+        filterOptionsConfig.ccrid = ccr;
+
+        const filterObjects: FilterState = {}
+
+        if(page?.mjr){
+            filterObjects['major'] = {
+                id: "mjr",
+                label: "Major/ Minor Reason",
+                filters: updatedFilterAttributes?.major?.map((key: any) => ({
+                    type: staticHeaderConfig[key]?.type || InputTypes.MultiSelect,
+                    name: staticHeaderConfig[key]?.name ,
+                    attributeName: key,
+                    operator: '',
+                    value: '',
+                    options: filterOptionsConfig[key]
+                }))
+            }
+        }
+        if(page?.or){
+            filterObjects["orders"] = {
+                id: "odr",
+                label: "Orders Filter",
+                filters: updatedFilterAttributes?.order?.map((key: any) => ({
+                    type: staticHeaderConfig[key]?.type || InputTypes.MultiSelect,
+                    name: staticHeaderConfig[key]?.name || (getKeyName(filterData?.hdrkeymap?.lattr, key) || getKeyName(filterData?.hdrkeymap?.oattr, key)),
+                    attributeName: key,
+                    operator: '',
+                    value: key === 'ms' ?  ["MTA", "MTO"] : '',
+                    options: key === 'ms' ?  filterData?.system_type?.map((type: any) => ({ id: type, label: type })): filterOptionsConfig[key]
+                })).filter((fil: any) => filterAttributes.order.includes(fil.attributeName) || ((getKeyName(filterData?.hdrkeymap.lattr, fil.attributeName) === fil.name) || (getKeyName(filterData?.hdrkeymap.oattr, fil.attributeName) === fil.name)))
+            }
+        }
+        if(page?.res){
+            filterObjects["resources"] = {
+                id: "res",
+                label: "Resource Filter",
+                filters: updatedFilterAttributes?.resource?.map((key: any) => ({
+                    type: staticHeaderConfig[key]?.type || InputTypes.MultiSelect,
+                    name: staticHeaderConfig[key]?.name,
+                    attributeName: key,
+                    operator: '',
+                    value: '',
+                    options: filterOptionsConfig[key]
+                }))
+            }
+        }
+        if(page?.cus){
+            filterObjects["customers"] = {
+                id: "cus",
+                label: "Customer Filter",
+                filters: updatedFilterAttributes?.customer?.map((key: any) =>  ({
+                    type: staticHeaderConfig[key]?.type || InputTypes.MultiSelect,
+                    name: staticHeaderConfig[key]?.name || getKeyName(filterData?.hdrkeymap?.cattr, key),
+                    attributeName: key,
+                    operator: '',
+                    value: '',
+                    options: filterOptionsConfig[key]
+                })).filter((fil: any) => filterAttributes.customer.includes(fil.attributeName) || (getKeyName(filterData?.hdrkeymap.cattr, fil.attributeName) === fil.name))
+            }
+        }
+        setMultiFilter(filterObjects);
+    }
+
+    },[filterData])
         
            
 
     return{
         state:multiFilter,
         setState:setMultiFilter,
-        onDelete:onDelete
+        // onDelete:onDelete
     }
 
 }

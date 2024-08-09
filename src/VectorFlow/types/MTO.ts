@@ -87,7 +87,7 @@ export interface DeptWiseOrder {
 }
 
 export interface Filter{
-    type?:string
+    type:string
     name:string
     attributeName:string
     operator:string
@@ -102,8 +102,8 @@ export interface FilterGroup{
 }
 
 export interface FilterState{
-    customers: FilterGroup
-    resources: FilterGroup
-    orders: FilterGroup
-    major: FilterGroup
+    customers?: FilterGroup
+    resources?: FilterGroup
+    orders?: FilterGroup
+    major?: FilterGroup
 }

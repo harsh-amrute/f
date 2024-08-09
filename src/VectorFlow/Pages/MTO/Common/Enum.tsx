@@ -30,3 +30,12 @@ export enum OTIFTags {
     "OT_True_IF_False" = 2,
     "OT_False_IF_True" = 3,
 }
+
+export enum InputTypes {
+    TextCompare= "textCompare",
+    NumberCompare ="numberCompare",
+    MultiSelect="multiSelect",
+    Checkbox="checkbox",
+    Search="search",
+    Select="select"
+}

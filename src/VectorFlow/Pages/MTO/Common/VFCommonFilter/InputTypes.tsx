@@ -1,11 +1,12 @@
-import { useSpring, animated, Any } from "react-spring";
+import { useSpring, animated } from "react-spring";
 import { MultiSelectCheckBoxComponent } from "../../../../../components/VectorFLOW/commons/VFMultiFilter/style";
 import { useUserData } from "../../../../../context";
 import Select from "react-select";
 import { useState } from "react";
-import { DropdownGroupWrapper, SelectDropdownComponent } from "./styles";
+import { DropdownGroupWrapper, SelectDropdownComponent, OptionsWrapper } from "./styles";
 import { Filter } from "../../../../../VectorFlow/types/MTO";
 import './style.css'
+import { InputTypes } from "../Enum";
 
 interface FilterMultiSelectCheckboxProps {
   filterOptions: Array<{ label: string; id: string }>;
@@ -22,6 +23,7 @@ const FilterCheckboxAccordian = ({
   setOpenStatus,
   children,
 }: any) => {
+  
   const openStatusReducer = (prevStatus: any) => {
     Object.keys(prevStatus).forEach((filterType) => {
       if (filterKey !== filterType) {
@@ -88,34 +90,33 @@ const FilterCheckboxAccordian = ({
 
 const FilterMultiSelectCheckbox = ({
   filterOptions,
-  header,
+  // header,
   onChange,
   filterState,
 }: FilterMultiSelectCheckboxProps) => {
-  const colorMap: string[] = ["#9A0101", "#EBBF2B", "#418D18"];
-
+  // const colorMap: string[] = ["#9A0101", "#EBBF2B", "#418D18"];
   const { user } = useUserData();
-
   const themeUi = user.user.theme_ui;
   return (
     <>
-      {filterOptions.map(
-        (option: { label: string; id: string }, index: number) => {
-          const color = colorMap[index];
+      {filterOptions?.map(
+        (option: { label: string; id: string }) => {
+          // const color = colorMap[index];
           return (
             <>
               <MultiSelectCheckBoxComponent key={option.id} theme={themeUi}>
                 <input
+                  key={option.id}
                   type="checkbox"
-                  name={option.label}
+                  name={option.id}
                   style={{
                     width: "15px",
                     height: "20px",
                     marginRight: "14px;",
                     borderRadius: "2px",
                   }}
-                  onChange={(e: any) => onChange(e, "value")}
-                  checked={filterState?.value.includes(option.label)}
+                  onChange={(e: any) => onChange(e, "value", option?.id)}
+                  checked={filterState?.value.includes(option.id)}
                 />
                 <label
                   style={{
@@ -132,6 +133,64 @@ const FilterMultiSelectCheckbox = ({
           );
         }
       )}
+    </>
+  );
+};
+
+const Checkbox = ({
+  filterOptions,
+  header,
+  onChange,
+  filterState,
+}: FilterMultiSelectCheckboxProps) => {
+  // const colorMap: string[] = ["#9A0101", "#EBBF2B", "#418D18"];
+  const { user } = useUserData();
+
+  const themeUi = user.user.theme_ui;
+  return (
+    <>
+      <div
+          style={{ display: "flex", gap: "1rem", padding: "10px 0px 10px 20px" }}
+        >
+          <p>
+            {header}
+          </p>
+        </div>
+      <OptionsWrapper >
+        {filterOptions?.map(
+          (option: { label: string; id: string }) => {
+            return (
+              <>
+                <MultiSelectCheckBoxComponent key={option.id} theme={themeUi}>
+                  <input
+                    key={option.id}
+                    type="checkbox"
+                    name={option.id}
+                    style={{
+                      width: "15px",
+                      height: "20px",
+                      marginRight: "14px;",
+                      borderRadius: "2px",
+                    }}
+                    onChange={(e: any) => onChange(e, "value", option.id)}
+                    checked={filterState?.value.includes(option.label)}
+                  />
+                  <label
+                    style={{
+                      fontFamily: "Roboto",
+                      fontWeight: "300",
+                      fontSize: "16px",
+                      color: "#313131",
+                    }}
+                  >
+                    {option.label}
+                  </label>
+                </MultiSelectCheckBoxComponent>
+              </>
+            );
+          }
+        )}
+      </OptionsWrapper>
     </>
   );
 };
@@ -164,9 +223,6 @@ const FilterSelectDropdown = ({
       fontFamily: "Roboto",
       fontWeight: "300",
       fontSize: "12px",
-      // marginTop:'5px',
-      // marginBottom:'5px',
-      // marginLeft:'5px',
       paddingTop: "3px",
       paddingBottom: "3px",
       cursor: "pointer",
@@ -279,8 +335,8 @@ const FilterTextInput = ({
         outline: "none",
         color: "#313131",
         fontFamily: "Roboto",
-        fontWeight: "300",
-        fontSize: "12px",
+        fontWeight: "400",
+        fontSize: "14px",
         textAlign: "center",
         border: "none",
       }}
@@ -294,41 +350,41 @@ const FilterTextInput = ({
 const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}:any)=>{
 
   const comparatorConfig: any = {
-    equalto : {value:'equalto',label:'Equal to'},
-    notequalto : {value:'notequalto',label:'Not Equal to'},
-    doesnotcontain : {value:'doesnotcontain',label:'Does not contain'},
-    startswith: {value:'startswith',label:'Starts with'},
-    doesnotstartwith: {value:'doesnotstartwith',label:'Does not start with'},
-    endswith: {value:'endswith',label:'Ends with'},
-    doesnotendwith: {value:'doesnotendwith',label:'Does not end with'},
-    hasvalue: {value:'hasvalue',label:'Has value'},
-    greaterthan: {value:'greaterthan',label:'>'},
-    greaterthanequalto: {value:'greaterthanequalto',label:'>='},
-    smallerthan: {value:'smallerthan',label:'<'},
-    smallerthanequalto: {value:'smallerthanequalto',label:'<='},
+    et : {value:'et',label:'Equal to'},
+    net : {value:'net',label:'Not Equal to'},
+    dnc : {value:'dnc',label:'Does not contain'},
+    sw: {value:'sw',label:'Starts with'},
+    dsw: {value:'dsw',label:'Does not start with'},
+    ew: {value:'ew',label:'Ends with'},
+    dnew: {value:'dnew',label:'Does not end with'},
+    hv: {value:'hv',label:'Has value'},
+    gt: {value:'gt',label:'>'},
+    gte: {value:'gte',label:'>='},
+    lt: {value:'lt',label:'<'},
+    lte: {value:'lte',label:'<='},
   }
 
   const textComparators = [
-    {value:'equalto',label:'Equal to'},
-    {value:'notequalto',label:'Not Equal to'},
-    {value:'doesnotcontain',label:'Does not contain'},
-    {value:'startswith',label:'Starts with'},
-    {value:'doesnotstartwith',label:'Does not start with'},
-    {value:'endswith',label:'Ends with'},
-    {value:'doesnotendwith',label:'Does not end with'},
-    {value:'hasvalue',label:'Has value'},
+    {value:'et',label:'Equal to'},
+    {value:'net',label:'Not Equal to'},
+    {value:'dnc',label:'Does not contain'},
+    {value:'sw',label:'Starts with'},
+    {value:'dsw',label:'Does not start with'},
+    {value:'ew',label:'Ends with'},
+    {value:'dnew',label:'Does not end with'},
+    {value:'hv',label:'Has value'},
   ]
-
+ 
   const numberComparators = [
-    {value:'greaterthanequalto',label:'>='},
-    {value:'smallerthanequalto',label:'<='},
-    {value:'greaterthan',label:'>'},
-    {value:'smallerthan',label:'<'},
+    {value:'gte',label:'>='},
+    {value:'lte',label:'<='},
+    {value:'gt',label:'>'},
+    {value:'lt',label:'<'},
   ]
   
   const getOperatorValue = (type: string)=>{
       const operator = filterState.operator;
-      if(type === "textCompare"){
+      if(type === InputTypes.TextCompare){
         return comparatorConfig[operator] || textComparators[0]
       }
       return comparatorConfig[operator] || numberComparators[0]
@@ -339,7 +395,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
   }
 
   const getOptions = (type: string) => {
-    return type === 'textCompare' ? textComparators : numberComparators
+    return type === InputTypes.TextCompare ? textComparators : numberComparators
   }
 
   return(
@@ -352,7 +408,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
           <FilterSelectDropdown className="custom-scrollbar" placeholder={"<="} options={getOptions(filterState.type)} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator')} filterId={filterId} value={getOperatorValue(filterState.type)}/>    
         </SelectDropdownComponent>
         <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-          <FilterTextInput type={filterState.type === "textCompare" ? "text" : 'number'} placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()}/>    
+          <FilterTextInput type={filterState.type === InputTypes.TextCompare ? "text" : 'number'} placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()}/>    
         </SelectDropdownComponent>  
       </DropdownGroupWrapper>  
     </>     
@@ -364,5 +420,6 @@ export {
   FilterMultiSelectCheckbox,
   FilterSelectDropdown,
   FilterTextInput,
-  AvailabilityFilter
+  AvailabilityFilter,
+  Checkbox
 };

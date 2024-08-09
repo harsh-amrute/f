@@ -2762,7 +2762,7 @@ export function getColumnDefinations(
   extraFields: any = [],
   removeCols: any = [],
 ) {
-  const columnDefs = fields.sort((a: any, b: any) => a.cp - b.cp).map((data: any) => {
+  const columnDefs = fields?.sort((a: any, b: any) => a.cp - b.cp)?.map((data: any) => {
     const columnDef = {
       colId: data.cc,
       headerName: data.hd,
@@ -2780,7 +2780,7 @@ export function getColumnDefinations(
     return columnDef;
   });
   // Add extra columns
-  extraFields.forEach((field: any) => {
+  extraFields?.forEach((field: any) => {
     let position = field.position;
     // If position is not specified or invalid, add the column at the end
     if (
@@ -2790,12 +2790,117 @@ export function getColumnDefinations(
     ) {
       position = columnDefs.length;
     }
-    columnDefs.splice(position, 0, field);
+    columnDefs?.splice(position, 0, field);
   });
 
-  const finalcolDef = columnDefs.filter((obj: any) => !removeCols.includes(obj.colId));
+  const finalcolDef = columnDefs?.filter((obj: any) => !removeCols?.includes(obj.colId));
 
   return finalcolDef;
 
 }
+// ===================================================================================================
+
+
+// Common methods used in Filter Modal Screen
+// ===================================================================================================
+
+// Function to find out the unique values of filter questions
+export function findUniqueKeysAndValues(filterData: any) {
+  const uniqueValues: any = {};
+
+  // Function to collect keys and values
+  function collectKeysAndValues(obj: any) {
+      for (const key in obj) {
+          if (!uniqueValues[key]) {
+              uniqueValues[key] = new Set();
+          }
+          uniqueValues[key].add(obj[key]);
+      }
+  }
+
+  // Iterate over customers and ordLineItems
+  if (filterData.customers) {
+      filterData.customers.forEach(collectKeysAndValues);
+  }
+
+  if (filterData.ordLineItems) {
+      filterData.ordLineItems.forEach(collectKeysAndValues);
+  }
+
+  if (filterData.ordAttr) {
+      filterData.ordAttr.forEach(collectKeysAndValues);
+  }
+
+  // Convert Set to Array and include empty array for missing keys
+  const response: any = {};
+  for (const key in uniqueValues) {
+      response[key] = Array.from(uniqueValues[key]).map((o: any) => ({label: o, id: o}));
+  }
+
+  // Add empty array for any missing keys based on the first object in each array
+  const allKeys: any = [
+      ...Array.from(new Set([
+          ...Object.keys(filterData.customers?.[0] || {}),
+          ...Object.keys(filterData.ordLineItems?.[0] || {})
+      ]))
+  ];
+
+  allKeys.forEach((key: any) => {
+      if (!response[key]) {
+          response[key] = [];
+      }
+  });
+
+  return response;
+}
+
+// Function to find dynamic attributes of the object that is passed in paramenters
+export const getDynamicAttributes = (attributes: any) => {
+  
+  if(!attributes || attributes?.length === 0 || Object.keys(attributes).length === 0){
+    return [];
+  }
+  return attributes?.map((attr: any) => attr.key);
+}
+
+export const getKeyName = (attributes: any, key: string) => {
+  for(let i = 0; i < attributes.length; i++){
+    if(key === attributes[i].key){
+      return attributes[i].name;
+    }
+  }
+  return ''
+}
+
+// Function to structure the output of filter modal
+export const formatFilterJSON = (filter: any) => {
+  let formatFilter: any = {};
+  for(const key in filter){
+    const { filters } = filter[key];
+    for(let i = 0; i < filters.length; i++){
+      const { attributeName, value, type, operator } = filters[i];
+      if(type === 'textCompare' || type === 'numberCompare'){
+          if(value){
+              formatFilter = { ...formatFilter, [attributeName]: { op: operator ? operator :  type === 'textCompare' ? 'et' : 'gte' , val: value } };
+          }
+      }else{
+          if(value.length > 0){
+              formatFilter = { ...formatFilter, [attributeName]: value };
+          }
+      }
+    }
+  }
+  return formatFilter;
+}
+
+// Function to check values already there in options of dropdown
+export const checkValue = (optionsArr: any, name: string) => {
+  for(let i = 0; i < optionsArr.length; i++ ){
+      if(optionsArr[i].label === name){
+          return true;
+      }
+  }
+  return false;
+}
+
 // ===================================================================================================

@@ -15,11 +15,32 @@ import TrailDeptCount from "./TrailDeptCount";
 import TrailDeptBalance from "./TrailDeptBalance";
 import { GridOptions } from "ag-grid-enterprise";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import useFilter from "../../../../../../hooks/useFilter";
+import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
+
+const APIFilterConfig = {
+  filSecVisConfig :  {
+    "Prod_Order_Balance" : {
+      mjr : false,
+      or: true,
+      res: true,
+      cus: true
+    },
+  }
+};
 
 const OrderBalance = () => {
   const [isGridView, setIsGridView] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const gridRef = useRef();
   const { screenHeight } = useViewPort();
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
+  const [filterData, setFilterData] = useState({});
+  const {state:currFilter,setState:setCurrFilter} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Balance);
+
+  const reportName = "OrderBalance";
 
   const gridOptions: GridOptions = {
     sideBar: {
@@ -72,11 +93,6 @@ const OrderBalance = () => {
     }
   };
 
-  const [HeaderData, setHeaderData] = useState([{}]);
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-
-  const reportName = "OrderBalance";
-
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
@@ -87,14 +103,30 @@ const OrderBalance = () => {
     }
   }
 
+  const tableColDefs = useMemo(() => {
+    return getColumnDefinations(HeaderData, colDefCustomizations, []);
+  }, [HeaderData]);
+
+  const onApplyFilter = (filter:any)=>{
+    console.log(filter)
+    setIsFilterOpen(false)
+  }
+  const onAddFilter = ()=>{
+    setIsFilterOpen(true)
+  }
+
+  const toggleFilter = (state: boolean) => {
+    setIsFilterOpen(state);
+  }
+
+  
   useEffect(() => {
     setColumnDef();
   }, [])
 
-
-  const tableColDefs = useMemo(() => {
-    return getColumnDefinations(HeaderData, colDefCustomizations, []);
-  }, [HeaderData]);
+  useEffect(() => {
+    setFilterData(filterResponse?.data.data)
+  }, [filterResponse]);
 
   return (
     <div style={{}}>
@@ -104,6 +136,12 @@ const OrderBalance = () => {
         setIsGridView={setIsGridView}
         isChartGridToggle
         isAddFilterButton
+        isFilterOpen={isFilterOpen}
+        onAddFilter={onAddFilter}
+        toggleFilter={toggleFilter}
+        onApplyFilter={onApplyFilter} 
+        multiFilter={currFilter}
+        setMultiFilter={setCurrFilter}
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: '25px' }}>
         {isGridView ? (

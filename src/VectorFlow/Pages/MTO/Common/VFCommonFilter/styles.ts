@@ -9,13 +9,34 @@ gap:10px;  //25px
 }
 `
 export const FilterCardWrapper = styled.div`
-width:270px;
+width:400px;
 margin:47px 0px 47px 0px;
 background-color:white;
 box-shadow: 0px 6px 12px #95959529;
 border-radius: 6px;
-height:max-content;
+height: max-content;
 `
+
+export const FilterWrapper = styled.div`
+height: max-content;
+max-height: 600px;
+overflow: auto;
+`
+
+export const NoFilterWrapper = styled.div`
+height: 300px;
+display: flex;
+justify-content: center;
+align-items: center;
+font-size: 18px;
+`
+export const OptionsWrapper = styled.div`
+display: flex;
+justify-content: flex-start;
+padding-left: 20px;
+gap: 40px;
+`
+
 export const FilterHeader = styled.div`
 height:60px;
 font-style:normal;
