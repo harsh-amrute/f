@@ -4,7 +4,8 @@ import { ReasonOrderChangeServices } from './api'
 //useQuery for get 
 export const QUERY_KEYS = {
     useGetReasonForAnalyticDelayOrder: ['MDMService.useGetReasonForAnalyticDelayOrder'],
-    useGetReasonForDelayOrder: ['MDMService.useGetReasonForDelayOrder']
+    useGetReasonForDelayOrder: ['MDMService.useGetReasonForDelayOrder'],
+    useGetPoogiMajorMinorReason: ['MDMService.useGetPoogiMajorMinorReason']
 }
 
 export const useGetReasonForPoogiAnalytics = () => {
@@ -24,4 +25,11 @@ export const useGetPoogiRemarks = () => {
         return await ReasonOrderChangeServices.getPoogIRemarks(data);
     })
 }
+
+export const useGetPoogiMajorMinorReason = () => {
+    return useQuery(QUERY_KEYS.useGetPoogiMajorMinorReason, async () => {
+        return await ReasonOrderChangeServices.getPoogiMajorMinorReason();
+    })
+}
+
 

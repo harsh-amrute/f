@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import { SaveBtnWrapper, SaveBtn } from './styles';
@@ -13,8 +13,7 @@ import { useUserData } from '../../../../../context';
 import RemarkHistoryRenderer from '../../Production/DepartmentWiseBMReport/RemarkHistoryRenderer';
 import MTORemarkHistoryModal from '../../Production/DepartmentWiseBMReport/MTORemarkHistoryModal';
 
-
-import DropdownCellRenderer from './DropDownRenderer';
+import CustomCellEditor from './DropDownRenderer';
 
 
 const ReasonForDelayOrder = () => {
@@ -79,7 +78,7 @@ const ReasonForDelayOrder = () => {
     const getHeaderData = async () => {
         try {
             const response = await getUIConfigData(reportName);
-            // console.log('response==',response?.data?.data)
+            //console.log('response==',response?.data?.data)
             setHeaderData(response.data.data);
 
         }
@@ -136,29 +135,20 @@ const ReasonForDelayOrder = () => {
         MajorReason: {
             pinned: "right",
             lockPosition: true,
-            minWidth: 120,
-            cellEditor: "agSelectCellEditor",
-            cellEditorParams: {
-                values: ["Male", "Female"]
-            },
-            cellRenderer:DropdownCellRenderer
-            // frameworkComponents: {
-            //     dropdownCellRenderer: DropdownCellRenderer,
-            // },
-            //dropdownCellRenderer: DropdownCellRenderer,
-            //dropdownCellRenderer: DropdownCellRenderer
-
+            initialWidth:300,
+            cellRenderer: CustomCellEditor
         },
         MinorReason: {
             pinned: "right",
             lockPosition: true,
-            minWidth: 120,
+            minWidth: 300,
+            cellRenderer: CustomCellEditor
         },
     }
 
     const columnDef = getColumnDefinations(HeaderData, customHeader);
 
-    //console.log(columnDef)
+
 
     useEffect(() => {
         getHeaderData();
@@ -196,12 +186,14 @@ const ReasonForDelayOrder = () => {
                 isAddFilterButton
                 isExcelExport
             />
+
             <VFTable
                 {...agGridProps}
                 height='750px'
                 columnDefs={columnDef}
                 rowData={rowData}
             />
+
 
             <SaveBtnWrapper>
                 <SaveBtn>
