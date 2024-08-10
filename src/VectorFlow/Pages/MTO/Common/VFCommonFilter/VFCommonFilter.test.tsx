@@ -9,9 +9,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { UserDataContext } from '../../../../../context';
 import { createStore } from '../../../../../redux/store/store';
-import { InputTypes } from "../Enum";
-import { select } from 'react-select-event'
-import reactSelect from "react-select";
 
 
 const queryClient = setupReactQuery();
@@ -64,19 +61,6 @@ describe("VFCommonFilter Component", () => {
         multiFilter: {},
         setMultiFilter: mockSetMultiFilter,
         isFilterOpen: true,
-    };
-
-    const setup = (props = {}) => {
-        return render(
-            <VFCommonFilter
-                onApplyFilter={mockOnApplyFilter}
-                onGoBack={mockOnGoBack}
-                setMultiFilter={mockSetMultiFilter}
-                multiFilter={{}}
-                isFilterOpen={true}
-                {...props}
-            />
-        );
     };
 
     const multiFilterMock: FilterState = {

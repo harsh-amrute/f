@@ -8,7 +8,6 @@ import {
   FilterComponent,
   FilterHeader,
   FilterWrapper,
-  NoFilterWrapper,
 } from "./styles";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
