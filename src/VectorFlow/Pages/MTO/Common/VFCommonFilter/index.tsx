@@ -138,13 +138,13 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
         data-testid="vfmultifilter-img"
       >
         {filterKeys.length === 0 ? 
-          <div className="loading" style={{ height: '300px' }}>
+          <div data-testid="filter-loader" className="loading" style={{ height: '300px' }}>
             <VFLoader/> 
           </div>
           : 
           <React.Fragment>
             <FilterBody>
-              {filterKeys?.length > 0 ? filterKeys.map((category) => {
+              {filterKeys?.map((category) => {
                 return (
                   <FilterCardWrapper data-testid="availabilityFilter">
                     <FilterHeader>
@@ -155,8 +155,9 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                         
                         if (filter?.type === InputTypes.TextCompare || filter?.type === InputTypes.NumberCompare) {
                           return (
-                            <FilterComponent style={{ borderTop: "0.5px solid #B7B7B7" }}>
+                            <FilterComponent data-testid="" style={{ borderTop: "0.5px solid #B7B7B7" }}>
                               <AvailabilityFilter
+
                                 placeholder={filter?.name}
                                 onChange={(e: any, key: string) =>
                                   onFilterChange(filter.type, filter.attributeName, e, category, key)
@@ -279,20 +280,18 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                     </FilterWrapper>
                   </FilterCardWrapper>
                 );
-              }): 
-                <NoFilterWrapper className="drop-down-options">Currently No Filters Available </NoFilterWrapper>
-              }
+              })}
             </FilterBody>
             <ButtonFilterWrapper>
               <ButtonContainer>
-                <VFButtonOutline themeUi={user.user.theme_ui} onClick={ () => {
+                <VFButtonOutline data-testid="goBack" themeUi={user.user.theme_ui} onClick={ () => {
                   setFilterState(multiFilter);
                   onGoBack()
                 }
                 }>
                   Go Back!
                 </VFButtonOutline>
-                <VFButton themeUi={user.user.theme_ui} onClick={() =>{
+                <VFButton data-testid="applyFilter" themeUi={user.user.theme_ui} onClick={() =>{
                   const formatedFilters = formatFilterJSON(filterState);
                   setMultiFilter(filterState);
                   onApplyFilter(formatedFilters);

@@ -401,13 +401,13 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
   return(
     <>
       <DropdownGroupWrapper>
-        <SelectDropdownComponent data-testid="BPR-filter-dropdown">
+        <SelectDropdownComponent data-testid="filter-dropdown">
           <FilterTextInput disabled={true} placeholder={placeholder} />  
         </SelectDropdownComponent>
-        <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-          <FilterSelectDropdown className="custom-scrollbar" placeholder={"<="} options={getOptions(filterState.type)} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator')} filterId={filterId} value={getOperatorValue(filterState.type)}/>    
+        <SelectDropdownComponent data-testid="filter-dropdown">
+          <FilterSelectDropdown className="custom-scrollbar" placeholder={filterState.type === InputTypes.TextCompare ? "Equal to" : "<="} options={getOptions(filterState.type)} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator')} filterId={filterId} value={getOperatorValue(filterState.type)}/>    
         </SelectDropdownComponent>
-        <SelectDropdownComponent data-testid="BPR-filter-dropdown">
+        <SelectDropdownComponent data-testid="filter-dropdown">
           <FilterTextInput type={filterState.type === InputTypes.TextCompare ? "text" : 'number'} placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()}/>    
         </SelectDropdownComponent>  
       </DropdownGroupWrapper>  

@@ -1,9 +1,42 @@
 import React, { ReactNode } from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import MTOActionToolBar from './MTOActionToolBar';
 import moment from 'moment';
 import { UserDataContext } from "../../../../../context";
+import { FilterState } from '../../../../../VectorFlow/types/MTO';
 
+const multiFilterMock: FilterState = {
+  customers: {
+      id: 'cus1',
+      label: "Customer 1",
+      filters: [
+          {
+              name: "Text Filter",
+              attributeName: "textFilter",
+              type: "textCompare",
+              operator: "",
+              value: "",
+              options: ["a", "b"]
+          },
+          {
+              name: "Search Filter",
+              attributeName: "srch",
+              type: "search",
+              operator: "",
+              value: "",
+              options: ["1", "2"]
+          },
+          {
+              name: "Select Filter",
+              attributeName: "select",
+              type: "select",
+              operator: "",
+              value: "",
+              options: ["option 1", "option 2"]
+          },
+      ],
+  },
+};
 
 
 const contextWrapperWithCustomTheme = (children: ReactNode, theme: string) => {
@@ -33,6 +66,10 @@ describe('MTOActionToolBar Component', () => {
   const mockHandleHorizonSubmit = jest.fn();
   const mockUpdateGraphState = jest.fn();
   const mockSetHorizonDays = jest.fn();
+  const mockToggleFilter = jest.fn();
+  const mockOnApplyFilter = jest.fn();
+  const mockSetCurrFilter = jest.fn();
+
 
   const selectedFilters = [
     { label: 'Plant Name', values: ['Plant 1'] },
@@ -198,6 +235,32 @@ test('calls removeFilters function for each filter value', () => {
     render(contextWrapperWithCustomTheme(<MTOActionToolBar isAsOnDate submitDate={mockSubmitDate} date={date} />, "REGALBLAZE"));
     const isAsOnDate = screen.getByTestId("isAsOnDate");
     expect(isAsOnDate).toBeInTheDocument();
+  });
+
+  test('renders isAsOnDate', async () => {
+    render(contextWrapperWithCustomTheme(<MTOActionToolBar 
+        isChartGridToggle
+        isAddFilterButton
+        isFilterOpen={true}
+        onAddFilter={mockOnAddFilter}
+        toggleFilter={mockToggleFilter}
+        onApplyFilter={mockOnApplyFilter} 
+        multiFilter={multiFilterMock}
+        setMultiFilter={mockSetCurrFilter} />, 
+    "REGALBLAZE"));
+
+    await waitFor( async () => expect(screen.getByTestId("vfmodal-img")).toBeInTheDocument())
+    
+    await waitFor (async () => {
+      const goBackButton = screen.getByText("Go Back!"); 
+      expect(goBackButton).toBeInTheDocument()
+      const applybutton = screen.getByText("Apply Filter");
+      expect(applybutton).toBeInTheDocument()
+    })
+    fireEvent.click(screen.getByText("Apply Filter"));
+    expect(mockSetCurrFilter).toHaveBeenCalledWith(multiFilterMock);
+    expect(mockOnApplyFilter).toHaveBeenCalledTimes(1);
+    
   });
   
 });
