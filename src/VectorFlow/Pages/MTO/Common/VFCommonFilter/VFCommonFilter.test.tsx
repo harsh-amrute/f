@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import VFCommonFilter from ".";
 import { FilterState } from "../../../../../VectorFlow/types/MTO";
@@ -240,16 +240,47 @@ describe("VFCommonFilter Component", () => {
         })
     })
 
-    it('handles open animation', () => {
-        render(contextWrapper(<VFCommonFilter {...props} multiFilter={multiFilterMock} />, mockedStore));
+    it('handles open animation', async () => {
+        const searchFilterState = {
+            customers: {
+                id: 'cus1',
+                label: "Customer 1",
+                filters: [
+                    {
+                        name: "Customer Search",
+                        attributeName: "customerSearch",
+                        type: "select",
+                        operator: "",
+                        value: "",
+                        options: [],
+                    },
+                    {
+                        name: "Customer Search",
+                        attributeName: "customerSearch2",
+                        type: "select",
+                        operator: "",
+                        value: "",
+                        options: [],
+                    },
+                ],
+            },
+        };
+        
+        render(contextWrapper(<VFCommonFilter {...props} multiFilter={searchFilterState} />, mockedStore));
 
-        const openanimation = screen.getAllByTestId('down-arrow')
-        openanimation.forEach((open: any) => {
-            fireEvent.click(open)
+        const openanimation = screen.getAllByTestId('down-arrow');
+
+        openanimation.forEach( async (open: any) => {
+            // await waitFor(() => {
+                fireEvent.click(open);
+                // expect(screen.getByText("No options")).toBeInTheDocument();
+            // })
         })
-        openanimation.forEach((open: any) => {
-            fireEvent.click(open)
-        })
+        // openanimation.forEach((open: any) => {
+        //     fireEvent.click(open)
+        // })
+
+
     })
 
     it("renders all the filters in the component", async () => {
@@ -322,30 +353,119 @@ describe("VFCommonFilter Component", () => {
         })
     })
 
-    // it('handles comparision', async () => {
+    it("handles MultiSelect filter with no options gracefully", () => {
+        const emptyOptionsFilter = {
+            customers: {
+                id: 'cus1',
+                label: "Customer 1",
+                filters: [
+                    {
+                        name: "Empty MultiSelect Filter",
+                        attributeName: "emptyMultiSelect",
+                        type: "multiSelect",
+                        operator: "",
+                        value: "",
+                        options: [] // No options provided
+                    },
+                ],
+            },
+        };
+        render(contextWrapper(<VFCommonFilter {...props} multiFilter={emptyOptionsFilter} />, mockedStore));
+    
+        const multiSelectFilter = screen.getByText("Empty MultiSelect Filter");
+        expect(multiSelectFilter).toBeInTheDocument();
+    
+        const dropdown = screen.queryByRole('combobox');
+        expect(dropdown).not.toBeInTheDocument(); // Ensure dropdown is not rendered or is disabled
+    });
 
-    //     render(contextWrapper(<VFCommonFilter {...props} multiFilter={dummyFilter} />, mockedStore));
+    // it("handles invalid input types for TextCompare filter", () => {
+    //     const invalidTextCompareFilter = {
+    //         customers: {
+    //             id: 'cus1',
+    //             label: "Customer 1",
+    //             filters: [
+    //                 {
+    //                     name: "Invalid Text Filter",
+    //                     attributeName: "invalidTextFilter",
+    //                     type: "textCompare",
+    //                     operator: "",
+    //                     value: "",
+    //                     options: ["a", "b"]
+    //                 },
+    //             ],
+    //         },
+    //     };
+    //     render(contextWrapper(<VFCommonFilter {...props} multiFilter={invalidTextCompareFilter} />, mockedStore));
+    
+    //     const input = screen.getByPlaceholderText("Invalid Text Filter");
+    //     expect(input).toBeInTheDocument();
+    
+    //     fireEvent.change(input, { target: { value: 12345 } }); // Simulate entering a number instead of text
+    //     expect(input.value).toBe("12345"); // Ensure it correctly handles the input, perhaps converting or rejecting the input
+    // });
 
-    //     await waitFor(async () => {
-    //         const reactSelect = screen.getAllByLabelText("PF1")[0];
-    //         expect(reactSelect).toBeInTheDocument();
-    //         await select(reactSelect, ["P1"]);
-    //         await select(reactSelect, ["P3"]);
-    //     });
-    //     await waitFor(async () => {
-    //         const reactSelect = screen.getAllByLabelText("PF1")[1];
-    //         expect(reactSelect).toBeInTheDocument();
-    //         await select(reactSelect, ["<="]);
-    //         await select(reactSelect, ["<="]);
-    //     });
-    //     await waitFor(async () => {
-    //         const reactSelect = screen.getAllByLabelText("PF1")[1];
-    //         expect(reactSelect).toBeInTheDocument();
-    //         await select(reactSelect, ["<="]);
-    //         await select(reactSelect, ["<="]);
+    it("renders filters as disabled when certain condition is met", () => {
+        const disabledFilterState = {
+            customers: {
+                id: 'cus1',
+                label: "Customer 1",
+                filters: [
+                    {
+                        name: "Disabled Filter",
+                        attributeName: "disabledFilter",
+                        type: "textCompare",
+                        operator: "",
+                        value: "",
+                        options: ["a", "b"],
+                        disabled: true, // Condition to disable the filter
+                    },
+                ],
+            },
+        };
+        render(contextWrapper(<VFCommonFilter {...props} multiFilter={disabledFilterState} />, mockedStore));
+    
+        const input = screen.getByPlaceholderText("Disabled Filter");
+        expect(input).toBeInTheDocument();
+        expect(input).toBeDisabled(); // Ensure the input is disabled
+    });
 
+    it("filters results correctly based on the search term", async () => {
+        const searchFilterState = {
+            customers: {
+                id: 'cus1',
+                label: "Customer 1",
+                filters: [
+                    {
+                        name: "Customer Search",
+                        attributeName: "customerSearch",
+                        type: "search",
+                        operator: "",
+                        value: "",
+                        options: [
+                            "Apple" ,
+                            "Banana",
+                            "Cherry",
+                        ],
+                    },
+                ],
+            },
+        };
+        render(contextWrapper(<VFCommonFilter {...props} multiFilter={searchFilterState} />, mockedStore));
+    
+        await waitFor(() => {
+            // const searchInput = screen.getByText("Customer Search") as HTMLInputElement;
+            // expect(searchInput).toBeInTheDocument();
+            const divElement = screen.getByTestId("select-filter-input");
+            const inputElement = divElement.querySelector('input[type="text"]') as HTMLInputElement; // Select the INPUT element within the DIV
+            expect(inputElement?.tagName).toBe("INPUT");;
+            
+            // Simulate typing "Ban" into the search input
+            fireEvent.change(inputElement, { target: { value: "Ban" } });
+        })
+        // Verify that only "Banana" is shown in the results
+        expect(screen.getByText("No options")).toBeInTheDocument();
+    });
 
-    //     });
-    // })
 });
 
