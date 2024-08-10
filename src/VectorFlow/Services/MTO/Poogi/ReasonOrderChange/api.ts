@@ -4,7 +4,6 @@ import axios from 'axios';
 export namespace ReasonOrderChangeServices {
 
     export const getPoogiReasonsAnalyticalData = async () => {
-
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getPoogiReasonForDelayedOrdersAnalyticsData/`, {
             headers: {
                 'Content-Type': 'application/json',
@@ -14,7 +13,6 @@ export namespace ReasonOrderChangeServices {
     }
 
     export const getPoogiReasonsDelayedOrder = async (data: number) => {
-        // console.log(process.env.REACT_APP_VF_API_HOST_MTO + `/getPoogiReasonForDealyedOrdersData/?isAssigned=${data}`)
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getPoogiReasonForDealyedOrdersData/?isAssigned=${data}`, {
             headers: {
                 'Content-Type': 'application/json',
@@ -33,7 +31,6 @@ export namespace ReasonOrderChangeServices {
     }
 
     export const getPoogiMajorMinorReason = async () => {
-        console.log('process.env.REACT_APP_VF_API_HOST_MTO + `/getPoogiReasonMasterData/`')
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getPoogiReasonMasterData/`, {
             headers: {
                 'Content-Type': 'application/json',

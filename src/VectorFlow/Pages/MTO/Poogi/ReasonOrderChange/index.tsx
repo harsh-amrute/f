@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, {  useEffect, useMemo, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import { SaveBtnWrapper, SaveBtn } from './styles';
@@ -13,7 +13,7 @@ import { useUserData } from '../../../../../context';
 import RemarkHistoryRenderer from '../../Production/DepartmentWiseBMReport/RemarkHistoryRenderer';
 import MTORemarkHistoryModal from '../../Production/DepartmentWiseBMReport/MTORemarkHistoryModal';
 
-import CustomCellEditor from './DropDownRenderer';
+import CustomCellEditor from './MajorDropDownRenderer';
 
 
 const ReasonForDelayOrder = () => {
@@ -135,7 +135,7 @@ const ReasonForDelayOrder = () => {
         MajorReason: {
             pinned: "right",
             lockPosition: true,
-            initialWidth:300,
+            initialWidth: 300,
             cellRenderer: CustomCellEditor
         },
         MinorReason: {
@@ -147,8 +147,6 @@ const ReasonForDelayOrder = () => {
     }
 
     const columnDef = getColumnDefinations(HeaderData, customHeader);
-
-
 
     useEffect(() => {
         getHeaderData();
