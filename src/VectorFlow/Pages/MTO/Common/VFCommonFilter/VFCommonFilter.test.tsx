@@ -398,7 +398,7 @@ describe("VFCommonFilter Component", () => {
         await waitFor(() => {
             const divElement = screen.getByTestId("select-filter-input");
             const inputElement = divElement.querySelector('input[type="text"]') as HTMLInputElement; // Select the INPUT element within the DIV
-            expect(inputElement?.tagName).toBe("INPUT");;
+            expect(inputElement?.tagName).toBe("INPUT");
             
             // Simulate typing "Ban" into the search input
             fireEvent.change(inputElement, { target: { value: "Ban" } });
