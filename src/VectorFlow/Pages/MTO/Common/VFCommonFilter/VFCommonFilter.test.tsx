@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import VFCommonFilter from ".";
 import { FilterState } from "../../../../../VectorFlow/types/MTO";
@@ -240,45 +240,13 @@ describe("VFCommonFilter Component", () => {
         })
     })
 
-    it('handles open animation', async () => {
-        const searchFilterState = {
-            customers: {
-                id: 'cus1',
-                label: "Customer 1",
-                filters: [
-                    {
-                        name: "Customer Search",
-                        attributeName: "customerSearch",
-                        type: "select",
-                        operator: "",
-                        value: "",
-                        options: [],
-                    },
-                    {
-                        name: "Customer Search",
-                        attributeName: "customerSearch2",
-                        type: "select",
-                        operator: "",
-                        value: "",
-                        options: [],
-                    },
-                ],
-            },
-        };
-        
-        render(contextWrapper(<VFCommonFilter {...props} multiFilter={searchFilterState} />, mockedStore));
+    it('handles open animation', () => {
+        render(contextWrapper(<VFCommonFilter {...props} multiFilter={multiFilterMock} />, mockedStore));
 
-        const openanimation = screen.getAllByTestId('down-arrow');
-
-        openanimation.forEach( async (open: any) => {
-            // await waitFor(() => {
-                fireEvent.click(open);
-                // expect(screen.getByText("No options")).toBeInTheDocument();
-            // })
+        const openanimation = screen.getAllByTestId('down-arrow')
+        openanimation.forEach((open: any) => {
+            fireEvent.click(open)
         })
-        // openanimation.forEach((open: any) => {
-        //     fireEvent.click(open)
-        // })
 
 
     })
@@ -379,32 +347,6 @@ describe("VFCommonFilter Component", () => {
         expect(dropdown).not.toBeInTheDocument(); // Ensure dropdown is not rendered or is disabled
     });
 
-    // it("handles invalid input types for TextCompare filter", () => {
-    //     const invalidTextCompareFilter = {
-    //         customers: {
-    //             id: 'cus1',
-    //             label: "Customer 1",
-    //             filters: [
-    //                 {
-    //                     name: "Invalid Text Filter",
-    //                     attributeName: "invalidTextFilter",
-    //                     type: "textCompare",
-    //                     operator: "",
-    //                     value: "",
-    //                     options: ["a", "b"]
-    //                 },
-    //             ],
-    //         },
-    //     };
-    //     render(contextWrapper(<VFCommonFilter {...props} multiFilter={invalidTextCompareFilter} />, mockedStore));
-    
-    //     const input = screen.getByPlaceholderText("Invalid Text Filter");
-    //     expect(input).toBeInTheDocument();
-    
-    //     fireEvent.change(input, { target: { value: 12345 } }); // Simulate entering a number instead of text
-    //     expect(input.value).toBe("12345"); // Ensure it correctly handles the input, perhaps converting or rejecting the input
-    // });
-
     it("renders filters as disabled when certain condition is met", () => {
         const disabledFilterState = {
             customers: {
@@ -454,8 +396,6 @@ describe("VFCommonFilter Component", () => {
         render(contextWrapper(<VFCommonFilter {...props} multiFilter={searchFilterState} />, mockedStore));
     
         await waitFor(() => {
-            // const searchInput = screen.getByText("Customer Search") as HTMLInputElement;
-            // expect(searchInput).toBeInTheDocument();
             const divElement = screen.getByTestId("select-filter-input");
             const inputElement = divElement.querySelector('input[type="text"]') as HTMLInputElement; // Select the INPUT element within the DIV
             expect(inputElement?.tagName).toBe("INPUT");;
