@@ -78,7 +78,7 @@ const useFilter=(filterData: any, page: any)=>{
         if(page?.mjr){
             filterObjects['major'] = {
                 id: "mjr",
-                label: "Major/ Minor Reason",
+                label: "Major Reason & Minor Reason ",
                 filters: updatedFilterAttributes?.major?.map((key: any) => ({
                     type: staticHeaderConfig[key]?.type || InputTypes.MultiSelect,
                     name: staticHeaderConfig[key]?.name ,
@@ -92,7 +92,7 @@ const useFilter=(filterData: any, page: any)=>{
         if(page?.or){
             filterObjects["orders"] = {
                 id: "odr",
-                label: "Orders Filter",
+                label: "Order Details Filter",
                 filters: updatedFilterAttributes?.order?.map((key: any) => ({
                     type: staticHeaderConfig[key]?.type || InputTypes.MultiSelect,
                     name: staticHeaderConfig[key]?.name || (getKeyName(filterData?.hdrkeymap?.lattr, key) || getKeyName(filterData?.hdrkeymap?.oattr, key)),
@@ -106,7 +106,7 @@ const useFilter=(filterData: any, page: any)=>{
         if(page?.res){
             filterObjects["resources"] = {
                 id: "res",
-                label: "Resource Filter",
+                label: "Resources Filter",
                 filters: updatedFilterAttributes?.resource?.map((key: any) => ({
                     type: staticHeaderConfig[key]?.type || InputTypes.MultiSelect,
                     name: staticHeaderConfig[key]?.name,

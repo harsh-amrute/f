@@ -1,6 +1,6 @@
 export const staticHeaderConfig: any = {
     //Order Filter attributes
-    id: { name: "order ID", type: 'search'},
+    id: { name: "Order ID", type: 'search'},
     lid: { name:"Line Item", type: 'search'},
     ic: { name:"Item Code", type: 'search'},
     ide: { name:"Item Description", type: 'textCompare'},
