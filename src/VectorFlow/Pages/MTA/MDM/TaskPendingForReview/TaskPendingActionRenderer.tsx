@@ -13,7 +13,7 @@ const TaskPendingActionRenderer = (props:TaskPendingActionRendererProps)=>{
     
 
     const onClick = (status:string)=>{
-        if(!props.data.isModified){
+        if(!props.data.isModified && status==="Approved"){
             return notifyError("No Actions Available")
         }
         if(props.data.status===status){

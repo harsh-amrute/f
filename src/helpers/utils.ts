@@ -1808,7 +1808,7 @@ export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number,m
   const  result:any[] = []
 
   rowData.forEach((item) => {
-    if((item.isModified  || actionType!==2 || masterId===6) ){
+    // if((item.isModified  || actionType!==2 || masterId===6) ){
       // Create a new object to store modified key-value pairs
     const  newItem:any = {};
 
@@ -1853,7 +1853,7 @@ export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number,m
     // Add the modified object to the result array
     const tempRow = _.omit({...newItem},['isModified'])
     result.push(tempRow);
-    }
+    // }
   });
 
   return result
