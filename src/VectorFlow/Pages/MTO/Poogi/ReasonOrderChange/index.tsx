@@ -82,7 +82,7 @@ const ReasonForDelayOrder = () => {
     const getHeaderData = async () => {
         try {
             const response = await getUIConfigData(reportName);
-        
+
             setHeaderData(response.data.data);
         }
         catch (e) {
@@ -130,8 +130,6 @@ const ReasonForDelayOrder = () => {
         }
     }
 
-
-
     const customHeader = {
         RemarksHistory: {
             pinned: "right",
@@ -146,8 +144,9 @@ const ReasonForDelayOrder = () => {
             pinned: "right",
             lockPosition: true,
             initialWidth: 300,
-            cellRenderer: CustomCellEditor,
-
+            cellRenderer: (props: any) => {
+                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} setRowData={setRowData} />
+            }
         },
         MinorReason: {
             pinned: "right",
@@ -158,15 +157,15 @@ const ReasonForDelayOrder = () => {
                 handleData: (saveobj: any) => handleDataToSave(saveobj)
             }
         },
-        ElapsedDays:{
-            cellStyle:{
-                'color':ColorsMTO.Pink.code
+        ElapsedDays: {
+            cellStyle: {
+                'color': ColorsMTO.Pink.code
             }
         },
-        PlannedReleaseDate:{
+        PlannedReleaseDate: {
             cellRenderer: PlannedReleaseRenderer,
         },
-        QuotedDueDate:{
+        QuotedDueDate: {
             cellRenderer: PlannedReleaseRenderer,
         }
     }
@@ -194,6 +193,7 @@ const ReasonForDelayOrder = () => {
         // console.log('body to api = ', items)
         const RemarkHistory: any = await updatePoogiRemarks(items);
         if (RemarkHistory.status == 200) {
+            setItems([]);
             toast.dismiss();
             notifySuccess('Successfull')
         }
@@ -203,7 +203,7 @@ const ReasonForDelayOrder = () => {
         return null;
     }
 
-    //console.log('index.ts', items)
+    console.log('index.ts', items)
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
     return (
@@ -225,7 +225,6 @@ const ReasonForDelayOrder = () => {
                 height='750px'
                 columnDefs={columnDef}
                 rowData={rowData}
-
             />
 
 

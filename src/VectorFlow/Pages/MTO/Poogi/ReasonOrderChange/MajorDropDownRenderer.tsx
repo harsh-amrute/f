@@ -11,14 +11,14 @@ type MyObject = {
 };
 
 const CustomCellEditor = (props: any) => {
-
-
   const { data, isLoading } = useGetPoogiMajorMinorReason();
-  const [selectedValue, setSelectedValue] = useState<string>('');
+  const [selectedValue, setSelectedValue] = useState<string>();
   const [selectedMinorReason, setSelectedMinorReason] = useState<string>();
   const [minorReasons, setMinorReasons] = useState<any>();
-  const [toogelView, setToggleView] = useState<boolean>(true);
-  //const [items, setItems] = useState<MyObject[]>([]);
+
+  useEffect(()=>{
+    setSelectedValue(props.selectedValue);
+  }, [props.rowData])
 
   const getOuterObjectByKey = (data: any, searchKey: string) => {
     return data[searchKey];
@@ -57,26 +57,24 @@ const CustomCellEditor = (props: any) => {
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (event.target.value != '') {
-      setToggleView(!toogelView)
-      props.data["MajRsn"] = event.target.value;
-      //renderMinorSelect();
-      setSelectedValue(event.target.value);
-      // setMinorReasons('');
+      props.data["maj"] = event.target.value;
+      const rowData = [...props.rowData];
+      rowData[props.rowIndex] = props.data;
+      props.setRowData(rowData);
+      
     }
   };
 
   useEffect(() => {
     if (isLoading) {
       toast.dismiss();
-      //notifyLoader("Loading Data ...")
+     
     }
     else {
       if (data?.status === 200) {
         toast.dismiss();
-        //props.data.reason = data?.data?.data
         const result = extractMind(data?.data?.data, props.data.pln.split(' ')[1]);
         setMinorReasons(result);
-        //notifySuccess("Data Fetched Successfully!")
       }
       else {
         toast.dismiss();
@@ -92,21 +90,17 @@ const CustomCellEditor = (props: any) => {
   };
 
   const clearSelection = () => {
-    //props.data["MajorReason"] = undefined;
-    setToggleView(!toogelView)
     setSelectedValue(''); // Set to empty string to clear selection
     setSelectedMinorReason('');
   };
 
-
   const handleMinorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setToggleView(!toogelView)
     props.data["MinRsn"] = event.target.value;
     setSelectedMinorReason(event.target.value);
     addObject({
       'ok': props.data.ok,
       minid: Number(event.target.value),
-      majid: Number(props.data.MajRsn)
+      majid: Number(props.data.maj)
     })
   };
 
@@ -133,13 +127,12 @@ const CustomCellEditor = (props: any) => {
   }
 
   const renderMinorSelect = () => {
-
     return (
       <select
+        disabled={props.data.maj == undefined}
         style={{ width: '100%', height: '100%', fontSize: '18px', fontFamily: 'Roboto' }}
-        value={selectedMinorReason}
+        value={props.data.min===null?selectedValue:props.data.min}
         onChange={handleMinorChange}
-        // Enabled only if a major reason is selected
         defaultValue={''}
       >
         <option value="" disabled>Select Reason</option>
@@ -155,29 +148,20 @@ const CustomCellEditor = (props: any) => {
   }
 
 
+
   return (
     <>
-
       <div style={{ height: '100%', display: 'flex', border: '1px solid #707070', borderRadius: '4px', }}>
         <div style={{ width: '90%' }} >
           {props.colDef.colId === 'MajorReason' ?renderMajorSelect(): renderMinorSelect()}
           
         </div>
-        {toogelView ?
-          <div style={{ padding: '10px', alignSelf: 'center' }}>
-            <img
-              alt="eye icon"
-              src="/assets/img/mto/reasonForDelay/EditPen.svg" />
-          </div>
-          :
-          <div style={{ padding: '10px', alignSelf: 'center' }} onClick={clearSelection}>
+        <div style={{ padding: '10px', alignSelf: 'center' }} onClick={clearSelection}>
             <img
               alt="cancel icon"
               src="/assets/img/mto/reasonForDelay/close.svg" />
           </div>
-        }
       </div>
-
     </>
   )
 };
