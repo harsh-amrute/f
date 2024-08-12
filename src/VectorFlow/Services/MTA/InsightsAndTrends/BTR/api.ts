@@ -4,12 +4,12 @@ import axios from 'axios';
 export namespace BTRService{
 
   export const getBTRDataCount = async (body:any) => {
-    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/GetBTRDataCount`,body,{
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `api/mta/GetBTRDataCount`,body,{
       headers:{ 'Content-Type': 'application/json' }
     });
   }
     export const getBTRData = async (body:any) => {
-        return await axios.post(process.env.REACT_APP_VF_API_HOST + `/GetBTRData`,body,{
+        return await axios.post(process.env.REACT_APP_VF_API_HOST + `api/mta/GetBTRData`,body,{
           headers:{ 'Content-Type': 'application/json' }
         });
       }

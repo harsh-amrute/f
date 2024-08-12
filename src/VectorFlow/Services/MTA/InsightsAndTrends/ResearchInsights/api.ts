@@ -9,7 +9,7 @@ export namespace ResearchInsightsService {
     }
 
     export const getHistoricalAvailabilityData = async()=>{
-        return await axios.get(process.env.REACT_APP_VF_API_HOST + `/GetHistroricalAvailabilityBPRData`,{
+        return await axios.get(process.env.REACT_APP_VF_API_HOST + `api/mta/GetHistroricalAvailabilityBPRData`,{
             headers: { 'Content-Type': 'application/json' }
           })
     }
