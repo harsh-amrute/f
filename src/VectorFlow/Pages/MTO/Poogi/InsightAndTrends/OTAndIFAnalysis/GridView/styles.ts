@@ -101,7 +101,6 @@ export const ETACellValue = styled.p`
 `
 
 export const SCDynamicContainer = styled.div`
-    margin-top:25px;
     display:block;
     height:150vh;
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem

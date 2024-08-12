@@ -1,5 +1,5 @@
 import { AgChartsReact } from 'ag-charts-react';
-import { GridOptions } from 'ag-grid-enterprise';
+import { GridOptions, IRowNode } from 'ag-grid-enterprise';
 import { useEffect, useMemo, useRef, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
@@ -20,15 +20,22 @@ import ReleaseModal from './ReleaseModal';
 import './styles.css'
 import { useGetDynamicReleaseData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement';
 import { notifyError } from '../../../../../helpers/notify';
-import { useGetCCRGroupMaster, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
+import { useGetCCRGroupMaster, useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import OverlayLoader from '../../Common/Loader';
+import { SCDynamicContainer } from './DynamicReleaseManagement.styled';
+import VFPagination from '../../Common/VFPagination';
+import { PaginationWrapper } from '../OrderRescheduling/styles';
+import { GridRef } from '../../../../../VectorFlow/types/MDM';
 
 
 const DynamicReleaseManagement = () => {
 
 
+  const selectedRowOrderKey: any = [];
+  const [rowRelease, setRowRelease] = useState(false);
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
+  const [order_key, setOrder_Key] = useState('');
 
   const [table1, setTable1] = useState(true);
 
@@ -46,12 +53,12 @@ const DynamicReleaseManagement = () => {
 
   const [routeNum, setRouteNum] = useState("");
 
-  const GetData = async (ao = 0) => {
+  const GetData = async (ao = 0, page = 1, graph = 1) => {
 
     if (ao) {
 
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao, page });
         setCurrData(APIData);
         setRowData(APIData.data.data.results);
       }
@@ -61,7 +68,7 @@ const DynamicReleaseManagement = () => {
     }
     else {
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao, page });
         setCurrData(APIData);
         setRowData(APIData.data.data.results);
       }
@@ -74,7 +81,7 @@ const DynamicReleaseManagement = () => {
     if (graph) {
 
       try {
-        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao });
+        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao, page });
         setCurrGraphData(GraphAPIData);
         setGraphData(GraphAPIData.data.data);
       }
@@ -98,6 +105,7 @@ const DynamicReleaseManagement = () => {
 
 
 
+
   const [routeTrigger, setRouteTrigger] = useState(false);
 
 
@@ -105,11 +113,12 @@ const DynamicReleaseManagement = () => {
     Action: {
       floatingFilter: false,
       suppressMenu: true,
-      cellRenderer: () => {
+      cellRenderer: (params: any) => {
+        console.log("cllll paramsssss", params);
         return (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#BC3D81', fontWeight: 'bold', fontFamily: 'roboto' }} onClick={() => { setShowReleaseModal(true) }}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#BC3D81', fontWeight: 'bold', fontFamily: 'roboto' }} onClick={() => { setRowRelease(true), setOrder_Key(params.data.ok), setMessage(`Release Order with id: ${params.data.oid} `), setShowReleaseModal(true) }}>
             <div>Release &nbsp; </div>
-            <img src='/assets/img/mto/dynamicReleaseManagement/arrow-icon.svg' alt='arrow-icon' />
+            <img height={14} width={14} src='/assets/img/mto/dynamicReleaseManagement/arrow-icon.svg' alt='arrow-icon' />
           </div>
         )
       }
@@ -124,9 +133,10 @@ const DynamicReleaseManagement = () => {
         return (
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
-            <img alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
-              setRouteTrigger(!routeTrigger);
+            <img height={12} width={12} alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
               setRouteNum(params.data.rid)
+              setOrderKey(params.data.ok)
+              setRouteTrigger(!routeTrigger);
             }} />
           </div>
         )
@@ -159,9 +169,9 @@ const DynamicReleaseManagement = () => {
   const [HeaderData] = useState(fullKitAssignmentHeader);
 
 
-  const refGrid = useRef<any>(null)
+  const refGrid = useRef<GridRef | any>(null)
 
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRows, setSelectedRows] = useState<any>([]);
 
   useEffect(() => {
     console.log("selected Rows", selectedRows);
@@ -179,13 +189,21 @@ const DynamicReleaseManagement = () => {
       Object.entries(element['wips']).forEach(([ccrName, value]: [string, any]) => {
         newData?.forEach((ele) => {
           if (ele['category'] === ccrName) {
-            // Assuming "incremental wip" is a number, initialize it if it's undefined
-            ele['incremental wip'] = (ele['incremental wip'] || 0) + (value);
+            // Assuming "Incremental WIP" is a number, initialize it if it's undefined
+            ele['Incremental WIP'] = (ele['Incremental WIP'] || 0) + (value);
             ele['selected'] = true;
           }
         });
       });
     });
+
+    if (selectedRows.length) {
+      setIsReleaseButtonDisabled(false);
+    }
+    else {
+      setIsReleaseButtonDisabled(true);
+
+    }
 
     console.log("called");
     setFinalGraphData(newData);
@@ -193,9 +211,68 @@ const DynamicReleaseManagement = () => {
   }, [selectedRows]);
 
   const updateGraphOnSelect = () => {
+
+    // const newSelects = [];
+    // const selectedData = refGrid.current?.api.getSelectedRows();
+    // const alreadySelectedData = selectedRows;
+
+
+    // // if in selected data and row data then add the new data
+    // selectedData.forEach((ele:any)=>{
+
+    //   let isThere = false;
+    //   rowData.forEach((eleR:any)=>{
+    //     if(ele.ok === eleR.ok){
+    //       isThere = true;
+    //     }
+    //   })
+
+    //   if(isThere){
+    //     newSelects.push(ele);
+    //   }
+    //   else{
+    //     newSelects.push(ele);
+    //   }
+
+    // })
+
+
+
+    // setSelectedRows(selectedData);
     const selectedData = refGrid.current?.api.getSelectedRows();
-    setSelectedRows(selectedData);
+    if (selectedData) {
+      let mergedData: any = [...selectedRows]; // Start with the existing selected data
+
+      selectedData.forEach((newItem: any) => {
+        const index = mergedData.findIndex((item: any) => item.ok === newItem.ok);
+
+        if (index !== -1) {
+          // If the item exists, replace it
+          mergedData[index] = newItem;
+        } else {
+          // Otherwise, add the new item
+          mergedData.push(newItem);
+        }
+      });
+
+      rowData.forEach((item: any) => {
+        let isThere = 0;
+        selectedData.forEach((selectedD: any) => {
+          if (selectedD.ok === item.ok) {
+            isThere = 1;
+          }
+        })
+
+        if (isThere == 0) {
+          mergedData = mergedData.filter((e: any) => e.ok !== item.ok)
+        }
+      })
+
+      setSelectedRows(mergedData);
+    }
   };
+
+
 
   const colDefs = useMemo(() => {
     return getColumnDefinations(HeaderData.data, colDefCustomizations, extras)
@@ -207,10 +284,12 @@ const DynamicReleaseManagement = () => {
         background: params.node.rowIndex % 2 === 0 ? "#F4F4F4" : "#FFFFFF",
       };
     },
-    rowHeight: 40,
+    rowHeight: 28,
     suppressRowClickSelection: true,
+    suppressPaginationPanel: true,
     onSelectionChanged: updateGraphOnSelect,
     sideBar: {
+
       toolPanels: [
         {
           id: 'columns',
@@ -234,6 +313,7 @@ const DynamicReleaseManagement = () => {
         }
       ],
     },
+
     columnDefs: colDefs,
     defaultColDef: {
       // resizable: true,
@@ -248,11 +328,15 @@ const DynamicReleaseManagement = () => {
 
       floatingFilterComponentParams: { suppressFilterButton: true },
       cellStyle: {
-        "font-size": "16px",
+        "font-size": "12px",
+        'display': 'flex',
+        'align-items': 'center',
+
       },
     },
   };
 
+  const [dataUpdated, setDataUpdated] = useState(0);
 
   interface InputData {
     [key: string]: {
@@ -264,9 +348,9 @@ const DynamicReleaseManagement = () => {
 
   interface OutputData {
     category: string;
-    "Released wip": number | string;
-    limit: number | string;
-    "incremental wip": number;
+    "Released WIP": number | string;
+    Limit: number | string;
+    "Incremental WIP": number;
     selected: boolean;
   }
 
@@ -283,19 +367,19 @@ const DynamicReleaseManagement = () => {
       // Create the main data entry
       result.push({
         category: item.ccr_code,
-        "Released wip": item.wip !== null ? item.wip : "",
-        limit: item.limit !== null ? item.limit : "",
-        // "incremental wip": index % 2 === 0 ? 20 : "", // Just as an example
-        "incremental wip": 0, // Just as an example
+        "Released WIP": item.wip !== null ? item.wip : "",
+        Limit: item.limit !== null ? item.limit : "",
+        // "Incremental WIP": index % 2 === 0 ? 20 : "", // Just as an example
+        "Incremental WIP": 0, // Just as an example
         selected: true,
       });
 
       // Create the empty separator entry
       result.push({
         category: " ".repeat(index + 1),
-        "Released wip": "",
-        limit: "",
-        "incremental wip": 0,
+        "Released WIP": "",
+        Limit: "",
+        "Incremental WIP": 0,
         selected: true,
       });
     });
@@ -310,7 +394,7 @@ const DynamicReleaseManagement = () => {
       {
         type: 'bar',
         xKey: 'category',
-        yKey: "Released wip",
+        yKey: "Released WIP",
         stacked: true,
         strokeWidth: 0,
         fill: "#191919",
@@ -326,7 +410,7 @@ const DynamicReleaseManagement = () => {
       {
         type: 'bar',
         xKey: 'category',
-        yKey: "incremental wip",
+        yKey: "Incremental WIP",
         stacked: true,
         strokeWidth: 0,
         fill: "#4BAAF7",
@@ -348,7 +432,7 @@ const DynamicReleaseManagement = () => {
       {
         type: 'scatter',
         xKey: 'category',
-        yKey: 'limit',
+        yKey: 'Limit',
         marker: {
           size: 10,
           fill: '#E53F3F',
@@ -400,8 +484,12 @@ const DynamicReleaseManagement = () => {
   const graph = useRef<any>();
 
 
+  const [message, setMessage] = useState('');
 
   const onOrderRelease = () => {
+    setRowRelease(false);
+    setOrder_Key('');
+    setMessage(`Release ${selectedRows.length} selected orders out of ${currData?.data?.data.count}`)
     setShowReleaseModal(true);
   }
 
@@ -422,12 +510,7 @@ const DynamicReleaseManagement = () => {
 
   const { mutateAsync: getRouteDetails, } = useGetRouteDetails();
   const { mutateAsync: getCCRGroupMaster, } = useGetCCRGroupMaster();
-
-
-
-
-
-  const [ccrGroupingData, setCCRGroupingData] = useState<any>();
+  const { mutateAsync: getLineCCRDetails } = useGetLineCCRDetails();
 
   const getMastersData = async () => {
     // if (!masters) {
@@ -461,19 +544,22 @@ const DynamicReleaseManagement = () => {
 
 
 
+
   const [route, setRoute] = useState<any>();
+  const [orderKey, setOrderKey] = useState<any>();
 
 
   useEffect(() => {
 
+    if (routeNum !== '') {
+      getRoute(routeNum, orderKey);
+    }
 
+  }, [routeTrigger, orderKey, routeNum])
 
+  const [lineCCR, setLineCCR] = useState();
 
-    getRoute(routeNum);
-
-  }, [routeNum, routeTrigger])
-  // TODO:
-  const getRoute = async (route: any) => {
+  const getRoute = async (route: any, orderKey: any) => {
     console.log("route, masters", route, masters);
 
 
@@ -500,6 +586,20 @@ const DynamicReleaseManagement = () => {
 
         console.log('newRoute', newRoute);
         setRoute(newRoute);
+        // setShowModal(true);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      // Handle cases where route is not a number
+      setRoute(route);
+    }
+    if (orderKey) {
+      try {
+        const data = await getLineCCRDetails([orderKey]);
+
+        setLineCCR(data.data.data)
+        // setRoute(newRoute);
         setShowModal(true);
       } catch (error) {
         console.log(error);
@@ -511,6 +611,92 @@ const DynamicReleaseManagement = () => {
   };
 
 
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChangeCumulative = async (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    if (table1) {
+      GetData(0, pageNumber, 0);
+    }
+    else {
+      GetData(1, pageNumber, 0);
+    }
+    console.log("pageNumber", pageNumber)
+    // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
+  };
+
+  const setAllRows = (e: any) => {
+    console.log('event', e.target.checked);
+    if (e.target.checked) {
+
+      const nodesToSelect: any = [];
+
+      refGrid.current.api.forEachNode((node: any) => {
+
+        nodesToSelect.push(node);
+
+      })
+      refGrid.current.api.selectAll();
+      // refGrid.current.api.setNodesSelected({ nodes: nodesToSelect, newValue: true })
+    }
+    else {
+      const nodesToSelect: any = [];
+
+      refGrid.current.api.forEachNode((node: any, index: any) => {
+
+        if (index === 0) {
+
+          nodesToSelect.push(node);
+        }
+
+
+      })
+      refGrid.current.api.deselectAll();
+
+    }
+  }
+
+  useEffect(() => {
+    if (!showModal) {
+
+      GetData(table1 ? 1 : 0, currentPage, 0);
+    }
+  }, [dataUpdated])
+
+  const [isReleaseButtonDisabled, setIsReleaseButtonDisabled] = useState(true);
+
+
+  const existsInSelected = (ok: string): boolean => {
+    for (let index = 0; index < selectedRows.length; index++) {
+      const element: any = selectedRows[index];
+      if (element.ok === ok) {
+        return true;
+      }
+
+    }
+    return false;
+  }
+
+  const onFirstDataRendered =
+    (params: any) => {
+      const nodesToSelect: IRowNode[] = [];
+
+      params.api.forEachNode((node: any) => {
+        if (node.data && node.data.oid && existsInSelected(node.data.ok)) {
+          node.data.ok = selectedRows[0].ok;
+
+          nodesToSelect.push(node);
+        }
+
+      });
+      params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
+
+    }
+    ;
+
+
+
+
   return (
     <>
       <Wrapper>
@@ -519,22 +705,28 @@ const DynamicReleaseManagement = () => {
 
           <OverlayLoader />
         }
-        <MTOActionToolBar comp="FullKitAssignment" isExcelExport isAddFilterButton isReleaseButton onOrderRelease={onOrderRelease} />
+        <MTOActionToolBar comp="FullKitAssignment" isExcelExport isAddFilterButton isReleaseButton isReleaseButtonDisabled={isReleaseButtonDisabled} onOrderRelease={onOrderRelease} onCheckBoxToggle={setAllRows} />
+
+        {/* <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}> */}
 
         <SCTabHeader style={{ marginTop: '5px' }}>
 
-          <BPRViewTableHeaderTab onClick={() => { setTable1(true), GetData() }} status={table1} marLeft={true} themeUi={themeUi} zIndex={2} style={{ width: '250px', fontSize: '12px' }} >
+          <BPRViewTableHeaderTab onClick={() => { setTable1(true), GetData(0, currentPage, 0) }} status={table1} marLeft={true} themeUi={themeUi} zIndex={2} style={{ width: '250px', fontSize: '12px' }} >
             Orders with simulated full kit
           </BPRViewTableHeaderTab>
-          <BPRViewTableHeaderTab onClick={() => { setTable1(false), GetData(1) }} status={!table1} marLeft={true} themeUi={themeUi} zIndex={1} style={{ width: '250px', fontSize: '12px' }} >
+          <BPRViewTableHeaderTab onClick={() => { setTable1(false), GetData(1, currentPage, 0) }} status={!table1} marLeft={true} themeUi={themeUi} zIndex={1} style={{ width: '250px', fontSize: '12px' }} >
             All Orders
           </BPRViewTableHeaderTab>
         </SCTabHeader>
 
 
+
+
+
         <VFTable
           ref={refGrid}
           rowData={rowData}
+          disableZoomScaling
           gridOptions={options}
           columnDefs={options.columnDefs}
           statusBar={{
@@ -543,7 +735,10 @@ const DynamicReleaseManagement = () => {
             ]
           }}
           rowSelection="multiple"
-          pagination={true}
+          onFirstDataRendered={onFirstDataRendered}
+          onGridReady={onFirstDataRendered}
+          onRowDataUpdated={onFirstDataRendered}
+        // pagination={true}
         // onSelectionChanged={(params) => {
         //   const selectedRoutes = new Set();
         //   params.api.getSelectedRows().forEach((row: any) => row.r.split(",").forEach((route: any) => selectedRoutes.add(route.trim())));
@@ -563,13 +758,29 @@ const DynamicReleaseManagement = () => {
         // }}
         />
 
+        {/* <PaginationWrapper style={{ padding: '-10px', margin: '-10', width: '100%' }}> */}
+
+        <div style={{ width: '100%' }}>
+
+          <VFPagination
+            selectedRows={0}
+            rowsPerPage={10}
+            totalRows={currData ? currData?.data?.data?.count : 0}
+            currentPage={currentPage}
+            handleChangePage={handlePageChangeCumulative}
+            showPagination
+          />
+        </div>
+        {/* </PaginationWrapper> */}
+        {/* </div> */}
+
 
         <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
         <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
           <AgChartsReact ref={graph} options={chartoptions} />
         </div>
-        <EditRouteModal route={route} master={masters} setRoute={setRoute} graphData={finalGraphData} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} />
-        <ReleaseModal themeUi={themeUi} totalOrders={120} selectedOrders={4} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />
+        <EditRouteModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} routeNum={routeNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} graphData={finalGraphData} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} />
+        <ReleaseModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} rowRelase={rowRelease} message={message} themeUi={themeUi} totalOrders={120} order_key={order_key} selectedOrders={selectedRows} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />
       </Wrapper >
     </>
 

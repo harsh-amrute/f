@@ -37,6 +37,7 @@ const OrderRescheduling = () => {
     const [selectedRowData, setSelectedRowData] = useState<RowDataType[]>([]);
 
     const getSelectedRowData = () => {
+
         const selectedData = refGraph1.current?.api.getSelectedRows();
         if (selectedData) {
             let mergedData = [...selectedRowData]; // Start with the existing selected data

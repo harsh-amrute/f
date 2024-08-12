@@ -1,14 +1,112 @@
 import { AgChartOptions } from 'ag-charts-community'
 import { AgChartsReact } from 'ag-charts-react'
 import { useEffect, } from 'react'
+import { useSaveRouteData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
 import { StepperWrapper, StepGroup, StepLabel, RouteContentWrapper, Text } from './DynamicReleaseManagement.styled'
 import { Rectangle } from './RectangleMarker'
 import CustomSelect from './Select'
+import OverlayLoader from '../../Common/Loader'
+import { notifyError, notifySuccess } from '../../../../../helpers/notify'
 
-const EditRouteModal = ({ master, setRoute, route, showModal, setShowModal, graphData, themeUi }: any) => {
 
+const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, routeNum, lineCCRDetails, master, setRoute, route, showModal, setShowModal, graphData, themeUi }: any) => {
+
+    const { mutateAsync: saveRouteData, isLoading, isSuccess, isError } = useSaveRouteData();
+
+    type Route = {
+        ccrId: number;
+        routeId: number;
+        ccrGrpId: number;
+        ps: number;
+    };
+
+    useEffect(() => {
+        if (isSuccess) {
+            notifySuccess("Route updated successfully!")
+        }
+        if (isError) {
+            notifyError("Failed to update route data")
+        }
+    }, [isSuccess, isError])
+
+    type LineCcr = {
+        [order: string]: {
+            [ccrId: string]: {
+                load: number;
+                pcqty: number;
+                rid: number;
+            };
+        };
+    };
+
+    type CcrDetails = {
+        ccrid: number;
+        ccrgrp: number;
+        pcQty: number;
+        pos: string;
+        ol: string;
+    };
+
+    type OrderData = {
+        route: string;
+        ok: string;
+        ccrdetails: CcrDetails[];
+    };
+
+    type RouteData = {
+        orders: OrderData[];
+    };
+
+    function convertToRequiredFormat(routes: Route[], lineCcr: LineCcr): any {
+        console.log('bas final route', routes)
+        console.log('bas line ccr details,', lineCcr)
+
+        const myCCRDetails: any = [];
+
+        routes.forEach((e: any, i) => {
+            console.log("each routewala ccr", e)
+            const perCCRDetail = {
+                "ccrid": e[1].value,
+                "ccrgrp": e[0].value,
+                "pcQty": lineCcr[e[1].value]?.pcqty ? lineCcr[e[1].value]?.pcqty : 0,
+                "pos": (i + 1).toString(),
+                "ol": lineCcr[e[1].value]?.load ? lineCcr[e[1].value]?.load : 0,
+            }
+
+            myCCRDetails.push(perCCRDetail);
+
+        })
+
+        let routeName = '';
+        routes.forEach((e: any) => {
+            routeName = routeName + (e[1].label) + '/'
+        })
+        if (routeName.length >= 1) {
+            routeName = routeName.substring(0, routeName.length - 1);
+        }
+
+        console.log("routeName", routeName)
+
+        const finalData = {
+            "routeData": {
+                "orders": [
+                    {
+                        "route": routeName,
+                        "ok": Object.keys(lineCCRDetails)[0],
+                        "ccrdetails": myCCRDetails
+                    }
+                ]
+            }
+        }
+
+        console.log('findata', finalData)
+
+        return finalData;
+
+
+    }
     useEffect(() => {
         // let animationFrameId: any;
         const animate = () => {
@@ -59,7 +157,7 @@ const EditRouteModal = ({ master, setRoute, route, showModal, setShowModal, grap
             {
                 type: 'bar',
                 xKey: 'category',
-                yKey: "Released wip",
+                yKey: "Released WIP",
                 stacked: true,
                 strokeWidth: 0,
                 fill: "#191919",
@@ -73,7 +171,7 @@ const EditRouteModal = ({ master, setRoute, route, showModal, setShowModal, grap
             {
                 type: 'bar',
                 xKey: 'category',
-                yKey: "incremental wip",
+                yKey: "Incremental WIP",
                 stacked: true,
                 strokeWidth: 0,
                 fill: "#4BAAF7",
@@ -94,7 +192,7 @@ const EditRouteModal = ({ master, setRoute, route, showModal, setShowModal, grap
             {
                 type: 'scatter',
                 xKey: 'category',
-                yKey: 'limit',
+                yKey: 'Limit',
                 marker: {
                     size: 10,
                     fill: '#E53F3F',
@@ -139,9 +237,36 @@ const EditRouteModal = ({ master, setRoute, route, showModal, setShowModal, grap
 
     }
 
+    console.log("lince cccr dataaa", lineCCRDetails)
+
+
+    const SaveRoute = async () => {
+        const data = convertToRequiredFormat(route, lineCCRDetails);
+        console.log("final data of route update", data)
+        try {
+            const response = await saveRouteData(JSON.parse(JSON.stringify(data)))
+            console.log("is success", response)
+            if (response.status === 200) {
+                setRouteNum('');
+                setDataUpdated(!dataUpdated)
+                setShowModal(false);
+            }
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        if (isSuccess) {
+            setShowModal(false);
+        }
+    }, [isSuccess])
+
 
     return (
-        <VFModalCard openModal={showModal} closeModal={() => { setShowModal((false)) }} headerText={'Edit Route'} headerIcon={''} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
+        <VFModalCard openModal={showModal} closeModal={() => { setRouteNum(''), setShowModal((false)) }} headerText={'Edit Route'} headerIcon={''} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
+            {isLoading && <OverlayLoader message='Saving route data' />}
             <RouteContentWrapper>
                 <Text>
                     You can change route by selecting CCR from drop-down
@@ -166,7 +291,7 @@ const EditRouteModal = ({ master, setRoute, route, showModal, setShowModal, grap
                 <div key={'1'} style={{ display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 10px 0 0' }}>
 
                     <div>
-                        <div onClick={() => { setShowModal(false) }} style={{
+                        <div onClick={() => { setRouteNum(''), setShowModal(false) }} style={{
                             background: 'white', color: 'grey', font: 'normal normal 300 16px/24px Roboto',
                             padding: '10px 20px',
                             fontWeight: '400',
@@ -187,9 +312,11 @@ const EditRouteModal = ({ master, setRoute, route, showModal, setShowModal, grap
                             color: 'white',
                             borderRadius: '6px',
                             background: `${themeUi ? '#820F4C' : '#820F4C'}`,
-
                             boxShadow: '0px 6px 25px #00000029'
-                        }}>
+
+                        }}
+                            onClick={() => { SaveRoute() }}
+                        >
                             Save Routes
                         </div>
                     </div>

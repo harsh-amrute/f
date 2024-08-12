@@ -1,4 +1,5 @@
 import VFButton from '../../VFButton';
+import { memo } from 'react'
 import {
     SCTaskBarContainer,
     SCGoBackContainer,
@@ -74,6 +75,8 @@ interface MTOActionToolBarProps {
     isChartGridToggle?: boolean
     isReleaseButton?: boolean
     onOrderRelease?: () => void;
+    onCheckBoxToggle?: any;
+    isReleaseButtonDisabled?: boolean
     //// new props
 }
 
@@ -102,7 +105,9 @@ const MTOActionToolBar = ({
     isChartGridToggle,
     isReleaseButton,
     onOrderRelease,
-    quickFilter
+    quickFilter,
+    onCheckBoxToggle,
+    isReleaseButtonDisabled
 }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
@@ -115,7 +120,11 @@ const MTOActionToolBar = ({
     const d = new Date();
     const datetime = moment(d).format(format2);
 
+
+    console.log("rendeeerrrrr")
     return (
+
+
 
         <SCTaskBarContainer className='toolbar-container'>
             <SCTaskFilterContainer
@@ -130,17 +139,30 @@ const MTOActionToolBar = ({
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold', gap: '15px' }}>
 
                             <div style={{ borderRadius: '5px', background: 'white', padding: '10px 30px', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: 'rgba(133, 132, 132, 0.247) -5px 4px 10px', gap: '10px' }}>
-                                <input type="checkbox" style={{ color: 'pink' }} />
+                                <input onChange={(e) => { onCheckBoxToggle(e) }} type="checkbox" style={{ color: 'pink' }} />
                                 <p>Release</p>
                             </div>
-                            <img
-                                style={{ cursor: 'pointer' }}
-                                src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
-                                height={50}
-                                width={60}
-                                alt="Group 627"
-                                onClick={onOrderRelease}
-                            />
+                            {
+                                isReleaseButtonDisabled ?
+
+                                    <img
+                                        style={{ cursor: 'pointer', opacity: `${isReleaseButtonDisabled ? "0.8" : '1'}` }}
+                                        src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
+                                        height={50}
+                                        width={60}
+                                        alt="Group 627"
+                                    // onClick={onOrderRelease}
+                                    />
+                                    :
+                                    <img
+                                        style={{ cursor: 'pointer', opacity: `${isReleaseButtonDisabled ? "0.8" : '1'}` }}
+                                        src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
+                                        height={50}
+                                        width={60}
+                                        alt="Group 627"
+                                        onClick={onOrderRelease}
+                                    />
+                            }
 
                         </div>
                     }
@@ -158,7 +180,7 @@ const MTOActionToolBar = ({
                         </SCGoBackContainer>
                     }
 
-                    {quickFilter && <div style={{display:"flex", justifyContent:"center", alignItems:"center", fontSize:"1.8rem"}}>
+                    {quickFilter && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem" }}>
                         {quickFilter}
                     </div>}
 
@@ -468,4 +490,4 @@ const MTOActionToolBar = ({
     )
 }
 
-export default MTOActionToolBar
+export default memo(MTOActionToolBar)

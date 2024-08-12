@@ -6,11 +6,30 @@ export const QUERY_KEYS = {
 }
 
 export const useGetDynamicReleaseData = () => {
-    return useMutation(async ({ graph, ao = 0 }: { graph: number, ao: number }) => {
+    return useMutation(async ({ graph, ao = 0, page = 1 }: { graph: number, ao: number, page: number }) => {
 
-        return DynamicReleaseManagementService.getDynamicReleaseData({ graph, ao })
+        return DynamicReleaseManagementService.getDynamicReleaseData({ graph, ao, page })
 
 
     })
 }
+
+export const useSaveRouteData = () => {
+    return useMutation(async (body: any) => {
+
+        return DynamicReleaseManagementService.saveRouteData(body)
+
+
+    })
+}
+export const useUpdateDynamicReleaseData = () => {
+    return useMutation(async (body: any) => {
+
+        return DynamicReleaseManagementService.updateDynamicReleaseData(body)
+
+
+    })
+}
+
+
 
