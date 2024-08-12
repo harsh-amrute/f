@@ -120,17 +120,13 @@ const MTOActionToolBar = ({
     const datetime = moment(d).format(format2);
 
     return (
-
-
-
         <SCTaskBarContainer className='toolbar-container'>
             <SCTaskFilterContainer
                 style={{
                     maxWidth: '50%',
                     width: 'unset',
                     justifyContent: 'unset'
-                }}
-            >
+                }}>
                 <>
                     {isReleaseButton &&
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold', gap: '15px' }}>
