@@ -29,7 +29,7 @@ const ReasonForDelayOrder = () => {
     const [remarkHistory, setRemarkHistory] = useState<any>();
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [items, setItems] = useState<any[]>([]);
-    const [savebtn, setSaveBtn] = useState<boolean>(true);
+    const [disabled, setDisabled] = useState<boolean>(true);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [rowDataCount, setRowDataCount] = useState<number>(0);
     const reportName = 'ReasonForDelayedOrders';
@@ -130,7 +130,7 @@ const ReasonForDelayOrder = () => {
 
     const handleDataToSave = async (data: any) => {
         if (data.majid != undefined && data.minid != undefined) {
-            setSaveBtn(false);
+            setDisabled(false);
             setItems((prevItem) => [...prevItem, data])
         }
     }
@@ -249,7 +249,7 @@ const ReasonForDelayOrder = () => {
 
 
             <SaveBtnWrapper>
-                <SaveBtn onClick={() => { updateMajorMinorReason() }} disabled={savebtn}>
+                <SaveBtn onClick={() => { updateMajorMinorReason() }} disabled={disabled}>
                     Save Reasons
                 </SaveBtn>
             </SaveBtnWrapper>
