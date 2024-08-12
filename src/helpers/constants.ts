@@ -2,7 +2,8 @@ export const HEADER_TRACE_KEY = 'X-Correlation-Id'
 
 export const LOCAL_STORAGE_KEY = {
   TOKEN_PAYLOAD: 'token',
-  URL_PERMISSION: 'url_permission'
+  URL_PERMISSION: 'url_permission',
+  LANDING_PAGE:'landing_page'
 }
 
 export const ROUTES = {

@@ -125,3 +125,10 @@
     padding-top: 5px;
   }
 }
+
+@media (min-width: 1024px) and (max-width: 1688px) {
+  .advanced-permission-container {
+    zoom:0.8;
+  }
+}
+
