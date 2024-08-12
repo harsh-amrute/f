@@ -15,6 +15,7 @@ import MTORemarkHistoryModal from '../../Production/DepartmentWiseBMReport/MTORe
 import PlannedReleaseRenderer from './PlannedReleaseRenderer';
 import CustomCellEditor from './MajorDropDownRenderer';
 import { ColorsMTO } from '../../Common/Colors';
+import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 
 
 const ReasonForDelayOrder = () => {
@@ -29,6 +30,8 @@ const ReasonForDelayOrder = () => {
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [items, setItems] = useState<any[]>([]);
     const [savebtn, setSaveBtn] = useState<boolean>(true);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [rowDataCount, setRowDataCount] = useState<number>(0);
     const reportName = 'ReasonForDelayedOrders';
 
     const sideBar = useMemo(() => {
@@ -91,10 +94,12 @@ const ReasonForDelayOrder = () => {
     }
 
     //to get the rowdata for Aggrid
-    const getInitialData = async (wipval: boolean) => {
+    const getInitialData = async (wipval: boolean,page:number) => {
         try {
+            setCurrentPage(1);
             setWIPCheck(wipval)
-            const apiResponse = await getPoogiReasonsDelayedOrder(wipval === true ? 0 : 1);
+            const apiResponse = await getPoogiReasonsDelayedOrder({'wip':wipval === true ? 0 : 1,'curr':page});
+            setRowDataCount(apiResponse.data?.data?.count);
             setRowData(apiResponse?.data?.data?.results)
         }
         catch (e) {
@@ -174,7 +179,7 @@ const ReasonForDelayOrder = () => {
 
     useEffect(() => {
         getHeaderData();
-        getInitialData(true);
+        getInitialData(true,1);
 
     }, [])
 
@@ -199,19 +204,25 @@ const ReasonForDelayOrder = () => {
         }
     }
 
+    const handlePageChange = (currPage: number) => {
+        console.log('first',currPage)
+        setCurrentPage(currPage);
+        getInitialData(isWIPChecked?true:false,currPage)
+    }
+
     if (!rowData) {
         return null;
     }
 
-    console.log('index.ts', items)
+    // console.log('index.ts', items)
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
     return (
-        <div style={{ zoom: 1.2 }}>
+        <div style={{ zoom: 1.1 }}>
             <MTOActionToolBar
                 quickFilter={
                     <div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
-                        <Checkbox checked={isWIPChecked} onChange={(e) => getInitialData(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>
+                        <Checkbox checked={isWIPChecked} onChange={(e) => getInitialData(e.target.checked,1)} theme={themeUi} /> &nbsp;&nbsp; <strong>
                             Show Only Unassigned Orders
                         </strong>
                     </div>
@@ -222,9 +233,18 @@ const ReasonForDelayOrder = () => {
 
             <VFTable
                 {...agGridProps}
+                paginationPageSize={10}
                 height='750px'
                 columnDefs={columnDef}
                 rowData={rowData}
+                pagination={false}
+            />
+            <VFPagination
+                selectedRows={0}
+                rowsPerPage={10}
+                totalRows={rowDataCount}
+                currentPage={currentPage}
+                handleChangePage={handlePageChange}
             />
 
 

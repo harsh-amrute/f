@@ -8,7 +8,8 @@ export const SaveBtnWrapper = styled.div`
     justify-content:flex-end;
     // background-color:#23232f;
     align-items:center;
-    padding:25px
+    padding:25px;
+    margin-top:30px;
 `
 
 export const SaveBtn=styled.button`

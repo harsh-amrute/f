@@ -13,7 +13,7 @@ type MyObject = {
 const CustomCellEditor = (props: any) => {
   const { data, isLoading } = useGetPoogiMajorMinorReason();
   const [selectedValue, setSelectedValue] = useState<string>();
-  const [selectedMinorReason, setSelectedMinorReason] = useState<string>();
+  const [/*selectedMinorReason*/, setSelectedMinorReason] = useState<string>();
   const [minorReasons, setMinorReasons] = useState<any>();
 
   useEffect(()=>{

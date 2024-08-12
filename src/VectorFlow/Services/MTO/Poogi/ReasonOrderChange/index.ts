@@ -15,7 +15,7 @@ export const useGetReasonForPoogiAnalytics = () => {
 }
 
 export const useGetReasonForDelayOrder = () => {
-    return useMutation(async (data: number) => {
+    return useMutation(async (data: any) => {
         return await ReasonOrderChangeServices.getPoogiReasonsDelayedOrder(data)
     })
 }
