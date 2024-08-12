@@ -1,12 +1,12 @@
-import React, {  useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import { SaveBtnWrapper, SaveBtn } from './styles';
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import { useGetReasonForDelayOrder, useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
+import { useGetReasonForDelayOrder, useGetPoogiRemarks, usePutPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import { toast } from 'react-toastify';
-import { notifyLoader } from '../../../../../helpers/notify';
+import { notifyLoader, notifySuccess } from '../../../../../helpers/notify';
 import { AgGridReactProps } from 'ag-grid-react';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 import { useUserData } from '../../../../../context';
@@ -20,11 +20,14 @@ const ReasonForDelayOrder = () => {
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { mutateAsync: getPoogiReasonsDelayedOrder, isLoading } = useGetReasonForDelayOrder();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
+    const { mutateAsync: updatePoogiRemarks } = usePutPoogiRemarks();
     const [HeaderData, setHeaderData] = useState<any>([{}]);
     const [rowData, setRowData] = useState<any>();
     const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
     const [remarkHistory, setRemarkHistory] = useState<any>();
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
+    const [items, setItems] = useState<any[]>([]);
+    const [savebtn, setSaveBtn] = useState<boolean>(true);
     const reportName = 'ReasonForDelayedOrders';
 
     const sideBar = useMemo(() => {
@@ -78,9 +81,7 @@ const ReasonForDelayOrder = () => {
     const getHeaderData = async () => {
         try {
             const response = await getUIConfigData(reportName);
-            //console.log('response==',response?.data?.data)
             setHeaderData(response.data.data);
-
         }
         catch (e) {
             console.log(e);
@@ -102,10 +103,8 @@ const ReasonForDelayOrder = () => {
     //to handle the modal for remark
     const handleModal = async (data: any) => {
         try {
-            //console.log('data.r=', data)
             if (data.r.length === 0) {
                 const RemarkHistory = await getPoogIRemarks(data.ok)
-                //console.log('remakr histoyr', RemarkHistory?.data?.data)
                 if (RemarkHistory.data?.data === 'No remarks are present for the order') {
                     data.r = []
                 }
@@ -122,6 +121,15 @@ const ReasonForDelayOrder = () => {
 
     }
 
+    const handleDataToSave = async (data: any) => {
+        if (data.majid != undefined && data.minid != undefined) {
+            setSaveBtn(false);
+            setItems((prevItem) => [...prevItem, data])
+        }
+    }
+
+
+
     const customHeader = {
         RemarksHistory: {
             pinned: "right",
@@ -136,13 +144,17 @@ const ReasonForDelayOrder = () => {
             pinned: "right",
             lockPosition: true,
             initialWidth: 300,
-            cellRenderer: CustomCellEditor
+            cellRenderer: CustomCellEditor,
+
         },
         MinorReason: {
             pinned: "right",
             lockPosition: true,
             minWidth: 300,
-            cellRenderer: CustomCellEditor
+            cellRenderer: CustomCellEditor,
+            cellRendererParams: {
+                handleData: (saveobj: any) => handleDataToSave(saveobj)
+            }
         },
     }
 
@@ -151,7 +163,9 @@ const ReasonForDelayOrder = () => {
     useEffect(() => {
         getHeaderData();
         getInitialData(true);
+
     }, [])
+
 
     useEffect(() => {
         if (isLoading) {
@@ -163,12 +177,20 @@ const ReasonForDelayOrder = () => {
         }
     }, [isLoading, isWIPChecked])
 
+    const updateMajorMinorReason = async () => {
+        console.log('body to api = ', items)
+        const RemarkHistory: any = await updatePoogiRemarks(items);
+        if (RemarkHistory.status == 200) {
+            toast.dismiss();
+            notifySuccess('Successfull')
+        }
+    }
+
     if (!rowData) {
         return null;
     }
 
-
-
+    //console.log('index.ts', items)
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
     return (
@@ -177,7 +199,7 @@ const ReasonForDelayOrder = () => {
                 quickFilter={
                     <div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
                         <Checkbox checked={isWIPChecked} onChange={(e) => getInitialData(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>
-                            Show order with available WIP Only
+                            Show Only Unassigned Orders
                         </strong>
                     </div>
                 }
@@ -190,11 +212,12 @@ const ReasonForDelayOrder = () => {
                 height='750px'
                 columnDefs={columnDef}
                 rowData={rowData}
+
             />
 
 
             <SaveBtnWrapper>
-                <SaveBtn>
+                <SaveBtn onClick={() => { updateMajorMinorReason() }} disabled={savebtn}>
                     Save Reasons
                 </SaveBtn>
             </SaveBtnWrapper>

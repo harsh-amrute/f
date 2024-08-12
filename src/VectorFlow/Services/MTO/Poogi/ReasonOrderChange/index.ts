@@ -32,4 +32,10 @@ export const useGetPoogiMajorMinorReason = () => {
     })
 }
 
+export const usePutPoogiRemarks = () => {
+    return useMutation(async (data: any) => {
+        return await ReasonOrderChangeServices.updatePoogiRemarks(data);
+    })
+}
+
 

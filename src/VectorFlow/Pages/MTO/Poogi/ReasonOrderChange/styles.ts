@@ -11,7 +11,7 @@ export const SaveBtnWrapper = styled.div`
     padding:25px
 `
 
-export const SaveBtn=styled.div`
+export const SaveBtn=styled.button`
     display:flex;
     height:40px;
     width:169px;
@@ -24,6 +24,7 @@ export const SaveBtn=styled.div`
     font-size:18px;
     font-family: 'Roboto', sans-serif;
     font-weight:400;
+    curser:pointer;
 `
 
 export const BPRDailyAnalyticsWrapper=styled.div`

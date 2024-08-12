@@ -38,4 +38,11 @@ export namespace ReasonOrderChangeServices {
             }
         })
     }
+
+    export const updatePoogiRemarks = async (body: any) => {
+        console.log('api', body)
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/updatePoogiReasonsforOrders/`, body, {
+            headers: { 'Content-Type': 'application/json' }
+        })
+    }
 }
