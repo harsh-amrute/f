@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import { SaveBtnWrapper, SaveBtn } from './styles';
@@ -12,8 +12,9 @@ import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox'
 import { useUserData } from '../../../../../context';
 import RemarkHistoryRenderer from '../../Production/DepartmentWiseBMReport/RemarkHistoryRenderer';
 import MTORemarkHistoryModal from '../../Production/DepartmentWiseBMReport/MTORemarkHistoryModal';
-
+import PlannedReleaseRenderer from './PlannedReleaseRenderer';
 import CustomCellEditor from './MajorDropDownRenderer';
+import { ColorsMTO } from '../../Common/Colors';
 
 
 const ReasonForDelayOrder = () => {
@@ -81,6 +82,7 @@ const ReasonForDelayOrder = () => {
     const getHeaderData = async () => {
         try {
             const response = await getUIConfigData(reportName);
+        
             setHeaderData(response.data.data);
         }
         catch (e) {
@@ -156,6 +158,17 @@ const ReasonForDelayOrder = () => {
                 handleData: (saveobj: any) => handleDataToSave(saveobj)
             }
         },
+        ElapsedDays:{
+            cellStyle:{
+                'color':ColorsMTO.Pink.code
+            }
+        },
+        PlannedReleaseDate:{
+            cellRenderer: PlannedReleaseRenderer,
+        },
+        QuotedDueDate:{
+            cellRenderer: PlannedReleaseRenderer,
+        }
     }
 
     const columnDef = getColumnDefinations(HeaderData, customHeader);
@@ -178,7 +191,7 @@ const ReasonForDelayOrder = () => {
     }, [isLoading, isWIPChecked])
 
     const updateMajorMinorReason = async () => {
-        console.log('body to api = ', items)
+        // console.log('body to api = ', items)
         const RemarkHistory: any = await updatePoogiRemarks(items);
         if (RemarkHistory.status == 200) {
             toast.dismiss();
