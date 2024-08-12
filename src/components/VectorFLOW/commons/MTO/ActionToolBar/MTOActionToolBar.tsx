@@ -119,8 +119,6 @@ const MTOActionToolBar = ({
     const d = new Date();
     const datetime = moment(d).format(format2);
 
-
-    console.log("rendeeerrrrr")
     return (
 
 

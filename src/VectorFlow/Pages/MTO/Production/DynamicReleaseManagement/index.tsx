@@ -23,33 +23,43 @@ import VFPagination from '../../Common/VFPagination';
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
 
 const DynamicReleaseManagement = () => {
-
+  interface InputData {
+    [key: string]: {
+      ccr_code: string;
+      limit: number | null;
+      wip: number | null;
+    };
+  }
+  interface OutputData {
+    category: string;
+    "Released WIP": number | string;
+    Limit: number | string;
+    "Incremental WIP": number;
+    selected: boolean;
+  }
+  const [HeaderData] = useState(fullKitAssignmentHeader);
+  const refGrid = useRef<GridRef | any>(null)
+  const [selectedRows, setSelectedRows] = useState<any>([]);
   const [rowRelease, setRowRelease] = useState(false);
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
   const [order_key, setOrder_Key] = useState('');
-
   const [table1, setTable1] = useState(true);
-
   const [showReleaseModal, setShowReleaseModal] = useState(false)
-
   const { mutateAsync: getDynamicReleaseData, isLoading, isError, isSuccess } = useGetDynamicReleaseData();
-
   const [currData, setCurrData] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
-
   const [graphData, setGraphData] = useState<any>([]);
-
   const [masters, setMasters] = useState<any>({});
-
   const [routeNum, setRouteNum] = useState("");
-
-  const GetData = async (ao = 0, page = 1, graph = 1) => {
-
-    if (ao) {
-
+  const [hide, setHide] = useState(false);
+  const [showModal, setShowModal] = useState(false)
+  const graph = useRef<any>();
+  const [message, setMessage] = useState('');
+  const GetData = async (allOrders = 0, page = 1, graph = 1) => {
+    if (allOrders) {
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao, page });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page });
         setCurrData(APIData);
         setRowData(APIData.data.data.results);
       }
@@ -59,7 +69,7 @@ const DynamicReleaseManagement = () => {
     }
     else {
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao, page });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page });
         setCurrData(APIData);
         setRowData(APIData.data.data.results);
       }
@@ -68,22 +78,16 @@ const DynamicReleaseManagement = () => {
       }
 
     }
-
     if (graph) {
-
       try {
-        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao, page });
+        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao: allOrders, page });
         setGraphData(GraphAPIData.data.data);
       }
       catch (e) {
         console.log(e)
       }
     }
-
-
   };
-
-
 
   useEffect(() => {
     getMastersData();
@@ -100,11 +104,7 @@ const DynamicReleaseManagement = () => {
     }
   }, [isSuccess, isError])
 
-
-
-
   const [routeTrigger, setRouteTrigger] = useState(false);
-
 
   const colDefCustomizations = {
     Action: {
@@ -161,12 +161,7 @@ const DynamicReleaseManagement = () => {
     }
   ];
 
-  const [HeaderData] = useState(fullKitAssignmentHeader);
 
-
-  const refGrid = useRef<GridRef | any>(null)
-
-  const [selectedRows, setSelectedRows] = useState<any>([]);
 
   useEffect(() => {
     const newData = convertData(graphData);
@@ -280,7 +275,7 @@ const DynamicReleaseManagement = () => {
 
     columnDefs: colDefs,
     defaultColDef: {
-      // resizable: true,
+      resizable: true,
       // suppressMenu: true,
       initialFlex: 1,
       // wrapHeaderText: true,
@@ -302,21 +297,7 @@ const DynamicReleaseManagement = () => {
 
   const [dataUpdated, setDataUpdated] = useState(0);
 
-  interface InputData {
-    [key: string]: {
-      ccr_code: string;
-      limit: number | null;
-      wip: number | null;
-    };
-  }
 
-  interface OutputData {
-    category: string;
-    "Released WIP": number | string;
-    Limit: number | string;
-    "Incremental WIP": number;
-    selected: boolean;
-  }
 
   function convertData(input: InputData): OutputData[] {
     const result: OutputData[] = [];
@@ -432,13 +413,7 @@ const DynamicReleaseManagement = () => {
 
   }
   )
-  const [hide, setHide] = useState(false);
-  const [showModal, setShowModal] = useState(false)
 
-  const graph = useRef<any>();
-
-
-  const [message, setMessage] = useState('');
 
   const onOrderRelease = () => {
     setRowRelease(false);
@@ -621,22 +596,14 @@ const DynamicReleaseManagement = () => {
       params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
 
     }
-    ;
-
-
-
 
   return (
     <>
       <Wrapper>
         {
-          isLoading &&
-
-          <OverlayLoader />
+          isLoading && <OverlayLoader />
         }
         <MTOActionToolBar comp="FullKitAssignment" isExcelExport isAddFilterButton isReleaseButton isReleaseButtonDisabled={isReleaseButtonDisabled} onOrderRelease={onOrderRelease} onCheckBoxToggle={setAllRows} />
-
-        {/* <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}> */}
 
         <SCTabHeader style={{ marginTop: '5px' }}>
 
@@ -647,11 +614,6 @@ const DynamicReleaseManagement = () => {
             All Orders
           </BPRViewTableHeaderTab>
         </SCTabHeader>
-
-
-
-
-
         <VFTable
           ref={refGrid}
           rowData={rowData}
@@ -688,11 +650,7 @@ const DynamicReleaseManagement = () => {
         <ReleaseModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} rowRelase={rowRelease} message={message} themeUi={themeUi} totalOrders={120} order_key={order_key} selectedOrders={selectedRows} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />
       </Wrapper >
     </>
-
-
   )
 }
 
 export default DynamicReleaseManagement
-
-
