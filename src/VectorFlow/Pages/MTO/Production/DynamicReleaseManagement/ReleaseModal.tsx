@@ -34,7 +34,6 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, rowRelase, order_key, mes
         }
         try {
             const response = await updateDynamicReleaseData(body)
-            console.log(response)
             if (response.status === 200) {
                 setDataUpdated(!dataUpdated)
                 setShowModal(false);

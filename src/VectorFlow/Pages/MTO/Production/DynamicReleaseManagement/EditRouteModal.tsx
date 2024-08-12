@@ -60,13 +60,10 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, routeNum, li
     };
 
     function convertToRequiredFormat(routes: Route[], lineCcr: LineCcr): any {
-        console.log('bas final route', routes)
-        console.log('bas line ccr details,', lineCcr)
 
         const myCCRDetails: any = [];
 
         routes.forEach((e: any, i) => {
-            console.log("each routewala ccr", e)
             const perCCRDetail = {
                 "ccrid": e[1].value,
                 "ccrgrp": e[0].value,
@@ -87,8 +84,6 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, routeNum, li
             routeName = routeName.substring(0, routeName.length - 1);
         }
 
-        console.log("routeName", routeName)
-
         const finalData = {
             "routeData": {
                 "orders": [
@@ -100,8 +95,6 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, routeNum, li
                 ]
             }
         }
-
-        console.log('findata', finalData)
 
         return finalData;
 
@@ -237,15 +230,10 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, routeNum, li
 
     }
 
-    console.log("lince cccr dataaa", lineCCRDetails)
-
-
     const SaveRoute = async () => {
         const data = convertToRequiredFormat(route, lineCCRDetails);
-        console.log("final data of route update", data)
         try {
             const response = await saveRouteData(JSON.parse(JSON.stringify(data)))
-            console.log("is success", response)
             if (response.status === 200) {
                 setRouteNum('');
                 setDataUpdated(!dataUpdated)

@@ -93,9 +93,7 @@ const DynamicReleaseManagement = () => {
 
   };
 
-  useEffect(() => {
-    console.log(currGraphData);
-  }, [currGraphData])
+
 
   useEffect(() => {
     getMastersData();
@@ -114,7 +112,6 @@ const DynamicReleaseManagement = () => {
       floatingFilter: false,
       suppressMenu: true,
       cellRenderer: (params: any) => {
-        console.log("cllll paramsssss", params);
         return (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#BC3D81', fontWeight: 'bold', fontFamily: 'roboto' }} onClick={() => { setRowRelease(true), setOrder_Key(params.data.ok), setMessage(`Release Order with id: ${params.data.oid} `), setShowReleaseModal(true) }}>
             <div>Release &nbsp; </div>
@@ -129,7 +126,6 @@ const DynamicReleaseManagement = () => {
     Route: {
       // tooltipField: "r"
       cellRenderer: (params: any) => {
-        console.log('paramssss', params)
         return (
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
@@ -174,9 +170,7 @@ const DynamicReleaseManagement = () => {
   const [selectedRows, setSelectedRows] = useState<any>([]);
 
   useEffect(() => {
-    console.log("selected Rows", selectedRows);
     const newData = convertData(graphData);
-    console.log("selected row length", selectedRows.length);
 
     if (selectedRows.length) {
 
@@ -205,9 +199,7 @@ const DynamicReleaseManagement = () => {
 
     }
 
-    console.log("called");
     setFinalGraphData(newData);
-    console.log("graph api", graph.current);
   }, [selectedRows]);
 
   const updateGraphOnSelect = () => {
@@ -399,7 +391,6 @@ const DynamicReleaseManagement = () => {
         strokeWidth: 0,
         fill: "#191919",
         formatter: (params: any) => {
-          console.log("params", params)
           return {
             fillOpacity: params.datum.selected ? 1 : 0.5,
             fill: params.datum.selected ? params.fill : "#191919"
@@ -503,8 +494,6 @@ const DynamicReleaseManagement = () => {
 
   useEffect(() => {
     setChartOptions({ ...chartoptions, data: finalGraphData })
-    console.log("chartopsfs data", chartoptions.data);
-    console.log(graph.current)
   }, [finalGraphData])
 
 
@@ -513,7 +502,6 @@ const DynamicReleaseManagement = () => {
   const { mutateAsync: getLineCCRDetails } = useGetLineCCRDetails();
 
   const getMastersData = async () => {
-    // if (!masters) {
     try {
       const ccrGroupMaster = await getCCRGroupMaster();
       const ccrGroupData = Object.values(ccrGroupMaster?.data?.data);
@@ -527,27 +515,13 @@ const DynamicReleaseManagement = () => {
         ccrGroups.push(obj);
       });
 
-      console.log('ccrGroups', ccrGroups);
       setMasters({ ccrGroups });
     } catch (error) {
-      console.log("Error fetching CCR Group Master:", error);
     }
-    // }
   };
-
-
-
-
-  useEffect(() => {
-    console.log("masters", masters);
-  }, [masters])
-
-
-
 
   const [route, setRoute] = useState<any>();
   const [orderKey, setOrderKey] = useState<any>();
-
 
   useEffect(() => {
 
@@ -560,11 +534,7 @@ const DynamicReleaseManagement = () => {
   const [lineCCR, setLineCCR] = useState();
 
   const getRoute = async (route: any, orderKey: any) => {
-    console.log("route, masters", route, masters);
-
-
     await getMastersData();
-
 
     if (typeof route === "number") {
       try {
@@ -572,7 +542,6 @@ const DynamicReleaseManagement = () => {
         const routeDetails = data.data.data;
 
         routeDetails.sort((a: any, b: any) => a.ps - b.ps);
-        console.log("route Details", routeDetails);
 
         const newRoute: any = [];
         routeDetails.forEach((routeDetail: any) => {
@@ -584,7 +553,6 @@ const DynamicReleaseManagement = () => {
           newRoute[routeDetail.ps - 1] = obj;
         });
 
-        console.log('newRoute', newRoute);
         setRoute(newRoute);
         // setShowModal(true);
       } catch (error) {
@@ -621,12 +589,9 @@ const DynamicReleaseManagement = () => {
     else {
       GetData(1, pageNumber, 0);
     }
-    console.log("pageNumber", pageNumber)
-    // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
   };
 
   const setAllRows = (e: any) => {
-    console.log('event', e.target.checked);
     if (e.target.checked) {
 
       const nodesToSelect: any = [];
