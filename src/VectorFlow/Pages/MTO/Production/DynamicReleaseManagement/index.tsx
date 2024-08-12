@@ -2,8 +2,6 @@ import { AgChartsReact } from 'ag-charts-react';
 import { GridOptions, IRowNode } from 'ag-grid-enterprise';
 import { useEffect, useMemo, useRef, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-
-import { AgChartOptions } from 'ag-charts-community';
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import { fullKitAssignmentHeader } from './data';
 import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
@@ -14,24 +12,18 @@ import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/A
 import EditRouteModal from './EditRouteModal';
 import * as globalStyles from "../../../../../styles/global";
 import { Rectangle } from './RectangleMarker';
-// import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
 import { BPRViewTableHeaderTab, SCTabHeader } from './styles';
 import ReleaseModal from './ReleaseModal';
 import './styles.css'
 import { useGetDynamicReleaseData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement';
-import { notifyError } from '../../../../../helpers/notify';
+import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import { useGetCCRGroupMaster, useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import OverlayLoader from '../../Common/Loader';
-import { SCDynamicContainer } from './DynamicReleaseManagement.styled';
 import VFPagination from '../../Common/VFPagination';
-import { PaginationWrapper } from '../OrderRescheduling/styles';
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
-
 
 const DynamicReleaseManagement = () => {
 
-
-  const selectedRowOrderKey: any = [];
   const [rowRelease, setRowRelease] = useState(false);
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
@@ -46,7 +38,6 @@ const DynamicReleaseManagement = () => {
   const [currData, setCurrData] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
 
-  const [currGraphData, setCurrGraphData] = useState<any>([]);
   const [graphData, setGraphData] = useState<any>([]);
 
   const [masters, setMasters] = useState<any>({});
@@ -82,7 +73,6 @@ const DynamicReleaseManagement = () => {
 
       try {
         const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao, page });
-        setCurrGraphData(GraphAPIData);
         setGraphData(GraphAPIData.data.data);
       }
       catch (e) {
@@ -100,6 +90,15 @@ const DynamicReleaseManagement = () => {
     GetData();
   }, [])
 
+
+  useEffect(() => {
+    if (isSuccess) {
+      notifySuccess("Fetched Data successfully!")
+    }
+    if (isError) {
+      notifyError("Failed to load data!")
+    }
+  }, [isSuccess, isError])
 
 
 
@@ -204,33 +203,6 @@ const DynamicReleaseManagement = () => {
 
   const updateGraphOnSelect = () => {
 
-    // const newSelects = [];
-    // const selectedData = refGrid.current?.api.getSelectedRows();
-    // const alreadySelectedData = selectedRows;
-
-
-    // // if in selected data and row data then add the new data
-    // selectedData.forEach((ele:any)=>{
-
-    //   let isThere = false;
-    //   rowData.forEach((eleR:any)=>{
-    //     if(ele.ok === eleR.ok){
-    //       isThere = true;
-    //     }
-    //   })
-
-    //   if(isThere){
-    //     newSelects.push(ele);
-    //   }
-    //   else{
-    //     newSelects.push(ele);
-    //   }
-
-    // })
-
-
-
-    // setSelectedRows(selectedData);
     const selectedData = refGrid.current?.api.getSelectedRows();
     if (selectedData) {
       let mergedData: any = [...selectedRows]; // Start with the existing selected data
@@ -409,16 +381,7 @@ const DynamicReleaseManagement = () => {
           return {
             fill: params.datum.selected ? params.fill : "#4BAA66"
           }
-        },
-        // label: {
-        //   enabled: true,
-        //   formatter: (params: any) => {
-        //     return params.datum.groupName
-        //   },
-        //   placement: "outside",
-        //   color: "black",
-
-        // }
+        }
       },
       {
         type: 'scatter',
@@ -517,6 +480,7 @@ const DynamicReleaseManagement = () => {
 
       setMasters({ ccrGroups });
     } catch (error) {
+      console.log(error)
     }
   };
 
@@ -703,28 +667,8 @@ const DynamicReleaseManagement = () => {
           onFirstDataRendered={onFirstDataRendered}
           onGridReady={onFirstDataRendered}
           onRowDataUpdated={onFirstDataRendered}
-        // pagination={true}
-        // onSelectionChanged={(params) => {
-        //   const selectedRoutes = new Set();
-        //   params.api.getSelectedRows().forEach((row: any) => row.r.split(",").forEach((route: any) => selectedRoutes.add(route.trim())));
-        //   if (selectedRoutes.size == 0) {
-        //     setData(data.map((row: any) => {
-        //       return { ...row, selected: true }
-        //     }))
-        //   } else {
-        //     setData(data.map((row: any) => {
-        //       if (selectedRoutes.has(row.category)) {
-        //         return { ...row, selected: true }
-        //       }
-        //       return { ...row, selected: false }
-        //     }))
-        //   }
 
-        // }}
         />
-
-        {/* <PaginationWrapper style={{ padding: '-10px', margin: '-10', width: '100%' }}> */}
-
         <div style={{ width: '100%' }}>
 
           <VFPagination
@@ -736,15 +680,11 @@ const DynamicReleaseManagement = () => {
             showPagination
           />
         </div>
-        {/* </PaginationWrapper> */}
-        {/* </div> */}
-
-
         <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
         <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
           <AgChartsReact ref={graph} options={chartoptions} />
         </div>
-        <EditRouteModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} routeNum={routeNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} graphData={finalGraphData} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} />
+        <EditRouteModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} graphData={finalGraphData} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} />
         <ReleaseModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} rowRelase={rowRelease} message={message} themeUi={themeUi} totalOrders={120} order_key={order_key} selectedOrders={selectedRows} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />
       </Wrapper >
     </>

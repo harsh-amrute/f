@@ -1,5 +1,4 @@
 import VFButton from '../../VFButton';
-import { memo } from 'react'
 import {
     SCTaskBarContainer,
     SCGoBackContainer,
@@ -490,4 +489,4 @@ const MTOActionToolBar = ({
     )
 }
 
-export default memo(MTOActionToolBar)
+export default MTOActionToolBar

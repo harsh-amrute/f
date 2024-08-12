@@ -4,14 +4,13 @@ import { useEffect, } from 'react'
 import { useSaveRouteData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
-import { StepperWrapper, StepGroup, StepLabel, RouteContentWrapper, Text } from './DynamicReleaseManagement.styled'
+import { RouteContentWrapper, Text } from './DynamicReleaseManagement.styled'
 import { Rectangle } from './RectangleMarker'
-import CustomSelect from './Select'
 import OverlayLoader from '../../Common/Loader'
 import { notifyError, notifySuccess } from '../../../../../helpers/notify'
 
 
-const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, routeNum, lineCCRDetails, master, setRoute, route, showModal, setShowModal, graphData, themeUi }: any) => {
+const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, lineCCRDetails, master, setRoute, route, showModal, setShowModal, graphData, themeUi }: any) => {
 
     const { mutateAsync: saveRouteData, isLoading, isSuccess, isError } = useSaveRouteData();
 
@@ -39,24 +38,6 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, routeNum, li
                 rid: number;
             };
         };
-    };
-
-    type CcrDetails = {
-        ccrid: number;
-        ccrgrp: number;
-        pcQty: number;
-        pos: string;
-        ol: string;
-    };
-
-    type OrderData = {
-        route: string;
-        ok: string;
-        ccrdetails: CcrDetails[];
-    };
-
-    type RouteData = {
-        orders: OrderData[];
     };
 
     function convertToRequiredFormat(routes: Route[], lineCcr: LineCcr): any {
@@ -101,7 +82,6 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, routeNum, li
 
     }
     useEffect(() => {
-        // let animationFrameId: any;
         const animate = () => {
             const stepGroups = document.querySelectorAll('.step-group');
             const svg: any = document.querySelector('.line');
@@ -138,10 +118,8 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, routeNum, li
             // animationFrameId = 
             requestAnimationFrame(animate);
         };
-        // animationFrameId = 
         requestAnimationFrame(animate);
 
-        // return cancelAnimationFrame(animationFrameId);
     }, []);
 
     const chartoptions: AgChartOptions = {
@@ -172,15 +150,7 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, routeNum, li
                     return {
                         fill: params.datum.selected ? params.fill : "#4BAA66"
                     }
-                },
-                // label: {
-                //     enabled: true,
-                //     formatter: (params: any) => {
-                //         return params.datum.groupName
-                //     },
-                //     placement: "outside",
-                //     color: "black",
-                // }
+                }
             },
             {
                 type: 'scatter',
@@ -223,7 +193,7 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, routeNum, li
                 marker: {
                     size: 15,
                     strokeWidth: 0,
-                    shape: 'square', // 'circle', 'square', 'cross', 'plus', 'triangle'
+                    shape: 'square',
                 },
             },
         },
@@ -271,7 +241,7 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, routeNum, li
                     />)
                 }
                 <strong style={{ fontSize: "14px" }}>Route Load</strong>
-                <div style={{ height: "250px" }}>
+                <div style={{ height: "220px" }}>
                     <AgChartsReact options={chartoptions} />
                 </div>
             </RouteContentWrapper>

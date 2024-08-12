@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import * as globalStyles from "../../../../../styles/global";
-import * as gridSystem from '../../../../../styles/gridSystem'
 export const Wrapper = styled.div`
   width: 100%;
   height: 100%;
