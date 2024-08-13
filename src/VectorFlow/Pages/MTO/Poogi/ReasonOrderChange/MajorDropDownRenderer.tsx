@@ -13,7 +13,7 @@ type MyObject = {
 const CustomCellEditor = (props: any) => {
   const { data, isLoading } = useGetPoogiMajorMinorReason();
   const [selectedValue, setSelectedValue] = useState<string>();
-  const [selectedMinorReason, setSelectedMinorReason] = useState<string>();
+  const [selectedMinorReason, setSelectedMinorReason] = useState<string>('');
   const [minorReasons, setMinorReasons] = useState<any>();
 
   useEffect(() => {
@@ -90,12 +90,14 @@ const CustomCellEditor = (props: any) => {
   };
 
   const clearSelection = () => {
+    console.log('called clearSection');
     setSelectedValue(''); // Set to empty string to clear selection
+    props.data["min"] = '';
     setSelectedMinorReason('');
   };
 
   const handleMinorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    props.data["MinRsn"] = event.target.value;
+    props.data["min"] = event.target.value;
     setSelectedMinorReason(event.target.value);
     addObject({
       'ok': props.data.ok,
@@ -127,6 +129,7 @@ const CustomCellEditor = (props: any) => {
   }
 
   const renderMinorSelect = () => {
+    //console.log('props.data', props.data)
     return (
       <select
         disabled={props.data.maj == undefined}
