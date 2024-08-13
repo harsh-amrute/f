@@ -1,4 +1,6 @@
 import axios from 'axios';
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace DynamicReleaseManagementService {
     export const getDynamicReleaseData = async ({ graph = 0, ao = 0, page = 1 }: { graph: number, ao: number, page: number }) => {
         if (graph === 0 && ao === 0 && page === 1) {

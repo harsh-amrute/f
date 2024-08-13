@@ -4,6 +4,7 @@ import axios, { AxiosStatic } from 'axios';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<AxiosStatic>;
 
+// eslint-disable-next-line
 describe('Dynamic Release Service', () => {
     const OLD_ENV = process.env;
     const dummyData = {
