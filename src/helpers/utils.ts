@@ -2879,28 +2879,54 @@ export const formatFilterJSON = (filter: any) => {
     const { filters } = filter[key];
     for(let i = 0; i < filters.length; i++){
       const { attributeName, value, type, operator } = filters[i];
-      if(type === 'textCompare' || type === 'numberCompare'){
-          if(value){
-              formatFilter = { ...formatFilter, [attributeName]: { op: operator ? operator :  type === 'textCompare' ? 'et' : 'gte' , val: value } };
-          }
-      }else{
-          if(value.length > 0){
-              formatFilter = { ...formatFilter, [attributeName]: value };
-          }
+      if(value?.length > 0 ){
+            if(type === 'textCompare' || type === 'numberCompare'){
+              formatFilter = { ...formatFilter, [attributeName]: { op: operator ? operator :  type === 'textCompare' ? 'et' : 'gte' , val: value[0].value } };
+            }else{
+              formatFilter = { ...formatFilter, [attributeName]: value?.map((v: any) => v?.value || v?.id) };
+            }
       }
     }
   }
   return formatFilter;
 }
 
-// Function to check values already there in options of dropdown
-export const checkValue = (optionsArr: any, name: string) => {
-  for(let i = 0; i < optionsArr.length; i++ ){
-      if(optionsArr[i].label === name){
-          return true;
-      }
+// Function to check values already there in Values
+export const checkValue = (filters: any, value: any) => {
+  for(let i = 0; i < filters.length; i++){
+    if(filters[i].id === value || filters[i].value === value){
+      return true;
+    }   
   }
   return false;
+}
+
+export const getSelectedFilters = (filter: any) => {
+  const selectedFilter: any = {};
+  for(const key in filter){
+
+    const { filters, label } = filter[key];
+    const newFilter: any = {
+      name: label,
+      parentId: key,
+      filters: []
+    }
+
+    for(let i = 0; i < filters.length; i++){
+      const { name, attributeName, value, type, operator } = filters[i];
+      
+      if(value.length > 0){
+        newFilter.filters.push({filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id )});
+      }
+    }
+
+    if(newFilter?.filters?.length > 0 ){
+      selectedFilter[key] = { ...newFilter};
+    }
+
+  }
+
+  return selectedFilter;
 }
 
 // ===================================================================================================

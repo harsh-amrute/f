@@ -16,7 +16,7 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import { AvailabilityFilter, FilterCheckboxAccordian, FilterMultiSelectCheckbox, Checkbox } from "./InputTypes";
 import VFMasterFieldSearch from "../../../../../components/VectorFLOW/commons/VFMasterFieldSearch";
-import { formatFilterJSON } from "../../../../../helpers/utils";
+import { checkValue, formatFilterJSON } from "../../../../../helpers/utils";
 import { InputTypes } from "../Enum";
 
 interface VFCommonFilterProps {
@@ -45,25 +45,17 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
       
       if (attributeName === filterId) {
         if( type === InputTypes.TextCompare || type === InputTypes.NumberCompare){
-
           let val = e?.value;
           if(property === 'value'){
-            val = type === InputTypes.NumberCompare ? Number(e?.target?.value) : e?.target?.value;
-          } 
-          updatedFilters[i][property as keyof Filter]= val;
-        }
-
-        if( type === InputTypes.MultiSelect ){
-          if (updatedFilters[i].value?.includes(targetValue)) {
-            updatedFilters[i].value = updatedFilters[i]?.value?.filter((v: any) => v !== targetValue);
-          } else {
-            updatedFilters[i].value = [...updatedFilters[i].value, targetValue];
+            const updatedvalue = type === InputTypes.NumberCompare ? Number(e?.target?.value) || '' : e?.target?.value;
+            val =  {label: updatedvalue, value: updatedvalue};
           }
+          updatedFilters[i][property as keyof Filter]= [val];
         }
 
-        if( type === InputTypes.Checkbox){
-          if (updatedFilters[i].value?.includes(targetValue)) {
-            updatedFilters[i].value = updatedFilters[i]?.value?.filter((v: any) => v !== targetValue);
+        if( type === InputTypes.MultiSelect ||type === InputTypes.Checkbox){
+          if (checkValue(updatedFilters[i].value, targetValue?.id)) {
+            updatedFilters[i].value = updatedFilters[i]?.value?.filter((v: any) => v?.id !== targetValue?.id);
           } else {
             updatedFilters[i].value = [...updatedFilters[i].value, targetValue];
           }
@@ -71,8 +63,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
 
         if( type === InputTypes.Search){
           if(Array.isArray(e)){
-            const options = e.map((option) => option.value);
-            updatedFilters[i].value = [...options];
+            updatedFilters[i].value = e?.map((option) => option);
           }
         }
 
@@ -89,13 +80,6 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
         filters: [...updatedFilters],
       },
     });
-  };
-
-  const getAPIValue = (values: any) => {
-    if(values){
-      return values?.map((val:string) => ({ label: val, value: val }));
-    }
-    return [];
   };
 
   useEffect(() => {
@@ -178,7 +162,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                               }}
                             >
                               <VFMasterFieldSearch
-                                value={getAPIValue(filter.value)}
+                                value={filter.value}
                                 setValue={(e: any) =>
                                   onFilterChange(InputTypes.Search, filter.attributeName, e, category, "value")
                                 }
@@ -263,7 +247,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                               >
                                 <FilterMultiSelectCheckbox
                                   header={filter.name}
-                                  filterOptions={filter.options?.map((f: any) => ({ label: f.label, id: f.id }))}
+                                  filterOptions={filter?.options?.map((f: any) => ({ label: f.label, id: f.id }))}
                                   filterState={filter}
                                   onChange={(e: any, key: string, targetVal: any) =>
                                     onFilterChange(InputTypes.MultiSelect, filter.attributeName, e, category, key,"", targetVal)

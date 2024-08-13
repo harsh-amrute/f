@@ -1,26 +1,33 @@
 import {useEffect, useState} from 'react';
 import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
-import { checkValue, findUniqueKeysAndValues, getDynamicAttributes, getKeyName } from '../helpers/utils';
+import { findUniqueKeysAndValues, getDynamicAttributes, getKeyName } from '../helpers/utils';
 import { filterAttributes, staticHeaderConfig } from '../VectorFlow/Pages/MTO/Common/VFCommonFilter/Constants';
 import { FilterState } from '../VectorFlow/types/MTO';
 
 const useFilter=(filterData: any, page: any)=>{
-    const [multiFilter, setMultiFilter]= useState<FilterState>({})
+    const [multiFilter, setMultiFilter]= useState<any>({})
     
-    // const onDelete = (parentId:any, filterId:any, value:any) => {
-    //     const updatedMultiFilter = { ...multiFilter };
-    
-    //     const currGroupKey = Object.keys(updatedMultiFilter).find(key => updatedMultiFilter[key as keyof FilterState]?.id === parentId);
-    
-    //     if (updatedMultiFilter && currGroupKey && updatedMultiFilter[currGroupKey as keyof FilterState]?.filters) {
-            
-    //         updatedMultiFilter[currGroupKey as keyof FilterState].filters = updatedMultiFilter[currGroupKey as keyof FilterState]?.filters?.filter(filter =>filter.name !== filterId || filter.value !== value) || [];
-     
-    //     }
-    
-    //     setMultiFilter(updatedMultiFilter);
-    //     return updatedMultiFilter
-    // };
+    const onFilterRemove = (parentId:string, filterId:any, value:any) => {
+        const updatedMultiFilter = { ...multiFilter };
+       const updatedFilters = updatedMultiFilter[parentId as keyof FilterState]?.filters || [];
+
+       for(let i = 0; i < updatedFilters?.length; i++){
+            const { attributeName } = updatedFilters[i];
+            if(attributeName === filterId){
+                updatedFilters[i].value = updatedFilters[i]?.value?.filter((val: any) => { 
+                    const newVal =val.value || val.id;
+                    if(newVal !== value){
+                        return val;
+                    }
+                });
+            }
+       }
+
+       updatedMultiFilter[parentId as keyof FilterState].filters = [...updatedFilters];
+       
+        setMultiFilter(updatedMultiFilter);
+        return updatedMultiFilter
+    };
 
     useEffect(()=>{
 
@@ -46,13 +53,13 @@ const useFilter=(filterData: any, page: any)=>{
         for(let i = 0; i < mappings.length; i++){
             const { rid, ccrid, grpid, deptid } = mappings[i];
             if(routes.includes(rid)){
-                if(dept[deptid]?.nm && !checkValue(department, dept[deptid]?.nm)){
+                if(dept[deptid]?.nm && !(department.includes(dept[deptid]?.nm))){
                     department.push({id: deptid, label :dept[deptid]?.nm})
                 }
-                if(ccrs[ccrid]?.nm && !checkValue(ccr, ccrs[ccrid]?.nm)){
+                if(ccrs[ccrid]?.nm && !(ccr.includes(ccrs[ccrid]?.nm))){
                     ccr.push({id: ccrid, label: ccrs[ccrid]?.nm})
                 }
-                if(ccrgroups[grpid]?.nm && !checkValue(ccrGrp, ccrgroups[grpid]?.nm)){
+                if(ccrgroups[grpid]?.nm && !(ccrGrp.includes(ccrgroups[grpid]?.nm))){
                     ccrGrp.push({id: grpid, label: ccrgroups[grpid]?.nm})
                 }
             }
@@ -72,7 +79,7 @@ const useFilter=(filterData: any, page: any)=>{
         filterOptionsConfig.deptid = department;
         filterOptionsConfig.grpid = ccrGrp;
         filterOptionsConfig.ccrid = ccr;
-
+        console.log(filterOptionsConfig, 'FILTER CONFIG');
         const filterObjects: FilterState = {}
 
         if(page?.mjr){
@@ -98,7 +105,7 @@ const useFilter=(filterData: any, page: any)=>{
                     name: staticHeaderConfig[key]?.name || (getKeyName(filterData?.hdrkeymap?.lattr, key) || getKeyName(filterData?.hdrkeymap?.oattr, key)),
                     attributeName: key,
                     operator: '',
-                    value: key === 'ms' ?  ["MTA", "MTO"] : '',
+                    value: key === 'ms' ?  filterData?.system_type?.map((type: any) => ({ id: type, label: type })) : [],
                     options: key === 'ms' ?  filterData?.system_type?.map((type: any) => ({ id: type, label: type })): filterOptionsConfig[key]
                 })).filter((fil: any) => filterAttributes.order.includes(fil.attributeName) || ((getKeyName(filterData?.hdrkeymap.lattr, fil.attributeName) === fil.name) || (getKeyName(filterData?.hdrkeymap.oattr, fil.attributeName) === fil.name)))
             }
@@ -141,7 +148,7 @@ const useFilter=(filterData: any, page: any)=>{
     return{
         state:multiFilter,
         setState:setMultiFilter,
-        // onDelete:onDelete
+        onFilterRemove:onFilterRemove
     }
 
 }

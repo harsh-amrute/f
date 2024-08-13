@@ -7,6 +7,7 @@ import { DropdownGroupWrapper, SelectDropdownComponent, OptionsWrapper } from ".
 import { Filter } from "../../../../../VectorFlow/types/MTO";
 import './style.css'
 import { InputTypes } from "../Enum";
+import { checkValue } from "../../../../../helpers/utils";
 
 interface FilterMultiSelectCheckboxProps {
   filterOptions: Array<{ label: string; id: string }>;
@@ -115,8 +116,8 @@ const FilterMultiSelectCheckbox = ({
                     marginRight: "14px;",
                     borderRadius: "2px",
                   }}
-                  onChange={(e: any) => onChange(e, "value", option?.id)}
-                  checked={filterState?.value.includes(option.id)}
+                  onChange={(e: any) => onChange(e, "value", option)}
+                  checked={checkValue(filterState?.value, option.id)}
                 />
                 <label
                   style={{
@@ -172,8 +173,8 @@ const Checkbox = ({
                       marginRight: "14px;",
                       borderRadius: "2px",
                     }}
-                    onChange={(e: any) => onChange(e, "value", option.id)}
-                    checked={filterState?.value.includes(option.label)}
+                    onChange={(e: any) => onChange(e, "value", option)}
+                    checked={checkValue(filterState?.value, option.id)}
                   />
                   <label
                     style={{
@@ -320,10 +321,12 @@ const FilterTextInput = ({
   onChange,
   disabled = false,
   value,
-  type = "text"
+  type = "text",
+  name
 }: any) => {
   return (
     <input
+      name={name}
       type={type}
       disabled={disabled}
       className="no-arrows"
@@ -391,7 +394,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
   }
 
   const getValue = ()=>{
-      return filterState ? filterState.value : ''
+      return filterState ? filterState?.value[0]?.value : ''
   }
 
   const getOptions = (type: string) => {
@@ -408,7 +411,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
           <FilterSelectDropdown className="custom-scrollbar" placeholder={filterState.type === InputTypes.TextCompare ? "Equal to" : "<="} options={getOptions(filterState.type)} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator')} filterId={filterId} value={getOperatorValue(filterState.type)}/>    
         </SelectDropdownComponent>
         <SelectDropdownComponent data-testid="filter-dropdown">
-          <FilterTextInput type={filterState.type === InputTypes.TextCompare ? "text" : 'number'} placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()}/>    
+          <FilterTextInput name={header} type={filterState.type === InputTypes.TextCompare ? "text" : 'number'} placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()}/>    
         </SelectDropdownComponent>  
       </DropdownGroupWrapper>  
     </>     
