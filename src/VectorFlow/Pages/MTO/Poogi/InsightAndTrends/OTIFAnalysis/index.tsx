@@ -2,7 +2,6 @@ import { Allotment } from "allotment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { APIMock } from "./MockData";
 import { ColDef, GridOptions } from "ag-grid-enterprise";
 import OTIFTrendsGraph from "./OTIFTrendsGraph";
 import OTAndIFTrendsGraph from "./OTAndIFTrendsGraph";
@@ -19,6 +18,7 @@ import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
 import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import useFilter from "../../../../../../hooks/useFilter";
+import { useGetOTIFAnalysisData } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTIFAnalysis";
 
 const APIFilterConfig = {
   filSecVisConfig :  {
@@ -37,9 +37,12 @@ const OTIFAnalysis = () => {
   const { screenHeight } = useViewPort();
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const { mutateAsync: getOTIFAnalysisData } = useGetOTIFAnalysisData()
   const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
   const [colDef, setColDef] = useState([{}]);
   const [filterData, setFilterData] = useState({});
+  const [gridData, setGridData] = useState([]);
+  const [graphData, setGraphData] = useState<any>({});
   const reportName = "OTIFAnalysis";
 
   const gridRef = useRef();
@@ -93,8 +96,30 @@ const OTIFAnalysis = () => {
     }
   }
 
+  const getGridData = async (isGraph: any) => {
+    try {
+      const response = await getOTIFAnalysisData(isGraph);
+      setGridData(response.data.data.results);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+  
+  const getGraphData = async (isGraph: any) => {
+    try {
+      const response = await getOTIFAnalysisData(isGraph);
+      setGraphData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
   useEffect(() => {
     setColumnDef();
+    getGridData(0);
+    getGraphData(1);
   }, []);
 
   useEffect(() => {
@@ -141,7 +166,7 @@ const OTIFAnalysis = () => {
               }}
               defaultColDef={defaultColDef}
               columnDefs={colDef}
-              rowData={APIMock?.grid}
+              rowData={gridData || []}
               tooltipHideDelay={100000}
               tooltipShowDelay={0}
               tooltipMouseTrack={true}
@@ -161,13 +186,12 @@ const OTIFAnalysis = () => {
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <OTIFTrendsGraph />
+                  <OTIFTrendsGraph graphData={graphData?.otif} />
                 </BTRAllomentSection>
               </Allotment.Pane>
-
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <OTAndIFTrendsGraph />
+                  <OTAndIFTrendsGraph graphData={graphData?.ot_n_if} />
                 </BTRAllomentSection>
               </Allotment.Pane>
             </Allotment>
