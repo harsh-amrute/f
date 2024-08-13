@@ -15,54 +15,49 @@ const CustomCellEditor = (props: any) => {
   const { data, isLoading } = useGetPoogiMajorMinorReason();
   const [selectedValue, setSelectedValue] = useState<string>();
   const [selectedMinorReason, setSelectedMinorReason] = useState<string>('');
-  const [minorReasons, setMinorReasons] = useState<any>();
+  //const [minorReasons, setMinorReasons] = useState<any>();
+
 
   useEffect(() => {
     setSelectedValue(props.selectedValue);
+    setSelectedMinorReason(props.selectedMinorReason)
   }, [props.rowData])
 
   const getOuterObjectByKey = (data: any, searchKey: string) => {
     return data[searchKey];
   }
 
-  const extractMind = (data: any, key: string): string[] => {
-    const mindValues: any = [];
-    if (data[key]) {
-      Object.values(data[key]).forEach((majItem: any) => {
-        majItem.min.forEach((minItem: any) => {
-          mindValues.push({
-            'des': minItem.mind,
-            'id': minItem.minid
-          });
-        });
-      });
-    }
-
-    return mindValues;
-  };
-
-
   const initialData = useMemo(() => {
     if (data) {
       const result = getOuterObjectByKey(data?.data?.data, props.data.pln.split(' ')[1]);
       const selectedVal = Object.values(result).map((item: any) => {
-        return { 'des': item.majd, 'id': item.majid }
+        return { 'des': item.majd, 'id': item.majid, 'min': item.min }
       })
-
       return selectedVal
     }
-    return undefined
-
+    return undefined;
   }, [data])
+
+
+  const extractMinDetails = (data: any, keyId: string) => {
+    const item = data.find((d: any) => d.id == keyId);
+    if (item && item.min.length > 0) {
+      const { mind, minid } = item.min[0];
+      return [{ 'des': mind, 'id': minid }];
+    }
+    return null;
+  };
 
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (event.target.value != '') {
+      const minRsnData = extractMinDetails(initialData, event.target.value);
+      props.data["minordropval"] = minRsnData
       props.data["maj"] = event.target.value;
       const rowData = [...props.rowData];
       rowData[props.rowIndex] = props.data;
       props.setRowData(rowData);
-
+      
     }
   };
 
@@ -74,19 +69,16 @@ const CustomCellEditor = (props: any) => {
     else {
       if (data?.status === 200) {
         toast.dismiss();
-        const result = extractMind(data?.data?.data, props.data.pln.split(' ')[1]);
-        setMinorReasons(result);
       }
       else {
         toast.dismiss();
         notifyError("Failed to fetch data!")
       }
     }
-  }, [isLoading, props.data.MajorReason])
+  }, [isLoading])
 
 
   const addObject = (newObject: MyObject) => {
-
     props.handleData(newObject)
   };
 
@@ -101,7 +93,7 @@ const CustomCellEditor = (props: any) => {
         props.data["min"] = null;
         setSelectedMinorReason('');
       }
-      if(props.rowData){
+      if (props.rowData) {
         const rowData = [...props.rowData];
         rowData[props.rowIndex] = props.data;
         props.setRowData(rowData);
@@ -144,18 +136,18 @@ const CustomCellEditor = (props: any) => {
   }
 
   const renderMinorSelect = () => {
-    //console.log('props.data', props.data)
     return (
       <select
         disabled={props.data.maj == undefined}
         style={{ width: '100%', height: '100%', fontSize: '18px', fontFamily: 'Roboto' }}
-        value={props.data.min === null ? selectedMinorReason : props.data.min}
+        //value={props.data.min === null ? selectedMinorReason : props.data.min}
+        value={selectedMinorReason}
         onChange={handleMinorChange}
         defaultValue={''}
       >
         <option value="" disabled>Select Reason</option>
-        {minorReasons && (
-          minorReasons.map((e: any, i: number) => {
+        {(props.data.minordropval) && (
+          props.data.minordropval.map((e: any, i: number) => {
             return (
               <option key={i} value={e.id}>{e.des}</option>
             )

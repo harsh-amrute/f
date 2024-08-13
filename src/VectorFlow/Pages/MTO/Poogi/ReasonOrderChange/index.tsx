@@ -29,7 +29,7 @@ const ReasonForDelayOrder = () => {
     const [remarkHistory, setRemarkHistory] = useState<any>();
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [items, setItems] = useState<any[]>([]);
-    const [disabled, setDisabled] = useState<boolean>(true);
+    //const [disabled, setDisabled] = useState<boolean>(true);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [rowDataCount, setRowDataCount] = useState<number>(0);
     const reportName = 'ReasonForDelayedOrders';
@@ -85,7 +85,6 @@ const ReasonForDelayOrder = () => {
     const getHeaderData = async () => {
         try {
             const response = await getUIConfigData(reportName);
-
             setHeaderData(response.data.data);
         }
         catch (e) {
@@ -129,10 +128,11 @@ const ReasonForDelayOrder = () => {
     }
 
     const handleDataToSave = async (data: any) => {
-        if (data.majid != undefined && data.minid != undefined) {
-            setDisabled(false);
+        console.log('data',data)
+        // if (data.majid != undefined && data.minid != undefined) {
+            //setDisabled(false);
             setItems((prevItem) => [...prevItem, data])
-        }
+        // }
     }
 
     const customHeader = {
@@ -150,7 +150,7 @@ const ReasonForDelayOrder = () => {
             lockPosition: true,
             initialWidth: 300,
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} setRowData={setRowData} 
+                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData} 
                 />
             }
         },
@@ -158,9 +158,8 @@ const ReasonForDelayOrder = () => {
             pinned: "right",
             lockPosition: true,
             minWidth: 300,
-            // cellRenderer: CustomCellEditor,
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} setRowData={setRowData} 
+                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData} 
                 />
             },
             cellRendererParams: {
@@ -203,17 +202,18 @@ const ReasonForDelayOrder = () => {
     }, [isLoading, isWIPChecked])
 
     const updateMajorMinorReason = async () => {
-        // console.log('body to api = ', items)
-        const RemarkHistory: any = await updatePoogiRemarks(items);
+        console.log('body to api = ', items)
+        const RemarkHistory = await updatePoogiRemarks(items);
         if (RemarkHistory.status == 200) {
             setItems([]);
             toast.dismiss();
-            notifySuccess('Successfull')
+            notifySuccess('Successfull');
+            getInitialData(isWIPChecked?true:false,1)
+
         }
     }
 
     const handlePageChange = (currPage: number) => {
-        console.log('first',currPage)
         setCurrentPage(currPage);
         getInitialData(isWIPChecked?true:false,currPage)
     }
@@ -222,7 +222,7 @@ const ReasonForDelayOrder = () => {
         return null;
     }
 
-    // console.log('index.ts', items)
+    //console.log('index.ts', items)
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
     return (
@@ -257,7 +257,7 @@ const ReasonForDelayOrder = () => {
 
 
             <SaveBtnWrapper>
-                <SaveBtn onClick={() => { updateMajorMinorReason() }} disabled={disabled}>
+                <SaveBtn onClick={() => updateMajorMinorReason()}>
                     Save Reasons
                 </SaveBtn>
             </SaveBtnWrapper>
