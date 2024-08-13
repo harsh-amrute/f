@@ -16,7 +16,7 @@ import PlannedReleaseRenderer from './PlannedReleaseRenderer';
 import CustomCellEditor from './MajorDropDownRenderer';
 import { ColorsMTO } from '../../Common/Colors';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
-
+import BPPRenderer from '../../Common/BPPRenderer';
 
 const ReasonForDelayOrder = () => {
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -173,6 +173,9 @@ const ReasonForDelayOrder = () => {
         },
         QuotedDueDate: {
             cellRenderer: PlannedReleaseRenderer,
+        },
+        BPP:{
+            cellRenderer: BPPRenderer,
         }
     }
 

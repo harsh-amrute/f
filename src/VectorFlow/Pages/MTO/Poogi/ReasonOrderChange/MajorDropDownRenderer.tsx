@@ -16,7 +16,7 @@ const CustomCellEditor = (props: any) => {
   const [selectedMinorReason, setSelectedMinorReason] = useState<string>();
   const [minorReasons, setMinorReasons] = useState<any>();
 
-  useEffect(()=>{
+  useEffect(() => {
     setSelectedValue(props.selectedValue);
   }, [props.rowData])
 
@@ -61,14 +61,14 @@ const CustomCellEditor = (props: any) => {
       const rowData = [...props.rowData];
       rowData[props.rowIndex] = props.data;
       props.setRowData(rowData);
-      
+
     }
   };
 
   useEffect(() => {
     if (isLoading) {
       toast.dismiss();
-     
+
     }
     else {
       if (data?.status === 200) {
@@ -131,7 +131,7 @@ const CustomCellEditor = (props: any) => {
       <select
         disabled={props.data.maj == undefined}
         style={{ width: '100%', height: '100%', fontSize: '18px', fontFamily: 'Roboto' }}
-        value={props.data.min===null?selectedMinorReason:props.data.min}
+        value={props.data.min === null ? selectedMinorReason : props.data.min}
         onChange={handleMinorChange}
         defaultValue={''}
       >
@@ -153,14 +153,14 @@ const CustomCellEditor = (props: any) => {
     <>
       <div style={{ height: '100%', display: 'flex', border: '1px solid #707070', borderRadius: '4px', }}>
         <div style={{ width: '90%' }} >
-          {props.colDef.colId === 'MajorReason' ?renderMajorSelect(): renderMinorSelect()}
-          
+          {props.colDef.colId === 'MajorReason' ? renderMajorSelect() : renderMinorSelect()}
+
         </div>
         <div style={{ padding: '10px', alignSelf: 'center' }} onClick={clearSelection}>
-            <img
-              alt="cancel icon"
-              src="/assets/img/mto/reasonForDelay/close.svg" />
-          </div>
+          <img
+            alt="cancel icon"
+            src="/assets/img/mto/reasonForDelay/close.svg" />
+        </div>
       </div>
     </>
   )
