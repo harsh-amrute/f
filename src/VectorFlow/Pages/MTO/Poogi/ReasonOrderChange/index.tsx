@@ -158,7 +158,11 @@ const ReasonForDelayOrder = () => {
             pinned: "right",
             lockPosition: true,
             minWidth: 300,
-            cellRenderer: CustomCellEditor,
+            // cellRenderer: CustomCellEditor,
+            cellRenderer: (props: any) => {
+                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} setRowData={setRowData} 
+                />
+            },
             cellRendererParams: {
                 handleData: (saveobj: any) => handleDataToSave(saveobj)
             }

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useEffect, useState, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { notifyError } from '../../../../../helpers/notify';
@@ -89,12 +90,26 @@ const CustomCellEditor = (props: any) => {
     props.handleData(newObject)
   };
 
-  const clearSelection = () => {
-    console.log('called clearSection');
-    setSelectedValue(''); // Set to empty string to clear selection
-    props.data["min"] = '';
-    setSelectedMinorReason('');
+  const clearSelection = (currRowIndex: any, currColId: any) => {
+
+    if (currRowIndex === props.rowIndex) {
+      if (currColId) {
+        props.data["maj"] = null;
+
+      }
+      else {
+        props.data["min"] = null;
+        setSelectedMinorReason('');
+      }
+      if(props.rowData){
+        const rowData = [...props.rowData];
+        rowData[props.rowIndex] = props.data;
+        props.setRowData(rowData);
+      }
+    }
+
   };
+
 
   const handleMinorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     props.data["min"] = event.target.value;
@@ -159,7 +174,7 @@ const CustomCellEditor = (props: any) => {
           {props.colDef.colId === 'MajorReason' ? renderMajorSelect() : renderMinorSelect()}
 
         </div>
-        <div style={{ padding: '10px', alignSelf: 'center' }} onClick={clearSelection}>
+        <div style={{ padding: '10px', alignSelf: 'center' }} onClick={() => clearSelection(props.rowIndex, props.colDef.colId === 'MajorReason')}>
           <img
             alt="cancel icon"
             src="/assets/img/mto/reasonForDelay/close.svg" />
