@@ -43,8 +43,13 @@ const GridView = () => {
     const gridOptions: GridOptions = {
         groupDefaultExpanded: 0,
         detailRowHeight: 500,
-        rowHeight: 30,
+        rowHeight: 26,
         rowGroupPanelShow: 'always',
+        getRowStyle: (params: any) => {
+            return {
+                background: params.node.rowIndex % 2 === 0 ? "#F4F4F4" : "#FFFFFF",
+            };
+        },
     };
 
     const colDefCustomizations = {

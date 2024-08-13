@@ -6,12 +6,12 @@ export const QUERY_KEYS = {
 }
 
 export const useGetUIConfig = (reportName: string) => {
-    return useQuery(QUERY_KEYS.useGetUIConfig ,async () => {
+    return useQuery(QUERY_KEYS.useGetUIConfig, async () => {
         return DueDateQuotationService.getUIConfig(reportName)
     })
 }
 
-interface DDQInputParams{
+interface DDQInputParams {
     currentPage: number,
     unScheduled: boolean
 }
@@ -68,4 +68,11 @@ export const useGetMarketOperatingLeadTimeMasterData = () => {
         return DueDateQuotationService.getMarketOperatingLeadTimeMasterData()
     })
 }
+
+export const useGetLineCCRDetails = () => {
+    return useMutation(async (body: string[]) => {
+        return DueDateQuotationService.getLineCCRDetails(body)
+    })
+}
+
 

@@ -14,7 +14,7 @@ export namespace DueDateQuotationService {
         })
     }
 
-    export const getOrdersForDDQ = async (currentPage: number,unScheduled: boolean) => {
+    export const getOrdersForDDQ = async (currentPage: number, unScheduled: boolean) => {
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/`, {
             headers: {
                 'Content-Type': 'application/json',
@@ -45,13 +45,13 @@ export namespace DueDateQuotationService {
         })
     }
 
-    export const getRouteDetails = async (route_id:number) => {
+    export const getRouteDetails = async (route_id: number) => {
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getRouteDetails/`, {
             headers: {
                 'Content-Type': 'application/json',
                 //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
             },
-            params:{
+            params: {
                 r_id: route_id
             }
         })
@@ -101,6 +101,18 @@ export namespace DueDateQuotationService {
             },
         })
     }
-  
+
+
+    export const getLineCCRDetails = async (body: string[]) => {
+        return await axios.post(process.env.REACT_APP_VF_API_HOST_MTO + `/getLineCCRDetailsData/`, body, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        })
+    }
+
+
+
 
 }
