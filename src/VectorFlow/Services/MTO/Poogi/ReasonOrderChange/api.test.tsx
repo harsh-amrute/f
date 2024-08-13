@@ -47,5 +47,18 @@ describe('MaterialRequirement', () => {
         expect(response.status).toBe(200);
     });
 
+    it('should make a PUT request with the correct URL and body', async () => {
+        const mockBody = { reason: 'Test reason' };
+        const mockResponse = { data: { success: true } };
+        mockedAxios.put.mockResolvedValue(mockResponse);
+        const result = await ReasonOrderChangeServices.updatePoogiRemarks(mockBody);
+        expect(mockedAxios.put).toHaveBeenCalledWith(
+            `${process.env.REACT_APP_VF_API_HOST_MTO}/updatePoogiReasonsforOrders/`,
+            mockBody,
+            { headers: { 'Content-Type': 'application/json' } }
+        );
+        expect(result).toEqual(mockResponse);
+    });
+
 
 });
