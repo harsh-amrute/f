@@ -46,6 +46,16 @@ describe('Dynamic Release Service', () => {
         const response = await DynamicReleaseManagementService.getDynamicReleaseData({ graph: 1, ao: 0, page: 1 });
         expect(response.status).toBe(200);
     });
+    it('should get orders for DRM for Order for graph', async () => {
+        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await DynamicReleaseManagementService.getDynamicReleaseData({ graph: 1, ao: 0, page: 2 });
+        expect(response.status).toBe(200);
+    });
+    it('should get orders for DRM for All Order for graph', async () => {
+        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await DynamicReleaseManagementService.getDynamicReleaseData({ graph: 1, ao: 1, page: 1 });
+        expect(response.status).toBe(200);
+    });
 
     it('should save the route', async () => {
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
