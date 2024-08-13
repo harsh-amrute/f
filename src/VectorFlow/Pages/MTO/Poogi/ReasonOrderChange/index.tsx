@@ -128,7 +128,7 @@ const ReasonForDelayOrder = () => {
     }
 
     const handleDataToSave = async (data: any) => {
-        console.log('data',data)
+      //  console.log('data',data)
         // if (data.majid != undefined && data.minid != undefined) {
             //setDisabled(false);
             setItems((prevItem) => [...prevItem, data])
@@ -202,7 +202,7 @@ const ReasonForDelayOrder = () => {
     }, [isLoading, isWIPChecked])
 
     const updateMajorMinorReason = async () => {
-        console.log('body to api = ', items)
+        // console.log('body to api = ', items)
         const RemarkHistory = await updatePoogiRemarks(items);
         if (RemarkHistory.status == 200) {
             setItems([]);
