@@ -131,7 +131,7 @@ const CustomCellEditor = (props: any) => {
       <select
         disabled={props.data.maj == undefined}
         style={{ width: '100%', height: '100%', fontSize: '18px', fontFamily: 'Roboto' }}
-        value={props.data.MinRsn===null?selectedMinorReason:props.data.MinRsn}
+        value={props.data.min===null?selectedMinorReason:props.data.min}
         onChange={handleMinorChange}
         defaultValue={''}
       >

@@ -96,7 +96,7 @@ const ReasonForDelayOrder = () => {
     //to get the rowdata for Aggrid
     const getInitialData = async (wipval: boolean,page:number) => {
         try {
-            setCurrentPage(1);
+            //setCurrentPage(1);
             setWIPCheck(wipval)
             const apiResponse = await getPoogiReasonsDelayedOrder({'wip':wipval === true ? 0 : 1,'curr':page});
             setRowDataCount(apiResponse.data?.data?.count);
@@ -150,7 +150,8 @@ const ReasonForDelayOrder = () => {
             lockPosition: true,
             initialWidth: 300,
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} setRowData={setRowData} />
+                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} setRowData={setRowData} 
+                />
             }
         },
         MinorReason: {
