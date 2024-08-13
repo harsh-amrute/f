@@ -5,20 +5,26 @@ export const StepperWrapper = styled.div`
   display: flex;
   justify-content: start;
   font-size: 12px;
-  padding: 2rem 1rem;
+  padding: 2rem 2rem;
   margin: 1.5rem 0;
   gap: 32px;
   border: 1px dashed #707070;
   border-radius: 10px;
   position: relative;
+  &.route-assignment > .step-group > div{
+    flex: 1;
+  }
+  &.buffer-assignment > .step-group > div:nth-of-type(2){
+    flex: 1.5;
+  }
 `;
 
 StepperWrapper.defaultProps = {
-    className: "stepper-container",
+  className: "stepper-container",
 };
 
-export const StepGroup = styled.div<{$step:boolean}>`
-  // flex: 1;
+export const StepGroup = styled.div<{ $step: boolean }>`
+  width: 43%;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -27,10 +33,11 @@ export const StepGroup = styled.div<{$step:boolean}>`
   background: #eae8e8;
   border-radius: 4px;
   position: relative;
-
+ 
+ 
   ${props => {
     return (props.$step &&
-    `&:not(:first-of-type):before {
+      `&:not(:first-of-type):before {
         content: "";
         position: absolute;
         width: 5px;
@@ -67,8 +74,9 @@ export const StepGroup = styled.div<{$step:boolean}>`
         border: 1px solid #82104c;
         left: calc(100% + 5px);
         border-radius: 50%;
-      }`)}
-    }
+      }`)
+  }
+  }
 `;
 
 StepGroup.defaultProps = {

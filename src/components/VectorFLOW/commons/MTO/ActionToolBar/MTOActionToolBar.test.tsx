@@ -150,27 +150,27 @@ describe('MTOActionToolBar Component', () => {
 
   test('renders with multiple selected filters', () => {
     const filters = [
-        { label: 'Plant Name', values: ['Plant 1', 'Plant 2'] },
-        { label: 'Department', values: ['Dept 1'] }
+      { label: 'Plant Name', values: ['Plant 1', 'Plant 2'] },
+      { label: 'Department', values: ['Dept 1'] }
     ];
     render(<MTOActionToolBar selectedFilters={filters} removeFilters={mockRemoveFilters} />);
     filters.forEach(filter => {
-        filter.values.forEach(value => {
-            expect(screen.getByText(value)).toBeInTheDocument();
-        });
+      filter.values.forEach(value => {
+        expect(screen.getByText(value)).toBeInTheDocument();
+      });
     });
-});
+  });
 
-test('calls removeFilters function for each filter value', () => {
+  test('calls removeFilters function for each filter value', () => {
     const filters = [
-        { label: 'Plant Name', values: ['Plant 1'] }
+      { label: 'Plant Name', values: ['Plant 1'] }
     ];
     render(<MTOActionToolBar selectedFilters={filters} removeFilters={mockRemoveFilters} />);
     filters[0].values.forEach(value => {
-        fireEvent.click(screen.getAllByTestId('closeIcon-filter')[0]);
-        expect(mockRemoveFilters).toHaveBeenCalledWith(filters[0].label, value);
+      fireEvent.click(screen.getAllByTestId('closeIcon-filter')[0]);
+      expect(mockRemoveFilters).toHaveBeenCalledWith(filters[0].label, value);
     });
-});
+  });
 
   test('renders Add/Edit Filter button and calls onAddFilter when clicked', () => {
     render(<MTOActionToolBar isAddFilterButton onAddFilter={mockOnAddFilter} selectedFilters={selectedFilters} />);
@@ -210,6 +210,12 @@ test('calls removeFilters function for each filter value', () => {
     expect(excelExportButton).toBeInTheDocument();
   });
 
+  test('renders isReleaseButton button', () => {
+    render(<MTOActionToolBar isReleaseButton />);
+    const isReleaseButton = screen.getAllByAltText('Group 627');
+    expect(isReleaseButton[0]).toBeInTheDocument();
+  });
+
 
   test('renders with different themes', () => {
     render(contextWrapperWithCustomTheme(<MTOActionToolBar isReleaseDate submitDate={mockSubmitDate} date={date} />, "REGALBLAZE"));
@@ -219,7 +225,7 @@ test('calls removeFilters function for each filter value', () => {
   });
 
   test('calls setHorizonDays function when slider value changes', () => {
-    render(contextWrapperWithCustomTheme(<MTOActionToolBar comp="resourceUtilization" setHorizonDays={mockSetHorizonDays} horizonDays={30} themeUi="NOIRFUSION"/>, "NOIRFUSION"));
+    render(contextWrapperWithCustomTheme(<MTOActionToolBar comp="resourceUtilization" setHorizonDays={mockSetHorizonDays} horizonDays={30} themeUi="NOIRFUSION" />, "NOIRFUSION"));
     const slider = screen.getByTestId('range-slider'); // Assuming there's a role slider for VFRangeSlider
     fireEvent.change(slider, { target: { value: 60 } });
     expect(mockSetHorizonDays).toHaveBeenCalledWith(60);
