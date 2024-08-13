@@ -173,7 +173,7 @@ describe('MTOActionToolBar Component', () => {
     expect(excelExportButton).toBeInTheDocument();
   });
 
-  test('renders isReleaseButton Export button', () => {
+  test('renders isReleaseButton button', () => {
     render(<MTOActionToolBar isReleaseButton />);
     const isReleaseButton = screen.getAllByAltText('Group 627');
     expect(isReleaseButton[0]).toBeInTheDocument();
