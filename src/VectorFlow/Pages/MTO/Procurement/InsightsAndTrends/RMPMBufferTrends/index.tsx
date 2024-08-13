@@ -108,7 +108,7 @@ const RMPMBufferTrends = () => {
 
             <MTOActionToolBar comp={"BTRMTO"} isAddFilterButton />
             <HorizontalViewWrapper style={{ marginTop: '20px' }}>
-                <BTRTableWrapper style={{ height: screenHeight - 145, margin: '0' }}>
+                <BTRTableWrapper style={{ height: screenHeight - 165, margin: '0' }}>
                     {
                         (isMTO) ?
                             (<Allotment vertical={false} separator={false}   >

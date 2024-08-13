@@ -120,7 +120,7 @@ const TrailDeptCount = () => {
   return (
     <div
       data-testid="count-graph"
-      style={{ height: "70vh", display: "flex", justifyContent: "left" }}
+      style={{ height: "100%", display: "flex", justifyContent: "left", marginRight: '8px', paddingBottom: '10px' }}
     >
       <SplitGraphContainer
         tableLoading={tableLoading}
@@ -139,30 +139,6 @@ const TrailDeptCount = () => {
         TooltipRenderer={TooltipRenderer}
         graphType={7}
       />
-      <div
-        style={{
-          width: "14px",
-          resize: "none",
-          height: "88%",
-          display: "flex",
-          justifyContent: "right",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            width: "8px",
-            background: "#E8E8E8",
-            height: "88%",
-            borderRadius: "4px 0 0 4px",
-            display: "flex",
-            alignItems: "center",
-            paddingRight: "1px",
-          }}
-        >
-          <img src="/assets/img/mto/RMPMBufferTrend/slider-icon-left.svg" />
-        </div>
-      </div>
     </div>
   );
 };

@@ -57,6 +57,7 @@ import ResourceUtilization from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/R
 import FOLSummary from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FOLSummary'
 import DynamicReleaseManagement from './VectorFlow/Pages/MTO/Production/DynamicReleaseManagement'
 import ReasonForDelayOrder from './VectorFlow/Pages/MTO/Poogi/ReasonOrderChange/index'
+import OTAndIFAnalysis from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/OTAndIFAnalysis'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -127,8 +128,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/poogi/insight-and-trends/otif-analysis',
     '/production-planning-scheduling/insights-and-trends/fol-summary',
     '/production-planning-scheduling/dynamic-release-mangement',
-    '/poogi/insight-and-trends/resource-utilization-wip-profile',
     '/poogi/reasons-for-delayed-orders',
+    '/poogi/insight-and-trends/ot-and-if-analysis'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -686,7 +687,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path:  '/poogi/insight-and-trends/resource-utilization-wip-profile',
+      path: '/poogi/insight-and-trends/resource-utilization-wip-profile',
       element: <AppLayout />,
       children: [
         {
@@ -747,6 +748,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<DueDateQuotation />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/insight-and-trends/ot-and-if-analysis',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OTAndIFAnalysis />)
         },
         ...getStoreTransferModuleRoutes()
       ]

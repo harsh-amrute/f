@@ -212,16 +212,11 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
 
         )
     }
+    console.log(isMTO)
     return (
-        <div style={{ height: "75vh", display: 'flex', justifyContent: 'left' }}>
+        <div style={{ height: "75vh", display: 'flex', justifyContent: 'left', marginLeft: '10px' }}>
 
-            {
-                (isMTO) && (<div style={{ width: "14px", resize: "none", height: "100%", display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
-                    <div style={{ width: '8px', background: '#E8E8E8', height: '88%', borderRadius: "0 4px 4px 0", display: "flex", alignItems: "center" }}>
-                        <img src='/assets/img/mto/RMPMBufferTrend/slider-icon-right.svg' />
-                    </div>
-                </div>)
-            }
+
 
             <SplitGraphContainer
                 tableLoading={tableLoading}
@@ -239,7 +234,6 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRenderer}
                 graphType={3}
-                chartHeight={55}
             />
         </div>
     )

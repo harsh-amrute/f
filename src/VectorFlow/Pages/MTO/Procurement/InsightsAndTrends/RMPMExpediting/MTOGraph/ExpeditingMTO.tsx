@@ -223,9 +223,11 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
     }
 
 
+    console.log(isMTO)
+
 
     return (
-        <div style={{ height: "75vh", display: 'flex', justifyContent: 'left' }}>
+        <div style={{ height: "75vh", display: 'flex', justifyContent: 'left', marginRight: '8px' }}>
 
 
             <SplitGraphContainer
@@ -244,17 +246,8 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRenderer}
                 graphType={2}
-                chartHeight={55}
             />
 
-
-            {
-                (isMTO) && (<div style={{ width: "14px", resize: "none", height: "100%", display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                    <div style={{ width: '8px', background: '#E8E8E8', height: '88%', borderRadius: "4px 0 0 4px", display: "flex", alignItems: "center", paddingRight: "1px" }}>
-                        <img src='/assets/img/mto/RMPMBufferTrend/slider-icon-left.svg' />
-                    </div>
-                </div>)
-            }
 
         </div>
 

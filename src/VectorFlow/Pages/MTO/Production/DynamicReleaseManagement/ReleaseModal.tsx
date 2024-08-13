@@ -1,21 +1,59 @@
+import { useUpdateDynamicReleaseData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement'
 import { SCButton } from '../../../../../components/layouts/NavbarRight/styles'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import { ContentWrapper, Text } from './DynamicReleaseManagement.styled'
+import OverlayLoader from '../../Common/Loader'
+import { useEffect } from 'react'
+import { notifyError, notifySuccess } from '../../../../../helpers/notify'
 
 
-const EditRouteModal = ({ themeUi, showModal, totalOrders, selectedOrders, setShowModal }: any) => {
+const EditRouteModal = ({ dataUpdated, setDataUpdated, rowRelase, order_key, message, themeUi, showModal, selectedOrders, setShowModal }: any) => {
+
+    const { mutateAsync: updateDynamicReleaseData, isLoading, isSuccess, isError } = useUpdateDynamicReleaseData();
 
 
+    useEffect(() => {
+        if (isSuccess) {
+            notifySuccess('Order released successfully!');
+        }
+        if (isError) {
+            notifyError('Failed to release order!');
+        }
+    }, [isSuccess, isError])
+
+    const releaseData = async () => {
+        const body: any = [];
+        if (rowRelase) {
+            body.push(order_key);
+
+        }
+        else {
+            selectedOrders.forEach((e: any) => {
+                body.push(e.ok);
+            })
+        }
+        try {
+            const response = await updateDynamicReleaseData(body)
+            if (response.status === 200) {
+                setDataUpdated(!dataUpdated)
+                setShowModal(false);
+            }
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <VFModalCard key={"key2"} openModal={showModal} closeModal={() => { setShowModal((false)) }} headerText={'Release Orders'} headerIcon={''} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
+            {isLoading && <OverlayLoader message='Releasing order ...' />}
             <ContentWrapper>
                 <Text style={{ height: '20vh', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', padding: '0 80px 20px 80px', fontSize: '16px' }}>
                     <p>
                         Are you sure? Do you want to
                     </p>
                     <p style={{ fontWeight: 'bold' }}>
-                        Release {selectedOrders} selected orders out of {totalOrders} orders?
+                        {message}
                     </p>
 
                 </Text>
@@ -29,7 +67,7 @@ const EditRouteModal = ({ themeUi, showModal, totalOrders, selectedOrders, setSh
                     </div>
                     <div>
 
-                        <SCButton themeUi={themeUi}>
+                        <SCButton onClick={releaseData} themeUi={themeUi}>
                             Yes, Release
                         </SCButton>
                     </div>
