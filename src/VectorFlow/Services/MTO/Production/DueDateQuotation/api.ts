@@ -101,6 +101,32 @@ export namespace DueDateQuotationService {
             },
         })
     }
-  
+
+    export const getLineCCRDetails = async (body: string[]) => {
+        return await axios.post(process.env.REACT_APP_VF_API_HOST_MTO + `/getLineCCRDetailsData/`, body,{
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        }) 
+    }
+    
+    export const updateBuffRouteCCREstDate = async (body: {bufferData: any, routeData: any}) => {
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/UpdateBuffRouteCCREstDate/`, body,{
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        }) 
+    }
+
+    export const updateScheduleOrders = async (body: { orders: any}) => {
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/updateScheduleOrders/`, body,{
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+        }) 
+    }
 
 }

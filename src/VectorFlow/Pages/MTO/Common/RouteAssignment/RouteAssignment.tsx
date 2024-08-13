@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import RadioSelect from '../../../../../components/VectorFLOW/commons/MTO/RadioSelect'
-import { StepGroup, StepperWrapper } from './RouteAssignment.styled'
+import { FOLIcon, StepGroup, StepperWrapper } from './RouteAssignment.styled'
 
 interface IRouteAssignmentProps{
     theme: string,
@@ -11,7 +11,7 @@ interface IRouteAssignmentProps{
     onChange?: (route:any) => void
 }
 
-const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedRoutes, isEditable = true, onChange}: IRouteAssignmentProps) => {
+const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedRoutes, isEditable = true}: IRouteAssignmentProps) => {
     useEffect(() => {
         // let animationFrameId: any;
         const adjustLayout =(containerWidth:number, items:any) =>{
@@ -164,8 +164,16 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
                     value={selectedRoutes[index]?.[0] || null}
                     onChange={(newValue: any)=>{
                         const newGroups = [...selectedRoutes];
-                        newGroups[index] = [newValue,null];
-                        setSelectedRoutes(newGroups);
+                        if(newValue == null || newValue == undefined){
+                            newGroups[index] = null
+                        }else{
+                            newGroups[index] = [newValue,null];
+                        }
+                        // console.log("newValue", newValue);
+                        // console.log("index", index);
+                        // console.log("newGroups", newGroups);
+                        // console.log(newGroups.filter(item => item !== undefined || item !== null))
+                        setSelectedRoutes(newGroups.filter(item => item !== undefined && item !== null));
                     }}
                 />
                 <RadioSelect 
@@ -179,9 +187,12 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
                         const newGroups = [...selectedRoutes];
                         newGroups[index][1] = newValue;
                         setSelectedRoutes(newGroups);
-                        if(onChange){
-                            onChange(newGroups)
-                        }
+                    }}
+                    Icon={(props:any)=>{
+                        const data = props.props.data;
+                        console.log(props);
+                        const color = data.fol === data.minFol? "green": "red";
+                        return <div style={{color:color, display:"flex", alignItems:"center", gap:"5px"}}><FOLIcon width={(data.fol/data.maxFol)*100} color={color}/><span>[{data.fol}]</span></div>
                     }}
                 />
             </StepGroup>

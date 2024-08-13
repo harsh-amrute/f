@@ -1,6 +1,6 @@
 import { GridOptions } from 'ag-grid-enterprise';
 import _ from 'lodash';
-import React from 'react'
+import React, { useEffect } from 'react'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
@@ -11,15 +11,21 @@ interface IStep1Props{
     currentPageSelectedRows: React.MutableRefObject<any>,
     totalRows: React.MutableRefObject<number>,
     currentPage: number,
-    setCurrentPage: React.Dispatch<React.SetStateAction<number>>
+    setCurrentPage: React.Dispatch<React.SetStateAction<number>>,
+    scheduledOrders: any
 }
 
-const Step1 = ({gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage}: IStep1Props) => {
+const Step1 = ({gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, scheduledOrders}: IStep1Props) => {
 
   const handlePageChange = async (currPage: number) => {
     setCurrentPage(currPage)
   }
 
+  useEffect(()=>{
+    scheduledOrders.forEach((order: any)=>{
+      selectedRows.delete(order);
+    })
+  }, [scheduledOrders])
 
   return (
       <>

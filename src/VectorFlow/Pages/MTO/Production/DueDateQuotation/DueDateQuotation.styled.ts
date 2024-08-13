@@ -26,9 +26,11 @@ export const Wrapper = styled.div`
         margin-top: 20px;
     }
     & > div[data-testid="vf_pagination"]{
-        margin-top:-15px;
+        margin-top:-8px;
         margin-bottom: 20px;
         padding: 0;
+        margin-left: 8px;
+        margin-right: 8px;
     }
 `
 
@@ -89,7 +91,7 @@ export const DateRange = styled.div`
     display: flex;
     background: white;
     align-items: center;
-    box-shadow: 0px 3px 12px #AFAFAF29;;
+    box-shadow: 0px 3px 12px #AFAFAF29;
     padding: 0.5rem;
     border-radius: 4px;
     position: relative;
@@ -105,4 +107,31 @@ export const DateRangeLabel = styled.div`
     padding: 1px 4px;
     font-size: 8px;
     border-radius: 4px 4px 0 0;
+`
+
+export const WarningContainer = styled.div`
+    box-shadow:rgba(0, 0, 0, 0.1) 0px 2px 10px 2px;
+`;
+
+export const WarningHeader = styled.div`
+    background: linear-gradient(271deg, #B71C1C, #F04D4D);
+    color: white;
+    padding: 1rem;
+    border-radius: 4px 4px 0 0;
+    font-size:1rem;
+    display:flex;
+`
+
+export const WarningBody = styled.div`
+    background: white;
+    padding:1rem;
+`
+
+export const WarningText = styled.strong`
+    background:#FFF2F9;
+    border: 1px dashed #B71C1C;
+    padding: 1rem;
+    border-radius: 4px;
+    display: block;
+    font-size: 12px;
 `
