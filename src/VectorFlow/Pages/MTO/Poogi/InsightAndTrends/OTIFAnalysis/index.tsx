@@ -17,13 +17,16 @@ import CustomTagTooltip from "./CustomTagTooltip";
 import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { useGetOTIFAnalysisData } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTIFAnalysis";
+import OverlayLoader from '../../../Common/Loader';
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
+
 
 const OTIFAnalysis = () => {
   const [isGridView, setIsGridView] = useState(false);
   const { screenHeight } = useViewPort();
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-  const { mutateAsync: getOTIFAnalysisData } = useGetOTIFAnalysisData()
+  const { mutateAsync: getOTIFAnalysisData, isLoading, isError, isSuccess } = useGetOTIFAnalysisData()
   const [colDef, setColDef] = useState([{}]);
   const [gridData, setGridData] = useState([]);
   const [graphData, setGraphData] = useState<any>({});
@@ -83,6 +86,7 @@ const OTIFAnalysis = () => {
     }
     catch (e) {
       console.log(e);
+      notifyError('Failed to fetch Grid data!');
     }
   }
   
@@ -93,6 +97,7 @@ const OTIFAnalysis = () => {
     }
     catch (e) {
       console.log(e);
+      notifyError('Failed to fetch Graph data!');
     }
   }
 
@@ -107,8 +112,20 @@ const OTIFAnalysis = () => {
     setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
   }, [HeaderData])
 
+  useEffect(() => {
+    if (isSuccess) {
+      notifySuccess("Fetched Data successfully!")
+    }
+    if (isError) {
+      notifyError("Failed to load data!")
+    }
+  }, [isSuccess, isError])
+
   return (
     <div>
+      {
+        isLoading && <OverlayLoader />
+      }
       <MTOActionToolBar
         comp={"stplAndFullKit"}
         isGridView={isGridView}
