@@ -1,20 +1,21 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "allotment/dist/style.css";
 import { AgChartOptions } from "ag-charts-community";
-import { APIMock, graphColumnConfig } from "../MockData";
+import { graphColumnConfig } from "../MockData";
 import { Poogi } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { TooltipRenderer } from "../OTIFCommon";
 
-const OTIFTrendsGraph = () => {
-  const [startDate] = useState(APIMock.graph.otif_graph.start);
-  const [endDate] = useState(APIMock.graph.otif_graph.end);
+const OTIFTrendsGraph = (props: any) => {
+  const { graphData } =props; 
+  const [startDate, setStartDate] = useState('-');
+  const [endDate, setEndDate] = useState('-');
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
-  const [rawData] = useState(APIMock.graph.otif_graph.data);
+  const [rawData, setRawData] = useState([]);
 
   function createSeriesData(val: number) {
     const seriesData: any = [];
@@ -24,7 +25,7 @@ const OTIFTrendsGraph = () => {
       const key = i === 0 ? "otif" : "otif_plus";
       seriesData.push({
         type: "line",
-        xKey: "x_label",
+        xKey: "m",
         yKey: key,
         yName: labels[i],
         lineDash: i === 0 ? null : [5, 5], // 5px dash, 5px gap
@@ -162,6 +163,14 @@ const OTIFTrendsGraph = () => {
       </div>
     );
   };
+
+  useEffect(()=>{
+    if(graphData){
+      setStartDate(graphData.start);
+      setEndDate(graphData.end);
+      setRawData(graphData.data);
+    }
+  },[graphData])
 
   return (
     <div style={{ height: "100%", display: "flex", justifyContent: "left", marginRight: '8px', paddingBottom: '10px' }}>
