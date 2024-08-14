@@ -56,6 +56,7 @@ import OTIFAnalysis from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/OTIFAnal
 import ResourceUtilization from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/ResourceUtilization'
 import FOLSummary from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FOLSummary'
 import DynamicReleaseManagement from './VectorFlow/Pages/MTO/Production/DynamicReleaseManagement'
+import ReasonForDelayOrder from './VectorFlow/Pages/MTO/Poogi/ReasonOrderChange/index'
 import OTAndIFAnalysis from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/OTAndIFAnalysis'
 
 // to show loading state for desired page only instead of the entire screen
@@ -127,6 +128,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/poogi/insight-and-trends/otif-analysis',
     '/production-planning-scheduling/insights-and-trends/fol-summary',
     '/production-planning-scheduling/dynamic-release-mangement',
+    '/poogi/reasons-for-delayed-orders',
     '/poogi/insight-and-trends/ot-and-if-analysis'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
@@ -724,6 +726,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<DynamicReleaseManagement />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/reasons-for-delayed-orders',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ReasonForDelayOrder />)
         },
         ...getStoreTransferModuleRoutes()
       ]

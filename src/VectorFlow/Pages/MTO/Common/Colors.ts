@@ -4,7 +4,7 @@ export const ColorsMTO = {
         label: 'Black'
     },
     Red: {
-        code: '#E53F40',
+        code: '#F02424',
         label: 'Red'
     },
     Yellow: {
@@ -22,5 +22,6 @@ export const ColorsMTO = {
     Orange: { code: '#CB830E', label: 'Orange' },
     Blue: { code: '#355FD3', label: 'Blue' },
     Pink: { code: '#BC3D81', label: 'Pink' },
-    LightGrey: { code: '#C0C0C0', label: 'LightGrey' }
+    LightGrey: { code: '#C0C0C0', label: 'LightGrey' },
+   
 }
