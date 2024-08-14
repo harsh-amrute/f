@@ -2,13 +2,14 @@ import React from 'react'
 import Select, { components, OptionProps } from 'react-select';
 import Radio from '../Radio';
 
-const RadioSelect = ({options ,theme, color="white", ...rest}: any) => {
+const RadioSelect = ({options ,theme, color="white", Icon, ...rest}: any) => {
     const Option = (props: OptionProps<any>) => {
         return (
             <components.Option {...props}>
                 <div style={{ display: "flex", justifyContent: "start", alignItems: "center", textAlign:"left", fontSize:"12px" }}>
                     <Radio theme={theme} defaultChecked={props.isSelected}/>
                     {props.label}
+                    {Icon && <Icon props={props}/>}
                 </div>
             </components.Option>
         );
@@ -58,6 +59,11 @@ const RadioSelect = ({options ,theme, color="white", ...rest}: any) => {
                     }
                 }),
                 dropdownIndicator:(base) => ({
+                    ...base,
+                    color: "grey",
+                    padding: "0"
+                }),
+                clearIndicator: (base) => ({
                     ...base,
                     color: "grey",
                     padding: "0"
