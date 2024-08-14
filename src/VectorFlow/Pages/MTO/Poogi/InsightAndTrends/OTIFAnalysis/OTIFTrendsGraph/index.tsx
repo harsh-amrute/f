@@ -27,13 +27,13 @@ const OTIFTrendsGraph = () => {
         xKey: "x_label",
         yKey: key,
         yName: labels[i],
-        lineDash: i === 0? null : [5, 5], // 5px dash, 5px gap
+        lineDash: i === 0 ? null : [5, 5], // 5px dash, 5px gap
         strokeWidth: 4,
         marker: {
-            enabled: true,
-            shape: 'circle',
-            size: 8,
-            fill: color
+          enabled: true,
+          shape: 'circle',
+          size: 8,
+          fill: color
         },
         strokeOpacity: 1,
         stroke: color,
@@ -88,17 +88,17 @@ const OTIFTrendsGraph = () => {
     ],
 
     legend: {
-        item: {
-            label: {
-                fontSize: 10,
-                fontWeight: 'bold', // Make legend text bold
-            },
-            marker: {
-                size: 15,
-                strokeWidth: 0,
-                shape: "square",
-            },
+      item: {
+        label: {
+          fontSize: 10,
+          fontWeight: 'bold', // Make legend text bold
         },
+        marker: {
+          size: 15,
+          strokeWidth: 0,
+          shape: "square",
+        },
+      },
     },
   };
 
@@ -122,7 +122,7 @@ const OTIFTrendsGraph = () => {
         <div
           data-testid="ot-if-graph"
           style={{
-            fontSize: "16px",
+            fontSize: "13px",
             margin: "0 auto",
 
             textAlign: "center",
@@ -164,7 +164,7 @@ const OTIFTrendsGraph = () => {
   };
 
   return (
-    <div style={{ height: "70vh", display: "flex", justifyContent: "left" }}>
+    <div style={{ height: "100%", display: "flex", justifyContent: "left", marginRight: '8px', paddingBottom: '10px' }}>
       <SplitGraphContainer
         tableLoading={tableLoading}
         chartLoading={chartLoading}
@@ -182,30 +182,6 @@ const OTIFTrendsGraph = () => {
         TooltipRenderer={TooltipRenderer}
         graphType={8}
       />
-      <div
-        style={{
-          width: "14px",
-          resize: "none",
-          height: "88%",
-          display: "flex",
-          justifyContent: "right",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            width: "8px",
-            background: "#E8E8E8",
-            height: "88%",
-            borderRadius: "4px 0 0 4px",
-            display: "flex",
-            alignItems: "center",
-            paddingRight: "1px",
-          }}
-        >
-          <img src="/assets/img/mto/RMPMBufferTrend/slider-icon-left.svg" />
-        </div>
-      </div>
     </div>
   );
 };

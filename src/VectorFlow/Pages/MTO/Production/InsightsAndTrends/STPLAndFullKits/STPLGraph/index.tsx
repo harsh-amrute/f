@@ -55,12 +55,15 @@ const STPLGraph = () => {
         xKey: "ccr",
         yKey: key,
         yName: labels[i],
-        strokeOpacity: isBar ? 0 : 0.25,
+        strokeOpacity: isBar ? 0 : 1.25,
         fill: color,
         stacked: isBar,
         tooltip: {
           renderer: TooltipRenderer,
         },
+        marker: {
+          size: 0
+        }
       });
     }
 
@@ -182,7 +185,7 @@ const STPLGraph = () => {
   }
 
   return (
-    <div style={{ height: "70vh", display: "flex", justifyContent: "left" }}>
+    <div style={{ height: "100%", display: "flex", justifyContent: "left", paddingBottom: '10px', marginRight: '8px' }}>
       <SplitGraphContainer
         tableLoading={tableLoading}
         chartLoading={chartLoading}
@@ -199,32 +202,8 @@ const STPLGraph = () => {
         toggleChart={toggleChart1}
         TooltipRenderer={TooltipRenderer}
         graphType={4}
-        chartHeight={50}
       />
-      <div
-        style={{
-          width: "14px",
-          resize: "none",
-          height: "88%",
-          display: "flex",
-          justifyContent: "right",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            width: "8px",
-            background: "#E8E8E8",
-            height: "88%",
-            borderRadius: "4px 0 0 4px",
-            display: "flex",
-            alignItems: "center",
-            paddingRight: "1px",
-          }}
-        >
-          <img src="/assets/img/mto/RMPMBufferTrend/slider-icon-left.svg" />
-        </div>
-      </div>
+
     </div>
   );
 };

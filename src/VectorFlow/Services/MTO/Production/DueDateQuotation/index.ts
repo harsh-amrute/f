@@ -6,12 +6,12 @@ export const QUERY_KEYS = {
 }
 
 export const useGetUIConfig = (reportName: string) => {
-    return useQuery(QUERY_KEYS.useGetUIConfig ,async () => {
+    return useQuery(QUERY_KEYS.useGetUIConfig, async () => {
         return DueDateQuotationService.getUIConfig(reportName)
     })
 }
 
-interface DDQInputParams{
+interface DDQInputParams {
     currentPage: number,
     unScheduled: boolean
 }
@@ -75,15 +75,4 @@ export const useGetLineCCRDetails = () => {
     })
 }
 
-export const useUpdateBuffRouteCCREstDate = () => {
-    return useMutation(async (body: {bufferData: any, routeData: any}) => {
-        return DueDateQuotationService.updateBuffRouteCCREstDate(body)
-    })
-}
-
-export const useUpdateScheduleOrders = () => {
-    return useMutation(async (body: {orders:any}) => {
-        return DueDateQuotationService.updateScheduleOrders(body)
-    })
-}
 

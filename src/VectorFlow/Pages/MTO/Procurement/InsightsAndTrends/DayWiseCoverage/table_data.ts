@@ -1,7 +1,7 @@
 export const tableData = {
   data: [
     {
-      clr: "Red", //Color Priority
+      clr: "Black", //Color Priority
       on: "BMN1231",
       ord: "23/07/2023",
       odd: "23/07/2023",
@@ -45,7 +45,7 @@ export const tableData = {
       ],
     },
     {
-      clr: "Black", //Color Priority
+      clr: "Red", //Color Priority
       on: "BMN1231",
       ord: "23/07/2023",
       odd: "23/07/2023",

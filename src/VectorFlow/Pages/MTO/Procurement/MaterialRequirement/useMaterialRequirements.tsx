@@ -390,7 +390,8 @@ const useMaterialReq = () => {
         renderView,
         onDateChangeReq,
         onDateSubmitReq,
-        date
+        date,
+        currentTab
         //excelDownload,
         //GetCount
     }

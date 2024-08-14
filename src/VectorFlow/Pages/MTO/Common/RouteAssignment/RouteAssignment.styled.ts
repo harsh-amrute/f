@@ -20,7 +20,7 @@ export const StepperWrapper = styled.div`
 `;
 
 StepperWrapper.defaultProps = {
-    className: "stepper-container",
+  className: "stepper-container",
 };
 
 export const StepGroup = styled.div<{$step:boolean}>`
@@ -33,7 +33,8 @@ export const StepGroup = styled.div<{$step:boolean}>`
   background: #eae8e8;
   border-radius: 4px;
   position: relative;
-
+ 
+ 
   ${props => {
     return (props.$step &&
     `&[data-order="asc"]:not(:first-of-type):before {

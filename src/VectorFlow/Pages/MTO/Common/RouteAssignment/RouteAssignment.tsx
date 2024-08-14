@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import RadioSelect from '../../../../../components/VectorFLOW/commons/MTO/RadioSelect'
 import { FOLIcon, StepGroup, StepperWrapper } from './RouteAssignment.styled'
 
-interface IRouteAssignmentProps{
+interface IRouteAssignmentProps {
     theme: string,
     ccrGroupMaster?: any,
     selectedRoutes?: any,
@@ -217,10 +217,10 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
         <StepGroup $step={true}>
             <StepLabel>Final Product</StepLabel>
         </StepGroup> */}
-        <svg className="line" style={{ position: "absolute", width: "100%", height: "100%", top: "0", left: "0", pointerEvents: "none" }}>
-        </svg>
-    </StepperWrapper>
-  )
+            <svg className="line" style={{ position: "absolute", width: "100%", height: "100%", top: "0", left: "0", pointerEvents: "none" }}>
+            </svg>
+        </StepperWrapper>
+    )
 }
 
 export default RouteAssignment

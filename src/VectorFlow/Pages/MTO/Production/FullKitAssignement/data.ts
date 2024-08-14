@@ -17,7 +17,7 @@ export const fullKitAssignmentData: any = {
     },
     {
       t: "Overloaded",
-      cp: "Red",
+      cp: "Black",
       r: "M1, M2",
       on: "BMN12321",
       oq: "66",
@@ -62,7 +62,7 @@ export const fullKitAssignmentData: any = {
     },
     {
       t: "Underloaded",
-      cp: "Black",
+      cp: "Red",
       r: "M3, M4",
       on: "BMN12321",
       oq: "66",

@@ -639,7 +639,7 @@ export const listMenuParent: any = [
             url: "/production-planning-scheduling/insight-and-trends/order-balance",
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
-          
+
         ]
       },
     ],
@@ -655,7 +655,7 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.poogi.reasonForDelayedOrders",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "",
+        url: "/poogi/reasons-for-delayed-orders",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {
@@ -674,6 +674,12 @@ export const listMenuParent: any = [
             name: "OTIF Analysis",
             img: "/assets/img/nav/arrow_down.svg",
             url: '/poogi/insight-and-trends/otif-analysis',
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
+          {
+            name: "OT & IF Analysis",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: '/poogi/insight-and-trends/ot-and-if-analysis',
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
         ]

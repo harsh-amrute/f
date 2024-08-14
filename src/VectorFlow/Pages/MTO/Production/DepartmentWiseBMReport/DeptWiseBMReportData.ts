@@ -337,8 +337,8 @@ export const AgieingTime: (ColDef | ColGroupDef)[] = [
         headerName: 'Ageing',
         field: 'agng',
         colId: 'agng',
-        cellStyle:{
-            'color':ColorsMTO.Pink.code
+        cellStyle: {
+            'color': ColorsMTO.Pink.code
         }
     }
 ]
@@ -507,7 +507,7 @@ export const deptwiseBMReportData = [
                 "Stck": 100,
                 "WIP": 50,
                 "Gp": 50,
-               
+
             },
             {
                 "FG_Cod": "B126",
@@ -516,7 +516,7 @@ export const deptwiseBMReportData = [
                 "Stck": 100,
                 "WIP": 50,
                 "Gp": 50,
-                
+
             },
             {
                 "FG_Cod": "B127",
@@ -525,7 +525,7 @@ export const deptwiseBMReportData = [
                 "Stck": 100,
                 "WIP": 50,
                 "Gp": 50,
-               
+
             }
         ]
     },

@@ -106,24 +106,7 @@ const TrailDeptBalance = () => {
           width: "100%",
         }}
       >
-        <div
-          data-testid="fullKit-graph"
-          style={{
-            fontSize: "16px",
-            margin: "0 auto",
 
-            textAlign: "center",
-          }}
-        >
-          <span style={{ fontWeight: 500 }}>
-            {`${
-              actBtn.label === "Bal To Mfg."
-                ? ProductionInsightsAndTrendsString.trailDeptMfg
-                : ProductionInsightsAndTrendsString.trailDeptDisp
-            } `}
-          </span>
-          <span style={{ fontWeight: 300 }}>{` (${date})`}</span>
-        </div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <CapsuleWrapper style={{ zoom: 1, padding: "4px" }}>
             <VFCapsule
@@ -144,8 +127,7 @@ const TrailDeptBalance = () => {
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
             <VFInfoToolTip
               infoList={[
-                `The graph highlights trailing department wise quantities balance to ${
-                  actBtn.label === "Bal To Mfg." ? "manufacture" : "dispatch"
+                `The graph highlights trailing department wise quantities balance to ${actBtn.label === "Bal To Mfg." ? "manufacture" : "dispatch"
                 }`,
               ]}
             />
@@ -181,31 +163,9 @@ const TrailDeptBalance = () => {
   return (
     <div
       data-testid="mfg-disp-graph"
-      style={{ height: "70vh", display: "flex", justifyContent: "left" }}
+      style={{ height: "100%", display: "flex", justifyContent: "left", marginLeft: '10px', paddingBottom: '10px' }}
     >
-      <div
-        style={{
-          width: "14px",
-          resize: "none",
-          height: "88%",
-          display: "flex",
-          justifyContent: "left",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            width: "8px",
-            background: "#E8E8E8",
-            height: "88%",
-            borderRadius: "0 4px 4px 0",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <img src="/assets/img/mto/RMPMBufferTrend/slider-icon-right.svg" />
-        </div>
-      </div>
+
       <SplitGraphContainer
         tableLoading={tableLoading}
         chartLoading={chartLoading}
@@ -213,7 +173,10 @@ const TrailDeptBalance = () => {
         setChartLoading={setChartLoading}
         data={rawData}
         rowData={options.data}
-        graphTitle={""}
+        graphTitle={`${actBtn.label === "Bal To Mfg."
+          ? ProductionInsightsAndTrendsString.trailDeptMfg
+          : ProductionInsightsAndTrendsString.trailDeptDisp
+          } ` + ` (${date})`}
         tableTitle={tableTitle}
         options={options}
         colDef={colDefs}

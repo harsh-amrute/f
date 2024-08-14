@@ -3,8 +3,8 @@ import axios from 'axios'
 
 export namespace ProcPlanningService {
 
-    export const GetProcPlanningData = async (date: string) => {
-        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getProcPlanningData/?releaseDate=${date}`, {
+    export const GetProcPlanningData = async (date: string, pageNum: string) => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getProcPlanningData/?releaseDate=${date}&?page=${pageNum}`, {
             headers: { 'Content-Type': 'application/json' }
         });
     }
@@ -18,6 +18,13 @@ export namespace ProcPlanningService {
             headers: { 'Content-Type': 'application/json' }
         });
     }
+
+    export const UpdateProcurementSimulationData = async (body: any) => {
+        return await axios.post(process.env.REACT_APP_VF_API_HOST_MTO + `/UpdateProcurementSimulationData/`, JSON.stringify(body), {
+            headers: { 'Content-Type': 'application/json' }
+        })
+    }
+
 }
 
 
