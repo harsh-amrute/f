@@ -3,7 +3,7 @@ import axios from 'axios';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace MaterialRequirementService {
     export const getMaterialRequirementData = async (data: any) => {
-        console.log(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementDayWiseData/?page=${data.currPage}&releaseDate=${data.releaseDate}`)
+       
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementData/?page=${data.currPage}&releaseDate=${data.releaseDate}`, {
 
             headers: {
@@ -14,7 +14,7 @@ export namespace MaterialRequirementService {
     }
 
     export const getMaterialRequirementDataDayWise = async (data: any) => {
-        console.log(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementDayWiseData/?page=${data.currPage}&releaseDate=${data.releaseDate}`)
+      
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementDayWiseData/?page=${data.currPage}&releaseDate=${data.releaseDate}`, {
             headers: {
                 'Content-Type': 'application/json',

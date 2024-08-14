@@ -20,6 +20,7 @@ import RRRAnalytics from "../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceH
 import BORAnalytics from "../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BuyerOrderReport/BORAnalytics";
 import DBMAnalytics from "../../../VectorFlow/Pages/MTA/DBM/DBMNormSuggestions/DBMAnalytics";
 import AnalyticalScreen from "../../../VectorFlow/Pages/MTO/Procurement/MaterialCoverage/AnalyticalScreen";
+import ReasonsOrderAnalyticalScreen from "../../../VectorFlow/Pages/MTO/Poogi/ReasonOrderChange/ReaonsOrderAnalyticalScreen";
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -276,6 +277,9 @@ const NavbarItem = ({
           <ParticularAvai themeUi={themeUi} />
         )}
 
+        {isHide && pathname === '/poogi/reasons-for-delayed-orders' && menuItem.id === 11 && (
+          <ReasonsOrderAnalyticalScreen/>
+        )}
 
 
         {pathname === "/" || pathname === "/ist-status" ? (

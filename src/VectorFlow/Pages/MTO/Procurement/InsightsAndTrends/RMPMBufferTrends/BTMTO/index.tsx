@@ -19,7 +19,6 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
     const [horizonDays, setHorizondays] = useState(14);
 
     console.log(isMTO)
-    console.log("final MTA ldata:", data)
     useEffect(() => {
         setNumericData(filterDataByDaysGap(data, 0, horizonDays, false))
     }, [data])
@@ -118,7 +117,6 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
             }
 
             const percentageValues = absoluteValues.map(value => (value / total) * 100);
-            console.log("percentValue", percentageValues)
             return percentageValues;
         }
 
