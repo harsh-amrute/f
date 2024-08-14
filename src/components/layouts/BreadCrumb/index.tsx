@@ -38,6 +38,7 @@ const BreadCrumb = () => {
   if (location.pathname === '/production-planning-scheduling/insight-and-trends/stpl-full-kits') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Insight & Trends / STPL & Full Kits</span>
   if (location.pathname === '/production-planning-scheduling/insight-and-trends/order-at-risk') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Insight & Trends / Orders At Risk</span>
   if (location.pathname === '/production-planning-scheduling/insight-and-trends/order-balance') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Insight & Trends / Orders Balance</span>
+  if (location.pathname === '/production-planning-scheduling/insights-and-trends/elapsed-time') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} />Insight & Trends / Elapsed Time</span>
 
   if (location.pathname === '/procurement/material-coverage-open-sales') return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Material Coverage For Open Sales Order</span>
   if (location.pathname === '/procurement-planning/planning') return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Procurement Planning</span>
