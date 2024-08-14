@@ -1,5 +1,5 @@
 import { GridOptions } from 'ag-grid-enterprise';
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { getColumnDefinations } from '../../../../../../../helpers/utils';
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
@@ -9,12 +9,13 @@ import { useGetUIConfigData } from '../../../../../../Services/MTO/Common/UIConf
 import './styles.css'
 import { SCDynamicContainer } from './styles';
 import ColorCellRenderer from '../../../../../MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/ColorCellRenderer';
+import _ from 'lodash';
 const GridView = () => {
     const gridRef = useRef(null);
-    const [colDef, setColDef] = React.useState([{}]);
-    const [HeaderData, setHeaderData] = React.useState(gridColumnConfig);
-    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-    const reportName = "OTIFAnalysis";
+    const HeaderData = gridColumnConfig;
+    // const [HeaderData, setHeaderData] = React.useState(gridColumnConfig);
+    // const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+    // const reportName = "ElapsedTime";
 
     const defaultColDef = {
         // suppressMenu: true,
@@ -66,24 +67,29 @@ const GridView = () => {
         },
     }
 
-    const setColumnDef = async () => {
-        try {
-            const response = await getUIConfigData(reportName);
-            setHeaderData(response?.data?.data);
-        }
-        catch (e) {
-            console.log(e);
-        }
-    }
+    // // const setColumnDef = async () => {
+    // //     try {
+    // //         const response = await getUIConfigData(reportName);
+    // //         setHeaderData(response?.data?.data);
+    // //     }
+    // //     catch (e) {
+    // //         console.log(e);
+    // //     }
+    // // }
 
-    React.useEffect(() => {
-        setColumnDef();
-    }, [])
+    // // React.useEffect(() => {
+    // //     setColumnDef();
+    // // }, [])
 
 
-    React.useEffect(() => {
-        setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
-    }, [HeaderData])
+    // // React.useEffect(() => {
+    const newHeader = _.cloneDeep(HeaderData);
+    console.log('Header Data', HeaderData)
+    console.log('coldef customs', colDefCustomizations);
+
+    const colDef = getColumnDefinations(newHeader, colDefCustomizations)
+    // }, [])
+    // }, [HeaderData])
 
 
 
@@ -98,7 +104,7 @@ const GridView = () => {
                 defaultColDef={defaultColDef}
                 columnDefs={colDef}
                 disableZoomScaling
-                rowData={APIMock?.grid}
+                rowData={APIMock}
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}

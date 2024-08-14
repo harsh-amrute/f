@@ -9,8 +9,8 @@ import Chart from 'react-apexcharts';
 
 interface BoxPlotContainerProps {
     colDef: any,
-    options: AgChartOptions,
-    data: any,
+    options?: AgChartOptions,
+    data?: any,
     rowData: any,
     header: () => JSX.Element,
     graphTitle: string,
@@ -21,7 +21,7 @@ interface BoxPlotContainerProps {
     setChartLoading: Dispatch<SetStateAction<boolean>>,
     hideChart: boolean,
     toggleChart: Dispatch<SetStateAction<boolean>>,
-    TooltipRenderer: (param: any) => string,
+    TooltipRenderer?: (param: any) => string,
     graphType: number,
     date?: string,
     boxChartData?: any,

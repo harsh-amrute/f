@@ -5,7 +5,6 @@ import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VF
 import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../Common/SplitGraphContainer/styles'
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import { AgChartOptions } from 'ag-charts-community'
-import { createSeriesDataIF, getMyColumnDefinitions, IFdata, TooltipRendererIF } from '../Data'
 import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
 import Select from 'react-select'
 
@@ -73,69 +72,12 @@ const WeekWiseGraph = () => {
 
     const [tableLoading, setTableLoading] = useState(false);
     const [chartLoading, setChartLoading] = useState(false);
-    const labels = [
-        { text: "0-20%", color: "#F5B279", key: "0-20%" },
-        { text: "20%-40%", color: "#F09241", key: "20%-40%" },
-        { text: "40%-60%", color: "#E36A00", key: "40%-60%" },
-        { text: "60%-80%", color: "#AD5000", key: "60%-80%" },
-        { text: "80%-100%", color: "#6A3000", key: "80%-100%" }
-    ];
 
-    const colDef: any = getMyColumnDefinitions(labels);
 
 
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 
     const date = apiResponseData?.data?.data;
-    const options: AgChartOptions = {
-        series: createSeriesDataIF(),
-        data: IFdata,
-        axes: [
-            {
-                type: "category",
-                position: "bottom",
-                label: {
-                    fontSize: 7,
-                    fontWeight: "bold",
-                    color: "black",
-                },
-                gridLine: {
-                    enabled: false,
-                },
-            },
-            {
-                title: {
-                    text: "Count Of Orders",
-                    fontFamily: "Roboto",
-                    fontSize: 10,
-                    fontWeight: 600,
-                    fontStyle: 'normal',
-                    spacing: 9
-                },
-                type: "number",
-                line: { enabled: true },
-                position: "left",
-                label: {
-                    fontSize: 8,
-                    fontWeight: "bold",
-                    color: "black",
-                },
-                gridLine: {
-                    enabled: false,
-                },
-            },
-
-        ],
-
-        legend: {
-            item: {
-                label: {
-                    fontSize: 10
-                },
-            },
-        },
-
-    }
 
     const boxChartOptions: any = {
         chart: {
@@ -226,10 +168,49 @@ const WeekWiseGraph = () => {
     ];
 
 
+    const GraphTableData = [
+        { 'week': 'Jul2024-Wk1', 'LW': 1, 'Q1': 3, 'Q2': 4, 'Q3': 7, 'HW': 9 },
+        { 'week': 'Jul2024-Wk2', 'LW': 2, 'Q1': 4, 'Q2': 5, 'Q3': 8, 'HW': 10 },
+        { 'week': 'Jul2024-Wk3', 'LW': 3, 'Q1': 5, 'Q2': 6, 'Q3': 9, 'HW': 11 },
+        { 'week': 'Jul2024-Wk4', 'LW': 4, 'Q1': 6, 'Q2': 7, 'Q3': 10, 'HW': 12 },
+        { 'week': 'Aug2024-Wk1', 'LW': 5, 'Q1': 7, 'Q2': 8, 'Q3': 11, 'HW': 13 },
+        { 'week': 'Aug2024-Wk2', 'LW': 6, 'Q1': 8, 'Q2': 9, 'Q3': 12, 'HW': 14 },
+        { 'week': 'Aug2024-Wk3', 'LW': 7, 'Q1': 9, 'Q2': 10, 'Q3': 13, 'HW': 15 },
+    ]
 
 
-
-
+    const columnDefinitions = [
+        {
+            headerName: 'Week',
+            field: 'week',
+            resizable: true,
+        },
+        {
+            headerName: 'LW',
+            field: 'LW',
+            resizable: true,
+        },
+        {
+            headerName: 'Q1',
+            field: 'Q1',
+            resizable: true,
+        },
+        {
+            headerName: 'Q2',
+            field: 'Q2',
+            resizable: true,
+        },
+        {
+            headerName: 'Q3',
+            field: 'Q3',
+            resizable: true,
+        },
+        {
+            headerName: 'HW',
+            field: 'HW',
+            resizable: true,
+        },
+    ];
 
     return (
         <div style={{ height: "100%", paddingBottom: '20px', display: 'flex', justifyContent: 'left', marginLeft: '10px' }}>
@@ -240,19 +221,16 @@ const WeekWiseGraph = () => {
                 chartLoading={chartLoading}
                 setTableLoading={setTableLoading}
                 setChartLoading={setChartLoading}
-                data={IFdata}
                 boxChartData={chartData}
                 boxChartOptions={boxChartOptions}
-                rowData={IFdata}
+                rowData={GraphTableData}
                 graphTitle={`Department-Wise Elapsed Time Distribution For Closed Orders`}
                 tableTitle={`Department-Wise Elapsed Time Distribution For Closed Orders`}
                 dateStr={`(${moment(date).subtract(90, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
-                options={options}
-                colDef={colDef}
+                colDef={columnDefinitions}
                 header={generateHeader}
                 hideChart={hideChart1}
                 toggleChart={toggleChart1}
-                TooltipRenderer={TooltipRendererIF}
                 graphType={10}
             />
         </div>

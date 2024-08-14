@@ -3,7 +3,6 @@ import { useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../Common/SplitGraphContainer/styles'
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
-import { createSeriesData, data, getMyColumnDefinitions, TooltipRenderer } from '../Data'
 import { AgChartOptions } from 'ag-charts-community'
 import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
 
@@ -37,69 +36,14 @@ const DeptWiseGraph = () => {
     const [tableLoading, setTableLoading] = useState(false);
     const [chartLoading, setChartLoading] = useState(false);
 
-    const labels = [
-        { text: "1-2 days", color: "#F5B279", key: "1-2 days" },
-        { text: "3-7 days", color: "#F09241", key: "3-7 days" },
-        { text: "8-15 days", color: "#E36A00", key: "8-15 days" },
-        { text: "16-30 days", color: "#AD5000", key: "16-30 days" },
-    ];
 
-    const colDef: any = getMyColumnDefinitions(labels);
 
 
 
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 
     const date = apiResponseData?.data?.data;
-    const options: AgChartOptions = {
-        series: createSeriesData(),
-        data: data,
-        axes: [
-            {
-                type: "category",
-                position: "bottom",
-                label: {
-                    fontSize: 7,
-                    fontWeight: "bold",
-                    color: "black",
-                },
-                gridLine: {
-                    enabled: false,
-                },
-            },
-            {
-                title: {
-                    text: "Count Of Orders",
-                    fontFamily: "Roboto",
-                    fontSize: 10,
-                    fontWeight: 600,
-                    fontStyle: 'normal',
-                    spacing: 9
-                },
-                type: "number",
-                line: { enabled: true },
-                position: "left",
-                label: {
-                    fontSize: 10,
-                    fontWeight: "bold",
-                    color: "black",
-                },
-                gridLine: {
-                    enabled: false,
-                },
-            },
 
-        ],
-
-        legend: {
-            item: {
-                label: {
-                    fontSize: 10
-                },
-            },
-        },
-
-    }
 
 
     const boxChartOptions: any = {
@@ -187,6 +131,23 @@ const DeptWiseGraph = () => {
         { x: "P10-Dept 10", y: [4, 7, 10, 13, 16] }
     ];
 
+    const chartTableData = [
+        { dept: 'P1-Dept1', LW: 2, Q1: 4, Q2: 5, Q3: 7, HW: 9 },
+        { dept: 'P2-Dept2', LW: 3, Q1: 5, Q2: 6, Q3: 8, HW: 10 },
+        { dept: 'P3-Dept3', LW: 1, Q1: 3, Q2: 4, Q3: 6, HW: 7 },
+        { dept: 'P4-Dept4', LW: 4, Q1: 6, Q2: 7, Q3: 9, HW: 11 },
+        { dept: 'P5-Dept5', LW: 2, Q1: 4, Q2: 5, Q3: 7, HW: 9 },
+        { dept: 'P6-Dept6', LW: 5, Q1: 7, Q2: 8, Q3: 10, HW: 12 }
+    ];
+
+    const columnDefinitions = [
+        { headerName: 'Department', field: 'dept' },
+        { headerName: 'LW', field: 'LW' },
+        { headerName: 'Q1', field: 'Q1' },
+        { headerName: 'Q2', field: 'Q2' },
+        { headerName: 'Q3', field: 'Q3' },
+        { headerName: 'HW', field: 'HW' }
+    ];
 
 
 
@@ -199,19 +160,16 @@ const DeptWiseGraph = () => {
                 chartLoading={chartLoading}
                 setTableLoading={setTableLoading}
                 setChartLoading={setChartLoading}
-                data={data}
-                rowData={data}
+                rowData={chartTableData}
                 boxChartData={chartData}
                 boxChartOptions={boxChartOptions}
                 graphTitle={`Department-Wise Elapsed Time Distribution For Closed Orders`}
                 tableTitle={`Department-Wise Elapsed Time Distribution For Closed Orders`}
                 dateStr={`(${moment(date).format('D MMM YYYY')})`}
-                options={options}
-                colDef={colDef}
+                colDef={columnDefinitions}
                 header={generateHeader}
                 hideChart={hideChart1}
                 toggleChart={toggleChart1}
-                TooltipRenderer={TooltipRenderer}
                 graphType={11}
             />
 
