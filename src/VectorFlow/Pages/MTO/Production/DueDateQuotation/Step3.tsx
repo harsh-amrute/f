@@ -1,44 +1,76 @@
 import { GridOptions } from 'ag-grid-enterprise'
 import { format } from 'date-fns'
-import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
+import React, { forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { useUpdateScheduleOrders } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import Radio from '../../../../../components/VectorFLOW/commons/MTO/Radio'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import { Arrow, BasketingContainer, BasketingLabel, BasketingLabelText, BasketingSection, DateRange, DateRangeLabel } from './DueDateQuotation.styled'
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
+import * as globalStyles from "../../../../../styles/global";
+import { getColumnDefinations } from '../../../../../helpers/utils';
 
 enum SchedulingType {
     ItemLevel,
     Basket
 }
 
-const Step3 = forwardRef(({ gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, scheduledOrders, setScheduledOrders }: any, ref: any) => {
+const Step3 = forwardRef(({ columnData ,gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, scheduledOrders, setScheduledOrders }: any, ref: any) => {
+
+
+    
+    const customization = {
+        CRDD: {
+            pinned: "right",
+            lockPosition: true,
+            minWidth: 120,
+            cellStyle: {
+                // background: "#BC3D814F",
+                // color: "#BC3D81",
+                color: globalStyles.chooseThemeColor[theme]?.color4,
+                fontWeight: "bold"
+            }
+        },
+        EstimatedDD: {
+            pinned: "right",
+            lockPosition: true,
+            minWidth: 120,
+            cellStyle: {
+                // background: "#BC3D814F",
+                // color: "#BC3D81",
+                color: globalStyles.chooseThemeColor[theme]?.color4,
+                fontWeight: "bold"
+            }
+        },
+    }
+
+    const extras: any = [
+        {
+            field: "",
+            headerCheckboxSelection: true,
+            checkboxSelection: true,
+            suppressMenu: true,
+            maxWidth: 50,
+            position: 0,
+            filter: false
+        }
+    ]
+
+
+    const columnDefs = useMemo(() => {
+        return getColumnDefinations(columnData || [], customization, extras);
+    }, []);
 
     const options: GridOptions = {
         ...gridOptions,
+        columnDefs: columnDefs,
     }
+
+
 
     const [dates, setDates] = useState<any>();
     const [schedulingType, setSchedulingType] = useState(SchedulingType.ItemLevel);
     const gridRef = useRef<any>();
     const { mutateAsync: updateScheduleOrders, } = useUpdateScheduleOrders()
-
-    // console.log(confirmedRows[0].cdd);
-
-    // useEffect(()=>{
-    //     let minDate: any = new Date(confirmedRows[0].cdd);
-    //     let maxDate: any = new Date(confirmedRows[0].cdd);
-    //     confirmedRows.forEach((order:any)=>{
-    //         minDate = new Date(Math.min(new Date(order.cdd) as any, minDate));
-    //         maxDate = new Date(Math.max(new Date(order.cdd) as any, maxDate));
-    //     });
-    //     console.log(minDate);
-    //     console.log(maxDate);
-    //     setDates({
-    //         minDate: format(minDate,"yyyy-MM-dd"),
-    //         maxDate: format(maxDate,"yyyy-MM-dd")
-    //     })
-    // },[])
 
     const calculateReleaseDateAndPostOrderBuffer = (maxDateLno: any, dueDateLno: any, schedulingType: any, order: any) => {
         let ddLno: any;
@@ -53,7 +85,6 @@ const Step3 = forwardRef(({ gridOptions, confirmedRows, setConfirmedRows, theme,
         const prodBuffer = order.prSz || 0;
         const procBuffer = order.pcSz || 0;
         const releaseDateLno = ddLno - prodBuffer - procBuffer - postOrderBuffer + 1;
-        console.log("releaseDateLno", releaseDateLno)
         const releaseDate = WorkingCalender.find((data: any) => {
             return data.ccrId == order.maxFol.ccr_id && data.PlId == order.plid && data.lno == releaseDateLno;
         })?.wd;
@@ -68,7 +99,6 @@ const Step3 = forwardRef(({ gridOptions, confirmedRows, setConfirmedRows, theme,
             const orders = new Set();
             selected.forEach((order: any) => {
                 const [releaseDate, postOrderBuffer] = calculateReleaseDateAndPostOrderBuffer(dates.maxDateLno, order.dueDateLno, schedulingType, order);
-                console.log(releaseDate)
                 obj.push({
                     ok: order.ok,
                     dd: schedulingType === SchedulingType.Basket ? dates.maxDate: order.cdd,
@@ -91,6 +121,7 @@ const Step3 = forwardRef(({ gridOptions, confirmedRows, setConfirmedRows, theme,
             notifySuccess(data.data.msg)
         }
         catch (err) {
+            console.log(err);
             notifyError("Something went wrong!")
         }
 
@@ -100,6 +131,7 @@ const Step3 = forwardRef(({ gridOptions, confirmedRows, setConfirmedRows, theme,
     useImperativeHandle(ref, () => ({
         onScheduled: onScheduled
     }));
+
 
     return (
         <>

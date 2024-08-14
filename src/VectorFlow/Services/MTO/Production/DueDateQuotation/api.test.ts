@@ -83,4 +83,22 @@ describe('OrderRescheduling', () => {
         expect(response.status).toBe(200);
     });
 
+    it('should get Line CCR Master Data', async () => {
+        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await DueDateQuotationService.getLineCCRDetails(['3']);
+        expect(response).toBe(undefined);
+    });
+
+    it('should update updateBuffRouteCCREstDate', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await DueDateQuotationService.updateBuffRouteCCREstDate({bufferData:[""],routeData:[""]});
+        expect(response.status).toBe(200);
+    });
+
+    it('should update updateScheduleOrders', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await DueDateQuotationService.updateScheduleOrders({orders:[""]});
+        expect(response.status).toBe(200);
+    });
+
 });

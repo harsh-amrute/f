@@ -1,6 +1,6 @@
 import { GridOptions } from 'ag-grid-enterprise';
 import _ from 'lodash';
-import React, { useEffect } from 'react'
+import React, { forwardRef, useEffect } from 'react'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
@@ -12,25 +12,29 @@ interface IStep1Props{
     totalRows: React.MutableRefObject<number>,
     currentPage: number,
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>,
-    scheduledOrders: any
+    scheduledOrders: any,
+    setSelectedRows: any
 }
 
-const Step1 = ({gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, scheduledOrders}: IStep1Props) => {
+const Step1 = forwardRef(({gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, scheduledOrders, setSelectedRows}: IStep1Props, ref: any) => {
 
   const handlePageChange = async (currPage: number) => {
     setCurrentPage(currPage)
   }
 
   useEffect(()=>{
+    const newMap = new Map(selectedRows)
     scheduledOrders.forEach((order: any)=>{
-      selectedRows.delete(order);
+      newMap.delete(order);
     })
+    setSelectedRows(newMap)
   }, [scheduledOrders])
 
   return (
       <>
         <VFTable
             key="allRows"
+            ref={ref}
             gridOptions={gridOptions}
             columnDefs={gridOptions.columnDefs}
             rowData={rows}
@@ -51,12 +55,18 @@ const Step1 = ({gridOptions, rows, selectedRows, currentPageSelectedRows, totalR
               params.api.setNodesSelected({ nodes: newCurrentPageSeleceted, newValue: true });
             }}
             onSelectionChanged={(params: any) => {
+              const newMap = new Map(selectedRows);
               _.differenceWith(currentPageSelectedRows.current, params.api.getSelectedNodes(), _.isEqual).forEach((node: any) => {
-                selectedRows.delete(node.data.ok);
+                newMap.delete(node.data.ok);
               }) 
+              //to sort within the same page
+              // params.api.getSelectedNodes().forEach((node: any) => {
+              //   newMap.delete(node.data.ok);
+              // })
               params.api.getSelectedNodes().forEach((node: any) => {
-                  selectedRows.set(node.data.ok, node);
+                newMap.set(node.data.ok, node);
               })
+              setSelectedRows(newMap)
               currentPageSelectedRows.current = params.api.getSelectedNodes();
             }}
         />
@@ -69,6 +79,6 @@ const Step1 = ({gridOptions, rows, selectedRows, currentPageSelectedRows, totalR
         />
     </>
   )
-}
+})
 
 export default Step1

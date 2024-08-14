@@ -17,6 +17,7 @@ import { add, format, max } from 'date-fns';
 import Tooltip from '../../../../../components/VectorFLOW/commons/MTO/Tooltip';
 import { AgChartOptions } from 'ag-charts-community';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
+import * as globalStyles from "../../../../../styles/global";
 
 const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, masters, getMastersData, rowsSelectedForAssignment, setRowsSelectedForAssignment, confirmedRows, setConfirmedRows, lineCCR, setDisabled }: any, ref) => {
     useEffect(() => {
@@ -24,26 +25,26 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         setRowsSelectedForAssignment(false);
     }, []);
 
-    useEffect(()=>{
-        if(masters){
+    useEffect(() => {
+        if (masters) {
             if (confirmedRows) {
                 setRows(confirmedRows.map((row: any) => {
                     return row
                 }))
             }
             else {
-                setRows(Array.from(selectedRows.values()).map((node: any) => {
+                const arr = Array.from(selectedRows.values()).map((node: any) => {
                     if (node.data.rid) {
                         routeLookup.current.set(node.data.rn, node.data.rid);
                     }
                     // calculate leadtime 
-                    if(node.data.cdd){
-                        const marketLeadTime = masters.MarketLeadTimeMaster.find((item:any)=>{
+                    if (node.data.cdd) {
+                        const marketLeadTime = masters.MarketLeadTimeMaster.find((item: any) => {
                             return item.mbot === node.data.mbot && item.itid === node.data.itid;
                         });
 
-                        if(marketLeadTime){
-                            const today = new Date(); 
+                        if (marketLeadTime) {
+                            const today = new Date();
                             today.setHours(0, 0, 0, 0);
                             const newDate = add(today, {
                                 years: 0,
@@ -54,15 +55,40 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                 minutes: 0,
                                 seconds: 0,
                             });
-                                const cdd = new Date(node.data.cdd);
-                                node.data.isOptimalLeadTime = cdd <= newDate;
+                            const cdd = new Date(node.data.cdd);
+                            node.data.isOptimalLeadTime = cdd <= newDate;
                         }
                     }
                     return { ...node.data }
-                }))
+                });
+
+                arr.sort((a, b) => {
+                    // Compare by 'crdd' first
+                    console.log(a);
+                    const aCrdd = new Date(a.cedd);
+                    const bCrdd = new Date(b.cedd);
+                    console.log(aCrdd)
+                    console.log(bCrdd)
+
+                    if (aCrdd < bCrdd) return -1;
+                    if (aCrdd > bCrdd) return 1;
+
+
+
+                    const aOrderIdNum = parseInt(a.oid.replace(/\D/g, ''));
+                    const bOrderIdNum = parseInt(b.oid.replace(/\D/g, ''));
+                    console.log(aOrderIdNum);
+                    console.log(bOrderIdNum);
+                    // If 'crdd' is equal, compare by 'orderId'
+                    if (aOrderIdNum < bOrderIdNum) return -1;
+                    if (aOrderIdNum > bOrderIdNum) return 1;
+
+                    return 0;  // equal values
+                });
+                setRows(arr);
             }
         }
-    },[masters])
+    }, [masters])
 
     const routeDiv = useRef<any>();
     const [routeDivHeight, setRouteDivHeight] = useState<any>();
@@ -91,27 +117,30 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             tooltipField: "rn",
             cellStyle: {
                 // background: "#BC3D814F",
-                color: "#BC3D81",
+                // color: "#BC3D81",
+                color: globalStyles.chooseThemeColor[theme]?.color4,
                 fontWeight: "bold"
             }
         },
         ProductionBuffer: {
             pinned: "right",
             lockPosition: true,
-            minWidth: 120,
+            minWidth: 100,
             cellStyle: {
                 // background: "#BC3D814F",
-                color: "#BC3D81",
+                // color: "#BC3D81",
+                color: globalStyles.chooseThemeColor[theme]?.color4,
                 fontWeight: "bold"
             }
         },
         ProcurementBuffer: {
             pinned: "right",
             lockPosition: true,
-            minWidth: 120,
+            minWidth: 100,
             cellStyle: {
                 // background: "#BC3D814F",
-                color: "#BC3D81",
+                // color: "#BC3D81",
+                color: globalStyles.chooseThemeColor[theme]?.color4,
                 fontWeight: "bold"
             }
         },
@@ -121,7 +150,8 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             minWidth: 120,
             cellStyle: {
                 // background: "#BC3D814F",
-                color: "#BC3D81",
+                // color: "#BC3D81",
+                color: globalStyles.chooseThemeColor[theme]?.color4,
                 fontWeight: "bold"
             }
         },
@@ -131,7 +161,8 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             minWidth: 120,
             cellStyle: {
                 // background: "#BC3D814F",
-                color: "#BC3D81",
+                // color: "#BC3D81",
+                color: globalStyles.chooseThemeColor[theme]?.color4,
                 fontWeight: "bold"
             }
         },
@@ -283,374 +314,424 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     const [no, setNo] = useState(false);
 
     const getRoute = async (route: any) => {
-        if (typeof route === "number") {
-            if (routeCache.current[route]) {
-                return _.cloneDeep(routeCache.current[route])
+        try {
+            if (typeof route === "number") {
+                if (routeCache.current[route]) {
+                    return _.cloneDeep(routeCache.current[route])
+                }
+                const data = await getRouteDetails(route);
+                const routeDetails = data.data.data;
+                routeDetails.sort((a: any, b: any) => a.ps - b.ps)
+                const newRoute: any = []
+                routeDetails.forEach((routeDetail: any) => {
+                    const obj = []
+                    const ccrGroup = masters.ccrGroups.find((ccr: any) => ccr.value === routeDetail.ccrGrpId);
+                    obj[0] = ccrGroup;
+                    obj[1] = ccrGroup.ccrs.find((ccr: any) => ccr.value === routeDetail.ccrId)
+                    newRoute[routeDetail.ps - 1] = obj
+                })
+                routeCache.current[route] = newRoute;
+                return _.cloneDeep(newRoute)
             }
-            const data = await getRouteDetails(route);
-            const routeDetails = data.data.data;
-            routeDetails.sort((a: any, b: any) => a.ps - b.ps)
-            const newRoute: any = []
-            routeDetails.forEach((routeDetail: any) => {
-                const obj = []
-                const ccrGroup = masters.ccrGroups.find((ccr: any) => ccr.value === routeDetail.ccrGrpId);
-                obj[0] = ccrGroup;
-                obj[1] = ccrGroup.ccrs.find((ccr: any) => ccr.value === routeDetail.ccrId)
-                newRoute[routeDetail.ps - 1] = obj
-            })
-            routeCache.current[route] = newRoute;
-            return _.cloneDeep(newRoute)
+            return JSON.parse(route)
         }
-        return JSON.parse(route)
+        catch (err) {
+            console.error(err);
+            notifyError("Something Went Wrong!");
+        }
     }
 
     const getBuffer = (prod_buffer: any, proc_buffer: any) => {
-        const buffer = [null, null];
-        if (prod_buffer.length == 1) {
-            const prodBuff = masters.prodMaster.find((prod: any) => prod.value === prod_buffer[0]);
-            buffer[0] = prodBuff
+        try {
+            const buffer = [null, null];
+            if (prod_buffer.length == 1) {
+                const prodBuff = masters.prodMaster.find((prod: any) => prod.value === prod_buffer[0]);
+                buffer[0] = prodBuff
+            }
+            if (proc_buffer.length == 1) {
+                const procBuff = masters.procMaster.find((proc: any) => proc.value === proc_buffer[0]);
+                buffer[1] = procBuff
+            }
+            return buffer
         }
-        if (proc_buffer.length == 1) {
-            const procBuff = masters.procMaster.find((proc: any) => proc.value === proc_buffer[0]);
-            buffer[1] = procBuff
+        catch (err) {
+            console.error(err);
+            notifyError("Something Went Wrong!");
         }
-        return buffer
     }
 
     const calculateEstimatedDueDate = async (rowData: any) => {
-        const ccr_prev_pending: any = {};
-        const ordersForDDQ = [...rowData]
-        console.log("rowData", ordersForDDQ)
-        const promises = ordersForDDQ.map(async (order: any) => {
-            if (order.prodc && order.rn) {
-                const order_ccr_data: any = {};
+        try {
+            const ccr_prev_pending: any = {};
+            const ordersForDDQ = [...rowData]
+            console.log("rowData", ordersForDDQ)
+            const promises = ordersForDDQ.map(async (order: any) => {
+                if (order.prodc && order.rn) {
+                    const order_ccr_data: any = {};
 
-                const ccrIds: any = [];
+                    const ccrIds: any = [];
 
-                //TODO: if the New Route Does not exist, use the rid --done
-                let route;
+                    //TODO: if the New Route Does not exist, use the rid --done
+                    let route;
 
-                if (order.newRoute) {
-                    route = order.newRoute
-                } else {
-                    route = await getRoute(order.rid);
-                }
-
-                route.forEach((route: any) => {
-                    if (route[1]?.value) {
-                        ccrIds.push(route[1].value)
+                    if (order.newRoute) {
+                        route = order.newRoute
+                    } else {
+                        route = await getRoute(order.rid);
                     }
-                });
 
-                console.log(ccrIds)
-
-                //calculating order load
-                ccrIds.forEach((ccrId: any, index: number) => {
-                    const ccr = masters.CCRMaster.find((ccr: any) => {
-                        return ccr.ccr_id === ccrId
-                    })
-                    // const fol = masters.FOL[ccrId];
-                    const ccrItem = masters?.CCRItemTypeMappingMaster.find((ccr: any) => ccr.ccrId === ccrId && ccr.it == order.itid)
-
-                    let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
-                    ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
-                    // console.log("ccritem", ccrItem)
-                    // console.log("lineCCR[order.ok]?.[ccrId]?.pcqty", lineCCR[order.ok]?.[ccrId]?.pcqty)
-                    // console.log("order.pcqty", order.pcQty)
-                    const orderLoad = Math.ceil((ccrItem.tt * (lineCCR[order.ok]?.[ccrId]?.pcqty || order.pcqty))) || 0
-
-
-                    if (!ccr_prev_pending[ccrId]) {
-                        const ccr_fol_data = masters.FOL[ccrId];
-                        const folInDays = ccr_fol_data.fol;
-                        // console.log("ccr_fol_data",ccr_fol_data)
-                        // console.log("ccrWorkingHoursPerDay", ccrWorkingHoursPerDay)
-                        // console.log("folInDays", folInDays)
-                        // console.log("prev pending",  Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm))
-
-                        ccr_prev_pending[ccrId] = {
-                            ccr_id: ccrId,
-                            prevPend: Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm)
+                    route.forEach((route: any) => {
+                        if (route[1]?.value) {
+                            ccrIds.push(route[1].value)
                         }
-                        console.log("prev pending", Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm))
+                    });
+
+                    console.log(ccrIds)
+
+                    //calculating order load
+                    ccrIds.forEach((ccrId: any, index: number) => {
+                        const ccr = masters.CCRMaster.find((ccr: any) => {
+                            return ccr.ccr_id === ccrId
+                        })
+                        // const fol = masters.FOL[ccrId];
+                        const ccrItem = masters?.CCRItemTypeMappingMaster.find((ccr: any) => ccr.ccrId === ccrId && ccr.it == order.itid)
+
+                        let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
+                        ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
+                        // console.log("ccritem", ccrItem)
+                        // console.log("lineCCR[order.ok]?.[ccrId]?.pcqty", lineCCR[order.ok]?.[ccrId]?.pcqty)
+                        // console.log("order.pcqty", order.pcQty)
+                        const orderLoad = Math.ceil((ccrItem.tt * (lineCCR[order.ok]?.[ccrId]?.pcqty || order.pcqty))) || 0
+
+
+                        if (!ccr_prev_pending[ccrId]) {
+                            const ccr_fol_data = masters.FOL[ccrId];
+                            const folInDays = ccr_fol_data.fol;
+                            // console.log("ccr_fol_data",ccr_fol_data)
+                            // console.log("ccrWorkingHoursPerDay", ccrWorkingHoursPerDay)
+                            // console.log("folInDays", folInDays)
+                            // console.log("prev pending",  Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm))
+
+                            ccr_prev_pending[ccrId] = {
+                                ccr_id: ccrId,
+                                prevPend: Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm)
+                            }
+                            console.log("prev pending", Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm))
+                        }
+                        ccr_prev_pending[ccrId].prevPend = (ccr_prev_pending[ccrId].prevPend) + orderLoad;
+                        order_ccr_data[ccrId] = {
+                            ccr_id: ccrId,
+                            ccrgrp: ccr?.ccr_group,
+                            orderLoad: orderLoad || 0,
+                            pos: index + 1,
+                            pcQty: lineCCR[order.ok]?.[ccrId]?.pcqty || order.pcqty || 0,
+                            folSpan: ((ccr_prev_pending[ccrId].prevPend)) / (ccrWorkingHoursPerDay * 60),
+                        }
+
+                        // console.log("ccr_prev_pending", ccr_prev_pending)
+                        // console.log(ccrId, "orderLoad", order_ccr_data[ccrId].orderLoad, "folSpan" ,order_ccr_data[ccrId].folSpan, "order pending qty",row.pcqty, "ccr tt", ccrItem.tt, "ccrWorkingHoursPerDay" ,ccrWorkingHoursPerDay)                     
+                    });
+
+                    order.CCRData = _.cloneDeep(order_ccr_data);
+
+
+
+                    console.log("order_ccr_data", order_ccr_data)
+
+
+                    //DDIndex
+                    const maxFol: any = Object.values(order_ccr_data).reduce((prev: any, current: any) => (current.folSpan > prev.folSpan) ? current : prev);
+
+                    console.log(maxFol);
+                    console.log(order.plid);
+                    console.log(order);
+
+                    // const formattedDate = format(new Date(), 'yyyy-MM-dd');
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    // console.log()
+
+                    const latestWorkingDayLno = masters.WorkingCalender.find((data: any) => {
+                        return new Date(data.wd) >= today && data.ccrId == maxFol.ccr_id && data.PlId == order.plid
+                    })?.lno;
+
+                    console.log("latestWorkingDayLno", latestWorkingDayLno)
+
+                    const residualBuffer = parseFloat(masters?.CCRMaster.find((ccr: any) => ccr.ccr_id == maxFol.ccr_id)?.residual_buffer);
+
+                    const prodBufferSize = order.prSz || 0;
+                    const procBufferSize = order.pcSz || 0;
+
+                    //optimise the logic
+                    const folDDIndex = Math.ceil(latestWorkingDayLno + maxFol.folSpan + (residualBuffer * prodBufferSize)) - 1;
+                    const folDD = masters.WorkingCalender.find((data: any) => {
+                        return data.lno == folDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == order.plid
+                    })?.wd;
+
+                    const bufferDDIndex = latestWorkingDayLno + procBufferSize + prodBufferSize;
+                    const bufferDD = masters.WorkingCalender.find((data: any) => {
+                        return data.lno == bufferDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == order.plid
+                    })?.wd;
+
+                    console.log("prodBufferSize", prodBufferSize)
+                    console.log("procBufferSize", procBufferSize)
+                    console.log("residualBuffer", residualBuffer)
+                    console.log("max fol span", maxFol.folSpan)
+                    // console.log(folDDIndex, bufferDDIndex)
+
+                    console.log(folDDIndex)
+                    console.log(bufferDDIndex)
+
+                    const crDD = order.crdd;
+                    const crDDIndex = masters.WorkingCalender.find((data: any) => {
+                        return data.ccrId == maxFol.ccr_id && data.PlId == order.plid && new Date(data.wd) >= new Date(crDD)
+                    })?.lno || -Infinity;
+
+
+                    const crddFlag = 0
+                    let maxDate;
+
+                    if (crddFlag) {
+                        maxDate = max([folDD, bufferDD, crDD]);
+                    } else {
+                        maxDate = max([folDD, bufferDD]);
                     }
-                    ccr_prev_pending[ccrId].prevPend = (ccr_prev_pending[ccrId].prevPend) + orderLoad;
-                    order_ccr_data[ccrId] = {
-                        ccr_id: ccrId,
-                        ccrgrp: ccr?.ccr_group,
-                        orderLoad: orderLoad || 0,
-                        pos: index + 1,
-                        pcQty: lineCCR[order.ok]?.[ccrId]?.pcqty || order.pcqty || 0,
-                        folSpan: ((ccr_prev_pending[ccrId].prevPend)) / (ccrWorkingHoursPerDay * 60),
+
+                    // console.log(maxDate);
+
+                    order.cdd = format(maxDate, 'yyyy-MM-dd');
+                    console.log(folDDIndex, bufferDDIndex, crDDIndex)
+                    order.dueDateLno = Math.max(folDDIndex, bufferDDIndex, crDDIndex);
+                    order.maxFol = maxFol;
+
+                    // console.log("maxDate", format(maxDate, 'yyyy-MM-dd'));
+                    const marketLeadTime = masters.MarketLeadTimeMaster.find((item: any) => {
+                        return item.mbot === order.mbot && item.itid === order.itid;
+                    });
+
+                    if (marketLeadTime) {
+                        // const optimalLeadTime = 
+                        const newDate = add(today, {
+                            days: marketLeadTime.lt || 0,
+                        })
+                        order.isOptimalLeadTime = maxDate <= newDate;
+                        // console.log(marketLeadTime);
                     }
-
-                    // console.log("ccr_prev_pending", ccr_prev_pending)
-                    // console.log(ccrId, "orderLoad", order_ccr_data[ccrId].orderLoad, "folSpan" ,order_ccr_data[ccrId].folSpan, "order pending qty",row.pcqty, "ccr tt", ccrItem.tt, "ccrWorkingHoursPerDay" ,ccrWorkingHoursPerDay)                     
-                });
-
-                order.CCRData = _.cloneDeep(order_ccr_data);
-
-
-
-                console.log("order_ccr_data", order_ccr_data)
-
-
-                //DDIndex
-                const maxFol: any = Object.values(order_ccr_data).reduce((prev: any, current: any) => (current.folSpan > prev.folSpan) ? current : prev);
-
-                console.log(maxFol);
-                console.log(order.plid);
-                console.log(order);
-
-                // const formattedDate = format(new Date(), 'yyyy-MM-dd');
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-
-                // console.log()
-
-                const latestWorkingDayLno = masters.WorkingCalender.find((data: any) => {
-                    return new Date(data.wd) >= today && data.ccrId == maxFol.ccr_id && data.PlId == order.plid
-                })?.lno;
-
-                console.log("latestWorkingDayLno", latestWorkingDayLno)
-
-                const residualBuffer = parseFloat(masters?.CCRMaster.find((ccr: any) => ccr.ccr_id == maxFol.ccr_id)?.residual_buffer);
-
-                const prodBufferSize = order.prSz || 0;
-                const procBufferSize = order.pcSz || 0;
-
-                //optimise the logic
-                const folDDIndex = Math.ceil(latestWorkingDayLno + maxFol.folSpan + (residualBuffer * prodBufferSize)) - 1;
-                const folDD = masters.WorkingCalender.find((data: any) => {
-                    return data.lno == folDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == order.plid
-                })?.wd;
-
-                const bufferDDIndex = latestWorkingDayLno + procBufferSize + prodBufferSize;
-                const bufferDD = masters.WorkingCalender.find((data: any) => {
-                    return data.lno == bufferDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == order.plid
-                })?.wd;
-
-                console.log("prodBufferSize", prodBufferSize)
-                console.log("procBufferSize", procBufferSize)
-                console.log("residualBuffer", residualBuffer)
-                console.log("max fol span", maxFol.folSpan)
-                // console.log(folDDIndex, bufferDDIndex)
-
-                console.log(folDDIndex)
-                console.log(bufferDDIndex)
-
-                const crDD = order.crdd;
-                const crDDIndex = masters.WorkingCalender.find((data: any) => {
-                    return data.ccrId == maxFol.ccr_id && data.PlId == order.plid && new Date(data.wd) >= new Date(crDD)
-                })?.lno || -Infinity;
-
-
-                const crddFlag = 0
-                let maxDate;
-
-                if (crddFlag) {
-                    maxDate = max([folDD, bufferDD, crDD]);
-                } else {
-                    maxDate = max([folDD, bufferDD]);
                 }
+                return order
+            });
 
-                // console.log(maxDate);
+            await Promise.all(promises);
 
-                order.cdd = format(maxDate, 'yyyy-MM-dd');
-                console.log(folDDIndex, bufferDDIndex, crDDIndex)
-                order.dueDateLno = Math.max(folDDIndex, bufferDDIndex, crDDIndex);
-                order.maxFol = maxFol;
-
-                // console.log("maxDate", format(maxDate, 'yyyy-MM-dd'));
-                const marketLeadTime = masters.MarketLeadTimeMaster.find((item: any) => {
-                    return item.mbot === order.mbot && item.itid === order.itid;
-                });
-
-                if(marketLeadTime){
-                    // const optimalLeadTime = 
-                    const newDate = add(today, {
-                        days: marketLeadTime.lt || 0,
-                    })
-                    order.isOptimalLeadTime = maxDate <= newDate;
-                    // console.log(marketLeadTime);
-                }   
-            }
-            return order
-        });
-
-        await Promise.all(promises);
-
-        return ordersForDDQ
+            return ordersForDDQ
+        }
+        catch (err) {
+            console.error(err);
+            notifyError("Something Went Wrong!");
+        }
     }
 
 
     const onSave = () => {
-        if (isEditable) {
-            const selectedOrders = new Set(gridRef.current.api.getSelectedRows().map((row: any) => row.ok));
-            const formattedRoute = formatRoute(selectedRoute);
-            const prodBuffer = selectedBuffers[0];
-            const procBuffer = selectedBuffers[1];
+        try {
+            if (isEditable) {
+                const selectedOrders = new Set(gridRef.current.api.getSelectedRows().map((row: any) => row.ok));
+                const formattedRoute = formatRoute(selectedRoute);
+                const prodBuffer = selectedBuffers[0];
+                const procBuffer = selectedBuffers[1];
 
-            const newRows = rows.map((row: any) => {
-                if (selectedOrders.has(row.ok)) {
-                    //update the routes in all the orders
-                    row.rn = formattedRoute;
-                    row.newRoute = selectedRoute;
-                    //update the buffers in all the orders
-                    row.nprid = prodBuffer?.value
-                    row.npcid = procBuffer?.value
+                const newRows = rows.map((row: any) => {
+                    if (selectedOrders.has(row.ok)) {
+                        //update the routes in all the orders
+                        row.rn = formattedRoute;
+                        row.newRoute = selectedRoute;
+                        //update the buffers in all the orders
+                        row.nprid = prodBuffer?.value
+                        row.npcid = procBuffer?.value
 
-                    row.prodc = prodBuffer?.label
-                    row.procc = procBuffer?.label
+                        row.prodc = prodBuffer?.label
+                        row.procc = procBuffer?.label
 
-                    row.prSz = prodBuffer?.size;
-                    row.pcSz = procBuffer?.size;
+                        row.prSz = prodBuffer?.size;
+                        row.pcSz = procBuffer?.size;
 
-                    row.updated = true;
-                }
-                return row
-            });
+                        row.updated = true;
+                    }
+                    return row
+                });
 
-            calculateEstimatedDueDate(newRows).then((data) => {
-                setRows(data);
-                setSelectedBuffers([])
-                setSelectedRoute([])
-                setRowsSelectedForAssignment(false);
-            })
+                calculateEstimatedDueDate(newRows).then((data) => {
+                    if(data){
+                        setRows(data);
+                        setSelectedBuffers([])
+                        setSelectedRoute([])
+                        setRowsSelectedForAssignment(false);
+                    }
+                })
 
 
 
+            }
+            setIsEditable(!isEditable);
         }
-        setIsEditable(!isEditable);
-
+        catch (err) {
+            console.error(err);
+            notifyError("Something Went Wrong!");
+        }
     }
     const onReset = async () => {
-        const selectedOrders = new Set(gridRef.current.api.getSelectedRows().map((row: any) => row.ok));
-        const newRows = [...rows];
+        try {
+            const selectedOrders = new Set(gridRef.current.api.getSelectedRows().map((row: any) => row.ok));
+            const newRows = [...rows];
 
-        const promises = newRows.map(async (row) => {
-            if (selectedOrders.has(row.ok)) {
-                // Unset the modified values
-                row.newRoute = undefined;
-                row.nprid = undefined;
-                row.npcid = undefined;
+            const promises = newRows.map(async (row) => {
+                if (selectedOrders.has(row.ok)) {
+                    // Unset the modified values
+                    row.newRoute = undefined;
+                    row.nprid = undefined;
+                    row.npcid = undefined;
 
-                try {
-                    // Retrieve route and format it
-                    const route = await getRoute(row.rid);
-                    row.rn = formatRoute(route);
+                    try {
+                        // Retrieve route and format it
+                        const route = await getRoute(row.rid);
+                        row.rn = formatRoute(route);
 
-                    // Retrieve buffer data
-                    const buffer: any = await getBuffer([row.prid], [row.pcid]);
-                    row.prodc = buffer[0]?.label || "";
-                    row.procc = buffer[1]?.label || "";
-                    row.prSz = buffer[0]?.size;
-                    row.pcSz = buffer[1]?.size;
+                        // Retrieve buffer data
+                        const buffer: any = await getBuffer([row.prid], [row.pcid]);
+                        row.prodc = buffer[0]?.label || "";
+                        row.procc = buffer[1]?.label || "";
+                        row.prSz = buffer[0]?.size;
+                        row.pcSz = buffer[1]?.size;
 
-                    //TODO: reset Estimated Due Date too!
-                    row.CCRData = undefined;
+                        //TODO: reset Estimated Due Date too!
+                        row.CCRData = undefined;
 
 
-                    row.updated = false;
-                } catch (error) {
-                    console.error(`Error fetching data for row ${row}:`, error);
+                        row.updated = false;
+                    } catch (error) {
+                        console.error(`Error fetching data for row ${row}:`, error);
+                    }
                 }
-            }
-        });
+            });
 
-        // Wait for all promises to resolve
-        await Promise.all(promises);
-        setRows(newRows);
-        setSelectedBuffers([])
-        setSelectedRoute([])
-        setRowsSelectedForAssignment(false);
+            // Wait for all promises to resolve
+            await Promise.all(promises);
+            setRows(newRows);
+            setSelectedBuffers([])
+            setSelectedRoute([])
+            setRowsSelectedForAssignment(false);
+        }
+        catch (err) {
+            console.error(err);
+            notifyError("Something Went Wrong!");
+        }
     }
 
 
     const formatRoute = (route: any) => {
-        let formattedRoute: any = []
-        route.forEach((route: any) => {
-            if (route[1]?.label) {
-                formattedRoute.push(route[1]?.label);
-            }
-        })
-        formattedRoute = formattedRoute.join("/");
-        return formattedRoute
+        try {
+            let formattedRoute: any = []
+            route.forEach((route: any) => {
+                if (route[1]?.label) {
+                    formattedRoute.push(route[1]?.label);
+                }
+            })
+            formattedRoute = formattedRoute.join("/");
+            return formattedRoute
+        }
+        catch (err) {
+            console.error(err);
+            notifyError("Something Went Wrong!");
+        }
+
     }
 
     const loadGraph = (selectedRoute: any) => {
-        const ccrIds: any = [];
-        selectedRoute.forEach((route: any) => {
-            if (route?.[1])
-                ccrIds.push(route[1]?.value);
-        })
-
-        const orderLoadOfCCRs: any = {}
-
-        newSelectedRows?.rows?.forEach((order: any) => {
-            ccrIds.forEach((ccrId: any) => {
-                const ccr = masters.CCRMaster.find((ccr: any) => {
-                    return ccr.ccr_id === ccrId
-                })
-                let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "1";
-                ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
-
-                const ccrItemTypeMapping = masters?.CCRItemTypeMappingMaster.find((ccr: any) => ccr.ccrId === ccrId && ccr.it == order.itid)
-                // console.log(JSON.parse(JSON.stringify(orderLoadOfCcrs)))
-
-                const orderLoadInDays = ((orderLoadOfCCRs[ccrId]?.orderLoad || 0) * 1.0) + ((ccrItemTypeMapping?.tt || 1) * order.pcqty) / (ccrWorkingHoursPerDay * 60);
-
-                const ccrFolInDays = masters.FOL[ccrId]?.fol;
-
-                const today: any = new Date();
-                today.setHours(0, 0, 0, 0);
-
-                // TODO: Check if plant id is also to be matched
-                const latestWorkingDayLno = masters.WorkingCalender.find((data: any) => {
-                    return new Date(data.wd) >= today && data.ccrId == ccrId
-                })?.lno;
-
-                const folIndex = latestWorkingDayLno + ccrFolInDays - 1;
-
-                const folDD: any = masters.WorkingCalender.find((data: any) => {
-                    return data.lno == folIndex && data.ccrId == ccrId
-                })?.wd;
-
-                
-
-                const diffDays: any = dateDiffInDays(today, new Date(folDD));
-
-                orderLoadOfCCRs[ccrId] = {
-                    ccrId,
-                    ccr_name: ccr.ccr_name,
-                    orderLoad: orderLoadInDays,
-                    ccrFolInDays: diffDays
-                }
+        try {
+            const ccrIds: any = [];
+            selectedRoute.forEach((route: any) => {
+                if (route?.[1])
+                    ccrIds.push(route[1]?.value);
             })
-        });
 
-        // console.log(JSON.parse(JSON.stringify(orderLoadOfCCRs)))
+            const orderLoadOfCCRs: any = {}
+
+            newSelectedRows?.rows?.forEach((order: any) => {
+                ccrIds.forEach((ccrId: any) => {
+                    const ccr = masters.CCRMaster.find((ccr: any) => {
+                        return ccr.ccr_id === ccrId
+                    })
+                    let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "1";
+                    ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
+
+                    const ccrItemTypeMapping = masters?.CCRItemTypeMappingMaster.find((ccr: any) => ccr.ccrId === ccrId && ccr.it == order.itid)
+                    // console.log(JSON.parse(JSON.stringify(orderLoadOfCcrs)))
+
+                    const orderLoadInDays = ((orderLoadOfCCRs[ccrId]?.orderLoad || 0) * 1.0) + ((ccrItemTypeMapping?.tt || 1) * order.pcqty) / (ccrWorkingHoursPerDay * 60);
+
+                    const ccrFolInDays = masters.FOL[ccrId]?.fol;
+
+                    const today: any = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    // TODO: Check if plant id is also to be matched
+                    const latestWorkingDayLno = masters.WorkingCalender.find((data: any) => {
+                        return new Date(data.wd) >= today && data.ccrId == ccrId
+                    })?.lno;
+
+                    const folIndex = latestWorkingDayLno + ccrFolInDays - 1;
+
+                    const folDD: any = masters.WorkingCalender.find((data: any) => {
+                        return data.lno == folIndex && data.ccrId == ccrId
+                    })?.wd;
 
 
-        setChartData(Object.values(orderLoadOfCCRs).map((order: any) => {
-            return { ...order, orderLoad: Math.ceil(order.orderLoad) }
-        }))
+
+                    const diffDays: any = dateDiffInDays(today, new Date(folDD));
+
+                    orderLoadOfCCRs[ccrId] = {
+                        ccrId,
+                        ccr_name: ccr.ccr_name,
+                        orderLoad: orderLoadInDays,
+                        ccrFolInDays: diffDays
+                    }
+                })
+            });
+
+            // console.log(JSON.parse(JSON.stringify(orderLoadOfCCRs)))
+
+
+            setChartData(Object.values(orderLoadOfCCRs).map((order: any) => {
+                return { ...order, orderLoad: Math.ceil(order.orderLoad) }
+            }))
+        }
+        catch (err) {
+            console.error(err);
+            notifyError("Something Went Wrong!");
+        }
     }
 
     // Label formatter function
     function labelFormatter(params: any) {
-        const today = new Date();
-        const value = parseInt(params.value);
+        try {
+            const today = new Date();
+            const value = parseInt(params.value);
 
-        // console.log(today)
+            // console.log(today)
 
-        if (value == 0) {
-            return format(today, "dd MMM yy");  // Returns today's date
-        } else if (value > 0) {
-            // const futureDate = addDays(today, value);
-            const futureDate = add(today, { days: value });
-            // console.log(value,futureDate)
-            return format(futureDate, "dd MMM yy");  // Returns future date
+            if (value == 0) {
+                return format(today, "dd MMM yy");  // Returns today's date
+            } else if (value > 0) {
+                // const futureDate = addDays(today, value);
+                const futureDate = add(today, { days: value });
+                // console.log(value,futureDate)
+                return format(futureDate, "dd MMM yy");  // Returns future date
+            }
+        }
+        catch (err) {
+            console.error(err);
+            notifyError("Something Went Wrong!");
         }
     }
 
@@ -676,44 +757,49 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         loadGraph(selectedRoute)
     }, [selectedRoute])
 
-    useEffect(()=>{
-        const filteredRows = rows?.filter((row: any)=>{
+    useEffect(() => {
+        const filteredRows = rows?.filter((row: any) => {
             return row.cdd ? false : true
         }) || [];
         setDisabled(filteredRows.length != 0)
-    },[rows])
+    }, [rows])
 
     const onConfirm = async () => {
         try {
             const bufferAssignmentObj: any = [];
             const routeAssignmentObj: any = []
             rows.forEach((row: any) => {
-                bufferAssignmentObj.push({
-                    ok: row.ok,
-                    proc_id: row.nprid,
-                    prod_id: row.npcid,
-                    estdd: row.cdd,
-                })
-                routeAssignmentObj.push({
-                    route: row.rn,
-                    ok: row.ok,
-                    ccrdetails: Object.values(row.CCRData).map((ccr: any) => {
-                        const temp = _.cloneDeep(ccr);
-                        temp.ccrid = ccr.ccr_id;
-                        temp.ol = ccr.orderLoad
-                        delete temp["ccr_id"];
-                        delete temp["folSpan"];
-                        delete temp["orderLoad"];
-                        return temp;
+                if (row.updated) {
+                    bufferAssignmentObj.push({
+                        ok: row.ok,
+                        proc_id: row.nprid,
+                        prod_id: row.npcid,
+                        estdd: row.cdd,
                     })
-                })
+                    routeAssignmentObj.push({
+                        route: row.rn,
+                        ok: row.ok,
+                        ccrdetails: Object.values(row.CCRData).map((ccr: any) => {
+                            const temp = _.cloneDeep(ccr);
+                            temp.ccrid = ccr.ccr_id;
+                            temp.ol = ccr.orderLoad
+                            delete temp["ccr_id"];
+                            delete temp["folSpan"];
+                            delete temp["orderLoad"];
+                            return temp;
+                        })
+                    })
+                }
             })
             console.log("bufferAssignmentObj", bufferAssignmentObj);
             console.log("routeAssignmentObj", routeAssignmentObj);
-            const data = await updateBuffRouteCCREstDate({ bufferData: { ordData: bufferAssignmentObj }, routeData: { orders: routeAssignmentObj } });
-            notifySuccess(data.data.msg)
+            if (bufferAssignmentObj.length != 0 || routeAssignmentObj.length != 0) {
+                const data = await updateBuffRouteCCREstDate({ bufferData: { ordData: bufferAssignmentObj }, routeData: { orders: routeAssignmentObj } });
+                notifySuccess(data.data.msg)
+            }
         }
         catch (err) {
+            console.log(err)
             notifyError("Something went wrong")
         }
         setConfirmedRows(rows);
@@ -731,6 +817,14 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         return [current, total]
     }, [rows, newSelectedRows?.rows])
 
+
+    const isSaveDisabled = useMemo(() => {
+        const isDisabled = selectedRoute.some((route: any) => {
+            return !route[0] || !route[1];
+        });
+        return isDisabled;
+    }, [selectedRoute, selectedBuffers])
+
     return (
         <>
             <Allotment vertical separator ref={allotment} snap={false} proportionalLayout={false}>
@@ -744,62 +838,67 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             columnDefs={options.columnDefs}
                             rowData={rows}
                             onSelectionChanged={async (params: GridReadyEvent) => {
-                                setIsEditable(false);
-                                setNo(false)
-                                const selected = params.api.getSelectedRows();
-                                if (selected.length) {
-                                    setRowsSelectedForAssignment(true);
-                                } else {
-                                    setSelectedBuffers([])
-                                    setSelectedRoute([])
-                                    setRowsSelectedForAssignment(false);
-                                    return
-                                }
-                                const selectedRoutes: any = new Set();
-                                const selectedProdBuffer: any = new Set();
-                                const selectedProcBuffer: any = new Set();
+                                try {
+                                    setIsEditable(false);
+                                    setNo(false)
+                                    const selected = params.api.getSelectedRows();
+                                    if (selected.length) {
+                                        setRowsSelectedForAssignment(true);
+                                    } else {
+                                        setSelectedBuffers([])
+                                        setSelectedRoute([])
+                                        setRowsSelectedForAssignment(false);
+                                        return
+                                    }
+                                    const selectedRoutes: any = new Set();
+                                    const selectedProdBuffer: any = new Set();
+                                    const selectedProcBuffer: any = new Set();
 
-                                selected.forEach((row: any) => {
-                                    if (row.newRoute) {
-                                        const formattedRoute = formatRoute(row.newRoute);
-                                        if (routeLookup.current.get(formattedRoute)) {
-                                            selectedRoutes.add(routeLookup.current.get(formattedRoute));
-                                        } else {
-                                            selectedRoutes.add(JSON.stringify(row.newRoute));
+                                    selected.forEach((row: any) => {
+                                        if (row.newRoute) {
+                                            const formattedRoute = formatRoute(row.newRoute);
+                                            if (routeLookup.current.get(formattedRoute)) {
+                                                selectedRoutes.add(routeLookup.current.get(formattedRoute));
+                                            } else {
+                                                selectedRoutes.add(JSON.stringify(row.newRoute));
+                                            }
                                         }
+                                        else if (row.rid) {
+                                            selectedRoutes.add(row.rid);
+                                        }
+                                        if (row.nprid) {
+                                            selectedProdBuffer.add(row.nprid);
+                                        }
+                                        else if (row.prid) {
+                                            selectedProdBuffer.add(row.prid);
+                                        }
+                                        if (row.npcid) {
+                                            selectedProcBuffer.add(row.npcid);
+                                        }
+                                        else if (row.pcid) {
+                                            selectedProcBuffer.add(row.pcid);
+                                        }
+                                    })
+                                    const isAssignmentPossible = ([1].includes(selectedRoutes.size)) && ([0, 1].includes(selectedProdBuffer.size)) && ([0, 1].includes(selectedProcBuffer.size))
+                                    // const isAssignmentPossible = (selectedRoutes.size == 1 )&&(selectedProdBuffer.size == 1 )&&(selectedProcBuffer.size == 1)
+                                    if (!isAssignmentPossible) {
+                                        setSelectedBuffers([])
+                                        setSelectedRoute([])
                                     }
-                                    else if (row.rid) {
-                                        selectedRoutes.add(row.rid);
+                                    if (selectedRoutes.size == 1) {
+                                        const routeDetails = await getRoute([...selectedRoutes][0]);
+                                        setSelectedRoute(routeDetails);
                                     }
-                                    if (row.nprid) {
-                                        selectedProdBuffer.add(row.nprid);
+                                    if ((selectedProdBuffer.size == 1 || selectedProcBuffer.size == 1)) {
+                                        const buffer: any = getBuffer([...selectedProdBuffer], [...selectedProcBuffer]);
+                                        setSelectedBuffers(buffer)
                                     }
-                                    else if (row.prid) {
-                                        selectedProdBuffer.add(row.prid);
-                                    }
-                                    if (row.npcid) {
-                                        selectedProcBuffer.add(row.npcid);
-                                    }
-                                    else if (row.pcid) {
-                                        selectedProcBuffer.add(row.pcid);
-                                    }
-                                })
-                                const isAssignmentPossible = ([1].includes(selectedRoutes.size)) && ([0, 1].includes(selectedProdBuffer.size)) && ([0, 1].includes(selectedProcBuffer.size))
-                                // const isAssignmentPossible = (selectedRoutes.size == 1 )&&(selectedProdBuffer.size == 1 )&&(selectedProcBuffer.size == 1)
-                                if (!isAssignmentPossible) {
-                                    setSelectedBuffers([])
-                                    setSelectedRoute([])
+                                    setNewSelectedRows({ rows: selected, isAssignmentPossible });
                                 }
-                                if (selectedRoutes.size == 1) {
-                                    const routeDetails = await getRoute([...selectedRoutes][0]);
-                                    setSelectedRoute(routeDetails);
+                                catch (err) {
+                                    console.error(err);
+                                    notifyError("Something Went Wrong!");
                                 }
-                                if ((selectedProdBuffer.size == 1 || selectedProcBuffer.size == 1)) {
-                                    const buffer: any = getBuffer([...selectedProdBuffer], [...selectedProcBuffer]);
-                                    setSelectedBuffers(buffer)
-                                }
-                                setNewSelectedRows({ rows: selected, isAssignmentPossible });
-
                             }}
                             onColumnPinned={(params: GridReadyEvent) => {
                                 params.columnApi.autoSizeAllColumns();
@@ -824,10 +923,11 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                     <VFButton
                                         themeUi={theme}
                                         onClick={onSave}
-                                        style={{ fontSize: "10px", width:"60px" ,height: "20px", padding: "0 1rem", display:"flex", justifyContent:"center", alignItems:"center", gap:"1rem" }}>
-                                        {isEditable ? <> <img src="/assets/img/mto/dueDateQuotation/save-icon.svg"/>Save</> : <> <img src="/assets/img/mto/dueDateQuotation/edit-icon.svg"/> Edit</>}
+                                        disabled={isEditable ? isSaveDisabled : false}
+                                        style={{ fontSize: "10px", width: "60px", height: "20px", padding: "0 1rem", display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem" }}>
+                                        {isEditable ? <> <img src="/assets/img/mto/dueDateQuotation/save-icon.svg" />Save</> : <> <img src="/assets/img/mto/dueDateQuotation/edit-icon.svg" /> Edit</>}
                                     </VFButton>
-                                    <VFButtonOutline themeUi={theme} onClick={onReset} style={{ fontSize: "10px", width: "60px", height: "20px", padding: "0 1rem", display:"flex", justifyContent:"center", alignItems:"center", gap:"0.5rem"  }}><img src="/assets/img/mto/dueDateQuotation/reset-icon.svg"/> Reset</VFButtonOutline>
+                                    <VFButtonOutline themeUi={theme} onClick={onReset} style={{ fontSize: "10px", width: "60px", height: "20px", padding: "0 1rem", display: "flex", justifyContent: "center", alignItems: "center", gap: "0.5rem" }}><img src="/assets/img/mto/dueDateQuotation/reset-icon.svg" /> Reset</VFButtonOutline>
                                 </div>
                                 <div style={{ display: "flex", gap: "2rem" }}>
                                     <div style={{ flex: "2" }}>

@@ -25,6 +25,7 @@ const BufferAssignment = ({theme, bufferMaster, selectedBuffers ,setSelectedBuff
               theme={theme} 
               options={bufferMaster?.prodMaster}
               value={selectedBuffers[0] || null}
+              isClearable
               onChange={(newValue: any) => onValueChange(newValue, "prod")}
               getOptionLabel={(option: any)=>{return `${option.label} - [${option.size}d]`}}
             />
@@ -35,6 +36,7 @@ const BufferAssignment = ({theme, bufferMaster, selectedBuffers ,setSelectedBuff
               key={`buffer-assignment-2-1`}
               isDisabled={!isEditable}
               theme={theme} 
+              isClearable
               options={bufferMaster?.procMaster}
               value={selectedBuffers[1] || null}
               onChange={(newValue: any) => onValueChange(newValue, "proc")}
