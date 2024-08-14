@@ -150,7 +150,7 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
     }, []);
 
   return (
-    <StepperWrapper key="route-assignment" className="route-assignment">
+    <StepperWrapper style={{justifyContent: ccrGroupMaster.length <= 3 ? "start" :ccrGroupMaster.length <= 6 ? "end" : ccrGroupMaster.length <= 9? "start": 'end'}} key="route-assignment" className="route-assignment">
         {ccrGroupMaster.map((ccrGroup: any, index: number)=>{
             return(
             <StepGroup $step={true} key={`route-assignment-${index}`}>

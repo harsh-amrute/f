@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const StepperWrapper = styled.div`
   flex-wrap: wrap;
   display: flex;
-  justify-content: end;
+  justify-content: start;
   font-size: 12px;
   padding: 2rem 2rem;
   margin: 1.5rem 0;

@@ -91,13 +91,13 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     }, [masters])
 
     const routeDiv = useRef<any>();
-    const [routeDivHeight, setRouteDivHeight] = useState<any>();
+    // const [routeDivHeight, setRouteDivHeight] = useState<any>();
 
     useEffect(() => {
         setTimeout(() => {
             allotment.current.reset();
-            if (routeDiv.current?.offsetHeight)
-                setRouteDivHeight(routeDiv.current.offsetHeight);
+            // if (routeDiv.current?.offsetHeight)
+                // setRouteDivHeight(routeDiv.current.offsetHeight);
         }, 0);
         //RouteDiv Position Calculate and move it to state instead of ref
     }, [rowsSelectedForAssignment])

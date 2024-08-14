@@ -76,3 +76,15 @@ export const useGetLineCCRDetails = () => {
 }
 
 
+export const useUpdateBuffRouteCCREstDate = () => {
+    return useMutation(async (body: {bufferData: any, routeData: any}) => {
+        return DueDateQuotationService.updateBuffRouteCCREstDate(body)
+    })
+}
+
+export const useUpdateScheduleOrders = () => {
+    return useMutation(async (body: {orders:any}) => {
+        return DueDateQuotationService.updateScheduleOrders(body)
+    })
+}
+
