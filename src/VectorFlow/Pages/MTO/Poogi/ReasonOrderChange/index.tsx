@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import { SaveBtnWrapper, SaveBtn } from './styles';
@@ -18,6 +18,12 @@ import { ColorsMTO } from '../../Common/Colors';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import BPPRenderer from '../../Common/BPPRenderer';
 
+type MyObject = {
+    ok: string;
+    minid: number;
+    majid: number;
+};
+
 const ReasonForDelayOrder = () => {
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { mutateAsync: getPoogiReasonsDelayedOrder, isLoading } = useGetReasonForDelayOrder();
@@ -28,11 +34,12 @@ const ReasonForDelayOrder = () => {
     const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
     const [remarkHistory, setRemarkHistory] = useState<any>();
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
-    const [items, setItems] = useState<any[]>([]);
+    //const [items, setItems] = useState<any[]>([]);
     //const [disabled, setDisabled] = useState<boolean>(true);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [rowDataCount, setRowDataCount] = useState<number>(0);
     const reportName = 'ReasonForDelayedOrders';
+    const tableRowRef = useRef<any>(null);
 
     const sideBar = useMemo(() => {
         return {
@@ -93,11 +100,11 @@ const ReasonForDelayOrder = () => {
     }
 
     //to get the rowdata for Aggrid
-    const getInitialData = async (wipval: boolean,page:number) => {
+    const getInitialData = async (wipval: boolean, page: number) => {
         try {
-            //setCurrentPage(1);
+            setCurrentPage(page);
             setWIPCheck(wipval)
-            const apiResponse = await getPoogiReasonsDelayedOrder({'wip':wipval === true ? 0 : 1,'curr':page});
+            const apiResponse = await getPoogiReasonsDelayedOrder({ 'wip': wipval === true ? 0 : 1, 'curr': page });
             setRowDataCount(apiResponse.data?.data?.count);
             setRowData(apiResponse?.data?.data?.results)
         }
@@ -127,13 +134,7 @@ const ReasonForDelayOrder = () => {
 
     }
 
-    const handleDataToSave = async (data: any) => {
-      //  console.log('data',data)
-        // if (data.majid != undefined && data.minid != undefined) {
-            //setDisabled(false);
-            setItems((prevItem) => [...prevItem, data])
-        // }
-    }
+    
 
     const customHeader = {
         RemarksHistory: {
@@ -150,7 +151,7 @@ const ReasonForDelayOrder = () => {
             lockPosition: true,
             initialWidth: 300,
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData} 
+                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData}
                 />
             }
         },
@@ -159,12 +160,10 @@ const ReasonForDelayOrder = () => {
             lockPosition: true,
             minWidth: 300,
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData} 
+                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData}
                 />
             },
-            cellRendererParams: {
-                handleData: (saveobj: any) => handleDataToSave(saveobj)
-            }
+            
         },
         ElapsedDays: {
             cellStyle: {
@@ -177,7 +176,7 @@ const ReasonForDelayOrder = () => {
         QuotedDueDate: {
             cellRenderer: PlannedReleaseRenderer,
         },
-        BPP:{
+        BPP: {
             cellRenderer: BPPRenderer,
         }
     }
@@ -186,7 +185,7 @@ const ReasonForDelayOrder = () => {
 
     useEffect(() => {
         getHeaderData();
-        getInitialData(true,1);
+        getInitialData(true, 1);
 
     }, [])
 
@@ -202,20 +201,41 @@ const ReasonForDelayOrder = () => {
     }, [isLoading, isWIPChecked])
 
     const updateMajorMinorReason = async () => {
-        // console.log('body to api = ', items)
-        const RemarkHistory = await updatePoogiRemarks(items);
+        //console.log('body to api = ', tableRowRef.current.props.rowData)
+        const allRows = tableRowRef?.current?.props?.rowData;
+        let putData: MyObject[] = [];
+        allRows.forEach((e: any) => {
+            const singleData: any = {
+                'ok': e.ok,
+                minid: null,
+                majid: null
+            }
+            if (e.maj) {
+                singleData['majid'] = Number(e.maj);
+                if (e.min) {
+                    singleData.minid = Number(e.min);
+                    putData.push(singleData);
+                }
+            }
+        })
+
+        console.log('finalApiData', putData)
+        const RemarkHistory = await updatePoogiRemarks(putData);
+        console.log('remarkHistory', RemarkHistory)
         if (RemarkHistory.status == 200) {
-            setItems([]);
             toast.dismiss();
             notifySuccess('Successfull');
-            getInitialData(isWIPChecked?true:false,1)
-
+            if(isWIPChecked){
+                getInitialData(isWIPChecked,1)
+            }
+            putData = [];
         }
     }
 
+
     const handlePageChange = (currPage: number) => {
         setCurrentPage(currPage);
-        getInitialData(isWIPChecked?true:false,currPage)
+        getInitialData(isWIPChecked ? true : false, currPage)
     }
 
     if (!rowData) {
@@ -230,7 +250,7 @@ const ReasonForDelayOrder = () => {
             <MTOActionToolBar
                 quickFilter={
                     <div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
-                        <Checkbox checked={isWIPChecked} onChange={(e) => getInitialData(e.target.checked,1)} theme={themeUi} /> &nbsp;&nbsp; <strong>
+                        <Checkbox checked={isWIPChecked} onChange={(e) => getInitialData(e.target.checked, 1)} theme={themeUi} /> &nbsp;&nbsp; <strong>
                             Show Only Unassigned Orders
                         </strong>
                     </div>
@@ -246,6 +266,7 @@ const ReasonForDelayOrder = () => {
                 columnDefs={columnDef}
                 rowData={rowData}
                 pagination={false}
+                ref={tableRowRef}
             />
             <VFPagination
                 selectedRows={0}
