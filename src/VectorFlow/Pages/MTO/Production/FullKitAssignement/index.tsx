@@ -235,7 +235,7 @@ const FullKitAssignment = () => {
   const graph = useRef<any>();
   const grid = useRef<any>();
 
-  const {state:currFilter,setState:setCurrFilter} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_FullKit_Assignment);
+  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_FullKit_Assignment);
 
   const onApplyFilter = (filter:any)=>{
     console.log(filter)
@@ -266,6 +266,7 @@ const FullKitAssignment = () => {
         onApplyFilter={onApplyFilter} 
         multiFilter={currFilter}
         setMultiFilter={setCurrFilter} 
+        onFilterRemove={onFilterRemove}
       />
       {/* <button onClick={() => setShowModal(true)}>Click</button> */}
       <VFTable

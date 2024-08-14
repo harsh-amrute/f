@@ -2901,7 +2901,7 @@ export const checkValue = (filters: any, value: any) => {
   return false;
 }
 
-export const getSelectedFilters = (filter: any) => {
+export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   const selectedFilter: any = {};
   for(const key in filter){
 
@@ -2914,9 +2914,15 @@ export const getSelectedFilters = (filter: any) => {
 
     for(let i = 0; i < filters.length; i++){
       const { name, attributeName, value, type, operator } = filters[i];
-      
-      if(value.length > 0){
-        newFilter.filters.push({filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id )});
+
+      if(attributeName === 'ms'){
+        if(value.length > 0 && isMfgStrgyIncluded){
+          newFilter.filters.push({filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id )});
+        }
+      }else{
+        if(value.length > 0){
+          newFilter.filters.push({filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id )});
+        }  
       }
     }
 

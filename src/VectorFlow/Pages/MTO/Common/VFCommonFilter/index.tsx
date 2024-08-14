@@ -28,10 +28,11 @@ interface VFCommonFilterProps {
   multiFilter: FilterState;
   setMultiFilter: any;
   isFilterOpen: boolean;
+  setIsMfgSelected: (mfgStrategy: boolean)=>void;
 }
 
 const VFCommonFilter = (props: VFCommonFilterProps) => {
-  const { onGoBack, multiFilter, setMultiFilter, onApplyFilter, isFilterOpen } = props;
+  const { onGoBack, multiFilter, setMultiFilter, onApplyFilter, isFilterOpen, setIsMfgSelected } = props;
   const [filterState, setFilterState] = useState<any>({});
   const [openStatus, setOpenStatus] = useState<any>({});
   const { user } = useUserData();
@@ -276,6 +277,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                 </VFButtonOutline>
                 <VFButton data-testid="applyFilter" themeUi={user.user.theme_ui} onClick={() =>{
                   const formatedFilters = formatFilterJSON(filterState);
+                  setIsMfgSelected(true);
                   setMultiFilter(filterState);
                   onApplyFilter(formatedFilters);
                 }}>

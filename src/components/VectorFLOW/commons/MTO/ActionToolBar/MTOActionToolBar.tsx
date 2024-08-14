@@ -37,7 +37,7 @@ import {
     VFSelectedFilterLabel,
 } from './styles';
 import moment from 'moment';
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
 import { format } from 'date-fns';
 import VFRangeSlider from '../../VFRangeSlider';
 import CustomSelect from '../../../../../VectorFlow/Pages/MTO/Production/FullKitAssignement/Select';
@@ -127,6 +127,9 @@ const MTOActionToolBar = ({
     isReleaseButtonDisabled
 }: MTOActionToolBarProps) => {
 
+
+    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
+
     const handleRemoveFilter = (category: string, name: string) => {
         if (removeFilters) {
             removeFilters(category, name);
@@ -137,7 +140,7 @@ const MTOActionToolBar = ({
     const d = new Date();
     const datetime = moment(d).format(format2);
 
-    const newFilters = getSelectedFilters(multiFilter);
+    const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
 
     return (
         <SCTaskBarContainer className='toolbar-container'>
@@ -553,6 +556,7 @@ const MTOActionToolBar = ({
                             multiFilter={multiFilter}
                             setMultiFilter={setMultiFilter}
                             isFilterOpen={isFilterOpen}
+                            setIsMfgSelected={setIsMfgSelected}
                         />
                     }
 

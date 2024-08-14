@@ -43,7 +43,7 @@ const BMTrends = () => {
     const [tableLoading, setTableLoading] = useState(true);
     const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
     const [filterData, setFilterData] = useState({});
-    const {state:currFilter,setState:setCurrFilter} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_BM_Trend);
+    const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_BM_Trend);
 
     const onApplyFilter = (filter:any)=>{
       console.log(filter)
@@ -429,6 +429,7 @@ const BMTrends = () => {
                 onApplyFilter={onApplyFilter} 
                 multiFilter={currFilter}
                 setMultiFilter={setCurrFilter}
+                onFilterRemove={onFilterRemove}
             />
             <div style={{ paddingLeft: '25px', height: screenHeight - 180, display: 'flex' }}>
                     <SplitGraphContainer

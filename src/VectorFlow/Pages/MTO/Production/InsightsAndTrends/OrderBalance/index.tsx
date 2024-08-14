@@ -38,7 +38,7 @@ const OrderBalance = () => {
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
   const [filterData, setFilterData] = useState({});
-  const {state:currFilter,setState:setCurrFilter} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Balance);
+  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Balance);
 
   const reportName = "OrderBalance";
 
@@ -142,6 +142,7 @@ const OrderBalance = () => {
         onApplyFilter={onApplyFilter} 
         multiFilter={currFilter}
         setMultiFilter={setCurrFilter}
+        onFilterRemove={onFilterRemove}
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: '25px' }}>
         {isGridView ? (

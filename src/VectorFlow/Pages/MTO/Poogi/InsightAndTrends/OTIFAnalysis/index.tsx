@@ -139,7 +139,7 @@ const OTIFAnalysis = () => {
     setIsFilterOpen(true)
   }
 
-  const {state:currFilter,setState:setCurrFilter} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
+  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
 
   return (
     <div>
@@ -155,6 +155,7 @@ const OTIFAnalysis = () => {
         onApplyFilter={onApplyFilter} 
         multiFilter={currFilter}
         setMultiFilter={setCurrFilter}
+        onFilterRemove={onFilterRemove}
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>
         {isGridView ? (

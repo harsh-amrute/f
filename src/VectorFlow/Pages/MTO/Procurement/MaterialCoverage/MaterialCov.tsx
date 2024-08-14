@@ -42,7 +42,7 @@ const MaterialCov = () => {
 
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const {state:currFilter,setState:setCurrFilter} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Coverage_For_OpenSO);
+  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Coverage_For_OpenSO);
 
   const onApplyFilter = (filter:any)=>{
     console.log(filter)
@@ -131,6 +131,7 @@ const MaterialCov = () => {
               onApplyFilter={onApplyFilter} 
               multiFilter={currFilter}
               setMultiFilter={setCurrFilter}
+              onFilterRemove={onFilterRemove}
               onDateChange={() => { console.log('') }}
               submitDate={() => { console.log('') }}
             />
