@@ -6,7 +6,7 @@ import { getColumnDefinations } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { useGetReasonForDelayOrder, useGetPoogiRemarks, usePutPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import { toast } from 'react-toastify';
-import { notifyLoader, notifySuccess } from '../../../../../helpers/notify';
+import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
 import { AgGridReactProps } from 'ag-grid-react';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 import { useUserData } from '../../../../../context';
@@ -134,7 +134,7 @@ const ReasonForDelayOrder = () => {
 
     }
 
-    
+
 
     const customHeader = {
         RemarksHistory: {
@@ -151,7 +151,7 @@ const ReasonForDelayOrder = () => {
             lockPosition: true,
             initialWidth: 300,
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData}
+                return <CustomCellEditor {...props} isWip={isWIPChecked} rowData={rowData} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData}
                 />
             }
         },
@@ -160,10 +160,10 @@ const ReasonForDelayOrder = () => {
             lockPosition: true,
             minWidth: 300,
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} rowData={rowData} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData}
+                return <CustomCellEditor {...props} rowData={rowData} isWip={isWIPChecked} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData}
                 />
             },
-            
+
         },
         ElapsedDays: {
             cellStyle: {
@@ -200,6 +200,13 @@ const ReasonForDelayOrder = () => {
         }
     }, [isLoading, isWIPChecked])
 
+    const checkForNullMinid = async (data: any): Promise<boolean> => {
+        return new Promise((resolve) => {
+            const hasNullMinid = data.some((item: any) => item.minid === null);
+            resolve(hasNullMinid);
+        });
+    };
+
     const updateMajorMinorReason = async () => {
         //console.log('body to api = ', tableRowRef.current.props.rowData)
         const allRows = tableRowRef?.current?.props?.rowData;
@@ -214,21 +221,35 @@ const ReasonForDelayOrder = () => {
                 singleData['majid'] = Number(e.maj);
                 if (e.min) {
                     singleData.minid = Number(e.min);
-                    putData.push(singleData);
                 }
+                putData.push(singleData);
             }
         })
+        // console.log('put', putData)
+        if (putData.length === 0) {
+            notifyError("Please Select Minor Reason ")
+        } else {
+            const checkData = async () => {
+                const result = await checkForNullMinid(putData);
+                // Execute further code if `minid` is null
+                if (result) {
+                    // Place your further code here
+                    notifyError('Please select Minor Reason');
+                } else {
+                    const RemarkHistory = await updatePoogiRemarks(putData);
+                    //console.log('remarkHistory', RemarkHistory)
+                    if (RemarkHistory.status == 200) {
+                        toast.dismiss();
+                        notifySuccess('Successfull');
+                        if (isWIPChecked) {
+                            getInitialData(isWIPChecked, 1)
+                        }
+                        putData = [];
+                    }
+                }
+            };
 
-        console.log('finalApiData', putData)
-        const RemarkHistory = await updatePoogiRemarks(putData);
-        console.log('remarkHistory', RemarkHistory)
-        if (RemarkHistory.status == 200) {
-            toast.dismiss();
-            notifySuccess('Successfull');
-            if(isWIPChecked){
-                getInitialData(isWIPChecked,1)
-            }
-            putData = [];
+            checkData();
         }
     }
 

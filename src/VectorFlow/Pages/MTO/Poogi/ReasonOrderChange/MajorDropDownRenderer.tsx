@@ -11,8 +11,6 @@ const CustomCellEditor = (props: any) => {
   const { data, isLoading } = useGetPoogiMajorMinorReason();
   const [selectedValue, setSelectedValue] = useState<string>();
   const [selectedMinorReason, setSelectedMinorReason] = useState<string>('');
-  //const [minorReasonOptions,setMinorReasonOptions] = useState<Array<any>>([])
-  //const [minorReasons, setMinorReasons] = useState<any>();
 
   useEffect(() => {
     setSelectedValue(props.selectedValue);
@@ -75,26 +73,28 @@ const CustomCellEditor = (props: any) => {
   }, [isLoading])
 
 
-  // const addObject = (newObject: MyObject) => {
-  //   props.handleData(newObject)
-  // };
+ 
 
   const clearSelection = (currRowIndex: any, currColId: any) => {
+    if (props.isWip) {
+      if (currRowIndex === props.rowIndex) {
+        if (currColId) {
+          props.data["maj"] = null;
 
-    if (currRowIndex === props.rowIndex) {
-      if (currColId) {
-        props.data["maj"] = null;
-
+        }
+        else {
+          props.data["min"] = null;
+          setSelectedMinorReason('');
+        }
+        if (props.rowData) {
+          const rowData = [...props.rowData];
+          rowData[props.rowIndex] = props.data;
+          props.setRowData(rowData);
+        }
       }
-      else {
-        props.data["min"] = null;
-        setSelectedMinorReason('');
-      }
-      if (props.rowData) {
-        const rowData = [...props.rowData];
-        rowData[props.rowIndex] = props.data;
-        props.setRowData(rowData);
-      }
+    }
+    else{
+      notifyError('User can modify Major and Minor Reason, but cannot deselect')
     }
 
   };
@@ -103,11 +103,7 @@ const CustomCellEditor = (props: any) => {
   const handleMinorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     props.data["min"] = event.target.value;
     setSelectedMinorReason(event.target.value);
-    // addObject({
-    //   'ok': props.data.ok,
-    //   minid: Number(event.target.value),
-    //   majid: Number(props.data.maj)
-    // })
+   
   };
 
   const renderMajorSelect = () => {
@@ -135,7 +131,7 @@ const CustomCellEditor = (props: any) => {
 
   const renderMinorSelect = () => {
 
-    const majList:Array<any> = data?.data.data
+    const majList: Array<any> = data?.data.data
     const majId = parseInt(props.data.maj)
 
     function getMinArrayByMajid(majid: number): Array<{ des: string | null; id: number | null }> {
@@ -145,7 +141,7 @@ const CustomCellEditor = (props: any) => {
         for (const itemKey in category) {
           const item = category[itemKey];
           if (item.majid === majid) {
-            return item.min.map(({ mind, minid }:any) => ({
+            return item.min.map(({ mind, minid }: any) => ({
               des: mind,
               id: minid
             }));
@@ -156,13 +152,13 @@ const CustomCellEditor = (props: any) => {
       return [];
     }
 
-    const optionsList = (props.data.minordropVal || !majId)?props.data.minordropVal:getMinArrayByMajid(majId) 
+    const optionsList = (props.data.minordropVal || !majId) ? props.data.minordropVal : getMinArrayByMajid(majId)
     return (
       <select
         disabled={props.data.maj == undefined}
         style={{ width: '100%', height: '100%', fontSize: '18px', fontFamily: 'Roboto' }}
         //value={props.data.min === null ? selectedMinorReason : props.data.min}
-        value={props.data.maj == undefined?undefined:selectedMinorReason}
+        value={props.data.maj == undefined ? undefined : selectedMinorReason}
         onChange={handleMinorChange}
         defaultValue={''}
       >
