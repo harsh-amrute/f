@@ -64,11 +64,8 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                 arr.sort((a, b) => {
                     // Compare by 'crdd' first
-                    console.log(a);
                     const aCrdd = new Date(a.cedd);
                     const bCrdd = new Date(b.cedd);
-                    console.log(aCrdd)
-                    console.log(bCrdd)
 
                     if (aCrdd < bCrdd) return -1;
                     if (aCrdd > bCrdd) return 1;
@@ -77,8 +74,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                     const aOrderIdNum = parseInt(a.oid.replace(/\D/g, ''));
                     const bOrderIdNum = parseInt(b.oid.replace(/\D/g, ''));
-                    console.log(aOrderIdNum);
-                    console.log(bOrderIdNum);
+
                     // If 'crdd' is equal, compare by 'orderId'
                     if (aOrderIdNum < bOrderIdNum) return -1;
                     if (aOrderIdNum > bOrderIdNum) return 1;
@@ -364,7 +360,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         try {
             const ccr_prev_pending: any = {};
             const ordersForDDQ = [...rowData]
-            console.log("rowData", ordersForDDQ)
+            // console.log("rowData", ordersForDDQ)
             const promises = ordersForDDQ.map(async (order: any) => {
                 if (order.prodc && order.rn) {
                     const order_ccr_data: any = {};
@@ -879,13 +875,18 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                             selectedProcBuffer.add(row.pcid);
                                         }
                                     })
-                                    const isAssignmentPossible = ([1].includes(selectedRoutes.size)) && ([0, 1].includes(selectedProdBuffer.size)) && ([0, 1].includes(selectedProcBuffer.size))
-                                    // const isAssignmentPossible = (selectedRoutes.size == 1 )&&(selectedProdBuffer.size == 1 )&&(selectedProcBuffer.size == 1)
+                                    let isAssignmentPossible = true; //if only one order is selected
+                                    if (selected.length > 1){
+                                        isAssignmentPossible = ([0, 1].includes(selectedRoutes.size)) && ([0, 1].includes(selectedProdBuffer.size)) && ([0, 1].includes(selectedProcBuffer.size))
+                                    }
                                     if (!isAssignmentPossible) {
                                         setSelectedBuffers([])
                                         setSelectedRoute([])
                                     }
-                                    if (selectedRoutes.size == 1) {
+                                    if(selectedRoutes.size == 0){
+                                        setSelectedRoute([])
+                                    }
+                                    else if (selectedRoutes.size == 1) {
                                         const routeDetails = await getRoute([...selectedRoutes][0]);
                                         setSelectedRoute(routeDetails);
                                     }
