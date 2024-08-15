@@ -862,11 +862,17 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         else if (row.rid) {
                                             selectedRoutes.add(row.rid);
                                         }
+                                        else{
+                                            selectedRoutes.add(null);
+                                        }
                                         if (row.nprid) {
                                             selectedProdBuffer.add(row.nprid);
                                         }
                                         else if (row.prid) {
                                             selectedProdBuffer.add(row.prid);
+                                        }
+                                        else{
+                                            selectedProdBuffer.add(null)
                                         }
                                         if (row.npcid) {
                                             selectedProcBuffer.add(row.npcid);
@@ -874,23 +880,28 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         else if (row.pcid) {
                                             selectedProcBuffer.add(row.pcid);
                                         }
+                                        else{
+                                            selectedProcBuffer.add(null)
+                                        }
                                     })
                                     let isAssignmentPossible = true; //if only one order is selected
                                     if (selected.length > 1){
-                                        isAssignmentPossible = ([0, 1].includes(selectedRoutes.size)) && ([0, 1].includes(selectedProdBuffer.size)) && ([0, 1].includes(selectedProcBuffer.size))
+                                        isAssignmentPossible = ([1].includes(selectedRoutes.size)) && ([1].includes(selectedProdBuffer.size)) && ([1].includes(selectedProcBuffer.size))
                                     }
                                     if (!isAssignmentPossible) {
                                         setSelectedBuffers([])
                                         setSelectedRoute([])
                                     }
+                                    const routeId = [...selectedRoutes][0]
                                     if(selectedRoutes.size == 0){
                                         setSelectedRoute([])
                                     }
-                                    else if (selectedRoutes.size == 1) {
-                                        const routeDetails = await getRoute([...selectedRoutes][0]);
+                                    else if (selectedRoutes.size == 1 && routeId != null) {
+                                        const routeDetails = await getRoute(routeId);
                                         setSelectedRoute(routeDetails);
                                     }
-                                    if ((selectedProdBuffer.size == 1 || selectedProcBuffer.size == 1)) {
+                                    // TODO: check this condition -> check for null
+                                    if (((selectedProdBuffer.size == 1) || (selectedProcBuffer.size == 1))) {
                                         const buffer: any = getBuffer([...selectedProdBuffer], [...selectedProcBuffer]);
                                         setSelectedBuffers(buffer)
                                     }
