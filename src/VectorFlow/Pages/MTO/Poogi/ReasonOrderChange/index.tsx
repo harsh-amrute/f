@@ -17,6 +17,7 @@ import CustomCellEditor from './MajorDropDownRenderer';
 import { ColorsMTO } from '../../Common/Colors';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import BPPRenderer from '../../Common/BPPRenderer';
+import OverlayLoader from '../../Common/Loader';
 
 type MyObject = {
     ok: string;
@@ -279,36 +280,40 @@ const ReasonForDelayOrder = () => {
                 isAddFilterButton
                 isExcelExport
             />
+            {isLoading ?
+                <OverlayLoader /> :
+                <>
+                    <VFTable
+                        {...agGridProps}
+                        paginationPageSize={10}
+                        height='750px'
+                        columnDefs={columnDef}
+                        rowData={rowData}
+                        pagination={false}
+                        ref={tableRowRef}
+                    />
+                    <VFPagination
+                        selectedRows={0}
+                        rowsPerPage={10}
+                        totalRows={rowDataCount}
+                        currentPage={currentPage}
+                        handleChangePage={handlePageChange}
+                    />
 
-            <VFTable
-                {...agGridProps}
-                paginationPageSize={10}
-                height='750px'
-                columnDefs={columnDef}
-                rowData={rowData}
-                pagination={false}
-                ref={tableRowRef}
-            />
-            <VFPagination
-                selectedRows={0}
-                rowsPerPage={10}
-                totalRows={rowDataCount}
-                currentPage={currentPage}
-                handleChangePage={handlePageChange}
-            />
 
+                    <SaveBtnWrapper>
+                        <SaveBtn onClick={() => updateMajorMinorReason()}>
+                            Save Reasons
+                        </SaveBtn>
+                    </SaveBtnWrapper>
 
-            <SaveBtnWrapper>
-                <SaveBtn onClick={() => updateMajorMinorReason()}>
-                    Save Reasons
-                </SaveBtn>
-            </SaveBtnWrapper>
-
-            <MTORemarkHistoryModal
-                data={remarkHistory}
-                isOpen={isRemarkHistoryOpen}
-                onClose={() => setIsRemarkHistoryOpen(false)}
-            />
+                    <MTORemarkHistoryModal
+                        data={remarkHistory}
+                        isOpen={isRemarkHistoryOpen}
+                        onClose={() => setIsRemarkHistoryOpen(false)}
+                    />
+                </>
+            }
         </div>
 
     )
