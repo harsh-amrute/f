@@ -15,6 +15,9 @@ import EditRouteModal from './EditRouteModal';
 import * as globalStyles from "../../../../../styles/global";
 import { Rectangle } from './RectangleMarker';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
+import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
+import { useGetFullKitAssignmentDataWithGraphData } from '../../../../../VectorFlow/Services/MTO/Production/FullKitAssignment';
+import OverlayLoader from '../../Common/Loader';
 
 const FullKitAssignment = () => {
 
@@ -28,7 +31,7 @@ const FullKitAssignment = () => {
       // tooltipField: "r"
       cellRenderer: (params: any) => {
         return (
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%", height:"100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
             <img alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
               setShowModal(true)
@@ -219,14 +222,34 @@ const FullKitAssignment = () => {
   const graph = useRef<any>();
   const grid = useRef<any>();
 
+  const [showOrdersWithFullKitReady, setShowOrdersWithFullKitReady] = useState(true);
+  const [orders, setOrders] = useState([]);
+  const {mutateAsync: getFullKitAssignmentDataWithGraphData, isLoading} = useGetFullKitAssignmentDataWithGraphData();
+
+  console.log(isLoading)
+
+  const fetchOrders = async () => {
+    const data = await getFullKitAssignmentDataWithGraphData();
+    console.log(data.data.data.results);
+    setOrders(data.data.data.results)
+  }
+
+  useEffect(()=>{
+    fetchOrders();
+  }, [])
+
 
   return (
     <Wrapper>
-      <MTOActionToolBar comp="FullKitAssignment" isExcelExport isAddFilterButton />
+      <MTOActionToolBar 
+        quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={showOrdersWithFullKitReady} onChange={(e: any) => setShowOrdersWithFullKitReady(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Orders with Full Kit Ready</strong></div>}
+        isExcelExport isAddFilterButton 
+      />
       {/* <button onClick={() => setShowModal(true)}>Click</button> */}
+      {isLoading && <OverlayLoader/>}
       <VFTable
         ref={grid}
-        rowData={fullKitAssignmentData.data}
+        rowData={orders}
         gridOptions={options}
         columnDefs={options.columnDefs}
         // rowSelection="multiple"

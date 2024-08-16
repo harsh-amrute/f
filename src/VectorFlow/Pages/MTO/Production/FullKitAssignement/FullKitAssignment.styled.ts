@@ -28,6 +28,8 @@ export const Wrapper = styled.div`
     width: 100%;
     margin-bottom: 0;
     margin-top: 20px;
+    padding-left: 0;
+    margin-left: 0;
   }
 `;
 
