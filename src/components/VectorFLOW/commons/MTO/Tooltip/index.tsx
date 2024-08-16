@@ -6,7 +6,7 @@ interface IToolTipProps extends CSSProperties {
     arrowLeft: string | number;
 }
 
-const Tooltip = ({ children, content, zoom = 1 }: any) => {
+const Tooltip = ({ children, content, zoom = 1, style= {}}: any) => {
     const [showTooltip, setShowTooltip] = useState(false);
     const [toolTipPosition, setoolTipPosition] = useState<IToolTipProps | null>();
     const tooltipRef = useRef<HTMLDivElement>(null);
@@ -52,6 +52,7 @@ const Tooltip = ({ children, content, zoom = 1 }: any) => {
         <TooltipTarget
             onMouseEnter={onMouseIn}
             onMouseLeave={onMouseOut}
+            style={style}
         >
             {children}
             {showTooltip && (

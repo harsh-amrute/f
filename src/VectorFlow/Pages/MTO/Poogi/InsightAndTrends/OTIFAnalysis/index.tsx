@@ -2,7 +2,6 @@ import { Allotment } from "allotment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { APIMock } from "./MockData";
 import { ColDef, GridOptions } from "ag-grid-enterprise";
 import OTIFTrendsGraph from "./OTIFTrendsGraph";
 import OTAndIFTrendsGraph from "./OTAndIFTrendsGraph";
@@ -17,13 +16,20 @@ import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRen
 import CustomTagTooltip from "./CustomTagTooltip";
 import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import { useGetOTIFAnalysisData } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTIFAnalysis";
+import OverlayLoader from '../../../Common/Loader';
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
+
 
 const OTIFAnalysis = () => {
   const [isGridView, setIsGridView] = useState(false);
   const { screenHeight } = useViewPort();
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const { mutateAsync: getOTIFAnalysisData, isLoading, isError, isSuccess } = useGetOTIFAnalysisData()
   const [colDef, setColDef] = useState([{}]);
+  const [gridData, setGridData] = useState([]);
+  const [graphData, setGraphData] = useState<any>({});
   const reportName = "OTIFAnalysis";
 
   const gridRef = useRef();
@@ -73,17 +79,53 @@ const OTIFAnalysis = () => {
     }
   }
 
+  const getGridData = async (isGraph: any) => {
+    try {
+      const response = await getOTIFAnalysisData(isGraph);
+      setGridData(response.data.data.results);
+    }
+    catch (e) {
+      console.log(e);
+      notifyError('Failed to fetch Grid data!');
+    }
+  }
+  
+  const getGraphData = async (isGraph: any) => {
+    try {
+      const response = await getOTIFAnalysisData(isGraph);
+      setGraphData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+      notifyError('Failed to fetch Graph data!');
+    }
+  }
+
   useEffect(() => {
     setColumnDef();
-  }, [])
+    getGridData(0);
+    getGraphData(1);
+  }, []);
 
 
   useEffect(() => {
     setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
   }, [HeaderData])
 
+  useEffect(() => {
+    if (isSuccess) {
+      notifySuccess("Fetched Data successfully!")
+    }
+    if (isError) {
+      notifyError("Failed to load data!")
+    }
+  }, [isSuccess, isError])
+
   return (
     <div>
+      {
+        isLoading && <OverlayLoader />
+      }
       <MTOActionToolBar
         comp={"stplAndFullKit"}
         isGridView={isGridView}
@@ -101,7 +143,7 @@ const OTIFAnalysis = () => {
               }}
               defaultColDef={defaultColDef}
               columnDefs={colDef}
-              rowData={APIMock?.grid}
+              rowData={gridData || []}
               tooltipHideDelay={100000}
               tooltipShowDelay={0}
               tooltipMouseTrack={true}
@@ -121,13 +163,12 @@ const OTIFAnalysis = () => {
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <OTIFTrendsGraph />
+                  <OTIFTrendsGraph graphData={graphData?.otif} />
                 </BTRAllomentSection>
               </Allotment.Pane>
-
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <OTAndIFTrendsGraph />
+                  <OTAndIFTrendsGraph graphData={graphData?.ot_n_if} />
                 </BTRAllomentSection>
               </Allotment.Pane>
             </Allotment>
