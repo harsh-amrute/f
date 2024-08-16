@@ -7,7 +7,7 @@ import {
 import { AgGridReactProps } from 'ag-grid-react';
 //import { ColDef } from 'ag-grid-enterprise'
 
-import { /*deptwiseBMReportData*/ RemarkHistoryData } from './DeptWiseBMReportData';
+//import { /*deptwiseBMReportData*/ RemarkHistoryData } from './DeptWiseBMReportData';
 import GridView from './GridView';
 import { Allotment } from 'allotment';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';

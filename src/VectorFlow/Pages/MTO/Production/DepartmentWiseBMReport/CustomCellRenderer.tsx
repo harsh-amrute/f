@@ -21,7 +21,7 @@ const { mutateAsync: getBombLevelData, /*isLoading :BombDataLoading*/ } = useGet
     const handleOnClick = async () => {
         try {
             const bombLevelData = await getBombLevelData({ 'oid': props.data.oid, 'lid': props.data.lid })
-            console.log('bombleveldata',bombLevelData?.data?.data)
+            //console.log('bombleveldata',bombLevelData?.data?.data)
             props.data['children']=bombLevelData?.data?.data
             node.setExpanded(!node.expanded)
         }

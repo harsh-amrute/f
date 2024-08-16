@@ -22,7 +22,6 @@ export namespace ReasonOrderChangeServices {
     }
 
     export const getPoogIRemarks = async (data: string) => {
-        console.log('url',process.env.REACT_APP_VF_API_HOST_MTO + `/getBMReportRemarksData/?ok=${data}`)
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getBMReportRemarksData/?ok=${data}`, {
             headers: {
                 'Content-Type': 'application/json',
