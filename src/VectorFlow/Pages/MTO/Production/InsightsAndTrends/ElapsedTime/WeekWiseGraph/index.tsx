@@ -104,13 +104,10 @@ const WeekWiseGraph = () => {
                             <Select options={selectOptionsPlnt} />
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <p style={{ fontWeight: 'bold', paddingRight: '5px' }}>Department: </p>
+                            <p style={{ fontWeight: 'bold', paddingRight: '5px' }}>Department </p>
                             <Select options={selectOptionsDep} />
                         </div>
                         <div>
-                            {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
-                                        Submit
-                                    </VFButtonOutline> */}
                             <img
 
                                 style={{ cursor: 'pointer' }}
