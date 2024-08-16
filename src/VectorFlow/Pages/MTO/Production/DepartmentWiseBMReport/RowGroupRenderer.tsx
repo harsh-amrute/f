@@ -27,15 +27,16 @@ interface CustomGridOptions extends GridOptions {
 }
 
 const RowGroupRenderer = (params: any) => {
+    //console.log('rowGroupREndere',params.data.children)
     const [rowData,] = useState<any[]>(params.data.children)
 
-    const [columnDefs,] = useState<ColDef[]>([
-        { field: "FG_Cod", headerName: 'FG Code', cellRenderer: "agGroupCellRenderer" },
-        { field: "Lvl", headerName: 'Level', },
-        { field: "Rqrment", headerName: 'Requirement' },
-        { field: "Stck", headerName: 'Stock' },
-        { field: "WIP", headerName: 'WIP' },
-        { field: 'Gp', headerName: 'Gap' }
+    const [columnDefs] = useState<ColDef[]>([
+        { field: "rmc", headerName: 'Item Code', cellRenderer: "agGroupCellRenderer" },
+        { field: "bl", headerName: 'Level' },
+        { field: "qty", headerName: 'Requirement' },
+        { field: "soh", headerName: 'Stock' },
+        { field: "wip", headerName: 'WIP' },
+        { field: 'gap', headerName: 'Gap' },
     ]);
 
     //static function to create the same 
@@ -86,12 +87,12 @@ const RowGroupRenderer = (params: any) => {
     const generateGridOptions = (level: number): CustomGridOptions => {
         const options: CustomGridOptions = {
             columnDefs: [
-                { field: "FG_Cod", headerName: 'FG Code', cellRenderer: "agGroupCellRenderer" },
-                { field: "Lvl", headerName: 'Level' },
-                { field: "Rqrment", headerName: 'Requirement' },
-                { field: "Stck", headerName: 'Stock' },
-                { field: "WIP", headerName: 'WIP' },
-                { field: 'Gp', headerName: 'Gap' },
+                { field: "rmc", headerName: 'Item Code', cellRenderer: "agGroupCellRenderer" },
+                { field: "bl", headerName: 'Level' },
+                { field: "qty", headerName: 'Requirement' },
+                { field: "soh", headerName: 'Stock' },
+                { field: "wip", headerName: 'WIP' },
+                { field: 'gap', headerName: 'Gap' },
             ],
             defaultColDef: {
                 flex: 1,
@@ -115,7 +116,7 @@ const RowGroupRenderer = (params: any) => {
             options.detailCellRendererParams = {
                 detailGridOptions: generateGridOptions(level - 1),
                 getDetailRowData: (params) => {
-                    params.successCallback(params.data.children);
+                    params.successCallback(params.data.child);
                 },
             } as IDetailCellRendererParams;
         }
@@ -129,7 +130,7 @@ const RowGroupRenderer = (params: any) => {
         return {
             detailGridOptions: generateGridOptions(level),
             getDetailRowData: (params) => {
-                params.successCallback(params.data.children);
+                params.successCallback(params.data.child);
             },
         } as IDetailCellRendererParams;
     }, []);

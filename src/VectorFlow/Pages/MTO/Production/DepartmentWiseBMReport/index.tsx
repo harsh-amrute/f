@@ -83,7 +83,7 @@ const DptWiseBMReport = () => {
             "colorCellRenderer": ColorCellRenderer,
             "AgeingCellRenderer": AgeingCellRenderer,
             "customCellRenderer": customCellRenderer,
-            "TextBoxCellRenderer": TextBoxCellRenderer,
+            //"TextBoxCellRenderer": TextBoxCellRenderer,
             "RemarkHistoryRenderer": RemarkHistoryRenderer
         }), []);
 
@@ -469,10 +469,11 @@ const DptWiseBMReport = () => {
                 field: child.scc.trim(),
                 headerName: child.hd,
                 colId: child.hd,
-                cellRenderer: child.cc === 'ec' ? "customCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'TextBoxCellRenderer' : child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
+                cellRenderer: child.cc === 'ec' ? "customCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
                 columnGroupShow: child.cgs,
                 pinned: child.cc === 'Remark' || child.cc === 'Latest Remark' || child.scc === 'Remark History' ? 'right' : undefined,
+                editable: child.cc === 'Remark' || child.cc === 'Latest Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 cellRendererParams: child.hd.includes("Remark") ? {
                     visible: {
@@ -480,7 +481,12 @@ const DptWiseBMReport = () => {
                     },
                     onClick: child.scc === 'Remark History' ? () => onOpenRemarkHistory() : undefined
                 } : undefined,
-
+                cellStyle: child.cc === 'Remark' || child.cc === 'Latest Remark' ? {
+                    backgroundColor: 'white',
+                    border: '1px solid #b9bdba',
+                    color: 'black',
+                    padding: '1px'
+                } : undefined
             }));
         };
 
