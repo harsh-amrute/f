@@ -45,7 +45,7 @@ const DayWiseCoverageCalender = ({
                                 return (
                                     <Month key={index}>
                                         {_.range(0, getDaysInMonth(month)).map((day: number, index) => {
-                                            const formattedDate = format(`${month.getFullYear()}/${month.getMonth() + 1}/${day + 1}`, "yyyy/MM/dd")
+                                            const formattedDate = format(`${month.getFullYear()}/${month.getMonth() + 1}/${day + 1}`, "yyyy-MM-dd")
                                             return (
                                                 <Day style={{opacity: (selectedDate == "" || selectedDate === formattedDate) ? "1"  : "0.5"}} key={index} color={getColor(formattedDate)} onClick={() => setSelectedDate(formattedDate)}>
                                                     <Tooltip content={getToolTipContent(formattedDate)} zoom={0.75}>

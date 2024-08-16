@@ -10,7 +10,7 @@ export const tableData = {
       cc: 5466788,
       ic: "AREB5092381",
       id: "SB2-NOTCH-KOTH-ABC-11",
-      status: "Full Kit Orders",
+      s: "Full Kit Orders",
       children: [
         {
           mrq: 33,
@@ -32,7 +32,7 @@ export const tableData = {
       cc: 5466788,
       ic: "AREB5092381",
       id: "SB2-NOTCH-KOTH-ABC-11",
-      status: "Partial Kit Orders",
+      s: "Partial Kit Orders",
       children: [
         {
           mrq: 33,
@@ -54,7 +54,7 @@ export const tableData = {
       cc: 5466788,
       ic: "AREB5092381",
       id: "SB2-NOTCH-KOTH-ABC-11",
-      status: "Full Kit Orders",
+      s: "Full Kit Orders",
       children: [
         {
           mrq: 33,
@@ -76,7 +76,7 @@ export const tableData = {
       cc: 5466788,
       ic: "AREB5092381",
       id: "SB2-NOTCH-KOTH-ABC-11",
-      status: "No Kit Orders",
+      s: "No Kit Orders",
       children: [
         {
           mrq: 33,
@@ -98,7 +98,7 @@ export const tableData = {
       cc: 5466788,
       ic: "AREB5092381",
       id: "SB2-NOTCH-KOTH-ABC-11",
-      status: "No Kit Orders",
+      s: "No Kit Orders",
       children: [
         {
           mrq: 33,

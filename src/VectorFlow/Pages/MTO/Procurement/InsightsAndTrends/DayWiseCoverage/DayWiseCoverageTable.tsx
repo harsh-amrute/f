@@ -7,16 +7,19 @@ import DayWiseCoverageDetailsCellRenderer from "./DayWiseCoverageDetailsCellRend
 import { tableData } from "./table_data";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
 
-// interface IDayWiseCoverageProps {
-//     selectedDate?: string,
-// }
+interface IDayWiseCoverageProps {
+    selectedDate: string,
+    startDate: string,
+    endDate: string
+}
 
-// const DayWiseCoverageTable = ({
-//     selectedDate,
-// }: IDayWiseCoverageProps) => {
-
-const DayWiseCoverageTable = () => {
+const DayWiseCoverageTable = ({
+    selectedDate,
+    startDate,
+    endDate
+}: IDayWiseCoverageProps) => {
   const colDefCustomizations = {
     ColorPriority: {
       cellRenderer: (params: any) => {
@@ -39,10 +42,24 @@ const DayWiseCoverageTable = () => {
   //   }
   // ]
 
-  const [HeaderData, setHeaderData] = useState([{}]);
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-
   const reportName = "DayWiseCoverage";
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const [rowData, setRowData] = useState([]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData();
+  const {mutateAsync: getData} = useGetDayWiseCoverageData();
+
+  const getGridData = async () => {
+    if(selectedDate){
+      const data = await getData({startDate: startDate, endDate: endDate,plannedReleaseDate: selectedDate});
+      console.log(data);
+      setRowData(data.data.data.results)
+    }
+  }
+
+  useEffect(()=>{
+    getGridData()
+  }, [selectedDate])
+
 
   const setColumnDef = async () => {
     try {
@@ -62,7 +79,10 @@ const DayWiseCoverageTable = () => {
 
   useEffect(() => {
     setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
-  }, [HeaderData])
+  }, [HeaderData]);
+
+
+
 
 
 
@@ -97,10 +117,10 @@ const DayWiseCoverageTable = () => {
     <VFTable
       animateRows={true}
       gridOptions={options}
-      height={"450px"}
+      height={"400px"}
       disableZoomScaling={true}
       columnDefs={options.columnDefs}
-      rowData={tableData.data}
+      rowData={rowData}
       pagination={true}
       onGridReady={(params: any) => {
         params.columnApi.autoSizeAllColumns();

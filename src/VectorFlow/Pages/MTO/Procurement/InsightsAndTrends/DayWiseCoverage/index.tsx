@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import DayWiseCoverageCalender from './DayWiseCoverageCalender';
 import { DayWiseCoverageSumamry } from './calender_json';
 import DayWiseCoverageHeader from './DayWiseCoverageHeader'
@@ -6,29 +6,52 @@ import DayWiseCoverageTable from './DayWiseCoverageTable';
 import { Player } from '@lottiefiles/react-lottie-player';
 import { AnimationWrapper, HelperText, TableContainer } from './style';
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
+import { add, endOfMonth, format, startOfMonth } from 'date-fns';
+import { useGetDayWiseCoverageData } from '../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage';
 
 
 const DayWiseCoverage = () => {
-    const [startDate, setStartDate] = useState("2024-04");
-    const [endDate, setEndDate] = useState("2024-06");
+    // const currentMonth = format(new Date(), "yyyy-MM");
+    const minDate = useMemo(()=>startOfMonth(add(new Date(), {months: -2 })), [])
+    const maxDate = useMemo(()=> endOfMonth(new Date()),[]);
+
+    const [startDate, setStartDate] = useState(format(minDate, "yyyy-MM"));
+    const [endDate, setEndDate] = useState(format(maxDate,"yyyy-MM"));
     const [selectedDate, setSelectedDate] = useState<string>("");
     const setDateRange = (start: string, end: string) => {
         setStartDate(start);
         setEndDate(end)
     }
 
+    const [calenderData, setCalenderData] = useState<any>();
+
+    const {mutateAsync: getData} = useGetDayWiseCoverageData();
+
+    const getCalenderData = async () => {
+        const data = await getData({startDate:format(startOfMonth(startDate), "yyyy-MM-dd"), endDate:format(endOfMonth(endDate), "yyyy-MM-dd")});
+        setCalenderData(data?.data?.data);
+    }
+
+    useEffect(()=>{
+        getCalenderData()
+    }, [startDate, endDate]);
+
+    console.log(calenderData)
+    
     const getColor = (id: string) => {
+        // console.log(id)
+        // console.log(calenderData?.[id]);
         if (id === selectedDate) {
             return "#B93B7E"
         }
-        if(!DayWiseCoverageSumamry?.data[id]){
+        if(!calenderData?.[id]){
             return "lightgrey"
         }
-        return DayWiseCoverageSumamry?.data[id]?.oc === DayWiseCoverageSumamry?.data[id]?.fk ? "#33800B" : "#F02424"
+        return calenderData?.[id]?.oc === calenderData?.[id]?.fk ? "#33800B" : "#F02424"
     }
 
     const getToolTipContent = (id: string) => {
-        if(!DayWiseCoverageSumamry?.data[id]){
+        if(!calenderData?.[id]){
             return <></>
         }
         return (
@@ -44,7 +67,7 @@ const DayWiseCoverage = () => {
                             No of Orders
                         </td>
                         <td>
-                            {DayWiseCoverageSumamry?.data[id]?.oc}
+                            {calenderData?.[id]?.oc}
                         </td>
                     </tr>
                     <tr>
@@ -52,7 +75,7 @@ const DayWiseCoverage = () => {
                             Full kit
                         </td>
                         <td>
-                            {DayWiseCoverageSumamry?.data[id]?.fk}
+                            {calenderData?.[id]?.fk}
                         </td>
                     </tr>
                     <tr>
@@ -60,7 +83,7 @@ const DayWiseCoverage = () => {
                             Partial kit
                         </td>
                         <td>
-                            {DayWiseCoverageSumamry?.data[id]?.pk}
+                            {calenderData?.[id]?.pk}
                         </td>
                     </tr>
                     <tr>
@@ -68,7 +91,7 @@ const DayWiseCoverage = () => {
                             No kit
                         </td>
                         <td>
-                            {DayWiseCoverageSumamry?.data[id]?.nk}
+                            {calenderData?.[id]?.nk}
                         </td>
                     </tr>
                 </tbody>
@@ -78,16 +101,18 @@ const DayWiseCoverage = () => {
     }
 
     return (
-        <div>
+        <div style={{display:"flex", flexDirection:"column", height:"100%"}}>
             <div style={{ zoom: 1.25 }}>
                 <MTOActionToolBar isExcelExport isAddFilterButton />
             </div>
-            <DayWiseCoverageHeader startDate={startDate} endDate={endDate} setDateRange={setDateRange} />
+            <DayWiseCoverageHeader max={maxDate} min={minDate} startDate={startDate} endDate={endDate} setDateRange={setDateRange} />
             <DayWiseCoverageCalender start={startDate} end={endDate} getToolTipContent={getToolTipContent} getColor={getColor} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
             <TableContainer>
                 {selectedDate ?
                     <DayWiseCoverageTable
-                    // selectedDate={selectedDate}
+                        startDate={format(startOfMonth(startDate), "yyyy-MM-dd")}
+                        endDate={format(endOfMonth(endDate), "yyyy-MM-dd")}
+                        selectedDate={selectedDate}
                     />
                     : <AnimationWrapper>
                         <Player src={'/assets/img/VectorFLOW/BPR/swipe pointer.json'} loop autoplay style={{ height: 100, width: 100 }} />

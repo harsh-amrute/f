@@ -98,12 +98,14 @@ export const Icon = styled.img``;
 export const TableContainer = styled.div`
   background: white; 
   border-radius: 8px; 
-  height:450px; 
+  min-  height:400px; 
   display:flex; 
+  flex:1;
   justify-content:center; 
   align-items:center;
   width:100%;
-  margin: 3rem 0;
+  margin: 1rem 0;
+  margin-bottom: 2rem;
   box-shadow: rgba(0, 0, 0, 0.1) 5px 2px 14px 3px;
   & > .ag-theme-alpine{
     width: 100%;
