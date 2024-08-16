@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import {
     BMDepWrapper,
@@ -22,6 +22,11 @@ import RemarkHistoryRenderer from './RemarkHistoryRenderer';
 import BPRRemarkHistoryModal from './MTORemarkHistoryModal';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 import { useUserData } from '../../../../../context';
+import { useGetDeptWiseBMReport } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index'
+import { notifyLoader } from '../../../../../helpers/notify';
+import { toast } from 'react-toastify';
+import OverlayLoader from '../../Common/Loader';
+
 
 interface ApiResponse {
     cc: string;
@@ -64,8 +69,14 @@ interface ColDefChild {
 }
 
 const DptWiseBMReport = () => {
+    const { mutateAsync: getDeptWiseBMReportData, isLoading: DeptWiseLoading } = useGetDeptWiseBMReport();
     const [colDeflatest, setColdef] = useState([{}])
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
+    const [gridData, setGridData] = useState<any>();
+    const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
+    const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
+
+    const refGraph1 = useRef<any>(null);
 
     const customCellRenderers = useMemo(() => (
         {
@@ -122,7 +133,7 @@ const DptWiseBMReport = () => {
                         "hd": "BPP",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "BPP",
+                        "scc": "bpp",
                     },
                     {
                         "cc": "DeptAgeing",
@@ -130,7 +141,7 @@ const DptWiseBMReport = () => {
                         "hd": "Dept Ageing",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "D_Ag",
+                        "scc": "da",
                     },
                     {
                         "cc": "OrderType",
@@ -138,8 +149,8 @@ const DptWiseBMReport = () => {
                         "hd": "Order Type",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Ord_Typ",
-                      
+                        "scc": "ot",
+
                     },
                     {
                         "cc": "OrderID",
@@ -147,8 +158,8 @@ const DptWiseBMReport = () => {
                         "hd": "Order ID",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Ord_ID",
-                     
+                        "scc": "oid",
+
                     },
                     {
                         "cc": "LineItem",
@@ -156,7 +167,7 @@ const DptWiseBMReport = () => {
                         "hd": "Line Item",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "L_Itm",
+                        "scc": "lid",
                         "cgs": "closed"
                     },
                     {
@@ -165,7 +176,7 @@ const DptWiseBMReport = () => {
                         "hd": "Item Code",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Itm_Code",
+                        "scc": "ic",
                         "cgs": "closed"
                     },
                     {
@@ -174,7 +185,7 @@ const DptWiseBMReport = () => {
                         "hd": "Item Description",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Itm_Desc",
+                        "scc": "id",
                         "cgs": "closed"
                     },
                     {
@@ -183,7 +194,7 @@ const DptWiseBMReport = () => {
                         "hd": "Order Quantity",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Ord_Qty",
+                        "scc": "oq",
                         "cgs": "closed"
                     },
                     {
@@ -192,7 +203,7 @@ const DptWiseBMReport = () => {
                         "hd": "WIPOn Hand",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "WIP_O_Hd",
+                        "scc": "woh",
                         "cgs": "closed"
                     },
                     {
@@ -201,7 +212,7 @@ const DptWiseBMReport = () => {
                         "hd": "Mfg. Balance",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "M_Bal",
+                        "scc": "mfg",
                         "cgs": "closed"
                     },
                     {
@@ -210,7 +221,7 @@ const DptWiseBMReport = () => {
                         "hd": "Due Date",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "DDt",
+                        "scc": "dd",
                         "cgs": "closed"
                     },
                     {
@@ -219,7 +230,7 @@ const DptWiseBMReport = () => {
                         "hd": "Trailing Department",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Trail_Dpt",
+                        "scc": "td",
                         "cgs": "closed"
                     },
 
@@ -229,7 +240,7 @@ const DptWiseBMReport = () => {
                         "hd": "CRDD",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "CRDDate",
+                        "scc": "crdd",
                         "cgs": "closed"
                     },
                     {
@@ -247,7 +258,7 @@ const DptWiseBMReport = () => {
                         "hd": "Customer Name",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Cust_Nme",
+                        "scc": "cn",
                         "cgs": "closed"
                     },
                 ],
@@ -390,7 +401,7 @@ const DptWiseBMReport = () => {
                         "v": true,
                         "cla": "Centre",
                         "scc": "Cust_Cd",
-                        "cgs": "open"
+                        //"cgs": "open"
                     },
                     {
                         "cc": "Region",
@@ -459,7 +470,7 @@ const DptWiseBMReport = () => {
                 headerName: child.hd,
                 colId: child.hd,
                 cellRenderer: child.cc === 'ec' ? "customCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'TextBoxCellRenderer' : child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
-                initialWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
+                maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
                 columnGroupShow: child.cgs,
                 pinned: child.cc === 'Remark' || child.cc === 'Latest Remark' || child.scc === 'Remark History' ? 'right' : undefined,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
@@ -486,15 +497,47 @@ const DptWiseBMReport = () => {
         }));
     }
 
+    const getInitialGridData = async (wip: boolean) => {
+        try {
+            setWIPCheck(wip)
+            const gridData = await getDeptWiseBMReportData(wip ? 1 : 0);
+            setGridData(gridData?.data?.data?.results)
+        }
+        catch (e) {
+            console.log('e');
+        }
+    }
+
+
     useEffect(() => {
         const colDefs = mapApiResponseToColDefs(apiResponse);
         setColdef(colDefs)
+        getInitialGridData(isWIPChecked);
     }, [])
+
+    useEffect(() => {
+        if (DeptWiseLoading) {
+            toast.dismiss();
+            notifyLoader("Loading Data ...")
+        }
+        else {
+            toast.dismiss();
+        }
+    }, [DeptWiseLoading])
 
     const onOpenRemarkHistory = () => {
         setIsRemarkHistoryOpen(true)
         // Function implementation for remark history
     };
+
+    const getSelectedRow = () => {
+        const selectedData = refGraph1.current?.api.getSelectedRows();
+        if (selectedData.length > 0) {
+            setIsOrderElapsedGrid(true)
+        } else {
+            setIsOrderElapsedGrid(false)
+        }
+    }
 
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
@@ -540,8 +583,11 @@ const DptWiseBMReport = () => {
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,
         groupDefaultExpanded: 0,
-        pivotMode: false
+        pivotMode: false,
+        onSelectionChanged: getSelectedRow
     };
+
+
 
     const { screenHeight } = useViewPort();
     const { user } = useUserData();
@@ -553,27 +599,33 @@ const DptWiseBMReport = () => {
                     comp={'DeptWiseBMReport'}
                     isAddFilterButton
                     isExcelExport
-                    quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={true} onChange={() => console.log()} theme={themeUi} /> &nbsp;&nbsp; <strong>Show order with available WIP Only</strong></div>}
+                    quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={isWIPChecked} onChange={(e) => getInitialGridData(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show order with available WIP Only</strong></div>}
                 />
             </BMDepHeaderWraper>
 
-            <HorizontalViewWrapper style={{ marginTop: '0px' }}>
-                <BTRTableWrapper style={{ height: screenHeight + 100, margin: '0' }}>
-                    <Allotment vertical={true} separator={true} >
-                        <Allotment.Pane preferredSize={'60%'}>
-                            <BTRAllomentSection>
-                                <GridView agGridProps={agGridProps} columDef={colDeflatest} convercolumnDef={deptwiseBMReportData} />
-                            </BTRAllomentSection>
-                        </Allotment.Pane>
+            <>
+                {
+                    DeptWiseLoading ? <OverlayLoader /> :
 
-                        <Allotment.Pane preferredSize={'40%'}>
-                            <BTRAllomentSection>
-                                <OrderElapsedGrid isTrue={true} />
-                            </BTRAllomentSection>
-                        </Allotment.Pane>
-                    </Allotment>
-                </BTRTableWrapper>
-            </HorizontalViewWrapper>
+                        <HorizontalViewWrapper style={{ marginTop: '0px' }}>
+                            <BTRTableWrapper style={{ height: screenHeight + 100, margin: '0' }}>
+                                <Allotment vertical={true} separator={true} >
+                                    <Allotment.Pane preferredSize={'60%'}>
+                                        <BTRAllomentSection>
+                                            <GridView reference={refGraph1} agGridProps={agGridProps} columDef={colDeflatest} convercolumnDef={gridData} />
+                                        </BTRAllomentSection>
+                                    </Allotment.Pane>
+
+                                    <Allotment.Pane preferredSize={'40%'}>
+                                        <BTRAllomentSection>
+                                            <OrderElapsedGrid isTrue={isOrderElapsedGrid} />
+                                        </BTRAllomentSection>
+                                    </Allotment.Pane>
+                                </Allotment>
+                            </BTRTableWrapper>
+                        </HorizontalViewWrapper>
+                }
+            </>
 
             <BPRRemarkHistoryModal
                 data={RemarkHistoryData}
