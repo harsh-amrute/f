@@ -42,7 +42,6 @@ import { format } from 'date-fns';
 import VFRangeSlider from '../../VFRangeSlider';
 import CustomSelect from '../../../../../VectorFlow/Pages/MTO/Production/FullKitAssignement/Select';
 import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
-import { FilterState } from '../../../../../VectorFlow/types/MTO';
 import { getSelectedFilters } from '../../../../../helpers/utils';
 
 type filterType = {
