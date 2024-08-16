@@ -23,8 +23,8 @@ StepperWrapper.defaultProps = {
   className: "stepper-container",
 };
 
-export const StepGroup = styled.div<{ $step: boolean }>`
-  width: 43%;
+export const StepGroup = styled.div<{$step:boolean}>`
+  width: 30%;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -37,7 +37,7 @@ export const StepGroup = styled.div<{ $step: boolean }>`
  
   ${props => {
     return (props.$step &&
-      `&:not(:first-of-type):before {
+    `&[data-order="asc"]:not(:first-of-type):before {
         content: "";
         position: absolute;
         width: 5px;
@@ -47,7 +47,7 @@ export const StepGroup = styled.div<{ $step: boolean }>`
         background: #82104c;
         border-radius: 50%;
       }
-      &#inactive:before {
+      &[data-order="asc"]#inactive:before {
         content: "";
         position: absolute;
         width: 5px;
@@ -57,16 +57,17 @@ export const StepGroup = styled.div<{ $step: boolean }>`
         background: transparent;
         border-radius: 50%;
       }
-      &:not(:last-of-type):after {
+      &[data-order="asc"]:not(:last-of-type):after {
         content: "";
         position: absolute;
         width: 5px;
         height: 5px;
         border: 1px solid #82104c;
         left: 100%;
+        background: #82104c;
         border-radius: 50%;
       }
-      &#inactive:after {
+      &[data-order="asc"]#inactive:after {
         content: "";
         position: absolute;
         width: 5px;
@@ -74,9 +75,51 @@ export const StepGroup = styled.div<{ $step: boolean }>`
         border: 1px solid #82104c;
         left: calc(100% + 5px);
         border-radius: 50%;
-      }`)
-  }
-  }
+      }
+      
+      
+
+      &[data-order="dsc"]:not(:last-of-type):before {
+        content: "";
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        border: 1px solid #82104c;
+        background: #82104c;
+        right: 100%;
+        border-radius: 50%;
+      }
+      &[data-order="dsc"]#inactive:before {
+        content: "";
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        border: 1px solid #82104c;
+        right: calc(100% + 5px);
+        background: transparent;
+        border-radius: 50%;
+      }
+      &[data-order="dsc"]:not(:first-of-type):after {
+        content: "";
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        border: 1px solid #82104c;
+        background: #82104c;
+        left: 100%;
+        border-radius: 50%;
+      }
+      &[data-order="dsc"]#inactive:after {
+        content: "";
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        border: 1px solid #82104c;
+        left: calc(100% + 5px);
+        border-radius: 50%;
+      }
+      `)}
+    }
 `;
 
 StepGroup.defaultProps = {
@@ -87,3 +130,20 @@ export const StepLabel = styled.div`
   margin: 0 1rem;
   width: max-content;
 `;
+
+export const FOLIcon = styled.div<{width:number, color: string}>`
+  width: 40px;
+  height: 10px;
+  background: lightgrey;
+  margin-left: 5px;
+  position:relative;
+  &:before{
+    content:"";
+    position:absolute;
+    width: ${props => props.width}%;
+    height: 100%;
+    background: ${props => props.color};
+    left: 0;
+    top:0;
+  }
+`

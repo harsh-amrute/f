@@ -16,8 +16,8 @@ const BufferAssignment = ({theme, bufferMaster, selectedBuffers ,setSelectedBuff
   }
 
   return (
-    <StepperWrapper key="buffer-assignment">
-        <StepGroup $step={false} key={`buffer-assignment-1`}>
+    <StepperWrapper key="buffer-assignment" className="buffer-assignment">
+        <StepGroup $step={false} key={`buffer-assignment-1`} style={{width:"100%"}}>
             <StepLabel>Production Buffer</StepLabel>
             <RadioSelect 
               key={`buffer-assignment-1-1`}
@@ -25,16 +25,18 @@ const BufferAssignment = ({theme, bufferMaster, selectedBuffers ,setSelectedBuff
               theme={theme} 
               options={bufferMaster?.prodMaster}
               value={selectedBuffers[0] || null}
+              isClearable
               onChange={(newValue: any) => onValueChange(newValue, "prod")}
               getOptionLabel={(option: any)=>{return `${option.label} - [${option.size}d]`}}
             />
         </StepGroup>
-        <StepGroup $step={false} key={`buffer-assignment-2`}> 
+        <StepGroup $step={false} key={`buffer-assignment-2`} style={{width:"100%"}}> 
             <StepLabel>Procurement Buffer</StepLabel>
             <RadioSelect 
               key={`buffer-assignment-2-1`}
               isDisabled={!isEditable}
               theme={theme} 
+              isClearable
               options={bufferMaster?.procMaster}
               value={selectedBuffers[1] || null}
               onChange={(newValue: any) => onValueChange(newValue, "proc")}

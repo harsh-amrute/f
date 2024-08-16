@@ -19,6 +19,9 @@ import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Comm
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import useFilter from "../../../../../../hooks/useFilter";
 import { useGetOTIFAnalysisData } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTIFAnalysis";
+import OverlayLoader from '../../../Common/Loader';
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
+
 
 const APIFilterConfig = {
   filSecVisConfig :  {
@@ -37,8 +40,8 @@ const OTIFAnalysis = () => {
   const { screenHeight } = useViewPort();
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-  const { mutateAsync: getOTIFAnalysisData } = useGetOTIFAnalysisData()
   const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
+  const { mutateAsync: getOTIFAnalysisData, isLoading, isError, isSuccess } = useGetOTIFAnalysisData()
   const [colDef, setColDef] = useState([{}]);
   const [filterData, setFilterData] = useState({});
   const [gridData, setGridData] = useState([]);
@@ -103,6 +106,7 @@ const OTIFAnalysis = () => {
     }
     catch (e) {
       console.log(e);
+      notifyError('Failed to fetch Grid data!');
     }
   }
   
@@ -113,6 +117,7 @@ const OTIFAnalysis = () => {
     }
     catch (e) {
       console.log(e);
+      notifyError('Failed to fetch Graph data!');
     }
   }
 
@@ -140,9 +145,20 @@ const OTIFAnalysis = () => {
   }
 
   const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
+  useEffect(() => {
+    if (isSuccess) {
+      notifySuccess("Fetched Data successfully!")
+    }
+    if (isError) {
+      notifyError("Failed to load data!")
+    }
+  }, [isSuccess, isError])
 
   return (
     <div>
+      {
+        isLoading && <OverlayLoader />
+      }
       <MTOActionToolBar
         comp={"stplAndFullKit"}
         isGridView={isGridView}

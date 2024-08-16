@@ -62,7 +62,7 @@ interface MTOActionToolBarProps {
     date?: string
     handleGoBack?: () => void;
     themeUi?: string;
-    quickFilter?: ReactElement
+    quickFilter?: ReactElement | null
     horizonDays?: number;
     setHorizonDays?: (e: number) => void;
     handleHorizonSubmit?: () => void;

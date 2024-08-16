@@ -21,10 +21,16 @@ const DayWiseCoverage = () => {
         if (id === selectedDate) {
             return "#B93B7E"
         }
-        return DayWiseCoverageSumamry.data[id].oc === DayWiseCoverageSumamry.data[id].fk ? "#33800B" : "#F02424"
+        if(!DayWiseCoverageSumamry?.data[id]){
+            return "lightgrey"
+        }
+        return DayWiseCoverageSumamry?.data[id]?.oc === DayWiseCoverageSumamry?.data[id]?.fk ? "#33800B" : "#F02424"
     }
 
     const getToolTipContent = (id: string) => {
+        if(!DayWiseCoverageSumamry?.data[id]){
+            return <></>
+        }
         return (
             <table style={{ padding: "8px", display: "table", width: '250px' }}>
                 <thead>
@@ -38,7 +44,7 @@ const DayWiseCoverage = () => {
                             No of Orders
                         </td>
                         <td>
-                            {DayWiseCoverageSumamry.data[id]?.oc}
+                            {DayWiseCoverageSumamry?.data[id]?.oc}
                         </td>
                     </tr>
                     <tr>
@@ -46,7 +52,7 @@ const DayWiseCoverage = () => {
                             Full kit
                         </td>
                         <td>
-                            {DayWiseCoverageSumamry.data[id]?.fk}
+                            {DayWiseCoverageSumamry?.data[id]?.fk}
                         </td>
                     </tr>
                     <tr>
@@ -54,7 +60,7 @@ const DayWiseCoverage = () => {
                             Partial kit
                         </td>
                         <td>
-                            {DayWiseCoverageSumamry.data[id]?.pk}
+                            {DayWiseCoverageSumamry?.data[id]?.pk}
                         </td>
                     </tr>
                     <tr>
@@ -62,7 +68,7 @@ const DayWiseCoverage = () => {
                             No kit
                         </td>
                         <td>
-                            {DayWiseCoverageSumamry.data[id]?.nk}
+                            {DayWiseCoverageSumamry?.data[id]?.nk}
                         </td>
                     </tr>
                 </tbody>
