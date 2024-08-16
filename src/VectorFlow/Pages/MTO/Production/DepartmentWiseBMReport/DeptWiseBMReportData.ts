@@ -755,34 +755,34 @@ export const deptwiseBMReportData = [
 
 export const RemarkHistoryData = [
     {
-        'un': 'fristan',
-        'r': 'enter the last remark data',
-        'rd': '2023-12-23'
+        'added_by': 'fristan',
+        'remark': 'enter the last remark data',
+        'added_on': '2023-12-23'
     },
     {
-        'un': 'fristan',
-        'r': 'enter the  remark 1 data',
-        'rd': '2023-12-24'
+        'added_by': 'fristan',
+        'remark': 'enter the  remark 1 data',
+        'added_on': '2023-12-24'
     },
     {
-        'un': 'fristan',
-        'r': 'enter the remark 2 data',
-        'rd': '2023-12-24'
+        'added_by': 'fristan',
+        'remark': 'enter the remark 2 data',
+        'added_on': '2023-12-24'
     },
     {
-        'un': 'Tarun',
-        'r': 'enter the remark 3 data',
-        'rd': '2023-12-23'
+        'added_by': 'Tarun',
+        'remark': 'enter the remark 3 data',
+        'added_on': '2023-12-23'
     },
     {
-        'un': 'Tarun',
-        'r': 'enter the remark 4 data',
-        'rd': '2023-12-24'
+        'added_by': 'Tarun',
+        'remark': 'enter the remark 4 data',
+        'added_on': '2023-12-24'
     },
     {
-        'un': 'Tarun',
-        'r': 'enter the remark 5 data',
-        'rd': '2023-12-24'
+        'added_by': 'Tarun',
+        'remark': 'enter the remark 5 data',
+        'added_on': '2023-12-24'
     }
 ]
 

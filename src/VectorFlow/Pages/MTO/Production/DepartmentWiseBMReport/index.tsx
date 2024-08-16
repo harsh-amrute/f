@@ -25,6 +25,7 @@ import { useGetDeptWiseBMReport } from '../../../../../VectorFlow/Services/MTO/P
 import { notifyLoader } from '../../../../../helpers/notify';
 import { toast } from 'react-toastify';
 import OverlayLoader from '../../Common/Loader';
+import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 
 
 interface ApiResponse {
@@ -63,17 +64,19 @@ interface ColDefChild {
         visible?: {
             flag: any;
         };
-        onClick?: () => void;
+        onClick?: (data: string) => Promise<void>;
     };
 }
 
 const DptWiseBMReport = () => {
     const { mutateAsync: getDeptWiseBMReportData, isLoading: DeptWiseLoading } = useGetDeptWiseBMReport();
+    const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const [colDeflatest, setColdef] = useState([{}])
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [gridData, setGridData] = useState<any>();
     const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
+    const [remarkHistory, setRemarkHistory] = useState<any>();
 
     const refGraph1 = useRef<any>(null);
 
@@ -82,8 +85,8 @@ const DptWiseBMReport = () => {
             "colorCellRenderer": ColorCellRenderer,
             "AgeingCellRenderer": AgeingCellRenderer,
             "customCellRenderer": customCellRenderer,
+            "RemarkHistoryRenderer": RemarkHistoryRenderer,
             //"TextBoxCellRenderer": TextBoxCellRenderer,
-            "RemarkHistoryRenderer": RemarkHistoryRenderer
         }), []);
 
     const sideBar = useMemo(() => {
@@ -461,6 +464,28 @@ const DptWiseBMReport = () => {
             }
         ]
 
+    const onOpenRemarkHistory = async (data: any) => {
+        // Function implementation for remark history
+        try {
+            if (data.rm.length === 0) {
+                const RemarkHistory = await getPoogIRemarks(data.ok)
+                console.log('remarkHistory', RemarkHistory)
+                if (RemarkHistory.data?.data === 'No remarks are present for the order') {
+                    data.rm = []
+                }
+                else {
+                    data.rm = RemarkHistory.data?.data;
+                }
+            }
+            setRemarkHistory(data.rm)
+            setIsRemarkHistoryOpen(true)
+        }
+        catch (e) {
+            console.log(e);
+        }
+        setIsRemarkHistoryOpen(true)
+       
+    };
 
     const mapApiResponseToColDefs = (apiResponse: ApiResponse[]): ColDef[] => {
         const mapChildren = (children: ApiResponse[]): ColDefChild[] => {
@@ -475,10 +500,10 @@ const DptWiseBMReport = () => {
                 editable: child.cc === 'Remark' || child.cc === 'Latest Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 cellRendererParams: child.hd.includes("Remark") ? {
-                    visible: {
-                        flag: child.scc === 'Remark' ? true : child.scc === 'Latest Remark' ? false : undefined,
-                    },
-                    onClick: child.scc === 'Remark History' ? () => onOpenRemarkHistory() : undefined
+                    // visible: {
+                    //     flag: child.scc === 'Remark' ? true : child.scc === 'Latest Remark' ? false : undefined,
+                    // },
+                    onClick: child.scc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
                 } : undefined,
                 cellStyle: child.cc === 'Remark' || child.cc === 'Latest Remark' ? {
                     backgroundColor: 'white',
@@ -516,6 +541,7 @@ const DptWiseBMReport = () => {
 
     useEffect(() => {
         const colDefs = mapApiResponseToColDefs(apiResponse);
+        // console.log('coldefs', colDefs)
         setColdef(colDefs)
         getInitialGridData(isWIPChecked);
     }, [])
@@ -530,10 +556,7 @@ const DptWiseBMReport = () => {
         }
     }, [DeptWiseLoading])
 
-    const onOpenRemarkHistory = () => {
-        setIsRemarkHistoryOpen(true)
-        // Function implementation for remark history
-    };
+
 
     const getSelectedRow = () => {
         const selectedData = refGraph1.current?.api.getSelectedRows();
@@ -633,7 +656,7 @@ const DptWiseBMReport = () => {
             </>
 
             <BPRRemarkHistoryModal
-                data={RemarkHistoryData}
+                data={remarkHistory}
                 isOpen={isRemarkHistoryOpen}
                 onClose={() => setIsRemarkHistoryOpen(false)}
             />
