@@ -11,9 +11,19 @@ const WeekWiseGraph = () => {
 
     const { mutateAsync: getPlantMasterData } = useGetPlantMasterData();
     const { mutateAsync: getDeptMasterData } = useGetDeptMasterData();
-
+    const [hideChart1, toggleChart1] = useState(false);
+    const [selectOptionsDep, setSelectOptionsDep] = useState([])
+    const [selectOptionsPlnt, setSelectOptionsPlnt] = useState([])
     const [depOpts, setDepOpts] = useState([]);
     const [plntOpts, setPlntOpts] = useState([]);
+    const [tableLoading, setTableLoading] = useState(false);
+    const [chartLoading, setChartLoading] = useState(false);
+
+
+
+    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+
+    const date = apiResponseData?.data?.data;
 
     const getPlntData = async () => {
         try {
@@ -68,20 +78,7 @@ const WeekWiseGraph = () => {
         setSelectOptionsDep(newDepOptions);
     }, [plntOpts, depOpts])
 
-
     const graph1 = ['This box plot graph highlights the trend of statistical distribution of elapsed time for the selected plant-department']
-
-    const [hideChart1, toggleChart1] = useState(false);
-
-    const [selectOptionsDep, setSelectOptionsDep] = useState([
-
-    ])
-
-    const [selectOptionsPlnt, setSelectOptionsPlnt] = useState([
-
-    ])
-
-
 
 
     const generateHeader = () => {
@@ -125,14 +122,7 @@ const WeekWiseGraph = () => {
         )
     }
 
-    const [tableLoading, setTableLoading] = useState(false);
-    const [chartLoading, setChartLoading] = useState(false);
 
-
-
-    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
-
-    const date = apiResponseData?.data?.data;
 
     const boxChartOptions: any =
     {

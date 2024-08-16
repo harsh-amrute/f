@@ -36,17 +36,8 @@ const DeptWiseGraph = () => {
 
     const [tableLoading, setTableLoading] = useState(false);
     const [chartLoading, setChartLoading] = useState(false);
-
-
-
-
-
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
-
     const date = apiResponseData?.data?.data;
-
-
-
     const boxChartOptions: any = {
         theme: {
             monochrome: {
