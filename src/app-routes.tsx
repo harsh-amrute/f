@@ -59,6 +59,7 @@ import DynamicReleaseManagement from './VectorFlow/Pages/MTO/Production/DynamicR
 import ReasonForDelayOrder from './VectorFlow/Pages/MTO/Poogi/ReasonOrderChange/index'
 import OTAndIFAnalysis from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/OTAndIFAnalysis'
 import ElapsedTime from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/ElapsedTime'
+import LeadTime from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/LeadTime'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -132,7 +133,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/poogi/insight-and-trends/ot-and-if-analysis',
     '/production-planning-scheduling/insights-and-trends/elapsed-time',
     '/poogi/reasons-for-delayed-orders',
-    '/poogi/insight-and-trends/ot-and-if-analysis'
+    '/poogi/insight-and-trends/ot-and-if-analysis',
+    '/poogi/insight-and-trends/lead-time'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -773,6 +775,18 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<OTAndIFAnalysis />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    }
+    ,
+    {
+      path: '/poogi/insight-and-trends/lead-time',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<LeadTime />)
         },
         ...getStoreTransferModuleRoutes()
       ]

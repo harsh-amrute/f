@@ -688,6 +688,12 @@ export const listMenuParent: any = [
             url: '/poogi/insight-and-trends/ot-and-if-analysis',
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
+          {
+            name: "Lead Time",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: '/poogi/insight-and-trends/lead-time',
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
         ]
       },
     ],

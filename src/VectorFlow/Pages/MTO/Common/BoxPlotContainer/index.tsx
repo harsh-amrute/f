@@ -126,7 +126,7 @@ const BoxPlotContainer = ({
                         }
                         // series={series} // Make sure you have defined the series data
                         type="boxPlot"
-                        height={350}
+                        height={'100%'}
                         series={boxChartSeries}
                     />
                 </div>
