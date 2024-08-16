@@ -79,7 +79,7 @@ interface MTOActionToolBarProps {
     isWIPCheckBox?: boolean
     isFilterOpen?: boolean
     toggleFilter?: (state: boolean) => void  
-    multiFilter?: FilterState
+    multiFilter?: any
     setMultiFilter?: any
     onApplyFilter?: (params: any) => void;
     onFilterRemove?: any;
@@ -141,6 +141,9 @@ const MTOActionToolBar = ({
     const datetime = moment(d).format(format2);
 
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
+
+    console.log(multiFilter, 'Multi Filters');
+    console.log(newFilters, 'NEW Filters');
 
     return (
         <SCTaskBarContainer className='toolbar-container'>

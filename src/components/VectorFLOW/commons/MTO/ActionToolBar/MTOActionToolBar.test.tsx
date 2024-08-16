@@ -69,6 +69,13 @@ describe('MTOActionToolBar Component', () => {
   const mockToggleFilter = jest.fn();
   const mockOnApplyFilter = jest.fn();
   const mockSetCurrFilter = jest.fn();
+  const mockOnFilterRemove = jest.fn();
+
+  global.ResizeObserver = class MockedResizeObserver {
+    observe = jest.fn();
+    unobserve = jest.fn();
+    disconnect = jest.fn();
+};
 
 
   const selectedFilters = [
@@ -268,5 +275,170 @@ describe('MTOActionToolBar Component', () => {
     expect(mockOnApplyFilter).toHaveBeenCalledTimes(1);
     
   });
-  
+
+  test('renders go back ', async () => {
+    render(contextWrapperWithCustomTheme(<MTOActionToolBar 
+        isChartGridToggle
+        isAddFilterButton
+        isFilterOpen={true}
+        onAddFilter={mockOnAddFilter}
+        toggleFilter={mockToggleFilter}
+        onApplyFilter={mockOnApplyFilter} 
+        multiFilter={multiFilterMock}
+        setMultiFilter={mockSetCurrFilter} />, 
+    "REGALBLAZE"));
+
+    await waitFor( async () => expect(screen.getByTestId("vfmodal-img")).toBeInTheDocument())
+    
+    await waitFor (async () => {
+      const goBackButton = screen.getByText("Go Back!"); 
+      expect(goBackButton).toBeInTheDocument()
+    })
+    fireEvent.click(screen.getByText("Go Back!"));
+    expect(mockToggleFilter).toHaveBeenCalledTimes(1);
+    
+  });
+
+  test('renders with multiple selected filters from common filter modal', async() => {
+    const multiFilterMock = {
+      customers: {
+        "id": "cus",
+        "label": "Customer Filter",
+        "filters": [
+            {
+                "type": "search",
+                "name": "Customer Code",
+                "attributeName": "cc",
+                "operator": "",
+                "value": [
+                    {
+                        "label": 1,
+                        "value": 1
+                    }
+                ],
+                "options": [
+                    {
+                        "label": "Cust 1",
+                        "value": "Cust 1"
+                    },
+                    {
+                        "label": "Cust 2",
+                        "value": "Cust 2"
+                    },
+                    {
+                        "label": "Cust 3",
+                        "value": "Cust 3"
+                    },
+                    {
+                        "label": 1,
+                        "value": 1
+                    },
+                    {
+                        "label": 2,
+                        "value": 2
+                    },
+                    {
+                        "label": 3,
+                        "value": 3
+                    }
+                ]
+            },
+            {
+                "type": "search",
+                "name": "Customer Name",
+                "attributeName": "cn",
+                "operator": "",
+                "value": [
+                    {
+                        "label": "Customer 1",
+                        "value": "Customer 1"
+                    },
+                    {
+                        "label": "Customer 2",
+                        "value": "Customer 2"
+                    }
+                ],
+                "options": [
+                    {
+                        "label": "Customer 1",
+                        "value": "Customer 1"
+                    },
+                    {
+                        "label": "Customer 2",
+                        "value": "Customer 2"
+                    }
+                ]
+            }
+        ]
+    },
+    };
+
+    const newFilters: any = {
+      "customers": {
+          "name": "Customer Filter",
+          "parentId": "customers",
+          "filters": [
+              {
+                  "filterId": "cc",
+                  "type": "search",
+                  "operator": "",
+                  "label": "Customer Code",
+                  "value": [
+                      {
+                          "label": 1,
+                          "value": 1
+                      }
+                  ]
+              },
+              {
+                  "filterId": "cn",
+                  "type": "search",
+                  "operator": "",
+                  "label": "Customer Name",
+                  "value": [
+                      {
+                          "label": "Customer 1",
+                          "value": "Customer 1"
+                      },
+                      {
+                          "label": "Customer 2",
+                          "value": "Customer 2"
+                      }
+                  ]
+              }
+          ]
+      }
+  }
+    render(contextWrapperWithCustomTheme(<MTOActionToolBar 
+      isChartGridToggle
+      isAddFilterButton
+      isFilterOpen={false}
+      onAddFilter={mockOnAddFilter}
+      toggleFilter={mockToggleFilter}
+      onApplyFilter={mockOnApplyFilter} 
+      multiFilter={multiFilterMock}
+      setMultiFilter={mockSetCurrFilter}
+      onFilterRemove={mockOnFilterRemove} />, 
+    "REGALBLAZE"));
+    
+    await waitFor(async () => {
+      // expect(screen.getByText("Apply Filter")).not.toBeInTheDocument()
+
+      Object.keys(newFilters).forEach(key => {
+        expect(screen.getByText(newFilters[key].name)).toBeInTheDocument();
+        newFilters[key].filters.forEach((filter: any) => {
+          // expect(screen.getByText(filter.label)).toBeInTheDocument();
+          filter.value.forEach((val: any) => {
+            expect(screen.getByText(val.label)).toBeInTheDocument();
+          })
+        });
+      });
+
+
+      fireEvent.click(screen.getAllByTestId('closeIcon-filter')[0]);
+      expect(mockOnFilterRemove).toHaveBeenCalled();
+    })
+
+  });
+
 });
