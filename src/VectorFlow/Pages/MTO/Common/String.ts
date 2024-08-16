@@ -25,3 +25,7 @@ export const Poogi = {
     otif: "OTIF % Trend",
     otNif: "OT & IF % Trend",
 }
+
+export const ManufacturingHub = {
+    reasonHeading: "Major | Minor Reasons For OTIF Failure",
+}

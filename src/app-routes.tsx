@@ -58,6 +58,7 @@ import FOLSummary from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FOLS
 import DynamicReleaseManagement from './VectorFlow/Pages/MTO/Production/DynamicReleaseManagement'
 import ReasonForDelayOrder from './VectorFlow/Pages/MTO/Poogi/ReasonOrderChange/index'
 import OTAndIFAnalysis from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/OTAndIFAnalysis'
+import TopFailureReasons from './VectorFlow/Pages/MTO/ManufacturingHub/ImprovementAreas/TopFailureReason'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -75,6 +76,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
+    '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons'
   ]
   const urlAllPage = [
     ...authenPage,
@@ -129,7 +131,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/production-planning-scheduling/insights-and-trends/fol-summary',
     '/production-planning-scheduling/dynamic-release-mangement',
     '/poogi/reasons-for-delayed-orders',
-    '/poogi/insight-and-trends/ot-and-if-analysis'
+    '/poogi/insight-and-trends/ot-and-if-analysis',
+    '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -759,6 +762,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<OTAndIFAnalysis />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TopFailureReasons />)
         },
         ...getStoreTransferModuleRoutes()
       ]
