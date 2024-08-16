@@ -5,7 +5,7 @@ import { FlatIcon } from './styles';
 import { useGetBombLevelData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport';
 
 const customCellRenderer = (props: CustomCellRendererProps) => {
-    const { mutateAsync: getBombLevelData, isLoading: BombDataLoading } = useGetBombLevelData();
+const { mutateAsync: getBombLevelData, /*isLoading :BombDataLoading*/ } = useGetBombLevelData();
     const { node } = props;
     const [expanded, setExpanded] = useState(node.expanded);
 

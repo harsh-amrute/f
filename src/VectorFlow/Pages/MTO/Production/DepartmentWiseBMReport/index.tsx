@@ -17,7 +17,6 @@ import ColorCellRenderer from '../../Common/ColorCellRenderer';
 import AgeingCellRenderer from './AgeingIconCellRenderer';
 import customCellRenderer from './CustomCellRenderer';
 import RowGroupRenderer from './RowGroupRenderer';
-import TextBoxCellRenderer from './TextBoxCellRenderer';
 import RemarkHistoryRenderer from './RemarkHistoryRenderer';
 import BPRRemarkHistoryModal from './MTORemarkHistoryModal';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
