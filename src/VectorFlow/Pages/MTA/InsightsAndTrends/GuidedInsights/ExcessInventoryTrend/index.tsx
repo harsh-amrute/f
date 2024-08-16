@@ -8,10 +8,10 @@ import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInf
 import { useEffect, useState } from 'react';
 
 
-const ExcessInventoryTrend = ({themeUi}:{themeUi:string}) => {
+const ExcessInventoryTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:string, filter:any, horizon:number, setHorizon:any}) => {
 
-     const [horizon1, setHorizon1] = useState<number>(9);
-     const [horizon2, setHorizon2] = useState<number>(9);
+    //  const [horizon1, setHorizon1] = useState<number>(9);
+    //  const [horizon2, setHorizon2] = useState<number>(9);
      const [options1, setOptions1] = useState({});
         const [options2, setOptions2] = useState({});
 
@@ -20,13 +20,13 @@ const ExcessInventoryTrend = ({themeUi}:{themeUi:string}) => {
      const { mutateAsync: GetExcessInventoryValue, isLoading: isLoaderGraph2 } =useGetExcessInventoryValue();
 
      useEffect(() => {
-    OnHorizon1Change(horizon1);
-    OnHorizon2Change(horizon2);
-  }, []);
+    OnHorizonChange(horizon);
+    OnHorizon2Change(horizon);
+  }, [filter]);
 
-   const OnHorizon1Change = async (hvalue: any) => {
-    setHorizon1(hvalue);
-    const param = { horison: horizon1 };
+   const OnHorizonChange = async (hvalue: any) => {
+    setHorizon(hvalue);
+    const param = { horison: horizon, filters:filter,  };
     const ExcessInventorySkuData = await GetExcessInventorySku(param);
    // const ExcessInventoryValueData =  await GetExcessInventoryValue(param);
    const greyShades = [
@@ -133,8 +133,8 @@ const ExcessInventoryTrend = ({themeUi}:{themeUi:string}) => {
      };
 
   const OnHorizon2Change = async (hvalue: any) => {
-    setHorizon2(hvalue);
-    const param = { horison: horizon2 };
+    setHorizon(hvalue);
+    const param = { horison: horizon, filters:filter };
     //const ExcessInventorySkuData = await GetExcessInventorySku(param);
     const ExcessInventoryValueData =  await GetExcessInventoryValue(param);
     //SetExcessInventorySku(ExcessInventorySkuData?.data?.data);
@@ -276,7 +276,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                     strictMode={false}
                     width={250}
                     defaultValue={9}
-                    handleChange={(e) => setHorizon1(e)}
+                    handleChange={(e) => setHorizon(e)}
                     labelValueFormatter={(value: number) =>
                         value > 1 ? `${value} Days` : `${value} Day`
                 
@@ -297,7 +297,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                     src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
                     height={40} 
                     width={50}
-                    onClick={() => OnHorizon1Change(horizon1)}
+                    onClick={() => OnHorizonChange(horizon)}
                     
                     />
                    
@@ -353,7 +353,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                 strictMode={false}
                 width={250}
                 defaultValue={9}
-                handleChange={(e) => setHorizon2(e)}
+                handleChange={(e) => setHorizon(e)}
                 labelValueFormatter={(value: number) =>
                     value > 1 ? `${value} Days` : `${value} Day`
             
@@ -373,7 +373,7 @@ if(isLoaderGraph1||isLoaderGraph2){
                     src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
                     height={40} 
                     width={50} 
-                    onClick={() => OnHorizon2Change(horizon2)}
+                    onClick={() => OnHorizon2Change(horizon)}
                     />
             </div>
 

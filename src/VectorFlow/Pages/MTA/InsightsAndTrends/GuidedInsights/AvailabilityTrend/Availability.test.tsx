@@ -46,7 +46,7 @@ describe("Availability Trend", () => {
     });
      it("Renders Availability Trend", () => {
         
-        render(contextWrapperWithCustomTheme(<AvailabilityTrend themeUi="REGALBLAZE"/>,"REGALBLAZE"))
+        render(contextWrapperWithCustomTheme(<AvailabilityTrend themeUi="REGALBLAZE" filter={"Product Filter"} horizon={10} setHorizon={jest.fn()}/>,"REGALBLAZE"))
        
     })
 })

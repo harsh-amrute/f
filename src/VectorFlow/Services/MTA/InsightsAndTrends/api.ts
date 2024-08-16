@@ -6,13 +6,13 @@ export const getAvaialabilityTrend = async (body:{horison:number}) => {
       headers: { 'Content-Type': 'application/json' }
     })
   }
-  export const getChronicUnavailabilityLoc = async () => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/ChronicUnavailabilityLoc`,{
+  export const getChronicUnavailabilityLoc = async (body:any) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/ChronicUnavailabilityLoc`,body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }
-  export const getChronicUnavailabilitySku = async () => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/ChronicUnavailabilitySku`,{
+  export const getChronicUnavailabilitySku = async (body:any) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/ChronicUnavailabilitySku`,body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }
@@ -23,23 +23,23 @@ export const getAvaialabilityTrend = async (body:{horison:number}) => {
       headers: { 'Content-Type': 'application/json' }
     })
   }
-  export const getDBMNormSuggestionLoc = async () => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/DBMNormSuggestionLoc`,{
+  export const getDBMNormSuggestionLoc = async (body:any) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/DBMNormSuggestionLoc`, body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }
-  export const getDBMNormSuggestionPie = async () => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/DBMNormSuggestionPie`,{
+  export const getDBMNormSuggestionPie = async (body:any) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/DBMNormSuggestionPie`, body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }
-  export const getDBMNormSuggestionSKUs = async () => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/DBMNormSuggestionSKUs`,{
+  export const getDBMNormSuggestionSKUs = async (body:any) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/DBMNormSuggestionSKUs`, body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }
-  export const getDBMNormSuggestionAgeing = async () => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST + `/DBMNormSuggestionAgeing`,{
+  export const getDBMNormSuggestionAgeing = async (body:any) => {
+    return await axios.post(process.env.REACT_APP_VF_API_HOST + `/DBMNormSuggestionAgeing`, body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }
