@@ -7,6 +7,10 @@ import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
 
 const ChartView = () => {
 
+    const [tableLoading, setTableLoading] = useState(false);
+    const [chartLoading, setChartLoading] = useState(false);
+    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+    const date = apiResponseData?.data?.data;
     const graph1 = ['This box plot graph displays statistical distribution of lead time of closed orders. Each box represents the various statistical measures around lead time of closed orders.']
 
     const [hideChart1, toggleChart1] = useState(false);
@@ -44,10 +48,7 @@ const ChartView = () => {
         )
     }
 
-    const [tableLoading, setTableLoading] = useState(false);
-    const [chartLoading, setChartLoading] = useState(false);
-    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
-    const date = apiResponseData?.data?.data;
+
 
 
     const boxChartOptions: any =
