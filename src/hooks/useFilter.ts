@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
-import { findUniqueKeysAndValues, getDynamicAttributes, getKeyName } from '../helpers/utils';
+import { checkValue, findUniqueKeysAndValues, getDynamicAttributes, getKeyName } from '../helpers/utils';
 import { filterAttributes, staticHeaderConfig } from '../VectorFlow/Pages/MTO/Common/VFCommonFilter/Constants';
 import { FilterState } from '../VectorFlow/types/MTO';
 
@@ -15,7 +15,7 @@ const useFilter=(filterData: any, page: any)=>{
             const { attributeName } = updatedFilters[i];
             if(attributeName === filterId){
                 updatedFilters[i].value = updatedFilters[i]?.value?.filter((val: any) => { 
-                    const newVal =val.value || val.id;
+                    const newVal = val.value || val.id;
                     if(newVal !== value){
                         return val;
                     }
@@ -24,7 +24,6 @@ const useFilter=(filterData: any, page: any)=>{
        }
 
        updatedMultiFilter[parentId as keyof FilterState].filters = [...updatedFilters];
-       
         setMultiFilter(updatedMultiFilter);
         return updatedMultiFilter
     };
@@ -53,23 +52,23 @@ const useFilter=(filterData: any, page: any)=>{
         for(let i = 0; i < mappings.length; i++){
             const { rid, ccrid, grpid, deptid } = mappings[i];
             if(routes.includes(rid)){
-                if(dept[deptid]?.nm && !(department.includes(dept[deptid]?.nm))){
-                    department.push({id: deptid, label :dept[deptid]?.nm})
+                if(dept[deptid]?.nm && !checkValue(department,  dept[deptid]?.nm )){
+                    department.push({value: deptid, label :dept[deptid]?.nm})
                 }
-                if(ccrs[ccrid]?.nm && !(ccr.includes(ccrs[ccrid]?.nm))){
-                    ccr.push({id: ccrid, label: ccrs[ccrid]?.nm})
+                if(ccrs[ccrid]?.nm && !checkValue(ccr, ccrs[ccrid]?.nm )){
+                    ccr.push({value: ccrid, label: ccrs[ccrid]?.nm})
                 }
-                if(ccrgroups[grpid]?.nm && !(ccrGrp.includes(ccrgroups[grpid]?.nm))){
-                    ccrGrp.push({id: grpid, label: ccrgroups[grpid]?.nm})
+                if(ccrgroups[grpid]?.nm && !checkValue(ccrGrp, ccrgroups[grpid]?.nm)){
+                    ccrGrp.push({value: grpid, label: ccrgroups[grpid]?.nm})
                 }
             }
         }
 
         for(let i = 0; i < filterOptionsConfig?.majid?.length; i++){
             const mjrid = filterOptionsConfig?.majid[i].id;
-            if(filterData?.mjar[mjrid]?.name && !mjr.includes(filterData?.mjar[mjrid]?.name)){
-                mjr.push({id: mjrid, label: filterData?.mjar[mjrid]?.name});
-                const minors = filterData?.mjar[mjrid]?.min?.map((reason: any) => ({ id: reason.id, label: reason.name}));
+            if(filterData?.mjar[mjrid]?.name && !checkValue(mjr, filterData?.mjar[mjrid]?.name )){
+                mjr.push({value: mjrid, label: filterData?.mjar[mjrid]?.name});
+                const minors = filterData?.mjar[mjrid]?.min?.map((reason: any) => ({ value: reason.id, label: reason.name}));
                 min = [...min, ...minors];
             }
         }
@@ -79,7 +78,6 @@ const useFilter=(filterData: any, page: any)=>{
         filterOptionsConfig.deptid = department;
         filterOptionsConfig.grpid = ccrGrp;
         filterOptionsConfig.ccrid = ccr;
-        console.log(filterOptionsConfig, 'FILTER CONFIG');
         const filterObjects: FilterState = {}
 
         if(page?.mjr){
@@ -105,8 +103,8 @@ const useFilter=(filterData: any, page: any)=>{
                     name: staticHeaderConfig[key]?.name || (getKeyName(filterData?.hdrkeymap?.lattr, key) || getKeyName(filterData?.hdrkeymap?.oattr, key)),
                     attributeName: key,
                     operator: '',
-                    value: key === 'ms' ?  filterData?.system_type?.map((type: any) => ({ id: type, label: type })) : [],
-                    options: key === 'ms' ?  filterData?.system_type?.map((type: any) => ({ id: type, label: type })): filterOptionsConfig[key]
+                    value: key === 'ms' ?  filterData?.system_type?.map((type: any) => ({ value: type, label: type })) : [],
+                    options: key === 'ms' ?  filterData?.system_type?.map((type: any) => ({ value: type, label: type })): filterOptionsConfig[key]
                 })).filter((fil: any) => filterAttributes.order.includes(fil.attributeName) || ((getKeyName(filterData?.hdrkeymap.lattr, fil.attributeName) === fil.name) || (getKeyName(filterData?.hdrkeymap.oattr, fil.attributeName) === fil.name)))
             }
         }
@@ -144,7 +142,8 @@ const useFilter=(filterData: any, page: any)=>{
     },[filterData])
         
            
-
+    // console.log(defaultFilterState, 'DEFAULT');
+    // console.log(multiFilter, 'MULTI');
     return{
         state:multiFilter,
         setState:setMultiFilter,

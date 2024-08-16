@@ -2814,7 +2814,9 @@ export function findUniqueKeysAndValues(filterData: any) {
           if (!uniqueValues[key]) {
               uniqueValues[key] = new Set();
           }
-          uniqueValues[key].add(obj[key]);
+          if(obj[key]){
+            uniqueValues[key].add(obj[key]);
+          }
       }
   }
 
@@ -2834,7 +2836,7 @@ export function findUniqueKeysAndValues(filterData: any) {
   // Convert Set to Array and include empty array for missing keys
   const response: any = {};
   for (const key in uniqueValues) {
-      response[key] = Array.from(uniqueValues[key]).map((o: any) => ({label: o, id: o}));
+      response[key] = Array.from(uniqueValues[key]).map((o: any) => ({label: o, value: o}));
   }
 
   // Add empty array for any missing keys based on the first object in each array
@@ -2894,7 +2896,7 @@ export const formatFilterJSON = (filter: any) => {
 // Function to check values already there in Values
 export const checkValue = (filters: any, value: any) => {
   for(let i = 0; i < filters.length; i++){
-    if(filters[i].id === value || filters[i].value === value){
+    if(filters[i]?.id === value || filters[i]?.value === value){
       return true;
     }   
   }
@@ -2904,7 +2906,6 @@ export const checkValue = (filters: any, value: any) => {
 export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   const selectedFilter: any = {};
   for(const key in filter){
-
     const { filters, label } = filter[key];
     const newFilter: any = {
       name: label,

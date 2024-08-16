@@ -46,6 +46,7 @@ describe("VFCommonFilter Component", () => {
     const mockOnGoBack = jest.fn();
     const mockSetMultiFilter = jest.fn();
     const mockSetIsMfgSelected = jest.fn();
+    const mockClearAllFilters = jest.fn();
 
     global.ResizeObserver = class MockedResizeObserver {
         observe = jest.fn();
@@ -62,7 +63,8 @@ describe("VFCommonFilter Component", () => {
         multiFilter: {},
         setMultiFilter: mockSetMultiFilter,
         isFilterOpen: true,
-        setIsMfgSelected: mockSetIsMfgSelected
+        setIsMfgSelected: mockSetIsMfgSelected,
+        clearAllFilters: mockClearAllFilters
     };
 
     const multiFilterMock: FilterState = {

@@ -3,11 +3,13 @@ import { useUserData } from "../../../../../context";
 import {
   ButtonContainer,
   ButtonFilterWrapper,
+  ConfirmationText,
   FilterBody,
   FilterCardWrapper,
   FilterComponent,
   FilterHeader,
   FilterWrapper,
+  TextBtn,
 } from "./styles";
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
@@ -35,6 +37,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
   const { onGoBack, multiFilter, setMultiFilter, onApplyFilter, isFilterOpen, setIsMfgSelected } = props;
   const [filterState, setFilterState] = useState<any>({});
   const [openStatus, setOpenStatus] = useState<any>({});
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
   const { user } = useUserData();
   
 
@@ -56,9 +59,9 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
 
         if( type === InputTypes.MultiSelect ||type === InputTypes.Checkbox){
           if (checkValue(updatedFilters[i].value, targetValue?.id)) {
-            updatedFilters[i].value = updatedFilters[i]?.value?.filter((v: any) => v?.id !== targetValue?.id);
+            updatedFilters[i].value = updatedFilters[i]?.value?.filter((v: any) => v?.value !== targetValue?.id );
           } else {
-            updatedFilters[i].value = [...updatedFilters[i].value, targetValue];
+            updatedFilters[i].value = [...updatedFilters[i].value, {label: targetValue?.label, value: targetValue?.id }];
           }
         }
 
@@ -82,6 +85,19 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
       },
     });
   };
+
+  const clearFilters = (currFilters: any) => {
+    const emptyFilterState = { ...currFilters };
+    for(const key in emptyFilterState){
+      const { filters } = emptyFilterState[key];
+      for(let i = 0; i < filters.length; i++){
+        const { attributeName, options } = filters[i];
+        filters[i].value = attributeName === 'ms' ? [...options] : [];
+      }
+    }
+    setMultiFilter(emptyFilterState);
+    setFilterState(emptyFilterState);
+  }
 
   useEffect(() => {
     const openFilters: any = {};
@@ -169,7 +185,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                                 }
                                 options={filter.options?.map((f: any) => ({
                                   label: f.label,
-                                  value: f.id,
+                                  value: f.value,
                                 }))}
                                 placeholder={`${filter.name}`}
                                 handleListChild={() => console.log("")}
@@ -199,7 +215,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                               >
                                 <FilterMultiSelectCheckbox
                                   header={filter.name}
-                                  filterOptions={filter.options?.map((f: any) => ({ label: f.label, id: f.id }))}
+                                  filterOptions={filter.options?.map((f: any) => ({ label: f.label, id: f.value }))}
                                   filterState={filter}
                                   onChange={(e: any, key: string) =>
                                     onFilterChange(InputTypes.Select, filter.attributeName, e, category, key)
@@ -221,7 +237,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                             >
                                 <Checkbox
                                   header={filter.name}
-                                  filterOptions={filter.options?.map((f: any) => ({ label: f.label, id: f.id }))}
+                                  filterOptions={filter.options?.map((f: any) => ({ label: f?.label, id: f?.value || f.label }))}
                                   filterState={filter}
                                   onChange={(e: any, key: string, targetVal: any) =>
                                     onFilterChange(InputTypes.Checkbox, filter.attributeName, e, category, key, '', targetVal)
@@ -248,7 +264,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                               >
                                 <FilterMultiSelectCheckbox
                                   header={filter.name}
-                                  filterOptions={filter?.options?.map((f: any) => ({ label: f.label, id: f.id }))}
+                                  filterOptions={filter?.options?.map((f: any) => ({ label: f.label, id: f.value }))}
                                   filterState={filter}
                                   onChange={(e: any, key: string, targetVal: any) =>
                                     onFilterChange(InputTypes.MultiSelect, filter.attributeName, e, category, key,"", targetVal)
@@ -268,6 +284,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
             </FilterBody>
             <ButtonFilterWrapper>
               <ButtonContainer>
+                <TextBtn onClick={() => setIsConfirmModalOpen(true)}>Clear All Filters</TextBtn>
                 <VFButtonOutline data-testid="goBack" themeUi={user.user.theme_ui} onClick={ () => {
                   setFilterState(multiFilter);
                   onGoBack()
@@ -288,6 +305,34 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
           </React.Fragment>
         }
       </VFModalCard>
+        <VFModalCard
+          zoom={"0.73"}
+          openModal={isConfirmModalOpen}
+          closeModal={() => setIsConfirmModalOpen(false)}
+          headerIcon={"/assets/img/VectorFLOW/BPR/select-filter.svg"}
+          headerText={""}
+          closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
+          paddingLeftAndRight={0}
+          backgroundColor={"#f4f4f4"}
+          data-testid="vfmultifilter-img"
+        >
+          <ConfirmationText>Are you sure, want to clear all Selected Filters ?</ConfirmationText>
+          <ButtonFilterWrapper>
+              <ButtonContainer>
+                <VFButtonOutline data-testid="goBack" themeUi={user.user.theme_ui} onClick={ () => {
+                  setIsConfirmModalOpen(false)
+                }}>
+                  No
+                </VFButtonOutline>
+                <VFButton data-testid="applyFilter" themeUi={user.user.theme_ui} onClick={() =>{
+                  clearFilters(filterState);
+                  setIsConfirmModalOpen(false)
+                }}>
+                  Yes
+                </VFButton>
+              </ButtonContainer>
+            </ButtonFilterWrapper>
+        </VFModalCard>
     </>
   );
 };

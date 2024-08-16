@@ -411,7 +411,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
           <FilterSelectDropdown className="custom-scrollbar" placeholder={filterState.type === InputTypes.TextCompare ? "Equal to" : "<="} options={getOptions(filterState.type)} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator')} filterId={filterId} value={getOperatorValue(filterState.type)}/>    
         </SelectDropdownComponent>
         <SelectDropdownComponent data-testid="filter-dropdown">
-          <FilterTextInput name={header} type={filterState.type === InputTypes.TextCompare ? "text" : 'number'} placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()}/>    
+          <FilterTextInput name={header} type={filterState.type === InputTypes.TextCompare ? "text" : 'number'} placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()||''}/>    
         </SelectDropdownComponent>  
       </DropdownGroupWrapper>  
     </>     

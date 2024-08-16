@@ -82,7 +82,7 @@ interface MTOActionToolBarProps {
     multiFilter?: FilterState
     setMultiFilter?: any
     onApplyFilter?: (params: any) => void;
-    onFilterRemove?: any
+    onFilterRemove?: any;
     isReleaseButton?: boolean
     onOrderRelease?: () => void;
     onCheckBoxToggle?: any;
@@ -491,7 +491,15 @@ const MTOActionToolBar = ({
 
             <SCCustomActionsContainer>
                 {isAddFilterButton && (onAddFilter ?
-                    <VFButton onClick={() => onAddFilter()} themeUi={themeUi || ''} disabled={false} width={110}>{(selectedFilters || selectedFilters ) && (selectedFilters?.length || Object.keys(selectedFilters).length ) ? <p style={{ padding: '2px' }}>Edit Filter</p> : <p style={{ padding: '2px' }}>+ Add Filter</p>}</VFButton>
+                    <VFButton onClick={() => onAddFilter()} 
+                        themeUi={themeUi || ''} 
+                        disabled={false} 
+                        width={110}
+                    >{(selectedFilters || newFilters ) && (selectedFilters?.length || Object.keys(newFilters).length ) ? 
+                        <p style={{ padding: '2px' }}>Edit Filter</p> 
+                        : 
+                        <p style={{ padding: '2px' }}>+ Add Filter</p>}
+                    </VFButton>
                     :
                     <SCButton>
                         <p>+ Add Filter</p>

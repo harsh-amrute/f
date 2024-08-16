@@ -154,3 +154,26 @@ display:flex;
 align-items: center; 
 flex-direction:column;
 `
+
+export const TextBtn=styled.div`
+font-family: 'Roboto';
+font-weight: 300;
+font-size: 20px;
+line-height: 24px;
+color: #82104C;
+display: flex;
+align-items: center;
+`
+
+export const ConfirmationText=styled.div`
+font-family: Roboto;
+font-weight: 500;
+font-size: 20px;
+line-height: 24px;
+color: rgb(0, 0, 0);
+display: flex;
+-webkit-box-align: center;
+align-items: center;
+height: 150px;
+justify-content: center;
+`
