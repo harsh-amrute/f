@@ -1,6 +1,5 @@
-import { AgChartOptions, AgCharts } from 'ag-charts-community'
-import { AgChartsReact } from 'ag-charts-react'
-import { Dispatch, SetStateAction, useMemo, useRef } from 'react'
+import { AgChartOptions } from 'ag-charts-community'
+import { Dispatch, SetStateAction, useRef } from 'react'
 import { SCChartContainer, SCChartMainContainer, SCHorizontalDivider, ChartWrapper } from './styles'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
@@ -26,12 +25,12 @@ interface BoxPlotContainerProps {
     date?: string,
     boxChartData?: any,
     boxChartOptions?: any
-    dateStr?: string
+    dateStr?: string,
+    boxChartSeries?: any
 }
 
 const BoxPlotContainer = ({
     colDef,
-    data,
     rowData,
     header,
     graphTitle,
@@ -40,31 +39,13 @@ const BoxPlotContainer = ({
     hideChart,
     dateStr,
     toggleChart,
-    boxChartData,
-    boxChartOptions
+    boxChartOptions,
+    boxChartSeries
 }: BoxPlotContainerProps) => {
-    const chartRef = useRef<AgChartsReact>(null);
     const refGraph1 = useRef<GridRef>(null);
 
-    const chartData = boxChartData;
 
 
-    const seriesData = useMemo(() => {
-
-        return chartData.map((item: any) => ({
-            x: item.name,
-            y: [parseFloat(item.mind), parseFloat(item.Q1), parseFloat(item.median), parseFloat(item.Q3), parseFloat(item.maxd)],
-
-        }))
-    }, [data]);
-
-    const series = [
-        {
-
-            name: 'boxplot',
-            data: chartData
-        }
-    ];
 
 
 
@@ -84,20 +65,12 @@ const BoxPlotContainer = ({
                 <ChartWrapper>
                     <div style={{ height: '100%', width: '100%' }}>
                         <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                            <div style={{ fontSize: '10px', fontWeight: 500, textAlign: 'center', margin: '0 auto', display: 'flex' }}>
+                            <div style={{ fontSize: '11px', fontWeight: 500, textAlign: 'center', margin: '0 auto', display: 'flex' }}>
                                 <p>
                                     {graphTitle}
                                 </p>
                                 <p style={{ paddingLeft: '4px', fontWeight: 350 }}>{dateStr}</p>
                             </div>
-                            <div style={{ marginLeft: '0 10px -5px', marginBottom: '-5px' }} onClick={() => {
-
-                                (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart, { fileName: graphTitle });
-
-                            }}>
-                                <img src='/assets/img/mto/RMPMBufferTrend/download.svg' style={{ color: "#CCCCCC", paddingBottom: '5px' }} height={15} width={15} color={"#CCCCCC"} />
-                            </div>
-
                         </div>
                     </div>
                 </ChartWrapper>
@@ -147,11 +120,14 @@ const BoxPlotContainer = ({
                 </VFModalCard>
                 <div style={{ flex: 1, width: '100%' }}>
                     <Chart
-                        options={boxChartOptions}
+                        options={
+                            boxChartOptions
+
+                        }
                         // series={series} // Make sure you have defined the series data
                         type="boxPlot"
                         height={350}
-                        series={series}
+                        series={boxChartSeries}
                     />
                 </div>
             </SCChartContainer>

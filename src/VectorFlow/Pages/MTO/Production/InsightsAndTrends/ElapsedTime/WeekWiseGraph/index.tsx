@@ -1,30 +1,85 @@
 import moment from 'moment'
-import React, { useState } from 'react'
-import SplitGraphContainer from '../../../../Common/SplitGraphContainer'
+import { useState, useEffect } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../Common/SplitGraphContainer/styles'
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
-import { AgChartOptions } from 'ag-charts-community'
 import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
 import Select from 'react-select'
+import { useGetDeptMasterData, useGetPlantMasterData } from '../../../../../../../VectorFlow/Services/MTO/Common/Masters'
 
 const WeekWiseGraph = () => {
 
-    const graph1 = ['This graph highlights the extent of Shortage in In-Full failed orders.']
+    const { mutateAsync: getPlantMasterData } = useGetPlantMasterData();
+    const { mutateAsync: getDeptMasterData } = useGetDeptMasterData();
+
+    const [depOpts, setDepOpts] = useState([]);
+    const [plntOpts, setPlntOpts] = useState([]);
+
+    const getPlntData = async () => {
+        try {
+
+            const result = await getPlantMasterData();
+            setPlntOpts(result?.data?.data);
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getDeptData = async () => {
+        try {
+
+            const result = await getDeptMasterData();
+            setDepOpts(result?.data?.data);
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        getPlntData();
+        getDeptData();
+    }, [])
+
+
+    useEffect(() => {
+
+        const newPlantOptions: any = [];
+
+        plntOpts?.forEach &&
+            plntOpts?.forEach((e: any) => {
+                const eachPlant = { value: e.plant_name, label: e.plant_name }
+
+                newPlantOptions.push(eachPlant);
+            })
+
+        setSelectOptionsPlnt(newPlantOptions);
+
+        const newDepOptions: any = [];
+
+        depOpts?.forEach &&
+            depOpts?.forEach((e: any) => {
+                const eachDep = { value: e.dept_name, label: e.dept_name }
+
+                newDepOptions.push(eachDep);
+            })
+
+        setSelectOptionsDep(newDepOptions);
+    }, [plntOpts, depOpts])
+
+
+    const graph1 = ['This box plot graph highlights the trend of statistical distribution of elapsed time for the selected plant-department']
 
     const [hideChart1, toggleChart1] = useState(false);
 
-    const selectOptionsDep = [
-        { value: 'Dep1', label: 'Dep1' },
-        { value: 'Dep2', label: 'Dep2' },
-        { value: 'Dep3', label: 'Dep3' }
-    ]
+    const [selectOptionsDep, setSelectOptionsDep] = useState([
 
-    const selectOptionsPlnt = [
-        { value: 'P1', label: 'P1' },
-        { value: 'P2', label: 'P2' },
-        { value: 'P3', label: 'P3' }
-    ]
+    ])
+
+    const [selectOptionsPlnt, setSelectOptionsPlnt] = useState([
+
+    ])
 
 
 
@@ -79,9 +134,19 @@ const WeekWiseGraph = () => {
 
     const date = apiResponseData?.data?.data;
 
-    const boxChartOptions: any = {
+    const boxChartOptions: any =
+    {
+        theme: {
+            monochrome: {
+                enabled: true,
+                color: '#FF0000',
+                shadeIntensity: 0
+            },
+            palette: 'palette4',
+        },
         chart: {
             type: 'boxPlot',
+
             zoom: {
                 enabled: false,
             },
@@ -93,10 +158,16 @@ const WeekWiseGraph = () => {
                 },
             },
         },
+
         grid: {
             show: false,
 
         },
+        legend: {
+            show: false
+
+        }
+        ,
         stroke: {
             show: true,
             curve: 'smooth',
@@ -114,6 +185,8 @@ const WeekWiseGraph = () => {
             },
 
             labels: {
+
+
                 rotateAlways: true,
                 style: {
                     fontSize: '12px', // Font size of y-axis labels
@@ -125,6 +198,7 @@ const WeekWiseGraph = () => {
         },
         yaxis: {
             axisBorder: {
+
                 show: true
             },
             title: {
@@ -136,6 +210,7 @@ const WeekWiseGraph = () => {
                 },
             },
             labels: {
+
                 style: {
                     fontSize: '10px',
                     fontWeight: 'bold', // Font size of y-axis labels
@@ -145,15 +220,31 @@ const WeekWiseGraph = () => {
             },
 
         },
+        // colors: ['red'],
+
         plotOptions: {
+
             boxPlot: {
                 colors: {
                     lower: '#D3D3D3',
-                    upper: '#848484'
+                    upper: '#848484',
+
                 }
             }
         }
+        ,
+        tooltip: {
+            followCursor: false,
+            enabledOnSeries: [1]
+        }
     }
+
+
+    // series={series} // Make sure you have defined the series data
+
+
+
+
     const chartData: any = [
         { x: "Feb 2024", y: [2, 5, 8, 11, 14] },
         { x: "Mar 2024", y: [2, 3, 5, 6, 8] },
@@ -177,6 +268,8 @@ const WeekWiseGraph = () => {
         { 'week': 'Aug2024-Wk2', 'LW': 6, 'Q1': 8, 'Q2': 9, 'Q3': 12, 'HW': 14 },
         { 'week': 'Aug2024-Wk3', 'LW': 7, 'Q1': 9, 'Q2': 10, 'Q3': 13, 'HW': 15 },
     ]
+
+
 
 
     const columnDefinitions = [
@@ -212,6 +305,14 @@ const WeekWiseGraph = () => {
         },
     ];
 
+    const boxSeries = [{
+        name: 'elapsed time',
+        type: 'boxPlot',
+        data: chartData
+    }]
+
+
+
     return (
         <div style={{ height: "100%", paddingBottom: '20px', display: 'flex', justifyContent: 'left', marginLeft: '10px' }}>
 
@@ -232,6 +333,7 @@ const WeekWiseGraph = () => {
                 hideChart={hideChart1}
                 toggleChart={toggleChart1}
                 graphType={10}
+                boxChartSeries={boxSeries}
             />
         </div>
     )

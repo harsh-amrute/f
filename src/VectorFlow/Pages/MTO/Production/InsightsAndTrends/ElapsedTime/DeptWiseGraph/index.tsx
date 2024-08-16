@@ -3,12 +3,13 @@ import { useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../Common/SplitGraphContainer/styles'
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
-import { AgChartOptions } from 'ag-charts-community'
 import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
 
 const DeptWiseGraph = () => {
 
-    const graph1 = ['This Graph highlights the extent of delays experienced by OT Failed completed orders.']
+    const graph1 = ['This box plots highlights the statistical distribution of dept-wise elapsed time (in days) for orders closed in the last 7 days at respective departments.',
+        'The box plots in Red indicate that the median elapsed time in those departments have increased by more than 15% (last week vs prev. 4 weeks). '
+    ]
 
     const [hideChart1, toggleChart1] = useState(false);
 
@@ -47,8 +48,17 @@ const DeptWiseGraph = () => {
 
 
     const boxChartOptions: any = {
+        theme: {
+            monochrome: {
+                enabled: true,
+                color: '#FF0000',
+                shadeIntensity: 0
+            },
+            palette: 'palette4',
+        },
         chart: {
             type: 'boxPlot',
+
             zoom: {
                 enabled: false,
             },
@@ -60,10 +70,16 @@ const DeptWiseGraph = () => {
                 },
             },
         },
+
         grid: {
             show: false,
 
         },
+        legend: {
+            show: false
+
+        }
+        ,
         stroke: {
             show: true,
             curve: 'smooth',
@@ -81,6 +97,8 @@ const DeptWiseGraph = () => {
             },
 
             labels: {
+
+
                 rotateAlways: true,
                 style: {
                     fontSize: '12px', // Font size of y-axis labels
@@ -92,6 +110,7 @@ const DeptWiseGraph = () => {
         },
         yaxis: {
             axisBorder: {
+
                 show: true
             },
             title: {
@@ -103,6 +122,7 @@ const DeptWiseGraph = () => {
                 },
             },
             labels: {
+
                 style: {
                     fontSize: '10px',
                     fontWeight: 'bold', // Font size of y-axis labels
@@ -112,13 +132,24 @@ const DeptWiseGraph = () => {
             },
 
         },
+        // colors: ['red'],
+
         plotOptions: {
+
             boxPlot: {
                 colors: {
                     lower: '#D3D3D3',
-                    upper: '#848484'
+                    upper: '#848484',
+
                 }
             }
+        }
+        ,
+        tooltip: {
+            followCursor: false,
+            // enabled: true,
+            // enabledOnSeries: []
+
         }
     }
     const chartData: any = [
@@ -150,6 +181,20 @@ const DeptWiseGraph = () => {
     ];
 
 
+    const boxSeries = [{
+        name: 'elapsed time',
+        type: 'boxPlot',
+        data: chartData
+    }, {
+        name: 'Alert',
+        type: 'scatter',
+        data: [
+            { x: "P2-Dept 2", y: [16] },
+            { x: "P2-Dept 3", y: [] },
+            { x: "P2-Dept 4", y: [10] }
+        ]
+    }]
+
 
     return (
         <div style={{ height: "100%", paddingBottom: '20px', display: 'flex', justifyContent: 'left', marginRight: '7px' }}>
@@ -171,6 +216,7 @@ const DeptWiseGraph = () => {
                 hideChart={hideChart1}
                 toggleChart={toggleChart1}
                 graphType={11}
+                boxChartSeries={boxSeries}
             />
 
         </div>

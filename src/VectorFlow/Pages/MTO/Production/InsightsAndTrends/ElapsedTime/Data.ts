@@ -1,11 +1,7 @@
-import { ColDef } from "ag-grid-enterprise";
-
-
-
 export const APIMock = [
     {
         tags: 1,
-        bpp: "BPP1",
+        bpp: 100,
         plnt: "Plant1",
         order_id: "ORD001",
         order_type: "Type1",
@@ -24,7 +20,7 @@ export const APIMock = [
     },
     {
         tags: 2,
-        bpp: "BPP2",
+        bpp: 100,
         plnt: "Plant2",
         order_id: "ORD002",
         order_type: "Type2",
@@ -42,8 +38,8 @@ export const APIMock = [
         cus_name: "Customer Two"
     },
     {
-        tags: "Tag3",
-        bpp: "BPP3",
+        tags: 3,
+        bpp: 100,
         plnt: "Plant3",
         order_id: "ORD003",
         order_type: "Type3",
@@ -61,8 +57,8 @@ export const APIMock = [
         cus_name: "Customer Three"
     },
     {
-        tags: "Tag4",
-        bpp: "BPP4",
+        tags: 1,
+        bpp: 100,
         plnt: "Plant4",
         order_id: "ORD004",
         order_type: "Type4",
@@ -80,8 +76,8 @@ export const APIMock = [
         cus_name: "Customer Four"
     },
     {
-        tags: "Tag5",
-        bpp: "BPP5",
+        tags: 2,
+        bpp: 100,
         plnt: "Plant5",
         order_id: "ORD005",
         order_type: "Type5",
