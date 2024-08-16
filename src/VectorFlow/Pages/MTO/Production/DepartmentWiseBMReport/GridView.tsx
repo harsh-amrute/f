@@ -1,5 +1,3 @@
-import React, { useRef } from 'react'
-import { GridRef } from '../../../../../VectorFlow/types/MDM';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import { VFWrapper } from './styles';
 
