@@ -138,7 +138,7 @@ const DayWiseCoverage = () => {
                 }
             })
             Object.entries(calenderData).forEach((entry: any)=>{
-                const [releasedDate, data] = entry;
+                const releasedDate = entry[0];
                 // console.log(releasedDate,getColor(releasedDate) === Colors.Red)
                 // const month = format(releasedDate, "MMM");
                 const month = getMonth(releasedDate);
