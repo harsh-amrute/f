@@ -52,7 +52,7 @@ const DayWiseCoverageTable = ({
   const getGridData = async () => {
     if(selectedDate){
       const data = await getData({startDate: startDate, endDate: endDate,plannedReleaseDate: selectedDate});
-      setRowData(data?.data?.data?.results)
+      setRowData(data?.data?.data)
     }
   }
 
@@ -104,7 +104,7 @@ const DayWiseCoverageTable = ({
       headerName: "Group",
       cellRenderer: CustomGroupCellRenderer,
       suppressMenu: true,
-      initialWidth: 250,
+      initialWidth: 260,
     },
     masterDetail: true,
     detailCellRendererParams: {
