@@ -3,18 +3,22 @@ import { useState } from 'react'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
-import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
-import { createSeriesData, data, getMyColumnDefinitions, TooltipRenderer } from '../Data'
+import { createSeriesData, getMyColumnDefinitions, TooltipRenderer } from '../Data'
 import { AgChartOptions } from 'ag-charts-community'
 
-const OTFailedGraph = () => {
+interface OTFailedGraphProps {
+    OTFailedData: any,
+}
+
+const OTFailedGraph = (props: OTFailedGraphProps) => {
+
+    const { OTFailedData } = props;
 
     const graph1 = ['This Graph highlights the extent of delays experienced by OT Failed completed orders.']
 
     const [hideChart1, toggleChart1] = useState(false);
-
-
-
+    const [tableLoading, setTableLoading] = useState(false);
+    const [chartLoading, setChartLoading] = useState(false);
 
     const generateHeader = () => {
         return (
@@ -31,7 +35,7 @@ const OTFailedGraph = () => {
                         }}
                     >
                         <span style={{ fontWeight: 500 }}>Extent Of Delay For OT Failed Orders &nbsp;</span>
-                        <span style={{ fontWeight: 350 }}>{`(${moment(date).format('D MMM YYYY')} - ${moment(date).add(90, 'days').format('D MMM YYYY')})`}</span>
+                        <span style={{ fontWeight: 350 }}>{`(${moment(OTFailedData?.start || '-').format('D MMM YYYY')} - ${moment(OTFailedData?.end || '-').format('D MMM YYYY')})`}</span>
                     </div>
 
                     <SCChartHeaderContainer>
@@ -49,26 +53,18 @@ const OTFailedGraph = () => {
         )
     }
 
-    const [tableLoading, setTableLoading] = useState(false);
-    const [chartLoading, setChartLoading] = useState(false);
-
     const labels = [
-        { text: "1-2 days", color: "#F5B279", key: "1-2 days" },
-        { text: "3-7 days", color: "#F09241", key: "3-7 days" },
-        { text: "8-15 days", color: "#E36A00", key: "8-15 days" },
-        { text: "16-30 days", color: "#AD5000", key: "16-30 days" },
+        { text: "1-2 days", color: "#F5B279", key: "1_2_d" },
+        { text: "3-7 days", color: "#F09241", key: "3_7_d" },
+        { text: "8-15 days", color: "#E36A00", key: "8_15_d" },
+        { text: "16-30 days", color: "#AD5000", key: "16_30_d" },
     ];
 
     const colDef: any = getMyColumnDefinitions(labels);
 
-
-
-    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
-
-    const date = apiResponseData?.data?.data;
     const options: AgChartOptions = {
         series: createSeriesData(),
-        data: data,
+        data: OTFailedData?.data || [],
         axes: [
             {
                 type: "category",
@@ -116,19 +112,15 @@ const OTFailedGraph = () => {
 
     }
 
-
-
     return (
         <div style={{ height: "100%", paddingBottom: '20px', display: 'flex', justifyContent: 'left', marginRight: '7px' }}>
-
-
             <SplitGraphContainer
                 tableLoading={tableLoading}
                 chartLoading={chartLoading}
                 setTableLoading={setTableLoading}
                 setChartLoading={setChartLoading}
-                data={data}
-                rowData={data}
+                data={OTFailedData?.data || []}
+                rowData={OTFailedData?.data || []}
                 graphTitle={``}
                 tableTitle={``}
                 options={options}
