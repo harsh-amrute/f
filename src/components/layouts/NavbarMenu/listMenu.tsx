@@ -628,6 +628,12 @@ export const listMenuParent: any = [
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
           {
+            name: "Elapsed Time",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: '/production-planning-scheduling/insights-and-trends/elapsed-time',
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
+          {
             name: "Orders At Risk",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/production-planning-scheduling/insight-and-trends/order-at-risk",
@@ -680,6 +686,12 @@ export const listMenuParent: any = [
             name: "OT & IF Analysis",
             img: "/assets/img/nav/arrow_down.svg",
             url: '/poogi/insight-and-trends/ot-and-if-analysis',
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
+          {
+            name: "Lead Time",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: '/poogi/insight-and-trends/lead-time',
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
         ]
