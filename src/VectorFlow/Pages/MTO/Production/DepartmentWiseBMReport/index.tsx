@@ -21,8 +21,8 @@ import RemarkHistoryRenderer from './RemarkHistoryRenderer';
 import BPRRemarkHistoryModal from './MTORemarkHistoryModal';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 import { useUserData } from '../../../../../context';
-import { useGetDeptWiseBMReport } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index'
-import { notifyLoader } from '../../../../../helpers/notify';
+import { useGetDeptWiseBMReport, useAddBMReportRemark } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index'
+import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
 import { toast } from 'react-toastify';
 import OverlayLoader from '../../Common/Loader';
 import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
@@ -68,16 +68,28 @@ interface ColDefChild {
     };
 }
 
+type UpdateRemarkObj = {
+    ok: string;
+    dept: number;
+    rm: string;
+    user: string
+};
+
+
 const DptWiseBMReport = () => {
     const { mutateAsync: getDeptWiseBMReportData, isLoading: DeptWiseLoading } = useGetDeptWiseBMReport();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
+    const { mutateAsync: addBMReportRemark } = useAddBMReportRemark();
     const [colDeflatest, setColdef] = useState([{}])
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [gridData, setGridData] = useState<any>();
     const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
     const [remarkHistory, setRemarkHistory] = useState<any>();
-
+    const [editedRows, setEditedRows] = useState<Set<number>>(new Set());
+    const { screenHeight } = useViewPort();
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
     const refGraph1 = useRef<any>(null);
 
     const customCellRenderers = useMemo(() => (
@@ -469,7 +481,6 @@ const DptWiseBMReport = () => {
         try {
             if (data.rm.length === 0) {
                 const RemarkHistory = await getPoogIRemarks(data.ok)
-                console.log('remarkHistory', RemarkHistory)
                 if (RemarkHistory.data?.data === 'No remarks are present for the order') {
                     data.rm = []
                 }
@@ -484,7 +495,7 @@ const DptWiseBMReport = () => {
             console.log(e);
         }
         setIsRemarkHistoryOpen(true)
-       
+
     };
 
     const mapApiResponseToColDefs = (apiResponse: ApiResponse[]): ColDef[] => {
@@ -497,7 +508,7 @@ const DptWiseBMReport = () => {
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
                 columnGroupShow: child.cgs,
                 pinned: child.cc === 'Remark' || child.cc === 'Latest Remark' || child.scc === 'Remark History' ? 'right' : undefined,
-                editable: child.cc === 'Remark' || child.cc === 'Latest Remark' ? true : false,
+                editable: child.cc === 'Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 cellRendererParams: child.hd.includes("Remark") ? {
                     // visible: {
@@ -505,7 +516,7 @@ const DptWiseBMReport = () => {
                     // },
                     onClick: child.scc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
                 } : undefined,
-                cellStyle: child.cc === 'Remark' || child.cc === 'Latest Remark' ? {
+                cellStyle: child.cc === 'Remark' ? {
                     backgroundColor: 'white',
                     border: '1px solid #b9bdba',
                     color: 'black',
@@ -567,6 +578,58 @@ const DptWiseBMReport = () => {
         }
     }
 
+    // Handle cell value changes
+    const onCellValueChanged = (event: any) => {
+        if (event.data) {
+            setEditedRows(prev => new Set(prev.add(event.data.ok)));
+        }
+    };
+
+    // Initialize AG Grid API reference
+    /*   const onGridReady = (params: any) => {
+          refGraph1.current = params.api;
+      }; */
+
+    const handleUpdateReason = async () => {
+      //  console.log('editedRows', editedRows)
+        try {
+            if (refGraph1.current) {
+                const updatedRow = gridData.filter((row: any) => editedRows.has(row.ok))
+               // console.log('updated row', updatedRow)
+                if (updatedRow.length > 0) {
+                    let putData: UpdateRemarkObj[] = [];
+                    updatedRow.forEach((e: any) => {
+                        const singleData: any = {
+                            "ok": e.ok,
+                            "dept": Number(e.td.split(' ')[1]),
+                            "rm": e.Remark,
+                            "user": user?.user?.name
+                        }
+                        putData.push(singleData);
+                    })
+                    const RemarkHistory = await addBMReportRemark(putData);
+                   // console.log('REmakrf', RemarkHistory)
+                    if (RemarkHistory.status === 200) {
+                        putData = [];
+                        setEditedRows(new Set());
+                        notifySuccess('Remark saved successfully')
+                    }
+                    else {
+                        notifyError('Remark not save')
+                    }
+                }
+                else {
+                    notifyError('Please add remarks/remark to save')
+                }
+            }
+            return [];
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+
+
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
         tooltipTrigger: "focus",
@@ -612,14 +675,12 @@ const DptWiseBMReport = () => {
         enterNavigatesVerticallyAfterEdit: true,
         groupDefaultExpanded: 0,
         pivotMode: false,
-        onSelectionChanged: getSelectedRow
+        onSelectionChanged: getSelectedRow,
+        onCellValueChanged: onCellValueChanged,
+        //onGridReady: onGridReady
     };
 
 
-
-    const { screenHeight } = useViewPort();
-    const { user } = useUserData();
-    const themeUi = user?.user?.theme_ui;
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>
@@ -640,7 +701,13 @@ const DptWiseBMReport = () => {
                                 <Allotment vertical={true} separator={true} >
                                     <Allotment.Pane preferredSize={'60%'}>
                                         <BTRAllomentSection>
-                                            <GridView reference={refGraph1} agGridProps={agGridProps} columDef={colDeflatest} convercolumnDef={gridData} />
+                                            <GridView
+                                                reference={refGraph1}
+                                                agGridProps={agGridProps}
+                                                columDef={colDeflatest}
+                                                convercolumnDef={gridData}
+                                                updateReason={() => handleUpdateReason()}
+                                            />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
 

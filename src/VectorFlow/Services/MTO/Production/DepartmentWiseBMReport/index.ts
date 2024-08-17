@@ -12,3 +12,9 @@ export const useGetBombLevelData = () => {
         return await DepartmentWiseBMReport.getBombLevelData(data);
     })
 }
+
+export const useAddBMReportRemark = () => {
+    return useMutation(async (data: any) => {
+        return await DepartmentWiseBMReport.addBMReportRemark(data);
+    })
+}

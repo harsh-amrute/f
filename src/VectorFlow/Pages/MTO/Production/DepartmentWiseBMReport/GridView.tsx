@@ -1,16 +1,18 @@
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import { VFWrapper } from './styles';
+import { SaveBtnWrapper, SaveBtn } from '../../Poogi/ReasonOrderChange/styles';
 
 interface GridProps {
     agGridProps: any
     columDef: any
     convercolumnDef: any
-    reference:any
+    reference: any
+    updateReason:()=>void
 }
 
-const GridView = ({ agGridProps, columDef, convercolumnDef,reference }: GridProps) => {
+const GridView = ({ agGridProps, columDef, convercolumnDef, reference,updateReason }: GridProps) => {
 
-  
+
     return (
         <>
             <VFWrapper>
@@ -37,6 +39,11 @@ const GridView = ({ agGridProps, columDef, convercolumnDef,reference }: GridProp
                     ref={reference}
                 />
             </VFWrapper>
+            <SaveBtnWrapper style={{margin:'0px 0px 10px'}}>
+                <SaveBtn onClick={ updateReason}>
+                    Save Remark
+                </SaveBtn>
+            </SaveBtnWrapper>
         </>
     )
 }
