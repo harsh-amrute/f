@@ -100,7 +100,7 @@ export const Icon = styled.img``;
 export const TableContainer = styled.div`
   background: white; 
   border-radius: 8px; 
-  min-height:400px; 
+  // min-height:400px; 
   display:flex; 
   flex:1;
   justify-content:center; 
@@ -113,6 +113,7 @@ export const TableContainer = styled.div`
     width: 100%;
     margin: unset;
     height: 100% !important;
+    min-height: 400px;
   }
 `
 

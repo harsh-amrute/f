@@ -170,6 +170,14 @@ const DayWiseCoverage = () => {
 
     const { renderView, toggleCurrentTab, date, currentTab } = useMaterialReq(selectedDate);
 
+    useEffect(()=>{
+        toggleCurrentTab({
+            id: 'sdv',
+            label: 'Selected Day View',
+            value: 'sdv'
+        })
+    }, [selectedDate])
+
     return (
         <div style={{display:"flex", flexDirection:"column", height:"100%"}}>
             <div style={{ zoom: 1.25 }}>
@@ -197,7 +205,7 @@ const DayWiseCoverage = () => {
                     <MaterialRequirementComponent renderView={renderView} currentTab={currentTab} date={date} toggleCurrentTab={toggleCurrentTab}/>
                 </div>
             </VFModalCard>
-            {calenderData?.[selectedDate] && <div style={{marginBottom:"1rem", marginTop:"-1rem", fontSize:"18px", fontWeight:"bold", cursor:"pointer"}} onClick={()=>setShowModal(true)}>Material Requirement</div>}
+            {calenderData?.[selectedDate] && <div style={{marginBottom:"1rem", marginTop:"-1rem", fontSize:"18px", fontWeight:"bold", cursor:"pointer", paddingTop: "1rem"}} onClick={()=>setShowModal(true)}>Material Requirement</div>}
         </div>
 
     )

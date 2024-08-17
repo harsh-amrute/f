@@ -70,7 +70,7 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 const useMaterialReq = (forDate?: string) => {
 
     const format2 = "YYYY-MM-DD"
-    const d = new Date();
+    const d = forDate ? new Date(forDate) : new Date();
     const datetime = moment(d).format(format2);
     const [HeaderData, setHeaderData] = useState([{}]);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -150,8 +150,8 @@ const useMaterialReq = (forDate?: string) => {
         if(forDate){
             const d = new Date(forDate);
             const datetime = moment(d).format(format2);
-            getInitialData(currentPage, forDate);
             onDateChangeReq(datetime);
+            // getInitialData(currentPage, forDate);
         }
     }, [forDate])
 
