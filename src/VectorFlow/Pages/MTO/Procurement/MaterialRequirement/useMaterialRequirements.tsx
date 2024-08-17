@@ -68,8 +68,9 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 };
 
 const useMaterialReq = (forDate?: string) => {
+
     const format2 = "YYYY-MM-DD"
-    const d = forDate ? new Date(forDate): new Date()
+    const d = new Date();
     const datetime = moment(d).format(format2);
     const [HeaderData, setHeaderData] = useState([{}]);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -140,10 +141,19 @@ const useMaterialReq = (forDate?: string) => {
     const [dayWiseRecordCount, setDayWiseRecordCount] = useState<number>(0);
     const [cumulativeRecordCount, setcumulativeRecordCount] = useState<number>(0);
     const [date, setDate] = useState<string>(datetime);
-
+    
     useEffect(() => {
         getInitialData()
     }, [currentTab])
+
+    useEffect(()=>{
+        if(forDate){
+            const d = new Date(forDate);
+            const datetime = moment(d).format(format2);
+            getInitialData(currentPage, forDate);
+            onDateChangeReq(datetime);
+        }
+    }, [forDate])
 
 
     const onDateChangeReq = (date: string) => {
@@ -154,20 +164,20 @@ const useMaterialReq = (forDate?: string) => {
         getInitialData()
     }
 
-    const getInitialData = async (currPage?: number) => {
-        currentTab.id === 'sdv' ? getSelectedDateWise(currPage) : getCumulativeDateWise(currPage);
+    const getInitialData = async (currPage?: number, releaseDate?: string) => {
+        currentTab.id === 'sdv' ? getSelectedDateWise(currPage, releaseDate) : getCumulativeDateWise(currPage, releaseDate);
     }
 
-    const getSelectedDateWise = async (currPage?: number) => {
+    const getSelectedDateWise = async (currPage?: number, releaseDate: string = date) => {
 
-        const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: date, currPage: currPage ? currPage : currentPage });
+        const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, currPage: currPage ? currPage : currentPage });
         const dayWiseOutput = datWiseData.data?.data?.results;
         setDayWiseRecordCount(datWiseData.data?.data?.count)
         setDayWiseData(dayWiseOutput)
     }
 
-    const getCumulativeDateWise = async (currPage?: number) => {
-        const cumulativeData = await getMaterialRequirementData({ releaseDate: date, currPage: currPage ? currPage : currentCumPage });
+    const getCumulativeDateWise = async (currPage?: number,  releaseDate: string = date) => {
+        const cumulativeData = await getMaterialRequirementData({ releaseDate: releaseDate, currPage: currPage ? currPage : currentCumPage });
         const cumulativeOutput = cumulativeData.data?.data?.results
         setcumulativeRecordCount(cumulativeData.data?.data?.count)
         SetCumulativeData(cumulativeOutput)
@@ -320,7 +330,7 @@ const useMaterialReq = (forDate?: string) => {
                                 tooltipHideDelay={100000}
                                 tooltipShowDelay={0}
                                 tooltipMouseTrack={true}
-                                height={'620px'}
+                                height={'550px'}
                                 ref={gridRef}
                                 pagination={false}
                                 statusBar={{
@@ -354,7 +364,7 @@ const useMaterialReq = (forDate?: string) => {
                                 tooltipHideDelay={100000}
                                 tooltipShowDelay={0}
                                 tooltipMouseTrack={true}
-                                height={'620px'}
+                                height={'550px'}
                                 ref={gridRef}
                                 statusBar={{
                                     statusPanels: [

@@ -10,7 +10,10 @@ import { useGetDayWiseCoverageData } from '../../../../../../VectorFlow/Services
 import OverlayLoader from '../../../Common/Loader';
 import { useDispatch } from 'react-redux';
 import { DAYWISE_COVERAGE_ANALYTICS } from '../../../../../../redux/actions/MTO';
-
+import VFModalCard from '../../../../../../components/VectorFLOW/commons/VFModalCard';
+import MaterialRequirementComponent from '../../MaterialRequirement/MaterialRequirementComponent';
+import useMaterialReq from '../../MaterialRequirement/useMaterialRequirements';
+import "./style.css"
 
 
 enum Colors{
@@ -30,6 +33,7 @@ const DayWiseCoverage = () => {
     const [startDate, setStartDate] = useState(format(minDate, "yyyy-MM"));
     const [endDate, setEndDate] = useState(format(maxDate,"yyyy-MM"));
     const [selectedDate, setSelectedDate] = useState<string>("");
+    const [showModal, setShowModal] = useState<boolean>(false);
     
     const [calenderData, setCalenderData] = useState<any>();
 
@@ -61,10 +65,6 @@ const DayWiseCoverage = () => {
             return Colors.Selected
         }
         return calenderData?.[id]?.oc === calenderData?.[id]?.fk ? Colors.Green: Colors.Red
-    }
-
-    const hasContent = (id: string) => {
-        return calenderData?.[id] != null
     }
 
     const getToolTipContent = (id: string) => {
@@ -157,16 +157,18 @@ const DayWiseCoverage = () => {
                 
             })
             
-            console.log(analytics);
+
             const data = Object.entries(analytics).map((entry: any)=>{
                 const greens = entry[1].green;
                 const reds = entry[1].red
                 return [months[entry[0]], greens, reds, formatNumber((greens/(greens + reds)* 100) || 0)]
             })
-            console.log("data", data);
+
             dispatch(DAYWISE_COVERAGE_ANALYTICS(data))
         }
     }   
+
+    const { renderView, toggleCurrentTab, date, currentTab } = useMaterialReq(selectedDate);
 
     return (
         <div style={{display:"flex", flexDirection:"column", height:"100%"}}>
@@ -190,7 +192,12 @@ const DayWiseCoverage = () => {
                     </AnimationWrapper>
                 }
             </TableContainer>
-
+            <VFModalCard openModal={showModal} closeModal={() => { setShowModal(false)}} headerText={'Material Coverage'} headerIcon={""} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'}>
+                <div style={{zoom: 0.8, margin: "2rem", overflow:"auto"}}>
+                    <MaterialRequirementComponent renderView={renderView} currentTab={currentTab} date={date} toggleCurrentTab={toggleCurrentTab}/>
+                </div>
+            </VFModalCard>
+            {calenderData?.[selectedDate] && <div style={{marginBottom:"1rem", marginTop:"-1rem", fontSize:"18px", fontWeight:"bold", cursor:"pointer"}} onClick={()=>setShowModal(true)}>Material Requirement</div>}
         </div>
 
     )

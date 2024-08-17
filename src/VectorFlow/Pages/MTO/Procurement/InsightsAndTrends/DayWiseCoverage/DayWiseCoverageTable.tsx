@@ -52,8 +52,7 @@ const DayWiseCoverageTable = ({
   const getGridData = async () => {
     if(selectedDate){
       const data = await getData({startDate: startDate, endDate: endDate,plannedReleaseDate: selectedDate});
-      console.log(data);
-      setRowData(data.data.data.results)
+      setRowData(data?.data?.data?.results)
     }
   }
 
@@ -105,7 +104,7 @@ const DayWiseCoverageTable = ({
       headerName: "Group",
       cellRenderer: CustomGroupCellRenderer,
       suppressMenu: true,
-      initialWidth: 220,
+      initialWidth: 250,
     },
     masterDetail: true,
     detailCellRendererParams: {
@@ -126,8 +125,7 @@ const DayWiseCoverageTable = ({
       disableZoomScaling={true}
       columnDefs={options.columnDefs}
       rowData={rowData}
-      paginationPageSize={5}
-      pagination={true}
+      // pagination={true}
       onGridReady={(params: any) => {
         params.columnApi.autoSizeAllColumns();
       }}
