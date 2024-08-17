@@ -34,6 +34,7 @@ export const CalenderTitle = styled.h1`
   color: white;
   margin: 0;
   padding: 8px 16px;
+  font-size: 16px;
 `;
 
 export const CalenderContent = styled.div`
@@ -86,6 +87,7 @@ export const Day = styled.td<{ color: string }>`
   background-color: ${(props) => props.color};
   color: white;
   border-radius: 50%;
+  cursor: pointer;
 `;
 
 export const Month = styled.tr`
@@ -124,5 +126,29 @@ export const AnimationWrapper = styled.div`
 export const HelperText = styled.div`
   font-size: 22px;
   width: 65%;
+  text-align: center;
+`
+
+
+export const AnalyticsTable = styled.table`
+    background: rgb(56, 55, 55);
+    color: white;
+    margin: 1rem;
+    font-size: 12px;
+    border-collapse: collapse;
+    padding: 1rem;
+    display: block;
+    border-radius: 4px;
+`
+
+export const AnalyticsRow = styled.tr`
+  thead &:nth-of-type(2){
+    border: 1px dashed #B4B4B4;
+    border-left: none;
+    border-right: none;
+  }
+`
+export const AnalyticsCol = styled.td`
+  padding: 0.5rem;
   text-align: center;
 `

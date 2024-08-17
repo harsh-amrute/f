@@ -67,9 +67,9 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
     };
 };
 
-const useMaterialReq = () => {
+const useMaterialReq = (forDate?: string) => {
     const format2 = "YYYY-MM-DD"
-    const d = new Date();
+    const d = forDate ? new Date(forDate): new Date()
     const datetime = moment(d).format(format2);
     const [HeaderData, setHeaderData] = useState([{}]);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -127,7 +127,6 @@ const useMaterialReq = () => {
             wrapHeaderText: true,
 
         },
-
     }
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
     const ShortageColumns = getColumnDefinations(HeaderData, customHeader)

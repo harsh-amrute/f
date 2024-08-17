@@ -4,7 +4,6 @@ import ColorCellRenderer from "../../../Common/ColorCellRenderer";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import DayWiseCoverageDetailsCellRenderer from "./DayWiseCoverageDetailsCellRenderer";
-import { tableData } from "./table_data";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
@@ -12,13 +11,15 @@ import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services
 interface IDayWiseCoverageProps {
     selectedDate: string,
     startDate: string,
-    endDate: string
+    endDate: string,
+    setLoading: any
 }
 
 const DayWiseCoverageTable = ({
     selectedDate,
     startDate,
-    endDate
+    endDate,
+    setLoading,
 }: IDayWiseCoverageProps) => {
   const colDefCustomizations = {
     ColorPriority: {
@@ -46,7 +47,7 @@ const DayWiseCoverageTable = ({
   const [HeaderData, setHeaderData] = useState([{}]);
   const [rowData, setRowData] = useState([]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData();
-  const {mutateAsync: getData} = useGetDayWiseCoverageData();
+  const {mutateAsync: getData, isLoading: isGridLoading} = useGetDayWiseCoverageData();
 
   const getGridData = async () => {
     if(selectedDate){
@@ -59,6 +60,10 @@ const DayWiseCoverageTable = ({
   useEffect(()=>{
     getGridData()
   }, [selectedDate])
+
+  useEffect(()=>{
+    setLoading(isGridLoading)
+  }, [isGridLoading])
 
 
   const setColumnDef = async () => {
@@ -121,6 +126,7 @@ const DayWiseCoverageTable = ({
       disableZoomScaling={true}
       columnDefs={options.columnDefs}
       rowData={rowData}
+      paginationPageSize={5}
       pagination={true}
       onGridReady={(params: any) => {
         params.columnApi.autoSizeAllColumns();
