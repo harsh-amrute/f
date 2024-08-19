@@ -68,7 +68,7 @@ const OrderElapsedGrid = ({ isTrue, data }: orderElapsedGridProps) => {
     const [isleftPanelElapsedTimeOpen, toggleLeftPanelElapsedTime] = useState<boolean>(false)
     const [isRightPanel, toggleRightPanel] = useState<boolean>(false);
     const [leftPanelActiveTab, SetLeftPanelActiveTab] = useState<string>('Order_Status')
-    const [ordeStatusColDef, setOrderStatusColdef] = useState<any>();
+    const [/*ordeStatusColDef*/, setOrderStatusColdef] = useState<any>();
 
     const sideBar = useMemo(() => {
         return {
@@ -297,7 +297,7 @@ const OrderElapsedGrid = ({ isTrue, data }: orderElapsedGridProps) => {
     useEffect(() => {
         if (data) {
             const columnDefs = convertApiResponseToColDefs(apiResponse);
-            console.log('coldef', columnDefs);
+            //console.log('coldef', columnDefs);
             setOrderStatusColdef(columnDefs)
         }
     }, [data])
