@@ -78,7 +78,6 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
-    '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons'
   ]
   const urlAllPage = [
     ...authenPage,
