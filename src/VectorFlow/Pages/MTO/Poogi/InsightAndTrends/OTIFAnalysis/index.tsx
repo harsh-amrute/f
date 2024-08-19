@@ -15,24 +15,44 @@ import { getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import CustomTagTooltip from "./CustomTagTooltip";
 import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
+import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import useFilter from "../../../../../../hooks/useFilter";
 import { useGetOTIFAnalysisData } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTIFAnalysis";
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 
 
+const APIFilterConfig = {
+  filSecVisConfig :  {
+      "Poogi_OTIF_Analysis" : {
+          mjr : true,
+          or: true,
+          res: true,
+          cus: true
+      },
+  }
+};
+
 const OTIFAnalysis = () => {
   const [isGridView, setIsGridView] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { screenHeight } = useViewPort();
   const [HeaderData, setHeaderData] = useState([{}]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
   const { mutateAsync: getOTIFAnalysisData, isLoading, isError, isSuccess } = useGetOTIFAnalysisData()
   const [colDef, setColDef] = useState([{}]);
+  const [filterData, setFilterData] = useState({});
   const [gridData, setGridData] = useState([]);
   const [graphData, setGraphData] = useState<any>({});
   const reportName = "OTIFAnalysis";
 
   const gridRef = useRef();
+
+  const toggleFilter = (state: boolean) => {
+    setIsFilterOpen(state);
+  }
 
   const defaultColDef = useMemo<ColDef>(() => {
     return {
@@ -107,11 +127,24 @@ const OTIFAnalysis = () => {
     getGraphData(1);
   }, []);
 
+  useEffect(() => {
+    setFilterData(filterResponse?.data.data)
+  }, [filterResponse]);
+
 
   useEffect(() => {
     setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
   }, [HeaderData])
 
+  const onApplyFilter = (filter:any)=>{
+    console.log(filter)
+    setIsFilterOpen(false)
+  }
+  const onAddFilter = ()=>{
+    setIsFilterOpen(true)
+  }
+
+  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
   useEffect(() => {
     if (isSuccess) {
       notifySuccess("Fetched Data successfully!")
@@ -132,6 +165,13 @@ const OTIFAnalysis = () => {
         setIsGridView={setIsGridView}
         isChartGridToggle
         isAddFilterButton
+        isFilterOpen={isFilterOpen}
+        onAddFilter={onAddFilter}
+        toggleFilter={toggleFilter}
+        onApplyFilter={onApplyFilter} 
+        multiFilter={currFilter}
+        setMultiFilter={setCurrFilter}
+        onFilterRemove={onFilterRemove}
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>
         {isGridView ? (
