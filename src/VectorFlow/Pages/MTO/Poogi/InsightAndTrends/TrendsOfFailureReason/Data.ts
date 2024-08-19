@@ -61,13 +61,14 @@ export const OFdata: any = [
     { "month": 'Jan 2024', "Annealing-Rolling": 10, "Planning": 7, "Annealing": 4, "Annealing-Furnace": 2 },
     { "month": 'Feb 2024', "Annealing-Rolling": 18, "Planning": 11, "Annealing": 8, "Annealing-Furnace": 6 },
     { "month": 'Mar 2024', "Annealing-Rolling": 14, "Planning": 9, "Annealing": 6, "Annealing-Furnace": 4 },
+    { "month": 'Apr 2024', "Annealing-Rolling": 12, "Planning": 9, "Annealing": 4, "Annealing-Furnace": 2 },
 ]
 export const IFdata: any = [
-    { "month": 'Apr 2024', "Sales": 20, "Line Overloaded": 12, "Quality": 9, "Packing": 7, "Coating Liquid Not Available": 4 },
-    { "month": 'Feb 2024', "Sales": 18, "Line Overloaded": 11, "Quality": 8, "Packing": 6, "Coating Liquid Not Available": 3 },
-    { "month": 'Mar 2024', "Sales": 14, "Line Overloaded": 9, "Quality": 6, "Packing": 4, "Coating Liquid Not Available": 2 },
-    { "month": 'Dec 2023', "Sales": 12, "Line Overloaded": 8, "Quality": 5, "Packing": 3, "Coating Liquid Not Available": 1 },
-    { "month": 'Jan 2024', "Sales": 10, "Line Overloaded": 7, "Quality": 4, "Packing": 2, "Coating Liquid Not Available": 1 },
+    { "month": 'Dec 2024', "Sales": 20, "Line Overloaded": 12, "Quality": 9, "Packing": 7, "Coating Liquid Not Available": 4 },
+    { "month": 'Jan 2024', "Sales": 18, "Line Overloaded": 11, "Quality": 8, "Packing": 6, "Coating Liquid Not Available": 3 },
+    { "month": 'Feb 2024', "Sales": 14, "Line Overloaded": 9, "Quality": 6, "Packing": 4, "Coating Liquid Not Available": 2 },
+    { "month": 'Mar 2023', "Sales": 12, "Line Overloaded": 8, "Quality": 5, "Packing": 3, "Coating Liquid Not Available": 1 },
+    { "month": 'Apr 2024', "Sales": 10, "Line Overloaded": 7, "Quality": 4, "Packing": 2, "Coating Liquid Not Available": 1 },
 ]
 
 export function createSeriesDataIF() {

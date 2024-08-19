@@ -191,6 +191,20 @@ const SplitGraphContainer = ({
                 strokeWidth: 3
 
               },
+              axes: {
+                category: {
+                  crossLines: {
+                    enabled: false,
+                    strokeOpacity: 0,
+                    stroke: 'white'
+                  },
+                  gridStyle:
+                    [
+                      { stroke: 'white' },
+                    ],
+
+                }
+              },
               legend: {
                 item: {
                   marker: {
@@ -220,6 +234,20 @@ const SplitGraphContainer = ({
                 },
                 strokeWidth: 3
 
+              },
+              axes: {
+                category: {
+                  crossLines: {
+                    enabled: false,
+                    strokeOpacity: 0,
+                    stroke: 'white'
+                  },
+                  gridStyle:
+                    [
+                      { stroke: 'white' },
+                    ],
+
+                }
               },
               legend: {
                 item: {

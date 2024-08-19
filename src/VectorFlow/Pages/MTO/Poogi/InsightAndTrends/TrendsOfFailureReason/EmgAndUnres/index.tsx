@@ -70,6 +70,7 @@ const EmgAndUnres = () => {
                     fontSize: 7,
                     fontWeight: "bold",
                     color: "black",
+                    fontFamily: 'Roboto',
                 },
                 gridLine: {
                     enabled: false,
@@ -89,6 +90,7 @@ const EmgAndUnres = () => {
                 position: "left",
                 label: {
                     fontSize: 8,
+                    fontFamily: 'Roboto',
                     fontWeight: "bold",
                     color: "black",
                 },

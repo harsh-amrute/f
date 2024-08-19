@@ -65,6 +65,7 @@ const DownTrend = () => {
                 position: "bottom",
                 label: {
                     fontSize: 7,
+                    fontFamily: 'Roboto',
                     fontWeight: "bold",
                     color: "black",
                 },
@@ -88,6 +89,7 @@ const DownTrend = () => {
                     fontSize: 8,
                     fontWeight: "bold",
                     color: "black",
+                    fontFamily: 'Robot',
                 },
                 gridLine: {
                     enabled: false,
