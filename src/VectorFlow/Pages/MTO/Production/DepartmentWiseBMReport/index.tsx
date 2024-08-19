@@ -79,6 +79,24 @@ type orderkeyObj = {
     ok: []
 }
 
+interface DepartmentData {
+    woh: number;
+    mfg: number;
+    int: number | null;
+    out: number;
+}
+// Define the structure for each order item
+interface OrderItem {
+    tq: number;
+    li: string;
+    [key: string]: number | string | DepartmentData; // Allow additional properties like departments
+}
+
+// Define the structure of the input data
+interface Orders {
+    [key: string]: OrderItem; // Order ID as the key
+}
+
 
 const DptWiseBMReport = () => {
     const { mutateAsync: getDeptWiseBMReportData, isLoading: DeptWiseLoading } = useGetDeptWiseBMReport();
@@ -97,6 +115,7 @@ const DptWiseBMReport = () => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
     const refGraph1 = useRef<any>(null);
+    const [deptName, setDeptName] = useState<any>([]);
 
     const customCellRenderers = useMemo(() => (
         {
@@ -573,12 +592,28 @@ const DptWiseBMReport = () => {
         }
     }, [DeptWiseLoading])
 
+    const extractDepartmentNames = (orders: Orders): string[] => {
+        const departmentNames: Set<string> = new Set();
 
+        // Iterate over each order
+        Object.values(orders).forEach(orderItem => {
+            // Iterate over each property in the order item
+            Object.keys(orderItem).forEach(key => {
+                // Check if the property is a department (i.e., not 'tq' or 'li')
+                if (key !== 'tq' && key !== 'li') {
+                    departmentNames.add(key);
+                }
+            });
+        });
+
+        // Convert Set to Array and return
+        return Array.from(departmentNames);
+    };
 
     const getSelectedRow = async () => {
         const selectedData = refGraph1.current?.api.getSelectedRows();
         if (selectedData.length > 0) {
-            //console.log('selected', selectedData)
+            //console.log('selected', selectedData.length)
             const selectedOrderKeys: orderkeyObj[] = []
             selectedData.map((ele: any) => {
                 selectedOrderKeys.push(ele.ok)
@@ -589,6 +624,9 @@ const DptWiseBMReport = () => {
                     const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
                     //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
                     setDeptWiseWipData(DeptWiseWipData?.data?.data);
+                    const departmentNames = extractDepartmentNames(DeptWiseWipData?.data?.data);
+                    //console.log('DeptWiseWipData===',departmentNames);
+                    setDeptName(departmentNames);
                 } catch (error) {
                     notifyError('Failed to fetch data');
                 }
@@ -635,8 +673,9 @@ const DptWiseBMReport = () => {
                         }
                         putData.push(singleData);
                     })
+                    //console.log('putData',putData)
                     const RemarkHistory = await addBMReportRemark(putData);
-                    // console.log('REmakrf', RemarkHistory)
+                     //console.log('REmakrf', RemarkHistory)
                     if (RemarkHistory.status === 200) {
                         putData = [];
                         setEditedRows(new Set());
@@ -744,6 +783,8 @@ const DptWiseBMReport = () => {
                                             <OrderElapsedGrid
                                                 isTrue={isOrderElapsedGrid}
                                                 data={deptWiseWipData}
+                                                deptName={deptName}
+                                                selectedOrderCount={ refGraph1.current?.api.getSelectedRows().length}
                                             />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
