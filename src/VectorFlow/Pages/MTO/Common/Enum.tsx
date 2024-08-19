@@ -25,8 +25,18 @@ export enum ProcurementSeriesDataFill {
 }
 
 export enum OTIFTags {
-    "OT_False_IF_False" = 0,
-    "OT_True_IF_True" = 1,
-    "OT_True_IF_False" = 2,
-    "OT_False_IF_True" = 3,
+    OTIFNone = 0,
+    OT_False_IF_False = 1,
+    OT_True_IF_True = 2,
+    OT_True_IF_False = 3,
+    OT_False_IF_True = 4,
+}
+
+export enum InputTypes {
+    TextCompare= "textCompare",
+    NumberCompare ="numberCompare",
+    MultiSelect="multiSelect",
+    Checkbox="checkbox",
+    Search="search",
+    Select="select"
 }

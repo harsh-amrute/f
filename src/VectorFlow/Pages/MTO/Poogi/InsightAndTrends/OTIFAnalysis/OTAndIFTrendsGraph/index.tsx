@@ -1,20 +1,23 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "allotment/dist/style.css";
 import { AgChartOptions } from "ag-charts-community";
-import { APIMock, graphColumnConfig } from "../MockData";
+import { graphColumnConfig } from "../MockData";
 import { Poogi } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { TooltipRenderer } from "../OTIFCommon";
 
-const OTAndIFTrendsGraph = () => {
-  const [startDate] = useState(APIMock.graph.ot_n_if_graph.start);
-  const [endDate] = useState(APIMock.graph.ot_n_if_graph.end);
+const OTAndIFTrendsGraph = (props: any) => {
+  const { graphData } =props; 
+  const [startDate, setStartDate] = useState('-');
+  const [endDate, setEndDate] = useState('-');
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
-  const [rawData] = useState(APIMock.graph.ot_n_if_graph.data);
+  // const [rawData] = useState(APIMock.graph.ot_n_if_graph.data);
+  const [rawData, setRawData] = useState([]);
+
 
   function createSeriesData(val: number) {
     const seriesData: any = [];
@@ -24,7 +27,7 @@ const OTAndIFTrendsGraph = () => {
       const key = i === 0 ? "ot" : "if";
       seriesData.push({
         type: "line",
-        xKey: "x_label",
+        xKey: "m",
         yKey: key,
         yName: labels[i],
         fill: color,
@@ -163,6 +166,14 @@ const OTAndIFTrendsGraph = () => {
       </div>
     );
   };
+
+  useEffect(()=>{
+    if(graphData){
+      setStartDate(graphData.start);
+      setEndDate(graphData.end);
+      setRawData(graphData.data);
+    }
+  },[graphData])
 
   return (
     <div style={{ height: "100%", display: "flex", justifyContent: "left", marginLeft: '10px', paddingBottom: '10px' }}>

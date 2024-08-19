@@ -1,23 +1,40 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useUserData } from '../../../../../../context'
 import DatePicker from '../../../../../../components/VectorFLOW/commons/MTO/DatePicker'
 import { DayWiseCoverageHeaderContainer, DayWiseCoverageStatus, Divider, Text } from './style'
+import { format } from 'date-fns'
 
 interface IDayWiseCoverageHeaderProps {
     startDate: string,
     endDate: string,
-    setDateRange: (start: string, end: string) => void
+    setDateRange: (start: string, end: string) => void,
+    max: Date,
+    min: Date,
 }
 
 const DayWiseCoverageHeader = ({
     startDate,
     endDate,
-    setDateRange
+    setDateRange,
+    max, 
+    min
 }: IDayWiseCoverageHeaderProps) => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
     const [start, setStart] = useState(startDate);
     const [end, setEnd] = useState(endDate);
+
+    const [minEndDate, setMinEndDate] = useState(format(min,"yyyy-MM"));
+    const [maxStartDate, setMaxStartDate] = useState(format(max,"yyyy-MM"))
+
+    useEffect(()=>{
+        setMinEndDate(start)
+    }, [start])
+
+    useEffect(()=>{
+        setMaxStartDate(end)
+    }, [end])
+
     return (
         <DayWiseCoverageHeaderContainer>
             <DayWiseCoverageStatus color={"#33800B"}>
@@ -28,9 +45,9 @@ const DayWiseCoverageHeader = ({
             </DayWiseCoverageStatus>
             <Divider />
             <Text>From</Text>
-            <DatePicker type="month" date={start} setDate={setStart} data-testid="start" />
+            <DatePicker type="month" date={start} setDate={setStart} data-testid="start" min={format(min, "yyyy-MM")} max={format(maxStartDate, "yyyy-MM")}/>
             <Text>To</Text>
-            <DatePicker type="month" date={end} setDate={setEnd} data-testid="end" />
+            <DatePicker type="month" date={end} setDate={setEnd} data-testid="end" min={format(minEndDate, "yyyy-MM")} max={format(max, "yyyy-MM")}/>
             {/* <div style={{ display: 'flex', alignItems: 'center' }}> */}
             <img
                 style={{ cursor: 'pointer' }}
