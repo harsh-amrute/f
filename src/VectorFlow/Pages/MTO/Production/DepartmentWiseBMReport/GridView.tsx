@@ -29,11 +29,14 @@ const GridView = ({ agGridProps, columDef, convercolumnDef, reference, updateRea
                     //defaultColDef={{maxWidth:150}}
                     statusBar={{
                         statusPanels: [
-                            { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
                             { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                            { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
                             { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                            { statusPanel: 'agAggregationComponent', align: 'left' },
+                            {
+                                statusPanel: 'agAggregationComponent',
+                                statusPanelParams: {
+                                    aggFuncs: ['avg', 'count', 'min', 'max', 'sum']
+                                }
+                            },
                         ],
                     }}
                     ref={reference}

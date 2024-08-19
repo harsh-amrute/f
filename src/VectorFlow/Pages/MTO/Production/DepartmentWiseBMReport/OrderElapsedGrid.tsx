@@ -22,7 +22,7 @@ import {
 import { AgGridReactProps } from 'ag-grid-react';
 import { BPRViewTableGrid } from '../../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/styles';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import { /*orderStatus, orderStatusData, */ElapsedTime, ElapsedTimeData, AgieingTime, ageingData } from './DeptWiseBMReportData'
+import { /*orderStatus, orderStatusData, ElapsedTime, ElapsedTimeData, */AgieingTime, ageingData } from './DeptWiseBMReportData'
 
 interface orderElapsedGridProps {
     isTrue?: boolean
