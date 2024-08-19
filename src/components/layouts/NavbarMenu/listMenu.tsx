@@ -700,28 +700,10 @@ export const listMenuParent: any = [
             url: '/poogi/insight-and-trends/trend-of-failure-reason',
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
-        ]
-      },
-    ],
-  },
-  {
-    id: 12,
-    name: "navbar.listMenuParent.manufacturingHub.title",
-    img: "/assets/img/nav/poogi-module",
-    url: "",
-    status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
-    child: [
-      {
-        name: "navbar.listMenuParent.manufacturingHub.improvementAreas",
-        img: "/assets/img/nav/arrow_down.svg",
-        url: "",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-        child: [
           {
             name: "Top Failure Reasons",
             img: "/assets/img/nav/arrow_down.svg",
-            url: '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
+            url: '/poogi/insight-and-trends/top-failure-reasons',
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
         ]

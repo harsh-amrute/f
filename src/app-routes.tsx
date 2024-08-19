@@ -57,12 +57,10 @@ import ResourceUtilization from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/R
 import FOLSummary from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FOLSummary'
 import DynamicReleaseManagement from './VectorFlow/Pages/MTO/Production/DynamicReleaseManagement'
 import ReasonForDelayOrder from './VectorFlow/Pages/MTO/Poogi/ReasonOrderChange/index'
+import TopFailureReasons from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/TopFailureReason'
 import OTAndIFAnalysis from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/OTAndIFAnalysis'
-import TopFailureReasons from './VectorFlow/Pages/MTO/ManufacturingHub/ImprovementAreas/TopFailureReason'
 import ElapsedTime from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/ElapsedTime'
 import LeadTime from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/LeadTime'
-import TrendsOfFailureReason from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/TrendsOfFailureReason'
-
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -137,8 +135,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/production-planning-scheduling/insights-and-trends/elapsed-time',
     '/poogi/reasons-for-delayed-orders',
     '/poogi/insight-and-trends/ot-and-if-analysis',
-    '/poogi/insight-and-trends/lead-time',
-    '/poogi/insight-and-trends/trend-of-failure-reason'
+    '/poogi/insight-and-trends/top-failure-reasons',
+    '/poogi/insight-and-trends/lead-time'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -784,23 +782,23 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
+      path: '/poogi/insight-and-trends/top-failure-reasons',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TopFailureReasons />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
       path: '/poogi/insight-and-trends/lead-time',
       element: <AppLayout />,
       children: [
         {
           index: true,
           element: lazyLoad(<LeadTime />)
-        },
-        ...getStoreTransferModuleRoutes()
-      ]
-    },
-    {
-      path: '/poogi/insight-and-trends/trend-of-failure-reason',
-      element: <AppLayout />,
-      children: [
-        {
-          index: true,
-          element: lazyLoad(<TrendsOfFailureReason />)
         },
         ...getStoreTransferModuleRoutes()
       ]
