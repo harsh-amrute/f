@@ -271,20 +271,20 @@ export const ElapsedTime: (ColDef | ColGroupDef)[] = [
     },
     {
         headerName: 'Department 1',
-        field: 'dpt1',
-        colId: 'dpt1'
+        field: '1',
+        colId: '1'
 
     },
     {
         headerName: 'Department 2',
-        field: 'dpt2',
-        colId: 'dpt2'
+        field: '2',
+        colId: '2'
 
     },
     {
         headerName: 'Department 3',
-        field: 'dpt3',
-        colId: 'dpt3'
+        field: '3',
+        colId: '3'
     }
 ]
 

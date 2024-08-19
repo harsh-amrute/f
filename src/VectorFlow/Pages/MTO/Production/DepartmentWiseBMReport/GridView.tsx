@@ -7,10 +7,10 @@ interface GridProps {
     columDef: any
     convercolumnDef: any
     reference: any
-    updateReason:()=>void
+    updateReason: () => void
 }
 
-const GridView = ({ agGridProps, columDef, convercolumnDef, reference,updateReason }: GridProps) => {
+const GridView = ({ agGridProps, columDef, convercolumnDef, reference, updateReason }: GridProps) => {
 
 
     return (
@@ -18,7 +18,7 @@ const GridView = ({ agGridProps, columDef, convercolumnDef, reference,updateReas
             <VFWrapper>
                 <VFTable
                     {...agGridProps}
-
+                    pagination={false}
                     columnDefs={columDef}
                     rowData={convercolumnDef}
                     tooltipHideDelay={100000}
@@ -39,8 +39,9 @@ const GridView = ({ agGridProps, columDef, convercolumnDef, reference,updateReas
                     ref={reference}
                 />
             </VFWrapper>
-            <SaveBtnWrapper style={{margin:'0px 0px 10px'}}>
-                <SaveBtn onClick={ updateReason}>
+
+            <SaveBtnWrapper style={{ margin: '0px 0px 10px' }}>
+                <SaveBtn onClick={updateReason}>
                     Save Remark
                 </SaveBtn>
             </SaveBtnWrapper>

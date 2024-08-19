@@ -52,9 +52,9 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
     const [isRightPanel, toggleRightPanel] = useState<boolean>(false);
     const [leftPanelActiveTab, SetLeftPanelActiveTab] = useState<string>('Order_Status')
     const [ordeStatusColDef, setOrderStatusColdef] = useState<any>();
-    //const [columns, setColumns] = useState<ApiColumn[]>([]);
+    const [elapsedOrderColdef, setElapsedOrderColDef] = useState<any>();
     const [rowData, setRowData] = useState<any>();
-
+    const [ElapsedTimeRowData,setElapsedTimeRowData]=useState<any>();
 
 
     const sideBar = useMemo(() => {
@@ -371,15 +371,15 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                     const deptInfo = deptData as {
                         woh?: number;
                         mfg?: number;
-                        int?: number | null;
-                        out?: number | null;
+                        //int?: number | null;
+                        //out?: number | null;
                     };
 
                     // Create fields based on department key
                     row[`${deptKey}_woh`] = deptInfo.woh ?? null;
                     row[`${deptKey}_mfg`] = deptInfo.mfg ?? null;
-                    row[`${deptKey}_int`] = deptInfo.int ?? null;
-                    row[`${deptKey}_out`] = deptInfo.out ?? null;
+                    //row[`${deptKey}_int`] = deptInfo.int ?? null;
+                    //row[`${deptKey}_out`] = deptInfo.out ?? null;
                 }
             }
 
@@ -389,10 +389,64 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
         return rowData;
     }
 
+    const createElapsedOrderColdef = (headers: any) => {
+        // Start with a default "time" column
+        const colDefs: any = [
+            {
+                headerName: "",
+                field: "time",
+                colId: "time",
+            },
+        ];
+
+        // Dynamically create the department columns based on the headers provided
+        headers.forEach((header: any, index: number) => {
+            colDefs.push({
+                headerName: header,
+                field: (index + 1).toString(),  // Convert index to string for field name
+                colId: (index + 1).toString(),
+            });
+        });
+
+        return colDefs;
+    }
+
+    const createRowDataWithTimes=()=>{
+        const rowData: RowData[] = [
+          { time: "In Time" },
+          { time: "Out Time" },
+          { time: "Elapsed Time" },
+        ];
+      
+        // Iterate through each order in the inputData
+        for (const [orderDetails] of Object.entries(data)) {
+          // Loop through each department (like "1", "2", etc.)
+          for (const [deptKey, deptData] of Object.entries(orderDetails)) {
+            if (deptKey !== 'tq' && deptKey !== 'li' && typeof deptData === 'object' && deptData !== null) {
+              const deptInfo = deptData as {
+                //woh?: number;
+                //mfg?: number;
+                int?: number | null;
+                out?: number | null;
+            };
+      
+              // Assign department times to the corresponding row
+              rowData[0][`dpt${deptKey}`] = deptInfo.int ?? null;
+              rowData[1][`dpt${deptKey}`] = deptInfo.out ?? null;
+    
+            }
+          }
+        }
+      
+        return rowData;
+      }
+      
+
+
 
     useEffect(() => {
         if (data) {
-            /**This will will create the UI Configuration api response */
+            /**This will create the UI Configuration api response */
             const apiResponse = generateApiResponse(deptName);
 
             /**Based on the apiResponse creating th dynamic coldef */
@@ -400,10 +454,16 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
             //console.log('coldef', columnDefs)
             setOrderStatusColdef(columnDefs)
 
+            const elapsedOrderColdef = createElapsedOrderColdef(deptName);
+            //console.log('elapsedOrderColdef', elapsedOrderColdef)
+            setElapsedOrderColDef(elapsedOrderColdef)
 
             const rowData = transformToRowData();//const rowData = generateRowData(columnDefs);
             setRowData(rowData)
             //console.log('rowData=Fristan', rowData);
+
+            const ElapsedTimeRowData=createRowDataWithTimes();
+            setElapsedTimeRowData(ElapsedTimeRowData)
         }
     }, [data])
 
@@ -504,8 +564,8 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                         <VFTable
                                             {...agGridPropsElapsedTime}
                                             height='400px'
-                                            rowData={ElapsedTimeData}
-                                            columnDefs={ElapsedTime}
+                                            rowData={ElapsedTimeRowData}
+                                            columnDefs={elapsedOrderColdef}
                                         />
                                     </ExpansionContent>
                                 )}
