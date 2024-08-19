@@ -194,7 +194,7 @@ export const orderStatusData = [
         "ord_id": 1,
         "l_itm": "Item A",
         "qty": 5,
-        "wipoh": 10,
+        "wipoh": 12,
         "btm": 15
     },
     {

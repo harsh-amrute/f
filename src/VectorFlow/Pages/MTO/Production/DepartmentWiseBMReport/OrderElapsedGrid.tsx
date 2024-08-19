@@ -1,5 +1,5 @@
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useUserData } from '../../../../../context';
 import {
     NoDataAvailableContainer,
@@ -26,18 +26,49 @@ import { orderStatus, orderStatusData, ElapsedTime, ElapsedTimeData, AgieingTime
 
 interface orderElapsedGridProps {
     isTrue?: boolean
+    data: []
 }
 
-const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
+// Define the types for column definitions
+interface ColumnDef {
+    headerName: string;
+    field?: string;
+    colId?: string;
+    children?: ColumnDef[];
+}
 
+// Define the types for department data
+interface ApiColumn {
+    cc: string; // Column code
+    cp: number; // Column position
+    hd: string; // Header display
+    v: boolean; // Visibility flag
+    cla?: string; // Class or other attributes
+    scc?: string; // Field ID for grid columns
+    children?: ApiColumn[]; // Children columns for grouped columns
+}
+
+// Define the structure of the column definition
+interface ColumnDef {
+    headerName: string;
+    field?: string;
+    colId?: string;
+    children?: ColumnDef[];
+}
+
+
+const OrderElapsedGrid = ({ isTrue, data }: orderElapsedGridProps) => {
+    //console.log('OrderElapsedGrid',Object.keys(data))
+    //const OrderElapsedGrid: any = [];
+    //OrderElapsedGrid.push([...data])
+    // const [orderElapsedGridData] = useState<any>([...data]);
     const { user } = useUserData()
-
     const themeUi = user.user.theme_ui
     const [isLeftPanelOrderStatusOpen, toggleLeftPanelOrderStatus] = useState<boolean>(false);
     const [isleftPanelElapsedTimeOpen, toggleLeftPanelElapsedTime] = useState<boolean>(false)
     const [isRightPanel, toggleRightPanel] = useState<boolean>(false);
-
     const [leftPanelActiveTab, SetLeftPanelActiveTab] = useState<string>('Order_Status')
+    const [ordeStatusColDef, setOrderStatusColdef] = useState<any>();
 
     const sideBar = useMemo(() => {
         return {
@@ -132,6 +163,147 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
 
         )
     }
+
+    const apiResponse: any[] = [
+        {
+            "cc": "ordid",
+            "cp": 1,
+            "hd": "Order ID",
+            "v": true,
+            "cla": "Centre",
+            "scc": 'ord_id',
+
+        },
+        {
+            "cc": "li",
+            "cp": 2,
+            "hd": "Line Item",
+            "v": true,
+            "cla": "Centre",
+            "scc": 'li',
+        },
+        {
+            "cc": "tq",
+            "cp": 3,
+            "hd": "Quantity",
+            "v": true,
+            "cla": "Centre",
+            "scc": 'tq',
+        },
+        {
+            "cc": "dept1",
+            "cp": 4,
+            "hd": "Department 1",
+            "v": true,
+            "cla": "Centre",
+            "scc": 'dept1',
+            "children": [
+                {
+                    "cc": "woh",
+                    "cp": 4,
+                    "hd": "WIP on hand",
+                    "v": true,
+                    "cla": "Centre",
+                    "scc": 'woh',
+                },
+                {
+                    "cc": "mfg",
+                    "cp": 4,
+                    "hd": "Balance to manufacture",
+                    "v": true,
+                    "cla": "Centre",
+                    "scc": 'mfg',
+                },
+            ]
+        },
+        {
+            "cc": "dept2",
+            "cp": 4,
+            "hd": "Department 2",
+            "v": true,
+            "cla": "Centre",
+            "scc": 'dept2',
+            "children": [
+                {
+                    "cc": "woh",
+                    "cp": 4,
+                    "hd": "WIP on hand",
+                    "v": true,
+                    "cla": "Centre",
+                    "scc": 'woh',
+                },
+                {
+                    "cc": "mfg",
+                    "cp": 4,
+                    "hd": "Balance to manufacture",
+                    "v": true,
+                    "cla": "Centre",
+                    "scc": 'mfg',
+                },
+            ]
+        },
+        {
+            "cc": "dept3",
+            "cp": 4,
+            "hd": "Department 3",
+            "v": true,
+            "cla": "Centre",
+            "scc": 'dept3',
+            "children": [
+                {
+                    "cc": "woh",
+                    "cp": 4,
+                    "hd": "WIP on hand",
+                    "v": true,
+                    "cla": "Centre",
+                    "scc": 'woh',
+                },
+                {
+                    "cc": "btm",
+                    "cp": 4,
+                    "hd": "Balance to manufacture",
+                    "v": true,
+                    "cla": "Centre",
+                    "scc": 'mfg',
+                },
+            ]
+        }
+    ]
+
+    const convertApiResponseToColDefs = (apiResponse: ApiColumn[]): ColumnDef[] => {
+        // Helper function to recursively map API column to ColumnDef
+        const mapToColDef = (apiColumn: ApiColumn): ColumnDef => {
+            const columnDef: ColumnDef = {
+                headerName: apiColumn.hd,
+                field: apiColumn.scc,
+                colId: apiColumn.scc,
+            };
+
+            if (apiColumn.children && apiColumn.children.length > 0) {
+                columnDef.children = apiColumn.children.map(mapToColDef);
+            }
+
+            return columnDef;
+        };
+
+        // Map each API column entry to ColumnDef format
+        return apiResponse.map(mapToColDef);
+    };
+
+
+
+
+
+    useEffect(() => {
+        if (data) {
+            const columnDefs = convertApiResponseToColDefs(apiResponse);
+            console.log('coldef', columnDefs);
+            setOrderStatusColdef(columnDefs)
+        }
+    }, [data])
+
+
+   
 
     return (
         isTrue ?

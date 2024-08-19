@@ -21,7 +21,7 @@ import RemarkHistoryRenderer from './RemarkHistoryRenderer';
 import BPRRemarkHistoryModal from './MTORemarkHistoryModal';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 import { useUserData } from '../../../../../context';
-import { useGetDeptWiseBMReport, useAddBMReportRemark } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index'
+import { useGetDeptWiseBMReport, useAddBMReportRemark, useGetDeptWiseWipData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
 import { toast } from 'react-toastify';
 import OverlayLoader from '../../Common/Loader';
@@ -75,11 +75,16 @@ type UpdateRemarkObj = {
     user: string
 };
 
+type orderkeyObj = {
+    ok: []
+}
+
 
 const DptWiseBMReport = () => {
     const { mutateAsync: getDeptWiseBMReportData, isLoading: DeptWiseLoading } = useGetDeptWiseBMReport();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const { mutateAsync: addBMReportRemark } = useAddBMReportRemark();
+    const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
     const [colDeflatest, setColdef] = useState([{}])
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [gridData, setGridData] = useState<any>();
@@ -87,6 +92,7 @@ const DptWiseBMReport = () => {
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
     const [remarkHistory, setRemarkHistory] = useState<any>();
     const [editedRows, setEditedRows] = useState<Set<number>>(new Set());
+    const [deptWiseWipData, setDeptWiseWipData] = useState<any>();
     const { screenHeight } = useViewPort();
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
@@ -569,14 +575,36 @@ const DptWiseBMReport = () => {
 
 
 
-    const getSelectedRow = () => {
+    const getSelectedRow = async () => {
         const selectedData = refGraph1.current?.api.getSelectedRows();
         if (selectedData.length > 0) {
+            //console.log('selected', selectedData)
+            const selectedOrderKeys: orderkeyObj[] = []
+            selectedData.map((ele: any) => {
+                selectedOrderKeys.push(ele.ok)
+            })
+            //console.log('slectedOrder',selectedOrderKeys)
+            const fetcDeptWiseWiphData = async () => {
+                try {
+                    const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
+                    //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
+                    setDeptWiseWipData(DeptWiseWipData?.data?.data);
+                } catch (error) {
+                    notifyError('Failed to fetch data');
+                }
+                // finally {
+                //     DeptWiseLoading(false);
+                // }
+            };
+            fetcDeptWiseWiphData();
             setIsOrderElapsedGrid(true)
         } else {
+            setDeptWiseWipData('');
             setIsOrderElapsedGrid(false)
         }
     }
+
+
 
     // Handle cell value changes
     const onCellValueChanged = (event: any) => {
@@ -591,11 +619,11 @@ const DptWiseBMReport = () => {
       }; */
 
     const handleUpdateReason = async () => {
-      //  console.log('editedRows', editedRows)
+        //  console.log('editedRows', editedRows)
         try {
             if (refGraph1.current) {
                 const updatedRow = gridData.filter((row: any) => editedRows.has(row.ok))
-               // console.log('updated row', updatedRow)
+                // console.log('updated row', updatedRow)
                 if (updatedRow.length > 0) {
                     let putData: UpdateRemarkObj[] = [];
                     updatedRow.forEach((e: any) => {
@@ -608,7 +636,7 @@ const DptWiseBMReport = () => {
                         putData.push(singleData);
                     })
                     const RemarkHistory = await addBMReportRemark(putData);
-                   // console.log('REmakrf', RemarkHistory)
+                    // console.log('REmakrf', RemarkHistory)
                     if (RemarkHistory.status === 200) {
                         putData = [];
                         setEditedRows(new Set());
@@ -713,7 +741,10 @@ const DptWiseBMReport = () => {
 
                                     <Allotment.Pane preferredSize={'40%'}>
                                         <BTRAllomentSection>
-                                            <OrderElapsedGrid isTrue={isOrderElapsedGrid} />
+                                            <OrderElapsedGrid
+                                                isTrue={isOrderElapsedGrid}
+                                                data={deptWiseWipData}
+                                            />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
                                 </Allotment>
