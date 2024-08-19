@@ -55,6 +55,20 @@ const SplitGraphContainer = ({
             strokes: ['black', 'red', 'yellow', 'green', 'grey'],
           },
         }
+      case 12:
+        return {
+          palette: {
+            fills: ['#418D18', '#9D9797', '#EBBF2C', '#F04D4D', '#3876FF'],
+            strokes: ['#418D18', '#9D9797', '#EBBF2C', '#F04D4D', '#3876FF'],
+          },
+        }
+      case 13:
+        return {
+          palette: {
+            fills: ['#418D18', '#9D9797', '#EBBF2C', '#F04D4D', '#3876FF'],
+            strokes: ['#418D18', '#9D9797', '#EBBF2C', '#F04D4D', '#3876FF'],
+          },
+        }
 
       case 4:
         return {
@@ -136,6 +150,66 @@ const SplitGraphContainer = ({
           chartType: 'line',
           cellRange: {
             columns: ['dt', 'b', 'r', 'y', 'g', 'bl', 'w'],
+          },
+
+          chartThemeOverrides: {
+            line: {
+              series: {
+                tooltip: {
+                  renderer: TooltipRenderer
+                },
+                strokeWidth: 3
+
+              },
+              legend: {
+                item: {
+                  marker: {
+                    shape: 'square'
+                  }
+                }
+              }
+
+
+            }
+          }
+
+        })
+        break;
+      case 12:
+        refGraph1.current?.api.createRangeChart({
+          chartType: 'line',
+          cellRange: {
+            columns: ['month', 'Sales', 'Line Overloaded', 'Quality', 'Packing', 'Coating Liquid Not Available'],
+          },
+
+          chartThemeOverrides: {
+            line: {
+              series: {
+                tooltip: {
+                  renderer: TooltipRenderer
+                },
+                strokeWidth: 3
+
+              },
+              legend: {
+                item: {
+                  marker: {
+                    shape: 'square'
+                  }
+                }
+              }
+
+
+            }
+          }
+
+        })
+        break;
+      case 13:
+        refGraph1.current?.api.createRangeChart({
+          chartType: 'line',
+          cellRange: {
+            columns: ['month', 'Annealing-Rolling', 'Planning', 'Annealing', 'Annealing-Furnace'],
           },
 
           chartThemeOverrides: {
@@ -682,6 +756,8 @@ const SplitGraphContainer = ({
           },
         });
         break;
+
+
       default:
         <></>
     }

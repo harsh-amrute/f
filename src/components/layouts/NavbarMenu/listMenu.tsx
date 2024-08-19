@@ -694,6 +694,12 @@ export const listMenuParent: any = [
             url: '/poogi/insight-and-trends/lead-time',
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
+          {
+            name: "Trend Of Failure Reasons",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: '/poogi/insight-and-trends/trend-of-failure-reason',
+            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+          },
         ]
       },
     ],
