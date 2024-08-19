@@ -19,14 +19,14 @@ import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox'
 import { useGetFullKitAssignmentDataWithGraphData } from '../../../../../VectorFlow/Services/MTO/Production/FullKitAssignment';
 import OverlayLoader from '../../Common/Loader';
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
+import VFPagination from '../../Common/VFPagination';
+import _ from 'lodash';
 
 const FullKitAssignment = () => {
 
 
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-
-
 
   const [HeaderData, setHeaderData] = useState([{}]);
   const [hide, setHide] = useState(false);
@@ -38,9 +38,15 @@ const FullKitAssignment = () => {
 
   const [showOrdersWithFullKitReady, setShowOrdersWithFullKitReady] = useState(true);
   const [orders, setOrders] = useState([]);
+  const [totalRows, setTotalRows]: any = useState(0)
+  const [currentPage, setCurrentPage]: any = useState(1)
+  const [loadDataParams, setLoadDataParams] = useState<any>();
+  const [selectedRows, setSelectedRows] = useState<any>(new Map());
+  const [graphData, setGraphData] = useState([]);
+
+  const currentPageSelectedRows = useRef([]);
+
   const { mutateAsync: getFullKitAssignmentDataWithGraphData, isLoading } = useGetFullKitAssignmentDataWithGraphData();
-
-
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
   const reportName = "FullKitAssignment";
@@ -73,6 +79,7 @@ const FullKitAssignment = () => {
 
   const [extra, setExtra]: any = useState([])
 
+
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
@@ -85,27 +92,103 @@ const FullKitAssignment = () => {
 
 
   const fetchOrders = async () => {
-    const data = await getFullKitAssignmentDataWithGraphData();
-    console.log(data.data.data.results);
-    setOrders(data.data.data.results)
+    const data = await getFullKitAssignmentDataWithGraphData(loadDataParams);
+    if(!loadDataParams.load_graph_data){
+      setOrders(data?.data?.data?.results);
+      setTotalRows(data?.data?.data?.count)
+    }
+    else{
+      console.log("graph data", data);
+      // setGraphData()
+    }
   }
 
-  useEffect(() => {
-    setColumnDef();
-    fetchOrders();
-  }, [])
+  const handlePageChange = async (currPage: number) => {
+    setCurrentPage(currPage)
+  }
 
-  // useEffect(()=>{
-  //   switch(editMode){
-  //     case "View":{
-  //       setExtra()
-  //     }
-  //   }
-  // }, [editMode])
+  const renderUtilityBtns = useMemo(() => {
+
+    switch(editMode){
+      case "View":{
+        return <VFButtonOutline themeUi={themeUi}
+        onClick={() => {
+          setEditMode("Deselect")
+        }}>Deselect</VFButtonOutline>
+      }
+      case "Deselect":{
+        return <>
+        <strong style={{marginRight: "1rem", cursor:"pointer"}} onClick={()=>{
+          setEditMode("View")
+        }}>Cancel</strong>
+        <VFButtonOutline 
+          style={{width:"unset"}}
+          themeUi={themeUi}
+          onClick={() => {
+            console.log()
+          }}>Exclude & Simulate</VFButtonOutline></>
+      }
+    }
+  }, [editMode])
 
   const colDefs = useMemo(() => {
     return getColumnDefinations(HeaderData, colDefCustomizations, extra)
   }, [HeaderData, extra])
+
+
+
+  useEffect(() => {
+    setColumnDef();
+  }, [])
+
+  useEffect(()=>{
+    if(loadDataParams){
+      fetchOrders();
+    }
+  },[loadDataParams])
+
+  useEffect(()=>{
+    setLoadDataParams({...loadDataParams, page: currentPage})
+  }, [currentPage])
+
+  useEffect(()=>{
+    setLoadDataParams({
+      is_fullkit: showOrdersWithFullKitReady,
+      load_graph_data: false,
+      load_data_after_simulation: false,
+      page:1
+    });
+  }, [showOrdersWithFullKitReady])
+
+  
+
+  useEffect(()=>{
+    switch(editMode){
+      case "View":{
+        // setShowOrdersWithFullKitReady(true)
+        setExtra([])
+        break
+      }
+      case "Deselect":{
+        setShowOrdersWithFullKitReady(false)
+        setExtra([{
+          field: "",
+          headerCheckboxSelection: true,
+          checkboxSelection: true,
+          suppressMenu: true,
+          maxWidth: 50,
+          position: 0,
+          filter: false
+        }])
+        break
+      }
+      // case "ExcludeSimulate":{
+
+      // }
+
+    }
+  }, [editMode])
+
 
   const options: GridOptions<any> = {
     getRowStyle: (params: any) => {
@@ -240,34 +323,11 @@ const FullKitAssignment = () => {
 
   }
 
-  const renderUtilityBtns = useMemo(() => {
-
-    return <>
-    {extra.length != 0 && <strong style={{marginRight: "1rem", cursor:"pointer"}} onClick={()=>{
-      setExtra([])
-    }}>Cancel</strong>}
-    <VFButtonOutline themeUi={themeUi}
-      onClick={() => {
-        setExtra(
-          [{
-            field: "",
-            headerCheckboxSelection: true,
-            checkboxSelection: true,
-            suppressMenu: true,
-            maxWidth: 50,
-            position: 0,
-            filter: false
-          },]
-        )
-      }}>{extra.length == 0 ? "Deselect" : "Exclude & Simulate"}</VFButtonOutline></>
-
-  }, [extra])
-
   return (
     <Wrapper>
       <MTOActionToolBar
         utilityBtns={renderUtilityBtns}
-        quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={showOrdersWithFullKitReady} onChange={(e: any) => setShowOrdersWithFullKitReady(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Orders with Full Kit Ready</strong></div>}
+        quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox style={{cursor: editMode != "View" ? "not-allowed" : "pointer"}} disabled={editMode != "View"} checked={showOrdersWithFullKitReady} onChange={(e: any) => setShowOrdersWithFullKitReady(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Orders with Full Kit Ready</strong></div>}
         isExcelExport isAddFilterButton
       />
       {/* <button onClick={() => setShowModal(true)}>Click</button> */}
@@ -277,8 +337,33 @@ const FullKitAssignment = () => {
         rowData={orders}
         gridOptions={options}
         columnDefs={options.columnDefs}
+        onRowDataUpdated={(params)=>{
+          const selectedRowIds = Array.from(selectedRows.keys());
+          const newCurrentPageSeleceted: any = []
+          params.api.forEachNode(node => {
+              if (selectedRowIds.includes(node.data.on)) {
+                  newCurrentPageSeleceted.push(node)
+              }
+          });
+          currentPageSelectedRows.current = newCurrentPageSeleceted;
+          params.api.setNodesSelected({ nodes: newCurrentPageSeleceted, newValue: true });
+        }}
+        onSelectionChanged={(params: any) => {
+          const newMap = new Map(selectedRows);
+          _.differenceWith(currentPageSelectedRows.current, params.api.getSelectedNodes(), _.isEqual).forEach((node: any) => {
+            newMap.delete(node.data.on);
+          }) 
+          //to sort within the same page
+          // params.api.getSelectedNodes().forEach((node: any) => {
+          //   newMap.delete(node.data.on);
+          // })
+          params.api.getSelectedNodes().forEach((node: any) => {
+            newMap.set(node.data.on, node);
+          })
+          setSelectedRows(newMap)
+          currentPageSelectedRows.current = params.api.getSelectedNodes();
+        }}
         // rowSelection="multiple"
-        pagination={true}
       // onSelectionChanged={(params) => {
       //   const selectedRoutes = new Set();
       //   params.api.getSelectedRows().forEach((row: any) => row.r.split(",").forEach((route: any) => selectedRoutes.add(route.trim())));
@@ -297,6 +382,7 @@ const FullKitAssignment = () => {
 
       // }}
       />
+      <VFPagination currentPage={currentPage} rowsPerPage={10} selectedRows={1} totalRows={totalRows} handleChangePage={handlePageChange}/>
       <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
       <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
         <AgChartsReact ref={graph} options={chartoptions} />

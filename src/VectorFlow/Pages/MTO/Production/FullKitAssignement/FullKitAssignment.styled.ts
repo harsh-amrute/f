@@ -31,6 +31,11 @@ export const Wrapper = styled.div`
     padding-left: 0;
     margin-left: 0;
   }
+
+  & > div[data-testid="vf_pagination"]{
+    flex: unset;
+    width:100%;
+  }
 `;
 
 export const Button = styled.button<{ themeUi: string; arrowName: string }>`
