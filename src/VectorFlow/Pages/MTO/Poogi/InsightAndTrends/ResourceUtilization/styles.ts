@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import * as globalStyles from '../../../../../../styles/global'
+// import * as gridSystem from "../../../../../../styles/gridSystem";
 
 export const CustomCalenderCaptionWrapper = styled.div`
     display:flex;
@@ -113,3 +115,44 @@ export const ColoredMarker = styled.div<{ color?: string }>`
     width: 15px;
     background: ${props => props.color ? props.color : 'gray'};
 `
+
+export const SCChartSliderContainer = styled.div`
+    display: flex;
+    justify-content:space-between;
+    justify-content:center;
+    gap:13px;
+    align-items:center;
+    height:55px
+`
+
+export const RadioGroup = styled.div`
+    display:flex;
+    min-width: 200px;
+`
+
+export const SelectGroup = styled.div`
+    display:flex;
+    gap: 20px;
+`
+
+export const ChartHeaderRadioGroup = styled.div<{ theme: string }>`
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    accent-color:${(props) => globalStyles.chooseThemeColor[props.theme].color5};
+    font-style:normal;
+    font-variant:normal;
+    font-weight:300;
+    font-size:14px;
+    line-height:19px;
+    font-family:Roboto;
+`
+
+export const SCVerticalDividerGray = styled.div`
+  width: 0.5px;
+  background-color: #c7c7c7;
+  height: 40px;
+  margin-right: 8px;
+  margin-left: 8px;
+  align-items: center;
+`;

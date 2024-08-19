@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AgChartOptions } from "ag-charts-community";
 import { AgChartsReact } from "ag-charts-react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
@@ -9,21 +9,32 @@ import CustomCalenderDay from "./CustomCalenderDay";
 import { useUserData } from "../../../../../../context/index";
 import { Rectangle } from "../../../Production/FullKitAssignement/RectangleMarker";
 import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule";
+import Select from 'react-select'
 import {
   CalenderHeading,
   CalenderLabel,
   CalenderWrapper,
   CapsuleWrapper,
+  ChartHeaderRadioGroup,
   ColoredMarker,
   GraphWrapper,
   HorizontalLineDashed,
   HorizontalWrapper,
   MarkerWrapper,
+  RadioGroup,
+  SCChartSliderContainer,
+  SCVerticalDividerGray,
   SectionFlex,
+  SelectGroup,
   VerticalTitle,
   VerticalWrapper,
 } from "./styles";
 import CustomSelect from "../../../Production/FullKitAssignement/Select";
+import { useGetResourceUtilizationData } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/ResourceUtilization";
+import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
+import moment from "moment";
+import { useGetCCRMasterData, useGetDeptMasterData, useGetPlantMasterData } from "../../../../../../VectorFlow/Services/MTO/Common/Masters";
+import VFRangeSlider from "../../../Common/VFRangeSlider";
 
 const ResourceUtilization = () => {
   const [chartLoading, setChartLoading] = useState(false);
@@ -36,6 +47,91 @@ const ResourceUtilization = () => {
   });
   const { user } = useUserData();
   const themeUi = user.user.theme_ui;
+
+  const { mutateAsync: getResourceUtilizationData } = useGetResourceUtilizationData();
+  const { mutateAsync: getPlantMaster } = useGetPlantMasterData();
+  const { mutateAsync: getDeptMaster } = useGetDeptMasterData();
+  const { mutateAsync: getCCRMaster } = useGetCCRMasterData();
+
+  const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+  const date = apiResponseData?.data?.data;
+
+  const [startDate, setStartDate] = useState(moment(date).subtract(90, 'days').format().substring(0, 10));
+  const [endDate, setEndDate] = useState(moment(date).format().substring(0, 10));
+  const [selectedCCR, setSelectedCCR] = useState();
+  const [selectedPlant, setSelectedPlant] = useState();
+  const [selectedDept, setSelectedDept] = useState();
+  const [apiData, setApiData] = useState<any>(null);
+  const [plantOpts, setPlantOpts] = useState([]);
+  const [deptOpts, setDeptOpts] = useState([]);
+  const [ccrOpts, setCCROpts] = useState([]);
+
+
+  const GetData = async () => {
+    try {
+      console.log("Dateeee==>", startDate, endDate)
+      const apiBody = {
+        startDate,
+        endDate,
+        ccrName: selectedCCR,
+        plantName: selectedPlant,
+        deptName: selectedDept
+      }
+      const response = await getResourceUtilizationData(apiBody);
+      setApiData(response.data.data)
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  const GetMasterData = async () => {
+    try {
+      const responsePlant = await getPlantMaster();
+      const plants = responsePlant.data.data;
+      const myPlantOpts: any = [];
+      plants.forEach((e: any) => {
+        myPlantOpts.push({ value: e.plant_code, label: e.plant_code })
+      })
+
+      setPlantOpts(myPlantOpts);
+
+
+      const responseDept = await getDeptMaster();
+      const depts = responseDept.data.data;
+      const myDeptOpts: any = [];
+      depts.forEach((e: any) => {
+        myDeptOpts.push({ value: e.dept_code, label: e.dept_code })
+      })
+      setDeptOpts(myDeptOpts);
+
+      const responseCCR = await getCCRMaster();
+      const ccrs = responseCCR.data.data;
+      const myCCROpts: any = []
+      ccrs.forEach((e: any) => {
+        myCCROpts.push({ value: e.ccr_code, label: e.ccr_code })
+      })
+      setCCROpts(myCCROpts);
+
+
+    }
+    catch (error) {
+      console.log(error);
+    }
+
+  }
+
+
+  useEffect(() => {
+    GetData();
+    GetMasterData();
+  }, [])
+
+  useEffect(() => {
+    console.log('Api Data....', apiData)
+  }, [apiData])
+
+
   console.log(chartLoading);
 
   function TooltipRenderer({ datum }: any) {
@@ -117,43 +213,23 @@ const ResourceUtilization = () => {
     return "default";
   };
 
+
   const getWIPColor = (date: any) => {
-    const overLimit = [
-      "01-08-2024",
-      "07-08-2024",
-      "08-08-2024",
-      "09-08-2024",
-      "10-08-2024",
-      "11-08-2024",
-      "12-08-2024",
-      "13-08-2024",
-      "19-08-2024",
-      "20-08-2024",
-      "21-08-2024",
-      "22-08-2024",
-      "25-08-2024",
-      "26-08-2024",
-      "27-08-2024",
-      "28-08-2024",
-      "29-08-2024",
-      "30-08-2024",
-      "31-08-2024",
-      "23-08-2024",
-      "24-08-2024",
-    ];
-    const underLimit = [
-      "02-08-2024",
-      "03-08-2024",
-      "04-08-2024",
-      "05-08-2024",
-      "06-08-2024",
-      "14-08-2024",
-      "15-08-2024",
-      "16-08-2024",
-      "17-08-2024",
-      "18-08-2024",
-      "19-08-2024",
-    ];
+    const overLimit: any = [];
+    const underLimit: any = [];
+
+    if (apiData && apiData?.analytics) {
+
+      const dates = Object.keys(apiData.analytics)
+
+      dates.forEach((e: any) => {
+        if (apiData.analytics[e].wc === 'ol') {
+          overLimit.push(e);
+        }
+      })
+    }
+
+    console.log('overLimit', overLimit)
 
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -384,6 +460,115 @@ const ResourceUtilization = () => {
     }
   };
 
+  const WIPFilter: any =
+    (
+      <div data-testid='resourceUtilization' style={{ display: ' flex', alignItems: 'flex-start', gap: '20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div style={{
+            fontStyle: "normal",
+            fontVariant: "normal",
+            fontWeight: 300,
+            fontSize: 14,
+            fontFamily: "Roboto",
+            width: 'max-content'
+          }}
+          >
+            Please choose an option:
+          </div>
+          <RadioGroup>
+            <ChartHeaderRadioGroup style={{ gap: '4px' }} theme={themeUi}>
+              <input type="radio" checked={selectedGraphState === 'wipLimit'} value="wipLimit" name="wipLimit" id="wipLimit" data-testid="wip-limit-radio" onChange={() => updateGraphState && updateGraphState(1, 'wipLimit')} style={{ margin: 0, zoom: 1.8, cursor: 'pointer' }} />
+              <label htmlFor="parent" style={{ fontSize: '14px', fontWeight: 500 }}>WIP Limit</label>
+            </ChartHeaderRadioGroup>
+            <ChartHeaderRadioGroup style={{ marginLeft: '10px', gap: '4px' }} theme={themeUi}>
+              <input type="radio" checked={selectedGraphState === 'utilization'} value="utilization" name="utilization" id="utilization" data-testid="utilization-radio" onChange={() => updateGraphState && updateGraphState(2, 'utilization')} style={{ margin: 0, zoom: 1.8, cursor: 'pointer' }} />
+              <label htmlFor="child" style={{ fontSize: '14px', fontWeight: 500 }}>Utilization</label>
+            </ChartHeaderRadioGroup>
+          </RadioGroup>
+        </div>
+        <div style={{ marginTop: '30px' }}>
+          <SCVerticalDividerGray />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div
+            style={{
+              fontStyle: "normal",
+              fontVariant: "normal",
+              fontWeight: 300,
+              fontSize: 14,
+              fontFamily: "Roboto",
+            }}
+            data-testid="select-plnt"
+          >
+            Select Plant
+          </div>
+          <SelectGroup style={{ width: '100px', zoom: '1.25' }}>
+            <Select options={plantOpts} />
+            {/* <CustomSelect placeholder="Select Plant" value={selectedPlant} onSelectionChanged={(e: any) => { console.log("selected this", e) }} selected={false} options={plantOpts} optionsWidth={"100%"} /> */}
+          </SelectGroup>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div
+            style={{
+              fontStyle: "normal",
+              fontVariant: "normal",
+              fontWeight: 300,
+              fontSize: 14,
+              fontFamily: "Roboto",
+            }}
+            data-testid="select-dept"
+          >
+            Select Department
+          </div>
+          <SelectGroup style={{ width: '120px', zoom: '1.25' }}>
+            <Select options={deptOpts} />
+          </SelectGroup>
+        </div>
+        <div style={{ marginTop: '30px' }}>
+          <SCVerticalDividerGray />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{
+            fontStyle: "normal",
+            fontVariant: "normal",
+            fontWeight: 300,
+            fontSize: 14,
+            fontFamily: "Roboto",
+          }}
+          >
+            Select Horizon(in Days):
+          </div>
+          <SCChartSliderContainer>
+            <VFRangeSlider
+              showTriangle={false}
+              min={1}
+              max={90}
+              milestones={[0, 30, 60, 90]}
+              strictMode={false}
+              width={250}
+              defaultValue={horizonDays || 0}
+              handleChange={(e) => setHorizonDays && setHorizonDays(e)}
+              labelValueFormatter={(value: number) => value > 1 ? `${value}` : `${value}`}
+            />
+            <div>
+              {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
+                                    Submit
+                                </VFButtonOutline> */}
+              <img
+                data-testid='horizon-submit'
+                style={{ cursor: 'pointer' }}
+                src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
+                height={50}
+                width={60}
+                onClick={() => handleHorizonSubmit && handleHorizonSubmit()}
+              />
+            </div>
+          </SCChartSliderContainer>
+        </div>
+      </div>)
+
+
+
   return (
     <div>
       <MTOActionToolBar
@@ -394,6 +579,7 @@ const ResourceUtilization = () => {
         handleHorizonSubmit={handleHorizonSubmit}
         selectedGraphState={selectedGraphState}
         updateGraphState={updateGraphState}
+        WIPFilter={WIPFilter}
       />
       <HorizontalWrapper>
         <GraphWrapper>
@@ -448,12 +634,9 @@ const ResourceUtilization = () => {
           <SectionFlex>
             <VerticalTitle>Analytics</VerticalTitle>
             <div data-testid="custom-select" style={{ width: "100%" }}>
-              <CustomSelect
-                placeholder="Select CCR"
-                selected={false}
-                options={[]}
-                width={"100%"}
-                optionsWidth={"100%"}
+
+              <Select
+                options={ccrOpts}
               />
             </div>
           </SectionFlex>
