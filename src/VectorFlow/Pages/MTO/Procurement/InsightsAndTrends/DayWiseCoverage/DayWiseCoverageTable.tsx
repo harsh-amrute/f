@@ -4,19 +4,23 @@ import ColorCellRenderer from "../../../Common/ColorCellRenderer";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import DayWiseCoverageDetailsCellRenderer from "./DayWiseCoverageDetailsCellRenderer";
-import { tableData } from "./table_data";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
 
-// interface IDayWiseCoverageProps {
-//     selectedDate?: string,
-// }
+interface IDayWiseCoverageProps {
+    selectedDate: string,
+    startDate: string,
+    endDate: string,
+    setLoading: any
+}
 
-// const DayWiseCoverageTable = ({
-//     selectedDate,
-// }: IDayWiseCoverageProps) => {
-
-const DayWiseCoverageTable = () => {
+const DayWiseCoverageTable = ({
+    selectedDate,
+    startDate,
+    endDate,
+    setLoading,
+}: IDayWiseCoverageProps) => {
   const colDefCustomizations = {
     ColorPriority: {
       cellRenderer: (params: any) => {
@@ -39,10 +43,27 @@ const DayWiseCoverageTable = () => {
   //   }
   // ]
 
-  const [HeaderData, setHeaderData] = useState([{}]);
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-
   const reportName = "DayWiseCoverage";
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const [rowData, setRowData] = useState([]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData();
+  const {mutateAsync: getData, isLoading: isGridLoading} = useGetDayWiseCoverageData();
+
+  const getGridData = async () => {
+    if(selectedDate){
+      const data = await getData({startDate: startDate, endDate: endDate,plannedReleaseDate: selectedDate});
+      setRowData(data?.data?.data)
+    }
+  }
+
+  useEffect(()=>{
+    getGridData()
+  }, [selectedDate])
+
+  useEffect(()=>{
+    setLoading(isGridLoading)
+  }, [isGridLoading])
+
 
   const setColumnDef = async () => {
     try {
@@ -62,7 +83,10 @@ const DayWiseCoverageTable = () => {
 
   useEffect(() => {
     setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
-  }, [HeaderData])
+  }, [HeaderData]);
+
+
+
 
 
 
@@ -80,7 +104,7 @@ const DayWiseCoverageTable = () => {
       headerName: "Group",
       cellRenderer: CustomGroupCellRenderer,
       suppressMenu: true,
-      initialWidth: 220,
+      initialWidth: 260,
     },
     masterDetail: true,
     detailCellRendererParams: {
@@ -97,11 +121,11 @@ const DayWiseCoverageTable = () => {
     <VFTable
       animateRows={true}
       gridOptions={options}
-      height={"450px"}
+      height={"400px"}
       disableZoomScaling={true}
       columnDefs={options.columnDefs}
-      rowData={tableData.data}
-      pagination={true}
+      rowData={rowData}
+      // pagination={true}
       onGridReady={(params: any) => {
         params.columnApi.autoSizeAllColumns();
       }}

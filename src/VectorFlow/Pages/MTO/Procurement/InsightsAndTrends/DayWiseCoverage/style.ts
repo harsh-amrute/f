@@ -34,6 +34,7 @@ export const CalenderTitle = styled.h1`
   color: white;
   margin: 0;
   padding: 8px 16px;
+  font-size: 16px;
 `;
 
 export const CalenderContent = styled.div`
@@ -86,6 +87,7 @@ export const Day = styled.td<{ color: string }>`
   background-color: ${(props) => props.color};
   color: white;
   border-radius: 50%;
+  cursor: pointer;
 `;
 
 export const Month = styled.tr`
@@ -98,16 +100,20 @@ export const Icon = styled.img``;
 export const TableContainer = styled.div`
   background: white; 
   border-radius: 8px; 
-  height:450px; 
+  // min-height:400px; 
   display:flex; 
+  flex:1;
   justify-content:center; 
   align-items:center;
   width:100%;
-  margin: 3rem 0;
+  margin: 1rem 0;
+  margin-bottom: 2rem;
   box-shadow: rgba(0, 0, 0, 0.1) 5px 2px 14px 3px;
   & > .ag-theme-alpine{
     width: 100%;
     margin: unset;
+    height: 100% !important;
+    min-height: 400px;
   }
 `
 
@@ -122,5 +128,29 @@ export const AnimationWrapper = styled.div`
 export const HelperText = styled.div`
   font-size: 22px;
   width: 65%;
+  text-align: center;
+`
+
+
+export const AnalyticsTable = styled.table`
+    background: rgb(56, 55, 55);
+    color: white;
+    margin: 1rem;
+    font-size: 12px;
+    border-collapse: collapse;
+    padding: 1rem;
+    display: block;
+    border-radius: 4px;
+`
+
+export const AnalyticsRow = styled.tr`
+  thead &:nth-of-type(2){
+    border: 1px dashed #B4B4B4;
+    border-left: none;
+    border-right: none;
+  }
+`
+export const AnalyticsCol = styled.td`
+  padding: 0.5rem;
   text-align: center;
 `
