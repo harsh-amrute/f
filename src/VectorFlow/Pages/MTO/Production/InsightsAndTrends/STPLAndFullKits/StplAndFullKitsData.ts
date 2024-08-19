@@ -339,7 +339,7 @@ export const APIMock = {
           fg_code: "AKJDDIN",
           fg_desc: "FG Desc Text",
           order_quality: 100,
-          quantity_manufacture: 50,
+          Stck: 50,
           r_wip: 10,
           fk: 20,
           un_fk: 0,

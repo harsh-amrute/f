@@ -10,14 +10,26 @@ import {
   BTRTableWrapper,
   HorizontalViewWrapper,
 } from "./styles";
-import { APIMock } from "./StplAndFullKitsData";
+// import { APIMock } from "./StplAndFullKitsData";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
-import OrderDetailsCellRenderer from "./OrderDetailsCellRenderer";
+// import OrderDetailsCellRenderer from "./OrderDetailsCellRenderer";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+// import customCellRenderer from "../../DepartmentWiseBMReport/CustomCellRenderer";
+import RowGrpRender from "./RowGrpRender";
+import { useGetSTPLAndFullKitData } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/STPLAndFullKits";
+import OverlayLoader from '../../../Common/Loader';
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 
 const STPLAndFullKits = () => {
   const [isGridView, setIsGridView] = useState(false);
+  const { mutateAsync: getSTPLandFullkitInDaysData, isLoading, isError, isSuccess } = useGetSTPLAndFullKitData()
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const [gridData, setGridData] = useState([]);
+  const [graphData, setGraphData] = useState<any>({});
+  const reportName = "STPLAndFullKits";
+
   const { screenHeight } = useViewPort();
 
   const gridRef = useRef();
@@ -54,17 +66,13 @@ const STPLAndFullKits = () => {
     groupDefaultExpanded: 0,
     masterDetail: true,
     detailRowHeight: 500,
-    detailCellRenderer: OrderDetailsCellRenderer,
+    detailCellRenderer: RowGrpRender,
     detailCellRendererParams: {
       innerHeight: 400,
     },
     rowGroupPanelShow: 'always'
   };
 
-  const [HeaderData, setHeaderData] = useState([{}]);
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-
-  const reportName = "STPLAndFullKits";
 
   const setColumnDef = async () => {
     try {
@@ -76,11 +84,42 @@ const STPLAndFullKits = () => {
     }
   }
 
+  const getGridData = async (isGraph: any) => {
+    try {
+      const response = await getSTPLandFullkitInDaysData(isGraph);
+      setGridData(response.data.data.results);
+    }
+    catch (e) {
+      console.log(e);
+      notifyError('Failed to fetch Grid data!');
+    }
+  }
+  
+  const getGraphData = async (isGraph: any) => {
+    try {
+      const response = await getSTPLandFullkitInDaysData(isGraph);
+      setGraphData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+      notifyError('Failed to fetch Graph data!');
+    }
+  }
+
   useEffect(() => {
     setColumnDef();
+    getGridData(0);
+    getGraphData(1);
   }, [])
 
-
+  useEffect(() => {
+    if (isSuccess) {
+      notifySuccess("Fetched Data successfully!")
+    }
+    if (isError) {
+      notifyError("Failed to load data!")
+    }
+  }, [isSuccess, isError])
 
   const colDefCustomizations = {
     Plant: {
@@ -94,6 +133,9 @@ const STPLAndFullKits = () => {
 
   return (
     <div style={{}}>
+       {
+        isLoading && <OverlayLoader />
+      }
       <MTOActionToolBar
         comp={"stplAndFullKit"}
         isGridView={isGridView}
@@ -107,7 +149,7 @@ const STPLAndFullKits = () => {
             <VFTable
               {...gridOptions}
               columnDefs={colDefs}
-              rowData={APIMock?.grid}
+              rowData={gridData || []}
               tooltipHideDelay={100000}
               tooltipShowDelay={0}
               tooltipMouseTrack={true}
@@ -126,13 +168,13 @@ const STPLAndFullKits = () => {
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <STPLGraph />
+                  <STPLGraph graphData={graphData?.stpl}/>
                 </BTRAllomentSection>
               </Allotment.Pane>
 
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <FullKitGraph />
+                  <FullKitGraph graphData={graphData?.stpl}/>
                 </BTRAllomentSection>
               </Allotment.Pane>
             </Allotment>
