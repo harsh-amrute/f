@@ -26,8 +26,6 @@ interface SplitGrpahContainerProps {
   downloadFileName?: string,
 }
 
-
-
 const SplitGraphContainer = ({
   colDef,
   options,

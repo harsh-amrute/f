@@ -8,14 +8,8 @@ import { AgChartOptions } from 'ag-charts-community'
 import { createSeriesDataIF, getMyColumnDefinitions, IFdata, TooltipRendererIF } from '../Data'
 
 const DownTrend = () => {
-
-    const graph1 = ['This graph highlights the failure reasons that have experienced decrease in occurrence by more than 15% from the average of last 3 months.']
-
+    const infoTipData = ['This graph highlights the failure reasons that have experienced decrease in occurrence by more than 15% from the average of last 3 months.']
     const [hideChart1, toggleChart1] = useState(false);
-
-
-
-
     const generateHeader = () => {
         return (
             <>
@@ -37,7 +31,7 @@ const DownTrend = () => {
                     <SCChartHeaderContainer>
 
                         <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
-                            <VFInfoToolTip infoList={graph1} />
+                            <VFInfoToolTip infoList={infoTipData} />
                         </div>
                         <div onClick={() => { toggleChart1(!hideChart1) }} style={{ marginLeft: 10, marginBottom: '-5px', marginRight: '10px' }}>
                             <img src='/assets/img/VectorFLOW/BPR/minimize.svg' height={13} width={13} color={"#CCCCCC"} />
@@ -48,7 +42,6 @@ const DownTrend = () => {
 
         )
     }
-
     const [tableLoading, setTableLoading] = useState(false);
     const [chartLoading, setChartLoading] = useState(false);
     const labels = [
@@ -61,10 +54,7 @@ const DownTrend = () => {
     ];
 
     const colDef: any = getMyColumnDefinitions(labels);
-
-
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
-
     const date = apiResponseData?.data?.data;
     const options: AgChartOptions = {
         series: createSeriesDataIF(),
@@ -119,14 +109,8 @@ const DownTrend = () => {
 
     }
 
-
-
-
-
     return (
         <div style={{ height: "100%", paddingBottom: '20px', display: 'flex', justifyContent: 'left', marginLeft: '10px' }}>
-
-
             <SplitGraphContainer
                 tableLoading={tableLoading}
                 chartLoading={chartLoading}

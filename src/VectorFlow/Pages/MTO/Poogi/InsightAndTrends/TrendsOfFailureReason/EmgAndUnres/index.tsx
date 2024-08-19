@@ -9,13 +9,8 @@ import { createSeriesData, getMyColumnDefinitions, OFdata, TooltipRenderer } fro
 
 const EmgAndUnres = () => {
 
-    const graph1 = ['This graph highlights failure reasons that have remained in the top 10 contributing reasons in last 3 months and experienced an increase in occurrence by more than 15% compared to the average of the last 3 months.']
-
+    const infoTipData = ['This graph highlights failure reasons that have remained in the top 10 contributing reasons in last 3 months and experienced an increase in occurrence by more than 15% compared to the average of the last 3 months.']
     const [hideChart1, toggleChart1] = useState(false);
-
-
-
-
     const generateHeader = () => {
         return (
             <>
@@ -37,7 +32,7 @@ const EmgAndUnres = () => {
                     <SCChartHeaderContainer>
 
                         <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
-                            <VFInfoToolTip infoList={graph1} />
+                            <VFInfoToolTip infoList={infoTipData} />
                         </div>
                         <div onClick={() => { toggleChart1(!hideChart1) }} style={{ marginLeft: 10, marginBottom: '-5px', marginRight: '10px' }}>
                             <img src='/assets/img/VectorFLOW/BPR/minimize.svg' height={13} width={13} color={"#CCCCCC"} />
