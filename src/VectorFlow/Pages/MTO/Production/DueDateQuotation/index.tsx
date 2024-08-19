@@ -15,6 +15,7 @@ import OverlayLoader from '../../Common/Loader'
 import Step3 from './Step3'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import { notifyError } from '../../../../../helpers/notify'
+import BomExplosionPOC from './BomExplosionPOC'
 
 const DueDateQuotation = () => {
   const { user } = useUserData();
@@ -279,7 +280,7 @@ const DueDateQuotation = () => {
 
   return (
     <Wrapper style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} className="wrapper">
-      {step != 3 && <MTOActionToolBar comp="DDQ" quickFilter={step === 1 ? <div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={unScheduled} onChange={(e: any) => setUnScheduled(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Only Unscheduled Orders</strong></div> : null} isAddFilterButton />}
+      {/* {step != 3 && <MTOActionToolBar comp="DDQ" quickFilter={step === 1 ? <div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={unScheduled} onChange={(e: any) => setUnScheduled(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Only Unscheduled Orders</strong></div> : null} isAddFilterButton />}
       {(isDataLoading || loading) && <OverlayLoader />}
       {getCurrentStep()}
       <VFModalCard key={"key2"} openModal={showModal} closeModal={() => { setShowModal(false) }} headerText={'Warning'} headerIcon={'/assets/img/ist/warning.svg'} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
@@ -346,7 +347,8 @@ const DueDateQuotation = () => {
           style={{ fontSize: "12px", width: "100px", height: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>
           {renderSubmitText()}
         </VFButton>
-      </Footer>
+      </Footer> */}
+      <BomExplosionPOC/>
     </Wrapper>
   )
 }
