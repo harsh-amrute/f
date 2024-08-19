@@ -143,6 +143,7 @@ const DownTrend = () => {
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRendererIF}
                 graphType={12}
+                downloadFileName={'Major-Minor Reasons Impacting OTIF But Showing A Downward Trend'}
             />
         </div>
     )

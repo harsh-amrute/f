@@ -23,6 +23,7 @@ interface SplitGrpahContainerProps {
   TooltipRenderer: (param: any) => string,
   graphType: number,
   date?: string,
+  downloadFileName?: string,
 }
 
 
@@ -41,6 +42,7 @@ const SplitGraphContainer = ({
   toggleChart,
   TooltipRenderer,
   graphType,
+  downloadFileName
 }: SplitGrpahContainerProps) => {
   const chartRef = useRef<AgChartsReact>(null);
   const refGraph1 = useRef<GridRef>(null);
@@ -786,7 +788,7 @@ const SplitGraphContainer = ({
               </div>
               <div style={{ marginLeft: '0 10px -5px', marginBottom: '-5px' }} onClick={() => {
 
-                (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart, { fileName: graphTitle });
+                (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart, { fileName: downloadFileName ? downloadFileName : graphTitle });
 
               }}>
                 <img src='/assets/img/mto/RMPMBufferTrend/download.svg' style={{ color: "#CCCCCC", paddingBottom: '5px' }} height={15} width={15} color={"#CCCCCC"} />

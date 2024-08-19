@@ -7,8 +7,6 @@ import EmgAndUnres from './EmgAndUnres'
 
 const TrendsOfFailureReason = () => {
 
-    const [isGridView, setIsGridView] = useState(false);
-
     return (
         <>
             <MTOActionToolBar isAddFilterButton />

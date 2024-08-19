@@ -5,7 +5,7 @@ import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VF
 import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import { AgChartOptions } from 'ag-charts-community'
-import { createSeriesData, getMyColumnDefinitions, IFdata, OFdata, TooltipRenderer, TooltipRendererIF } from '../Data'
+import { createSeriesData, getMyColumnDefinitions, OFdata, TooltipRenderer } from '../Data'
 
 const EmgAndUnres = () => {
 
@@ -141,6 +141,7 @@ const EmgAndUnres = () => {
                 toggleChart={toggleChart1}
                 TooltipRenderer={TooltipRenderer}
                 graphType={13}
+                downloadFileName={'Emergent & Unresolved Major-Minor Reasons Impacting OTIF'}
             />
         </div>
     )
