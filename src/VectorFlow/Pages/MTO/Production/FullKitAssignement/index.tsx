@@ -18,6 +18,7 @@ import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Commo
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 import { useGetFullKitAssignmentDataWithGraphData } from '../../../../../VectorFlow/Services/MTO/Production/FullKitAssignment';
 import OverlayLoader from '../../Common/Loader';
+import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
 
 const FullKitAssignment = () => {
 
@@ -26,12 +27,30 @@ const FullKitAssignment = () => {
   const themeUi = user?.user?.theme_ui;
 
 
+
+  const [HeaderData, setHeaderData] = useState([{}]);
+  const [hide, setHide] = useState(false);
+  const [showModal, setShowModal] = useState(false)
+  const [editMode, setEditMode] = useState("View")
+
+  const graph = useRef<any>();
+  const grid = useRef<any>();
+
+  const [showOrdersWithFullKitReady, setShowOrdersWithFullKitReady] = useState(true);
+  const [orders, setOrders] = useState([]);
+  const { mutateAsync: getFullKitAssignmentDataWithGraphData, isLoading } = useGetFullKitAssignmentDataWithGraphData();
+
+
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+  const reportName = "FullKitAssignment";
+
   const colDefCustomizations = {
     Route: {
       // tooltipField: "r"
       cellRenderer: (params: any) => {
         return (
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%", height:"100%" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%", height: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
             <img alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
               setShowModal(true)
@@ -40,16 +59,6 @@ const FullKitAssignment = () => {
         )
       }
     },
-    // FullKitsAvail: {
-    //   cellStyle: {
-    //     background: "#bc3d814d"
-    //   }
-    // },
-    // KitBeforeSm: {
-    //   cellStyle: {
-    //     background: "#bc3d814d"
-    //   }
-    // },
     OrderInFullKitToday: {
       cellRenderer: AvailabilityCellRenderer,
     },
@@ -62,11 +71,7 @@ const FullKitAssignment = () => {
     }
   }
 
-  const extra: any = []
-  const [HeaderData, setHeaderData] = useState([{}]);
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-
-  const reportName = "FullKitAssignment";
+  const [extra, setExtra]: any = useState([])
 
   const setColumnDef = async () => {
     try {
@@ -78,13 +83,29 @@ const FullKitAssignment = () => {
     }
   }
 
+
+  const fetchOrders = async () => {
+    const data = await getFullKitAssignmentDataWithGraphData();
+    console.log(data.data.data.results);
+    setOrders(data.data.data.results)
+  }
+
   useEffect(() => {
     setColumnDef();
+    fetchOrders();
   }, [])
+
+  // useEffect(()=>{
+  //   switch(editMode){
+  //     case "View":{
+  //       setExtra()
+  //     }
+  //   }
+  // }, [editMode])
 
   const colDefs = useMemo(() => {
     return getColumnDefinations(HeaderData, colDefCustomizations, extra)
-  }, [HeaderData])
+  }, [HeaderData, extra])
 
   const options: GridOptions<any> = {
     getRowStyle: (params: any) => {
@@ -105,6 +126,8 @@ const FullKitAssignment = () => {
       enableRowGroup: true,
       floatingFilterComponentParams: { suppressFilterButton: true },
     },
+    rowSelection: "multiple",
+    suppressRowClickSelection: true,
     sideBar: {
       toolPanels: ["agColumnsToolPanel"],
     },
@@ -216,37 +239,39 @@ const FullKitAssignment = () => {
     },
 
   }
-  const [hide, setHide] = useState(false);
-  const [showModal, setShowModal] = useState(false)
 
-  const graph = useRef<any>();
-  const grid = useRef<any>();
+  const renderUtilityBtns = useMemo(() => {
 
-  const [showOrdersWithFullKitReady, setShowOrdersWithFullKitReady] = useState(true);
-  const [orders, setOrders] = useState([]);
-  const {mutateAsync: getFullKitAssignmentDataWithGraphData, isLoading} = useGetFullKitAssignmentDataWithGraphData();
+    return <>
+    {extra.length != 0 && <strong style={{marginRight: "1rem", cursor:"pointer"}} onClick={()=>{
+      setExtra([])
+    }}>Cancel</strong>}
+    <VFButtonOutline themeUi={themeUi}
+      onClick={() => {
+        setExtra(
+          [{
+            field: "",
+            headerCheckboxSelection: true,
+            checkboxSelection: true,
+            suppressMenu: true,
+            maxWidth: 50,
+            position: 0,
+            filter: false
+          },]
+        )
+      }}>{extra.length == 0 ? "Deselect" : "Exclude & Simulate"}</VFButtonOutline></>
 
-  console.log(isLoading)
-
-  const fetchOrders = async () => {
-    const data = await getFullKitAssignmentDataWithGraphData();
-    console.log(data.data.data.results);
-    setOrders(data.data.data.results)
-  }
-
-  useEffect(()=>{
-    fetchOrders();
-  }, [])
-
+  }, [extra])
 
   return (
     <Wrapper>
-      <MTOActionToolBar 
+      <MTOActionToolBar
+        utilityBtns={renderUtilityBtns}
         quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={showOrdersWithFullKitReady} onChange={(e: any) => setShowOrdersWithFullKitReady(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Orders with Full Kit Ready</strong></div>}
-        isExcelExport isAddFilterButton 
+        isExcelExport isAddFilterButton
       />
       {/* <button onClick={() => setShowModal(true)}>Click</button> */}
-      {isLoading && <OverlayLoader/>}
+      {isLoading && <OverlayLoader />}
       <VFTable
         ref={grid}
         rowData={orders}
@@ -276,7 +301,7 @@ const FullKitAssignment = () => {
       <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
         <AgChartsReact ref={graph} options={chartoptions} />
       </div>
-      <EditRouteModal graphData={data} showModal={showModal} setShowModal={setShowModal} theme={themeUi}/>
+      <EditRouteModal graphData={data} showModal={showModal} setShowModal={setShowModal} theme={themeUi} />
     </Wrapper >
 
 

@@ -75,7 +75,8 @@ interface MTOActionToolBarProps {
     isReleaseButton?: boolean
     onOrderRelease?: () => void;
     onCheckBoxToggle?: any;
-    isReleaseButtonDisabled?: boolean
+    isReleaseButtonDisabled?: boolean,
+    utilityBtns?: ReactElement | null
     //// new props
 }
 
@@ -106,7 +107,8 @@ const MTOActionToolBar = ({
     onOrderRelease,
     quickFilter,
     onCheckBoxToggle,
-    isReleaseButtonDisabled
+    isReleaseButtonDisabled,
+    utilityBtns
 }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
@@ -308,6 +310,8 @@ const MTOActionToolBar = ({
                 </VFSelectedFiltersWrapper>}
                 {/**Selected Filter ends*/}
 
+                
+
                 {(comp === 'resourceUtilization') &&
                     <div data-testid='resourceUtilization' style={{ display: ' flex', alignItems: 'flex-start', gap: '20px' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
@@ -417,6 +421,9 @@ const MTOActionToolBar = ({
             </SCTaskFilterContainer>
 
             <SCCustomActionsContainer>
+                {utilityBtns && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem" }}>
+                        {utilityBtns}
+                </div>}
                 {isAddFilterButton && (onAddFilter ?
                     <VFButton onClick={() => onAddFilter()} themeUi={themeUi || ''} disabled={false} width={110}>{selectedFilters && selectedFilters?.length > 0 ? <p style={{ padding: '2px' }}>Edit Filter</p> : <p style={{ padding: '2px' }}>+ Add Filter</p>}</VFButton>
                     :
