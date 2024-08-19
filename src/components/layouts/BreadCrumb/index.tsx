@@ -59,9 +59,11 @@ const BreadCrumb = () => {
 
   if (location.pathname === '/poogi/insight-and-trends/resource-utilization-wip-profile') return <span>Poogi<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Resource Utilization & WIP Profile</span>
   if (location.pathname === '/poogi/reasons-for-delayed-orders') return <span>Poogi<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Reason For Delayed Orders</span>
-  if(location.pathname === '/poogi/insight-and-trends/otif-analysis') return <span>POOGI <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> OTIF Analysis</span>  
+  if (location.pathname === '/poogi/insight-and-trends/otif-analysis') return <span>POOGI <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> OTIF Analysis</span>
   if (location.pathname === '/poogi/insight-and-trends/ot-and-if-analysis') return <span>POOGI <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Insight & Trends / OT & IF Analysis</span>
-  
+  if (location.pathname === '/poogi/insight-and-trends/lead-time') return <span>POOGI <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Insight & Trends / Lead Time</span>
+  if (location.pathname === '/poogi/insight-and-trends/trend-of-failure-reason') return <span>POOGI <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /> Insight & Trends / Trend Of Failure Reason</span>
+
 
 
 

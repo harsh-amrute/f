@@ -23,9 +23,8 @@ interface SplitGrpahContainerProps {
   TooltipRenderer: (param: any) => string,
   graphType: number,
   date?: string,
+  downloadFileName?: string,
 }
-
-
 
 const SplitGraphContainer = ({
   colDef,
@@ -41,6 +40,7 @@ const SplitGraphContainer = ({
   toggleChart,
   TooltipRenderer,
   graphType,
+  downloadFileName
 }: SplitGrpahContainerProps) => {
   const chartRef = useRef<AgChartsReact>(null);
   const refGraph1 = useRef<GridRef>(null);
@@ -53,6 +53,20 @@ const SplitGraphContainer = ({
           palette: {
             fills: ['black', 'red', 'yellow', 'green', 'grey'],
             strokes: ['black', 'red', 'yellow', 'green', 'grey'],
+          },
+        }
+      case 12:
+        return {
+          palette: {
+            fills: ['#418D18', '#9D9797', '#EBBF2C', '#F04D4D', '#3876FF'],
+            strokes: ['#418D18', '#9D9797', '#EBBF2C', '#F04D4D', '#3876FF'],
+          },
+        }
+      case 13:
+        return {
+          palette: {
+            fills: ['#418D18', '#9D9797', '#EBBF2C', '#F04D4D', '#3876FF'],
+            strokes: ['#418D18', '#9D9797', '#EBBF2C', '#F04D4D', '#3876FF'],
           },
         }
 
@@ -153,6 +167,94 @@ const SplitGraphContainer = ({
                 },
                 strokeWidth: 3
 
+              },
+              legend: {
+                item: {
+                  marker: {
+                    shape: 'square'
+                  }
+                }
+              }
+
+
+            }
+          }
+
+        })
+        break;
+      case 12:
+        refGraph1.current?.api.createRangeChart({
+          chartType: 'line',
+          cellRange: {
+            columns: ['month', 'Sales', 'Line Overloaded', 'Quality', 'Packing', 'Coating Liquid Not Available'],
+          },
+
+          chartThemeOverrides: {
+            line: {
+              series: {
+                tooltip: {
+                  renderer: TooltipRenderer
+                },
+                strokeWidth: 3
+
+              },
+              axes: {
+                category: {
+                  crossLines: {
+                    enabled: false,
+                    strokeOpacity: 0,
+                    stroke: 'white'
+                  },
+                  gridStyle:
+                    [
+                      { stroke: 'white' },
+                    ],
+
+                }
+              },
+              legend: {
+                item: {
+                  marker: {
+                    shape: 'square'
+                  }
+                }
+              }
+
+
+            }
+          }
+
+        })
+        break;
+      case 13:
+        refGraph1.current?.api.createRangeChart({
+          chartType: 'line',
+          cellRange: {
+            columns: ['month', 'Annealing-Rolling', 'Planning', 'Annealing', 'Annealing-Furnace'],
+          },
+
+          chartThemeOverrides: {
+            line: {
+              series: {
+                tooltip: {
+                  renderer: TooltipRenderer
+                },
+                strokeWidth: 3
+
+              },
+              axes: {
+                category: {
+                  crossLines: {
+                    enabled: false,
+                    strokeOpacity: 0,
+                    stroke: 'white'
+                  },
+                  gridStyle:
+                    [
+                      { stroke: 'white' },
+                    ],
+
+                }
               },
               legend: {
                 item: {
@@ -775,7 +877,7 @@ const SplitGraphContainer = ({
               </div>
               <div style={{ marginLeft: '0 10px -5px', marginBottom: '-5px' }} onClick={() => {
 
-                (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart, { fileName: graphTitle });
+                (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart, { fileName: downloadFileName ? downloadFileName : graphTitle });
 
               }}>
                 <img src='/assets/img/mto/RMPMBufferTrend/download.svg' style={{ color: "#CCCCCC", paddingBottom: '5px' }} height={15} width={15} color={"#CCCCCC"} />
