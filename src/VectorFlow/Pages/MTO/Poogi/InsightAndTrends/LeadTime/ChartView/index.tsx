@@ -32,7 +32,7 @@ const ChartView = ({chartData, chartTableData}: any) => {
                         }}
                     >
                         <span style={{ fontWeight: 500 }}>Statistical Overview Of Lead Time Of Closed Orders &nbsp;</span>
-                        <span style={{ fontWeight: 350 }}>{`(${moment(date).format('D MMM YYYY')} - ${moment(date).add(90, 'days').format('D MMM YYYY')})`}</span>
+                        <span style={{ fontWeight: 350 }}>{`(${moment(date).add(-90, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}</span>
                     </div>
                     <SCChartHeaderContainer>
 
