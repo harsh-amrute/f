@@ -16,6 +16,7 @@ import Step3 from './Step3'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import { notifyError } from '../../../../../helpers/notify'
 import BomExplosionPOC from './BomExplosionPOC'
+import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion'
 
 const DueDateQuotation = () => {
   const { user } = useUserData();
@@ -49,6 +50,7 @@ const DueDateQuotation = () => {
   const { mutateAsync: getDailyWorkingCalendar, } = useGetDailyWorkingCalendar();
   const { mutateAsync: getMarketOperatingLeadTimeMasterData, } = useGetMarketOperatingLeadTimeMasterData();
   const { mutateAsync: getLineCCRDetails, } = useGetLineCCRDetails();
+  const { mutateAsync: getBOMExplosionData, } = useGetBOMExplosionData();
   const { data: UIConfig, isLoading: isUIConfigLoading } = useGetUIConfig("DueDateQuotation");
 
   const [loading, setLoading] = useState(false);
@@ -65,8 +67,14 @@ const DueDateQuotation = () => {
     },
   ]
 
+  const customization: any = {
+    "OrderID": {
+      cellRenderer: "agGroupCellRenderer"
+    }
+  }
+
   const columnDefs = useMemo(() => {
-    return getColumnDefinations(UIConfig?.data ? UIConfig?.data?.data : [], undefined, extras);
+    return getColumnDefinations(UIConfig?.data ? UIConfig?.data?.data : [], customization, extras);
   }, [isUIConfigLoading]);
 
   const gridOptions: GridOptions = {
@@ -78,6 +86,44 @@ const DueDateQuotation = () => {
     rowSelection: "multiple",
     columnDefs: columnDefs,
     suppressRowClickSelection: true,
+    masterDetail: true,
+    detailRowAutoHeight: true,
+    detailCellRendererParams: {
+      suppressMenu: true,
+      detailGridOptions: {
+        rowHeight: 45,
+        domLayout:"autoHeight",
+        autoGroupColumnDef: {
+          headerName:"Item Name",
+          cellRendererParams: {
+              suppressCount: true
+          }
+      },
+        columnDefs: [
+          { field: "qty", headerName: "Requirement", },
+          { field: "soh", headerName: "Stock",  },
+          { field: "wip", headerName: "WIP",  },
+          { field: "gap", headerName: "Gap", },
+        ],
+        defaultColDef: {
+          flex: 1,
+          suppressMenu: true,
+          cellStyle: {
+            fontSize:"16px",
+            display: "flex",
+            alignItems: "center"
+          }
+        },
+        treeData: true,
+        getDataPath: (data: any) => {
+          return data.path;
+        },
+      },
+      getDetailRowData: async (params: any) => {
+        const data = await getBOMExplosionData({orderId: params.data.oid, lineId: params.data.lid});
+        params.successCallback(data.data.data)
+      }
+    },
     defaultColDef: {
       wrapHeaderText: true,
       autoHeaderHeight: true,
@@ -95,8 +141,6 @@ const DueDateQuotation = () => {
       toolPanels: ["columns"],
     },
   }
-
-
 
   useEffect(() => {
     getDDQData();
@@ -269,7 +313,7 @@ const DueDateQuotation = () => {
         return <>Confirm</>
       }
       case 3: {
-        return <div style={{display:"flex", justifyContent:"center", alignItems:"center", gap: "0.6rem"}}><img src="/assets/img/mto/dueDateQuotation/calender.svg"/> Schedule</div>
+        return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "0.6rem" }}><img src="/assets/img/mto/dueDateQuotation/calender.svg" /> Schedule</div>
       }
       default: {
         return <>  Continue</>
@@ -280,7 +324,7 @@ const DueDateQuotation = () => {
 
   return (
     <Wrapper style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} className="wrapper">
-      {/* {step != 3 && <MTOActionToolBar comp="DDQ" quickFilter={step === 1 ? <div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={unScheduled} onChange={(e: any) => setUnScheduled(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Only Unscheduled Orders</strong></div> : null} isAddFilterButton />}
+      {step != 3 && <MTOActionToolBar comp="DDQ" quickFilter={step === 1 ? <div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={unScheduled} onChange={(e: any) => setUnScheduled(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Only Unscheduled Orders</strong></div> : null} isAddFilterButton />}
       {(isDataLoading || loading) && <OverlayLoader />}
       {getCurrentStep()}
       <VFModalCard key={"key2"} openModal={showModal} closeModal={() => { setShowModal(false) }} headerText={'Warning'} headerIcon={'/assets/img/ist/warning.svg'} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
@@ -322,14 +366,14 @@ const DueDateQuotation = () => {
           style={{ width: "50px", height: "40px" }}>
           <img src="/assets/img/mto/dueDateQuotation/back-btn.svg" />
         </VFButtonOutline>}
-       {step != 3 && <VFButtonOutline themeUi={themeUi} disabled
-          onClick={() => { 
+        {step != 3 && <VFButtonOutline themeUi={themeUi} disabled
+          onClick={() => {
             console.log();
-          }} 
+          }}
           style={{ fontSize: "12px", width: "100px", height: "40px" }}>
           Deselect Orders
         </VFButtonOutline>}
-        
+
         <VFButton themeUi={themeUi}
           disabled={disabled}
           onClick={() => {
@@ -347,8 +391,8 @@ const DueDateQuotation = () => {
           style={{ fontSize: "12px", width: "100px", height: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>
           {renderSubmitText()}
         </VFButton>
-      </Footer> */}
-      <BomExplosionPOC/>
+      </Footer>
+      {/* <BomExplosionPOC/> */}
     </Wrapper>
   )
 }
