@@ -93,7 +93,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         setTimeout(() => {
             allotment.current.reset();
             // if (routeDiv.current?.offsetHeight)
-                // setRouteDivHeight(routeDiv.current.offsetHeight);
+            // setRouteDivHeight(routeDiv.current.offsetHeight);
         }, 0);
         //RouteDiv Position Calculate and move it to state instead of ref
     }, [rowsSelectedForAssignment])
@@ -106,6 +106,9 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
 
     const customization = {
+        OrderID: {
+            cellRenderer: "agGroupCellRenderer"
+        },
         Route: {
             pinned: "right",
             lockPosition: true,
@@ -558,7 +561,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 });
 
                 calculateEstimatedDueDate(newRows).then((data) => {
-                    if(data){
+                    if (data) {
                         setRows(data);
                         setSelectedBuffers([])
                         setSelectedRoute([])
@@ -862,7 +865,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         else if (row.rid) {
                                             selectedRoutes.add(row.rid);
                                         }
-                                        else{
+                                        else {
                                             selectedRoutes.add(null);
                                         }
                                         if (row.nprid) {
@@ -871,7 +874,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         else if (row.prid) {
                                             selectedProdBuffer.add(row.prid);
                                         }
-                                        else{
+                                        else {
                                             selectedProdBuffer.add(null)
                                         }
                                         if (row.npcid) {
@@ -880,12 +883,12 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         else if (row.pcid) {
                                             selectedProcBuffer.add(row.pcid);
                                         }
-                                        else{
+                                        else {
                                             selectedProcBuffer.add(null)
                                         }
                                     })
                                     let isAssignmentPossible = true; //if only one order is selected
-                                    if (selected.length > 1){
+                                    if (selected.length > 1) {
                                         isAssignmentPossible = ([1].includes(selectedRoutes.size)) && ([1].includes(selectedProdBuffer.size)) && ([1].includes(selectedProcBuffer.size))
                                     }
                                     if (!isAssignmentPossible) {
@@ -893,7 +896,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         setSelectedRoute([])
                                     }
                                     const routeId = [...selectedRoutes][0]
-                                    if(selectedRoutes.size == 0){
+                                    if (selectedRoutes.size == 0) {
                                         setSelectedRoute([])
                                     }
                                     else if (selectedRoutes.size == 1 && routeId != null) {
@@ -1025,7 +1028,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 }
                 {!rowsSelectedForAssignment &&
                     <Allotment.Pane preferredSize={"50%"} key={4}>
-                        <Wrapper style={{ justifyContent: "center", alignItems: "center", background: "white", margin: "20px 10px", height: "calc(100% - 30px)", color: "grey", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px" }}>
+                        <Wrapper style={{ justifyContent: "center", alignItems: "center", background: "white", margin: "20px 10px", height: "calc(100% - 30px)", color: "grey", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", overflow: "hidden" }}>
                             <div style={{ fontSize: "16px" }}>No Data to Display</div>
                             <div style={{ fontSize: "12px" }}>Please Select Orders to Process</div>
                         </Wrapper>
