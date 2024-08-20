@@ -15,7 +15,6 @@ import OverlayLoader from '../../Common/Loader'
 import Step3 from './Step3'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import { notifyError } from '../../../../../helpers/notify'
-import BomExplosionPOC from './BomExplosionPOC'
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion'
 
 const DueDateQuotation = () => {
