@@ -116,6 +116,8 @@ const DptWiseBMReport = () => {
     const themeUi = user?.user?.theme_ui;
     const refGraph1 = useRef<any>(null);
     const [deptName, setDeptName] = useState<any>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [gridDataCount, setGridDataCount] = useState<number>(0);
 
     const customCellRenderers = useMemo(() => (
         {
@@ -563,11 +565,14 @@ const DptWiseBMReport = () => {
         }));
     }
 
-    const getInitialGridData = async (wip: boolean) => {
+    const getInitialGridData = async (wip: boolean, page: number) => {
         try {
+            setCurrentPage(page)
             setWIPCheck(wip)
-            const gridData = await getDeptWiseBMReportData(wip ? 1 : 0);
+            const gridData = await getDeptWiseBMReportData({ 'wip': wip === true ? 1 : 0, 'curr': page });
             setGridData(gridData?.data?.data?.results)
+            //console.log('first',gridData?.data?.data)
+            setGridDataCount(gridData?.data?.data?.count)
         }
         catch (e) {
             console.log('e');
@@ -579,7 +584,7 @@ const DptWiseBMReport = () => {
         const colDefs = mapApiResponseToColDefs(apiResponse);
         // console.log('coldefs', colDefs)
         setColdef(colDefs)
-        getInitialGridData(isWIPChecked);
+        getInitialGridData(isWIPChecked, 1);
     }, [])
 
     useEffect(() => {
@@ -675,7 +680,7 @@ const DptWiseBMReport = () => {
                     })
                     //console.log('putData',putData)
                     const RemarkHistory = await addBMReportRemark(putData);
-                     //console.log('REmakrf', RemarkHistory)
+                    //console.log('REmakrf', RemarkHistory)
                     if (RemarkHistory.status === 200) {
                         putData = [];
                         setEditedRows(new Set());
@@ -696,6 +701,11 @@ const DptWiseBMReport = () => {
         }
     }
 
+    const handlePageChange = async (currPage: number) => {
+        //console.log('first,', currPage)
+        setCurrentPage(currPage)
+        getInitialGridData(isWIPChecked, currPage)
+    }
 
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
@@ -755,7 +765,7 @@ const DptWiseBMReport = () => {
                     comp={'DeptWiseBMReport'}
                     isAddFilterButton
                     isExcelExport
-                    quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={isWIPChecked} onChange={(e) => getInitialGridData(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show order with available WIP Only</strong></div>}
+                    quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={isWIPChecked} onChange={(e) => getInitialGridData(e.target.checked, 1)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show order with available WIP Only</strong></div>}
                 />
             </BMDepHeaderWraper>
 
@@ -774,6 +784,9 @@ const DptWiseBMReport = () => {
                                                 columDef={colDeflatest}
                                                 convercolumnDef={gridData}
                                                 updateReason={() => handleUpdateReason()}
+                                                handlePageChange={(cp) => handlePageChange(cp)}
+                                                totalRow={gridDataCount}
+                                                currentPage={currentPage}
                                             />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
@@ -784,7 +797,8 @@ const DptWiseBMReport = () => {
                                                 isTrue={isOrderElapsedGrid}
                                                 data={deptWiseWipData}
                                                 deptName={deptName}
-                                                selectedOrderCount={ refGraph1.current?.api.getSelectedRows().length}
+                                                selectedOrderCount={refGraph1.current?.api.getSelectedRows().length}
+
                                             />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>

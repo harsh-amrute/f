@@ -4,7 +4,7 @@ import axios from 'axios';
 export namespace DepartmentWiseBMReport {
 
     export const getDeptWiseBMReport = async (data: any) => {
-        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${data}`, {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${data.wip}&page=${data.curr}`, {
             headers: {
                 'Content-Type': 'application/json',
                 //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'

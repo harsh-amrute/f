@@ -1,16 +1,27 @@
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import { VFWrapper } from './styles';
 import { SaveBtnWrapper, SaveBtn } from '../../Poogi/ReasonOrderChange/styles';
-
+import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 interface GridProps {
     agGridProps: any
     columDef: any
     convercolumnDef: any
     reference: any
     updateReason: () => void
+    handlePageChange: (e:any) =>any
+    totalRow:number
+    currentPage:number
 }
 
-const GridView = ({ agGridProps, columDef, convercolumnDef, reference, updateReason }: GridProps) => {
+const GridView = ({
+    agGridProps,
+    columDef,
+    convercolumnDef,
+    reference,
+    updateReason,
+    handlePageChange,
+    totalRow,
+    currentPage }: GridProps) => {
 
 
     return (
@@ -42,8 +53,15 @@ const GridView = ({ agGridProps, columDef, convercolumnDef, reference, updateRea
                     ref={reference}
                 />
             </VFWrapper>
+            <VFPagination
+                selectedRows={0}
+                rowsPerPage={10}
+                totalRows={totalRow}
+                currentPage={currentPage}
+                handleChangePage={handlePageChange}
+            />
 
-            <SaveBtnWrapper style={{ margin: '0px 0px 10px' }}>
+            <SaveBtnWrapper style={{ margin: '0px 5px 10px' }}>
                 <SaveBtn onClick={updateReason}>
                     Save Remark
                 </SaveBtn>
