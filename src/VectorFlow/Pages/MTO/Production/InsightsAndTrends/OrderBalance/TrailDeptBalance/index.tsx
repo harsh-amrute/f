@@ -8,8 +8,9 @@ import { columnConfigData, APIMock } from "../OrderBalanceMockData";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { format } from "date-fns";
 import VFCapsule from "../../../../../../../components/VectorFLOW/commons/VFCapsule";
-import { CapsuleWrapper } from "../styles";
+import { CapsuleWrapper, SelectLabel, SelectWrapper } from "../styles";
 import { createSeriesData, TooltipRenderer } from "../OrderBalanceCommon";
+import SelectDropDown from "../SelectDropDown";
 
 const TrailDeptBalance = () => {
   const [date] = useState(format(new Date(), "d MMM yyyy"));
@@ -17,6 +18,7 @@ const TrailDeptBalance = () => {
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [rawData, setRawData] = useState(APIMock.balMfg);
+  const [orderType, setOrderType] = useState({ label: "END TO END", value: "endToEnd" });
   const [actBtn, setActBtn] = useState({
     label: "Bal To Mfg.",
     value: "Bal To Mfg.",
@@ -93,6 +95,10 @@ const TrailDeptBalance = () => {
     }
   };
 
+  const handleOrderTypeChange = (option: any) => {
+    // setOrderType(option)
+  }
+
   const generateHeader = () => {
     return (
       <div
@@ -101,12 +107,25 @@ const TrailDeptBalance = () => {
           backgroundColor: "white",
           height: "40px",
           display: "flex",
-          justifyContent: "right",
+          justifyContent: "space-between",
           alignItems: "center",
           width: "100%",
         }}
       >
-
+        <SelectWrapper>
+          <SelectLabel>Order Type</SelectLabel>
+          <SelectDropDown 
+            selected={orderType}
+            onChange={handleOrderTypeChange}
+            options={[
+             { label: "END TO END", value: "endToEnd" },
+             { label: "Fabric Sale", value: "fabricSale" },
+            ]} 
+            placeholder="Select Order Type" 
+            width={'180px'}
+            optionsWidth={'180px'}
+          />
+        </SelectWrapper>
         <div style={{ display: "flex", alignItems: "center" }}>
           <CapsuleWrapper style={{ zoom: 1, padding: "4px" }}>
             <VFCapsule

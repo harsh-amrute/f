@@ -71,3 +71,4 @@ export function createSeriesData() {
 
   return seriesData;
 }
+
