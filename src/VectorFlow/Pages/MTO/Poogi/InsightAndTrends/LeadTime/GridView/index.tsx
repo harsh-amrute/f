@@ -15,7 +15,10 @@ import { notifyError } from '../../../../../../../helpers/notify';
 const GridView = ({uiConfig}: any) => {
     const gridRef = useRef(null);
     // const HeaderData = gridColumnConfig;
-
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalRows, setTotalRows] = useState(1);
+    const [data, setData] = useState([]);
     const { mutateAsync: getLeadTimeData } = useGetLeadTimeData()
 
     const defaultColDef = {
@@ -68,14 +71,9 @@ const GridView = ({uiConfig}: any) => {
         },
     }
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalRows, setTotalRows] = useState(1);
-    const [data, setData] = useState([]);
-
     const getGridData = async () => {
         try{
             const data = await getLeadTimeData({page: currentPage, graphFlag: 0});
-            console.log(data.data.data.results)
             setData(data?.data?.data?.results)
             setTotalRows(data?.data?.data?.count)
         }

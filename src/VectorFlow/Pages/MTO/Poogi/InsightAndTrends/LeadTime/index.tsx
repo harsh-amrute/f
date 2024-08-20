@@ -9,14 +9,16 @@ import { notifyError } from '../../../../../../helpers/notify'
 const LeadTime = () => {
     const [isGridView, setIsGridView] = useState(false);
 
-    const { mutateAsync: getUIConfigData } = useGetUIConfigData();
-
     const [HeaderData, setHeaderData] = useState();
-
     const [chartTableData, setChartTableData] = useState([]);
     const [chartData, setChartData] = useState([]);
-
     const reportName = "LeadTime";
+
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData();
+    const { mutateAsync: getLeadTimeData } = useGetLeadTimeData()
+
+
+
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
@@ -31,8 +33,6 @@ const LeadTime = () => {
         setColumnDef();
         getGridData();
     }, [])
-
-    const { mutateAsync: getLeadTimeData } = useGetLeadTimeData()
 
     const getGridData = async () => {
         try{
@@ -51,6 +51,8 @@ const LeadTime = () => {
             notifyError("Something Went Wrong")
         }
     }
+
+    // Sample Data
 
     // const chartData: any = [
     //     { x: "Feb 2024", y: [2, 5, 8, 11, 14] },
