@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { Allotment } from "allotment";
 import {
   useGetDBMNormSuggestionLoc,
@@ -24,20 +24,43 @@ import {GraphSeriesOverrides} from '../../../../../../helpers/BPRConstants'
 
 //import 'ag-grid-enterprise';
 
-const DBMNormSuggestions = () => {
-  const { data: DBMNormSuggestionLoc, isLoading: isLoadingGraph1 } =
-    useGetDBMNormSuggestionLoc();
-  const { data: DBMNormSuggestionPie, isLoading: isLoadingGraph2 } =
+const DBMNormSuggestions = ({filter}:{filter:any}) => {
+  const { mutateAsync: DBMNormSuggestionLoc, isLoading:isLoadingGraph1 } =
+  useGetDBMNormSuggestionLoc();
+  // const { data: DBMNormSuggestionLoc, isLoading: isLoadingGraph1 } =
+  //   useGetDBMNormSuggestionLoc(filter);
+  const { mutateAsync: DBMNormSuggestionPie, isLoading: isLoadingGraph2 } =
     useGetDBMNormSuggestionPie();
-  const { data: DBMNormSuggestionSKUs, isLoading: isLoadingGraph3 } =
+  const { mutateAsync: DBMNormSuggestionSKUs, isLoading: isLoadingGraph3 } =
     useGetDBMNormSuggestionSKUs();
-  const { data: DBMNormSuggestionAgeing, isLoading: isLoadingGraph4 } =
+  const { mutateAsync: DBMNormSuggestionAgeing, isLoading: isLoadingGraph4 } =
     useGetDBMNormSuggestionAgeing();
 
-  const DBMSuggestionLocData = DBMNormSuggestionLoc?.data?.data;
-  const ActiveDBMSuggestionData = DBMNormSuggestionPie?.data?.data;
-  const DBMSuggestionSkuData = DBMNormSuggestionSKUs?.data?.data;
-  const DBMSuggestionAgeingData = DBMNormSuggestionAgeing?.data?.data;
+    const [DBMSuggestionLocData, SetDBMSuggestionLocData]=useState([]);
+    const [ActiveDBMSuggestionData, SetActiveDBMSuggestionData]=useState([]);
+    const [DBMSuggestionSkuData, SetDBMSuggestionSkuData]=useState([]);
+    const [DBMSuggestionAgeingData, SetDBMSuggestionAgeingData]=useState([]);
+    const param = {};
+
+    useEffect(() => {
+      const fetchDBMNormSuggestionData = async ()=>{
+        const DBMNormSuggestionLocD =  await  DBMNormSuggestionLoc(param);
+        SetDBMSuggestionLocData(DBMNormSuggestionLocD?.data?.data);
+        const ActiveDBMSuggestionDataD= await DBMNormSuggestionPie(param);
+        SetActiveDBMSuggestionData(ActiveDBMSuggestionDataD?.data?.data);
+        const DBMSuggestionSkuDataD= await DBMNormSuggestionSKUs(param);
+        SetDBMSuggestionSkuData(DBMSuggestionSkuDataD?.data?.data);
+        const DBMSuggestionAgeingDataD = await  DBMNormSuggestionAgeing(param)
+        SetDBMSuggestionAgeingData(DBMSuggestionAgeingDataD?.data?.data)
+      }
+      fetchDBMNormSuggestionData();
+     
+    }, [filter]);
+
+    
+
+  // const DBMSuggestionSkuData = DBMNormSuggestionSKUs?.data?.data;
+  // const DBMSuggestionAgeingData = DBMNormSuggestionAgeing?.data?.data;
   const totalCount = ActiveDBMSuggestionData?.reduce(
     (acc: any, curr: any) => acc + curr.count,
     0
@@ -715,7 +738,7 @@ const DBMNormSuggestions = () => {
 
   if (
     isLoadingGraph1 ||
-    isLoadingGraph2 ||
+    isLoadingGraph2 || 
     isLoadingGraph3 ||
     isLoadingGraph4
   ) {

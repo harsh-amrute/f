@@ -67,7 +67,7 @@ global.ResizeObserver = class MockedResizeObserver {
       
      it("Renders Excess  Inventory", () => {
  
-        render(contextWrapperWithCustomTheme(<ExcessInventoryTrend themeUi="REGALBLAZE"/>,"REGALBLAZE"))
+        render(contextWrapperWithCustomTheme(<ExcessInventoryTrend themeUi="REGALBLAZE" filter={"Product Filter"} horizon={10} setHorizon={jest.fn()}/>,"REGALBLAZE"))
        
     })
 })

@@ -1,6 +1,6 @@
 import { screen, render, fireEvent } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
-import { useGetAvailabilityTrend,  useGetChronicUnavailabilityGridView} from "../../../../Services/MTA/InsightsAndTrends";
+import { useGetAvailabilityTrend,  useGetChronicUnavailabilityGridView, useGetAvailabilityAgeing, useGetDBMNormSuggestionLoc, useGetDBMNormSuggestionPie, useGetDBMNormSuggestionSKUs, useGetDBMNormSuggestionAgeing, useGetExcessInventorySku, useGetExcessInventoryValue, useGetChronicUnavailabilityLoc, useGetChronicUnavailabilitySku} from "../../../../Services/MTA/InsightsAndTrends";
 import { GuidedInsights } from "../../../../../mock-data/GuidedInsights";
 import GuidedInsight from ".";
 import { UserDataContext } from "../../../../../context";
@@ -60,6 +60,90 @@ const useGetChronicUnavailabilityGridViewData: any = {
   },
 };
 
+const useGetAvailabiltyAgeingViewMock = useGetAvailabilityAgeing as jest.MockedFunction<
+    typeof useGetAvailabilityAgeing
+>;
+const useGetAvailabiltyAgeingViewMockData: any = {
+  mutateAsync: () => {
+    return { data: {data: GuidedInsights.AvailabilityAgeingtrend }};
+  },
+};
+
+const useGetDBMNormSuggestionLocMock = useGetDBMNormSuggestionLoc as jest.MockedFunction<
+    typeof useGetAvailabilityAgeing
+>;
+const useGetDBMNormSuggestionLocMockData: any = {
+  mutateAsync: () => {
+    return { data: {data: GuidedInsights.DBMSuggestionsLoc }};
+  },
+};
+
+const useGetDBMNormSuggestionPieMock = useGetDBMNormSuggestionPie as jest.MockedFunction<
+    typeof useGetAvailabilityAgeing
+>;
+const useGetDBMNormSuggestionPieMockData: any = {
+  mutateAsync: () => {
+    return { data: {data: GuidedInsights.DBMSuggestionsPie }};
+  },
+};
+
+const useGetDBMNormSuggestionSKUsMock = useGetDBMNormSuggestionSKUs as jest.MockedFunction<
+    typeof useGetAvailabilityAgeing
+>;
+const useGetDBMNormSuggestionSKUsData: any = {
+  mutateAsync: () => {
+    return { data: {data: GuidedInsights.DBMSuggestionsSKUs }};
+  },
+};
+
+const useGetDBMNormSuggestionAgeingMock = useGetDBMNormSuggestionAgeing as jest.MockedFunction<
+    typeof useGetAvailabilityAgeing
+>;
+const useGetDBMNormSuggestionAgeingData: any = {
+  mutateAsync: () => {
+    return { data: {data: GuidedInsights.DBMSuggestionAgeing }};
+  },
+};
+
+const useGetExcessInventorySkuMock = useGetExcessInventorySku as jest.MockedFunction<
+    typeof useGetAvailabilityAgeing
+>;
+const useGetExcessInventorySkuData: any = {
+  mutateAsync: () => {
+    return { data: {data: GuidedInsights.ExcessInventorySkuData }};
+  },
+};
+
+const useGetExcessInventoryValueMock = useGetExcessInventoryValue as jest.MockedFunction<
+    typeof useGetAvailabilityAgeing
+>;
+const useGetExcessInventoryValueData: any = {
+  mutateAsync: () => {
+    return { data: {data: GuidedInsights.ExcessInventoryValueData}};
+  },
+};
+
+const useGetChronicUnavailabilityLocMock = useGetChronicUnavailabilityLoc as jest.MockedFunction<
+    typeof useGetAvailabilityAgeing
+>;
+const useGetChronicUnavailabilityLocData: any = {
+  mutateAsync: () => {
+    return { data: {data: GuidedInsights.ChronicUnavailabilityLocData}};
+  },
+};
+
+const useGetChronicUnavailabilitySkuMock = useGetChronicUnavailabilitySku as jest.MockedFunction<
+    typeof useGetAvailabilityAgeing
+>;
+const useGetChronicUnavailabilitySkuData: any = {
+  mutateAsync: () => {
+    return { data: {data: GuidedInsights.ChronicUnavailabilitySkuData}};
+  },
+};
+
+
+
+
 // const useGetChronicUnavailabilityLocMock = useGetChronicUnavailabilityLoc as jest.MockedFunction<
 //     typeof useGetChronicUnavailabilityLoc
 // >;
@@ -93,6 +177,34 @@ describe("Availability Trend Data", () => {
          useGetChronicUnavailabilityGridViewMock.mockImplementation(()=>{
             return useGetChronicUnavailabilityGridViewData;
         })
+        useGetAvailabiltyAgeingViewMock.mockImplementation(()=>{
+          return useGetAvailabiltyAgeingViewMockData
+        })
+        useGetDBMNormSuggestionLocMock.mockImplementation(()=>{
+          return useGetDBMNormSuggestionLocMockData
+        })
+        useGetDBMNormSuggestionPieMock.mockImplementation(()=>{
+          return useGetDBMNormSuggestionPieMockData
+        })
+        useGetDBMNormSuggestionSKUsMock.mockImplementation(()=>{
+          return useGetDBMNormSuggestionSKUsData
+        })
+        useGetDBMNormSuggestionAgeingMock.mockImplementation(()=>{
+          return useGetDBMNormSuggestionAgeingData
+        })
+        useGetExcessInventorySkuMock.mockImplementation(()=>{
+          return useGetExcessInventorySkuData
+        })
+        useGetExcessInventoryValueMock.mockImplementation(()=>{
+          return useGetExcessInventoryValueData
+        })
+        useGetChronicUnavailabilityLocMock.mockImplementation(()=>{
+          return useGetChronicUnavailabilityLocData
+        })
+        useGetChronicUnavailabilitySkuMock.mockImplementation(()=>{
+          return useGetChronicUnavailabilitySkuData
+        })
+
         })
     
     
@@ -100,6 +212,7 @@ describe("Availability Trend Data", () => {
              
         render(contextWrapper(<GuidedInsight />,store));
     })
+    
     it("On changing tab to Availability trend data ", async() => {
 
         render(contextWrapper(<GuidedInsight />,store));
