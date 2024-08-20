@@ -128,7 +128,7 @@ const SplitGraphContainer = ({
             strokes: ['#F5B279', "#F09241", "#E36A00", "#AD5000", "#6A3000"],
           },
         }
-      case 12:
+      case 14:
         return {
           palette: {
             fills: ['#AD5000'],
@@ -791,7 +791,7 @@ const SplitGraphContainer = ({
           },
         });
         break;
-      case 12:
+      case 14:
         refGraph1.current?.api.createRangeChart({
           chartType: "stackedBar",
           cellRange: {
