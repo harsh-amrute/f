@@ -1,5 +1,5 @@
 import { GridOptions } from 'ag-grid-enterprise';
-import { useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { getColumnDefinations } from '../../../../../../../helpers/utils';
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
@@ -10,12 +10,18 @@ import './styles.css'
 import { SCDynamicContainer } from './styles';
 import ColorCellRenderer from '../../../../../MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/ColorCellRenderer';
 import _ from 'lodash';
+import { useGetLeadTimeData } from '../../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/LeadTime';
+import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFPagination';
+import { notifyError } from '~/helpers/notify';
+import { useGetUIConfigData } from '../../../../../../../VectorFlow/Services/MTO/Common/UIConfig';
+
 const GridView = () => {
     const gridRef = useRef(null);
-    const HeaderData = gridColumnConfig;
-    // const [HeaderData, setHeaderData] = React.useState(gridColumnConfig);
-    // const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-    // const reportName = "ElapsedTime";
+    // const HeaderData = gridColumnConfig;
+    const [HeaderData, setHeaderData] = useState(gridColumnConfig);
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+    const { mutateAsync: getLeadTimeData } = useGetLeadTimeData()
+    const reportName = "Lead Time";
 
     const defaultColDef = {
         // suppressMenu: true,
@@ -67,31 +73,53 @@ const GridView = () => {
         },
     }
 
-    // // const setColumnDef = async () => {
-    // //     try {
-    // //         const response = await getUIConfigData(reportName);
-    // //         setHeaderData(response?.data?.data);
-    // //     }
-    // //     catch (e) {
-    // //         console.log(e);
-    // //     }
-    // // }
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalRows, setTotalRows] = useState(1);
+    const [data, setData] = useState([]);
 
-    // // React.useEffect(() => {
-    // //     setColumnDef();
-    // // }, [])
+    const getGridData = async () => {
+        try{
+            const data = await getLeadTimeData({page: 1, graphFlag: 0});
+            console.log(data.data.data.results)
+            setData(data?.data?.data?.results)
+            setTotalRows(data?.data?.data?.count)
+        }
+        catch(err: any){
+            console.log(err)
+            notifyError("Something Went Wrong")
+        }
+        
+    }
+
+    useEffect(() => {
+        setColumnDef();
+    }, [])
+
+    useEffect(()=>{
+        getGridData()
+    }, [currentPage])
+
+    const setColumnDef = async () => {
+        try {
+            const response = await getUIConfigData(reportName);
+            setHeaderData(response?.data?.data);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
 
 
-    // // React.useEffect(() => {
+
     const newHeader = _.cloneDeep(HeaderData);
-    console.log('Header Data', HeaderData)
-    console.log('coldef customs', colDefCustomizations);
 
     const colDef = getColumnDefinations(newHeader, colDefCustomizations)
-    // }, [])
-    // }, [HeaderData])
 
+    // const colDef = useMemo()
 
+    const handlePageChange = async (currPage: number) => {
+        setCurrentPage(currPage)
+      }
 
     return (
 
@@ -116,6 +144,7 @@ const GridView = () => {
                 }}
                 pagination
             />
+            <VFPagination currentPage={currentPage} totalRows={totalRows} rowsPerPage={10} selectedRows={1} handleChangePage={handlePageChange}/>
         </SCDynamicContainer>
 
     )
