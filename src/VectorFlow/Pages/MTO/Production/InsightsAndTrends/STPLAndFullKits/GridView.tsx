@@ -7,6 +7,8 @@ import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { useGetSTPLAndFullKitData } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/STPLAndFullKits";
+import customCellRenderer from "../../DepartmentWiseBMReport/CustomCellRenderer";
+import RowGroupRenderer from "../../DepartmentWiseBMReport/RowGroupRenderer";
 
 const GridView = () => {
 
@@ -55,7 +57,7 @@ const GridView = () => {
 
     const colDefCustomizations = {
         Plant: {
-          cellRenderer: "agGroupCellRenderer",
+          cellRenderer: customCellRenderer,
         }
     }
 
@@ -95,7 +97,7 @@ const GridView = () => {
         groupDefaultExpanded: 0,
         masterDetail: true,
         detailRowHeight: 500,
-        detailCellRenderer: RowGrpRender,
+        detailCellRenderer: RowGroupRenderer,
         detailCellRendererParams: {
           innerHeight: 400,
         },
