@@ -45,7 +45,7 @@ const FullKitGraph = (props: any) => {
     series: [
       {
         type: "bar",
-        xKey: "ccr",
+        xKey: "ccr_n",
         yKey: "days",
         yName: "Full Kit In Days",
         strokeOpacity: 0,
