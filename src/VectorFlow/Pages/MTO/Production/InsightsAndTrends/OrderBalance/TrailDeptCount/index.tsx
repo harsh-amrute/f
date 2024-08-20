@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AgChartOptions } from "ag-charts-community";
 import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
@@ -8,9 +8,10 @@ import { APIMock, columnConfigData } from "../OrderBalanceMockData";
 import { format } from "date-fns";
 import { createSeriesData, TooltipRenderer } from "../OrderBalanceCommon";
 
-const TrailDeptCount = () => {
+const TrailDeptCount = (props: any) => {
+  const {graphData} = props;
   const [date] = useState(format(new Date(), "d MMM yyyy"));
-  const [rawData] = useState(APIMock.orderCount);
+  const [rawData, setRawData] = useState([]);
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -116,6 +117,10 @@ const TrailDeptCount = () => {
       </div>
     );
   };
+
+  useEffect(()=>{
+    setRawData(graphData?.tdept_ord_cnt);
+  },[graphData])
 
   return (
     <div

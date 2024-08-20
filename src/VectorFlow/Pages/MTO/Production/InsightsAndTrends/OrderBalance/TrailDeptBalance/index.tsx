@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "allotment/dist/style.css";
 import { AgChartOptions } from "ag-charts-community";
 import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
@@ -10,15 +10,17 @@ import { format } from "date-fns";
 import VFCapsule from "../../../../../../../components/VectorFLOW/commons/VFCapsule";
 import { CapsuleWrapper, SelectLabel, SelectWrapper } from "../styles";
 import { createSeriesData, TooltipRenderer } from "../OrderBalanceCommon";
-import SelectDropDown from "../SelectDropDown";
+import Select from 'react-select'
 
-const TrailDeptBalance = () => {
+
+const TrailDeptBalance = (props: any) => {
+  const { graphData } = props;
   const [date] = useState(format(new Date(), "d MMM yyyy"));
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
-  const [rawData, setRawData] = useState(APIMock.balMfg);
-  const [orderType, setOrderType] = useState({ label: "END TO END", value: "endToEnd" });
+  const [rawData, setRawData] = useState([]);
+  const [orderType, setOrderType] = useState({});
   const [actBtn, setActBtn] = useState({
     label: "Bal To Mfg.",
     value: "Bal To Mfg.",
@@ -85,19 +87,49 @@ const TrailDeptBalance = () => {
         label: "Bal To Disp.",
         value: "Bal To Disp.",
       });
-      setRawData(APIMock.balDisp);
+      setRawData(graphData?.disp);
     } else {
       setActBtn({
         label: "Bal To Mfg.",
         value: "Bal To Mfg.",
       });
-      setRawData(APIMock.balMfg);
+      setRawData(graphData?.mfg);
     }
   };
+  
+  const handleChange = (option: any) => {
+    setOrderType(option)
+    console.log("Selected option:", option);
+  };
 
-  const handleOrderTypeChange = (option: any) => {
-    // setOrderType(option)
-  }
+  const orderTypeOptions = [
+    { label: "END TO END", value: "endToEnd" },
+    { label: "Fabric Sale", value: "fabricSale" },
+   ];
+
+   const customStyles = {
+    control: (provided: any) => ({
+      ...provided,
+      width: 180,
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      width: 180,
+    }),
+    placeholder: (provided: any) => ({
+      ...provided,
+      color: 'gray', // Customize the placeholder color
+      fontSize: '15px', // Customize the font size
+    }),
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? 'lightblue' : 'white',
+      color: 'black',
+      '&:hover': {
+        backgroundColor: 'lightgray',
+      },
+    }),
+  };
 
   const generateHeader = () => {
     return (
@@ -112,9 +144,13 @@ const TrailDeptBalance = () => {
           width: "100%",
         }}
       >
-        <SelectWrapper>
+        <div style={{ display: 'flex', alignItems: 'center', marginLeft: '30px' }}>
+            <p style={{ fontFamily: 'roboto', fontSize: '15px',fontWeight: '500', paddingRight: '5px' }}>Order Type </p>
+            <Select styles={customStyles} placeholder="Select Order Type" options={orderTypeOptions} onChange={handleChange}/>
+        </div>
+        {/* <SelectWrapper>
           <SelectLabel>Order Type</SelectLabel>
-          <SelectDropDown 
+          <CustomSelect 
             selected={orderType}
             onChange={handleOrderTypeChange}
             options={[
@@ -125,7 +161,7 @@ const TrailDeptBalance = () => {
             width={'180px'}
             optionsWidth={'180px'}
           />
-        </SelectWrapper>
+        </SelectWrapper> */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <CapsuleWrapper style={{ zoom: 1, padding: "4px" }}>
             <VFCapsule
@@ -178,6 +214,10 @@ const TrailDeptBalance = () => {
     actBtn.label === "Bal To Mfg."
       ? ProductionInsightsAndTrendsString.trailDeptMfg
       : ProductionInsightsAndTrendsString.trailDeptDisp;
+
+  useEffect(()=>{
+    setRawData(graphData?.mfg)
+  },[graphData])
 
   return (
     <div

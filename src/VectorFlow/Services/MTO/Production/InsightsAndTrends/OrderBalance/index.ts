@@ -1,8 +1,8 @@
 import { useMutation, /*useQuery*/ } from '@tanstack/react-query'
-import { OTIFAanalysisService } from './api'
+import { OrderBalanceService } from './api'
 
-export const useGetOTIFAnalysisData = () => {
+export const useGetOrderBalanceData = () => {
     return useMutation(async (graphFlag: any) => {
-        return OTIFAanalysisService.getOTIFAnalysisData(graphFlag);
+        return OrderBalanceService.getOrderBalanceData(graphFlag);
     })
 }

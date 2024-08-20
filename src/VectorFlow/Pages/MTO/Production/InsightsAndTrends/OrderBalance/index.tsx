@@ -17,6 +17,9 @@ import { GridOptions } from "ag-grid-enterprise";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import useFilter from "../../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
+import { useGetOrderBalanceData } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/OrderBalance";
+import OverlayLoader from '../../../Common/Loader';
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 
 const APIFilterConfig = {
   filSecVisConfig :  {
@@ -39,6 +42,9 @@ const OrderBalance = () => {
   const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
   const [filterData, setFilterData] = useState({});
   const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Balance);
+  const {mutateAsync: getOrderBalanceData, isLoading, isError, isSuccess } = useGetOrderBalanceData();
+  const [gridData, setGridData] = useState([]);
+  const [graphData, setGraphData] = useState<any>({});
 
   const reportName = "OrderBalance";
 
@@ -118,18 +124,54 @@ const OrderBalance = () => {
   const toggleFilter = (state: boolean) => {
     setIsFilterOpen(state);
   }
+  const getGridData = async (isGraph: any) => {
+    try {
+      const response = await getOrderBalanceData(isGraph);
+      setGridData(response.data.data.results);
+    }
+    catch (e) {
+      console.log(e);
+      notifyError('Failed to fetch Grid data!');
+    }
+  }
 
+  const getGraphData = async (isGraph: any) => {
+    try {
+      const response = await getOrderBalanceData(isGraph);
+      setGraphData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+      notifyError('Failed to fetch Graph data!');
+    }
+  }
   
   useEffect(() => {
     setColumnDef();
+    getGridData(0);
+    getGraphData(1);
   }, [])
 
   useEffect(() => {
     setFilterData(filterResponse?.data.data)
   }, [filterResponse]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      notifySuccess("Fetched Data successfully!")
+    }
+    if (isError) {
+      notifyError("Failed to load data!")
+    }
+  }, [isSuccess, isError])
+
+
+
   return (
     <div style={{}}>
+      {
+        isLoading && <OverlayLoader />
+      }
       <MTOActionToolBar
         comp={"orderBalance"}
         isGridView={isGridView}
@@ -151,7 +193,7 @@ const OrderBalance = () => {
               {...gridOptions}
               pagination={true}
               columnDefs={tableColDefs}
-              rowData={APIMock?.gridData}
+              rowData={gridData || []}
               tooltipHideDelay={100000}
               tooltipShowDelay={0}
               tooltipMouseTrack={true}
@@ -169,13 +211,13 @@ const OrderBalance = () => {
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <TrailDeptCount />
+                  <TrailDeptCount graphData={graphData}/>
                 </BTRAllomentSection>
               </Allotment.Pane>
 
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <TrailDeptBalance />
+                  <TrailDeptBalance graphData={graphData} />
                 </BTRAllomentSection>
               </Allotment.Pane>
             </Allotment>
