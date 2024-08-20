@@ -1,0 +1,86 @@
+
+import { DepartmentWiseBMReport } from './api';
+import axios, { AxiosStatic } from 'axios';
+
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<AxiosStatic>;
+
+describe('MaterialRequirement', () => {
+    const OLD_ENV = process.env;
+    beforeEach(() => {
+        jest.resetModules() // Most important - it clears the cache
+        process.env = { ...OLD_ENV }; // Make a copy
+    });
+    process.env.REACT_APP_VF_API_HOST_MTO = 'http://10.8.1.10:8000'
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+
+    it('should fetch the initial data', async () => {
+
+        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const data = { wip: true, curr: 1 };
+        const response = await DepartmentWiseBMReport.getDeptWiseBMReport(data);
+        expect(response.status).toBe(200);
+    });
+
+    it('should fetch the bomb level datar', async () => {
+
+        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const data = { wip: true, curr: 1 };
+        const response = await DepartmentWiseBMReport.getBombLevelData(data);
+        expect(response.status).toBe(200);
+    });
+
+  
+
+    it('should make a POST request with the correct URL and body', async () => {
+        const mockBody = { department: 'IT', status: 'In Progress' };
+        const mockResponse = { data: { success: true, data: [] } };
+        // Mock the axios post request
+        mockedAxios.post.mockResolvedValue(mockResponse);
+        // Call the function
+        const response = await DepartmentWiseBMReport.addBMReportRemark(mockBody);
+        // Check if axios.post was called with correct URL and body
+        expect(axios.post).toHaveBeenCalledWith(
+            process.env.REACT_APP_VF_API_HOST_MTO + '/createBMReportRemarksData/',
+            mockBody,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        // Check if the response is correct
+        expect(response).toEqual(mockResponse);
+        
+    });
+
+
+    it('should call axios.post with correct URL and body', async () => {
+        const mockBody = { department: 'IT', status: 'In Progress' };
+        const mockResponse = { data: { success: true, data: [] } };
+        // Mock the axios post request
+        mockedAxios.post.mockResolvedValue(mockResponse);
+        // Call the function
+        const response = await DepartmentWiseBMReport.getDeptWiseWipData(mockBody);
+        // Check if axios.post was called with correct URL and body
+        expect(axios.post).toHaveBeenCalledWith(
+            process.env.REACT_APP_VF_API_HOST_MTO + '/getDeptWiseWipData/',
+            mockBody,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        // Check if the response is correct
+        expect(response).toEqual(mockResponse);
+    });
+
+
+});
