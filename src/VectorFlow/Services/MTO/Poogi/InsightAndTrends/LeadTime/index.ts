@@ -1,8 +1,8 @@
 import { useMutation, } from '@tanstack/react-query'
-import { LeadTimeService } from './api'
+import { getLeadTimeData } from './api';
 
 export const useGetLeadTimeData = () => {
-    return useMutation(async (data: {graphFlag: any, page: number}) => {
-        return LeadTimeService.getLeadTimeData(data.graphFlag, data.page);
+    return useMutation(async (data: {graphFlag: any, page?: number}) => {
+        return getLeadTimeData(data.graphFlag, data?.page);
     })
 }

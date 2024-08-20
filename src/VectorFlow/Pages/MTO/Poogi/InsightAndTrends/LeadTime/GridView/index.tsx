@@ -4,24 +4,19 @@ import { getColumnDefinations } from '../../../../../../../helpers/utils';
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
 import TagCellToolTip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
-import { APIMock, gridColumnConfig } from '../Data';
 // import { useGetUIConfigData } from '../../../../../../Services/MTO/Common/UIConfig';
 import './styles.css'
 import { SCDynamicContainer } from './styles';
 import ColorCellRenderer from '../../../../../MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/ColorCellRenderer';
-import _ from 'lodash';
 import { useGetLeadTimeData } from '../../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/LeadTime';
 import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFPagination';
-import { notifyError } from '~/helpers/notify';
-import { useGetUIConfigData } from '../../../../../../../VectorFlow/Services/MTO/Common/UIConfig';
+import { notifyError } from '../../../../../../../helpers/notify';
 
-const GridView = () => {
+const GridView = ({uiConfig}: any) => {
     const gridRef = useRef(null);
     // const HeaderData = gridColumnConfig;
-    const [HeaderData, setHeaderData] = useState(gridColumnConfig);
-    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
     const { mutateAsync: getLeadTimeData } = useGetLeadTimeData()
-    const reportName = "Lead Time";
 
     const defaultColDef = {
         // suppressMenu: true,
@@ -60,7 +55,7 @@ const GridView = () => {
     };
 
     const colDefCustomizations = {
-        'tags': {
+        'Tag': {
             tooltipValueGetter: (params: any) => params.value,
             cellRenderer: TagCellToolTip,
             cellStyle: {
@@ -68,7 +63,7 @@ const GridView = () => {
                 justifyContent: "center",
             }
         },
-        'bpp': {
+        'BPP': {
             cellRenderer: ColorCellRenderer,
         },
     }
@@ -79,7 +74,7 @@ const GridView = () => {
 
     const getGridData = async () => {
         try{
-            const data = await getLeadTimeData({page: 1, graphFlag: 0});
+            const data = await getLeadTimeData({page: currentPage, graphFlag: 0});
             console.log(data.data.data.results)
             setData(data?.data?.data?.results)
             setTotalRows(data?.data?.data?.count)
@@ -91,31 +86,14 @@ const GridView = () => {
         
     }
 
-    useEffect(() => {
-        setColumnDef();
-    }, [])
-
     useEffect(()=>{
         getGridData()
     }, [currentPage])
 
-    const setColumnDef = async () => {
-        try {
-            const response = await getUIConfigData(reportName);
-            setHeaderData(response?.data?.data);
-        }
-        catch (e) {
-            console.log(e);
-        }
-    }
+    
 
 
-
-    const newHeader = _.cloneDeep(HeaderData);
-
-    const colDef = getColumnDefinations(newHeader, colDefCustomizations)
-
-    // const colDef = useMemo()
+    const colDef = useMemo(() => getColumnDefinations(uiConfig, colDefCustomizations), [])
 
     const handlePageChange = async (currPage: number) => {
         setCurrentPage(currPage)
@@ -132,17 +110,16 @@ const GridView = () => {
                 defaultColDef={defaultColDef}
                 columnDefs={colDef}
                 disableZoomScaling
-                rowData={APIMock}
+                rowData={data}
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}
                 ref={gridRef}
-                statusBar={{
-                    statusPanels: [
-                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                    ]
-                }}
-                pagination
+                // statusBar={{
+                //     statusPanels: [
+                //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                //     ]
+                // }}
             />
             <VFPagination currentPage={currentPage} totalRows={totalRows} rowsPerPage={10} selectedRows={1} handleChangePage={handlePageChange}/>
         </SCDynamicContainer>
