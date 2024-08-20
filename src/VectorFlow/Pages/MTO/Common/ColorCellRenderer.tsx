@@ -31,7 +31,7 @@ const colorMapper = (color: string) => {
 
 const ColorCellRenderer = (params: any) => {
     // const color = params.data?.cp;
-    console.log(params)
+
     const color = params.value;
     const cellColor = colorMapper(color);
 

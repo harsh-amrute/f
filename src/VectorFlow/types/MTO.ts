@@ -86,4 +86,24 @@ export interface DeptWiseOrder {
     Rmrk_Hstry: string;
 }
 
+export interface Filter{
+    type:string
+    name:string
+    attributeName:string
+    operator:string
+    value: any
+    options: string[] | number[]
+}
 
+export interface FilterGroup{
+    id:string
+    label:string
+    filters: Filter[]
+}
+
+export interface FilterState{
+    customers?: FilterGroup
+    resources?: FilterGroup
+    orders?: FilterGroup
+    major?: FilterGroup
+}

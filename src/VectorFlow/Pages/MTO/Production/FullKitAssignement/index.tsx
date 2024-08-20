@@ -15,12 +15,28 @@ import EditRouteModal from './EditRouteModal';
 import * as globalStyles from "../../../../../styles/global";
 import { Rectangle } from './RectangleMarker';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
+import useFilter from "../../../../../hooks/useFilter";
+import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+
+
+const APIFilterConfig = {
+  filSecVisConfig :  {
+    "Prod_FullKit_Assignment" : {
+      mjr : false,
+      or: true,
+      res: true,
+      cus: true
+    },
+  }
+}
 
 const FullKitAssignment = () => {
 
-
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
+  const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
+  const [filterData, setFilterData] = useState({});
 
 
   const colDefCustomizations = {
@@ -219,10 +235,39 @@ const FullKitAssignment = () => {
   const graph = useRef<any>();
   const grid = useRef<any>();
 
+  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_FullKit_Assignment);
+
+  const onApplyFilter = (filter:any)=>{
+    console.log(filter)
+    setIsFilterOpen(false)
+  }
+  const onAddFilter = ()=>{
+    setIsFilterOpen(true)
+  }
+
+  const toggleFilter = (state: boolean) => {
+    setIsFilterOpen(state);
+  }
+
+  useEffect(() => {
+    setFilterData(filterResponse?.data.data)
+  }, [filterResponse]);
+
 
   return (
     <Wrapper>
-      <MTOActionToolBar comp="FullKitAssignment" isExcelExport isAddFilterButton />
+      <MTOActionToolBar 
+        comp="FullKitAssignment" 
+        isExcelExport 
+        isAddFilterButton
+        isFilterOpen={isFilterOpen}
+        onAddFilter={onAddFilter}
+        toggleFilter={toggleFilter}
+        onApplyFilter={onApplyFilter} 
+        multiFilter={currFilter}
+        setMultiFilter={setCurrFilter} 
+        onFilterRemove={onFilterRemove}
+      />
       {/* <button onClick={() => setShowModal(true)}>Click</button> */}
       <VFTable
         ref={grid}

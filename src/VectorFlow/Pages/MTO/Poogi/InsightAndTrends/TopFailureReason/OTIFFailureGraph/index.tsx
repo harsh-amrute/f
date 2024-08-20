@@ -180,7 +180,7 @@ const OTIFFailureGraph = (props: any) => {
         hideChart={hideChart1}
         toggleChart={toggleChart1}
         TooltipRenderer={TooltipRenderer}
-        graphType={12}
+        graphType={14}
       />
     </div>
   );

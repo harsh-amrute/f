@@ -57,10 +57,11 @@ import ResourceUtilization from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/R
 import FOLSummary from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FOLSummary'
 import DynamicReleaseManagement from './VectorFlow/Pages/MTO/Production/DynamicReleaseManagement'
 import ReasonForDelayOrder from './VectorFlow/Pages/MTO/Poogi/ReasonOrderChange/index'
+import TopFailureReasons from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/TopFailureReason'
 import OTAndIFAnalysis from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/OTAndIFAnalysis'
-import TopFailureReasons from './VectorFlow/Pages/MTO/ManufacturingHub/ImprovementAreas/TopFailureReason'
 import ElapsedTime from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/ElapsedTime'
 import LeadTime from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/LeadTime'
+import TrendsOfFailureReason from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/TrendsOfFailureReason'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -78,7 +79,6 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
-    '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons'
   ]
   const urlAllPage = [
     ...authenPage,
@@ -136,7 +136,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/production-planning-scheduling/insights-and-trends/elapsed-time',
     '/poogi/reasons-for-delayed-orders',
     '/poogi/insight-and-trends/ot-and-if-analysis',
-    '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
+    '/poogi/insight-and-trends/top-failure-reasons',
+    '/poogi/insight-and-trends/trend-of-failure-reason',
     '/poogi/insight-and-trends/lead-time'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
@@ -783,7 +784,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
+      path: '/poogi/insight-and-trends/top-failure-reasons',
       element: <AppLayout />,
       children: [
         {
@@ -792,8 +793,18 @@ export const initRoutes = (): RouteObject[] => {
         },
         ...getStoreTransferModuleRoutes()
       ]
-    }
-    ,
+    },
+    {
+      path: '/poogi/insight-and-trends/trend-of-failure-reason',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TrendsOfFailureReason />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
     {
       path: '/poogi/insight-and-trends/lead-time',
       element: <AppLayout />,

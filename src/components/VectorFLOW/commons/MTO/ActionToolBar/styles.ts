@@ -209,10 +209,22 @@ export const VFSelectedFiltersFilterLabel = styled.div`
   font-size: 16px;
   line-height: 21px;
   font-family: Roboto;
-  font-weight: 300;
+  font-weight: 500;
   letter-spacing: 0px;
   color: #313131;
-  width: 120px;
+  display: flex;
+  width: max-content;
+`;
+
+export const VFSelectedFilterLabel = styled.div`
+  font-size: 16px;
+  line-height: 21px;
+  font-family: Roboto;
+  font-weight: 200;
+  letter-spacing: 0px;
+  color: #313131;
+  display: flex;
+  width: max-content;
 `;
 
 export const VFSelectedFiltersFilterContent = styled.div`

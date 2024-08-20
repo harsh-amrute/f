@@ -11,16 +11,36 @@ import {
 } from "./styles";
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
+import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
+import useFilter from "../../../../../../hooks/useFilter";
 import { useGetOTIFAnalysisData } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTIFAnalysis";
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import GridView from "../../../Common/GridView";
 
+
+const APIFilterConfig = {
+  filSecVisConfig :  {
+      "Poogi_OTIF_Analysis" : {
+          mjr : true,
+          or: true,
+          res: true,
+          cus: true
+      },
+  }
+};
+
 const OTIFAnalysis = () => {
   const [isGridView, setIsGridView] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { screenHeight } = useViewPort();
   const { mutateAsync: getOTIFAnalysisData, isLoading, isError, isSuccess } = useGetOTIFAnalysisData()
   const [graphData, setGraphData] = useState<any>({});
+  const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
+  const [filterData, setFilterData] = useState({});
+  const toggleFilter = (state: boolean) => {
+    setIsFilterOpen(state);
+  }
 
   const colDefCustomizations = {
     Tags: {
@@ -52,6 +72,19 @@ const OTIFAnalysis = () => {
   }, []);
 
   useEffect(() => {
+    setFilterData(filterResponse?.data.data)
+  }, [filterResponse]);
+
+  const onApplyFilter = (filter:any)=>{
+    console.log(filter)
+    setIsFilterOpen(false)
+  }
+  const onAddFilter = ()=>{
+    setIsFilterOpen(true)
+  }
+
+  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
+  useEffect(() => {
     if (isSuccess) {
       notifySuccess("Fetched Data successfully!")
     }
@@ -70,6 +103,13 @@ const OTIFAnalysis = () => {
         setIsGridView={setIsGridView}
         isChartGridToggle
         isAddFilterButton
+        isFilterOpen={isFilterOpen}
+        onAddFilter={onAddFilter}
+        toggleFilter={toggleFilter}
+        onApplyFilter={onApplyFilter} 
+        multiFilter={currFilter}
+        setMultiFilter={setCurrFilter}
+        onFilterRemove={onFilterRemove}
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>
         {isGridView ? (
