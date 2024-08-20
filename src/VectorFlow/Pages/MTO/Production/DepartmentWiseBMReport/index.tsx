@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import {
     BMDepWrapper,
@@ -7,7 +7,7 @@ import {
 import { AgGridReactProps } from 'ag-grid-react';
 //import { ColDef } from 'ag-grid-enterprise'
 
-import { deptwiseBMReportData, RemarkHistoryData } from './DeptWiseBMReportData';
+//import { /*deptwiseBMReportData*/ RemarkHistoryData } from './DeptWiseBMReportData';
 import GridView from './GridView';
 import { Allotment } from 'allotment';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
@@ -17,11 +17,16 @@ import ColorCellRenderer from '../../Common/ColorCellRenderer';
 import AgeingCellRenderer from './AgeingIconCellRenderer';
 import customCellRenderer from './CustomCellRenderer';
 import RowGroupRenderer from './RowGroupRenderer';
-import TextBoxCellRenderer from './TextBoxCellRenderer';
 import RemarkHistoryRenderer from './RemarkHistoryRenderer';
 import BPRRemarkHistoryModal from './MTORemarkHistoryModal';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 import { useUserData } from '../../../../../context';
+import { useGetDeptWiseBMReport, useAddBMReportRemark, useGetDeptWiseWipData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index'
+import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
+import { toast } from 'react-toastify';
+import OverlayLoader from '../../Common/Loader';
+import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
+
 
 interface ApiResponse {
     cc: string;
@@ -59,21 +64,68 @@ interface ColDefChild {
         visible?: {
             flag: any;
         };
-        onClick?: () => void;
+        onClick?: (data: string) => Promise<void>;
     };
 }
 
+type UpdateRemarkObj = {
+    ok: string;
+    dept: number;
+    rm: string;
+    user: string
+};
+
+type orderkeyObj = {
+    ok: []
+}
+
+interface DepartmentData {
+    woh: number;
+    mfg: number;
+    int: number | null;
+    out: number;
+}
+// Define the structure for each order item
+interface OrderItem {
+    tq: number;
+    li: string;
+    [key: string]: number | string | DepartmentData; // Allow additional properties like departments
+}
+
+// Define the structure of the input data
+interface Orders {
+    [key: string]: OrderItem; // Order ID as the key
+}
+
+
 const DptWiseBMReport = () => {
+    const { mutateAsync: getDeptWiseBMReportData, isLoading: DeptWiseLoading } = useGetDeptWiseBMReport();
+    const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
+    const { mutateAsync: addBMReportRemark } = useAddBMReportRemark();
+    const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
     const [colDeflatest, setColdef] = useState([{}])
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
+    const [gridData, setGridData] = useState<any>();
+    const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
+    const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
+    const [remarkHistory, setRemarkHistory] = useState<any>();
+    const [editedRows, setEditedRows] = useState<Set<number>>(new Set());
+    const [deptWiseWipData, setDeptWiseWipData] = useState<any>();
+    const { screenHeight } = useViewPort();
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
+    const refGraph1 = useRef<any>(null);
+    const [deptName, setDeptName] = useState<any>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [gridDataCount, setGridDataCount] = useState<number>(0);
 
     const customCellRenderers = useMemo(() => (
         {
             "colorCellRenderer": ColorCellRenderer,
             "AgeingCellRenderer": AgeingCellRenderer,
             "customCellRenderer": customCellRenderer,
-            "TextBoxCellRenderer": TextBoxCellRenderer,
-            "RemarkHistoryRenderer": RemarkHistoryRenderer
+            "RemarkHistoryRenderer": RemarkHistoryRenderer,
+            //"TextBoxCellRenderer": TextBoxCellRenderer,
         }), []);
 
     const sideBar = useMemo(() => {
@@ -122,7 +174,7 @@ const DptWiseBMReport = () => {
                         "hd": "BPP",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "BPP",
+                        "scc": "bpp",
                     },
                     {
                         "cc": "DeptAgeing",
@@ -130,7 +182,7 @@ const DptWiseBMReport = () => {
                         "hd": "Dept Ageing",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "D_Ag",
+                        "scc": "da",
                     },
                     {
                         "cc": "OrderType",
@@ -138,8 +190,8 @@ const DptWiseBMReport = () => {
                         "hd": "Order Type",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Ord_Typ",
-                      
+                        "scc": "ot",
+
                     },
                     {
                         "cc": "OrderID",
@@ -147,8 +199,8 @@ const DptWiseBMReport = () => {
                         "hd": "Order ID",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Ord_ID",
-                     
+                        "scc": "oid",
+
                     },
                     {
                         "cc": "LineItem",
@@ -156,7 +208,7 @@ const DptWiseBMReport = () => {
                         "hd": "Line Item",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "L_Itm",
+                        "scc": "lid",
                         "cgs": "closed"
                     },
                     {
@@ -165,7 +217,7 @@ const DptWiseBMReport = () => {
                         "hd": "Item Code",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Itm_Code",
+                        "scc": "ic",
                         "cgs": "closed"
                     },
                     {
@@ -174,7 +226,7 @@ const DptWiseBMReport = () => {
                         "hd": "Item Description",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Itm_Desc",
+                        "scc": "id",
                         "cgs": "closed"
                     },
                     {
@@ -183,7 +235,7 @@ const DptWiseBMReport = () => {
                         "hd": "Order Quantity",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Ord_Qty",
+                        "scc": "oq",
                         "cgs": "closed"
                     },
                     {
@@ -192,7 +244,7 @@ const DptWiseBMReport = () => {
                         "hd": "WIPOn Hand",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "WIP_O_Hd",
+                        "scc": "woh",
                         "cgs": "closed"
                     },
                     {
@@ -201,7 +253,7 @@ const DptWiseBMReport = () => {
                         "hd": "Mfg. Balance",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "M_Bal",
+                        "scc": "mfg",
                         "cgs": "closed"
                     },
                     {
@@ -210,7 +262,7 @@ const DptWiseBMReport = () => {
                         "hd": "Due Date",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "DDt",
+                        "scc": "dd",
                         "cgs": "closed"
                     },
                     {
@@ -219,7 +271,7 @@ const DptWiseBMReport = () => {
                         "hd": "Trailing Department",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Trail_Dpt",
+                        "scc": "td",
                         "cgs": "closed"
                     },
 
@@ -229,7 +281,7 @@ const DptWiseBMReport = () => {
                         "hd": "CRDD",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "CRDDate",
+                        "scc": "crdd",
                         "cgs": "closed"
                     },
                     {
@@ -247,7 +299,7 @@ const DptWiseBMReport = () => {
                         "hd": "Customer Name",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Cust_Nme",
+                        "scc": "cn",
                         "cgs": "closed"
                     },
                 ],
@@ -390,7 +442,7 @@ const DptWiseBMReport = () => {
                         "v": true,
                         "cla": "Centre",
                         "scc": "Cust_Cd",
-                        "cgs": "open"
+                        //"cgs": "open"
                     },
                     {
                         "cc": "Region",
@@ -451,6 +503,27 @@ const DptWiseBMReport = () => {
             }
         ]
 
+    const onOpenRemarkHistory = async (data: any) => {
+        // Function implementation for remark history
+        try {
+            if (data.rm.length === 0) {
+                const RemarkHistory = await getPoogIRemarks(data.ok)
+                if (RemarkHistory.data?.data === 'No remarks are present for the order') {
+                    data.rm = []
+                }
+                else {
+                    data.rm = RemarkHistory.data?.data;
+                }
+            }
+            setRemarkHistory(data.rm)
+            setIsRemarkHistoryOpen(true)
+        }
+        catch (e) {
+            console.log(e);
+        }
+        setIsRemarkHistoryOpen(true)
+
+    };
 
     const mapApiResponseToColDefs = (apiResponse: ApiResponse[]): ColDef[] => {
         const mapChildren = (children: ApiResponse[]): ColDefChild[] => {
@@ -458,18 +531,24 @@ const DptWiseBMReport = () => {
                 field: child.scc.trim(),
                 headerName: child.hd,
                 colId: child.hd,
-                cellRenderer: child.cc === 'ec' ? "customCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'TextBoxCellRenderer' : child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
-                initialWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
+                cellRenderer: child.cc === 'ec' ? "customCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
+                maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
                 columnGroupShow: child.cgs,
                 pinned: child.cc === 'Remark' || child.cc === 'Latest Remark' || child.scc === 'Remark History' ? 'right' : undefined,
+                editable: child.cc === 'Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 cellRendererParams: child.hd.includes("Remark") ? {
-                    visible: {
-                        flag: child.scc === 'Remark' ? true : child.scc === 'Latest Remark' ? false : undefined,
-                    },
-                    onClick: child.scc === 'Remark History' ? () => onOpenRemarkHistory() : undefined
+                    // visible: {
+                    //     flag: child.scc === 'Remark' ? true : child.scc === 'Latest Remark' ? false : undefined,
+                    // },
+                    onClick: child.scc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
                 } : undefined,
-
+                cellStyle: child.cc === 'Remark' ? {
+                    backgroundColor: 'white',
+                    border: '1px solid #b9bdba',
+                    color: 'black',
+                    padding: '1px'
+                } : undefined
             }));
         };
 
@@ -486,15 +565,147 @@ const DptWiseBMReport = () => {
         }));
     }
 
+    const getInitialGridData = async (wip: boolean, page: number) => {
+        try {
+            setCurrentPage(page)
+            setWIPCheck(wip)
+            const gridData = await getDeptWiseBMReportData({ 'wip': wip === true ? 1 : 0, 'curr': page });
+            setGridData(gridData?.data?.data?.results)
+            //console.log('first',gridData?.data?.data)
+            setGridDataCount(gridData?.data?.data?.count)
+        }
+        catch (e) {
+            console.log('e');
+        }
+    }
+
+
     useEffect(() => {
         const colDefs = mapApiResponseToColDefs(apiResponse);
+        // console.log('coldefs', colDefs)
         setColdef(colDefs)
+        getInitialGridData(isWIPChecked, 1);
     }, [])
 
-    const onOpenRemarkHistory = () => {
-        setIsRemarkHistoryOpen(true)
-        // Function implementation for remark history
+    useEffect(() => {
+        if (DeptWiseLoading) {
+            toast.dismiss();
+            notifyLoader("Loading Data ...")
+        }
+        else {
+            toast.dismiss();
+        }
+    }, [DeptWiseLoading])
+
+    const extractDepartmentNames = (orders: Orders): string[] => {
+        const departmentNames: Set<string> = new Set();
+
+        // Iterate over each order
+        Object.values(orders).forEach(orderItem => {
+            // Iterate over each property in the order item
+            Object.keys(orderItem).forEach(key => {
+                // Check if the property is a department (i.e., not 'tq' or 'li')
+                if (key !== 'tq' && key !== 'li') {
+                    departmentNames.add(key);
+                }
+            });
+        });
+
+        // Convert Set to Array and return
+        return Array.from(departmentNames);
     };
+
+    const getSelectedRow = async () => {
+        const selectedData = refGraph1.current?.api.getSelectedRows();
+        if (selectedData.length > 0) {
+            //console.log('selected', selectedData.length)
+            const selectedOrderKeys: orderkeyObj[] = []
+            selectedData.map((ele: any) => {
+                selectedOrderKeys.push(ele.ok)
+            })
+            //console.log('slectedOrder',selectedOrderKeys)
+            const fetcDeptWiseWiphData = async () => {
+                try {
+                    const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
+                    //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
+                    setDeptWiseWipData(DeptWiseWipData?.data?.data);
+                    const departmentNames = extractDepartmentNames(DeptWiseWipData?.data?.data);
+                    //console.log('DeptWiseWipData===',departmentNames);
+                    setDeptName(departmentNames);
+                } catch (error) {
+                    notifyError('Failed to fetch data');
+                }
+                // finally {
+                //     DeptWiseLoading(false);
+                // }
+            };
+            fetcDeptWiseWiphData();
+            setIsOrderElapsedGrid(true)
+        } else {
+            setDeptWiseWipData('');
+            setIsOrderElapsedGrid(false)
+        }
+    }
+
+
+
+    // Handle cell value changes
+    const onCellValueChanged = (event: any) => {
+        if (event.data) {
+            setEditedRows(prev => new Set(prev.add(event.data.ok)));
+        }
+    };
+
+    // Initialize AG Grid API reference
+    /*   const onGridReady = (params: any) => {
+          refGraph1.current = params.api;
+      }; */
+
+    const handleUpdateReason = async () => {
+        //  console.log('editedRows', editedRows)
+        try {
+            if (refGraph1.current) {
+                const updatedRow = gridData.filter((row: any) => editedRows.has(row.ok))
+                // console.log('updated row', updatedRow)
+                if (updatedRow.length > 0) {
+                    let putData: UpdateRemarkObj[] = [];
+                    updatedRow.forEach((e: any) => {
+                        const singleData: any = {
+                            "ok": e.ok,
+                            "dept": Number(e.td.split(' ')[1]),
+                            "rm": e.Remark,
+                            "user": user?.user?.name
+                        }
+                        putData.push(singleData);
+                    })
+                    //console.log('putData',putData)
+                    const RemarkHistory = await addBMReportRemark(putData);
+                    //console.log('REmakrf', RemarkHistory)
+                    if (RemarkHistory.status === 200) {
+                        putData = [];
+                        setEditedRows(new Set());
+                        notifySuccess('Remark saved successfully')
+                    }
+                    else {
+                        notifyError('Remark not save')
+                    }
+                }
+                else {
+                    notifyError('Please add remarks/remark to save')
+                }
+            }
+            return [];
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+
+    const handlePageChange = async (currPage: number) => {
+        //console.log('first,', currPage)
+        setCurrentPage(currPage)
+        getInitialGridData(isWIPChecked, currPage)
+    }
 
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
@@ -540,12 +751,13 @@ const DptWiseBMReport = () => {
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,
         groupDefaultExpanded: 0,
-        pivotMode: false
+        pivotMode: false,
+        onSelectionChanged: getSelectedRow,
+        onCellValueChanged: onCellValueChanged,
+        //onGridReady: onGridReady
     };
 
-    const { screenHeight } = useViewPort();
-    const { user } = useUserData();
-    const themeUi = user?.user?.theme_ui;
+
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>
@@ -553,30 +765,51 @@ const DptWiseBMReport = () => {
                     comp={'DeptWiseBMReport'}
                     isAddFilterButton
                     isExcelExport
-                    quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={true} onChange={() => console.log()} theme={themeUi} /> &nbsp;&nbsp; <strong>Show order with available WIP Only</strong></div>}
+                    quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={isWIPChecked} onChange={(e) => getInitialGridData(e.target.checked, 1)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show order with available WIP Only</strong></div>}
                 />
             </BMDepHeaderWraper>
 
-            <HorizontalViewWrapper style={{ marginTop: '0px' }}>
-                <BTRTableWrapper style={{ height: screenHeight + 100, margin: '0' }}>
-                    <Allotment vertical={true} separator={true} >
-                        <Allotment.Pane preferredSize={'60%'}>
-                            <BTRAllomentSection>
-                                <GridView agGridProps={agGridProps} columDef={colDeflatest} convercolumnDef={deptwiseBMReportData} />
-                            </BTRAllomentSection>
-                        </Allotment.Pane>
+            <>
+                {
+                    DeptWiseLoading ? <OverlayLoader /> :
 
-                        <Allotment.Pane preferredSize={'40%'}>
-                            <BTRAllomentSection>
-                                <OrderElapsedGrid isTrue={true} />
-                            </BTRAllomentSection>
-                        </Allotment.Pane>
-                    </Allotment>
-                </BTRTableWrapper>
-            </HorizontalViewWrapper>
+                        <HorizontalViewWrapper style={{ marginTop: '0px' }}>
+                            <BTRTableWrapper style={{ height: screenHeight + 100, margin: '0' }}>
+                                <Allotment vertical={true} separator={true} >
+                                    <Allotment.Pane preferredSize={'60%'}>
+                                        <BTRAllomentSection>
+                                            <GridView
+                                                reference={refGraph1}
+                                                agGridProps={agGridProps}
+                                                columDef={colDeflatest}
+                                                convercolumnDef={gridData}
+                                                updateReason={() => handleUpdateReason()}
+                                                handlePageChange={(cp) => handlePageChange(cp)}
+                                                totalRow={gridDataCount}
+                                                currentPage={currentPage}
+                                            />
+                                        </BTRAllomentSection>
+                                    </Allotment.Pane>
+
+                                    <Allotment.Pane preferredSize={'40%'}>
+                                        <BTRAllomentSection>
+                                            <OrderElapsedGrid
+                                                isTrue={isOrderElapsedGrid}
+                                                data={deptWiseWipData}
+                                                deptName={deptName}
+                                                selectedOrderCount={refGraph1.current?.api.getSelectedRows().length}
+
+                                            />
+                                        </BTRAllomentSection>
+                                    </Allotment.Pane>
+                                </Allotment>
+                            </BTRTableWrapper>
+                        </HorizontalViewWrapper>
+                }
+            </>
 
             <BPRRemarkHistoryModal
-                data={RemarkHistoryData}
+                data={remarkHistory}
                 isOpen={isRemarkHistoryOpen}
                 onClose={() => setIsRemarkHistoryOpen(false)}
             />

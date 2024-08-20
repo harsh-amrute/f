@@ -194,7 +194,7 @@ export const orderStatusData = [
         "ord_id": 1,
         "l_itm": "Item A",
         "qty": 5,
-        "wipoh": 10,
+        "wipoh": 12,
         "btm": 15
     },
     {
@@ -271,20 +271,20 @@ export const ElapsedTime: (ColDef | ColGroupDef)[] = [
     },
     {
         headerName: 'Department 1',
-        field: 'dpt1',
-        colId: 'dpt1'
+        field: '1',
+        colId: '1'
 
     },
     {
         headerName: 'Department 2',
-        field: 'dpt2',
-        colId: 'dpt2'
+        field: '2',
+        colId: '2'
 
     },
     {
         headerName: 'Department 3',
-        field: 'dpt3',
-        colId: 'dpt3'
+        field: '3',
+        colId: '3'
     }
 ]
 
@@ -755,34 +755,34 @@ export const deptwiseBMReportData = [
 
 export const RemarkHistoryData = [
     {
-        'un': 'fristan',
-        'r': 'enter the last remark data',
-        'rd': '2023-12-23'
+        'added_by': 'fristan',
+        'remark': 'enter the last remark data',
+        'added_on': '2023-12-23'
     },
     {
-        'un': 'fristan',
-        'r': 'enter the  remark 1 data',
-        'rd': '2023-12-24'
+        'added_by': 'fristan',
+        'remark': 'enter the  remark 1 data',
+        'added_on': '2023-12-24'
     },
     {
-        'un': 'fristan',
-        'r': 'enter the remark 2 data',
-        'rd': '2023-12-24'
+        'added_by': 'fristan',
+        'remark': 'enter the remark 2 data',
+        'added_on': '2023-12-24'
     },
     {
-        'un': 'Tarun',
-        'r': 'enter the remark 3 data',
-        'rd': '2023-12-23'
+        'added_by': 'Tarun',
+        'remark': 'enter the remark 3 data',
+        'added_on': '2023-12-23'
     },
     {
-        'un': 'Tarun',
-        'r': 'enter the remark 4 data',
-        'rd': '2023-12-24'
+        'added_by': 'Tarun',
+        'remark': 'enter the remark 4 data',
+        'added_on': '2023-12-24'
     },
     {
-        'un': 'Tarun',
-        'r': 'enter the remark 5 data',
-        'rd': '2023-12-24'
+        'added_by': 'Tarun',
+        'remark': 'enter the remark 5 data',
+        'added_on': '2023-12-24'
     }
 ]
 

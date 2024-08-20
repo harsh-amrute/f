@@ -149,6 +149,10 @@
         "title": "POOGI",
         "reasonForDelayedOrders": "Reason For Delayed Orders",
         "insightAndTrends": "Insight and Trends"
+      },
+      "manufacturingHub": {
+        "title": "Manufacturing Intelligence Hub",
+        "improvementAreas": "Improvement Areas"
       }
     },
     "particulars": {
