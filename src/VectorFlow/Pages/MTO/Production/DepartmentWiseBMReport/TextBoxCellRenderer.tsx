@@ -1,6 +1,7 @@
 import { ETACellRendererWrapper } from "./styles"
 import { BPRRemarksCellRendererWrapper, BPRSubmitRemarkInput } from '../../../MTA/SupplyChainIntelligenceHub/BPR/styles'
 const TextBoxCellRenderer = (params: any) => {
+    //Not in use as of now. Delete later if not required
 
     return (
         <ETACellRendererWrapper  >
