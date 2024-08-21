@@ -17,7 +17,7 @@ const FullKitGraph = (props: any) => {
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
-  const [rawData, setRawData] = useState([]);
+  const [rawData, setRawData] = useState<any>([]);
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
@@ -158,7 +158,10 @@ const FullKitGraph = (props: any) => {
   }
 
   useEffect(()=>{
-    setRawData(graphData);
+    if(graphData){
+      const data = Object.keys(graphData)?.map((key: any) => ({ ccr_n: key, days: graphData[key] }));
+      setRawData(data);
+    }
   },[graphData])
 
   return (

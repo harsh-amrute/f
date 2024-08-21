@@ -21,9 +21,9 @@ const STPLAndFullKits = () => {
 
   const { screenHeight } = useViewPort();
 
-  const getGraphData = async (isGraph: any) => {
+  const getGraphData = async (params: any) => {
     try {
-      const response = await getSTPLandFullkitInDaysData(isGraph);
+      const response = await getSTPLandFullkitInDaysData(params);
       setGraphData(response.data.data);
     }
     catch (e) {
@@ -33,7 +33,7 @@ const STPLAndFullKits = () => {
   }
 
   useEffect(() => {
-    getGraphData(1);
+    getGraphData({graphFlag: 1});
   }, [])
 
   useEffect(() => {
