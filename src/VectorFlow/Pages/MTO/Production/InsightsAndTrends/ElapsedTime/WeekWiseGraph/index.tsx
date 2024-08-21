@@ -4,7 +4,6 @@ import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VF
 import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../Common/SplitGraphContainer/styles'
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
-import Select from 'react-select'
 import { useGetDeptMasterData, useGetPlantMasterData } from '../../../../../../../VectorFlow/Services/MTO/Common/Masters'
 import RadioSelect from '../../../../../../../components/VectorFLOW/commons/MTO/RadioSelect'
 import { useUserData } from '../../../../../../../context'

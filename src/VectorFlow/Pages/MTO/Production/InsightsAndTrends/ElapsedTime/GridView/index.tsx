@@ -4,12 +4,9 @@ import { getColumnDefinations } from '../../../../../../../helpers/utils';
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
 import TagCellToolTip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
-import { APIMock, gridColumnConfig } from '../Data';
-// import { useGetUIConfigData } from '../../../../../../Services/MTO/Common/UIConfig';
 import './styles.css'
 import { SCDynamicContainer } from './styles';
 import ColorCellRenderer from '../../../../../MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/ColorCellRenderer';
-import _ from 'lodash';
 import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFPagination';
 import { notifyError, notifySuccess } from '../../../../../../../helpers/notify';
 import { useGetElapsedTimeData } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
