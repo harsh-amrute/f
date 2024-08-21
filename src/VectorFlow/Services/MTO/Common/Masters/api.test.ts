@@ -27,6 +27,11 @@ describe('Master API', () => {
         const response = await MasterService.getPlantMasterData();
         expect(response.status).toBe(200);
     });
+    it('should get ccr master data', async () => {
+        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await MasterService.getCCRMasterData();
+        expect(response.status).toBe(200);
+    });
 
 });
 
