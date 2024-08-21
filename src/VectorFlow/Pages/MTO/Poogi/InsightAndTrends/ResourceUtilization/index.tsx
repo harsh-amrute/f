@@ -78,7 +78,6 @@ const ResourceUtilization = () => {
 
   const GetData = async () => {
     try {
-      console.log("Dateeee==>", startDate, endDate)
 
       const apiBody = {
         startDate: moment(date).subtract(horizonDays, 'days').format().substring(0, 10),
@@ -88,7 +87,6 @@ const ResourceUtilization = () => {
         deptName: selectedDept
       }
 
-      console.log("api call body", apiBody)
       const response = await getResourceUtilizationData(apiBody);
       setApiData(response.data.data)
     }
