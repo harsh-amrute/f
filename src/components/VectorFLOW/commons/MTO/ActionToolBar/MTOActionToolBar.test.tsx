@@ -7,34 +7,34 @@ import { FilterState } from '../../../../../VectorFlow/types/MTO';
 
 const multiFilterMock: FilterState = {
   customers: {
-      id: 'cus1',
-      label: "Customer 1",
-      filters: [
-          {
-              name: "Text Filter",
-              attributeName: "textFilter",
-              type: "textCompare",
-              operator: "",
-              value: "",
-              options: ["a", "b"]
-          },
-          {
-              name: "Search Filter",
-              attributeName: "srch",
-              type: "search",
-              operator: "",
-              value: "",
-              options: ["1", "2"]
-          },
-          {
-              name: "Select Filter",
-              attributeName: "select",
-              type: "select",
-              operator: "",
-              value: "",
-              options: ["option 1", "option 2"]
-          },
-      ],
+    id: 'cus1',
+    label: "Customer 1",
+    filters: [
+      {
+        name: "Text Filter",
+        attributeName: "textFilter",
+        type: "textCompare",
+        operator: "",
+        value: "",
+        options: ["a", "b"]
+      },
+      {
+        name: "Search Filter",
+        attributeName: "srch",
+        type: "search",
+        operator: "",
+        value: "",
+        options: ["1", "2"]
+      },
+      {
+        name: "Select Filter",
+        attributeName: "select",
+        type: "select",
+        operator: "",
+        value: "",
+        options: ["option 1", "option 2"]
+      },
+    ],
   },
 };
 
@@ -63,9 +63,6 @@ describe('MTOActionToolBar Component', () => {
   const mockSetIsGridView = jest.fn();
   const mockOnAddFilter = jest.fn();
   const mockRemoveFilters = jest.fn();
-  const mockHandleHorizonSubmit = jest.fn();
-  const mockUpdateGraphState = jest.fn();
-  const mockSetHorizonDays = jest.fn();
   const mockToggleFilter = jest.fn();
   const mockOnApplyFilter = jest.fn();
   const mockSetCurrFilter = jest.fn();
@@ -75,7 +72,7 @@ describe('MTOActionToolBar Component', () => {
     observe = jest.fn();
     unobserve = jest.fn();
     disconnect = jest.fn();
-};
+  };
 
 
   const selectedFilters = [
@@ -191,24 +188,6 @@ describe('MTOActionToolBar Component', () => {
     expect(mockOnAddFilter).toHaveBeenCalled();
   });
 
-  test('renders radio button and horizon when called from Resource WIP', () => {
-    render(contextWrapperWithCustomTheme(<MTOActionToolBar handleHorizonSubmit={mockHandleHorizonSubmit} updateGraphState={mockUpdateGraphState} comp='resourceUtilization' themeUi="NOIRFUSION" />, "NOIRFUSION"));
-
-    expect(screen.getByTestId('wip-limit-radio')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('wip-limit-radio'));
-    expect(mockUpdateGraphState).toHaveBeenCalled();
-
-    expect(screen.getByTestId('utilization-radio')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('utilization-radio'));
-    expect(mockUpdateGraphState).toHaveBeenCalled();
-
-    expect(screen.getByTestId('select-plnt')).toBeInTheDocument();
-    expect(screen.getByTestId('select-dept')).toBeInTheDocument();
-
-    expect(screen.getByTestId('horizon-submit')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('horizon-submit'));
-    expect(mockHandleHorizonSubmit).toHaveBeenCalled();
-  });
 
 
   test('renders Excel Export button', () => {
@@ -231,13 +210,6 @@ describe('MTOActionToolBar Component', () => {
     expect(mockSubmitDate).toHaveBeenCalled();
   });
 
-  test('calls setHorizonDays function when slider value changes', () => {
-    render(contextWrapperWithCustomTheme(<MTOActionToolBar comp="resourceUtilization" setHorizonDays={mockSetHorizonDays} horizonDays={30} themeUi="NOIRFUSION" />, "NOIRFUSION"));
-    const slider = screen.getByTestId('range-slider'); // Assuming there's a role slider for VFRangeSlider
-    fireEvent.change(slider, { target: { value: 60 } });
-    expect(mockSetHorizonDays).toHaveBeenCalledWith(60);
-  });
-
   test('renders isReleaseDate', () => {
     render(contextWrapperWithCustomTheme(<MTOActionToolBar isReleaseDate submitDate={mockSubmitDate} date={date} />, "REGALBLAZE"));
     const isReleaseDate = screen.getByTestId("isReleaseDate");
@@ -251,21 +223,21 @@ describe('MTOActionToolBar Component', () => {
   });
 
   test('renders isAsOnDate', async () => {
-    render(contextWrapperWithCustomTheme(<MTOActionToolBar 
-        isChartGridToggle
-        isAddFilterButton
-        isFilterOpen={true}
-        onAddFilter={mockOnAddFilter}
-        toggleFilter={mockToggleFilter}
-        onApplyFilter={mockOnApplyFilter} 
-        multiFilter={multiFilterMock}
-        setMultiFilter={mockSetCurrFilter} />, 
-    "REGALBLAZE"));
+    render(contextWrapperWithCustomTheme(<MTOActionToolBar
+      isChartGridToggle
+      isAddFilterButton
+      isFilterOpen={true}
+      onAddFilter={mockOnAddFilter}
+      toggleFilter={mockToggleFilter}
+      onApplyFilter={mockOnApplyFilter}
+      multiFilter={multiFilterMock}
+      setMultiFilter={mockSetCurrFilter} />,
+      "REGALBLAZE"));
 
-    await waitFor( async () => expect(screen.getByTestId("vfmodal-img")).toBeInTheDocument())
-    
-    await waitFor (async () => {
-      const goBackButton = screen.getByText("Go Back!"); 
+    await waitFor(async () => expect(screen.getByTestId("vfmodal-img")).toBeInTheDocument())
+
+    await waitFor(async () => {
+      const goBackButton = screen.getByText("Go Back!");
       expect(goBackButton).toBeInTheDocument()
       const applybutton = screen.getByText("Apply Filter");
       expect(applybutton).toBeInTheDocument()
@@ -273,154 +245,154 @@ describe('MTOActionToolBar Component', () => {
     fireEvent.click(screen.getByText("Apply Filter"));
     expect(mockSetCurrFilter).toHaveBeenCalledWith(multiFilterMock);
     expect(mockOnApplyFilter).toHaveBeenCalledTimes(1);
-    
+
   });
 
   test('renders go back ', async () => {
-    render(contextWrapperWithCustomTheme(<MTOActionToolBar 
-        isChartGridToggle
-        isAddFilterButton
-        isFilterOpen={true}
-        onAddFilter={mockOnAddFilter}
-        toggleFilter={mockToggleFilter}
-        onApplyFilter={mockOnApplyFilter} 
-        multiFilter={multiFilterMock}
-        setMultiFilter={mockSetCurrFilter} />, 
-    "REGALBLAZE"));
+    render(contextWrapperWithCustomTheme(<MTOActionToolBar
+      isChartGridToggle
+      isAddFilterButton
+      isFilterOpen={true}
+      onAddFilter={mockOnAddFilter}
+      toggleFilter={mockToggleFilter}
+      onApplyFilter={mockOnApplyFilter}
+      multiFilter={multiFilterMock}
+      setMultiFilter={mockSetCurrFilter} />,
+      "REGALBLAZE"));
 
-    await waitFor( async () => expect(screen.getByTestId("vfmodal-img")).toBeInTheDocument())
-    
-    await waitFor (async () => {
-      const goBackButton = screen.getByText("Go Back!"); 
+    await waitFor(async () => expect(screen.getByTestId("vfmodal-img")).toBeInTheDocument())
+
+    await waitFor(async () => {
+      const goBackButton = screen.getByText("Go Back!");
       expect(goBackButton).toBeInTheDocument()
     })
     fireEvent.click(screen.getByText("Go Back!"));
     expect(mockToggleFilter).toHaveBeenCalledTimes(1);
-    
+
   });
 
-  test('renders with multiple selected filters from common filter modal', async() => {
+  test('renders with multiple selected filters from common filter modal', async () => {
     const multiFilterMock = {
       customers: {
         "id": "cus",
         "label": "Customer Filter",
         "filters": [
-            {
-                "type": "search",
-                "name": "Customer Code",
-                "attributeName": "cc",
-                "operator": "",
-                "value": [
-                    {
-                        "label": 1,
-                        "value": 1
-                    }
-                ],
-                "options": [
-                    {
-                        "label": "Cust 1",
-                        "value": "Cust 1"
-                    },
-                    {
-                        "label": "Cust 2",
-                        "value": "Cust 2"
-                    },
-                    {
-                        "label": "Cust 3",
-                        "value": "Cust 3"
-                    },
-                    {
-                        "label": 1,
-                        "value": 1
-                    },
-                    {
-                        "label": 2,
-                        "value": 2
-                    },
-                    {
-                        "label": 3,
-                        "value": 3
-                    }
-                ]
-            },
-            {
-                "type": "search",
-                "name": "Customer Name",
-                "attributeName": "cn",
-                "operator": "",
-                "value": [
-                    {
-                        "label": "Customer 1",
-                        "value": "Customer 1"
-                    },
-                    {
-                        "label": "Customer 2",
-                        "value": "Customer 2"
-                    }
-                ],
-                "options": [
-                    {
-                        "label": "Customer 1",
-                        "value": "Customer 1"
-                    },
-                    {
-                        "label": "Customer 2",
-                        "value": "Customer 2"
-                    }
-                ]
-            }
+          {
+            "type": "search",
+            "name": "Customer Code",
+            "attributeName": "cc",
+            "operator": "",
+            "value": [
+              {
+                "label": 1,
+                "value": 1
+              }
+            ],
+            "options": [
+              {
+                "label": "Cust 1",
+                "value": "Cust 1"
+              },
+              {
+                "label": "Cust 2",
+                "value": "Cust 2"
+              },
+              {
+                "label": "Cust 3",
+                "value": "Cust 3"
+              },
+              {
+                "label": 1,
+                "value": 1
+              },
+              {
+                "label": 2,
+                "value": 2
+              },
+              {
+                "label": 3,
+                "value": 3
+              }
+            ]
+          },
+          {
+            "type": "search",
+            "name": "Customer Name",
+            "attributeName": "cn",
+            "operator": "",
+            "value": [
+              {
+                "label": "Customer 1",
+                "value": "Customer 1"
+              },
+              {
+                "label": "Customer 2",
+                "value": "Customer 2"
+              }
+            ],
+            "options": [
+              {
+                "label": "Customer 1",
+                "value": "Customer 1"
+              },
+              {
+                "label": "Customer 2",
+                "value": "Customer 2"
+              }
+            ]
+          }
         ]
-    },
+      },
     };
 
     const newFilters: any = {
       "customers": {
-          "name": "Customer Filter",
-          "parentId": "customers",
-          "filters": [
+        "name": "Customer Filter",
+        "parentId": "customers",
+        "filters": [
+          {
+            "filterId": "cc",
+            "type": "search",
+            "operator": "",
+            "label": "Customer Code",
+            "value": [
               {
-                  "filterId": "cc",
-                  "type": "search",
-                  "operator": "",
-                  "label": "Customer Code",
-                  "value": [
-                      {
-                          "label": 1,
-                          "value": 1
-                      }
-                  ]
+                "label": 1,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "filterId": "cn",
+            "type": "search",
+            "operator": "",
+            "label": "Customer Name",
+            "value": [
+              {
+                "label": "Customer 1",
+                "value": "Customer 1"
               },
               {
-                  "filterId": "cn",
-                  "type": "search",
-                  "operator": "",
-                  "label": "Customer Name",
-                  "value": [
-                      {
-                          "label": "Customer 1",
-                          "value": "Customer 1"
-                      },
-                      {
-                          "label": "Customer 2",
-                          "value": "Customer 2"
-                      }
-                  ]
+                "label": "Customer 2",
+                "value": "Customer 2"
               }
-          ]
+            ]
+          }
+        ]
       }
-  }
-    render(contextWrapperWithCustomTheme(<MTOActionToolBar 
+    }
+    render(contextWrapperWithCustomTheme(<MTOActionToolBar
       isChartGridToggle
       isAddFilterButton
       isFilterOpen={false}
       onAddFilter={mockOnAddFilter}
       toggleFilter={mockToggleFilter}
-      onApplyFilter={mockOnApplyFilter} 
+      onApplyFilter={mockOnApplyFilter}
       multiFilter={multiFilterMock}
       setMultiFilter={mockSetCurrFilter}
-      onFilterRemove={mockOnFilterRemove} />, 
-    "REGALBLAZE"));
-    
+      onFilterRemove={mockOnFilterRemove} />,
+      "REGALBLAZE"));
+
     await waitFor(async () => {
       // expect(screen.getByText("Apply Filter")).not.toBeInTheDocument()
 
