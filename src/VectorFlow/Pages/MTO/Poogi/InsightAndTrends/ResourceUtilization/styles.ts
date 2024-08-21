@@ -128,11 +128,17 @@ export const SCChartSliderContainer = styled.div`
 export const RadioGroup = styled.div`
     display:flex;
     min-width: 200px;
+    & > div{
+        flex: 1;
+    }
 `
 
 export const SelectGroup = styled.div`
     display:flex;
     gap: 20px;
+    & > div{
+        flex: 1;
+    }
 `
 
 export const ChartHeaderRadioGroup = styled.div<{ theme: string }>`

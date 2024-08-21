@@ -13,9 +13,9 @@ export namespace ResourceUtilizationService {
             params: {
                 hs: startDate,
                 he: endDate,
-                ccrName: ccrName,
-                plantName: plantName,
-                deptName: deptName
+                ccrid: ccrName,
+                plantid: plantName,
+                deptid: deptName
             }
         })
     }

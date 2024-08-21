@@ -2,14 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { AgChartOptions } from "ag-charts-community";
 import { AgChartsReact } from "ag-charts-react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { APIMock } from "./mockData";
+// import { APIMock } from "./mockData";
 import { DayPicker } from "react-day-picker";
 import CustomCalenderCaption from "./CustomCalenderCaption";
 import CustomCalenderDay from "./CustomCalenderDay";
 import { useUserData } from "../../../../../../context/index";
 import { Rectangle } from "../../../Production/FullKitAssignement/RectangleMarker";
 import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule";
-import Select from 'react-select'
 import {
   CalenderHeading,
   CalenderLabel,
@@ -29,26 +28,28 @@ import {
   VerticalTitle,
   VerticalWrapper,
 } from "./styles";
-import CustomSelect from "../../../Production/FullKitAssignement/Select";
 import { useGetResourceUtilizationData } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/ResourceUtilization";
 import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 import moment from "moment";
 import { useGetCCRMasterData, useGetDeptMasterData, useGetPlantMasterData } from "../../../../../../VectorFlow/Services/MTO/Common/Masters";
 import VFRangeSlider from "../../../Common/VFRangeSlider";
+import RadioSelect from "../../../../../../components/VectorFLOW/commons/MTO/RadioSelect";
+import OverlayLoader from "../../../Common/Loader";
 
 const ResourceUtilization = () => {
   const [chartLoading, setChartLoading] = useState(false);
   const chartRef = useRef<AgChartsReact>(null);
-  const [horizonDays, setHorizonDays] = useState(30);
+  const [horizonDays, setHorizonDays] = useState(90);
   const [selectedGraphState, setSelectedGraphState] = useState("wipLimit");
   const [actBtn, setActBtn] = useState({
-    label: "Under Limit",
-    value: "Under Limit",
+    label: "Over Limit",
+    value: "Over Limit",
   });
   const { user } = useUserData();
   const themeUi = user.user.theme_ui;
+  let firstCall = true;
 
-  const { mutateAsync: getResourceUtilizationData } = useGetResourceUtilizationData();
+  const { mutateAsync: getResourceUtilizationData, isLoading } = useGetResourceUtilizationData();
   const { mutateAsync: getPlantMaster } = useGetPlantMasterData();
   const { mutateAsync: getDeptMaster } = useGetDeptMasterData();
   const { mutateAsync: getCCRMaster } = useGetCCRMasterData();
@@ -56,27 +57,38 @@ const ResourceUtilization = () => {
   const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
   const date = apiResponseData?.data?.data;
 
+
+
   const [startDate, setStartDate] = useState(moment(date).subtract(90, 'days').format().substring(0, 10));
   const [endDate, setEndDate] = useState(moment(date).format().substring(0, 10));
-  const [selectedCCR, setSelectedCCR] = useState();
+  const [selectedCCR, setSelectedCCR] = useState<any>(undefined);
+  const [defaultCCR, setDefaultCCR] = useState<any>();
   const [selectedPlant, setSelectedPlant] = useState();
   const [selectedDept, setSelectedDept] = useState();
   const [apiData, setApiData] = useState<any>(null);
   const [plantOpts, setPlantOpts] = useState([]);
   const [deptOpts, setDeptOpts] = useState([]);
   const [ccrOpts, setCCROpts] = useState([]);
+  const [horizonClicked, setHorizonClicked] = useState(false);
 
+  const [utilData, setUtilData] = useState<any>();
+  const [wipData, setWipData] = useState<any>();
+  const [wipOverData, setWipOverData] = useState<any>();
+  const [wipUnderData, setWipUnderData] = useState<any>();
 
   const GetData = async () => {
     try {
       console.log("Dateeee==>", startDate, endDate)
+
       const apiBody = {
-        startDate,
-        endDate,
-        ccrName: selectedCCR,
+        startDate: moment(date).subtract(horizonDays, 'days').format().substring(0, 10),
+        endDate: moment(date).format().substring(0, 10),
+        ccrName: selectedCCR?.value,
         plantName: selectedPlant,
         deptName: selectedDept
       }
+
+      console.log("api call body", apiBody)
       const response = await getResourceUtilizationData(apiBody);
       setApiData(response.data.data)
     }
@@ -109,7 +121,8 @@ const ResourceUtilization = () => {
       const ccrs = responseCCR.data.data;
       const myCCROpts: any = []
       ccrs.forEach((e: any) => {
-        myCCROpts.push({ value: e.ccr_code, label: e.ccr_code })
+        myCCROpts.push({ value: e.ccr_id, label: e.ccr_name })
+        console.log(e.ccr_id);
       })
       setCCROpts(myCCROpts);
 
@@ -128,8 +141,63 @@ const ResourceUtilization = () => {
   }, [])
 
   useEffect(() => {
+    setActBtn({
+      label: "Over Limit",
+      value: "Over Limit",
+    })
+    firstCall = false;
+    GetData();
+  }, [selectedCCR, horizonClicked])
+
+  useEffect(() => {
     console.log('Api Data....', apiData)
+    const newUtilData: any = [];
+    const newWipOverData: any = [];
+    const newWipUnderData: any = [];
+    if (apiData && apiData.utilization) {
+
+      apiData.utilization.forEach((e: any) => {
+        newUtilData.push({ ccr: e.ccr, limit: e.aup })
+      })
+    }
+    if (apiData && apiData.wiplimit) {
+      apiData.wiplimit.olimit.forEach((e: any) => {
+        console.log('**', e.awip)
+        newWipOverData.push({ overLimit: Number(e.awip), limit: e.lm, ccr: e.ccr })
+      })
+      apiData.wiplimit.ulimit.forEach((e: any) => {
+        newWipUnderData.push({ underLimit: e.awip, limit: e.lm, ccr: e.ccr })
+
+      })
+    }
+
+    setUtilData(newUtilData);
+    setWipOverData(newWipOverData);
+    setWipUnderData(newWipUnderData);
+
+    if (apiData && apiData.ccr && apiData.ccr.ccr_id && !selectedCCR) {
+
+      setDefaultCCR({ value: apiData?.ccr.ccr_id, label: apiData?.ccr.ccr_name })
+    }
+    else {
+      setDefaultCCR(selectedCCR)
+    }
+
+
+
+
   }, [apiData])
+
+  useEffect(() => {
+    setUtilizationOptions({ ...utilizationOptions, data: utilData })
+  }, [utilData])
+  useEffect(() => {
+    console.log('wipData.....', wipData)
+    // wipOptions.data = 
+    setWipOptions({ ...wipOptions, data: wipOverData })
+  }, [wipOverData, wipUnderData])
+
+
 
 
   console.log(chartLoading);
@@ -143,15 +211,7 @@ const ResourceUtilization = () => {
       <div style="border-top: 1px dashed lightgray"></div>
       <div style="width: 100%; padding: 10px 5px;">
           <div style="display: flex; width: 100%;">
-              <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #E96666"></div>
-              <div style="display:flex; justify-content: space-between; width: 100%;">
-                  <div>${selectedGraphState === "wipLimit"
-        ? "Limit"
-        : "Utilization Percentage"
-      }</div>
-                  <div style="margin-left: 20px">${datum?.limit}%</div>
-              </div>
-          </div>
+              
           ${selectedGraphState === "wipLimit"
         ? `<div style="display: flex; width: 100%;">
               <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
@@ -170,34 +230,32 @@ const ResourceUtilization = () => {
 
   const getUtilizationColor = (date: any) => {
 
-    const redDates = [
-      "01-08-2024",
-      "07-08-2024",
-      "08-08-2024",
-      "09-08-2024",
-      "10-08-2024",
-      "11-08-2024",
-      "12-08-2024",
-      "13-08-2024",
-      "21-08-2024",
-      "22-08-2024",
-      "25-08-2024",
-      "26-08-2024",
-      "27-08-2024",
-      "28-08-2024",
-      "29-08-2024",
-      "30-08-2024",
-      "31-08-2024",
-      "23-08-2024",
-      "24-08-2024",
-    ];
-    const yelowDates = [
-      "02-08-2024",
-      "03-08-2024",
-      "04-08-2024",
-      "05-08-2024",
-      "06-08-2024",
-    ];
+    const redDates: any = [];
+    const yellowDates: any = [];
+
+    if (apiData && apiData?.analytics) {
+
+      const dates = Object.keys(apiData.analytics)
+
+      dates.forEach((e: any) => {
+        if (apiData.analytics[e].up > 85) {
+          let currDate = e;
+          currDate = currDate.split('-')[2] + '-' + currDate.split('-')[1] + '-' + currDate.split('-')[0];
+          redDates.push(currDate);
+        }
+        else if (apiData.analytics[e].up < 60) {
+          // underLimit.push(moment(e).calendar().replaceAll('/', '-'));
+        }
+        else {
+          let currDate = e;
+          currDate = currDate.split('-')[2] + '-' + currDate.split('-')[1] + '-' + currDate.split('-')[0];
+          yellowDates.push(currDate);
+
+        }
+      })
+    }
+
+
 
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -207,7 +265,7 @@ const ResourceUtilization = () => {
     if (redDates.includes(newDate)) {
       return "Red";
     }
-    if (yelowDates.includes(newDate)) {
+    if (yellowDates.includes(newDate)) {
       return "Yellow";
     }
     return "default";
@@ -224,12 +282,18 @@ const ResourceUtilization = () => {
 
       dates.forEach((e: any) => {
         if (apiData.analytics[e].wc === 'ol') {
-          overLimit.push(e);
+          let currDate = e
+          currDate = currDate.split('-')[2] + '-' + currDate.split('-')[1] + '-' + currDate.split('-')[0];
+          overLimit.push(currDate);
+        }
+        else if (apiData.analytics[e].wc === 'ul') {
+          let currDate = e;
+          currDate = currDate.split('-')[2] + '-' + currDate.split('-')[1] + '-' + currDate.split('-')[0];
+          underLimit.push(currDate);
         }
       })
-    }
 
-    console.log('overLimit', overLimit)
+    }
 
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -245,9 +309,12 @@ const ResourceUtilization = () => {
     return "default";
   };
 
-  const utilizationOptions: AgChartOptions = {
-    data: APIMock.utilization,
 
+
+
+
+  const [utilizationOptions, setUtilizationOptions] = useState<AgChartOptions>({
+    data: utilData,
     series: [
       {
         type: "bar",
@@ -328,16 +395,16 @@ const ResourceUtilization = () => {
     // padding: {
     //   bottom: 0,
     // },
-  };
+  })
 
-  const wipOptions: AgChartOptions = {
-    data: APIMock.wipLimit,
+  const [wipOptions, setWipOptions] = useState<AgChartOptions | any>({
+    data: wipData,
 
     series: [
       {
         type: "bar",
         xKey: "ccr",
-        yKey: actBtn.value === "Over Limit" ? "overLimit" : "underLimit",
+        yKey: "overLimit",
         yName: "Released",
         stacked: true,
         fill: "#000000",
@@ -355,7 +422,7 @@ const ResourceUtilization = () => {
       {
         type: "scatter",
         xKey: "ccr",
-        yKey: "limit",
+        yKey: (actBtn.label === 'Over Limit') ? "limit" : 'none',
         yName: "Limit",
         marker: {
           size: 10,
@@ -436,10 +503,115 @@ const ResourceUtilization = () => {
     padding: {
       bottom: 0,
     },
-  };
+  })
+
+  useEffect(() => {
+
+    if (actBtn.label === 'Over Limit') {
+
+      setWipOptions({
+        ...wipOptions,
+        data: wipOverData,
+
+        series: [{
+          type: "bar",
+          xKey: "ccr",
+          yKey: "overLimit",
+          yName: "Released",
+          stacked: true,
+          fill: "#000000",
+          highlightStyle: {
+            item: {
+              fill: "#D2CECE",
+              stroke: "#D2CECE",
+              strokeWidth: 2,
+            },
+          },
+          tooltip: {
+            renderer: TooltipRenderer,
+          },
+        },
+        {
+          type: "scatter",
+          xKey: "ccr",
+          yKey: "limit",
+          yName: "Limit",
+          marker: {
+            size: 10,
+            fill: "#E96666",
+            shape: Rectangle,
+            strokeWidth: 0,
+          },
+          highlightStyle: {
+            item: {
+              fill: "#820F4C",
+              stroke: "#820F4C",
+              strokeWidth: 2,
+            },
+          },
+          tooltip: {
+            renderer: TooltipRenderer,
+          },
+        }]
+      })
+    }
+    else {
+
+
+      setWipOptions({
+        ...wipOptions,
+        data: wipUnderData,
+        series: [{
+          type: "bar",
+          xKey: "ccr",
+          yKey: "underLimit",
+          yName: "Released",
+          stacked: true,
+          fill: "#000000",
+          highlightStyle: {
+            item: {
+              fill: "#D2CECE",
+              stroke: "#D2CECE",
+              strokeWidth: 2,
+            },
+          },
+          tooltip: {
+            renderer: TooltipRenderer,
+          },
+        },
+        {
+          type: "scatter",
+          xKey: "ccr",
+          yKey: "limit",
+          yName: "Limit",
+          marker: {
+            size: 10,
+            fill: "#E96666",
+            shape: Rectangle,
+            strokeWidth: 0,
+          },
+          highlightStyle: {
+            item: {
+              fill: "#820F4C",
+              stroke: "#820F4C",
+              strokeWidth: 2,
+            },
+          },
+          tooltip: {
+            renderer: TooltipRenderer,
+          },
+        }]
+      })
+    }
+
+
+
+  }, [actBtn, horizonClicked])
 
   const handleHorizonSubmit = () => {
     console.log("horizon SUbmit");
+    setHorizonClicked(!horizonClicked)
+
   };
 
   const updateGraphState = (id: number, option: string) => {
@@ -502,8 +674,8 @@ const ResourceUtilization = () => {
           >
             Select Plant
           </div>
-          <SelectGroup style={{ width: '100px', zoom: '1.25' }}>
-            <Select options={plantOpts} />
+          <SelectGroup style={{ width: '130px', zoom: '1.25' }}>
+            <RadioSelect theme={themeUi} placeholder={"Select Plant"} options={plantOpts} />
             {/* <CustomSelect placeholder="Select Plant" value={selectedPlant} onSelectionChanged={(e: any) => { console.log("selected this", e) }} selected={false} options={plantOpts} optionsWidth={"100%"} /> */}
           </SelectGroup>
         </div>
@@ -520,8 +692,8 @@ const ResourceUtilization = () => {
           >
             Select Department
           </div>
-          <SelectGroup style={{ width: '120px', zoom: '1.25' }}>
-            <Select options={deptOpts} />
+          <SelectGroup style={{ width: '160px', zoom: '1.25' }}>
+            <RadioSelect theme={themeUi} placeholder={"Select Department"} options={deptOpts} />
           </SelectGroup>
         </div>
         <div style={{ marginTop: '30px' }}>
@@ -547,7 +719,7 @@ const ResourceUtilization = () => {
               strictMode={false}
               width={250}
               defaultValue={horizonDays || 0}
-              handleChange={(e) => setHorizonDays && setHorizonDays(e)}
+              handleChange={(e) => { setHorizonDays && setHorizonDays(e), console.log(horizonDays) }}
               labelValueFormatter={(value: number) => value > 1 ? `${value}` : `${value}`}
             />
             <div>
@@ -571,6 +743,7 @@ const ResourceUtilization = () => {
 
   return (
     <div>
+      {isLoading && <OverlayLoader />}
       <MTOActionToolBar
         themeUi={themeUi}
         comp={"resourceUtilization"}
@@ -620,7 +793,7 @@ const ResourceUtilization = () => {
               suppressDragLeaveHidesColumns={true}
               ref={chartRef}
               options={
-                selectedGraphState === "wipLimit"
+                (selectedGraphState === "wipLimit")
                   ? wipOptions
                   : utilizationOptions
               }
@@ -635,8 +808,13 @@ const ResourceUtilization = () => {
             <VerticalTitle>Analytics</VerticalTitle>
             <div data-testid="custom-select" style={{ width: "100%" }}>
 
-              <Select
+              <RadioSelect
+                styles={{ width: '100%' }}
+                theme={themeUi}
+                placeholder={'Select CCR'}
+                value={defaultCCR ? defaultCCR : selectedCCR}
                 options={ccrOpts}
+                onChange={(e: any) => { setSelectedCCR(e), setDefaultCCR(e) }}
               />
             </div>
           </SectionFlex>
@@ -697,10 +875,7 @@ const ResourceUtilization = () => {
                   <ColoredMarker color="#E53F3F" />
                   Over Limit
                 </MarkerWrapper>
-                <MarkerWrapper>
-                  <ColoredMarker color="#A2A2A2" />
-                  Other
-                </MarkerWrapper>
+
               </CalenderLabel>
               <CalenderWrapper>
                 <CalenderHeading data-testid="wipControl">WIP Control</CalenderHeading>
