@@ -10,8 +10,9 @@ interface ColorValues {
 
 export const ColorPriorityCellRenderer = styled.div<ColorValues>`
     position: relative;
-    height: 20px;
-    width: 70px;
+    height: 70%;
+    width: 90%;
+    max-width: 150px;
     background: #000000 0% 0% no-repeat padding-box;
     &::before {
         content: '';

@@ -29,7 +29,7 @@ export const BMDepSubHeaderWraper = styled.div`
 export const NoDataAvailableContainer = styled.div`
       border: 2px dashed #ccc;
       width: 100%;
-      height: 90%;
+      height: 70%;
       display: flex;
       align-items: center;
       justify-content: center;
