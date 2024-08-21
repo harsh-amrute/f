@@ -190,7 +190,6 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
                     }}
                     Icon={(props:any)=>{
                         const data = props.props.data;
-                        console.log(props);
                         const color = data.fol === data.minFol? "green": "red";
                         return <div style={{color:color, display:"flex", alignItems:"center", gap:"5px"}}><FOLIcon width={(data.fol/data.maxFol)*100} color={color}/><span>[{data.fol}]</span></div>
                     }}
