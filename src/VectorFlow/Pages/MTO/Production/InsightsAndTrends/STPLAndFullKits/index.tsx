@@ -33,7 +33,7 @@ const STPLAndFullKits = () => {
   }
 
   useEffect(() => {
-    getGraphData({graphFlag: 1});
+    getGraphData({graphflag: 1});
   }, [])
 
   useEffect(() => {

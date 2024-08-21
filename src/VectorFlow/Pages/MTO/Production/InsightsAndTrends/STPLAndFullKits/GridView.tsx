@@ -26,14 +26,13 @@ const GridView = () => {
 
     const handlePageChange = async (currPage: number) => {
       setCurrentPage(currPage);
-      getGridData({graphFlag: 0, page: currPage});
+      getGridData({graphflag: 0, page: currPage});
   }
 
     const getGridData = async (params: any) => {
         try {
           const response = await getSTPLandFullkitInDaysData(params);
-          const data = response?.data?.data?.results?.map((row: any) => row[0]);
-          setGridData(data);
+          setGridData(response?.data?.data?.results);
           setTotalRow(response?.data?.data?.count)
         }
         catch (e) {

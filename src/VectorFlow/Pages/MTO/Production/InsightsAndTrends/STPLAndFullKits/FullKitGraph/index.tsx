@@ -159,8 +159,7 @@ const FullKitGraph = (props: any) => {
 
   useEffect(()=>{
     if(graphData){
-      const data = Object.keys(graphData)?.map((key: any) => ({ ccr_n: key, days: graphData[key] }));
-      setRawData(data);
+      setRawData(graphData);
     }
   },[graphData])
 
