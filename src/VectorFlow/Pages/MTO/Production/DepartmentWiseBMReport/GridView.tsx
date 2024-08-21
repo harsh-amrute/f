@@ -6,11 +6,12 @@ interface GridProps {
     agGridProps: any
     columDef: any
     convercolumnDef: any
-    reference: any
-    updateReason: () => void
-    handlePageChange: (e:any) =>any
-    totalRow:number
-    currentPage:number
+    reference?: any
+    updateReason?: () => void
+    handlePageChange: (e: any) => any
+    totalRow?: any
+    currentPage?: any,
+    saveBtn?: boolean
 }
 
 const GridView = ({
@@ -21,7 +22,8 @@ const GridView = ({
     updateReason,
     handlePageChange,
     totalRow,
-    currentPage }: GridProps) => {
+    currentPage,
+    saveBtn=true }: GridProps) => {
 
 
     return (
@@ -60,12 +62,15 @@ const GridView = ({
                 currentPage={currentPage}
                 handleChangePage={handlePageChange}
             />
-
-            <SaveBtnWrapper style={{ margin: '0px 5px 10px' }}>
-                <SaveBtn onClick={updateReason}>
-                    Save Remark
-                </SaveBtn>
-            </SaveBtnWrapper>
+            {
+                saveBtn && (
+                    <SaveBtnWrapper style={{ margin: '0px 5px 10px' }}>
+                        <SaveBtn onClick={updateReason}>
+                            Save Remark
+                        </SaveBtn>
+                    </SaveBtnWrapper>
+                )
+            }
         </>
     )
 }

@@ -26,9 +26,9 @@ import { /*orderStatus, orderStatusData, ElapsedTime, ElapsedTimeData, */Agieing
 
 interface orderElapsedGridProps {
     isTrue?: boolean
-    data: any
+    data?: any
     deptName: [],
-    selectedOrderCount: string
+    selectedOrderCount?: string
 }
 
 

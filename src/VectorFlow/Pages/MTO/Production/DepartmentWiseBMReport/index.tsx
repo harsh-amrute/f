@@ -13,7 +13,6 @@ import { Allotment } from 'allotment';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
 import useViewPort from '../../../../../hooks/useViewPort';
 import OrderElapsedGrid from './OrderElapsedGrid';
-import ColorCellRenderer from '../../Common/ColorCellRenderer';
 import AgeingCellRenderer from './AgeingIconCellRenderer';
 import customCellRenderer from './CustomCellRenderer';
 import RowGroupRenderer from './RowGroupRenderer';
@@ -26,6 +25,7 @@ import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers
 import { toast } from 'react-toastify';
 import OverlayLoader from '../../Common/Loader';
 import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
+import BPPRenderer from '../../Common/BPPRenderer';
 
 
 interface ApiResponse {
@@ -121,7 +121,7 @@ const DptWiseBMReport = () => {
 
     const customCellRenderers = useMemo(() => (
         {
-            "colorCellRenderer": ColorCellRenderer,
+            "colorCellRenderer": BPPRenderer,
             "AgeingCellRenderer": AgeingCellRenderer,
             "customCellRenderer": customCellRenderer,
             "RemarkHistoryRenderer": RemarkHistoryRenderer,
@@ -314,12 +314,12 @@ const DptWiseBMReport = () => {
                 "scc": "Calculate Attributes",
                 "children": [
                     {
-                        "cc": "ElapsedDays",
+                        "cc": "ed",
                         "cp": 18,
                         "hd": "Elapsed Days",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Elap_days",
+                        "scc": "ed",
 
                     },
                     {
@@ -342,12 +342,12 @@ const DptWiseBMReport = () => {
                 "scc": "Order Attribute",
                 "children": [
                     {
-                        "cc": "PlantName",
+                        "cc": "pn",
                         "cp": 20,
                         "hd": "Plant Name",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Pl_Nam",
+                        "scc": "pn",
 
                     },
                     {
@@ -482,12 +482,12 @@ const DptWiseBMReport = () => {
 
                     },
                     {
-                        "cc": "Latest Remark",
+                        "cc": "lr",
                         "cp": 29,
                         "hd": "Latest Remark",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Latest Remark",
+                        "scc": "lr",
                     },
                     {
 
@@ -534,7 +534,7 @@ const DptWiseBMReport = () => {
                 cellRenderer: child.cc === 'ec' ? "customCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
                 columnGroupShow: child.cgs,
-                pinned: child.cc === 'Remark' || child.cc === 'Latest Remark' || child.scc === 'Remark History' ? 'right' : undefined,
+                pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
                 editable: child.cc === 'Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 cellRendererParams: child.hd.includes("Remark") ? {
@@ -571,7 +571,7 @@ const DptWiseBMReport = () => {
             setWIPCheck(wip)
             const gridData = await getDeptWiseBMReportData({ 'wip': wip === true ? 1 : 0, 'curr': page });
             setGridData(gridData?.data?.data?.results)
-            //console.log('first',gridData?.data?.data)
+            console.log('first',gridData?.data?.data)
             setGridDataCount(gridData?.data?.data?.count)
         }
         catch (e) {
@@ -614,6 +614,8 @@ const DptWiseBMReport = () => {
         // Convert Set to Array and return
         return Array.from(departmentNames);
     };
+
+    const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
 
     const getSelectedRow = async () => {
         const selectedData = refGraph1.current?.api.getSelectedRows();
