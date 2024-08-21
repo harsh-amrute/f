@@ -64,11 +64,8 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                 arr.sort((a, b) => {
                     // Compare by 'crdd' first
-                    console.log(a);
                     const aCrdd = new Date(a.cedd);
                     const bCrdd = new Date(b.cedd);
-                    console.log(aCrdd)
-                    console.log(bCrdd)
 
                     if (aCrdd < bCrdd) return -1;
                     if (aCrdd > bCrdd) return 1;
@@ -77,8 +74,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                     const aOrderIdNum = parseInt(a.oid.replace(/\D/g, ''));
                     const bOrderIdNum = parseInt(b.oid.replace(/\D/g, ''));
-                    console.log(aOrderIdNum);
-                    console.log(bOrderIdNum);
+
                     // If 'crdd' is equal, compare by 'orderId'
                     if (aOrderIdNum < bOrderIdNum) return -1;
                     if (aOrderIdNum > bOrderIdNum) return 1;
@@ -97,7 +93,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         setTimeout(() => {
             allotment.current.reset();
             // if (routeDiv.current?.offsetHeight)
-                // setRouteDivHeight(routeDiv.current.offsetHeight);
+            // setRouteDivHeight(routeDiv.current.offsetHeight);
         }, 0);
         //RouteDiv Position Calculate and move it to state instead of ref
     }, [rowsSelectedForAssignment])
@@ -110,6 +106,9 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
 
     const customization = {
+        OrderID: {
+            cellRenderer: "agGroupCellRenderer"
+        },
         Route: {
             pinned: "right",
             lockPosition: true,
@@ -364,7 +363,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         try {
             const ccr_prev_pending: any = {};
             const ordersForDDQ = [...rowData]
-            console.log("rowData", ordersForDDQ)
+            // console.log("rowData", ordersForDDQ)
             const promises = ordersForDDQ.map(async (order: any) => {
                 if (order.prodc && order.rn) {
                     const order_ccr_data: any = {};
@@ -562,7 +561,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 });
 
                 calculateEstimatedDueDate(newRows).then((data) => {
-                    if(data){
+                    if (data) {
                         setRows(data);
                         setSelectedBuffers([])
                         setSelectedRoute([])
@@ -866,11 +865,17 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         else if (row.rid) {
                                             selectedRoutes.add(row.rid);
                                         }
+                                        else {
+                                            selectedRoutes.add(null);
+                                        }
                                         if (row.nprid) {
                                             selectedProdBuffer.add(row.nprid);
                                         }
                                         else if (row.prid) {
                                             selectedProdBuffer.add(row.prid);
+                                        }
+                                        else {
+                                            selectedProdBuffer.add(null)
                                         }
                                         if (row.npcid) {
                                             selectedProcBuffer.add(row.npcid);
@@ -878,18 +883,28 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         else if (row.pcid) {
                                             selectedProcBuffer.add(row.pcid);
                                         }
+                                        else {
+                                            selectedProcBuffer.add(null)
+                                        }
                                     })
-                                    const isAssignmentPossible = ([1].includes(selectedRoutes.size)) && ([0, 1].includes(selectedProdBuffer.size)) && ([0, 1].includes(selectedProcBuffer.size))
-                                    // const isAssignmentPossible = (selectedRoutes.size == 1 )&&(selectedProdBuffer.size == 1 )&&(selectedProcBuffer.size == 1)
+                                    let isAssignmentPossible = true; //if only one order is selected
+                                    if (selected.length > 1) {
+                                        isAssignmentPossible = ([1].includes(selectedRoutes.size)) && ([1].includes(selectedProdBuffer.size)) && ([1].includes(selectedProcBuffer.size))
+                                    }
                                     if (!isAssignmentPossible) {
                                         setSelectedBuffers([])
                                         setSelectedRoute([])
                                     }
-                                    if (selectedRoutes.size == 1) {
-                                        const routeDetails = await getRoute([...selectedRoutes][0]);
+                                    const routeId = [...selectedRoutes][0]
+                                    if (selectedRoutes.size == 0) {
+                                        setSelectedRoute([])
+                                    }
+                                    else if (selectedRoutes.size == 1 && routeId != null) {
+                                        const routeDetails = await getRoute(routeId);
                                         setSelectedRoute(routeDetails);
                                     }
-                                    if ((selectedProdBuffer.size == 1 || selectedProcBuffer.size == 1)) {
+                                    // TODO: check this condition -> check for null
+                                    if (((selectedProdBuffer.size == 1) || (selectedProcBuffer.size == 1))) {
                                         const buffer: any = getBuffer([...selectedProdBuffer], [...selectedProcBuffer]);
                                         setSelectedBuffers(buffer)
                                     }
@@ -1013,7 +1028,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 }
                 {!rowsSelectedForAssignment &&
                     <Allotment.Pane preferredSize={"50%"} key={4}>
-                        <Wrapper style={{ justifyContent: "center", alignItems: "center", background: "white", margin: "20px 10px", height: "calc(100% - 30px)", color: "grey", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px" }}>
+                        <Wrapper style={{ justifyContent: "center", alignItems: "center", background: "white", margin: "20px 10px", height: "calc(100% - 30px)", color: "grey", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", overflow: "hidden" }}>
                             <div style={{ fontSize: "16px" }}>No Data to Display</div>
                             <div style={{ fontSize: "12px" }}>Please Select Orders to Process</div>
                         </Wrapper>
