@@ -1,5 +1,5 @@
 import { GridOptions } from 'ag-grid-enterprise';
-import { useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { getColumnDefinations } from '../../../../../../../helpers/utils';
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
@@ -10,12 +10,22 @@ import './styles.css'
 import { SCDynamicContainer } from './styles';
 import ColorCellRenderer from '../../../../../MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/ColorCellRenderer';
 import _ from 'lodash';
-const GridView = () => {
+import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFPagination';
+import { notifyError, notifySuccess } from '../../../../../../../helpers/notify';
+import { useGetElapsedTimeData } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
+import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader';
+const GridView = ({uiConfig}: any) => {
     const gridRef = useRef(null);
-    const HeaderData = gridColumnConfig;
-    // const [HeaderData, setHeaderData] = React.useState(gridColumnConfig);
-    // const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-    // const reportName = "ElapsedTime";
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalRows, setTotalRows] = useState(1);
+    const [data, setData] = useState([]);
+    const { mutateAsync: getElapsedTimeData, isLoading } = useGetElapsedTimeData()
+
+    
+    useEffect(()=>{
+        getGridData()
+    }, [currentPage])
+
 
     const defaultColDef = {
         // suppressMenu: true,
@@ -54,7 +64,7 @@ const GridView = () => {
     };
 
     const colDefCustomizations = {
-        'tags': {
+        'Tags': {
             tooltipValueGetter: (params: any) => params.value,
             cellRenderer: TagCellToolTip,
             cellStyle: {
@@ -62,40 +72,39 @@ const GridView = () => {
                 justifyContent: "center",
             }
         },
-        'bpp': {
+        'BPP': {
             cellRenderer: ColorCellRenderer,
         },
     }
 
-    // // const setColumnDef = async () => {
-    // //     try {
-    // //         const response = await getUIConfigData(reportName);
-    // //         setHeaderData(response?.data?.data);
-    // //     }
-    // //     catch (e) {
-    // //         console.log(e);
-    // //     }
-    // // }
 
-    // // React.useEffect(() => {
-    // //     setColumnDef();
-    // // }, [])
-
-
-    // // React.useEffect(() => {
-    const newHeader = _.cloneDeep(HeaderData);
-    console.log('Header Data', HeaderData)
-    console.log('coldef customs', colDefCustomizations);
-
-    const colDef = getColumnDefinations(newHeader, colDefCustomizations)
+    const colDef = useMemo(()=>getColumnDefinations(uiConfig, colDefCustomizations),[])
     // }, [])
     // }, [HeaderData])
 
+    const getGridData = async () => {
+        try{
+            const data = await getElapsedTimeData({page: currentPage, graphFlag: 0});
+            setData(data?.data?.data?.results)
+            setTotalRows(data?.data?.data?.count)
+            notifySuccess("Data Fetched Successfully!")
+        }
+        catch(err: any){
+            console.log(err)
+            notifyError("Something Went Wrong")
+        }
+        
+    }
+
+    const handlePageChange = async (currPage: number) => {
+        setCurrentPage(currPage)
+      }
 
 
     return (
 
         <SCDynamicContainer className="ag-theme-planning-custom">
+            {isLoading && <OverlayLoader/>}
             <VFTable
                 {...gridOptions}
                 sideBar={{
@@ -104,18 +113,18 @@ const GridView = () => {
                 defaultColDef={defaultColDef}
                 columnDefs={colDef}
                 disableZoomScaling
-                rowData={APIMock}
+                rowData={data}
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}
                 ref={gridRef}
-                statusBar={{
-                    statusPanels: [
-                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                    ]
-                }}
-                pagination
+                // statusBar={{
+                //     statusPanels: [
+                //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                //     ]
+                // }}
             />
+            <VFPagination selectedRows={1} totalRows={totalRows} currentPage={currentPage} rowsPerPage={10} handleChangePage={handlePageChange} />
         </SCDynamicContainer>
 
     )

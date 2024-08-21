@@ -185,7 +185,10 @@ export const SCDynamicContainer = styled.div`
       }
   }
 
-  
+  & div[data-testid="vf_pagination"]{
+    margin-top: -20px;
+    padding: 0 20px;
+  }
    
 
     

@@ -6,8 +6,10 @@ import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAn
 import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
 import Select from 'react-select'
 import { useGetDeptMasterData, useGetPlantMasterData } from '../../../../../../../VectorFlow/Services/MTO/Common/Masters'
+import RadioSelect from '../../../../../../../components/VectorFLOW/commons/MTO/RadioSelect'
+import { useUserData } from '../../../../../../../context'
 
-const WeekWiseGraph = () => {
+const WeekWiseGraph = ({handleSelectionChange, chartTableData, chartData, plant, dept}: any) => {
 
     const { mutateAsync: getPlantMasterData } = useGetPlantMasterData();
     const { mutateAsync: getDeptMasterData } = useGetDeptMasterData();
@@ -18,6 +20,12 @@ const WeekWiseGraph = () => {
     const [plntOpts, setPlntOpts] = useState([]);
     const [tableLoading, setTableLoading] = useState(false);
     const [chartLoading, setChartLoading] = useState(false);
+
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
+
+    const [selectedPlant, setSelectedPlant] = useState(plant);
+    const [selectedDept, setSelectedDept] = useState(dept);
 
 
 
@@ -59,7 +67,7 @@ const WeekWiseGraph = () => {
 
         plntOpts?.forEach &&
             plntOpts?.forEach((e: any) => {
-                const eachPlant = { value: e.plant_name, label: e.plant_name }
+                const eachPlant = { value: e.plant_id, label: e.plant_name }
 
                 newPlantOptions.push(eachPlant);
             })
@@ -70,7 +78,7 @@ const WeekWiseGraph = () => {
 
         depOpts?.forEach &&
             depOpts?.forEach((e: any) => {
-                const eachDep = { value: e.dept_name, label: e.dept_name }
+                const eachDep = { value: e.dept_id, label: e.dept_name }
 
                 newDepOptions.push(eachDep);
             })
@@ -81,7 +89,7 @@ const WeekWiseGraph = () => {
     const graph1 = ['This box plot graph highlights the trend of statistical distribution of elapsed time for the selected plant-department']
 
     const handleSubmitClick = () => {
-        console.log('button clicked')
+        handleSelectionChange(selectedPlant, selectedDept)
     }
 
     const generateHeader = () => {
@@ -101,11 +109,11 @@ const WeekWiseGraph = () => {
                     >
                         <div style={{ display: 'flex', alignItems: 'center', marginLeft: '10px' }}>
                             <p style={{ fontWeight: 'bold', paddingRight: '5px' }}>Plant </p>
-                            <Select options={selectOptionsPlnt} />
+                            <RadioSelect theme={themeUi} options={selectOptionsPlnt} value={selectedPlant} onChange={(newValue: any) => {setSelectedPlant(newValue)}}/>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <p style={{ fontWeight: 'bold', paddingRight: '5px' }}>Department </p>
-                            <Select options={selectOptionsDep} />
+                            <RadioSelect theme={themeUi} options={selectOptionsDep} value={selectedDept} onChange={(newValue: any) => {setSelectedDept(newValue)}}/>
                         </div>
                         <div>
                             <img
@@ -156,10 +164,21 @@ const WeekWiseGraph = () => {
             toolbar: {
                 show: true,
                 tools: {
-                    download: true,
+                    download: '<img src="/assets/img/mto/RMPMBufferTrend/download.svg" class="ico-download" width="14">',
                     customIcons: [],
                 },
             },
+            export: {
+                csv: {
+                  filename: `Elapsed Time Trend: Statistical Distribution For The Selected Department`,
+                },
+                svg: {
+                  filename: `Elapsed Time Trend: Statistical Distribution For The Selected Department`,
+                },
+                png: {
+                  filename: `Elapsed Time Trend: Statistical Distribution For The Selected Department`,
+                }
+              },
         },
 
         grid: {
@@ -248,29 +267,29 @@ const WeekWiseGraph = () => {
 
 
 
-    const chartData: any = [
-        { x: "Feb 2024", y: [2, 5, 8, 11, 14] },
-        { x: "Mar 2024", y: [2, 3, 5, 6, 8] },
-        { x: "May 2024", y: [1, 3, 4, 5, 9] },
-        { x: "Jun 2024", y: [2, 4, 6, 8, 10] },
-        { x: "July 2024-WK 1", y: [3, 5, 7, 9, 11] },
-        { x: "July 2024-WK 2", y: [3, 5, 7, 9, 11] },
-        { x: "July 2024-WK 3", y: [3, 5, 7, 9, 11] },
-        { x: "July 2024-WK 4", y: [3, 5, 7, 9, 11] },
-        { x: "Aug 2024-WK 1", y: [3, 6, 9, 12, 15] },
+    // const chartData: any = [
+    //     { x: "Feb 2024", y: [2, 5, 8, 11, 14] },
+    //     { x: "Mar 2024", y: [2, 3, 5, 6, 8] },
+    //     { x: "May 2024", y: [1, 3, 4, 5, 9] },
+    //     { x: "Jun 2024", y: [2, 4, 6, 8, 10] },
+    //     { x: "July 2024-WK 1", y: [3, 5, 7, 9, 11] },
+    //     { x: "July 2024-WK 2", y: [3, 5, 7, 9, 11] },
+    //     { x: "July 2024-WK 3", y: [3, 5, 7, 9, 11] },
+    //     { x: "July 2024-WK 4", y: [3, 5, 7, 9, 11] },
+    //     { x: "Aug 2024-WK 1", y: [3, 6, 9, 12, 15] },
 
-    ];
+    // ];
 
 
-    const GraphTableData = [
-        { 'week': 'Jul2024-Wk1', 'LW': 1, 'Q1': 3, 'Q2': 4, 'Q3': 7, 'HW': 9 },
-        { 'week': 'Jul2024-Wk2', 'LW': 2, 'Q1': 4, 'Q2': 5, 'Q3': 8, 'HW': 10 },
-        { 'week': 'Jul2024-Wk3', 'LW': 3, 'Q1': 5, 'Q2': 6, 'Q3': 9, 'HW': 11 },
-        { 'week': 'Jul2024-Wk4', 'LW': 4, 'Q1': 6, 'Q2': 7, 'Q3': 10, 'HW': 12 },
-        { 'week': 'Aug2024-Wk1', 'LW': 5, 'Q1': 7, 'Q2': 8, 'Q3': 11, 'HW': 13 },
-        { 'week': 'Aug2024-Wk2', 'LW': 6, 'Q1': 8, 'Q2': 9, 'Q3': 12, 'HW': 14 },
-        { 'week': 'Aug2024-Wk3', 'LW': 7, 'Q1': 9, 'Q2': 10, 'Q3': 13, 'HW': 15 },
-    ]
+    // const chartTableData = [
+    //     { 'week': 'Jul2024-Wk1', 'LW': 1, 'Q1': 3, 'Q2': 4, 'Q3': 7, 'HW': 9 },
+    //     { 'week': 'Jul2024-Wk2', 'LW': 2, 'Q1': 4, 'Q2': 5, 'Q3': 8, 'HW': 10 },
+    //     { 'week': 'Jul2024-Wk3', 'LW': 3, 'Q1': 5, 'Q2': 6, 'Q3': 9, 'HW': 11 },
+    //     { 'week': 'Jul2024-Wk4', 'LW': 4, 'Q1': 6, 'Q2': 7, 'Q3': 10, 'HW': 12 },
+    //     { 'week': 'Aug2024-Wk1', 'LW': 5, 'Q1': 7, 'Q2': 8, 'Q3': 11, 'HW': 13 },
+    //     { 'week': 'Aug2024-Wk2', 'LW': 6, 'Q1': 8, 'Q2': 9, 'Q3': 12, 'HW': 14 },
+    //     { 'week': 'Aug2024-Wk3', 'LW': 7, 'Q1': 9, 'Q2': 10, 'Q3': 13, 'HW': 15 },
+    // ]
 
 
 
@@ -283,27 +302,27 @@ const WeekWiseGraph = () => {
         },
         {
             headerName: 'LW',
-            field: 'LW',
+            field: 'lw',
             resizable: true,
         },
         {
             headerName: 'Q1',
-            field: 'Q1',
+            field: 'q1',
             resizable: true,
         },
         {
             headerName: 'Q2',
-            field: 'Q2',
+            field: 'q2',
             resizable: true,
         },
         {
             headerName: 'Q3',
-            field: 'Q3',
+            field: 'q3',
             resizable: true,
         },
         {
             headerName: 'HW',
-            field: 'HW',
+            field: 'uw',
             resizable: true,
         },
     ];
@@ -327,9 +346,9 @@ const WeekWiseGraph = () => {
                 setChartLoading={setChartLoading}
                 boxChartData={chartData}
                 boxChartOptions={boxChartOptions}
-                rowData={GraphTableData}
-                graphTitle={`Department-Wise Elapsed Time Distribution For Closed Orders`}
-                tableTitle={`Department-Wise Elapsed Time Distribution For Closed Orders`}
+                rowData={chartTableData}
+                graphTitle={`Elapsed Time Trend: Statistical Distribution For The Selected Department`}
+                tableTitle={`Elapsed Time Trend: Statistical Distribution For The Selected Department`}
                 dateStr={`(${moment(date).subtract(90, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
                 colDef={columnDefinitions}
                 header={generateHeader}
