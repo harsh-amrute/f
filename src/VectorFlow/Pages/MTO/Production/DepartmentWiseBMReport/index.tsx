@@ -26,6 +26,8 @@ import { toast } from 'react-toastify';
 import OverlayLoader from '../../Common/Loader';
 import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import BPPRenderer from '../../Common/BPPRenderer';
+import { IRowNode } from 'ag-grid-enterprise';
+import { FirstDataRenderedEvent } from 'ag-grid-community';
 
 
 interface ApiResponse {
@@ -118,6 +120,7 @@ const DptWiseBMReport = () => {
     const [deptName, setDeptName] = useState<any>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [gridDataCount, setGridDataCount] = useState<number>(0);
+    
 
     const customCellRenderers = useMemo(() => (
         {
@@ -125,6 +128,7 @@ const DptWiseBMReport = () => {
             "AgeingCellRenderer": AgeingCellRenderer,
             "customCellRenderer": customCellRenderer,
             "RemarkHistoryRenderer": RemarkHistoryRenderer,
+            //"EditableRender": isCellEditable
             //"TextBoxCellRenderer": TextBoxCellRenderer,
         }), []);
 
@@ -525,6 +529,7 @@ const DptWiseBMReport = () => {
 
     };
 
+
     const mapApiResponseToColDefs = (apiResponse: ApiResponse[]): ColDef[] => {
         const mapChildren = (children: ApiResponse[]): ColDefChild[] => {
             return children.map(child => ({
@@ -571,7 +576,7 @@ const DptWiseBMReport = () => {
             setWIPCheck(wip)
             const gridData = await getDeptWiseBMReportData({ 'wip': wip === true ? 1 : 0, 'curr': page });
             setGridData(gridData?.data?.data?.results)
-            console.log('first',gridData?.data?.data)
+            //console.log('first', gridData?.data?.data)
             setGridDataCount(gridData?.data?.data?.count)
         }
         catch (e) {
@@ -618,38 +623,73 @@ const DptWiseBMReport = () => {
     const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
 
     const getSelectedRow = async () => {
+
         const selectedData = refGraph1.current?.api.getSelectedRows();
-        if (selectedData.length > 0) {
-            //console.log('selected', selectedData.length)
-            const selectedOrderKeys: orderkeyObj[] = []
-            selectedData.map((ele: any) => {
-                selectedOrderKeys.push(ele.ok)
-            })
-            //console.log('slectedOrder',selectedOrderKeys)
-            const fetcDeptWiseWiphData = async () => {
-                try {
-                    const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
-                    //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
-                    setDeptWiseWipData(DeptWiseWipData?.data?.data);
-                    const departmentNames = extractDepartmentNames(DeptWiseWipData?.data?.data);
-                    //console.log('DeptWiseWipData===',departmentNames);
-                    setDeptName(departmentNames);
-                } catch (error) {
-                    notifyError('Failed to fetch data');
+
+        // To persist the state
+        if (selectedData) {
+            let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
+
+            selectedData.forEach((newItem: any) => {
+                const index = mergedData.findIndex((item: any) => item.oid === newItem.oid);
+
+                if (index !== -1) {
+                    // If the item exists, replace it
+                    mergedData[index] = newItem;
+                } else {
+                    // Otherwise, add the new item
+                    mergedData.push(newItem);
                 }
-                // finally {
-                //     DeptWiseLoading(false);
-                // }
-            };
-            fetcDeptWiseWiphData();
-            setIsOrderElapsedGrid(true)
-        } else {
-            setDeptWiseWipData('');
-            setIsOrderElapsedGrid(false)
+            });
+
+            gridData.forEach((item: any) => {
+                let isThere = 0;
+                selectedData.forEach((selectedD: any) => {
+                    if (selectedD.oid === item.oid) {
+                        isThere = 1;
+                    }
+                })
+
+                if (isThere == 0) {
+                    mergedData = mergedData.filter((e: any) => e.oid !== item.oid)
+                }
+            })
+
+            setMasterSelectedRowData(mergedData);
+            //console.log("masterDataaa", mergedData)
+
+            ///
+
+            if (mergedData.length > 0) {
+                //console.log('selected', mergedData.length)
+                const selectedOrderKeys: orderkeyObj[] = []
+                mergedData.map((ele: any) => {
+                    selectedOrderKeys.push(ele.ok)
+                })
+                //console.log('slectedOrder',selectedOrderKeys)
+                const fetcDeptWiseWiphData = async () => {
+                    try {
+                        const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
+                        //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
+                        setDeptWiseWipData(DeptWiseWipData?.data?.data);
+                        const departmentNames = extractDepartmentNames(DeptWiseWipData?.data?.data);
+                        //console.log('DeptWiseWipData===',departmentNames);
+                        setDeptName(departmentNames);
+                    } catch (error) {
+                        notifyError('Failed to fetch data');
+                    }
+                    // finally {
+                    //     DeptWiseLoading(false);
+                    // }
+                };
+                fetcDeptWiseWiphData();
+                setIsOrderElapsedGrid(true)
+            } else {
+                setDeptWiseWipData('');
+                setIsOrderElapsedGrid(false)
+            }
         }
     }
-
-
 
     // Handle cell value changes
     const onCellValueChanged = (event: any) => {
@@ -658,15 +698,11 @@ const DptWiseBMReport = () => {
         }
     };
 
-    // Initialize AG Grid API reference
-    /*   const onGridReady = (params: any) => {
-          refGraph1.current = params.api;
-      }; */
-
     const handleUpdateReason = async () => {
         //  console.log('editedRows', editedRows)
         try {
             if (refGraph1.current) {
+               
                 const updatedRow = gridData.filter((row: any) => editedRows.has(row.ok))
                 // console.log('updated row', updatedRow)
                 if (updatedRow.length > 0) {
@@ -702,6 +738,38 @@ const DptWiseBMReport = () => {
             console.log(e)
         }
     }
+
+    const existsInSelected = (reqOid: string): boolean => {
+        for (let index = 0; index < masterSelectedRowData.length; index++) {
+            const element: any = masterSelectedRowData[index];
+            if (element.oid === reqOid) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    const onFirstDataRendered = (params: FirstDataRenderedEvent<any>) => {
+        const nodesToSelect: IRowNode[] = [];
+
+        params.api.forEachNode((node: any) => {
+            if (node.data && node.data.oid && existsInSelected(node.data.oid)) {
+                node.data.Remark = masterSelectedRowData[0].Remark;
+                for (let index = 0; index < masterSelectedRowData.length; index++) {
+                    const element = masterSelectedRowData[index];
+                    if (element.oid === node.data.oid) {
+                        node.data.Remark = element.Remark;
+
+                    }
+                }
+                nodesToSelect.push(node);
+            }
+
+        });
+        params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
+    }
+
 
     const handlePageChange = async (currPage: number) => {
         //console.log('first,', currPage)
@@ -757,6 +825,9 @@ const DptWiseBMReport = () => {
         onSelectionChanged: getSelectedRow,
         onCellValueChanged: onCellValueChanged,
         //onGridReady: onGridReady
+        onFirstDataRendered: onFirstDataRendered,
+        onGridReady: onFirstDataRendered,
+        onRowDataUpdated: onFirstDataRendered,
     };
 
 
@@ -767,7 +838,13 @@ const DptWiseBMReport = () => {
                     comp={'DeptWiseBMReport'}
                     isAddFilterButton
                     isExcelExport
-                    quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={isWIPChecked} onChange={(e) => getInitialGridData(e.target.checked, 1)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show order with available WIP Only</strong></div>}
+                    quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
+                        <Checkbox
+                            checked={isWIPChecked}
+                            onChange={(e) => getInitialGridData(e.target.checked, 1)}
+                            theme={themeUi}
+                        />
+                        &nbsp;&nbsp; <strong>Show order with available WIP Only</strong></div>}
                 />
             </BMDepHeaderWraper>
 
@@ -799,7 +876,7 @@ const DptWiseBMReport = () => {
                                                 isTrue={isOrderElapsedGrid}
                                                 data={deptWiseWipData}
                                                 deptName={deptName}
-                                                selectedOrderCount={refGraph1.current?.api.getSelectedRows().length}
+                                                selectedOrderCount={masterSelectedRowData.length}
 
                                             />
                                         </BTRAllomentSection>

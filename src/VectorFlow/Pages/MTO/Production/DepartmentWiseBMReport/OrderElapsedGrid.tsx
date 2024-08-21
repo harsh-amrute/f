@@ -442,8 +442,6 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
       }
       
 
-
-
     useEffect(() => {
         if (data) {
             /**This will create the UI Configuration api response */
