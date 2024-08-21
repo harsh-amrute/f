@@ -29,18 +29,11 @@ import {
     DateIcon,
     DateTitle,
     DateValue,
-    SCChartSliderContainer,
-    /**Date component style end */
-    ChartHeaderRadioGroup,
-    RadioGroup,
-    SelectGroup,
     VFSelectedFilterLabel,
 } from './styles';
 import moment from 'moment';
 import { ReactElement, useState } from 'react';
 import { format } from 'date-fns';
-import VFRangeSlider from '../../VFRangeSlider';
-import CustomSelect from '../../../../../VectorFlow/Pages/MTO/Production/FullKitAssignement/Select';
 import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
 import { getSelectedFilters } from '../../../../../helpers/utils';
 
@@ -63,11 +56,6 @@ interface MTOActionToolBarProps {
     themeUi?: string;
     quickFilter?: ReactElement | null
     WIPFilter?: ReactElement | null
-    horizonDays?: number;
-    setHorizonDays?: (e: number) => void;
-    handleHorizonSubmit?: () => void;
-    selectedGraphState?: any;
-    updateGraphState?: (id: number, option: string) => void;
 
     //// new props
     isGoBackButton?: boolean
@@ -87,14 +75,10 @@ interface MTOActionToolBarProps {
     onOrderRelease?: () => void;
     onCheckBoxToggle?: any;
     isReleaseButtonDisabled?: boolean
-    plantOptions?: any
-    deptOptions?: any
-    selectedOptions?: any
     //// new props
 }
 
 const MTOActionToolBar = ({
-    comp,
     onDateChange,
     isGridView,
     setIsGridView,
@@ -105,11 +89,6 @@ const MTOActionToolBar = ({
     date,
     handleGoBack,
     themeUi,
-    horizonDays,
-    setHorizonDays,
-    handleHorizonSubmit,
-    updateGraphState,
-    selectedGraphState,
     isGoBackButton,
     isReleaseDate,
     isAsOnDate,
@@ -128,9 +107,6 @@ const MTOActionToolBar = ({
     quickFilter,
     onCheckBoxToggle,
     isReleaseButtonDisabled,
-    plantOptions,
-    deptOptions,
-    selectedOptions,
     WIPFilter
 }: MTOActionToolBarProps) => {
 

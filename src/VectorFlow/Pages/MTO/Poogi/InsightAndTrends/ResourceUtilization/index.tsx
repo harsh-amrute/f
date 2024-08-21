@@ -35,6 +35,8 @@ import { useGetCCRMasterData, useGetDeptMasterData, useGetPlantMasterData } from
 import VFRangeSlider from "../../../Common/VFRangeSlider";
 import RadioSelect from "../../../../../../components/VectorFLOW/commons/MTO/RadioSelect";
 import OverlayLoader from "../../../Common/Loader";
+import { toast } from "react-toastify";
+import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
 
 const ResourceUtilization = () => {
   const [chartLoading, setChartLoading] = useState(false);
@@ -47,20 +49,12 @@ const ResourceUtilization = () => {
   });
   const { user } = useUserData();
   const themeUi = user.user.theme_ui;
-  let firstCall = true;
-
-  const { mutateAsync: getResourceUtilizationData, isLoading } = useGetResourceUtilizationData();
+  const { mutateAsync: getResourceUtilizationData, isLoading, isSuccess, isError } = useGetResourceUtilizationData();
   const { mutateAsync: getPlantMaster } = useGetPlantMasterData();
   const { mutateAsync: getDeptMaster } = useGetDeptMasterData();
   const { mutateAsync: getCCRMaster } = useGetCCRMasterData();
-
   const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
   const date = apiResponseData?.data?.data;
-
-
-
-  const [startDate, setStartDate] = useState(moment(date).subtract(90, 'days').format().substring(0, 10));
-  const [endDate, setEndDate] = useState(moment(date).format().substring(0, 10));
   const [selectedCCR, setSelectedCCR] = useState<any>(undefined);
   const [defaultCCR, setDefaultCCR] = useState<any>();
   const [selectedPlant, setSelectedPlant] = useState();
@@ -72,7 +66,6 @@ const ResourceUtilization = () => {
   const [horizonClicked, setHorizonClicked] = useState(false);
 
   const [utilData, setUtilData] = useState<any>();
-  const [wipData, setWipData] = useState<any>();
   const [wipOverData, setWipOverData] = useState<any>();
   const [wipUnderData, setWipUnderData] = useState<any>();
 
@@ -143,9 +136,19 @@ const ResourceUtilization = () => {
       label: "Over Limit",
       value: "Over Limit",
     })
-    firstCall = false;
     GetData();
   }, [selectedCCR, horizonClicked])
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.dismiss()
+      notifySuccess("Fetched data successfully!")
+    }
+    if (isError) {
+      toast.dismiss()
+      notifyError("Failed to fetch data!")
+    }
+  }, [isSuccess, isError])
 
   useEffect(() => {
     console.log('Api Data....', apiData)
@@ -190,8 +193,6 @@ const ResourceUtilization = () => {
     setUtilizationOptions({ ...utilizationOptions, data: utilData })
   }, [utilData])
   useEffect(() => {
-    console.log('wipData.....', wipData)
-    // wipOptions.data = 
     setWipOptions({ ...wipOptions, data: wipOverData })
   }, [wipOverData, wipUnderData])
 
@@ -396,7 +397,7 @@ const ResourceUtilization = () => {
   })
 
   const [wipOptions, setWipOptions] = useState<AgChartOptions | any>({
-    data: wipData,
+    data: wipOverData,
 
     series: [
       {
@@ -673,7 +674,7 @@ const ResourceUtilization = () => {
             Select Plant
           </div>
           <SelectGroup style={{ width: '130px', zoom: '1.25' }}>
-            <RadioSelect theme={themeUi} placeholder={"Select Plant"} options={plantOpts} />
+            <RadioSelect theme={themeUi} placeholder={"Select Plant"} options={plantOpts} onSelectionChanged={(e: any) => { setSelectedPlant(e.value) }} />
             {/* <CustomSelect placeholder="Select Plant" value={selectedPlant} onSelectionChanged={(e: any) => { console.log("selected this", e) }} selected={false} options={plantOpts} optionsWidth={"100%"} /> */}
           </SelectGroup>
         </div>
@@ -691,7 +692,7 @@ const ResourceUtilization = () => {
             Select Department
           </div>
           <SelectGroup style={{ width: '160px', zoom: '1.25' }}>
-            <RadioSelect theme={themeUi} placeholder={"Select Department"} options={deptOpts} />
+            <RadioSelect theme={themeUi} placeholder={"Select Department"} options={deptOpts} onSelectionChanged={(e: any) => { setSelectedDept(e.value) }} />
           </SelectGroup>
         </div>
         <div style={{ marginTop: '30px' }}>
@@ -745,11 +746,6 @@ const ResourceUtilization = () => {
       <MTOActionToolBar
         themeUi={themeUi}
         comp={"resourceUtilization"}
-        horizonDays={horizonDays}
-        setHorizonDays={setHorizonDays}
-        handleHorizonSubmit={handleHorizonSubmit}
-        selectedGraphState={selectedGraphState}
-        updateGraphState={updateGraphState}
         WIPFilter={WIPFilter}
       />
       <HorizontalWrapper>
