@@ -37,3 +37,17 @@ export const SCHorizontalDivider = styled.hr`
     border: none;
     border-top:1px solid #B2B2B2;
 `
+
+export const VFChilWrapper = styled.div`
+ width: 100%;
+ height: 100%;
+ & .ag-theme-alpine{
+ --ag-header-background-color: rgb(255, 255, 255) !important;
+ --ag-header-foreground-color:rgb(0,0,0) !important;
+ }
+ & .ag-theme-noir-fusion{
+  --ag-header-background-color: rgb(255, 255, 255) !important;
+  --ag-header-foreground-color:rgb(0,0,0) !important;
+ }
+}
+`
