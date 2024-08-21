@@ -14,3 +14,10 @@ export const useGetDeptMasterData = () => {
         return MasterService.getDeptMasterData()
     })
 }
+
+
+export const useGetCCRMasterData = () => {
+    return useMutation(async () => {
+        return MasterService.getCCRMasterData()
+    })
+}
