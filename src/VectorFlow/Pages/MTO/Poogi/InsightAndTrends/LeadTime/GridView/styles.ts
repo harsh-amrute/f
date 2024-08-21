@@ -72,6 +72,11 @@ export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?:
       & .ag-cell {
         height: 100% !important
       }
+
+      & > div[data-testid="vf_pagination"]{
+        margin-top: -20px;
+        padding: 0 20px;
+      }
     
 `
 export const PaginationWrapper = styled.div`

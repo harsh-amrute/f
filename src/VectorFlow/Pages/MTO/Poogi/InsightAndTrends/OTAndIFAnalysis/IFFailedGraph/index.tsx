@@ -1,20 +1,24 @@
 import moment from 'moment'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
-import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import { AgChartOptions } from 'ag-charts-community'
-import { createSeriesDataIF, getMyColumnDefinitions, IFdata, TooltipRendererIF } from '../Data'
+import { createSeriesDataIF, getMyColumnDefinitions, TooltipRendererIF } from '../Data'
 
-const IFFailedGraph = () => {
+interface IFFailedGraphProps {
+    IFFailedData: any,
+}
+
+const IFFailedGraph = (props: IFFailedGraphProps) => {
+
+    const { IFFailedData } = props;
 
     const graph1 = ['This graph highlights the extent of Shortage in In-Full failed orders.']
 
     const [hideChart1, toggleChart1] = useState(false);
-
-
-
+    const [tableLoading, setTableLoading] = useState(false);
+    const [chartLoading, setChartLoading] = useState(false);
 
     const generateHeader = () => {
         return (
@@ -31,7 +35,7 @@ const IFFailedGraph = () => {
                         }}
                     >
                         <span style={{ fontWeight: 500 }}>Extent Of Shortages In IF Failed Orders &nbsp;</span>
-                        <span style={{ fontWeight: 350 }}>{`(${moment(date).format('D MMM YYYY')} - ${moment(date).add(90, 'days').format('D MMM YYYY')})`}</span>
+                        <span style={{ fontWeight: 350 }}>{`(${moment(IFFailedData?.start).format('D MMM YYYY')} - ${moment(IFFailedData?.end).format('D MMM YYYY')})`}</span>
                     </div>
                     <SCChartHeaderContainer>
 
@@ -48,25 +52,19 @@ const IFFailedGraph = () => {
         )
     }
 
-    const [tableLoading, setTableLoading] = useState(false);
-    const [chartLoading, setChartLoading] = useState(false);
     const labels = [
-        { text: "0-20%", color: "#F5B279", key: "0-20%" },
-        { text: "20%-40%", color: "#F09241", key: "20%-40%" },
-        { text: "40%-60%", color: "#E36A00", key: "40%-60%" },
-        { text: "60%-80%", color: "#AD5000", key: "60%-80%" },
-        { text: "80%-100%", color: "#6A3000", key: "80%-100%" }
+        { text: "0%-20%", color: "#F5B279", key: "0_2_p" },
+        { text: "20%-40%", color: "#F09241", key: "20_40_p" },
+        { text: "40%-60%", color: "#E36A00", key: "40_60_p" },
+        { text: "60%-80%", color: "#AD5000", key: "60_80_p" },
+        { text: "80%-100%", color: "#6A3000", key: "80_100_p" }
     ];
 
     const colDef: any = getMyColumnDefinitions(labels);
 
-
-    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
-
-    const date = apiResponseData?.data?.data;
     const options: AgChartOptions = {
         series: createSeriesDataIF(),
-        data: IFdata,
+        data: IFFailedData?.data || [],
         axes: [
             {
                 type: "category",
@@ -114,21 +112,15 @@ const IFFailedGraph = () => {
 
     }
 
-
-
-
-
     return (
         <div style={{ height: "100%", paddingBottom: '20px', display: 'flex', justifyContent: 'left', marginLeft: '10px' }}>
-
-
             <SplitGraphContainer
                 tableLoading={tableLoading}
                 chartLoading={chartLoading}
                 setTableLoading={setTableLoading}
                 setChartLoading={setChartLoading}
-                data={IFdata}
-                rowData={IFdata}
+                data={IFFailedData?.data || []}
+                rowData={IFFailedData?.data || []}
                 graphTitle={``}
                 tableTitle={``}
                 options={options}
