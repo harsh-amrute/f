@@ -29,6 +29,7 @@ import BPPRenderer from '../../Common/BPPRenderer';
 import { IRowNode } from 'ag-grid-enterprise';
 import { FirstDataRenderedEvent } from 'ag-grid-community';
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
+import { ColorsMTO } from '../../Common/Colors';
 
 interface ApiResponse {
     cc: string;
@@ -182,7 +183,7 @@ const DptWiseBMReport = () => {
                         "scc": "bpp",
                     },
                     {
-                        "cc": "DeptAgeing",
+                        "cc": "da",
                         "cp": 4,
                         "hd": "Dept Ageing",
                         "v": true,
@@ -511,6 +512,7 @@ const DptWiseBMReport = () => {
     const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
         try {
+            //console.log('data.rm', data.rm.length)
             // if (data.rm.length === 0) {
             const RemarkHistory = await getPoogIRemarks(data.ok)
             //console.log('RemarkHistory', RemarkHistory?.data?.data)
@@ -555,6 +557,8 @@ const DptWiseBMReport = () => {
                     border: '1px solid #b9bdba',
                     color: 'black',
                     padding: '1px'
+                } : child.cc === 'da' ? {
+                    'color': ColorsMTO.Pink.code
                 } : undefined
             }));
         };
@@ -710,9 +714,8 @@ const DptWiseBMReport = () => {
 
                 // Ensure that any ongoing editing is stopped and values are committed
                 api.stopEditing();
-
                 const updatedRow = gridData.filter((row: any) => editedRows.has(row.ok))
-                //console.log('updated row', updatedRow)
+                // console.log('updated row', updatedRow)
                 if (updatedRow.length > 0) {
                     let putData: UpdateRemarkObj[] = [];
                     updatedRow.forEach((e: any) => {
@@ -724,7 +727,7 @@ const DptWiseBMReport = () => {
                         }
                         putData.push(singleData);
                     })
-                    //console.log('putData', putData)
+                    // console.log('putData', putData)
                     const RemarkHistory = await addBMReportRemark(putData);
                     //console.log('REmakrf', RemarkHistory)
                     if (RemarkHistory.status === 200) {
