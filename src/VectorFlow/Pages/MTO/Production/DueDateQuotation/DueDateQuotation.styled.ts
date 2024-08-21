@@ -13,6 +13,10 @@ export const Wrapper = styled.div`
     & .ag-header-cell-text {
         text-align: center;
     }
+
+    & .ag-theme-alpine .ag-theme-alpine .ag-header-cell{
+        text-align: left;
+    }
     & > .ag-theme-alpine{
         flex: 1;
         height: 100%;
