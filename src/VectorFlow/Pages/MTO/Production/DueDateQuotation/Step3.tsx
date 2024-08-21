@@ -14,11 +14,14 @@ enum SchedulingType {
     Basket
 }
 
-const Step3 = forwardRef(({ columnData ,gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, scheduledOrders, setScheduledOrders }: any, ref: any) => {
+const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, scheduledOrders, setScheduledOrders }: any, ref: any) => {
 
 
-    
+
     const customization = {
+        OrderID: {
+            cellRenderer: "agGroupCellRenderer"
+        },
         CRDD: {
             pinned: "right",
             lockPosition: true,
@@ -101,7 +104,7 @@ const Step3 = forwardRef(({ columnData ,gridOptions, confirmedRows, setConfirmed
                 const [releaseDate, postOrderBuffer] = calculateReleaseDateAndPostOrderBuffer(dates.maxDateLno, order.dueDateLno, schedulingType, order);
                 obj.push({
                     ok: order.ok,
-                    dd: schedulingType === SchedulingType.Basket ? dates.maxDate: order.cdd,
+                    dd: schedulingType === SchedulingType.Basket ? dates.maxDate : order.cdd,
                     rd: releaseDate,
                     pobsz: postOrderBuffer
                 })
@@ -110,9 +113,9 @@ const Step3 = forwardRef(({ columnData ,gridOptions, confirmedRows, setConfirmed
             const data = await updateScheduleOrders({ orders: obj });
 
             const newScheduledOrders = new Set([...scheduledOrders])
-            
-            setConfirmedRows(confirmedRows.filter((row: any)=>{
-                if(orders.has(row.ok)){
+
+            setConfirmedRows(confirmedRows.filter((row: any) => {
+                if (orders.has(row.ok)) {
                     newScheduledOrders.add(row.ok);
                 }
                 return !orders.has(row.ok);
@@ -136,7 +139,7 @@ const Step3 = forwardRef(({ columnData ,gridOptions, confirmedRows, setConfirmed
     return (
         <>
             <VFTable
-                containerStyle={{padding:"1rem"}}
+                containerStyle={{ padding: "1rem" }}
                 key="scheduling"
                 ref={gridRef}
                 gridOptions={options}
