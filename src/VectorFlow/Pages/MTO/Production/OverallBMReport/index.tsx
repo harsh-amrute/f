@@ -7,7 +7,7 @@ import {
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
 import { Allotment } from 'allotment';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
-import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
+//import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
 import useViewPort from '../../../../../hooks/useViewPort';
 import { useUserData } from '../../../../../context';
 import { AgGridReactProps } from 'ag-grid-react';
@@ -57,7 +57,7 @@ interface ColDefChild {
 const OverallBmReport = () => {
     //console.log()
     const { screenHeight } = useViewPort();
-    const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
+    const [isWIPChecked, /*setWIPCheck*/] = useState<boolean>(true);
     const [coldefs, setColdef] = useState<any>();
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
@@ -65,7 +65,7 @@ const OverallBmReport = () => {
     const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
         try {
-            //console.log('onOpenRemarkHistory ', data)
+            console.log('onOpenRemarkHistory ', data)
             // if (data.rm.length === 0) {
             //     const RemarkHistory = await getPoogIRemarks(data.ok)
             //     if (RemarkHistory.data?.data === 'No remarks are present for the order') {
@@ -693,7 +693,7 @@ const OverallBmReport = () => {
         {
             "colorCellRenderer": BPPRenderer,
             "AgeingCellRenderer": AgeingCellRenderer,
-            //"customCellRenderer": customCellRenderer,
+            "customCellRenderer": customCellRenderer,
             "RemarkHistoryRenderer": RemarkHistoryRenderer,
         }), []);
 

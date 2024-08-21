@@ -14,8 +14,8 @@ import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../.
 import useViewPort from '../../../../../hooks/useViewPort';
 import OrderElapsedGrid from './OrderElapsedGrid';
 import AgeingCellRenderer from './AgeingIconCellRenderer';
-import customCellRenderer from './CustomCellRenderer';
-import RowGroupRenderer from './RowGroupRenderer';
+// import customCellRenderer from './CustomCellRenderer';
+// import RowGroupRenderer from './RowGroupRenderer';
 import RemarkHistoryRenderer from './RemarkHistoryRenderer';
 import BPRRemarkHistoryModal from './MTORemarkHistoryModal';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
@@ -127,7 +127,7 @@ const DptWiseBMReport = () => {
         {
             "colorCellRenderer": BPPRenderer,
             "AgeingCellRenderer": AgeingCellRenderer,
-            "customCellRenderer": customCellRenderer,
+            //"customCellRenderer": customCellRenderer,
             "RemarkHistoryRenderer": RemarkHistoryRenderer,
             //"EditableRender": isCellEditable
             //"TextBoxCellRenderer": TextBoxCellRenderer,
