@@ -81,20 +81,10 @@ const TrailDeptBalance = (props: any) => {
     return getColumnDefinations(columnConfigData?.tableColumn, {}, []);
   }, []);
 
-  const updateGraphState = () => {
-    if (actBtn.label === "Bal To Mfg.") {
-      setActBtn({
-        label: "Bal To Disp.",
-        value: "Bal To Disp.",
-      });
-      setRawData(graphData?.disp);
-    } else {
-      setActBtn({
-        label: "Bal To Mfg.",
-        value: "Bal To Mfg.",
-      });
-      setRawData(graphData?.mfg);
-    }
+  const updateGraphState = (capsule: any) => {
+
+    setActBtn(capsule);
+   
   };
   
   const handleChange = (option: any) => {
@@ -148,20 +138,6 @@ const TrailDeptBalance = (props: any) => {
             <p style={{ fontFamily: 'roboto', fontSize: '15px',fontWeight: '500', paddingRight: '5px' }}>Order Type </p>
             <Select styles={customStyles} placeholder="Select Order Type" options={orderTypeOptions} onChange={handleChange}/>
         </div>
-        {/* <SelectWrapper>
-          <SelectLabel>Order Type</SelectLabel>
-          <CustomSelect 
-            selected={orderType}
-            onChange={handleOrderTypeChange}
-            options={[
-             { label: "END TO END", value: "endToEnd" },
-             { label: "Fabric Sale", value: "fabricSale" },
-            ]} 
-            placeholder="Select Order Type" 
-            width={'180px'}
-            optionsWidth={'180px'}
-          />
-        </SelectWrapper> */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <CapsuleWrapper style={{ zoom: 1, padding: "4px" }}>
             <VFCapsule
@@ -176,7 +152,7 @@ const TrailDeptBalance = (props: any) => {
                   value: "Bal To Disp.",
                 },
               ]}
-              handleClick={() => updateGraphState()}
+              handleClick={updateGraphState}
             />
           </CapsuleWrapper>
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
@@ -216,8 +192,44 @@ const TrailDeptBalance = (props: any) => {
       : ProductionInsightsAndTrendsString.trailDeptDisp;
 
   useEffect(()=>{
-    setRawData(graphData?.mfg)
+    if(graphData?.mfg){
+      const response: any = graphData?.mfg;
+      const data: any =  Object.keys(response)?.map((key: string) => ({
+        trailDept: key, 
+        b: response[key]?.Black || 0, 
+        r: response[key]?.Red || 0, 
+        y: response[key]?.Yellow || 0, 
+        g: response[key]?.Green || 0, 
+        bl: response[key]?.Blue || 0, 
+        w: response[key]?.White || 0, 
+      }));
+      setRawData(data);
+    }
   },[graphData])
+
+  useEffect(()=>{
+
+    let response: any = {};
+    if (actBtn.label === "Bal To Mfg.") {
+      response = graphData?.disp || {};
+    } else {
+      response = graphData?.mfg || {};
+    }
+
+    const data: any =  Object.keys(response)?.map((key: string) => ({
+      trailDept: key, 
+      b: response[key]?.Black || 0, 
+      r: response[key]?.Red || 0, 
+      y: response[key]?.Yellow || 0, 
+      g: response[key]?.Green || 0, 
+      bl: response[key]?.Blue || 0, 
+      w: response[key]?.White || 0, 
+    }));
+    setRawData(data);
+    
+  },[actBtn])
+  
+  console.log(rawData, 'Raw DATA');
 
   return (
     <div

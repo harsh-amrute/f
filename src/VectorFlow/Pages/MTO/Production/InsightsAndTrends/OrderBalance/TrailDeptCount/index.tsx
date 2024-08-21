@@ -4,14 +4,14 @@ import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
-import { APIMock, columnConfigData } from "../OrderBalanceMockData";
+import { columnConfigData } from "../OrderBalanceMockData";
 import { format } from "date-fns";
 import { createSeriesData, TooltipRenderer } from "../OrderBalanceCommon";
 
 const TrailDeptCount = (props: any) => {
   const {graphData} = props;
   const [date] = useState(format(new Date(), "d MMM yyyy"));
-  const [rawData, setRawData] = useState([]);
+  const [rawData, setRawData] = useState<any>([]);
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -119,7 +119,22 @@ const TrailDeptCount = (props: any) => {
   };
 
   useEffect(()=>{
-    setRawData(graphData?.tdept_ord_cnt);
+
+    if(graphData?.tdept_ord_cnt){
+      const response: any = graphData?.tdept_ord_cnt;
+      const data: any =  Object.keys(response)?.map((key: string) => ({
+        trailDept: key, 
+        b: response[key]?.Black || 0, 
+        r: response[key]?.Red || 0, 
+        y: response[key]?.Yellow || 0, 
+        g: response[key]?.Green || 0, 
+        bl: response[key]?.Blue || 0, 
+        w: response[key]?.White || 0, 
+      }));
+      console.log(data, 'DatA');
+      setRawData(data);
+    }
+
   },[graphData])
 
   return (

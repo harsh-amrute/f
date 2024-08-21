@@ -124,9 +124,9 @@ const OrderBalance = () => {
   const toggleFilter = (state: boolean) => {
     setIsFilterOpen(state);
   }
-  const getGridData = async (isGraph: any) => {
+  const getGridData = async (params: any) => {
     try {
-      const response = await getOrderBalanceData(isGraph);
+      const response = await getOrderBalanceData(params);
       setGridData(response.data.data.results);
     }
     catch (e) {
@@ -135,10 +135,10 @@ const OrderBalance = () => {
     }
   }
 
-  const getGraphData = async (isGraph: any) => {
+  const getGraphData = async (params: any) => {
     try {
-      const response = await getOrderBalanceData(isGraph);
-      setGraphData(response.data.data);
+      const response = await getOrderBalanceData(params);
+      setGraphData(response?.data?.data[0]);
     }
     catch (e) {
       console.log(e);
@@ -148,8 +148,8 @@ const OrderBalance = () => {
   
   useEffect(() => {
     setColumnDef();
-    getGridData(0);
-    getGraphData(1);
+    getGridData({ graphflag: 0, page: 1});
+    getGraphData({ graphflag: 1, ordertype: 1 });
   }, [])
 
   useEffect(() => {
@@ -164,8 +164,6 @@ const OrderBalance = () => {
       notifyError("Failed to load data!")
     }
   }, [isSuccess, isError])
-
-
 
   return (
     <div style={{}}>
