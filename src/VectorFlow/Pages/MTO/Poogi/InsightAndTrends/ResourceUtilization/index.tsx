@@ -378,7 +378,7 @@ const ResourceUtilization = () => {
       },
     ],
     background: {
-      fill: "transparent", // Set the background to transparent
+      fill: "transparent",
     },
     legend: {
       position: "bottom",
@@ -390,10 +390,7 @@ const ResourceUtilization = () => {
           shape: "square",
         },
       },
-    },
-    // padding: {
-    //   bottom: 0,
-    // },
+    }
   })
 
   const [wipOptions, setWipOptions] = useState<AgChartOptions | any>({
