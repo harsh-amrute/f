@@ -7,6 +7,7 @@ import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VF
 import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { TooltipRenderer } from "../common";
+import moment from "moment";
 
 const OTIFFailureGraph = (props: any) => {
   const { month, graphData } =props; 
@@ -110,13 +111,13 @@ const OTIFFailureGraph = (props: any) => {
           }}
         >
           <span style={{ fontWeight: 500 }}>{`${ManufacturingHub.reasonHeading}  `}</span>
-          <span style={{ fontWeight: 300 }}>{`(${startDate} - ${endDate})`}</span>
+          <span style={{ fontWeight: 300 }}>{`(${endDate} - ${startDate})`}</span>
         </div>
         <div style={{ display: "flex" }}>
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
             <VFInfoToolTip
               infoList={[
-                `The graph highlights the top contriuting reasons behind OTIF failures for orders completed between ${startDate} - ${endDate}.`,
+                `The graph highlights the top contriuting reasons behind OTIF failures for orders completed between ${endDate} - ${startDate}.`,
               ]}
             />
           </div>
@@ -145,9 +146,10 @@ const OTIFFailureGraph = (props: any) => {
 
   useEffect(()=>{
     if(graphData){
-      setStartDate(graphData.start);
-      setEndDate(graphData.end);
-      setRawData(graphData.data);
+      setStartDate(month ==='current' ? moment().subtract(1, 'days').format('DD-MMM-YYYY') : moment().subtract(1, 'months').subtract(1, 'days').format('DD-MMM-YYYY'));
+      setEndDate(month ==='current' ?  moment().subtract(1, 'months').format('DD-MMM-YYYY') : moment().subtract(2, 'months').format('DD-MMM-YYYY'));
+      const data = Object.keys(graphData)?.map((key: string) => ({ r: key, co: graphData[key]}));
+      setRawData(data);
     }
   },[graphData])
 
