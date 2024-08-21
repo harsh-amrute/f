@@ -572,7 +572,7 @@ const SplitGraphContainer = ({
         refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
-            columns: ["week", "0-20%", "20%-40%", "40%-60%", "60%-80%", "80%-100%"],
+            columns: ["m", "0_2_p", "20_40_p", "40_60_p", "60_80_p", "80_100_p"],
           },
           chartThemeOverrides: {
             column: {
@@ -627,7 +627,7 @@ const SplitGraphContainer = ({
         refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
-            columns: ["week", "1-2 days", "3-7 days", "8-15 days", "16-30 days"],
+            columns: ["m", "1_2_d", "3_7_d", "8_15_d", "16_30_d"],
           },
           chartThemeOverrides: {
             column: {
