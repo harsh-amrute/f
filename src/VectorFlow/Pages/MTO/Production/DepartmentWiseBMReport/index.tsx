@@ -28,7 +28,7 @@ import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi
 import BPPRenderer from '../../Common/BPPRenderer';
 import { IRowNode } from 'ag-grid-enterprise';
 import { FirstDataRenderedEvent } from 'ag-grid-community';
-
+import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
 
 interface ApiResponse {
     cc: string;
@@ -105,6 +105,7 @@ const DptWiseBMReport = () => {
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const { mutateAsync: addBMReportRemark } = useAddBMReportRemark();
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
+    const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
     const [colDeflatest, setColdef] = useState([{}])
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [gridData, setGridData] = useState<any>();
@@ -120,7 +121,7 @@ const DptWiseBMReport = () => {
     const [deptName, setDeptName] = useState<any>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [gridDataCount, setGridDataCount] = useState<number>(0);
-    
+
 
     const customCellRenderers = useMemo(() => (
         {
@@ -536,7 +537,7 @@ const DptWiseBMReport = () => {
                 field: child.scc.trim(),
                 headerName: child.hd,
                 colId: child.hd,
-                cellRenderer: child.cc === 'ec' ? "customCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
+                cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
                 columnGroupShow: child.cgs,
                 pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
@@ -678,9 +679,7 @@ const DptWiseBMReport = () => {
                     } catch (error) {
                         notifyError('Failed to fetch data');
                     }
-                    // finally {
-                    //     DeptWiseLoading(false);
-                    // }
+                    
                 };
                 fetcDeptWiseWiphData();
                 setIsOrderElapsedGrid(true)
@@ -702,7 +701,7 @@ const DptWiseBMReport = () => {
         //  console.log('editedRows', editedRows)
         try {
             if (refGraph1.current) {
-               
+
                 const updatedRow = gridData.filter((row: any) => editedRows.has(row.ok))
                 // console.log('updated row', updatedRow)
                 if (updatedRow.length > 0) {
@@ -814,8 +813,8 @@ const DptWiseBMReport = () => {
             },
         },
         sideBar: sideBar,
-        masterDetail: true,
-        detailCellRenderer: RowGroupRenderer,
+        //masterDetail: true,
+        //detailCellRenderer: RowGroupRenderer,
         //detailCellRendererParams:RowGroupRenderer,
         paginationAutoPageSize: true,
         enterNavigatesVertically: true,
@@ -828,6 +827,44 @@ const DptWiseBMReport = () => {
         onFirstDataRendered: onFirstDataRendered,
         onGridReady: onFirstDataRendered,
         onRowDataUpdated: onFirstDataRendered,
+        masterDetail: true,
+        detailRowAutoHeight: true,
+        detailCellRendererParams: {
+            suppressMenu: true,
+            detailGridOptions: {
+                rowHeight: 45,
+                domLayout: "autoHeight",
+                autoGroupColumnDef: {
+                    headerName: "Item Name",
+                    cellRendererParams: {
+                        suppressCount: true
+                    }
+                },
+                columnDefs: [
+                    { field: "qty", headerName: "Requirement", },
+                    { field: "soh", headerName: "Stock", },
+                    { field: "wip", headerName: "WIP", },
+                    { field: "gap", headerName: "Gap", },
+                ],
+                defaultColDef: {
+                    flex: 1,
+                    suppressMenu: true,
+                    cellStyle: {
+                        fontSize: "16px",
+                        display: "flex",
+                        alignItems: "center"
+                    }
+                },
+                treeData: true,
+                getDataPath: (data: any) => {
+                    return data.path;
+                },
+            },
+            getDetailRowData: async (params: any) => {
+                const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
+                params.successCallback(data.data.data)
+            }
+        },
     };
 
 

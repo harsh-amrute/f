@@ -85,6 +85,7 @@ const RowGroupRenderer = (params: any) => {
       }, []);*/
 
     const generateGridOptions = (level: number): CustomGridOptions => {
+        //not in use anymore 
         const options: CustomGridOptions = {
             columnDefs: [
                 { field: "rmc", headerName: 'Item Code', cellRenderer: "agGroupCellRenderer" },

@@ -693,7 +693,7 @@ const OverallBmReport = () => {
         {
             "colorCellRenderer": BPPRenderer,
             "AgeingCellRenderer": AgeingCellRenderer,
-            "customCellRenderer": customCellRenderer,
+            //"customCellRenderer": customCellRenderer,
             "RemarkHistoryRenderer": RemarkHistoryRenderer,
         }), []);
 
