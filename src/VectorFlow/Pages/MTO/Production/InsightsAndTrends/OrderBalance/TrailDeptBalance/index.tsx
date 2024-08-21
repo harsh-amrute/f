@@ -4,13 +4,13 @@ import { AgChartOptions } from "ag-charts-community";
 import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
-import { columnConfigData, APIMock } from "../OrderBalanceMockData";
+import { columnConfigData } from "../OrderBalanceMockData";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { format } from "date-fns";
 import VFCapsule from "../../../../../../../components/VectorFLOW/commons/VFCapsule";
-import { CapsuleWrapper, SelectLabel, SelectWrapper } from "../styles";
+import { CapsuleWrapper } from "../styles";
 import { createSeriesData, TooltipRenderer } from "../OrderBalanceCommon";
-import Select from 'react-select'
+// import Select from 'react-select'
 
 
 const TrailDeptBalance = (props: any) => {
@@ -20,7 +20,7 @@ const TrailDeptBalance = (props: any) => {
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [rawData, setRawData] = useState([]);
-  const [orderType, setOrderType] = useState({});
+  // const [orderType, setOrderType] = useState({});
   const [actBtn, setActBtn] = useState({
     label: "Bal To Mfg.",
     value: "Bal To Mfg.",
@@ -87,39 +87,39 @@ const TrailDeptBalance = (props: any) => {
    
   };
   
-  const handleChange = (option: any) => {
-    setOrderType(option)
-    console.log("Selected option:", option);
-  };
+  // const handleChange = (option: any) => {
+  //   setOrderType(option)
+  //   console.log("Selected option:", option);
+  // };
 
-  const orderTypeOptions = [
-    { label: "END TO END", value: "endToEnd" },
-    { label: "Fabric Sale", value: "fabricSale" },
-   ];
+  // const orderTypeOptions = [
+  //   { label: "END TO END", value: "endToEnd" },
+  //   { label: "Fabric Sale", value: "fabricSale" },
+  //  ];
 
-   const customStyles = {
-    control: (provided: any) => ({
-      ...provided,
-      width: 180,
-    }),
-    menu: (provided: any) => ({
-      ...provided,
-      width: 180,
-    }),
-    placeholder: (provided: any) => ({
-      ...provided,
-      color: 'gray', // Customize the placeholder color
-      fontSize: '15px', // Customize the font size
-    }),
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? 'lightblue' : 'white',
-      color: 'black',
-      '&:hover': {
-        backgroundColor: 'lightgray',
-      },
-    }),
-  };
+  //  const customStyles = {
+  //   control: (provided: any) => ({
+  //     ...provided,
+  //     width: 180,
+  //   }),
+  //   menu: (provided: any) => ({
+  //     ...provided,
+  //     width: 180,
+  //   }),
+  //   placeholder: (provided: any) => ({
+  //     ...provided,
+  //     color: 'gray', // Customize the placeholder color
+  //     fontSize: '15px', // Customize the font size
+  //   }),
+  //   option: (provided: any, state: any) => ({
+  //     ...provided,
+  //     backgroundColor: state.isSelected ? 'lightblue' : 'white',
+  //     color: 'black',
+  //     '&:hover': {
+  //       backgroundColor: 'lightgray',
+  //     },
+  //   }),
+  // };
 
   const generateHeader = () => {
     return (
@@ -129,15 +129,15 @@ const TrailDeptBalance = (props: any) => {
           backgroundColor: "white",
           height: "40px",
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "end",
           alignItems: "center",
           width: "100%",
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', marginLeft: '30px' }}>
+        {/* <div style={{ display: 'flex', alignItems: 'center', marginLeft: '30px' }}>
             <p style={{ fontFamily: 'roboto', fontSize: '15px',fontWeight: '500', paddingRight: '5px' }}>Order Type </p>
             <Select styles={customStyles} placeholder="Select Order Type" options={orderTypeOptions} onChange={handleChange}/>
-        </div>
+        </div> */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <CapsuleWrapper style={{ zoom: 1, padding: "4px" }}>
             <VFCapsule
@@ -211,9 +211,9 @@ const TrailDeptBalance = (props: any) => {
 
     let response: any = {};
     if (actBtn.label === "Bal To Mfg.") {
-      response = graphData?.disp || {};
-    } else {
       response = graphData?.mfg || {};
+    } else {
+      response = graphData?.disp || {};
     }
 
     const data: any =  Object.keys(response)?.map((key: string) => ({
@@ -225,11 +225,13 @@ const TrailDeptBalance = (props: any) => {
       bl: response[key]?.Blue || 0, 
       w: response[key]?.White || 0, 
     }));
+    console.log(data, 'data');
+    
     setRawData(data);
     
   },[actBtn])
   
-  console.log(rawData, 'Raw DATA');
+  
 
   return (
     <div

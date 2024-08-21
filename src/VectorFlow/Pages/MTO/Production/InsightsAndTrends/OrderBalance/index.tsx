@@ -2,7 +2,6 @@ import { Allotment } from "allotment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { APIMock } from "./OrderBalanceMockData";
 import {
   BTRAllomentSection,
   BTRTableWrapper,
@@ -20,6 +19,7 @@ import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Comm
 import { useGetOrderBalanceData } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/OrderBalance";
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
+import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 
 const APIFilterConfig = {
   filSecVisConfig :  {
@@ -45,6 +45,8 @@ const OrderBalance = () => {
   const {mutateAsync: getOrderBalanceData, isLoading, isError, isSuccess } = useGetOrderBalanceData();
   const [gridData, setGridData] = useState([]);
   const [graphData, setGraphData] = useState<any>({});
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalRows, setTotalRows] = useState<number>(0);
 
   const reportName = "OrderBalance";
 
@@ -127,6 +129,7 @@ const OrderBalance = () => {
   const getGridData = async (params: any) => {
     try {
       const response = await getOrderBalanceData(params);
+      setTotalRows(response.data.data.count);
       setGridData(response.data.data.results);
     }
     catch (e) {
@@ -145,10 +148,15 @@ const OrderBalance = () => {
       notifyError('Failed to fetch Graph data!');
     }
   }
+
+  const handlePageChange = (current: any) => {
+    setCurrentPage(current);
+    getGridData({ graphflag: 0, page: current})
+  }
   
   useEffect(() => {
     setColumnDef();
-    getGridData({ graphflag: 0, page: 1});
+    getGridData({ graphflag: 0, page: currentPage});
     getGraphData({ graphflag: 1, ordertype: 1 });
   }, [])
 
@@ -202,6 +210,13 @@ const OrderBalance = () => {
                   { statusPanel: "agTotalRowCountComponent", align: "left" },
                 ],
               }}
+            />
+            <VFPagination
+                selectedRows={0}
+                rowsPerPage={10}
+                totalRows={totalRows}
+                currentPage={currentPage}
+                handleChangePage={handlePageChange}
             />
           </div>
         ) : (
