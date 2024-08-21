@@ -86,8 +86,8 @@ const EnquiryResponse = () => {
       if (existIndex !== -1) {
         simData[existIndex] = {
           ...simData[existIndex],
+          cnm: ((element.fol <= simData[existIndex].fol) ? element.cnm : simData[existIndex].cnm),
           fol: Math.min(simData[existIndex].fol, element.fol),
-          cnm: element.fol === simData[existIndex].fol ? element.cnm : simData[existIndex].cnm,
         };
       } else {
         simData.push({ ...element }); // Clone the object to avoid mutation
@@ -154,6 +154,7 @@ const EnquiryResponse = () => {
     if (filterData) {
 
       const simData = getTableSimData(filterData);
+      console.log('simData.....', simData)
       // const simData: any = [];
       return (
         <RmUICont style={{ background: 'white' }}>

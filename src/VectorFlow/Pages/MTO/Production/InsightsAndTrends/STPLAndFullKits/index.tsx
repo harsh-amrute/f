@@ -1,8 +1,7 @@
 import { Allotment } from "allotment";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { GridOptions } from "ag-grid-enterprise";
 import STPLGraph from "./STPLGraph";
 import FullKitGraph from "./FullKitGraph";
 import {
@@ -10,90 +9,47 @@ import {
   BTRTableWrapper,
   HorizontalViewWrapper,
 } from "./styles";
-import { APIMock } from "./StplAndFullKitsData";
-import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
-import OrderDetailsCellRenderer from "./OrderDetailsCellRenderer";
-import { getColumnDefinations } from "../../../../../../helpers/utils";
-import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import { useGetSTPLAndFullKitData } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/STPLAndFullKits";
+import OverlayLoader from '../../../Common/Loader';
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
+import GridView from "./GridView";
 
 const STPLAndFullKits = () => {
   const [isGridView, setIsGridView] = useState(false);
+  const { mutateAsync: getSTPLandFullkitInDaysData, isLoading, isError, isSuccess } = useGetSTPLAndFullKitData()
+  const [graphData, setGraphData] = useState<any>({});
+
   const { screenHeight } = useViewPort();
 
-  const gridRef = useRef();
-
-  const gridOptions: GridOptions = {
-    sideBar: {
-      toolPanels: [
-        {
-          id: 'columns',
-          labelDefault: 'Columns',
-          labelKey: 'columns',
-          iconKey: 'columns',
-          toolPanel: 'agColumnsToolPanel',
-          minWidth: 225,
-          maxWidth: 225,
-          width: 225
-        },
-        {
-          id: 'filters',
-          labelDefault: 'Filters',
-          labelKey: 'filters',
-          iconKey: 'filter',
-          toolPanel: 'agFiltersToolPanel',
-          minWidth: 180,
-          maxWidth: 400,
-          width: 250
-        }
-      ],
-    },
-    defaultColDef: {
-      flex: 1,
-      enableRowGroup: true,
-    },
-    groupDefaultExpanded: 0,
-    masterDetail: true,
-    detailRowHeight: 500,
-    detailCellRenderer: OrderDetailsCellRenderer,
-    detailCellRendererParams: {
-      innerHeight: 400,
-    },
-    rowGroupPanelShow: 'always'
-  };
-
-  const [HeaderData, setHeaderData] = useState([{}]);
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-
-  const reportName = "STPLAndFullKits";
-
-  const setColumnDef = async () => {
+  const getGraphData = async (params: any) => {
     try {
-      const response = await getUIConfigData(reportName);
-      setHeaderData(response.data.data);
+      const response = await getSTPLandFullkitInDaysData(params);
+      setGraphData(response.data.data);
     }
     catch (e) {
       console.log(e);
+      notifyError('Failed to fetch Graph data!');
     }
   }
 
   useEffect(() => {
-    setColumnDef();
+    getGraphData({graphflag: 1});
   }, [])
 
-
-
-  const colDefCustomizations = {
-    Plant: {
-      cellRenderer: "agGroupCellRenderer",
+  useEffect(() => {
+    if (isSuccess) {
+      notifySuccess("Fetched Data successfully!")
     }
-  }
-
-  const colDefs = useMemo(() => {
-    return getColumnDefinations(HeaderData, colDefCustomizations, [])
-  }, [HeaderData]);
+    if (isError) {
+      notifyError("Failed to load data!")
+    }
+  }, [isSuccess, isError])
 
   return (
     <div style={{}}>
+       {
+        isLoading && <OverlayLoader />
+      }
       <MTOActionToolBar
         comp={"stplAndFullKit"}
         isGridView={isGridView}
@@ -103,36 +59,19 @@ const STPLAndFullKits = () => {
       />
       <HorizontalViewWrapper style={{ marginTop: "20px" }}>
         {isGridView ? (
-          <div data-testid='grid-view'>
-            <VFTable
-              {...gridOptions}
-              columnDefs={colDefs}
-              rowData={APIMock?.grid}
-              tooltipHideDelay={100000}
-              tooltipShowDelay={0}
-              tooltipMouseTrack={true}
-              height={"95vh"}
-              ref={gridRef}
-              statusBar={{
-                statusPanels: [
-                  { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                ]
-              }}
-            />
-          </div>
-
+          <GridView />
         ) : (
           <BTRTableWrapper style={{ height: screenHeight - 200, margin: "0" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <STPLGraph />
+                  <STPLGraph graphData={graphData?.stpl}/>
                 </BTRAllomentSection>
               </Allotment.Pane>
 
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <FullKitGraph />
+                  <FullKitGraph graphData={graphData?.fk}/>
                 </BTRAllomentSection>
               </Allotment.Pane>
             </Allotment>
