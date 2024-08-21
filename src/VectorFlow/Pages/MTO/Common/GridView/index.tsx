@@ -1,23 +1,34 @@
 import { GridOptions } from 'ag-grid-enterprise';
-import React, { useRef } from 'react'
-import { getColumnDefinations } from '../../../../../../../helpers/utils';
-import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
-import CustomTagTooltip from '../../OTIFAnalysis/CustomTagTooltip';
-import TagCellToolTip from '../../OTIFAnalysis/TagCellRenderer/TagCellRenderer';
-import { APIMock, gridColumnConfig } from '../Data';
-import { useGetUIConfigData } from '../../../../../../Services/MTO/Common/UIConfig';
-import './styles.css'
+import { useEffect, useRef, useState } from 'react'
+import { getColumnDefinations } from '../../../../../helpers/utils';
+import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
+import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
+import './style.css'
 import { SCDynamicContainer } from './styles';
-import ColorCellRenderer from '../../../../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/ColorCellRenderer';
-const GridView = () => {
+import { notifyError, notifySuccess } from '../../../../../helpers/notify';
+import OverlayLoader from '../../../../../VectorFlow/Pages/MTO/Common/Loader';
+import CustomTagTooltip from '../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
+
+interface IGridViewProps {
+    getData : (isGraph: number) => any,
+    reportName: string,
+    isLoading: boolean,
+    isError: boolean,
+    isSuccess: boolean,
+    colDefCustomizations?: any
+}
+
+const GridView = (props: IGridViewProps) => {
+
+    const { getData, reportName, isLoading, isError, isSuccess, colDefCustomizations={} } = props;
+
     const gridRef = useRef(null);
-    const [colDef, setColDef] = React.useState([{}]);
-    const [HeaderData, setHeaderData] = React.useState(gridColumnConfig);
+    const [colDef, setColDef] = useState([{}]);
+    const [HeaderData, setHeaderData] = useState([]);
+    const [gridData, setGridData] = useState([]);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-    const reportName = "OTIFAnalysis";
 
     const defaultColDef = {
-        // suppressMenu: true,
         autoHeaderHeight: true,
         filter: "agTextColumnFilter",
         floatingFilter: true,
@@ -52,20 +63,6 @@ const GridView = () => {
         },
     };
 
-    const colDefCustomizations = {
-        Tags: {
-            tooltipValueGetter: (params: any) => params.value,
-            cellRenderer: TagCellToolTip,
-            cellStyle: {
-                display: 'flex',
-                justifyContent: "center",
-            }
-        },
-        BPP: {
-            cellRenderer: ColorCellRenderer,
-        },
-    }
-
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
@@ -76,20 +73,41 @@ const GridView = () => {
         }
     }
 
-    React.useEffect(() => {
+    const getGridData = async (isGraph: any) => {
+        try {
+          const response = await getData(isGraph);
+          setGridData(response.data.data.results);
+        }
+        catch (e) {
+          console.log(e);
+          notifyError('Failed to fetch Grid data!');
+        }
+    }
+
+    useEffect(() => {
+        getGridData(0);
         setColumnDef();
     }, [])
 
-
-    React.useEffect(() => {
+    useEffect(() => {
         setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
     }, [HeaderData])
 
-
+    useEffect(() => {
+        if (isSuccess) {
+          notifySuccess("Fetched Data successfully!")
+        }
+        if (isError) {
+          notifyError("Failed to load data!")
+        }
+    }, [isSuccess, isError])
 
     return (
 
         <SCDynamicContainer className="ag-theme-planning-custom">
+            {
+                isLoading && <OverlayLoader />
+            }
             <VFTable
                 {...gridOptions}
                 sideBar={{
@@ -98,7 +116,7 @@ const GridView = () => {
                 defaultColDef={defaultColDef}
                 columnDefs={colDef}
                 disableZoomScaling
-                rowData={APIMock?.grid}
+                rowData={gridData}
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}

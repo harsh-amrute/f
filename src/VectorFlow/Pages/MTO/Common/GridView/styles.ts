@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import * as gridSystem from '../../../../../../../styles/gridSystem'
+import * as gridSystem from '../../../../../styles/gridSystem'
 
 
 export const ApplyZoomOut = styled.div`
