@@ -12,25 +12,25 @@ import {
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
-// import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-// import { useGetOTIFAnalysisData } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTIFAnalysis";
-// import OverlayLoader from '../../../Common/Loader';
-// import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
+import OverlayLoader from '../../../Common/Loader';
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import CustomTagTooltip from "../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip";
 import TagCellToolTip from "../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer";
-import { gridColumnConfig, MockGraphData, MockGridData } from "./mockData";
+// import { gridColumnConfig, MockGraphData, MockGridData } from "./mockData";
+import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import { useTopFailureData } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/TopFailureReasons";
 
 
 const TopFailureReasons = () => {
   const [isGridView, setIsGridView] = useState(false);
   const { screenHeight } = useViewPort();
   const [HeaderData, setHeaderData] = useState([{}]);
-//   const { mutateAsync: getUIConfigData } = useGetUIConfigData();
-//   const { mutateAsync: getOTIFAnalysisData, isLoading, isError, isSuccess } = useGetOTIFAnalysisData();
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData();
+  const { mutateAsync: getTopFailureData, isLoading, isError, isSuccess } = useTopFailureData();
   const [colDef, setColDef] = useState([{}]);
   const [gridData, setGridData] = useState<any>([]);
   const [graphData, setGraphData] = useState<any>({});
-//   const reportName = "TopFailureReasons";
+  const reportName = "TopFailureReasons";
 
   const gridRef = useRef();
 
@@ -69,45 +69,47 @@ const TopFailureReasons = () => {
     },
   }
 
-//   const setColumnDef = async () => {
-//     try {
-//       const response = await getUIConfigData(reportName);
-//       setHeaderData(response.data.data);
-//     }
-//     catch (e) {
-//       console.log(e);
-//     }
-//   }
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
 
-//   const getGridData = async (isGraph: any) => {
-//     try {
-//       const response = await getOTIFAnalysisData(isGraph);
-//       setGridData(response.data.data.results);
-//     }
-//     catch (e) {
-//       console.log(e);
-//       notifyError('Failed to fetch Grid data!');
-//     }
-//   }
+  const getGridData = async (isGraph: any) => {
+    try {
+      const response = await getTopFailureData(isGraph);
+      const data = response.data.data.results?.map((row: any) => row[0]);
+
+      setGridData(data);
+    }
+    catch (e) {
+      console.log(e);
+      notifyError('Failed to fetch Grid data!');
+    }
+  }
   
-//   const getGraphData = async (isGraph: any) => {
-//     try {
-//       const response = await getOTIFAnalysisData(isGraph);
-//       setGraphData(response.data.data);
-//     }
-//     catch (e) {
-//       console.log(e);
-//       notifyError('Failed to fetch Graph data!');
-//     }
-//   }
+  const getGraphData = async (isGraph: any) => {
+    try {
+      const response = await getTopFailureData(isGraph);
+      setGraphData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+      notifyError('Failed to fetch Graph data!');
+    }
+  }
 
   useEffect(() => {
-    // setColumnDef();
-    // getGridData(0);
-    // getGraphData(1);
-    setHeaderData(gridColumnConfig);
-    setGridData(MockGridData);
-    setGraphData(MockGraphData)
+    setColumnDef();
+    getGridData(0);
+    getGraphData(1);
+    // setHeaderData(gridColumnConfig);
+    // setGridData(MockGridData);
+    // setGraphData(MockGraphData)
   }, []);
 
 
@@ -115,22 +117,22 @@ const TopFailureReasons = () => {
     setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
   }, [HeaderData])
 
-//   useEffect(() => {
-//     if (isSuccess) {
-//       notifySuccess("Fetched Data successfully!")
-//     }
-//     if (isError) {
-//       notifyError("Failed to load data!")
-//     }
-//   }, [isSuccess, isError])
+  useEffect(() => {
+    if (isSuccess) {
+      notifySuccess("Fetched Data successfully!")
+    }
+    if (isError) {
+      notifyError("Failed to load data!")
+    }
+  }, [isSuccess, isError])
 
-console.log(colDef,'COLUMN');
+  console.log(colDef, 'COL')
 
   return (
     <div>
-      {/* {
+      {
         isLoading && <OverlayLoader />
-      } */}
+      }
       <MTOActionToolBar
         isGridView={isGridView}
         setIsGridView={setIsGridView}
