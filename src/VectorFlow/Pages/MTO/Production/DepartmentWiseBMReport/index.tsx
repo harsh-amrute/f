@@ -121,7 +121,7 @@ const DptWiseBMReport = () => {
     const [deptName, setDeptName] = useState<any>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [gridDataCount, setGridDataCount] = useState<number>(0);
-
+    const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
 
     const customCellRenderers = useMemo(() => (
         {
@@ -511,15 +511,16 @@ const DptWiseBMReport = () => {
     const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
         try {
-            if (data.rm.length === 0) {
-                const RemarkHistory = await getPoogIRemarks(data.ok)
-                if (RemarkHistory.data?.data === 'No remarks are present for the order') {
-                    data.rm = []
-                }
-                else {
-                    data.rm = RemarkHistory.data?.data;
-                }
+            // if (data.rm.length === 0) {
+            const RemarkHistory = await getPoogIRemarks(data.ok)
+            //console.log('RemarkHistory', RemarkHistory?.data?.data)
+            if (RemarkHistory.data?.data === 'No remarks are present for the order') {
+                data.rm = []
             }
+            else {
+                data.rm = RemarkHistory.data?.data;
+            }
+            // }
             setRemarkHistory(data.rm)
             setIsRemarkHistoryOpen(true)
         }
@@ -621,7 +622,7 @@ const DptWiseBMReport = () => {
         return Array.from(departmentNames);
     };
 
-    const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
+
 
     const getSelectedRow = async () => {
 
@@ -679,7 +680,7 @@ const DptWiseBMReport = () => {
                     } catch (error) {
                         notifyError('Failed to fetch data');
                     }
-                    
+
                 };
                 fetcDeptWiseWiphData();
                 setIsOrderElapsedGrid(true)
@@ -693,6 +694,9 @@ const DptWiseBMReport = () => {
     // Handle cell value changes
     const onCellValueChanged = (event: any) => {
         if (event.data) {
+            // const updatedSet = new Set(editedRows);
+            // updatedSet.add(event.data.ok); // Assuming "ok" is the unique ID of the row
+            // setEditedRows(updatedSet);
             setEditedRows(prev => new Set(prev.add(event.data.ok)));
         }
     };
@@ -701,21 +705,26 @@ const DptWiseBMReport = () => {
         //  console.log('editedRows', editedRows)
         try {
             if (refGraph1.current) {
+                // Get the grid API reference
+                const api = refGraph1.current.api;
+
+                // Ensure that any ongoing editing is stopped and values are committed
+                api.stopEditing();
 
                 const updatedRow = gridData.filter((row: any) => editedRows.has(row.ok))
-                // console.log('updated row', updatedRow)
+                //console.log('updated row', updatedRow)
                 if (updatedRow.length > 0) {
                     let putData: UpdateRemarkObj[] = [];
                     updatedRow.forEach((e: any) => {
                         const singleData: any = {
                             "ok": e.ok,
-                            "dept": Number(e.td.split(' ')[1]),
+                            "dept": e.did,
                             "rm": e.Remark,
                             "user": user?.user?.name
                         }
                         putData.push(singleData);
                     })
-                    //console.log('putData',putData)
+                    //console.log('putData', putData)
                     const RemarkHistory = await addBMReportRemark(putData);
                     //console.log('REmakrf', RemarkHistory)
                     if (RemarkHistory.status === 200) {
@@ -823,6 +832,7 @@ const DptWiseBMReport = () => {
         pivotMode: false,
         onSelectionChanged: getSelectedRow,
         onCellValueChanged: onCellValueChanged,
+        stopEditingWhenCellsLoseFocus: true,
         //onGridReady: onGridReady
         onFirstDataRendered: onFirstDataRendered,
         onGridReady: onFirstDataRendered,
