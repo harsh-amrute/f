@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import "allotment/dist/style.css";
 import {
     SCChartContainer, SCHorizontalDivider
 } from '../styles';
 import { AgChartsReact } from "ag-charts-react";
 import { AgChartOptions, AgCharts } from "ag-charts-community";
-import { Order } from "../../../../../../types/MTO";
 import { InsightsAndTrendsString } from "../../../../Common/String";
 import { ProcurementSeriesDataFill, ProcurementSeriesDataYKey, ProcurementSeriesDataYName } from "../../../../Common/Enum";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
@@ -22,12 +21,6 @@ const GraphView = ({ shortageData }: any) => {
 
     const mydate = apiResponseData?.data?.data;
     const [date] = useState(`${moment(mydate).format('D MMM YYYY')} - ${moment(mydate).add(90, 'days').format('D MMM YYYY')}`)
-
-    const [rawData, setRawData] = useState(shortageData);
-
-    useEffect(() => {
-        setRawData(shortageData)
-    }, [shortageData])
 
 
     function TooltipRenderer({ datum, xKey }: any) {
@@ -54,13 +47,6 @@ const GraphView = ({ shortageData }: any) => {
     </div>`
     }
 
-    const calculateDaysDifference = (releaseDateStr: string) => {
-        const releaseDate = new Date(releaseDateStr);
-        const baseDate = new Date("2024-08-05");
-        const diffInTime = releaseDate.getTime() - baseDate.getTime();
-        const diffInDays = diffInTime / (1000 * 60 * 60 * 24);
-        return diffInDays;
-    };
 
     function createSeriesData(val: number) {
         const seriesData: any = [];
@@ -109,7 +95,6 @@ const GraphView = ({ shortageData }: any) => {
                     fontWeight: 'bold',
                     color: 'black',
                     formatter: (params) => {
-                        console.log('graphParams', params)
                         if (params.value === '1') {
                             return '0-7 Days'
                         }
@@ -163,8 +148,6 @@ const GraphView = ({ shortageData }: any) => {
 
     const chartRef = useRef<AgChartsReact>(null);
     const [hideChart1, toggleChart1] = useState(false);
-    const [gridLoading, setGridLoading] = useState(false);
-    console.log(gridLoading);
     const ColdDefs = [
         {
             colId: 'start_date',
@@ -284,7 +267,7 @@ const GraphView = ({ shortageData }: any) => {
                             (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart, { fileName: "RM_PM_Orderwise_Coverage" });
                         }}> <img height={12} width={12} src="/assets/img/mto/RMPMBufferTrend/download.svg" /></div>
                     </div>
-                    <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText="RM / PM Orderwise Coverage (01 July 2024 - 28 Sept 2024)" headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                    <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText={`RM / PM Orderwise Coverage ( ${date})`} headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div className="ag-theme-planning" style={{ width: '1000px' }}>
                             <VFTable
 
@@ -304,7 +287,7 @@ const GraphView = ({ shortageData }: any) => {
                                         { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                                         { statusPanel: 'agAggregationComponent', align: 'left' },
                                     ],
-                                }} onGridReady={() => { setGridLoading(false); generateChart() }}
+                                }} onGridReady={() => { generateChart() }}
                                 // getChartToolbarItems={getChartToolbarItems}
                                 chartToolPanelsDef={
                                     {

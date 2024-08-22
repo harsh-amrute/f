@@ -240,16 +240,11 @@ const RMPMOrderwiseCoverage = () => {
     }, [])
 
     useEffect(() => {
-        // setGraphDatas(apiGraphData)
         setConvertedData(mapDataToColumns(apiGridData, columnData));
-        // console.log('apps gridh data....', apiGridData)
     }, [apiGridData])
 
     useEffect(() => {
         setGraphDatas(apiGraphData)
-        console.log("apps graph data", apiGraphData)
-
-        // setConvertedData(mapDataToColumns(apiGridData, columnData));
     }, [apiGraphData])
 
 
