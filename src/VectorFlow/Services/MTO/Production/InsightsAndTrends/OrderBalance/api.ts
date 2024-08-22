@@ -10,5 +10,12 @@ export namespace OrderBalanceService {
             params
         })
     }
+    export const getOrderTypeOptions = async () => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrderTypeMasterData/`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+    }
 
 }

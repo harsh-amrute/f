@@ -8,6 +8,7 @@ import { SCDynamicContainer } from './styles';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import OverlayLoader from '../../../../../VectorFlow/Pages/MTO/Common/Loader';
 import CustomTagTooltip from '../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
+import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 
 interface IGridViewProps {
     getData : (isGraph: number) => any,
@@ -26,6 +27,8 @@ const GridView = (props: IGridViewProps) => {
     const [colDef, setColDef] = useState([{}]);
     const [HeaderData, setHeaderData] = useState([]);
     const [gridData, setGridData] = useState([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [totalRows, setTotalRows] = useState<number>(0);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
     const defaultColDef = {
@@ -73,10 +76,11 @@ const GridView = (props: IGridViewProps) => {
         }
     }
 
-    const getGridData = async (isGraph: any) => {
+    const getGridData = async (params: any) => {
         try {
-          const response = await getData(isGraph);
+          const response = await getData(params);
           setGridData(response.data.data.results);
+          setTotalRows(response.data.data.count)
         }
         catch (e) {
           console.log(e);
@@ -84,8 +88,13 @@ const GridView = (props: IGridViewProps) => {
         }
     }
 
+    const handlePageChange = (current: any) => {
+        setCurrentPage(current);
+        getGridData({ graphflag: 0, page: current})
+    }
+
     useEffect(() => {
-        getGridData(0);
+        getGridData({ graphflag: 0, page: currentPage});
         setColumnDef();
     }, [])
 
@@ -126,7 +135,13 @@ const GridView = (props: IGridViewProps) => {
                         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                     ]
                 }}
-                pagination
+            />
+            <VFPagination
+                selectedRows={0}
+                rowsPerPage={10}
+                totalRows={totalRows}
+                currentPage={currentPage}
+                handleChangePage={handlePageChange}
             />
         </SCDynamicContainer>
 

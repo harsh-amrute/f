@@ -10,17 +10,23 @@ import { format } from "date-fns";
 import VFCapsule from "../../../../../../../components/VectorFLOW/commons/VFCapsule";
 import { CapsuleWrapper } from "../styles";
 import { createSeriesData, TooltipRenderer } from "../OrderBalanceCommon";
+// <-------------- uncomment below code to enable dropdown for orderType    --------->
 // import Select from 'react-select'
 
 
 const TrailDeptBalance = (props: any) => {
-  const { graphData } = props;
+  const { 
+    graphData, 
+  // <-------------- uncomment below code to enable dropdown for orderType    --------->
+    // orderOptions,
+    // handleChange,
+    // orderType
+  } = props;
   const [date] = useState(format(new Date(), "d MMM yyyy"));
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [rawData, setRawData] = useState([]);
-  // const [orderType, setOrderType] = useState({});
   const [actBtn, setActBtn] = useState({
     label: "Bal To Mfg.",
     value: "Bal To Mfg.",
@@ -82,22 +88,12 @@ const TrailDeptBalance = (props: any) => {
   }, []);
 
   const updateGraphState = (capsule: any) => {
-
     setActBtn(capsule);
-   
   };
-  
-  // const handleChange = (option: any) => {
-  //   setOrderType(option)
-  //   console.log("Selected option:", option);
-  // };
 
-  // const orderTypeOptions = [
-  //   { label: "END TO END", value: "endToEnd" },
-  //   { label: "Fabric Sale", value: "fabricSale" },
-  //  ];
+  // <-------------- uncomment below code to enable dropdown for orderType    --------->
 
-  //  const customStyles = {
+  // const customStyles = {
   //   control: (provided: any) => ({
   //     ...provided,
   //     width: 180,
@@ -122,6 +118,8 @@ const TrailDeptBalance = (props: any) => {
   // };
 
   const generateHeader = () => {
+    // <-------------- uncomment below code to enable dropdown for orderType    --------->
+    // const options = orderOptions?.map((opt: any)=>({ label: opt.desc, value: opt.order_type }))
     return (
       <div
         className="title"
@@ -129,14 +127,17 @@ const TrailDeptBalance = (props: any) => {
           backgroundColor: "white",
           height: "40px",
           display: "flex",
-          justifyContent: "end",
+          // <-------------- uncomment below code to enable dropdown for orderType    --------->
+          // justifyContent: "space-between", 
+          justifyContent: "end",   
           alignItems: "center",
           width: "100%",
         }}
       >
+        {/* <-------------- uncomment below code to enable dropdown for orderType    ---------> */}
         {/* <div style={{ display: 'flex', alignItems: 'center', marginLeft: '30px' }}>
             <p style={{ fontFamily: 'roboto', fontSize: '15px',fontWeight: '500', paddingRight: '5px' }}>Order Type </p>
-            <Select styles={customStyles} placeholder="Select Order Type" options={orderTypeOptions} onChange={handleChange}/>
+            <Select styles={customStyles} placeholder="Select Order Type" options={options} onChange={handleChange}/>
         </div> */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <CapsuleWrapper style={{ zoom: 1, padding: "4px" }}>

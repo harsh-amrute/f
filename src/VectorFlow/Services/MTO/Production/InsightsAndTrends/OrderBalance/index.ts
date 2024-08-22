@@ -6,3 +6,9 @@ export const useGetOrderBalanceData = () => {
         return OrderBalanceService.getOrderBalanceData(params);
     })
 }
+
+export const useGetOrderTypeOptions = () => {
+    return useMutation(async () => {
+        return OrderBalanceService.getOrderTypeOptions();
+    })
+}
