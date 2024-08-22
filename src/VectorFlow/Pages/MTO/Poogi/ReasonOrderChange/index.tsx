@@ -286,7 +286,7 @@ const ReasonForDelayOrder = () => {
                     <VFTable
                         {...agGridProps}
                         paginationPageSize={10}
-                        height='750px'
+                        height='650px'
                         columnDefs={columnDef}
                         rowData={rowData}
                         pagination={false}

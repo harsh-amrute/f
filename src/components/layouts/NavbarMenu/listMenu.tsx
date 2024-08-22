@@ -600,7 +600,7 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.overallBMReport",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "",
+        url: "/production-planning-scheduling/overall-bm-report",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {

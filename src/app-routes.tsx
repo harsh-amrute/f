@@ -62,6 +62,7 @@ import OTAndIFAnalysis from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/OTAnd
 import ElapsedTime from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/ElapsedTime'
 import LeadTime from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/LeadTime'
 import TrendsOfFailureReason from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/TrendsOfFailureReason'
+import OverallBmReport from './VectorFlow/Pages/MTO/Production/OverallBMReport'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -138,7 +139,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/poogi/insight-and-trends/ot-and-if-analysis',
     '/poogi/insight-and-trends/top-failure-reasons',
     '/poogi/insight-and-trends/trend-of-failure-reason',
-    '/poogi/insight-and-trends/lead-time'
+    '/poogi/insight-and-trends/lead-time',
+    '/production-planning-scheduling/overall-bm-report',
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -812,6 +814,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<LeadTime />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/overall-bm-report',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OverallBmReport />)
         },
         ...getStoreTransferModuleRoutes()
       ]
