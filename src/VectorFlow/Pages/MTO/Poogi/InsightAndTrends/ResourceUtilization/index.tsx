@@ -391,9 +391,6 @@ const ResourceUtilization = () => {
         },
       },
     },
-    // padding: {
-    //   bottom: 0,
-    // },
   })
 
   const [wipOptions, setWipOptions] = useState<AgChartOptions | any>({

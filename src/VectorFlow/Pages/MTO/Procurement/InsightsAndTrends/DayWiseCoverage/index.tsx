@@ -13,7 +13,6 @@ import { DAYWISE_COVERAGE_ANALYTICS } from '../../../../../../redux/actions/MTO'
 import VFModalCard from '../../../../../../components/VectorFLOW/commons/VFModalCard';
 import MaterialRequirementComponent from '../../MaterialRequirement/MaterialRequirementComponent';
 import useMaterialReq from '../../MaterialRequirement/useMaterialRequirements';
-import "./style.css"
 
 
 enum Colors {
