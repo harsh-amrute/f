@@ -71,8 +71,7 @@ export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?:
 
       & .ag-cell {
         height: 100% !important
-      }
-    
+      }   
 `
 export const PaginationWrapper = styled.div`
 
@@ -103,6 +102,7 @@ export const ETACellValue = styled.p`
 export const SCDynamicContainer = styled.div`
     display:block;
     height:150vh;
+    
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
     .size.desktop}) {
         height:70vh
@@ -180,8 +180,9 @@ export const SCDynamicContainer = styled.div`
       }
   }
 
-  
-   
-
+  & div[data-testid="vf_pagination"]{
+    margin-top: -20px;
+    padding: 0 20px;
+  }
     
 `
