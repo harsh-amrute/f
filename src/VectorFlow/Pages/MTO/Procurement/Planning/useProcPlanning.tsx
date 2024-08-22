@@ -174,7 +174,7 @@ const useProcPlanning = (date: string) => {
 
             };
             initializeData(datas, HeaderData);
-            console.log("....", datas)
+            
         }
     }, [datas, HeaderData]);
 
@@ -237,8 +237,8 @@ const useProcPlanning = (date: string) => {
 
     const icons = useMemo(() => {
         return {
-            groupExpanded: `<img src="${'/assets/img/mto/procPlanning/minus_circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
-            groupContracted: `<img src="${'/assets/img/mto/procPlanning/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
+            groupExpanded: `<img src="${'/assets/img/mto/dayWiseCoverage/collapse.svg'}" style="height: 100%; width: 80%;"/>`,
+            groupContracted: `<img src="${'/assets/img/mto/dayWiseCoverage/expand.svg'}" style="height: 100%; width: 80%;"/>`,
         };
     }, []);
     const autoGroupColumnDef = useMemo(() => {
@@ -254,7 +254,7 @@ const useProcPlanning = (date: string) => {
         // const { user } = useUserData();
         // console.log("user...", user)
         if (user) {
-            console.log('user...', user)
+            //console.log('user...', user)
         }
         const inputJson: any = {
             "username": user?.user.name,
