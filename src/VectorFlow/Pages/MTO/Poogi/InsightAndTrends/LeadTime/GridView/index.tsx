@@ -10,7 +10,8 @@ import { SCDynamicContainer } from './styles';
 import ColorCellRenderer from '../../../../../MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/ColorCellRenderer';
 import { useGetLeadTimeData } from '../../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/LeadTime';
 import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFPagination';
-import { notifyError } from '../../../../../../../helpers/notify';
+import { notifyError, notifySuccess } from '../../../../../../../helpers/notify';
+import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader';
 
 const GridView = ({uiConfig}: any) => {
     const gridRef = useRef(null);
@@ -19,7 +20,7 @@ const GridView = ({uiConfig}: any) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(1);
     const [data, setData] = useState([]);
-    const { mutateAsync: getLeadTimeData } = useGetLeadTimeData()
+    const { mutateAsync: getLeadTimeData, isLoading } = useGetLeadTimeData()
 
     const defaultColDef = {
         // suppressMenu: true,
@@ -76,6 +77,7 @@ const GridView = ({uiConfig}: any) => {
             const data = await getLeadTimeData({page: currentPage, graphFlag: 0});
             setData(data?.data?.data?.results)
             setTotalRows(data?.data?.data?.count)
+            notifySuccess("Data Fetched Successfully!");
         }
         catch(err: any){
             console.log(err)
@@ -100,6 +102,7 @@ const GridView = ({uiConfig}: any) => {
     return (
 
         <SCDynamicContainer className="ag-theme-planning-custom">
+            {isLoading && <OverlayLoader/>}
             <VFTable
                 {...gridOptions}
                 sideBar={{
