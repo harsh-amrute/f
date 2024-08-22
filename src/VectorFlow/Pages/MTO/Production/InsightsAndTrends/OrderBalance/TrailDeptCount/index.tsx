@@ -131,7 +131,6 @@ const TrailDeptCount = (props: any) => {
         bl: response[key]?.Blue || 0, 
         w: response[key]?.White || 0, 
       }));
-      console.log(data, 'DatA');
       setRawData(data);
     }
 

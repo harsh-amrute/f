@@ -226,7 +226,6 @@ const TrailDeptBalance = (props: any) => {
       bl: response[key]?.Blue || 0, 
       w: response[key]?.White || 0, 
     }));
-    console.log(data, 'data');
     
     setRawData(data);
     
