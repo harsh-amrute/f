@@ -8,7 +8,7 @@ import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../.
 import { Allotment } from 'allotment';
 //import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
 import useViewPort from '../../../../../hooks/useViewPort';
-import { useUserData } from '../../../../../context';
+//import { useUserData } from '../../../../../context';
 import { AgGridReactProps } from 'ag-grid-react';
 import BPPRenderer from '../../Common/BPPRenderer';
 import AgeingCellRenderer from '../DepartmentWiseBMReport/AgeingIconCellRenderer';
@@ -105,8 +105,8 @@ const OverallBmReport = () => {
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
 
 
-    const { user } = useUserData();
-    const themeUi = user?.user?.theme_ui;
+    // const { user } = useUserData();
+    // const themeUi = user?.user?.theme_ui;
 
     const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
@@ -838,11 +838,11 @@ const OverallBmReport = () => {
                 mergedData.map((ele: any) => {
                     selectedOrderKeys.push(ele.ok)
                 })
-                console.log('slectedOrder', selectedOrderKeys)
+                //console.log('slectedOrder', selectedOrderKeys)
                 const fetchDeptWiseWiphData = async () => {
                     try {
                         const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
-                        console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
+                        //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
                         setDeptWiseWipData(DeptWiseWipData?.data?.data);
                         const departmentNames = extractDepartmentNames(DeptWiseWipData?.data?.data);
                         //console.log('DeptWiseWipData===',departmentNames);
