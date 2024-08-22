@@ -1,24 +1,60 @@
 import { Allotment } from 'allotment'
+import { useEffect, useState } from 'react'
+import { useTopFailureReasonData } from '../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/TrendsOfFailureReason'
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../../Common/SplitGraphContainer/styles'
 import DownTrend from './DownTrend'
 import EmgAndUnres from './EmgAndUnres'
+import OverlayLoader from '../../../Common/Loader';
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 
 const TrendsOfFailureReason = () => {
+
+    const [graphData, setGraphData] = useState<any>({});
+    const { mutateAsync: getTrendsFailureData, isLoading, isError, isSuccess } = useTopFailureReasonData();
+    
+
+    const getGraphData = async () => {
+        try {
+          const response = await getTrendsFailureData();
+          setGraphData(response.data.data);
+        }
+        catch (e) {
+          console.log(e);
+          notifyError('Failed to fetch Graph data!');
+        }
+    }
+
+    useEffect(() => {
+        getGraphData();
+      }, []);
+    
+      useEffect(() => {
+        if (isSuccess) {
+          notifySuccess("Fetched Data successfully!")
+        }
+        if (isError) {
+          notifyError("Failed to load data!")
+        }
+      }, [isSuccess, isError])
+      
     return (
         <>
+            {
+                isLoading && <OverlayLoader />
+            }
             <MTOActionToolBar isAddFilterButton />
             <HorizontalViewWrapper style={{ margin: '20px 14px', height: '85%', display: 'flex' }}>
                 <BTRTableWrapper style={{ flex: '1', margin: '0' }}>
                     <Allotment vertical={false} separator={false}   >
                         <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
                             <BTRAllomentSection>
-                                <EmgAndUnres />
+                                <EmgAndUnres graphData={graphData?.eu} />
                             </BTRAllomentSection>
                         </Allotment.Pane>
                         <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
                             <BTRAllomentSection>
-                                <DownTrend />
+                                <DownTrend graphData={graphData?.dt} />
                             </BTRAllomentSection>
                         </Allotment.Pane>
                     </Allotment>
