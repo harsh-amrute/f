@@ -16,7 +16,7 @@ import * as globalStyles from "../../../../../styles/global";
 import { Rectangle } from './RectangleMarker';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
-import { useGetFullKitAssignmentDataWithGraphData } from '../../../../../VectorFlow/Services/MTO/Production/FullKitAssignment';
+import { useGetFullKitAssignmentDataWithGraphData, useUpdateExcludedOrdersForFullkitAssignment, useUpdateOrSimulateStockAllocation } from '../../../../../VectorFlow/Services/MTO/Production/FullKitAssignment';
 import OverlayLoader from '../../Common/Loader';
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
 import VFPagination from '../../Common/VFPagination';
@@ -36,22 +36,31 @@ const FullKitAssignment = () => {
   const graph = useRef<any>();
   const grid = useRef<any>();
 
-  const [showOrdersWithFullKitReady, setShowOrdersWithFullKitReady] = useState(true);
+  // const [showOrdersWithFullKitReady, setShowOrdersWithFullKitReady] = useState(true);
+  // const [loadGraph, setLoadGraph] = useState(false);
+  // const [loadDataAfterSimulation, setLoadDataAfterSimulation] = useState(false)
   const [orders, setOrders] = useState([]);
   const [totalRows, setTotalRows]: any = useState(0)
   const [currentPage, setCurrentPage]: any = useState(1)
-  const [loadDataParams, setLoadDataParams] = useState<any>();
+  const [loadDataParams, setLoadDataParams] = useState<any>({
+    is_fullkit: true,
+    load_graph_data: false,
+    load_data_after_simulation: false,
+    page: 1 
+  });
   const [selectedRows, setSelectedRows] = useState<any>(new Map());
   const [graphData, setGraphData] = useState([]);
 
   const currentPageSelectedRows = useRef([]);
 
-  const { mutateAsync: getFullKitAssignmentDataWithGraphData, isLoading } = useGetFullKitAssignmentDataWithGraphData();
+  const { mutateAsync: getFullKitAssignmentDataWithGraphData, isLoading: isDataLoading } = useGetFullKitAssignmentDataWithGraphData();
+  const { mutateAsync: updateExcludedOrdersForFullkitAssignment,isLoading: excludeOrdersLoading } = useUpdateExcludedOrdersForFullkitAssignment();
+  const { mutateAsync: updateOrSimulateStockAllocation, isLoading: simulationLoading} = useUpdateOrSimulateStockAllocation();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
   const reportName = "FullKitAssignment";
 
-  const colDefCustomizations = {
+  const [colDefCustomizations, setColDefCustomizations] = useState({
     Route: {
       // tooltipField: "r"
       cellRenderer: (params: any) => {
@@ -75,7 +84,7 @@ const FullKitAssignment = () => {
       cellRenderer: ColorCellRenderer,
       minWidth: 150
     }
-  }
+  })
 
   const [extra, setExtra]: any = useState([])
 
@@ -98,13 +107,30 @@ const FullKitAssignment = () => {
       setTotalRows(data?.data?.data?.count)
     }
     else{
-      console.log("graph data", data);
+      // console.log("graph data", data);
       // setGraphData()
     }
   }
 
+
   const handlePageChange = async (currPage: number) => {
     setCurrentPage(currPage)
+  }
+
+  const excludeAndSimulate = async () => {
+    const username = user.user.name
+    const orders = Array.from(selectedRows.values()).map((order: any) =>{ return {on: order.data.on, lid: order.data.lid }})
+    const excluded = await updateExcludedOrdersForFullkitAssignment({orders, username}) 
+    if(excluded.status == 200){
+      const simulateOrders = await updateOrSimulateStockAllocation({username, is_simulated: true})
+      if(simulateOrders.status == 200){
+        setExtra([])
+        setSelectedRows(new Map())
+        // setShowOrdersWithFullKitReady(true);
+        // setLoadDataAfterSimulation(true)
+        setLoadDataParams({...loadDataParams, is_fullkit: true, load_data_after_simulation: true})
+      }
+    }
   }
 
   const renderUtilityBtns = useMemo(() => {
@@ -125,8 +151,22 @@ const FullKitAssignment = () => {
           style={{width:"unset"}}
           themeUi={themeUi}
           onClick={() => {
-            console.log()
+            //once the rows are excluded and simulated,
+            setEditMode("ExcludeSimulate"); // also set the new column definition
           }}>Exclude & Simulate</VFButtonOutline></>
+      }
+      case "ExcludeSimulate": {
+        return <>
+          <strong style={{marginRight: "1rem", cursor:"pointer"}} onClick={()=>{
+          setEditMode("Deselect")
+        }}>Cancel</strong>
+        <VFButtonOutline 
+          style={{width:"unset"}}
+          themeUi={themeUi}
+          onClick={() => {
+            console.log()
+          }}>Save Simulation</VFButtonOutline>
+        </>
       }
     }
   }, [editMode])
@@ -151,26 +191,29 @@ const FullKitAssignment = () => {
     setLoadDataParams({...loadDataParams, page: currentPage})
   }, [currentPage])
 
-  useEffect(()=>{
-    setLoadDataParams({
-      is_fullkit: showOrdersWithFullKitReady,
-      load_graph_data: false,
-      load_data_after_simulation: false,
-      page:1
-    });
-  }, [showOrdersWithFullKitReady])
+  // useEffect(()=>{
+  //   setLoadDataParams({
+  //     is_fullkit: showOrdersWithFullKitReady,
+  //     load_graph_data: loadGraph,
+  //     load_data_after_simulation: loadDataAfterSimulation,
+  //     page:1
+  //   });
+  // }, [showOrdersWithFullKitReady, loadGraph, loadDataAfterSimulation])
 
   
 
   useEffect(()=>{
     switch(editMode){
       case "View":{
-        // setShowOrdersWithFullKitReady(true)
-        setExtra([])
+        // setShowOrdersWithFullKitReady(true);
+        setLoadDataParams({...loadDataParams, is_fullkit: true})
+        setSelectedRows(new Map());
+        setExtra([]);
         break
       }
       case "Deselect":{
-        setShowOrdersWithFullKitReady(false)
+        // setShowOrdersWithFullKitReady(false)
+        setLoadDataParams({...loadDataParams, is_fullkit: false})
         setExtra([{
           field: "",
           headerCheckboxSelection: true,
@@ -182,9 +225,10 @@ const FullKitAssignment = () => {
         }])
         break
       }
-      // case "ExcludeSimulate":{
-
-      // }
+      case "ExcludeSimulate":{
+        // setShowOrdersWithFullKitReady(True)
+        excludeAndSimulate()
+      }
 
     }
   }, [editMode])
@@ -327,11 +371,10 @@ const FullKitAssignment = () => {
     <Wrapper>
       <MTOActionToolBar
         utilityBtns={renderUtilityBtns}
-        quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox style={{cursor: editMode != "View" ? "not-allowed" : "pointer"}} disabled={editMode != "View"} checked={showOrdersWithFullKitReady} onChange={(e: any) => setShowOrdersWithFullKitReady(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Orders with Full Kit Ready</strong></div>}
+        quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox style={{cursor: editMode != "View" ? "not-allowed" : "pointer"}} disabled={editMode != "View"} checked={loadDataParams.is_fullkit} onChange={(e: any) => setLoadDataParams({...loadDataParams, is_fullkit: e.target.checked})} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Orders with Full Kit Ready</strong></div>}
         isExcelExport isAddFilterButton
       />
-      {/* <button onClick={() => setShowModal(true)}>Click</button> */}
-      {isLoading && <OverlayLoader />}
+      {(isDataLoading || excludeOrdersLoading || simulationLoading) && <OverlayLoader/>}
       <VFTable
         ref={grid}
         rowData={orders}
@@ -353,17 +396,12 @@ const FullKitAssignment = () => {
           _.differenceWith(currentPageSelectedRows.current, params.api.getSelectedNodes(), _.isEqual).forEach((node: any) => {
             newMap.delete(node.data.on);
           }) 
-          //to sort within the same page
-          // params.api.getSelectedNodes().forEach((node: any) => {
-          //   newMap.delete(node.data.on);
-          // })
           params.api.getSelectedNodes().forEach((node: any) => {
             newMap.set(node.data.on, node);
           })
           setSelectedRows(newMap)
           currentPageSelectedRows.current = params.api.getSelectedNodes();
         }}
-        // rowSelection="multiple"
       // onSelectionChanged={(params) => {
       //   const selectedRoutes = new Set();
       //   params.api.getSelectedRows().forEach((row: any) => row.r.split(",").forEach((route: any) => selectedRoutes.add(route.trim())));

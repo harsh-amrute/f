@@ -35,6 +35,7 @@ export const Wrapper = styled.div`
   & > div[data-testid="vf_pagination"]{
     flex: unset;
     width:100%;
+    margin-top: -17px;
   }
 `;
 

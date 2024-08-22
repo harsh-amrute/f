@@ -16,4 +16,27 @@ export namespace FullKitAssignmentService {
             }
         })
     }
+
+    export const updateExcludedOrdersForFullkitAssignment = async (orders: any, username: string) => {
+        return await axios.post(process.env.REACT_APP_VF_API_HOST_MTO + `/updateExcludedOrdersForFullkitAssignment/`, {orders, username} ,{
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            }
+        })
+    }
+    
+    export const updateOrSimulateStockAllocation = async (is_simulated: boolean, username: string) => {
+        return await axios.post(process.env.REACT_APP_VF_API_HOST_MTO + `/UpdateOrSimulateStockAllocation/`, null,{
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+             params: {
+                username,
+                is_simulated, 
+             }
+        })
+    }
+    
 }
