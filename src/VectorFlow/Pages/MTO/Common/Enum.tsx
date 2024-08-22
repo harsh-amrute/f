@@ -5,10 +5,10 @@ export enum EnumKitStatus {
 }
 
 export enum ProcurementSeriesDataYKey {
-    soh = 0,
-    sit = 1,
-    po = 2,
-    or = 3
+    total_soh = 0,
+    total_sit = 1,
+    total_po = 2,
+    shortage = 3
 }
 export enum ProcurementSeriesDataYName {
     "Orders With Full Kit (On hand Stock)" = 0,
@@ -33,10 +33,10 @@ export enum OTIFTags {
 }
 
 export enum InputTypes {
-    TextCompare= "textCompare",
-    NumberCompare ="numberCompare",
-    MultiSelect="multiSelect",
-    Checkbox="checkbox",
-    Search="search",
-    Select="select"
+    TextCompare = "textCompare",
+    NumberCompare = "numberCompare",
+    MultiSelect = "multiSelect",
+    Checkbox = "checkbox",
+    Search = "search",
+    Select = "select"
 }

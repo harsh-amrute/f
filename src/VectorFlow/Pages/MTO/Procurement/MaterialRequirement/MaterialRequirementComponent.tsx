@@ -3,7 +3,7 @@ import moment from 'moment'
 import VFFloatingTab from '../../../../../components/VectorFLOW/commons/VFFloatingTab'
 import { MaterialRequirementHeading, MaterialRequirementTest, MaterialRequirementDate, MaterialRequiremetLayout } from './styles'
 
-const MaterialRequirementComponent = ({ currentTab, toggleCurrentTab, renderView, date}: any) => {
+const MaterialRequirementComponent = ({ currentTab, toggleCurrentTab, renderView, date }: any) => {
     return (
         <>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
