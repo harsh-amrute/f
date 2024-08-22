@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { CustomCellRendererProps } from '@ag-grid-community/react';
 import { RowEvent } from '@ag-grid-community/core';
 import { FlatIcon } from './styles';
 import { useGetBombLevelData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport';
 
 const customCellRenderer = (props: CustomCellRendererProps) => {
+//component not in use. Delete it later on 
 const { mutateAsync: getBombLevelData, /*isLoading :BombDataLoading*/ } = useGetBombLevelData();
     const { node } = props;
     const [expanded, setExpanded] = useState(node.expanded);
@@ -39,6 +40,7 @@ const { mutateAsync: getBombLevelData, /*isLoading :BombDataLoading*/ } = useGet
 
         <button data-testid='collapsable' style={{ fontSize: "18px", background: "transparent", fontWeight: "bold" }} onClick={onClick}>
             <FlatIcon src={expanded ? "/assets/img/mto/dayWiseCoverage/arrow_down.svg" : "/assets/img/mto/dayWiseCoverage/arrow_right.svg"} />
+            {props?.data?.plnt || ''}
         </button>
     )
 }

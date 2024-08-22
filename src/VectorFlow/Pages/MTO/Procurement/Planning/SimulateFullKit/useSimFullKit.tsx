@@ -134,8 +134,8 @@ const useSimFullKit = () => {
 
     const icons = useMemo(() => {
         return {
-            groupExpanded: `<img src="${'/assets/img/mto/procPlanning/minus_circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
-            groupContracted: `<img src="${'/assets/img/mto/procPlanning/add-circle.svg'}" style="height: 20px; width: 20px; padding-right: 2px; border-radius: 12px;"/>`,
+            groupExpanded: `<img src="${'/assets/img/mto/dayWiseCoverage/collapse.svg'}" style="height: 100%; width: 80%;"/>`,
+            groupContracted: `<img src="${'/assets/img/mto/dayWiseCoverage/expand.svg'}" style="height: 100%; width: 80%;"/>`,
         };
     }, []);
 
@@ -151,6 +151,7 @@ const useSimFullKit = () => {
             "avlCellRenderer": AvlCellRenderer,
             "availabilityToolTip": AvailabilityToolTip
         }), []);
+
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
     const renderView = () => {
         switch (currentTab.id) {
@@ -225,6 +226,7 @@ const useSimFullKit = () => {
                     'text-overflow': 'ellipsis',
                     'white-space': 'nowrap',
                     'resizable': 'true',
+                    'width':'180px'
                 },
             },
         },

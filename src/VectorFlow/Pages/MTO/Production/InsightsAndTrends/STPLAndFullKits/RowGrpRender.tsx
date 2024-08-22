@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
 import { ColDef, GridOptions, IDetailCellRendererParams } from "ag-grid-enterprise";
 import {
     VFChilWrapper
@@ -26,17 +26,15 @@ interface CustomGridOptions extends GridOptions {
     //detailCellRendererParams?: CustomDetailCellRendererParams; // Optional for nested grids
 }
 
-const RowGroupRenderer = (params: any) => {
-    //console.log('rowGroupREndere',params.data.children)
+const RowGrpRender = (params: any) => {
     const [rowData,] = useState<any[]>(params.data.children)
 
-    const [columnDefs] = useState<ColDef[]>([
-        { field: "rmc", headerName: 'Item Code', cellRenderer: "agGroupCellRenderer" },
-        { field: "bl", headerName: 'Level' },
-        { field: "qty", headerName: 'Requirement' },
-        { field: "soh", headerName: 'Stock' },
-        { field: "wip", headerName: 'WIP' },
-        { field: 'gap', headerName: 'Gap' },
+    const [columnDefs,] = useState<ColDef[]>([
+        { field: "ic", headerName: 'Item Code', cellRenderer: "agGroupCellRenderer" },
+        { field: "Rqrment", headerName: 'Requirement' },
+        { field: "Stck", headerName: 'Stock' },
+        { field: "WIP", headerName: 'WIP' },
+        { field: 'Gp', headerName: 'Gap' }
     ]);
 
     //static function to create the same 
@@ -85,15 +83,13 @@ const RowGroupRenderer = (params: any) => {
       }, []);*/
 
     const generateGridOptions = (level: number): CustomGridOptions => {
-        //not in use anymore 
         const options: CustomGridOptions = {
             columnDefs: [
-                { field: "rmc", headerName: 'Item Code', cellRenderer: "agGroupCellRenderer" },
-                { field: "bl", headerName: 'Level' },
-                { field: "qty", headerName: 'Requirement' },
-                { field: "soh", headerName: 'Stock' },
-                { field: "wip", headerName: 'WIP' },
-                { field: 'gap', headerName: 'Gap' },
+                { field: "ic", headerName: 'Item Code', cellRenderer: "agGroupCellRenderer" },
+                { field: "Rqrment", headerName: 'Requirement' },
+                { field: "Stck", headerName: 'Stock' },
+                { field: "WIP", headerName: 'WIP' },
+                { field: 'Gp', headerName: 'Gap' }
             ],
             defaultColDef: {
                 flex: 1,
@@ -112,12 +108,17 @@ const RowGroupRenderer = (params: any) => {
         if (level > 1) {
             options.groupDefaultExpanded = 0;
             options.masterDetail = true;
-            //options.detailRowHeight = 240;
+            options.rowHeight = 50;
+            // options.getRowStyle = (params: any) => {
+            //     return {
+            //         background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
+            //     };
+            // },
             options.detailRowAutoHeight = true;
             options.detailCellRendererParams = {
                 detailGridOptions: generateGridOptions(level - 1),
                 getDetailRowData: (params) => {
-                    params.successCallback(params.data.child);
+                    params.successCallback(params.data.children);
                 },
             } as IDetailCellRendererParams;
         }
@@ -131,7 +132,7 @@ const RowGroupRenderer = (params: any) => {
         return {
             detailGridOptions: generateGridOptions(level),
             getDetailRowData: (params) => {
-                params.successCallback(params.data.child);
+                params.successCallback(params.data.children);
             },
         } as IDetailCellRendererParams;
     }, []);
@@ -176,4 +177,4 @@ const RowGroupRenderer = (params: any) => {
         </VFChilWrapper>
     );
 };
-export default RowGroupRenderer;
+export default RowGrpRender;

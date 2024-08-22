@@ -4,7 +4,8 @@ import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MT
 import ChartView from './ChartView';
 import GridView from './GridView';
 import { useGetLeadTimeData } from '../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/LeadTime'
-import { notifyError } from '../../../../../../helpers/notify'
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify'
+import OverlayLoader from '../../../Common/Loader';
 
 const LeadTime = () => {
     const [isGridView, setIsGridView] = useState(false);
@@ -15,7 +16,7 @@ const LeadTime = () => {
     const reportName = "LeadTime";
 
     const { mutateAsync: getUIConfigData } = useGetUIConfigData();
-    const { mutateAsync: getLeadTimeData } = useGetLeadTimeData()
+    const { mutateAsync: getLeadTimeData, isLoading} = useGetLeadTimeData()
 
 
 
@@ -45,6 +46,7 @@ const LeadTime = () => {
             })
             setChartTableData(tableData);
             setChartData(chartData)
+            notifySuccess("Data Fetched Successfully!");
         }
         catch(err: any){
             console.log(err)
@@ -83,7 +85,7 @@ const LeadTime = () => {
     return (
         <>
             <MTOActionToolBar handleGoBack={() => { setIsGridView(false) }} isGoBackButton={isGridView} isChartGridToggle isGridView={isGridView} setIsGridView={setIsGridView} isExcelExport />
-
+            {isLoading && <OverlayLoader/>}
             {
                 isGridView ?
                     <>

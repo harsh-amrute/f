@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AgChartOptions } from "ag-charts-community";
-import { APIMock } from "../StplAndFullKitsData";
+// import { APIMock } from "../StplAndFullKitsData";
 import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
@@ -8,9 +8,11 @@ import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { columnConfigData } from "../ColumnData";
 import { format } from "date-fns";
 
-const STPLGraph = () => {
+const STPLGraph = (props: any) => {
+  const { graphData } = props;
+
   const [date] = useState(format(new Date(), 'd MMM yyyy'));
-  const [rawData] = useState(APIMock.stpl);
+  const [rawData, setRawData] = useState([]);
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -33,7 +35,7 @@ const STPLGraph = () => {
                    </div>
                </div>
            </div> 
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: gray"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Released WIP (In Days)</div><div>${datum["days"]}</div></div></div>
+        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: gray"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Released WIP (In Days)</div><div>${datum["r_wip"]}</div></div></div>
         <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: green"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Limit</div><div>${datum["limit"]}</div></div></div>
 
         </div>`;
@@ -52,7 +54,7 @@ const STPLGraph = () => {
       const key = i === 0 ? "exceedDays" : i === 1 ? 'days' : "limit";
       seriesData.push({
         type: isBar ? "bar" : "line",
-        xKey: "ccr",
+        xKey: "ccr_n",
         yKey: key,
         yName: labels[i],
         strokeOpacity: isBar ? 0 : 1.25,
@@ -183,6 +185,18 @@ const STPLGraph = () => {
       </div>
     )
   }
+
+  useEffect(()=>{
+    if(graphData){
+      const updatedGraphData = graphData?.map((data: any) => {
+        if(data.r_wip > data?.limit){
+          return ({...data, exceedDays: data.r_wip, r_wip: 0 });
+        }
+        return ({...data, exceedDays: 0, })
+      })
+      setRawData(updatedGraphData);
+    }
+  },[graphData])
 
   return (
     <div style={{ height: "100%", display: "flex", justifyContent: "left", paddingBottom: '10px', marginRight: '8px' }}>
