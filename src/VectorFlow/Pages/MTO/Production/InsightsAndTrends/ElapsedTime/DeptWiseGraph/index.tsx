@@ -5,7 +5,7 @@ import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../Common
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
 
-const DeptWiseGraph = () => {
+const DeptWiseGraph = ({chartTableData, chartData, alertData}: any) => {
 
     const graph1 = ['This box plots highlights the statistical distribution of dept-wise elapsed time (in days) for orders closed in the last 7 days at respective departments.',
         'The box plots in Red indicate that the median elapsed time in those departments have increased by more than 15% (last week vs prev. 4 weeks). '
@@ -56,7 +56,7 @@ const DeptWiseGraph = () => {
             toolbar: {
                 show: true,
                 tools: {
-                    download: true,
+                    download: '<img src="/assets/img/mto/RMPMBufferTrend/download.svg" class="ico-download" width="14">',
                     customIcons: [],
                 },
             },
@@ -143,34 +143,33 @@ const DeptWiseGraph = () => {
 
         }
     }
-    const chartData: any = [
-        { x: "P2-Dept 2", y: [2, 5, 8, 11, 14] },
-        { x: "P3-Dept 3", y: [2, 3, 5, 6, 8] },
-        { x: "P4-Dept 4", y: [1, 3, 4, 5, 9] },
-        { x: "P5-Dept 5", y: [2, 4, 6, 8, 10] },
-        { x: "P6-Dept 6", y: [3, 5, 7, 9, 11] },
-        { x: "P9-Dept 9", y: [3, 6, 9, 12, 15] },
-        { x: "P10-Dept 10", y: [4, 7, 10, 13, 16] }
-    ];
+    // const chartData: any = [
+    //     { x: "P2-Dept 2", y: [2, 5, 8, 11, 14] },
+    //     { x: "P3-Dept 3", y: [2, 3, 5, 6, 8] },
+    //     { x: "P4-Dept 4", y: [1, 3, 4, 5, 9] },
+    //     { x: "P5-Dept 5", y: [2, 4, 6, 8, 10] },
+    //     { x: "P6-Dept 6", y: [3, 5, 7, 9, 11] },
+    //     { x: "P9-Dept 9", y: [3, 6, 9, 12, 15] },
+    //     { x: "P10-Dept 10", y: [4, 7, 10, 13, 16] }
+    // ];
 
-    const chartTableData = [
-        { dept: 'P1-Dept1', LW: 2, Q1: 4, Q2: 5, Q3: 7, HW: 9 },
-        { dept: 'P2-Dept2', LW: 3, Q1: 5, Q2: 6, Q3: 8, HW: 10 },
-        { dept: 'P3-Dept3', LW: 1, Q1: 3, Q2: 4, Q3: 6, HW: 7 },
-        { dept: 'P4-Dept4', LW: 4, Q1: 6, Q2: 7, Q3: 9, HW: 11 },
-        { dept: 'P5-Dept5', LW: 2, Q1: 4, Q2: 5, Q3: 7, HW: 9 },
-        { dept: 'P6-Dept6', LW: 5, Q1: 7, Q2: 8, Q3: 10, HW: 12 }
-    ];
+    // const chartTableData = [
+    //     { dept: 'P1-Dept1', LW: 2, Q1: 4, Q2: 5, Q3: 7, HW: 9 },
+    //     { dept: 'P2-Dept2', LW: 3, Q1: 5, Q2: 6, Q3: 8, HW: 10 },
+    //     { dept: 'P3-Dept3', LW: 1, Q1: 3, Q2: 4, Q3: 6, HW: 7 },
+    //     { dept: 'P4-Dept4', LW: 4, Q1: 6, Q2: 7, Q3: 9, HW: 11 },
+    //     { dept: 'P5-Dept5', LW: 2, Q1: 4, Q2: 5, Q3: 7, HW: 9 },
+    //     { dept: 'P6-Dept6', LW: 5, Q1: 7, Q2: 8, Q3: 10, HW: 12 }
+    // ];
 
     const columnDefinitions = [
-        { headerName: 'Department', field: 'dept' },
-        { headerName: 'LW', field: 'LW' },
-        { headerName: 'Q1', field: 'Q1' },
-        { headerName: 'Q2', field: 'Q2' },
-        { headerName: 'Q3', field: 'Q3' },
-        { headerName: 'HW', field: 'HW' }
+        { headerName: 'Department', field: 'department' },
+        { headerName: 'LW', field: 'lw' },
+        { headerName: 'Q1', field: 'q1' },
+        { headerName: 'Q2', field: 'q2' },
+        { headerName: 'Q3', field: 'q3' },
+        { headerName: 'HW', field: 'uw' }
     ];
-
 
     const boxSeries = [{
         name: 'elapsed time',
@@ -179,11 +178,12 @@ const DeptWiseGraph = () => {
     }, {
         name: 'Alert',
         type: 'scatter',
-        data: [
-            { x: "P2-Dept 2", y: [16] },
-            { x: "P2-Dept 3", y: [] },
-            { x: "P2-Dept 4", y: [10] }
-        ]
+        data: alertData
+        // data: [
+        //     { x: "P2-Dept 2", y: [16] },
+        //     { x: "P2-Dept 3", y: [] },
+        //     { x: "P2-Dept 4", y: [10] }
+        // ]
     }]
 
 

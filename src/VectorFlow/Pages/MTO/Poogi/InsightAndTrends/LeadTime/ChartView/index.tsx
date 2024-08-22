@@ -4,16 +4,16 @@ import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VF
 import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../Common/SplitGraphContainer/styles'
 import { useGetDate } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
+import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader'
 
 
 const ChartView = ({chartData, chartTableData}: any) => {
 
     const [tableLoading, setTableLoading] = useState(false);
     const [chartLoading, setChartLoading] = useState(false);
-    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+    const { data: apiResponseData, isLoading } = useGetDate();
     const date = apiResponseData?.data?.data;
     const graph1 = ['This box plot graph displays statistical distribution of lead time of closed orders. Each box represents the various statistical measures around lead time of closed orders.']
-
     const [hideChart1, toggleChart1] = useState(false);
 
 
@@ -71,7 +71,7 @@ const ChartView = ({chartData, chartTableData}: any) => {
             toolbar: {
                 show: true,
                 tools: {
-                    download: true,
+                    download: '<img src="/assets/img/mto/RMPMBufferTrend/download.svg" class="ico-download" width="14">',
                     customIcons: [],
                 },
             },
@@ -201,7 +201,7 @@ const ChartView = ({chartData, chartTableData}: any) => {
 
     return (
         <div style={{ height: "85%", paddingBottom: '20px', marginLeft: '20px', marginTop: '10px', display: 'flex' }}>
-
+            {isLoading && <OverlayLoader/>}
 
             <BoxPlotContainer
                 tableLoading={tableLoading}
