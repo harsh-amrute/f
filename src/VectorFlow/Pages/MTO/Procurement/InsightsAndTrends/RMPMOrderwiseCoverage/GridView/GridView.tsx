@@ -9,7 +9,7 @@ interface GridProps {
     ShortageDatas: any
 }
 
-const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) => {
+const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps | any) => {
 
     const gridRef = useRef();
 
