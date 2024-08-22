@@ -55,7 +55,7 @@ global.ResizeObserver = class MockedResizeObserver {
 
      it("Availability Ageing", () => {
        
-        render(contextWrapperWithCustomTheme(<AvailabilityAgeingTrend themeUi="REGALBLAZE"/>,"REGALBLAZE"))
+        render(contextWrapperWithCustomTheme(<AvailabilityAgeingTrend themeUi="REGALBLAZE" filter={"Product Filter"} horizon={10} setHorizon={jest.fn()} setAgeing={jest.fn()} ageing={1}/>,"REGALBLAZE", ))
 
     })
 })

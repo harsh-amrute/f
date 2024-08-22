@@ -8,26 +8,43 @@ import DBMNormSuggestions from './';
 import {UserDataContext} from '../../../../../../context'
 
 jest.mock("../../../../../Services/MTA/InsightsAndTrends");
+
 const useGetDBMNormSuggestionSKUsMock = useGetDBMNormSuggestionSKUs as jest.MockedFunction<
     typeof useGetDBMNormSuggestionSKUs
 >;
-const useGetDBMNormSuggestionSKUsData: any = { data: {data: GuidedInsights.DBMSuggestionsSKUs }};
-
+const useGetDBMNormSuggestionSKUsData: any = { 
+  mutateAsync: () => {
+    return { data:{data: GuidedInsights.DBMSuggestionsSKUs }};
+  },
+};  
+  
 
 const useGetDBMNormSuggestionAgeingMock = useGetDBMNormSuggestionAgeing as jest.MockedFunction<
     typeof useGetDBMNormSuggestionAgeing
 >;
-const useGetDBMNormSuggestionAgeingData: any =  { data:{data: GuidedInsights.DBMSuggestionAgeing }};
+const useGetDBMNormSuggestionAgeingData: any =  { 
+  mutateAsync: () => {
+    return { data:{data: GuidedInsights.DBMSuggestionAgeing }};
+  },
+};
 
 const useGetDBMNormSuggestionLocMock = useGetDBMNormSuggestionLoc as jest.MockedFunction<
     typeof useGetDBMNormSuggestionLoc
 >;
-const useGetDBMNormSuggestionLocData: any =  { data:{data: GuidedInsights.DBMSuggestionsLoc }};
+const useGetDBMNormSuggestionLocData: any =  {
+  mutateAsync: () => {
+    return { data:{data: GuidedInsights.DBMSuggestionsLoc }};
+  },
+};
 
 const useGetDBMNormSuggestionPieMock = useGetDBMNormSuggestionPie as jest.MockedFunction<
     typeof useGetDBMNormSuggestionPie
 >;
-const useGetDBMNormSuggestionPieData: any =  { data:{data: GuidedInsights.DBMSuggestionsPie }};
+const useGetDBMNormSuggestionPieData: any =  { 
+  mutateAsync: () => {
+    return { data:{data: GuidedInsights.DBMSuggestionsPie }};
+  },
+};
 
 const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {
     return (
@@ -46,6 +63,8 @@ const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {
   
     );
   };
+
+
 
 describe("DBM Suggestions ", () => {
 global.ResizeObserver = class MockedResizeObserver {
@@ -71,11 +90,11 @@ global.ResizeObserver = class MockedResizeObserver {
       
      it("Renders DBM Suggestions", () => {
       
-        render(contextWrapperWithCustomTheme(<DBMNormSuggestions/>,'NOIRFUSION'))
+        render(contextWrapperWithCustomTheme(<DBMNormSuggestions filter={"Product Filter"}/>,'NOIRFUSION'))
        
     })
      it("On minimize chart click for graph 2", async() => {        
-        render(contextWrapperWithCustomTheme(<DBMNormSuggestions/>,'NOIRFUSION'))
+        render(contextWrapperWithCustomTheme(<DBMNormSuggestions filter={"Product Filter"}/>,'NOIRFUSION'))
          await act(async () => {
             
             fireEvent.click(screen.getAllByTestId('minimizechart1')[0])
@@ -92,7 +111,7 @@ global.ResizeObserver = class MockedResizeObserver {
     // })
       it("On minimize chart click for graph 2", async() => {
    
-        render(contextWrapperWithCustomTheme(<DBMNormSuggestions/>,'NOIRFUSION'))
+        render(contextWrapperWithCustomTheme(<DBMNormSuggestions filter={"Product Filter"}/>,'NOIRFUSION'))
          await act(async () => {
             
             fireEvent.click(screen.getAllByTestId('minimizechart3')[0])
@@ -101,7 +120,7 @@ global.ResizeObserver = class MockedResizeObserver {
     })
       it("On minimize chart click for graph 2", async() => {
       
-        render(contextWrapperWithCustomTheme(<DBMNormSuggestions/>,'NOIRFUSION'))
+        render(contextWrapperWithCustomTheme(<DBMNormSuggestions filter={"Product Filter"}/>,'NOIRFUSION'))
          await act(async () => {
             
             fireEvent.click(screen.getAllByTestId('minimizechart4')[0])
