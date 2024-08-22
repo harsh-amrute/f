@@ -13,10 +13,12 @@ import {formatMDMDate} from './format';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
 import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
-import { BPRField } from '../VectorFlow/types/BPR';
+import { BPRField, BPRViewTableFilterNumericalOperator, BPRViewTableFilterStringOperator } from '../VectorFlow/types/BPR';
 import {RRRField} from '../VectorFlow/types/RRR'
 import _ from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
+import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
+import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -2456,4 +2458,52 @@ export const getColumnsForExcelExport = (columns:Array<ColDef>):any=>{
   const defaultColumnsToExclude = ['checkbox','dailydatagraph','sleep','tags','rh','remarks','AgeingOrder','t']
   return columns.filter((c:ColDef)=>(c.colId!==undefined && !defaultColumnsToExclude.includes(c.colId))).map((c)=>(c.colId && c.colId))
 
+}
+
+export const getBPRViewTableHeaderFilterOptions = (dataType:string | undefined):Array<{value:string,label:string}>=>{
+  if(dataType==='number'){
+    return BPRViewTableHeaderFilterNumberoptions
+  }
+
+  return BPRViewTableHeaderFilterStringoptions
+}
+
+export const performStringOpertionsForBPRViewTableFilter =(reference:string,value:string,operator:BPRViewTableFilterStringOperator):boolean=>{
+  //String operations
+
+  switch(operator){
+    case 'contains':
+      return reference.includes(value)
+    case 'doesNotContain':
+      return !reference.includes(value)
+     case 'equals':
+      return reference === value
+    case 'doesNotEqual':
+      return reference !== value
+    default:
+      return false
+  }
+
+}
+
+export const performNumericalOpertionsForBPRViewTableFilter =(num1:number,num2:number,operator:BPRViewTableFilterNumericalOperator):boolean=>{
+  
+  switch(operator){
+    case 'equals':
+      console.log(num1 ===num2)
+      return num1 === num2
+    case 'doesNotEqual':
+      return num1 !==num2
+     case 'greaterThan':
+      return num2 < num1
+    case 'lessThan':
+      return num2 > num1
+    default:
+      return false
+  }
+
+}
+
+export const getFiltersArrayFromColDefs = (colDefs:Array<BPRViewTableColDef>):Array<any>=>{
+ return  colDefs.filter((c)=>c.filter).map((f)=>({colId:f.colId,filterValue:'',dataType:f.dataType,query:null}))
 }

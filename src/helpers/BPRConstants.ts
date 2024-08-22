@@ -169,3 +169,41 @@ export const routerToAnalyticsStringMap:RouterToAnalyticsStringMap = {
     "Norm 2 Consumption based Decrease": "11"
   }
   
+
+  export const BPRViewTableHeaderFilterStringoptions = [
+    {
+        value:'contains',
+        label:'Contains'
+    },
+    {
+        value:'doesNotContain',
+        label:'Does not contain'
+    },
+    {
+        value:'equals',
+        label:'Equals'
+    },
+    {
+        value:'doesNotEqual',
+        label:'Does not equal'
+    }
+  ]
+
+  export const BPRViewTableHeaderFilterNumberoptions = [
+    {
+        value:'equals',
+        label:'Equals'
+    },
+    {
+        value:'doesNotEqual',
+        label:'Does not equal'
+    },
+    {
+        value:'lessThan',
+        label:'Less than'
+    },
+    {
+        value:'greaterThan',
+        label:'Greater than '
+    }
+  ]

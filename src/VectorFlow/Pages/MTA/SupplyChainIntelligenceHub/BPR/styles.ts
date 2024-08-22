@@ -132,6 +132,69 @@ export const BPRViewTableHeader = styled.div`
     text-overflow:ellipsis;
 `
 
+export const BPRViewTableHeaderFilterIcon = styled.img`
+    position:absolute;
+    right:10px;
+    top:13px;
+    height:17px;
+    width:17px;
+    cursor:pointer;
+`
+export const BPRViewTableHeaderFilterAlert = styled.div<{themeUi:string}>`
+    position:absolute;
+    right:10px;
+    top:14px;
+    background-color:${(props)=>globalStyles.chooseThemeColor[props.themeUi].color4};
+    height:6px;
+    width:6px;
+    border-radius:50%;
+`
+
+export const BPRViewTableColumnFilterWrapper = styled.div`
+    position:fixed;
+    z-index:100;
+    // transform:translateX(-150%);
+`
+
+export const BPRViewTableColumnFilterContainer = styled.div`
+    display:flex;
+    flex-direction:column;
+    padding:5px;
+    width:100px;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    border-radius:2px;
+    background-color:white;
+`
+
+export const BPRViewTableColumnFilterInput = styled.input`
+    height:15px;
+    font-size:10px;
+    &:focus{
+        outline:none;
+    };
+`
+
+export const BPRViewTableColumnFilterSelect = styled.select`
+    height:15px;
+    font-size:10px;
+    &:focus{
+        outline:none;
+    };
+    
+    margin-bottom:5px;
+`
+export const BPRViewTableColumnFilterSelectOption = styled.option`
+    &:hover{
+        color:red;
+        background-color:red;
+    }
+`
+
+export const BPRViewTableColumnFilterButton = styled.button`
+
+`
+
+
 export const BPRViewTableRowContainer = styled.div`
 position:relative;
     width:100%;

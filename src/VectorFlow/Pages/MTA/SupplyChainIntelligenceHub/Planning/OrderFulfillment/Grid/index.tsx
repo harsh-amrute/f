@@ -7,6 +7,7 @@ import { createIconColumn } from '../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { OrderCoverageCellRenderer } from '../../../../../../../components/VectorFLOW/commons/OrderCoverageCellRenderer';
+import { BPRViewTableColDef } from '../../../BPR/BPRViewTable';
 
 const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, currentCategory, currentTab}:any) => {
 
@@ -136,36 +137,45 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
 
     const colDefs = mapUIConfigToColdefs(data['uiConfig']);
 
-    const customGridColDef = [
+    const customGridColDef:Array<BPRViewTableColDef> = [
         {
             headerName: "Order No/Tracking No",
             colId: 'on',
-            field: 'on'
+            field: 'on',
+            filter:true,
+            dataType:'number'
         },
         {
             headerName: "Creation Date",
             colId: 'id',
-            field: 'id'
+            field: 'id',
+            filter:true
         },
         {
             headerName: "Pending Quantity",
             colId: 'pq',
-            field: 'pq'
+            field: 'pq',
+            dataType:"number",
+            filter:true
         },
         {
             headerName: "Due Date",
             colId: 'dd',
-            field: 'dd'
+            field: 'dd',
+            filter:true
         },
         {
             headerName: "Price",
             colId: 'p',
-            field: 'p'
+            field: 'p',
+            dataType:"number",
+            filter:true
         },
         {
             headerName: "Order Status",
             colId: 'os',
-            field: 'os'
+            field: 'os',
+            filter:true
         },
     ]
 

@@ -167,3 +167,7 @@ export interface GridState {
     charts:Array<any>
     columns:Array<any>
 }
+
+export type BPRViewTableFilterNumericalOperator = 'equals' | 'doesNotEqual' | 'lessThan' | 'greaterThan'
+
+export type BPRViewTableFilterStringOperator = 'equals' | 'doesNotEqual' | 'contains' | 'doesNotContain'
