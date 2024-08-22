@@ -74,7 +74,6 @@ const ElapsedTime = () => {
 
     const getWeeklyChartData = async () => {
         try{
-            console.log(selectedPlant, selectedDept)
             const data = await getElapsedDaysforDeptPlantData({plant: selectedPlant.value, dept: selectedDept.value});
             const chartData: any = []
             const tableData: any = []
@@ -99,7 +98,6 @@ const ElapsedTime = () => {
 
 
     const handleSelectionChange = (newPlant: any, newDept: any) => {
-        console.log(newPlant, newDept)
         setSelectedPlant(newPlant);
         setSelectedDept(newDept);
     }
