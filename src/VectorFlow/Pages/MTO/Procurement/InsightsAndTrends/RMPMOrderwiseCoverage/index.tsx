@@ -190,41 +190,71 @@ const RMPMOrderwiseCoverage = () => {
             return mappedItem;
 
         });
-
-
     };
 
     const [convertedData, setConvertedData] = useState([{}]);
     const [GraphDatas, setGraphDatas] = useState([{}])
-    const [apiData, setApiData] = useState([{}]);
-    const GetData = async () => {
-        try {
-            notifyLoader("Loading Data...")
-            const APIData = await getOrderwiseCoverageData();
-            if (APIData.status.toString() === '200') {
+    const [apiGraphData, setApiGraphData] = useState([{}]);
+    const [apiGridData, setApiGridData] = useState([{}]);
+    const GetData = async (graph: any, page: any) => {
+        if (graph === 1) {
+
+            try {
+                notifyLoader("Loading Data...")
+                const APIData = await getOrderwiseCoverageData({ graph, page });
+                if (APIData.status.toString() === '200') {
+                    toast.dismiss();
+                    notifySuccess("Data Fetched Successfully!")
+                }
+                setApiGraphData(APIData.data.data);
+
+
+            } catch (e) {
                 toast.dismiss();
-                notifySuccess("Data Fetched Successfully!")
+                notifyError("Failed to fetch Data");
             }
-            setApiData(APIData.data.data);
-
-
-        } catch (e) {
-            toast.dismiss();
-            notifyError("Failed to fetch Data");
         }
+        else {
+            try {
+                notifyLoader("Loading Data...")
+                const APIData = await getOrderwiseCoverageData({ graph, page });
+                if (APIData.status.toString() === '200') {
+                    toast.dismiss();
+                    notifySuccess("Data Fetched Successfully!")
+                }
+                setApiGridData(APIData.data.data);
+
+
+            } catch (e) {
+                toast.dismiss();
+                notifyError("Failed to fetch Data");
+            }
+
+        }
+
     }
 
     useEffect(() => {
-        GetData();
-
+        GetData(1, 1);
+        GetData(0, 1);
     }, [])
 
     useEffect(() => {
-        setGraphDatas(apiData)
-        setConvertedData(mapDataToColumns(apiData, columnData));
-    }, [apiData])
+        // setGraphDatas(apiGraphData)
+        setConvertedData(mapDataToColumns(apiGridData, columnData));
+        // console.log('apps gridh data....', apiGridData)
+    }, [apiGridData])
 
-    console.log("shortageColumns", ShortageColumns);
+    useEffect(() => {
+        setGraphDatas(apiGraphData)
+        console.log("apps graph data", apiGraphData)
+
+        // setConvertedData(mapDataToColumns(apiGridData, columnData));
+    }, [apiGraphData])
+
+
+
+
     return (
         <>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
