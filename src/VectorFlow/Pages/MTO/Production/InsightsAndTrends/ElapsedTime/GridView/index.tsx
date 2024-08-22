@@ -76,8 +76,6 @@ const GridView = ({uiConfig}: any) => {
 
 
     const colDef = useMemo(()=>getColumnDefinations(uiConfig, colDefCustomizations),[])
-    // }, [])
-    // }, [HeaderData])
 
     const getGridData = async () => {
         try{

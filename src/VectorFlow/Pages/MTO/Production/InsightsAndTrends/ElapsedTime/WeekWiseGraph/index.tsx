@@ -260,12 +260,6 @@ const WeekWiseGraph = ({handleSelectionChange, chartTableData, chartData, plant,
         }
     }
 
-
-    // series={series} // Make sure you have defined the series data
-
-
-
-
     // const chartData: any = [
     //     { x: "Feb 2024", y: [2, 5, 8, 11, 14] },
     //     { x: "Mar 2024", y: [2, 3, 5, 6, 8] },
