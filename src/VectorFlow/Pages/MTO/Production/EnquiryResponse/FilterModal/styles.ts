@@ -172,6 +172,7 @@ export const Option = styled.div`
     font-size: 16px;
     letter-spacing: 0px;
     color:#313131;
+    
 `;
 
 export const AccordianContainer = styled.div`

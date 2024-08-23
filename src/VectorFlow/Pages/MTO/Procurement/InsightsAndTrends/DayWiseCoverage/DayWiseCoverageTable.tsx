@@ -9,17 +9,17 @@ import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Co
 import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
 
 interface IDayWiseCoverageProps {
-    selectedDate: string,
-    startDate: string,
-    endDate: string,
-    setLoading: any
+  selectedDate: string,
+  startDate: string,
+  endDate: string,
+  setLoading: any
 }
 
 const DayWiseCoverageTable = ({
-    selectedDate,
-    startDate,
-    endDate,
-    setLoading,
+  selectedDate,
+  startDate,
+  endDate,
+  setLoading,
 }: IDayWiseCoverageProps) => {
   const colDefCustomizations = {
     ColorPriority: {
@@ -47,20 +47,20 @@ const DayWiseCoverageTable = ({
   const [HeaderData, setHeaderData] = useState([{}]);
   const [rowData, setRowData] = useState([]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData();
-  const {mutateAsync: getData, isLoading: isGridLoading} = useGetDayWiseCoverageData();
+  const { mutateAsync: getData, isLoading: isGridLoading } = useGetDayWiseCoverageData();
 
   const getGridData = async () => {
-    if(selectedDate){
-      const data = await getData({startDate: startDate, endDate: endDate,plannedReleaseDate: selectedDate});
+    if (selectedDate) {
+      const data = await getData({ startDate: startDate, endDate: endDate, plannedReleaseDate: selectedDate });
       setRowData(data?.data?.data)
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     getGridData()
   }, [selectedDate])
 
-  useEffect(()=>{
+  useEffect(() => {
     setLoading(isGridLoading)
   }, [isGridLoading])
 
@@ -118,6 +118,8 @@ const DayWiseCoverageTable = ({
   };
 
   return (
+
+
     <VFTable
       animateRows={true}
       gridOptions={options}
@@ -130,6 +132,7 @@ const DayWiseCoverageTable = ({
         params.columnApi.autoSizeAllColumns();
       }}
     />
+
   );
 };
 

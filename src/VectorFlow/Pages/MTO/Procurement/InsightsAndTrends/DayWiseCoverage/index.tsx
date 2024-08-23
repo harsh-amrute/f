@@ -3,7 +3,7 @@ import DayWiseCoverageCalender from './DayWiseCoverageCalender';
 import DayWiseCoverageHeader from './DayWiseCoverageHeader'
 import DayWiseCoverageTable from './DayWiseCoverageTable';
 import { Player } from '@lottiefiles/react-lottie-player';
-import { AnimationWrapper, HelperText, TableContainer } from './style';
+import { AnimationWrapper, HelperText, PageWrapper, TableContainer } from './style';
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import { add, eachMonthOfInterval, endOfMonth, format, getMonth, startOfMonth } from 'date-fns';
 import { useGetDayWiseCoverageData } from '../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage';
@@ -178,7 +178,7 @@ const DayWiseCoverage = () => {
     }, [selectedDate])
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <PageWrapper style={{ display: "flex", flexDirection: "column", height: "100%" }}>
             <div style={{ zoom: 1.25 }}>
                 <MTOActionToolBar isExcelExport isAddFilterButton />
             </div>
@@ -209,7 +209,7 @@ const DayWiseCoverage = () => {
                 <path id="Path_10655" data-name="Path 10655" d="M19.9,1.444a.716.716,0,0,0-.135-.2c-.009-.009-.012-.022-.021-.031s-.022-.012-.031-.021A.679.679,0,0,0,19.235,1H14.894a.724.724,0,0,0,0,1.447h2.594L12.212,7.723a.723.723,0,1,0,1.023,1.023L18.512,3.47V6.064a.724.724,0,1,0,1.447,0V1.723a.716.716,0,0,0-.056-.279Z" transform="translate(-4.041 -1)" fill="#b93b7e" />
             </svg>
             </div>}
-        </div>
+        </PageWrapper>
 
     )
 }

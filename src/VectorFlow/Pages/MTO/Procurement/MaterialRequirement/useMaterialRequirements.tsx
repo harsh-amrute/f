@@ -13,10 +13,10 @@ import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams,
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { useGetMaterialRequirementDetails, useGetMaterialRequirementDetailsDatewise } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
-import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import moment from "moment";
 import { VFTableWrapper } from "../../../../../components/VectorFLOW/commons/VFTable/styles";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import VFPagination from "../../Common/VFPagination";
 
 
 
@@ -141,13 +141,13 @@ const useMaterialReq = (forDate?: string) => {
     const [dayWiseRecordCount, setDayWiseRecordCount] = useState<number>(0);
     const [cumulativeRecordCount, setcumulativeRecordCount] = useState<number>(0);
     const [date, setDate] = useState<string>(datetime);
-    
+
     useEffect(() => {
         getInitialData()
     }, [currentTab])
 
-    useEffect(()=>{
-        if(forDate){
+    useEffect(() => {
+        if (forDate) {
             const d = new Date(forDate);
             const datetime = moment(d).format(format2);
             onDateChangeReq(datetime);
@@ -176,7 +176,7 @@ const useMaterialReq = (forDate?: string) => {
         setDayWiseData(dayWiseOutput)
     }
 
-    const getCumulativeDateWise = async (currPage?: number,  releaseDate: string = date) => {
+    const getCumulativeDateWise = async (currPage?: number, releaseDate: string = date) => {
         const cumulativeData = await getMaterialRequirementData({ releaseDate: releaseDate, currPage: currPage ? currPage : currentCumPage });
         const cumulativeOutput = cumulativeData.data?.data?.results
         setcumulativeRecordCount(cumulativeData.data?.data?.count)
@@ -262,6 +262,7 @@ const useMaterialReq = (forDate?: string) => {
                 enableRangeSelection: true,
                 pagination: true,
                 defaultColDef: {
+                    floatingFilterComponentParams: { suppressFilterButton: true },
                     floatingFilter: true,
                     filter: "agMultiColumnFilter",
                     cellDataType: false,
