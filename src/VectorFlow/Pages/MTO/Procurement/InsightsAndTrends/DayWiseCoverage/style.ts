@@ -154,3 +154,11 @@ export const AnalyticsCol = styled.td`
   padding: 0.5rem;
   text-align: center;
 `
+
+export const PageWrapper = styled.div`
+& .ag-header-cell-text {
+  font-size: 17px;
+}
+`
+
+

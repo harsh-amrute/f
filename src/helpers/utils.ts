@@ -2581,9 +2581,11 @@ export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: ColumnHeaderCon
       return {
         colId: f.jf,
         field: f.jf,
+        maxWidth: 50,
         headerName: f.hdr,
         hide: !f.vs,
         cellRenderer: 'coloPriorityOfBall',
+
         initialWidth: 20,
         headerClass: "simchild-header",
       }
@@ -2810,47 +2812,47 @@ export function findUniqueKeysAndValues(filterData: any) {
 
   // Function to collect keys and values
   function collectKeysAndValues(obj: any) {
-      for (const key in obj) {
-          if (!uniqueValues[key]) {
-              uniqueValues[key] = new Set();
-          }
-          if(obj[key]){
-            uniqueValues[key].add(obj[key]);
-          }
+    for (const key in obj) {
+      if (!uniqueValues[key]) {
+        uniqueValues[key] = new Set();
       }
+      if (obj[key]) {
+        uniqueValues[key].add(obj[key]);
+      }
+    }
   }
 
   // Iterate over customers and ordLineItems
   if (filterData.customers) {
-      filterData.customers.forEach(collectKeysAndValues);
+    filterData.customers.forEach(collectKeysAndValues);
   }
 
   if (filterData.ordLineItems) {
-      filterData.ordLineItems.forEach(collectKeysAndValues);
+    filterData.ordLineItems.forEach(collectKeysAndValues);
   }
 
   if (filterData.ordAttr) {
-      filterData.ordAttr.forEach(collectKeysAndValues);
+    filterData.ordAttr.forEach(collectKeysAndValues);
   }
 
   // Convert Set to Array and include empty array for missing keys
   const response: any = {};
   for (const key in uniqueValues) {
-      response[key] = Array.from(uniqueValues[key]).map((o: any) => ({label: o, value: o}));
+    response[key] = Array.from(uniqueValues[key]).map((o: any) => ({ label: o, value: o }));
   }
 
   // Add empty array for any missing keys based on the first object in each array
   const allKeys: any = [
-      ...Array.from(new Set([
-          ...Object.keys(filterData.customers?.[0] || {}),
-          ...Object.keys(filterData.ordLineItems?.[0] || {})
-      ]))
+    ...Array.from(new Set([
+      ...Object.keys(filterData.customers?.[0] || {}),
+      ...Object.keys(filterData.ordLineItems?.[0] || {})
+    ]))
   ];
 
   allKeys.forEach((key: any) => {
-      if (!response[key]) {
-          response[key] = [];
-      }
+    if (!response[key]) {
+      response[key] = [];
+    }
   });
 
   return response;
@@ -2858,16 +2860,16 @@ export function findUniqueKeysAndValues(filterData: any) {
 
 // Function to find dynamic attributes of the object that is passed in paramenters
 export const getDynamicAttributes = (attributes: any) => {
-  
-  if(!attributes || attributes?.length === 0 || Object.keys(attributes).length === 0){
+
+  if (!attributes || attributes?.length === 0 || Object.keys(attributes).length === 0) {
     return [];
   }
   return attributes?.map((attr: any) => attr.key);
 }
 
 export const getKeyName = (attributes: any, key: string) => {
-  for(let i = 0; i < attributes.length; i++){
-    if(key === attributes[i].key){
+  for (let i = 0; i < attributes.length; i++) {
+    if (key === attributes[i].key) {
       return attributes[i].name;
     }
   }
@@ -2877,9 +2879,9 @@ export const getKeyName = (attributes: any, key: string) => {
 // Function to structure the output of filter modal
 export const formatFilterJSON = (filter: any) => {
   let formatFilter: any = {};
-  for(const key in filter){
+  for (const key in filter) {
     const { filters } = filter[key];
-    for(let i = 0; i < filters.length; i++){
+    for (let i = 0; i < filters.length; i++) {
       const { attributeName, value, type, operator } = filters[i];
       if(value?.length > 0 ){
             if(type === 'textCompare' || type === 'numberCompare'){
@@ -2895,17 +2897,17 @@ export const formatFilterJSON = (filter: any) => {
 
 // Function to check values already there in Values
 export const checkValue = (filters: any, value: any) => {
-  for(let i = 0; i < filters.length; i++){
-    if(filters[i]?.id === value || filters[i]?.value === value){
+  for (let i = 0; i < filters.length; i++) {
+    if (filters[i]?.id === value || filters[i]?.value === value) {
       return true;
-    }   
+    }
   }
   return false;
 }
 
 export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   const selectedFilter: any = {};
-  for(const key in filter){
+  for (const key in filter) {
     const { filters, label } = filter[key];
     const newFilter: any = {
       name: label,
@@ -2913,22 +2915,22 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
       filters: []
     }
 
-    for(let i = 0; i < filters.length; i++){
+    for (let i = 0; i < filters.length; i++) {
       const { name, attributeName, value, type, operator } = filters[i];
 
-      if(attributeName === 'ms'){
-        if(value.length > 0 && isMfgStrgyIncluded){
-          newFilter.filters.push({filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id )});
+      if (attributeName === 'ms') {
+        if (value.length > 0 && isMfgStrgyIncluded) {
+          newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id) });
         }
-      }else{
-        if(value.length > 0){
-          newFilter.filters.push({filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id )});
-        }  
+      } else {
+        if (value.length > 0) {
+          newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id) });
+        }
       }
     }
 
-    if(newFilter?.filters?.length > 0 ){
-      selectedFilter[key] = { ...newFilter};
+    if (newFilter?.filters?.length > 0) {
+      selectedFilter[key] = { ...newFilter };
     }
 
   }

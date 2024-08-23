@@ -214,7 +214,7 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
     }
     console.log(isMTO)
     return (
-        <div style={{ height: "75vh", display: 'flex', justifyContent: 'left', marginLeft: '10px' }}>
+        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '10px' }}>
 
 
 

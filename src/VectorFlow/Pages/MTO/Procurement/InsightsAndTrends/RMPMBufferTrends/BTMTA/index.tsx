@@ -485,7 +485,7 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
     const date = apiResponseData?.data?.data;
 
     return (
-        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '10px', paddingBottom: '20px' }}>
+        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '8px', paddingBottom: '20px' }}>
 
 
             <SplitGraphContainer
@@ -495,8 +495,8 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 setChartLoading={setChartLoading}
                 data={numericData}
                 rowData={numericData}
-                graphTitle={`RM / PM Buffer Trend- MTO (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
-                tableTitle={`RM / PM Buffer Trend- MTO (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
+                graphTitle={`RM / PM Buffer Trend- MTA (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
+                tableTitle={`RM / PM Buffer Trend- MTA (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
                 options={options}
                 colDef={colDef}
                 header={generateHeader}

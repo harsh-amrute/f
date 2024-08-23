@@ -23,6 +23,7 @@ interface SplitGrpahContainerProps {
   TooltipRenderer: (param: any) => string,
   graphType: number,
   date?: string,
+  columnsData?: any,
   downloadFileName?: string,
 }
 
@@ -40,6 +41,7 @@ const SplitGraphContainer = ({
   toggleChart,
   TooltipRenderer,
   graphType,
+  columnsData,
   downloadFileName
 }: SplitGrpahContainerProps) => {
   const chartRef = useRef<AgChartsReact>(null);
@@ -58,15 +60,8 @@ const SplitGraphContainer = ({
       case 12:
         return {
           palette: {
-            fills: ['#418D18', '#9D9797', '#EBBF2C', '#F04D4D', '#3876FF'],
-            strokes: ['#418D18', '#9D9797', '#EBBF2C', '#F04D4D', '#3876FF'],
-          },
-        }
-      case 13:
-        return {
-          palette: {
-            fills: ['#418D18', '#9D9797', '#EBBF2C', '#F04D4D', '#3876FF'],
-            strokes: ['#418D18', '#9D9797', '#EBBF2C', '#F04D4D', '#3876FF'],
+            fills: columnsData?.map((column: any)=> column?.color),
+            strokes: columnsData?.map((column: any)=> column?.color),
           },
         }
 
@@ -121,6 +116,22 @@ const SplitGraphContainer = ({
             strokes: ['#F5B279', "#F09241", "#E36A00", "#AD5000", "#6A3000"],
           },
         }
+      case 3: {
+        return {
+          palette: {
+            fills: ['Grey'],
+            strokes: ['Grey']
+          }
+        }
+      }
+      case 2: {
+        return {
+          palette: {
+            fills: ['Grey'],
+            strokes: ['Grey']
+          }
+        }
+      }
       case 11:
         return {
           palette: {
@@ -186,58 +197,14 @@ const SplitGraphContainer = ({
         refGraph1.current?.api.createRangeChart({
           chartType: 'line',
           cellRange: {
-            columns: ['month', 'Sales', 'Line Overloaded', 'Quality', 'Packing', 'Coating Liquid Not Available'],
+            columns: columnsData.map((column: any)=>column.key),
           },
 
           chartThemeOverrides: {
             line: {
               series: {
                 tooltip: {
-                  renderer: TooltipRenderer
-                },
-                strokeWidth: 3
-
-              },
-              axes: {
-                category: {
-                  crossLines: {
-                    enabled: false,
-                    strokeOpacity: 0,
-                    stroke: 'white'
-                  },
-                  gridStyle:
-                    [
-                      { stroke: 'white' },
-                    ],
-
-                }
-              },
-              legend: {
-                item: {
-                  marker: {
-                    shape: 'square'
-                  }
-                }
-              }
-
-
-            }
-          }
-
-        })
-        break;
-      case 13:
-        refGraph1.current?.api.createRangeChart({
-          chartType: 'line',
-          cellRange: {
-            columns: ['month', 'Annealing-Rolling', 'Planning', 'Annealing', 'Annealing-Furnace'],
-          },
-
-          chartThemeOverrides: {
-            line: {
-              series: {
-                tooltip: {
-                  renderer: TooltipRenderer
+                  renderer: (params: any) => TooltipRenderer({...params, labels: columnsData?.filter((column: any)=> column.key !== 'month')})
                 },
                 strokeWidth: 3
 
@@ -364,20 +331,15 @@ const SplitGraphContainer = ({
 
                   item: {
 
-
-
                     fill: "white",
                     fillOpacity: 0.2,
                   },
-
-
                 },
                 tooltip: {
                   renderer: TooltipRenderer,
                 },
                 strokeWidth: 1,
                 strokeOpacity: 0,
-
               },
               legend: {
                 item: {

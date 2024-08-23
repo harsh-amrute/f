@@ -29,7 +29,7 @@ export const ColorPriorityCellRenderer = styled.div<ColorValues>`
         if (R > 0) colorStops.push(`#E53F3F ${B}% ${B + R}%`);
         if (Y > 0) colorStops.push(`#EBBF2C ${B + R}% ${B + R + Y}%`);
         if (G > 0) colorStops.push(`#4CAF50 ${B + R + Y}% ${B + R + Y + G}%`);
-        if (W > 0) colorStops.push(`#FFFFFF ${B + R + Y + G}% ${B + R + Y + G + W}%`);
+        if (W > 0) colorStops.push(`#cecece ${B + R + Y + G}% ${B + R + Y + G + W}%`);
         if (Bl > 0) colorStops.push(`#0000FF ${B + R + Y + G + W}% 100%`);
 
         if (colorStops.length === 0) {

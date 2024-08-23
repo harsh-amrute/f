@@ -20,4 +20,5 @@ export const DateInput = styled.input`
   border-radius: 5px;
   &::-webkit-calendar-picker-indicator {
   }
+
 `;

@@ -16,7 +16,7 @@ const DayWiseCoverageHeader = ({
     startDate,
     endDate,
     setDateRange,
-    max, 
+    max,
     min
 }: IDayWiseCoverageHeaderProps) => {
     const { user } = useUserData();
@@ -24,16 +24,32 @@ const DayWiseCoverageHeader = ({
     const [start, setStart] = useState(startDate);
     const [end, setEnd] = useState(endDate);
 
-    const [minEndDate, setMinEndDate] = useState(format(min,"yyyy-MM"));
-    const [maxStartDate, setMaxStartDate] = useState(format(max,"yyyy-MM"))
+    const [minEndDate, setMinEndDate] = useState(format(min, "yyyy-MM"));
+    const [maxStartDate, setMaxStartDate] = useState(format(max, "yyyy-MM"))
 
-    useEffect(()=>{
-        setMinEndDate(start)
+    useEffect(() => {
+        if (!(start.length && end.length)) {
+            setIsDisabled(true)
+        }
+        if (start && start.length) {
+
+            setMinEndDate(start)
+        }
     }, [start])
 
-    useEffect(()=>{
-        setMaxStartDate(end)
+    useEffect(() => {
+        if (!(start.length && end.length)) {
+            setIsDisabled(true)
+        }
+        if (end && end.length !== 0) {
+
+            setMaxStartDate(end)
+        }
+
     }, [end])
+
+
+    const [isDisabled, setIsDisabled] = useState(false);
 
     return (
         <DayWiseCoverageHeaderContainer>
@@ -45,17 +61,17 @@ const DayWiseCoverageHeader = ({
             </DayWiseCoverageStatus>
             <Divider />
             <Text>From</Text>
-            <DatePicker type="month" date={start} setDate={setStart} data-testid="start" min={format(min, "yyyy-MM")} max={format(maxStartDate, "yyyy-MM")}/>
+            <DatePicker type="month" date={start} setDate={setStart} data-testid="start" min={format(min, "yyyy-MM")} max={format(maxStartDate, "yyyy-MM")} />
             <Text>To</Text>
-            <DatePicker type="month" date={end} setDate={setEnd} data-testid="end" min={format(minEndDate, "yyyy-MM")} max={format(max, "yyyy-MM")}/>
+            <DatePicker type="month" date={end} setDate={setEnd} data-testid="end" min={format(minEndDate, "yyyy-MM")} max={format(max, "yyyy-MM")} />
             {/* <div style={{ display: 'flex', alignItems: 'center' }}> */}
             <img
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', opacity: isDisabled ? '0.7' : '1' }}
                 src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
                 height={50}
                 width={60}
                 alt={"Submit"}
-                onClick={() => { setDateRange(start, end) }}
+                onClick={() => { (!isDisabled) && setDateRange(start, end) }}
             />
 
             {/* </div> */}

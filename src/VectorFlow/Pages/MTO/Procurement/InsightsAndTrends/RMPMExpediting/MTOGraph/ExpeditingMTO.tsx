@@ -227,7 +227,7 @@ const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
 
 
     return (
-        <div style={{ height: "75vh", display: 'flex', justifyContent: 'left', marginRight: '8px' }}>
+        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginRight: '8px' }}>
 
 
             <SplitGraphContainer
