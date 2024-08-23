@@ -364,6 +364,7 @@ export const SCDynamicContainer = styled.div`
      
         --ag-borders: none !important;
           & .ag-cell {
+            border: none;
             height: 100% !important;
             border-top: 0.1px solid #cecece !important;
           }
