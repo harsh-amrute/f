@@ -24,15 +24,15 @@ describe('OrderRescheduling', () => {
     });
 
     it('should get orders for DDQ for Unscheduled Order', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await DueDateQuotationService.getFilteredOrdersForDDQ({page: 1, unSch:1});
-        expect(response.status).toBe(200);
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await DueDateQuotationService.getFilteredOrdersForDDQ({page: 1, unSch: true, appliedFilters: {}});
+        expect(response?.status).toBe(200);
     });
 
     it('should get orders for DDQ for Scheduled Order', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await DueDateQuotationService.getFilteredOrdersForDDQ({page: 1, unSch: 1});
-        expect(response.status).toBe(200);
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await DueDateQuotationService.getFilteredOrdersForDDQ({page: 1, unSch: false, appliedFilters: {}});
+        expect(response?.status).toBe(200);
     });
 
     it('should get Buffer Master Data', async () => {
