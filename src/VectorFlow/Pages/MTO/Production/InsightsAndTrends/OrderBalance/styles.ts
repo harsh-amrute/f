@@ -42,3 +42,15 @@ export const CapsuleWrapper = styled.div`
     // max-width:120px;
     margin-left:auto;
 `
+export const SelectWrapper = styled.div`
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding-left: 30px;
+`
+export const SelectLabel = styled.div`
+    font-family: 'Roboto';
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0;
+`

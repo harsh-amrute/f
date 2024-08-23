@@ -56,9 +56,9 @@ const OTIFAnalysis = () => {
     },
   }
 
-  const getGraphData = async (isGraph: any) => {
+  const getGraphData = async (params: any) => {
     try {
-      const response = await getOTIFAnalysisData(isGraph);
+      const response = await getOTIFAnalysisData(params);
       setGraphData(response.data.data);
     }
     catch (e) {
@@ -68,7 +68,7 @@ const OTIFAnalysis = () => {
   }
 
   useEffect(() => {
-    getGraphData(1);
+    getGraphData({graphflag: 1});
   }, []);
 
   useEffect(() => {

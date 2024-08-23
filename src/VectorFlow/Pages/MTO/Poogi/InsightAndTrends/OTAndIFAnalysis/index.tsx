@@ -17,9 +17,9 @@ const OTAndIFAnalysis = () => {
     const { mutateAsync: getOTAndIFAnalysisData, isLoading, isError, isSuccess }  = useGetOTAndIFAnalysisData();
     const [graphData, setGraphData] = useState<any>({});
 
-    const getGraphData = async (isGraph: any) => {
+    const getGraphData = async (params: any) => {
         try {
-          const response = await getOTAndIFAnalysisData(isGraph);
+          const response = await getOTAndIFAnalysisData(params);
           setGraphData(response.data.data);
         }
         catch (e) {
@@ -43,7 +43,7 @@ const OTAndIFAnalysis = () => {
     }
 
     useEffect(()=>{
-        getGraphData(1);
+        getGraphData({graphflag: 1});
     },[])
 
     useEffect(() => {

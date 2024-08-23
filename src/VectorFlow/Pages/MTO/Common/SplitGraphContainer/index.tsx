@@ -96,8 +96,8 @@ const SplitGraphContainer = ({
       case 7:
         return {
           palette: {
-            fills: ['black', 'red', 'yellow', 'green', 'blue'],
-            strokes: ['black', 'red', 'yellow', 'green', 'blue'],
+            fills: ['black', 'red', 'yellow', 'green', 'blue', '#E8E8E8'],
+            strokes: ['black', 'red', 'yellow', 'green', 'blue', '#E8E8E8'],
           },
         }
       case 8:
@@ -529,7 +529,7 @@ const SplitGraphContainer = ({
         refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
-            columns: ["trailDept", "b", 'r', 'y', 'g', 'bl'],
+            columns: ["trailDept", "b", 'r', 'y', 'g', 'bl', 'w'],
           },
           chartThemeOverrides: {
             column: {

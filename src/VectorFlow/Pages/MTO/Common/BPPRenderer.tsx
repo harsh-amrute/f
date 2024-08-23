@@ -5,7 +5,7 @@ const colorMapper = (color: string) => {
 
     switch (color) {
         case 'White':
-            return { bg: ColorsMTO.White.code, text: ColorsMTO.Black.code };
+            return { bg: "#A8A8A8", text: ColorsMTO.Black.code };
         case 'Green':
             return { bg: ColorsMTO.Green.code, text: ColorsMTO.White.code };
         case 'Yellow':
@@ -31,6 +31,7 @@ const colorMapper = (color: string) => {
 const BPPRenderer = (props: any) => {
     const color = props.data.cl;
     const cellColor = colorMapper(color);
+
     return (
         <div style={{ display: 'flex', width: '50%', height: '90%', backgroundColor: cellColor.bg, justifyContent: 'center', alignItems: 'center', boxShadow: '0px 6px 12px #8D8D8D29', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>
             <span style={{ color: 'white' }}>{props.data.bpp}</span>

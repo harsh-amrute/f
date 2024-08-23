@@ -54,7 +54,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
     const [ordeStatusColDef, setOrderStatusColdef] = useState<any>();
     const [elapsedOrderColdef, setElapsedOrderColDef] = useState<any>();
     const [rowData, setRowData] = useState<any>();
-    const [ElapsedTimeRowData,setElapsedTimeRowData]=useState<any>();
+    const [ElapsedTimeRowData, setElapsedTimeRowData] = useState<any>();
 
 
     const sideBar = useMemo(() => {
@@ -411,36 +411,36 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
         return colDefs;
     }
 
-    const createRowDataWithTimes=()=>{
+    const createRowDataWithTimes = () => {
         const rowData: RowData[] = [
-          { time: "In Time" },
-          { time: "Out Time" },
-          { time: "Elapsed Time" },
+            { time: "In Time" },
+            { time: "Out Time" },
+            { time: "Elapsed Time" },
         ];
-      
+
         // Iterate through each order in the inputData
         for (const [orderDetails] of Object.entries(data)) {
-          // Loop through each department (like "1", "2", etc.)
-          for (const [deptKey, deptData] of Object.entries(orderDetails)) {
-            if (deptKey !== 'tq' && deptKey !== 'li' && typeof deptData === 'object' && deptData !== null) {
-              const deptInfo = deptData as {
-                //woh?: number;
-                //mfg?: number;
-                int?: number | null;
-                out?: number | null;
-            };
-      
-              // Assign department times to the corresponding row
-              rowData[0][`dpt${deptKey}`] = deptInfo.int ?? null;
-              rowData[1][`dpt${deptKey}`] = deptInfo.out ?? null;
-    
+            // Loop through each department (like "1", "2", etc.)
+            for (const [deptKey, deptData] of Object.entries(orderDetails)) {
+                if (deptKey !== 'tq' && deptKey !== 'li' && typeof deptData === 'object' && deptData !== null) {
+                    const deptInfo = deptData as {
+                        //woh?: number;
+                        //mfg?: number;
+                        int?: number | null;
+                        out?: number | null;
+                    };
+
+                    // Assign department times to the corresponding row
+                    rowData[0][`dpt${deptKey}`] = deptInfo.int ?? null;
+                    rowData[1][`dpt${deptKey}`] = deptInfo.out ?? null;
+
+                }
             }
-          }
         }
-      
+
         return rowData;
-      }
-      
+    }
+
 
     useEffect(() => {
         if (data) {
@@ -460,7 +460,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
             setRowData(rowData)
             //console.log('rowData=Fristan', rowData);
 
-            const ElapsedTimeRowData=createRowDataWithTimes();
+            const ElapsedTimeRowData = createRowDataWithTimes();
             setElapsedTimeRowData(ElapsedTimeRowData)
         }
     }, [data])
@@ -510,7 +510,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                             WIP Present In  :
                                         </ExpansionHeaderNormalText>
                                         <ExpansionHeaderColoredText>
-                                            {`${deptName},`}
+                                            {`${deptName.length > 1?',':''}${deptName}`}
                                         </ExpansionHeaderColoredText>
                                     </ExpansionHeaderGroup>
                                     <ExpansionHeaderGroup onClick={() => toggleLeftPanelOrderStatus(!isLeftPanelOrderStatusOpen)} style={{ marginLeft: 'auto' }}>
