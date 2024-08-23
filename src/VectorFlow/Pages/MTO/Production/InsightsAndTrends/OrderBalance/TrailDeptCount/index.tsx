@@ -1,16 +1,17 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AgChartOptions } from "ag-charts-community";
 import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
-import { APIMock, columnConfigData } from "../OrderBalanceMockData";
+import { columnConfigData } from "../OrderBalanceMockData";
 import { format } from "date-fns";
 import { createSeriesData, TooltipRenderer } from "../OrderBalanceCommon";
 
-const TrailDeptCount = () => {
+const TrailDeptCount = (props: any) => {
+  const {graphData} = props;
   const [date] = useState(format(new Date(), "d MMM yyyy"));
-  const [rawData] = useState(APIMock.orderCount);
+  const [rawData, setRawData] = useState<any>([]);
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -116,6 +117,24 @@ const TrailDeptCount = () => {
       </div>
     );
   };
+
+  useEffect(()=>{
+
+    if(graphData?.tdept_ord_cnt){
+      const response: any = graphData?.tdept_ord_cnt;
+      const data: any =  Object.keys(response)?.map((key: string) => ({
+        trailDept: key, 
+        b: response[key]?.Black || 0, 
+        r: response[key]?.Red || 0, 
+        y: response[key]?.Yellow || 0, 
+        g: response[key]?.Green || 0, 
+        bl: response[key]?.Blue || 0, 
+        w: response[key]?.White || 0, 
+      }));
+      setRawData(data);
+    }
+
+  },[graphData])
 
   return (
     <div

@@ -629,16 +629,12 @@ const DptWiseBMReport = () => {
 
 
     const getSelectedRow = async () => {
-
         const selectedData = refGraph1.current?.api.getSelectedRows();
-
         // To persist the state
         if (selectedData) {
             let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
-
             selectedData.forEach((newItem: any) => {
                 const index = mergedData.findIndex((item: any) => item.oid === newItem.oid);
-
                 if (index !== -1) {
                     // If the item exists, replace it
                     mergedData[index] = newItem;
@@ -655,7 +651,6 @@ const DptWiseBMReport = () => {
                         isThere = 1;
                     }
                 })
-
                 if (isThere == 0) {
                     mergedData = mergedData.filter((e: any) => e.oid !== item.oid)
                 }
@@ -663,8 +658,7 @@ const DptWiseBMReport = () => {
 
             setMasterSelectedRowData(mergedData);
             //console.log("masterDataaa", mergedData)
-
-            ///
+            /*Persist state code end here*/
 
             if (mergedData.length > 0) {
                 //console.log('selected', mergedData.length)

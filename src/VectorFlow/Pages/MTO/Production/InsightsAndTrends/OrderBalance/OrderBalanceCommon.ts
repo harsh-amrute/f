@@ -41,6 +41,13 @@ export function TooltipRenderer({ datum, xKey }: any) {
             <div>${datum["bl"]}</div>
         </div>
     </div>
+    <div style="display: flex;">
+        <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #E8E8E8"></div>
+        <div style="display:flex ;width: 100%; justify-content: space-between">
+            <div>White</div>
+            <div>${datum["w"]}</div>
+        </div>
+    </div>
 </div>`;
 }
 
@@ -52,6 +59,7 @@ export function createSeriesData() {
     { text: "Yellow", color: "#EBBF2B", key: "y" },
     { text: "Green", color: "#418D18", key: "g" },
     { text: "Blue", color: "#3876FE", key: "bl" },
+    { text: "White", color: "#E8E8E8", key: "w" },
   ];
 
   for (let i = 0; i < labels.length; i++) {
@@ -71,3 +79,4 @@ export function createSeriesData() {
 
   return seriesData;
 }
+
