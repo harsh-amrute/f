@@ -1,15 +1,24 @@
 import moment from 'moment'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import { AgChartOptions } from 'ag-charts-community'
-import { createSeriesDataIF, getMyColumnDefinitions, IFdata, TooltipRendererIF } from '../Data'
+import { createSeriesData, getMyColumnDefinitions, TooltipRenderer } from '../Data'
 
-const DownTrend = () => {
+const DownTrend = (props: any) => {
+    const {graphData} = props;
+    const [hideChart1, toggleChart1] = useState(false);    
+    const [tableLoading, setTableLoading] = useState(false);
+    const [chartLoading, setChartLoading] = useState(false);
+    const [graphColDef, setGraphColDef] = useState<any>([]);
+    const [rawData, setRawData] = useState<any>([]);
+    const [labelData, setLabelData] = useState<any>([]);
+    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+
     const infoTipData = ['This graph highlights the failure reasons that have experienced decrease in occurrence by more than 15% from the average of last 3 months.']
-    const [hideChart1, toggleChart1] = useState(false);
+    
     const generateHeader = () => {
         return (
             <>
@@ -26,7 +35,7 @@ const DownTrend = () => {
                         }}
                     >
                         <span style={{ fontWeight: 500 }}>Major-Minor Reasons Impacting OTIF But Showing A Downward Trend &nbsp;</span>
-                        <span style={{ fontWeight: 350 }}>{`(${moment(date).format('D MMM YYYY')} - ${moment(date).add(90, 'days').format('D MMM YYYY')})`}</span>
+                        <span style={{ fontWeight: 350 }}>{`(${moment(date).subtract(150, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}</span>
                     </div>
                     <SCChartHeaderContainer>
 
@@ -42,23 +51,46 @@ const DownTrend = () => {
 
         )
     }
-    const [tableLoading, setTableLoading] = useState(false);
-    const [chartLoading, setChartLoading] = useState(false);
-    const labels = [
-        { text: "Month", color: "#418D18", key: "month" },
-        { text: "Sales", color: "#418D18", key: "Sales" },
-        { text: "Line Overloaded", color: "#9D9797", key: "Line Overloaded" },
-        { text: "Quality", color: "#EBBF2C", key: "Quality" },
-        { text: "Packing", color: "#F04D4D", key: "Packing" },
-        { text: "Coating Liquid Not Available", color: "#3876FF", key: "Coating Liquid Not Available" },
-    ];
 
-    const colDef: any = getMyColumnDefinitions(labels);
-    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+    const colDef: any = getMyColumnDefinitions(graphColDef);
+
     const date = apiResponseData?.data?.data;
+
+    const checkLabel = (labels: any, key: string) => {
+        for(let i = 0; i < labels.length; i++){
+            if(key === labels[i]?.key){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    useEffect(()=>{
+        if(graphData){
+            const months = Object.keys(graphData);
+            const EUData: any = [];
+            const labels: any = [];
+            for(let i = 0; i < months.length; i++){
+                const data: any = { month: months[i] };
+                const reasons = graphData[months[i]];
+                for(let j = 0; j < reasons?.length; j++){
+                    const key = reasons[j].r
+                    data[key] = reasons[j].oc;
+                    if(!checkLabel(labels, key)){
+                        labels.push({ text: key, color: reasons[j].clr, key: key })
+                    }
+                }
+                EUData.push(data);
+            }
+            setRawData(EUData);
+            setLabelData(labels);
+            setGraphColDef( [...labels, { text: 'Month', color: '#418D18', key: 'month' }] );
+        }
+    },[graphData])
+
     const options: AgChartOptions = {
-        series: createSeriesDataIF(),
-        data: IFdata,
+        series: createSeriesData(labelData),
+        data: rawData,
         axes: [
             {
                 type: "category",
@@ -118,8 +150,8 @@ const DownTrend = () => {
                 chartLoading={chartLoading}
                 setTableLoading={setTableLoading}
                 setChartLoading={setChartLoading}
-                data={IFdata}
-                rowData={IFdata}
+                data={rawData}
+                rowData={rawData}
                 graphTitle={``}
                 tableTitle={``}
                 options={options}
@@ -127,8 +159,9 @@ const DownTrend = () => {
                 header={generateHeader}
                 hideChart={hideChart1}
                 toggleChart={toggleChart1}
-                TooltipRenderer={TooltipRendererIF}
+                TooltipRenderer={TooltipRenderer}
                 graphType={12}
+                columnsData={graphColDef}
                 downloadFileName={'Major-Minor Reasons Impacting OTIF But Showing A Downward Trend'}
             />
         </div>
