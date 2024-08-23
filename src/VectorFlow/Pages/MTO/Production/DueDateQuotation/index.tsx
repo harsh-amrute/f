@@ -328,7 +328,7 @@ const DueDateQuotation = () => {
 
   const getUpdatedFilterData = async() => {
     try {
-      const data: any = await getFilteredOrdersForDDQ({ currentPage, unScheduled: unScheduled, appliedFilters});
+      const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters});
       totalRows.current = data?.data?.data?.count;
       let results: any = data?.data?.data?.results;
       results = results?.filter((order: any) => {

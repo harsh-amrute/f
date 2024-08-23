@@ -19,9 +19,14 @@ describe('MaterialRequirement', () => {
 
 
     it('should fetch the initial data', async () => {
-
         mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         const data = { wip: true, curr: 1, appliedFilters: {} };
+        const response = await DepartmentWiseBMReport.getFilteredDeptWiseBMReport(data);
+        expect(response.status).toBe(200);
+    });
+    it('should fetch the initial data', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const data = { wip: false, curr: 2, appliedFilters: {ms: ["MTO", "MTA"]} };
         const response = await DepartmentWiseBMReport.getFilteredDeptWiseBMReport(data);
         expect(response.status).toBe(200);
     });

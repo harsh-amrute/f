@@ -31,7 +31,7 @@ describe('OrderRescheduling', () => {
 
     it('should get orders for DDQ for Scheduled Order', async () => {
         mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await DueDateQuotationService.getFilteredOrdersForDDQ({page: 1, unSch: false, appliedFilters: {}});
+        const response = await DueDateQuotationService.getFilteredOrdersForDDQ({page: 1, unSch: false, appliedFilters: {ms: ["MTO", "MTA"]}});
         expect(response?.status).toBe(200);
     });
 

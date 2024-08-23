@@ -12,8 +12,8 @@ export const useGetUIConfig = (reportName: string) => {
 }
 
 interface DDQInputParams {
-    currentPage: number,
-    unScheduled: boolean,
+    page: number,
+    unSch: boolean,
     appliedFilters: any
 }
 
