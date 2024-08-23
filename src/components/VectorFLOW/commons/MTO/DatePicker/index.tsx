@@ -12,10 +12,12 @@ const DatePicker = ({ date, setDate, type, min, max }: IDateProps) => {
     return (
         <DatePickerContainer data-testid="calender">
             <DateInput
+
                 value={date}
                 type={type}
                 min={min}
                 max={max}
+
                 onChange={(e) => {
                     setDate(e.target.value);
                 }}

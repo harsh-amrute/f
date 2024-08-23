@@ -1,8 +1,8 @@
 import { ProcurementLayout } from './styles';
 import useMaterialSO from './useMaterialSO';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import VFOverlay from '../../../../../components/VectorFLOW/commons/VFOverlay';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
+import OverlayLoader from '../../Common/Loader';
 
 interface MaterialSODetailedProps {
     parameterData: any
@@ -19,21 +19,20 @@ const MaterialSODetailed = ({ parameterData }: MaterialSODetailedProps) => {
         currentPage
     } = useMaterialSO(parameterData);
 
-   
-    const handlePageChange=(currPage: number)=>{
-        handlePageChangeOnHook(currPage);        
-    }   
+
+    const handlePageChange = (currPage: number) => {
+        handlePageChangeOnHook(currPage);
+    }
 
     return (
-        <>
+        <div style={{ height: '100%' }}>
             {
                 isLoading && (
-                    <VFOverlay>
-                        <h1 style={{ backgroundColor: "white", padding: '15px', borderRadius: '8px' }}>Loading....</h1>
-                    </VFOverlay>
+                    <OverlayLoader />
                 )
             }
             <ProcurementLayout style={{ marginLeft: '25px' }}>
+
                 <VFTable
                     {...agGridProps}
                     columnDefs={columnDef}
@@ -41,7 +40,7 @@ const MaterialSODetailed = ({ parameterData }: MaterialSODetailedProps) => {
                     tooltipHideDelay={100000}
                     tooltipShowDelay={0}
                     tooltipMouseTrack={true}
-                    height={'780px'}
+                    // height={'780px'}
                     paginationPageSize={10}
                     pagination={false}
                     statusBar={{
@@ -58,7 +57,7 @@ const MaterialSODetailed = ({ parameterData }: MaterialSODetailedProps) => {
                     handleChangePage={handlePageChange}
                 />
             </ProcurementLayout>
-        </>
+        </div>
     )
 }
 

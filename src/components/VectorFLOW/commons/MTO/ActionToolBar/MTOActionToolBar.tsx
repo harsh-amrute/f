@@ -282,11 +282,11 @@ const MTOActionToolBar = ({
                         </DateValue>
                     </DateWrapper>}
                 {/**Temp Enquiry response Filter start */}
-                {selectedFilters && selectedFilters?.length > 0 && <VFSelectedFiltersWrapper>
+                {selectedFilters && selectedFilters?.length > 0 && <VFSelectedFiltersWrapper style={{ width: '700px' }}>
                     <VFSelectedFiltersPlaceHolder>
                         Selected Filters
                     </VFSelectedFiltersPlaceHolder>
-                    <VFFilterScrollBar>
+                    <VFFilterScrollBar >
                         {
                             selectedFilters?.map((filter: filterType) => {
                                 if (filter.values.length > 0) {

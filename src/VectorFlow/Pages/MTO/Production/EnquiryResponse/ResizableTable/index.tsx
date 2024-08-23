@@ -26,6 +26,7 @@ const ResizableTable = (props: IResizeTableProps) => {
   };
 
   const defaultColDef = {
+
     cellStyle: {
       'text-align': 'center',
       "font-style": "normal",

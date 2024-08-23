@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from "react"
-import { AgGridReactProps } from "ag-grid-react"
+import { AgGridReactProps, } from "ag-grid-react"
 import { AgGridReact } from "@ag-grid-community/react";
 import { useUserData } from "../../../../../context"
 import ColoPriority from "../../Common/ColorPriority/index";
@@ -18,6 +18,7 @@ import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import OverlayLoader from "../../Common/Loader";
+import { INumberCellEditorParams } from "@ag-grid-community/core"
 
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
@@ -114,13 +115,14 @@ const useProcPlanning = (date: string) => {
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
     const { mutateAsync: UpdateProcurementSimulationData } = putUpdateProcurementSimulationData()
     const [isLoading, setIsLoading] = useState(false);
-    const fetchData = useCallback(async (date: string) => {
+    const fetchData = useCallback(async (date: string, pageNumber = 1) => {
         setIsLoading(true);
         try {
             toast.dismiss();
             notifyLoader("Loading data...")
-            const response = await getProcPlanningData({ date, pageNum: currentPage.toString() });
+            const response = await getProcPlanningData({ date, pageNum: pageNumber.toString() });
             if (response.status === 200) {
+                setCurrentPage(pageNumber)
                 toast.dismiss();
                 notifySuccess("Data fetched Successfully!");
                 setIsLoading(false);
@@ -166,7 +168,7 @@ const useProcPlanning = (date: string) => {
                     }
                     return header;
                 });
-
+                console.log("this workds")
                 SetShortageData(ShortageData);
                 setCompleteAvailableData(CompleteAvailableData);
 
@@ -174,7 +176,7 @@ const useProcPlanning = (date: string) => {
 
             };
             initializeData(datas, HeaderData);
-            
+
         }
     }, [datas, HeaderData]);
 
@@ -197,16 +199,20 @@ const useProcPlanning = (date: string) => {
             },
             // tooltipComponent: "availabilityToolTip",
             initialWidth: 200, //160
-            autoHeaderHeight: true,
-            wrapHeaderText: true,
+            // autoHeaderHeight: true,
+            // wrapHeaderText: true,
 
         },
 
         'ExpAdd.StockToday': {
-            cellRenderer: "inputbox",
+            // cellRenderer: "inputbox",
             editable: true,
-            autoHeaderHeight: true,
-            wrapHeaderText: true,
+            cellEditor: 'agNumberCellEditor',
+            cellEditorParams: {
+                min: 0
+            } as INumberCellEditorParams,
+            // autoHeaderHeight: true,
+            // wrapHeaderText: true,
             initialWidth: 200, //160
             filter: 'agMultiColumnFilter',
             floatingFilter: true,
@@ -248,14 +254,22 @@ const useProcPlanning = (date: string) => {
     }, []);
 
     const toggleCurrentTab = useCallback((tab: VFFloatingTabItemProps) => setCurrentTab(tab), []);
+    const [isDisabled, setIsDisabled] = useState(true);
+    useEffect(() => {
+        let isDis = true;
+        ShortageDatas.forEach((e) => {
+            if (e.eas && e.eas !== 0) {
+                isDis = false;
+                setIsDisabled(false);
+            }
+        })
+        if (isDis) {
+            setIsDisabled(true);
+        }
+    }, [ShortageDatas])
     const navigateToSimulateScreen = useCallback(async () => {
 
-        // TODO
-        // const { user } = useUserData();
-        // console.log("user...", user)
-        if (user) {
-            //console.log('user...', user)
-        }
+
         const inputJson: any = {
             "username": user?.user.name,
             "stock": [
@@ -343,14 +357,26 @@ const useProcPlanning = (date: string) => {
         };
     }, []);
 
+    useEffect(() => {
+        if (date) {
+
+            fetchData(date);
+        }
+    }, [])
+
     const handlePageChangeCumulative = async (pageNumber: number) => {
-        setIsLoading(true);
-        setCurrentPage(pageNumber);
-        const APIData = await getProcPlanningData({ date, pageNum: currentPage.toString() });
-        // setData(APIData)
-        const newDat = APIData.data.data.results
-        setData(newDat);
-        setIsLoading(false);
+        // setIsLoading(true);
+        // setCurrentPage(pageNumber);
+        // const APIData = await getProcPlanningData({ date, pageNum: currentPage.toString() });
+        // // setData(APIData)
+        // const newDat = APIData.data.data.results
+        // setTotalRows(APIData?.data?.data?.count)
+        // // setData(APIData?.data?.data?.results || []);
+        // setData(newDat);
+        // setIsLoading(false);
+
+        fetchData(date, pageNumber);
+
         // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
 
@@ -415,15 +441,16 @@ const useProcPlanning = (date: string) => {
                             handleChangePage={handlePageChangeCumulative}
 
                         />
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', flexDirection: 'row', marginTop: '5px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
 
                             <VFButtonOutline
-                                onClick={() => { fetchData(date) }}
+                                onClick={() => { (!isDisabled) && fetchData(date) }}
                                 themeUi=""
-                                disabled={false}
+                                disabled={isDisabled}
                                 width={135}
 
                                 style={{
+                                    opacity: isDisabled ? '0.4' : '1',
                                     height: '50px',
                                     marginRight: 20,
                                     borderColor: '#BC3D81',
@@ -443,7 +470,7 @@ const useProcPlanning = (date: string) => {
                             <VFButton
                                 onClick={navigateToSimulateScreen}
                                 themeUi=""
-                                disabled={false}
+                                disabled={isDisabled}
 
                                 width={250}>Simulate improvement in Full Kits
                             </VFButton>
@@ -486,12 +513,14 @@ const useProcPlanning = (date: string) => {
             enableBrowserTooltips: true,
             enableRangeSelection: true,
             icons: icons,
+
             defaultColDef: {
                 floatingFilter: true,
                 filter: "agMultiColumnFilter",
+                floatingFilterComponentParams: { suppressFilterButton: true },
                 minWidth: 140,
-                wrapHeaderText: true,
-                autoHeaderHeight: true,
+                // wrapHeaderText: true,
+                // autoHeaderHeight: true,
                 cellStyle: {
                     'text-align': 'center',
                     'height': '50px',

@@ -6,6 +6,7 @@ import VFModalCard from '../../../../../../components/VectorFLOW/commons/VFModal
 import { AccordianContainer, ButtonContainer, ButtonFilterWrapper, FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, ModalBody, ModalWrapper, Option, OptionsWrapper, } from './styles';
 import FilterCheckboxAccordian from '../../../../../../components/VectorFLOW/commons/MTO/FilterCheckboxAccordian';
 import VFMasterFieldSearch from '../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch';
+import Radio from '../../../../../../components/VectorFLOW/commons/MTO/Radio';
 
 
 
@@ -142,14 +143,15 @@ const FilterModal = (props: IFilterModalProps) => {
                                                 <OptionsWrapper>
                                                     {filter?.options?.map((option: string, idx: number) => (
                                                         <Option>
-                                                            <input
+
+                                                            <label><Radio
                                                                 key={option}
                                                                 name={option}
+                                                                theme={themeUi ? themeUi : ''}
                                                                 checked={getChecked(filter?.heading, option)}
                                                                 onChange={(e) => { handleOptionChange(e, filter?.heading, idx) }}
                                                                 type={`${filter.key === 'prdGrp' ? 'radio' : 'checkbox'}`}
-                                                            />
-                                                            <label>{option}</label>
+                                                            />{option}</label>
                                                         </Option>
                                                     ))}
                                                 </OptionsWrapper>

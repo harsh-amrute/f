@@ -14,19 +14,19 @@ import { DetailsObj } from './CommonFunc';
 import { useGetSOSummaydetails } from '../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage';
 import { toast } from 'react-toastify';
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
-import VFOverlay from '../../../../../components/VectorFLOW/commons/VFOverlay';
 import useFilter from "../../../../../hooks/useFilter";
 // import { APIResponseMock } from '../../Production/InsightsAndTrends/OrderBalance/OrderBalanceMockData';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+import OverlayLoader from '../../Common/Loader';
 
 const APIFilterConfig = {
-  filSecVisConfig :  {
-    "Proc_Material_Coverage_For_OpenSO" : {
-      mjr : false,
+  filSecVisConfig: {
+    "Proc_Material_Coverage_For_OpenSO": {
+      mjr: false,
       or: true,
       res: true,
       cus: true
-  },
+    },
   }
 };
 
@@ -42,13 +42,13 @@ const MaterialCov = () => {
 
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Coverage_For_OpenSO);
+  const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Coverage_For_OpenSO);
 
-  const onApplyFilter = (filter:any)=>{
+  const onApplyFilter = (filter: any) => {
     console.log(filter)
     setIsFilterOpen(false)
   }
-  const onAddFilter = ()=>{
+  const onAddFilter = () => {
     setIsFilterOpen(true)
   }
 
@@ -115,9 +115,7 @@ const MaterialCov = () => {
         <>
           {
             isLoading && (
-              <VFOverlay>
-                <h1 style={{ backgroundColor: "white", padding: '15px', borderRadius: '8px' }}>Loading....</h1>
-              </VFOverlay>
+              <OverlayLoader />
             )
           }
           <div style={{ zoom: '1.3' }}>
@@ -128,7 +126,7 @@ const MaterialCov = () => {
               isFilterOpen={isFilterOpen}
               onAddFilter={onAddFilter}
               toggleFilter={toggleFilter}
-              onApplyFilter={onApplyFilter} 
+              onApplyFilter={onApplyFilter}
               multiFilter={currFilter}
               setMultiFilter={setCurrFilter}
               onFilterRemove={onFilterRemove}
@@ -183,7 +181,7 @@ const MaterialCov = () => {
 
         </>
         :
-        <>
+        <div style={{ height: '100%' }}>
           <div style={{ zoom: 1.25 }}>
 
             <ActionToolBar
@@ -200,7 +198,7 @@ const MaterialCov = () => {
             />
           </div>
           <MaterialSODetailed parameterData={detailDataObj} />
-        </>
+        </div>
 
       }
     </div>

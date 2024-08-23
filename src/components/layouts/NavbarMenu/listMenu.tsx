@@ -495,7 +495,7 @@ export const listMenuParent: any = [
     id: 19,
     name: "Procurement",
     img: "/assets/img/nav/procurement",
-    url: "",
+    url: "/procurement/material-coverage-open-sales",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
     avoidHeader: true,
@@ -654,7 +654,7 @@ export const listMenuParent: any = [
     id: 11,
     name: "navbar.listMenuParent.poogi.title",
     img: "/assets/img/nav/poogi-module",
-    url: "",
+    url: "/poogi/reasons-for-delayed-orders",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
     child: [
