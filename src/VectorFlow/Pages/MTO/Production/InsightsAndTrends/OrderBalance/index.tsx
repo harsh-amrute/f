@@ -2,7 +2,6 @@ import { Allotment } from "allotment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { APIMock } from "./OrderBalanceMockData";
 import {
   BTRAllomentSection,
   BTRTableWrapper,
@@ -17,6 +16,14 @@ import { GridOptions } from "ag-grid-enterprise";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import useFilter from "../../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
+import { 
+  useGetOrderBalanceData, 
+  // <-------------- uncomment below code to enable dropdown for orderType    --------->
+  // useGetOrderTypeOptions 
+} from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/OrderBalance";
+import OverlayLoader from '../../../Common/Loader';
+import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
+import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 
 const APIFilterConfig = {
   filSecVisConfig :  {
@@ -39,7 +46,16 @@ const OrderBalance = () => {
   const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
   const [filterData, setFilterData] = useState({});
   const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Balance);
-
+  const {mutateAsync: getOrderBalanceData, isLoading, isError, isSuccess } = useGetOrderBalanceData();
+  // <-------------- uncomment below code to enable dropdown for orderType    --------->
+  // const {mutateAsync: getOrderTypeOptions, isLoading: isOptionsLoading, isError: isOptionsError, isSuccess: isOptionsSuccess } = useGetOrderTypeOptions();
+  const [gridData, setGridData] = useState([]);
+  const [graphData, setGraphData] = useState<any>({});
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalRows, setTotalRows] = useState<number>(0);
+  //  <-------------- uncomment below code to enable dropdown for orderType    --------->
+  // const [orderOptions, setOrderOptions] = useState([]); 
+  // const [orderType, setOrderType] = useState({}); 
   const reportName = "OrderBalance";
 
   const gridOptions: GridOptions = {
@@ -118,18 +134,71 @@ const OrderBalance = () => {
   const toggleFilter = (state: boolean) => {
     setIsFilterOpen(state);
   }
+  const getGridData = async (params: any) => {
+    try {
+      const response = await getOrderBalanceData(params);
+      setTotalRows(response.data.data.count);
+      setGridData(response.data.data.results);
+    }
+    catch (e) {
+      console.log(e);
+      notifyError('Failed to fetch Grid data!');
+    }
+  }
 
+  const getGraphData = async (params: any) => {
+    try {
+      const response = await getOrderBalanceData(params);
+      setGraphData(response?.data?.data[0]);
+    }
+    catch (e) {
+      console.log(e);
+      notifyError('Failed to fetch Graph data!');
+    }
+  }
+
+  const handlePageChange = (current: any) => {
+    setCurrentPage(current);
+    getGridData({ graphflag: 0, page: current})
+  }
+
+  // <-------------- uncomment below code to enable dropdown for orderType    --------->
+  // const getOrderOptions = async () => {
+  //   const response = await getOrderTypeOptions();
+  //   setOrderOptions(response?.data?.data)
+  // }
+  
+  // const handleChange = (option: any) => {
+  //   setOrderType(option)
+  //    getGraphData({ graphflag: 1, ordertype: option?.value || 1 });
+  // };
   
   useEffect(() => {
     setColumnDef();
+    getGridData({ graphflag: 0, page: currentPage});
+    getGraphData({ graphflag: 1, ordertype: 1 });
+  // <-------------- uncomment below code to enable dropdown for orderType    --------->  
+    // getOrderOptions()
   }, [])
 
   useEffect(() => {
     setFilterData(filterResponse?.data.data)
   }, [filterResponse]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      notifySuccess("Fetched Data successfully!")
+    }
+    if (isError) {
+      notifyError("Failed to load data!")
+    }
+  }, [isSuccess, isError])
+
   return (
     <div style={{}}>
+      {
+        isLoading && <OverlayLoader />
+      }
       <MTOActionToolBar
         comp={"orderBalance"}
         isGridView={isGridView}
@@ -151,7 +220,7 @@ const OrderBalance = () => {
               {...gridOptions}
               pagination={true}
               columnDefs={tableColDefs}
-              rowData={APIMock?.gridData}
+              rowData={gridData || []}
               tooltipHideDelay={100000}
               tooltipShowDelay={0}
               tooltipMouseTrack={true}
@@ -163,19 +232,32 @@ const OrderBalance = () => {
                 ],
               }}
             />
+            <VFPagination
+                selectedRows={0}
+                rowsPerPage={10}
+                totalRows={totalRows}
+                currentPage={currentPage}
+                handleChangePage={handlePageChange}
+            />
           </div>
         ) : (
           <BTRTableWrapper style={{ height: screenHeight - 190, margin: "0" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <TrailDeptCount />
+                  <TrailDeptCount graphData={graphData}/>
                 </BTRAllomentSection>
               </Allotment.Pane>
 
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <TrailDeptBalance />
+                  <TrailDeptBalance 
+                    graphData={graphData} 
+  // <-------------- uncomment below code to enable dropdown for orderType    --------->
+                    // orderOptions={orderOptions}
+                    // handleChange={handleChange}
+                    // orderType={orderType}
+                  />
                 </BTRAllomentSection>
               </Allotment.Pane>
             </Allotment>

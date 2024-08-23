@@ -155,6 +155,14 @@ export const columnConfigData = {
       cla: "left",
       scc: "bl",
     },
+    {
+      cc: "w",
+      cp: 6,
+      hd: "White",
+      v: true,
+      cla: "left",
+      scc: "w",
+    },
   ],
 };
 
