@@ -1,10 +1,10 @@
 import styled from "styled-components";
- 
+
 export const TooltipTarget = styled.div`
   cursor: pointer;
 `;
 
-export const TooltipContainer = styled.div<{$arrowLeft?: any}>`
+export const TooltipContainer = styled.div<{ $arrowLeft?: any, $myzoom?: any }>`
   color: white;
   background: #313131;
   border-radius: 4px;
@@ -12,6 +12,7 @@ export const TooltipContainer = styled.div<{$arrowLeft?: any}>`
   position: fixed;
   max-width: 300px;
   font-size: 16px;
+  zoom: ${(props) => props.$myzoom ? props.$myzoom : 1};
   &:after {
     content: "";
     width: 0;

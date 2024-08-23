@@ -4,7 +4,7 @@ import axios from 'axios'
 export namespace ProcPlanningService {
 
     export const GetProcPlanningData = async (date: string, pageNum: string) => {
-        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getProcPlanningData/?releaseDate=${date}&page=${pageNum}`, {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getProcPlanningData/?releaseDate=${date}&page=${pageNum}&ca=1`, {
             headers: { 'Content-Type': 'application/json' }
         });
     }

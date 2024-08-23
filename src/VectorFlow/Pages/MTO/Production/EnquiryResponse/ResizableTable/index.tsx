@@ -26,7 +26,11 @@ const ResizableTable = (props: IResizeTableProps) => {
   };
 
   const defaultColDef = {
-
+    filter: "agTextColumnFilter",
+    floatingFilter: true,
+    floatingFilterComponentParams: { suppressFilterButton: true },
+    suppressMenu: true,
+    resizable: true,
     cellStyle: {
       'text-align': 'center',
       "font-style": "normal",

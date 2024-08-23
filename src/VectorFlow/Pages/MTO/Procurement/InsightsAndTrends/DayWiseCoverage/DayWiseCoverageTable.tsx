@@ -98,7 +98,11 @@ const DayWiseCoverageTable = ({
     },
     columnDefs: colDef,
     defaultColDef: {
+      filter: "agTextColumnFilter",
+      floatingFilter: true,
+      floatingFilterComponentParams: { suppressFilterButton: true },
       suppressMenu: true,
+      resizable: true,
     },
     autoGroupColumnDef: {
       headerName: "Group",

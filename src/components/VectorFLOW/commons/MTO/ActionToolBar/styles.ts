@@ -313,6 +313,7 @@ export const DateWrapper = styled.div`
   font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: 18px;
+  margin-left: -65px;
   color: #000000;
   letter-spacing: 0;
   line-height: 21px;
@@ -368,11 +369,11 @@ export const SelectGroup = styled.div`
     gap: 20px;
 `
 
-export const ChartHeaderRadioGroup = styled.div<{theme:string}>`
+export const ChartHeaderRadioGroup = styled.div<{ theme: string }>`
     display:flex;
     align-items:center;
     justify-content:center;
-    accent-color:${(props)=>globalStyles.chooseThemeColor[props.theme].color5};
+    accent-color:${(props) => globalStyles.chooseThemeColor[props.theme].color5};
     font-style:normal;
     font-variant:normal;
     font-weight:300;

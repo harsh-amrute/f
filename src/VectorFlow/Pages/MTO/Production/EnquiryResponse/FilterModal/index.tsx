@@ -142,9 +142,9 @@ const FilterModal = (props: IFilterModalProps) => {
                                             <FilterCheckboxAccordian filterType={filter?.heading} filterKey={filter?.key} isOpen={activeAccordian === filter?.key} handleToggleAccordian={handleToggleAccordian}>
                                                 <OptionsWrapper>
                                                     {filter?.options?.map((option: string, idx: number) => (
-                                                        <Option>
+                                                        <Option >
 
-                                                            <label><Radio
+                                                            <label style={{ alignItems: 'center', display: 'flex' }}><Radio
                                                                 key={option}
                                                                 name={option}
                                                                 theme={themeUi ? themeUi : ''}

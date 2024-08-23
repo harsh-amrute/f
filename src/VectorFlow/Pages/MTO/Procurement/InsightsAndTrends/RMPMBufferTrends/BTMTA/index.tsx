@@ -495,8 +495,8 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 setChartLoading={setChartLoading}
                 data={numericData}
                 rowData={numericData}
-                graphTitle={`RM / PM Buffer Trend- MTA (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
-                tableTitle={`RM / PM Buffer Trend- MTA (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
+                graphTitle={`RM / PM On Hand Invetory Trend - MTA (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
+                tableTitle={`RM / PM On Hand Invetory Trend - MTA (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
                 options={options}
                 colDef={colDef}
                 header={generateHeader}

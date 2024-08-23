@@ -19,6 +19,7 @@ import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Commo
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import OverlayLoader from "../../Common/Loader";
 import { INumberCellEditorParams } from "@ag-grid-community/core"
+import { TableWrapper } from "./styles";
 
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
@@ -135,7 +136,6 @@ const useProcPlanning = (date: string) => {
             setTotalRows(response?.data?.data?.count)
             setData(response?.data?.data?.results || []);
         } catch (error) {
-            console.log("error ")
             toast.dismiss();
             notifyError("Failed to fetch data!");
             setIsLoading(false);
@@ -168,7 +168,6 @@ const useProcPlanning = (date: string) => {
                     }
                     return header;
                 });
-                console.log("this workds")
                 SetShortageData(ShortageData);
                 setCompleteAvailableData(CompleteAvailableData);
 
@@ -297,7 +296,6 @@ const useProcPlanning = (date: string) => {
                 if (response.status === 200) {
                     toast.dismiss();
                     notifySuccess("Simulation updated successfully!")
-                    console.log("API call succeeded:", response);
                     navigate("/planning/simulative-fullkit", { state: { ShortageDatas, date } });
 
                 }
@@ -384,7 +382,7 @@ const useProcPlanning = (date: string) => {
         switch (currentTab.id) {
             case "ca":
                 return (
-                    <div>
+                    <TableWrapper>
                         <VFTable
                             {...agGridProps}
                             columnDefs={CompleteAvailableColumns}
@@ -409,12 +407,12 @@ const useProcPlanning = (date: string) => {
                             handleChangePage={handlePageChangeCumulative}
 
                         />
-                    </div>
+                    </TableWrapper>
                 );
             case "short":
                 return (
 
-                    <div>
+                    <TableWrapper>
                         {isOverlayLoading && <OverlayLoader message={"Updating the simulated data..."} />}
 
                         <VFTable
@@ -476,7 +474,7 @@ const useProcPlanning = (date: string) => {
                             </VFButton>
                         </div>
 
-                    </div>
+                    </TableWrapper>
                 );
             default:
                 return (
@@ -514,7 +512,10 @@ const useProcPlanning = (date: string) => {
             enableRangeSelection: true,
             icons: icons,
 
+
             defaultColDef: {
+                suppressMenu: true,
+                resizable: true,
                 floatingFilter: true,
                 filter: "agMultiColumnFilter",
                 floatingFilterComponentParams: { suppressFilterButton: true },

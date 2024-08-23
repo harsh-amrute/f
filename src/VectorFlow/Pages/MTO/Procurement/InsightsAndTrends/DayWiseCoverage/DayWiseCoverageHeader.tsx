@@ -31,6 +31,9 @@ const DayWiseCoverageHeader = ({
         if (!(start.length && end.length)) {
             setIsDisabled(true)
         }
+        else {
+            setIsDisabled(false)
+        }
         if (start && start.length) {
 
             setMinEndDate(start)
@@ -40,6 +43,9 @@ const DayWiseCoverageHeader = ({
     useEffect(() => {
         if (!(start.length && end.length)) {
             setIsDisabled(true)
+        }
+        else {
+            setIsDisabled(false)
         }
         if (end && end.length !== 0) {
 
