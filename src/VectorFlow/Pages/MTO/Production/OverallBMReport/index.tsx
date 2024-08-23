@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import {
     BMDepWrapper,
@@ -6,18 +6,27 @@ import {
 } from '../DepartmentWiseBMReport/styles';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
 import { Allotment } from 'allotment';
-import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 //import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
 import useViewPort from '../../../../../hooks/useViewPort';
-import { useUserData } from '../../../../../context';
+//import { useUserData } from '../../../../../context';
 import { AgGridReactProps } from 'ag-grid-react';
 import BPPRenderer from '../../Common/BPPRenderer';
 import AgeingCellRenderer from '../DepartmentWiseBMReport/AgeingIconCellRenderer';
-import customCellRenderer from '../DepartmentWiseBMReport/CustomCellRenderer';
+//import customCellRenderer from '../DepartmentWiseBMReport/CustomCellRenderer';
 import RemarkHistoryRenderer from '../DepartmentWiseBMReport/RemarkHistoryRenderer';
 import GridView from '../DepartmentWiseBMReport/GridView'
 import OrderElapsedGrid from '../DepartmentWiseBMReport/OrderElapsedGrid';
-
+import { useGetOverAllBMReport } from '../../../../Services/MTO/Production/OverallBMReport/index'
+import { notifyError, notifyLoader } from '../../../../../helpers/notify';
+import { toast } from 'react-toastify';
+import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
+import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
+import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
+import { useGetDeptWiseWipData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index';
+import { FirstDataRenderedEvent } from 'ag-grid-community';
+import { IRowNode } from 'ag-grid-enterprise';
+import OverlayLoader from '../../Common/Loader';
+import { ColorsMTO } from '../../Common/Colors';
 interface ApiResponse {
     cc: string;
     cp: number;
@@ -54,34 +63,73 @@ interface ColDefChild {
     };
 }
 
+type orderkeyObj = {
+    ok: []
+}
+
+interface Orders {
+    [key: string]: OrderItem; // Order ID as the key
+}
+
+interface OrderItem {
+    tq: number;
+    li: string;
+    [key: string]: number | string | DepartmentData; // Allow additional properties like departments
+}
+interface DepartmentData {
+    woh: number;
+    mfg: number;
+    int: number | null;
+    out: number;
+}
+
 const OverallBmReport = () => {
     //console.log()
+    const { mutateAsync: getOverallBMReportData, isLoading: OverAllBMLoading } = useGetOverAllBMReport();
+    const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
+    const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
+    const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
+
     const { screenHeight } = useViewPort();
-    const [isWIPChecked, /*setWIPCheck*/] = useState<boolean>(true);
+    const refGraph2 = useRef<any>(null);
+
     const [coldefs, setColdef] = useState<any>();
-    const { user } = useUserData();
-    const themeUi = user?.user?.theme_ui;
+    const [gridData, setGridData] = useState<any>();
+    const [gridDataCount, setGridDataCount] = useState<number>(0);
+    const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
+    const [remarkHistory, setRemarkHistory] = useState<any>();
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
+    const [deptWiseWipData, setDeptWiseWipData] = useState<any>();
+    const [deptName, setDeptName] = useState<any>([]);
+    const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
+
+
+    // const { user } = useUserData();
+    // const themeUi = user?.user?.theme_ui;
 
     const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
         try {
-            console.log('onOpenRemarkHistory ', data)
+            //console.log('data.rm', data.rm.length)
             // if (data.rm.length === 0) {
-            //     const RemarkHistory = await getPoogIRemarks(data.ok)
-            //     if (RemarkHistory.data?.data === 'No remarks are present for the order') {
-            //         data.rm = []
-            //     }
-            //     else {
-            //         data.rm = RemarkHistory.data?.data;
-            //     }
+            const RemarkHistory = await getPoogIRemarks(data.ok)
+            //console.log('RemarkHistory', RemarkHistory?.data?.data)
+            if (RemarkHistory.data?.data === 'No remarks are present for the order') {
+                data.rm = []
+            }
+            else {
+                data.rm = RemarkHistory.data?.data;
+            }
             // }
-            // setRemarkHistory(data.rm)
-            // setIsRemarkHistoryOpen(true)
+            setRemarkHistory(data.rm)
+            setIsRemarkHistoryOpen(true)
         }
         catch (e) {
             console.log(e);
         }
-        // setIsRemarkHistoryOpen(true)
+        setIsRemarkHistoryOpen(true)
+
     };
 
     const apiResponse: ApiResponse[] =
@@ -127,7 +175,7 @@ const OverallBmReport = () => {
                         "scc": "bpp",
                     },
                     {
-                        "cc": "DeptAgeing",
+                        "cc": "da",
                         "cp": 4,
                         "hd": "Dept Ageing",
                         "v": true,
@@ -191,38 +239,39 @@ const OverallBmReport = () => {
                 ],
             },
             {
-                "cc": "dept1",
+                "cc": "ddt1",
                 "cp": 2,
                 "hd": "Department 1",
                 "v": true,
                 "cla": "Centre",
-                "scc": "dept1",
+                "scc": "ddt1",
                 "children": [
                     {
-                        "cc": '1_woh',
+                        "cc": 'woh',
                         'cp': 1,
                         'hd': 'WIP on Hand',
                         'v': true,
                         'cla': 'centre',
-                        'scc': '1_woh',
+                        'scc': 'woh',
                     },
                     {
-                        "cc": '1_mfg',
+                        "cc": 'mfg',
                         'cp': 2,
                         'hd': 'Mfg. Balance',
                         'v': true,
                         'cla': 'centre',
-                        'scc': '1_mfg',
+                        'scc': 'mfg',
+                        "cgs": "closed"
                     },
                 ]
             },
             {
-                "cc": "dept2",
+                "cc": "ddt2",
                 "cp": 3,
                 "hd": "Department 2",
                 "v": true,
                 "cla": "Centre",
-                "scc": "dept2",
+                "scc": "ddt2",
                 "children": [
                     {
                         "cc": '2_woh',
@@ -239,16 +288,17 @@ const OverallBmReport = () => {
                         'v': true,
                         'cla': 'centre',
                         'scc': '2_mfg',
+                        "cgs": "closed"
                     },
                 ]
             },
             {
-                "cc": "empty",
+                "cc": "",
                 "cp": 2,
                 "hd": "",
                 "v": true,
                 "cla": "Centre",
-                "scc": "empty",
+                "scc": "",
                 "children": [
                     {
                         "cc": "DueDate",
@@ -333,7 +383,7 @@ const OverallBmReport = () => {
                         "hd": "Elapsed Days",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Elap_days",
+                        "scc": "ed",
 
                     },
                     {
@@ -361,7 +411,7 @@ const OverallBmReport = () => {
                         "hd": "Plant Name",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Pl_Nam",
+                        "scc": "pn",
 
                     },
                     {
@@ -478,173 +528,173 @@ const OverallBmReport = () => {
             },
         ]
 
-    const rowData = [
-        {
-            ec: "EC1",
-            ic: "IC1",
-            bpp: "BPP1",
-            da: "5 days",
-            ot: "Urgent",
-            oid: "Order001",
-            lid: "Line001",
-            id: "Product A",
-            oq: 100,
-            wipoh: 50,
-            mfg: 30,
-            dd: "2024-08-25",
-            td: "Dept A",
-            crdd: "2024-08-30",
-            CCR_Nme: "John Doe",
-            cn: "Customer X",
-            "Release Date": "2024-08-20",
-            "Remark History": "On track",
-            Elap_days: 5,
-            Attr: "Attribute A",
-            Pl_Nam: "Plant X",
-            "PO_No.": "PO001",
-            Price: 1500,
-            Itm_Grp: "Electronics",
-            Att_1: "Color: Red",
-            Att_2: "Size: M",
-            Att_3: "Weight: 2kg",
-            Att_4: "Battery: 6 hours",
-            Cust_Cd: "Cust001",
-            Rgn: "North America",
-            Cntry: "USA"
-        },
-        {
-            ec: "EC2",
-            ic: "IC2",
-            bpp: "BPP2",
-            da: "3 days",
-            ot: "Normal",
-            oid: "Order002",
-            lid: "Line002",
-            id: "Product B",
-            oq: 200,
-            wipoh: 100,
-            mfg: 80,
-            dd: "2024-08-28",
-            td: "Dept B",
-            crdd: "2024-09-02",
-            CCR_Nme: "Jane Doe",
-            cn: "Customer Y",
-            "Release Date": "2024-08-22",
-            "Remark History": "Delayed",
-            Elap_days: 7,
-            Attr: "Attribute B",
-            Pl_Nam: "Plant Y",
-            "PO_No.": "PO002",
-            Price: 2500,
-            Itm_Grp: "Appliances",
-            Att_1: "Color: Blue",
-            Att_2: "Size: L",
-            Att_3: "Weight: 3kg",
-            Att_4: "Battery: 8 hours",
-            Cust_Cd: "Cust002",
-            Rgn: "Europe",
-            Cntry: "Germany"
-        },
-        {
-            ec: "EC3",
-            ic: "IC3",
-            bpp: "BPP3",
-            da: "7 days",
-            ot: "Urgent",
-            oid: "Order003",
-            lid: "Line003",
-            id: "Product C",
-            oq: 300,
-            wipoh: 150,
-            mfg: 100,
-            dd: "2024-09-01",
-            td: "Dept C",
-            crdd: "2024-09-05",
-            CCR_Nme: "Jack Smith",
-            cn: "Customer Z",
-            "Release Date": "2024-08-25",
-            "Remark History": "Ahead of schedule",
-            Elap_days: 3,
-            Attr: "Attribute C",
-            Pl_Nam: "Plant Z",
-            "PO_No.": "PO003",
-            Price: 3500,
-            Itm_Grp: "Furniture",
-            Att_1: "Color: Green",
-            Att_2: "Size: S",
-            Att_3: "Weight: 5kg",
-            Att_4: "Battery: N/A",
-            Cust_Cd: "Cust003",
-            Rgn: "Asia",
-            Cntry: "India"
-        },
-        {
-            ec: "EC4",
-            ic: "IC4",
-            bpp: "BPP4",
-            da: "2 days",
-            ot: "Normal",
-            oid: "Order004",
-            lid: "Line004",
-            id: "Product D",
-            oq: 400,
-            wipoh: 200,
-            mfg: 120,
-            dd: "2024-08-30",
-            td: "Dept D",
-            crdd: "2024-09-04",
-            CCR_Nme: "Alice Brown",
-            cn: "Customer W",
-            "Release Date": "2024-08-21",
-            "Remark History": "Needs review",
-            Elap_days: 10,
-            Attr: "Attribute D",
-            Pl_Nam: "Plant W",
-            "PO_No.": "PO004",
-            Price: 4500,
-            Itm_Grp: "Automotive",
-            Att_1: "Color: Black",
-            Att_2: "Size: XL",
-            Att_3: "Weight: 10kg",
-            Att_4: "Battery: 12 hours",
-            Cust_Cd: "Cust004",
-            Rgn: "South America",
-            Cntry: "Brazil"
-        },
-        {
-            ec: "EC5",
-            ic: "IC5",
-            bpp: "BPP5",
-            da: "1 day",
-            ot: "Urgent",
-            oid: "Order005",
-            lid: "Line005",
-            id: "Product E",
-            oq: 500,
-            wipoh: 250,
-            mfg: 140,
-            dd: "2024-09-03",
-            td: "Dept E",
-            crdd: "2024-09-07",
-            CCR_Nme: "Bob White",
-            cn: "Customer V",
-            "Release Date": "2024-08-23",
-            "Remark History": "Under review",
-            Elap_days: 6,
-            Attr: "Attribute E",
-            Pl_Nam: "Plant V",
-            "PO_No.": "PO005",
-            Price: 5500,
-            Itm_Grp: "Textiles",
-            Att_1: "Color: Yellow",
-            Att_2: "Size: XS",
-            Att_3: "Weight: 1kg",
-            Att_4: "Battery: 3 hours",
-            Cust_Cd: "Cust005",
-            Rgn: "Oceania",
-            Cntry: "Australia"
-        }
-    ];
+    /* const rowData = [
+         {
+             ec: "EC1",
+             ic: "IC1",
+             bpp: "BPP1",
+             da: "5 days",
+             ot: "Urgent",
+             oid: "Order001",
+             lid: "Line001",
+             id: "Product A",
+             oq: 100,
+             wipoh: 50,
+             mfg: 30,
+             dd: "2024-08-25",
+             td: "Dept A",
+             crdd: "2024-08-30",
+             CCR_Nme: "John Doe",
+             cn: "Customer X",
+             "Release Date": "2024-08-20",
+             "Remark History": "On track",
+             Elap_days: 5,
+             Attr: "Attribute A",
+             Pl_Nam: "Plant X",
+             "PO_No.": "PO001",
+             Price: 1500,
+             Itm_Grp: "Electronics",
+             Att_1: "Color: Red",
+             Att_2: "Size: M",
+             Att_3: "Weight: 2kg",
+             Att_4: "Battery: 6 hours",
+             Cust_Cd: "Cust001",
+             Rgn: "North America",
+             Cntry: "USA"
+         },
+         {
+             ec: "EC2",
+             ic: "IC2",
+             bpp: "BPP2",
+             da: "3 days",
+             ot: "Normal",
+             oid: "Order002",
+             lid: "Line002",
+             id: "Product B",
+             oq: 200,
+             wipoh: 100,
+             mfg: 80,
+             dd: "2024-08-28",
+             td: "Dept B",
+             crdd: "2024-09-02",
+             CCR_Nme: "Jane Doe",
+             cn: "Customer Y",
+             "Release Date": "2024-08-22",
+             "Remark History": "Delayed",
+             Elap_days: 7,
+             Attr: "Attribute B",
+             Pl_Nam: "Plant Y",
+             "PO_No.": "PO002",
+             Price: 2500,
+             Itm_Grp: "Appliances",
+             Att_1: "Color: Blue",
+             Att_2: "Size: L",
+             Att_3: "Weight: 3kg",
+             Att_4: "Battery: 8 hours",
+             Cust_Cd: "Cust002",
+             Rgn: "Europe",
+             Cntry: "Germany"
+         },
+         {
+             ec: "EC3",
+             ic: "IC3",
+             bpp: "BPP3",
+             da: "7 days",
+             ot: "Urgent",
+             oid: "Order003",
+             lid: "Line003",
+             id: "Product C",
+             oq: 300,
+             wipoh: 150,
+             mfg: 100,
+             dd: "2024-09-01",
+             td: "Dept C",
+             crdd: "2024-09-05",
+             CCR_Nme: "Jack Smith",
+             cn: "Customer Z",
+             "Release Date": "2024-08-25",
+             "Remark History": "Ahead of schedule",
+             Elap_days: 3,
+             Attr: "Attribute C",
+             Pl_Nam: "Plant Z",
+             "PO_No.": "PO003",
+             Price: 3500,
+             Itm_Grp: "Furniture",
+             Att_1: "Color: Green",
+             Att_2: "Size: S",
+             Att_3: "Weight: 5kg",
+             Att_4: "Battery: N/A",
+             Cust_Cd: "Cust003",
+             Rgn: "Asia",
+             Cntry: "India"
+         },
+         {
+             ec: "EC4",
+             ic: "IC4",
+             bpp: "BPP4",
+             da: "2 days",
+             ot: "Normal",
+             oid: "Order004",
+             lid: "Line004",
+             id: "Product D",
+             oq: 400,
+             wipoh: 200,
+             mfg: 120,
+             dd: "2024-08-30",
+             td: "Dept D",
+             crdd: "2024-09-04",
+             CCR_Nme: "Alice Brown",
+             cn: "Customer W",
+             "Release Date": "2024-08-21",
+             "Remark History": "Needs review",
+             Elap_days: 10,
+             Attr: "Attribute D",
+             Pl_Nam: "Plant W",
+             "PO_No.": "PO004",
+             Price: 4500,
+             Itm_Grp: "Automotive",
+             Att_1: "Color: Black",
+             Att_2: "Size: XL",
+             Att_3: "Weight: 10kg",
+             Att_4: "Battery: 12 hours",
+             Cust_Cd: "Cust004",
+             Rgn: "South America",
+             Cntry: "Brazil"
+         },
+         {
+             ec: "EC5",
+             ic: "IC5",
+             bpp: "BPP5",
+             da: "1 day",
+             ot: "Urgent",
+             oid: "Order005",
+             lid: "Line005",
+             id: "Product E",
+             oq: 500,
+             wipoh: 250,
+             mfg: 140,
+             dd: "2024-09-03",
+             td: "Dept E",
+             crdd: "2024-09-07",
+             CCR_Nme: "Bob White",
+             cn: "Customer V",
+             "Release Date": "2024-08-23",
+             "Remark History": "Under review",
+             Elap_days: 6,
+             Attr: "Attribute E",
+             Pl_Nam: "Plant V",
+             "PO_No.": "PO005",
+             Price: 5500,
+             Itm_Grp: "Textiles",
+             Att_1: "Color: Yellow",
+             Att_2: "Size: XS",
+             Att_3: "Weight: 1kg",
+             Att_4: "Battery: 3 hours",
+             Cust_Cd: "Cust005",
+             Rgn: "Oceania",
+             Cntry: "Australia"
+         }
+     ];*/
 
 
     const mapApiResponseToColDefs = (apiResponse: ApiResponse[]): ColDef[] => {
@@ -653,18 +703,20 @@ const OverallBmReport = () => {
                 field: child.scc.trim(),
                 headerName: child.hd,
                 colId: child.hd,
-                cellRenderer: child.cc === 'ec' ? "customCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
+                cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
                 columnGroupShow: child.cgs,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 cellRendererParams: child.hd.includes("Remark") ? {
-                    onClick: child.scc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
+                    onClick: child.scc === 'rh' ? (data: string) => onOpenRemarkHistory(data) : undefined
                 } : undefined,
                 cellStyle: child.cc === 'Remark' ? {
                     backgroundColor: 'white',
                     border: '1px solid #b9bdba',
                     color: 'black',
                     padding: '1px'
+                } : child.cc === 'da' ? {
+                    'color': ColorsMTO.Pink.code
                 } : undefined
             }));
         };
@@ -686,14 +738,24 @@ const OverallBmReport = () => {
         const colDefs = mapApiResponseToColDefs(apiResponse);
         //console.log('coldefs', colDefs)
         setColdef(colDefs)
-        // getInitialGridData(isWIPChecked, 1);
+        getInitialGridData(1);
     }, [])
+
+    useEffect(() => {
+        if (OverAllBMLoading) {
+            toast.dismiss();
+            notifyLoader("Loading Data ...")
+        }
+        else {
+            toast.dismiss();
+        }
+    }, [OverAllBMLoading])
 
     const customCellRenderers = useMemo(() => (
         {
             "colorCellRenderer": BPPRenderer,
             "AgeingCellRenderer": AgeingCellRenderer,
-            "customCellRenderer": customCellRenderer,
+            //"customCellRenderer": customCellRenderer,
             "RemarkHistoryRenderer": RemarkHistoryRenderer,
         }), []);
 
@@ -702,6 +764,135 @@ const OverallBmReport = () => {
             toolPanels: ['columns'],
         };
     }, []);
+
+    const getInitialGridData = async (currentPage: number) => {
+        try {
+            const gridData = await getOverallBMReportData(currentPage);
+            setGridData(gridData?.data?.data?.results)
+            console.log('first', gridData?.data?.data)
+            setGridDataCount(gridData?.data?.data?.count)
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+
+    const handlePageChange = async (currPage: number) => {
+        //console.log('first,', currPage)
+        setCurrentPage(currPage)
+        getInitialGridData(currPage)
+    }
+
+    const extractDepartmentNames = (orders: Orders): string[] => {
+        const departmentNames: Set<string> = new Set();
+
+        // Iterate over each order
+        Object.values(orders).forEach(orderItem => {
+            // Iterate over each property in the order item
+            Object.keys(orderItem).forEach(key => {
+                // Check if the property is a department (i.e., not 'tq' or 'li')
+                if (key !== 'tq' && key !== 'li') {
+                    departmentNames.add(key);
+                }
+            });
+        });
+
+        // Convert Set to Array and return
+        return Array.from(departmentNames);
+    };
+
+    const getSelectedRow = async () => {
+        const selectedData = refGraph2.current?.api.getSelectedRows();
+        /* To persist the state*/
+        if (selectedData) {
+            let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
+            selectedData.forEach((newItem: any) => {
+                const index = mergedData.findIndex((item: any) => item.oid === newItem.oid);
+                if (index !== -1) {
+                    // If the item exists, replace it
+                    mergedData[index] = newItem;
+                } else {
+                    // Otherwise, add the new item
+                    mergedData.push(newItem);
+                }
+            });
+
+            gridData.forEach((item: any) => {
+                let isThere = 0;
+                selectedData.forEach((selectedD: any) => {
+                    if (selectedD.oid === item.oid) {
+                        isThere = 1;
+                    }
+                })
+                if (isThere == 0) {
+                    mergedData = mergedData.filter((e: any) => e.oid !== item.oid)
+                }
+            })
+            setMasterSelectedRowData(mergedData);
+            //console.log("masterDataaa", mergedData)
+            /*persist data finised*/
+
+            if (mergedData.length > 0) {
+                //console.log('selected', mergedData.length)
+                const selectedOrderKeys: orderkeyObj[] = []
+                mergedData.map((ele: any) => {
+                    selectedOrderKeys.push(ele.ok)
+                })
+                //console.log('slectedOrder', selectedOrderKeys)
+                const fetchDeptWiseWiphData = async () => {
+                    try {
+                        const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
+                        //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
+                        setDeptWiseWipData(DeptWiseWipData?.data?.data);
+                        const departmentNames = extractDepartmentNames(DeptWiseWipData?.data?.data);
+                        //console.log('DeptWiseWipData===',departmentNames);
+                        setDeptName(departmentNames);
+                    } catch (error) {
+                        notifyError('Failed to fetch data');
+                    }
+
+                };
+                fetchDeptWiseWiphData();
+                setIsOrderElapsedGrid(true)
+            } else {
+                setDeptWiseWipData('');
+                setIsOrderElapsedGrid(false)
+            }
+        }
+    }
+
+
+
+    const existsInSelected = (reqOid: string): boolean => {
+        for (let index = 0; index < masterSelectedRowData.length; index++) {
+            const element: any = masterSelectedRowData[index];
+            if (element.oid === reqOid) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    const onFirstDataRendered = (params: FirstDataRenderedEvent<any>) => {
+        const nodesToSelect: IRowNode[] = [];
+
+        params.api.forEachNode((node: any) => {
+            if (node.data && node.data.oid && existsInSelected(node.data.oid)) {
+                node.data.Remark = masterSelectedRowData[0].Remark;
+                for (let index = 0; index < masterSelectedRowData.length; index++) {
+                    const element = masterSelectedRowData[index];
+                    if (element.oid === node.data.oid) {
+                        node.data.Remark = element.Remark;
+
+                    }
+                }
+                nodesToSelect.push(node);
+            }
+
+        });
+        params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
+    }
 
 
     const agGridProps: AgGridReactProps = {
@@ -749,71 +940,98 @@ const OverallBmReport = () => {
         enterNavigatesVerticallyAfterEdit: true,
         groupDefaultExpanded: 0,
         pivotMode: false,
-        //onSelectionChanged: getSelectedRow,
-        //onCellValueChanged: onCellValueChanged,
-        //onGridReady: onGridReady
+        onSelectionChanged: getSelectedRow,
+        onFirstDataRendered: onFirstDataRendered,
+        detailCellRendererParams: {
+            suppressMenu: true,
+            detailGridOptions: {
+                rowHeight: 45,
+                domLayout: "autoHeight",
+                autoGroupColumnDef: {
+                    headerName: "Item Name",
+                    cellRendererParams: {
+                        suppressCount: true
+                    }
+                },
+                columnDefs: [
+                    { field: "qty", headerName: "Requirement", },
+                    { field: "soh", headerName: "Stock", },
+                    { field: "wip", headerName: "WIP", },
+                    { field: "gap", headerName: "Gap", },
+                ],
+                defaultColDef: {
+                    flex: 1,
+                    suppressMenu: true,
+                    cellStyle: {
+                        fontSize: "16px",
+                        display: "flex",
+                        alignItems: "center"
+                    }
+                },
+                treeData: true,
+                getDataPath: (data: any) => {
+                    return data.path;
+                },
+            },
+            getDetailRowData: async (params: any) => {
+                const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
+                params.successCallback(data.data.data)
+            }
+        },
     };
 
-    const handleUpdateReason = () => {
-        console.log('first')
-    }
 
-    const handlePageChange = (e: number) => {
-        console.log('first', e)
-    }
 
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>
                 <MTOActionToolBar
-                    comp={'DeptWiseBMReport'}
+                    comp={'OverallBMReport'}
                     isAddFilterButton
                     isExcelExport
-                    quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
-                        <Checkbox checked={isWIPChecked} onChange={(e) => console.log(e)/*(e) => getInitialGridData(e.target.checked, 1)*/} theme={themeUi} />
-                        &nbsp;&nbsp; <strong>Show order with available WIP Only</strong></div>}
                 />
             </BMDepHeaderWraper>
 
-            <HorizontalViewWrapper style={{ marginTop: '0px' }}>
-                <BTRTableWrapper style={{ height: screenHeight + 100, margin: '0' }}>
-                    <Allotment vertical={true} separator={true} >
-                        <Allotment.Pane preferredSize={'60%'}>
-                            <BTRAllomentSection>
-                                <GridView
-                                    // reference={refGraph1}
-                                    agGridProps={agGridProps}
-                                    columDef={coldefs}
-                                    convercolumnDef={rowData}
-                                    updateReason={() => handleUpdateReason()}
-                                    handlePageChange={(cp) => handlePageChange(cp)}
-                                    saveBtn={false}
-                                //totalRow={gridDataCount}
-                                //currentPage={currentPage}
-                                />
-                            </BTRAllomentSection>
-                        </Allotment.Pane>
+            {OverAllBMLoading ? <OverlayLoader /> :
 
-                        <Allotment.Pane preferredSize={'40%'}>
-                            <BTRAllomentSection>
-                                <OrderElapsedGrid
-                                    isTrue={true}
-                                    //data={deptWiseWipData}
-                                    deptName={[]}
-                                //selectedOrderCount={refGraph1.current?.api.getSelectedRows().length}
+                <HorizontalViewWrapper style={{ marginTop: '0px' }}>
+                    <BTRTableWrapper style={{ height: screenHeight + 100, margin: '0' }}>
+                        <Allotment vertical={true} separator={true} >
+                            <Allotment.Pane preferredSize={'60%'}>
+                                <BTRAllomentSection>
+                                    <GridView
+                                        reference={refGraph2}
+                                        agGridProps={agGridProps}
+                                        columDef={coldefs}
+                                        convercolumnDef={gridData}
+                                        handlePageChange={(cp) => handlePageChange(cp)}
+                                        saveBtn={false}
+                                        totalRow={gridDataCount}
+                                        currentPage={currentPage}
+                                    />
+                                </BTRAllomentSection>
+                            </Allotment.Pane>
 
-                                />
-                            </BTRAllomentSection>
-                        </Allotment.Pane>
-                    </Allotment>
-                </BTRTableWrapper>
-            </HorizontalViewWrapper>
+                            <Allotment.Pane preferredSize={'40%'}>
+                                <BTRAllomentSection>
+                                    <OrderElapsedGrid
+                                        isTrue={isOrderElapsedGrid}
+                                        data={deptWiseWipData}
+                                        deptName={deptName}
+                                        selectedOrderCount={masterSelectedRowData.length}
+                                    />
+                                </BTRAllomentSection>
+                            </Allotment.Pane>
+                        </Allotment>
+                    </BTRTableWrapper>
+                </HorizontalViewWrapper>
+            }
 
-            {/* <BPRRemarkHistoryModal
+            <BPRRemarkHistoryModal
                 data={remarkHistory}
                 isOpen={isRemarkHistoryOpen}
                 onClose={() => setIsRemarkHistoryOpen(false)}
-            /> */}
+            />
 
         </BMDepWrapper>
 
