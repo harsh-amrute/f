@@ -352,7 +352,7 @@ const FilterTextInput = ({
 
 const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}:any)=>{
 
-  const comparatorConfig: any = {
+  const textComparatorConfig: any = {
     et : {value:'et',label:'Equal to'},
     net : {value:'net',label:'Not Equal to'},
     dnc : {value:'dnc',label:'Does not contain'},
@@ -361,6 +361,11 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
     ew: {value:'ew',label:'Ends with'},
     dnew: {value:'dnew',label:'Does not end with'},
     hv: {value:'hv',label:'Has value'},
+  }
+  
+  const numberComparatorConfig: any = {
+    et: {value:'et', label: '='},
+    net:  {value:'net', label: '!='},
     gt: {value:'gt',label:'>'},
     gte: {value:'gte',label:'>='},
     lt: {value:'lt',label:'<'},
@@ -379,6 +384,8 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
   ]
  
   const numberComparators = [
+    {value:'et', label: '='},
+    {value:'net', label: '!='},
     {value:'gte',label:'>='},
     {value:'lte',label:'<='},
     {value:'gt',label:'>'},
@@ -388,9 +395,9 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
   const getOperatorValue = (type: string)=>{
       const operator = filterState.operator;
       if(type === InputTypes.TextCompare){
-        return comparatorConfig[operator] || textComparators[0]
+        return textComparatorConfig[operator] || textComparators[0]
       }
-      return comparatorConfig[operator] || numberComparators[0]
+      return numberComparatorConfig[operator] || numberComparators[0]
   }
 
   const getValue = ()=>{
