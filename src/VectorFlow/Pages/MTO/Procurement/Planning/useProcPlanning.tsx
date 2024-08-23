@@ -115,13 +115,14 @@ const useProcPlanning = (date: string) => {
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
     const { mutateAsync: UpdateProcurementSimulationData } = putUpdateProcurementSimulationData()
     const [isLoading, setIsLoading] = useState(false);
-    const fetchData = useCallback(async (date: string) => {
+    const fetchData = useCallback(async (date: string, pageNumber = 1) => {
         setIsLoading(true);
         try {
             toast.dismiss();
             notifyLoader("Loading data...")
-            const response = await getProcPlanningData({ date, pageNum: currentPage.toString() });
+            const response = await getProcPlanningData({ date, pageNum: pageNumber.toString() });
             if (response.status === 200) {
+                setCurrentPage(pageNumber)
                 toast.dismiss();
                 notifySuccess("Data fetched Successfully!");
                 setIsLoading(false);
@@ -167,7 +168,7 @@ const useProcPlanning = (date: string) => {
                     }
                     return header;
                 });
-
+                console.log("this workds")
                 SetShortageData(ShortageData);
                 setCompleteAvailableData(CompleteAvailableData);
 
@@ -357,17 +358,25 @@ const useProcPlanning = (date: string) => {
     }, []);
 
     useEffect(() => {
-        handlePageChangeCumulative(currentPage)
+        if (date) {
+
+            fetchData(date);
+        }
     }, [])
 
     const handlePageChangeCumulative = async (pageNumber: number) => {
-        setIsLoading(true);
-        setCurrentPage(pageNumber);
-        const APIData = await getProcPlanningData({ date, pageNum: currentPage.toString() });
-        // setData(APIData)
-        const newDat = APIData.data.data.results
-        setData(newDat);
-        setIsLoading(false);
+        // setIsLoading(true);
+        // setCurrentPage(pageNumber);
+        // const APIData = await getProcPlanningData({ date, pageNum: currentPage.toString() });
+        // // setData(APIData)
+        // const newDat = APIData.data.data.results
+        // setTotalRows(APIData?.data?.data?.count)
+        // // setData(APIData?.data?.data?.results || []);
+        // setData(newDat);
+        // setIsLoading(false);
+
+        fetchData(date, pageNumber);
+
         // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
 

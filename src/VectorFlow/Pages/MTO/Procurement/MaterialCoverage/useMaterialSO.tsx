@@ -157,7 +157,13 @@ const useMaterialSO = (data: any) => {
             enableBrowserTooltips: true,
             enableRangeSelection: true,
             components: customCellRenderers,
+
             defaultColDef: {
+
+                floatingFilterComponentParams: {
+                    suppressFilterButton: true,
+                },
+                suppressMenu: true,
                 resizable: true,
                 flex: 1,
                 filter: 'agTextColumnFilter',

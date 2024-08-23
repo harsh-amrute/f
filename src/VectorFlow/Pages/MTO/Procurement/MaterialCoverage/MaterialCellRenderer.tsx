@@ -9,7 +9,7 @@ const MaterialCellRenderer = (params: any) => {
     const columnDef = mapSimulateHedaerChildrenFieldsToColDefs(HeaderChildren)
 
     const customChildrenCellRenderers = useMemo(() => ({
-        "coloPriorityOfBall": ChildrenColor
+        "coloPriorityOfBall": ChildrenColor,
     }), []);
 
     return (
@@ -38,14 +38,16 @@ const MaterialCellRenderer = (params: any) => {
                             'background': 'white',
                             "display": "block",
                         },
-                        flex: 0,
+                        flex: 1,
                     }}
                     rowData={params.data.children}
                     height={'300px'}
                     pagination={true}
+                    paginationPageSize={3}
                     components={customChildrenCellRenderers}
                     masterDetail={true}
                     rowSelection="multiple"
+
                     suppressRowClickSelection={true}
                     enableRangeSelection={true}
                     // paginationAutoPageSize={true}

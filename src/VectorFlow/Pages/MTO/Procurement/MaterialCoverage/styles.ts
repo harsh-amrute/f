@@ -183,10 +183,12 @@ export const underLine = styled.div`
     color:"#000"    
 `
 export const ProcurementLayout = styled.div`
-    height: 90vh;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 
     & > .ag-theme-alpine{
-          flex: 1;
+          flex: 1 !important;
 
     }
 
@@ -354,7 +356,20 @@ export const SCDynamicContainer = styled.div`
     & .ag-header-cell-text {
       font-size: 18px;
       font-weight: bold;
-  }
+    }
+
+    
+
+      & > .ag-theme-alpine{
+     
+        --ag-borders: none !important;
+          & .ag-cell {
+            height: 100% !important;
+            border-top: 0.1px solid #cecece !important;
+          }
+  
+        }
+}
 
 
   

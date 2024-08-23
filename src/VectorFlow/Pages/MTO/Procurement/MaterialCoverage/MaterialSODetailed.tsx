@@ -40,7 +40,7 @@ const MaterialSODetailed = ({ parameterData }: MaterialSODetailedProps) => {
                     tooltipHideDelay={100000}
                     tooltipShowDelay={0}
                     tooltipMouseTrack={true}
-                    height={'780px'}
+                    // height={'780px'}
                     paginationPageSize={10}
                     pagination={false}
                     statusBar={{
