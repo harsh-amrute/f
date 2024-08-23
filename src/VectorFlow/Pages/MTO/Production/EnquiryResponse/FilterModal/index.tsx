@@ -147,7 +147,7 @@ const FilterModal = (props: IFilterModalProps) => {
                                                             <label><Radio
                                                                 key={option}
                                                                 name={option}
-                                                                theme={themeUi!}
+                                                                theme={themeUi ? themeUi : ''}
                                                                 checked={getChecked(filter?.heading, option)}
                                                                 onChange={(e) => { handleOptionChange(e, filter?.heading, idx) }}
                                                                 type={`${filter.key === 'prdGrp' ? 'radio' : 'checkbox'}`}
