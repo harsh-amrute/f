@@ -774,6 +774,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         prod_id: row.nprid,
                         proc_id: row.npcid,
                         estdd: row.cdd,
+                        ccr: row.maxFol.ccr_id
                     })
                     routeAssignmentObj.push({
                         route: row.rn,

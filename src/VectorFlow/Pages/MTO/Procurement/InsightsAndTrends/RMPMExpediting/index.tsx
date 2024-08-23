@@ -17,17 +17,19 @@ const RMExpeditionSuppliers = () => {
     const { screenHeight } = useViewPort()
 
 
+
     return (
         <div style={{ zoom: 1.33, marginLeft: '30px' }}>
             <MTOActionToolBar comp={"BTRMTO"} isAddFilterButton />
             <HorizontalViewWrapper style={{ marginTop: '20px' }}>
-                <BTRTableWrapper style={{ height: screenHeight - 185, margin: '0' }}>
+                <BTRTableWrapper style={{ height: screenHeight - 160, margin: '0' }}>
                     {
                         (isMTO) ?
                             (<Allotment
                                 vertical={false}
                                 separator={false}   >
                                 <Allotment.Pane
+                                    minSize={350}
                                     preferredSize={'50%'}>
                                     <BTRAllomentSection>
                                         <ExpeditingMTO
@@ -38,6 +40,7 @@ const RMExpeditionSuppliers = () => {
                                 </Allotment.Pane>
 
                                 <Allotment.Pane
+                                    minSize={350}
                                     preferredSize={'50%'}>
                                     <BTRAllomentSection>
                                         <ExpeditingMTA

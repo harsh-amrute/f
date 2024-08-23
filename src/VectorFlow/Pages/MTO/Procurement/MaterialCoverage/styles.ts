@@ -6,7 +6,7 @@ export const Main = styled.div`
 
 export const MainContainer = styled.div`
   display: flex;
-  gap: 120px;
+  gap: 100px;
   margin-left:20px;
   padding: 1rem;
 `
@@ -183,8 +183,15 @@ export const underLine = styled.div`
     color:"#000"    
 `
 export const ProcurementLayout = styled.div`
-    height: '100%';
-    width: '100%';
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    & > .ag-theme-alpine{
+          flex: 1 !important;
+
+    }
+
 `
 
 /***Analytical screen css */
@@ -342,3 +349,32 @@ export const ChildrenColorCellRenderer = styled.div<{ value: string }>`
 `;
 
 
+
+export const SCDynamicContainer = styled.div`
+
+
+    & .ag-header-cell-text {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    
+
+      & > .ag-theme-alpine{
+     
+        --ag-borders: none !important;
+          & .ag-cell {
+            border: none;
+            height: 100% !important;
+            border-top: 0.1px solid #cecece !important;
+          }
+  
+        }
+}
+
+
+  
+   
+
+    
+`

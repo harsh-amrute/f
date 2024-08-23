@@ -116,6 +116,22 @@ const SplitGraphContainer = ({
             strokes: ['#F5B279', "#F09241", "#E36A00", "#AD5000", "#6A3000"],
           },
         }
+      case 3: {
+        return {
+          palette: {
+            fills: ['Grey'],
+            strokes: ['Grey']
+          }
+        }
+      }
+      case 2: {
+        return {
+          palette: {
+            fills: ['Grey'],
+            strokes: ['Grey']
+          }
+        }
+      }
       case 11:
         return {
           palette: {
@@ -315,20 +331,15 @@ const SplitGraphContainer = ({
 
                   item: {
 
-
-
                     fill: "white",
                     fillOpacity: 0.2,
                   },
-
-
                 },
                 tooltip: {
                   renderer: TooltipRenderer,
                 },
                 strokeWidth: 1,
                 strokeOpacity: 0,
-
               },
               legend: {
                 item: {
