@@ -23,7 +23,7 @@ const CustomCellEditor = (props: any) => {
 
   const initialData = useMemo(() => {
     if (data) {
-      const result = getOuterObjectByKey(data?.data?.data, props.data.pln.split(' ')[1]);
+      const result = getOuterObjectByKey(data?.data?.data, props.data.pid);
       const selectedVal = Object.values(result).map((item: any) => {
         return { 'des': item.majd, 'id': item.majid, 'min': item.min }
       })
@@ -73,7 +73,7 @@ const CustomCellEditor = (props: any) => {
   }, [isLoading])
 
 
- 
+
 
   const clearSelection = (currRowIndex: any, currColId: any) => {
     if (props.isWip) {
@@ -93,7 +93,7 @@ const CustomCellEditor = (props: any) => {
         }
       }
     }
-    else{
+    else {
       notifyError('User can modify Major and Minor Reason, but cannot deselect')
     }
 
@@ -103,7 +103,7 @@ const CustomCellEditor = (props: any) => {
   const handleMinorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     props.data["min"] = event.target.value;
     setSelectedMinorReason(event.target.value);
-   
+
   };
 
   const renderMajorSelect = () => {
