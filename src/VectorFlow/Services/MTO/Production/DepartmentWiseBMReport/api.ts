@@ -3,23 +3,17 @@ import axios from 'axios';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace DepartmentWiseBMReport {
 
-    export const getDeptWiseBMReport = async (data: any) => {
-        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${data.wip}&page=${data.curr}`, {
-            headers: {
-                'Content-Type': 'application/json',
-                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
-            }
-        })
+    export const getFilteredDeptWiseBMReport = async ({ wip, curr, appliedFilters}: any) => {
+        const payload: any = {};
+        payload.headers = {
+            'Content-Type': 'application/json',
+            //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+        };
+        if(Object.keys(appliedFilters).length){
+            payload.body = appliedFilters;
+        }
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${wip}&page=${curr}`, payload)
     }
-    // export const getFilteredDeptWiseBMReport = async (data: any) => {
-    //     return await axios.post(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/`, {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
-    //         },
-    //         body: data
-    //     })
-    // }
 
     export const getBombLevelData = async (data: any) => {
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getBOMLevelWiseAllocationData/?oid=${data.oid}&lid=${data.lid}`, {

@@ -4,7 +4,7 @@ import { useUserData } from '../../../../../context'
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { Footer, Wrapper } from './DueDateQuotation.styled'
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
-import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetFilteredOrdersForDDQ, useGetFOLData, useGetLineCCRDetails, useGetMarketOperatingLeadTimeMasterData, useGetOrdersForDDQ, useGetUIConfig } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
+import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetFilteredOrdersForDDQ, useGetFOLData, useGetLineCCRDetails, useGetMarketOperatingLeadTimeMasterData, useGetUIConfig } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
 import { getColumnDefinations } from '../../../../../helpers/utils'
 import { GridOptions } from 'ag-grid-enterprise'
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox'
@@ -53,7 +53,6 @@ const DueDateQuotation = () => {
   const assignmentRef = useRef<any>();
   // const gridRef= useRef();
 
-  const { mutateAsync: getData, isLoading: isDataLoading } = useGetOrdersForDDQ();
   const { mutateAsync: getBufferMaster, } = useGetBufferMasterData();
   const { mutateAsync: getCCRGroupMaster, } = useGetCCRGroupMaster();
   const { mutateAsync: getCCRItemTypeMappingMaster, } = useGetCCRItemTypeMappingMaster();
@@ -164,10 +163,6 @@ const DueDateQuotation = () => {
   }
 
   useEffect(() => {
-    getDDQData();
-  }, [currentPage, unScheduled]);
-
-  useEffect(() => {
     if (selectedRows.size > 0) {
       setDisabled(false)
     }
@@ -175,27 +170,6 @@ const DueDateQuotation = () => {
       setDisabled(true)
     }
   }, [selectedRows]);
-
-
-  // useEffect(()=>{
-  //   setLoading(false)
-  // }, [masters])
-
-  const getDDQData = async () => {
-    try {
-      const data: any = await getData({ currentPage, unScheduled: unScheduled });
-      totalRows.current = data?.data?.data?.count;
-      let results: any = data?.data?.data?.results;
-      results = results?.filter((order: any) => {
-        return !scheduledOrders.has(order.id);
-      })
-      setRows(results);
-    }
-    catch (err) {
-      console.error(err);
-      notifyError("Something Went Wrong!");
-    }
-  }
 
   const getMastersData = async () => {
     try {
@@ -347,15 +321,30 @@ const DueDateQuotation = () => {
     setAppliedFilters(filter);
     setIsFilterOpen(false)
   }
-      const onAddFilter = ()=>{
+  
+  const onAddFilter = ()=>{
       setIsFilterOpen(true)
   }
 
+  const getUpdatedFilterData = async() => {
+    try {
+      const data: any = await getFilteredOrdersForDDQ({ currentPage, unScheduled: unScheduled, appliedFilters});
+      totalRows.current = data?.data?.data?.count;
+      let results: any = data?.data?.data?.results;
+      results = results?.filter((order: any) => {
+        return !scheduledOrders.has(order.id);
+      })
+      setRows(results);
+    }
+    catch (err) {
+      console.error(err);
+      notifyError("Something Went Wrong!");
+    }
+  }
+
   useEffect(() => {
-      if(Object.keys(appliedFilters)?.length){
-        getFilteredOrdersForDDQ(appliedFilters)
-      }
-  }, [appliedFilters]);
+      getUpdatedFilterData();
+  }, [appliedFilters,currentPage, unScheduled]);
 
   useEffect(() => {
       setFilterData(filterResponse?.data.data)
@@ -382,7 +371,7 @@ const DueDateQuotation = () => {
           onFilterRemove={onFilterRemove}
         />
       }
-      {(isDataLoading || loading) && <OverlayLoader />}
+      {(isFilteredDataLoaded || loading) && <OverlayLoader />}
       {getCurrentStep()}
       <VFModalCard key={"key2"} openModal={showModal} closeModal={() => { setShowModal(false) }} headerText={'Warning'} headerIcon={'/assets/img/ist/warning.svg'} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
         <div style={{ margin: "0 2rem" }}>

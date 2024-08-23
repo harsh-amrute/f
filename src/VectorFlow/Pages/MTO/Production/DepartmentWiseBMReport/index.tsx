@@ -20,7 +20,7 @@ import RemarkHistoryRenderer from './RemarkHistoryRenderer';
 import BPRRemarkHistoryModal from './MTORemarkHistoryModal';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 import { useUserData } from '../../../../../context';
-import { useGetDeptWiseBMReport, useAddBMReportRemark, useGetDeptWiseWipData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index'
+import { useAddBMReportRemark, useGetDeptWiseWipData, useGetFilteredDeptWiseBMReport } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
 import { toast } from 'react-toastify';
 import OverlayLoader from '../../Common/Loader';
@@ -114,8 +114,7 @@ const APIFilterConfig = {
 };
 
 const DptWiseBMReport = () => {
-    const { mutateAsync: getDeptWiseBMReportData, isLoading: DeptWiseLoading } = useGetDeptWiseBMReport();
-    // const { mutateAsync: getFilteredData, isLoading: isFilteredDataLoaded } = useGetFilteredDeptWiseBMReport();
+    const { mutateAsync: getFilteredDeptWiseBMReportData, isLoading: isFilteredDataLoaded } = useGetFilteredDeptWiseBMReport();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const { mutateAsync: addBMReportRemark } = useAddBMReportRemark();
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
@@ -598,37 +597,20 @@ const DptWiseBMReport = () => {
         }));
     }
 
-    const getInitialGridData = async (wip: boolean, page: number) => {
-        try {
-            setCurrentPage(page)
-            setWIPCheck(wip)
-            const gridData = await getDeptWiseBMReportData({ 'wip': wip === true ? 1 : 0, 'curr': page });
-            setGridData(gridData?.data?.data?.results)
-            //console.log('first', gridData?.data?.data)
-            setGridDataCount(gridData?.data?.data?.count)
-        }
-        catch (e) {
-            console.log('e');
-        }
-    }
-
-
     useEffect(() => {
         const colDefs = mapApiResponseToColDefs(apiResponse);
-        // console.log('coldefs', colDefs)
         setColdef(colDefs)
-        getInitialGridData(isWIPChecked, 1);
     }, [])
 
     useEffect(() => {
-        if (DeptWiseLoading) {
+        if (isFilteredDataLoaded) {
             toast.dismiss();
             notifyLoader("Loading Data ...")
         }
         else {
             toast.dismiss();
         }
-    }, [DeptWiseLoading])
+    }, [isFilteredDataLoaded])
 
     const extractDepartmentNames = (orders: Orders): string[] => {
         const departmentNames: Set<string> = new Set();
@@ -801,7 +783,6 @@ const DptWiseBMReport = () => {
     const handlePageChange = async (currPage: number) => {
         //console.log('first,', currPage)
         setCurrentPage(currPage)
-        getInitialGridData(isWIPChecked, currPage)
     }
 
     const agGridProps: AgGridReactProps = {
@@ -901,13 +882,25 @@ const DptWiseBMReport = () => {
         setAppliedFilters(filter);
         setIsFilterOpen(false)
     }
-        const onAddFilter = ()=>{
+
+    const onAddFilter = ()=>{
         setIsFilterOpen(true)
     }
+
+    const getUpdatedFilteredData = async () => {
+        try {
+            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked, 'curr': currentPage, appliedFilters });
+            setGridData(gridData?.data?.data?.results)
+            setGridDataCount(gridData?.data?.data?.count)
+        }
+        catch (e) {
+            console.log('e');
+        }
+    }
     
-    // useEffect(() => {
-    //     getFilteredData(appliedFilters)
-    // }, [appliedFilters]);
+    useEffect(() => {
+        getUpdatedFilteredData()
+    }, [appliedFilters,isWIPChecked, currentPage]);
    
     useEffect(() => {
         setFilterData(filterResponse?.data.data)
@@ -923,7 +916,10 @@ const DptWiseBMReport = () => {
                     quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
                         <Checkbox
                             checked={isWIPChecked}
-                            onChange={(e) => getInitialGridData(e.target.checked, 1)}
+                            onChange={(e) => {
+                                setCurrentPage(1)
+                                setWIPCheck(e.target.checked)
+                            }}
                             theme={themeUi}
                         />
                         &nbsp;&nbsp; <strong>Show order with available WIP Only</strong></div>}
@@ -939,7 +935,7 @@ const DptWiseBMReport = () => {
 
             <>
                 {
-                    DeptWiseLoading ? <OverlayLoader /> :
+                    (isFilteredDataLoaded) ? <OverlayLoader /> :
 
                         <HorizontalViewWrapper style={{ marginTop: '0px' }}>
                             <BTRTableWrapper style={{ height: screenHeight + 100, margin: '0' }}>

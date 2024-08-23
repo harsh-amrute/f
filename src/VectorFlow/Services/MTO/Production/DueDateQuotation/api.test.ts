@@ -25,13 +25,13 @@ describe('OrderRescheduling', () => {
 
     it('should get orders for DDQ for Unscheduled Order', async () => {
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await DueDateQuotationService.getOrdersForDDQ(1, true);
+        const response = await DueDateQuotationService.getFilteredOrdersForDDQ({page: 1, unSch:1});
         expect(response.status).toBe(200);
     });
 
     it('should get orders for DDQ for Scheduled Order', async () => {
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await DueDateQuotationService.getOrdersForDDQ(1, false);
+        const response = await DueDateQuotationService.getFilteredOrdersForDDQ({page: 1, unSch: 1});
         expect(response.status).toBe(200);
     });
 

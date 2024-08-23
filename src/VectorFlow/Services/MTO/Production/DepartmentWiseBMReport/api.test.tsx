@@ -22,7 +22,7 @@ describe('MaterialRequirement', () => {
 
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
         const data = { wip: true, curr: 1 };
-        const response = await DepartmentWiseBMReport.getDeptWiseBMReport(data);
+        const response = await DepartmentWiseBMReport.getFilteredDeptWiseBMReport(data);
         expect(response.status).toBe(200);
     });
 

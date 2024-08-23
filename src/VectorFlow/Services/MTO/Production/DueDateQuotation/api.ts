@@ -14,27 +14,17 @@ export namespace DueDateQuotationService {
         })
     }
 
-    export const getOrdersForDDQ = async (currentPage: number, unScheduled: boolean) => {
-        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/`, {
-            headers: {
-                'Content-Type': 'application/json',
-                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
-            },
-            params: {
-                page: currentPage,
-                unSch: unScheduled ? 1 : 0
-            }
-        })
-    }
-    
-    export const getFilteredOrdersForDDQ = async (data: any) => {
-        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/`, {
-            headers: {
-                'Content-Type': 'application/json',
-                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
-            },
-            body: data
-        })
+    export const getFilteredOrdersForDDQ = async ({currentPage, unScheduled, appliedFilters}: any) => {
+       
+        const payload: any = {};
+        payload.headers = {
+            'Content-Type': 'application/json',
+            //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+        };
+        if(Object.keys(appliedFilters).length){
+            payload.body = appliedFilters;
+        }
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/?page=${currentPage}&unSch=${unScheduled ? 1 : 0}`,payload)
     }
 
     export const getBufferMasterData = async () => {
