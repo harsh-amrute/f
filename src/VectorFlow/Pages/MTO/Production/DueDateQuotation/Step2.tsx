@@ -320,7 +320,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     //ccr groups & ccrs filter on the basis of plant
 
     const ccrGroups = useMemo(()=>{
-        if(selectedPlant){
+        if(selectedPlant && masters){
             return masters?.ccrGroups.map((ccrGroup: any)=>{
                 return {...ccrGroup, ccrs: ccrGroup.ccrs.filter((ccr: any)=>{
                     return ccr.plant_id == selectedPlant
@@ -333,9 +333,9 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         
     }, [masters, selectedPlant])
 
-    console.log("selectedPlant", selectedPlant)
-    console.log("ccrGroups", ccrGroups)
-    console.log("master", masters.ccrGroups)
+    // console.log("selectedPlant", selectedPlant)
+    // console.log("ccrGroups", ccrGroups)
+    // console.log("master", masters?.ccrGroups)
 
     const getRoute = async (route: any) => {
         try {
@@ -618,6 +618,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             const selectedOrders = new Set(gridRef.current.api.getSelectedRows().map((row: any) => row.ok));
             const newRows = [...rows];
 
+            //TODO: maybe, here we can also use the existing selectedRows to get the original values -> Verify
             const promises = newRows.map(async (row) => {
                 if (selectedOrders.has(row.ok)) {
                     // Unset the modified values
@@ -639,7 +640,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                         //TODO: reset Estimated Due Date too!
                         row.CCRData = undefined;
-
 
                         row.updated = false;
                     } catch (error) {
@@ -808,6 +808,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         prod_id: row.nprid,
                         proc_id: row.npcid,
                         estdd: row.cdd,
+                        ccr: row.maxFolSpan.ccr_id
                     })
                     routeAssignmentObj.push({
                         route: row.rn,
