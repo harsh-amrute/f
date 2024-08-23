@@ -11,6 +11,15 @@ export namespace DepartmentWiseBMReport {
             }
         })
     }
+    // export const getFilteredDeptWiseBMReport = async (data: any) => {
+    //     return await axios.post(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/`, {
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+    //         },
+    //         body: data
+    //     })
+    // }
 
     export const getBombLevelData = async (data: any) => {
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getBOMLevelWiseAllocationData/?oid=${data.oid}&lid=${data.lid}`, {

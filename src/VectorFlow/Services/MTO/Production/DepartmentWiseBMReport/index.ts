@@ -7,6 +7,12 @@ export const useGetDeptWiseBMReport = () => {
     })
 }
 
+// export const useGetFilteredDeptWiseBMReport = () => {
+//     return useMutation(async (data: any) => {
+//         return await DepartmentWiseBMReport.getFilteredDeptWiseBMReport(data)
+//     })
+// }
+
 export const useGetBombLevelData = () => {
     return useMutation(async (data: any) => {
         return await DepartmentWiseBMReport.getBombLevelData(data);

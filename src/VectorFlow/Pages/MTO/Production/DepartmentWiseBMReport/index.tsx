@@ -30,6 +30,8 @@ import { IRowNode } from 'ag-grid-enterprise';
 import { FirstDataRenderedEvent } from 'ag-grid-community';
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
 import { ColorsMTO } from '../../Common/Colors';
+import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+import useFilter from '../../../../../hooks/useFilter';
 
 interface ApiResponse {
     cc: string;
@@ -100,9 +102,20 @@ interface Orders {
     [key: string]: OrderItem; // Order ID as the key
 }
 
+const APIFilterConfig = {
+    filSecVisConfig :  {
+        "Prod_Dept_Wise_BM_Report" : {
+            mjr : false,
+            or: true,
+            res: true,
+            cus: true
+        },
+    }
+};
 
 const DptWiseBMReport = () => {
     const { mutateAsync: getDeptWiseBMReportData, isLoading: DeptWiseLoading } = useGetDeptWiseBMReport();
+    // const { mutateAsync: getFilteredData, isLoading: isFilteredDataLoaded } = useGetFilteredDeptWiseBMReport();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const { mutateAsync: addBMReportRemark } = useAddBMReportRemark();
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
@@ -123,6 +136,15 @@ const DptWiseBMReport = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [gridDataCount, setGridDataCount] = useState<number>(0);
     const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
+    const [filterData, setFilterData] = useState({});
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [appliedFilters, setAppliedFilters] = useState<any>({});
+    const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
+    const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dept_Wise_BM_Report);
+    
+    const toggleFilter = (state: boolean) => {
+        setIsFilterOpen(state);
+    }
 
     const customCellRenderers = useMemo(() => (
         {
@@ -874,6 +896,22 @@ const DptWiseBMReport = () => {
         },
     };
 
+    const onApplyFilter = (filter:any)=>{
+        console.log(filter);
+        setAppliedFilters(filter);
+        setIsFilterOpen(false)
+    }
+        const onAddFilter = ()=>{
+        setIsFilterOpen(true)
+    }
+    
+    // useEffect(() => {
+    //     getFilteredData(appliedFilters)
+    // }, [appliedFilters]);
+   
+    useEffect(() => {
+        setFilterData(filterResponse?.data.data)
+    }, [filterResponse]);
 
     return (
         <BMDepWrapper>
@@ -889,6 +927,13 @@ const DptWiseBMReport = () => {
                             theme={themeUi}
                         />
                         &nbsp;&nbsp; <strong>Show order with available WIP Only</strong></div>}
+                    isFilterOpen={isFilterOpen}
+                    onAddFilter={onAddFilter}
+                    toggleFilter={toggleFilter}
+                    onApplyFilter={onApplyFilter} 
+                    multiFilter={currFilter}
+                    setMultiFilter={setCurrFilter}
+                    onFilterRemove={onFilterRemove}
                 />
             </BMDepHeaderWraper>
 

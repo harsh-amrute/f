@@ -22,6 +22,12 @@ export const useGetOrdersForDDQ = () => {
     })
 }
 
+export const useGetFilteredOrdersForDDQ = () => {
+    return useMutation(async (data: DDQInputParams) => {
+        return DueDateQuotationService.getFilteredOrdersForDDQ(data)
+    })
+}
+
 export const useGetBufferMasterData = () => {
     return useMutation(async () => {
         return DueDateQuotationService.getBufferMasterData()
