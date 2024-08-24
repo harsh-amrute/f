@@ -31,6 +31,18 @@ interface MaterialSOProps {
 
 const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderValue, percent, ToolTipdata }: MaterialSOProps) => {
 
+    const formatNumber = (num:any) => {
+        if (num >= 10000000) {
+          return (num / 10000000).toFixed(1) + 'Cr'; // Crore
+        } else if (num >= 100000) {
+          return (num / 100000).toFixed(1) + 'L'; // Lakh
+        } else if (num >= 1000) {
+          return (num / 1000).toFixed(1) + 'K'; // Thousand
+        } else {
+          return num; // Numbers below 1000
+        }
+      };
+
     return (
         <>
             {
@@ -140,7 +152,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
                         >
                         </ButtonImg>
                     </Tooltip>
-                    {orderValue}
+                    {formatNumber(orderValue)}
                 </Btns>
             </BtnGroup>
         </>

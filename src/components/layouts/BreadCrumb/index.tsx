@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../../../context";
-import { BoldSpan } from "./styles";
+import { BoldSpan } from './styles'
 
 const BreadCrumb = () => {
   const { t } = useTranslation();
@@ -65,6 +65,94 @@ const BreadCrumb = () => {
   if (location.pathname === '/poogi/insight-and-trends/lead-time') return <span>POOGI <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan>Insight & Trends / Lead Time </BoldSpan> </span>
   if (location.pathname === '/poogi/insight-and-trends/top-failure-reasons') return <span>POOGI <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Insight & Trends / Top Failure Reasons </BoldSpan></span>
   if (location.pathname === '/poogi/insight-and-trends/trend-of-failure-reason') return <span>POOGI <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Insight & Trends / Trend Of Failure Reason</BoldSpan></span>
+
+
+  if (location.pathname === '/manufacturing-intelligence-hub/delivery-performance/bm-trends') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Delivery Performance / BM Trend</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/delivery-performance/otif-analysis') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan> Delivery Performance /OTIF Analysis</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan> Delivery Performance /OT & IF Analysis</BoldSpan></span>
+
+
+  if (location.pathname === '/manufacturing-intelligence-hub/delivery-performance/lead-time') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Delivery Performance / Lead Time</BoldSpan></span>
+
+
+
+
+  if (location.pathname === '/manufacturing-intelligence-hub/congestion-analysis/elapsed-time') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Congestion Analysis / Elapsed Time</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/congestion-analysis/orders-at-risk') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Congestion Analysis / Orders At Risk</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/congestion-analysis/order-balance') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Congestion Analysis / Order Balance</BoldSpan></span>
+
+
+
+
+
+  if (location.pathname === '/manufacturing-intelligence-hub/forward-exceution/fol-summary') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Forward Execution / FOL Summary</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/forward-exceution/stpl-and-fullkit') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Forward Execution / STPL & Full Kits</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/forward-exceution/day-wise-coverage') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Forward Execution / Day Wise Coverage</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/forward-exceution/rm-pm-order-wise-coverage') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Forward Execution / RM / PM Order Wise Coverage</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/forward-exceution/expetiting-rm-supplier') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Forward Execution / Expediting - RM & Suppliers</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/forward-exceution/rm-pm-buffer-trend') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Forward Execution / RM - PM Buffer Trend</BoldSpan></span>
+
+
+
+
+  if (location.pathname === '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Improvement Areas / Top Failure Reasons</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/improvement-areas/trends-failure-reasons') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Improvement Areas / Trend Of Failure Reasons</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Improvement Areas / Resource Utilization & WIP Profile</BoldSpan></span>
+
+
+  if (location.pathname === '/manufacturing-intelligence-hub/delivery-performance/bm-trends') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Delivery Performance / BM Trend</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/delivery-performance/otif-analysis') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan> Delivery Performance /OTIF Analysis</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan> Delivery Performance /OT & IF Analysis</BoldSpan></span>
+
+
+  if (location.pathname === '/manufacturing-intelligence-hub/delivery-performance/lead-time') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Delivery Performance / Lead Time</BoldSpan></span>
+
+
+
+
+  if (location.pathname === '/manufacturing-intelligence-hub/congestion-analysis/elapsed-time') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Congestion Analysis / Elapsed Time</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/congestion-analysis/orders-at-risk') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Congestion Analysis / Orders At Risk</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/congestion-analysis/order-balance') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Congestion Analysis / Order Balance</BoldSpan></span>
+
+
+
+
+
+  if (location.pathname === '/manufacturing-intelligence-hub/forward-exceution/fol-summary') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Forward Execution / FOL Summary</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/forward-exceution/stpl-and-fullkit') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Forward Execution / STPL & Full Kits</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/forward-exceution/day-wise-coverage') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Forward Execution / Day Wise Coverage</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/forward-exceution/rm-pm-order-wise-coverage') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Forward Execution / RM / PM Order Wise Coverage</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/forward-exceution/expetiting-rm-supplier') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Forward Execution / Expediting - RM & Suppliers</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/forward-exceution/rm-pm-buffer-trend') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Forward Execution / RM - PM Buffer Trend</BoldSpan></span>
+
+
+
+
+  if (location.pathname === '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Improvement Areas / Top Failure Reasons</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/improvement-areas/trends-failure-reasons') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Improvement Areas / Trend Of Failure Reasons</BoldSpan></span>
+
+  if (location.pathname === '/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Improvement Areas / Resource Utilization & WIP Profile</BoldSpan></span>
 
 
 
