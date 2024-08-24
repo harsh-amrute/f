@@ -2,8 +2,6 @@ import { useRef } from "react"
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import { TableWrapper } from "../styles"
 
-
-
 interface GridProps {
     agGridProps: any
     ShortageColumns: any
