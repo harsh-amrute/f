@@ -141,7 +141,7 @@ const DueDateQuotation = () => {
       },
       getDetailRowData: async (params: any) => {
         const data = await getBOMExplosionData({orderId: params.data.oid, lineId: params.data.lid});
-        params.successCallback(data.data.data)
+        params.successCallback(data?.data?.data)
       }
     },
     defaultColDef: {
@@ -207,7 +207,7 @@ const DueDateQuotation = () => {
             maxFol = Math.max(maxFol, FOL[ccr.ccr_id]?.fol || 0)
           })
           group.ccrs.forEach((ccr: any) => {
-            obj.ccrs.push({ label: ccr.ccr_name, value: ccr.ccr_id, minFol, maxFol, fol: FOL[ccr.ccr_id]?.fol || 0 });
+            obj.ccrs.push({ label: ccr.ccr_name, value: ccr.ccr_id, minFol, maxFol, fol: FOL[ccr.ccr_id]?.fol || 0, plant_id: ccr.plant });
           })
           ccrGroups.push(obj);
         })
