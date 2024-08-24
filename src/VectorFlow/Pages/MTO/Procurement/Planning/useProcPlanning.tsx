@@ -255,10 +255,12 @@ const useProcPlanning = (date: string) => {
     useEffect(() => {
         if (currentTab) {
             if (currentTab.label === 'Shortage') {
-                fetchData(date, currentPage, '0')
+                setCurrentPage(1);
+                fetchData(date, 1, '0')
             }
             else {
-                fetchData(date, currentPage, '1')
+                setCurrentPage(1);
+                fetchData(date, 1, '1')
 
             }
         }

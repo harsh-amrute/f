@@ -202,6 +202,7 @@ const ResourceUtilization = () => {
   console.log(chartLoading);
 
   function TooltipRenderer({ datum }: any) {
+    console.log("88888", selectedGraphState, datum);
     return `
       <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: flex-start; align-items: center; min-width: 200px">
           Details
@@ -219,7 +220,7 @@ const ResourceUtilization = () => {
                   <div>${actBtn?.label === "Over Limit"
           ? datum?.overLimit
           : datum?.underLimit
-        }%</div>
+        }</div>
               </div>
           </div>`
         : ""
@@ -330,7 +331,28 @@ const ResourceUtilization = () => {
           },
         },
         tooltip: {
-          renderer: TooltipRenderer,
+          renderer: (datum: any) => {
+            console.log(datum)
+            return `
+      <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: flex-start; align-items: center; min-width: 200px">
+          Details
+      </div>
+      <div class="ag-chart-tooltip-content" style="color: white; background-color: #2E2E2E; padding: 0px 20px;">
+      <div style="border-top: 1px dashed lightgray"></div>
+      <div style="width: 100%; padding: 10px 5px;">
+          <div style="display: flex; width: 100%;">
+              
+         
+                 <div style="display: flex; width: 100%;">
+              <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
+              <div style="display:flex; justify-content: space-between; width: 100%;">
+                  <div>Usage</div>
+                  <div>${datum.datum?.limit} %
+                </div>
+              </div>
+          </div>
+      </div>`;
+          }
         },
       },
     ],
