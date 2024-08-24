@@ -39,7 +39,6 @@ import { toast } from "react-toastify";
 import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
 
 const ResourceUtilization = () => {
-  const [chartLoading, setChartLoading] = useState(false);
   const chartRef = useRef<AgChartsReact>(null);
   const [horizonDays, setHorizonDays] = useState(90);
   const [selectedGraphState, setSelectedGraphState] = useState("wipLimit");
@@ -113,7 +112,6 @@ const ResourceUtilization = () => {
       const myCCROpts: any = []
       ccrs.forEach((e: any) => {
         myCCROpts.push({ value: e.ccr_id, label: e.ccr_name })
-        console.log(e.ccr_id);
       })
       setCCROpts(myCCROpts);
 
@@ -151,7 +149,6 @@ const ResourceUtilization = () => {
   }, [isSuccess, isError])
 
   useEffect(() => {
-    console.log('Api Data....', apiData)
     const newUtilData: any = [];
     const newWipOverData: any = [];
     const newWipUnderData: any = [];
@@ -163,7 +160,6 @@ const ResourceUtilization = () => {
     }
     if (apiData && apiData.wiplimit) {
       apiData.wiplimit.olimit.forEach((e: any) => {
-        console.log('**', e.awip)
         newWipOverData.push({ overLimit: Number(e.awip), limit: e.lm, ccr: e.ccr })
       })
       apiData.wiplimit.ulimit.forEach((e: any) => {
@@ -199,10 +195,8 @@ const ResourceUtilization = () => {
 
 
 
-  console.log(chartLoading);
 
   function TooltipRenderer({ datum }: any) {
-    console.log("88888", selectedGraphState, datum);
     return `
       <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: flex-start; align-items: center; min-width: 200px">
           Details
@@ -332,7 +326,6 @@ const ResourceUtilization = () => {
         },
         tooltip: {
           renderer: (datum: any) => {
-            console.log(datum)
             return `
       <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: flex-start; align-items: center; min-width: 200px">
           Details
@@ -627,7 +620,6 @@ const ResourceUtilization = () => {
   }, [actBtn, horizonClicked])
 
   const handleHorizonSubmit = () => {
-    console.log("horizon SUbmit");
     setHorizonClicked(!horizonClicked)
 
   };
@@ -737,7 +729,7 @@ const ResourceUtilization = () => {
               strictMode={false}
               width={250}
               defaultValue={horizonDays || 0}
-              handleChange={(e) => { setHorizonDays && setHorizonDays(e), console.log(horizonDays) }}
+              handleChange={(e) => { setHorizonDays && setHorizonDays(e) }}
               labelValueFormatter={(value: number) => value > 1 ? `${value}` : `${value}`}
             />
             <div>
@@ -810,9 +802,6 @@ const ResourceUtilization = () => {
                   ? wipOptions
                   : utilizationOptions
               }
-              onChartReady={() => {
-                setChartLoading(false);
-              }}
             />
           </div>
         </GraphWrapper>
