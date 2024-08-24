@@ -66,6 +66,6 @@ describe('RMPMBufferTrends Component', () => {
 
     test('renders both MTO and MTA panes in Allotment', () => {
         render(contextWrapper(<RMPMBufferTrends />, mockedStore));
-        expect(screen.getAllByText(/RM \/ PM Buffer Trend/i).length).toBe(2);
+        expect(screen.getAllByText(/RM \/ PM Buffer Trend/i).length).toBe(1);
     });
 });

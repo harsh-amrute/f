@@ -22,3 +22,7 @@ border-radius: 50%;
 margin-top: 14px;
 background-color: ${(props) => determineColor(props.value)};
 `;
+
+export const Tooltipcontainer = styled.div`
+margin: 5px 8px;
+`;

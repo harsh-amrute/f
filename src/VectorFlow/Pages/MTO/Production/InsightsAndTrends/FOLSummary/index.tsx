@@ -117,7 +117,6 @@ const FOLSummary = () => {
 
   const filterByfol = (updata: any, folValues: any) => {
     const { symbol, value } = folValues;
-    console.log("Brooo folFilter hua change ", symbol, value);
     if (symbol.length === 0) {
       return updata;
     }
@@ -131,42 +130,36 @@ const FOLSummary = () => {
       if (symbol === '<') {
 
         if (Number(current?.fol) < Number(value)) {
-          console.log("yeh hua compare", Number(current?.fol), symbol, Number(value))
           updatedData?.push(current);
         }
       }
       if (symbol === '>') {
 
         if (Number(current?.fol) > Number(value)) {
-          console.log("yeh hua compare", Number(current?.fol), symbol, Number(value))
           updatedData?.push(current);
         }
       }
       if (symbol === '<=') {
 
         if (Number(current?.fol) <= Number(value)) {
-          console.log("yeh hua compare", Number(current?.fol), symbol, Number(value))
           updatedData?.push(current);
         }
       }
       if (symbol === '>=') {
 
         if (Number(current?.fol) >= Number(value)) {
-          console.log("yeh hua compare", Number(current?.fol), symbol, Number(value))
           updatedData?.push(current);
         }
       }
       if (symbol === 'Equal to') {
 
         if (Number(current?.fol) === Number(value)) {
-          console.log("yeh hua compare", Number(current?.fol), symbol, Number(value))
           updatedData?.push(current);
         }
       }
       if (symbol === 'Not Equal to') {
 
         if (Number(current?.fol) !== Number(value)) {
-          console.log("yeh hua compare", Number(current?.fol), symbol, Number(value))
           updatedData?.push(current);
         }
       }
@@ -464,14 +457,14 @@ const FOLSummary = () => {
 
   useEffect(() => {
     notifyLoader("Loading Grid Data")
-    if (data?.data?.data?.results) {
-      setTableData(data?.data?.data?.results);
+    if (data?.data?.data) {
+      setTableData(data?.data?.data);
     }
     toast.dismiss()
   }, [data]);
 
   useEffect(() => {
-    setFilterData(data?.data?.data?.results);
+    setFilterData(data?.data?.data);
   }, [tableData]);
 
 

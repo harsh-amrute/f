@@ -15,7 +15,7 @@ export const BackgroundCover = styled.div`
 
 export const ModalWrapper = styled.div`
     overflow: auto;
-    height : 95vh;
+    height : 78vh;
     width: 690px;
 `;
 

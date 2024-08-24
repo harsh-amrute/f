@@ -14,9 +14,9 @@ import { getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { useGetMaterialRequirementDetails, useGetMaterialRequirementDetailsDatewise } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
 import moment from "moment";
-import { VFTableWrapper } from "../../../../../components/VectorFLOW/commons/VFTable/styles";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import VFPagination from "../../Common/VFPagination";
+import { TableWrapper } from "./styles";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -325,7 +325,7 @@ const useMaterialReq = (forDate?: string) => {
             case "sdv":
                 return (
                     <div>
-                        <VFTableWrapper>
+                        <TableWrapper>
 
                             <VFTable
                                 paginationPageSize={10}
@@ -343,7 +343,6 @@ const useMaterialReq = (forDate?: string) => {
                                         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                     ]
                                 }}
-                                disableZoomScaling={true}
 
                             />
                             <VFPagination
@@ -353,13 +352,13 @@ const useMaterialReq = (forDate?: string) => {
                                 currentPage={currentPage}
                                 handleChangePage={handlePageChangeDayWise}
                             />
-                        </VFTableWrapper>
+                        </TableWrapper>
                     </div>
                 );
             case "cv":
                 return (
                     <div>
-                        <VFTableWrapper>
+                        <TableWrapper>
 
                             <VFTable
                                 paginationPageSize={10}
@@ -376,7 +375,6 @@ const useMaterialReq = (forDate?: string) => {
                                         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                     ]
                                 }}
-                                disableZoomScaling={true}
 
                             />
                             <VFPagination
@@ -386,7 +384,7 @@ const useMaterialReq = (forDate?: string) => {
                                 currentPage={currentCumPage}
                                 handleChangePage={handlePageChangeCumulative}
                             />
-                        </VFTableWrapper>
+                        </TableWrapper>
 
                     </div>
                 );

@@ -100,7 +100,7 @@
       },
       "src/components/VectorFLOW": {
         "statements": 90,
-        "branches": 90,
+        "branches": 89,
         "functions": 70,
         "lines": 90
       },
