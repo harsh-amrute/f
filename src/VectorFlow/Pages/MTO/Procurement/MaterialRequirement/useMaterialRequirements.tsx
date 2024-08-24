@@ -17,9 +17,6 @@ import moment from "moment";
 import { VFTableWrapper } from "../../../../../components/VectorFLOW/commons/VFTable/styles";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import VFPagination from "../../Common/VFPagination";
-import { ColorsMTO } from "../../Common/Colors";
-
-
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
