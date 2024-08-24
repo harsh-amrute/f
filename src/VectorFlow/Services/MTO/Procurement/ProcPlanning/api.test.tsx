@@ -27,7 +27,7 @@ describe('ProcPlanningService', () => {
     });
 
     it('should fetch procurement planning data correctly', async () => {
-        const response = await ProcPlanningService.GetProcPlanningData(mockDate, pageNum);
+        const response = await ProcPlanningService.GetProcPlanningData(mockDate, pageNum, '1');
 
         expect(axios.get).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/getProcPlanningData/?releaseDate=${mockDate}&page=${pageNum}`, {
             headers: { 'Content-Type': 'application/json' }

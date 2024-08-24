@@ -116,12 +116,12 @@ const useProcPlanning = (date: string) => {
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
     const { mutateAsync: UpdateProcurementSimulationData } = putUpdateProcurementSimulationData()
     const [isLoading, setIsLoading] = useState(false);
-    const fetchData = useCallback(async (date: string, pageNumber = 1) => {
+    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1') => {
         setIsLoading(true);
         try {
             toast.dismiss();
             notifyLoader("Loading data...")
-            const response = await getProcPlanningData({ date, pageNum: pageNumber.toString() });
+            const response = await getProcPlanningData({ date, pageNum: pageNumber.toString(), ca: currentTab });
             if (response.status === 200) {
                 setCurrentPage(pageNumber)
                 toast.dismiss();
@@ -251,6 +251,22 @@ const useProcPlanning = (date: string) => {
             minWidth: 250,
         };
     }, []);
+
+    useEffect(() => {
+        if (currentTab) {
+            if (currentTab.label === 'Shortage') {
+                fetchData(date, currentPage, '0')
+            }
+            else {
+                fetchData(date, currentPage, '1')
+
+            }
+        }
+
+
+    }, [currentTab])
+
+
 
     const toggleCurrentTab = useCallback((tab: VFFloatingTabItemProps) => setCurrentTab(tab), []);
     const [isDisabled, setIsDisabled] = useState(true);
