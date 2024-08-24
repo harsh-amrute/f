@@ -15,7 +15,7 @@ export namespace DueDateQuotationService {
     }
 
     export const getOrdersForDDQ = async (currentPage: number, unScheduled: boolean) => {
-        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/`, {
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/`, {body:[]} ,{
             headers: {
                 'Content-Type': 'application/json',
                 //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'

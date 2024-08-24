@@ -18,8 +18,6 @@ import { VFTableWrapper } from "../../../../../components/VectorFLOW/commons/VFT
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import VFPagination from "../../Common/VFPagination";
 
-
-
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
         {
@@ -80,7 +78,7 @@ const useMaterialReq = (forDate?: string) => {
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
-            setHeaderData(response.data.data);
+            setHeaderData(response?.data?.data);
         }
         catch (e) {
             console.log(e);
@@ -128,6 +126,10 @@ const useMaterialReq = (forDate?: string) => {
             wrapHeaderText: true,
 
         },
+        "net_r": {
+            valueFormatter: (params:any) => Math.max(0, Number(params.data.net_r))
+        }
+        
     }
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
     const ShortageColumns = getColumnDefinations(HeaderData, customHeader)
@@ -295,6 +297,7 @@ const useMaterialReq = (forDate?: string) => {
             defaultExcelExportParams: defaultExcelExportParams,
             excelStyles: excelStyles,
             sideBar: sideBar,
+            
             onCellEditingStopped(event: any) {
                 const field = event.colDef.field;
                 const newValue = event.newValue;
@@ -316,6 +319,7 @@ const useMaterialReq = (forDate?: string) => {
                 });
                 gridRef.current?.api.refreshCells({ force: true });
             }
+            
         };
         switch (currentTab.id) {
             case "sdv":
