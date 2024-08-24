@@ -89,7 +89,7 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
         const procBuffer = order.pcSz || 0;
         const releaseDateLno = ddLno - prodBuffer - procBuffer - postOrderBuffer + 1;
         const releaseDate = WorkingCalender.find((data: any) => {
-            return data.ccrId == order.maxFol.ccr_id && data.PlId == order.plid && data.lno == releaseDateLno;
+            return data.ccrId == order.maxFolSpan.ccr_id && data.PlId == order.plid && data.lno == releaseDateLno;
         })?.wd;
 
         return [releaseDate, postOrderBuffer]

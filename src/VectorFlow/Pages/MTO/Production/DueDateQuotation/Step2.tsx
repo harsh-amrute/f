@@ -302,6 +302,10 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     const [newSelectedRows, setNewSelectedRows] = useState<any>({ rows: null, isAssignmentPossible: false });
     const [selectedRoute, setSelectedRoute] = useState<any>([])
 
+    const [selectedPlant, setSelectedPlant] = useState<number | null>(null);
+
+    // console.log(masters);
+
     const allotment = useRef<any>();
     const gridRef = useRef<any>();
     const [selectedBuffers, setSelectedBuffers] = useState<any[]>([]);
@@ -311,6 +315,27 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     const { mutateAsync: updateBuffRouteCCREstDate, } = useUpdateBuffRouteCCREstDate();
     const routeCache = useRef<Record<number, any>>({});
     const [no, setNo] = useState(false);
+    const [arePlantsDifferent, setArePlantsDifferent] = useState(false);
+
+    //ccr groups & ccrs filter on the basis of plant
+
+    const ccrGroups = useMemo(()=>{
+        if(selectedPlant && masters){
+            return masters?.ccrGroups.map((ccrGroup: any)=>{
+                return {...ccrGroup, ccrs: ccrGroup.ccrs.filter((ccr: any)=>{
+                    return ccr.plant_id == selectedPlant
+                })}
+            })?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0 )
+        }
+        else{
+            return []
+        }
+        
+    }, [masters, selectedPlant])
+
+    // console.log("selectedPlant", selectedPlant)
+    // console.log("ccrGroups", ccrGroups)
+    // console.log("master", masters?.ccrGroups)
 
     const getRoute = async (route: any) => {
         try {
@@ -369,6 +394,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     const order_ccr_data: any = {};
 
                     const ccrIds: any = [];
+                    const ccrNames: any = []
 
                     //TODO: if the New Route Does not exist, use the rid --done
                     let route;
@@ -382,6 +408,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     route.forEach((route: any) => {
                         if (route[1]?.value) {
                             ccrIds.push(route[1].value)
+                            ccrNames.push(route[1].label)
                         }
                     });
 
@@ -395,7 +422,13 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         // const fol = masters.FOL[ccrId];
                         const ccrItem = masters?.CCRItemTypeMappingMaster.find((ccr: any) => ccr.ccrId === ccrId && ccr.it == order.itid)
 
-                        let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "0";
+                        if(!ccrItem){
+                            throw new Error(`CCR Name: ${ccrNames[index]} not available in MapCCRItemType Master`)
+                        }
+                        if(!ccrItem.tt){
+                            throw new Error(`Touch Time not available for CCR Name: ${ccrNames[index]} and Item ID: ${order.itid} in MapCCRItemType Master`);
+                        }
+                        let ccrWorkingHoursPerDay = ccr.working_hours_per_day;
                         ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
                         // console.log("ccritem", ccrItem)
                         // console.log("lineCCR[order.ok]?.[ccrId]?.pcqty", lineCCR[order.ok]?.[ccrId]?.pcqty)
@@ -439,9 +472,9 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
 
                     //DDIndex
-                    const maxFol: any = Object.values(order_ccr_data).reduce((prev: any, current: any) => (current.folSpan > prev.folSpan) ? current : prev);
+                    const maxFolSpan: any = Object.values(order_ccr_data).reduce((prev: any, current: any) => (current.folSpan > prev.folSpan) ? current : prev);
 
-                    console.log(maxFol);
+                    console.log(maxFolSpan);
                     console.log(order.plid);
                     console.log(order);
 
@@ -452,31 +485,31 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     // console.log()
 
                     const latestWorkingDayLno = masters.WorkingCalender.find((data: any) => {
-                        return new Date(data.wd) >= today && data.ccrId == maxFol.ccr_id && data.PlId == order.plid
+                        return new Date(data.wd) >= today && data.ccrId == maxFolSpan.ccr_id && data.PlId == order.plid
                     })?.lno;
 
                     console.log("latestWorkingDayLno", latestWorkingDayLno)
 
-                    const residualBuffer = parseFloat(masters?.CCRMaster.find((ccr: any) => ccr.ccr_id == maxFol.ccr_id)?.residual_buffer);
+                    const residualBuffer = parseFloat(masters?.CCRMaster.find((ccr: any) => ccr.ccr_id == maxFolSpan.ccr_id)?.residual_buffer);
 
                     const prodBufferSize = order.prSz || 0;
                     const procBufferSize = order.pcSz || 0;
 
                     //optimise the logic
-                    const folDDIndex = Math.ceil(latestWorkingDayLno + maxFol.folSpan + (residualBuffer * prodBufferSize)) - 1;
+                    const folDDIndex = Math.ceil(latestWorkingDayLno + maxFolSpan.folSpan + (residualBuffer * prodBufferSize)) - 1;
                     const folDD = masters.WorkingCalender.find((data: any) => {
-                        return data.lno == folDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == order.plid
+                        return data.lno == folDDIndex && data.ccrId == maxFolSpan.ccr_id && data.PlId == order.plid
                     })?.wd;
 
                     const bufferDDIndex = latestWorkingDayLno + procBufferSize + prodBufferSize;
                     const bufferDD = masters.WorkingCalender.find((data: any) => {
-                        return data.lno == bufferDDIndex && data.ccrId == maxFol.ccr_id && data.PlId == order.plid
+                        return data.lno == bufferDDIndex && data.ccrId == maxFolSpan.ccr_id && data.PlId == order.plid
                     })?.wd;
 
                     console.log("prodBufferSize", prodBufferSize)
                     console.log("procBufferSize", procBufferSize)
                     console.log("residualBuffer", residualBuffer)
-                    console.log("max fol span", maxFol.folSpan)
+                    console.log("max fol span", maxFolSpan.folSpan)
                     // console.log(folDDIndex, bufferDDIndex)
 
                     console.log(folDDIndex)
@@ -484,7 +517,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                     const crDD = order.crdd;
                     const crDDIndex = masters.WorkingCalender.find((data: any) => {
-                        return data.ccrId == maxFol.ccr_id && data.PlId == order.plid && new Date(data.wd) >= new Date(crDD)
+                        return data.ccrId == maxFolSpan.ccr_id && data.PlId == order.plid && new Date(data.wd) >= new Date(crDD)
                     })?.lno || -Infinity;
 
 
@@ -502,7 +535,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     order.cdd = format(maxDate, 'yyyy-MM-dd');
                     console.log(folDDIndex, bufferDDIndex, crDDIndex)
                     order.dueDateLno = Math.max(folDDIndex, bufferDDIndex, crDDIndex);
-                    order.maxFol = maxFol;
+                    order.maxFolSpan = maxFolSpan;
 
                     // console.log("maxDate", format(maxDate, 'yyyy-MM-dd'));
                     const marketLeadTime = masters.MarketLeadTimeMaster.find((item: any) => {
@@ -525,9 +558,10 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
             return ordersForDDQ
         }
-        catch (err) {
+        catch (err: any) {
             console.error(err);
-            notifyError("Something Went Wrong!");
+            // notifyError("Something Went Wrong!");
+            notifyError(err.message)
         }
     }
 
@@ -584,6 +618,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             const selectedOrders = new Set(gridRef.current.api.getSelectedRows().map((row: any) => row.ok));
             const newRows = [...rows];
 
+            //TODO: maybe, here we can also use the existing selectedRows to get the original values -> Verify
             const promises = newRows.map(async (row) => {
                 if (selectedOrders.has(row.ok)) {
                     // Unset the modified values
@@ -605,7 +640,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                         //TODO: reset Estimated Due Date too!
                         row.CCRData = undefined;
-
 
                         row.updated = false;
                     } catch (error) {
@@ -774,7 +808,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         prod_id: row.nprid,
                         proc_id: row.npcid,
                         estdd: row.cdd,
-                        ccr: row.maxFol.ccr_id
+                        ccr: row.maxFolSpan.ccr_id
                     })
                     routeAssignmentObj.push({
                         route: row.rn,
@@ -848,13 +882,19 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         setSelectedBuffers([])
                                         setSelectedRoute([])
                                         setRowsSelectedForAssignment(false);
+                                        setArePlantsDifferent(false)
                                         return
                                     }
                                     const selectedRoutes: any = new Set();
                                     const selectedProdBuffer: any = new Set();
                                     const selectedProcBuffer: any = new Set();
+                                    const selectedPlants: any = new Set();
+                                    
 
                                     selected.forEach((row: any) => {
+                                        if(row.plid){
+                                            selectedPlants.add(row.plid)
+                                        }
                                         if (row.newRoute) {
                                             const formattedRoute = formatRoute(row.newRoute);
                                             if (routeLookup.current.get(formattedRoute)) {
@@ -892,10 +932,15 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                     if (selected.length > 1) {
                                         isAssignmentPossible = ([1].includes(selectedRoutes.size)) && ([1].includes(selectedProdBuffer.size)) && ([1].includes(selectedProcBuffer.size))
                                     }
-                                    if (!isAssignmentPossible) {
-                                        setSelectedBuffers([])
-                                        setSelectedRoute([])
+                                    if(selectedPlants.size == 1){
+                                        setArePlantsDifferent(false)
+                                        setSelectedPlant([...selectedPlants][0])
+                                    }else{
+                                        isAssignmentPossible = false;
+                                        setSelectedPlant(null)
+                                        setArePlantsDifferent(true)
                                     }
+                    
                                     const routeId = [...selectedRoutes][0]
                                     if (selectedRoutes.size == 0) {
                                         setSelectedRoute([])
@@ -905,9 +950,15 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         setSelectedRoute(routeDetails);
                                     }
                                     // TODO: check this condition -> check for null
-                                    if (((selectedProdBuffer.size == 1) || (selectedProcBuffer.size == 1))) {
-                                        const buffer: any = getBuffer([...selectedProdBuffer], [...selectedProcBuffer]);
+                                    const prod = [...selectedProdBuffer]
+                                    const proc = [...selectedProcBuffer]
+                                    if (((selectedProdBuffer.size == 1 && prod[0] != null) || (selectedProcBuffer.size == 1 && proc[0] != null))) {
+                                        const buffer: any = getBuffer(prod, proc);
                                         setSelectedBuffers(buffer)
+                                    }
+                                    if (!isAssignmentPossible) {
+                                        setSelectedBuffers([])
+                                        setSelectedRoute([])
                                     }
                                     setNewSelectedRows({ rows: selected, isAssignmentPossible });
                                 }
@@ -951,7 +1002,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         <RouteAssignment
                                             isEditable={isEditable}
                                             theme={theme}
-                                            ccrGroupMaster={masters.ccrGroups}
+                                            ccrGroupMaster={ccrGroups}
                                             selectedRoutes={selectedRoute}
                                             setSelectedRoutes={setSelectedRoute}
                                         />
@@ -974,7 +1025,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                 <CardCover>
                                     <DashedCard style={{ width: "500px" }}>
                                         <MessageText style={{ textAlign: "center", display: "flex", flexDirection: "column", width: "100%", gap: "2rem" }}>
-                                            {!no ? <>
+                                            {arePlantsDifferent? <div>Selected orders have different plants and cannot be modified together.</div> : !no ? <>
                                                 <div>
                                                     Selected orders have different routes and buffer.<br />
                                                     Do you want to edit these orders together?
