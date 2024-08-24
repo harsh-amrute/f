@@ -1,5 +1,4 @@
 import { useRef } from "react"
-import { SCDynamicContainer } from "../../../../../../../VectorFlow/Pages/MTO/Common/GridView/styles"
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import { TableWrapper } from "../styles"
 

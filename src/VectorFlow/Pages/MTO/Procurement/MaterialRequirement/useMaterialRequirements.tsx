@@ -14,7 +14,6 @@ import { getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { useGetMaterialRequirementDetails, useGetMaterialRequirementDetailsDatewise } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
 import moment from "moment";
-import { VFTableWrapper } from "../../../../../components/VectorFLOW/commons/VFTable/styles";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import VFPagination from "../../Common/VFPagination";
 import { TableWrapper } from "./styles";

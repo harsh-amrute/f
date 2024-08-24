@@ -17,12 +17,7 @@ import _ from "lodash";
 
 const GraphView = ({ shortageData }: any) => {
 
-
-    // const [mydate, setMyDate] = useState(new Date());
-
-
     const { data: apiResponseData, isSuccess } = useGetDate();
-
     const [apiDate, setApiDate] = useState(apiResponseData?.data.data);
     const [date, setDate] = useState('');
 
@@ -37,7 +32,6 @@ const GraphView = ({ shortageData }: any) => {
     }, [apiDate, isSuccess]);
 
     function TooltipRenderer({ datum, xKey }: any) {
-        console.log(datum, xKey, datum[xKey]);
         return `
     <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
         ${(datum[xKey] === 1) ? '0-7 Days' : (datum[xKey] === 85) ? '85-90 Days' : (datum[xKey] + '-' + (Number(datum[xKey] + 6)) + ' Days')}
@@ -85,19 +79,12 @@ const GraphView = ({ shortageData }: any) => {
         return seriesData;
     }
 
-
-
     const numberOfSeriesData = 4;
-
     const seriesData = createSeriesData(numberOfSeriesData);
-
     const options: AgChartOptions = ({
 
-
         data: shortageData, // Todo final data
-
         series: seriesData,
-
         axes: [
             {
                 type: "category",

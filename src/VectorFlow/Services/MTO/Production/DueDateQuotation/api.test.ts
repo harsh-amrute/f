@@ -24,13 +24,13 @@ describe('OrderRescheduling', () => {
     });
 
     it('should get orders for DDQ for Unscheduled Order', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         const response = await DueDateQuotationService.getOrdersForDDQ(1, true);
         expect(response.status).toBe(200);
     });
 
     it('should get orders for DDQ for Scheduled Order', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         const response = await DueDateQuotationService.getOrdersForDDQ(1, false);
         expect(response.status).toBe(200);
     });
@@ -97,13 +97,13 @@ describe('OrderRescheduling', () => {
 
     it('should update updateBuffRouteCCREstDate', async () => {
         mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await DueDateQuotationService.updateBuffRouteCCREstDate({bufferData:[""],routeData:[""]});
+        const response = await DueDateQuotationService.updateBuffRouteCCREstDate({ bufferData: [""], routeData: [""] });
         expect(response.status).toBe(200);
     });
 
     it('should update updateScheduleOrders', async () => {
         mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await DueDateQuotationService.updateScheduleOrders({orders:[""]});
+        const response = await DueDateQuotationService.updateScheduleOrders({ orders: [""] });
         expect(response.status).toBe(200);
     });
 
