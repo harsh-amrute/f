@@ -31,3 +31,14 @@ export const useUpdateOrSimulateStockAllocation = () => {
         return FullKitAssignmentService.updateOrSimulateStockAllocation(data.is_simulated, data.username);
     })
 }
+
+export interface IUpdateFullkitOnSimulationParams{
+    username: string,
+    is_type: "Save" | "Delete"
+}
+
+export const useUpdateFullkitOnSimulation = () => {
+    return useMutation(async (data: IUpdateFullkitOnSimulationParams) => {
+        return FullKitAssignmentService.updateFullkitOnSimulation(data.is_type, data.username);
+    })
+}

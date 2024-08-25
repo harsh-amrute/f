@@ -5,7 +5,6 @@ import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
 import { AgChartOptions } from 'ag-charts-community';
 import { getColumnDefinations } from '../../../../../helpers/utils';
-import { fullKitAssignmentData } from './data';
 import AvailabilityCellRenderer from '../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
 import ColorCellRenderer from '../../Common/ColorCellRenderer';
 import { Button, Wrapper } from './FullKitAssignment.styled';
@@ -16,11 +15,12 @@ import * as globalStyles from "../../../../../styles/global";
 import { Rectangle } from './RectangleMarker';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
-import { useGetFullKitAssignmentDataWithGraphData, useUpdateExcludedOrdersForFullkitAssignment, useUpdateOrSimulateStockAllocation } from '../../../../../VectorFlow/Services/MTO/Production/FullKitAssignment';
+import { useGetFullKitAssignmentDataWithGraphData, useUpdateExcludedOrdersForFullkitAssignment, useUpdateFullkitOnSimulation, useUpdateOrSimulateStockAllocation } from '../../../../../VectorFlow/Services/MTO/Production/FullKitAssignment';
 import OverlayLoader from '../../Common/Loader';
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
 import VFPagination from '../../Common/VFPagination';
 import _ from 'lodash';
+import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 
 const FullKitAssignment = () => {
 
@@ -44,7 +44,7 @@ const FullKitAssignment = () => {
   const [currentPage, setCurrentPage]: any = useState(1)
   const [loadDataParams, setLoadDataParams] = useState<any>({
     is_fullkit: true,
-    load_graph_data: false,
+    load_graph_data: true,
     load_data_after_simulation: false,
     page: 1 
   });
@@ -56,11 +56,12 @@ const FullKitAssignment = () => {
   const { mutateAsync: getFullKitAssignmentDataWithGraphData, isLoading: isDataLoading } = useGetFullKitAssignmentDataWithGraphData();
   const { mutateAsync: updateExcludedOrdersForFullkitAssignment,isLoading: excludeOrdersLoading } = useUpdateExcludedOrdersForFullkitAssignment();
   const { mutateAsync: updateOrSimulateStockAllocation, isLoading: simulationLoading} = useUpdateOrSimulateStockAllocation();
+  const { mutateAsync: updateFullkitOnSimulation, isLoading: isSimulationResultsUpdating} = useUpdateFullkitOnSimulation();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
   const reportName = "FullKitAssignment";
 
-  const [colDefCustomizations, setColDefCustomizations] = useState({
+  const defaultColDefCustomisation = useRef({
     Route: {
       // tooltipField: "r"
       cellRenderer: (params: any) => {
@@ -86,6 +87,8 @@ const FullKitAssignment = () => {
     }
   })
 
+  const [colDefCustomizations, setColDefCustomizations] = useState<any>(defaultColDefCustomisation.current)
+
   const [extra, setExtra]: any = useState([])
 
 
@@ -102,14 +105,27 @@ const FullKitAssignment = () => {
 
   const fetchOrders = async () => {
     const data = await getFullKitAssignmentDataWithGraphData(loadDataParams);
-    if(!loadDataParams.load_graph_data){
-      setOrders(data?.data?.data?.results);
+      if(loadDataParams.load_graph_data){
+        const graph: any = [];
+        //underload
+        data?.data?.data?.results?.graphdata["underloaded"].forEach((row: any)=>{
+          graph.push({...row})
+          graph.push(_.cloneDeep({ccr_name:" ".repeat(graph.length - 1), allowed_full_kits:0, stpl_in_days:0,}))
+        })
+        //overload
+        data?.data?.data?.results?.graphdata["overloaded"].forEach((row: any)=>{
+          graph.push(row)
+          graph.push(_.cloneDeep({ccr_name:" ".repeat(graph.length - 1), allowed_full_kits:0, stpl_in_days:0,}))
+        })
+        //balanced
+        data?.data?.data?.results?.graphdata["balanced"].forEach((row: any)=>{
+          graph.push(row)
+          graph.push(_.cloneDeep({ccr_name:" ".repeat(graph.length - 1), allowed_full_kits:0, stpl_in_days:0,}))
+        })
+        setGraphData(graph)
+      }
+      setOrders(data?.data?.data?.results?.griddata);
       setTotalRows(data?.data?.data?.count)
-    }
-    else{
-      // console.log("graph data", data);
-      // setGraphData()
-    }
   }
 
 
@@ -119,18 +135,30 @@ const FullKitAssignment = () => {
 
   const excludeAndSimulate = async () => {
     const username = user.user.name
-    const orders = Array.from(selectedRows.values()).map((order: any) =>{ return {on: order.data.on, lid: order.data.lid }})
+    const orders = Array.from(selectedRows.values()).map((order: any) =>{ return {on: order.data.on, lid: order.data.li }})
     const excluded = await updateExcludedOrdersForFullkitAssignment({orders, username}) 
     if(excluded.status == 200){
       const simulateOrders = await updateOrSimulateStockAllocation({username, is_simulated: true})
       if(simulateOrders.status == 200){
-        setExtra([])
-        setSelectedRows(new Map())
-        // setShowOrdersWithFullKitReady(true);
-        // setLoadDataAfterSimulation(true)
-        setLoadDataParams({...loadDataParams, is_fullkit: true, load_data_after_simulation: true})
+        return true
+      }else{
+        return false
       }
     }
+  }
+
+  const saveOrCancelSimulaton = async (is_type: "Save" | "Delete") =>{
+    try{
+      const username = user.user.name
+      await updateFullkitOnSimulation({username, is_type})
+      notifySuccess("Simulation Saved")
+      return true
+    }
+    catch(err){
+      notifyError("Failed to Save the Simulation")
+      return false
+    }
+    
   }
 
   const renderUtilityBtns = useMemo(() => {
@@ -158,13 +186,20 @@ const FullKitAssignment = () => {
       case "ExcludeSimulate": {
         return <>
           <strong style={{marginRight: "1rem", cursor:"pointer"}} onClick={()=>{
-          setEditMode("Deselect")
+            saveOrCancelSimulaton("Delete").then((data)=>{
+              if(data){
+                setColDefCustomizations({
+                  ...defaultColDefCustomisation.current
+                })
+                setEditMode("Deselect")
+              }
+            })
         }}>Cancel</strong>
         <VFButtonOutline 
           style={{width:"unset"}}
           themeUi={themeUi}
           onClick={() => {
-            console.log()
+            setEditMode("SimulationSaved") 
           }}>Save Simulation</VFButtonOutline>
         </>
       }
@@ -188,7 +223,7 @@ const FullKitAssignment = () => {
   },[loadDataParams])
 
   useEffect(()=>{
-    setLoadDataParams({...loadDataParams, page: currentPage})
+    setLoadDataParams({...loadDataParams, load_graph_data: false, page: currentPage})
   }, [currentPage])
 
   // useEffect(()=>{
@@ -206,14 +241,17 @@ const FullKitAssignment = () => {
     switch(editMode){
       case "View":{
         // setShowOrdersWithFullKitReady(true);
-        setLoadDataParams({...loadDataParams, is_fullkit: true})
+        setLoadDataParams({is_fullkit: true, load_graph_data: true, load_data_after_simulation: false, page: 1})
         setSelectedRows(new Map());
         setExtra([]);
         break
       }
       case "Deselect":{
         // setShowOrdersWithFullKitReady(false)
-        setLoadDataParams({...loadDataParams, is_fullkit: false})
+        setLoadDataParams({is_fullkit: false, load_graph_data: true, load_data_after_simulation:false, page: 1})
+        setColDefCustomizations({
+          ...defaultColDefCustomisation.current
+        })
         setExtra([{
           field: "",
           headerCheckboxSelection: true,
@@ -227,9 +265,48 @@ const FullKitAssignment = () => {
       }
       case "ExcludeSimulate":{
         // setShowOrdersWithFullKitReady(True)
-        excludeAndSimulate()
+        excludeAndSimulate().then((data)=>{
+          if(data){
+            setLoadDataParams({is_fullkit: true, load_data_after_simulation: true, load_graph_data: true, page: 1})
+            setExtra([])
+            setSelectedRows(new Map());
+            setColDefCustomizations({
+              ...defaultColDefCustomisation.current,
+              KitsBeforeSM:{
+                cellStyle: {
+                  // background: "#BC3D814F",
+                  // color: "#BC3D81",
+                  background:  globalStyles.chooseThemeColor[themeUi]?.color4 + "60",
+                  color: globalStyles.chooseThemeColor[themeUi]?.color4,
+                  fontWeight: "bold"
+              }
+              },
+              FullKitsAvailable:{
+                cellStyle: {
+                  // background: "#BC3D814F",
+                  // color: "#BC3D81",
+                  background:  globalStyles.chooseThemeColor[themeUi]?.color4 + "60",
+                  color: globalStyles.chooseThemeColor[themeUi]?.color4,
+                  fontWeight: "bold"
+              }
+              }
+            })
+          }
+        })
+        break
       }
-
+      case "SimulationSaved": {
+        saveOrCancelSimulaton("Save").then(()=>{
+          if(data){
+            // setLoadDataParams({is_fullkit: true, load_data_after_simulation: false, load_graph_data: true, page: 1})
+            setExtra([])
+            setEditMode("View")
+            setColDefCustomizations({
+              ...defaultColDefCustomisation.current
+            })
+          }
+        })
+      }
     }
   }, [editMode])
 
@@ -261,55 +338,56 @@ const FullKitAssignment = () => {
   };
 
   const [data] = useState([
-    { category: 'M5', value: 13, target: 43, value2: 10, groupName: "Underloaded\n", selected: true },
-    { category: '    ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M6', value: 10, target: 35, value2: 5, groupName: "Underloaded\n", selected: true },
-    { category: '      ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M7', value: 12, target: 38, value2: 8, groupName: "Underloaded\n", selected: true },
-    { category: '        ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M8', value: 8, target: 12, value2: 20, groupName: "Underloaded\n", selected: true },
-    { category: '          ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M1', value: 10, target: 35, value2: 20, groupName: "Overloaded\n", selected: true },
-    { category: '', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M2', value: 12, target: 10, value2: 20, groupName: "Overloaded\n", selected: true },
-    { category: ' ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M3', value: 8, target: 12, value2: 20, groupName: "Overloaded\n", selected: true },
-    { category: '  ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M4', value: 15, target: 14, value2: 20, groupName: "Overloaded\n", selected: true },
-    { category: '   ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M9', value: 15, target: 36, value2: 20, groupName: "Balanced\n", selected: true },
-    { category: '            ', value: "", target: "", value2: "", groupName: "", selected: true },
-    { category: 'M10', value: 13, target: 35, value2: 20, groupName: "Balanced\n", selected: true },
+    // { category: 'M5', value: 13, target: 43, value2: 10, groupName: "Underloaded\n", selected: true },
+    // { category: '    ', value: "", target: "", value2: "", groupName: "", selected: true },
+    // { category: 'M6', value: 10, target: 35, value2: 5, groupName: "Underloaded\n", selected: true },
+    // { category: '      ', value: "", target: "", value2: "", groupName: "", selected: true },
+    // { category: 'M7', value: 12, target: 38, value2: 8, groupName: "Underloaded\n", selected: true },
+    // { category: '        ', value: "", target: "", value2: "", groupName: "", selected: true },
+    // { category: 'M8', value: 8, target: 12, value2: 20, groupName: "Underloaded\n", selected: true },
+    // { category: '          ', value: "", target: "", value2: "", groupName: "", selected: true },
+    // { category: 'M1', value: 10, target: 35, value2: 20, groupName: "Overloaded\n", selected: true },
+    // { category: '', value: "", target: "", value2: "", groupName: "", selected: true },
+    // { category: 'M2', value: 12, target: 10, value2: 20, groupName: "Overloaded\n", selected: true },
+    // { category: ' ', value: "", target: "", value2: "", groupName: "", selected: true },
+    // { category: 'M3', value: 8, target: 12, value2: 20, groupName: "Overloaded\n", selected: true },
+    // { category: '  ', value: "", target: "", value2: "", groupName: "", selected: true },
+    // { category: 'M4', value: 15, target: 14, value2: 20, groupName: "Overloaded\n", selected: true },
+    // { category: '   ', value: "", target: "", value2: "", groupName: "", selected: true },
+    // { category: 'M9', value: 15, target: 36, value2: 20, groupName: "Balanced\n", selected: true },
+    // { category: '            ', value: "", target: "", value2: "", groupName: "", selected: true },
+    // { category: 'M10', value: 13, target: 35, value2: 20, groupName: "Balanced\n", selected: true },
+    
   ])
   const chartoptions: AgChartOptions = {
-    data: data,
+    data: graphData,
     series: [
       {
         type: 'bar',
-        xKey: 'category',
-        yKey: "value",
+        xKey: 'ccr_name',
+        yKey: "stpl_in_days",
         stacked: true,
         strokeWidth: 0,
         fill: "#191919",
-        formatter: (params) => {
-          return {
-            fillOpacity: params.datum.selected ? 1 : 0.5,
-            fill: params.datum.selected ? params.fill : "#191919"
-          }
-        }
+        // formatter: (params) => {
+        //   return {
+        //     fillOpacity: params.datum.selected ? 1 : 0.5,
+        //     fill: params.datum.selected ? params.fill : "#191919"
+        //   }
+        // }
       },
       {
         type: 'bar',
-        xKey: 'category',
-        yKey: "value2",
+        xKey: 'ccr_name',
+        yKey: "allowed_full_kits",
         stacked: true,
         strokeWidth: 0,
         fill: "#EBBF2C",
-        formatter: (params) => {
-          return {
-            fill: params.datum.selected ? params.fill : "#A8A8A8"
-          }
-        },
+        // formatter: (params) => {
+        //   return {
+        //     fill: params.datum.selected ? params.fill : "#A8A8A8"
+        //   }
+        // },
         // label: {
         //   enabled: true,
         //   formatter: (params: any) => {
@@ -322,8 +400,8 @@ const FullKitAssignment = () => {
       },
       {
         type: 'scatter',
-        xKey: 'category',
-        yKey: 'target',
+        xKey: 'ccr_name',
+        yKey: 'cumulative_wip_limit',
         marker: {
           size: 10,
           fill: '#E53F3F',
@@ -371,7 +449,7 @@ const FullKitAssignment = () => {
     <Wrapper>
       <MTOActionToolBar
         utilityBtns={renderUtilityBtns}
-        quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox style={{cursor: editMode != "View" ? "not-allowed" : "pointer"}} disabled={editMode != "View"} checked={loadDataParams.is_fullkit} onChange={(e: any) => setLoadDataParams({...loadDataParams, is_fullkit: e.target.checked})} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Orders with Full Kit Ready</strong></div>}
+        quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox style={{cursor: editMode != "View" ? "not-allowed" : "pointer"}} disabled={editMode != "View"} checked={loadDataParams.is_fullkit} onChange={(e: any) => setLoadDataParams({...loadDataParams, load_graph_data: true, is_fullkit: e.target.checked})} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Orders with Full Kit Ready</strong></div>}
         isExcelExport isAddFilterButton
       />
       {(isDataLoading || excludeOrdersLoading || simulationLoading) && <OverlayLoader/>}
