@@ -443,7 +443,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             errors.push(`Missing Pending Qty for CCR: ${ccrNames[index]} or Order: ${order.oid}`)
                         }
 
-                        const orderLoad = Math.ceil((ccrItem.tt * (lineCCRPendingQty || orderPendingQty)));
+                        const orderLoad = Math.ceil(((ccrItem?.tt || 0) * (lineCCRPendingQty || orderPendingQty)));
 
                         //for calculating the initial value for prevPending
                         if (!ccr_prev_pending[ccrId]) {
