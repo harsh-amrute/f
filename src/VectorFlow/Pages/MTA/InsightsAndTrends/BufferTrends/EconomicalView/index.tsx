@@ -51,7 +51,9 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
                 label:{
                     fontSize:8,
                     fontWeight:'bold',
-                    color:'black'
+                    color:'black',
+                    autoRotate:false,
+                    avoidCollisions:true
                 }
             },
             {

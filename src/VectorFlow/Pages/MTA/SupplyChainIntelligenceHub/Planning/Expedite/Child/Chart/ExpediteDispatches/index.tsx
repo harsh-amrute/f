@@ -410,7 +410,7 @@ const mapDataToRowData = (data: any) => {
             },
             label:{
                 formatter:(params:any)=>{
-                    if(params.value.length > 6) return params.value.toString().slice(0,6) + '...';
+                    if(params.value.value.length > 6) return params.value.toString().slice(0,6) + '...';
                     return params.value;
                 },
               fontSize:8,
@@ -449,7 +449,7 @@ const mapDataToRowData = (data: any) => {
             },
             label:{
                 formatter:(params:any)=>{
-                    if(params.value.length > 6) return params.value.toString().slice(0,6) + '...';
+                    if(params.value.value.length > 6) return params.value.toString().slice(0,6) + '...';
                     return params.value;
                 },
               fontSize:8,

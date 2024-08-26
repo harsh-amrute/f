@@ -34,7 +34,6 @@ import DBM from './VectorFlow/Pages/MTA/DBM/DBMNormSuggestions'
 import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests'
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
 import SupplierDispatchReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport'
-
 import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
 
 // to show loading state for desired page only instead of the entire screen

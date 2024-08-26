@@ -73,6 +73,8 @@ const AvailabilityTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:strin
           label: {
             formatter: (params:any) => new Date(params.value).toISOString().split('T')[0],
             fontSize: 10,
+            autoRotate:false,
+            avoidCollisions:true
           },
           
         },
