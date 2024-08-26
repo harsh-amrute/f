@@ -90,3 +90,9 @@ export const useUpdateScheduleOrders = () => {
     })
 }
 
+export const useGetDBRsettingsData = () => {
+    return useMutation(async () => {
+        return DueDateQuotationService.getDBRsettingsData()
+    })
+}
+
