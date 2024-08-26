@@ -427,7 +427,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             errors.push(`CCR Name: ${ccrNames[index]} not available in MapCCRItemType Master`)
                             // throw new Error(`CCR Name: ${ccrNames[index]} not available in MapCCRItemType Master`)
                         }
-                        if(!ccrItem.tt){
+                        if(!ccrItem?.tt){
                             errors.push(`Touch Time not available for CCR Name: ${ccrNames[index]} and Item ID: ${order.itid} in MapCCRItemType Master`)
                             // throw new Error(`Touch Time not available for CCR Name: ${ccrNames[index]} and Item ID: ${order.itid} in MapCCRItemType Master`);
                         }
