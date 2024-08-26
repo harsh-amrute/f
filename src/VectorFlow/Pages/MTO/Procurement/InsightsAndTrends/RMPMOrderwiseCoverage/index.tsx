@@ -72,6 +72,12 @@ const RMPMOrderwiseCoverage = () => {
             pagination: true,
 
             defaultColDef: {
+                filter: "agTextColumnFilter",
+                floatingFilter: true,
+                floatingFilterComponentParams: { suppressFilterButton: true },
+                suppressMenu: true,
+                resizable: true,
+
                 cellStyle: {
                     'text-align': 'center',
                     'height': '50px',
@@ -85,7 +91,7 @@ const RMPMOrderwiseCoverage = () => {
                     'resizable': 'true',
                 },
                 flex: 1,
-                floatingFilter: true
+                // floatingFilterComponentParams: { suppressFilterButton: true },
             },
 
         },
@@ -141,7 +147,6 @@ const RMPMOrderwiseCoverage = () => {
             initialWidth: 200,
             autoHeaderHeight: true,
             wrapHeaderText: true,
-
         },
         OrderType: {
             cellRenderer: () => {

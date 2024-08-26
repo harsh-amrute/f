@@ -4,16 +4,16 @@ import React, { forwardRef, useImperativeHandle, useRef } from 'react'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
-interface IStep1Props{
-    gridOptions: GridOptions,
-    rows: any,
-    selectedRows: any,
-    currentPageSelectedRows: React.MutableRefObject<any>,
-    totalRows: React.MutableRefObject<number>,
-    currentPage: number,
-    setCurrentPage: React.Dispatch<React.SetStateAction<number>>,
-    scheduledOrders: any,
-    setSelectedRows: any
+interface IStep1Props {
+  gridOptions: GridOptions,
+  rows: any,
+  selectedRows: any,
+  currentPageSelectedRows: React.MutableRefObject<any>,
+  totalRows: React.MutableRefObject<number>,
+  currentPage: number,
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>,
+  scheduledOrders: any,
+  setSelectedRows: any
 }
 
 const Step1 = forwardRef(({gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows}: IStep1Props, ref: any) => {

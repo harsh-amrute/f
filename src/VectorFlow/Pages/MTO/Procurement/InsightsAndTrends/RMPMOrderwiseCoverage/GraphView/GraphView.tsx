@@ -17,16 +17,24 @@ import _ from "lodash";
 
 const GraphView = ({ shortageData }: any) => {
 
-    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+    const { data: apiResponseData, isSuccess } = useGetDate();
+    const [apiDate, setApiDate] = useState(apiResponseData?.data.data);
+    const [date, setDate] = useState('');
 
-    const mydate = apiResponseData?.data?.data;
-    const [date] = useState(`${moment(mydate).format('D MMM YYYY')} - ${moment(mydate).add(90, 'days').format('D MMM YYYY')}`)
+    React.useEffect(() => {
+        setApiDate(apiResponseData?.data.data);
+    }, [apiResponseData]);
 
+    React.useEffect(() => {
+        if (apiDate) {
+            setDate(`${moment(apiDate).format('D MMM YYYY')} - ${moment(apiDate).add(90, 'days').format('D MMM YYYY')}`);
+        }
+    }, [apiDate, isSuccess]);
 
     function TooltipRenderer({ datum, xKey }: any) {
         return `
     <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-        ${(datum[xKey] === '1') ? '0-7 Days' : (datum[xKey] + '-' + (Number(datum[xKey] + 6)) + ' Days')}
+        ${(datum[xKey] === 1) ? '0-7 Days' : (datum[xKey] === 85) ? '85-90 Days' : (datum[xKey] + '-' + (Number(datum[xKey] + 6)) + ' Days')}
     </div>
     <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
     
@@ -41,8 +49,8 @@ const GraphView = ({ shortageData }: any) => {
                 </div>
             </div>
         </div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitOPO}</div><div>${datum["total_sit"]}</div></div></div>
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitSIT}</div><div>${datum["total_po"]}</div></div></div>
+        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #F09241"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitOPO}</div><div>${datum["total_po"]}</div></div></div>
+        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #AD5000"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithFullkitSIT}</div><div>${datum["total_sit"]}</div></div></div>
         <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #6A3001"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>${InsightsAndTrendsString.ordersWithRMPM}</div><div> ${datum["shortage"]}</div></div></div>
     </div>`
     }
@@ -71,19 +79,12 @@ const GraphView = ({ shortageData }: any) => {
         return seriesData;
     }
 
-
-
     const numberOfSeriesData = 4;
-
     const seriesData = createSeriesData(numberOfSeriesData);
-
     const options: AgChartOptions = ({
 
-
         data: shortageData, // Todo final data
-
         series: seriesData,
-
         axes: [
             {
                 type: "category",
@@ -97,6 +98,9 @@ const GraphView = ({ shortageData }: any) => {
                     formatter: (params) => {
                         if (params.value === '1') {
                             return '0-7 Days'
+                        }
+                        else if (params.value === '85') {
+                            return '85-90 Days'
                         }
                         else {
                             return `${params.value}-${Number(params.value) + 6} Days`

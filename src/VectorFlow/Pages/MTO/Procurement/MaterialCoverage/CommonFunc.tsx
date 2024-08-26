@@ -75,11 +75,11 @@ export interface DetailsObj {
 
 export const getToolTipContent = (col: string, ToolTipdata: any) => {
     return (
-        <table style={{ padding: "0px 10px 0px 10px", display: "table", width: '100%' }}>
+        <table style={{ padding: "0px 10px 0px 10px", fontSize: '14px', display: "table", width: '150px' }}>
             <tbody>
                 {col == 'Red' || col == 'Green' ?
                     <>
-                        <tr>
+                        <tr style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <td>
                                 {col == 'Red' ? 'Black' : 'Green'}
                             </td>
@@ -93,7 +93,7 @@ export const getToolTipContent = (col: string, ToolTipdata: any) => {
                 }
                 {col == 'Red' || col == 'Blue' ?
                     <>
-                        <tr>
+                        <tr style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <td>
                                 {col == 'Red' ? 'Red' : 'White'}
                             </td>
@@ -101,7 +101,7 @@ export const getToolTipContent = (col: string, ToolTipdata: any) => {
                                 {isNaN(ToolTipdata.p2) ? 0 : ToolTipdata.p2}%/{ToolTipdata?.c2}
                             </td>
                         </tr>
-                        <tr>
+                        <tr style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <td>
                                 {col == 'Red' ? 'Yellow' : 'Blue'}
                             </td>
