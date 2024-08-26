@@ -7,7 +7,23 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
 
-const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
+interface SupplierData {
+    [key: string]: {
+        [key: string]: number;
+    };
+}
+interface Product {
+    rn: string;  // Product ID
+    c: number;   // Value for the product ID
+}
+
+interface Result {
+    sn: string;
+    rc: number;
+    tt: Product[];  // Array of product objects with rn and c
+}
+
+const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
     let RMPMExpeditionOBj = {}
     const [chartLoading, setChartLoading] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
@@ -20,29 +36,64 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
         getOnLoadData();
     }, [])
 
+
+    const transformSupplierData = (data: SupplierData): Result[] => {
+        // Initialize an empty array to store the result
+        const result: Result[] = [];
+        // Loop through each supplier in the data
+        for (const supplier in data) {
+            // Calculate the sum of values for each supplier
+            const total = Object.values(data[supplier]).reduce((acc, value) => acc + value, 0);
+            // Push the result in the desired format
+
+            // Create the tt array, which contains objects with rn and c for each product
+            const tt = Object.entries(data[supplier]).map(([productId, value]) => ({
+                rn: productId,
+                c: value,
+            }));
+
+            // Push the result in the desired format
+            result.push({
+                sn: supplier,
+                rc: total,
+                tt: tt,  // Add array of product details
+            });
+        }
+        // Sort the result array in descending order based on 'rn'
+        result.sort((a, b) => b.rc - a.rc);
+
+        return result;
+    };
+
     const getOnLoadData = async () => {
         RMPMExpeditionOBj = {
             'horizon': '14',
             'val': 'all'
         }
         const someData = await getRMPMExpedition(RMPMExpeditionOBj);
-        setNumericData(someData.data?.data?.supplier)
+        const xAxisValue = transformSupplierData(someData?.data?.data?.supplier);
+        setNumericData(xAxisValue)
     }
+
 
 
 
     const TooltipRenderer = ({ datum }: any) => {
 
         return `
-        <div style="background:#000; border-radius:3px; color:#fff ;padding:8px">
-            <div style="width: 100%; display: flex; justify-content: center">
-                ${datum.rn}
-            </div>
+        <div style="background:#000; border-radius:3px; color:#fff; padding:8px">
+            ${datum.tt.map((item: { rn: string; c: number }) => `
+                <div style="width: 100%; display: flex; justify-content: space-between; padding: 5px 0;">
+                    <div style="text-align: left;">${item.rn} :</div>
+                    <div style="text-align: right;">${item.c}</div>
+                </div>
+            `).join('')}
             <hr style="border: 1px dashed"/>
             <div>No. Of Orders : ${datum.rc}</div>
         </div>
-        `;
+    `;
     }
+
 
 
     const options: AgChartOptions = {
@@ -124,7 +175,8 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
             'val': 'supplier'
         }
         const someData = await getRMPMExpedition(RMPMExpeditionOBj);
-        setNumericData(someData.data?.data?.supplier)
+        const xAxisValue = transformSupplierData(someData?.data?.data?.supplier);
+        setNumericData(xAxisValue)
     }
 
     const handleSubmitClick = () => {
@@ -212,7 +264,7 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
 
         )
     }
-    console.log(isMTO)
+
     return (
         <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '10px' }}>
 
