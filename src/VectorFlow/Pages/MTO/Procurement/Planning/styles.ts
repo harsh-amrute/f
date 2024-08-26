@@ -11,3 +11,14 @@ export const ChildTableWrapper = styled.div`
     font-size: 18px;
 }
 `
+
+export const TableWrapper = styled.div`
+    height : 95vh;
+    display: flex;
+    flex-direction: column;
+
+    & > .ag-theme-alpine{
+        flex: 1;
+    }
+    
+`

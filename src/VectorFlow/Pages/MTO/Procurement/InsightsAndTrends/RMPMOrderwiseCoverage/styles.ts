@@ -64,3 +64,15 @@ export const SCHorizontalDivider = styled.hr`
     border-top:1px solid #B2B2B2;
 `
 
+
+export const TableWrapper = styled.div`
+    height : 95vh;
+    zoom: 0.75;
+    display: flex;
+    flex-direction: column;
+
+    & > .ag-theme-alpine {
+        flex: 1;
+    }
+    
+`

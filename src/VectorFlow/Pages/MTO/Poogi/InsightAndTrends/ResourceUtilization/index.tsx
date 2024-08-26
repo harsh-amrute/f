@@ -39,7 +39,6 @@ import { toast } from "react-toastify";
 import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
 
 const ResourceUtilization = () => {
-  const [chartLoading, setChartLoading] = useState(false);
   const chartRef = useRef<AgChartsReact>(null);
   const [horizonDays, setHorizonDays] = useState(90);
   const [selectedGraphState, setSelectedGraphState] = useState("wipLimit");
@@ -113,7 +112,6 @@ const ResourceUtilization = () => {
       const myCCROpts: any = []
       ccrs.forEach((e: any) => {
         myCCROpts.push({ value: e.ccr_id, label: e.ccr_name })
-        console.log(e.ccr_id);
       })
       setCCROpts(myCCROpts);
 
@@ -151,7 +149,6 @@ const ResourceUtilization = () => {
   }, [isSuccess, isError])
 
   useEffect(() => {
-    console.log('Api Data....', apiData)
     const newUtilData: any = [];
     const newWipOverData: any = [];
     const newWipUnderData: any = [];
@@ -163,7 +160,6 @@ const ResourceUtilization = () => {
     }
     if (apiData && apiData.wiplimit) {
       apiData.wiplimit.olimit.forEach((e: any) => {
-        console.log('**', e.awip)
         newWipOverData.push({ overLimit: Number(e.awip), limit: e.lm, ccr: e.ccr })
       })
       apiData.wiplimit.ulimit.forEach((e: any) => {
@@ -199,7 +195,6 @@ const ResourceUtilization = () => {
 
 
 
-  console.log(chartLoading);
 
   function TooltipRenderer({ datum }: any) {
     return `
@@ -219,7 +214,7 @@ const ResourceUtilization = () => {
                   <div>${actBtn?.label === "Over Limit"
           ? datum?.overLimit
           : datum?.underLimit
-        }%</div>
+        }</div>
               </div>
           </div>`
         : ""
@@ -330,7 +325,27 @@ const ResourceUtilization = () => {
           },
         },
         tooltip: {
-          renderer: TooltipRenderer,
+          renderer: (datum: any) => {
+            return `
+      <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: flex-start; align-items: center; min-width: 200px">
+          Details
+      </div>
+      <div class="ag-chart-tooltip-content" style="color: white; background-color: #2E2E2E; padding: 0px 20px;">
+      <div style="border-top: 1px dashed lightgray"></div>
+      <div style="width: 100%; padding: 10px 5px;">
+          <div style="display: flex; width: 100%;">
+              
+         
+                 <div style="display: flex; width: 100%;">
+              <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
+              <div style="display:flex; justify-content: space-between; width: 100%;">
+                  <div>Usage</div>
+                  <div>${datum.datum?.limit} %
+                </div>
+              </div>
+          </div>
+      </div>`;
+          }
         },
       },
     ],
@@ -605,7 +620,6 @@ const ResourceUtilization = () => {
   }, [actBtn, horizonClicked])
 
   const handleHorizonSubmit = () => {
-    console.log("horizon SUbmit");
     setHorizonClicked(!horizonClicked)
 
   };
@@ -715,7 +729,7 @@ const ResourceUtilization = () => {
               strictMode={false}
               width={250}
               defaultValue={horizonDays || 0}
-              handleChange={(e) => { setHorizonDays && setHorizonDays(e), console.log(horizonDays) }}
+              handleChange={(e) => { setHorizonDays && setHorizonDays(e) }}
               labelValueFormatter={(value: number) => value > 1 ? `${value}` : `${value}`}
             />
             <div>
@@ -788,9 +802,6 @@ const ResourceUtilization = () => {
                   ? wipOptions
                   : utilizationOptions
               }
-              onChartReady={() => {
-                setChartLoading(false);
-              }}
             />
           </div>
         </GraphWrapper>

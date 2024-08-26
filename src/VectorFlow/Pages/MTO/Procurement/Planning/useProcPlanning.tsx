@@ -19,6 +19,7 @@ import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Commo
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import OverlayLoader from "../../Common/Loader";
 import { INumberCellEditorParams } from "@ag-grid-community/core"
+import { TableWrapper } from "./styles";
 
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
@@ -115,12 +116,12 @@ const useProcPlanning = (date: string) => {
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
     const { mutateAsync: UpdateProcurementSimulationData } = putUpdateProcurementSimulationData()
     const [isLoading, setIsLoading] = useState(false);
-    const fetchData = useCallback(async (date: string, pageNumber = 1) => {
+    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1') => {
         setIsLoading(true);
         try {
             toast.dismiss();
             notifyLoader("Loading data...")
-            const response = await getProcPlanningData({ date, pageNum: pageNumber.toString() });
+            const response = await getProcPlanningData({ date, pageNum: pageNumber.toString(), ca: currentTab });
             if (response.status === 200) {
                 setCurrentPage(pageNumber)
                 toast.dismiss();
@@ -135,7 +136,6 @@ const useProcPlanning = (date: string) => {
             setTotalRows(response?.data?.data?.count)
             setData(response?.data?.data?.results || []);
         } catch (error) {
-            console.log("error ")
             toast.dismiss();
             notifyError("Failed to fetch data!");
             setIsLoading(false);
@@ -168,7 +168,6 @@ const useProcPlanning = (date: string) => {
                     }
                     return header;
                 });
-                console.log("this workds")
                 SetShortageData(ShortageData);
                 setCompleteAvailableData(CompleteAvailableData);
 
@@ -253,6 +252,24 @@ const useProcPlanning = (date: string) => {
         };
     }, []);
 
+    useEffect(() => {
+        if (currentTab) {
+            if (currentTab.label === 'Shortage') {
+                setCurrentPage(1);
+                fetchData(date, 1, '0')
+            }
+            else {
+                setCurrentPage(1);
+                fetchData(date, 1, '1')
+
+            }
+        }
+
+
+    }, [currentTab])
+
+
+
     const toggleCurrentTab = useCallback((tab: VFFloatingTabItemProps) => setCurrentTab(tab), []);
     const [isDisabled, setIsDisabled] = useState(true);
     useEffect(() => {
@@ -297,7 +314,6 @@ const useProcPlanning = (date: string) => {
                 if (response.status === 200) {
                     toast.dismiss();
                     notifySuccess("Simulation updated successfully!")
-                    console.log("API call succeeded:", response);
                     navigate("/planning/simulative-fullkit", { state: { ShortageDatas, date } });
 
                 }
@@ -384,7 +400,7 @@ const useProcPlanning = (date: string) => {
         switch (currentTab.id) {
             case "ca":
                 return (
-                    <div>
+                    <TableWrapper>
                         <VFTable
                             {...agGridProps}
                             columnDefs={CompleteAvailableColumns}
@@ -409,12 +425,12 @@ const useProcPlanning = (date: string) => {
                             handleChangePage={handlePageChangeCumulative}
 
                         />
-                    </div>
+                    </TableWrapper>
                 );
             case "short":
                 return (
 
-                    <div>
+                    <TableWrapper>
                         {isOverlayLoading && <OverlayLoader message={"Updating the simulated data..."} />}
 
                         <VFTable
@@ -476,7 +492,7 @@ const useProcPlanning = (date: string) => {
                             </VFButton>
                         </div>
 
-                    </div>
+                    </TableWrapper>
                 );
             default:
                 return (
@@ -514,7 +530,10 @@ const useProcPlanning = (date: string) => {
             enableRangeSelection: true,
             icons: icons,
 
+
             defaultColDef: {
+                suppressMenu: true,
+                resizable: true,
                 floatingFilter: true,
                 filter: "agMultiColumnFilter",
                 floatingFilterComponentParams: { suppressFilterButton: true },

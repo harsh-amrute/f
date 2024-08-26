@@ -27,9 +27,18 @@ describe('ProcPlanningService', () => {
     });
 
     it('should fetch procurement planning data correctly', async () => {
-        const response = await ProcPlanningService.GetProcPlanningData(mockDate, pageNum);
+        const response = await ProcPlanningService.GetProcPlanningData(mockDate, pageNum, '1');
 
-        expect(axios.get).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/getProcPlanningData/?releaseDate=${mockDate}&page=${pageNum}`, {
+        expect(axios.get).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/getProcPlanningData/?releaseDate=${mockDate}&page=${pageNum}&ca=1`, {
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        expect(response).toEqual(mockResponse);
+    });
+    it('should fetch procurement planning data correctly with ca =0', async () => {
+        const response = await ProcPlanningService.GetProcPlanningData(mockDate, pageNum, '0');
+
+        expect(axios.get).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/getProcPlanningData/?releaseDate=${mockDate}&page=${pageNum}&ca=0`, {
             headers: { 'Content-Type': 'application/json' }
         });
 

@@ -6,7 +6,8 @@ interface IToolTipProps extends CSSProperties {
     arrowLeft: string | number;
 }
 
-const Tooltip = ({ children, content, zoom = 1, style= {}}: any) => {
+const Tooltip = ({ children, content, zoom = 1, style = {}, tooltipZoom = 1 }: any) => {
+
     const [showTooltip, setShowTooltip] = useState(false);
     const [toolTipPosition, setoolTipPosition] = useState<IToolTipProps | null>();
     const tooltipRef = useRef<HTMLDivElement>(null);
@@ -28,7 +29,7 @@ const Tooltip = ({ children, content, zoom = 1, style= {}}: any) => {
                 // Adjust if tooltip goes outside the viewport
                 let viewportWidth = window.innerWidth
 
-                viewportWidth = viewportWidth * 1 / zoom - 20;
+                viewportWidth = viewportWidth * (1 / zoom) - 20;
 
 
                 if (tooltipLeft < 0) {
@@ -58,7 +59,7 @@ const Tooltip = ({ children, content, zoom = 1, style= {}}: any) => {
             {showTooltip && (
                 //use portal here
                 <Portal wrapperId="tooltip">
-                    <TooltipContainer $arrowLeft={toolTipPosition?.arrowLeft} data-testid="tooltip" style={{ top: toolTipPosition?.top, left: toolTipPosition?.left }} ref={tooltipRef}>
+                    <TooltipContainer $myzoom={tooltipZoom} $arrowLeft={toolTipPosition?.arrowLeft} data-testid="tooltip" style={{ top: toolTipPosition?.top, left: toolTipPosition?.left }} ref={tooltipRef}>
                         {content}
                     </TooltipContainer>
                 </Portal>
