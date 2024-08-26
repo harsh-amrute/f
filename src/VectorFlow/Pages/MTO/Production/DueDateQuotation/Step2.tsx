@@ -19,7 +19,7 @@ import { AgChartOptions } from 'ag-charts-community';
 import { notifyError, notifyErrorWithoutAutoClose, notifySuccess } from '../../../../../helpers/notify';
 import * as globalStyles from "../../../../../styles/global";
 
-const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, masters, getMastersData, rowsSelectedForAssignment, setRowsSelectedForAssignment, confirmedRows, setConfirmedRows, lineCCR,  }: any, ref) => {
+const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, masters, getMastersData, rowsSelectedForAssignment, setRowsSelectedForAssignment, confirmedRows, setConfirmedRows, lineCCR, setDisabled }: any, ref) => {
     useEffect(() => {
         getMastersData();
         setRowsSelectedForAssignment(false);
@@ -847,12 +847,12 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         loadGraph(selectedRoute)
     }, [selectedRoute])
 
-    // useEffect(() => {
-    //     const filteredRows = rows?.filter((row: any) => {
-    //         return row.cdd ? false : true
-    //     }) || [];
-    //     setDisabled(filteredRows.length != 0)
-    // }, [rows])
+    useEffect(() => {
+        const filteredRows = rows?.filter((row: any) => {
+            return row.cdd && row.prodc && (row.rn || row.newRoute ) ? false : true
+        }) || [];
+        setDisabled(filteredRows.length != 0)
+    }, [rows])
 
     const onConfirm = async () => {
         try {
