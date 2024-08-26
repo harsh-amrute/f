@@ -101,6 +101,8 @@ console.log(age)
         label: {
           fontSize: 8,
           fontFamily: "Roboto",
+          autoRotate:false,
+          avoidCollisions:true
         },
       },
       {

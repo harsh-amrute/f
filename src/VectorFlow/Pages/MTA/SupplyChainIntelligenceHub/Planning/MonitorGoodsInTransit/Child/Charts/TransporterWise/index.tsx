@@ -230,7 +230,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                         },
                         label:{
                             formatter:(params:any)=>{
-                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                                 return params.value;
                             },
                         }
