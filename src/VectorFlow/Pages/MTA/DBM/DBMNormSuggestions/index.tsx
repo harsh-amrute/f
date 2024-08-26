@@ -46,6 +46,7 @@ const DBM = () => {
 }
 
   return (
+    <>
     <GridStateContext.Provider value={{
       ref:gridRef,
       exportExcelColumns:exportExcelColumns,
@@ -119,6 +120,7 @@ const DBM = () => {
         </div>
       </DBMLayout>
       </GridStateContext.Provider>
+      </>
   )
 }
 
