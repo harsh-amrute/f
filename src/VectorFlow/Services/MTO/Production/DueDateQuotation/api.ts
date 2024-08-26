@@ -16,15 +16,24 @@ export namespace DueDateQuotationService {
 
     export const getFilteredOrdersForDDQ = async ({page, unSch, appliedFilters}: any) => {
        
-        const payload: any = {};
-        payload.headers = {
-            'Content-Type': 'application/json',
-            //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
-        };
         if(appliedFilters && Object.keys(appliedFilters).length){
-            payload.body = appliedFilters;
+            return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/?page=${page}&unSch=${unSch ? 1 : 0}`,
+            appliedFilters,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+                }
+            },
+            )
         }
-        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/?page=${page}&unSch=${unSch ? 1 : 0}`,payload)
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/?page=${page}&unSch=${unSch ? 1 : 0}`,{
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            }
+        })
+
     }
 
     export const getBufferMasterData = async () => {
