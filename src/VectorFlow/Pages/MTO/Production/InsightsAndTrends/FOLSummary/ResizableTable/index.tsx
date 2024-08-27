@@ -4,6 +4,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import VFTable from "../../../../../../../components/VectorFLOW/commons/VFTable";
 import { VFTableWrapper } from './style'
+import { pagination } from "../../../../../../../VectorFlow/Pages/MTO/Common/Enum";
 
 interface IResizeTableProps {
   header: ColDef[];
@@ -26,6 +27,11 @@ const ResizableTable = (props: IResizeTableProps) => {
   };
 
   const defaultColDef = {
+    filter: "agTextColumnFilter",
+    floatingFilter: true,
+    floatingFilterComponentParams: { suppressFilterButton: true },
+    suppressMenu: true,
+    resizable: true,
     cellStyle: {
       'text-align': 'center',
       "font-style": "normal",
@@ -50,7 +56,7 @@ const ResizableTable = (props: IResizeTableProps) => {
         defaultColDef={defaultColDef}
         getRowStyle={getRowStyle}
         pagination
-        paginationPageSize={10}
+        paginationPageSize={pagination.mtoPageSize}
 
       />
     </VFTableWrapper>

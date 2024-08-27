@@ -20,6 +20,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import OverlayLoader from "../../Common/Loader";
 import { INumberCellEditorParams } from "@ag-grid-community/core"
 import { TableWrapper } from "./styles";
+import { pagination } from "../../Common/Enum";
 
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
@@ -390,8 +391,12 @@ const useProcPlanning = (date: string) => {
         // // setData(APIData?.data?.data?.results || []);
         // setData(newDat);
         // setIsLoading(false);
-
-        fetchData(date, pageNumber);
+        if (currentTab.id === 'ca') {
+            fetchData(date, pageNumber, '1');
+        }
+        else {
+            fetchData(date, pageNumber, '0');
+        }
 
         // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
@@ -419,7 +424,7 @@ const useProcPlanning = (date: string) => {
                         <VFPagination
                             key={1}
                             selectedRows={0}
-                            rowsPerPage={Math.min(10, totalRows)}
+                            rowsPerPage={Math.min(pagination.mtoPageSize, totalRows)}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
@@ -451,7 +456,7 @@ const useProcPlanning = (date: string) => {
                         />
                         <VFPagination
                             selectedRows={0}
-                            rowsPerPage={Math.min(10, totalRows)}
+                            rowsPerPage={Math.min(pagination.mtoPageSize, totalRows)}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
@@ -503,7 +508,7 @@ const useProcPlanning = (date: string) => {
                         <VFPagination
 
                             selectedRows={0}
-                            rowsPerPage={Math.min(10, totalRows)}
+                            rowsPerPage={Math.min(pagination.mtoPageSize, totalRows)}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}

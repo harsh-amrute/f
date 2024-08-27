@@ -248,8 +248,8 @@ const GraphView = ({ shortageData }: any) => {
 
 
         <>
-            <SCChartContainer height={"450px"} style={{ border: "1px solid #CCCCCC" }}>
-                <div style={{ height: '85%', width: '100%' }}>
+            <SCChartContainer height={"70vh"} style={{ border: "1px solid #CCCCCC" }}>
+                <div style={{ height: '60vh', width: '100%' }}>
                     <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
                         <div style={{ fontSize: '12px', margin: '0 auto', fontWeight: 500, textAlign: 'center' }}>
                             {`${InsightsAndTrendsString.rmpmOrderwiseCoverage}  (${date})`}

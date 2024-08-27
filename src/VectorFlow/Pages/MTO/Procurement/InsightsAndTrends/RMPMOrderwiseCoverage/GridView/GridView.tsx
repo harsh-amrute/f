@@ -1,4 +1,5 @@
 import { useRef } from "react"
+import { pagination } from "../../../../../../../VectorFlow/Pages/MTO/Common/Enum"
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import { TableWrapper } from "../styles"
 
@@ -26,6 +27,7 @@ const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps | a
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}
+                paginationPageSize={pagination.mtoPageSize}
                 ref={gridRef}
                 statusBar={{
                     statusPanels: [

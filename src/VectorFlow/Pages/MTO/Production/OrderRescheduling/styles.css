@@ -1,5 +1,5 @@
 input[type="date"]::-webkit-calendar-picker-indicator {
-    color: red;
+
     color: purple;
     opacity: 1;
     background: url('../../../../../../public/assets/img/mto/OrderRescheduling/edit-calendar.svg') no-repeat;

@@ -33,7 +33,7 @@ const STPLAndFullKits = () => {
   }
 
   useEffect(() => {
-    getGraphData({graphflag: 1});
+    getGraphData({ graphflag: 1 });
   }, [])
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const STPLAndFullKits = () => {
 
   return (
     <div style={{}}>
-       {
+      {
         isLoading && <OverlayLoader />
       }
       <MTOActionToolBar
@@ -65,13 +65,13 @@ const STPLAndFullKits = () => {
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <STPLGraph graphData={graphData?.stpl}/>
+                  <STPLGraph graphData={graphData?.stpl} />
                 </BTRAllomentSection>
               </Allotment.Pane>
 
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <FullKitGraph graphData={graphData?.fk}/>
+                  <FullKitGraph graphData={graphData?.fk} />
                 </BTRAllomentSection>
               </Allotment.Pane>
             </Allotment>

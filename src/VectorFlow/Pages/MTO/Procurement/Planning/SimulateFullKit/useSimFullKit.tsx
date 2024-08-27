@@ -215,6 +215,10 @@ const useSimFullKit = () => {
             components: customCellRenderers,
             icons: icons,
             defaultColDef: {
+                suppressMenu: true,
+                resizable: true,
+                filter: "agMultiColumnFilter",
+                floatingFilterComponentParams: { suppressFilterButton: true },
                 cellStyle: {
                     'text-align': 'center',
                     'height': '50px',
@@ -226,7 +230,7 @@ const useSimFullKit = () => {
                     'text-overflow': 'ellipsis',
                     'white-space': 'nowrap',
                     'resizable': 'true',
-                    'width':'180px'
+                    'width': '180px'
                 },
             },
         },

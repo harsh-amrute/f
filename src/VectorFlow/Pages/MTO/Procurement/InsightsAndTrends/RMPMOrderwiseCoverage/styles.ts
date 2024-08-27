@@ -7,6 +7,9 @@ export const SCChartContainer = styled.div<{ height?: string }>`
     // box-shadow: -5px 5px 25px #86868633;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     margin: 20px;
+    display: flex;
+    flex-direction: column;
+    
     // height:547px;
     height:${props => props.height ? props.height : 'auto'}
 `

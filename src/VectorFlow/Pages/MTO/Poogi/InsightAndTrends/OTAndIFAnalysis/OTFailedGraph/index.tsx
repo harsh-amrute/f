@@ -5,6 +5,7 @@ import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VF
 import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
 import { createSeriesData, getMyColumnDefinitions, TooltipRenderer } from '../Data'
 import { AgChartOptions } from 'ag-charts-community'
+import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 
 interface OTFailedGraphProps {
     OTFailedData: any,
@@ -19,6 +20,7 @@ const OTFailedGraph = (props: OTFailedGraphProps) => {
     const [hideChart1, toggleChart1] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
     const [chartLoading, setChartLoading] = useState(false);
+    const { data: apiResponseData, isSuccess } = useGetDate();
 
     const generateHeader = () => {
         return (
@@ -35,7 +37,7 @@ const OTFailedGraph = (props: OTFailedGraphProps) => {
                         }}
                     >
                         <span style={{ fontWeight: 500 }}>Extent Of Delay For OT Failed Orders &nbsp;</span>
-                        <span style={{ fontWeight: 350 }}>{`(${moment(OTFailedData?.start || '-').format('D MMM YYYY')} - ${moment(OTFailedData?.end || '-').format('D MMM YYYY')})`}</span>
+                        <span style={{ fontWeight: 350 }}>{`(${moment(apiResponseData?.data.data || '-').subtract(90, 'days').format('D MMM YYYY')} - ${moment(apiResponseData?.data.data || '-').format('D MMM YYYY')})`}</span>
                     </div>
 
                     <SCChartHeaderContainer>

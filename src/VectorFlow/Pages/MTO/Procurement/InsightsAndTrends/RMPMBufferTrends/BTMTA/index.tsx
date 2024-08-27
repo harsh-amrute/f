@@ -447,7 +447,8 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
 
                     </SCChartSliderContainer>
-                    <SCChartHeaderContainer>
+                    <SCChartHeaderContainer style={{ background: 'transparent' }}>
+
                         <CapsuleWrapper style={{ zoom: 0.8, padding: '4px' }}>
                             <VFCapsule
                                 activeBtn={actBtn}

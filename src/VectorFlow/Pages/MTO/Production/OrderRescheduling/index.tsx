@@ -17,6 +17,7 @@ import OverlayLoader from '../../Common/Loader';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import VFPagination from '../../Common/VFPagination';
+import { pagination } from '../../Common/Enum';
 
 const user = { user: { them_ui: 'pure' } };
 
@@ -39,6 +40,66 @@ const OrderRescheduling = () => {
     const getSelectedRowData = () => {
 
         const selectedData = refGraph1.current?.api.getSelectedRows();
+
+        //  logic to get the unselected row and set the default date to it
+
+        // const unselectedRows: any = [];
+        // const lastUpdateSelectedRows: any = [];
+
+        // rowData.forEach((e) => {
+        //     selectedRowData.forEach((el) => {
+        //         if (e.oid === el.oid) {
+        //             lastUpdateSelectedRows.push(e);
+        //         }
+        //     })
+        // })
+
+        // lastUpdateSelectedRows.forEach((e: any) => {
+        //     let isThere = false;
+        //     selectedData?.forEach((el) => {
+        //         if (e.oid === el.oid) {
+        //             isThere = true;
+        //         }
+        //     }
+        //     )
+
+
+        //     if (!isThere) {
+        //         unselectedRows.push(e);
+        //     }
+
+        // })
+
+
+        // console.log("unselected Row...", unselectedRows)
+
+        // unselectedRows.forEach((e: any) => {
+        //     rowData.forEach((el: any) => {
+        //         if (el.oid === e.oid) {
+        //             e.oid = el.oid;
+        //         }
+        //     })
+        // })
+
+
+        // unselectedRows.forEach((unSec: any) => {
+
+        //     refGraph1?.current?.api.forEachNode((node) => {
+        //         if (node.data && node.data.oid) {
+
+        //             if (node.data.oid === unSec.oid) {
+        //                 console.log("yes")
+        //                 node.data.dd = unSec.dd;
+        //             }
+        //         }
+        //     });
+
+        // })
+
+        // setRowData(rowData);
+
+        /////////////////
+
         if (selectedData) {
             let mergedData = [...selectedRowData]; // Start with the existing selected data
 
@@ -468,7 +529,7 @@ const OrderRescheduling = () => {
 
                                 <VFPagination
                                     selectedRows={0}
-                                    rowsPerPage={10}
+                                    rowsPerPage={pagination.mtoPageSize}
                                     totalRows={currData ? currData.data.data.count : 0}
                                     currentPage={currentPage}
                                     handleChangePage={handlePageChangeCumulative}

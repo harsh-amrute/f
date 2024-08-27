@@ -38,11 +38,13 @@ const DueDateCellRenderer = (params: any) => {
     //.setDate(d.getDate() - 1)
     const [datetime] = useState(moment(d).format(format2));
 
+
     return (
         <>
 
             <input type="date"
                 className='date-pick'
+                id='dateField'
                 data-testid="datepicker"
                 style={{
                     top: '141px',

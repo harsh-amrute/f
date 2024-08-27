@@ -2,6 +2,7 @@ import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import { VFWrapper } from './styles';
 import { SaveBtnWrapper, SaveBtn } from '../../Poogi/ReasonOrderChange/styles';
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
+import { pagination } from '../../Common/Enum';
 interface GridProps {
     agGridProps: any
     columDef: any
@@ -23,7 +24,7 @@ const GridView = ({
     handlePageChange,
     totalRow,
     currentPage,
-    saveBtn=true }: GridProps) => {
+    saveBtn = true }: GridProps) => {
     return (
         <>
             <VFWrapper>
@@ -55,7 +56,7 @@ const GridView = ({
             </VFWrapper>
             <VFPagination
                 selectedRows={0}
-                rowsPerPage={10}
+                rowsPerPage={pagination.mtoPageSize}
                 totalRows={totalRow}
                 currentPage={currentPage}
                 handleChangePage={handlePageChange}

@@ -35,7 +35,7 @@ const TopFailureReasons = () => {
       cellRenderer: ColorCellRenderer,
     },
   }
-  
+
   const getGraphData = async (isGraph: any) => {
     try {
       const response = await getTopFailureData(isGraph);
@@ -48,7 +48,7 @@ const TopFailureReasons = () => {
   }
 
   useEffect(() => {
-    getGraphData({graphflag: 1});
+    getGraphData({ graphflag: 1 });
   }, []);
 
   useEffect(() => {
@@ -66,20 +66,20 @@ const TopFailureReasons = () => {
         isLoading && <OverlayLoader />
       }
       <MTOActionToolBar
-        isGridView={isGridView}
-        setIsGridView={setIsGridView}
-        isChartGridToggle
+        // isGridView={isGridView}
+        // setIsGridView={setIsGridView}
+        // isChartGridToggle
         isAddFilterButton
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>
         {isGridView ? (
-          <GridView 
-              getData={getTopFailureData} 
-              reportName={reportName} 
-              isLoading={isLoading} 
-              isError={isError} 
-              isSuccess={isSuccess} 
-              colDefCustomizations={colDefCustomizations}
+          <GridView
+            getData={getTopFailureData}
+            reportName={reportName}
+            isLoading={isLoading}
+            isError={isError}
+            isSuccess={isSuccess}
+            colDefCustomizations={colDefCustomizations}
           />
         ) : (
           <BTRTableWrapper style={{ height: screenHeight - 190, margin: "0" }}>

@@ -3,6 +3,7 @@ import useMaterialSO from './useMaterialSO';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import OverlayLoader from '../../Common/Loader';
+import { pagination } from '../../Common/Enum';
 
 interface MaterialSODetailedProps {
     parameterData: any
@@ -41,7 +42,7 @@ const MaterialSODetailed = ({ parameterData }: MaterialSODetailedProps) => {
                     tooltipShowDelay={0}
                     tooltipMouseTrack={true}
                     // height={'780px'}
-                    paginationPageSize={10}
+                    paginationPageSize={pagination.mtoPageSize}
                     pagination={false}
                     statusBar={{
                         statusPanels: [
@@ -51,7 +52,7 @@ const MaterialSODetailed = ({ parameterData }: MaterialSODetailedProps) => {
                 />
                 <VFPagination
                     selectedRows={0}
-                    rowsPerPage={10}
+                    rowsPerPage={pagination.mtoPageSize}
                     totalRows={rowDataCount}
                     currentPage={currentPage}
                     handleChangePage={handlePageChange}

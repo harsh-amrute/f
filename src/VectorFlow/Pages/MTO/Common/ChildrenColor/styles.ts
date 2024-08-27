@@ -11,6 +11,7 @@ const determineColor = (value: any) => {
     if (value === "Green") return 'Green';
     if (value === "Orange") return 'Orange';
     if (value === "Blue") return 'Blue';
+    if (value === "Purple") return 'Purple'
 };
 export const ChildrenColorCellRenderer = styled.div<{ value: string }>`
 display: flex;

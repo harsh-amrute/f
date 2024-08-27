@@ -199,7 +199,8 @@ const ExpeditingMTA = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
 
 
                     </SCChartSliderContainer>
-                    <SCChartHeaderContainer>
+                    <SCChartHeaderContainer style={{ background: 'transparent' }}>
+
                         <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
                             <VFInfoToolTip infoList={graph1} />
                         </div>

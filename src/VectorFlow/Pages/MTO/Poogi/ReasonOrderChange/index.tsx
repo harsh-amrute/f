@@ -18,6 +18,7 @@ import { ColorsMTO } from '../../Common/Colors';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import BPPRenderer from '../../Common/BPPRenderer';
 import OverlayLoader from '../../Common/Loader';
+import { pagination } from '../../Common/Enum';
 
 type MyObject = {
     ok: string;
@@ -294,7 +295,7 @@ const ReasonForDelayOrder = () => {
                     />
                     <VFPagination
                         selectedRows={0}
-                        rowsPerPage={10}
+                        rowsPerPage={pagination.mtoPageSize}
                         totalRows={rowDataCount}
                         currentPage={currentPage}
                         handleChangePage={handlePageChange}

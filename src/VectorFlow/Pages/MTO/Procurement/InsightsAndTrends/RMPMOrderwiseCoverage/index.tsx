@@ -15,6 +15,7 @@ import { getColumnDefinations } from '../../../../../../helpers/utils'
 import ColorCellRenderer from '../../../Common/ColorCellRenderer'
 import ColorRangeCellRenderer from '../../../Common/ColorRangeCellRenderer'
 import FullkitCellRenderer from '../../../Common/FullkitCellRenderer'
+import { pagination } from '../../../Common/Enum'
 
 
 const RMPMOrderwiseCoverage = () => {
@@ -70,6 +71,8 @@ const RMPMOrderwiseCoverage = () => {
             enableRangeSelection: true,
 
             pagination: true,
+            paginationAutoPageSize: false,
+            paginationPageSize: pagination.mtoPageSize,
 
             defaultColDef: {
                 filter: "agTextColumnFilter",

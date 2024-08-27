@@ -17,6 +17,7 @@ import moment from "moment";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import VFPagination from "../../Common/VFPagination";
 import { TableWrapper } from "./styles";
+import { pagination } from "../../Common/Enum";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -127,9 +128,9 @@ const useMaterialReq = (forDate?: string) => {
 
         },
         "net_r": {
-            valueFormatter: (params:any) => Math.max(0, Number(params.data.net_r))
+            valueFormatter: (params: any) => Math.max(0, Number(params.data.net_r))
         }
-        
+
     }
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
     const ShortageColumns = getColumnDefinations(HeaderData, customHeader)
@@ -266,9 +267,10 @@ const useMaterialReq = (forDate?: string) => {
                 defaultColDef: {
                     floatingFilterComponentParams: { suppressFilterButton: true },
                     floatingFilter: true,
+                    suppressMenu: true,
                     filter: "agMultiColumnFilter",
                     cellDataType: false,
-                    resizable: false,
+                    resizable: true,
                     minWidth: 140,
                     wrapHeaderText: true,
                     autoHeaderHeight: true,
@@ -297,7 +299,7 @@ const useMaterialReq = (forDate?: string) => {
             defaultExcelExportParams: defaultExcelExportParams,
             excelStyles: excelStyles,
             sideBar: sideBar,
-            
+
             onCellEditingStopped(event: any) {
                 const field = event.colDef.field;
                 const newValue = event.newValue;
@@ -319,7 +321,7 @@ const useMaterialReq = (forDate?: string) => {
                 });
                 gridRef.current?.api.refreshCells({ force: true });
             }
-            
+
         };
         switch (currentTab.id) {
             case "sdv":
@@ -347,7 +349,7 @@ const useMaterialReq = (forDate?: string) => {
                             />
                             <VFPagination
                                 selectedRows={0}
-                                rowsPerPage={10}
+                                rowsPerPage={pagination.mtoPageSize}
                                 totalRows={dayWiseRecordCount}
                                 currentPage={currentPage}
                                 handleChangePage={handlePageChangeDayWise}
@@ -379,7 +381,7 @@ const useMaterialReq = (forDate?: string) => {
                             />
                             <VFPagination
                                 selectedRows={0}
-                                rowsPerPage={10}
+                                rowsPerPage={pagination.mtoPageSize}
                                 totalRows={cumulativeRecordCount}
                                 currentPage={currentCumPage}
                                 handleChangePage={handlePageChangeCumulative}

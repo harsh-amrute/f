@@ -21,7 +21,7 @@ const MaterialRequirement = () => {
 
                 />
             </div>
-            <MaterialRequirementComponent currentTab={currentTab} renderView={renderView} toggleCurrentTab={toggleCurrentTab} date={date}/>
+            <MaterialRequirementComponent currentTab={currentTab} renderView={renderView} toggleCurrentTab={toggleCurrentTab} date={date} />
         </>
     )
 }

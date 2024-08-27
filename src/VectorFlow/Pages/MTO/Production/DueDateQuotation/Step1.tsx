@@ -3,6 +3,7 @@ import _ from 'lodash';
 import React, { forwardRef, useEffect } from 'react'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import { pagination } from '../../Common/Enum';
 
 interface IStep1Props {
   gridOptions: GridOptions,
@@ -73,7 +74,7 @@ const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelected
       <VFPagination
         selectedRows={0}
         totalRows={totalRows.current}
-        rowsPerPage={10}
+        rowsPerPage={pagination.mtoPageSize}
         currentPage={currentPage}
         handleChangePage={handlePageChange}
       />

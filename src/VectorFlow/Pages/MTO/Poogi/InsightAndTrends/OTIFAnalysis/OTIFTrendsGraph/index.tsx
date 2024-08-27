@@ -7,15 +7,19 @@ import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VF
 import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { TooltipRenderer } from "../OTIFCommon";
+import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
+import moment from "moment";
 
 const OTIFTrendsGraph = (props: any) => {
-  const { graphData } =props; 
+  const { graphData } = props;
   const [startDate, setStartDate] = useState('-');
   const [endDate, setEndDate] = useState('-');
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [rawData, setRawData] = useState([]);
+  const { data: apiResponseData, isSuccess } = useGetDate();
+
 
   function createSeriesData(val: number) {
     const seriesData: any = [];
@@ -130,7 +134,8 @@ const OTIFTrendsGraph = (props: any) => {
           }}
         >
           <span style={{ fontWeight: 500 }}>{`${Poogi.otif}  `}</span>
-          <span style={{ fontWeight: 300 }}>{`(${startDate} - ${endDate})`}</span>
+          <span style={{ fontWeight: 350 }}>{`(${moment(apiResponseData?.data.data || '-').subtract(90, 'days').format('D MMM YYYY')} - ${moment(apiResponseData?.data.data || '-').format('D MMM YYYY')})`}</span>
+
         </div>
         <div style={{ display: "flex" }}>
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
@@ -164,13 +169,13 @@ const OTIFTrendsGraph = (props: any) => {
     );
   };
 
-  useEffect(()=>{
-    if(graphData){
+  useEffect(() => {
+    if (graphData) {
       setStartDate(graphData.start);
       setEndDate(graphData.end);
       setRawData(graphData.data);
     }
-  },[graphData])
+  }, [graphData])
 
   return (
     <div style={{ height: "100%", display: "flex", justifyContent: "left", marginRight: '8px', paddingBottom: '10px' }}>
