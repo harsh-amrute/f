@@ -7,7 +7,7 @@ import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } 
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';
 import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
-const ExpeditingMTO = ({ isMTO, date }: { isMTO: boolean, date: string }) => {
+const ExpeditingMTO = ({  date }: { isMTO: boolean, date: string }) => {
 
     const { mutateAsync: getRMPMExpedition } = useGetRMExpeditingData()
     const [horizonDays, setHorizondays] = useState(14);
