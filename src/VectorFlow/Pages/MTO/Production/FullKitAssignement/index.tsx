@@ -146,7 +146,6 @@ const FullKitAssignment = () => {
       const ccrs = row.ccr_ids;
       const tags = {overloaded: 0, underloaded: 0, balanced: 0}
       const oifkt = ((row.fka ?? 0)/(row.oq ?? 1)) * 100;
-      console.log(oifkt)
       ccrs?.forEach((ccrId: any)=>{
         const isOverloaded = graphdata["overloaded"].find((loadData: any)=> findTag(loadData, ccrId));
 
@@ -525,7 +524,6 @@ const FullKitAssignment = () => {
   const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_FullKit_Assignment);
 
   const onApplyFilter = (filter:any)=>{
-    console.log(filter)
     setIsFilterOpen(false)
   }
   const onAddFilter = ()=>{

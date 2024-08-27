@@ -203,8 +203,6 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
         const myCCRDetails: any = [];
 
         routes.forEach((e: any, i) => {
-            console.log("e", e)
-            console.log("lineCCR", lineCcr)
             const perCCRDetail = {
                 "ccrid": e[1].value,
                 "ccrgrp": e[0].value,
