@@ -31,6 +31,7 @@ describe('OrderRescheduling', () => {
     it('should get orders for DDQ for Scheduled Order', async () => {
         mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         const response = await DueDateQuotationService.getOrdersForDDQ(1, false);
+        console.log(response)
         expect(response.status).toBe(200);
     });
  
@@ -105,6 +106,12 @@ describe('OrderRescheduling', () => {
         const response = await DueDateQuotationService.updateScheduleOrders({ orders: [""] });
         expect(response.status).toBe(200);
     });
- 
+
+    it('should getDBRsettingsData', async () => {
+        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await DueDateQuotationService.getDBRsettingsData();
+        expect(response.status).toBe(200);
+    });
+
 });
  
