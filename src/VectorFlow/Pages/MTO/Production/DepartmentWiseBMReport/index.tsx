@@ -32,6 +32,7 @@ import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/C
 import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
+import { formatFilterJSON } from '~/helpers/utils';
 
 interface ApiResponse {
     cc: string;
@@ -889,7 +890,8 @@ const DptWiseBMReport = () => {
 
     const getUpdatedFilteredData = async () => {
         try {
-            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked, 'curr': currentPage, appliedFilters });
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked, 'curr': currentPage, appliedFilters: formatedFilters });
             setGridData(gridData?.data?.data?.results)
             setGridDataCount(gridData?.data?.data?.count)
         }
@@ -897,6 +899,10 @@ const DptWiseBMReport = () => {
             console.log('e');
         }
     }
+
+    useEffect(()=>{
+        setAppliedFilters(currFilter);
+    },[currFilter])
     
     useEffect(() => {
         getUpdatedFilteredData()
