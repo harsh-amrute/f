@@ -40,7 +40,7 @@ type RowData = {
 
 
 const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderElapsedGridProps) => {
-    // console.log('OrderElapsedGrid', selectedOrderCount)
+    console.log('data', data)
     //const OrderElapsedGrid: any = [];
     //OrderElapsedGrid.push([...data])
     // const [orderElapsedGridData] = useState<any>([...data]);
@@ -394,7 +394,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
         const colDefs: any = [
             {
                 headerName: "",
-                field: "time",
+                field: "dept",
                 colId: "time",
             },
         ];

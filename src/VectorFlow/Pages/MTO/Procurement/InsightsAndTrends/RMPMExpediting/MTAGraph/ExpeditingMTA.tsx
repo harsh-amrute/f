@@ -229,9 +229,9 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
                         <VFRangeSlider
                             style={{ paddingTop: '13px' }}
                             showTriangle={false}
-                            min={0}
+                            min={1}
                             max={90}
-                            milestones={[0, 90]}
+                            milestones={[0, 30, 60, 90]}
                             strictMode={false}
                             width={200}
                             defaultValue={horizonDays}
