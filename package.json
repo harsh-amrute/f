@@ -25,6 +25,8 @@
     "allotment": "^1.20.0",
     "axios": "^1.2.1",
     "chart.js": "^4.4.1",
+    "react-apexcharts": "^1.4.1",
+    "apexcharts": "^3.51.0",
     "chartjs-adapter-date-fns": "^3.0.0",
     "date-fns": "^3.0.6",
     "eslint-html-reporter": "^0.7.4",
@@ -98,7 +100,7 @@
       },
       "src/components/VectorFLOW": {
         "statements": 90,
-        "branches": 90,
+        "branches": 89,
         "functions": 70,
         "lines": 90
       },

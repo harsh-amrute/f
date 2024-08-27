@@ -1,7 +1,6 @@
 import { useRef } from "react"
-import { VFTableWrapper } from "../../../../../../../components/VectorFLOW/commons/VFTable/styles"
-import VFTable from "../../../../../../../components/VectorFLOW/commons/VFTable"
-
+import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
+import { TableWrapper } from "../styles"
 
 interface GridProps {
     agGridProps: any
@@ -9,42 +8,36 @@ interface GridProps {
     ShortageDatas: any
 }
 
-const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps) => {
+const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps | any) => {
 
     const gridRef = useRef();
 
-
-
-
-
-
     return (
-        <>
-            <VFTableWrapper>
+
+        <TableWrapper>
 
 
-                <VFTable
 
-                    {...agGridProps}
-                    columnDefs={ShortageColumns}
-                    rowData={ShortageDatas}
-                    tooltipHideDelay={100000}
-                    tooltipShowDelay={0}
-                    tooltipMouseTrack={true}
-                    height={"790px"}
-                    ref={gridRef}
-                    statusBar={{
-                        statusPanels: [
-                            { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                        ]
-                    }}
+            <VFTable
 
-
-                />
-            </VFTableWrapper>
+                {...agGridProps}
+                columnDefs={ShortageColumns}
+                rowData={ShortageDatas}
+                tooltipHideDelay={100000}
+                tooltipShowDelay={0}
+                tooltipMouseTrack={true}
+                ref={gridRef}
+                statusBar={{
+                    statusPanels: [
+                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                    ]
+                }}
 
 
-        </>
+            />
+        </TableWrapper>
+
+
     );
 }
 

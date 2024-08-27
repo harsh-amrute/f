@@ -15,7 +15,7 @@ export const BackgroundCover = styled.div`
 
 export const ModalWrapper = styled.div`
     overflow: auto;
-    height : 95vh;
+    height : 78vh;
     width: 690px;
 `;
 
@@ -172,6 +172,7 @@ export const Option = styled.div`
     font-size: 16px;
     letter-spacing: 0px;
     color:#313131;
+    
 `;
 
 export const AccordianContainer = styled.div`

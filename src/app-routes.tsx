@@ -57,7 +57,12 @@ import ResourceUtilization from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/R
 import FOLSummary from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FOLSummary'
 import DynamicReleaseManagement from './VectorFlow/Pages/MTO/Production/DynamicReleaseManagement'
 import ReasonForDelayOrder from './VectorFlow/Pages/MTO/Poogi/ReasonOrderChange/index'
+import TopFailureReasons from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/TopFailureReason'
 import OTAndIFAnalysis from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/OTAndIFAnalysis'
+import ElapsedTime from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/ElapsedTime'
+import LeadTime from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/LeadTime'
+import TrendsOfFailureReason from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/TrendsOfFailureReason'
+import OverallBmReport from './VectorFlow/Pages/MTO/Production/OverallBMReport'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -128,8 +133,34 @@ const lazyLoad = (children: React.ReactNode) => {
     '/poogi/insight-and-trends/otif-analysis',
     '/production-planning-scheduling/insights-and-trends/fol-summary',
     '/production-planning-scheduling/dynamic-release-mangement',
+    '/poogi/insight-and-trends/ot-and-if-analysis',
+    '/production-planning-scheduling/insights-and-trends/elapsed-time',
     '/poogi/reasons-for-delayed-orders',
-    '/poogi/insight-and-trends/ot-and-if-analysis'
+    '/poogi/insight-and-trends/ot-and-if-analysis',
+    '/poogi/insight-and-trends/top-failure-reasons',
+    '/poogi/insight-and-trends/trend-of-failure-reason',
+    '/poogi/insight-and-trends/lead-time',
+    '/production-planning-scheduling/overall-bm-report',
+    /**Delivery and Intelligence hub */
+    '/manufacturing-intelligence-hub/delivery-performance/bm-trends',
+    '/manufacturing-intelligence-hub/delivery-performance/otif-analysis',
+    '/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
+    '/manufacturing-intelligence-hub/delivery-performance/lead-time',
+
+    '/manufacturing-intelligence-hub/congestion-analysis/elapsed-time',
+    '/manufacturing-intelligence-hub/congestion-analysis/orders-at-risk',
+    '/manufacturing-intelligence-hub/congestion-analysis/order-balance',
+
+    '/manufacturing-intelligence-hub/forward-exceution/fol-summary',
+    '/manufacturing-intelligence-hub/forward-exceution/stpl-and-fullkit',
+    '/manufacturing-intelligence-hub/forward-exceution/day-wise-coverage',
+    '/manufacturing-intelligence-hub/forward-exceution/rm-pm-order-wise-coverage',
+    '/manufacturing-intelligence-hub/forward-exceution/expetiting-rm-supplier',
+    '/manufacturing-intelligence-hub/forward-exceution/rm-pm-buffer-trend',
+
+    '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
+    '/manufacturing-intelligence-hub/improvement-areas/trends-failure-reasons',
+    '/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -753,6 +784,17 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
+      path: '/production-planning-scheduling/insights-and-trends/elapsed-time',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ElapsedTime />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
       path: '/poogi/insight-and-trends/ot-and-if-analysis',
       element: <AppLayout />,
       children: [
@@ -762,7 +804,212 @@ export const initRoutes = (): RouteObject[] => {
         },
         ...getStoreTransferModuleRoutes()
       ]
+    },
+    {
+      path: '/poogi/insight-and-trends/top-failure-reasons',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TopFailureReasons />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/insight-and-trends/trend-of-failure-reason',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TrendsOfFailureReason />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/insight-and-trends/lead-time',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<LeadTime />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/overall-bm-report',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OverallBmReport />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/delivery-performance/bm-trends',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<BMTrends />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/delivery-performance/otif-analysis',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OTIFAnalysis />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OTAndIFAnalysis />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/delivery-performance/lead-time',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<LeadTime />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/congestion-analysis/elapsed-time',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ElapsedTime />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/congestion-analysis/orders-at-risk',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OrderAtRisk />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/congestion-analysis/order-balance',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OrderBalance />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/forward-exceution/fol-summary',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<FOLSummary />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/forward-exceution/stpl-and-fullkit',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<STPLAndFullKits />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/forward-exceution/day-wise-coverage',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DayWiseCoverage />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/forward-exceution/rm-pm-order-wise-coverage',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMPMOrderwiseCoverage />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/forward-exceution/expetiting-rm-supplier',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMExpeditionSuppliers />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/forward-exceution/rm-pm-buffer-trend',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMPMBufferTrends />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TopFailureReasons />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/improvement-areas/trends-failure-reasons',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TrendsOfFailureReason />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ResourceUtilization />)
+        }
+      ]
     }
+
 
   ]
 }

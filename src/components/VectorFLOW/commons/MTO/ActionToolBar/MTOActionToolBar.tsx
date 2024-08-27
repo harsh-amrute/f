@@ -29,17 +29,13 @@ import {
     DateIcon,
     DateTitle,
     DateValue,
-    SCChartSliderContainer,
-    /**Date component style end */
-    ChartHeaderRadioGroup,
-    RadioGroup,
-    SelectGroup,
+    VFSelectedFilterLabel,
 } from './styles';
 import moment from 'moment';
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
 import { format } from 'date-fns';
-import VFRangeSlider from '../../VFRangeSlider';
-import CustomSelect from '../../../../../VectorFlow/Pages/MTO/Production/FullKitAssignement/Select';
+import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
+import { getSelectedFilters } from '../../../../../helpers/utils';
 
 type filterType = {
     label: string,
@@ -59,11 +55,7 @@ interface MTOActionToolBarProps {
     handleGoBack?: () => void;
     themeUi?: string;
     quickFilter?: ReactElement | null
-    horizonDays?: number;
-    setHorizonDays?: (e: number) => void;
-    handleHorizonSubmit?: () => void;
-    selectedGraphState?: any;
-    updateGraphState?: (id: number, option: string) => void;
+    WIPFilter?: ReactElement | null
 
     //// new props
     isGoBackButton?: boolean
@@ -72,6 +64,13 @@ interface MTOActionToolBarProps {
     isAddFilterButton?: boolean
     isExcelExport?: boolean
     isChartGridToggle?: boolean
+    isWIPCheckBox?: boolean
+    isFilterOpen?: boolean
+    toggleFilter?: (state: boolean) => void
+    multiFilter?: any
+    setMultiFilter?: any
+    onApplyFilter?: (params: any) => void;
+    onFilterRemove?: any;
     isReleaseButton?: boolean
     onOrderRelease?: () => void;
     onCheckBoxToggle?: any;
@@ -81,7 +80,6 @@ interface MTOActionToolBarProps {
 }
 
 const MTOActionToolBar = ({
-    comp,
     onDateChange,
     isGridView,
     setIsGridView,
@@ -92,24 +90,30 @@ const MTOActionToolBar = ({
     date,
     handleGoBack,
     themeUi,
-    horizonDays,
-    setHorizonDays,
-    handleHorizonSubmit,
-    updateGraphState,
-    selectedGraphState,
     isGoBackButton,
     isReleaseDate,
     isAsOnDate,
     isAddFilterButton,
     isExcelExport,
     isChartGridToggle,
+    // isWIPCheckBox,
+    isFilterOpen,
+    toggleFilter,
+    multiFilter,
+    setMultiFilter,
+    onApplyFilter,
+    onFilterRemove,
     isReleaseButton,
     onOrderRelease,
     quickFilter,
     onCheckBoxToggle,
     isReleaseButtonDisabled,
-    utilityBtns
+    utilityBtns,
+    WIPFilter
 }: MTOActionToolBarProps) => {
+
+
+    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
 
     const handleRemoveFilter = (category: string, name: string) => {
         if (removeFilters) {
@@ -120,6 +124,8 @@ const MTOActionToolBar = ({
     const format2 = "MM-dd-yyyy"
     const d = new Date();
     const datetime = moment(d).format(format2);
+
+    const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
 
     return (
         <SCTaskBarContainer className='toolbar-container'>
@@ -277,144 +283,93 @@ const MTOActionToolBar = ({
                             {format(new Date(), format2)}
                         </DateValue>
                     </DateWrapper>}
-                {/**Selected Filter start */}
-                {selectedFilters && selectedFilters?.length > 0 && <VFSelectedFiltersWrapper>
+                {/**Temp Enquiry response Filter start */}
+                {selectedFilters && selectedFilters?.length > 0 && <VFSelectedFiltersWrapper style={{ width: '700px' }}>
                     <VFSelectedFiltersPlaceHolder>
                         Selected Filters
                     </VFSelectedFiltersPlaceHolder>
-                    <VFFilterScrollBar>
-
+                    <VFFilterScrollBar >
                         {
-                            selectedFilters?.map((filter: filterType) => (
-                                <VFSelectedFiltersChip key={filter.label}>
-                                    <VFSelectedFiltersFilterLabel>
-                                        {filter?.label}:
-                                    </VFSelectedFiltersFilterLabel>
-                                    {filter?.values?.map((value: string) => (
-                                        <div key={value}>
-                                            <VFSelectedFiltersFilterContent>
-                                                <VFSelectedFiltersFilterValue>
-                                                    <p style={{ margin: '0px 5px 0px 5px' }}> {value}</p>
-                                                </VFSelectedFiltersFilterValue>
-                                                <VFSelectedFiltersFilterCloseIcon
-                                                    onClick={() => handleRemoveFilter(filter?.label, value)}
-                                                    src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
-                                                />
-                                                {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
-                                            </VFSelectedFiltersFilterContent>
-                                        </div>
-                                    ))}
-                                </VFSelectedFiltersChip>
-                            ))}
+                            selectedFilters?.map((filter: filterType) => {
+                                if (filter.values.length > 0) {
+                                    return (
+                                        <VFSelectedFiltersChip key={filter.label}>
+                                            <VFSelectedFiltersFilterLabel>
+                                                {filter?.label}:
+                                            </VFSelectedFiltersFilterLabel>
+                                            {filter?.values?.map((value: string) => (
+                                                <div key={value}>
+                                                    <VFSelectedFiltersFilterContent>
+                                                        <VFSelectedFiltersFilterValue>
+                                                            <p style={{ margin: '0px 5px 0px 5px' }}> {value}</p>
+                                                        </VFSelectedFiltersFilterValue>
+                                                        <VFSelectedFiltersFilterCloseIcon
+                                                            onClick={() => handleRemoveFilter(filter?.label, value)}
+                                                            src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
+                                                        />
+                                                        {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
+                                                    </VFSelectedFiltersFilterContent>
+                                                </div>
+                                            )
+                                            )}
+                                        </VFSelectedFiltersChip>
+                                    )
+                                }
+                            })
+                        }
                     </VFFilterScrollBar>
                 </VFSelectedFiltersWrapper>}
                 {/**Selected Filter ends*/}
 
-                
+                {/**New Selected Filter start */}
+                {newFilters && Object.keys(newFilters)?.length > 0 && <VFSelectedFiltersWrapper>
+                    <VFSelectedFiltersPlaceHolder>
+                        Selected Filters
+                    </VFSelectedFiltersPlaceHolder>
+                    <VFFilterScrollBar>
+                        {
+                            Object.keys(newFilters)?.map((key: any) => (
+                                <VFSelectedFiltersChip key={key}>
+                                    <VFSelectedFiltersFilterLabel>
+                                        {newFilters[key]?.name} <SCFilterVerticalDivider />
+                                    </VFSelectedFiltersFilterLabel>
+                                    {newFilters[key]?.filters?.map((filter: any, index: number) => (
+                                        (filter?.value?.length) > 0 &&
+                                        <>
+                                            <VFSelectedFilterLabel>
+                                                {filter?.label}:
+                                            </VFSelectedFilterLabel>
+                                            {filter?.value?.map((f: any) => (
+                                                <div key={f.value}>
+                                                    <VFSelectedFiltersFilterContent>
+                                                        <VFSelectedFiltersFilterValue>
+                                                            <p style={{ margin: '0px 5px 0px 5px', fontFamily: '500' }}> {f.label}</p>
+                                                        </VFSelectedFiltersFilterValue>
+                                                        <VFSelectedFiltersFilterCloseIcon
+                                                            onClick={() => {
+                                                                const filtervalue = f.id || f.value;
+                                                                onFilterRemove(key, filter.filterId, filtervalue)
+                                                            }}
+                                                            src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
+                                                        />
+                                                        {/* {filter?.value?.length > 1 && <SCFilterVerticalDivider />} */}
+                                                    </VFSelectedFiltersFilterContent>
+                                                </div>
+                                            ))}
+                                            {index !== newFilters[key]?.filters?.length - 1 && <SCFilterVerticalDivider />}
+                                        </>
+                                    ))}
+                                </VFSelectedFiltersChip>
+                            ))
+                        }
+                    </VFFilterScrollBar>
+                </VFSelectedFiltersWrapper>}
+                {/**Selected Filter ends*/}
 
-                {(comp === 'resourceUtilization') &&
-                    <div data-testid='resourceUtilization' style={{ display: ' flex', alignItems: 'flex-start', gap: '20px' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-                            <div style={{
-                                fontStyle: "normal",
-                                fontVariant: "normal",
-                                fontWeight: 300,
-                                fontSize: 14,
-                                fontFamily: "Roboto",
-                                width: 'max-content'
-                            }}
-                            >
-                                Please choose an option:
-                            </div>
-                            <RadioGroup>
-                                <ChartHeaderRadioGroup style={{ gap: '4px' }} theme={themeUi}>
-                                    <input type="radio" checked={selectedGraphState === 'wipLimit'} value="wipLimit" name="wipLimit" id="wipLimit" data-testid="wip-limit-radio" onChange={() => updateGraphState && updateGraphState(1, 'wipLimit')} style={{ margin: 0, zoom: 1.8, cursor: 'pointer' }} />
-                                    <label htmlFor="parent" style={{ fontSize: '14px', fontWeight: 500 }}>WIP Limit</label>
-                                </ChartHeaderRadioGroup>
-                                <ChartHeaderRadioGroup style={{ marginLeft: '10px', gap: '4px' }} theme={themeUi}>
-                                    <input type="radio" checked={selectedGraphState === 'utilization'} value="utilization" name="utilization" id="utilization" data-testid="utilization-radio" onChange={() => updateGraphState && updateGraphState(2, 'utilization')} style={{ margin: 0, zoom: 1.8, cursor: 'pointer' }} />
-                                    <label htmlFor="child" style={{ fontSize: '14px', fontWeight: 500 }}>Utilization</label>
-                                </ChartHeaderRadioGroup>
-                            </RadioGroup>
-                        </div>
-                        <div style={{ marginTop: '30px' }}>
-                            <SCVerticalDividerGray />
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                            <div
-                                style={{
-                                    fontStyle: "normal",
-                                    fontVariant: "normal",
-                                    fontWeight: 300,
-                                    fontSize: 14,
-                                    fontFamily: "Roboto",
-                                }}
-                                data-testid="select-plnt"
-                            >
-                                Select Plant
-                            </div>
-                            <SelectGroup>
-                                <CustomSelect placeholder="Select Plant" selected={false} options={[]} optionsWidth={"100%"} />
-                            </SelectGroup>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                            <div
-                                style={{
-                                    fontStyle: "normal",
-                                    fontVariant: "normal",
-                                    fontWeight: 300,
-                                    fontSize: 14,
-                                    fontFamily: "Roboto",
-                                }}
-                                data-testid="select-dept"
-                            >
-                                Select Department
-                            </div>
-                            <SelectGroup>
-                                <CustomSelect placeholder="Select Department" selected={false} options={[]} optionsWidth={"100%"} />
-                            </SelectGroup>
-                        </div>
-                        <div style={{ marginTop: '30px' }}>
-                            <SCVerticalDividerGray />
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <div style={{
-                                fontStyle: "normal",
-                                fontVariant: "normal",
-                                fontWeight: 300,
-                                fontSize: 14,
-                                fontFamily: "Roboto",
-                            }}
-                            >
-                                Select Horizon(in Days):
-                            </div>
-                            <SCChartSliderContainer>
-                                <VFRangeSlider
-                                    showTriangle={false}
-                                    min={1}
-                                    max={90}
-                                    milestones={[0, 30, 60, 90]}
-                                    strictMode={false}
-                                    width={250}
-                                    defaultValue={horizonDays || 0}
-                                    handleChange={(e) => setHorizonDays && setHorizonDays(e)}
-                                    labelValueFormatter={(value: number) => value > 1 ? `${value}` : `${value}`}
-                                />
-                                <div>
-                                    {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
-                                    Submit
-                                </VFButtonOutline> */}
-                                    <img
-                                        data-testid='horizon-submit'
-                                        style={{ cursor: 'pointer' }}
-                                        src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
-                                        height={50}
-                                        width={60}
-                                        onClick={() => handleHorizonSubmit && handleHorizonSubmit()}
-                                    />
-                                </div>
-                            </SCChartSliderContainer>
-                        </div>
+                {
+                    WIPFilter &&
+                    <div>
+                        {WIPFilter}
                     </div>
                 }
 
@@ -425,7 +380,15 @@ const MTOActionToolBar = ({
                         {utilityBtns}
                 </div>}
                 {isAddFilterButton && (onAddFilter ?
-                    <VFButton onClick={() => onAddFilter()} themeUi={themeUi || ''} disabled={false} width={110}>{selectedFilters && selectedFilters?.length > 0 ? <p style={{ padding: '2px' }}>Edit Filter</p> : <p style={{ padding: '2px' }}>+ Add Filter</p>}</VFButton>
+                    <VFButton onClick={() => onAddFilter()}
+                        themeUi={themeUi || ''}
+                        disabled={false}
+                        width={110}
+                    >{(selectedFilters || newFilters) && (selectedFilters?.length || Object.keys(newFilters).length) ?
+                        <p style={{ padding: '2px' }}>Edit Filter</p>
+                        :
+                        <p style={{ padding: '2px' }}>+ Add Filter</p>}
+                    </VFButton>
                     :
                     <SCButton>
                         <p>+ Add Filter</p>
@@ -483,7 +446,16 @@ const MTOActionToolBar = ({
                     }
 
                 </>
-
+                {isFilterOpen && toggleFilter && onApplyFilter && setMultiFilter && multiFilter &&
+                    <VFCommonFilter
+                        onApplyFilter={onApplyFilter}
+                        onGoBack={() => toggleFilter(false)}
+                        multiFilter={multiFilter}
+                        setMultiFilter={setMultiFilter}
+                        isFilterOpen={isFilterOpen}
+                        setIsMfgSelected={setIsMfgSelected}
+                    />
+                }
 
             </SCCustomActionsContainer >
         </SCTaskBarContainer >

@@ -1,5 +1,5 @@
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useUserData } from '../../../../../context';
 import {
     NoDataAvailableContainer,
@@ -22,22 +22,40 @@ import {
 import { AgGridReactProps } from 'ag-grid-react';
 import { BPRViewTableGrid } from '../../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/styles';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import { orderStatus, orderStatusData, ElapsedTime, ElapsedTimeData, AgieingTime, ageingData } from './DeptWiseBMReportData'
+import { /*orderStatus, orderStatusData, ElapsedTime, ElapsedTimeData, */AgieingTime, ageingData } from './DeptWiseBMReportData'
 
 interface orderElapsedGridProps {
     isTrue?: boolean
+    data?: any
+    deptName: [],
+    selectedOrderCount?: string
 }
 
-const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
+
+
+type RowData = {
+    [key: string]: any;
+};
+
+
+
+const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderElapsedGridProps) => {
+    // console.log('OrderElapsedGrid', selectedOrderCount)
+    //const OrderElapsedGrid: any = [];
+    //OrderElapsedGrid.push([...data])
+    // const [orderElapsedGridData] = useState<any>([...data]);
 
     const { user } = useUserData()
-
     const themeUi = user.user.theme_ui
     const [isLeftPanelOrderStatusOpen, toggleLeftPanelOrderStatus] = useState<boolean>(false);
     const [isleftPanelElapsedTimeOpen, toggleLeftPanelElapsedTime] = useState<boolean>(false)
     const [isRightPanel, toggleRightPanel] = useState<boolean>(false);
-
     const [leftPanelActiveTab, SetLeftPanelActiveTab] = useState<string>('Order_Status')
+    const [ordeStatusColDef, setOrderStatusColdef] = useState<any>();
+    const [elapsedOrderColdef, setElapsedOrderColDef] = useState<any>();
+    const [rowData, setRowData] = useState<any>();
+    const [ElapsedTimeRowData, setElapsedTimeRowData] = useState<any>();
+
 
     const sideBar = useMemo(() => {
         return {
@@ -133,6 +151,323 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
         )
     }
 
+    /* const apiResponse: any[] = [
+         {
+             "cc": "ordid",
+             "cp": 1,
+             "hd": "Order ID",
+             "v": true,
+             "cla": "Centre",
+             "scc": 'ord_id',
+ 
+         },
+         {
+             "cc": "li",
+             "cp": 2,
+             "hd": "Line Item",
+             "v": true,
+             "cla": "Centre",
+             "scc": 'li',
+         },
+         {
+             "cc": "tq",
+             "cp": 3,
+             "hd": "Quantity",
+             "v": true,
+             "cla": "Centre",
+             "scc": 'tq',
+         },
+         {
+             "cc": "dept1",
+             "cp": 4,
+             "hd": "Department 1",
+             "v": true,
+             "cla": "Centre",
+             "scc": 'dept1',
+             "children": [
+                 {
+                     "cc": "woh",
+                     "cp": 4,
+                     "hd": "WIP on hand",
+                     "v": true,
+                     "cla": "Centre",
+                     "scc": 'woh',
+                 },
+                 {
+                     "cc": "mfg",
+                     "cp": 4,
+                     "hd": "Balance to manufacture",
+                     "v": true,
+                     "cla": "Centre",
+                     "scc": 'mfg',
+                 },
+             ]
+         },
+         {
+             "cc": "dept2",
+             "cp": 4,
+             "hd": "Department 2",
+             "v": true,
+             "cla": "Centre",
+             "scc": 'dept2',
+             "children": [
+                 {
+                     "cc": "woh",
+                     "cp": 4,
+                     "hd": "WIP on hand",
+                     "v": true,
+                     "cla": "Centre",
+                     "scc": 'woh',
+                 },
+                 {
+                     "cc": "mfg",
+                     "cp": 4,
+                     "hd": "Balance to manufacture",
+                     "v": true,
+                     "cla": "Centre",
+                     "scc": 'mfg',
+                 },
+             ]
+         },
+         {
+             "cc": "dept3",
+             "cp": 4,
+             "hd": "Department 3",
+             "v": true,
+             "cla": "Centre",
+             "scc": 'dept3',
+             "children": [
+                 {
+                     "cc": "woh",
+                     "cp": 4,
+                     "hd": "WIP on hand",
+                     "v": true,
+                     "cla": "Centre",
+                     "scc": 'woh',
+                 },
+                 {
+                     "cc": "btm",
+                     "cp": 4,
+                     "hd": "Balance to manufacture",
+                     "v": true,
+                     "cla": "Centre",
+                     "scc": 'mfg',
+                 },
+             ]
+         }
+     ]*/
+
+    const convertApiResponseToColDefs = (apiResponse: any[]) => {
+        // Helper function to recursively map API column to ColumnDef
+        const mapToColDef = (apiColumn: any) => {
+            const columnDef: any = {
+                headerName: apiColumn.hd,
+                field: apiColumn.scc,
+                colId: apiColumn.scc,
+            };
+
+            if (apiColumn.children && apiColumn.children.length > 0) {
+                columnDef.children = apiColumn.children.map(mapToColDef);
+            }
+
+            return columnDef;
+        };
+
+        // Map each API column entry to ColumnDef format
+        return apiResponse.map(mapToColDef);
+    };
+
+
+
+    const generateApiResponse = (departmentHeaders: string[]) => {
+        const apiResponse: any[] = [
+            {
+                cc: "ordid",
+                cp: 1,
+                hd: "Order ID",
+                v: true,
+                cla: "Centre",
+                scc: 'ord_id',
+            },
+            {
+                cc: "li",
+                cp: 2,
+                hd: "Line Item",
+                v: true,
+                cla: "Centre",
+                scc: 'li',
+            },
+            {
+                cc: "tq",
+                cp: 3,
+                hd: "Quantity",
+                v: true,
+                cla: "Centre",
+                scc: 'tq',
+            }
+        ];
+
+        departmentHeaders.forEach((departmentHeader, index) => {
+
+            const departmentColumn: any = {
+                cc: `dept${index + 1}`,
+                cp: 4,
+                hd: departmentHeader,
+                v: true,
+                cla: "Centre",
+                scc: `dept${index + 1}`,
+                children: [
+                    {
+                        cc: `${departmentHeader}_woh`,
+                        cp: 4,
+                        hd: "WIP on hand",
+                        v: true,
+                        cla: "Centre",
+                        scc: `${departmentHeader}_woh`,
+                    },
+                    {
+                        cc: `${departmentHeader}_mfg`,
+                        cp: 4,
+                        hd: "Balance to manufacture",
+                        v: true,
+                        cla: "Centre",
+                        scc: `${departmentHeader}_mfg`,
+                    }
+                ]
+            };
+
+            apiResponse.push(departmentColumn);
+        });
+
+        return apiResponse;
+    };
+
+
+
+    const transformToRowData = () => {
+        const rowData: RowData[] = [];
+
+        // Loop through each order in the input data
+        for (const [orderId, orderDetails] of Object.entries(data)) {
+            if (typeof orderDetails !== 'object' || orderDetails === null) {
+                continue; // Skip invalid or null entries
+            }
+
+            const orderDetailsObj = orderDetails as Record<string, unknown>;
+
+            // Safely extract 'li' and 'tq' with type-checks
+            const li = typeof orderDetailsObj.li === 'string' ? orderDetailsObj.li : '';
+            const tq = typeof orderDetailsObj.tq === 'number' ? orderDetailsObj.tq : 0;
+
+            const row: RowData = {
+                ord_id: orderId,
+                li,
+                tq,
+            };
+
+            // Loop through each department (like "1", "2", etc.)
+            for (const [deptKey, deptData] of Object.entries(orderDetailsObj)) {
+                if (deptKey !== 'tq' && deptKey !== 'li' && typeof deptData === 'object' && deptData !== null) {
+                    const deptInfo = deptData as {
+                        woh?: number;
+                        mfg?: number;
+                        //int?: number | null;
+                        //out?: number | null;
+                    };
+
+                    // Create fields based on department key
+                    row[`${deptKey}_woh`] = deptInfo.woh ?? null;
+                    row[`${deptKey}_mfg`] = deptInfo.mfg ?? null;
+                    //row[`${deptKey}_int`] = deptInfo.int ?? null;
+                    //row[`${deptKey}_out`] = deptInfo.out ?? null;
+                }
+            }
+
+            rowData.push(row);
+        }
+
+        return rowData;
+    }
+
+    const createElapsedOrderColdef = (headers: any) => {
+        // Start with a default "time" column
+        const colDefs: any = [
+            {
+                headerName: "",
+                field: "time",
+                colId: "time",
+            },
+        ];
+
+        // Dynamically create the department columns based on the headers provided
+        headers.forEach((header: any, index: number) => {
+            colDefs.push({
+                headerName: header,
+                field: (index + 1).toString(),  // Convert index to string for field name
+                colId: (index + 1).toString(),
+            });
+        });
+
+        return colDefs;
+    }
+
+    const createRowDataWithTimes = () => {
+        const rowData: RowData[] = [
+            { time: "In Time" },
+            { time: "Out Time" },
+            { time: "Elapsed Time" },
+        ];
+
+        // Iterate through each order in the inputData
+        for (const [orderDetails] of Object.entries(data)) {
+            // Loop through each department (like "1", "2", etc.)
+            for (const [deptKey, deptData] of Object.entries(orderDetails)) {
+                if (deptKey !== 'tq' && deptKey !== 'li' && typeof deptData === 'object' && deptData !== null) {
+                    const deptInfo = deptData as {
+                        //woh?: number;
+                        //mfg?: number;
+                        int?: number | null;
+                        out?: number | null;
+                    };
+
+                    // Assign department times to the corresponding row
+                    rowData[0][`dpt${deptKey}`] = deptInfo.int ?? null;
+                    rowData[1][`dpt${deptKey}`] = deptInfo.out ?? null;
+
+                }
+            }
+        }
+
+        return rowData;
+    }
+
+
+    useEffect(() => {
+        if (data) {
+            /**This will create the UI Configuration api response */
+            const apiResponse = generateApiResponse(deptName);
+
+            /**Based on the apiResponse creating th dynamic coldef */
+            const columnDefs = convertApiResponseToColDefs(apiResponse);
+            //console.log('coldef', columnDefs)
+            setOrderStatusColdef(columnDefs)
+
+            const elapsedOrderColdef = createElapsedOrderColdef(deptName);
+            //console.log('elapsedOrderColdef', elapsedOrderColdef)
+            setElapsedOrderColDef(elapsedOrderColdef)
+
+            const rowData = transformToRowData();//const rowData = generateRowData(columnDefs);
+            setRowData(rowData)
+            //console.log('rowData=Fristan', rowData);
+
+            const ElapsedTimeRowData = createRowDataWithTimes();
+            setElapsedTimeRowData(ElapsedTimeRowData)
+        }
+    }, [data])
+
+
+
+
     return (
         isTrue ?
             <div style={{ display: 'flex', gap: "2rem" }}>
@@ -167,7 +502,7 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                             Selected Orders  :
                                         </ExpansionHeaderNormalText>
                                         <ExpansionHeaderColoredText>
-                                            4
+                                            {selectedOrderCount}
                                         </ExpansionHeaderColoredText>
                                     </ExpansionHeaderGroup>
                                     <ExpansionHeaderGroup style={{ marginLeft: '10px' }}>
@@ -175,7 +510,7 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                             WIP Present In  :
                                         </ExpansionHeaderNormalText>
                                         <ExpansionHeaderColoredText>
-                                            Dept 1, Dept 2
+                                            {`${deptName.length > 1?',':''}${deptName}`}
                                         </ExpansionHeaderColoredText>
                                     </ExpansionHeaderGroup>
                                     <ExpansionHeaderGroup onClick={() => toggleLeftPanelOrderStatus(!isLeftPanelOrderStatusOpen)} style={{ marginLeft: 'auto' }}>
@@ -189,8 +524,8 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                         <VFWrapper>
                                             <VFTable
                                                 {...agGridProps}
-                                                columnDefs={orderStatus}
-                                                rowData={orderStatusData}
+                                                columnDefs={ordeStatusColDef}
+                                                rowData={rowData}
                                                 height='400px'
                                             />
                                         </VFWrapper>
@@ -205,7 +540,7 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                             Selected Orders  :
                                         </ExpansionHeaderNormalText>
                                         <ExpansionHeaderColoredText>
-                                            4
+                                            {selectedOrderCount}
                                         </ExpansionHeaderColoredText>
                                     </ExpansionHeaderGroup>
                                     <ExpansionHeaderGroup style={{ marginLeft: '10px' }}>
@@ -227,8 +562,8 @@ const OrderElapsedGrid = ({ isTrue }: orderElapsedGridProps) => {
                                         <VFTable
                                             {...agGridPropsElapsedTime}
                                             height='400px'
-                                            rowData={ElapsedTimeData}
-                                            columnDefs={ElapsedTime}
+                                            rowData={ElapsedTimeRowData}
+                                            columnDefs={elapsedOrderColdef}
                                         />
                                     </ExpansionContent>
                                 )}

@@ -15,6 +15,7 @@ const RMPMBufferTrends = () => {
 
 
     const formatDate = (date: Date): string => {
+        // console.log("dateddd", date)
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
@@ -24,49 +25,62 @@ const RMPMBufferTrends = () => {
 
 
     const convertToGraphData = (apiData: any) => {
-        const startDate = formatDate(new Date());
-        const numDays = 90;
-        const updatedData: BufferTrendData[] = [];
-        const dateParts = startDate?.split('-');
-        const date = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`); // Convert to YYYY-MM-DD
+        try {
+            const startDate = formatDate(new Date());
+            const numDays = 90;
+            const updatedData: BufferTrendData[] = [];
+            const dateParts = startDate?.split('-');
+            const date = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`); // Convert to YYYY-MM-DD
 
-        for (let i = 0; i < numDays; i++) {
-            const day = formatDate(date);
-            let entry: any = {
-                'dt': day,
-                'b': 0,
-                'r': 0,
-                'g': 0,
-                'y': 0,
-                'bl': 0,
-                'w': 0,
-            };
-            const newDate = day?.split('-')?.reverse()?.join('-');
-            if (apiData[newDate]) {
-                if (apiData[newDate]?.B) {
-                    entry = { ...entry, b: apiData[newDate]?.B || 0 }
+            for (let i = 0; i < numDays; i++) {
+                const day = formatDate(date);
+                console.log(day)
+                let entry: any = {
+                    'dt': day,
+                    'b': 0,
+                    'r': 0,
+                    'g': 0,
+                    'y': 0,
+                    'bl': 0,
+                    'w': 0,
+                };
+                const newDate = day?.split('-')?.reverse()?.join('-');
+
+                if (apiData[newDate]) {
+                    if (apiData[newDate]?.B) {
+                        entry = { ...entry, b: apiData[newDate]?.B || 0 }
+                    }
+                    if (apiData[newDate]?.R) {
+                        entry = { ...entry, r: apiData[newDate]?.R || 0 }
+                    }
+                    if (apiData[newDate]?.G) {
+                        entry = { ...entry, g: apiData[newDate]?.G || 0 }
+                    }
+                    if (apiData[newDate]?.Y) {
+                        entry = { ...entry, y: apiData[newDate]?.Y || 0 }
+                    }
+                    if (apiData[newDate]?.W) {
+                        entry = { ...entry, w: apiData[newDate]?.W || 0 }
+                    }
+                    if (apiData[newDate]?.Bl) {
+                        entry = { ...entry, bl: apiData[newDate]?.Bl || 0 }
+                    }
                 }
-                if (apiData[newDate]?.R) {
-                    entry = { ...entry, r: apiData[newDate]?.R || 0 }
-                }
-                if (apiData[newDate]?.G) {
-                    entry = { ...entry, g: apiData[newDate]?.G || 0 }
-                }
-                if (apiData[newDate]?.Y) {
-                    entry = { ...entry, y: apiData[newDate]?.Y || 0 }
-                }
-                if (apiData[newDate]?.W) {
-                    entry = { ...entry, w: apiData[newDate]?.W || 0 }
-                }
-                if (apiData[newDate]?.Bl) {
-                    entry = { ...entry, bl: apiData[newDate]?.Bl || 0 }
-                }
+
+
+
+
+                updatedData.push(entry);
+                date.setDate(date.getDate() - 1);
+                // date = date?.split('-')?.reverse()?.join('-')
+
+
             }
-
-            updatedData.push(entry);
-            date.setDate(date.getDate() - 1);
+            return updatedData;
         }
-        return updatedData;
+        catch (e) {
+            console.log("this is the error", e)
+        }
     }
 
     const [isMTO] = useState(true);
@@ -81,9 +95,10 @@ const RMPMBufferTrends = () => {
             toast.dismiss();
             notifyLoader("Loading Graph Data ...")
             const APIData = await getRMPMBufferTrendsData();
+            console.log("sdfsdfsdf")
             const updatedDataMTO = convertToGraphData(APIData?.data?.data.MTO);
             const updatedDataMTA = convertToGraphData(APIData?.data?.data.MTA);
-
+            console.log('==>', updatedDataMTA)
             setMTOData(updatedDataMTO);
             setMTAData(updatedDataMTA);
             toast.dismiss();
@@ -91,10 +106,15 @@ const RMPMBufferTrends = () => {
         }
         catch (e) {
             toast.dismiss();
-            notifyError("Failed to fetch Grid data");
+            notifyError("Failed to fetch data");
         }
 
     }
+
+    useEffect(() => {
+        console.log('MTA data', MTAData)
+        console.log('MTO data', MTOData)
+    }, [MTAData, MTOData])
 
     useEffect(() => {
         GetData();
@@ -112,13 +132,13 @@ const RMPMBufferTrends = () => {
                     {
                         (isMTO) ?
                             (<Allotment vertical={false} separator={false}   >
-                                <Allotment.Pane preferredSize={'50%'}>
+                                <Allotment.Pane minSize={450} preferredSize={'50%'}>
                                     <BTRAllomentSection>
                                         <BTMTO data={MTOData} isMTO={isMTO} />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
 
-                                <Allotment.Pane preferredSize={'50%'}>
+                                <Allotment.Pane minSize={450} preferredSize={'50%'}>
                                     <BTRAllomentSection>
                                         <BTMTA data={MTAData} isMTO={isMTO} />
                                     </BTRAllomentSection>

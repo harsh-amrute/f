@@ -6,14 +6,17 @@ export const ApplyZoomOut = styled.div`
 `
 
 export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?: boolean }>`
-    height:${(props) => props.height ? props.height : 'auto'};
-    // max-height:90%;
-    margin:20px;
-    zoom:${props => props.disableZoomScaling ? 1 : 0.75};
-    width:100%,
+    height: 75vh;
+    zoom: 0.75;
+    margin-top: 20px;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+
 
  
     & .ag-theme-alpine {
+      flex: 1;
         margin: 0 !important;
       }
     & .ag-theme-noir-fusion {

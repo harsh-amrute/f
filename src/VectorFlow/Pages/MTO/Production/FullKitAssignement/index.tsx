@@ -23,12 +23,28 @@ import _ from 'lodash';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import { useGetCCRGroupMaster, useGetFOLData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import AvailabilityCellRenderer from './AvailabilityCellRenderer';
+import useFilter from "../../../../../hooks/useFilter";
+import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+
+
+const APIFilterConfig = {
+  filSecVisConfig :  {
+    "Prod_FullKit_Assignment" : {
+      mjr : false,
+      or: true,
+      res: true,
+      cus: true
+    },
+  }
+}
 
 const FullKitAssignment = () => {
 
-
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
+  const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
+  const [filterData, setFilterData] = useState({});
 
   const [HeaderData, setHeaderData] = useState([{}]);
   const [hide, setHide] = useState(false);
@@ -506,13 +522,42 @@ const FullKitAssignment = () => {
 
   }
 
+  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_FullKit_Assignment);
+
+  const onApplyFilter = (filter:any)=>{
+    console.log(filter)
+    setIsFilterOpen(false)
+  }
+  const onAddFilter = ()=>{
+    setIsFilterOpen(true)
+  }
+
+  const toggleFilter = (state: boolean) => {
+    setIsFilterOpen(state);
+  }
+
+  useEffect(() => {
+    setFilterData(filterResponse?.data.data)
+  }, [filterResponse]);
+
+
   return (
     <Wrapper>
-      <MTOActionToolBar
+      <MTOActionToolBar 
+        comp="FullKitAssignment" 
+        isExcelExport 
+        isAddFilterButton
+        isFilterOpen={isFilterOpen}
+        onAddFilter={onAddFilter}
+        toggleFilter={toggleFilter}
+        onApplyFilter={onApplyFilter} 
+        multiFilter={currFilter}
+        setMultiFilter={setCurrFilter} 
+        onFilterRemove={onFilterRemove}
         utilityBtns={renderUtilityBtns}
         quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox style={{cursor: editMode != "View" ? "not-allowed" : "pointer"}} disabled={editMode != "View"} checked={loadDataParams.is_fullkit} onChange={(e: any) => setLoadDataParams({...loadDataParams, load_graph_data: true, is_fullkit: e.target.checked})} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Orders with Full Kit Ready</strong></div>}
-        isExcelExport isAddFilterButton
       />
+      {/* <button onClick={() => setShowModal(true)}>Click</button> */}
       {(isDataLoading || excludeOrdersLoading || simulationLoading || isSimulationResultsUpdating) && <OverlayLoader/>}
       <VFTable
         ref={grid}

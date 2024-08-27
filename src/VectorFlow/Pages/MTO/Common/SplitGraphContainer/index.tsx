@@ -23,9 +23,9 @@ interface SplitGrpahContainerProps {
   TooltipRenderer: (param: any) => string,
   graphType: number,
   date?: string,
+  columnsData?: any,
+  downloadFileName?: string,
 }
-
-
 
 const SplitGraphContainer = ({
   colDef,
@@ -41,6 +41,8 @@ const SplitGraphContainer = ({
   toggleChart,
   TooltipRenderer,
   graphType,
+  columnsData,
+  downloadFileName
 }: SplitGrpahContainerProps) => {
   const chartRef = useRef<AgChartsReact>(null);
   const refGraph1 = useRef<GridRef>(null);
@@ -53,6 +55,13 @@ const SplitGraphContainer = ({
           palette: {
             fills: ['black', 'red', 'yellow', 'green', 'grey'],
             strokes: ['black', 'red', 'yellow', 'green', 'grey'],
+          },
+        }
+      case 12:
+        return {
+          palette: {
+            fills: columnsData?.map((column: any)=> column?.color),
+            strokes: columnsData?.map((column: any)=> column?.color),
           },
         }
 
@@ -82,8 +91,8 @@ const SplitGraphContainer = ({
       case 7:
         return {
           palette: {
-            fills: ['black', 'red', 'yellow', 'green', 'blue'],
-            strokes: ['black', 'red', 'yellow', 'green', 'blue'],
+            fills: ['black', 'red', 'yellow', 'green', 'blue', '#E8E8E8'],
+            strokes: ['black', 'red', 'yellow', 'green', 'blue', '#E8E8E8'],
           },
         }
       case 8:
@@ -107,11 +116,34 @@ const SplitGraphContainer = ({
             strokes: ['#F5B279', "#F09241", "#E36A00", "#AD5000", "#6A3000"],
           },
         }
+      case 3: {
+        return {
+          palette: {
+            fills: ['Grey'],
+            strokes: ['Grey']
+          }
+        }
+      }
+      case 2: {
+        return {
+          palette: {
+            fills: ['Grey'],
+            strokes: ['Grey']
+          }
+        }
+      }
       case 11:
         return {
           palette: {
             fills: ['#F5B279', "#F09241", "#E36A00", "#AD5000", "#6A3000"],
             strokes: ['#F5B279', "#F09241", "#E36A00", "#AD5000", "#6A3000"],
+          },
+        }
+      case 14:
+        return {
+          palette: {
+            fills: ['#AD5000'],
+            strokes: ['#AD5000'],
           },
         }
 
@@ -146,6 +178,50 @@ const SplitGraphContainer = ({
                 },
                 strokeWidth: 3
 
+              },
+              legend: {
+                item: {
+                  marker: {
+                    shape: 'square'
+                  }
+                }
+              }
+
+
+            }
+          }
+
+        })
+        break;
+      case 12:
+        refGraph1.current?.api.createRangeChart({
+          chartType: 'line',
+          cellRange: {
+            columns: columnsData.map((column: any)=>column.key),
+          },
+
+          chartThemeOverrides: {
+            line: {
+              series: {
+                tooltip: {
+                  renderer: (params: any) => TooltipRenderer({...params, labels: columnsData?.filter((column: any)=> column.key !== 'month')})
+                },
+                strokeWidth: 3
+
+              },
+              axes: {
+                category: {
+                  crossLines: {
+                    enabled: false,
+                    strokeOpacity: 0,
+                    stroke: 'white'
+                  },
+                  gridStyle:
+                    [
+                      { stroke: 'white' },
+                    ],
+
+                }
               },
               legend: {
                 item: {
@@ -221,11 +297,11 @@ const SplitGraphContainer = ({
         refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
-            columns: ["ccr", "exceedDays", 'days', 'limit'],
+            columns: ["ccr_n", "exceedDays", 'r_wip', 'limit'],
           },
           seriesChartTypes: [
             { colId: "exceedDays", chartType: "stackedColumn" },
-            { colId: "days", chartType: "stackedColumn" },
+            { colId: "r_wip", chartType: "stackedColumn" },
             { colId: "limit", chartType: "line" }
           ],
           chartThemeOverrides: {
@@ -255,20 +331,15 @@ const SplitGraphContainer = ({
 
                   item: {
 
-
-
                     fill: "white",
                     fillOpacity: 0.2,
                   },
-
-
                 },
                 tooltip: {
                   renderer: TooltipRenderer,
                 },
                 strokeWidth: 1,
                 strokeOpacity: 0,
-
               },
               legend: {
                 item: {
@@ -409,7 +480,7 @@ const SplitGraphContainer = ({
         refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
-            columns: ["trailDept", "b", 'r', 'y', 'g', 'bl'],
+            columns: ["trailDept", "b", 'r', 'y', 'g', 'bl', 'w'],
           },
           chartThemeOverrides: {
             column: {
@@ -463,7 +534,7 @@ const SplitGraphContainer = ({
         refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
-            columns: ["week", "0-20%", "20%-40%", "40%-60%", "60%-80%", "80%-100%"],
+            columns: ["m", "0_2_p", "20_40_p", "40_60_p", "60_80_p", "80_100_p"],
           },
           chartThemeOverrides: {
             column: {
@@ -518,7 +589,7 @@ const SplitGraphContainer = ({
         refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
-            columns: ["week", "1-2 days", "3-7 days", "8-15 days", "16-30 days"],
+            columns: ["m", "1_2_d", "3_7_d", "8_15_d", "16_30_d"],
           },
           chartThemeOverrides: {
             column: {
@@ -682,6 +753,64 @@ const SplitGraphContainer = ({
           },
         });
         break;
+      case 14:
+        refGraph1.current?.api.createRangeChart({
+          chartType: "stackedBar",
+          cellRange: {
+            columns: ["r", "co"],
+          },
+          chartThemeOverrides: {
+            bar: {
+              axes: {
+                category: {
+                  position: 'left', // Position the category axis on the left
+                  gridStyle: [{ stroke: "transparent" }],
+                  label: {
+                    fontSize: 8,
+                    rotation: 0
+                  },
+                  left: {
+                    label: {
+                      fontSize: 8,
+                    },
+                  },
+                },
+                number: {
+                  position: 'bottom',
+                  gridStyle: [{ stroke: "transparent" }],
+                  label: {
+                    fontSize: 8,
+                  },
+                },
+              },
+              series: {
+                highlightStyle: {
+                  item: {
+                    fill: "white",
+                    fillOpacity: 0.2,
+                  },
+                },
+                tooltip: {
+                  renderer: TooltipRenderer,
+                },
+                strokeWidth: 1,
+                strokeOpacity: 0,
+              },
+              legend: {
+                item: {
+                  label: {
+                    fontSize: 10,
+                  },
+
+                  marker: {
+                    shape: "square",
+                  },
+                },
+              },
+            }
+          },
+        });
+        break;
       default:
         <></>
     }
@@ -710,7 +839,7 @@ const SplitGraphContainer = ({
               </div>
               <div style={{ marginLeft: '0 10px -5px', marginBottom: '-5px' }} onClick={() => {
 
-                (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart, { fileName: graphTitle });
+                (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart, { fileName: downloadFileName ? downloadFileName : graphTitle });
 
               }}>
                 <img src='/assets/img/mto/RMPMBufferTrend/download.svg' style={{ color: "#CCCCCC", paddingBottom: '5px' }} height={15} width={15} color={"#CCCCCC"} />

@@ -53,12 +53,12 @@ export const columnConfigLevel1 = [
 export const columnConfigData = {
     stplTableColumn : [
         { 
-            "cc": "ccr",
+            "cc": "ccr_n",
             "cp": 1,
             "hd": "CCR",
             "v": true,
             "cla": "left",
-            "scc": "ccr"
+            "scc": "ccr_n"
         },
         { 
             "cc": "exceedDays",
@@ -87,12 +87,12 @@ export const columnConfigData = {
     ],
     fullkitTableColumn : [
         { 
-            "cc": "ccr",
+            "cc": "ccr_n",
             "cp": 1,
             "hd": "CCR",
             "v": true,
             "cla": "left",
-            "scc": "ccr"
+            "scc": "ccr_n"
         },
         { 
             "cc": "days",

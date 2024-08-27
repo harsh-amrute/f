@@ -14,7 +14,21 @@ import { DetailsObj } from './CommonFunc';
 import { useGetSOSummaydetails } from '../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage';
 import { toast } from 'react-toastify';
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
-import VFOverlay from '../../../../../components/VectorFLOW/commons/VFOverlay';
+import useFilter from "../../../../../hooks/useFilter";
+// import { APIResponseMock } from '../../Production/InsightsAndTrends/OrderBalance/OrderBalanceMockData';
+import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+import OverlayLoader from '../../Common/Loader';
+
+const APIFilterConfig = {
+  filSecVisConfig: {
+    "Proc_Material_Coverage_For_OpenSO": {
+      mjr: false,
+      or: true,
+      res: true,
+      cus: true
+    },
+  }
+};
 
 const MaterialCov = () => {
   const [detailDataObj, setDetailDataObj] = useState<DetailsObj>();
@@ -23,6 +37,24 @@ const MaterialCov = () => {
   const [toggleComponent, setToggleComponent] = useState<boolean>(false);
   const [soData, setSOData] = useState<any>([]);
   const { data, isLoading, /*refetch*/ } = useGetSOSummaydetails();
+  const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
+  const [filterData, setFilterData] = useState({});
+
+
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Coverage_For_OpenSO);
+
+  const onApplyFilter = (filter: any) => {
+    console.log(filter)
+    setIsFilterOpen(false)
+  }
+  const onAddFilter = () => {
+    setIsFilterOpen(true)
+  }
+
+  const toggleFilter = (state: boolean) => {
+    setIsFilterOpen(state);
+  }
 
 
   useEffect(() => {
@@ -58,6 +90,10 @@ const MaterialCov = () => {
     setSOData(data?.data.data)
   }, [data])
 
+  useEffect(() => {
+    setFilterData(filterResponse?.data.data)
+  }, [filterResponse]);
+
   const tabs = [
     {
       id: "1",
@@ -79,9 +115,7 @@ const MaterialCov = () => {
         <>
           {
             isLoading && (
-              <VFOverlay>
-                <h1 style={{ backgroundColor: "white", padding: '15px', borderRadius: '8px' }}>Loading....</h1>
-              </VFOverlay>
+              <OverlayLoader />
             )
           }
           <div style={{ zoom: '1.3' }}>
@@ -89,6 +123,13 @@ const MaterialCov = () => {
               comp={'MaterialCov'}
               isExcelExport
               isAddFilterButton
+              isFilterOpen={isFilterOpen}
+              onAddFilter={onAddFilter}
+              toggleFilter={toggleFilter}
+              onApplyFilter={onApplyFilter}
+              multiFilter={currFilter}
+              setMultiFilter={setCurrFilter}
+              onFilterRemove={onFilterRemove}
               onDateChange={() => { console.log('') }}
               submitDate={() => { console.log('') }}
             />
@@ -140,7 +181,7 @@ const MaterialCov = () => {
 
         </>
         :
-        <>
+        <div style={{ height: '100%' }}>
           <div style={{ zoom: 1.25 }}>
 
             <ActionToolBar
@@ -157,7 +198,7 @@ const MaterialCov = () => {
             />
           </div>
           <MaterialSODetailed parameterData={detailDataObj} />
-        </>
+        </div>
 
       }
     </div>

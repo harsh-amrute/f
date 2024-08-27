@@ -39,11 +39,13 @@ const useMaterialSO = (data: any) => {
     const extras = [
         {
             field: "",
+            resizable: false,
             position: 0,
             suppressHeaderFilterButton: true,
             suppressMenu: true,
             filter: false,
-            initialWidth: 100,
+            initialWidth: 80,
+            maxWidth: 80,
             cellRenderer: CustomGroupCellRenderer
         }
     ]
@@ -155,7 +157,15 @@ const useMaterialSO = (data: any) => {
             enableBrowserTooltips: true,
             enableRangeSelection: true,
             components: customCellRenderers,
+
             defaultColDef: {
+
+                floatingFilterComponentParams: {
+                    suppressFilterButton: true,
+                },
+                suppressMenu: true,
+                resizable: true,
+                flex: 1,
                 filter: 'agTextColumnFilter',
                 floatingFilter: true,
                 cellStyle: {

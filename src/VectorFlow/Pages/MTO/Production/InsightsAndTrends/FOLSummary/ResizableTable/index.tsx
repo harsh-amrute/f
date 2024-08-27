@@ -50,6 +50,7 @@ const ResizableTable = (props: IResizeTableProps) => {
         defaultColDef={defaultColDef}
         getRowStyle={getRowStyle}
         pagination
+        paginationPageSize={10}
 
       />
     </VFTableWrapper>

@@ -4,7 +4,7 @@ import useProcPlanning from './useProcPlanning';
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import { useState } from 'react';
 import moment from 'moment';
-import VFOverlay from '../../../../../components/VectorFLOW/commons/VFOverlay';
+import OverlayLoader from '../../Common/Loader';
 
 const ProcurementPlanning = () => {
     const format2 = "YYYY-MM-DD"
@@ -19,9 +19,7 @@ const ProcurementPlanning = () => {
         <>
 
             {isLoading && (
-                <VFOverlay>
-                    <h1 style={{ backgroundColor: "white", padding: '15px', borderRadius: '8px' }}>Loading....</h1>
-                </VFOverlay>
+                <OverlayLoader />
             )}
 
             <div>

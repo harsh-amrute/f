@@ -1,22 +1,32 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "allotment/dist/style.css";
 import { AgChartOptions } from "ag-charts-community";
 import { ProductionInsightsAndTrendsString } from "../../../../Common/String";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
-import { columnConfigData, APIMock } from "../OrderBalanceMockData";
+import { columnConfigData } from "../OrderBalanceMockData";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { format } from "date-fns";
 import VFCapsule from "../../../../../../../components/VectorFLOW/commons/VFCapsule";
 import { CapsuleWrapper } from "../styles";
 import { createSeriesData, TooltipRenderer } from "../OrderBalanceCommon";
+// <-------------- uncomment below code to enable dropdown for orderType    --------->
+// import Select from 'react-select'
 
-const TrailDeptBalance = () => {
+
+const TrailDeptBalance = (props: any) => {
+  const { 
+    graphData, 
+  // <-------------- uncomment below code to enable dropdown for orderType    --------->
+    // orderOptions,
+    // handleChange,
+    // orderType
+  } = props;
   const [date] = useState(format(new Date(), "d MMM yyyy"));
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
-  const [rawData, setRawData] = useState(APIMock.balMfg);
+  const [rawData, setRawData] = useState([]);
   const [actBtn, setActBtn] = useState({
     label: "Bal To Mfg.",
     value: "Bal To Mfg.",
@@ -77,23 +87,39 @@ const TrailDeptBalance = () => {
     return getColumnDefinations(columnConfigData?.tableColumn, {}, []);
   }, []);
 
-  const updateGraphState = () => {
-    if (actBtn.label === "Bal To Mfg.") {
-      setActBtn({
-        label: "Bal To Disp.",
-        value: "Bal To Disp.",
-      });
-      setRawData(APIMock.balDisp);
-    } else {
-      setActBtn({
-        label: "Bal To Mfg.",
-        value: "Bal To Mfg.",
-      });
-      setRawData(APIMock.balMfg);
-    }
+  const updateGraphState = (capsule: any) => {
+    setActBtn(capsule);
   };
 
+  // <-------------- uncomment below code to enable dropdown for orderType    --------->
+
+  // const customStyles = {
+  //   control: (provided: any) => ({
+  //     ...provided,
+  //     width: 180,
+  //   }),
+  //   menu: (provided: any) => ({
+  //     ...provided,
+  //     width: 180,
+  //   }),
+  //   placeholder: (provided: any) => ({
+  //     ...provided,
+  //     color: 'gray', // Customize the placeholder color
+  //     fontSize: '15px', // Customize the font size
+  //   }),
+  //   option: (provided: any, state: any) => ({
+  //     ...provided,
+  //     backgroundColor: state.isSelected ? 'lightblue' : 'white',
+  //     color: 'black',
+  //     '&:hover': {
+  //       backgroundColor: 'lightgray',
+  //     },
+  //   }),
+  // };
+
   const generateHeader = () => {
+    // <-------------- uncomment below code to enable dropdown for orderType    --------->
+    // const options = orderOptions?.map((opt: any)=>({ label: opt.desc, value: opt.order_type }))
     return (
       <div
         className="title"
@@ -101,12 +127,18 @@ const TrailDeptBalance = () => {
           backgroundColor: "white",
           height: "40px",
           display: "flex",
-          justifyContent: "right",
+          // <-------------- uncomment below code to enable dropdown for orderType    --------->
+          // justifyContent: "space-between", 
+          justifyContent: "end",   
           alignItems: "center",
           width: "100%",
         }}
       >
-
+        {/* <-------------- uncomment below code to enable dropdown for orderType    ---------> */}
+        {/* <div style={{ display: 'flex', alignItems: 'center', marginLeft: '30px' }}>
+            <p style={{ fontFamily: 'roboto', fontSize: '15px',fontWeight: '500', paddingRight: '5px' }}>Order Type </p>
+            <Select styles={customStyles} placeholder="Select Order Type" options={options} onChange={handleChange}/>
+        </div> */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <CapsuleWrapper style={{ zoom: 1, padding: "4px" }}>
             <VFCapsule
@@ -121,7 +153,7 @@ const TrailDeptBalance = () => {
                   value: "Bal To Disp.",
                 },
               ]}
-              handleClick={() => updateGraphState()}
+              handleClick={updateGraphState}
             />
           </CapsuleWrapper>
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
@@ -159,6 +191,47 @@ const TrailDeptBalance = () => {
     actBtn.label === "Bal To Mfg."
       ? ProductionInsightsAndTrendsString.trailDeptMfg
       : ProductionInsightsAndTrendsString.trailDeptDisp;
+
+  useEffect(()=>{
+    if(graphData?.mfg){
+      const response: any = graphData?.mfg;
+      const data: any =  Object.keys(response)?.map((key: string) => ({
+        trailDept: key, 
+        b: response[key]?.Black || 0, 
+        r: response[key]?.Red || 0, 
+        y: response[key]?.Yellow || 0, 
+        g: response[key]?.Green || 0, 
+        bl: response[key]?.Blue || 0, 
+        w: response[key]?.White || 0, 
+      }));
+      setRawData(data);
+    }
+  },[graphData])
+
+  useEffect(()=>{
+
+    let response: any = {};
+    if (actBtn.label === "Bal To Mfg.") {
+      response = graphData?.mfg || {};
+    } else {
+      response = graphData?.disp || {};
+    }
+
+    const data: any =  Object.keys(response)?.map((key: string) => ({
+      trailDept: key, 
+      b: response[key]?.Black || 0, 
+      r: response[key]?.Red || 0, 
+      y: response[key]?.Yellow || 0, 
+      g: response[key]?.Green || 0, 
+      bl: response[key]?.Blue || 0, 
+      w: response[key]?.White || 0, 
+    }));
+    
+    setRawData(data);
+    
+  },[actBtn])
+  
+  
 
   return (
     <div

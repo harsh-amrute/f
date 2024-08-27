@@ -209,10 +209,22 @@ export const VFSelectedFiltersFilterLabel = styled.div`
   font-size: 16px;
   line-height: 21px;
   font-family: Roboto;
-  font-weight: 300;
+  font-weight: 500;
   letter-spacing: 0px;
   color: #313131;
-  width: 120px;
+  display: flex;
+  width: max-content;
+`;
+
+export const VFSelectedFilterLabel = styled.div`
+  font-size: 16px;
+  line-height: 21px;
+  font-family: Roboto;
+  font-weight: 200;
+  letter-spacing: 0px;
+  color: #313131;
+  display: flex;
+  width: max-content;
 `;
 
 export const VFSelectedFiltersFilterContent = styled.div`
@@ -301,6 +313,7 @@ export const DateWrapper = styled.div`
   font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: 18px;
+  margin-left: -65px;
   color: #000000;
   letter-spacing: 0;
   line-height: 21px;
@@ -356,11 +369,11 @@ export const SelectGroup = styled.div`
     gap: 20px;
 `
 
-export const ChartHeaderRadioGroup = styled.div<{theme:string}>`
+export const ChartHeaderRadioGroup = styled.div<{ theme: string }>`
     display:flex;
     align-items:center;
     justify-content:center;
-    accent-color:${(props)=>globalStyles.chooseThemeColor[props.theme].color5};
+    accent-color:${(props) => globalStyles.chooseThemeColor[props.theme].color5};
     font-style:normal;
     font-variant:normal;
     font-weight:300;

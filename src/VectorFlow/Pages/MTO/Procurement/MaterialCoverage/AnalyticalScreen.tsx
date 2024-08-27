@@ -37,7 +37,7 @@ const AnalyticalScreen = () => {
         },
     ])
 
-    options.Order.map((o: any) => {
+    options?.Order?.map((o: any) => {
         totalOrderCount += o.ordCunt;
         totalCustCount += o.cusCunt;
         totalOrderVal += o.totalCunt;
@@ -68,7 +68,7 @@ const AnalyticalScreen = () => {
                     </BPRDailyAnalyticsTableHeaderContainer>
                     <BPRDailyAnalyticsTableRowContainer>
 
-                        {options.Order.map((o: any) => {
+                        {options?.Order?.map((o: any) => {
                             return (
                                 <BPRDailyAnalyticsTableRow style={{
                                     height: 30,

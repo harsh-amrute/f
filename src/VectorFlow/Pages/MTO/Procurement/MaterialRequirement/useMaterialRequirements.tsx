@@ -13,12 +13,10 @@ import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams,
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { useGetMaterialRequirementDetails, useGetMaterialRequirementDetailsDatewise } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
-import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import moment from "moment";
-import { VFTableWrapper } from "../../../../../components/VectorFLOW/commons/VFTable/styles";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-
-
+import VFPagination from "../../Common/VFPagination";
+import { TableWrapper } from "./styles";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -67,9 +65,10 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
     };
 };
 
-const useMaterialReq = () => {
+const useMaterialReq = (forDate?: string) => {
+
     const format2 = "YYYY-MM-DD"
-    const d = new Date();
+    const d = forDate ? new Date(forDate) : new Date();
     const datetime = moment(d).format(format2);
     const [HeaderData, setHeaderData] = useState([{}]);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -79,7 +78,7 @@ const useMaterialReq = () => {
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
-            setHeaderData(response.data.data);
+            setHeaderData(response?.data?.data);
         }
         catch (e) {
             console.log(e);
@@ -127,7 +126,10 @@ const useMaterialReq = () => {
             wrapHeaderText: true,
 
         },
-
+        "net_r": {
+            valueFormatter: (params:any) => Math.max(0, Number(params.data.net_r))
+        }
+        
     }
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
     const ShortageColumns = getColumnDefinations(HeaderData, customHeader)
@@ -146,6 +148,15 @@ const useMaterialReq = () => {
         getInitialData()
     }, [currentTab])
 
+    useEffect(() => {
+        if (forDate) {
+            const d = new Date(forDate);
+            const datetime = moment(d).format(format2);
+            onDateChangeReq(datetime);
+            // getInitialData(currentPage, forDate);
+        }
+    }, [forDate])
+
 
     const onDateChangeReq = (date: string) => {
         setDate(date);
@@ -155,20 +166,20 @@ const useMaterialReq = () => {
         getInitialData()
     }
 
-    const getInitialData = async (currPage?: number) => {
-        currentTab.id === 'sdv' ? getSelectedDateWise(currPage) : getCumulativeDateWise(currPage);
+    const getInitialData = async (currPage?: number, releaseDate?: string) => {
+        currentTab.id === 'sdv' ? getSelectedDateWise(currPage, releaseDate) : getCumulativeDateWise(currPage, releaseDate);
     }
 
-    const getSelectedDateWise = async (currPage?: number) => {
+    const getSelectedDateWise = async (currPage?: number, releaseDate: string = date) => {
 
-        const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: date, currPage: currPage ? currPage : currentPage });
+        const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, currPage: currPage ? currPage : currentPage });
         const dayWiseOutput = datWiseData.data?.data?.results;
         setDayWiseRecordCount(datWiseData.data?.data?.count)
         setDayWiseData(dayWiseOutput)
     }
 
-    const getCumulativeDateWise = async (currPage?: number) => {
-        const cumulativeData = await getMaterialRequirementData({ releaseDate: date, currPage: currPage ? currPage : currentCumPage });
+    const getCumulativeDateWise = async (currPage?: number, releaseDate: string = date) => {
+        const cumulativeData = await getMaterialRequirementData({ releaseDate: releaseDate, currPage: currPage ? currPage : currentCumPage });
         const cumulativeOutput = cumulativeData.data?.data?.results
         setcumulativeRecordCount(cumulativeData.data?.data?.count)
         SetCumulativeData(cumulativeOutput)
@@ -253,6 +264,7 @@ const useMaterialReq = () => {
                 enableRangeSelection: true,
                 pagination: true,
                 defaultColDef: {
+                    floatingFilterComponentParams: { suppressFilterButton: true },
                     floatingFilter: true,
                     filter: "agMultiColumnFilter",
                     cellDataType: false,
@@ -285,6 +297,7 @@ const useMaterialReq = () => {
             defaultExcelExportParams: defaultExcelExportParams,
             excelStyles: excelStyles,
             sideBar: sideBar,
+            
             onCellEditingStopped(event: any) {
                 const field = event.colDef.field;
                 const newValue = event.newValue;
@@ -306,12 +319,13 @@ const useMaterialReq = () => {
                 });
                 gridRef.current?.api.refreshCells({ force: true });
             }
+            
         };
         switch (currentTab.id) {
             case "sdv":
                 return (
                     <div>
-                        <VFTableWrapper>
+                        <TableWrapper>
 
                             <VFTable
                                 paginationPageSize={10}
@@ -321,7 +335,7 @@ const useMaterialReq = () => {
                                 tooltipHideDelay={100000}
                                 tooltipShowDelay={0}
                                 tooltipMouseTrack={true}
-                                height={'620px'}
+                                height={'550px'}
                                 ref={gridRef}
                                 pagination={false}
                                 statusBar={{
@@ -329,7 +343,6 @@ const useMaterialReq = () => {
                                         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                     ]
                                 }}
-                                disableZoomScaling={true}
 
                             />
                             <VFPagination
@@ -339,13 +352,13 @@ const useMaterialReq = () => {
                                 currentPage={currentPage}
                                 handleChangePage={handlePageChangeDayWise}
                             />
-                        </VFTableWrapper>
+                        </TableWrapper>
                     </div>
                 );
             case "cv":
                 return (
                     <div>
-                        <VFTableWrapper>
+                        <TableWrapper>
 
                             <VFTable
                                 paginationPageSize={10}
@@ -355,14 +368,13 @@ const useMaterialReq = () => {
                                 tooltipHideDelay={100000}
                                 tooltipShowDelay={0}
                                 tooltipMouseTrack={true}
-                                height={'620px'}
+                                height={'550px'}
                                 ref={gridRef}
                                 statusBar={{
                                     statusPanels: [
                                         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                     ]
                                 }}
-                                disableZoomScaling={true}
 
                             />
                             <VFPagination
@@ -372,7 +384,7 @@ const useMaterialReq = () => {
                                 currentPage={currentCumPage}
                                 handleChangePage={handlePageChangeCumulative}
                             />
-                        </VFTableWrapper>
+                        </TableWrapper>
 
                     </div>
                 );

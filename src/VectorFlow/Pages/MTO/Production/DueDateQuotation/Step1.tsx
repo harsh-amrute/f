@@ -1,40 +1,49 @@
 import { GridOptions } from 'ag-grid-enterprise';
 import _ from 'lodash';
-import React, { forwardRef, useEffect } from 'react'
+import React, { forwardRef, useImperativeHandle, useRef } from 'react'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 
-interface IStep1Props{
-    gridOptions: GridOptions,
-    rows: any,
-    selectedRows: any,
-    currentPageSelectedRows: React.MutableRefObject<any>,
-    totalRows: React.MutableRefObject<number>,
-    currentPage: number,
-    setCurrentPage: React.Dispatch<React.SetStateAction<number>>,
-    scheduledOrders: any,
-    setSelectedRows: any
+interface IStep1Props {
+  gridOptions: GridOptions,
+  rows: any,
+  selectedRows: any,
+  currentPageSelectedRows: React.MutableRefObject<any>,
+  totalRows: React.MutableRefObject<number>,
+  currentPage: number,
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>,
+  scheduledOrders: any,
+  setSelectedRows: any
 }
 
-const Step1 = forwardRef(({gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, scheduledOrders, setSelectedRows}: IStep1Props, ref: any) => {
+const Step1 = forwardRef(({gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows}: IStep1Props, ref: any) => {
 
+  const gridRef = useRef<any>()
   const handlePageChange = async (currPage: number) => {
     setCurrentPage(currPage)
   }
 
-  useEffect(()=>{
-    const newMap = new Map(selectedRows)
-    scheduledOrders.forEach((order: any)=>{
-      newMap.delete(order);
-    })
-    setSelectedRows(newMap)
-  }, [scheduledOrders])
+  // useEffect(()=>{
+  //   const newMap = new Map(selectedRows)
+  //   scheduledOrders.forEach((order: any)=>{
+  //     newMap.delete(order);
+  //   })
+  //   setSelectedRows(newMap)
+  // }, [scheduledOrders])
+
+  const deselectAllForStep1 = () => {
+    gridRef.current?.api.deselectAll();
+  }
+
+  useImperativeHandle(ref, () => ({
+    deselectAllForStep1: deselectAllForStep1
+  }));
 
   return (
       <>
         <VFTable
             key="allRows"
-            ref={ref}
+            ref={gridRef}
             gridOptions={gridOptions}
             columnDefs={gridOptions.columnDefs}
             rowData={rows}

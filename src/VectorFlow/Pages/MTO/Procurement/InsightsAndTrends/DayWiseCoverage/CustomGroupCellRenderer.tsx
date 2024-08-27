@@ -3,10 +3,18 @@ import { CustomCellRendererProps } from '@ag-grid-community/react';
 import { RowEvent } from '@ag-grid-community/core';
 import { Icon } from './style';
 
+
+const DayWiseCoverageMap: any = {
+    "NK": "No Kit Orders",
+    "FK": "Full Kit Orders",
+    "PK": "Partial Kit Orders"
+}
+
 const CustomGroupCellRenderer = (props: CustomCellRendererProps) => {
     const { node, value } = props;
     const [expanded, setExpanded] = useState(node.expanded);
 
+    //if you want to have rows expanded initially
     useEffect(() => {
         const expandListener = (event: RowEvent) => setExpanded(event.node.expanded);
 
@@ -22,7 +30,7 @@ const CustomGroupCellRenderer = (props: CustomCellRendererProps) => {
     return (
         node.group ?
             <button data-testid='collapsable' style={{ fontSize: "18px", background: "transparent", fontWeight: "bold" }} onClick={onClick}>
-                {value}&nbsp;({props.node.allChildrenCount})&nbsp;&nbsp;<Icon src={expanded ? "/assets/img/mto/dayWiseCoverage/arrow_down.svg" : "/assets/img/mto/dayWiseCoverage/arrow_right.svg"} />
+                {DayWiseCoverageMap[value]? DayWiseCoverageMap[value] : value}&nbsp;({props.node.allChildrenCount})&nbsp;&nbsp;<Icon src={expanded ? "/assets/img/mto/dayWiseCoverage/arrow_down.svg" : "/assets/img/mto/dayWiseCoverage/arrow_right.svg"} />
             </button>
             :
             <button data-testid='collapsable' style={{ width: "100%", background: "transparent", textAlign: "right", height: "100%" }} onClick={onClick}>

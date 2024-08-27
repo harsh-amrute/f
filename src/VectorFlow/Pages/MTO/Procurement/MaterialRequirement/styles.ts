@@ -34,3 +34,14 @@ export const MaterialRequirementHeading = styled.div`
     justify-content:center;
     padding: 20px 0 5px;
 `
+export const TableWrapper = styled.div`
+    height : 88vh;
+    display: flex;
+    flex-direction: column;
+
+    & > .ag-theme-alpine{
+        margin: 0;
+        flex: 1;
+    }
+    
+`

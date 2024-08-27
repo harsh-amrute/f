@@ -2581,9 +2581,11 @@ export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: ColumnHeaderCon
       return {
         colId: f.jf,
         field: f.jf,
+        maxWidth: 50,
         headerName: f.hdr,
         hide: !f.vs,
         cellRenderer: 'coloPriorityOfBall',
+
         initialWidth: 20,
         headerClass: "simchild-header",
       }
@@ -2762,7 +2764,7 @@ export function getColumnDefinations(
   extraFields: any = [],
   removeCols: any = [],
 ) {
-  const columnDefs = fields.sort((a: any, b: any) => a.cp - b.cp).map((data: any) => {
+  const columnDefs = fields?.sort((a: any, b: any) => a.cp - b.cp)?.map((data: any) => {
     const columnDef = {
       colId: data.cc,
       headerName: data.hd,
@@ -2780,7 +2782,7 @@ export function getColumnDefinations(
     return columnDef;
   });
   // Add extra columns
-  extraFields.forEach((field: any) => {
+  extraFields?.forEach((field: any) => {
     let position = field.position;
     // If position is not specified or invalid, add the column at the end
     if (
@@ -2790,12 +2792,150 @@ export function getColumnDefinations(
     ) {
       position = columnDefs.length;
     }
-    columnDefs.splice(position, 0, field);
+    columnDefs?.splice(position, 0, field);
   });
 
-  const finalcolDef = columnDefs.filter((obj: any) => !removeCols.includes(obj.colId));
+  const finalcolDef = columnDefs?.filter((obj: any) => !removeCols?.includes(obj.colId));
 
   return finalcolDef;
 
 }
+// ===================================================================================================
+
+
+// Common methods used in Filter Modal Screen
+// ===================================================================================================
+
+// Function to find out the unique values of filter questions
+export function findUniqueKeysAndValues(filterData: any) {
+  const uniqueValues: any = {};
+
+  // Function to collect keys and values
+  function collectKeysAndValues(obj: any) {
+    for (const key in obj) {
+      if (!uniqueValues[key]) {
+        uniqueValues[key] = new Set();
+      }
+      if (obj[key]) {
+        uniqueValues[key].add(obj[key]);
+      }
+    }
+  }
+
+  // Iterate over customers and ordLineItems
+  if (filterData.customers) {
+    filterData.customers.forEach(collectKeysAndValues);
+  }
+
+  if (filterData.ordLineItems) {
+    filterData.ordLineItems.forEach(collectKeysAndValues);
+  }
+
+  if (filterData.ordAttr) {
+    filterData.ordAttr.forEach(collectKeysAndValues);
+  }
+
+  // Convert Set to Array and include empty array for missing keys
+  const response: any = {};
+  for (const key in uniqueValues) {
+    response[key] = Array.from(uniqueValues[key]).map((o: any) => ({ label: o, value: o }));
+  }
+
+  // Add empty array for any missing keys based on the first object in each array
+  const allKeys: any = [
+    ...Array.from(new Set([
+      ...Object.keys(filterData.customers?.[0] || {}),
+      ...Object.keys(filterData.ordLineItems?.[0] || {})
+    ]))
+  ];
+
+  allKeys.forEach((key: any) => {
+    if (!response[key]) {
+      response[key] = [];
+    }
+  });
+
+  return response;
+}
+
+// Function to find dynamic attributes of the object that is passed in paramenters
+export const getDynamicAttributes = (attributes: any) => {
+
+  if (!attributes || attributes?.length === 0 || Object.keys(attributes).length === 0) {
+    return [];
+  }
+  return attributes?.map((attr: any) => attr.key);
+}
+
+export const getKeyName = (attributes: any, key: string) => {
+  for (let i = 0; i < attributes.length; i++) {
+    if (key === attributes[i].key) {
+      return attributes[i].name;
+    }
+  }
+  return ''
+}
+
+// Function to structure the output of filter modal
+export const formatFilterJSON = (filter: any) => {
+  let formatFilter: any = {};
+  for (const key in filter) {
+    const { filters } = filter[key];
+    for (let i = 0; i < filters.length; i++) {
+      const { attributeName, value, type, operator } = filters[i];
+      if (value?.length > 0) {
+        if (type === 'textCompare' || type === 'numberCompare') {
+          formatFilter = { ...formatFilter, [attributeName]: { op: operator ? operator : type === 'textCompare' ? 'et' : 'gte', val: value[0].value } };
+        } else {
+          formatFilter = { ...formatFilter, [attributeName]: value?.map((v: any) => v?.value || v?.id) };
+        }
+      }
+    }
+  }
+  return formatFilter;
+}
+
+// Function to check values already there in Values
+export const checkValue = (filters: any, value: any) => {
+  for (let i = 0; i < filters.length; i++) {
+    if (filters[i]?.id === value || filters[i]?.value === value) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
+  const selectedFilter: any = {};
+  for (const key in filter) {
+    const { filters, label } = filter[key];
+    const newFilter: any = {
+      name: label,
+      parentId: key,
+      filters: []
+    }
+
+    for (let i = 0; i < filters.length; i++) {
+      const { name, attributeName, value, type, operator } = filters[i];
+
+      if (attributeName === 'ms') {
+        if (value.length > 0 && isMfgStrgyIncluded) {
+          newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id) });
+        }
+      } else {
+        if (value.length > 0) {
+          newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id) });
+        }
+      }
+    }
+
+    if (newFilter?.filters?.length > 0) {
+      selectedFilter[key] = { ...newFilter };
+    }
+
+  }
+
+  return selectedFilter;
+}
+
 // ===================================================================================================

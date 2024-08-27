@@ -1,6 +1,6 @@
 import { GridOptions } from 'ag-grid-enterprise'
 import { format } from 'date-fns'
-import React, { forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { useUpdateScheduleOrders } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import Radio from '../../../../../components/VectorFLOW/commons/MTO/Radio'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
@@ -14,11 +14,16 @@ enum SchedulingType {
     Basket
 }
 
-const Step3 = forwardRef(({ columnData ,gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, scheduledOrders, setScheduledOrders }: any, ref: any) => {
-
-
+const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, setStep, setDisabled }: any, ref: any) => {
     
+    useEffect(()=>{
+        setDisabled(true);
+    }, [])
+
     const customization = {
+        OrderID: {
+            cellRenderer: "agGroupCellRenderer"
+        },
         CRDD: {
             pinned: "right",
             lockPosition: true,
@@ -86,7 +91,7 @@ const Step3 = forwardRef(({ columnData ,gridOptions, confirmedRows, setConfirmed
         const procBuffer = order.pcSz || 0;
         const releaseDateLno = ddLno - prodBuffer - procBuffer - postOrderBuffer + 1;
         const releaseDate = WorkingCalender.find((data: any) => {
-            return data.ccrId == order.maxFol.ccr_id && data.PlId == order.plid && data.lno == releaseDateLno;
+            return data.ccrId == order.maxFolSpan.ccr_id && data.PlId == order.plid && data.lno == releaseDateLno;
         })?.wd;
 
         return [releaseDate, postOrderBuffer]
@@ -96,29 +101,33 @@ const Step3 = forwardRef(({ columnData ,gridOptions, confirmedRows, setConfirmed
         try {
             const selected = gridRef.current.api.getSelectedRows();
             const obj: any = [];
-            const orders = new Set();
+            const scheduled = new Set();
             selected.forEach((order: any) => {
                 const [releaseDate, postOrderBuffer] = calculateReleaseDateAndPostOrderBuffer(dates.maxDateLno, order.dueDateLno, schedulingType, order);
                 obj.push({
                     ok: order.ok,
-                    dd: schedulingType === SchedulingType.Basket ? dates.maxDate: order.cdd,
+                    dd: schedulingType === SchedulingType.Basket ? dates.maxDate : order.cdd,
                     rd: releaseDate,
                     pobsz: postOrderBuffer
                 })
-                orders.add(order.ok);
+                scheduled.add(order.ok);
             });
-            const data = await updateScheduleOrders({ orders: obj });
+            await updateScheduleOrders({ orders: obj });
 
-            const newScheduledOrders = new Set([...scheduledOrders])
+            // const newScheduledOrders = new Set([...scheduledOrders])
+            const newConfirmedRows = confirmedRows.filter((row: any) => {
+                return !scheduled.has(row.ok);
+            })
+
             
-            setConfirmedRows(confirmedRows.filter((row: any)=>{
-                if(orders.has(row.ok)){
-                    newScheduledOrders.add(row.ok);
-                }
-                return !orders.has(row.ok);
-            }))
-            setScheduledOrders(newScheduledOrders);
-            notifySuccess(data.data.msg)
+            if(newConfirmedRows.length == 0){
+                setStep(1);
+                setConfirmedRows(null)
+            }else{
+                setConfirmedRows(newConfirmedRows);
+            }
+            // setScheduledOrders(newScheduledOrders);
+            notifySuccess("Orders Scheduled Successfully")
         }
         catch (err) {
             console.log(err);
@@ -136,7 +145,7 @@ const Step3 = forwardRef(({ columnData ,gridOptions, confirmedRows, setConfirmed
     return (
         <>
             <VFTable
-                containerStyle={{padding:"1rem"}}
+                containerStyle={{ padding: "1rem" }}
                 key="scheduling"
                 ref={gridRef}
                 gridOptions={options}
@@ -145,8 +154,10 @@ const Step3 = forwardRef(({ columnData ,gridOptions, confirmedRows, setConfirmed
                     const selected = params.api.getSelectedRows()
                     if (selected.length === 0) {
                         setDates(null);
+                        setDisabled(true)
                         return
                     }
+                    setDisabled(false)
                     let minDate: any = new Date(confirmedRows[0].cdd);
                     let minDateLno: any = confirmedRows[0].dueDateLno;
                     let maxDate: any = new Date(confirmedRows[0].cdd);

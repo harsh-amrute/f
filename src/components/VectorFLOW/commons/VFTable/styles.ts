@@ -9,6 +9,12 @@ export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?:
     zoom:${props => props.disableZoomScaling ? 1 : 0.75};
     width:1200px,
 
+    & > .ag-theme-alpine{
+      margin: 0 !important;
+    }
+    & > .ag-theme-noir-fusion{
+      margin: 0 !important;
+    }
  
 
   

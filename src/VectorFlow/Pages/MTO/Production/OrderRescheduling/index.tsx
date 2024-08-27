@@ -11,12 +11,12 @@ import { AgGridReactProps } from 'ag-grid-react';
 import { GridRef } from '../../../../types/MDM';
 import { notifySuccess, notifyError } from '../../../../../helpers/notify';
 import { toast } from 'react-toastify';
-import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import { IRowNode } from 'ag-grid-enterprise';
 import { FirstDataRenderedEvent } from 'ag-grid-community';
 import OverlayLoader from '../../Common/Loader';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import { getColumnDefinations } from '../../../../../helpers/utils';
+import VFPagination from '../../Common/VFPagination';
 
 const user = { user: { them_ui: 'pure' } };
 
@@ -83,8 +83,10 @@ const OrderRescheduling = () => {
         defaultColDef: {
             floatingFilter: true,
             filter: "agMultiColumnFilter",
+            floatingFilterComponentParams: { suppressFilterButton: true },
+            suppressMenu: true,
+            resizable: true,
             cellDataType: false,
-            resizable: false,
             minWidth: 140,
             wrapHeaderText: true,
             autoHeaderHeight: true,
@@ -129,6 +131,7 @@ const OrderRescheduling = () => {
     const extras = [
         {
             field: "",
+            resizable: false,
             position: 0,
             headerCheckboxSelection: false,
             checkboxSelection: true,
@@ -432,7 +435,7 @@ const OrderRescheduling = () => {
                         </ApplyZoomOut>
                     </div>
                     <div style={{ width: '100%' }}>
-                        <VFTableWrapper height='69vh'>
+                        <VFTableWrapper >
                             <VFTable
 
                                 disableZoomScaling
@@ -461,17 +464,17 @@ const OrderRescheduling = () => {
 
 
 
-                        </VFTableWrapper>
-                        <PaginationWrapper>
+                            <PaginationWrapper>
 
-                            <VFPagination
-                                selectedRows={0}
-                                rowsPerPage={10}
-                                totalRows={currData ? currData.data.data.count : 0}
-                                currentPage={currentPage}
-                                handleChangePage={handlePageChangeCumulative}
-                            />
-                        </PaginationWrapper>
+                                <VFPagination
+                                    selectedRows={0}
+                                    rowsPerPage={10}
+                                    totalRows={currData ? currData.data.data.count : 0}
+                                    currentPage={currentPage}
+                                    handleChangePage={handlePageChangeCumulative}
+                                />
+                            </PaginationWrapper>
+                        </VFTableWrapper>
                     </div>
                     <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%' }}>
                         <div style={{ width: '100%', height: '65px', padding: '30px 30px', background: 'white', display: 'flex', justifyContent: 'left', alignItems: 'center' }}>

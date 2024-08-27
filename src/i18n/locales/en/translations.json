@@ -149,6 +149,29 @@
         "title": "POOGI",
         "reasonForDelayedOrders": "Reason For Delayed Orders",
         "insightAndTrends": "Insight and Trends"
+      },
+      "manufacturingHub": {
+        "title": "Manufacturing Intelligence Hub",
+        "deliveryPerformance": "Delivery Performance",
+        "bmtrends":"BM Trends",
+        "otifanalysis":"OTIF Analysis",
+        "otandifanalysis":"OT & IF Analysis",
+        "leadtime":"Lead Time",
+        "congestionanalysis":"Congestion Analysis",
+        "elapsedtime":"Elapsed Time",
+        "orderatrisk":"Orders At Risk",
+        "orderbalance":"Order Balance",
+        "forwardexecution":"Forward Execution",
+        "folsummary":"FOL Summary",
+        "STPL&FullKits":"STPL & Full Kits",
+        "daywisecoverage":"Day Wise Coverage",
+        "rmpmorderwisecoverage":"RM / PM Order Wise Coverage",
+        "expeditingrm":"Expediting - RM & Suppliers",
+        "rmpmbuffertrend":"RM / PM Buffer Trend",
+        "improvementaread":"Improvement Areas",
+        "topfailurereason":"Top Failure Reasons",
+        "trenfailurereason":"Trend Of Failure Reasons",
+        "resourceutilizationwip":"Resource Utilization & WIP Profile"
       }
     },
     "particulars": {

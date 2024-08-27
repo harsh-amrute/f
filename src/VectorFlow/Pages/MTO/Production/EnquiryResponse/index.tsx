@@ -44,6 +44,7 @@ const EnquiryResponse = () => {
   const [selectedFilters, setSelectedFilters] = useState<any>([]);
   const [hasProductGroup, setHasProductGroup] = useState<any>(false);
   const { data } = useGetEnquiryResData() || {};
+
   const [selectedOptions, setSelectedOptions] = useState<any>({
     plantName: "",
     productGroup: [],
@@ -86,8 +87,8 @@ const EnquiryResponse = () => {
       if (existIndex !== -1) {
         simData[existIndex] = {
           ...simData[existIndex],
+          cnm: ((element.fol <= simData[existIndex].fol) ? element.cnm : simData[existIndex].cnm),
           fol: Math.min(simData[existIndex].fol, element.fol),
-          cnm: element.fol === simData[existIndex].fol ? element.cnm : simData[existIndex].cnm,
         };
       } else {
         simData.push({ ...element }); // Clone the object to avoid mutation
@@ -154,11 +155,9 @@ const EnquiryResponse = () => {
     if (filterData) {
 
       const simData = getTableSimData(filterData);
-      // const simData: any = [];
+
       return (
         <RmUICont style={{ background: 'white' }}>
-
-
 
           <table style={{ margin: '10px 0', borderSpacing: '0', fontFamily: 'Roboto' }}>
             <thead style={{ marginBottom: '20px', textAlign: 'center' }}>
@@ -553,14 +552,15 @@ const EnquiryResponse = () => {
 
   useEffect(() => {
     notifyLoader("Loading Grid Data")
-    if (data?.data?.data?.results) {
-      setTableData(data?.data?.data?.results);
+    if (data?.data?.data) {
+      setTableData(data?.data?.data);
     }
     toast.dismiss()
   }, [data]);
 
   useEffect(() => {
-    setFilterData(data?.data?.data?.results);
+    console.log('data', data)
+    setFilterData(data?.data?.data);
   }, [tableData]);
 
   const { screenHeight } = useViewPort()

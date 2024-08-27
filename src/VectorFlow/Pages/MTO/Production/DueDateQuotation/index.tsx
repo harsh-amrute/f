@@ -4,7 +4,7 @@ import { useUserData } from '../../../../../context'
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { Footer, Wrapper } from './DueDateQuotation.styled'
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
-import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetFOLData, useGetLineCCRDetails, useGetMarketOperatingLeadTimeMasterData, useGetOrdersForDDQ, useGetUIConfig } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
+import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetDBRsettingsData, useGetFOLData, useGetLineCCRDetails, useGetMarketOperatingLeadTimeMasterData, useGetOrdersForDDQ, useGetUIConfig } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
 import { getColumnDefinations } from '../../../../../helpers/utils'
 import { GridOptions } from 'ag-grid-enterprise'
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox'
@@ -15,6 +15,7 @@ import OverlayLoader from '../../Common/Loader'
 import Step3 from './Step3'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import { notifyError } from '../../../../../helpers/notify'
+import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion'
 
 const DueDateQuotation = () => {
   const { user } = useUserData();
@@ -37,7 +38,7 @@ const DueDateQuotation = () => {
   const totalRows = useRef(0);
   const currentPageSelectedRows = useRef<any>([]);
   const assignmentRef = useRef<any>();
-  // const gridRef= useRef();
+  const gridRef= useRef<any>();
 
   const { mutateAsync: getData, isLoading: isDataLoading } = useGetOrdersForDDQ();
   const { mutateAsync: getBufferMaster, } = useGetBufferMasterData();
@@ -48,6 +49,8 @@ const DueDateQuotation = () => {
   const { mutateAsync: getDailyWorkingCalendar, } = useGetDailyWorkingCalendar();
   const { mutateAsync: getMarketOperatingLeadTimeMasterData, } = useGetMarketOperatingLeadTimeMasterData();
   const { mutateAsync: getLineCCRDetails, } = useGetLineCCRDetails();
+  const { mutateAsync: getBOMExplosionData, } = useGetBOMExplosionData();
+  const { mutateAsync: getDBRsettingsData, } = useGetDBRsettingsData();
   const { data: UIConfig, isLoading: isUIConfigLoading } = useGetUIConfig("DueDateQuotation");
 
   const [loading, setLoading] = useState(false);
@@ -64,8 +67,14 @@ const DueDateQuotation = () => {
     },
   ]
 
+  const customization: any = {
+    "OrderID": {
+      cellRenderer: "agGroupCellRenderer"
+    }
+  }
+
   const columnDefs = useMemo(() => {
-    return getColumnDefinations(UIConfig?.data ? UIConfig?.data?.data : [], undefined, extras);
+    return getColumnDefinations(UIConfig?.data ? UIConfig?.data?.data : [], customization, extras);
   }, [isUIConfigLoading]);
 
   const gridOptions: GridOptions = {
@@ -77,6 +86,44 @@ const DueDateQuotation = () => {
     rowSelection: "multiple",
     columnDefs: columnDefs,
     suppressRowClickSelection: true,
+    masterDetail: true,
+    detailRowAutoHeight: true,
+    detailCellRendererParams: {
+      suppressMenu: true,
+      detailGridOptions: {
+        rowHeight: 45,
+        domLayout:"autoHeight",
+        autoGroupColumnDef: {
+          headerName:"Item Name",
+          cellRendererParams: {
+              suppressCount: true
+          }
+      },
+        columnDefs: [
+          { field: "qty", headerName: "Requirement", },
+          { field: "soh", headerName: "Stock",  },
+          { field: "wip", headerName: "WIP",  },
+          { field: "gap", headerName: "Gap", },
+        ],
+        defaultColDef: {
+          flex: 1,
+          suppressMenu: true,
+          cellStyle: {
+            fontSize:"16px",
+            display: "flex",
+            alignItems: "center"
+          }
+        },
+        treeData: true,
+        getDataPath: (data: any) => {
+          return data.path;
+        },
+      },
+      getDetailRowData: async (params: any) => {
+        const data = await getBOMExplosionData({orderId: params.data.oid, lineId: params.data.lid});
+        params.successCallback(data?.data?.data)
+      }
+    },
     defaultColDef: {
       wrapHeaderText: true,
       autoHeaderHeight: true,
@@ -95,11 +142,9 @@ const DueDateQuotation = () => {
     },
   }
 
-
-
   useEffect(() => {
     getDDQData();
-  }, [currentPage, unScheduled]);
+  }, [currentPage, unScheduled, step == 1]);
 
   useEffect(() => {
     if (selectedRows.size > 0) {
@@ -119,10 +164,10 @@ const DueDateQuotation = () => {
     try {
       const data: any = await getData({ currentPage, unScheduled: unScheduled });
       totalRows.current = data?.data?.data?.count;
-      let results: any = data?.data?.data?.results;
-      results = results?.filter((order: any) => {
-        return !scheduledOrders.has(order.id);
-      })
+      const results: any = data?.data?.data?.results;
+      // results = results?.filter((order: any) => {
+      //   return !scheduledOrders.has(order.id);
+      // })
       setRows(results);
     }
     catch (err) {
@@ -141,10 +186,10 @@ const DueDateQuotation = () => {
         const procMaster: any = []
         if (allBufferMaster) {
           allBufferMaster.forEach((master: any) => {
-            if (master.buffer_type.buffer_type.toLowerCase() === "prod") {
+            if ("production".includes(master.buffer_type.buffer_type.toLowerCase())) {
               prodMaster.push({ label: master.buffer_code, value: master.buffer_id, size: master.buffer_size })
             }
-            else if (master.buffer_type.buffer_type.toLowerCase() === "proc") {
+            else if ("procurement".includes(master.buffer_type.buffer_type.toLowerCase())) {
               procMaster.push({ label: master.buffer_code, value: master.buffer_id, size: master.buffer_size })
             }
           })
@@ -167,7 +212,7 @@ const DueDateQuotation = () => {
             maxFol = Math.max(maxFol, FOL[ccr.ccr_id]?.fol || 0)
           })
           group.ccrs.forEach((ccr: any) => {
-            obj.ccrs.push({ label: ccr.ccr_name, value: ccr.ccr_id, minFol, maxFol, fol: FOL[ccr.ccr_id]?.fol || 0 });
+            obj.ccrs.push({ label: ccr.ccr_name, value: ccr.ccr_id, minFol, maxFol, fol: FOL[ccr.ccr_id]?.fol || 0, plant_id: ccr.plant });
           })
           ccrGroups.push(obj);
         })
@@ -184,8 +229,14 @@ const DueDateQuotation = () => {
 
         const MarketLeadTimeMasterData = await getMarketOperatingLeadTimeMasterData();
         const MarketLeadTimeMaster = MarketLeadTimeMasterData.data?.data;
-        setMasters({ procMaster, prodMaster, ccrGroups, CCRItemTypeMappingMaster, FOL, CCRMaster, WorkingCalender, MarketLeadTimeMaster });
+        
+        
+        const DBRSettingsData = await getDBRsettingsData();
+        const DBRSettings = DBRSettingsData.data?.data;
+        
+        setMasters({ procMaster, prodMaster, ccrGroups, CCRItemTypeMappingMaster, FOL, CCRMaster, WorkingCalender, MarketLeadTimeMaster, DBRSettings });
       }
+
       const orders = Array.from(selectedRows.values()).map((row: any) => {
         return row.data.ok
       })
@@ -209,7 +260,7 @@ const DueDateQuotation = () => {
       case 1: {
         return (
           <Step1
-            // ref={gridRef}
+            ref={gridRef}
             gridOptions={gridOptions}
             rows={rows}
             selectedRows={selectedRows}
@@ -253,6 +304,8 @@ const DueDateQuotation = () => {
             WorkingCalender={masters?.WorkingCalender}
             scheduledOrders={scheduledOrders}
             setScheduledOrders={setScheduledOrders}
+            setStep={setStep}
+            setDisabled={setDisabled}
           />
         )
       }
@@ -268,7 +321,7 @@ const DueDateQuotation = () => {
         return <>Confirm</>
       }
       case 3: {
-        return <div style={{display:"flex", justifyContent:"center", alignItems:"center", gap: "0.6rem"}}><img src="/assets/img/mto/dueDateQuotation/calender.svg"/> Schedule</div>
+        return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "0.6rem" }}><img src="/assets/img/mto/dueDateQuotation/calender.svg" /> Schedule</div>
       }
       default: {
         return <>  Continue</>
@@ -287,7 +340,6 @@ const DueDateQuotation = () => {
           <div style={{ minHeight: '10vh', fontSize: '16px', padding: "20px", textAlign: "center" }}>
             Any unsaved changes will be discarded, <br /> Are you sure you want to go back ?
           </div>
-
           <div style={{ zoom: '0.7', display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 0 0 0' }}>
 
             <VFButton onClick={() => { setShowModal(false) }} themeUi={themeUi}>
@@ -321,14 +373,20 @@ const DueDateQuotation = () => {
           style={{ width: "50px", height: "40px" }}>
           <img src="/assets/img/mto/dueDateQuotation/back-btn.svg" />
         </VFButtonOutline>}
-       {step != 3 && <VFButtonOutline themeUi={themeUi} disabled
-          onClick={() => { 
+        {step != 3 && <VFButtonOutline themeUi={themeUi} 
+          onClick={() => {
             console.log();
-          }} 
+            if(step == 1){
+              gridRef.current?.deselectAllForStep1()
+            }
+            if(step == 2){
+              assignmentRef.current?.deselectAllForStep2()
+            }
+          }}
           style={{ fontSize: "12px", width: "100px", height: "40px" }}>
           Deselect Orders
         </VFButtonOutline>}
-        
+
         <VFButton themeUi={themeUi}
           disabled={disabled}
           onClick={() => {
@@ -336,8 +394,13 @@ const DueDateQuotation = () => {
               setStep(step + 1);
             }
             else if (assignmentRef.current?.onConfirm && step == 2) {
-              assignmentRef.current.onConfirm()
-              setStep(step + 1);
+              const isDDQActiveFlag = masters.DBRSettings.find((setting: any)=> setting.flag == "IsDDQActive");
+              // const isDDQActiveFlag = false;
+              assignmentRef.current.onConfirm().then((data: any)=>{
+                if (data && isDDQActiveFlag){ //TODO: what to do when the flag is false and no changes are made, what message to show
+                    setStep(step + 1);
+                }
+              });
             }
             else if (assignmentRef.current?.onScheduled && step == 3) {
               assignmentRef.current.onScheduled();
@@ -347,6 +410,7 @@ const DueDateQuotation = () => {
           {renderSubmitText()}
         </VFButton>
       </Footer>
+      {/* <BomExplosionPOC/> */}
     </Wrapper>
   )
 }
