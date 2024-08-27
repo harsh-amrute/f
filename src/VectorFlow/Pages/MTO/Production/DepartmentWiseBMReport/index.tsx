@@ -32,7 +32,7 @@ import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/C
 import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
-import { formatFilterJSON } from '~/helpers/utils';
+import { formatFilterJSON } from '../../../../../helpers/utils';
 
 interface ApiResponse {
     cc: string;
