@@ -5,7 +5,7 @@ import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/A
 import { Footer, Wrapper } from './DueDateQuotation.styled'
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
 import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetDBRsettingsData, useGetFOLData, useGetLineCCRDetails, useGetMarketOperatingLeadTimeMasterData, useGetUIConfig, useGetFilteredOrdersForDDQ } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
-import { getColumnDefinations } from '../../../../../helpers/utils'
+import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils'
 import { GridOptions } from 'ag-grid-enterprise'
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox'
 import "./style.css"
@@ -183,7 +183,8 @@ const DueDateQuotation = () => {
 
   const getDDQData = async () => {
     try {
-      const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters });
+      const formatedFilters = formatFilterJSON(appliedFilters);
+      const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters: formatedFilters });
       totalRows.current = data?.data?.data?.count;
       const results: any = data?.data?.data?.results;
       // results = results?.filter((order: any) => {
@@ -362,7 +363,8 @@ const DueDateQuotation = () => {
 
   const getUpdatedFilterData = async() => {
     try {
-      const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters});
+      const formatedFilters = formatFilterJSON(appliedFilters);
+      const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters: formatedFilters });
       totalRows.current = data?.data?.data?.count;
       let results: any = data?.data?.data?.results;
       results = results?.filter((order: any) => {
@@ -375,6 +377,10 @@ const DueDateQuotation = () => {
       notifyError("Something Went Wrong!");
     }
   }
+
+  useEffect(()=>{
+    setAppliedFilters(currFilter);
+  },[currFilter])
 
   useEffect(() => {
       getUpdatedFilterData();

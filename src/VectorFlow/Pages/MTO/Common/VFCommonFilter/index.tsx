@@ -18,7 +18,7 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import { AvailabilityFilter, FilterCheckboxAccordian, FilterMultiSelectCheckbox, Checkbox } from "./InputTypes";
 import VFMasterFieldSearch from "../../../../../components/VectorFLOW/commons/VFMasterFieldSearch";
-import { checkValue, formatFilterJSON } from "../../../../../helpers/utils";
+import { checkValue } from "../../../../../helpers/utils";
 import { InputTypes } from "../Enum";
 
 interface VFCommonFilterProps {
@@ -293,10 +293,9 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                   Go Back!
                 </VFButtonOutline>
                 <VFButton data-testid="applyFilter" themeUi={user.user.theme_ui} onClick={() =>{
-                  const formatedFilters = formatFilterJSON(filterState);
                   setIsMfgSelected(true);
                   setMultiFilter(filterState);
-                  onApplyFilter(formatedFilters);
+                  onApplyFilter(filterState);
                 }}>
                   Apply Filter
                 </VFButton>
