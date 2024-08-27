@@ -43,6 +43,7 @@ const BreadCrumb = () => {
 
   if (location.pathname === '/procurement/material-coverage-open-sales') return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Material Coverage For Open Sales Order</BoldSpan></span>
   if (location.pathname === '/procurement-planning/planning') return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Procurement Planning</BoldSpan></span>
+  if (location.pathname === '/planning/simulative-fullkit') return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Procurement Planning</BoldSpan></span>
   if (location.pathname === '/procurement/material-requirement') return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Material Requirement</BoldSpan></span>
   if (location.pathname === '/procurement/insights-and-trends/day-wise-coverage') return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>Insights & Trends / Day Wise Coverage </BoldSpan></span>
   if (location.pathname === '/procurement/insights-and-trends/rmpm-orderwise-coverage') return <span>Procurement <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Insights & Trends / RM/PM Orderwise Coverage </BoldSpan></span>
