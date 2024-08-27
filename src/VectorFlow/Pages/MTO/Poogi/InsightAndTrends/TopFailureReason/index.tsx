@@ -68,7 +68,7 @@ const TopFailureReasons = () => {
       <MTOActionToolBar
         isGridView={isGridView}
         setIsGridView={setIsGridView}
-        isChartGridToggle
+        //isChartGridToggle /***commented it  */
         isAddFilterButton
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>
