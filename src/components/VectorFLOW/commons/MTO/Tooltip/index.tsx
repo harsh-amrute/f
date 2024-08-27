@@ -56,15 +56,19 @@ const Tooltip = ({ children, content, zoom = 1, style = {}, tooltipZoom = 1 }: a
             style={style}
         >
             {children}
-            {showTooltip && (
-                //use portal here
-                <Portal wrapperId="tooltip">
-                    <TooltipContainer $myzoom={tooltipZoom} $arrowLeft={toolTipPosition?.arrowLeft} data-testid="tooltip" style={{ top: toolTipPosition?.top, left: toolTipPosition?.left }} ref={tooltipRef}>
-                        {content}
-                    </TooltipContainer>
-                </Portal>
+            {showTooltip &&
 
-            )}
+                (
+                    //use portal here
+                    <Portal key={1} wrapperId="tooltip">
+                        <TooltipContainer $myzoom={tooltipZoom} $arrowLeft={toolTipPosition?.arrowLeft} data-testid="tooltip" style={{ top: toolTipPosition?.top, left: toolTipPosition?.left }} ref={tooltipRef}>
+                            {content}
+                        </TooltipContainer>
+                    </Portal>
+                )
+
+
+            }
         </TooltipTarget>
     );
 };

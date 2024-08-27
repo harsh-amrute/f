@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 import { ColDef, GridOptions, IDetailCellRendererParams } from "ag-grid-enterprise";
 import {
     VFChilWrapper
@@ -13,7 +13,7 @@ interface CustomColDef extends ColDef {
 // Define the default column definition interface
 interface CustomDefaultColDef {
     flex: number;
-    cellStyle:any;
+    cellStyle: any;
 }
 
 // Define the grid options interface

@@ -1,6 +1,6 @@
 import { ProcurementLayout } from './styles';
 import useMaterialSO from './useMaterialSO';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import OverlayLoader from '../../Common/Loader';
 import { pagination } from '../../Common/Enum';

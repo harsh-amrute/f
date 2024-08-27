@@ -7,18 +7,18 @@ import { useState } from "react";
 import { useUserData } from "../../../context";
 import { useNavigate } from "react-router";
 
-const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) => {
+const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any) => {
   const [listMenu, setListMenu] = useState(listMenuParent);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const queryClient = useQueryClient();
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
   const [activeTooltip, setActiveTooltip] = useState<number>(0);
-  const [isLoading,setIsLoading] = useState(false);
-  const [tempUrls,setTempUrls] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [tempUrls, setTempUrls] = useState([]);
 
   const handleClickMenu = (item: any, index: number) => {
-    if(item.name==='navbar.listMenuParent.miscellaneousReports.title') return;
+    if (item.name === 'navbar.listMenuParent.miscellaneousReports.title') return;
     setMenuItem(item);
     const newMenu = [...listMenuParent];
     newMenu.forEach((itemMenu: any) => {
@@ -80,11 +80,11 @@ const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) =
                     src={renderImg(item.img, item.status, item.id)}
                     alt="logo"
                     widthIcon={item.widthIcon}
-                    onClick={()=>{navigate(item.url)}}
+                    onClick={() => { navigate(item.url) }}
 
                   />
                   {!item.status && activeTooltip === item.id && (
-                    <MenuToolTip item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive}/>
+                    <MenuToolTip item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive} />
                   )}
                   {item.status && !isHide && activeTooltip === item.id && (
                     <MenuToolTip item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive} />

@@ -6,15 +6,13 @@ export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?:
     height:${(props) => props.height ? props.height : 'auto'};
     // max-height:90%;
     margin:20px;
-    zoom:${props => props.disableZoomScaling ? 1 : 1};
+    zoom: 1 !important;
     width:1200px,
 
-    @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
-    .size.desktop}) {
-        ${props => props.disableZoomScaling ? 1 : 1};
+    & > .ag-theme-alpine{
+      margin: 0 !important;
     }
-  
-    @media (min-width: ${gridSystem.size.desktop}) {
-      zoom:1;
+    & > .ag-theme-noir-fusion{
+      margin: 0 !important;
     }
 ` 

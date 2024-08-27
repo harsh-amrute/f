@@ -6,7 +6,7 @@ import DetailCellRenderer from "./MaterialCellRenderer";
 import { getColumnDefinations } from '../../../../../helpers/utils'
 import ColorCellRenderer from "../../Common/ColorCellRenderer";
 import { useGetOpenSODetailsData } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage";
-import CustomGroupCellRenderer from "../InsightsAndTrends/DayWiseCoverage/CustomGroupCellRenderer";
+import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { toast } from "react-toastify";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
@@ -44,8 +44,8 @@ const useMaterialSO = (data: any) => {
             suppressHeaderFilterButton: true,
             suppressMenu: true,
             filter: false,
-            initialWidth: 80,
-            maxWidth: 80,
+            initialWidth: 50,
+            maxWidth: 50,
             cellRenderer: CustomGroupCellRenderer
         }
     ]

@@ -21,7 +21,7 @@ import {
 } from './styles'
 import { AgGridReactProps } from 'ag-grid-react';
 import { BPRViewTableGrid } from '../../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/styles';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 import { /*orderStatus, orderStatusData, ElapsedTime, ElapsedTimeData, */AgieingTime, ageingData } from './DeptWiseBMReportData'
 
 interface orderElapsedGridProps {
@@ -510,7 +510,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                             WIP Present In  :
                                         </ExpansionHeaderNormalText>
                                         <ExpansionHeaderColoredText>
-                                            {`${deptName.length > 1?',':''}${deptName}`}
+                                            {`${deptName.length > 1 ? ',' : ''}${deptName}`}
                                         </ExpansionHeaderColoredText>
                                     </ExpansionHeaderGroup>
                                     <ExpansionHeaderGroup onClick={() => toggleLeftPanelOrderStatus(!isLeftPanelOrderStatusOpen)} style={{ marginLeft: 'auto' }}>

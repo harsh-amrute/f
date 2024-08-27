@@ -77,7 +77,6 @@ const RMPMOrderwiseCoverage = () => {
             defaultColDef: {
                 filter: "agTextColumnFilter",
                 floatingFilter: true,
-                floatingFilterComponentParams: { suppressFilterButton: true },
                 suppressMenu: true,
                 resizable: true,
 

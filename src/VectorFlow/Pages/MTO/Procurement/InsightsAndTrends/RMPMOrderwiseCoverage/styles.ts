@@ -70,7 +70,7 @@ export const SCHorizontalDivider = styled.hr`
 
 export const TableWrapper = styled.div`
     height : 95vh;
-    zoom: 0.75;
+    zoom: 1;
     display: flex;
     flex-direction: column;
 

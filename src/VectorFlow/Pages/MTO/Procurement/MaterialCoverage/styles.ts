@@ -354,7 +354,7 @@ export const SCDynamicContainer = styled.div`
 
 
     & .ag-header-cell-text {
-      font-size: 18px;
+      font-size: 10px !important;
       font-weight: bold;
     }
 

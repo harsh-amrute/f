@@ -1,6 +1,6 @@
 import { useRef } from "react"
 import { pagination } from "../../../../../../../VectorFlow/Pages/MTO/Common/Enum"
-import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
+import VFTable from "../../../../../../../VectorFlow/Pages/MTO/Common/VFTable"
 import { TableWrapper } from "../styles"
 
 interface GridProps {
@@ -16,9 +16,6 @@ const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps | a
     return (
 
         <TableWrapper>
-
-
-
             <VFTable
 
                 {...agGridProps}

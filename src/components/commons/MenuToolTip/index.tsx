@@ -9,42 +9,42 @@ import {
   TooltipContent,
   SCIcon,
 } from "./style";
-import {handleDownload,navigateWithPrompt} from "../../../helpers/utils";
-import {useDispatch, useSelector } from 'react-redux';
+import { handleDownload, navigateWithPrompt } from "../../../helpers/utils";
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 
-const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading,setIsHide,setWidthResponsive }: any) => {
+const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoading, setIsHide, setWidthResponsive }: any) => {
   const { t } = useTranslation();
-  const { user,toggleSideBar } = useUserData();
+  const { user, toggleSideBar } = useUserData();
   const themeUi = user?.user?.theme_ui;
   const location = useLocation();
   const navigate = useNavigate();
   //Add Report Urls to this Array
-  const reportUrls = ['/api/download-reports/bpr','/api/download-reports/fr','/api/download-reports/rosn','/api/download-reports/store_classification','/api/download-reports/ist'];
+  const reportUrls = ['/api/download-reports/bpr', '/api/download-reports/fr', '/api/download-reports/rosn', '/api/download-reports/store_classification', '/api/download-reports/ist'];
 
-  const mdm = useSelector((state:RootState) => state.mdm);
+  const mdm = useSelector((state: RootState) => state.mdm);
   const dispatch = useDispatch();
 
   const resetState = () => {
     dispatch(RESET_STATE());
   }
 
-  
-  const handleTooltipClick = async (url:string) => {
-    
-    if(reportUrls.includes(url)){
+
+  const handleTooltipClick = async (url: string) => {
+
+    if (reportUrls.includes(url)) {
       setTempUrls([...tempUrls].concat(url));
       setIsLoading(true);
-      if(await handleDownload(url,'')) {
+      if (await handleDownload(url, '')) {
         setIsLoading(false);
-        const tempArr = tempUrls.filter((tempUrl:string)=>tempUrl===url)
+        const tempArr = tempUrls.filter((tempUrl: string) => tempUrl === url)
         setTempUrls([...tempArr]);
       }
     }
-    else{
+    else {
       // navigate(url, { replace: true })
-      navigateWithPrompt(()=>{
+      navigateWithPrompt(() => {
         navigate(url, { replace: true });
         if (isHide) {
           setWidthResponsive({
@@ -54,7 +54,7 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading
         }
         setIsHide(false);
         toggleSideBar(false)
-      },url,mdm,resetState);
+      }, url, mdm, resetState);
     }
   }
 
@@ -63,60 +63,60 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading
     const result = [];
 
     while (stack.length > 0) {
-        const current = stack.pop();
+      const current = stack.pop();
 
-        if (current.child) {
-            stack.push(...current.child);
-        }
+      if (current.child) {
+        stack.push(...current.child);
+      }
 
-        else{
-          result.push(current);
-        }
+      else {
+        result.push(current);
+      }
     }
 
     return result.reverse();
-};
+  };
 
 
 
 
-  const renderToolTipContent = (items:any):any=>{
+  const renderToolTipContent = (items: any): any => {
     const result = getNestedChildren(items.child)
-      return(
-        result.map((itemChild: any, index: number) => {
-          const checkRole = user?.roles?.permission?.some((value: any) =>
+    return (
+      result.map((itemChild: any, index: number) => {
+        const checkRole = user?.roles?.permission?.some((value: any) =>
           itemChild?.role?.includes(value)
-          );
-          if (
-            (user.url_permission.includes(itemChild.url) ||
+        );
+        if (
+          (user.url_permission.includes(itemChild.url) ||
             itemChild.url === "" ||
             itemChild.url === "/profile" || reportUrls.includes(itemChild.url)) && checkRole
-          ) {
-            return (
-              
-              <TooltipContent
-                key={index}
-                action={itemChild.url === location.pathname}
-                themeUi={themeUi}
-                onClick={() => handleTooltipClick(itemChild.url)}
-              >
-                {t(itemChild.name) || itemChild.name}
-                {itemChild.url !== location.pathname && (
-                  <SCIcon
-                    src={
-                      isLoading && tempUrls.includes(itemChild.url) ? "/assets/img/nav/loader.svg" :
+        ) {
+          return (
+
+            <TooltipContent
+              key={index}
+              action={itemChild.url === location.pathname}
+              themeUi={themeUi}
+              onClick={() => handleTooltipClick(itemChild.url)}
+            >
+              {t(itemChild.name) || itemChild.name}
+              {itemChild.url !== location.pathname && (
+                <SCIcon
+                  src={
+                    isLoading && tempUrls.includes(itemChild.url) ? "/assets/img/nav/loader.svg" :
                       itemChild.imgHover
                         ? itemChild.imgHover
                         : "/assets/img/nav/arrow_down.svg"
-                    }
-                    alt="arrow"
-                  />
-                )}
-              </TooltipContent>
-            );
-          }
-        })
-      )
+                  }
+                  alt="arrow"
+                />
+              )}
+            </TooltipContent>
+          );
+        }
+      })
+    )
   }
 
   return (
@@ -127,10 +127,11 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading
         className="tooltip_list"
         noArrow
         isOpen
+
       >
         <TooltipContainer>
           <TooltipTitle>{t(item.name)}</TooltipTitle>
-         {renderToolTipContent(item)}
+          {renderToolTipContent(item)}
         </TooltipContainer>
       </Tooltip>
     </WrapToolTip>

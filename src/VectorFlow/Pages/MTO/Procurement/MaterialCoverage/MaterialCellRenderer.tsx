@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
 import { HeaderChildren } from './Data';
 import { mapSimulateHedaerChildrenFieldsToColDefs } from '../../../../../helpers/utils';
@@ -13,8 +13,8 @@ const MaterialCellRenderer = (params: any) => {
     }), []);
 
     return (
-        <div style={{ backgroundColor: 'white' }}>
-            <h3 style={{ marginLeft: 20, fontSize: 17 }}>Raw Material Details</h3>
+        <div style={{ backgroundColor: 'transparent' }}>
+            <h3 style={{ marginLeft: 20, fontSize: 12 }}>Raw Material Details</h3>
 
             <SCDynamicContainer>
 
@@ -41,7 +41,7 @@ const MaterialCellRenderer = (params: any) => {
                         flex: 1,
                     }}
                     rowData={params.data.children}
-                    height={'300px'}
+                    height={'200px'}
                     pagination={true}
                     paginationPageSize={3}
                     components={customChildrenCellRenderers}
