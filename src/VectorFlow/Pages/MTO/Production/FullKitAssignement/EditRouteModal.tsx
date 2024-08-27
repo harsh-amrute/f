@@ -1,100 +1,80 @@
+import React, { useEffect, useMemo, useState } from 'react'
 import { AgChartOptions } from 'ag-charts-community'
 import { AgChartsReact } from 'ag-charts-react'
-import React from 'react'
+import { useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
+import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
 // import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
-import { ContentWrapper, StepGroup, StepLabel, StepperWrapper, Text } from './FullKitAssignment.styled'
+import { ContentWrapper, Text } from './FullKitAssignment.styled'
 import { Rectangle } from './RectangleMarker'
-import CustomSelect from './Select'
+import { notifyError } from '../../../../../helpers/notify'
+import _ from 'lodash'
+import { useSaveRouteData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement'
+import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
+import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline'
 
-const EditRouteModal = ({ showModal, setShowModal, graphData, theme }: any) => {
+type LineCcr = {
+    [order: string]: {
+        [ccrId: string]: {
+            load: number;
+            pcqty: number;
+            rid: number;
+        };
+    };
+};
 
-    // useEffect(() => {
-    //     // let animationFrameId: any;
-    //     const animate = () => {
-    //         const stepGroups = document.querySelectorAll('.step-group');
-    //         const svg: any = document.querySelector('.line');
-    //         if (svg?.innerHTML) {
-    //             svg.innerHTML = "";
-    //         }
-    //         for (let i = 0; i < stepGroups?.length - 1; i++) {
-    //             const start: any = stepGroups[i].getBoundingClientRect();
-    //             const end: any = stepGroups[i + 1].getBoundingClientRect();
-    //             if (stepGroups[i + 1].id == "inactive") {
-    //                 const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-    //                 polyline.setAttribute('points', `${end.left - 8},${end.top + end.height / 2 - 2.5} ${end.left - 8},${end.top - 10} ${end.left + 8 + end.width},${end.top - 10} ${end.left + 8 + end.width},${end.top + end.height / 2 - 2.5}`);
-    //                 svg.appendChild(polyline);
-    //                 polyline.setAttribute('stroke', '#82104C');
-    //                 polyline.setAttribute('fill', 'none');
-    //                 svg.appendChild(polyline);
-    //             }
-    //             const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    //             let leftOffset = 0
-    //             let rightOffset = 0
-    //             if (stepGroups[i].id == "inactive") {
-    //                 rightOffset = 5
-    //             }
-    //             if (stepGroups[i + 1].id == "inactive") {
-    //                 leftOffset = 5
-    //             }
-    //             line.setAttribute('x1', (start.right + 6 + rightOffset).toString());
-    //             line.setAttribute('y1', start.top + start.height / 2);
-    //             line.setAttribute('x2', (end.left - 6 - leftOffset).toString());
-    //             line.setAttribute('y2', end.top + end.height / 2);
-    //             line.setAttribute('stroke', '#82104C');
-    //             svg.appendChild(line);
-    //         }
-    //         // animationFrameId = 
-    //         requestAnimationFrame(animate);
-    //     };
-    //     // animationFrameId = 
-    //     requestAnimationFrame(animate);
+type Route = {
+    ccrId: number;
+    routeId: number;
+    ccrGrpId: number;
+    ps: number;
+};
 
-    //     // return cancelAnimationFrame(animationFrameId);
-    // }, []);
+const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, routeId, plantId, orderKey, setOrderKey, loadDataParams, setLoadDataParams }: any) => {
 
     const chartoptions: AgChartOptions = {
         data: graphData,
         series: [
             {
                 type: 'bar',
-                xKey: 'category',
-                yKey: "value",
+                xKey: 'ccr_name',
+                yKey: "stpl_in_days",
                 stacked: true,
                 strokeWidth: 0,
                 fill: "#191919",
-                formatter: (params) => {
-                    return {
-                        fillOpacity: params.datum.selected ? 1 : 0.5,
-                        fill: params.datum.selected ? params.fill : "#191919"
-                    }
-                }
+                // formatter: (params) => {
+                //   return {
+                //     fillOpacity: params.datum.selected ? 1 : 0.5,
+                //     fill: params.datum.selected ? params.fill : "#191919"
+                //   }
+                // }
             },
             {
                 type: 'bar',
-                xKey: 'category',
-                yKey: "value2",
+                xKey: 'ccr_name',
+                yKey: "allowed_full_kits",
                 stacked: true,
                 strokeWidth: 0,
                 fill: "#EBBF2C",
-                formatter: (params) => {
-                    return {
-                        fill: params.datum.selected ? params.fill : "#A8A8A8"
-                    }
-                },
+                // formatter: (params) => {
+                //   return {
+                //     fill: params.datum.selected ? params.fill : "#A8A8A8"
+                //   }
+                // },
                 // label: {
-                //     enabled: true,
-                //     formatter: (params: any) => {
-                //         return params.datum.groupName
-                //     },
-                //     placement: "outside",
-                //     color: "black",
+                //   enabled: true,
+                //   formatter: (params: any) => {
+                //     return params.datum.groupName
+                //   },
+                //   placement: "outside",
+                //   color: "black",
+
                 // }
             },
             {
                 type: 'scatter',
-                xKey: 'category',
-                yKey: 'target',
+                xKey: 'ccr_name',
+                yKey: 'cumulative_wip_limit',
                 marker: {
                     size: 10,
                     fill: '#E53F3F',
@@ -126,7 +106,6 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme }: any) => {
         ],
         legend: {
             position: "top",
-
             item: {
                 showSeriesStroke: true,
                 marker: {
@@ -139,39 +118,165 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme }: any) => {
 
     }
 
+    const { mutateAsync: getRouteDetails, } = useGetRouteDetails();
+    const { mutateAsync: getLineCCRDetails, } = useGetLineCCRDetails();
+    const { mutateAsync: saveRouteData,} = useSaveRouteData();
+
+    const [selectedRoute, setSelectedRoute] = useState<any>([])
+    const [lineCCR, setLineCCR] = useState<any>();
+
+    useEffect(() => {
+        getRoute(routeId).then((newRoute) => {
+            setSelectedRoute(newRoute);
+        })
+        if (orderKey)
+            getLineCCRData(orderKey)
+    }, [routeId, orderKey]);
+
+    const ccrGroupsForPlant = useMemo(() => {
+        if (plantId && ccrGroups) {
+            return ccrGroups.map((ccrGroup: any) => {
+                return {
+                    ...ccrGroup, ccrs: ccrGroup.ccrs.filter((ccr: any) => {
+                        return ccr.plant_id == plantId
+                    })
+                }
+            })?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0)
+        }
+        else {
+            return []
+        }
+    }, [ccrGroups, plantId])
+
+
+    const getRoute = async (route: any) => {
+        try {
+            if (typeof route === "number") {
+                const data = await getRouteDetails(route);
+                const routeDetails = data.data.data;
+                routeDetails.sort((a: any, b: any) => a.ps - b.ps)
+                const newRoute: any = []
+                routeDetails.forEach((routeDetail: any) => {
+                    const obj = []
+                    const ccrGroup = ccrGroups.find((ccr: any) => ccr.value === routeDetail.ccrGrpId);
+                    obj[0] = ccrGroup;
+                    obj[1] = ccrGroup.ccrs.find((ccr: any) => ccr.value === routeDetail.ccrId)
+                    newRoute[routeDetail.ps - 1] = obj
+                })
+                return _.cloneDeep(newRoute)
+            }
+            return []
+        }
+        catch (err) {
+            console.error(err);
+            notifyError("Something Went Wrong!");
+        }
+    }
+
+    const getLineCCRData = async (orderKey: any) => {
+        try {
+            const data: any = await getLineCCRDetails([orderKey]);
+            setLineCCR(data?.data?.data)
+        }
+        catch (err) {
+            notifyError("Something went wrong!")
+        }
+    }
+
+    const SaveRoute = async () => {
+        const data = convertToRequiredFormat(selectedRoute, lineCCR);
+        try {
+            const response = await saveRouteData(JSON.parse(JSON.stringify(data)))
+            if (response.status === 200) {
+                setShowModal(false);
+                setLoadDataParams({ ...loadDataParams, load_graph_data: true })
+            }
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+
+    function convertToRequiredFormat(routes: Route[], lineCcr: LineCcr[]): any {
+
+        const myCCRDetails: any = [];
+
+        routes.forEach((e: any, i) => {
+            const perCCRDetail = {
+                "ccrid": e[1].value,
+                "ccrgrp": e[0].value,
+                "pcQty": lineCcr[e[1].value]?.pcqty ? lineCcr[e[1].value]?.pcqty : 0,
+                "pos": (i + 1).toString(),
+                "ol": lineCcr[e[1].value]?.load ? lineCcr[e[1].value]?.load : 0,
+            }
+
+            myCCRDetails.push(perCCRDetail);
+
+        })
+
+        let routeName = '';
+        routes.forEach((e: any) => {
+            routeName = routeName + (e[1].label) + '/'
+        })
+        if (routeName.length >= 1) {
+            routeName = routeName.substring(0, routeName.length - 1);
+        }
+
+        const finalData = {
+            "routeData": {
+                "orders": [
+                    {
+                        "route": routeName,
+                        "ok": Object.keys(lineCCR)[0],
+                        "ccrdetails": myCCRDetails
+                    }
+                ]
+            }
+        }
+
+        return finalData;
+
+
+    }
+
     return (
-        <VFModalCard openModal={showModal} closeModal={() => { setShowModal((false)) }} headerText={'Edit Route'} headerIcon={''} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
+        <VFModalCard openModal={showModal} closeModal={() => { setOrderKey(null); setShowModal((false)); setSelectedRoute([]) }} headerText={'Edit Route'} headerIcon={''} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
             <ContentWrapper>
                 <Text>
                     You can change route by selecting CCR from drop-down
                 </Text>
-                <StepperWrapper>
-                    <StepGroup>
-                        <StepLabel>Dispensing</StepLabel>
-                        <CustomSelect theme={theme} selected={{ label: "M1", value: "M1" }} />
-                    </StepGroup>
-                    <StepGroup>
-                        <StepLabel>Granulation</StepLabel>
-                        <CustomSelect theme={theme} selected={{ label: "M2", value: "M2" }} />
-                    </StepGroup>
-                    <StepGroup id="inactive">
-                        <StepLabel>Shaft</StepLabel>
-                        <CustomSelect theme={theme} selected={{ label: "M3", value: "M3" }} />
-                    </StepGroup>
-                    <StepGroup id="inactive">
-                        <StepLabel>Inactive</StepLabel>
-                        <CustomSelect theme={theme} />
-                    </StepGroup>
-                    <StepGroup>
-                        <StepLabel>Final Product</StepLabel>
-                    </StepGroup>
-                    <svg className="line" style={{ position: "absolute", width: "100%", height: "100%", top: "0", left: "0", pointerEvents: "none" }}>
-                    </svg>
-                </StepperWrapper>
+                <RouteAssignment theme={theme} ccrGroupMaster={ccrGroupsForPlant} selectedRoutes={selectedRoute} setSelectedRoutes={setSelectedRoute} />
                 {/* <RouteAssignment theme={theme} /> */}
                 <strong style={{ fontSize: "14px" }}>Route Load</strong>
                 <div style={{ height: "300px" }}>
                     <AgChartsReact options={chartoptions} />
+                </div>
+                <div style={{display:"flex", justifyContent:"end", gap: "1rem"}}>
+                    <VFButtonOutline
+                        style={{
+                            height: "30px",
+                            minWidth: "80px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            padding: "1rem",
+                            fontSize: "14px",
+                        }}
+                        themeUi={theme} 
+                        onClick={() => { setOrderKey(null); setShowModal((false)); setSelectedRoute([]); setLineCCR(null); }}>
+                        Cancel
+                    </VFButtonOutline>
+                    <VFButton style={{
+                        height: "30px",
+                        minWidth: "80px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "1rem",
+                        fontSize: "14px",
+                        boxShadow:"unset"
+                    }} themeUi={theme} onClick={() => { SaveRoute() }}>Save Route</VFButton>
                 </div>
             </ContentWrapper>
         </VFModalCard>

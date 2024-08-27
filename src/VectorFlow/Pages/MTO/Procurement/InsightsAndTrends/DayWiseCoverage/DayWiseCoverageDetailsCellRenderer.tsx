@@ -14,7 +14,7 @@ const DayWiseCoverageDetailsCellRenderer = (params: any) => {
                     display: "flex",
                 },
                 cellRenderer: (params: any) => {
-                    return (<div style={{ borderRadius: "50%", background: "#E53F3F", width: "30px", height: "30px", display: "flex", justifyContent: "center", alignItems: "center", padding: "1.5rem", color: "white" }}>
+                    return (<div style={{ borderRadius: "50%", background: params.data.rmq == params.data.rmal ? "#33800B" :"#E53F3F", width: "30px", height: "30px", display: "flex", justifyContent: "center", alignItems: "center", padding: "1.5rem", color: "white" }}>
                         {params.value}
                     </div>)
                 }
