@@ -74,7 +74,8 @@ interface MTOActionToolBarProps {
     isReleaseButton?: boolean
     onOrderRelease?: () => void;
     onCheckBoxToggle?: any;
-    isReleaseButtonDisabled?: boolean
+    isReleaseButtonDisabled?: boolean,
+    utilityBtns?: ReactElement | null
     //// new props
 }
 
@@ -107,6 +108,7 @@ const MTOActionToolBar = ({
     quickFilter,
     onCheckBoxToggle,
     isReleaseButtonDisabled,
+    utilityBtns,
     WIPFilter
 }: MTOActionToolBarProps) => {
 
@@ -374,6 +376,9 @@ const MTOActionToolBar = ({
                 {/**Selected Filter ends*/}
 
             <SCCustomActionsContainer>
+                {utilityBtns && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem", gap: "1.5rem", marginRight: "10px"}}>
+                        {utilityBtns}
+                </div>}
                 {isAddFilterButton && (onAddFilter ?
                     <VFButton onClick={() => onAddFilter()}
                         themeUi={themeUi || ''}

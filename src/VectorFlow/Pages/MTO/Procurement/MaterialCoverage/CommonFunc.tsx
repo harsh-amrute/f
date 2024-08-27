@@ -118,3 +118,15 @@ export const getToolTipContent = (col: string, ToolTipdata: any) => {
         </table>
     )
 }
+
+export const formatNumber = (num:any) => {
+    if (num >= 10000000) {
+      return (num / 10000000).toFixed(1) + 'Cr'; // Crore
+    } else if (num >= 100000) {
+      return (num / 100000).toFixed(1) + 'L'; // Lakh
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'K'; // Thousand
+    } else {
+      return num; // Numbers below 1000
+    }
+  };

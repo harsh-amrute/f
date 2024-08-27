@@ -436,29 +436,46 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         // console.log("ccritem", ccrItem)
                         // console.log("lineCCR[order.ok]?.[ccrId]?.pcqty", lineCCR[order.ok]?.[ccrId]?.pcqty)
                         // console.log("order.pcqty", order.pcQty)
+                        console.log('lineCCR', lineCCR);
+                        
                         const lineCCRPendingQty = lineCCR[order.ok]?.[ccrId]?.pcqty || 0;
                         const orderPendingQty = order.pcqty || 0
 
-                        if(!lineCCRPendingQty || !orderPendingQty){
-                            errors.push(`Missing Pending Qty for CCR: ${ccrNames[index]} or Order: ${order.oid}`)
+                        console.log("lineCCRPendingQty", lineCCRPendingQty)
+                        console.log("orderPendingQty", orderPendingQty)
+
+                        if(!lineCCRPendingQty)
+                        {
+                            if(!orderPendingQty){
+                                errors.push(`Missing Pending Qty for CCR: ${ccrNames[index]} or Order: ${order.oid}`)
+                            }    
                         }
 
+                        
                         const orderLoad = Math.ceil(((ccrItem?.tt || 0) * (lineCCRPendingQty || orderPendingQty)));
-
+                        console.log('ccrItem?.tt', ccrItem?.tt);
+                        
+                        console.log('orderLoad', orderLoad);
+                        
                         //for calculating the initial value for prevPending
                         if (!ccr_prev_pending[ccrId]) {
                             const ccr_fol_data = masters.FOL[ccrId];
-                            const folInDays = ccr_fol_data.fol || -1; 
-                            const ocm = ccr_fol_data?.ocm || -1; 
+                            const folInDays = ccr_fol_data?.fol ?? -1; 
+                            const ocm = ccr_fol_data?.ocm ?? -1; 
                             // console.log("folInDays", folInDays)
                             // console.log("ocm", ocm)
-                            if(ccr_fol_data?.fol == -1 || ccr_fol_data.ocm == -1){
+                            if(folInDays == -1 || ocm == -1){
                                 errors.push(`"FOL" or "Occupied Quanitity In Muniutes (OCM)" missing for CCR Name: ${ccrNames[index]}`)
                             }
                             // console.log("ccr_fol_data",ccr_fol_data)
                             // console.log("ccrWorkingHoursPerDay", ccrWorkingHoursPerDay)
                             // console.log("folInDays", folInDays)
                             // console.log("prev pending",  Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm))
+
+                            console.log("FOLinDays", folInDays)
+                            console.log("ccrWorkingHoursPerDay", ccrWorkingHoursPerDay)
+                            console.log("ocm", ocm)
+                            console.log(orderLoad)
 
                             ccr_prev_pending[ccrId] = {
                                 ccr_id: ccrId,
@@ -478,7 +495,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             folSpan: ((ccr_prev_pending[ccrId].prevPend)) / (ccrWorkingHoursPerDay * 60),
                         }
 
-                        // console.log("ccr_prev_pending", ccr_prev_pending)
+                        console.log("ccr_prev_pending", ccr_prev_pending)
                         // console.log(ccrId, "orderLoad", order_ccr_data[ccrId].orderLoad, "folSpan" ,order_ccr_data[ccrId].folSpan, "order pending qty",row.pcqty, "ccr tt", ccrItem.tt, "ccrWorkingHoursPerDay" ,ccrWorkingHoursPerDay)                     
                     });
                     if(errors.length > 0){
