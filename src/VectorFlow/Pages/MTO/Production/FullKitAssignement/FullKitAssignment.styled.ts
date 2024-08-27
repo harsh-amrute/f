@@ -28,6 +28,14 @@ export const Wrapper = styled.div`
     width: 100%;
     margin-bottom: 0;
     margin-top: 20px;
+    padding-left: 0;
+    margin-left: 0;
+  }
+
+  & > div[data-testid="vf_pagination"]{
+    flex: unset;
+    width:100%;
+    margin-top: -17px;
   }
 `;
 
@@ -133,6 +141,7 @@ export const StepLabel = styled.div`
 
 export const ContentWrapper = styled.div`
   margin: 2rem;
+  width: 70vw;
 `;
 export const Text = styled.div`
   font-size: 14px;
