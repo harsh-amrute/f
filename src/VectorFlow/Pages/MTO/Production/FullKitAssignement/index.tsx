@@ -523,7 +523,7 @@ const FullKitAssignment = () => {
 
   const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_FullKit_Assignment);
 
-  const onApplyFilter = (filter:any)=>{
+  const onApplyFilter = ()=>{
     setIsFilterOpen(false)
   }
   const onAddFilter = ()=>{
