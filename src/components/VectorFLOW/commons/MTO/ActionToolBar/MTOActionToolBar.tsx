@@ -421,7 +421,7 @@ const MTOActionToolBar = ({
             </SCTaskFilterContainer>
 
             <SCCustomActionsContainer>
-                {utilityBtns && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem" }}>
+                {utilityBtns && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem", gap: "1.5rem", marginRight: "10px"}}>
                         {utilityBtns}
                 </div>}
                 {isAddFilterButton && (onAddFilter ?
