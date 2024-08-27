@@ -510,6 +510,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
             const currentElapsedTimeInDays = parseElapsedTime(row.et);
 
             // If department is not in the map or current row has a higher elapsed time
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             if (!deptMap.has(row.dept) || parseElapsedTime(deptMap.get(row.dept)!.et) < currentElapsedTimeInDays) {
                 deptMap.set(row.dept, row);
             }
