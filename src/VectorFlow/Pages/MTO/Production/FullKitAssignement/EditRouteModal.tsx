@@ -120,7 +120,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
 
     const { mutateAsync: getRouteDetails, } = useGetRouteDetails();
     const { mutateAsync: getLineCCRDetails, } = useGetLineCCRDetails();
-    const { mutateAsync: saveRouteData, isLoading, isSuccess, isError } = useSaveRouteData();
+    const { mutateAsync: saveRouteData,} = useSaveRouteData();
 
     const [selectedRoute, setSelectedRoute] = useState<any>([])
     const [lineCCR, setLineCCR] = useState<any>();
