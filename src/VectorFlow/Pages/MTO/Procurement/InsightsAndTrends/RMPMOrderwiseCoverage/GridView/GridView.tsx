@@ -17,7 +17,6 @@ const GridView = ({ agGridProps, ShortageColumns, ShortageDatas }: GridProps | a
 
         <TableWrapper>
             <VFTable
-
                 {...agGridProps}
                 columnDefs={ShortageColumns}
                 rowData={ShortageDatas}

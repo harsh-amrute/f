@@ -69,10 +69,12 @@ export const SCHorizontalDivider = styled.hr`
 
 
 export const TableWrapper = styled.div`
-    height : 95vh;
+    // height : 95vh;
+    height: 100%;
     zoom: 1;
     display: flex;
     flex-direction: column;
+    margin-left: 2rem;
 
     & > .ag-theme-alpine {
         flex: 1;
