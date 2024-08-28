@@ -58,7 +58,7 @@ const DueDateCellRenderer = (params: any) => {
                     letterSpacing: '0px',
                     color: '#000',
                     opacity: 1,
-                    fontSize: '18px',
+                    fontSize: '15px',
                     padding: '4px',
                     fontFamily: 'Roboto',
                     border: '0px solid white',
