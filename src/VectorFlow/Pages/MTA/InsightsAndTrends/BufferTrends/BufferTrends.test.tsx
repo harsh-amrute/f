@@ -1,4 +1,4 @@
-import { screen,render,fireEvent} from "@testing-library/react";
+import { render} from "@testing-library/react";
 import { mockBTGTechData } from "../../../../../mock-data/BufferTrends";
 import { useGetBufferTrendsGraph } from '../../../../Services/MTA/InsightsAndTrends/BufferTrends/index'
 import { setupReactQuery } from "../../../../../config/react-query-config";
