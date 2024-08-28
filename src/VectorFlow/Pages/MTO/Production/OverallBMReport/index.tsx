@@ -22,7 +22,7 @@ import { toast } from 'react-toastify';
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
 import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
-import { useGetDeptWiseWipData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index';
+import { useGetDeptWiseWipData,useGetHighAgeingData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index';
 import { FirstDataRenderedEvent } from 'ag-grid-community';
 import { IRowNode } from 'ag-grid-enterprise';
 import OverlayLoader from '../../Common/Loader';
@@ -102,6 +102,7 @@ const OverallBmReport = () => {
     //console.log()
     const { mutateAsync: getOverallBMReportData, isLoading: OverAllBMLoading } = useGetOverAllBMReport();
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
+    const { mutateAsync: getHighAgeingData}= useGetHighAgeingData();
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
 
@@ -123,7 +124,7 @@ const OverallBmReport = () => {
     const [appliedFilters, setAppliedFilters] = useState<any>({});
     const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
     const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_OverAll_BMReport);
-    
+    const [highAgeing, sethighAgeing] = useState<any>();
 
     // const { user } = useUserData();
     // const themeUi = user?.user?.theme_ui;
@@ -860,7 +861,9 @@ const OverallBmReport = () => {
                 const fetchDeptWiseWiphData = async () => {
                     try {
                         const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
-                        console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
+                        const highAgeingData= await getHighAgeingData(selectedOrderKeys);
+                        sethighAgeing(highAgeingData?.data?.data);
+                        //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
                         setDeptWiseWipData(DeptWiseWipData?.data?.data);
                         const departmentNames = extractDepartmentNames(DeptWiseWipData?.data?.data);
                         //console.log('DeptWiseWipData===',departmentNames);
@@ -999,7 +1002,7 @@ const OverallBmReport = () => {
     };
 
     const onApplyFilter = (filter:any)=>{
-        console.log(filter);
+
         setAppliedFilters(filter);
         setIsFilterOpen(false)
     }
@@ -1068,6 +1071,7 @@ const OverallBmReport = () => {
                                         data={deptWiseWipData}
                                         deptName={deptName}
                                         selectedOrderCount={masterSelectedRowData.length}
+                                        highAgeingdata={highAgeing}
                                     />
                                 </BTRAllomentSection>
                             </Allotment.Pane>

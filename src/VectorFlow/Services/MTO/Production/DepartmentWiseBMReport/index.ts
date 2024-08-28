@@ -24,3 +24,9 @@ export const useGetDeptWiseWipData = () => {
         return await DepartmentWiseBMReport.getDeptWiseWipData(data);
     })
 }
+
+export const useGetHighAgeingData=()=>{
+    return useMutation(async (data: any) => {
+        return await DepartmentWiseBMReport.getHighAgeingData(data);
+    })
+}
