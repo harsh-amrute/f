@@ -82,6 +82,7 @@ describe ("Buffer trends",()=>{
 
     beforeEach(()=>{
         useGetBufferTrendsGraphMocked.mockImplementation(()=>{
+          
             return useGetBufferTrendsGraphMockData(mockBTGTechData);
         }) 
     })
