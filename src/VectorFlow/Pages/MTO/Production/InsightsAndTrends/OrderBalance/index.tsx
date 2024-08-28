@@ -98,14 +98,6 @@ const OrderBalance = () => {
   const colDefCustomizations = {
     BPP: {
       cellRenderer: ColorCellRenderer,
-    },
-    LineItemID: {
-      colId: 'line_item_id',
-      field: 'line_item_id'
-    },
-    OrderQuantity: {
-      colId: 'order_quantity',
-      field: 'order_quantity',
     }
   };
 
@@ -218,7 +210,6 @@ const OrderBalance = () => {
           <div data-testid="grid-view" style={{ height: screenHeight - 190 }}>
             <VFTable
               {...gridOptions}
-              pagination={true}
               columnDefs={tableColDefs}
               rowData={gridData || []}
               tooltipHideDelay={100000}

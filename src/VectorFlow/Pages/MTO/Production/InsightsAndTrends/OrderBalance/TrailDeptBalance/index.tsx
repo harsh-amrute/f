@@ -231,6 +231,20 @@ const TrailDeptBalance = (props: any) => {
     
   },[actBtn])
   
+  const graphTitleJSX =  <div
+    data-testid="ot-if-graph"
+    style={{
+      fontSize: "13px",
+      margin: "0 auto",
+
+      textAlign: "center",
+    }}
+  >
+    <span style={{ fontWeight: 500 }}>{`${actBtn.label === "Bal To Mfg."
+          ? ProductionInsightsAndTrendsString.trailDeptMfg
+          : ProductionInsightsAndTrendsString.trailDeptDisp}  `}</span>
+    <span style={{ fontWeight: 300 }}>{`(${date})`}</span>
+  </div>
   
 
   return (
@@ -246,10 +260,8 @@ const TrailDeptBalance = (props: any) => {
         setChartLoading={setChartLoading}
         data={rawData}
         rowData={options.data}
-        graphTitle={`${actBtn.label === "Bal To Mfg."
-          ? ProductionInsightsAndTrendsString.trailDeptMfg
-          : ProductionInsightsAndTrendsString.trailDeptDisp
-          } ` + ` (${date})`}
+        graphTitle={``}
+        graphTitleJSX={graphTitleJSX}
         tableTitle={tableTitle}
         options={options}
         colDef={colDefs}
