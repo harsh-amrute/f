@@ -33,6 +33,7 @@ const Step1 = forwardRef(({gridOptions, rows, selectedRows, currentPageSelectedR
 
   const deselectAllForStep1 = () => {
     gridRef.current?.api.deselectAll();
+    setSelectedRows(new Map());
   }
 
   useImperativeHandle(ref, () => ({
