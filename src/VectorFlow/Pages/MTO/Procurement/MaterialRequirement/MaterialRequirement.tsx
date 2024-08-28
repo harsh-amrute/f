@@ -7,7 +7,7 @@ import MaterialRequirementComponent from './MaterialRequirementComponent';
 const MaterialRequirement = () => {
     const { renderView, toggleCurrentTab, onDateChangeReq, onDateSubmitReq, date, currentTab } = useMaterialReq();
     return (
-        <>
+        <div style={{ display: "flex", flexDirection: "column", height: "100%", paddingBottom: "2rem" }}>
             <ActionToolBar
                 isReleaseDate
                 isAddFilterButton
@@ -19,7 +19,7 @@ const MaterialRequirement = () => {
 
             />
             <MaterialRequirementComponent currentTab={currentTab} renderView={renderView} toggleCurrentTab={toggleCurrentTab} date={date} />
-        </>
+        </div>
     )
 }
 

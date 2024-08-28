@@ -326,7 +326,7 @@ const useMaterialReq = (forDate?: string) => {
         switch (currentTab.id) {
             case "sdv":
                 return (
-                    <div>
+                    <>
                         <TableWrapper>
 
                             <VFTable
@@ -337,7 +337,6 @@ const useMaterialReq = (forDate?: string) => {
                                 tooltipHideDelay={100000}
                                 tooltipShowDelay={0}
                                 tooltipMouseTrack={true}
-                                height={'550px'}
                                 ref={gridRef}
                                 pagination={false}
                                 statusBar={{
@@ -355,11 +354,11 @@ const useMaterialReq = (forDate?: string) => {
                                 handleChangePage={handlePageChangeDayWise}
                             />
                         </TableWrapper>
-                    </div>
+                    </>
                 );
             case "cv":
                 return (
-                    <div>
+                    <>
                         <TableWrapper>
 
                             <VFTable
@@ -388,7 +387,7 @@ const useMaterialReq = (forDate?: string) => {
                             />
                         </TableWrapper>
 
-                    </div>
+                    </>
                 );
             default:
                 return <VFTable columnDefs={[]} rowData={[]} {...agGridProps} />

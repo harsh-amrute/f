@@ -35,13 +35,18 @@ export const MaterialRequirementHeading = styled.div`
     padding: 20px 0 10px;
 `
 export const TableWrapper = styled.div`
-    height : 88vh;
+    // height : 88vh;
     display: flex;
     flex-direction: column;
-
+    height: 100%;
     & > .ag-theme-alpine{
         margin: 0;
-        flex: 1;
+        // flex: 1;
+        height: 100%;
+    }
+
+    & > div[data-testid="vf_pagination"]{
+        margin-top: 0 !important;
     }
     
 `
