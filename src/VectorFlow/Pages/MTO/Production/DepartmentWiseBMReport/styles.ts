@@ -208,7 +208,7 @@ export const VFWrapper = styled.div`
   }
   & .ag-theme-alpine .ag-header-row:nth-child(3){
     background-color: rgb(255,255,255);
-    //color: white;
+    color: black;
   }
 
 `

@@ -172,6 +172,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
 
         const blackNK = calculateColorOrderCount(SOData, ColorsMTO.Black.label, 'NK', 0)
         const blackNKPercent = Math.round((blackNK / Math.round(firstBlock.ordCunt + frthBlock.ordCunt)) * 100)
+        console.log('blackNKPercent',((blackNK / Math.round(firstBlock.ordCunt + frthBlock.ordCunt)) * 100).toFixed(2))
         
         const blackPK = calculateColorOrderCount(SOData, ColorsMTO.Black.label, 'PK', 0);
         const blackPKPercent = Math.round((blackPK / (secondBlock.ordCunt + fifthBlock.ordCunt)) * 100)
@@ -200,7 +201,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
 
         const GreenNK = calculateColorOrderCount(SOData, ColorsMTO.Green.label, 'NK', 0);
         const GreenNKPercent = Math.round((GreenNK / Math.round(frthBlock.ordCunt + firstBlock.ordCunt)) * 100)
-
+        console.log('GreenNKPercent=',GreenNKPercent)
 
         const GreenPK = calculateColorOrderCount(SOData, ColorsMTO.Green.label, 'PK', 0);
         const GreenPKPercent = Math.round((GreenPK / (fifthBlock.ordCunt + secondBlock.ordCunt)) * 100)
