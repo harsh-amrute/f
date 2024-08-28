@@ -558,6 +558,18 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
     const date = apiResponseData?.data?.data;
 
+    const graphTitleJSX =  <div
+        data-testid="ot-if-graph"
+        style={{
+        fontSize: "13px",
+        margin: "0 auto",
+
+        textAlign: "center",
+        }}
+    >
+        <span style={{ fontWeight: 500 }}>RM / PM Buffer Trend- MTO</span>
+        <span style={{ fontWeight: 300 }}>{` (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}</span>
+    </div>
 
     return (
         <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginRight: '5px', paddingBottom: '20px' }}>
@@ -570,7 +582,8 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 setChartLoading={setChartLoading}
                 data={numericData}
                 rowData={rowData}
-                graphTitle={`RM / PM Buffer Trend- MTO (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
+                graphTitle={''}
+                graphTitleJSX={graphTitleJSX}
                 tableTitle={`RM / PM Buffer Trend- MTO (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
                 options={options}
                 colDef={colDef}
