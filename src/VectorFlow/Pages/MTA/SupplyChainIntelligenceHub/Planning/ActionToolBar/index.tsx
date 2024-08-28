@@ -4,7 +4,6 @@ import VFSelectedFilters from "../../../../../../components/VectorFLOW/commons/V
 import { useState, useMemo, useContext } from "react";
 import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { useLocation, Link } from "react-router-dom";
-import { MultiFilterSupplyChainCheckboxList } from "../../../../../../helpers/BPRConstants";
 import useSaveAllState from "../../../../../../hooks/useSaveAllState";
 
 import {

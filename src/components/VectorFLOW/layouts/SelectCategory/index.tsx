@@ -5,7 +5,6 @@ import { useState } from 'react'
 import VFButton from "../../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../../context"
 import VFMultiFilter from "../../../../components/VectorFLOW/commons/VFMultiFilter";
-import { MultiFilterSupplyChainCheckboxList } from '../../../../helpers/BPRConstants'
 import * as globalStyles from '../../../../styles/global'
 import useGetLocation from "../../../../hooks/useGetLocation";
 

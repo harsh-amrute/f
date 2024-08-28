@@ -109,27 +109,6 @@ const useInTransitWhereAbouts = ()=>{
     // const [columnState,setColumnState] = useState<any>()
     // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
-    const sideBar = {
-        toolPanels: [
-          {
-            id: "columns",
-            labelDefault: "Columns",
-            labelKey: "columns",
-            iconKey: "columns",
-            toolPanel: "agColumnsToolPanel",
-            toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-              suppressRowGroups: true,
-              suppressValues: true,
-            },
-          
-          },
-        ],
-        defaultToolPanel:'',
-      }
-
-
     // useEffect(()=>{
     //     const getTableState = async()=>{
     //       try{

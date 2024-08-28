@@ -1,4 +1,3 @@
-import {useState} from 'react'
 
 import { getBPRViewTableHeaderFilterOptions } from '../../../../../helpers/utils'
 import {BPRViewTableColumnFilterContainer,BPRViewTableColumnFilterInput, BPRViewTableColumnFilterSelect, BPRViewTableColumnFilterSelectOption} from './styles'
