@@ -20,7 +20,7 @@ import OverlayLoader from '../../Common/Loader';
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
 import VFPagination from '../../Common/VFPagination';
 import _ from 'lodash';
-import { notifyError, notifySuccess } from '../../../../../helpers/notify';
+import { notifyError} from '../../../../../helpers/notify';
 import { useGetCCRGroupMaster, useGetFOLData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import AvailabilityCellRenderer from './AvailabilityCellRenderer';
 import useFilter from "../../../../../hooks/useFilter";
@@ -234,7 +234,6 @@ const FullKitAssignment = () => {
     try{
       const username = user.user.name
       await updateFullkitOnSimulation({username, is_type})
-      notifySuccess("Simulation Saved")
       return true
     }
     catch(err){
@@ -285,6 +284,7 @@ const FullKitAssignment = () => {
         }}>Cancel</strong>
         <VFButtonOutline 
           style={{width:"unset"}}
+          disabled={ selectedRows.size == 0 }
           themeUi={themeUi}
           onClick={() => {
             //once the rows are excluded and simulated,
@@ -312,7 +312,7 @@ const FullKitAssignment = () => {
         </>
       }
     }
-  }, [editMode])
+  }, [editMode, selectedRows])
 
   const colDefs = useMemo(() => {
     return getColumnDefinations(HeaderData, colDefCustomizations, extra)
@@ -346,7 +346,7 @@ const FullKitAssignment = () => {
       }
       case "Deselect":{
         // setShowOrdersWithFullKitReady(false)
-        setLoadDataParams({is_fullkit: false, load_graph_data: true, load_data_after_simulation:false, page: 1})
+        setLoadDataParams({is_fullkit: false, load_graph_data: false, load_data_after_simulation:false, page: 1})
         setColDefCustomizations({
           ...defaultColDefCustomisation.current
         })

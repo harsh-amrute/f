@@ -178,7 +178,6 @@ const DueDateQuotation = () => {
 
   const getMastersData = async () => {
     try {
-      if (!masters) {
         setLoading(true);
         const bufferMaster = await getBufferMaster();
         const allBufferMaster = bufferMaster?.data?.data;
@@ -235,7 +234,6 @@ const DueDateQuotation = () => {
         const DBRSettings = DBRSettingsData.data?.data;
         
         setMasters({ procMaster, prodMaster, ccrGroups, CCRItemTypeMappingMaster, FOL, CCRMaster, WorkingCalender, MarketLeadTimeMaster, DBRSettings });
-      }
 
       const orders = Array.from(selectedRows.values()).map((row: any) => {
         return row.data.ok
@@ -306,6 +304,8 @@ const DueDateQuotation = () => {
             setScheduledOrders={setScheduledOrders}
             setStep={setStep}
             setDisabled={setDisabled}
+            setSelectedRows={selectedRows}
+            setMasters={setMasters}
           />
         )
       }

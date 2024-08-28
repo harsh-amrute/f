@@ -1,7 +1,7 @@
 // VFRangeSlider.tsx
 import React, { useState } from 'react';
 import { useUserData } from '../../../../../context';
-import { RangeSliderContainer, RangeSliderInput, ValueLabel, MilestonesContainer, MilestoneLabel, ToolTipTriangle } from './styles';
+import { RangeSliderContainer, RangeSliderInput, ValueLabel, ToolTipTriangle } from './styles';
 
 interface VFRangeSliderProps {
     milestones?: number[];
@@ -80,7 +80,15 @@ const VFRangeSlider: React.FC<VFRangeSliderProps> = ({ milestones, min, max, str
                     style={{ left: ((value / range) * multiplier) + 6.5 }}
                 />
             )}
-            {milestones && (
+            <div style={{width: "100%", margin:"0 2px", display:"flex", justifyContent:"space-between", padding:"12px 3px"}}>
+                <strong>
+                    {min}
+                </strong>
+                <strong>
+                    {max}
+                </strong>
+            </div>
+            {/* {milestones && (
                 <MilestonesContainer>
                     {milestones.map((milestone: number, index: number) => {
                         if (milestone !== milestones[currMileStoneIndex]) {
@@ -88,7 +96,7 @@ const VFRangeSlider: React.FC<VFRangeSliderProps> = ({ milestones, min, max, str
                         }
                     })}
                 </MilestonesContainer>
-            )}
+            )} */}
         </RangeSliderContainer>
     );
 };
