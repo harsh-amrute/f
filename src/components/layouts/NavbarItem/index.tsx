@@ -22,6 +22,7 @@ import DBMAnalytics from "../../../VectorFlow/Pages/MTA/DBM/DBMNormSuggestions/D
 import AnalyticalScreen from "../../../VectorFlow/Pages/MTO/Procurement/MaterialCoverage/AnalyticalScreen";
 import ReasonsOrderAnalyticalScreen from "../../../VectorFlow/Pages/MTO/Poogi/ReasonOrderChange/ReaonsOrderAnalyticalScreen";
 import DaywiseCoverageAnalytics from "../../../VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/DayWiseCoverage/DayWiseCoverageAnalytics";
+import ProcAnalytics from "../../../VectorFlow/Pages/MTO/Procurement/Planning/ProcAnalytics";
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -242,9 +243,10 @@ const NavbarItem = ({
           <InTransitAnalytics />
         )}
 
-        {isHide && pathname === '/procurement/material-coverage-open-sales' && menuItem.id === 19 && (
-          <AnalyticalScreen />
+        {isHide && pathname === '/procurement-planning/planning' && menuItem.id ===  19 && (
+          <ProcAnalytics/>
         )}
+         
 
         {isHide && pathname === '/procurement/insights-and-trends/day-wise-coverage' && menuItem.id === 19 && (
           <DaywiseCoverageAnalytics />

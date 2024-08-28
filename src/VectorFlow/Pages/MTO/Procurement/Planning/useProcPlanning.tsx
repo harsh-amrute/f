@@ -20,6 +20,8 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import OverlayLoader from "../../Common/Loader";
 import { INumberCellEditorParams } from "@ag-grid-community/core"
 import { TableWrapper } from "./styles";
+import { useDispatch } from "react-redux";
+import { PROCPLANNING_ANALYTICS } from "../../../../../redux/actions/MTO";
 
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
@@ -100,6 +102,8 @@ const useProcPlanning = (date: string) => {
     const [isOverlayLoading, setIsOverlayLoading] = useState(false);
     const { user } = useUserData();
 
+
+    const dispatch = useDispatch()
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: 'ca',
@@ -112,6 +116,9 @@ const useProcPlanning = (date: string) => {
             value: 'short'
         }
     ];
+
+    dispatch(PROCPLANNING_ANALYTICS({date}));
+
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
     const { mutateAsync: UpdateProcurementSimulationData } = putUpdateProcurementSimulationData()
