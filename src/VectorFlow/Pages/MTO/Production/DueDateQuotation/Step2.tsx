@@ -38,27 +38,27 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         routeLookup.current.set(node.data.rn, node.data.rid);
                     }
                     // calculate leadtime 
-                    if (node.data.cdd) {
-                        const marketLeadTime = masters.MarketLeadTimeMaster.find((item: any) => {
-                            return item.mbot === node.data.mbot && item.itid === node.data.itid;
-                        });
+                    // if (node.data.cdd) {
+                    //     const marketLeadTime = masters.MarketLeadTimeMaster.find((item: any) => {
+                    //         return item.mbot === node.data.mbot && item.itid === node.data.itid;
+                    //     });
 
-                        // if (marketLeadTime) {
-                        //     const today = new Date();
-                        //     today.setHours(0, 0, 0, 0);
-                        //     const newDate = add(today, {
-                        //         years: 0,
-                        //         months: 0,
-                        //         weeks: 0,
-                        //         days: marketLeadTime.lt || 0,
-                        //         hours: 0,
-                        //         minutes: 0,
-                        //         seconds: 0,
-                        //     });
-                        //     const cdd = new Date(node.data.cdd);
-                        //     node.data.isOptimalLeadTime = cdd <= newDate;
-                        // }
-                    }
+                    //     if (marketLeadTime) {
+                    //         const today = new Date();
+                    //         today.setHours(0, 0, 0, 0);
+                    //         const newDate = add(today, {
+                    //             years: 0,
+                    //             months: 0,
+                    //             weeks: 0,
+                    //             days: marketLeadTime.lt || 0,
+                    //             hours: 0,
+                    //             minutes: 0,
+                    //             seconds: 0,
+                    //         });
+                    //         const cdd = new Date(node.data.cdd);
+                    //         node.data.isOptimalLeadTime = cdd <= newDate;
+                    //     }
+                    // }
                     return { ...node.data }
                 });
 
@@ -83,7 +83,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 });
 
                calculateEstimatedDueDate(arr).then((data)=>{
-                   setRows(arr);
+                   setRows(data);
                })
 
             }

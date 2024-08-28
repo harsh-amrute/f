@@ -1,7 +1,7 @@
 // VFRangeSlider.tsx
 import React, { useState } from 'react';
 import { useUserData } from '../../../../../context';
-import { RangeSliderContainer, RangeSliderInput, ValueLabel, MilestonesContainer, MilestoneLabel, ToolTipTriangle } from './styles';
+import { RangeSliderContainer, RangeSliderInput, ValueLabel, ToolTipTriangle } from './styles';
 
 interface VFRangeSliderProps {
     milestones?: number[];
