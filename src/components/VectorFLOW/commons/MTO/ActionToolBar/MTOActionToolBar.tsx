@@ -181,7 +181,7 @@ const MTOActionToolBar = ({
                         </SCGoBackContainer>
                     }
 
-                    {quickFilter && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem" }}>
+                    {quickFilter && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem", minWidth: "max-content" }}>
                         {quickFilter}
                     </div>}
 
@@ -321,8 +321,17 @@ const MTOActionToolBar = ({
                 </VFSelectedFiltersWrapper>}
                 {/**Selected Filter ends*/}
 
-                {/**New Selected Filter start */}
-                {newFilters && Object.keys(newFilters)?.length > 0 && <VFSelectedFiltersWrapper>
+                {
+                    WIPFilter &&
+                    <div>
+                        {WIPFilter}
+                    </div>
+                }
+
+            </SCTaskFilterContainer>
+            {/**New Selected Filter start */}
+            {newFilters && Object.keys(newFilters)?.length > 0 && 
+            <VFSelectedFiltersWrapper>
                     <VFSelectedFiltersPlaceHolder>
                         Selected Filters
                     </VFSelectedFiltersPlaceHolder>
@@ -363,17 +372,8 @@ const MTOActionToolBar = ({
                             ))
                         }
                     </VFFilterScrollBar>
-                </VFSelectedFiltersWrapper>}
+            </VFSelectedFiltersWrapper>}
                 {/**Selected Filter ends*/}
-
-                {
-                    WIPFilter &&
-                    <div>
-                        {WIPFilter}
-                    </div>
-                }
-
-            </SCTaskFilterContainer>
 
             <SCCustomActionsContainer>
                 {utilityBtns && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem", gap: "1.5rem", marginRight: "10px"}}>

@@ -3,13 +3,27 @@ import axios from 'axios';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace DepartmentWiseBMReport {
 
-    export const getDeptWiseBMReport = async (data: any) => {
-        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${data.wip}&page=${data.curr}`, {
+    export const getFilteredDeptWiseBMReport = async ({ wip, curr, appliedFilters}: any) => {
+        
+        if(appliedFilters && Object.keys(appliedFilters).length){
+            return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${wip}&page=${curr}`, 
+            appliedFilters,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+                }
+            },
+            )
+        }
+
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${wip}&page=${curr}`, {
             headers: {
                 'Content-Type': 'application/json',
                 //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
             }
         })
+        
     }
 
     export const getBombLevelData = async (data: any) => {

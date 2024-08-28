@@ -12,13 +12,15 @@ export const useGetUIConfig = (reportName: string) => {
 }
 
 interface DDQInputParams {
-    currentPage: number,
-    unScheduled: boolean
+    page: number,
+    unSch: boolean,
+    appliedFilters: any
 }
 
-export const useGetOrdersForDDQ = () => {
+
+export const useGetFilteredOrdersForDDQ = () => {
     return useMutation(async (data: DDQInputParams) => {
-        return DueDateQuotationService.getOrdersForDDQ(data?.currentPage, data?.unScheduled)
+        return DueDateQuotationService.getFilteredOrdersForDDQ(data)
     })
 }
 

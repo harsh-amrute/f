@@ -13,6 +13,7 @@ import {
 } from './styles';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../../redux/store/store';
+import { formatNumber } from './CommonFunc'
 
 
 const AnalyticalScreen = () => {
@@ -108,7 +109,7 @@ const AnalyticalScreen = () => {
                                     </BPRDailyAnalyticsTableCell>
                                     <BPRDailyAnalyticsTableCell>
                                         <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }} >
-                                            {o.totalCunt}
+                                            {formatNumber(o.totalCunt)}
                                         </BPRDailyAnalyticsTableCellHeader>
 
                                     </BPRDailyAnalyticsTableCell>
@@ -146,7 +147,7 @@ const AnalyticalScreen = () => {
                             </BPRDailyAnalyticsTableCell>
                             <BPRDailyAnalyticsTableCell>
                                 <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }} >
-                                    {totalOrderVal}
+                                    {formatNumber(totalOrderVal)}
                                 </BPRDailyAnalyticsTableCellHeader>
 
                             </BPRDailyAnalyticsTableCell>

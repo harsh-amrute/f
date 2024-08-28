@@ -167,8 +167,7 @@ export const SCButton = styled.button`
 
 /**for Search filter */
 export const VFSelectedFiltersWrapper = styled.div`
-   overflow:auto;
-   width:100%
+    overflow:auto;
     height: 51px;
     padding:5px;
     display:flex;
@@ -176,7 +175,7 @@ export const VFSelectedFiltersWrapper = styled.div`
     background: ${ColorsMTO.White} 0% 0% no-repeat padding-box;
     box-shadow: 0px 6px 12px #95959529;
     border-radius: 30px;
-    margin-left: auto;
+    margin-right: 20px;
 `;
 
 export const VFSelectedFiltersPlaceHolder = styled.p`

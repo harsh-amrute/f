@@ -858,7 +858,7 @@ const OverallBmReport = () => {
                 const fetchDeptWiseWiphData = async () => {
                     try {
                         const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
-                        //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
+                        console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
                         setDeptWiseWipData(DeptWiseWipData?.data?.data);
                         const departmentNames = extractDepartmentNames(DeptWiseWipData?.data?.data);
                         //console.log('DeptWiseWipData===',departmentNames);

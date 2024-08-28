@@ -190,9 +190,9 @@ const STPLGraph = (props: any) => {
     if(graphData){
       const updatedGraphData = graphData?.map((data: any) => {
         if(data.r_wip > data?.limit){
-          return ({...data, exceedDays: data.r_wip, r_wip: 0 });
+          return ({...data, exceedDays: data.r_wip, days: 0 });
         }
-        return ({...data, exceedDays: 0, })
+        return ({...data, exceedDays: 0, days:data.r_wip })
       })
       setRawData(updatedGraphData);
     }

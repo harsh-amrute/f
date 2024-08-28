@@ -18,7 +18,7 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import { AvailabilityFilter, FilterCheckboxAccordian, FilterMultiSelectCheckbox, Checkbox } from "./InputTypes";
 import VFMasterFieldSearch from "../../../../../components/VectorFLOW/commons/VFMasterFieldSearch";
-import { checkValue, formatFilterJSON } from "../../../../../helpers/utils";
+import { checkValue } from "../../../../../helpers/utils";
 import { InputTypes } from "../Enum";
 
 interface VFCommonFilterProps {
@@ -52,9 +52,9 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
           let val = e?.value;
           if(property === 'value'){
             const updatedvalue = type === InputTypes.NumberCompare ? Number(e?.target?.value) || '' : e?.target?.value;
-            val =  {label: updatedvalue, value: updatedvalue};
+            val =  [{label: updatedvalue, value: updatedvalue}];
           }
-          updatedFilters[i][property as keyof Filter]= [val];
+          updatedFilters[i][property as keyof Filter]= val;
         }
 
         if( type === InputTypes.MultiSelect ||type === InputTypes.Checkbox){
@@ -293,10 +293,9 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                   Go Back!
                 </VFButtonOutline>
                 <VFButton data-testid="applyFilter" themeUi={user.user.theme_ui} onClick={() =>{
-                  const formatedFilters = formatFilterJSON(filterState);
                   setIsMfgSelected(true);
                   setMultiFilter(filterState);
-                  onApplyFilter(formatedFilters);
+                  onApplyFilter(filterState);
                 }}>
                   Apply Filter
                 </VFButton>
@@ -309,8 +308,8 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
           zoom={"0.73"}
           openModal={isConfirmModalOpen}
           closeModal={() => setIsConfirmModalOpen(false)}
-          headerIcon={"/assets/img/VectorFLOW/BPR/select-filter.svg"}
-          headerText={""}
+          headerText={'Warning'} 
+          headerIcon={'/assets/img/ist/warning.svg'}
           closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
           paddingLeftAndRight={0}
           backgroundColor={"#f4f4f4"}

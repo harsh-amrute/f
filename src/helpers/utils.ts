@@ -2883,12 +2883,12 @@ export const formatFilterJSON = (filter: any) => {
     const { filters } = filter[key];
     for (let i = 0; i < filters.length; i++) {
       const { attributeName, value, type, operator } = filters[i];
-      if (value?.length > 0) {
-        if (type === 'textCompare' || type === 'numberCompare') {
-          formatFilter = { ...formatFilter, [attributeName]: { op: operator ? operator : type === 'textCompare' ? 'et' : 'gte', val: value[0].value } };
-        } else {
-          formatFilter = { ...formatFilter, [attributeName]: value?.map((v: any) => v?.value || v?.id) };
-        }
+      if(value?.length > 0 ){
+            if(type === 'textCompare' || type === 'numberCompare'){
+              formatFilter = { ...formatFilter, [attributeName]: { op: operator ? operator :  'et', val: value[0].value } };
+            }else{
+              formatFilter = { ...formatFilter, [attributeName]: value?.map((v: any) => v?.value || v?.id) };
+            }
       }
     }
   }

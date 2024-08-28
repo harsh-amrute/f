@@ -18,7 +18,6 @@ import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import GridView from "../../../Common/GridView";
 
-
 const APIFilterConfig = {
   filSecVisConfig :  {
       "Poogi_OTIF_Analysis" : {
@@ -84,6 +83,7 @@ const OTIFAnalysis = () => {
   }
 
   const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
+  
   useEffect(() => {
     if (isSuccess) {
       notifySuccess("Fetched Data successfully!")
