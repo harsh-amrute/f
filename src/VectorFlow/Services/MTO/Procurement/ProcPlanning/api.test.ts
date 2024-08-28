@@ -48,7 +48,7 @@ describe('ProcPlanningService', () => {
     it('should fetch procurement data after simulation correctly', async () => {
         const response = await ProcPlanningService.GetProcDataAfterSimulation(mockDate, '0', '1');
 
-        expect(axios.get).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/getProdDataAfterSimulation/?releaseDate=${mockDate}`, {
+        expect(axios.get).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/getProdDataAfterSimulation/?releaseDate=${mockDate}&eas=0&page=1`, {
             headers: { 'Content-Type': 'application/json' }
         });
 
