@@ -43,7 +43,9 @@ padding-bottom: 10px;
 `
 
 export const GraphWrapper = styled.div`
+width: 100%;
 display:flex;
+justify-content: center;
 position: relative;
 flex-grow: 1;
 `
