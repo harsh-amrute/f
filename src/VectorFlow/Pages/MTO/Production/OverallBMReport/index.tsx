@@ -29,6 +29,7 @@ import OverlayLoader from '../../Common/Loader';
 import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
+import { formatFilterJSON } from '../../../../../helpers/utils';
 
 interface ApiResponse {
     cc: string;
@@ -786,7 +787,8 @@ const OverallBmReport = () => {
 
     const getInitialGridData = async (currentPage: number) => {
         try {
-            const gridData = await getOverallBMReportData({page: currentPage, appliedFilters});
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const gridData = await getOverallBMReportData({page: currentPage, appliedFilters: formatedFilters});
             setGridData(gridData?.data?.data?.results)
             setGridDataCount(gridData?.data?.data?.count)
         }
@@ -1009,7 +1011,11 @@ const OverallBmReport = () => {
     const toggleFilter = (state: boolean) => {
         setIsFilterOpen(state);
     }
-        
+      
+    useEffect(()=>{
+        setAppliedFilters(currFilter);
+    },[currFilter])
+
     useEffect(()=>{
         getInitialGridData(currentPage);
     },[currentPage, appliedFilters])

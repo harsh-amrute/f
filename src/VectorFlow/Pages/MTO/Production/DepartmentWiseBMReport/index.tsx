@@ -891,7 +891,7 @@ const DptWiseBMReport = () => {
     const getUpdatedFilteredData = async () => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked, 'curr': currentPage, appliedFilters: formatedFilters });
+            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': currentPage, appliedFilters: formatedFilters });
             setGridData(gridData?.data?.data?.results)
             setGridDataCount(gridData?.data?.data?.count)
         }
