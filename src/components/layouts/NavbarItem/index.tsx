@@ -246,6 +246,11 @@ const NavbarItem = ({
         {isHide && pathname === '/procurement/material-coverage-open-sales' && menuItem.id ===  19 && (
           <AnalyticalScreen/>
         )}
+
+{isHide && pathname === '/procurement-planning/planning' && menuItem.id ===  19 && (
+          <ProcAnalytics/>
+        )}
+        
          
 
         {isHide && pathname === '/procurement/insights-and-trends/day-wise-coverage' && menuItem.id === 19 && (
