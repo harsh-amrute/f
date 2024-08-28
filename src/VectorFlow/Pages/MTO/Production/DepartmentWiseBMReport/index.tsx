@@ -315,12 +315,12 @@ const DptWiseBMReport = () => {
                         "cgs": "closed"
                     },
                     {
-                        "cc": "CCRName",
+                        "cc": "ccr",
                         "cp": 16,
                         "hd": "CCRName ",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "CCR_Nme",
+                        "scc": "ccr",
                         "cgs": "closed"
                     },
                     {

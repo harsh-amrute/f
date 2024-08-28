@@ -297,11 +297,11 @@ const SplitGraphContainer = ({
         refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
-            columns: ["ccr_n", "exceedDays", 'r_wip', 'limit'],
+            columns: ["ccr_n", "exceedDays", 'days', 'limit'],
           },
           seriesChartTypes: [
             { colId: "exceedDays", chartType: "stackedColumn" },
-            { colId: "r_wip", chartType: "stackedColumn" },
+            { colId: "days", chartType: "stackedColumn" },
             { colId: "limit", chartType: "line" }
           ],
           chartThemeOverrides: {
