@@ -33,10 +33,10 @@ import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production
 import moment from "moment";
 import { useGetCCRMasterData, useGetDeptMasterData, useGetPlantMasterData } from "../../../../../../VectorFlow/Services/MTO/Common/Masters";
 import VFRangeSlider from "../../../Common/VFRangeSlider";
-import RadioSelect from "../../../../../../components/VectorFLOW/commons/MTO/RadioSelect";
 import OverlayLoader from "../../../Common/Loader";
 import { toast } from "react-toastify";
 import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
+import VFSelect from "../../../../../../components/VectorFLOW/commons/MTO/VFSelect";
 
 const ResourceUtilization = () => {
   const chartRef = useRef<AgChartsReact>(null);
@@ -56,8 +56,8 @@ const ResourceUtilization = () => {
   const date = apiResponseData?.data?.data;
   const [selectedCCR, setSelectedCCR] = useState<any>(undefined);
   const [defaultCCR, setDefaultCCR] = useState<any>();
-  const [selectedPlant, setSelectedPlant] = useState<any>({});
-  const [selectedDept, setSelectedDept] = useState<any>({});
+  const [selectedPlant, setSelectedPlant] = useState<any>({ label: 'Select Plant', value: '' });
+  const [selectedDept, setSelectedDept] = useState<any>({ label: 'Select Department', value: '' });
   const [apiData, setApiData] = useState<any>(null);
   const [plantOpts, setPlantOpts] = useState([]);
   const [deptOpts, setDeptOpts] = useState([]);
@@ -686,6 +686,9 @@ const ResourceUtilization = () => {
     }
   };
 
+  console.log(selectedDept)
+  console.log("selectedPlant",selectedPlant)
+
   const WIPFilter: any =
     (
       <div data-testid='resourceUtilization' style={{ display: ' flex', alignItems: 'flex-start', gap: '20px' }}>
@@ -729,10 +732,12 @@ const ResourceUtilization = () => {
             Select Plant
           </div>
           <SelectGroup style={{ width: '130px', zoom: '1.25' }}>
-            <RadioSelect theme={themeUi} placeholder={"Select Plant"} options={plantOpts} 
-            isSelected={selectedPlant.value}
-            checked={selectedPlant.value}
-            onChange={handlePlantChange}
+            <VFSelect 
+              themeUi={themeUi} 
+              placeholder={"Select Plant"} 
+              options={plantOpts} 
+              isSelected={selectedPlant.value}
+              onChange={handlePlantChange}
             />
             {/* <CustomSelect placeholder="Select Plant" value={selectedPlant} onSelectionChanged={(e: any) => { console.log("selected this", e) }} selected={false} options={plantOpts} optionsWidth={"100%"} /> */}
           </SelectGroup>
@@ -751,10 +756,9 @@ const ResourceUtilization = () => {
             Select Department
           </div>
           <SelectGroup style={{ width: '160px', zoom: '1.25' }}>
-            <RadioSelect 
-              theme={themeUi} 
+            <VFSelect 
+              themeUi={themeUi} 
               placeholder={"Select Department"} 
-              value={ selectedDept} 
               isSelected={selectedDept.value} 
               options={deptOpts} 
               onChange={handleDeptChange} 
@@ -825,6 +829,7 @@ const ResourceUtilization = () => {
                   zoom: 1,
                   padding: "4px",
                   // position: "absolute",
+                  marginRight:"2rem",
                   right: "10px",
                   top: "10px",
                   zIndex: 8,
@@ -849,7 +854,7 @@ const ResourceUtilization = () => {
 
           }
         <GraphWrapper>
-          <div style={{ width: "100%", height: "87%" }}>
+          <div style={{ width: "90%", height: "100" }}>
             <AgChartsReact
               suppressDragLeaveHidesColumns={true}
               ref={chartRef}
@@ -867,10 +872,8 @@ const ResourceUtilization = () => {
           <SectionFlex>
             <VerticalTitle>Analytics</VerticalTitle>
             <div data-testid="custom-select" style={{ width: "100%" }}>
-
-              <RadioSelect
-                styles={{ width: '100%' }}
-                theme={themeUi}
+              <VFSelect
+                themeUi={themeUi}
                 placeholder={'Select CCR'}
                 value={defaultCCR ? defaultCCR : selectedCCR}
                 options={ccrOpts}

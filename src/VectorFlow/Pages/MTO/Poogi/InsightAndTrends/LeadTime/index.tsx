@@ -41,7 +41,8 @@ const LeadTime = () => {
             const chartData: any = []
             const tableData: any = []
             Object.entries(data.data.data).forEach((entry: any)=>{
-                chartData.push({x: entry[0], y: Object.values(entry[1])})
+                // console.log(entry1);
+                chartData.push({x: entry[0], y: Object.values(entry[1]).sort((a: any,b: any)=> a - b)})
                 tableData.push({...entry[1], week: entry[0]})
             })
             setChartTableData(tableData);

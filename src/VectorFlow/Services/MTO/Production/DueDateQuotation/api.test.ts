@@ -22,17 +22,39 @@ describe('OrderRescheduling', () => {
         expect(response.status).toBe(200);
     });
  
-    it('should get orders for DDQ for Unscheduled Order', async () => {
+    it('should get orders for DDQ for Unscheduled Order  without filters', async () => {
         mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await DueDateQuotationService.getOrdersForDDQ(1, true);
-        expect(response.status).toBe(200);
+        const response = await DueDateQuotationService.getFilteredOrdersForDDQ({page: 1, unSch: true});
+        expect(response?.status).toBe(200);
+    });
+    
+    it('should get orders for DDQ for Scheduled Order  without filters', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await DueDateQuotationService.getFilteredOrdersForDDQ({page: 1, unSch: false});
+        expect(response?.status).toBe(200);
     });
  
-    it('should get orders for DDQ for Scheduled Order', async () => {
+    it('should get orders for DDQ for Unscheduled Order  with Filters', async () => {
         mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await DueDateQuotationService.getOrdersForDDQ(1, false);
-        console.log(response)
-        expect(response.status).toBe(200);
+        const response = await DueDateQuotationService.getFilteredOrdersForDDQ({page: 1, unSch: true, appliedFilters:{
+            "ms": [
+              "MTO",
+              "MTA"
+            ]
+          } });
+        expect(response?.status).toBe(200);
+    });
+
+    it('should get orders for DDQ for Scheduled Order with Filters', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await DueDateQuotationService.getFilteredOrdersForDDQ({page: 1, unSch: false, appliedFilters:{
+            "ms": [
+              "MTO",
+              "MTA"
+            ]
+          }
+        });
+        expect(response?.status).toBe(200);
     });
  
     it('should get Buffer Master Data', async () => {
