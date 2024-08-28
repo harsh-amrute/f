@@ -26,7 +26,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     }, []);
 
     useEffect(() => {
-        if (masters) {
+        if (masters ) {
             if (confirmedRows) {
                 setRows(confirmedRows.map((row: any) => {
                     return row
@@ -43,21 +43,21 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             return item.mbot === node.data.mbot && item.itid === node.data.itid;
                         });
 
-                        if (marketLeadTime) {
-                            const today = new Date();
-                            today.setHours(0, 0, 0, 0);
-                            const newDate = add(today, {
-                                years: 0,
-                                months: 0,
-                                weeks: 0,
-                                days: marketLeadTime.lt || 0,
-                                hours: 0,
-                                minutes: 0,
-                                seconds: 0,
-                            });
-                            const cdd = new Date(node.data.cdd);
-                            node.data.isOptimalLeadTime = cdd <= newDate;
-                        }
+                        // if (marketLeadTime) {
+                        //     const today = new Date();
+                        //     today.setHours(0, 0, 0, 0);
+                        //     const newDate = add(today, {
+                        //         years: 0,
+                        //         months: 0,
+                        //         weeks: 0,
+                        //         days: marketLeadTime.lt || 0,
+                        //         hours: 0,
+                        //         minutes: 0,
+                        //         seconds: 0,
+                        //     });
+                        //     const cdd = new Date(node.data.cdd);
+                        //     node.data.isOptimalLeadTime = cdd <= newDate;
+                        // }
                     }
                     return { ...node.data }
                 });
@@ -81,10 +81,14 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                     return 0;  // equal values
                 });
-                setRows(arr);
+
+               calculateEstimatedDueDate(arr).then((data)=>{
+                   setRows(arr);
+               })
+
             }
         }
-    }, [masters])
+    }, [lineCCR])
 
     const routeDiv = useRef<any>();
     // const [routeDivHeight, setRouteDivHeight] = useState<any>();
@@ -146,7 +150,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         CRDD: {
             pinned: "right",
             lockPosition: true,
-            minWidth: 120,
+            minWidth: 140,
             cellStyle: {
                 // background: "#BC3D814F",
                 // color: "#BC3D81",
@@ -157,7 +161,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         EstimatedDD: {
             pinned: "right",
             lockPosition: true,
-            minWidth: 120,
+            minWidth: 140,
             cellStyle: {
                 // background: "#BC3D814F",
                 // color: "#BC3D81",
@@ -319,18 +323,20 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
     //ccr groups & ccrs filter on the basis of plant
 
-    const ccrGroups = useMemo(()=>{
-        if(selectedPlant && masters){
-            return masters?.ccrGroups.map((ccrGroup: any)=>{
-                return {...ccrGroup, ccrs: ccrGroup.ccrs.filter((ccr: any)=>{
-                    return ccr.plant_id == selectedPlant
-                })}
-            })?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0 )
+    const ccrGroups = useMemo(() => {
+        if (selectedPlant && masters) {
+            return masters?.ccrGroups.map((ccrGroup: any) => {
+                return {
+                    ...ccrGroup, ccrs: ccrGroup.ccrs.filter((ccr: any) => {
+                        return ccr.plant_id == selectedPlant
+                    })
+                }
+            })?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0)
         }
-        else{
+        else {
             return []
         }
-        
+
     }, [masters, selectedPlant])
 
     // console.log("selectedPlant", selectedPlant)
@@ -423,11 +429,11 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         // const fol = masters.FOL[ccrId];
                         const ccrItem = masters?.CCRItemTypeMappingMaster.find((ccr: any) => ccr.ccrId === ccrId && ccr.it == order.itid)
 
-                        if(!ccrItem){
+                        if (!ccrItem) {
                             errors.push(`CCR Name: ${ccrNames[index]} not available in MapCCRItemType Master`)
                             // throw new Error(`CCR Name: ${ccrNames[index]} not available in MapCCRItemType Master`)
                         }
-                        if(!ccrItem?.tt){
+                        if (!ccrItem?.tt) {
                             errors.push(`Touch Time not available for CCR Name: ${ccrNames[index]} and Item ID: ${order.itid} in MapCCRItemType Master`)
                             // throw new Error(`Touch Time not available for CCR Name: ${ccrNames[index]} and Item ID: ${order.itid} in MapCCRItemType Master`);
                         }
@@ -437,34 +443,33 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         // console.log("lineCCR[order.ok]?.[ccrId]?.pcqty", lineCCR[order.ok]?.[ccrId]?.pcqty)
                         // console.log("order.pcqty", order.pcQty)
                         console.log('lineCCR', lineCCR);
-                        
+
                         const lineCCRPendingQty = lineCCR[order.ok]?.[ccrId]?.pcqty || 0;
                         const orderPendingQty = order.pcqty || 0
 
                         console.log("lineCCRPendingQty", lineCCRPendingQty)
                         console.log("orderPendingQty", orderPendingQty)
 
-                        if(!lineCCRPendingQty)
-                        {
-                            if(!orderPendingQty){
+                        if (!lineCCRPendingQty) {
+                            if (!orderPendingQty) {
                                 errors.push(`Missing Pending Qty for CCR: ${ccrNames[index]} or Order: ${order.oid}`)
-                            }    
+                            }
                         }
 
-                        
+
                         const orderLoad = Math.ceil(((ccrItem?.tt || 0) * (lineCCRPendingQty || orderPendingQty)));
                         console.log('ccrItem?.tt', ccrItem?.tt);
-                        
+
                         console.log('orderLoad', orderLoad);
-                        
+
                         //for calculating the initial value for prevPending
                         if (!ccr_prev_pending[ccrId]) {
                             const ccr_fol_data = masters.FOL[ccrId];
-                            const folInDays = ccr_fol_data?.fol ?? -1; 
-                            const ocm = ccr_fol_data?.ocm ?? -1; 
+                            const folInDays = ccr_fol_data?.fol ?? -1;
+                            const ocm = ccr_fol_data?.ocm ?? -1;
                             // console.log("folInDays", folInDays)
                             // console.log("ocm", ocm)
-                            if(folInDays == -1 || ocm == -1){
+                            if (folInDays == -1 || ocm == -1) {
                                 errors.push(`"FOL" or "Occupied Quanitity In Muniutes (OCM)" missing for CCR Name: ${ccrNames[index]}`)
                             }
                             // console.log("ccr_fol_data",ccr_fol_data)
@@ -491,14 +496,14 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             ccrgrp: ccr?.ccr_group,
                             orderLoad: orderLoad || 0,
                             pos: index + 1,
-                            pcQty:  lineCCRPendingQty || orderPendingQty,
+                            pcQty: lineCCRPendingQty || orderPendingQty,
                             folSpan: ((ccr_prev_pending[ccrId].prevPend)) / (ccrWorkingHoursPerDay * 60),
                         }
 
                         console.log("ccr_prev_pending", ccr_prev_pending)
                         // console.log(ccrId, "orderLoad", order_ccr_data[ccrId].orderLoad, "folSpan" ,order_ccr_data[ccrId].folSpan, "order pending qty",row.pcqty, "ccr tt", ccrItem.tt, "ccrWorkingHoursPerDay" ,ccrWorkingHoursPerDay)                     
                     });
-                    if(errors.length > 0){
+                    if (errors.length > 0) {
                         throw new Error(errors.join("\n\n"))
                     }
 
@@ -527,13 +532,13 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     })?.lno;
 
                     console.log("latestWorkingDayLno", latestWorkingDayLno)
-                    if(!latestWorkingDayLno){
+                    if (!latestWorkingDayLno) {
                         throw new Error(`Working calender missing for CCR ${maxFolSpan.ccr_name} and Plant ${order.pn}`)
                     }
 
                     const residualBuffer = parseFloat(masters?.CCRMaster.find((ccr: any) => ccr.ccr_id == maxFolSpan.ccr_id)?.residual_buffer);
                     console.log("residualBuffer", residualBuffer);
-                    if(!residualBuffer){
+                    if (!residualBuffer) {
                         throw new Error(`Residual Missing for CCR: ${maxFolSpan.ccr_name}`)
                     }
 
@@ -566,7 +571,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     })?.lno || -Infinity;
 
 
-                    const crddFlag = masters.DBRSettings.find((setting: any)=> setting.flag == "ConsiderCRDDInDDQ");
+                    const crddFlag = masters.DBRSettings.find((setting: any) => setting.flag == "ConsiderCRDDInDDQ");
                     console.log(masters.DBRSettings)
                     console.log("crDD",)
                     console.log("crDDIndex", crDDIndex)
@@ -610,8 +615,9 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         catch (err: any) {
             console.error(err);
             // notifyError("Something Went Wrong!");
-            notifyErrorWithoutAutoClose(<div style={{whiteSpace:"pre-line"}}>{err.message}</div>);
-            setRows([...rows])
+            notifyErrorWithoutAutoClose(<div style={{ whiteSpace: "pre-line" }}>{err.message}</div>);
+            if(rows)
+                setRows([...rows])
             setSelectedBuffers([])
             setSelectedRoute([])
             setRowsSelectedForAssignment(false);
@@ -866,61 +872,54 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
     useEffect(() => {
         const filteredRows = rows?.filter((row: any) => {
-            return row.prodc && (row.rn || row.newRoute ) ? false : true
+            return row.prodc && (row.rn || row.newRoute) ? false : true
         }) || [];
         setDisabled(filteredRows.length != 0)
     }, [rows])
 
     const onConfirm = async () => {
         try {
-            const data: any = await calculateEstimatedDueDate(rows);
-            console.log("data", data);
-            if(data){
-                const bufferAssignmentObj: any = [];
-                const routeAssignmentObj: any = [];
-                data.forEach((row: any) => {
-                    if (row.updated) {
-                        bufferAssignmentObj.push({
-                            ok: row.ok,
-                            prod_id: row.nprid,
-                            proc_id: row.npcid,
-                            estdd: row.cdd,
-                            ccr: row.maxFolSpan.ccr_id
+            const bufferAssignmentObj: any = [];
+            const routeAssignmentObj: any = [];
+            rows.forEach((row: any) => {
+                if (row.updated) {
+                    bufferAssignmentObj.push({
+                        ok: row.ok,
+                        prod_id: row.nprid,
+                        proc_id: row.npcid,
+                        estdd: row.cdd,
+                        ccr: row.maxFolSpan.ccr_id
+                    })
+                    routeAssignmentObj.push({
+                        route: row.rn,
+                        ok: row.ok,
+                        ccrdetails: Object.values(row.CCRData).map((ccr: any) => {
+                            const temp = _.cloneDeep(ccr);
+                            temp.ccrid = ccr.ccr_id;
+                            temp.ol = ccr.orderLoad
+                            delete temp["ccr_id"];
+                            delete temp["folSpan"];
+                            delete temp["orderLoad"];
+                            return temp;
                         })
-                        routeAssignmentObj.push({
-                            route: row.rn,
-                            ok: row.ok,
-                            ccrdetails: Object.values(row.CCRData).map((ccr: any) => {
-                                const temp = _.cloneDeep(ccr);
-                                temp.ccrid = ccr.ccr_id;
-                                temp.ol = ccr.orderLoad
-                                delete temp["ccr_id"];
-                                delete temp["folSpan"];
-                                delete temp["orderLoad"];
-                                return temp;
-                            })
-                        })
-                    }
-                })
-                console.log("bufferAssignmentObj", bufferAssignmentObj);
-                console.log("routeAssignmentObj", routeAssignmentObj);
-                if (bufferAssignmentObj.length != 0 && routeAssignmentObj.length != 0) { //TODO: check if this is a OR condition or AND condition
-                    const data = await updateBuffRouteCCREstDate({ bufferData: { ordData: bufferAssignmentObj }, routeData: { orders: routeAssignmentObj } });
-                    notifySuccess(data.data.msg)
+                    })
                 }
-                setConfirmedRows(data);
-                return true
+            })
+            console.log("bufferAssignmentObj", bufferAssignmentObj);
+            console.log("routeAssignmentObj", routeAssignmentObj);
+            if (bufferAssignmentObj.length != 0 && routeAssignmentObj.length != 0) { //TODO: check if this is a OR condition or AND condition
+                const data = await updateBuffRouteCCREstDate({ bufferData: { ordData: bufferAssignmentObj }, routeData: { orders: routeAssignmentObj } });
+                notifySuccess(data.data.msg)
             }
-            else{
-                throw new Error("Something went wrong")
-            }
+            setConfirmedRows(rows);
+            return true
         }
         catch (err) {
             console.log(err)
             notifyError("Route & Buffer Assignment Failed!");
             return false
         }
-        
+
     }
 
     useImperativeHandle(ref, () => ({
@@ -958,7 +957,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             rowData={rows}
                             onSelectionChanged={async (params: GridReadyEvent) => {
                                 try {
-                                    
+
                                     setIsEditable(false);
                                     setNo(false)
                                     const selected = params.api.getSelectedRows();
@@ -975,10 +974,10 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                     const selectedProdBuffer: any = new Set();
                                     const selectedProcBuffer: any = new Set();
                                     const selectedPlants: any = new Set();
-                                    
+
 
                                     selected.forEach((row: any) => {
-                                        if(row.plid){
+                                        if (row.plid) {
                                             selectedPlants.add(row.plid)
                                         }
                                         if (row.newRoute) {
@@ -1018,15 +1017,15 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                     if (selected.length > 1) {
                                         isAssignmentPossible = ([1].includes(selectedRoutes.size)) && ([1].includes(selectedProdBuffer.size)) && ([1].includes(selectedProcBuffer.size))
                                     }
-                                    if(selectedPlants.size == 1){
+                                    if (selectedPlants.size == 1) {
                                         setArePlantsDifferent(false)
                                         setSelectedPlant([...selectedPlants][0])
-                                    }else{
+                                    } else {
                                         isAssignmentPossible = false;
                                         setSelectedPlant(null)
                                         setArePlantsDifferent(true)
                                     }
-                    
+
                                     const routeId = [...selectedRoutes][0]
                                     if (selectedRoutes.size == 0) {
                                         setSelectedRoute([])
@@ -1111,7 +1110,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                 <CardCover>
                                     <DashedCard style={{ width: "500px" }}>
                                         <MessageText style={{ textAlign: "center", display: "flex", flexDirection: "column", width: "100%", gap: "2rem" }}>
-                                            {arePlantsDifferent? <div>Selected orders have different plants and cannot be modified together.</div> : !no ? <>
+                                            {arePlantsDifferent ? <div>Selected orders have different plants and cannot be modified together.</div> : !no ? <>
                                                 <div>
                                                     Selected orders have different routes and buffer.<br />
                                                     Do you want to edit these orders together?
