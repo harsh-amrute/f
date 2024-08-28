@@ -170,7 +170,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
     
     return(
         <>
-            <SCChartContainer height={"75%"}>
+            <SCChartContainer >
                 <SCChartMainContainer>
                     <SCChartSliderContainer>                               
                     <label style={{fontStyle:"normal",
