@@ -3,14 +3,14 @@ import { ColDef } from 'ag-grid-enterprise';
 import { useUserData } from '../../../../../context';
 import BPRViewTableRequestCellRenderer from './BPRViewTableRequestCellRenderer';
 import BPRViewTableRowCellWithReadMore from './BPRViewTableRowCellWithReadMore';
-import {BPRViewTableWrapper,BPRViewTablePrefix,BPRViewTableGrid,BPRViewTableHeaderContainer,BPRViewTableRowContainer,BPRViewTableRow,BPRViewTableRowCell,BPRViewTablePrefixWrapper, BPRViewTablePrefixText, BPRViewTablePrefixIcon, BPRViewTableNoDataContainer, BPRViewTableNoDataHeader, BPRViewTableNoDataText, BPRViewTableHeaderTab} from './styles'
+import {BPRViewTableWrapper,BPRViewTablePrefix,BPRViewTableGrid,BPRViewTableHeaderContainer,BPRViewTableRowContainer,BPRViewTableRow,BPRViewTableRowCell,BPRViewTablePrefixWrapper, BPRViewTablePrefixText, BPRViewTablePrefixIcon, BPRViewTableNoDataContainer, BPRViewTableNoDataHeader, BPRViewTableNoDataText, BPRViewTableHeaderTab, BPRViewTableAvailabilityCellRenderer} from './styles'
 import AgeingCellRenderer from './AgeingCellRenderer';
 import WhereAboutsCellRenderer from './WhereAboutsCellRenderer';
 import BPRViewTableColumnHeader from './BPRViewTableColumnHeader';
 import { getFiltersArrayFromColDefs, performNumericalOpertionsForBPRViewTableFilter, performStringOpertionsForBPRViewTableFilter } from '../../../../../helpers/utils';
 
 export interface BPRViewTableColDef{
-    headerName: string
+    headerName: any
     colId: string
     field?: string
     filter?:boolean
@@ -117,6 +117,15 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
                                        if(colDef.colId==='request'){
                                             return(
                                                 <BPRViewTableRequestCellRenderer onClick={onReq} key={index}/>
+                                            )
+                                        }
+                                        if(colDef.colId==='avail'){
+                                            return(
+                                                <BPRViewTableRowCell key={index}>
+                                                    <BPRViewTableAvailabilityCellRenderer>
+                                                        {row[colDef.colId]}
+                                                    </BPRViewTableAvailabilityCellRenderer>
+                                                </BPRViewTableRowCell>
                                             )
                                         }
                                        return(

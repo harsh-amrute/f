@@ -172,7 +172,7 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
 
     return (
         <>
-            <SCChartContainer height={"75%"}>
+            <SCChartContainer >
                 <SCChartMainContainer>
                     <SCChartSliderContainer>
                         <label style={{

@@ -677,3 +677,14 @@ export const BPRViewTableHeaderTab = styled.div<{
       transform-origin: bottom left;
     }
   `
+  export const BPRViewTableAvailabilityCellRenderer = styled.div`
+    background-color:#F8F8F8;
+    border:solid 1px #AFAFAF;
+    height:40px;
+    width:80px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-left:50px;
+    border-radius:4px;
+  `
