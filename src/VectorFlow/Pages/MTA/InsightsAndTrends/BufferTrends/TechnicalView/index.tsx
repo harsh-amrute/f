@@ -15,7 +15,6 @@ import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
 
-
 interface TechnicalWiseProps {
     data: any
     currentPageTab: string
@@ -33,7 +32,7 @@ interface TechnicalWiseProps {
 const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizondays, handleSubmitClick, horizonDays,themeUi }: TechnicalWiseProps) => {
 
 
-    const numericData = data.map((item: any) => ({
+    const numericData = data?.map((item: any) => ({
         ...item,
         b: parseFloat(item.b),
         bu: parseFloat(item.bu),
