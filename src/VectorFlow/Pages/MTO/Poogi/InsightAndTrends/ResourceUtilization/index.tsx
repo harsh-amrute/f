@@ -56,8 +56,8 @@ const ResourceUtilization = () => {
   const date = apiResponseData?.data?.data;
   const [selectedCCR, setSelectedCCR] = useState<any>(undefined);
   const [defaultCCR, setDefaultCCR] = useState<any>();
-  const [selectedPlant, setSelectedPlant] = useState<any>({});
-  const [selectedDept, setSelectedDept] = useState<any>({});
+  const [selectedPlant, setSelectedPlant] = useState<any>({ label: 'Select Plant', value: '' });
+  const [selectedDept, setSelectedDept] = useState<any>({ label: 'Select Department', value: '' });
   const [apiData, setApiData] = useState<any>(null);
   const [plantOpts, setPlantOpts] = useState([]);
   const [deptOpts, setDeptOpts] = useState([]);
@@ -732,10 +732,12 @@ const ResourceUtilization = () => {
             Select Plant
           </div>
           <SelectGroup style={{ width: '130px', zoom: '1.25' }}>
-            <VFSelect themeUi={themeUi} placeholder={"Select Plant"} options={plantOpts} 
-            isSelected={selectedPlant.value}
-            checked={selectedPlant.value}
-            onChange={handlePlantChange}
+            <VFSelect 
+              themeUi={themeUi} 
+              placeholder={"Select Plant"} 
+              options={plantOpts} 
+              isSelected={selectedPlant.value}
+              onChange={handlePlantChange}
             />
             {/* <CustomSelect placeholder="Select Plant" value={selectedPlant} onSelectionChanged={(e: any) => { console.log("selected this", e) }} selected={false} options={plantOpts} optionsWidth={"100%"} /> */}
           </SelectGroup>

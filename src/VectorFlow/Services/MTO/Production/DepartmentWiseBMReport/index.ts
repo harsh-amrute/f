@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query'
 import { DepartmentWiseBMReport } from './api'
 
-export const useGetDeptWiseBMReport = () => {
+export const useGetFilteredDeptWiseBMReport = () => {
     return useMutation(async (data: any) => {
-        return await DepartmentWiseBMReport.getDeptWiseBMReport(data)
+        return await DepartmentWiseBMReport.getFilteredDeptWiseBMReport(data)
     })
 }
 

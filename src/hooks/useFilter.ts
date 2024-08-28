@@ -41,7 +41,7 @@ const useFilter=(filterData: any, page: any)=>{
 
         const filterOptionsConfig = findUniqueKeysAndValues(filterData);
 
-        const routes = filterOptionsConfig?.route?.map((r: any) => r.id) || [];
+        const routes = filterOptionsConfig?.route?.map((r: any) => r.value) || [];
         const { ccrs, ccrgroups, mappings, dept } = filterData || {};
         const department: any = [];
         const ccr: any = [];
@@ -52,13 +52,13 @@ const useFilter=(filterData: any, page: any)=>{
         for(let i = 0; i < mappings.length; i++){
             const { rid, ccrid, grpid, deptid } = mappings[i];
             if(routes.includes(rid)){
-                if(dept[deptid]?.nm && !checkValue(department,  dept[deptid]?.nm )){
+                if(dept[deptid]?.nm && !checkValue(department,  deptid )){
                     department.push({value: deptid, label :dept[deptid]?.nm})
                 }
-                if(ccrs[ccrid]?.nm && !checkValue(ccr, ccrs[ccrid]?.nm )){
+                if(ccrs[ccrid]?.nm && !checkValue(ccr, ccrid )){
                     ccr.push({value: ccrid, label: ccrs[ccrid]?.nm})
                 }
-                if(ccrgroups[grpid]?.nm && !checkValue(ccrGrp, ccrgroups[grpid]?.nm)){
+                if(ccrgroups[grpid]?.nm && !checkValue(ccrGrp, grpid)){
                     ccrGrp.push({value: grpid, label: ccrgroups[grpid]?.nm})
                 }
             }
@@ -66,7 +66,7 @@ const useFilter=(filterData: any, page: any)=>{
 
         for(let i = 0; i < filterOptionsConfig?.majid?.length; i++){
             const mjrid = filterOptionsConfig?.majid[i].id;
-            if(filterData?.mjar[mjrid]?.name && !checkValue(mjr, filterData?.mjar[mjrid]?.name )){
+            if(filterData?.mjar[mjrid]?.name && !checkValue(mjr, mjrid )){
                 mjr.push({value: mjrid, label: filterData?.mjar[mjrid]?.name});
                 const minors = filterData?.mjar[mjrid]?.min?.map((reason: any) => ({ value: reason.id, label: reason.name}));
                 min = [...min, ...minors];
