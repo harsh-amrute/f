@@ -19,6 +19,7 @@ import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount,use
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { ColDef } from "ag-grid-enterprise";
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 
 
 
@@ -108,25 +109,6 @@ const useInTransitWhereAbouts = ()=>{
     // const [columnState,setColumnState] = useState<any>()
     // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
-    const sideBar = {
-        toolPanels: [
-          {
-            id: "columns",
-            labelDefault: "Columns",
-            labelKey: "columns",
-            iconKey: "columns",
-            toolPanel: "agColumnsToolPanel",
-            toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
-          
-          },
-        ],
-        defaultToolPanel:'',
-      }
-
-
     // useEffect(()=>{
     //     const getTableState = async()=>{
     //       try{
@@ -189,7 +171,7 @@ const useInTransitWhereAbouts = ()=>{
             readOnlyEdit:true
         },
         
-        sideBar:sideBar,
+        sideBar:defaultAgGridSideBarForBPR,
         // suppressRowClickSelection: true,
         components: customCellRenderers,
         defaultColDef: {

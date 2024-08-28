@@ -16,6 +16,7 @@ import { notifyError, notifyLoader} from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 
 
 
@@ -88,24 +89,6 @@ export const useBOR =()=>{
       const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
       const [columnState,setColumnState] = useState<any>()
       const {currentGridState} = useSelector((state:RootState)=>state.mta)
-
-    const sideBar = {
-        toolPanels: [
-          {
-            id: "columns",
-            labelDefault: "Columns",
-            labelKey: "columns",
-            iconKey: "columns",
-            toolPanel: "agColumnsToolPanel",
-            toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
-          
-          },
-        ]
-      }
-
 
     useEffect(()=>{
         const getTableState = async()=>{
@@ -189,7 +172,7 @@ export const useBOR =()=>{
             },
         },
          pagination:false,
-         sideBar:sideBar,
+         sideBar:defaultAgGridSideBarForBPR,
         // pivotMode:true,
          defaultColDef:{
             floatingFilter: true,

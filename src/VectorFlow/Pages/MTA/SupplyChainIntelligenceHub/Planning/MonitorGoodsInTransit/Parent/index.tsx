@@ -35,9 +35,11 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
             iconKey: "columns",
             toolPanel: "agColumnsToolPanel",
             toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
+                suppressPivots: true,
+                suppressPivotMode: true,
+                suppressRowGroups: true,
+                suppressValues: true,
+              },
           
           },
         ],
