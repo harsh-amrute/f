@@ -12,12 +12,7 @@ export const Wrapper = styled.div`
     margin-top: -22px !important;
     font-size: 10px !important;
   }
-  & .ag-header-container {
-    font-size: 16px;
-  }
-  & .ag-header-cell-text {
-    text-align: center;
-  }
+ 
   & > .ag-theme-alpine {
     margin: 0 20px 0;
     width: 100%;
@@ -40,69 +35,7 @@ export const Wrapper = styled.div`
   }
   & > .ag-theme-alpine{
       margin: 0 !important;
-    --ag-grid-size: 3px !important;
-    --ag-list-item-height: 20px !important;
-    --ag-font-size: 10px !important;
-      flex: 1;
-      height: 100%;
-      --ag-row-hover-color: rgb(188, 61, 129,0.3) !important;
-
-      & .ag-cell {
-        height: 100% !important;
       }
-
-      & .ag-paging-panel {
-        height: 24px !important;
-      }
-
-      & .ag-side-buttons {
-        font-size: 10px;
-      }
-
-      & .ag-header {
-        border-radius: 0;
-      }
-
-      & .ag-pivot-off{
-        height: 47px !important;
-        min-height: 47px !important;
-
-      }
-     
-      & .ag-header-cell {
-        min-height: 24px !important;
-        height: 24px !important;
-      }
-      & .ag-header-row {
-        min-height: 20px !important;
-        height: 20px !important;
-      }
-      & .ag-header-container {
-        min-height: 20px !important;
-        height: 20px !important;
-      }
-      
-      
-       & .ag-header-row-column-filter{
-        top: 23px !important;
-        height: 24px !important;
-       }
-
-      
-       & .ag-input-field-input {
-        height: 14px !important;
-        min-height: 10px !important;
-        font-size: 12px;
-       }
-      & .ag-column-drop{
-        background: #D2CECE;
-      }
-
-      & .ag-status-bar{
-        height: 24px !important;
-        font-size: 10px;
-      }
-  }
 `;
 
 export const Button = styled.button<{ themeUi: string; arrowName: string }>`

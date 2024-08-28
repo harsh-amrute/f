@@ -5,7 +5,7 @@ import { useUserData } from "../../../../../context"
 import ColoPriority from "../../Common/ColorPriority/index";
 import AvailabilityToolTip from "../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from "../../Common/VFTable";
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { useNavigate } from "react-router-dom";
@@ -465,7 +465,7 @@ const useProcPlanning = (date: string) => {
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
 
                             <VFButtonOutline
-                                onClick={() => { (!isDisabled) && fetchData(date) }}
+                                onClick={() => { (!isDisabled) && fetchData(date, 1, '0') }}
                                 themeUi=""
                                 disabled={isDisabled}
                                 width={135}
@@ -541,8 +541,7 @@ const useProcPlanning = (date: string) => {
                 resizable: true,
                 floatingFilter: true,
                 filter: "agMultiColumnFilter",
-                floatingFilterComponentParams: { suppressFilterButton: true },
-                minWidth: 140,
+                // minWidth: 140,
                 // wrapHeaderText: true,
                 // autoHeaderHeight: true,
                 cellStyle: {
@@ -558,6 +557,7 @@ const useProcPlanning = (date: string) => {
                     'resizable': 'true',
                 },
                 flex: 1,
+                initialFlex: 1,
             },
 
 
@@ -610,7 +610,8 @@ const useProcPlanning = (date: string) => {
         GetCount,
         fetchData,
         date,
-        isLoading
+        isLoading,
+        currentTab
     }
 }
 

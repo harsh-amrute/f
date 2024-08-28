@@ -110,7 +110,7 @@ const MaterialCov = () => {
   const defaultTab = tabs.findIndex(tab => tab.value === currTab)
 
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%", height: "100%" }}>
       {!toggleComponent ?
         <>
           {
@@ -183,7 +183,7 @@ const MaterialCov = () => {
 
         </>
         :
-        <div style={{ height: '100%' }}>
+        <div style={{ height: '100%', display: "flex", flexDirection: "column", paddingBottom: "2rem" }}>
 
 
           <ActionToolBar

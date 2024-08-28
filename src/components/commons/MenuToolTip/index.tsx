@@ -9,6 +9,7 @@ import {
   TooltipContent,
   SCIcon,
 } from "./style";
+import { useRef, useEffect } from 'react';
 import { handleDownload, navigateWithPrompt } from "../../../helpers/utils";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
@@ -78,6 +79,7 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
   };
 
 
+  const tooltipRef = useRef<any>(null);
 
 
   const renderToolTipContent = (items: any): any => {
@@ -119,6 +121,37 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
     )
   }
 
+  useEffect(() => {
+    // Access the div's position when the component mounts
+    if (tooltipRef.current) {
+      const rect = tooltipRef.current?.getBoundingClientRect();
+      console.log('Div position:', rect); // You can log or use rect's properties here
+
+      // Example: Accessing specific properties
+      console.log('Top:', rect.top);
+      console.log('Left:', rect.left);
+      console.log('Width:', rect.width);
+      console.log('Height:', rect.height);
+    }
+  }, [tooltipRef]);
+
+
+  let maxHeight = 'fit-content';
+
+
+  if (item.name === "navbar.listMenuParent.prodAndPlanningScheduling.title") {
+    maxHeight = '250px';
+  }
+  else if (item.name === "navbar.listMenuParent.manufacturingHub.title") {
+    maxHeight = '160px';
+  }
+  else if (item.name === "navbar.listMenuParent.poogi.title") {
+    maxHeight = "200px";
+  }
+  else if (item.name === "Replenishment and Replacement") {
+    maxHeight = '340px';
+  }
+
   return (
     <WrapToolTip>
       <Tooltip
@@ -129,7 +162,7 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
         isOpen
 
       >
-        <TooltipContainer>
+        <TooltipContainer style={{ maxHeight }} ref={tooltipRef}>
           <TooltipTitle>{t(item.name)}</TooltipTitle>
           {renderToolTipContent(item)}
         </TooltipContainer>

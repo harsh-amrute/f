@@ -90,7 +90,7 @@ export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?:
     height:${(props) => props.height ? props.height : 'auto'};
     // max-height:90%;
 
-    zoom:${props => props.disableZoomScaling ? 1 : 0.75};
+    zoom: 1;
     width:100%;
     padding-right: 25px;
     display: flex;

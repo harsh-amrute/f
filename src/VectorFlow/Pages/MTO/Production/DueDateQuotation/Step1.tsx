@@ -2,7 +2,7 @@ import { GridOptions } from 'ag-grid-enterprise';
 import _ from 'lodash';
 import React, { forwardRef, useEffect } from 'react'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 import { pagination } from '../../Common/Enum';
 
 interface IStep1Props {

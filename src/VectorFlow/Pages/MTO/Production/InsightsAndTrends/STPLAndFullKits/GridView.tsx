@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
+import VFTable from "../../../Common/VFTable";
 import { GridOptions } from "ag-grid-enterprise";
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';

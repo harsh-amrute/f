@@ -2,7 +2,7 @@ import { ColDef } from "ag-grid-enterprise";
 import { useRef } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import VFTable from "../../../../../../../components/VectorFLOW/commons/VFTable";
+import VFTable from "../../../../../../../VectorFlow/Pages/MTO/Common/VFTable";
 import { VFTableWrapper } from './style'
 import { pagination } from "../../../../../../../VectorFlow/Pages/MTO/Common/Enum";
 

@@ -157,12 +157,7 @@ const useMaterialSO = (data: any) => {
             enableBrowserTooltips: true,
             enableRangeSelection: true,
             components: customCellRenderers,
-
             defaultColDef: {
-
-                floatingFilterComponentParams: {
-                    suppressFilterButton: true,
-                },
                 suppressMenu: true,
                 resizable: true,
                 flex: 1,
@@ -202,6 +197,7 @@ const useMaterialSO = (data: any) => {
         },
         masterDetail: true,
         detailCellRenderer: DetailCellRenderer,
+        detailRowHeight: 240,
         autoGroupColumnDef: autoGroupColumnDef,
         paginationAutoPageSize: true,
 

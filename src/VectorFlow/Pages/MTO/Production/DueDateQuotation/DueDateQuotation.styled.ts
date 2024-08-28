@@ -7,16 +7,7 @@ export const Wrapper = styled.div`
     margin-left: 2rem;
     flex-direction: column;
     
-    & .ag-header-cell-text {
-        font-size: 18px;
-    }
-    & .ag-header-cell-text {
-        text-align: center;
-    }
-
-    & .ag-theme-alpine .ag-theme-alpine .ag-header-cell{
-        text-align: left;
-    }
+   
     & > .ag-theme-alpine{
         flex: 1;
         height: 100%;
@@ -73,7 +64,7 @@ export const BasketingLabel = styled.div`
     gap:1rem;
 `
 
-export const BasketingLabelText = styled.strong<{theme: string}>`
+export const BasketingLabelText = styled.strong<{ theme: string }>`
     display: flex; 
     align-items: center;
     gap: 0.5rem;

@@ -5,7 +5,7 @@ import GetSimulateFullKitHeader from './GetSimulateFullKitHeader.json';
 import AvlCellRenderer from "../../../Common/AvlCellRenderer";
 import AvailabilityToolTip from "../../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../../components/VectorFLOW/commons/VFFloatingTab"
-import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from "../../../Common/VFTable";
 import { useLocation } from 'react-router-dom';
 import ColorCellRenderer from "../../../Common/ColorCellRenderer";
 import { mapSimulateProcPlanningFieldsToColDefs } from '../../../../../../helpers/utils';
@@ -218,7 +218,6 @@ const useSimFullKit = () => {
                 suppressMenu: true,
                 resizable: true,
                 filter: "agMultiColumnFilter",
-                floatingFilterComponentParams: { suppressFilterButton: true },
                 cellStyle: {
                     'text-align': 'center',
                     'height': '50px',
@@ -230,8 +229,9 @@ const useSimFullKit = () => {
                     'text-overflow': 'ellipsis',
                     'white-space': 'nowrap',
                     'resizable': 'true',
-                    'width': '180px'
+                    'width': '200px'
                 },
+
             },
         },
         masterDetail: true,

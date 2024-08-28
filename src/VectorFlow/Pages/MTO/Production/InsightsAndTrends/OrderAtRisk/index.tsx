@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import { HorizontalViewWrapper } from "./styles";
-import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
+import VFTable from "../../../Common/VFTable";
 import { GridOptions } from "ag-grid-enterprise";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import { reasonColConfig } from "./MockData";

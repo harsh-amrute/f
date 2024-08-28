@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import VFFloatingTab from '../../../../../components/VectorFLOW/commons/VFFloatingTab';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import { ApplyZoomOut, PaginationWrapper, VFTableWrapper } from './styles';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import ReasonCellRenderer from './ReasonCellRenderer';
 import DueDateCellRenderer from './DueDateCellRenderer';
@@ -152,7 +152,6 @@ const OrderRescheduling = () => {
             wrapHeaderText: true,
             autoHeaderHeight: true,
             cellStyle: {
-                'font-size': '16px',
                 "text-align": "center",
                 'text-overflow': 'ellipsis',
             },

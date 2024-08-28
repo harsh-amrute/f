@@ -41,7 +41,7 @@ const MaterialCellRenderer = (params: any) => {
                         flex: 1,
                     }}
                     rowData={params.data.children}
-                    height={'200px'}
+                    height={'180px'}
                     pagination={true}
                     paginationPageSize={3}
                     components={customChildrenCellRenderers}
@@ -51,7 +51,6 @@ const MaterialCellRenderer = (params: any) => {
                     suppressRowClickSelection={true}
                     enableRangeSelection={true}
                     // paginationAutoPageSize={true}
-                    alwaysShowVerticalScroll={true}
                     // suppressPaginationPanel
                     statusBar={{
                         statusPanels: [

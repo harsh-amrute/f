@@ -1,7 +1,7 @@
 import { AgChartsReact } from 'ag-charts-react';
 import { GridOptions, IRowNode } from 'ag-grid-enterprise';
 import { useEffect, useMemo, useRef, useState } from 'react'
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import { fullKitAssignmentHeader } from './data';
 import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';

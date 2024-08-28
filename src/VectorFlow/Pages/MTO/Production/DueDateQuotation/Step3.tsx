@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 import React, { forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { useUpdateScheduleOrders } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import Radio from '../../../../../components/VectorFLOW/commons/MTO/Radio'
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 import { Arrow, BasketingContainer, BasketingLabel, BasketingLabelText, BasketingSection, DateRange, DateRangeLabel } from './DueDateQuotation.styled'
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import * as globalStyles from "../../../../../styles/global";

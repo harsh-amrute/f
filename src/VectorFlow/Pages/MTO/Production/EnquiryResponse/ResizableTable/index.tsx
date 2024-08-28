@@ -2,7 +2,7 @@ import { ColDef } from "ag-grid-enterprise";
 import { useRef } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
+import VFTable from "../../../Common/VFTable";
 import { VFTableWrapper } from "./styles";
 
 interface IResizeTableProps {
@@ -28,7 +28,6 @@ const ResizableTable = (props: IResizeTableProps) => {
   const defaultColDef = {
     filter: "agTextColumnFilter",
     floatingFilter: true,
-    floatingFilterComponentParams: { suppressFilterButton: true },
     suppressMenu: true,
     resizable: true,
     cellStyle: {

@@ -7,7 +7,6 @@ export const ApplyZoomOut = styled.div`
 
 export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?: boolean }>`
     height: 75vh;
-    zoom: 0.75;
     margin-top: 20px;
     padding-left: 20px;
     display: flex;
@@ -21,10 +20,6 @@ export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?:
       }
     & .ag-theme-noir-fusion {
         margin: 0 !important;
-      }
-
-      & .ag-header-container {
-        font-size: 16px;
       }
     
 `

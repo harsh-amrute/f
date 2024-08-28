@@ -7,7 +7,7 @@ import {
   BTRTableWrapper,
   HorizontalViewWrapper,
 } from "./styles";
-import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
+import VFTable from "../../../Common/VFTable";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import TrailDeptCount from "./TrailDeptCount";
@@ -86,7 +86,6 @@ const OrderBalance = () => {
     },
     defaultColDef: {
       initialFlex: 1,
-      wrapHeaderText: true,
       autoHeaderHeight: true,
       filter: "agTextColumnFilter",
       floatingFilter: true,

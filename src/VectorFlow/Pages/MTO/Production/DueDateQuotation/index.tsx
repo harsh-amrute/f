@@ -91,24 +91,24 @@ const DueDateQuotation = () => {
       suppressMenu: true,
       detailGridOptions: {
         rowHeight: 45,
-        domLayout:"autoHeight",
+        domLayout: "autoHeight",
         autoGroupColumnDef: {
-          headerName:"Item Name",
+          headerName: "Item Name",
           cellRendererParams: {
-              suppressCount: true
+            suppressCount: true
           }
-      },
+        },
         columnDefs: [
           { field: "qty", headerName: "Requirement", },
-          { field: "soh", headerName: "Stock",  },
-          { field: "wip", headerName: "WIP",  },
+          { field: "soh", headerName: "Stock", },
+          { field: "wip", headerName: "WIP", },
           { field: "gap", headerName: "Gap", },
         ],
         defaultColDef: {
           flex: 1,
           suppressMenu: true,
           cellStyle: {
-            fontSize:"16px",
+            fontSize: "16px",
             display: "flex",
             alignItems: "center"
           }
@@ -119,7 +119,7 @@ const DueDateQuotation = () => {
         },
       },
       getDetailRowData: async (params: any) => {
-        const data = await getBOMExplosionData({orderId: params.data.oid, lineId: params.data.lid});
+        const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
         params.successCallback(data?.data?.data)
       }
     },
@@ -130,6 +130,7 @@ const DueDateQuotation = () => {
       // flex: 1,
       suppressSizeToFit: false,
       filter: "agTextColumnFilter",
+      suppressMenu: true,
       floatingFilter: true,
       resizable: true,
       cellStyle: {

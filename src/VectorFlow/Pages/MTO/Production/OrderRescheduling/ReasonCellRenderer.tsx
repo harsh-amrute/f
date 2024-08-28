@@ -21,7 +21,7 @@ const ReasonCellRenderer = (params: any) => {
         <ETACellRendererWrapper  >
 
             {/* <ETACellValue> */}
-            <input disabled={disabled} value={val} onChange={(e) => { params.data.rs = e.target.value, setVal(params.data.rs) }} placeholder="Enter your reason here..." type={'text'} style={{ fontSize: '14px', height: '28px', width: '180px' }} />
+            <input disabled={disabled} value={val} onChange={(e) => { params.data.rs = e.target.value, setVal(params.data.rs) }} placeholder="Enter your reason here..." type={'text'} style={{ fontSize: '12px', height: '18px', width: '160px' }} />
             {/* </ETACellValue> */}
         </ETACellRendererWrapper>
     )

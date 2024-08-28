@@ -4,7 +4,7 @@ import { GridOptions } from 'ag-grid-enterprise';
 import { Allotment } from 'allotment';
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { getColumnDefinations } from '../../../../../helpers/utils';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 import BufferAssignment from '../../Common/RouteAssignment/BufferAssignment';
 import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment';
 import { WarningBody, WarningContainer, WarningHeader, WarningText, Wrapper } from './DueDateQuotation.styled';
@@ -319,18 +319,20 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
     //ccr groups & ccrs filter on the basis of plant
 
-    const ccrGroups = useMemo(()=>{
-        if(selectedPlant && masters){
-            return masters?.ccrGroups.map((ccrGroup: any)=>{
-                return {...ccrGroup, ccrs: ccrGroup.ccrs.filter((ccr: any)=>{
-                    return ccr.plant_id == selectedPlant
-                })}
-            })?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0 )
+    const ccrGroups = useMemo(() => {
+        if (selectedPlant && masters) {
+            return masters?.ccrGroups.map((ccrGroup: any) => {
+                return {
+                    ...ccrGroup, ccrs: ccrGroup.ccrs.filter((ccr: any) => {
+                        return ccr.plant_id == selectedPlant
+                    })
+                }
+            })?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0)
         }
-        else{
+        else {
             return []
         }
-        
+
     }, [masters, selectedPlant])
 
     // console.log("selectedPlant", selectedPlant)
@@ -422,10 +424,10 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         // const fol = masters.FOL[ccrId];
                         const ccrItem = masters?.CCRItemTypeMappingMaster.find((ccr: any) => ccr.ccrId === ccrId && ccr.it == order.itid)
 
-                        if(!ccrItem){
+                        if (!ccrItem) {
                             throw new Error(`CCR Name: ${ccrNames[index]} not available in MapCCRItemType Master`)
                         }
-                        if(!ccrItem.tt){
+                        if (!ccrItem.tt) {
                             throw new Error(`Touch Time not available for CCR Name: ${ccrNames[index]} and Item ID: ${order.itid} in MapCCRItemType Master`);
                         }
                         let ccrWorkingHoursPerDay = ccr.working_hours_per_day;
@@ -889,10 +891,10 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                     const selectedProdBuffer: any = new Set();
                                     const selectedProcBuffer: any = new Set();
                                     const selectedPlants: any = new Set();
-                                    
+
 
                                     selected.forEach((row: any) => {
-                                        if(row.plid){
+                                        if (row.plid) {
                                             selectedPlants.add(row.plid)
                                         }
                                         if (row.newRoute) {
@@ -932,15 +934,15 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                     if (selected.length > 1) {
                                         isAssignmentPossible = ([1].includes(selectedRoutes.size)) && ([1].includes(selectedProdBuffer.size)) && ([1].includes(selectedProcBuffer.size))
                                     }
-                                    if(selectedPlants.size == 1){
+                                    if (selectedPlants.size == 1) {
                                         setArePlantsDifferent(false)
                                         setSelectedPlant([...selectedPlants][0])
-                                    }else{
+                                    } else {
                                         isAssignmentPossible = false;
                                         setSelectedPlant(null)
                                         setArePlantsDifferent(true)
                                     }
-                    
+
                                     const routeId = [...selectedRoutes][0]
                                     if (selectedRoutes.size == 0) {
                                         setSelectedRoute([])
@@ -1025,7 +1027,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                 <CardCover>
                                     <DashedCard style={{ width: "500px" }}>
                                         <MessageText style={{ textAlign: "center", display: "flex", flexDirection: "column", width: "100%", gap: "2rem" }}>
-                                            {arePlantsDifferent? <div>Selected orders have different plants and cannot be modified together.</div> : !no ? <>
+                                            {arePlantsDifferent ? <div>Selected orders have different plants and cannot be modified together.</div> : !no ? <>
                                                 <div>
                                                     Selected orders have different routes and buffer.<br />
                                                     Do you want to edit these orders together?

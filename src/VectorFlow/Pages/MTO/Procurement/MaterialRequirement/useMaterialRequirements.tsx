@@ -265,13 +265,12 @@ const useMaterialReq = (forDate?: string) => {
                 enableRangeSelection: true,
                 pagination: true,
                 defaultColDef: {
-                    floatingFilterComponentParams: { suppressFilterButton: true },
                     floatingFilter: true,
                     suppressMenu: true,
                     filter: "agMultiColumnFilter",
                     cellDataType: false,
                     resizable: true,
-                    minWidth: 140,
+                    // minWidth: 140,
                     wrapHeaderText: true,
                     autoHeaderHeight: true,
                     cellStyle: {
@@ -285,7 +284,8 @@ const useMaterialReq = (forDate?: string) => {
                         'white-space': 'nowrap',
                         'resizable': 'true',
                     },
-                    initialFlex: 1
+                    initialFlex: 1,
+                    flex: 1
                 },
 
             },

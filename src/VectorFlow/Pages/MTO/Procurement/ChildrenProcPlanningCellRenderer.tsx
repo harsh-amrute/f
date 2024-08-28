@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import VFTable from '../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../Common/VFTable';
 import { mapProcPlanningChildrenFieldsToColDefs } from '../../../../helpers/utils';
 import GetProcHeaderChildren from './Planning/GetProcHeaderChildren.json';
 import ChildrenColor from "../Common/ChildrenColor/ChildrenColor";
@@ -14,7 +14,7 @@ const ChildrenProcPlanningCellRenderer = (params: any) => {
     }), []);
 
     return (
-        <div style={{ backgroundColor: 'white' }}>
+        <div>
             <ChildTableWrapper>
 
                 <VFTable
@@ -39,7 +39,7 @@ const ChildrenProcPlanningCellRenderer = (params: any) => {
                         flex: 0,
                     }}
                     rowData={params.data && params.data.children ? params.data.children : []}
-                    height={'300px'}
+                    height={'260px'}
                     pagination={true}
                     components={customChildrenCellRenderers}
                     masterDetail={true}

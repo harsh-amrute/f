@@ -15,7 +15,6 @@ export const TooltipContainer = styled.div`
   color: ${globalStyles.black};
   text-align: left;
   cursor: pointer;
-  max-height: 200px;
   overflow: auto;
 `;
 
