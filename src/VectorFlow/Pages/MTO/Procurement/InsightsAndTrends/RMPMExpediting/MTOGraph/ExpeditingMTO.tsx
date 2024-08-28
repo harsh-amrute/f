@@ -222,6 +222,18 @@ const ExpeditingMTO = ({  date }: { isMTO: boolean, date: string }) => {
         )
     }
 
+    const graphTitleJSX =  <div
+        data-testid="ot-if-graph"
+        style={{
+        fontSize: "13px",
+        margin: "0 auto",
+
+        textAlign: "center",
+        }}
+    >
+        <span style={{ fontWeight: 500 }}>Top 10 Raw Materials Impacting Orders With Release Date In Selected Horizon</span>
+        <span style={{ fontWeight: 300 }}>{` (${moment(date).format('D MMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('D MMM YYYY')}) `}</span>
+    </div>
 
 
     return (
@@ -235,7 +247,8 @@ const ExpeditingMTO = ({  date }: { isMTO: boolean, date: string }) => {
                 setChartLoading={setChartLoading}
                 data={numericData}
                 rowData={numericData}
-                graphTitle={`Top 10 Raw Materials Impacting Orders With Release Date In Selected Horizon (${moment(date).format('D MMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('D MMM YYYY')}) `}
+                graphTitle={''}
+                graphTitleJSX={graphTitleJSX}
                 tableTitle={`Top 10 Raw Materials Impacting Orders With Release Date In Selected Horizon (${moment(date).format('Do MMMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('Do MMMM YYYY')})`}
                 options={options}
                 colDef={colDef}

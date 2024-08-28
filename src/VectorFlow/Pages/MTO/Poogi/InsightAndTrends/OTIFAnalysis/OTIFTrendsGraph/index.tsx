@@ -7,6 +7,7 @@ import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VF
 import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { TooltipRenderer } from "../OTIFCommon";
+import { format } from "date-fns";
 
 const OTIFTrendsGraph = (props: any) => {
   const { graphData } =props; 
@@ -166,8 +167,8 @@ const OTIFTrendsGraph = (props: any) => {
 
   useEffect(()=>{
     if(graphData){
-      setStartDate(graphData.start);
-      setEndDate(graphData.end);
+      setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
+      setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
       setRawData(graphData.data);
     }
   },[graphData])

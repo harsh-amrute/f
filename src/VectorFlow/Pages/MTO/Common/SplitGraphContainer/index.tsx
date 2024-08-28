@@ -13,6 +13,7 @@ interface SplitGrpahContainerProps {
   rowData: any,
   header: () => JSX.Element,
   graphTitle: string,
+  graphTitleJSX?: JSX.Element,
   tableTitle: string,
   tableLoading?: boolean,
   chartLoading?: boolean,
@@ -34,6 +35,7 @@ const SplitGraphContainer = ({
   rowData,
   header,
   graphTitle,
+  graphTitleJSX,
   tableTitle,
   setTableLoading,
   setChartLoading,
@@ -835,7 +837,7 @@ const SplitGraphContainer = ({
           <div style={{ height: '100%', width: '100%' }}>
             <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
               <div style={{ fontSize: '10px', fontWeight: 500, textAlign: 'center', margin: '0 auto' }}>
-                {graphTitle}
+                {graphTitle || graphTitleJSX}
               </div>
               <div style={{ marginLeft: '0 10px -5px', marginBottom: '-5px' }} onClick={() => {
 
