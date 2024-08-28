@@ -109,6 +109,8 @@ const ExcessInventoryTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:st
           label: {
             formatter: (params:any) => new Date(params.value).toISOString().split('T')[0],
             fontSize: 10,
+            autoRotate:false,
+            avoidCollisions:true
           },
           
         },
@@ -217,7 +219,10 @@ const ExcessInventoryTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:st
           label: {
             formatter: (params:any) => new Date(params.value).toISOString().split('T')[0],
             fontSize: 10,
-          },
+            autoRotate:false,
+            avoidCollisions:true
+          },   
+          
           
         },
         {

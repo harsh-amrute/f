@@ -52,7 +52,9 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                 label: {
                     fontSize: 8,
                     fontWeight: 'bold',
-                    color: 'black'
+                    color: 'black',
+                    autoRotate:false,
+                    avoidCollisions:true
                 }
             },
             {
