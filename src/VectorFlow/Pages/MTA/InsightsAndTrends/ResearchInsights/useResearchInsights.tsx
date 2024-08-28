@@ -20,6 +20,7 @@ import { RootState } from '../../../../../redux/store/store'
 import { type DailyDataGraph } from "../../../../types/MTA";
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import useBPRFilter from '../../../../../hooks/useBPRFilter'
+import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants'
 
 const useResearchInsights = ()=>{
     
@@ -87,28 +88,6 @@ const useResearchInsights = ()=>{
 
     const [selectedRowsDates,setSelectedRowsDates] = useState<Array<any>>([])
 
-
-    
-
-    const sideBar = {
-        toolPanels: [
-          {
-            id: "columns",
-            labelDefault: "Columns",
-            labelKey: "columns",
-            iconKey: "columns",
-            toolPanel: "agColumnsToolPanel",
-            toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
-          
-          },
-        ],
-        defaultToolPanel:'',
-      }
-
-
     useEffect(()=>{
         const getTableState = async()=>{
           try{
@@ -157,7 +136,7 @@ const useResearchInsights = ()=>{
             return { background: "#F7F7F7" };
             },
         },
-        sideBar:sideBar,
+        sideBar:defaultAgGridSideBarForBPR,
         // paginationPageSize:25,
         paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
         suppressRowClickSelection:true,

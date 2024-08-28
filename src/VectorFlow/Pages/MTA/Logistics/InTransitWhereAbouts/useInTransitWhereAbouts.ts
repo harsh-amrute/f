@@ -19,6 +19,7 @@ import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount,use
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { ColDef } from "ag-grid-enterprise";
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 
 
 
@@ -119,6 +120,8 @@ const useInTransitWhereAbouts = ()=>{
             toolPanelParams: {
               suppressPivots: true,
               suppressPivotMode: true,
+              suppressRowGroups: true,
+              suppressValues: true,
             },
           
           },
@@ -189,7 +192,7 @@ const useInTransitWhereAbouts = ()=>{
             readOnlyEdit:true
         },
         
-        sideBar:sideBar,
+        sideBar:defaultAgGridSideBarForBPR,
         // suppressRowClickSelection: true,
         components: customCellRenderers,
         defaultColDef: {

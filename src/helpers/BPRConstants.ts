@@ -207,3 +207,23 @@ export const routerToAnalyticsStringMap:RouterToAnalyticsStringMap = {
         label:'Greater than '
     }
   ]
+
+  export const defaultAgGridSideBarForBPR = {
+    toolPanels: [
+      {
+        id: "columns",
+        labelDefault: "Columns",
+        labelKey: "columns",
+        iconKey: "columns",
+        toolPanel: "agColumnsToolPanel",
+        toolPanelParams: {
+          suppressPivots: true,
+          suppressPivotMode: true,
+          suppressRowGroups: true,
+          suppressValues: true,
+        },
+      
+      },
+    ],
+    defaultToolPanel:'',
+  }

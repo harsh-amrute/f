@@ -25,10 +25,11 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
             iconKey: "columns",
             toolPanel: "agColumnsToolPanel",
             toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
-          
+                suppressPivots: true,
+                suppressPivotMode: true,
+                suppressRowGroups: true,
+                suppressValues: true,
+              },
           },
         ],
         defaultToolPanel:'',

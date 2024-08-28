@@ -58,9 +58,11 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCa
             iconKey: "columns",
             toolPanel: "agColumnsToolPanel",
             toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
+                suppressPivots: true,
+                suppressPivotMode: true,
+                suppressRowGroups: true,
+                suppressValues: true,
+              },
           
           },
         ],

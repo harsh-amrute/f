@@ -10,6 +10,7 @@ import { notifyError, notifyLoader} from "../../../../../helpers/notify"
 import { toast } from "react-toastify";
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 
 
 const useRRR =()=>{
@@ -38,26 +39,6 @@ const useRRR =()=>{
     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
 
     const RRRColumns = mapRRRFieldsToColDefs(data?.data.data)
-
-
-
-    const sideBar:SideBarDef = {
-        toolPanels: [
-          {
-            id: "columns",
-            labelDefault: "Columns",
-            labelKey: "columns",
-            iconKey: "columns",
-            toolPanel: "agColumnsToolPanel",
-            toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
-          
-          },
-        ],
-        defaultToolPanel:'',
-      }
 
   
     useEffect(()=>{       
@@ -180,7 +161,7 @@ const useRRR =()=>{
             },
         },
         pagination:false,
-        sideBar:sideBar,
+        sideBar:defaultAgGridSideBarForBPR,
         // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
         // rowSelection:'multiple',
         paginationPageSize:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200'),

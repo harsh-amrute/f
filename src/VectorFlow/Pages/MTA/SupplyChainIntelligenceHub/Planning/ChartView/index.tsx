@@ -27,7 +27,6 @@ interface ChartViewProps {
 
 }
 const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenDailyDataGraph,planningCounts}:ChartViewProps) => {
-    console.debug(currentTab)
     const renderGraphs = ()=>{
         switch(category){
             case 'GITFromParent':

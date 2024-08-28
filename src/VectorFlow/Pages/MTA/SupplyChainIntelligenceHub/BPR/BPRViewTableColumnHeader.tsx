@@ -7,7 +7,7 @@ import { BPRViewTableColDef } from './BPRViewTable'
 import Portal from '../../../../../components/VectorFLOW/layouts/Portal'
 import { useUserData } from '../../../../../context'
 
-const BPRViewTableColumnHeader = ({colDef}:{colDef:BPRViewTableColDef})=>{
+const BPRViewTableColumnHeader = ({colDef,query}:{colDef:BPRViewTableColDef,query:string})=>{
     const {user} = useUserData()
     const themeUi = user.user.theme_ui
     const [isFilterOpen, setFilterOpen] = useState<boolean>(false)
@@ -41,6 +41,7 @@ const BPRViewTableColumnHeader = ({colDef}:{colDef:BPRViewTableColDef})=>{
         }
     }, [isFilterOpen])
 
+
     return (
         <BPRViewTableHeader style={{minWidth:colDef.colId==='whereabouts'?200:120}} key={colDef.colId}>
             {colDef.headerName}
@@ -58,12 +59,14 @@ const BPRViewTableColumnHeader = ({colDef}:{colDef:BPRViewTableColDef})=>{
                     >
                         <BPRViewTableColumnFilter
                             dataType={colDef.dataType}
+                            
                             filterString={colDef.filterValue || ""}
                             onApplyFilter={(f,q)=>{
                                 if(colDef.onApplyFilter){
                                     colDef.onApplyFilter(f,q)
                                 }
                             }}
+                            query={query}
                         />
                     </BPRViewTableColumnFilterWrapper>
                 </Portal>

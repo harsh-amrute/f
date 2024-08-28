@@ -30,9 +30,11 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
             iconKey: "columns",
             toolPanel: "agColumnsToolPanel",
             toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
+                suppressPivots: true,
+                suppressPivotMode: true,
+                suppressRowGroups: true,
+                suppressValues: true,
+              },
           
           },
         ],

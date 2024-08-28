@@ -1,5 +1,6 @@
 
 // import { ICellRendererParams } from "ag-grid-enterprise"
+import React from "react"
 import { BPRColorCellRendererWrapper, 
     BPRTagsCellRendererWrapper,
     BPRRemarksCellRendererWrapper,
@@ -65,16 +66,17 @@ export const BPRTechColorCellRenderer = (params:any)=>{
     const techColor = params.data.TechColor
     const cellColor = colorMapper(params.data.TechColor)
 
-    if(!techColor || techColor.length<0){
+    if(!techColor || techColor.length<0 ){
         return(
-            <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}} data-testid='bpr-tech-color-cell'>
-                NULL
-            </BPRColorCellRendererWrapper>
+            // <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}} data-testid='bpr-tech-color-cell'>
+            //     NULL
+            // </BPRColorCellRendererWrapper>
+            <React.Fragment/>
         )
     }
 
     return(
-        <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
+        <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
             {params.data.TechPen}%
         </BPRColorCellRendererWrapper>
     )
@@ -88,11 +90,12 @@ export const BPREcoColorCellRenderer = (params:any)=>{
 
     const cellColor = colorMapper(ecoColor)
 
-    if(!ecoColor || ecoColor.length<0){
+    if(!ecoColor || ecoColor.length<0 ){
         return(
-            <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
-                NULL
-            </BPRColorCellRendererWrapper>
+            // <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
+            //     NULL
+            // </BPRColorCellRendererWrapper>
+            <React.Fragment/>
         )
     }
 

@@ -27,6 +27,7 @@ import { GridStateContext } from "../../../../../../context/GridStateContext";
 import { useDispatch, useSelector } from "react-redux";
 import { UPDATE_PLANNING_DATA } from "../../../../../../redux/actions/MTA";
 import { RootState } from "../../../../../../redux/store/store";
+import useGetLocation from "../../../../../../hooks/useGetLocation";
 
 interface ActionToolBarProps {
   view: string;
@@ -82,6 +83,8 @@ const ActionToolBar = ({
 }: ActionToolBarProps) => {
   const { user } = useUserData();
   const { ref } = useContext(GridStateContext);
+
+  const {locations} = useGetLocation()
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
   const { onSaveState, onResetAllState, onExportToExcel } = useSaveAllState();
   const { currentCategory } = useSelector(
@@ -94,7 +97,6 @@ const ActionToolBar = ({
   const [isFilterOpen, toggleFilter] = useState<boolean>(false);
 
   const handleApplyFilter = (params: any) => {
-    console.log(params)
     if (onApplyFilter) onApplyFilter(params);
     toggleFilter(false);
   };
@@ -134,6 +136,7 @@ const ActionToolBar = ({
   };
 
   const renderFilter = () => {
+    console.log(currCategory)
     switch (currCategory) {
       case "GITFromParent":
         return (
@@ -147,10 +150,10 @@ const ActionToolBar = ({
             locationFilterActive={true}
             availabilityFilterActive={true}
             supplyChainForLocationCheckBoxList={
-              MultiFilterSupplyChainCheckboxList
+              locations
             }
             supplyChainForChildrenOfCheckBoxList={
-              MultiFilterSupplyChainCheckboxList
+              locations
             }
           />
         );
@@ -166,10 +169,10 @@ const ActionToolBar = ({
             locationFilterActive={true}
             availabilityFilterActive={true}
             supplyChainForLocationCheckBoxList={
-              MultiFilterSupplyChainCheckboxList
+              locations
             }
             supplyChainForChildrenOfCheckBoxList={
-              MultiFilterSupplyChainCheckboxList
+              locations
             }
           />
         );
@@ -185,10 +188,10 @@ const ActionToolBar = ({
             locationFilterActive={true}
             availabilityFilterActive={true}
             supplyChainForLocationCheckBoxList={
-              MultiFilterSupplyChainCheckboxList
+              locations
             }
             supplyChainForChildrenOfCheckBoxList={
-              MultiFilterSupplyChainCheckboxList
+              locations
             }
           />
         );
@@ -204,10 +207,10 @@ const ActionToolBar = ({
             locationFilterActive={true}
             availabilityFilterActive={true}
             supplyChainForLocationCheckBoxList={
-              MultiFilterSupplyChainCheckboxList
+              locations
             }
             supplyChainForChildrenOfCheckBoxList={
-              MultiFilterSupplyChainCheckboxList
+              locations
             }
           />
         );
@@ -223,10 +226,10 @@ const ActionToolBar = ({
             locationFilterActive={true}
             availabilityFilterActive={true}
             supplyChainForLocationCheckBoxList={
-              MultiFilterSupplyChainCheckboxList
+              locations
             }
             supplyChainForChildrenOfCheckBoxList={
-              MultiFilterSupplyChainCheckboxList
+              locations
             }
           />
         );
@@ -242,10 +245,10 @@ const ActionToolBar = ({
             locationFilterActive={true}
             coverageFilterActive={true}
             supplyChainForLocationCheckBoxList={
-              MultiFilterSupplyChainCheckboxList
+              locations
             }
             supplyChainForChildrenOfCheckBoxList={
-              MultiFilterSupplyChainCheckboxList
+              locations
             }
           />
         );
@@ -262,10 +265,10 @@ const ActionToolBar = ({
               locationFilterActive={true}
               availabilityFilterActive={true}
               supplyChainForLocationCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
               supplyChainForChildrenOfCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
             />
           );
@@ -284,10 +287,10 @@ const ActionToolBar = ({
               locationFilterActive={true}
               availabilityFilterActive={true}
               supplyChainForLocationCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
               supplyChainForChildrenOfCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
             />
           );
@@ -306,10 +309,10 @@ const ActionToolBar = ({
               locationFilterActive={true}
               availabilityFilterActive={true}
               supplyChainForLocationCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
               supplyChainForChildrenOfCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
             />
           );
@@ -328,10 +331,10 @@ const ActionToolBar = ({
               locationFilterActive={true}
               availabilityFilterActive={true}
               supplyChainForLocationCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
               supplyChainForChildrenOfCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
             />
           );
@@ -353,10 +356,10 @@ const ActionToolBar = ({
               onChangeHorizon={onChangeHorizon}
               horizon={horizon}
               supplyChainForLocationCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
               supplyChainForChildrenOfCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
             />
           );
@@ -374,10 +377,10 @@ const ActionToolBar = ({
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
               supplyChainForLocationCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
-              supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter(
-                (m) => ["1", "3", "4"].includes(m.id)
+              supplyChainForChildrenOfCheckBoxList={locations.filter(
+                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
               )}
             />
           );
@@ -396,10 +399,10 @@ const ActionToolBar = ({
               locationFilterActive={true}
               availabilityFilterActive={true}
               supplyChainForLocationCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
               supplyChainForChildrenOfCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
             />
           );
@@ -417,10 +420,10 @@ const ActionToolBar = ({
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
               supplyChainForLocationCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
-              supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter(
-                (m) => ["1", "3", "4"].includes(m.id)
+              supplyChainForChildrenOfCheckBoxList={locations.filter(
+                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
               )}
             />
           );
@@ -438,10 +441,10 @@ const ActionToolBar = ({
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
               supplyChainForLocationCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
-              supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter(
-                (m) => ["1", "3", "4"].includes(m.id)
+              supplyChainForChildrenOfCheckBoxList={locations.filter(
+                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
               )}
             />
           );
@@ -461,10 +464,10 @@ const ActionToolBar = ({
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
               supplyChainForLocationCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
-              supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter(
-                (m) => ["1", "3", "4"].includes(m.id)
+              supplyChainForChildrenOfCheckBoxList={locations.filter(
+                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
               )}
             />
           );
@@ -482,10 +485,10 @@ const ActionToolBar = ({
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
               supplyChainForLocationCheckBoxList={
-                MultiFilterSupplyChainCheckboxList
+                locations
               }
-              supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter(
-                (m) => ["1", "3", "4"].includes(m.id)
+              supplyChainForChildrenOfCheckBoxList={locations.filter(
+                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
               )}
             />
           );
@@ -502,10 +505,10 @@ const ActionToolBar = ({
             supplyChainNodeFilterActive={true}
             locationFilterActive={true}
             supplyChainForLocationCheckBoxList={
-              MultiFilterSupplyChainCheckboxList
+              locations
             }
-            supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter(
-              (m) => ["1", "3", "4"].includes(m.id)
+            supplyChainForChildrenOfCheckBoxList={locations.filter(
+              (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
             )}
           />
         );

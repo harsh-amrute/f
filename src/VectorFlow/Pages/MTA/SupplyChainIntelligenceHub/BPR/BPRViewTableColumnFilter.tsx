@@ -8,6 +8,7 @@ interface BPRViewTableColumnFilterProps{
     onApplyFilter:(filterString:string,query:any)=>void
     filterString:string
     dataType?:string
+    query?:string
 }
 
 const BPRViewTableColumnFilter = (props:BPRViewTableColumnFilterProps)=>{
@@ -15,24 +16,23 @@ const BPRViewTableColumnFilter = (props:BPRViewTableColumnFilterProps)=>{
     const{
         onApplyFilter,
         filterString,
-        dataType
+        dataType,
+        query
     } = props
 
     const filterOptions = getBPRViewTableHeaderFilterOptions(dataType)
 
-    const [filterQuery,setFilterQuery] = useState<string>(filterOptions[0].value)
-
-
+    
     return (
         <BPRViewTableColumnFilterContainer>
             <BPRViewTableColumnFilterSelect onChange={(e)=>{
-                setFilterQuery(e.target.value)
                 onApplyFilter(filterString,e.target.value)
             }}>
                 {filterOptions.map((f)=>{
                     return (
                         <BPRViewTableColumnFilterSelectOption 
                             value={f.value}
+                            selected={f.value===query}
                         >
                             {f.label}
                         </BPRViewTableColumnFilterSelectOption>
@@ -43,7 +43,7 @@ const BPRViewTableColumnFilter = (props:BPRViewTableColumnFilterProps)=>{
                 autoFocus 
                 placeholder='Filter..' 
                 onChange={(e)=>{
-                    onApplyFilter(e.target.value,filterQuery)
+                    onApplyFilter(e.target.value,query)
                 }}
                 value={filterString}
             />

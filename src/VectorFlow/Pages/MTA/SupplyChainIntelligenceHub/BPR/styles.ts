@@ -162,7 +162,6 @@ export const BPRViewTableColumnFilterContainer = styled.div`
     padding:5px;
     width:100px;
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-    border-radius:2px;
     background-color:white;
 `
 
@@ -182,12 +181,10 @@ export const BPRViewTableColumnFilterSelect = styled.select`
     };
     
     margin-bottom:5px;
+    accent-color:red;
 `
 export const BPRViewTableColumnFilterSelectOption = styled.option`
-    &:hover{
-        color:red;
-        background-color:red;
-    }
+accent-color:inherit;
 `
 
 export const BPRViewTableColumnFilterButton = styled.button`

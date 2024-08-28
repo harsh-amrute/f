@@ -7,6 +7,7 @@ import { useUserData } from "../../../../context"
 import VFMultiFilter from "../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { MultiFilterSupplyChainCheckboxList } from '../../../../helpers/BPRConstants'
 import * as globalStyles from '../../../../styles/global'
+import useGetLocation from "../../../../hooks/useGetLocation";
 
 
 
@@ -45,7 +46,6 @@ const SelectCategory = (props: CountProp) => {
         onExpediteChildClick,
         onExcessInventoryReviewClick,
         onOrderFulfillmentReviewClick,
-        currCategory,
         multiFilter,
         setMultiFilter,
         onDelete,
@@ -62,14 +62,14 @@ const SelectCategory = (props: CountProp) => {
     // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
     const themeUi = user.user.theme_ui
 
-    console.debug(currCategory)
-
     const currentTheme = globalStyles.chooseThemeColor[themeUi]
 
     const handleApplyFilter = (state: any) => {
         onApplyFilter(state)
         toggleFilter(false)
     }
+
+    const {locations} = useGetLocation()
 
     return (
         <>
@@ -83,7 +83,7 @@ const SelectCategory = (props: CountProp) => {
                     <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>Edit Filter</VFButton>
                     {
                         isFilterOpen && (
-                            <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={() => toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true} productFilterActive={true} supplyChainNodeFilterActive={true} supplyChainForLocationCheckBoxList={MultiFilterSupplyChainCheckboxList} supplyChainForChildrenOfCheckBoxList={MultiFilterSupplyChainCheckboxList.filter((m: any) => ['1', '3', '4'].includes(m.id))}></VFMultiFilter>
+                            <VFMultiFilter onApplyFilter={handleApplyFilter} onGoBack={() => toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true} productFilterActive={true} supplyChainNodeFilterActive={true} supplyChainForLocationCheckBoxList={locations} supplyChainForChildrenOfCheckBoxList={locations.filter((m: any) => ['plant', 'CWH', 'RWH'].includes(m.id))}></VFMultiFilter>
 
                         )
                     }

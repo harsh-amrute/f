@@ -8,6 +8,7 @@ import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { OrderCoverageCellRenderer } from '../../../../../../../components/VectorFLOW/commons/OrderCoverageCellRenderer';
 import { BPRViewTableColDef } from '../../../BPR/BPRViewTable';
+import { defaultAgGridSideBarForBPR } from '../../../../../../../helpers/BPRConstants';
 
 const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, currentCategory, currentTab}:any) => {
 
@@ -21,22 +22,6 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
         orderCoverageCellRenderer: OrderCoverageCellRenderer
     }), []);
 
-    const sideBar: SideBarDef = {
-        toolPanels: [
-            {
-                id: "columns",
-                labelDefault: "Columns",
-                labelKey: "columns",
-                iconKey: "columns",
-                toolPanel: "agColumnsToolPanel",
-                toolPanelParams: {
-                    suppressPivots: true,
-                    suppressPivotMode: true,
-                },
-            },
-        ],
-        defaultToolPanel: '',
-    }
 
     const agGridProps: AgGridReactProps = {
         enableRangeSelection: true,
@@ -61,7 +46,7 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
                 toggleSubGrid(true);
             }
         },
-        sideBar: sideBar,
+        sideBar: defaultAgGridSideBarForBPR,
         suppressRowClickSelection: true,
         components: customCellRenderers,
         defaultColDef: {

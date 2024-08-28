@@ -51,6 +51,7 @@ const Planning = () => {
         currentColDefs
     } = usePlanning();
 
+    console.log(currentCategory,currentTab)
 
 
     const renderView = () => {

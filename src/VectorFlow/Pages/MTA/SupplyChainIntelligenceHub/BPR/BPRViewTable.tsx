@@ -48,8 +48,6 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
     const {theme_ui} = user.user
 
     const [filters,setFilters] = useState<Array<any>>(getFiltersArrayFromColDefs(colDefs))
-
-    console.log(filters)
     const onApplyFilter = (key:string,value:string,query:string)=>{
        setFilters((prev)=>prev.map((f)=>f.colId===key?{...f,filterValue:value,query:query}:f))
     }
@@ -169,12 +167,17 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
                 <BPRViewTableHeaderContainer>
                     {colDefs.map((colDef)=>{
                         const currFilter = filters.find((f)=>f.colId===colDef.colId)
-                        return <BPRViewTableColumnHeader 
-                        colDef={{
-                            ...colDef,filterValue:currFilter?.filterValue || '',
-                            onApplyFilter(filterString,query) {
-                            onApplyFilter(colDef.colId,filterString,query)
-                        }}}/>
+                        return (
+                            <BPRViewTableColumnHeader 
+                                colDef={{
+                                    ...colDef,
+                                    filterValue:currFilter?.filterValue || '',
+                                    onApplyFilter:(filterString,query)=> {
+                                    onApplyFilter(colDef.colId,filterString,query)
+                                }}}
+                                query={currFilter?.query}
+                            />
+                        )
                     })}
                 </BPRViewTableHeaderContainer>
                 <BPRViewTableRowContainer>
