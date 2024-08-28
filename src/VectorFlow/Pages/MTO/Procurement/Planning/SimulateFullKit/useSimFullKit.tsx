@@ -10,9 +10,11 @@ import { useLocation } from 'react-router-dom';
 import ColorCellRenderer from "../../../Common/ColorCellRenderer";
 import { mapSimulateProcPlanningFieldsToColDefs } from '../../../../../../helpers/utils';
 import DetailCellRenderer from "./DetailCellRenderer";
-import { userGetProcAfterSimulationPlanningData, UpdateBatchWiseCompAllSimulation } from "../../../../../Services/MTO/Procurement/ProcPlanning/index";
+import { userGetProcAfterSimulationPlanningData  } from "../../../../../Services/MTO/Procurement/ProcPlanning/index";
 import OverlayLoader from "../../../Common/Loader";
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
+import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
+import { toast } from "react-toastify";
 
 
 const useSimFullKit = () => {
@@ -51,34 +53,33 @@ const useSimFullKit = () => {
             }
         });
     }
-    const Save = () => {
-        const newData: { sno: string; on: string; lid: string; item: string; easa: number }[] = [];
-        if (rowsData) {
-            rowsData.forEach((item: any) => {
-                if (Array.isArray(item.children)) {
-                    item.children.forEach((child: any) => {
-                        const newEntry = {
-                            sno: child.sno,
-                            on: child.on,
-                            lid: child.lid,
-                            item: item.rm,
-                            easa: item.eas,
-                            // remq: child.remq
-                        };
-                        newData.push(newEntry);
-                    });
-                }
-            });
-        }
-        return newData;
-    };
+    // const Save = () => {
+    //     const newData: { sno: string; on: string; lid: string; item: string; easa: number }[] = [];
+    //     if (rowsData) {
+    //         rowsData.forEach((item: any) => {
+    //             if (Array.isArray(item.children)) {
+    //                 item.children.forEach((child: any) => {
+    //                     const newEntry = {
+    //                         sno: child.sno,
+    //                         on: child.on,
+    //                         lid: child.lid,
+    //                         item: item.rm,
+    //                         easa: item.eas,
+    //                         // remq: child.remq
+    //                     };
+    //                     newData.push(newEntry);
+    //                 });
+    //             }
+    //         });
+    //     }
+    //     return newData;
+    // };
 
 
     const [totalRows, setTotalRows] = useState(0);
 
 
     const { mutateAsync: userGetProcAfterSimulationData , isLoading, isSuccess, isError} = userGetProcAfterSimulationPlanningData();
-    const { mutateAsync: updateBatchWiseCompAllSimulation } = UpdateBatchWiseCompAllSimulation();
     //isLoading: isProcPlanningUILoading, isError
 
     const fetchData = useCallback(async (date: string, eas: string, pageNumber='1') => {
@@ -161,6 +162,18 @@ const useSimFullKit = () => {
             minWidth: 250,
         };
     }, []);
+
+    useEffect(()=>{
+
+        if(isError){
+            toast.dismiss();
+            notifyError("Failed to fetch data!")
+        }
+        if(isSuccess){
+            notifySuccess("Fetched Data Successfully!")
+        }
+
+    },[isError, isSuccess])
 
     const handlePageChangeCumulative = async (pageNumber: number) => {
         // setIsLoading(true);
