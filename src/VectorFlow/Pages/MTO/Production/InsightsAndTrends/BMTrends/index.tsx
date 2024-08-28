@@ -417,6 +417,18 @@ const BMTrends = () => {
     const date = apiResponseData?.data?.data;
     const { screenHeight } = useViewPort();
 
+    const graphTitleJSX =  <div
+        data-testid="ot-if-graph"
+        style={{
+        fontSize: "13px",
+        margin: "0 auto",
+
+        textAlign: "center",
+        }}
+    >
+        <span style={{ fontWeight: 500 }}>Overall BM Trend </span>
+        <span style={{ fontWeight: 300 }}>{`(${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}</span>
+    </div>
 
     return (
         <BMTrendWrapper>
@@ -440,7 +452,8 @@ const BMTrends = () => {
                         data={numericData}
                         rowData={rowData}
                         // moment(d).format(format2)
-                        graphTitle={`Overall BM Trend (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
+                        graphTitle={``}
+                        graphTitleJSX={graphTitleJSX}
                         tableTitle={`Overall BM Trend (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
                         options={options}
                         colDef={colDef}

@@ -136,6 +136,19 @@ const TrailDeptCount = (props: any) => {
 
   },[graphData])
 
+  const graphTitleJSX =  <div
+    data-testid="ot-if-graph"
+    style={{
+      fontSize: "13px",
+      margin: "0 auto",
+
+      textAlign: "center",
+    }}
+  >
+    <span style={{ fontWeight: 500 }}>{`${ProductionInsightsAndTrendsString.trailDeptCount}  `}</span>
+    <span style={{ fontWeight: 300 }}>{`(${date})`}</span>
+  </div>
+
   return (
     <div
       data-testid="count-graph"
@@ -148,7 +161,8 @@ const TrailDeptCount = (props: any) => {
         setChartLoading={setChartLoading}
         data={rawData}
         rowData={options.data}
-        graphTitle={`${ProductionInsightsAndTrendsString.trailDeptCount}  ` + ` (${date})`}
+        graphTitle={''}
+        graphTitleJSX={graphTitleJSX}
         tableTitle={ProductionInsightsAndTrendsString.trailDeptCount}
         options={options}
         colDef={colDefs}
