@@ -232,7 +232,7 @@ const useProcPlanning = (date: string) => {
             suppressHeaderFilterButton: true,
             suppressMenu: true,
             filter: false,
-            maxWidth: 50,
+            maxWidth: 35,
             cellRenderer: 'agGroupCellRenderer'
         }
     ]
@@ -413,7 +413,6 @@ const useProcPlanning = (date: string) => {
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'650px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [
@@ -437,7 +436,6 @@ const useProcPlanning = (date: string) => {
 
                     <TableWrapper>
                         {isOverlayLoading && <OverlayLoader message={"Updating the simulated data..."} />}
-
                         <VFTable
                             key={2}
                             {...agGridProps}
@@ -446,7 +444,6 @@ const useProcPlanning = (date: string) => {
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'650px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [
@@ -472,18 +469,19 @@ const useProcPlanning = (date: string) => {
 
                                 style={{
                                     opacity: isDisabled ? '0.4' : '1',
-                                    height: '50px',
+                                    height: 'max-content',
                                     marginRight: 20,
                                     borderColor: '#BC3D81',
                                     color: '#BC3D81',
                                     background: 'transparent',
                                     fontWeight: 'bold',
+                                    padding: "1rem",
+                                    paddingRight: "2rem",
                                 }}
                             >
-
                                 <div style={{ display: 'flex', alignItems: 'center', }}>
-                                    <img src="/assets/img/VectorFLOW/reset.svg" alt="Reset Icon" height={20} width={20} style={{ margin: '0 12px' }} />
-                                    <p style={{ fontSize: '14px' }}>
+                                    <img src="/assets/img/VectorFLOW/reset.svg" alt="Reset Icon" height={15} width={15} style={{ margin: '0 12px' }} />
+                                    <p style={{ fontSize: '12px' }}>
                                         Reset Data
                                     </p>
                                 </div>
@@ -492,8 +490,15 @@ const useProcPlanning = (date: string) => {
                                 onClick={navigateToSimulateScreen}
                                 themeUi=""
                                 disabled={isDisabled}
-
-                                width={250}>Simulate improvement in Full Kits
+                                width={250}
+                                style={{
+                                    padding: "1rem",
+                                    height: "max-content",
+                                    width: "max-content",
+                                    fontSize: "12px",
+                                }}
+                            >
+                                Simulate improvement in Full Kits
                             </VFButton>
                         </div>
 
@@ -564,6 +569,7 @@ const useProcPlanning = (date: string) => {
         },
         masterDetail: true,
         detailCellRenderer: ChildrenProcPlanningCellRenderer,
+        detailRowHeight: 225,
         autoGroupColumnDef: autoGroupColumnDef,
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,

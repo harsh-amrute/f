@@ -2,23 +2,29 @@ import styled from "styled-components"
 
 
 export const ProcurementLayout = styled.div`
-    height: '1200px',
-    width: '1200px'
+    flex: 1;
 `
 
 export const ChildTableWrapper = styled.div`
-& .ag-header-cell-text {
-    font-size: 18px;
-}
+    padding: 2rem;
+    & .ag-header-cell-text {
+        font-size: 12px !important;
+    }
 `
 
 export const TableWrapper = styled.div`
-    height : 95vh;
+    height: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
-
     & > .ag-theme-alpine{
-        flex: 1;
+        height: 100%;
+        margin-left: 3rem;
+        margin-bottom: 0;
+    }
+    & > div[data-testid="vf_pagination"]{
+        margin: 0px 15px !important;
+        width: 100%;
     }
     
 `

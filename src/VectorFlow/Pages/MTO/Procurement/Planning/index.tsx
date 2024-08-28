@@ -22,7 +22,7 @@ const ProcurementPlanning = () => {
                 <OverlayLoader />
             )}
 
-            <div>
+            <div style={{ display: "flex", height: "100%", flexDirection: "column", paddingBottom: "2rem" }}>
 
 
 
@@ -56,9 +56,9 @@ const ProcurementPlanning = () => {
 
                     </div>
                 </div>
-                <ProcurementLayout>
-                    {renderView()}
-                </ProcurementLayout>
+                {/* <ProcurementLayout> */}
+                {renderView()}
+                {/* </ProcurementLayout> */}
             </div>
         </>
     )

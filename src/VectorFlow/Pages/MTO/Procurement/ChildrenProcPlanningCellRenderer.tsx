@@ -36,18 +36,17 @@ const ChildrenProcPlanningCellRenderer = (params: any) => {
                             'resizable': 'true',
                             'background': 'white',
                         },
-                        flex: 0,
+                        flex: 1,
                     }}
                     rowData={params.data && params.data.children ? params.data.children : []}
-                    height={'260px'}
+                    height={'180px'}
                     pagination={true}
                     components={customChildrenCellRenderers}
                     masterDetail={true}
                     rowSelection="multiple"
                     suppressRowClickSelection={true}
                     enableRangeSelection={true}
-                    paginationAutoPageSize={true}
-                    alwaysShowVerticalScroll={true}
+                    paginationPageSize={3}
                     statusBar={{
                         statusPanels: [
                             { statusPanel: 'agTotalRowCountComponent', align: 'left' },
