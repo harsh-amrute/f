@@ -37,7 +37,7 @@ const ColorCellRenderer = (params: any) => {
 
     return (
         <BPRColorCellRendererWrapper
-            style={{ backgroundColor: cellColor.bg, color: cellColor.text, maxWidth: 120 }}
+            style={{ backgroundColor: cellColor.bg, color: cellColor.text, maxWidth: '80px' }}
             data-testid='color-cell'>
             {color}
         </BPRColorCellRendererWrapper>

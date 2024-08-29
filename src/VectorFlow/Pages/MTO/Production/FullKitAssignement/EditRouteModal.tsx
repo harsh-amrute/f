@@ -107,6 +107,20 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
         legend: {
             position: "top",
             item: {
+                label: {
+                    formatter: (props) => {
+                        if (props.value === "stpl_in_days") {
+                            return "Released WIP in Days"
+
+                        }
+                        else if (props.value === 'allowed_full_kits') {
+                            return 'Allocated Full Kits'
+                        }
+                        else {
+                            return 'Cummulative WIP Limit'
+                        }
+                    }
+                },
                 showSeriesStroke: true,
                 marker: {
                     size: 15,
@@ -120,7 +134,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
 
     const { mutateAsync: getRouteDetails, } = useGetRouteDetails();
     const { mutateAsync: getLineCCRDetails, } = useGetLineCCRDetails();
-    const { mutateAsync: saveRouteData,} = useSaveRouteData();
+    const { mutateAsync: saveRouteData, } = useSaveRouteData();
 
     const [selectedRoute, setSelectedRoute] = useState<any>([])
     const [lineCCR, setLineCCR] = useState<any>();
@@ -252,7 +266,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
                 <div style={{ height: "300px" }}>
                     <AgChartsReact options={chartoptions} />
                 </div>
-                <div style={{display:"flex", justifyContent:"end", gap: "1rem"}}>
+                <div style={{ display: "flex", justifyContent: "end", gap: "1rem" }}>
                     <VFButtonOutline
                         style={{
                             height: "30px",
@@ -263,7 +277,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
                             padding: "1rem",
                             fontSize: "14px",
                         }}
-                        themeUi={theme} 
+                        themeUi={theme}
                         onClick={() => { setOrderKey(null); setShowModal((false)); setSelectedRoute([]); setLineCCR(null); }}>
                         Cancel
                     </VFButtonOutline>
@@ -275,7 +289,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
                         alignItems: "center",
                         padding: "1rem",
                         fontSize: "14px",
-                        boxShadow:"unset"
+                        boxShadow: "unset"
                     }} themeUi={theme} onClick={() => { SaveRoute() }}>Save Route</VFButton>
                 </div>
             </ContentWrapper>

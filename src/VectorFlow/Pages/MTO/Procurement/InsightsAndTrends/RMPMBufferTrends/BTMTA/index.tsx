@@ -154,6 +154,18 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
         value: 'Absolute Value'
     })
 
+    function convertDate(dateStr: string): string {
+        // Split the input string by spaces
+        const [monthStr, dayStr, yearStr] = dateStr.split(' ');
+
+        // Remove the 'th', 'st', 'nd', 'rd' from the day string
+        const day = dayStr.replace(/\D/g, '');
+
+        // Reformat the date to "29-Aug-24"
+        return `${day}-${monthStr}-${yearStr}`;
+    }
+
+
     const options: AgChartOptions = {
         axes: [
             {
@@ -161,13 +173,12 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 position: 'bottom',
                 label: {
                     fontSize: 8,
-                    fontWeight: 'bold',
                     color: 'black',
                     avoidCollisions: true,
                     autoRotate: false,
                     formatter: function (params) {
                         const myDate = params.value.split('-')[1] + '-' + params.value.split('-')[0] + '-' + params.value.split('-')[2];
-                        return (moment(myDate).format('D MMM YYYY'))
+                        return convertDate(moment(myDate).format("MMM Do YY"))
                     }
                 },
                 gridLine: {
@@ -175,7 +186,14 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 }
             },
             {
-                title: { text: "Percentage of SKU Locations", fontSize: 10, spacing: 3 },
+                title: {
+                    formatter: (props) => {
+                        if (actBtn.label === 'Absolute Value') {
+                            return 'SKU Locations'
+                        }
+                        return "Percentage of SKU Locations"
+                    }, text: "Percentage of SKU Locations", fontSize: 10, spacing: 3
+                },
                 type: "number",
                 line: { enabled: true },
                 position: 'left',
@@ -184,7 +202,6 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                         return (params.value) + ((actBtn.label === 'Percentage') ? '%' : '');
                     },
                     fontSize: 8,
-                    fontWeight: 'bold',
                     color: 'black',
 
                 },
@@ -485,13 +502,13 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
     const date = apiResponseData?.data?.data;
 
-    const graphTitleJSX =  <div
+    const graphTitleJSX = <div
         data-testid="ot-if-graph"
         style={{
-        fontSize: "13px",
-        margin: "0 auto",
+            fontSize: "13px",
+            margin: "0 auto",
 
-        textAlign: "center",
+            textAlign: "center",
         }}
     >
         <span style={{ fontWeight: 500 }}>RM / PM On Hand Invetory Trend - MTA </span>

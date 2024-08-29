@@ -431,7 +431,7 @@ const useProcPlanning = (date: string) => {
                         <VFPagination
                             key={1}
                             selectedRows={0}
-                            rowsPerPage={Math.min(pagination.mtoPageSize, totalRows)}
+                            rowsPerPage={Math.min(500, totalRows)}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
@@ -461,7 +461,7 @@ const useProcPlanning = (date: string) => {
                         />
                         <VFPagination
                             selectedRows={0}
-                            rowsPerPage={Math.min(pagination.mtoPageSize, totalRows)}
+                            rowsPerPage={Math.min(500, totalRows)}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
@@ -522,7 +522,7 @@ const useProcPlanning = (date: string) => {
                         <VFPagination
 
                             selectedRows={0}
-                            rowsPerPage={Math.min(pagination.mtoPageSize, totalRows)}
+                            rowsPerPage={Math.min(500, totalRows)}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}

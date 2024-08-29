@@ -13,15 +13,19 @@ const ReasonCellRenderer = (params: any) => {
         selects.forEach((element: any) => {
             if (element.oid === myoid) {
                 disabled = false;
+
             }
+
         });
+
     }
 
+
     return (
-        <ETACellRendererWrapper  >
+        <ETACellRendererWrapper >
 
             {/* <ETACellValue> */}
-            <input disabled={disabled} value={val} onChange={(e) => { params.data.rs = e.target.value, setVal(params.data.rs) }} placeholder="Enter your reason here..." type={'text'} style={{ fontSize: '12px', height: '18px', width: '100%' }} />
+            <input disabled={disabled} value={(!disabled) ? val : ''} onChange={(e) => { params.data.rs = e.target.value, setVal(params.data.rs) }} placeholder="Enter your reason here..." type={'text'} style={{ border: '1px solid black', fontSize: '12px', height: '28px', width: '100%' }} />
             {/* </ETACellValue> */}
         </ETACellRendererWrapper>
     )

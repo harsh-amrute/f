@@ -24,6 +24,7 @@ const useMaterialSO = (data: any) => {
             cellRenderer: ColorCellRenderer
         },
         FullKitAvail: {
+            minWidth: 100,
             cellRenderer: "avlCellRenderer",
             tooltipComponent: 'availabilityToolTip',
             tooltipValueGetter: (params: any) => {

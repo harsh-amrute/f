@@ -159,7 +159,8 @@ const RMPMOrderwiseCoverage = () => {
             },
         },
         FullKitAvailable: {
-            cellRenderer: FullkitCellRenderer
+            cellRenderer: FullkitCellRenderer,
+            minWidth: 100,
         }
 
 

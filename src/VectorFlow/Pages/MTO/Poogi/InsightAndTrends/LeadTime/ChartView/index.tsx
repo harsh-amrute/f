@@ -7,13 +7,13 @@ import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader'
 
 
-const ChartView = ({chartData, chartTableData}: any) => {
+const ChartView = ({ chartData, chartTableData }: any) => {
 
     const [tableLoading, setTableLoading] = useState(false);
     const [chartLoading, setChartLoading] = useState(false);
     const { data: apiResponseData, isLoading } = useGetDate();
     const date = apiResponseData?.data?.data;
-    const graph1 = ['This box plot graph displays statistical distribution of lead time of closed orders. Each box represents the various statistical measures around lead time of closed orders.']
+    const graph1 = ['This box plot graph displays statistical distribution of lead time of closed orders. Each box represents the various statistical measures around lead time of closed orders.', 'Lead time = Closure date - Actual release date']
     const [hideChart1, toggleChart1] = useState(false);
 
 
@@ -201,7 +201,7 @@ const ChartView = ({chartData, chartTableData}: any) => {
 
     return (
         <div style={{ height: "85%", paddingBottom: '20px', marginLeft: '20px', marginTop: '10px', display: 'flex' }}>
-            {isLoading && <OverlayLoader/>}
+            {isLoading && <OverlayLoader />}
 
             <BoxPlotContainer
                 tableLoading={tableLoading}

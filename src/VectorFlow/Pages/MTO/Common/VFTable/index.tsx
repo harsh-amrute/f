@@ -40,6 +40,7 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
         ref={ref}
         {...props}
         rowHeight={30}
+        suppressMenuHide={false}
         suppressDragLeaveHidesColumns={true}
       />
     </VFTableWrapper>
