@@ -44,6 +44,8 @@ const ResizableTable = (props: IResizeTableProps) => {
     flex: 1,
   };
 
+
+
   return (
     <VFTableWrapper>
 
@@ -55,6 +57,11 @@ const ResizableTable = (props: IResizeTableProps) => {
         getRowStyle={getRowStyle}
         pagination
         paginationPageSize={15}
+        gridOptions={{
+          sideBar: {
+            toolPanels: ["agColumnsToolPanel"],
+          },
+        }}
 
       />
     </VFTableWrapper>

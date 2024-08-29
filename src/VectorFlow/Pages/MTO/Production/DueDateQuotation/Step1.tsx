@@ -1,9 +1,8 @@
 import { GridOptions } from 'ag-grid-enterprise';
 import _ from 'lodash';
-import React, { forwardRef, useImperativeHandle, useRef } from 'react'
+import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import VFTable from '../../Common/VFTable';
-import { pagination } from '../../Common/Enum';
 
 interface IStep1Props {
   gridOptions: GridOptions,
@@ -41,6 +40,10 @@ const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelected
     deselectAllForStep1: deselectAllForStep1
   }));
 
+  const isRowSelectable = useCallback((params: any) => {
+    return (params.data.dd == null || params.data.dd == undefined);
+  }, []);
+
   return (
     <>
       <VFTable
@@ -49,6 +52,7 @@ const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelected
         gridOptions={gridOptions}
         columnDefs={gridOptions.columnDefs}
         rowData={rows}
+        isRowSelectable={isRowSelectable}
         // domLayout="autoHeight"
         rowSelection="multiple"
         onGridReady={(params: any) => {
@@ -84,7 +88,7 @@ const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelected
       <VFPagination
         selectedRows={0}
         totalRows={totalRows.current}
-        rowsPerPage={pagination.mtoPageSize}
+        rowsPerPage={15}
         currentPage={currentPage}
         handleChangePage={handlePageChange}
       />

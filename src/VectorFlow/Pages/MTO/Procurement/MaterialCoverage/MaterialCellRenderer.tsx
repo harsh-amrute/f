@@ -43,7 +43,7 @@ const MaterialCellRenderer = (params: any) => {
                     rowData={params.data.children}
                     height={'180px'}
                     pagination={true}
-                    paginationPageSize={3}
+                    paginationPageSize={15}
                     components={customChildrenCellRenderers}
                     masterDetail={true}
                     rowSelection="multiple"

@@ -37,6 +37,7 @@ const GridView = ({
                     tooltipShowDelay={0}
                     //detailRowHeight={400}
                     rowSelection={'multiple'}
+                    detailRowAutoHeight
                     tooltipMouseTrack={true}
                     //defaultColDef={{maxWidth:150}}
                     statusBar={{

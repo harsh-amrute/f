@@ -94,7 +94,7 @@ const FullKitAssignment = () => {
       // tooltipField: "r"
       cellRenderer: (params: any) => {
         return (
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%", height: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "end", gap: "1rem", width: "100%", height: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
             <img height={12} width={12} alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
               setShowModal(true);
@@ -193,8 +193,13 @@ const FullKitAssignment = () => {
     })
   }
 
+  // const noOfCalls = useRef(0);
 
   const fetchOrders = async () => {
+    // if(noOfCalls.current == 0){
+    //   await saveOrCancelSimulaton("Delete");
+    //   noOfCalls.current += 1;
+    // }
     const data = await getFullKitAssignmentDataWithGraphData(loadDataParams);
     const griddata: any = data?.data?.data?.results?.griddata;
     if (loadDataParams.load_graph_data) {
@@ -414,10 +419,12 @@ const FullKitAssignment = () => {
         saveOrCancelSimulaton("Save").then((data) => {
           if (data) {
             // setLoadDataParams({is_fullkit: true, load_data_after_simulation: false, load_graph_data: true, page: 1})
-            setExtra([])
-            setEditMode("View")
-            setColDefCustomizations({
-              ...defaultColDefCustomisation.current
+            saveOrCancelSimulaton("Delete").then(() => {
+              setExtra([])
+              setEditMode("View")
+              setColDefCustomizations({
+                ...defaultColDefCustomisation.current
+              });
             })
           }
         })
@@ -432,6 +439,20 @@ const FullKitAssignment = () => {
         background: params.node.rowIndex % 2 === 0 ? "#F4F4F4" : "#FFFFFF",
       };
     },
+    sideBar: {
+      toolPanels: [
+        {
+          id: 'columns',
+          labelDefault: 'Columns',
+          labelKey: 'columns',
+          iconKey: 'columns',
+          toolPanel: 'agColumnsToolPanel',
+          minWidth: 225,
+          maxWidth: 225,
+          width: 225
+        },
+      ],
+    },
     rowHeight: 50,
     columnDefs: colDefs,
     defaultColDef: {
@@ -441,15 +462,15 @@ const FullKitAssignment = () => {
       wrapHeaderText: true,
       autoHeaderHeight: true,
       filter: "agTextColumnFilter",
+      floatingFilterComponentParams: { suppressFilterButton: true },
       floatingFilter: true,
       enableRowGroup: true,
-      floatingFilterComponentParams: { suppressFilterButton: true },
     },
     rowSelection: "multiple",
     suppressRowClickSelection: true,
-    sideBar: {
-      toolPanels: ["agColumnsToolPanel"],
-    },
+    // sideBar: {
+    //   toolPanels: ["agColumnsToolPanel"],
+    // },
   };
 
   const chartoptions: AgChartOptions = {

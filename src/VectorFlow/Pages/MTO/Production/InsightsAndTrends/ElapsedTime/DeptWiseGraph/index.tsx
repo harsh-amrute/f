@@ -88,8 +88,7 @@ const DeptWiseGraph = ({chartTableData, chartData, alertData}: any) => {
             },
 
             labels: {
-
-
+                
                 rotateAlways: true,
                 style: {
                     fontSize: '12px', // Font size of y-axis labels
@@ -113,6 +112,11 @@ const DeptWiseGraph = ({chartTableData, chartData, alertData}: any) => {
                 },
             },
             labels: {
+
+                formatter: (val:any)=>{
+                    return parseFloat(val.toFixed(2))
+                },
+
 
                 style: {
                     fontSize: '10px',

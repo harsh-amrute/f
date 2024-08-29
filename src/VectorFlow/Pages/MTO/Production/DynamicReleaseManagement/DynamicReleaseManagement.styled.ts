@@ -36,6 +36,9 @@ export const Wrapper = styled.div`
   & > .ag-theme-alpine{
       margin: 0 !important;
       }
+  & div[data-testid="vf_pagination"]{
+    margin: 0 !important;
+  }
 `;
 
 export const Button = styled.button<{ themeUi: string; arrowName: string }>`

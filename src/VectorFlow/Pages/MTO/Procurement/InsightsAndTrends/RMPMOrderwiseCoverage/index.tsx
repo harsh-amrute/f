@@ -41,16 +41,6 @@ const RMPMOrderwiseCoverage = () => {
                     minWidth: 225,
                     maxWidth: 225,
                     width: 225
-                },
-                {
-                    id: 'filters',
-                    labelDefault: 'Filters',
-                    labelKey: 'filters',
-                    iconKey: 'filter',
-                    toolPanel: 'agFiltersToolPanel',
-                    minWidth: 180,
-                    maxWidth: 400,
-                    width: 250
                 }
             ],
         },

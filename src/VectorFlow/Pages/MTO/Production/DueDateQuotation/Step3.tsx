@@ -72,6 +72,7 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
 
 
 
+
     const [dates, setDates] = useState<any>();
     const [schedulingType, setSchedulingType] = useState(SchedulingType.ItemLevel);
     const gridRef = useRef<any>();
@@ -152,6 +153,9 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
                 ref={gridRef}
                 gridOptions={options}
                 rowData={confirmedRows}
+                onGridReady={(params)=>{
+                    params.api.selectAll()
+                }}
                 onRowSelected={(params: any) => {
                     const selected = params.api.getSelectedRows()
                     if (selected.length === 0) {
@@ -180,7 +184,7 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
                     });
                 }}
             />
-            <BasketingSection>
+            {dates && <BasketingSection>
                 <BasketingContainer>
                     <BasketingLabel>
                         <BasketingLabel style={{ width: "45%" }}>
@@ -228,7 +232,8 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
 
                     </BasketingLabel>
                 </BasketingContainer>
-            </BasketingSection>
+            </BasketingSection>}
+            
         </>
     )
 })

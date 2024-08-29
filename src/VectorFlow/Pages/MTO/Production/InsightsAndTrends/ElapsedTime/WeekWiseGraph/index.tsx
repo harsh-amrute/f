@@ -231,7 +231,9 @@ const WeekWiseGraph = ({handleSelectionChange, chartTableData, chartData, plant,
                 },
             },
             labels: {
-
+                formatter: (val:any)=>{
+                    return parseFloat(val.toFixed(2))
+                },
                 style: {
                     fontSize: '10px',
                     fontWeight: 'bold', // Font size of y-axis labels
