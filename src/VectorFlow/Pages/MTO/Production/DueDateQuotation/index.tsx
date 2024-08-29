@@ -81,6 +81,7 @@ const DueDateQuotation = () => {
       field: "",
       headerCheckboxSelection: true,
       checkboxSelection: true,
+      showDisabledCheckboxes: true,
       suppressMenu: true,
       maxWidth: 30,
       position: 0,
@@ -435,7 +436,7 @@ const DueDateQuotation = () => {
           </div>
         </div>
       </VFModalCard>
-      <Footer>
+      <Footer style={(rowsSelectedForAssignment && step == 2) ? { position: "fixed", bottom: 0, background:"white", width:"100%", zIndex:"2", left: 0, padding:"1rem 55px", paddingBottom:"20px", margin: 0}:{}}>
         {step != 1 && <VFButtonOutline
           themeUi={themeUi}
           onClick={() => {
@@ -495,3 +496,4 @@ const DueDateQuotation = () => {
 }
 
 export default DueDateQuotation
+

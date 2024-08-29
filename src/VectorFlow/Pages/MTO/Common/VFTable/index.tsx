@@ -39,13 +39,17 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       <AgGridReact
         ref={ref}
         {...props}
-        gridOptions = {{
+        gridOptions={{
           ...props.gridOptions,
           defaultColDef: {
             ...props.gridOptions?.defaultColDef,
             filter: "agTextColumnFilter",
             floatingFilterComponentParams: { suppressFilterButton: false },
             floatingFilter: true,
+            suppressMenu: false,
+            // wrapHeaderText: true,
+            // autoHeaderHeight: true,
+            // flex: 0,
           },
           sideBar: {
             toolPanels: [
@@ -59,6 +63,16 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
             ],
           },
         }}
+        statusBar={{
+          statusPanels: [
+            { statusPanel: 'agTotalAndFilteredRowCountComponent' },
+            { statusPanel: 'agTotalRowCountComponent' },
+            { statusPanel: 'agFilteredRowCountComponent' },
+            { statusPanel: 'agSelectedRowCountComponent' },
+            { statusPanel: 'agAggregationComponent' }
+          ]
+        }}
+        enableRangeSelection
         rowHeight={30}
         suppressDragLeaveHidesColumns={true}
       />
