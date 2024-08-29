@@ -103,4 +103,13 @@ describe('MaterialRequirement', () => {
     });
 
 
+    it('should fetch the High Ageing Data', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const data = { wip: false, curr: 2, appliedFilters: {ms: ["MTO", "MTA"]} };
+        const response = await DepartmentWiseBMReport.getHighAgeingData(data);
+        expect(response.status).toBe(200);
+    });
+
+
+
 });
