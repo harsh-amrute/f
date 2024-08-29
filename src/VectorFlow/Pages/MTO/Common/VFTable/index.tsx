@@ -34,6 +34,8 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
     }
   }
 
+  console.log(props.gridOptions)
+
   return (
     <VFTableWrapper className={`${getClassName()} ag-theme-alpine vfwrap`} role={"table"} height={props.height} disableZoomScaling={props.disableZoomScaling}>
       <AgGridReact
@@ -76,6 +78,18 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
         rowHeight={30}
         suppressMenuHide={false}
         suppressDragLeaveHidesColumns={true}
+        defaultColDef={
+          {
+            ...props?.defaultColDef,
+            filter: "agTextColumnFilter",
+            floatingFilterComponentParams: { suppressFilterButton: false },
+            floatingFilter: true,
+            suppressMenu: false,
+            // wrapHeaderText: true,
+            // autoHeaderHeight: true,
+            // flex: 0,
+          }
+        }
       />
     </VFTableWrapper>
   );
