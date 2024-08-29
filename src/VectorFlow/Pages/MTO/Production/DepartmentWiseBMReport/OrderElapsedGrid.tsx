@@ -22,7 +22,7 @@ import {
 import { AgGridReactProps } from 'ag-grid-react';
 import { BPRViewTableGrid } from '../../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/styles';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import { /*orderStatus, orderStatusData, ElapsedTime, ElapsedTimeData, */AgieingTime, ageingData } from './DeptWiseBMReportData'
+//import { /*orderStatus, orderStatusData, ElapsedTime, ElapsedTimeData, */AgieingTime, ageingData } from './DeptWiseBMReportData'
 import { ColorsMTO } from '../../Common/Colors';
 
 interface orderElapsedGridProps {
@@ -30,9 +30,8 @@ interface orderElapsedGridProps {
     data?: any
     deptName: [],
     selectedOrderCount?: string
+    highAgeingdata?: any
 }
-
-
 
 type RowData = {
     [key: string]: any;
@@ -40,8 +39,8 @@ type RowData = {
 
 
 
-const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderElapsedGridProps) => {
-    //console.log('data', data)
+const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgeingdata }: orderElapsedGridProps) => {
+      
     const { user } = useUserData()
     const themeUi = user.user.theme_ui
     const [isLeftPanelOrderStatusOpen, toggleLeftPanelOrderStatus] = useState<boolean>(false);
@@ -50,9 +49,11 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
     const [leftPanelActiveTab, SetLeftPanelActiveTab] = useState<string>('Order_Status')
     const [ordeStatusColDef, setOrderStatusColdef] = useState<any>();
     const [elapsedOrderColdef, setElapsedOrderColDef] = useState<any>();
+    const [highAgeingColdef, setHighAgeingColDef] = useState<any>();
     const [rowData, setRowData] = useState<any>();
     const [ElapsedTimeRowData, setElapsedTimeRowData] = useState<any>();
     const [elapsedOrderTotalDays, setElapsedOrderTotalDays] = useState<number>(0);
+    const [minMaxAge,setMinMaxAge]=useState<any>({min:'0',max:'0'})
 
     const sideBar = useMemo(() => {
         return {
@@ -85,6 +86,10 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                     'white-space': 'nowrap',
                     'resizable': 'true',
                 },
+                floatingFilterComponentParams: {
+                    suppressFilterButton: true
+                },
+                //initialFlex: 1
 
             },
 
@@ -382,38 +387,89 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
         return rowData;
     }
 
-    const createElapsedOrderColdef = () => {
-        // Start with a default "time" column
-        const colDefs: any = [
-            {
-                headerName: "Department",
-                field: "dept",
-                colId: "dept",
-                width: 60,
-            },
-            {
-                headerName: "In Time",
-                field: "it",
-                colId: "it",
+    const createElapsedOrderColdef = (name: string) => {
+        let colDefs = [];
 
-            },
-            {
-                headerName: "Out Time",
-                field: "ot",
-                colId: "ot",
+        // Define column definitions based on the 'name' parameter
+        switch (name) {
+            case 'ET':
+                colDefs = [
+                    {
+                        headerName: "Department",
+                        field: "dept",
+                        colId: "dept",
+                        width: 60,
+                    },
+                    {
+                        headerName: "In Time",
+                        field: "it",
+                        colId: "it",
+                    },
+                    {
+                        headerName: "Out Time",
+                        field: "ot",
+                        colId: "ot",
+                    },
+                    {
+                        headerName: "Elapsed Time",
+                        field: "et",
+                        colId: "et",
+                        cellStyle: {
+                            color: ColorsMTO.Pink.code,
+                        },
+                    },
+                ];
+                break;
 
-            },
-            {
-                headerName: "Elapsed Time",
-                field: "et",
-                colId: "et",
-                cellStyle: {
-                    'color': ColorsMTO.Pink.code
-                }
-            }
-        ];
+            case 'HA':
+                colDefs = [
+                    {
+                        headerName: "Order ID",
+                        field: "oid",
+                        colId: "oid",
+                    },
+                    {
+                        headerName: "Line Item",
+                        field: "lid",
+                        colId: "lid",
+                    },
+                    {
+                        headerName: "Batch No.",
+                        field: "bn",
+                        colId: "bn",
+                    },
+                    {
+                        headerName: "Department",
+                        field: "dept",
+                        colId: "dept",
+                    },
+                    {
+                        headerName: "Ageing",
+                        field: "age",
+                        colId: "age",
+                        cellStyle: {
+                            color: ColorsMTO.Pink.code,
+                        },
+                    },
+
+                ];
+                break;
+
+            // Add more cases as needed for different 'name' values
+
+            default:
+                colDefs = [
+                    {
+                        headerName: "Default Column",
+                        field: "default",
+                        colId: "default",
+                    },
+                ];
+                break;
+        }
+
         return colDefs;
-    }
+    };
 
     // Function to format date and time in "1 Feb 2024, 10:00am" format
     const formatDateTime = (dateTime: string): string => {
@@ -525,6 +581,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
         //console.log('rowData', rowData)
         return rowData.reduce((total, row) => total + parseElapsedTime(row.et), 0);
     };
+    
 
     useEffect(() => {
         if (data) {
@@ -536,9 +593,13 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
             //console.log('coldef', columnDefs)
             setOrderStatusColdef(columnDefs)
 
-            const elapsedOrderColdef = createElapsedOrderColdef();
+            const elapsedOrderColdef = createElapsedOrderColdef('ET');
             //console.log('elapsedOrderColdef', elapsedOrderColdef)
             setElapsedOrderColDef(elapsedOrderColdef)
+
+            const highAgeingColDef = createElapsedOrderColdef('HA');
+            //console.log('highAgeingColDef',highAgeingColDef)
+            setHighAgeingColDef(highAgeingColDef)
 
             //this will create the row data
             const rowData = transformToOrderStatusRowData();//const rowData = generateRowData(columnDefs);
@@ -554,12 +615,37 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
             setElapsedOrderTotalDays(totalDays)
             //console.log('totalDays',totalDays)
             setElapsedTimeRowData(ElapsedTimeRowData)
+
+            const { minAge, maxAge } = findAgeRange();
+            setMinMaxAge({min:minAge,max:maxAge})
+
         }
     }, [data])
 
+    const findAgeRange = (): { minAge: number, maxAge: number } => {
+        if (highAgeingdata?.length === 0) {
+            throw new Error("The array of people is empty.");
+        }
+    
+        // Initialize minAge and maxAge with the age of the first person
+        let minAge = highAgeingdata[0].age;
+        let maxAge = highAgeingdata[0].age;
+    
+        // Iterate through the array to find the min and max age
+        for (const person of highAgeingdata) {
+            if (person.age < minAge) {
+                minAge = person.age;
+            }
+            if (person.age > maxAge) {
+                maxAge = person.age;
+            }
+        }
+    
+        return { minAge, maxAge };
+    };
 
-
-
+    
+   
     return (
         isTrue ?
             <div style={{ display: 'flex', gap: "2rem" }}>
@@ -640,7 +726,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                             Elapsed Time  :
                                         </ExpansionHeaderNormalText>
                                         <ExpansionHeaderColoredText>
-                                            {elapsedOrderTotalDays +' Days'}
+                                            {elapsedOrderTotalDays + ' Days'}
                                         </ExpansionHeaderColoredText>
                                     </ExpansionHeaderGroup>
                                     <ExpansionHeaderGroup onClick={() => toggleLeftPanelElapsedTime(!isleftPanelElapsedTimeOpen)} style={{ marginLeft: 'auto' }}>
@@ -688,7 +774,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                         No. Of batches  :
                                     </ExpansionHeaderNormalText>
                                     <ExpansionHeaderColoredText>
-                                        4
+                                        {highAgeingdata?.length}
                                     </ExpansionHeaderColoredText>
                                 </ExpansionHeaderGroup>
                                 <ExpansionHeaderGroup style={{ marginLeft: 'auto' }}>
@@ -696,7 +782,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                         Min Ageing  :
                                     </ExpansionHeaderNormalText>
                                     <ExpansionHeaderColoredText>
-                                        10 days, 2hrs
+                                        {minMaxAge.min}
                                     </ExpansionHeaderColoredText>
                                 </ExpansionHeaderGroup>
                                 <ExpansionHeaderGroup style={{ marginLeft: 'auto' }}>
@@ -704,7 +790,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                         Max Ageing  :
                                     </ExpansionHeaderNormalText>
                                     <ExpansionHeaderColoredText>
-                                        10 days, 2hrs
+                                        {minMaxAge.max}
                                     </ExpansionHeaderColoredText>
                                 </ExpansionHeaderGroup>
                                 <ExpansionHeaderGroup onClick={() => toggleRightPanel(!isRightPanel)} style={{ marginLeft: '100px' }}>
@@ -718,8 +804,8 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                     <VFTable
                                         {...agGridProps}
                                         height='400px'
-                                        columnDefs={AgieingTime}
-                                        rowData={ageingData}
+                                        columnDefs={highAgeingColdef}
+                                        rowData={highAgeingdata}
                                     />
                                 </ExpansionContent>
                             )}

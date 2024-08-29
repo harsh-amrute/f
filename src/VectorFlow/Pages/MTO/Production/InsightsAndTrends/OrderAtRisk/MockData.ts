@@ -114,4 +114,12 @@ export const reasonColConfig =  [
       "cla": "left",
       "scc": "bo"
   },
+  { 
+    "cc": "ro",
+    "cp": 3,
+    "hd": "Impacted orders - Red",
+    "v": true,
+    "cla": "left",
+    "scc": "ro"
+},
 ]
