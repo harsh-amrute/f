@@ -21,11 +21,12 @@ export const Wrapper = styled.div`
         margin-top: 20px;
     }
     & > div[data-testid="vf_pagination"]{
-        margin-top:-8px;
-        margin-bottom: 20px;
         padding: 0;
-        margin-left: 8px;
-        margin-right: 8px;
+        // margin-top:-8px;
+        // margin-bottom: 20px;
+        // margin-left: 8px;
+        // margin-right: 8px;
+        margin: -10px 10px 20px;
     }
 `
 

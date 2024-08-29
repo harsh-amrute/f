@@ -327,7 +327,7 @@ const DueDateQuotation = () => {
             setScheduledOrders={setScheduledOrders}
             setStep={setStep}
             setDisabled={setDisabled}
-            setSelectedRows={selectedRows}
+            setSelectedRows={setSelectedRows}
             setMasters={setMasters}
           />
         )
