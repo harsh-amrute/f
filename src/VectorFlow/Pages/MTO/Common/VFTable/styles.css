@@ -34,6 +34,10 @@
   zoom: 0.75;
 }
 
+.vfwrap .ag-status-bar{
+  font-size: 12px !important;
+}
+
 .vfwrap .ag-popup-child {
   font-size: 8px !important;
   min-width: 40px !important;
@@ -42,10 +46,11 @@
 .vfwrap .ag-cell {
   height: 100% !important;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center !important;
   font-family: 'Roboto' !important;
-  font-size: 11px !important;
+  font-size: 12px !important;
+  font-weight: normal !important;
 }
 
 .vfwrap .child-grid {

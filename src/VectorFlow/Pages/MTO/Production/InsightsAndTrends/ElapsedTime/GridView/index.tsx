@@ -6,12 +6,12 @@ import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/Cu
 import TagCellToolTip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import './styles.css'
 import { SCDynamicContainer } from './styles';
-import ColorCellRenderer from '../../../../../MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/ColorCellRenderer';
 import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFPagination';
 import { notifyError, notifySuccess } from '../../../../../../../helpers/notify';
 import { useGetElapsedTimeData } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader';
 import { pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
+import ColorRangeCellRenderer from '../../../../../../../VectorFlow/Pages/MTO/Common/ColorRangeCellRenderer';
 const GridView = ({ uiConfig }: any) => {
     const gridRef = useRef(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -70,7 +70,7 @@ const GridView = ({ uiConfig }: any) => {
             }
         },
         'BPP': {
-            cellRenderer: ColorCellRenderer,
+            cellRenderer: ColorRangeCellRenderer ,
         },
     }
 

@@ -111,13 +111,15 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
     const customization = {
         OrderID: {
-            cellRenderer: "agGroupCellRenderer"
+            cellRenderer: "agGroupCellRenderer",
+            cellStyle:{
+                minWidth: "30px",
+            }
         },
         Route: {
             pinned: "right",
             lockPosition: true,
             minWidth: 120,
-            tooltipField: "rn",
             cellStyle: {
                 // background: "#BC3D814F",
                 // color: "#BC3D81",
@@ -227,7 +229,19 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         // getRowStyle:(params: any) => null
     }
 
+    
     const [chartData, setChartData] = useState<any>([])
+    const [maxFolinDays, setMaxFolInDays] = useState(1);
+
+    const interval = useMemo(()=>{
+        let i = 2
+        if(maxFolinDays > 30){
+            i = Math.floor(maxFolinDays / 5)
+        }
+        return i
+     }, [maxFolinDays])
+
+    console.log(chartData);
     const chartOptions: AgChartOptions = {
         data: chartData,
         series: [
@@ -273,7 +287,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 line: { enabled: true },
                 // interval: 1,
                 tick: {
-                    interval: 2,
+                    interval: interval,
                 },
                 label: {
                     fontSize: 10,
@@ -304,7 +318,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     const routeLookup = useRef(new Map());
     const [rows, setRows] = useState<any>(null);
     const [newSelectedRows, setNewSelectedRows] = useState<any>({ rows: null, isAssignmentPossible: false });
-    const [selectedRoute, setSelectedRoute] = useState<any>([])
+    const [selectedRoute, setSelectedRoute] = useState<any>([]);
 
     const [selectedPlant, setSelectedPlant] = useState<number | null>(null);
 
@@ -411,10 +425,12 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         route = await getRoute(order.rid);
                     }
 
-                    route.forEach((route: any) => {
-                        if (route[1]?.value) {
-                            ccrIds.push(route[1].value)
-                            ccrNames.push(route[1].label)
+                    console.log(route);
+
+                    route.forEach((r: any) => {
+                        if (r[1]?.value) {
+                            ccrIds.push(r[1].value)
+                            ccrNames.push(r[1].label)
                         }
                     });
 
@@ -765,6 +781,8 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
             const orderLoadOfCCRs: any = {}
 
+            let maxFol = 0
+
             newSelectedRows?.rows?.forEach((order: any) => {
                 ccrIds.forEach((ccrId: any) => {
                     const ccr = masters.CCRMaster.find((ccr: any) => {
@@ -798,6 +816,8 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                     const diffDays: any = dateDiffInDays(today, new Date(folDD));
 
+                    maxFol = Math.max(diffDays, maxFol);
+
                     orderLoadOfCCRs[ccrId] = {
                         ccrId,
                         ccr_name: ccr.ccr_name,
@@ -808,7 +828,8 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             });
 
             // console.log(JSON.parse(JSON.stringify(orderLoadOfCCRs)))
-
+            
+            setMaxFolInDays(maxFol)
 
             setChartData(Object.values(orderLoadOfCCRs).map((order: any) => {
                 return { ...order, orderLoad: Math.ceil(order.orderLoad) }
@@ -1140,7 +1161,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 }
                 {rowsSelectedForAssignment &&
                     <Allotment.Pane preferredSize={'33%'} key={3}>
-                        <Wrapper style={{ padding: "20px 0 10px 0", margin: 0 }}>
+                        <Wrapper style={{ padding: "20px 0 10px 0", margin: 0, paddingBottom:"75px" }}>
                             <div style={{ height: "100%", overflow: "hidden", display: "flex", width: "100%" }}>
                                 <div style={{ display: 'flex', flexDirection: "column", width: countOfExceedingLeadTime != 0 ? "80%" : "100%", background: "white", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", margin: "0 1rem 1rem 1rem" }}>
                                     <h3 style={{ margin: "1rem", borderBottom: "1px dashed black" }}>CCR Load Chart</h3>
