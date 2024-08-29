@@ -9,7 +9,6 @@ import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { TooltipRenderer } from "../OTIFCommon";
 import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 import moment from "moment";
-import { format } from "date-fns";
 
 const OTIFTrendsGraph = (props: any) => {
   const { graphData } = props;
@@ -19,7 +18,7 @@ const OTIFTrendsGraph = (props: any) => {
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [rawData, setRawData] = useState([]);
-  const { data: apiResponseData, isSuccess } = useGetDate();
+  const { data: apiResponseData } = useGetDate();
 
 
   function createSeriesData(val: number) {
