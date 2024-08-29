@@ -10,13 +10,17 @@ import { useLocation } from 'react-router-dom';
 import ColorCellRenderer from "../../../Common/ColorCellRenderer";
 import { mapSimulateProcPlanningFieldsToColDefs } from '../../../../../../helpers/utils';
 import DetailCellRenderer from "./DetailCellRenderer";
-import { userGetProcAfterSimulationPlanningData, UpdateBatchWiseCompAllSimulation } from "../../../../../Services/MTO/Procurement/ProcPlanning/index";
+import { userGetProcAfterSimulationPlanningData  } from "../../../../../Services/MTO/Procurement/ProcPlanning/index";
+import OverlayLoader from "../../../Common/Loader";
+import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
+import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
+import { toast } from "react-toastify";
 
 
 const useSimFullKit = () => {
     const { HeaderData } = GetSimulateFullKitHeader;
     const { isSideBarOpen } = useUserData()
-    const [currentPage] = useState<any>(1);
+    const [currentPage,setCurrentPage] = useState<any>(1);
     const location = useLocation();
     const rowsData = location.state?.ShortageDatas;
     const date = location.state?.date;
@@ -49,39 +53,42 @@ const useSimFullKit = () => {
             }
         });
     }
-    const Save = () => {
-        const newData: { sno: string; on: string; lid: string; item: string; easa: number }[] = [];
-        if (rowsData) {
-            rowsData.forEach((item: any) => {
-                if (Array.isArray(item.children)) {
-                    item.children.forEach((child: any) => {
-                        const newEntry = {
-                            sno: child.sno,
-                            on: child.on,
-                            lid: child.lid,
-                            item: item.rm,
-                            easa: item.eas,
-                            // remq: child.remq
-                        };
-                        newData.push(newEntry);
-                    });
-                }
-            });
-        }
-        return newData;
-    };
+    // const Save = () => {
+    //     const newData: { sno: string; on: string; lid: string; item: string; easa: number }[] = [];
+    //     if (rowsData) {
+    //         rowsData.forEach((item: any) => {
+    //             if (Array.isArray(item.children)) {
+    //                 item.children.forEach((child: any) => {
+    //                     const newEntry = {
+    //                         sno: child.sno,
+    //                         on: child.on,
+    //                         lid: child.lid,
+    //                         item: item.rm,
+    //                         easa: item.eas,
+    //                         // remq: child.remq
+    //                     };
+    //                     newData.push(newEntry);
+    //                 });
+    //             }
+    //         });
+    //     }
+    //     return newData;
+    // };
 
 
-    const { mutateAsync: userGetProcAfterSimulationData } = userGetProcAfterSimulationPlanningData();
-    const { mutateAsync: updateBatchWiseCompAllSimulation } = UpdateBatchWiseCompAllSimulation();
+    const [totalRows, setTotalRows] = useState(0);
+
+
+    const { mutateAsync: userGetProcAfterSimulationData , isLoading, isSuccess, isError} = userGetProcAfterSimulationPlanningData();
     //isLoading: isProcPlanningUILoading, isError
 
-    const fetchData = useCallback(async (date: string) => {
+    const fetchData = useCallback(async (date: string, eas: string, pageNumber='1') => {
         try {
-            const wrappedData = Save();
-            await updateBatchWiseCompAllSimulation(wrappedData);
-            const response = await userGetProcAfterSimulationData(date);
+            const response = await userGetProcAfterSimulationData({date,eas,pageNumber});
             setData(response?.data?.data?.results);
+            setTotalRows(response?.data?.data.count);
+            setCurrentPage(pageNumber)
+
         } catch (error) {
             console.log("error ", error);
         }
@@ -91,10 +98,18 @@ const useSimFullKit = () => {
         if ('' !== date) {
             const selectedDate = date;
             if (rowsData) {
-                fetchData(selectedDate);
+                if(currentTab.id==='iof'){
+
+                    fetchData(selectedDate,'0',currentPage);
+                }
+                else{
+                    fetchData(selectedDate, '1',currentPage);
+                }
             }
         }
     }, [rowsData, fetchData]);
+
+
 
     useEffect(() => {
         if (data.length !== undefined && HeaderData.length !== undefined) {
@@ -106,11 +121,14 @@ const useSimFullKit = () => {
                 const WithZeroEas = calculateData.filter((item: any) => item.children.every((child: any) => child.eas === 0));
                 const WithoutZeroEas = calculateData.filter((item: any) => item.children.every((child: any) => child.eas !== 0));
 
+            
                 const BothEasData = calculateData.filter((item: any) => {
                     return item.children.some((child: any) => child.eas === 0) && item.children.some((child: any) => child.eas !== 0);
                 });
-                setIncOrderFullKitData([...WithoutZeroEas, ...BothEasData]);
-                setCumulativeFullKitDara([...WithZeroEas, ...BothEasData]);
+                // setIncOrderFullKitData([...WithoutZeroEas, ...BothEasData]);
+                // setCumulativeFullKitDara([...WithZeroEas, ...BothEasData]);
+                setIncOrderFullKitData(calculateData);
+                setCumulativeFullKitDara(calculateData);
                 return { WithZeroEas, WithoutZeroEas, BothEasData };
             };
             initilizeData(data);
@@ -145,6 +163,41 @@ const useSimFullKit = () => {
         };
     }, []);
 
+    useEffect(()=>{
+
+        if(isError){
+            toast.dismiss();
+            notifyError("Failed to fetch data!")
+        }
+        if(isSuccess){
+            notifySuccess("Fetched Data Successfully!")
+        }
+
+    },[isError, isSuccess])
+
+    const handlePageChangeCumulative = async (pageNumber: number) => {
+        // setIsLoading(true);
+        // setCurrentPage(pageNumber);
+        // const APIData = await getProcPlanningData({ date, pageNum: currentPage.toString() });
+        // // setData(APIData)
+        // const newDat = APIData.data.data.results
+        // setTotalRows(APIData?.data?.data?.count)
+        // // setData(APIData?.data?.data?.results || []);
+        // setData(newDat);
+        // setIsLoading(false);
+
+        if(currentTab.id==='iof'){
+
+            fetchData(date,'0', pageNumber.toString());
+            
+        }
+        else{
+            fetchData(date, '1', pageNumber.toString());
+        }
+
+        // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
+    };
+
     const customCellRenderers = useMemo(() => (
         {
             "colorCellRenderer": ColorCellRenderer,
@@ -152,12 +205,25 @@ const useSimFullKit = () => {
             "availabilityToolTip": AvailabilityToolTip
         }), []);
 
+
+        useEffect(()=>{
+
+            if(currentTab.id==='iof'){
+                fetchData(date,'0');
+            }
+            else{
+                fetchData(date,'1');
+            }
+        
+        },[currentTab])
+
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
     const renderView = () => {
         switch (currentTab.id) {
             case "iof":
                 return (
                     <div>
+                        {isLoading && <OverlayLoader/>}
                         <VFTable
                             {...agGridProps}
                             columnDefs={SimulateColumns}
@@ -172,11 +238,22 @@ const useSimFullKit = () => {
                                 ]
                             }}
                         />
+                        <VFPagination
+                            key={1}
+                            selectedRows={0}
+                            rowsPerPage={Math.min(10, totalRows)}
+                            totalRows={totalRows}
+                            currentPage={currentPage}
+                            handleChangePage={handlePageChangeCumulative}
+
+                        />
+                        
                     </div>
                 );
             case "cf":
                 return (
                     <div>
+                        {isLoading && <OverlayLoader/>}
                         <VFTable
                             {...agGridProps}
                             columnDefs={SimulateColumns}
@@ -190,6 +267,14 @@ const useSimFullKit = () => {
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                 ]
                             }}
+                        />
+                        <VFPagination
+                            key={1}
+                            selectedRows={0}
+                            rowsPerPage={Math.min(15, totalRows)}
+                            totalRows={totalRows}
+                            currentPage={currentPage}
+                            handleChangePage={handlePageChangeCumulative}
                         />
                     </div>
                 );
@@ -207,7 +292,6 @@ const useSimFullKit = () => {
                     background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
                 };
             },
-            pagination: true,
             rowSelection: 'multiple',
             suppressRowClickSelection: true,
             enableBrowserTooltips: true,

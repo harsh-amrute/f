@@ -8,8 +8,8 @@ export namespace ProcPlanningService {
             headers: { 'Content-Type': 'application/json' }
         });
     }
-    export const GetProcDataAfterSimulation = async (date: string) => {
-        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getProdDataAfterSimulation/?releaseDate=${date}`, {
+    export const GetProcDataAfterSimulation = async (date: string, eas: string, pageNumber: string) => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getProdDataAfterSimulation/?releaseDate=${date}&eas=${eas}&page=${pageNumber}`, {
             headers: { 'Content-Type': 'application/json' }
         });
     }
