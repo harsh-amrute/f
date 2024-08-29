@@ -171,43 +171,42 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
 
 
         const blackNK = calculateColorOrderCount(SOData, ColorsMTO.Black.label, 'NK', 0)
-        const blackNKPercent = Math.round((blackNK / Math.round(firstBlock.ordCunt + frthBlock.ordCunt)) * 100)
-       
-        
+        const blackNKPercent = Math.round((blackNK / totalOrdCunt) * 100);
+
         const blackPK = calculateColorOrderCount(SOData, ColorsMTO.Black.label, 'PK', 0);
-        const blackPKPercent = Math.round((blackPK / (secondBlock.ordCunt + fifthBlock.ordCunt)) * 100)
+        const blackPKPercent = Math.round((blackPK / totalOrdCunt) * 100)
 
 
         const blackFK = calculateColorOrderCount(SOData, ColorsMTO.Black.label, 'FK', 0);
-        const blackFKPercent = Math.round((blackFK / (thirdBlock.ordCunt + sxthBlock.ordCunt)) * 100)
+        const blackFKPercent = Math.round((blackFK / totalOrdCunt) * 100)
 
         const RedNK = calculateColorOrderCount(SOData, ColorsMTO.Red.label, 'NK', 0);
-        const RedNKPercent = Math.round((RedNK / (firstBlock.ordCunt + frthBlock.ordCunt)) * 100)
+        const RedNKPercent = Math.round((RedNK / totalOrdCunt) * 100)
 
         const RedPK = calculateColorOrderCount(SOData, ColorsMTO.Red.label, 'PK', 0);
-        const RedPKPercent = Math.round((RedPK / (secondBlock.ordCunt + fifthBlock.ordCunt)) * 100)
+        const RedPKPercent = Math.round((RedPK / totalOrdCunt) * 100)
 
         const RedFK = calculateColorOrderCount(SOData, ColorsMTO.Red.label, 'FK', 0);
-        const RedFKPercent = Math.round((RedFK / (thirdBlock.ordCunt + sxthBlock.ordCunt)) * 100)
+        const RedFKPercent = Math.round((RedFK / totalOrdCunt) * 100)
 
         const YellowNK = calculateColorOrderCount(SOData, ColorsMTO.Yellow.label, 'NK', 0);
-        const YellowNKPercent = Math.round((YellowNK / (firstBlock.ordCunt + frthBlock.ordCunt)) * 100)
+        const YellowNKPercent = Math.round((YellowNK / totalOrdCunt) * 100)
 
         const YellowPK = calculateColorOrderCount(SOData, ColorsMTO.Yellow.label, 'PK', 0);
-        const YellowPkPercent = Math.round((YellowPK / (secondBlock.ordCunt + fifthBlock.ordCunt)) * 100)
+        const YellowPkPercent = Math.round((YellowPK / totalOrdCunt) * 100)
 
         const YellowFK = calculateColorOrderCount(SOData, ColorsMTO.Yellow.label, 'FK', 0);
-        const YellowFkPercent = Math.round((YellowFK / (thirdBlock.ordCunt + sxthBlock.ordCunt)) * 100)
+        const YellowFkPercent = Math.round((YellowFK / totalOrdCunt) * 100)
 
         const GreenNK = calculateColorOrderCount(SOData, ColorsMTO.Green.label, 'NK', 0);
-        const GreenNKPercent = Math.round((GreenNK / Math.round(frthBlock.ordCunt + firstBlock.ordCunt)) * 100)
-      
+        const GreenNKPercent = Math.round((GreenNK / totalOrdCunt) * 100)
+
 
         const GreenPK = calculateColorOrderCount(SOData, ColorsMTO.Green.label, 'PK', 0);
-        const GreenPKPercent = Math.round((GreenPK / (fifthBlock.ordCunt + secondBlock.ordCunt)) * 100)
+        const GreenPKPercent = Math.round((GreenPK / totalOrdCunt) * 100)
 
         const GreenFK = calculateColorOrderCount(SOData, ColorsMTO.Green.label, 'FK', 0);
-        const GreenFKPercent = Math.round((GreenFK / (sxthBlock.ordCunt + thirdBlock.ordCunt)) * 100)
+        const GreenFKPercent = Math.round((GreenFK / totalOrdCunt) * 100)
 
 
         const BlueNK = calculateColorOrderCount(SOData, ColorsMTO.Blue.label, 'NK', 1);
