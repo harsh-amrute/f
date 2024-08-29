@@ -2583,3 +2583,57 @@ export const performNumericalOpertionsForBPRViewTableFilter =(num1:number,num2:n
 export const getFiltersArrayFromColDefs = (colDefs:Array<BPRViewTableColDef>):Array<any>=>{
  return  colDefs.filter((c)=>c.filter).map((f)=>({colId:f.colId,filterValue:'',dataType:f.dataType,query:null}))
 }
+
+export const getProductAndLocationHeirarchiesFromEnv = (column:any,extraProperties:any) => {
+    if(column.colCode === 'sl1'){
+      return {
+          field:column['colCode'],
+          colId:column['colCode'],
+          headerName:process.env.REACT_APP_PRODUCT_PERMISSION_L1,
+          ...extraProperties
+      }
+    }
+    if(column.colCode === 'sl2'){
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:process.env.REACT_APP_PRODUCT_PERMISSION_L2,
+            ...extraProperties
+        }
+    }
+    if(column.colCode === 'sl3'){
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:process.env.REACT_APP_PRODUCT_PERMISSION_L3,
+            ...extraProperties
+        }
+    }
+    if(column.colCode === 'll1'){
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:process.env.REACT_APP_LOCATION_PERMISSION_L1,
+            ...extraProperties
+        }
+    }
+    if(column.colCode === 'll2'){
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:process.env.REACT_APP_LOCATION_PERMISSION_L2,
+            ...extraProperties
+        }
+    }
+
+    if(column.colCode === 'll3'){
+      return {
+          field:column['colCode'],
+          colId:column['colCode'],
+          headerName:process.env.REACT_APP_LOCATION_PERMISSION_L3,
+          ...extraProperties
+      }
+  }
+
+  return undefined;
+}

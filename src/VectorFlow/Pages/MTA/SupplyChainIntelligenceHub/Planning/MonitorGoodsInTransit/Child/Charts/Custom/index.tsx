@@ -14,6 +14,7 @@ import { useGetState } from "../../../../../../../../../VectorFlow/Services/MTA/
 
 import { GridStateContext } from "../../../../../../../../../context/GridStateContext";
 import { GridState } from "../../../../../../../../../VectorFlow/types/BPR";
+import { getProductAndLocationHeirarchiesFromEnv } from "../../../../../../../../../helpers/utils";
 
 
 
@@ -35,6 +36,8 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
         let colDefs = [];
 
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{enablePivot:true, enableValue:true,enableRowGroup:true}); 
+            if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
