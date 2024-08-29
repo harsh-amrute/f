@@ -747,7 +747,7 @@ const OverallBmReport = () => {
             checkboxSelection: section.scc === "chckbx" ? true : undefined,
             maxWidth: section.scc === "chckbx" ? 80 : undefined,
             floatingFilter: section.scc === "chckbx" ? false : undefined,
-            headerName: section.cc,
+            headerName: section.hd,
             suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
             colId: section.hd,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,

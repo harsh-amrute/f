@@ -508,7 +508,7 @@ const DptWiseBMReport = () => {
                         "hd": "Remark",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "Remark",
+                        "scc": "r",
 
                     },
                     {
@@ -720,14 +720,14 @@ const DptWiseBMReport = () => {
                 // Ensure that any ongoing editing is stopped and values are committed
                 api.stopEditing();
                 const updatedRow = gridData.filter((row: any) => editedRows.has(row.ok))
-                // console.log('updated row', updatedRow)
+                //console.log('updated row', updatedRow)
                 if (updatedRow.length > 0) {
                     let putData: UpdateRemarkObj[] = [];
                     updatedRow.forEach((e: any) => {
                         const singleData: any = {
                             "ok": e.ok,
                             "dept": e.did,
-                            "rm": e.Remark,
+                            "rm": e.r,
                             "user": user?.user?.name
                         }
                         putData.push(singleData);
@@ -741,7 +741,7 @@ const DptWiseBMReport = () => {
                         notifySuccess('Remark saved successfully')
                     }
                     else {
-                        notifyError('Remark not save')
+                        notifyError('Failed to save the remark(s)')
                     }
                 }
                 else {

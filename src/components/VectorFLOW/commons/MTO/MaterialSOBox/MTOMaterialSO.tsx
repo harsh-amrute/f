@@ -31,6 +31,16 @@ interface MaterialSOProps {
 
 const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderValue, percent, ToolTipdata }: MaterialSOProps) => {
 
+    const formatPercent = (percent: number): string => {
+        // Check if percent is NaN or 0, and return "NA" if true
+      
+        if (isNaN(percent) || percent === 0) {
+            return 'NA';
+        }
+        
+        // Perform the rounding operation if percent is not NaN or 0
+        return `${Math.round(percent * 100).toString()}%`;
+    };
     
     return (
         <>
@@ -99,7 +109,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
 
             <PercentBorderContainer>
                 <Percentborder>
-                    <Percent>{Math.round(isNaN(percent) ? 0 : percent * 100)}%</Percent>
+                    <Percent>{formatPercent(percent)}</Percent>
                 </Percentborder>
             </PercentBorderContainer>
 
