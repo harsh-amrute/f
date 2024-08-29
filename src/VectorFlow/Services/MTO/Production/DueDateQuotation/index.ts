@@ -12,13 +12,15 @@ export const useGetUIConfig = (reportName: string) => {
 }
 
 interface DDQInputParams {
-    currentPage: number,
-    unScheduled: boolean
+    page: number,
+    unSch: boolean,
+    appliedFilters: any
 }
 
-export const useGetOrdersForDDQ = () => {
+
+export const useGetFilteredOrdersForDDQ = () => {
     return useMutation(async (data: DDQInputParams) => {
-        return DueDateQuotationService.getOrdersForDDQ(data?.currentPage, data?.unScheduled)
+        return DueDateQuotationService.getFilteredOrdersForDDQ(data)
     })
 }
 
@@ -85,6 +87,12 @@ export const useUpdateBuffRouteCCREstDate = () => {
 export const useUpdateScheduleOrders = () => {
     return useMutation(async (body: {orders:any}) => {
         return DueDateQuotationService.updateScheduleOrders(body)
+    })
+}
+
+export const useGetDBRsettingsData = () => {
+    return useMutation(async () => {
+        return DueDateQuotationService.getDBRsettingsData()
     })
 }
 

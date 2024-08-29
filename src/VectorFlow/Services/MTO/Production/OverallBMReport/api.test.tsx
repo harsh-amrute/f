@@ -19,9 +19,9 @@ describe('MaterialRequirement', () => {
 
 
     it('should fetch the initial data', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         //const data = {  curr: Number(1) };
-        const response = await OverallBMReportService.getOverallBMReportData(0);
+        const response = await OverallBMReportService.getOverallBMReportData({page: 1, appliedFilters: {}});
         expect(response.status).toBe(200);
     });
 

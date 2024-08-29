@@ -98,14 +98,6 @@ const OrderBalance = () => {
   const colDefCustomizations = {
     BPP: {
       cellRenderer: ColorCellRenderer,
-    },
-    LineItemID: {
-      colId: 'line_item_id',
-      field: 'line_item_id'
-    },
-    OrderQuantity: {
-      colId: 'order_quantity',
-      field: 'order_quantity',
     }
   };
 

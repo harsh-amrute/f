@@ -485,6 +485,19 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
     const date = apiResponseData?.data?.data;
 
+    const graphTitleJSX =  <div
+        data-testid="ot-if-graph"
+        style={{
+        fontSize: "13px",
+        margin: "0 auto",
+
+        textAlign: "center",
+        }}
+    >
+        <span style={{ fontWeight: 500 }}>RM / PM On Hand Invetory Trend - MTA </span>
+        <span style={{ fontWeight: 300 }}>{`  (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}</span>
+    </div>
+
     return (
         <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '8px', paddingBottom: '20px' }}>
 
@@ -496,7 +509,8 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 setChartLoading={setChartLoading}
                 data={numericData}
                 rowData={numericData}
-                graphTitle={`RM / PM On Hand Invetory Trend - MTA (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
+                graphTitle={''}
+                graphTitleJSX={graphTitleJSX}
                 tableTitle={`RM / PM On Hand Invetory Trend - MTA (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
                 options={options}
                 colDef={colDef}

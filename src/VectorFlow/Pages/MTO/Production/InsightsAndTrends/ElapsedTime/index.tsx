@@ -57,7 +57,7 @@ const ElapsedTime = () => {
                     alertData.push({x: entry[0], y: []})
                 }
                 delete obj["cl"]
-                chartData.push({x: entry[0], y: Object.values(obj)})
+                chartData.push({x: entry[0], y: Object.values(obj).sort((a: any,b: any)=> a - b)})
                 tableData.push({...entry[1], department: entry[0]})
             })
             setDeptwiseChartTableData(tableData);
@@ -80,7 +80,7 @@ const ElapsedTime = () => {
             Object.entries(data.data.data).forEach((entry: any)=>{
                 const obj = _.cloneDeep(entry[1]);
                 delete obj["cl"]
-                chartData.push({x: entry[0], y: Object.values(obj)})
+                chartData.push({x: entry[0], y: Object.values(obj).sort((a: any,b: any)=> a - b)})
                 tableData.push({...entry[1], week: entry[0]})
             })
             setWeeklyChartTableData(tableData);

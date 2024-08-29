@@ -66,9 +66,9 @@ const TopFailureReasons = () => {
         isLoading && <OverlayLoader />
       }
       <MTOActionToolBar
-        // isGridView={isGridView}
-        // setIsGridView={setIsGridView}
-        // isChartGridToggle
+        isGridView={isGridView}
+        setIsGridView={setIsGridView}
+        //isChartGridToggle /***commented it  */
         isAddFilterButton
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>

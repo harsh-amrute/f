@@ -22,16 +22,16 @@ import {
 import { AgGridReactProps } from 'ag-grid-react';
 import { BPRViewTableGrid } from '../../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/styles';
 import VFTable from '../../Common/VFTable';
-import { /*orderStatus, orderStatusData, ElapsedTime, ElapsedTimeData, */AgieingTime, ageingData } from './DeptWiseBMReportData'
+//import { /*orderStatus, orderStatusData, ElapsedTime, ElapsedTimeData, */AgieingTime, ageingData } from './DeptWiseBMReportData'
+import { ColorsMTO } from '../../Common/Colors';
 
 interface orderElapsedGridProps {
     isTrue?: boolean
     data?: any
     deptName: [],
     selectedOrderCount?: string
+    highAgeingdata?: any
 }
-
-
 
 type RowData = {
     [key: string]: any;
@@ -39,11 +39,7 @@ type RowData = {
 
 
 
-const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderElapsedGridProps) => {
-    // console.log('OrderElapsedGrid', selectedOrderCount)
-    //const OrderElapsedGrid: any = [];
-    //OrderElapsedGrid.push([...data])
-    // const [orderElapsedGridData] = useState<any>([...data]);
+const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgeingdata }: orderElapsedGridProps) => {
 
     const { user } = useUserData()
     const themeUi = user.user.theme_ui
@@ -53,9 +49,11 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
     const [leftPanelActiveTab, SetLeftPanelActiveTab] = useState<string>('Order_Status')
     const [ordeStatusColDef, setOrderStatusColdef] = useState<any>();
     const [elapsedOrderColdef, setElapsedOrderColDef] = useState<any>();
+    const [highAgeingColdef, setHighAgeingColDef] = useState<any>();
     const [rowData, setRowData] = useState<any>();
     const [ElapsedTimeRowData, setElapsedTimeRowData] = useState<any>();
-
+    const [elapsedOrderTotalDays, setElapsedOrderTotalDays] = useState<number>(0);
+    const [minMaxAge, setMinMaxAge] = useState<any>({ min: '0', max: '0' })
 
     const sideBar = useMemo(() => {
         return {
@@ -88,6 +86,10 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                     'white-space': 'nowrap',
                     'resizable': 'true',
                 },
+                floatingFilterComponentParams: {
+                    suppressFilterButton: true
+                },
+                //initialFlex: 1
 
             },
 
@@ -125,8 +127,8 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                     suppressFilterButton: true
                 },
                 initialFlex: 1
-            },
 
+            },
         },
         sideBar: sideBar,
         pivotMode: false
@@ -257,7 +259,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
          }
      ]*/
 
-    const convertApiResponseToColDefs = (apiResponse: any[]) => {
+    const convertApiResponseToOrderStatusColDefs = (apiResponse: any[]) => {
         // Helper function to recursively map API column to ColumnDef
         const mapToColDef = (apiColumn: any) => {
             const columnDef: any = {
@@ -276,8 +278,6 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
         // Map each API column entry to ColumnDef format
         return apiResponse.map(mapToColDef);
     };
-
-
 
     const generateApiResponse = (departmentHeaders: string[]) => {
         const apiResponse: any[] = [
@@ -342,9 +342,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
         return apiResponse;
     };
 
-
-
-    const transformToRowData = () => {
+    const transformToOrderStatusRowData = () => {
         const rowData: RowData[] = [];
 
         // Loop through each order in the input data
@@ -389,57 +387,200 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
         return rowData;
     }
 
-    const createElapsedOrderColdef = (headers: any) => {
-        // Start with a default "time" column
-        const colDefs: any = [
-            {
-                headerName: "",
-                field: "time",
-                colId: "time",
-            },
-        ];
+    const createElapsedOrderColdef = (name: string) => {
+        let colDefs = [];
 
-        // Dynamically create the department columns based on the headers provided
-        headers.forEach((header: any, index: number) => {
-            colDefs.push({
-                headerName: header,
-                field: (index + 1).toString(),  // Convert index to string for field name
-                colId: (index + 1).toString(),
-            });
-        });
+        // Define column definitions based on the 'name' parameter
+        switch (name) {
+            case 'ET':
+                colDefs = [
+                    {
+                        headerName: "Department",
+                        field: "dept",
+                        colId: "dept",
+                        width: 60,
+                    },
+                    {
+                        headerName: "In Time",
+                        field: "it",
+                        colId: "it",
+                    },
+                    {
+                        headerName: "Out Time",
+                        field: "ot",
+                        colId: "ot",
+                    },
+                    {
+                        headerName: "Elapsed Time",
+                        field: "et",
+                        colId: "et",
+                        cellStyle: {
+                            color: ColorsMTO.Pink.code,
+                        },
+                    },
+                ];
+                break;
+
+            case 'HA':
+                colDefs = [
+                    {
+                        headerName: "Order ID",
+                        field: "oid",
+                        colId: "oid",
+                    },
+                    {
+                        headerName: "Line Item",
+                        field: "lid",
+                        colId: "lid",
+                    },
+                    {
+                        headerName: "Batch No.",
+                        field: "bn",
+                        colId: "bn",
+                    },
+                    {
+                        headerName: "Department",
+                        field: "dept",
+                        colId: "dept",
+                    },
+                    {
+                        headerName: "Ageing",
+                        field: "age",
+                        colId: "age",
+                        cellStyle: {
+                            color: ColorsMTO.Pink.code,
+                        },
+                    },
+
+                ];
+                break;
+
+            // Add more cases as needed for different 'name' values
+
+            default:
+                colDefs = [
+                    {
+                        headerName: "Default Column",
+                        field: "default",
+                        colId: "default",
+                    },
+                ];
+                break;
+        }
 
         return colDefs;
-    }
+    };
 
-    const createRowDataWithTimes = () => {
-        const rowData: RowData[] = [
-            { time: "In Time" },
-            { time: "Out Time" },
-            { time: "Elapsed Time" },
-        ];
+    // Function to format date and time in "1 Feb 2024, 10:00am" format
+    const formatDateTime = (dateTime: string): string => {
+        const date = new Date(dateTime);
 
-        // Iterate through each order in the inputData
-        for (const [orderDetails] of Object.entries(data)) {
-            // Loop through each department (like "1", "2", etc.)
-            for (const [deptKey, deptData] of Object.entries(orderDetails)) {
-                if (deptKey !== 'tq' && deptKey !== 'li' && typeof deptData === 'object' && deptData !== null) {
-                    const deptInfo = deptData as {
-                        //woh?: number;
-                        //mfg?: number;
-                        int?: number | null;
-                        out?: number | null;
-                    };
-
-                    // Assign department times to the corresponding row
-                    rowData[0][`dpt${deptKey}`] = deptInfo.int ?? null;
-                    rowData[1][`dpt${deptKey}`] = deptInfo.out ?? null;
-
-                }
-            }
+        if (isNaN(date.getTime())) {
+            return "Invalid date"; // Handle invalid date case
         }
+
+        // Options for formatting the date and time
+        const dateOptions: Intl.DateTimeFormatOptions = {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        };
+
+        /*  const timeOptions: Intl.DateTimeFormatOptions = {
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true // To display in 12-hour format with am/pm
+          };*/
+
+        const formattedDate = date.toLocaleDateString("en-GB", dateOptions);
+        //const formattedTime = date.toLocaleTimeString("en-GB", timeOptions);
+
+        return `${formattedDate}`;
+        //${formattedTime}`
+    };
+
+    const transformToElapsedTimeRowData = () => {
+        // Filter out keys that are not department-related (e.g., 'tq', 'li')
+        const dynamicKeys = Object.keys(data).filter(key => key !== 'tq' && key !== 'li');
+        // Build row data using the dynamic keys
+        const rowData: RowData[] = dynamicKeys.flatMap(deptKey => {
+            const deptData = data[deptKey];
+            // Handle the case where deptData contains an object with nested keys
+            const nestedKeys = Object.keys(deptData);
+            return nestedKeys.flatMap(nestedDeptKey => {
+                const nestedDeptData = deptData[nestedDeptKey];
+
+                // Ensure we find 'int' and 'out' within the nested object
+                const nestedInTime = nestedDeptData?.int;
+                const nestedOutTime = nestedDeptData?.out;
+
+                if (nestedInTime && nestedOutTime) {
+                    return [{
+                        dept: nestedDeptKey,  // Use the nested key as the dept value
+                        it: formatDateTime(nestedInTime),
+                        ot: formatDateTime(nestedOutTime),
+                        et: calculateElapsedTime(nestedInTime, nestedOutTime),  // Calculate elapsed time
+                    }];
+                }
+                return [];
+            });
+            return [];
+        });
 
         return rowData;
     }
+
+    // Function to calculate the time difference between "out" and "int" (in days or any desired unit)
+    const calculateElapsedTime = (inTime: string, outTime: string): string => {
+        const inDate = new Date(inTime);
+        const outDate = new Date(outTime);
+        if (isNaN(inDate.getTime()) || isNaN(outDate.getTime())) {
+            return "Invalid date"; // Handle invalid date case
+        }
+
+        // Calculate the difference in milliseconds
+        const timeDifference = outDate.getTime() - inDate.getTime();
+
+        // Calculate the difference in days and hours
+        const totalHours = timeDifference / (1000 * 3600); // Total hours
+        const days = Math.floor(totalHours / 24); // Whole days
+        //const hours = Math.floor(totalHours % 24); // Remaining hours
+
+        // Construct the string with days and hours
+        return `${days} days`;
+        /* ${hours} hrs*/
+    };
+
+    // Function to parse elapsed time string to total days
+    const parseElapsedTime = (elapsedTime: string): number => {
+        // Handle the case where elapsedTime is negative
+        const match = elapsedTime.match(/(-?\d+) days/);
+        return match ? parseFloat(match[1]) : 0;
+    };
+
+    // Function to keep the row data with the highest elapsed time for each department
+    const filterMaxElapsedTimePerDept = (rowData: RowData[]): RowData[] => {
+        const deptMap = new Map<string, RowData>();
+
+        rowData.forEach(row => {
+            const currentElapsedTimeInDays = parseElapsedTime(row.et);
+
+            // If department is not in the map or current row has a higher elapsed time
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            if (!deptMap.has(row.dept) || parseElapsedTime(deptMap.get(row.dept)!.et) < currentElapsedTimeInDays) {
+                deptMap.set(row.dept, row);
+            }
+        });
+
+        // Return the values (rows) of the map
+        return Array.from(deptMap.values());
+    };
+
+    // Function to calculate the total days from the elapsed time column
+    const calculateTotalElapsedDays = (rowData: RowData[]): number => {
+        //console.log('rowData', rowData)
+        return rowData.reduce((total, row) => total + parseElapsedTime(row.et), 0);
+    };
 
 
     useEffect(() => {
@@ -448,23 +589,60 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
             const apiResponse = generateApiResponse(deptName);
 
             /**Based on the apiResponse creating th dynamic coldef */
-            const columnDefs = convertApiResponseToColDefs(apiResponse);
+            const columnDefs = convertApiResponseToOrderStatusColDefs(apiResponse);
             //console.log('coldef', columnDefs)
             setOrderStatusColdef(columnDefs)
 
-            const elapsedOrderColdef = createElapsedOrderColdef(deptName);
+            const elapsedOrderColdef = createElapsedOrderColdef('ET');
             //console.log('elapsedOrderColdef', elapsedOrderColdef)
             setElapsedOrderColDef(elapsedOrderColdef)
 
-            const rowData = transformToRowData();//const rowData = generateRowData(columnDefs);
+            const highAgeingColDef = createElapsedOrderColdef('HA');
+            //console.log('highAgeingColDef',highAgeingColDef)
+            setHighAgeingColDef(highAgeingColDef)
+
+            //this will create the row data
+            const rowData = transformToOrderStatusRowData();//const rowData = generateRowData(columnDefs);
             setRowData(rowData)
             //console.log('rowData=Fristan', rowData);
 
-            const ElapsedTimeRowData = createRowDataWithTimes();
+
+            const ElapsedTimeAllRowData = transformToElapsedTimeRowData();
+            // console.log('ElapsedTimeRowData', ElapsedTimeAllRowData)
+            const ElapsedTimeRowData = filterMaxElapsedTimePerDept(ElapsedTimeAllRowData)
+            //console.log('findtotal', ElapsedTimeAllRowData)
+            const totalDays = calculateTotalElapsedDays(ElapsedTimeRowData)
+            setElapsedOrderTotalDays(totalDays)
+            //console.log('totalDays',totalDays)
             setElapsedTimeRowData(ElapsedTimeRowData)
+
+            const { minAge, maxAge } = findAgeRange();
+            setMinMaxAge({ min: minAge, max: maxAge })
+
         }
     }, [data])
 
+    const findAgeRange = (): { minAge: number, maxAge: number } => {
+        if (highAgeingdata?.length === 0) {
+            throw new Error("The array of people is empty.");
+        }
+
+        // Initialize minAge and maxAge with the age of the first person
+        let minAge = highAgeingdata[0].age;
+        let maxAge = highAgeingdata[0].age;
+
+        // Iterate through the array to find the min and max age
+        for (const person of highAgeingdata) {
+            if (person.age < minAge) {
+                minAge = person.age;
+            }
+            if (person.age > maxAge) {
+                maxAge = person.age;
+            }
+        }
+
+        return { minAge, maxAge };
+    };
 
 
 
@@ -510,7 +688,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                             WIP Present In  :
                                         </ExpansionHeaderNormalText>
                                         <ExpansionHeaderColoredText>
-                                            {`${deptName.length > 1 ? ',' : ''}${deptName}`}
+                                            {`${deptName}${deptName.length > 1 ? ',' : ''}`}
                                         </ExpansionHeaderColoredText>
                                     </ExpansionHeaderGroup>
                                     <ExpansionHeaderGroup onClick={() => toggleLeftPanelOrderStatus(!isLeftPanelOrderStatusOpen)} style={{ marginLeft: 'auto' }}>
@@ -548,7 +726,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                             Elapsed Time  :
                                         </ExpansionHeaderNormalText>
                                         <ExpansionHeaderColoredText>
-                                            10 days
+                                            {elapsedOrderTotalDays + ' Days'}
                                         </ExpansionHeaderColoredText>
                                     </ExpansionHeaderGroup>
                                     <ExpansionHeaderGroup onClick={() => toggleLeftPanelElapsedTime(!isleftPanelElapsedTimeOpen)} style={{ marginLeft: 'auto' }}>
@@ -596,7 +774,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                         No. Of batches  :
                                     </ExpansionHeaderNormalText>
                                     <ExpansionHeaderColoredText>
-                                        4
+                                        {highAgeingdata?.length}
                                     </ExpansionHeaderColoredText>
                                 </ExpansionHeaderGroup>
                                 <ExpansionHeaderGroup style={{ marginLeft: 'auto' }}>
@@ -604,7 +782,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                         Min Ageing  :
                                     </ExpansionHeaderNormalText>
                                     <ExpansionHeaderColoredText>
-                                        10 days, 2hrs
+                                        {minMaxAge.min}
                                     </ExpansionHeaderColoredText>
                                 </ExpansionHeaderGroup>
                                 <ExpansionHeaderGroup style={{ marginLeft: 'auto' }}>
@@ -612,7 +790,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                         Max Ageing  :
                                     </ExpansionHeaderNormalText>
                                     <ExpansionHeaderColoredText>
-                                        10 days, 2hrs
+                                        {minMaxAge.max}
                                     </ExpansionHeaderColoredText>
                                 </ExpansionHeaderGroup>
                                 <ExpansionHeaderGroup onClick={() => toggleRightPanel(!isRightPanel)} style={{ marginLeft: '100px' }}>
@@ -626,8 +804,8 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                                     <VFTable
                                         {...agGridProps}
                                         height='400px'
-                                        columnDefs={AgieingTime}
-                                        rowData={ageingData}
+                                        columnDefs={highAgeingColdef}
+                                        rowData={highAgeingdata}
                                     />
                                 </ExpansionContent>
                             )}
@@ -644,10 +822,6 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount }: orderE
                     <SelectText>Please select a row from above table to view data</SelectText>
                 </NoDataToShowDiv>
             </NoDataAvailableContainer>
-
-
-
-
     )
 }
 

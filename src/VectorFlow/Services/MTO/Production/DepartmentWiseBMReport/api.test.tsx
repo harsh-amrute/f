@@ -19,10 +19,30 @@ describe('MaterialRequirement', () => {
 
 
     it('should fetch the initial data', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const data = { wip: true, curr: 1, appliedFilters: {} };
+        const response = await DepartmentWiseBMReport.getFilteredDeptWiseBMReport(data);
+        expect(response.status).toBe(200);
+    });
+    
+    it('should fetch the initial data', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const data = { wip: false, curr: 1, appliedFilters: {} };
+        const response = await DepartmentWiseBMReport.getFilteredDeptWiseBMReport(data);
+        expect(response.status).toBe(200);
+    });
 
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const data = { wip: true, curr: 1 };
-        const response = await DepartmentWiseBMReport.getDeptWiseBMReport(data);
+    it('should fetch the initial data', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const data = { wip: true, curr: 2, appliedFilters: {ms: ["MTO", "MTA"]} };
+        const response = await DepartmentWiseBMReport.getFilteredDeptWiseBMReport(data);
+        expect(response.status).toBe(200);
+    });
+    
+    it('should fetch the initial data', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const data = { wip: false, curr: 2, appliedFilters: {ms: ["MTO", "MTA"]} };
+        const response = await DepartmentWiseBMReport.getFilteredDeptWiseBMReport(data);
         expect(response.status).toBe(200);
     });
 
@@ -81,6 +101,15 @@ describe('MaterialRequirement', () => {
         // Check if the response is correct
         expect(response).toEqual(mockResponse);
     });
+
+
+    it('should fetch the High Ageing Data', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const data = { wip: false, curr: 2, appliedFilters: {ms: ["MTO", "MTA"]} };
+        const response = await DepartmentWiseBMReport.getHighAgeingData(data);
+        expect(response.status).toBe(200);
+    });
+
 
 
 });

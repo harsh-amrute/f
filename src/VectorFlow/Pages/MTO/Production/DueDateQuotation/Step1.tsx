@@ -1,6 +1,6 @@
 import { GridOptions } from 'ag-grid-enterprise';
 import _ from 'lodash';
-import React, { forwardRef, useEffect } from 'react'
+import React, { forwardRef, useImperativeHandle, useRef } from 'react'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import VFTable from '../../Common/VFTable';
 import { pagination } from '../../Common/Enum';
@@ -17,25 +17,35 @@ interface IStep1Props {
   setSelectedRows: any
 }
 
-const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, scheduledOrders, setSelectedRows }: IStep1Props, ref: any) => {
+const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows }: IStep1Props, ref: any) => {
 
+  const gridRef = useRef<any>()
   const handlePageChange = async (currPage: number) => {
     setCurrentPage(currPage)
   }
 
-  useEffect(() => {
-    const newMap = new Map(selectedRows)
-    scheduledOrders.forEach((order: any) => {
-      newMap.delete(order);
-    })
-    setSelectedRows(newMap)
-  }, [scheduledOrders])
+  // useEffect(()=>{
+  //   const newMap = new Map(selectedRows)
+  //   scheduledOrders.forEach((order: any)=>{
+  //     newMap.delete(order);
+  //   })
+  //   setSelectedRows(newMap)
+  // }, [scheduledOrders])
+
+  const deselectAllForStep1 = () => {
+    gridRef.current?.api.deselectAll();
+    setSelectedRows(new Map());
+  }
+
+  useImperativeHandle(ref, () => ({
+    deselectAllForStep1: deselectAllForStep1
+  }));
 
   return (
     <>
       <VFTable
         key="allRows"
-        ref={ref}
+        ref={gridRef}
         gridOptions={gridOptions}
         columnDefs={gridOptions.columnDefs}
         rowData={rows}

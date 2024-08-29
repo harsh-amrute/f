@@ -9,8 +9,55 @@ import { columnConfigData } from "../ColumnData";
 import { format } from "date-fns";
 
 const STPLGraph = (props: any) => {
-  const { graphData } = props;
+    const { graphData } = props;
 
+ /* const graphData:any = [
+    {
+      "ccr_n": "Ideal - (01)",
+      "limit": 100,
+      "r_wip": 0.03
+    },
+    {
+      "ccr_n": "Carousell - (01)",
+      "limit": 80,
+      "r_wip": 0
+    },
+    {
+      "ccr_n": "Assembling tables - (01)",
+      "limit": 90,
+      "r_wip": 0
+    },
+    {
+      "ccr_n": "No_CCR - (01)",
+      "limit": 100,
+      "r_wip": 0
+    },
+    {
+      "ccr_n": "Igland assembly - (01)",
+      "limit": 80,
+      "r_wip": 0
+    },
+    {
+      "ccr_n": "Hagan - (01)",
+      "limit": 80,
+      "r_wip": 27.15
+    },
+    {
+      "ccr_n": "Aichelin - (01)",
+      "limit": 70,
+      "r_wip": 0
+    },
+    {
+      "ccr_n": "Purchased - (10001)",
+      "limit": 90,
+      "r_wip": 0
+    },
+    {
+      "ccr_n": "Igland TT+Cranes - (01)",
+      "limit": 90,
+      "r_wip": 1.83
+    }
+  ]*/
   const [date] = useState(format(new Date(), 'd MMM yyyy'));
   const [rawData, setRawData] = useState([]);
   const [hideChart1, toggleChart1] = useState(false);
@@ -35,7 +82,7 @@ const STPLGraph = (props: any) => {
                    </div>
                </div>
            </div> 
-        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: gray"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Released WIP (In Days)</div><div>${datum["r_wip"]}</div></div></div>
+        <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: gray"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Released WIP (In Days)</div><div>${datum["days"]}</div></div></div>
         <div style="display: flex;"><div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: green"></div><div style="display:flex ;width: 100%; justify-content: space-between"><div>Limit</div><div>${datum["limit"]}</div></div></div>
 
         </div>`;
@@ -124,6 +171,7 @@ const STPLGraph = (props: any) => {
   };
 
   const colDefs = useMemo(() => {
+
     return getColumnDefinations(columnConfigData?.stplTableColumn, {}, [])
   }, []);
 
@@ -186,17 +234,17 @@ const STPLGraph = (props: any) => {
     )
   }
 
-  useEffect(()=>{
-    if(graphData){
+  useEffect(() => {
+    if (graphData) {
       const updatedGraphData = graphData?.map((data: any) => {
-        if(data.r_wip > data?.limit){
-          return ({...data, exceedDays: data.r_wip, r_wip: 0 });
+        if (data.r_wip > data?.limit) {
+          return ({ ...data, exceedDays: data.r_wip, days: 0 });
         }
-        return ({...data, exceedDays: 0, })
+        return ({ ...data, exceedDays: 0, days: data.r_wip })
       })
       setRawData(updatedGraphData);
     }
-  },[graphData])
+  }, [graphData])
 
   return (
     <div style={{ height: "100%", display: "flex", justifyContent: "left", paddingBottom: '10px', marginRight: '8px' }}>

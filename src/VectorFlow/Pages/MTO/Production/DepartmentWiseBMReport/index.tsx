@@ -20,7 +20,7 @@ import RemarkHistoryRenderer from './RemarkHistoryRenderer';
 import BPRRemarkHistoryModal from './MTORemarkHistoryModal';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 import { useUserData } from '../../../../../context';
-import { useGetDeptWiseBMReport, useAddBMReportRemark, useGetDeptWiseWipData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index'
+import { useAddBMReportRemark, useGetDeptWiseWipData, useGetFilteredDeptWiseBMReport, useGetHighAgeingData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
 import { toast } from 'react-toastify';
 import OverlayLoader from '../../Common/Loader';
@@ -30,6 +30,9 @@ import { IRowNode } from 'ag-grid-enterprise';
 import { FirstDataRenderedEvent } from 'ag-grid-community';
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
 import { ColorsMTO } from '../../Common/Colors';
+import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+import useFilter from '../../../../../hooks/useFilter';
+import { formatFilterJSON } from '../../../../../helpers/utils';
 
 interface ApiResponse {
     cc: string;
@@ -100,12 +103,23 @@ interface Orders {
     [key: string]: OrderItem; // Order ID as the key
 }
 
+const APIFilterConfig = {
+    filSecVisConfig: {
+        "Prod_Dept_Wise_BM_Report": {
+            mjr: false,
+            or: true,
+            res: true,
+            cus: true
+        },
+    }
+};
 
 const DptWiseBMReport = () => {
-    const { mutateAsync: getDeptWiseBMReportData, isLoading: DeptWiseLoading } = useGetDeptWiseBMReport();
+    const { mutateAsync: getFilteredDeptWiseBMReportData, isLoading: isFilteredDataLoaded } = useGetFilteredDeptWiseBMReport();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const { mutateAsync: addBMReportRemark } = useAddBMReportRemark();
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
+    const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
     const [colDeflatest, setColdef] = useState([{}])
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
@@ -115,6 +129,7 @@ const DptWiseBMReport = () => {
     const [remarkHistory, setRemarkHistory] = useState<any>();
     const [editedRows, setEditedRows] = useState<Set<number>>(new Set());
     const [deptWiseWipData, setDeptWiseWipData] = useState<any>();
+    const [highAgeing, sethighAgeing] = useState<any>();
     const { screenHeight } = useViewPort();
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
@@ -123,6 +138,15 @@ const DptWiseBMReport = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [gridDataCount, setGridDataCount] = useState<number>(0);
     const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
+    const [filterData, setFilterData] = useState({});
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [appliedFilters, setAppliedFilters] = useState<any>({});
+    const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
+    const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dept_Wise_BM_Report);
+
+    const toggleFilter = (state: boolean) => {
+        setIsFilterOpen(state);
+    }
 
     const customCellRenderers = useMemo(() => (
         {
@@ -291,12 +315,12 @@ const DptWiseBMReport = () => {
                         "cgs": "closed"
                     },
                     {
-                        "cc": "CCRName",
+                        "cc": "ccr",
                         "cp": 16,
                         "hd": "CCRName ",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "CCR_Nme",
+                        "scc": "ccr",
                         "cgs": "closed"
                     },
                     {
@@ -576,37 +600,20 @@ const DptWiseBMReport = () => {
         }));
     }
 
-    const getInitialGridData = async (wip: boolean, page: number) => {
-        try {
-            setCurrentPage(page)
-            setWIPCheck(wip)
-            const gridData = await getDeptWiseBMReportData({ 'wip': wip === true ? 1 : 0, 'curr': page });
-            setGridData(gridData?.data?.data?.results)
-            //console.log('first', gridData?.data?.data)
-            setGridDataCount(gridData?.data?.data?.count)
-        }
-        catch (e) {
-            console.log('e');
-        }
-    }
-
-
     useEffect(() => {
         const colDefs = mapApiResponseToColDefs(apiResponse);
-        // console.log('coldefs', colDefs)
         setColdef(colDefs)
-        getInitialGridData(isWIPChecked, 1);
     }, [])
 
     useEffect(() => {
-        if (DeptWiseLoading) {
+        if (isFilteredDataLoaded) {
             toast.dismiss();
             notifyLoader("Loading Data ...")
         }
         else {
             toast.dismiss();
         }
-    }, [DeptWiseLoading])
+    }, [isFilteredDataLoaded])
 
     const extractDepartmentNames = (orders: Orders): string[] => {
         const departmentNames: Set<string> = new Set();
@@ -666,10 +673,14 @@ const DptWiseBMReport = () => {
                 mergedData.map((ele: any) => {
                     selectedOrderKeys.push(ele.ok)
                 })
-                //console.log('slectedOrder',selectedOrderKeys)
+                //console.log('slectedOrder', selectedOrderKeys)
+
                 const fetcDeptWiseWiphData = async () => {
                     try {
                         const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
+                        const highAgeingData = await getHighAgeingData(selectedOrderKeys);
+                        sethighAgeing(highAgeingData?.data?.data);
+                        //console.log('HighAgeingData',highAgeingData)
                         //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
                         setDeptWiseWipData(DeptWiseWipData?.data?.data);
                         const departmentNames = extractDepartmentNames(DeptWiseWipData?.data?.data);
@@ -779,7 +790,6 @@ const DptWiseBMReport = () => {
     const handlePageChange = async (currPage: number) => {
         //console.log('first,', currPage)
         setCurrentPage(currPage)
-        getInitialGridData(isWIPChecked, currPage)
     }
 
     const agGridProps: AgGridReactProps = {
@@ -874,6 +884,39 @@ const DptWiseBMReport = () => {
         },
     };
 
+    const onApplyFilter = (filter: any) => {
+        console.log(filter);
+        setAppliedFilters(filter);
+        setIsFilterOpen(false)
+    }
+
+    const onAddFilter = () => {
+        setIsFilterOpen(true)
+    }
+
+    const getUpdatedFilteredData = async () => {
+        try {
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': currentPage, appliedFilters: formatedFilters });
+            setGridData(gridData?.data?.data?.results)
+            setGridDataCount(gridData?.data?.data?.count)
+        }
+        catch (e) {
+            console.log('e');
+        }
+    }
+
+    useEffect(() => {
+        setAppliedFilters(currFilter);
+    }, [currFilter])
+
+    useEffect(() => {
+        getUpdatedFilteredData()
+    }, [appliedFilters, isWIPChecked, currentPage]);
+
+    useEffect(() => {
+        setFilterData(filterResponse?.data.data)
+    }, [filterResponse]);
 
     return (
         <BMDepWrapper>
@@ -885,16 +928,26 @@ const DptWiseBMReport = () => {
                     quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
                         <Checkbox
                             checked={isWIPChecked}
-                            onChange={(e) => getInitialGridData(e.target.checked, 1)}
+                            onChange={(e) => {
+                                setCurrentPage(1)
+                                setWIPCheck(e.target.checked)
+                            }}
                             theme={themeUi}
                         />
                         &nbsp;&nbsp; <strong>Show order with available WIP Only</strong></div>}
+                    isFilterOpen={isFilterOpen}
+                    onAddFilter={onAddFilter}
+                    toggleFilter={toggleFilter}
+                    onApplyFilter={onApplyFilter}
+                    multiFilter={currFilter}
+                    setMultiFilter={setCurrFilter}
+                    onFilterRemove={onFilterRemove}
                 />
             </BMDepHeaderWraper>
 
             <>
                 {
-                    DeptWiseLoading ? <OverlayLoader /> :
+                    (isFilteredDataLoaded) ? <OverlayLoader /> :
 
                         <HorizontalViewWrapper style={{ marginTop: '0px' }}>
                             <BTRTableWrapper style={{ height: screenHeight + 100, margin: '0' }}>
@@ -921,7 +974,7 @@ const DptWiseBMReport = () => {
                                                 data={deptWiseWipData}
                                                 deptName={deptName}
                                                 selectedOrderCount={masterSelectedRowData.length}
-
+                                                highAgeingdata={highAgeing}
                                             />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>

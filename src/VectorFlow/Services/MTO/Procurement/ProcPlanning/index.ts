@@ -14,8 +14,8 @@ export const userGetProcPlanningData = () => {
 }
 
 export const userGetProcAfterSimulationPlanningData = () => {
-    return useMutation(async (date: string) => {
-        return await ProcPlanningService.GetProcDataAfterSimulation(date);
+    return useMutation(async (props: {date: string, eas: string, pageNumber: string}) => {
+        return await ProcPlanningService.GetProcDataAfterSimulation(props.date,props.eas, props.pageNumber);
     });
 }
 

@@ -22,11 +22,15 @@ import { toast } from 'react-toastify';
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
 import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
-import { useGetDeptWiseWipData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index';
+import { useGetDeptWiseWipData,useGetHighAgeingData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index';
 import { FirstDataRenderedEvent } from 'ag-grid-community';
 import { IRowNode } from 'ag-grid-enterprise';
 import OverlayLoader from '../../Common/Loader';
 import { ColorsMTO } from '../../Common/Colors';
+import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+import useFilter from '../../../../../hooks/useFilter';
+import { formatFilterJSON } from '../../../../../helpers/utils';
+
 interface ApiResponse {
     cc: string;
     cp: number;
@@ -83,10 +87,22 @@ interface DepartmentData {
     out: number;
 }
 
+const APIFilterConfig = {
+    filSecVisConfig :  {
+        "Prod_OverAll_BMReport" : {
+            mjr : false,
+            or: true,
+            res: true,
+            cus: true
+        },
+    }
+};
+
 const OverallBmReport = () => {
     //console.log()
     const { mutateAsync: getOverallBMReportData, isLoading: OverAllBMLoading } = useGetOverAllBMReport();
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
+    const { mutateAsync: getHighAgeingData}= useGetHighAgeingData();
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
 
@@ -103,7 +119,12 @@ const OverallBmReport = () => {
     const [deptWiseWipData, setDeptWiseWipData] = useState<any>();
     const [deptName, setDeptName] = useState<any>([]);
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
-
+    const [filterData, setFilterData] = useState({});
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [appliedFilters, setAppliedFilters] = useState<any>({});
+    const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
+    const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_OverAll_BMReport);
+    const [highAgeing, sethighAgeing] = useState<any>();
 
     // const { user } = useUserData();
     // const themeUi = user?.user?.theme_ui;
@@ -329,12 +350,12 @@ const OverallBmReport = () => {
                         "cgs": "closed"
                     },
                     {
-                        "cc": "CCRName",
+                        "cc": "ccr",
                         "cp": 16,
-                        "hd": "CCRName ",
+                        "hd": "CCRName",
                         "v": true,
                         "cla": "Centre",
-                        "scc": "CCR_Nme",
+                        "scc": "ccr",
                         "cgs": "closed"
                     },
                     {
@@ -767,9 +788,9 @@ const OverallBmReport = () => {
 
     const getInitialGridData = async (currentPage: number) => {
         try {
-            const gridData = await getOverallBMReportData(currentPage);
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const gridData = await getOverallBMReportData({page: currentPage, appliedFilters: formatedFilters});
             setGridData(gridData?.data?.data?.results)
-            console.log('first', gridData?.data?.data)
             setGridDataCount(gridData?.data?.data?.count)
         }
         catch (e) {
@@ -778,9 +799,7 @@ const OverallBmReport = () => {
     }
 
     const handlePageChange = async (currPage: number) => {
-        //console.log('first,', currPage)
         setCurrentPage(currPage)
-        getInitialGridData(currPage)
     }
 
     const extractDepartmentNames = (orders: Orders): string[] => {
@@ -842,6 +861,8 @@ const OverallBmReport = () => {
                 const fetchDeptWiseWiphData = async () => {
                     try {
                         const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
+                        const highAgeingData= await getHighAgeingData(selectedOrderKeys);
+                        sethighAgeing(highAgeingData?.data?.data);
                         //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
                         setDeptWiseWipData(DeptWiseWipData?.data?.data);
                         const departmentNames = extractDepartmentNames(DeptWiseWipData?.data?.data);
@@ -980,7 +1001,31 @@ const OverallBmReport = () => {
         },
     };
 
+    const onApplyFilter = (filter:any)=>{
 
+        setAppliedFilters(filter);
+        setIsFilterOpen(false)
+    }
+
+    const onAddFilter = ()=>{
+        setIsFilterOpen(true)
+    }
+
+    const toggleFilter = (state: boolean) => {
+        setIsFilterOpen(state);
+    }
+      
+    useEffect(()=>{
+        setAppliedFilters(currFilter);
+    },[currFilter])
+
+    useEffect(()=>{
+        getInitialGridData(currentPage);
+    },[currentPage, appliedFilters])
+
+    useEffect(() => {
+        setFilterData(filterResponse?.data.data)
+    }, [filterResponse]);
 
     return (
         <BMDepWrapper>
@@ -989,6 +1034,13 @@ const OverallBmReport = () => {
                     comp={'OverallBMReport'}
                     isAddFilterButton
                     isExcelExport
+                    isFilterOpen={isFilterOpen}
+                    onAddFilter={onAddFilter}
+                    toggleFilter={toggleFilter}
+                    onApplyFilter={onApplyFilter} 
+                    multiFilter={currFilter}
+                    setMultiFilter={setCurrFilter}
+                    onFilterRemove={onFilterRemove}
                 />
             </BMDepHeaderWraper>
 
@@ -1019,6 +1071,7 @@ const OverallBmReport = () => {
                                         data={deptWiseWipData}
                                         deptName={deptName}
                                         selectedOrderCount={masterSelectedRowData.length}
+                                        highAgeingdata={highAgeing}
                                     />
                                 </BTRAllomentSection>
                             </Allotment.Pane>

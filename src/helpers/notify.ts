@@ -1,4 +1,4 @@
-import { toast, type Theme, type ToastPosition } from 'react-toastify'
+import { toast, ToastOptions, type Theme, type ToastPosition } from 'react-toastify'
 
 interface PromiseToastMsg{
   pending:string
@@ -26,6 +26,19 @@ export const ATTR_TOAST = {
 export const notifyError = (msg: string) =>{
   toast.dismiss()
   return toast.error(msg, ATTR_TOAST)
+}
+
+
+export const ATTR_TOAST_WITHOUT_AUTOCLOSE: ToastOptions = {
+  position: 'top-right',
+  autoClose: false,
+  hideProgressBar: true,
+  theme: 'colored'
+}
+
+export const notifyErrorWithoutAutoClose = (msg: any) =>{
+  toast.dismiss()
+  return toast.error(msg, ATTR_TOAST_WITHOUT_AUTOCLOSE)
 }
 
 export const notifySuccess = (msg: string) =>{

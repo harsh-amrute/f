@@ -4,8 +4,8 @@ import { useUserData } from '../../../../../context'
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { Footer, Wrapper } from './DueDateQuotation.styled'
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
-import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetFOLData, useGetLineCCRDetails, useGetMarketOperatingLeadTimeMasterData, useGetOrdersForDDQ, useGetUIConfig } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
-import { getColumnDefinations } from '../../../../../helpers/utils'
+import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetDBRsettingsData, useGetFOLData, useGetLineCCRDetails, useGetMarketOperatingLeadTimeMasterData, useGetUIConfig, useGetFilteredOrdersForDDQ } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
+import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils'
 import { GridOptions } from 'ag-grid-enterprise'
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox'
 import "./style.css"
@@ -16,6 +16,19 @@ import Step3 from './Step3'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import { notifyError } from '../../../../../helpers/notify'
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion'
+import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+import useFilter from '../../../../../hooks/useFilter';
+
+const APIFilterConfig = {
+  filSecVisConfig :  {
+    "Prod_DDQ" : {
+      mjr : false,
+      or: true,
+      res: true,
+      cus: true
+    },
+  }
+};
 
 const DueDateQuotation = () => {
   const { user } = useUserData();
@@ -38,9 +51,8 @@ const DueDateQuotation = () => {
   const totalRows = useRef(0);
   const currentPageSelectedRows = useRef<any>([]);
   const assignmentRef = useRef<any>();
-  // const gridRef= useRef();
+  const gridRef= useRef<any>();
 
-  const { mutateAsync: getData, isLoading: isDataLoading } = useGetOrdersForDDQ();
   const { mutateAsync: getBufferMaster, } = useGetBufferMasterData();
   const { mutateAsync: getCCRGroupMaster, } = useGetCCRGroupMaster();
   const { mutateAsync: getCCRItemTypeMappingMaster, } = useGetCCRItemTypeMappingMaster();
@@ -50,8 +62,18 @@ const DueDateQuotation = () => {
   const { mutateAsync: getMarketOperatingLeadTimeMasterData, } = useGetMarketOperatingLeadTimeMasterData();
   const { mutateAsync: getLineCCRDetails, } = useGetLineCCRDetails();
   const { mutateAsync: getBOMExplosionData, } = useGetBOMExplosionData();
+  const { mutateAsync: getDBRsettingsData, } = useGetDBRsettingsData();
   const { data: UIConfig, isLoading: isUIConfigLoading } = useGetUIConfig("DueDateQuotation");
-
+    const { mutateAsync: getFilteredOrdersForDDQ, isLoading: isFilteredDataLoaded } = useGetFilteredOrdersForDDQ();
+  const [filterData, setFilterData] = useState({});
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState<any>({});
+  const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
+  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_DDQ);
+    
+    const toggleFilter = (state: boolean) => {
+        setIsFilterOpen(state);
+    }
   const [loading, setLoading] = useState(false);
 
   const extras: any = [
@@ -144,7 +166,7 @@ const DueDateQuotation = () => {
 
   useEffect(() => {
     getDDQData();
-  }, [currentPage, unScheduled]);
+  }, [currentPage, unScheduled, step == 1]);
 
   useEffect(() => {
     if (selectedRows.size > 0) {
@@ -162,12 +184,13 @@ const DueDateQuotation = () => {
 
   const getDDQData = async () => {
     try {
-      const data: any = await getData({ currentPage, unScheduled: unScheduled });
+      const formatedFilters = formatFilterJSON(appliedFilters);
+      const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters: formatedFilters });
       totalRows.current = data?.data?.data?.count;
-      let results: any = data?.data?.data?.results;
-      results = results?.filter((order: any) => {
-        return !scheduledOrders.has(order.id);
-      })
+      const results: any = data?.data?.data?.results;
+      // results = results?.filter((order: any) => {
+      //   return !scheduledOrders.has(order.id);
+      // })
       setRows(results);
     }
     catch (err) {
@@ -178,7 +201,6 @@ const DueDateQuotation = () => {
 
   const getMastersData = async () => {
     try {
-      if (!masters) {
         setLoading(true);
         const bufferMaster = await getBufferMaster();
         const allBufferMaster = bufferMaster?.data?.data;
@@ -186,10 +208,10 @@ const DueDateQuotation = () => {
         const procMaster: any = []
         if (allBufferMaster) {
           allBufferMaster.forEach((master: any) => {
-            if (master.buffer_type.buffer_type.toLowerCase() === "prod") {
+            if ("production".includes(master.buffer_type.buffer_type.toLowerCase())) {
               prodMaster.push({ label: master.buffer_code, value: master.buffer_id, size: master.buffer_size })
             }
-            else if (master.buffer_type.buffer_type.toLowerCase() === "proc") {
+            else if ("procurement".includes(master.buffer_type.buffer_type.toLowerCase())) {
               procMaster.push({ label: master.buffer_code, value: master.buffer_id, size: master.buffer_size })
             }
           })
@@ -229,8 +251,13 @@ const DueDateQuotation = () => {
 
         const MarketLeadTimeMasterData = await getMarketOperatingLeadTimeMasterData();
         const MarketLeadTimeMaster = MarketLeadTimeMasterData.data?.data;
-        setMasters({ procMaster, prodMaster, ccrGroups, CCRItemTypeMappingMaster, FOL, CCRMaster, WorkingCalender, MarketLeadTimeMaster });
-      }
+        
+        
+        const DBRSettingsData = await getDBRsettingsData();
+        const DBRSettings = DBRSettingsData.data?.data;
+        
+        setMasters({ procMaster, prodMaster, ccrGroups, CCRItemTypeMappingMaster, FOL, CCRMaster, WorkingCalender, MarketLeadTimeMaster, DBRSettings });
+
       const orders = Array.from(selectedRows.values()).map((row: any) => {
         return row.data.ok
       })
@@ -254,7 +281,7 @@ const DueDateQuotation = () => {
       case 1: {
         return (
           <Step1
-            // ref={gridRef}
+            ref={gridRef}
             gridOptions={gridOptions}
             rows={rows}
             selectedRows={selectedRows}
@@ -298,6 +325,10 @@ const DueDateQuotation = () => {
             WorkingCalender={masters?.WorkingCalender}
             scheduledOrders={scheduledOrders}
             setScheduledOrders={setScheduledOrders}
+            setStep={setStep}
+            setDisabled={setDisabled}
+            setSelectedRows={selectedRows}
+            setMasters={setMasters}
           />
         )
       }
@@ -321,18 +352,73 @@ const DueDateQuotation = () => {
     }
   }
 
+  const onApplyFilter = (filter:any)=>{
+    console.log(filter);
+    setAppliedFilters(filter);
+    setIsFilterOpen(false)
+  }
+  
+  const onAddFilter = ()=>{
+      setIsFilterOpen(true)
+  }
+
+  const getUpdatedFilterData = async() => {
+    try {
+      const formatedFilters = formatFilterJSON(appliedFilters);
+      const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters: formatedFilters });
+      totalRows.current = data?.data?.data?.count;
+      let results: any = data?.data?.data?.results;
+      results = results?.filter((order: any) => {
+        return !scheduledOrders.has(order.id);
+      })
+      setRows(results);
+    }
+    catch (err) {
+      console.error(err);
+      notifyError("Something Went Wrong!");
+    }
+  }
+
+  useEffect(()=>{
+    setAppliedFilters(currFilter);
+  },[currFilter])
+
+  useEffect(() => {
+      getUpdatedFilterData();
+  }, [appliedFilters,currentPage, unScheduled]);
+
+  useEffect(() => {
+      setFilterData(filterResponse?.data.data)
+  }, [filterResponse]);
 
   return (
     <Wrapper style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} className="wrapper">
-      {step != 3 && <MTOActionToolBar comp="DDQ" quickFilter={step === 1 ? <div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox checked={unScheduled} onChange={(e: any) => setUnScheduled(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Only Unscheduled Orders</strong></div> : null} isAddFilterButton />}
-      {(isDataLoading || loading) && <OverlayLoader />}
+      {step != 3 && 
+        <MTOActionToolBar 
+          comp="DDQ" 
+          quickFilter={
+            step === 1 ? <div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
+              <Checkbox checked={unScheduled} onChange={(e: any) => setUnScheduled(e.target.checked)} theme={themeUi} />
+               &nbsp;&nbsp; <strong>Show Only Unscheduled Orders</strong>
+            </div> : null
+          } 
+          isAddFilterButton 
+          isFilterOpen={isFilterOpen}
+          onAddFilter={onAddFilter}
+          toggleFilter={toggleFilter}
+          onApplyFilter={onApplyFilter} 
+          multiFilter={currFilter}
+          setMultiFilter={setCurrFilter}
+          onFilterRemove={onFilterRemove}
+        />
+      }
+      {(isFilteredDataLoaded || loading) && <OverlayLoader />}
       {getCurrentStep()}
       <VFModalCard key={"key2"} openModal={showModal} closeModal={() => { setShowModal(false) }} headerText={'Warning'} headerIcon={'/assets/img/ist/warning.svg'} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
         <div style={{ margin: "0 2rem" }}>
           <div style={{ minHeight: '10vh', fontSize: '16px', padding: "20px", textAlign: "center" }}>
             Any unsaved changes will be discarded, <br /> Are you sure you want to go back ?
           </div>
-
           <div style={{ zoom: '0.7', display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 0 0 0' }}>
 
             <VFButton onClick={() => { setShowModal(false) }} themeUi={themeUi}>
@@ -366,9 +452,15 @@ const DueDateQuotation = () => {
           style={{ width: "50px", height: "40px" }}>
           <img src="/assets/img/mto/dueDateQuotation/back-btn.svg" />
         </VFButtonOutline>}
-        {step != 3 && <VFButtonOutline themeUi={themeUi} disabled
+        {step != 3 && <VFButtonOutline themeUi={themeUi} 
           onClick={() => {
             console.log();
+            if(step == 1){
+              gridRef.current?.deselectAllForStep1()
+            }
+            if(step == 2){
+              assignmentRef.current?.deselectAllForStep2()
+            }
           }}
           style={{ fontSize: "12px", width: "100px", height: "40px" }}>
           Deselect Orders
@@ -381,8 +473,13 @@ const DueDateQuotation = () => {
               setStep(step + 1);
             }
             else if (assignmentRef.current?.onConfirm && step == 2) {
-              assignmentRef.current.onConfirm()
-              setStep(step + 1);
+              const isDDQActiveFlag = masters.DBRSettings.find((setting: any)=> setting.flag == "IsDDQActive");
+              // const isDDQActiveFlag = false;
+              assignmentRef.current.onConfirm().then((data: any)=>{
+                if (data && isDDQActiveFlag){ //TODO: what to do when the flag is false and no changes are made, what message to show
+                    setStep(step + 1);
+                }
+              });
             }
             else if (assignmentRef.current?.onScheduled && step == 3) {
               assignmentRef.current.onScheduled();

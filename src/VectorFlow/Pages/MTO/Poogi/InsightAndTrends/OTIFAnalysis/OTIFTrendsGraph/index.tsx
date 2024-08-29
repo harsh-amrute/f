@@ -9,6 +9,7 @@ import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { TooltipRenderer } from "../OTIFCommon";
 import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 import moment from "moment";
+import { format } from "date-fns";
 
 const OTIFTrendsGraph = (props: any) => {
   const { graphData } = props;
@@ -171,8 +172,8 @@ const OTIFTrendsGraph = (props: any) => {
 
   useEffect(() => {
     if (graphData) {
-      setStartDate(graphData.start);
-      setEndDate(graphData.end);
+      setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
+      setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
       setRawData(graphData.data);
     }
   }, [graphData])

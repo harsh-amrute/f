@@ -653,7 +653,7 @@ export const listMenuParent: any = [
   {
     id: 11,
     name: "navbar.listMenuParent.poogi.title",
-    img: "/assets/img/nav/poogi-module",
+    img: "/assets/img/nav/poogi-module1",
     url: "/poogi/reasons-for-delayed-orders",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],

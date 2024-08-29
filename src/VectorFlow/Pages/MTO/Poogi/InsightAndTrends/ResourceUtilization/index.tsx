@@ -33,10 +33,10 @@ import { useGetDate } from "../../../../../../VectorFlow/Services/MTO/Production
 import moment from "moment";
 import { useGetCCRMasterData, useGetDeptMasterData, useGetPlantMasterData } from "../../../../../../VectorFlow/Services/MTO/Common/Masters";
 import VFRangeSlider from "../../../Common/VFRangeSlider";
-import RadioSelect from "../../../../../../components/VectorFLOW/commons/MTO/RadioSelect";
 import OverlayLoader from "../../../Common/Loader";
 import { toast } from "react-toastify";
 import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
+import VFSelect from "../../../../../../components/VectorFLOW/commons/MTO/VFSelect";
 
 const ResourceUtilization = () => {
   const chartRef = useRef<AgChartsReact>(null);
@@ -56,17 +56,20 @@ const ResourceUtilization = () => {
   const date = apiResponseData?.data?.data;
   const [selectedCCR, setSelectedCCR] = useState<any>(undefined);
   const [defaultCCR, setDefaultCCR] = useState<any>();
-  const [selectedPlant, setSelectedPlant] = useState();
-  const [selectedDept, setSelectedDept] = useState();
+  const [selectedPlant, setSelectedPlant] = useState<any>({ label: 'Select Plant', value: '' });
+  const [selectedDept, setSelectedDept] = useState<any>({ label: 'Select Department', value: '' });
   const [apiData, setApiData] = useState<any>(null);
   const [plantOpts, setPlantOpts] = useState([]);
   const [deptOpts, setDeptOpts] = useState([]);
   const [ccrOpts, setCCROpts] = useState([]);
+  const [masterCCROptions, setMaterCCROptions] = useState([]);
+  const [masterDept, setMasterDept] = useState([]);
   const [horizonClicked, setHorizonClicked] = useState(false);
 
   const [utilData, setUtilData] = useState<any>();
   const [wipOverData, setWipOverData] = useState<any>();
   const [wipUnderData, setWipUnderData] = useState<any>();
+  const defaultDepartment = { label: 'Select Department', value: '' };
 
   const GetData = async () => {
     try {
@@ -75,8 +78,8 @@ const ResourceUtilization = () => {
         startDate: moment(date).subtract(horizonDays, 'days').format().substring(0, 10),
         endDate: moment(date).format().substring(0, 10),
         ccrName: selectedCCR?.value,
-        plantName: selectedPlant,
-        deptName: selectedDept
+        plantName: selectedPlant.value,
+        deptName: selectedDept.value
       }
 
       const response = await getResourceUtilizationData(apiBody);
@@ -93,36 +96,85 @@ const ResourceUtilization = () => {
       const plants = responsePlant.data.data;
       const myPlantOpts: any = [];
       plants.forEach((e: any) => {
-        myPlantOpts.push({ value: e.plant_code, label: e.plant_code })
+        myPlantOpts.push({ value: e.plant_id, label: e.plant_name })
       })
 
       setPlantOpts(myPlantOpts);
-
-
       const responseDept = await getDeptMaster();
       const depts = responseDept.data.data;
       const myDeptOpts: any = [];
       depts.forEach((e: any) => {
-        myDeptOpts.push({ value: e.dept_code, label: e.dept_code })
+        myDeptOpts.push({ value: e.dept_id, label: e.dept_name })
       })
+      setMasterDept(depts)
       setDeptOpts(myDeptOpts);
-
-      const responseCCR = await getCCRMaster();
-      const ccrs = responseCCR.data.data;
-      const myCCROpts: any = []
-      ccrs.forEach((e: any) => {
-        myCCROpts.push({ value: e.ccr_id, label: e.ccr_name })
-      })
-      setCCROpts(myCCROpts);
-
-
     }
     catch (error) {
       console.log(error);
     }
-
   }
 
+  const checkOptions = ( CCRarr: any, ccrName: string ) => {
+
+    for(let i = 0; i < CCRarr?.length; i++){
+      if(CCRarr[i].label === ccrName){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  const getCCROptions = async (apiData: any) => {
+    try {
+      const responseCCR = await getCCRMaster();
+      const ccrs = responseCCR.data.data;
+      const myCCROpts: any = [];
+      const newMasterCCROpts: any = [];
+      const oLimit = apiData?.wiplimit?.olimit?.map((l: any) => l.ccr) || [];
+      const uLimit = apiData?.wiplimit?.ulimit?.map((l: any) => l.ccr) || [];
+      const apiOptions = [ ...oLimit, ...uLimit ] || [];
+      ccrs.forEach((e: any) => {
+        newMasterCCROpts.push(e)
+        if(apiOptions.includes( e.ccr_name ) && !checkOptions( myCCROpts, e.ccr_name)){
+          myCCROpts.push({ value: e.ccr_id, label: e.ccr_name })
+        }
+      })
+      setMaterCCROptions(newMasterCCROpts)
+      setCCROpts(myCCROpts);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const filterDepartment = () => {
+    const depts = masterDept;
+    const myDeptOpts: any = [];
+    const deptIds: any[] = [];
+    for(let i = 0; i < masterCCROptions?.length; i++){
+      const ccr: any = masterCCROptions[i];
+      if(selectedPlant.value === ccr?.plant && !deptIds.includes(ccr.dept)){
+        deptIds.push(ccr?.dept);
+      }
+    }
+    depts.forEach((e: any) => {
+      if(deptIds?.includes(e.dept_id)){
+        myDeptOpts.push({ value: e.dept_id, label: e.dept_name })
+      }
+    })
+    setDeptOpts(myDeptOpts);
+  }
+
+  useEffect(()=>{
+    if(apiData){
+      getCCROptions(apiData)
+    }
+  },[apiData])
+
+  useEffect(()=>{
+    if(selectedPlant?.value){
+      filterDepartment()
+    }
+  },[selectedPlant, masterDept])
 
   useEffect(() => {
     GetData();
@@ -135,6 +187,7 @@ const ResourceUtilization = () => {
       value: "Over Limit",
     })
     GetData();
+    // GetMasterData();
   }, [selectedCCR, horizonClicked])
 
   useEffect(() => {
@@ -193,21 +246,15 @@ const ResourceUtilization = () => {
       setDefaultCCR(selectedCCR)
     }
 
-
-
-
   }, [apiData])
 
   useEffect(() => {
     setUtilizationOptions({ ...utilizationOptions, data: utilData })
   }, [utilData])
+
   useEffect(() => {
     setWipOptions({ ...wipOptions, data: wipOverData })
   }, [wipOverData, wipUnderData])
-
-
-
-
 
   function TooltipRenderer({ datum }: any) {
     console.log("datum.....", datum)
@@ -278,8 +325,6 @@ const ResourceUtilization = () => {
       })
     }
 
-
-
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
@@ -332,8 +377,11 @@ const ResourceUtilization = () => {
     return "default";
   };
 
-
-
+  const handlePlantChange = (option: any) => {
+    setSelectedPlant(option);
+    setSelectedDept(defaultDepartment);
+  };
+  const handleDeptChange = (option: any) => setSelectedDept(option);
 
 
   const [utilizationOptions, setUtilizationOptions] = useState<AgChartOptions>({
@@ -595,8 +643,6 @@ const ResourceUtilization = () => {
       })
     }
     else {
-
-
       setWipOptions({
         ...wipOptions,
         data: wipUnderData,
@@ -643,8 +689,6 @@ const ResourceUtilization = () => {
       })
     }
 
-
-
   }, [actBtn, horizonClicked])
 
   const handleHorizonSubmit = () => {
@@ -669,6 +713,9 @@ const ResourceUtilization = () => {
       });
     }
   };
+
+  console.log(selectedDept)
+  console.log("selectedPlant",selectedPlant)
 
   const WIPFilter: any =
     (
@@ -713,7 +760,13 @@ const ResourceUtilization = () => {
             Select Plant
           </div>
           <SelectGroup style={{ width: '130px', zoom: '1.25' }}>
-            <RadioSelect theme={themeUi} placeholder={"Select Plant"} options={plantOpts} onSelectionChanged={(e: any) => { setSelectedPlant(e.value) }} />
+            <VFSelect 
+              themeUi={themeUi} 
+              placeholder={"Select Plant"} 
+              options={plantOpts} 
+              isSelected={selectedPlant.value}
+              onChange={handlePlantChange}
+            />
             {/* <CustomSelect placeholder="Select Plant" value={selectedPlant} onSelectionChanged={(e: any) => { console.log("selected this", e) }} selected={false} options={plantOpts} optionsWidth={"100%"} /> */}
           </SelectGroup>
         </div>
@@ -731,7 +784,13 @@ const ResourceUtilization = () => {
             Select Department
           </div>
           <SelectGroup style={{ width: '160px', zoom: '1.25' }}>
-            <RadioSelect theme={themeUi} placeholder={"Select Department"} options={deptOpts} onSelectionChanged={(e: any) => { setSelectedDept(e.value) }} />
+            <VFSelect 
+              themeUi={themeUi} 
+              placeholder={"Select Department"} 
+              isSelected={selectedDept.value} 
+              options={deptOpts} 
+              onChange={handleDeptChange} 
+            />
           </SelectGroup>
         </div>
         <div style={{ marginTop: '30px' }}>
@@ -788,7 +847,7 @@ const ResourceUtilization = () => {
         WIPFilter={WIPFilter}
       />
       <HorizontalWrapper>
-        <GraphWrapper>
+        <div style={{ display: 'flex' , flexDirection: 'column', width:'100%'}}>
           {
             selectedGraphState === "wipLimit" && (
 
@@ -797,7 +856,8 @@ const ResourceUtilization = () => {
                 style={{
                   zoom: 1,
                   padding: "4px",
-                  position: "absolute",
+                  // position: "absolute",
+                  marginRight:"2rem",
                   right: "10px",
                   top: "10px",
                   zIndex: 8,
@@ -821,7 +881,8 @@ const ResourceUtilization = () => {
             )
 
           }
-          <div style={{ width: "100%", height: "87%" }}>
+        <GraphWrapper>
+          <div style={{ width: "90%", height: "100" }}>
             <AgChartsReact
               suppressDragLeaveHidesColumns={true}
               ref={chartRef}
@@ -833,14 +894,14 @@ const ResourceUtilization = () => {
             />
           </div>
         </GraphWrapper>
+
+        </div>
         <VerticalWrapper>
           <SectionFlex>
             <VerticalTitle>Analytics</VerticalTitle>
             <div data-testid="custom-select" style={{ width: "100%" }}>
-
-              <RadioSelect
-                styles={{ width: '100%' }}
-                theme={themeUi}
+              <VFSelect
+                themeUi={themeUi}
                 placeholder={'Select CCR'}
                 value={defaultCCR ? defaultCCR : selectedCCR}
                 options={ccrOpts}
