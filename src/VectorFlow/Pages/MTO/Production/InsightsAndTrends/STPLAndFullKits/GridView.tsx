@@ -9,6 +9,7 @@ import { useGetSTPLAndFullKitData } from "../../../../../../VectorFlow/Services/
 import { useGetBOMExplosionData } from "../../../../../../VectorFlow/Services/MTO/Common/BOMExplosion";
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { pagination } from "../../../Common/Enum";
+import { Wrapper } from "./styles";
 
 
 const GridView = () => {
@@ -111,7 +112,7 @@ const GridView = () => {
     detailCellRendererParams: {
       suppressMenu: true,
       detailGridOptions: {
-        rowHeight: 45,
+        rowHeight: 30,
         domLayout: "autoHeight",
         autoGroupColumnDef: {
           headerName: "Item Name",
@@ -129,7 +130,7 @@ const GridView = () => {
           flex: 1,
           suppressMenu: true,
           cellStyle: {
-            fontSize: "16px",
+            fontSize: "14px",
             display: "flex",
             alignItems: "center"
           }
@@ -151,7 +152,7 @@ const GridView = () => {
       {
         isLoading && <OverlayLoader />
       }
-      <div data-testid='grid-view'>
+      <Wrapper data-testid='grid-view'>
         <VFTable
           {...gridOptions}
           columnDefs={colDefs}
@@ -159,7 +160,6 @@ const GridView = () => {
           tooltipHideDelay={100000}
           tooltipShowDelay={0}
           tooltipMouseTrack={true}
-          height={"95vh"}
           ref={gridRef}
           statusBar={{
             statusPanels: [
@@ -167,14 +167,14 @@ const GridView = () => {
             ]
           }}
         />
-      </div>
-      <VFPagination
-        selectedRows={0}
-        rowsPerPage={pagination.mtoPageSize}
-        totalRows={totalRow}
-        currentPage={currentPage}
-        handleChangePage={(cp) => handlePageChange(cp)}
-      />
+        <VFPagination
+          selectedRows={0}
+          rowsPerPage={pagination.mtoPageSize}
+          totalRows={totalRow}
+          currentPage={currentPage}
+          handleChangePage={(cp) => handlePageChange(cp)}
+        />
+      </Wrapper>
     </>
   )
 }

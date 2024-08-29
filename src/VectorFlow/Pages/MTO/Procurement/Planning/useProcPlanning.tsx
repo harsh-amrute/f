@@ -474,6 +474,7 @@ const useProcPlanning = (date: string) => {
                                     borderColor: '#BC3D81',
                                     color: '#BC3D81',
                                     background: 'transparent',
+                                    alignItems: 'center',
                                     fontWeight: 'bold',
                                     padding: "1rem",
                                     paddingRight: "2rem",

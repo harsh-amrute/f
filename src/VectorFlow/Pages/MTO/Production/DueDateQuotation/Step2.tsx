@@ -173,14 +173,14 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             headerCheckboxSelection: true,
             checkboxSelection: true,
             suppressMenu: true,
-            maxWidth: 50,
+            maxWidth: 35,
             position: 0,
             filter: false
         },
         {
             field: "",
-            minWidth: 58,
-            maxWidth: 58,
+            minWidth: 30,
+            maxWidth: 30,
             cellRenderer: (params: any) => {
                 if (params.data.isOptimalLeadTime == undefined) {
                     return
@@ -189,7 +189,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     <div style={{ height: "100%", display: "flex", alignItems: "center" }}>
                         <Tooltip content={<div style={{ padding: "1rem", maxWidth: "180px", textAlign: "center" }}>{params.data.isOptimalLeadTime ? "Optimal Lead Time" : "Exceeding market operating leadtime"}</div>} zoom={false} style={{ display: "flex" }}>
                             {params.data.isOptimalLeadTime ?
-                                <svg xmlns="http://www.w3.org/2000/svg" width="17.326" height="16.976" viewBox="0 0 17.326 16.976">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 17.326 16.976">
                                     <g id="Component_237_99" data-name="Component 237 – 99" transform="translate(1.202 1.162)">
                                         <g id="Icon_feather-check-circle" data-name="Icon feather-check-circle" transform="translate(-3 -2.991)">
                                             <path id="Path_13420" data-name="Path 13420" d="M17.71,9.674v.677a7.355,7.355,0,1,1-4.362-6.722" transform="translate(0 0)" fill="none" stroke="#418d18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
@@ -197,7 +197,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         </g>
                                     </g>
                                 </svg>
-                                : <svg id="Icon_metro-warning" data-name="Icon metro-warning" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+                                : <svg id="Icon_metro-warning" data-name="Icon metro-warning" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 20 20">
                                     <path id="Icon_metro-warning-2" data-name="Icon metro-warning" d="M12.571,3.74l8.381,16.7H4.19l8.381-16.7Zm0-1.812a1.446,1.446,0,0,0-1.189.872L2.845,19.814c-.654,1.163-.1,2.114,1.236,2.114H21.06c1.334,0,1.89-.951,1.236-2.114h0L13.76,2.8A1.445,1.445,0,0,0,12.571,1.928Zm1.25,16.25a1.25,1.25,0,1,1-1.25-1.25A1.25,1.25,0,0,1,13.821,18.178Zm-1.25-2.5a1.25,1.25,0,0,1-1.25-1.25v-3.75a1.25,1.25,0,0,1,2.5,0v3.75A1.25,1.25,0,0,1,12.571,15.678Z" transform="translate(-2.571 -1.928)" fill="#ff3636" />
                                 </svg>}
                         </Tooltip>

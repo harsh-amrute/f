@@ -90,7 +90,7 @@ const DueDateQuotation = () => {
     detailCellRendererParams: {
       suppressMenu: true,
       detailGridOptions: {
-        rowHeight: 45,
+        rowHeight: 30,
         domLayout: "autoHeight",
         autoGroupColumnDef: {
           headerName: "Item Name",

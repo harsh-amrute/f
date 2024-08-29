@@ -37,7 +37,6 @@ const ResizableTable = (props: IResizeTableProps) => {
       "font-style": "normal",
       "font-variant": "normal",
       "font-size": "20px",
-      'font-weight': "300",
       "font-family": "Roboto",
       'text-overflow': 'ellipsis',
       'white-space': 'nowrap',

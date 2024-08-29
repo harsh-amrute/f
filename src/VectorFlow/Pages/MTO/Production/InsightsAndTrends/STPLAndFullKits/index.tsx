@@ -46,7 +46,7 @@ const STPLAndFullKits = () => {
   }, [isSuccess, isError])
 
   return (
-    <div style={{}}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {
         isLoading && <OverlayLoader />
       }
@@ -57,11 +57,11 @@ const STPLAndFullKits = () => {
         isChartGridToggle
         isAddFilterButton
       />
-      <HorizontalViewWrapper style={{ marginTop: "20px" }}>
+      <HorizontalViewWrapper style={{ flex: 1 }}>
         {isGridView ? (
           <GridView />
         ) : (
-          <BTRTableWrapper style={{ height: screenHeight - 200, margin: "0" }}>
+          <BTRTableWrapper style={{ height: screenHeight - 200, paddingLeft: "20px" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>

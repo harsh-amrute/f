@@ -1,5 +1,5 @@
 import { ICellRendererParams } from "ag-grid-enterprise";
-import Tooltip from "../../../../../components/VectorFLOW/commons/MTO/Tooltip";
+import Tooltip from "../Tooltip";
 import { ProcPlanningChildrenColor, ChildrenColorCellRenderer, Tooltipcontainer } from "./styles";
 
 const ChildrenColor = (props: ICellRendererParams) => {

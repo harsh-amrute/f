@@ -1,8 +1,8 @@
-import VFTable from '../../Common/VFTable';
 import { VFWrapper } from './styles';
 import { SaveBtnWrapper, SaveBtn } from '../../Poogi/ReasonOrderChange/styles';
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import { pagination } from '../../Common/Enum';
+import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 interface GridProps {
     agGridProps: any
     columDef: any

@@ -39,7 +39,6 @@ const GridView = ({ uiConfig }: any) => {
             'height': '50px',
             "font-style": "normal",
             "font-variant": "normal",
-            "font-weight": "300",
             "font-size": "12px",
             "font-family": "Roboto",
             'text-overflow': 'ellipsis',

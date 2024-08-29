@@ -19,6 +19,13 @@ export const BTRAllomentSection = styled.div`
 export const HorizontalViewWrapper = styled.div`
     //   display:flex;
       width:100%;
+      & .ag-theme-alpine{
+        height: 100%;
+      }
+      & div[data-testid="vf_pagination"]{
+        padding: 0;
+        margin-top: -20px;
+      }
 `
 
 export const SCChartContainer = styled.div<{ height?: string }>`

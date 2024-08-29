@@ -12,6 +12,10 @@ export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?:
     margin:20px;
     width:100%,
 
+    & > div[data-testid="vf_pagination"]{
+      margin-top: 0 !important;
+  }
+
     & .ag-theme-alpine .ag-header-row:nth-child(2) {
       background-color: #F7F7F7;
       color: black;
@@ -111,6 +115,12 @@ export const SCDynamicContainer = styled.div`
     @media (min-width: ${gridSystem.size.desktop}) {
       height:110vh
     }
+
+    & > div[data-testid="vf_pagination"]{
+      margin-top: -20px !important;
+      padding: 0 20px;
+  }
+
 
     & .ag-header-cell-text {
       font-size: 12px;

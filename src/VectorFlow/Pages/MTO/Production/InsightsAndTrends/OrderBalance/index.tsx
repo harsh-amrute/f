@@ -215,7 +215,7 @@ const OrderBalance = () => {
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: '25px' }}>
         {isGridView ? (
-          <div data-testid="grid-view" style={{ height: screenHeight - 190 }}>
+          <div data-testid="grid-view" style={{ height: screenHeight - 200 }}>
             <VFTable
               {...gridOptions}
               columnDefs={tableColDefs}
@@ -223,7 +223,6 @@ const OrderBalance = () => {
               tooltipHideDelay={100000}
               tooltipShowDelay={0}
               tooltipMouseTrack={true}
-              height={"95vh"}
               ref={gridRef}
               statusBar={{
                 statusPanels: [
