@@ -13,6 +13,7 @@ import { RootState } from "../../../../../../../../../redux/store/store";
 import { toast } from 'react-toastify';
 import { useGetState } from "../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../../../../../../../../../context/GridStateContext";
+import { getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../../../helpers/utils';
 
 
 
@@ -35,6 +36,9 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
         let colDefs = [];
 
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{enablePivot:true, enableValue:true,enableRowGroup:true}); 
+
+            if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
                 colId:column['colCode'],

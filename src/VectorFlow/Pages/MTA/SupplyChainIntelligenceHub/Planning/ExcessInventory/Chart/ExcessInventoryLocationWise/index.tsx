@@ -9,7 +9,7 @@ import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/V
 
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
 import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import {convertToInt} from '../../../../../../../../helpers/utils';
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../helpers/utils';
 interface ExcessInventoryProps{
     data:any
 }
@@ -40,6 +40,10 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            if(customColdef) return customColdef;
+
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
@@ -68,6 +72,8 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
