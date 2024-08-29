@@ -10,9 +10,10 @@ import CustomTagTooltip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/Custo
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { SCDynamicContainer } from './styles';
 import './style.css'
+import { pagination } from '../../../Common/Enum';
 
 interface IGridViewProps {
-    getData : (isGraph: number) => any,
+    getData: (isGraph: number) => any,
     reportName: string,
     isLoading: boolean,
     isError: boolean,
@@ -22,7 +23,7 @@ interface IGridViewProps {
 
 const GridView = (props: IGridViewProps) => {
 
-    const { getData, reportName, isLoading, isError, isSuccess, colDefCustomizations={} } = props;
+    const { getData, reportName, isLoading, isError, isSuccess, colDefCustomizations = {} } = props;
     const { screenHeight } = useViewPort();
     const gridRef = useRef(null);
     const [colDef, setColDef] = useState([{}]);
@@ -34,13 +35,13 @@ const GridView = (props: IGridViewProps) => {
 
     const defaultColDef = useMemo<ColDef>(() => {
         return {
-          suppressMenu: true,
-          autoHeaderHeight: true,
-          filter: "agTextColumnFilter",
-          floatingFilter: true,
-          enableRowGroup: true,
-          floatingFilterComponentParams: { suppressFilterButton: true },
-          tooltipComponent: CustomTagTooltip,
+            suppressMenu: true,
+            autoHeaderHeight: true,
+            filter: "agTextColumnFilter",
+            floatingFilter: true,
+            enableRowGroup: true,
+            floatingFilterComponentParams: { suppressFilterButton: true },
+            tooltipComponent: CustomTagTooltip,
         };
     }, []);
 
@@ -48,7 +49,7 @@ const GridView = (props: IGridViewProps) => {
         groupDefaultExpanded: 0,
         detailRowHeight: 500,
         detailCellRendererParams: {
-          innerHeight: 400,
+            innerHeight: 400,
         },
         rowGroupPanelShow: 'always'
     };
@@ -65,25 +66,25 @@ const GridView = (props: IGridViewProps) => {
 
     const getGridData = async (isGraph: any) => {
         try {
-          const response = await getData(isGraph);
-          const data = response.data.data.results?.map((row: any) => row[0]);
-          setGridData(data);
-          console.log(response.data?.data?.count, 'REPS')
-          setTotalRow(response?.data?.data?.count);
+            const response = await getData(isGraph);
+            const data = response.data.data.results?.map((row: any) => row[0]);
+            setGridData(data);
+            console.log(response.data?.data?.count, 'REPS')
+            setTotalRow(response?.data?.data?.count);
         }
         catch (e) {
-          console.log(e);
-          notifyError('Failed to fetch Grid data!');
+            console.log(e);
+            notifyError('Failed to fetch Grid data!');
         }
     }
 
     const handlePageChange = async (currPage: number) => {
         setCurrentPage(currPage)
-        getGridData({graphflag: 0, page: currPage});
+        getGridData({ graphflag: 0, page: currPage });
     }
 
     useEffect(() => {
-        getGridData({graphflag: 0, page: currentPage});
+        getGridData({ graphflag: 0, page: currentPage });
         setColumnDef();
     }, [])
 
@@ -93,10 +94,10 @@ const GridView = (props: IGridViewProps) => {
 
     useEffect(() => {
         if (isSuccess) {
-          notifySuccess("Fetched Data successfully!")
+            notifySuccess("Fetched Data successfully!")
         }
         if (isError) {
-          notifyError("Failed to load data!")
+            notifyError("Failed to load data!")
         }
     }, [isSuccess, isError])
 
@@ -107,10 +108,10 @@ const GridView = (props: IGridViewProps) => {
                 isLoading && <OverlayLoader />
             }
             <div data-testid='grid-view' style={{ height: screenHeight - 50 }} >
-               <VFTable
+                <VFTable
                     {...gridOptions}
                     sideBar={{
-                    toolPanels: ['columns'],
+                        toolPanels: ['columns'],
                     }}
                     defaultColDef={defaultColDef}
                     columnDefs={colDef}
@@ -121,14 +122,14 @@ const GridView = (props: IGridViewProps) => {
                     height={"75%"}
                     ref={gridRef}
                     statusBar={{
-                    statusPanels: [
-                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                    ]
+                        statusPanels: [
+                            { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                        ]
                     }}
                 />
                 <VFPagination
                     selectedRows={0}
-                    rowsPerPage={10}
+                    rowsPerPage={pagination.mtoPageSize}
                     totalRows={totalRow}
                     currentPage={currentPage}
                     handleChangePage={handlePageChange}

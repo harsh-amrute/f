@@ -9,9 +9,10 @@ import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import OverlayLoader from '../../../../../VectorFlow/Pages/MTO/Common/Loader';
 import CustomTagTooltip from '../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
+import { pagination } from '../Enum';
 
 interface IGridViewProps {
-    getData : (isGraph: number) => any,
+    getData: (isGraph: number) => any,
     reportName: string,
     isLoading: boolean,
     isError: boolean,
@@ -21,7 +22,7 @@ interface IGridViewProps {
 
 const GridView = (props: IGridViewProps) => {
 
-    const { getData, reportName, isLoading, isError, isSuccess, colDefCustomizations={} } = props;
+    const { getData, reportName, isLoading, isError, isSuccess, colDefCustomizations = {} } = props;
 
     const gridRef = useRef(null);
     const [colDef, setColDef] = useState([{}]);
@@ -35,12 +36,13 @@ const GridView = (props: IGridViewProps) => {
         autoHeaderHeight: true,
         filter: "agTextColumnFilter",
         floatingFilter: true,
+
         enableRowGroup: true,
         floatingFilterComponentParams: { suppressFilterButton: true },
         tooltipComponent: CustomTagTooltip,
         initialWidth: 110,
         cellStyle: {
-            'text-align': 'center',
+            'text-align': 'left',
             'height': '50px',
             "font-style": "normal",
             "font-variant": "normal",
@@ -78,23 +80,23 @@ const GridView = (props: IGridViewProps) => {
 
     const getGridData = async (params: any) => {
         try {
-          const response = await getData(params);
-          setGridData(response.data.data.results);
-          setTotalRows(response.data.data.count)
+            const response = await getData(params);
+            setGridData(response.data.data.results);
+            setTotalRows(response.data.data.count)
         }
         catch (e) {
-          console.log(e);
-          notifyError('Failed to fetch Grid data!');
+            console.log(e);
+            notifyError('Failed to fetch Grid data!');
         }
     }
 
     const handlePageChange = (current: any) => {
         setCurrentPage(current);
-        getGridData({ graphflag: 0, page: current})
+        getGridData({ graphflag: 0, page: current })
     }
 
     useEffect(() => {
-        getGridData({ graphflag: 0, page: currentPage});
+        getGridData({ graphflag: 0, page: currentPage });
         setColumnDef();
     }, [])
 
@@ -104,10 +106,10 @@ const GridView = (props: IGridViewProps) => {
 
     useEffect(() => {
         if (isSuccess) {
-          notifySuccess("Fetched Data successfully!")
+            notifySuccess("Fetched Data successfully!")
         }
         if (isError) {
-          notifyError("Failed to load data!")
+            notifyError("Failed to load data!")
         }
     }, [isSuccess, isError])
 
@@ -138,7 +140,7 @@ const GridView = (props: IGridViewProps) => {
             />
             <VFPagination
                 selectedRows={0}
-                rowsPerPage={10}
+                rowsPerPage={pagination.mtoPageSize}
                 totalRows={totalRows}
                 currentPage={currentPage}
                 handleChangePage={handlePageChange}

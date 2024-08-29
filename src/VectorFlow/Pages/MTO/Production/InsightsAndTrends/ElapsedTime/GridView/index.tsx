@@ -11,15 +11,16 @@ import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFP
 import { notifyError, notifySuccess } from '../../../../../../../helpers/notify';
 import { useGetElapsedTimeData } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader';
-const GridView = ({uiConfig}: any) => {
+import { pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
+const GridView = ({ uiConfig }: any) => {
     const gridRef = useRef(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(1);
     const [data, setData] = useState([]);
     const { mutateAsync: getElapsedTimeData, isLoading } = useGetElapsedTimeData()
 
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         getGridData()
     }, [currentPage])
 
@@ -38,7 +39,6 @@ const GridView = ({uiConfig}: any) => {
             'height': '50px',
             "font-style": "normal",
             "font-variant": "normal",
-            "font-weight": "300",
             "font-size": "12px",
             "font-family": "Roboto",
             'text-overflow': 'ellipsis',
@@ -75,31 +75,31 @@ const GridView = ({uiConfig}: any) => {
     }
 
 
-    const colDef = useMemo(()=>getColumnDefinations(uiConfig, colDefCustomizations),[])
+    const colDef = useMemo(() => getColumnDefinations(uiConfig, colDefCustomizations), [])
 
     const getGridData = async () => {
-        try{
-            const data = await getElapsedTimeData({page: currentPage, graphFlag: 0});
+        try {
+            const data = await getElapsedTimeData({ page: currentPage, graphFlag: 0 });
             setData(data?.data?.data?.results)
             setTotalRows(data?.data?.data?.count)
             notifySuccess("Data Fetched Successfully!")
         }
-        catch(err: any){
+        catch (err: any) {
             console.log(err)
             notifyError("Something Went Wrong")
         }
-        
+
     }
 
     const handlePageChange = async (currPage: number) => {
         setCurrentPage(currPage)
-      }
+    }
 
 
     return (
 
         <SCDynamicContainer className="ag-theme-planning-custom">
-            {isLoading && <OverlayLoader/>}
+            {isLoading && <OverlayLoader />}
             <VFTable
                 {...gridOptions}
                 sideBar={{
@@ -113,13 +113,13 @@ const GridView = ({uiConfig}: any) => {
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}
                 ref={gridRef}
-                // statusBar={{
-                //     statusPanels: [
-                //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                //     ]
-                // }}
+            // statusBar={{
+            //     statusPanels: [
+            //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+            //     ]
+            // }}
             />
-            <VFPagination selectedRows={1} totalRows={totalRows} currentPage={currentPage} rowsPerPage={10} handleChangePage={handlePageChange} />
+            <VFPagination selectedRows={1} totalRows={totalRows} currentPage={currentPage} rowsPerPage={pagination.mtoPageSize} handleChangePage={handlePageChange} />
         </SCDynamicContainer>
 
     )

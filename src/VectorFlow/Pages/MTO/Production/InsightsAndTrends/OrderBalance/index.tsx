@@ -7,7 +7,7 @@ import {
   BTRTableWrapper,
   HorizontalViewWrapper,
 } from "./styles";
-import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
+import VFTable from "../../../Common/VFTable";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import TrailDeptCount from "./TrailDeptCount";
@@ -16,19 +16,20 @@ import { GridOptions } from "ag-grid-enterprise";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import useFilter from "../../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
-import { 
-  useGetOrderBalanceData, 
+import {
+  useGetOrderBalanceData,
   // <-------------- uncomment below code to enable dropdown for orderType    --------->
   // useGetOrderTypeOptions 
 } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/OrderBalance";
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
+import { pagination } from "../../../Common/Enum";
 
 const APIFilterConfig = {
-  filSecVisConfig :  {
-    "Prod_Order_Balance" : {
-      mjr : false,
+  filSecVisConfig: {
+    "Prod_Order_Balance": {
+      mjr: false,
       or: true,
       res: true,
       cus: true
@@ -45,8 +46,8 @@ const OrderBalance = () => {
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
   const [filterData, setFilterData] = useState({});
-  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Balance);
-  const {mutateAsync: getOrderBalanceData, isLoading, isError, isSuccess } = useGetOrderBalanceData();
+  const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Balance);
+  const { mutateAsync: getOrderBalanceData, isLoading, isError, isSuccess } = useGetOrderBalanceData();
   // <-------------- uncomment below code to enable dropdown for orderType    --------->
   // const {mutateAsync: getOrderTypeOptions, isLoading: isOptionsLoading, isError: isOptionsError, isSuccess: isOptionsSuccess } = useGetOrderTypeOptions();
   const [gridData, setGridData] = useState([]);
@@ -85,7 +86,6 @@ const OrderBalance = () => {
     },
     defaultColDef: {
       initialFlex: 1,
-      wrapHeaderText: true,
       autoHeaderHeight: true,
       filter: "agTextColumnFilter",
       floatingFilter: true,
@@ -115,11 +115,11 @@ const OrderBalance = () => {
     return getColumnDefinations(HeaderData, colDefCustomizations, []);
   }, [HeaderData]);
 
-  const onApplyFilter = (filter:any)=>{
+  const onApplyFilter = (filter: any) => {
     console.log(filter)
     setIsFilterOpen(false)
   }
-  const onAddFilter = ()=>{
+  const onAddFilter = () => {
     setIsFilterOpen(true)
   }
 
@@ -151,7 +151,7 @@ const OrderBalance = () => {
 
   const handlePageChange = (current: any) => {
     setCurrentPage(current);
-    getGridData({ graphflag: 0, page: current})
+    getGridData({ graphflag: 0, page: current })
   }
 
   // <-------------- uncomment below code to enable dropdown for orderType    --------->
@@ -159,17 +159,17 @@ const OrderBalance = () => {
   //   const response = await getOrderTypeOptions();
   //   setOrderOptions(response?.data?.data)
   // }
-  
+
   // const handleChange = (option: any) => {
   //   setOrderType(option)
   //    getGraphData({ graphflag: 1, ordertype: option?.value || 1 });
   // };
-  
+
   useEffect(() => {
     setColumnDef();
-    getGridData({ graphflag: 0, page: currentPage});
+    getGridData({ graphflag: 0, page: currentPage });
     getGraphData({ graphflag: 1, ordertype: 1 });
-  // <-------------- uncomment below code to enable dropdown for orderType    --------->  
+    // <-------------- uncomment below code to enable dropdown for orderType    --------->  
     // getOrderOptions()
   }, [])
 
@@ -200,14 +200,14 @@ const OrderBalance = () => {
         isFilterOpen={isFilterOpen}
         onAddFilter={onAddFilter}
         toggleFilter={toggleFilter}
-        onApplyFilter={onApplyFilter} 
+        onApplyFilter={onApplyFilter}
         multiFilter={currFilter}
         setMultiFilter={setCurrFilter}
         onFilterRemove={onFilterRemove}
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: '25px' }}>
         {isGridView ? (
-          <div data-testid="grid-view" style={{ height: screenHeight - 190 }}>
+          <div data-testid="grid-view" style={{ height: screenHeight - 200 }}>
             <VFTable
               {...gridOptions}
               columnDefs={tableColDefs}
@@ -215,7 +215,6 @@ const OrderBalance = () => {
               tooltipHideDelay={100000}
               tooltipShowDelay={0}
               tooltipMouseTrack={true}
-              height={"95vh"}
               ref={gridRef}
               statusBar={{
                 statusPanels: [
@@ -224,11 +223,11 @@ const OrderBalance = () => {
               }}
             />
             <VFPagination
-                selectedRows={0}
-                rowsPerPage={10}
-                totalRows={totalRows}
-                currentPage={currentPage}
-                handleChangePage={handlePageChange}
+              selectedRows={0}
+              rowsPerPage={pagination.mtoPageSize}
+              totalRows={totalRows}
+              currentPage={currentPage}
+              handleChangePage={handlePageChange}
             />
           </div>
         ) : (
@@ -236,18 +235,18 @@ const OrderBalance = () => {
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <TrailDeptCount graphData={graphData}/>
+                  <TrailDeptCount graphData={graphData} />
                 </BTRAllomentSection>
               </Allotment.Pane>
 
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <TrailDeptBalance 
-                    graphData={graphData} 
-  // <-------------- uncomment below code to enable dropdown for orderType    --------->
-                    // orderOptions={orderOptions}
-                    // handleChange={handleChange}
-                    // orderType={orderType}
+                  <TrailDeptBalance
+                    graphData={graphData}
+                  // <-------------- uncomment below code to enable dropdown for orderType    --------->
+                  // orderOptions={orderOptions}
+                  // handleChange={handleChange}
+                  // orderType={orderType}
                   />
                 </BTRAllomentSection>
               </Allotment.Pane>

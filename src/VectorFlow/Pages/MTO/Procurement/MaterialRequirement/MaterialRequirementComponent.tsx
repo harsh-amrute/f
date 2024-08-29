@@ -1,4 +1,3 @@
-import React from 'react'
 import moment from 'moment'
 import VFFloatingTab from '../../../../../components/VectorFLOW/commons/VFFloatingTab'
 import { MaterialRequirementHeading, MaterialRequirementTest, MaterialRequirementDate, MaterialRequiremetLayout } from './styles'
@@ -6,7 +5,7 @@ import { MaterialRequirementHeading, MaterialRequirementTest, MaterialRequiremen
 const MaterialRequirementComponent = ({ currentTab, toggleCurrentTab, renderView, date }: any) => {
     return (
         <>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
+            <div style={{ zoom: 0.75, display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 
                 <VFFloatingTab
                     handleClick={(tab) => toggleCurrentTab(tab)}
@@ -34,7 +33,7 @@ const MaterialRequirementComponent = ({ currentTab, toggleCurrentTab, renderView
                     {moment(date).format('Do MMMM YYYY')}
                 </MaterialRequirementDate>
             </MaterialRequirementHeading>
-            <MaterialRequiremetLayout style={{ marginLeft: '30px' }}>
+            <MaterialRequiremetLayout style={{ marginLeft: '30px', flex: "1" }}>
                 {renderView()}
             </MaterialRequiremetLayout>
 

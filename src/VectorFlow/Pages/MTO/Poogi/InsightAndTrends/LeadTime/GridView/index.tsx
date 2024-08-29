@@ -7,16 +7,17 @@ import TagCellToolTip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/TagC
 // import { useGetUIConfigData } from '../../../../../../Services/MTO/Common/UIConfig';
 import './styles.css'
 import { SCDynamicContainer } from './styles';
-import ColorCellRenderer from '../../../../../MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests/ColorCellRenderer';
+import ColorCellRenderer from "../../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import { useGetLeadTimeData } from '../../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/LeadTime';
 import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFPagination';
 import { notifyError, notifySuccess } from '../../../../../../../helpers/notify';
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader';
+import { pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
 
-const GridView = ({uiConfig}: any) => {
+const GridView = ({ uiConfig }: any) => {
     const gridRef = useRef(null);
     // const HeaderData = gridColumnConfig;
-    
+
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(1);
     const [data, setData] = useState([]);
@@ -73,36 +74,36 @@ const GridView = ({uiConfig}: any) => {
     }
 
     const getGridData = async () => {
-        try{
-            const data = await getLeadTimeData({page: currentPage, graphFlag: 0});
+        try {
+            const data = await getLeadTimeData({ page: currentPage, graphFlag: 0 });
             setData(data?.data?.data?.results)
             setTotalRows(data?.data?.data?.count)
             notifySuccess("Data Fetched Successfully!");
         }
-        catch(err: any){
+        catch (err: any) {
             console.log(err)
             notifyError("Something Went Wrong")
         }
-        
+
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         getGridData()
     }, [currentPage])
 
-    
+
 
 
     const colDef = useMemo(() => getColumnDefinations(uiConfig, colDefCustomizations), [])
 
     const handlePageChange = async (currPage: number) => {
         setCurrentPage(currPage)
-      }
+    }
 
     return (
 
         <SCDynamicContainer className="ag-theme-planning-custom">
-            {isLoading && <OverlayLoader/>}
+            {isLoading && <OverlayLoader />}
             <VFTable
                 {...gridOptions}
                 sideBar={{
@@ -116,13 +117,13 @@ const GridView = ({uiConfig}: any) => {
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}
                 ref={gridRef}
-                // statusBar={{
-                //     statusPanels: [
-                //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                //     ]
-                // }}
+            // statusBar={{
+            //     statusPanels: [
+            //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+            //     ]
+            // }}
             />
-            <VFPagination currentPage={currentPage} totalRows={totalRows} rowsPerPage={10} selectedRows={1} handleChangePage={handlePageChange}/>
+            <VFPagination currentPage={currentPage} totalRows={totalRows} rowsPerPage={pagination.mtoPageSize} selectedRows={1} handleChangePage={handlePageChange} />
         </SCDynamicContainer>
 
     )

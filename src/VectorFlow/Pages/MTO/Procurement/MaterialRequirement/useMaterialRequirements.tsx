@@ -5,7 +5,7 @@ import { AgGridReact } from "@ag-grid-community/react";
 import ColorPriority from '../../Common/ColorPriority/index';
 import AvailabilityToolTip from "../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from "../../Common/VFTable";
 //import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
 // import GetProcPlanningData from '../Planning/GetProcPlanningData.json';
@@ -17,6 +17,7 @@ import moment from "moment";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import VFPagination from "../../Common/VFPagination";
 import { TableWrapper } from "./styles";
+import { pagination } from "../../Common/Enum";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -127,9 +128,9 @@ const useMaterialReq = (forDate?: string) => {
 
         },
         "net_r": {
-            valueFormatter: (params:any) => Math.max(0, Number(params.data.net_r))
+            valueFormatter: (params: any) => Math.max(0, Number(params.data.net_r))
         }
-        
+
     }
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
     const ShortageColumns = getColumnDefinations(HeaderData, customHeader)
@@ -264,12 +265,12 @@ const useMaterialReq = (forDate?: string) => {
                 enableRangeSelection: true,
                 pagination: true,
                 defaultColDef: {
-                    floatingFilterComponentParams: { suppressFilterButton: true },
                     floatingFilter: true,
+                    suppressMenu: true,
                     filter: "agMultiColumnFilter",
                     cellDataType: false,
-                    resizable: false,
-                    minWidth: 140,
+                    resizable: true,
+                    // minWidth: 140,
                     wrapHeaderText: true,
                     autoHeaderHeight: true,
                     cellStyle: {
@@ -283,7 +284,8 @@ const useMaterialReq = (forDate?: string) => {
                         'white-space': 'nowrap',
                         'resizable': 'true',
                     },
-                    initialFlex: 1
+                    initialFlex: 1,
+                    flex: 1
                 },
 
             },
@@ -297,7 +299,7 @@ const useMaterialReq = (forDate?: string) => {
             defaultExcelExportParams: defaultExcelExportParams,
             excelStyles: excelStyles,
             sideBar: sideBar,
-            
+
             onCellEditingStopped(event: any) {
                 const field = event.colDef.field;
                 const newValue = event.newValue;
@@ -319,12 +321,12 @@ const useMaterialReq = (forDate?: string) => {
                 });
                 gridRef.current?.api.refreshCells({ force: true });
             }
-            
+
         };
         switch (currentTab.id) {
             case "sdv":
                 return (
-                    <div>
+                    <>
                         <TableWrapper>
 
                             <VFTable
@@ -335,7 +337,6 @@ const useMaterialReq = (forDate?: string) => {
                                 tooltipHideDelay={100000}
                                 tooltipShowDelay={0}
                                 tooltipMouseTrack={true}
-                                height={'550px'}
                                 ref={gridRef}
                                 pagination={false}
                                 statusBar={{
@@ -347,17 +348,17 @@ const useMaterialReq = (forDate?: string) => {
                             />
                             <VFPagination
                                 selectedRows={0}
-                                rowsPerPage={10}
+                                rowsPerPage={pagination.mtoPageSize}
                                 totalRows={dayWiseRecordCount}
                                 currentPage={currentPage}
                                 handleChangePage={handlePageChangeDayWise}
                             />
                         </TableWrapper>
-                    </div>
+                    </>
                 );
             case "cv":
                 return (
-                    <div>
+                    <>
                         <TableWrapper>
 
                             <VFTable
@@ -379,14 +380,14 @@ const useMaterialReq = (forDate?: string) => {
                             />
                             <VFPagination
                                 selectedRows={0}
-                                rowsPerPage={10}
+                                rowsPerPage={pagination.mtoPageSize}
                                 totalRows={cumulativeRecordCount}
                                 currentPage={currentCumPage}
                                 handleChangePage={handlePageChangeCumulative}
                             />
                         </TableWrapper>
 
-                    </div>
+                    </>
                 );
             default:
                 return <VFTable columnDefs={[]} rowData={[]} {...agGridProps} />

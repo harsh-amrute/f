@@ -33,7 +33,7 @@ const STPLAndFullKits = () => {
   }
 
   useEffect(() => {
-    getGraphData({graphflag: 1});
+    getGraphData({ graphflag: 1 });
   }, [])
 
   useEffect(() => {
@@ -46,8 +46,8 @@ const STPLAndFullKits = () => {
   }, [isSuccess, isError])
 
   return (
-    <div style={{}}>
-       {
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      {
         isLoading && <OverlayLoader />
       }
       <MTOActionToolBar
@@ -57,21 +57,21 @@ const STPLAndFullKits = () => {
         isChartGridToggle
         isAddFilterButton
       />
-      <HorizontalViewWrapper style={{ marginTop: "20px" }}>
+      <HorizontalViewWrapper style={{ flex: 1 }}>
         {isGridView ? (
           <GridView />
         ) : (
-          <BTRTableWrapper style={{ height: screenHeight - 200, margin: "0" }}>
+          <BTRTableWrapper style={{ height: screenHeight - 200, paddingLeft: "20px" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <STPLGraph graphData={graphData?.stpl}/>
+                  <STPLGraph graphData={graphData?.stpl} />
                 </BTRAllomentSection>
               </Allotment.Pane>
 
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
-                  <FullKitGraph graphData={graphData?.fk}/>
+                  <FullKitGraph graphData={graphData?.fk} />
                 </BTRAllomentSection>
               </Allotment.Pane>
             </Allotment>

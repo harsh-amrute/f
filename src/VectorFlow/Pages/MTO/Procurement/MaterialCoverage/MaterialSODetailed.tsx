@@ -1,8 +1,9 @@
 import { ProcurementLayout } from './styles';
 import useMaterialSO from './useMaterialSO';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import OverlayLoader from '../../Common/Loader';
+import { pagination } from '../../Common/Enum';
 
 interface MaterialSODetailedProps {
     parameterData: any
@@ -25,13 +26,13 @@ const MaterialSODetailed = ({ parameterData }: MaterialSODetailedProps) => {
     }
 
     return (
-        <div style={{ height: '100%' }}>
+        <>
             {
                 isLoading && (
                     <OverlayLoader />
                 )
             }
-            <ProcurementLayout style={{ marginLeft: '25px' }}>
+            <ProcurementLayout style={{ marginLeft: '25px', flex: "1" }}>
 
                 <VFTable
                     {...agGridProps}
@@ -41,7 +42,8 @@ const MaterialSODetailed = ({ parameterData }: MaterialSODetailedProps) => {
                     tooltipShowDelay={0}
                     tooltipMouseTrack={true}
                     // height={'780px'}
-                    paginationPageSize={10}
+
+                    paginationPageSize={pagination.mtoPageSize}
                     pagination={false}
                     statusBar={{
                         statusPanels: [
@@ -51,13 +53,13 @@ const MaterialSODetailed = ({ parameterData }: MaterialSODetailedProps) => {
                 />
                 <VFPagination
                     selectedRows={0}
-                    rowsPerPage={10}
+                    rowsPerPage={pagination.mtoPageSize}
                     totalRows={rowDataCount}
                     currentPage={currentPage}
                     handleChangePage={handlePageChange}
                 />
             </ProcurementLayout>
-        </div>
+        </>
     )
 }
 

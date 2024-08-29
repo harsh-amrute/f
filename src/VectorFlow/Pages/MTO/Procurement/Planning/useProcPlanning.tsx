@@ -5,7 +5,7 @@ import { useUserData } from "../../../../../context"
 import ColoPriority from "../../Common/ColorPriority/index";
 import AvailabilityToolTip from "../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from "../../Common/VFTable";
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { useNavigate } from "react-router-dom";
@@ -20,8 +20,10 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import OverlayLoader from "../../Common/Loader";
 import { INumberCellEditorParams } from "@ag-grid-community/core"
 import { TableWrapper } from "./styles";
+import { pagination } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
 import { PROCPLANNING_ANALYTICS } from "../../../../../redux/actions/MTO";
+
 
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
@@ -117,7 +119,7 @@ const useProcPlanning = (date: string) => {
         }
     ];
 
-    dispatch(PROCPLANNING_ANALYTICS({date}));
+    dispatch(PROCPLANNING_ANALYTICS({ date }));
 
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
@@ -238,7 +240,7 @@ const useProcPlanning = (date: string) => {
             suppressHeaderFilterButton: true,
             suppressMenu: true,
             filter: false,
-            maxWidth: 50,
+            maxWidth: 35,
             cellRenderer: 'agGroupCellRenderer'
         }
     ]
@@ -397,8 +399,12 @@ const useProcPlanning = (date: string) => {
         // // setData(APIData?.data?.data?.results || []);
         // setData(newDat);
         // setIsLoading(false);
-
-        fetchData(date, pageNumber);
+        if (currentTab.id === 'ca') {
+            fetchData(date, pageNumber, '1');
+        }
+        else {
+            fetchData(date, pageNumber, '0');
+        }
 
         // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
@@ -415,7 +421,6 @@ const useProcPlanning = (date: string) => {
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'650px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [
@@ -426,7 +431,7 @@ const useProcPlanning = (date: string) => {
                         <VFPagination
                             key={1}
                             selectedRows={0}
-                            rowsPerPage={Math.min(10, totalRows)}
+                            rowsPerPage={Math.min(pagination.mtoPageSize, totalRows)}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
@@ -439,7 +444,6 @@ const useProcPlanning = (date: string) => {
 
                     <TableWrapper>
                         {isOverlayLoading && <OverlayLoader message={"Updating the simulated data..."} />}
-
                         <VFTable
                             key={2}
                             {...agGridProps}
@@ -448,7 +452,6 @@ const useProcPlanning = (date: string) => {
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'650px'}
                             ref={gridRef}
                             statusBar={{
                                 statusPanels: [
@@ -458,7 +461,7 @@ const useProcPlanning = (date: string) => {
                         />
                         <VFPagination
                             selectedRows={0}
-                            rowsPerPage={Math.min(10, totalRows)}
+                            rowsPerPage={Math.min(pagination.mtoPageSize, totalRows)}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
@@ -467,25 +470,27 @@ const useProcPlanning = (date: string) => {
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
 
                             <VFButtonOutline
-                                onClick={() => { (!isDisabled) && fetchData(date) }}
+                                onClick={() => { (!isDisabled) && fetchData(date, 1, '0') }}
                                 themeUi=""
                                 disabled={isDisabled}
                                 width={135}
 
                                 style={{
                                     opacity: isDisabled ? '0.4' : '1',
-                                    height: '50px',
+                                    height: 'max-content',
                                     marginRight: 20,
                                     borderColor: '#BC3D81',
                                     color: '#BC3D81',
                                     background: 'transparent',
+                                    alignItems: 'center',
                                     fontWeight: 'bold',
+                                    padding: "1rem",
+                                    paddingRight: "2rem",
                                 }}
                             >
-
                                 <div style={{ display: 'flex', alignItems: 'center', }}>
-                                    <img src="/assets/img/VectorFLOW/reset.svg" alt="Reset Icon" height={20} width={20} style={{ margin: '0 12px' }} />
-                                    <p style={{ fontSize: '14px' }}>
+                                    <img src="/assets/img/VectorFLOW/reset.svg" alt="Reset Icon" height={15} width={15} style={{ margin: '0 12px' }} />
+                                    <p style={{ fontSize: '12px' }}>
                                         Reset Data
                                     </p>
                                 </div>
@@ -494,8 +499,15 @@ const useProcPlanning = (date: string) => {
                                 onClick={navigateToSimulateScreen}
                                 themeUi=""
                                 disabled={isDisabled}
-
-                                width={250}>Simulate improvement in Full Kits
+                                width={250}
+                                style={{
+                                    padding: "1rem",
+                                    height: "max-content",
+                                    width: "max-content",
+                                    fontSize: "12px",
+                                }}
+                            >
+                                Simulate improvement in Full Kits
                             </VFButton>
                         </div>
 
@@ -510,7 +522,7 @@ const useProcPlanning = (date: string) => {
                         <VFPagination
 
                             selectedRows={0}
-                            rowsPerPage={Math.min(10, totalRows)}
+                            rowsPerPage={Math.min(pagination.mtoPageSize, totalRows)}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
@@ -543,8 +555,7 @@ const useProcPlanning = (date: string) => {
                 resizable: true,
                 floatingFilter: true,
                 filter: "agMultiColumnFilter",
-                floatingFilterComponentParams: { suppressFilterButton: true },
-                minWidth: 140,
+                // minWidth: 140,
                 // wrapHeaderText: true,
                 // autoHeaderHeight: true,
                 cellStyle: {
@@ -560,12 +571,14 @@ const useProcPlanning = (date: string) => {
                     'resizable': 'true',
                 },
                 flex: 1,
+                initialFlex: 1,
             },
 
 
         },
         masterDetail: true,
         detailCellRenderer: ChildrenProcPlanningCellRenderer,
+        detailRowHeight: 225,
         autoGroupColumnDef: autoGroupColumnDef,
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,
@@ -612,7 +625,8 @@ const useProcPlanning = (date: string) => {
         GetCount,
         fetchData,
         date,
-        isLoading
+        isLoading,
+        currentTab
     }
 }
 

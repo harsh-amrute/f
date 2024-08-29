@@ -1,7 +1,7 @@
 import { AgChartsReact } from 'ag-charts-react';
 import { GridOptions } from 'ag-grid-enterprise';
 import { useEffect, useMemo, useRef, useState } from 'react'
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 
 import { AgChartOptions } from 'ag-charts-community';
 import { getColumnDefinations } from '../../../../../helpers/utils';
@@ -20,17 +20,18 @@ import OverlayLoader from '../../Common/Loader';
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
 import VFPagination from '../../Common/VFPagination';
 import _ from 'lodash';
-import { notifyError} from '../../../../../helpers/notify';
+import { notifyError } from '../../../../../helpers/notify';
 import { useGetCCRGroupMaster, useGetFOLData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import AvailabilityCellRenderer from './AvailabilityCellRenderer';
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+import { AvailabilityToolTipWrapper } from '../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/styles';
 
 
 const APIFilterConfig = {
-  filSecVisConfig :  {
-    "Prod_FullKit_Assignment" : {
-      mjr : false,
+  filSecVisConfig: {
+    "Prod_FullKit_Assignment": {
+      mjr: false,
       or: true,
       res: true,
       cus: true
@@ -70,7 +71,7 @@ const FullKitAssignment = () => {
     is_fullkit: true,
     load_graph_data: true,
     load_data_after_simulation: false,
-    page: 1 
+    page: 1
   });
   const [selectedRows, setSelectedRows] = useState<any>(new Map());
   const [graphData, setGraphData] = useState([]);
@@ -79,9 +80,9 @@ const FullKitAssignment = () => {
   const currentPageSelectedRows = useRef([]);
 
   const { mutateAsync: getFullKitAssignmentDataWithGraphData, isLoading: isDataLoading } = useGetFullKitAssignmentDataWithGraphData();
-  const { mutateAsync: updateExcludedOrdersForFullkitAssignment,isLoading: excludeOrdersLoading } = useUpdateExcludedOrdersForFullkitAssignment();
-  const { mutateAsync: updateOrSimulateStockAllocation, isLoading: simulationLoading} = useUpdateOrSimulateStockAllocation();
-  const { mutateAsync: updateFullkitOnSimulation, isLoading: isSimulationResultsUpdating} = useUpdateFullkitOnSimulation();
+  const { mutateAsync: updateExcludedOrdersForFullkitAssignment, isLoading: excludeOrdersLoading } = useUpdateExcludedOrdersForFullkitAssignment();
+  const { mutateAsync: updateOrSimulateStockAllocation, isLoading: simulationLoading } = useUpdateOrSimulateStockAllocation();
+  const { mutateAsync: updateFullkitOnSimulation, isLoading: isSimulationResultsUpdating } = useUpdateFullkitOnSimulation();
   const { mutateAsync: getCCRGroupMaster, } = useGetCCRGroupMaster();
   const { mutateAsync: getFOLData, } = useGetFOLData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -95,7 +96,7 @@ const FullKitAssignment = () => {
         return (
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%", height: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
-            <img alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
+            <img height={12} width={12} alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
               setShowModal(true);
               setSelectedPlantId(params.data?.plid);
               setSelectedRouteId(params.data?.r);
@@ -106,6 +107,21 @@ const FullKitAssignment = () => {
       }
     },
     OrderInFullKitToday: {
+      tooltipComponent: (params: any) => {
+        return (
+          <AvailabilityToolTipWrapper style={{ padding: "1rem", fontSize: "12px" }}>
+            {params.value}
+          </AvailabilityToolTipWrapper>
+
+        )
+      },
+
+      tooltipValueGetter: (params: any) => {
+
+        const oq = params.data.oq;
+        const fka = params.data.fka;
+        return `${fka}/${oq} kits can be manufactured`;
+      },
       cellRenderer: AvailabilityCellRenderer,
     },
     ColorPriority: {
@@ -132,7 +148,7 @@ const FullKitAssignment = () => {
     }
   }
 
-  const findTag = (loadData: any, ccrId: any)=>{
+  const findTag = (loadData: any, ccrId: any) => {
     return loadData.ccr_id == ccrId
   }
 
@@ -144,34 +160,34 @@ const FullKitAssignment = () => {
     //-------------------------------------------
     const newRows = rows.map((row: any) => {
       const ccrs = row.ccr_ids;
-      const tags = {overloaded: 0, underloaded: 0, balanced: 0}
-      const oifkt = ((row.fka ?? 0)/(row.oq ?? 1)) * 100;
-      ccrs?.forEach((ccrId: any)=>{
-        const isOverloaded = graphdata["overloaded"].find((loadData: any)=> findTag(loadData, ccrId));
+      const tags = { overloaded: 0, underloaded: 0, balanced: 0 }
+      const oifkt = ((row.fka ?? 0) / (row.oq ?? 1)) * 100;
+      ccrs?.forEach((ccrId: any) => {
+        const isOverloaded = graphdata["overloaded"].find((loadData: any) => findTag(loadData, ccrId));
 
-        if(isOverloaded){
+        if (isOverloaded) {
           tags.overloaded = tags.overloaded + 1
           return
         }
-        const isUnderloaded = graphdata["underloaded"].find((loadData: any)=> findTag(loadData, ccrId))
-        if(isUnderloaded){
+        const isUnderloaded = graphdata["underloaded"].find((loadData: any) => findTag(loadData, ccrId))
+        if (isUnderloaded) {
           tags.underloaded = tags.underloaded + 1
           return
         }
         tags.balanced = tags.balanced + 1
       })
-      if(tags.overloaded > 0){
-        return {...row, t: "Overloaded", sortKey: 1, oifkt }
+      if (tags.overloaded > 0) {
+        return { ...row, t: "Overloaded", sortKey: 1, oifkt }
       }
-      else if(tags.overloaded == 0 && tags.underloaded > 0){
-        return {...row, t: "Underloaded", sortKey: 2, oifkt}
+      else if (tags.overloaded == 0 && tags.underloaded > 0) {
+        return { ...row, t: "Underloaded", sortKey: 2, oifkt }
       }
-      else if(tags.overloaded == 0 && tags.underloaded == 0 && tags.balanced > 0){
-        return {...row, t: "Balanced", sortKey: 3, oifkt}
+      else if (tags.overloaded == 0 && tags.underloaded == 0 && tags.balanced > 0) {
+        return { ...row, t: "Balanced", sortKey: 3, oifkt }
       }
-      return {...row, sortKey: 4, oifkt}
+      return { ...row, sortKey: 4, oifkt }
     })
-    return newRows.sort((a: any,b: any)=>{
+    return newRows.sort((a: any, b: any) => {
       return a.sortKey - b.sortKey
     })
   }
@@ -180,35 +196,35 @@ const FullKitAssignment = () => {
   const fetchOrders = async () => {
     const data = await getFullKitAssignmentDataWithGraphData(loadDataParams);
     const griddata: any = data?.data?.data?.results?.griddata;
-      if(loadDataParams.load_graph_data){
-        const graph: any = [];
-        const newGraphdata = data?.data?.data?.results?.graphdata;
-        //underload
-        newGraphdata["underloaded"].forEach((row: any)=>{
-          graph.push({...row})
-          graph.push(_.cloneDeep({ccr_name:" ".repeat(graph.length - 1), allowed_full_kits:0, stpl_in_days:0,}))
-        })
-        //overload
-        newGraphdata["overloaded"].forEach((row: any)=>{
-          graph.push(row)
-          graph.push(_.cloneDeep({ccr_name:" ".repeat(graph.length - 1), allowed_full_kits:0, stpl_in_days:0,}))
-        })
-        //balanced
-        newGraphdata["balanced"].forEach((row: any)=>{
-          graph.push(row)
-          graph.push(_.cloneDeep({ccr_name:" ".repeat(graph.length - 1), allowed_full_kits:0, stpl_in_days:0,}))
-        })
-        //modify griddata for adding tags
-        const newRows = calculateTagsAndOrderinFullkitToday(griddata, newGraphdata)
-        setOrders(newRows);
-        setGraphData(graph)
-        graphDataOgFormat.current = newGraphdata;
-      }
-      else{
-        const newRows = calculateTagsAndOrderinFullkitToday(griddata, graphDataOgFormat.current) // already fetched graph data
-        setOrders(newRows);
-      }
-      setTotalRows(data?.data?.data?.count)
+    if (loadDataParams.load_graph_data) {
+      const graph: any = [];
+      const newGraphdata = data?.data?.data?.results?.graphdata;
+      //underload
+      newGraphdata["underloaded"].forEach((row: any) => {
+        graph.push({ ...row })
+        graph.push(_.cloneDeep({ ccr_name: " ".repeat(graph.length - 1), allowed_full_kits: 0, stpl_in_days: 0, }))
+      })
+      //overload
+      newGraphdata["overloaded"].forEach((row: any) => {
+        graph.push(row)
+        graph.push(_.cloneDeep({ ccr_name: " ".repeat(graph.length - 1), allowed_full_kits: 0, stpl_in_days: 0, }))
+      })
+      //balanced
+      newGraphdata["balanced"].forEach((row: any) => {
+        graph.push(row)
+        graph.push(_.cloneDeep({ ccr_name: " ".repeat(graph.length - 1), allowed_full_kits: 0, stpl_in_days: 0, }))
+      })
+      //modify griddata for adding tags
+      const newRows = calculateTagsAndOrderinFullkitToday(griddata, newGraphdata)
+      setOrders(newRows);
+      setGraphData(graph)
+      graphDataOgFormat.current = newGraphdata;
+    }
+    else {
+      const newRows = calculateTagsAndOrderinFullkitToday(griddata, graphDataOgFormat.current) // already fetched graph data
+      setOrders(newRows);
+    }
+    setTotalRows(data?.data?.data?.count)
   }
 
 
@@ -218,97 +234,97 @@ const FullKitAssignment = () => {
 
   const excludeAndSimulate = async () => {
     const username = user.user.name
-    const orders = Array.from(selectedRows.values()).map((order: any) =>{ return {on: order.data.on, lid: order.data.li }})
-    const excluded = await updateExcludedOrdersForFullkitAssignment({orders, username}) 
-    if(excluded.status == 200){
-      const simulateOrders = await updateOrSimulateStockAllocation({username, is_simulated: true})
-      if(simulateOrders.status == 200){
+    const orders = Array.from(selectedRows.values()).map((order: any) => { return { on: order.data.on, lid: order.data.li } })
+    const excluded = await updateExcludedOrdersForFullkitAssignment({ orders, username })
+    if (excluded.status == 200) {
+      const simulateOrders = await updateOrSimulateStockAllocation({ username, is_simulated: true })
+      if (simulateOrders.status == 200) {
         return true
-      }else{
+      } else {
         return false
       }
     }
   }
 
-  const saveOrCancelSimulaton = async (is_type: "Save" | "Delete") =>{
-    try{
+  const saveOrCancelSimulaton = async (is_type: "Save" | "Delete") => {
+    try {
       const username = user.user.name
-      await updateFullkitOnSimulation({username, is_type})
+      await updateFullkitOnSimulation({ username, is_type })
       return true
     }
-    catch(err){
+    catch (err) {
       notifyError("Failed to Save the Simulation")
       return false
     }
-    
+
   }
 
   const getMasterData = async () => {
     const ccrGroupMaster = await getCCRGroupMaster();
-        const ccrGroupData = Object.values(ccrGroupMaster?.data?.data);
-        const ccrGroups: any = [];
+    const ccrGroupData = Object.values(ccrGroupMaster?.data?.data);
+    const ccrGroups: any = [];
 
-        const FOLData = await getFOLData();
-        const FOL = FOLData?.data?.data;
+    const FOLData = await getFOLData();
+    const FOL = FOLData?.data?.data;
 
-        ccrGroupData.forEach((group: any) => {
-          const obj: any = { label: group.ccr_group_code, value: group.ccr_group_id, ccrs: [] }
-          // let minFOL = Infinity
-          let minFol = Infinity;
-          let maxFol = -Infinity;
-          group.ccrs.forEach((ccr: any) => {
-            minFol = Math.min(minFol, FOL[ccr.ccr_id]?.fol || 0);
-            maxFol = Math.max(maxFol, FOL[ccr.ccr_id]?.fol || 0)
-          })
-          group.ccrs.forEach((ccr: any) => {
-            obj.ccrs.push({ label: ccr.ccr_name, value: ccr.ccr_id, minFol, maxFol, fol: FOL[ccr.ccr_id]?.fol || 0, plant_id: ccr.plant });
-          })
-          ccrGroups.push(obj);
-        })
-        setMasters({ccrGroups})
+    ccrGroupData.forEach((group: any) => {
+      const obj: any = { label: group.ccr_group_code, value: group.ccr_group_id, ccrs: [] }
+      // let minFOL = Infinity
+      let minFol = Infinity;
+      let maxFol = -Infinity;
+      group.ccrs.forEach((ccr: any) => {
+        minFol = Math.min(minFol, FOL[ccr.ccr_id]?.fol || 0);
+        maxFol = Math.max(maxFol, FOL[ccr.ccr_id]?.fol || 0)
+      })
+      group.ccrs.forEach((ccr: any) => {
+        obj.ccrs.push({ label: ccr.ccr_name, value: ccr.ccr_id, minFol, maxFol, fol: FOL[ccr.ccr_id]?.fol || 0, plant_id: ccr.plant });
+      })
+      ccrGroups.push(obj);
+    })
+    setMasters({ ccrGroups })
   }
 
   const renderUtilityBtns = useMemo(() => {
 
-    switch(editMode){
-      case "View":{
+    switch (editMode) {
+      case "View": {
         return <VFButtonOutline themeUi={themeUi}
-        onClick={() => {
-          setEditMode("Deselect")
-        }}>Deselect</VFButtonOutline>
-      }
-      case "Deselect":{
-        return <>
-        <strong style={{marginRight: "1rem", cursor:"pointer", color: globalStyles.chooseThemeColor[themeUi].color4}} onClick={()=>{
-          setEditMode("View")
-        }}>Cancel</strong>
-        <VFButtonOutline 
-          style={{width:"unset"}}
-          disabled={ selectedRows.size == 0 }
-          themeUi={themeUi}
           onClick={() => {
-            //once the rows are excluded and simulated,
-            setEditMode("ExcludeSimulate"); // also set the new column definition
-          }}>Exclude & Simulate</VFButtonOutline></>
+            setEditMode("Deselect")
+          }}>Deselect</VFButtonOutline>
+      }
+      case "Deselect": {
+        return <>
+          <strong style={{ marginRight: "1rem", cursor: "pointer", color: globalStyles.chooseThemeColor[themeUi].color4 }} onClick={() => {
+            setEditMode("View")
+          }}>Cancel</strong>
+          <VFButtonOutline
+            style={{ width: "unset" }}
+            disabled={selectedRows.size == 0}
+            themeUi={themeUi}
+            onClick={() => {
+              //once the rows are excluded and simulated,
+              setEditMode("ExcludeSimulate"); // also set the new column definition
+            }}>Exclude & Simulate</VFButtonOutline></>
       }
       case "ExcludeSimulate": {
         return <>
-          <strong style={{marginRight: "1rem", cursor:"pointer", color: globalStyles.chooseThemeColor[themeUi].color4}} onClick={()=>{
-            saveOrCancelSimulaton("Delete").then((data)=>{
-              if(data){
+          <strong style={{ marginRight: "1rem", cursor: "pointer", color: globalStyles.chooseThemeColor[themeUi].color4 }} onClick={() => {
+            saveOrCancelSimulaton("Delete").then((data) => {
+              if (data) {
                 setColDefCustomizations({
                   ...defaultColDefCustomisation.current
                 })
                 setEditMode("Deselect")
               }
             })
-        }}>Cancel</strong>
-        <VFButtonOutline 
-          style={{width:"unset"}}
-          themeUi={themeUi}
-          onClick={() => {
-            setEditMode("SimulationSaved") 
-          }}>Save Simulation</VFButtonOutline>
+          }}>Cancel</strong>
+          <VFButtonOutline
+            style={{ width: "unset" }}
+            themeUi={themeUi}
+            onClick={() => {
+              setEditMode("SimulationSaved")
+            }}>Save Simulation</VFButtonOutline>
         </>
       }
     }
@@ -325,28 +341,28 @@ const FullKitAssignment = () => {
     setColumnDef();
   }, [])
 
-  useEffect(()=>{
-    if(loadDataParams){
+  useEffect(() => {
+    if (loadDataParams) {
       fetchOrders();
     }
-  },[loadDataParams])
+  }, [loadDataParams])
 
-  useEffect(()=>{
-    setLoadDataParams({...loadDataParams, load_graph_data: false, page: currentPage})
+  useEffect(() => {
+    setLoadDataParams({ ...loadDataParams, load_graph_data: false, page: currentPage })
   }, [currentPage])
 
-  useEffect(()=>{
-    switch(editMode){
-      case "View":{
+  useEffect(() => {
+    switch (editMode) {
+      case "View": {
         // setShowOrdersWithFullKitReady(true);
-        setLoadDataParams({is_fullkit: true, load_graph_data: true, load_data_after_simulation: false, page: 1})
+        setLoadDataParams({ is_fullkit: true, load_graph_data: true, load_data_after_simulation: false, page: 1 })
         setSelectedRows(new Map());
         setExtra([]);
         break
       }
-      case "Deselect":{
+      case "Deselect": {
         // setShowOrdersWithFullKitReady(false)
-        setLoadDataParams({is_fullkit: false, load_graph_data: false, load_data_after_simulation:false, page: 1})
+        setLoadDataParams({ is_fullkit: false, load_graph_data: false, load_data_after_simulation: false, page: 1 })
         setColDefCustomizations({
           ...defaultColDefCustomisation.current
         })
@@ -361,32 +377,32 @@ const FullKitAssignment = () => {
         }])
         break
       }
-      case "ExcludeSimulate":{
+      case "ExcludeSimulate": {
         // setShowOrdersWithFullKitReady(True)
-        excludeAndSimulate().then((data)=>{
-          if(data){
-            setLoadDataParams({is_fullkit: true, load_data_after_simulation: true, load_graph_data: true, page: 1})
+        excludeAndSimulate().then((data) => {
+          if (data) {
+            setLoadDataParams({ is_fullkit: true, load_data_after_simulation: true, load_graph_data: true, page: 1 })
             setExtra([])
             setSelectedRows(new Map());
             setColDefCustomizations({
               ...defaultColDefCustomisation.current,
-              KitsBeforeSM:{
+              KitsBeforeSM: {
                 cellStyle: {
                   // background: "#BC3D814F",
                   // color: "#BC3D81",
-                  background:  globalStyles.chooseThemeColor[themeUi]?.color4 + "60",
+                  background: globalStyles.chooseThemeColor[themeUi]?.color4 + "60",
                   color: globalStyles.chooseThemeColor[themeUi]?.color4,
                   fontWeight: "bold"
-              }
+                }
               },
-              FullKitsAvailable:{
+              FullKitsAvailable: {
                 cellStyle: {
                   // background: "#BC3D814F",
                   // color: "#BC3D81",
-                  background:  globalStyles.chooseThemeColor[themeUi]?.color4 + "60",
+                  background: globalStyles.chooseThemeColor[themeUi]?.color4 + "60",
                   color: globalStyles.chooseThemeColor[themeUi]?.color4,
                   fontWeight: "bold"
-              }
+                }
               }
             })
           }
@@ -394,8 +410,8 @@ const FullKitAssignment = () => {
         break
       }
       case "SimulationSaved": {
-        saveOrCancelSimulaton("Save").then((data)=>{
-          if(data){
+        saveOrCancelSimulaton("Save").then((data) => {
+          if (data) {
             // setLoadDataParams({is_fullkit: true, load_data_after_simulation: false, load_graph_data: true, page: 1})
             setExtra([])
             setEditMode("View")
@@ -521,12 +537,12 @@ const FullKitAssignment = () => {
 
   }
 
-  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_FullKit_Assignment);
+  const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_FullKit_Assignment);
 
-  const onApplyFilter = ()=>{
+  const onApplyFilter = () => {
     setIsFilterOpen(false)
   }
-  const onAddFilter = ()=>{
+  const onAddFilter = () => {
     setIsFilterOpen(true)
   }
 
@@ -541,34 +557,37 @@ const FullKitAssignment = () => {
 
   return (
     <Wrapper>
-      <MTOActionToolBar 
-        comp="FullKitAssignment" 
-        isExcelExport 
+      <MTOActionToolBar
+        comp="FullKitAssignment"
+        isExcelExport
         isAddFilterButton
         isFilterOpen={isFilterOpen}
         onAddFilter={onAddFilter}
         toggleFilter={toggleFilter}
-        onApplyFilter={onApplyFilter} 
+        onApplyFilter={onApplyFilter}
         multiFilter={currFilter}
-        setMultiFilter={setCurrFilter} 
+        setMultiFilter={setCurrFilter}
         onFilterRemove={onFilterRemove}
         utilityBtns={renderUtilityBtns}
-        quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox style={{cursor: editMode != "View" ? "not-allowed" : "pointer"}} disabled={editMode != "View"} checked={loadDataParams.is_fullkit} onChange={(e: any) => setLoadDataParams({...loadDataParams, load_graph_data: true, is_fullkit: e.target.checked})} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Orders with Full Kit Ready</strong></div>}
+        quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox style={{ cursor: editMode != "View" ? "not-allowed" : "pointer" }} disabled={editMode != "View"} checked={loadDataParams.is_fullkit} onChange={(e: any) => setLoadDataParams({ ...loadDataParams, load_graph_data: true, is_fullkit: e.target.checked })} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Orders with Full Kit Ready</strong></div>}
       />
       {/* <button onClick={() => setShowModal(true)}>Click</button> */}
-      {(isDataLoading || excludeOrdersLoading || simulationLoading || isSimulationResultsUpdating) && <OverlayLoader/>}
+      {(isDataLoading || excludeOrdersLoading || simulationLoading || isSimulationResultsUpdating) && <OverlayLoader />}
       <VFTable
         ref={grid}
         rowData={orders}
         gridOptions={gridOptions}
         columnDefs={gridOptions.columnDefs}
-        onRowDataUpdated={(params)=>{
+        tooltipHideDelay={100000}
+        tooltipShowDelay={0}
+        tooltipMouseTrack={true}
+        onRowDataUpdated={(params) => {
           const selectedRowIds = Array.from(selectedRows.keys());
           const newCurrentPageSeleceted: any = []
           params.api.forEachNode(node => {
-              if (selectedRowIds.includes(node.data.on)) {
-                  newCurrentPageSeleceted.push(node)
-              }
+            if (selectedRowIds.includes(node.data.on)) {
+              newCurrentPageSeleceted.push(node)
+            }
           });
           currentPageSelectedRows.current = newCurrentPageSeleceted;
           params.api.setNodesSelected({ nodes: newCurrentPageSeleceted, newValue: true });
@@ -577,7 +596,7 @@ const FullKitAssignment = () => {
           const newMap = new Map(selectedRows);
           _.differenceWith(currentPageSelectedRows.current, params.api.getSelectedNodes(), _.isEqual).forEach((node: any) => {
             newMap.delete(node.data.on);
-          }) 
+          })
           params.api.getSelectedNodes().forEach((node: any) => {
             newMap.set(node.data.on, node);
           })
@@ -602,12 +621,12 @@ const FullKitAssignment = () => {
 
       // }}
       />
-      <VFPagination currentPage={currentPage} rowsPerPage={15} selectedRows={1} totalRows={totalRows} handleChangePage={handlePageChange}/>
+      <VFPagination currentPage={currentPage} rowsPerPage={15} selectedRows={1} totalRows={totalRows} handleChangePage={handlePageChange} />
       <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
       <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
         <AgChartsReact ref={graph} options={chartoptions} />
       </div>
-      <EditRouteModal orderKey={orderKey} plantId={selectedPlantId} routeId={selectedRouteId} graphData={graphData} showModal={showModal} ccrGroups={masters?.ccrGroups} setShowModal={setShowModal} theme={themeUi} setOrderKey={setOrderKey} loadDataParams={loadDataParams} setLoadDataParams={setLoadDataParams}/>
+      <EditRouteModal orderKey={orderKey} plantId={selectedPlantId} routeId={selectedRouteId} graphData={graphData} showModal={showModal} ccrGroups={masters?.ccrGroups} setShowModal={setShowModal} theme={themeUi} setOrderKey={setOrderKey} loadDataParams={loadDataParams} setLoadDataParams={setLoadDataParams} />
     </Wrapper >
 
 

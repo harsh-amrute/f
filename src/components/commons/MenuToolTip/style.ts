@@ -15,6 +15,7 @@ export const TooltipContainer = styled.div`
   color: ${globalStyles.black};
   text-align: left;
   cursor: pointer;
+  overflow: auto;
 `;
 
 export const TooltipTitle = styled.div`
@@ -22,7 +23,7 @@ export const TooltipTitle = styled.div`
   border-bottom: 1px solid #929292;
   padding: 8px 10px;
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
-      .size.laptopL}) {
+    .size.laptopL}) {
     font-size: 1.2rem;
     padding: 4px 10px;
   }
@@ -45,7 +46,7 @@ export const TooltipContent = styled.div<{ action: boolean; themeUi: string }>`
       ? globalStyles.chooseThemeColor[props.themeUi].backgroundActiveTooltip
       : "unset"};
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
-      .size.laptopL}) {
+    .size.laptopL}) {
     font-size: 1.2rem;
     margin: 0;
   }

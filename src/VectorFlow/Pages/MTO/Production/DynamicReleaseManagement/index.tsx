@@ -1,7 +1,7 @@
 import { AgChartsReact } from 'ag-charts-react';
 import { GridOptions, IRowNode } from 'ag-grid-enterprise';
 import { useEffect, useMemo, useRef, useState } from 'react'
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import { fullKitAssignmentHeader } from './data';
 import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
@@ -21,6 +21,7 @@ import { useGetCCRGroupMaster, useGetLineCCRDetails, useGetRouteDetails } from '
 import OverlayLoader from '../../Common/Loader';
 import VFPagination from '../../Common/VFPagination';
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
+import { pagination } from '../../Common/Enum';
 
 const DynamicReleaseManagement = () => {
   interface InputData {
@@ -109,6 +110,7 @@ const DynamicReleaseManagement = () => {
   const colDefCustomizations = {
     Action: {
       floatingFilter: false,
+      resizable: false,
       suppressMenu: true,
       cellRenderer: (params: any) => {
         return (
@@ -153,6 +155,7 @@ const DynamicReleaseManagement = () => {
     {
       field: "",
       position: 0,
+      resizable: false,
       headerCheckboxSelection: false,
       checkboxSelection: true,
       maxWidth: 50,
@@ -276,7 +279,7 @@ const DynamicReleaseManagement = () => {
     columnDefs: colDefs,
     defaultColDef: {
       resizable: true,
-      // suppressMenu: true,
+      suppressMenu: true,
       initialFlex: 1,
       // wrapHeaderText: true,
       filter: "agMultiColumnFilter",
@@ -635,7 +638,7 @@ const DynamicReleaseManagement = () => {
 
           <VFPagination
             selectedRows={0}
-            rowsPerPage={10}
+            rowsPerPage={pagination.mtoPageSize}
             totalRows={currData ? currData?.data?.data?.count : 0}
             currentPage={currentPage}
             handleChangePage={handlePageChangeCumulative}

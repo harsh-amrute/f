@@ -2,7 +2,8 @@ import { GridOptions } from 'ag-grid-enterprise';
 import _ from 'lodash';
 import React, { forwardRef, useImperativeHandle, useRef } from 'react'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
+import { pagination } from '../../Common/Enum';
 
 interface IStep1Props {
   gridOptions: GridOptions,
@@ -16,7 +17,7 @@ interface IStep1Props {
   setSelectedRows: any
 }
 
-const Step1 = forwardRef(({gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows}: IStep1Props, ref: any) => {
+const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows }: IStep1Props, ref: any) => {
 
   const gridRef = useRef<any>()
   const handlePageChange = async (currPage: number) => {
@@ -41,52 +42,52 @@ const Step1 = forwardRef(({gridOptions, rows, selectedRows, currentPageSelectedR
   }));
 
   return (
-      <>
-        <VFTable
-            key="allRows"
-            ref={gridRef}
-            gridOptions={gridOptions}
-            columnDefs={gridOptions.columnDefs}
-            rowData={rows}
-            // domLayout="autoHeight"
-            rowSelection="multiple"
-            onGridReady={(params: any) => {
-                params.columnApi.autoSizeAllColumns();
-            }}
-            onRowDataUpdated={(params)=>{
-              const selectedRowIds = Array.from(selectedRows.keys());
-              const newCurrentPageSeleceted: any = []
-              params.api.forEachNode(node => {
-                  if (selectedRowIds.includes(node.data.ok)) {
-                      newCurrentPageSeleceted.push(node)
-                  }
-              });
-              currentPageSelectedRows.current = newCurrentPageSeleceted;
-              params.api.setNodesSelected({ nodes: newCurrentPageSeleceted, newValue: true });
-            }}
-            onSelectionChanged={(params: any) => {
-              const newMap = new Map(selectedRows);
-              _.differenceWith(currentPageSelectedRows.current, params.api.getSelectedNodes(), _.isEqual).forEach((node: any) => {
-                newMap.delete(node.data.ok);
-              }) 
-              //to sort within the same page
-              // params.api.getSelectedNodes().forEach((node: any) => {
-              //   newMap.delete(node.data.ok);
-              // })
-              params.api.getSelectedNodes().forEach((node: any) => {
-                newMap.set(node.data.ok, node);
-              })
-              setSelectedRows(newMap)
-              currentPageSelectedRows.current = params.api.getSelectedNodes();
-            }}
-        />
-        <VFPagination
-            selectedRows={0}
-            totalRows={totalRows.current}
-            rowsPerPage={10}
-            currentPage={currentPage}
-            handleChangePage={handlePageChange}
-        />
+    <>
+      <VFTable
+        key="allRows"
+        ref={gridRef}
+        gridOptions={gridOptions}
+        columnDefs={gridOptions.columnDefs}
+        rowData={rows}
+        // domLayout="autoHeight"
+        rowSelection="multiple"
+        onGridReady={(params: any) => {
+          params.columnApi.autoSizeAllColumns();
+        }}
+        onRowDataUpdated={(params) => {
+          const selectedRowIds = Array.from(selectedRows.keys());
+          const newCurrentPageSeleceted: any = []
+          params.api.forEachNode(node => {
+            if (selectedRowIds.includes(node.data.ok)) {
+              newCurrentPageSeleceted.push(node)
+            }
+          });
+          currentPageSelectedRows.current = newCurrentPageSeleceted;
+          params.api.setNodesSelected({ nodes: newCurrentPageSeleceted, newValue: true });
+        }}
+        onSelectionChanged={(params: any) => {
+          const newMap = new Map(selectedRows);
+          _.differenceWith(currentPageSelectedRows.current, params.api.getSelectedNodes(), _.isEqual).forEach((node: any) => {
+            newMap.delete(node.data.ok);
+          })
+          //to sort within the same page
+          // params.api.getSelectedNodes().forEach((node: any) => {
+          //   newMap.delete(node.data.ok);
+          // })
+          params.api.getSelectedNodes().forEach((node: any) => {
+            newMap.set(node.data.ok, node);
+          })
+          setSelectedRows(newMap)
+          currentPageSelectedRows.current = params.api.getSelectedNodes();
+        }}
+      />
+      <VFPagination
+        selectedRows={0}
+        totalRows={totalRows.current}
+        rowsPerPage={pagination.mtoPageSize}
+        currentPage={currentPage}
+        handleChangePage={handlePageChange}
+      />
     </>
   )
 })

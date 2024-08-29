@@ -5,6 +5,7 @@ import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VF
 import { SCChartHeaderContainer, SCChartMainContainer } from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer/styles'
 import { AgChartOptions } from 'ag-charts-community'
 import { createSeriesDataIF, getMyColumnDefinitions, TooltipRendererIF } from '../Data'
+import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 
 interface IFFailedGraphProps {
     IFFailedData: any,
@@ -19,6 +20,8 @@ const IFFailedGraph = (props: IFFailedGraphProps) => {
     const [hideChart1, toggleChart1] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
     const [chartLoading, setChartLoading] = useState(false);
+    const { data: apiResponseData,} = useGetDate();
+
 
     const generateHeader = () => {
         return (
@@ -35,7 +38,8 @@ const IFFailedGraph = (props: IFFailedGraphProps) => {
                         }}
                     >
                         <span style={{ fontWeight: 500 }}>Extent Of Shortages In IF Failed Orders &nbsp;</span>
-                        <span style={{ fontWeight: 350 }}>{`(${moment(IFFailedData?.start).format('D MMM YYYY')} - ${moment(IFFailedData?.end).format('D MMM YYYY')})`}</span>
+                        <span style={{ fontWeight: 350 }}>{`(${moment(apiResponseData?.data.data || '-').subtract(90, 'days').format('D MMM YYYY')} - ${moment(apiResponseData?.data.data || '-').format('D MMM YYYY')})`}</span>
+
                     </div>
                     <SCChartHeaderContainer>
 

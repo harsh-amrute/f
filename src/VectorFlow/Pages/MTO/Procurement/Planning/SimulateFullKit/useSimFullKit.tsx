@@ -5,12 +5,12 @@ import GetSimulateFullKitHeader from './GetSimulateFullKitHeader.json';
 import AvlCellRenderer from "../../../Common/AvlCellRenderer";
 import AvailabilityToolTip from "../../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../../components/VectorFLOW/commons/VFFloatingTab"
-import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from "../../../Common/VFTable";
 import { useLocation } from 'react-router-dom';
 import ColorCellRenderer from "../../../Common/ColorCellRenderer";
 import { mapSimulateProcPlanningFieldsToColDefs } from '../../../../../../helpers/utils';
 import DetailCellRenderer from "./DetailCellRenderer";
-import { userGetProcAfterSimulationPlanningData  } from "../../../../../Services/MTO/Procurement/ProcPlanning/index";
+import { userGetProcAfterSimulationPlanningData } from "../../../../../Services/MTO/Procurement/ProcPlanning/index";
 import OverlayLoader from "../../../Common/Loader";
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
@@ -20,7 +20,7 @@ import { toast } from "react-toastify";
 const useSimFullKit = () => {
     const { HeaderData } = GetSimulateFullKitHeader;
     const { isSideBarOpen } = useUserData()
-    const [currentPage,setCurrentPage] = useState<any>(1);
+    const [currentPage, setCurrentPage] = useState<any>(1);
     const location = useLocation();
     const rowsData = location.state?.ShortageDatas;
     const date = location.state?.date;
@@ -79,12 +79,12 @@ const useSimFullKit = () => {
     const [totalRows, setTotalRows] = useState(0);
 
 
-    const { mutateAsync: userGetProcAfterSimulationData , isLoading, isSuccess, isError} = userGetProcAfterSimulationPlanningData();
+    const { mutateAsync: userGetProcAfterSimulationData, isLoading, isSuccess, isError } = userGetProcAfterSimulationPlanningData();
     //isLoading: isProcPlanningUILoading, isError
 
-    const fetchData = useCallback(async (date: string, eas: string, pageNumber='1') => {
+    const fetchData = useCallback(async (date: string, eas: string, pageNumber = '1') => {
         try {
-            const response = await userGetProcAfterSimulationData({date,eas,pageNumber});
+            const response = await userGetProcAfterSimulationData({ date, eas, pageNumber });
             setData(response?.data?.data?.results);
             setTotalRows(response?.data?.data.count);
             setCurrentPage(pageNumber)
@@ -98,12 +98,12 @@ const useSimFullKit = () => {
         if ('' !== date) {
             const selectedDate = date;
             if (rowsData) {
-                if(currentTab.id==='iof'){
+                if (currentTab.id === 'iof') {
 
-                    fetchData(selectedDate,'0',currentPage);
+                    fetchData(selectedDate, '0', currentPage);
                 }
-                else{
-                    fetchData(selectedDate, '1',currentPage);
+                else {
+                    fetchData(selectedDate, '1', currentPage);
                 }
             }
         }
@@ -121,7 +121,7 @@ const useSimFullKit = () => {
                 const WithZeroEas = calculateData.filter((item: any) => item.children.every((child: any) => child.eas === 0));
                 const WithoutZeroEas = calculateData.filter((item: any) => item.children.every((child: any) => child.eas !== 0));
 
-            
+
                 const BothEasData = calculateData.filter((item: any) => {
                     return item.children.some((child: any) => child.eas === 0) && item.children.some((child: any) => child.eas !== 0);
                 });
@@ -163,17 +163,17 @@ const useSimFullKit = () => {
         };
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
 
-        if(isError){
+        if (isError) {
             toast.dismiss();
             notifyError("Failed to fetch data!")
         }
-        if(isSuccess){
+        if (isSuccess) {
             notifySuccess("Fetched Data Successfully!")
         }
 
-    },[isError, isSuccess])
+    }, [isError, isSuccess])
 
     const handlePageChangeCumulative = async (pageNumber: number) => {
         // setIsLoading(true);
@@ -186,12 +186,12 @@ const useSimFullKit = () => {
         // setData(newDat);
         // setIsLoading(false);
 
-        if(currentTab.id==='iof'){
+        if (currentTab.id === 'iof') {
 
-            fetchData(date,'0', pageNumber.toString());
-            
+            fetchData(date, '0', pageNumber.toString());
+
         }
-        else{
+        else {
             fetchData(date, '1', pageNumber.toString());
         }
 
@@ -206,24 +206,24 @@ const useSimFullKit = () => {
         }), []);
 
 
-        useEffect(()=>{
+    useEffect(() => {
 
-            if(currentTab.id==='iof'){
-                fetchData(date,'0');
-            }
-            else{
-                fetchData(date,'1');
-            }
-        
-        },[currentTab])
+        if (currentTab.id === 'iof') {
+            fetchData(date, '0');
+        }
+        else {
+            fetchData(date, '1');
+        }
+
+    }, [currentTab])
 
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
     const renderView = () => {
         switch (currentTab.id) {
             case "iof":
                 return (
-                    <div>
-                        {isLoading && <OverlayLoader/>}
+                    <>
+                        {isLoading && <OverlayLoader />}
                         <VFTable
                             {...agGridProps}
                             columnDefs={SimulateColumns}
@@ -231,7 +231,7 @@ const useSimFullKit = () => {
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'750px'}
+                            // height={'750px'}
                             statusBar={{
                                 statusPanels: [
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
@@ -247,13 +247,13 @@ const useSimFullKit = () => {
                             handleChangePage={handlePageChangeCumulative}
 
                         />
-                        
-                    </div>
+
+                    </>
                 );
             case "cf":
                 return (
-                    <div>
-                        {isLoading && <OverlayLoader/>}
+                    <>
+                        {isLoading && <OverlayLoader />}
                         <VFTable
                             {...agGridProps}
                             columnDefs={SimulateColumns}
@@ -261,7 +261,7 @@ const useSimFullKit = () => {
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
-                            height={'750px'}
+                            // height={'750px'}
                             statusBar={{
                                 statusPanels: [
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
@@ -276,7 +276,7 @@ const useSimFullKit = () => {
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
                         />
-                    </div>
+                    </>
                 );
             default:
                 return <VFTable columnDefs={[]} rowData={[]} {...agGridProps} />
@@ -299,6 +299,9 @@ const useSimFullKit = () => {
             components: customCellRenderers,
             icons: icons,
             defaultColDef: {
+                suppressMenu: true,
+                resizable: true,
+                filter: "agMultiColumnFilter",
                 cellStyle: {
                     'text-align': 'center',
                     'height': '50px',
@@ -310,8 +313,9 @@ const useSimFullKit = () => {
                     'text-overflow': 'ellipsis',
                     'white-space': 'nowrap',
                     'resizable': 'true',
-                    'width':'180px'
+                    'width': '200px'
                 },
+
             },
         },
         masterDetail: true,

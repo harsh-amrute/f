@@ -40,3 +40,7 @@ export enum InputTypes {
     Search = "search",
     Select = "select"
 }
+
+export enum pagination {
+    mtoPageSize = 15
+}

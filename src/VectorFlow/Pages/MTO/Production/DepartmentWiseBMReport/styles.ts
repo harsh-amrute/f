@@ -19,7 +19,7 @@ export const BMDepWrapper = styled.div`
 `
 
 export const BMDepHeaderWraper = styled.div`
-  zoom:1.3;
+  zoom: 1.25;
  
 `
 export const BMDepSubHeaderWraper = styled.div`
@@ -51,9 +51,9 @@ export const NoDataText = styled.p`
 
 export const SelectText = styled.p`
   color:#000000;
-  font-family:Roboto-light;
+  font-family:Roboto;
   font-size:20px;
-  font-weight:200;
+  color: grey;
 `
 
 export const BPRViewTableWrapper = styled.div`

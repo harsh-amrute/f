@@ -10,10 +10,10 @@ export const MaterialRequirementTest = styled.div`
     display:flex;
     justify-content:center;
     align-item:center;
-    font-size:16px;
     color:${ColorsMTO.Black};
     font-family:Roboto-Light;
     font:normal normal 300 20px/24px Roboto;
+    font-size: 16px;
     opacity:100%;
     flex-direction:row;
 `
@@ -23,7 +23,7 @@ export const MaterialRequirementDate = styled.div`
     font-familt:Roboto-Medium;
     justify-content:center;
     align-item:center;
-    font-size:18px;
+    font-size:15px;
     font:normal normal medium 20px/24px Roboto;
     padding-left:8px;
 `
@@ -32,16 +32,21 @@ export const MaterialRequirementHeading = styled.div`
     display:flex;
     align-items:center;
     justify-content:center;
-    padding: 20px 0 5px;
+    padding: 20px 0 10px;
 `
 export const TableWrapper = styled.div`
-    height : 88vh;
+    // height : 88vh;
     display: flex;
     flex-direction: column;
-
+    height: 100%;
     & > .ag-theme-alpine{
         margin: 0;
-        flex: 1;
+        // flex: 1;
+        height: 100%;
+    }
+
+    & > div[data-testid="vf_pagination"]{
+        margin-top: 0 !important;
     }
     
 `
