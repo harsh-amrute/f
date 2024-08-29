@@ -42,10 +42,11 @@
 .vfwrap .ag-cell {
   height: 100% !important;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center !important;
   font-family: 'Roboto' !important;
-  font-size: 11px !important;
+  font-size: 12px !important;
+  font-weight: normal !important;
 }
 
 .vfwrap .child-grid {

@@ -11,11 +11,16 @@ const ChildrenColor = (props: ICellRendererParams) => {
         str = "Partial Kit"
     }
     return (
-        <Tooltip tooltipZoom='1' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} content={<><Tooltipcontainer>{str}</Tooltipcontainer></>}>
+        str !== ""?
+        <Tooltip  tooltipZoom='1' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} content={<><Tooltipcontainer>{str}</Tooltipcontainer></>}>
             <ProcPlanningChildrenColor data-testid="children-cell-renderer">
                 <ChildrenColorCellRenderer value={props.data.clr} />
             </ProcPlanningChildrenColor>
         </Tooltip>
+        : <ProcPlanningChildrenColor data-testid="children-cell-renderer">
+                <ChildrenColorCellRenderer value={props.data.clr} />
+        </ProcPlanningChildrenColor>
+        
     );
 };
 

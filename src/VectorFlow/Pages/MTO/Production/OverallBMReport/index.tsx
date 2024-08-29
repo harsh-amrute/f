@@ -989,6 +989,7 @@ const OverallBmReport = () => {
                         alignItems: "center"
                     }
                 },
+                
                 treeData: true,
                 getDataPath: (data: any) => {
                     return data.path;

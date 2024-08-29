@@ -117,7 +117,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             pinned: "right",
             lockPosition: true,
             minWidth: 120,
-            tooltipField: "rn",
             cellStyle: {
                 // background: "#BC3D814F",
                 // color: "#BC3D81",

@@ -94,7 +94,7 @@ const FullKitAssignment = () => {
       // tooltipField: "r"
       cellRenderer: (params: any) => {
         return (
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%", height: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "end",gap: "1rem", width: "100%", height: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
             <img height={12} width={12} alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
               setShowModal(true);
@@ -129,7 +129,7 @@ const FullKitAssignment = () => {
     },
     Tags: {
       cellRenderer: ColorCellRenderer,
-      minWidth: 150
+      minWidth: 140
     }
   })
 
@@ -431,6 +431,20 @@ const FullKitAssignment = () => {
         background: params.node.rowIndex % 2 === 0 ? "#F4F4F4" : "#FFFFFF",
       };
     },
+    sideBar: {
+      toolPanels: [
+        {
+          id: 'columns',
+          labelDefault: 'Columns',
+          labelKey: 'columns',
+          iconKey: 'columns',
+          toolPanel: 'agColumnsToolPanel',
+          minWidth: 225,
+          maxWidth: 225,
+          width: 225
+        },
+      ],
+    },
     rowHeight: 50,
     columnDefs: colDefs,
     defaultColDef: {
@@ -440,15 +454,15 @@ const FullKitAssignment = () => {
       wrapHeaderText: true,
       autoHeaderHeight: true,
       filter: "agTextColumnFilter",
+      floatingFilterComponentParams: { suppressFilterButton: true },
       floatingFilter: true,
       enableRowGroup: true,
-      floatingFilterComponentParams: { suppressFilterButton: true },
     },
     rowSelection: "multiple",
     suppressRowClickSelection: true,
-    sideBar: {
-      toolPanels: ["agColumnsToolPanel"],
-    },
+    // sideBar: {
+    //   toolPanels: ["agColumnsToolPanel"],
+    // },
   };
 
   const chartoptions: AgChartOptions = {

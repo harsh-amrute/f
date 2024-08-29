@@ -2771,7 +2771,7 @@ export function getColumnDefinations(
       field: data.scc,
       hide: !data.v,
       cellStyle: {
-        textAlign: data.cla
+        justifyContent: data.cla
       }
     };
     // Apply customization if needed

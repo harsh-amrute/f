@@ -39,6 +39,26 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       <AgGridReact
         ref={ref}
         {...props}
+        gridOptions = {{
+          ...props.gridOptions,
+          defaultColDef: {
+            ...props.gridOptions?.defaultColDef,
+            filter: "agTextColumnFilter",
+            floatingFilterComponentParams: { suppressFilterButton: false },
+            floatingFilter: true,
+          },
+          sideBar: {
+            toolPanels: [
+              {
+                id: 'columns',
+                labelDefault: 'Columns',
+                labelKey: 'columns',
+                iconKey: 'columns',
+                toolPanel: 'agColumnsToolPanel',
+              },
+            ],
+          },
+        }}
         rowHeight={30}
         suppressDragLeaveHidesColumns={true}
       />

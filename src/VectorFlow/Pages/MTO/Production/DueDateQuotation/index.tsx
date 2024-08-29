@@ -82,7 +82,7 @@ const DueDateQuotation = () => {
       headerCheckboxSelection: true,
       checkboxSelection: true,
       suppressMenu: true,
-      maxWidth: 50,
+      maxWidth: 30,
       position: 0,
       filter: false
     },
